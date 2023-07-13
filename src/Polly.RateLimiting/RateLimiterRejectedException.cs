@@ -93,7 +93,9 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
 
 #if !NETCOREAPP
     /// <inheritdoc/>
+#pragma warning disable RS0016 // Add public types and members to the declared API
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
+#pragma warning restore RS0016 // Add public types and members to the declared API
     {
         Guard.NotNull(info);
 

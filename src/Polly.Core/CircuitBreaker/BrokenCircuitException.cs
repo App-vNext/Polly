@@ -47,7 +47,7 @@ public class BrokenCircuitException : ExecutionRejectedException
     /// </summary>
     /// <param name="info">The <see cref="SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
     /// <param name="context">The <see cref="StreamingContext" /> that contains contextual information about the source or destination.</param>
-    protected BrokenCircuitException(SerializationInfo info, StreamingContext context)
+    protected private BrokenCircuitException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
     }

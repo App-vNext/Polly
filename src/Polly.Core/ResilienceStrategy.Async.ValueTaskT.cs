@@ -1,6 +1,7 @@
 namespace Polly;
 
 #pragma warning disable CA1031 // Do not catch general exception types
+#pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
 
 public abstract partial class ResilienceStrategy
 {

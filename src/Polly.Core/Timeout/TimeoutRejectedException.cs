@@ -69,7 +69,7 @@ public class TimeoutRejectedException : ExecutionRejectedException
     /// </summary>
     /// <param name="info">The information.</param>
     /// <param name="context">The context.</param>
-    protected TimeoutRejectedException(SerializationInfo info, StreamingContext context)
+    private TimeoutRejectedException(SerializationInfo info, StreamingContext context)
         : base(info, context) => Timeout = TimeSpan.FromSeconds(info.GetDouble("Timeout"));
 #endif
 
@@ -80,7 +80,9 @@ public class TimeoutRejectedException : ExecutionRejectedException
 
 #if !NETCOREAPP
     /// <inheritdoc/>
+#pragma warning disable RS0016 // Add public types and members to the declared API
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
+#pragma warning restore RS0016 // Add public types and members to the declared API
     {
         Guard.NotNull(info);
 

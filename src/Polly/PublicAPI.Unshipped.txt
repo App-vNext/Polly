@@ -1,0 +1,1059 @@
+﻿abstract Polly.AsyncPolicy.ImplementationAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+abstract Polly.AsyncPolicy<TResult>.ImplementationAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+abstract Polly.Policy.Implementation<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> TResult
+abstract Polly.Policy<TResult>.Implementation(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> TResult
+override Polly.PolicyBuilder.Equals(object obj) -> bool
+override Polly.PolicyBuilder.GetHashCode() -> int
+override Polly.PolicyBuilder.ToString() -> string
+override Polly.PolicyBuilder<TResult>.Equals(object obj) -> bool
+override Polly.PolicyBuilder<TResult>.GetHashCode() -> int
+override Polly.PolicyBuilder<TResult>.ToString() -> string
+Polly.AdvancedCircuitBreakerSyntax
+Polly.AdvancedCircuitBreakerTResultSyntax
+Polly.AsyncAdvancedCircuitBreakerSyntax
+Polly.AsyncAdvancedCircuitBreakerTResultSyntax
+Polly.AsyncCircuitBreakerSyntax
+Polly.AsyncCircuitBreakerTResultSyntax
+Polly.AsyncFallbackSyntax
+Polly.AsyncFallbackTResultSyntax
+Polly.AsyncPolicy
+Polly.AsyncPolicy.AsyncPolicy(Polly.PolicyBuilder policyBuilder = null) -> void
+Polly.AsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.Tasks.Task> action, Polly.Context context) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync(System.Func<System.Threading.Tasks.Task> action) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, Polly.Context context) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<System.Threading.Tasks.Task<TResult>> action) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task
+Polly.AsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+Polly.AsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task
+Polly.AsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+Polly.AsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.Tasks.Task> action, Polly.Context context) -> System.Threading.Tasks.Task
+Polly.AsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task
+Polly.AsyncPolicy.ExecuteAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task
+Polly.AsyncPolicy.ExecuteAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+Polly.AsyncPolicy.ExecuteAsync(System.Func<System.Threading.Tasks.Task> action) -> System.Threading.Tasks.Task
+Polly.AsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, Polly.Context context) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy.ExecuteAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy.ExecuteAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy.ExecuteAsync<TResult>(System.Func<System.Threading.Tasks.Task<TResult>> action) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy.WithPolicyKey(string policyKey) -> Polly.AsyncPolicy
+Polly.AsyncPolicy.WrapAsync(Polly.IAsyncPolicy innerPolicy) -> Polly.Wrap.AsyncPolicyWrap
+Polly.AsyncPolicy.WrapAsync<TResult>(Polly.IAsyncPolicy<TResult> innerPolicy) -> Polly.Wrap.AsyncPolicyWrap<TResult>
+Polly.AsyncPolicy<TResult>
+Polly.AsyncPolicy<TResult>.AsyncPolicy(Polly.PolicyBuilder<TResult> policyBuilder = null) -> void
+Polly.AsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, Polly.Context context) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<System.Threading.Tasks.Task<TResult>> action) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.AsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, Polly.Context context) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy<TResult>.ExecuteAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy<TResult>.ExecuteAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy<TResult>.ExecuteAsync(System.Func<System.Threading.Tasks.Task<TResult>> action) -> System.Threading.Tasks.Task<TResult>
+Polly.AsyncPolicy<TResult>.WithPolicyKey(string policyKey) -> Polly.AsyncPolicy<TResult>
+Polly.AsyncPolicy<TResult>.WrapAsync(Polly.IAsyncPolicy innerPolicy) -> Polly.Wrap.AsyncPolicyWrap<TResult>
+Polly.AsyncPolicy<TResult>.WrapAsync(Polly.IAsyncPolicy<TResult> innerPolicy) -> Polly.Wrap.AsyncPolicyWrap<TResult>
+Polly.AsyncRetrySyntax
+Polly.AsyncRetryTResultSyntax
+Polly.Bulkhead.AsyncBulkheadPolicy
+Polly.Bulkhead.AsyncBulkheadPolicy.BulkheadAvailableCount.get -> int
+Polly.Bulkhead.AsyncBulkheadPolicy.Dispose() -> void
+Polly.Bulkhead.AsyncBulkheadPolicy.QueueAvailableCount.get -> int
+Polly.Bulkhead.AsyncBulkheadPolicy<TResult>
+Polly.Bulkhead.AsyncBulkheadPolicy<TResult>.BulkheadAvailableCount.get -> int
+Polly.Bulkhead.AsyncBulkheadPolicy<TResult>.Dispose() -> void
+Polly.Bulkhead.AsyncBulkheadPolicy<TResult>.QueueAvailableCount.get -> int
+Polly.Bulkhead.BulkheadPolicy
+Polly.Bulkhead.BulkheadPolicy.BulkheadAvailableCount.get -> int
+Polly.Bulkhead.BulkheadPolicy.Dispose() -> void
+Polly.Bulkhead.BulkheadPolicy.QueueAvailableCount.get -> int
+Polly.Bulkhead.BulkheadPolicy<TResult>
+Polly.Bulkhead.BulkheadPolicy<TResult>.BulkheadAvailableCount.get -> int
+Polly.Bulkhead.BulkheadPolicy<TResult>.Dispose() -> void
+Polly.Bulkhead.BulkheadPolicy<TResult>.QueueAvailableCount.get -> int
+Polly.Bulkhead.BulkheadRejectedException
+Polly.Bulkhead.BulkheadRejectedException.BulkheadRejectedException() -> void
+Polly.Bulkhead.BulkheadRejectedException.BulkheadRejectedException(string message) -> void
+Polly.Bulkhead.BulkheadRejectedException.BulkheadRejectedException(string message, System.Exception innerException) -> void
+Polly.Bulkhead.IBulkheadPolicy
+Polly.Bulkhead.IBulkheadPolicy.BulkheadAvailableCount.get -> int
+Polly.Bulkhead.IBulkheadPolicy.QueueAvailableCount.get -> int
+Polly.Bulkhead.IBulkheadPolicy<TResult>
+Polly.Caching.AbsoluteTtl
+Polly.Caching.AbsoluteTtl.AbsoluteTtl(System.DateTimeOffset absoluteExpirationTime) -> void
+Polly.Caching.AsyncCachePolicy
+Polly.Caching.AsyncCachePolicy<TResult>
+Polly.Caching.AsyncSerializingCacheProvider<TResult, TSerialized>
+Polly.Caching.AsyncSerializingCacheProvider<TResult, TSerialized>.AsyncSerializingCacheProvider(Polly.Caching.IAsyncCacheProvider<TSerialized> wrappedCacheProvider, Polly.Caching.ICacheItemSerializer<TResult, TSerialized> serializer) -> void
+Polly.Caching.AsyncSerializingCacheProvider<TResult, TSerialized>.PutAsync(string key, TResult value, Polly.Caching.Ttl ttl, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+Polly.Caching.AsyncSerializingCacheProvider<TResult, TSerialized>.TryGetAsync(string key, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<(bool, TResult)>
+Polly.Caching.AsyncSerializingCacheProvider<TSerialized>
+Polly.Caching.AsyncSerializingCacheProvider<TSerialized>.AsyncSerializingCacheProvider(Polly.Caching.IAsyncCacheProvider<TSerialized> wrappedCacheProvider, Polly.Caching.ICacheItemSerializer<object, TSerialized> serializer) -> void
+Polly.Caching.AsyncSerializingCacheProvider<TSerialized>.PutAsync(string key, object value, Polly.Caching.Ttl ttl, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+Polly.Caching.AsyncSerializingCacheProvider<TSerialized>.TryGetAsync(string key, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<(bool, object)>
+Polly.Caching.CachePolicy
+Polly.Caching.CachePolicy<TResult>
+Polly.Caching.CacheProviderExtensions
+Polly.Caching.ContextualTtl
+Polly.Caching.ContextualTtl.ContextualTtl() -> void
+Polly.Caching.ContextualTtl.GetTtl(Polly.Context context, object result) -> Polly.Caching.Ttl
+Polly.Caching.DefaultCacheKeyStrategy
+Polly.Caching.DefaultCacheKeyStrategy.DefaultCacheKeyStrategy() -> void
+Polly.Caching.DefaultCacheKeyStrategy.GetCacheKey(Polly.Context context) -> string
+Polly.Caching.IAsyncCacheProvider
+Polly.Caching.IAsyncCacheProvider.PutAsync(string key, object value, Polly.Caching.Ttl ttl, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+Polly.Caching.IAsyncCacheProvider.TryGetAsync(string key, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<(bool, object)>
+Polly.Caching.IAsyncCacheProvider<TResult>
+Polly.Caching.IAsyncCacheProvider<TResult>.PutAsync(string key, TResult value, Polly.Caching.Ttl ttl, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+Polly.Caching.IAsyncCacheProvider<TResult>.TryGetAsync(string key, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<(bool, TResult)>
+Polly.Caching.ICacheItemSerializer<TResult, TSerialized>
+Polly.Caching.ICacheItemSerializer<TResult, TSerialized>.Deserialize(TSerialized objectToDeserialize) -> TResult
+Polly.Caching.ICacheItemSerializer<TResult, TSerialized>.Serialize(TResult objectToSerialize) -> TSerialized
+Polly.Caching.ICacheKeyStrategy
+Polly.Caching.ICacheKeyStrategy.GetCacheKey(Polly.Context context) -> string
+Polly.Caching.ICachePolicy
+Polly.Caching.ICachePolicy<TResult>
+Polly.Caching.ISyncCacheProvider
+Polly.Caching.ISyncCacheProvider.Put(string key, object value, Polly.Caching.Ttl ttl) -> void
+Polly.Caching.ISyncCacheProvider.TryGet(string key) -> (bool, object)
+Polly.Caching.ISyncCacheProvider<TResult>
+Polly.Caching.ISyncCacheProvider<TResult>.Put(string key, TResult value, Polly.Caching.Ttl ttl) -> void
+Polly.Caching.ISyncCacheProvider<TResult>.TryGet(string key) -> (bool, TResult)
+Polly.Caching.ITtlStrategy
+Polly.Caching.ITtlStrategy<TResult>
+Polly.Caching.ITtlStrategy<TResult>.GetTtl(Polly.Context context, TResult result) -> Polly.Caching.Ttl
+Polly.Caching.NonSlidingTtl
+Polly.Caching.NonSlidingTtl.GetTtl(Polly.Context context, object result) -> Polly.Caching.Ttl
+Polly.Caching.NonSlidingTtl.NonSlidingTtl(System.DateTimeOffset absoluteExpirationTime) -> void
+Polly.Caching.RelativeTtl
+Polly.Caching.RelativeTtl.GetTtl(Polly.Context context, object result) -> Polly.Caching.Ttl
+Polly.Caching.RelativeTtl.RelativeTtl(System.TimeSpan ttl) -> void
+Polly.Caching.ResultTtl<TResult>
+Polly.Caching.ResultTtl<TResult>.GetTtl(Polly.Context context, TResult result) -> Polly.Caching.Ttl
+Polly.Caching.ResultTtl<TResult>.ResultTtl(System.Func<Polly.Context, TResult, Polly.Caching.Ttl> ttlFunc) -> void
+Polly.Caching.ResultTtl<TResult>.ResultTtl(System.Func<TResult, Polly.Caching.Ttl> ttlFunc) -> void
+Polly.Caching.SerializingCacheProvider<TResult, TSerialized>
+Polly.Caching.SerializingCacheProvider<TResult, TSerialized>.Put(string key, TResult value, Polly.Caching.Ttl ttl) -> void
+Polly.Caching.SerializingCacheProvider<TResult, TSerialized>.SerializingCacheProvider(Polly.Caching.ISyncCacheProvider<TSerialized> wrappedCacheProvider, Polly.Caching.ICacheItemSerializer<TResult, TSerialized> serializer) -> void
+Polly.Caching.SerializingCacheProvider<TResult, TSerialized>.TryGet(string key) -> (bool, TResult)
+Polly.Caching.SerializingCacheProvider<TSerialized>
+Polly.Caching.SerializingCacheProvider<TSerialized>.Put(string key, object value, Polly.Caching.Ttl ttl) -> void
+Polly.Caching.SerializingCacheProvider<TSerialized>.SerializingCacheProvider(Polly.Caching.ISyncCacheProvider<TSerialized> wrappedCacheProvider, Polly.Caching.ICacheItemSerializer<object, TSerialized> serializer) -> void
+Polly.Caching.SerializingCacheProvider<TSerialized>.TryGet(string key) -> (bool, object)
+Polly.Caching.SlidingTtl
+Polly.Caching.SlidingTtl.GetTtl(Polly.Context context, object result) -> Polly.Caching.Ttl
+Polly.Caching.SlidingTtl.SlidingTtl(System.TimeSpan slidingTtl) -> void
+Polly.Caching.Ttl
+Polly.Caching.Ttl.SlidingExpiration -> bool
+Polly.Caching.Ttl.Timespan -> System.TimeSpan
+Polly.Caching.Ttl.Ttl() -> void
+Polly.Caching.Ttl.Ttl(System.TimeSpan timeSpan) -> void
+Polly.Caching.Ttl.Ttl(System.TimeSpan timeSpan, bool slidingExpiration) -> void
+Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+Polly.CircuitBreaker.AsyncCircuitBreakerPolicy.CircuitState.get -> Polly.CircuitBreaker.CircuitState
+Polly.CircuitBreaker.AsyncCircuitBreakerPolicy.Isolate() -> void
+Polly.CircuitBreaker.AsyncCircuitBreakerPolicy.LastException.get -> System.Exception
+Polly.CircuitBreaker.AsyncCircuitBreakerPolicy.Reset() -> void
+Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>.CircuitState.get -> Polly.CircuitBreaker.CircuitState
+Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>.Isolate() -> void
+Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>.LastException.get -> System.Exception
+Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>.LastHandledResult.get -> TResult
+Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>.Reset() -> void
+Polly.CircuitBreaker.CircuitBreakerPolicy
+Polly.CircuitBreaker.CircuitBreakerPolicy.CircuitState.get -> Polly.CircuitBreaker.CircuitState
+Polly.CircuitBreaker.CircuitBreakerPolicy.Isolate() -> void
+Polly.CircuitBreaker.CircuitBreakerPolicy.LastException.get -> System.Exception
+Polly.CircuitBreaker.CircuitBreakerPolicy.Reset() -> void
+Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>.CircuitState.get -> Polly.CircuitBreaker.CircuitState
+Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>.Isolate() -> void
+Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>.LastException.get -> System.Exception
+Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>.LastHandledResult.get -> TResult
+Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>.Reset() -> void
+Polly.CircuitBreaker.ICircuitBreakerPolicy
+Polly.CircuitBreaker.ICircuitBreakerPolicy.CircuitState.get -> Polly.CircuitBreaker.CircuitState
+Polly.CircuitBreaker.ICircuitBreakerPolicy.Isolate() -> void
+Polly.CircuitBreaker.ICircuitBreakerPolicy.LastException.get -> System.Exception
+Polly.CircuitBreaker.ICircuitBreakerPolicy.Reset() -> void
+Polly.CircuitBreaker.ICircuitBreakerPolicy<TResult>
+Polly.CircuitBreaker.ICircuitBreakerPolicy<TResult>.LastHandledResult.get -> TResult
+Polly.CircuitBreakerSyntax
+Polly.CircuitBreakerTResultSyntax
+Polly.Context
+Polly.Context.Add(object key, object value) -> void
+Polly.Context.Add(string key, object value) -> void
+Polly.Context.Clear() -> void
+Polly.Context.Contains(object key) -> bool
+Polly.Context.ContainsKey(string key) -> bool
+Polly.Context.Context() -> void
+Polly.Context.Context(string operationKey) -> void
+Polly.Context.Context(string operationKey, System.Collections.Generic.IDictionary<string, object> contextData) -> void
+Polly.Context.CopyTo(System.Array array, int index) -> void
+Polly.Context.CorrelationId.get -> System.Guid
+Polly.Context.Count.get -> int
+Polly.Context.GetEnumerator() -> System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, object>>
+Polly.Context.Keys.get -> System.Collections.Generic.ICollection<string>
+Polly.Context.OperationKey.get -> string
+Polly.Context.PolicyKey.get -> string
+Polly.Context.PolicyWrapKey.get -> string
+Polly.Context.Remove(object key) -> void
+Polly.Context.Remove(string key) -> bool
+Polly.Context.this[string key].get -> object
+Polly.Context.this[string key].set -> void
+Polly.Context.TryGetValue(string key, out object value) -> bool
+Polly.Context.Values.get -> System.Collections.Generic.ICollection<object>
+Polly.DelegateResult<TResult>
+Polly.DelegateResult<TResult>.DelegateResult(System.Exception exception) -> void
+Polly.DelegateResult<TResult>.DelegateResult(TResult result) -> void
+Polly.DelegateResult<TResult>.Exception.get -> System.Exception
+Polly.DelegateResult<TResult>.Result.get -> TResult
+Polly.ExceptionPredicate
+Polly.ExceptionPredicates
+Polly.ExceptionPredicates.ExceptionPredicates() -> void
+Polly.ExceptionPredicates.FirstMatchOrDefault(System.Exception ex) -> System.Exception
+Polly.ExceptionType
+Polly.ExceptionType.HandledByThisPolicy = 0 -> Polly.ExceptionType
+Polly.ExceptionType.Unhandled = 1 -> Polly.ExceptionType
+Polly.Fallback.AsyncFallbackPolicy
+Polly.Fallback.AsyncFallbackPolicy<TResult>
+Polly.Fallback.FallbackPolicy
+Polly.Fallback.FallbackPolicy<TResult>
+Polly.Fallback.IFallbackPolicy
+Polly.Fallback.IFallbackPolicy<TResult>
+Polly.FallbackSyntax
+Polly.FallbackTResultSyntax
+Polly.FaultType
+Polly.FaultType.ExceptionHandledByThisPolicy = 0 -> Polly.FaultType
+Polly.FaultType.ResultHandledByThisPolicy = 2 -> Polly.FaultType
+Polly.FaultType.UnhandledException = 1 -> Polly.FaultType
+Polly.IAsyncPolicy
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.Tasks.Task> action, Polly.Context context) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync(System.Func<System.Threading.Tasks.Task> action) -> System.Threading.Tasks.Task<Polly.PolicyResult>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, Polly.Context context) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy.ExecuteAndCaptureAsync<TResult>(System.Func<System.Threading.Tasks.Task<TResult>> action) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task
+Polly.IAsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+Polly.IAsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task
+Polly.IAsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+Polly.IAsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.Tasks.Task> action, Polly.Context context) -> System.Threading.Tasks.Task
+Polly.IAsyncPolicy.ExecuteAsync(System.Func<Polly.Context, System.Threading.Tasks.Task> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task
+Polly.IAsyncPolicy.ExecuteAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task
+Polly.IAsyncPolicy.ExecuteAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+Polly.IAsyncPolicy.ExecuteAsync(System.Func<System.Threading.Tasks.Task> action) -> System.Threading.Tasks.Task
+Polly.IAsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, Polly.Context context) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy.ExecuteAsync<TResult>(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy.ExecuteAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy.ExecuteAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy.ExecuteAsync<TResult>(System.Func<System.Threading.Tasks.Task<TResult>> action) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy.WithPolicyKey(string policyKey) -> Polly.IAsyncPolicy
+Polly.IAsyncPolicy<TResult>
+Polly.IAsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, Polly.Context context) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy<TResult>.ExecuteAndCaptureAsync(System.Func<System.Threading.Tasks.Task<TResult>> action) -> System.Threading.Tasks.Task<Polly.PolicyResult<TResult>>
+Polly.IAsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, Polly.Context context) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy<TResult>.ExecuteAsync(System.Func<Polly.Context, System.Threading.Tasks.Task<TResult>> action, System.Collections.Generic.IDictionary<string, object> contextData) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy<TResult>.ExecuteAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy<TResult>.ExecuteAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> action, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy<TResult>.ExecuteAsync(System.Func<System.Threading.Tasks.Task<TResult>> action) -> System.Threading.Tasks.Task<TResult>
+Polly.IAsyncPolicy<TResult>.WithPolicyKey(string policyKey) -> Polly.IAsyncPolicy<TResult>
+Polly.IAsyncPolicyExtensions
+Polly.IAsyncPolicyPolicyWrapExtensions
+Polly.IsPolicy
+Polly.IsPolicy.PolicyKey.get -> string
+Polly.ISyncPolicy
+Polly.ISyncPolicy.Execute(System.Action action) -> void
+Polly.ISyncPolicy.Execute(System.Action<Polly.Context, System.Threading.CancellationToken> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> void
+Polly.ISyncPolicy.Execute(System.Action<Polly.Context, System.Threading.CancellationToken> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> void
+Polly.ISyncPolicy.Execute(System.Action<Polly.Context> action, Polly.Context context) -> void
+Polly.ISyncPolicy.Execute(System.Action<Polly.Context> action, System.Collections.Generic.IDictionary<string, object> contextData) -> void
+Polly.ISyncPolicy.Execute(System.Action<System.Threading.CancellationToken> action, System.Threading.CancellationToken cancellationToken) -> void
+Polly.ISyncPolicy.Execute<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.ISyncPolicy.Execute<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.ISyncPolicy.Execute<TResult>(System.Func<Polly.Context, TResult> action, Polly.Context context) -> TResult
+Polly.ISyncPolicy.Execute<TResult>(System.Func<Polly.Context, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData) -> TResult
+Polly.ISyncPolicy.Execute<TResult>(System.Func<System.Threading.CancellationToken, TResult> action, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.ISyncPolicy.Execute<TResult>(System.Func<TResult> action) -> TResult
+Polly.ISyncPolicy.ExecuteAndCapture(System.Action action) -> Polly.PolicyResult
+Polly.ISyncPolicy.ExecuteAndCapture(System.Action<Polly.Context, System.Threading.CancellationToken> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult
+Polly.ISyncPolicy.ExecuteAndCapture(System.Action<Polly.Context, System.Threading.CancellationToken> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult
+Polly.ISyncPolicy.ExecuteAndCapture(System.Action<Polly.Context> action, Polly.Context context) -> Polly.PolicyResult
+Polly.ISyncPolicy.ExecuteAndCapture(System.Action<Polly.Context> action, System.Collections.Generic.IDictionary<string, object> contextData) -> Polly.PolicyResult
+Polly.ISyncPolicy.ExecuteAndCapture(System.Action<System.Threading.CancellationToken> action, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult
+Polly.ISyncPolicy.ExecuteAndCapture<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy.ExecuteAndCapture<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy.ExecuteAndCapture<TResult>(System.Func<Polly.Context, TResult> action, Polly.Context context) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy.ExecuteAndCapture<TResult>(System.Func<Polly.Context, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy.ExecuteAndCapture<TResult>(System.Func<System.Threading.CancellationToken, TResult> action, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy.ExecuteAndCapture<TResult>(System.Func<TResult> action) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy.WithPolicyKey(string policyKey) -> Polly.ISyncPolicy
+Polly.ISyncPolicy<TResult>
+Polly.ISyncPolicy<TResult>.Execute(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.ISyncPolicy<TResult>.Execute(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.ISyncPolicy<TResult>.Execute(System.Func<Polly.Context, TResult> action, Polly.Context context) -> TResult
+Polly.ISyncPolicy<TResult>.Execute(System.Func<Polly.Context, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData) -> TResult
+Polly.ISyncPolicy<TResult>.Execute(System.Func<System.Threading.CancellationToken, TResult> action, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.ISyncPolicy<TResult>.Execute(System.Func<TResult> action) -> TResult
+Polly.ISyncPolicy<TResult>.ExecuteAndCapture(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy<TResult>.ExecuteAndCapture(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy<TResult>.ExecuteAndCapture(System.Func<Polly.Context, TResult> action, Polly.Context context) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy<TResult>.ExecuteAndCapture(System.Func<Polly.Context, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy<TResult>.ExecuteAndCapture(System.Func<System.Threading.CancellationToken, TResult> action, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy<TResult>.ExecuteAndCapture(System.Func<TResult> action) -> Polly.PolicyResult<TResult>
+Polly.ISyncPolicy<TResult>.WithPolicyKey(string policyKey) -> Polly.ISyncPolicy<TResult>
+Polly.ISyncPolicyExtensions
+Polly.ISyncPolicyPolicyWrapExtensions
+Polly.NoOp.AsyncNoOpPolicy
+Polly.NoOp.AsyncNoOpPolicy<TResult>
+Polly.NoOp.INoOpPolicy
+Polly.NoOp.INoOpPolicy<TResult>
+Polly.NoOp.NoOpPolicy
+Polly.NoOp.NoOpPolicy<TResult>
+Polly.OutcomeType
+Polly.OutcomeType.Failure = 1 -> Polly.OutcomeType
+Polly.OutcomeType.Successful = 0 -> Polly.OutcomeType
+Polly.Policy
+Polly.Policy.Execute(System.Action action) -> void
+Polly.Policy.Execute(System.Action<Polly.Context, System.Threading.CancellationToken> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> void
+Polly.Policy.Execute(System.Action<Polly.Context, System.Threading.CancellationToken> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> void
+Polly.Policy.Execute(System.Action<Polly.Context> action, Polly.Context context) -> void
+Polly.Policy.Execute(System.Action<Polly.Context> action, System.Collections.Generic.IDictionary<string, object> contextData) -> void
+Polly.Policy.Execute(System.Action<System.Threading.CancellationToken> action, System.Threading.CancellationToken cancellationToken) -> void
+Polly.Policy.Execute<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.Policy.Execute<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.Policy.Execute<TResult>(System.Func<Polly.Context, TResult> action, Polly.Context context) -> TResult
+Polly.Policy.Execute<TResult>(System.Func<Polly.Context, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData) -> TResult
+Polly.Policy.Execute<TResult>(System.Func<System.Threading.CancellationToken, TResult> action, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.Policy.Execute<TResult>(System.Func<TResult> action) -> TResult
+Polly.Policy.ExecuteAndCapture(System.Action action) -> Polly.PolicyResult
+Polly.Policy.ExecuteAndCapture(System.Action<Polly.Context, System.Threading.CancellationToken> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult
+Polly.Policy.ExecuteAndCapture(System.Action<Polly.Context, System.Threading.CancellationToken> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult
+Polly.Policy.ExecuteAndCapture(System.Action<Polly.Context> action, Polly.Context context) -> Polly.PolicyResult
+Polly.Policy.ExecuteAndCapture(System.Action<Polly.Context> action, System.Collections.Generic.IDictionary<string, object> contextData) -> Polly.PolicyResult
+Polly.Policy.ExecuteAndCapture(System.Action<System.Threading.CancellationToken> action, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult
+Polly.Policy.ExecuteAndCapture<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.Policy.ExecuteAndCapture<TResult>(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.Policy.ExecuteAndCapture<TResult>(System.Func<Polly.Context, TResult> action, Polly.Context context) -> Polly.PolicyResult<TResult>
+Polly.Policy.ExecuteAndCapture<TResult>(System.Func<Polly.Context, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData) -> Polly.PolicyResult<TResult>
+Polly.Policy.ExecuteAndCapture<TResult>(System.Func<System.Threading.CancellationToken, TResult> action, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.Policy.ExecuteAndCapture<TResult>(System.Func<TResult> action) -> Polly.PolicyResult<TResult>
+Polly.Policy.Policy(Polly.PolicyBuilder policyBuilder = null) -> void
+Polly.Policy.WithPolicyKey(string policyKey) -> Polly.Policy
+Polly.Policy.Wrap(Polly.ISyncPolicy innerPolicy) -> Polly.Wrap.PolicyWrap
+Polly.Policy.Wrap<TResult>(Polly.ISyncPolicy<TResult> innerPolicy) -> Polly.Wrap.PolicyWrap<TResult>
+Polly.Policy<TResult>
+Polly.Policy<TResult>.Execute(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.Policy<TResult>.Execute(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.Policy<TResult>.Execute(System.Func<Polly.Context, TResult> action, Polly.Context context) -> TResult
+Polly.Policy<TResult>.Execute(System.Func<Polly.Context, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData) -> TResult
+Polly.Policy<TResult>.Execute(System.Func<System.Threading.CancellationToken, TResult> action, System.Threading.CancellationToken cancellationToken) -> TResult
+Polly.Policy<TResult>.Execute(System.Func<TResult> action) -> TResult
+Polly.Policy<TResult>.ExecuteAndCapture(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.Policy<TResult>.ExecuteAndCapture(System.Func<Polly.Context, System.Threading.CancellationToken, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.Policy<TResult>.ExecuteAndCapture(System.Func<Polly.Context, TResult> action, Polly.Context context) -> Polly.PolicyResult<TResult>
+Polly.Policy<TResult>.ExecuteAndCapture(System.Func<Polly.Context, TResult> action, System.Collections.Generic.IDictionary<string, object> contextData) -> Polly.PolicyResult<TResult>
+Polly.Policy<TResult>.ExecuteAndCapture(System.Func<System.Threading.CancellationToken, TResult> action, System.Threading.CancellationToken cancellationToken) -> Polly.PolicyResult<TResult>
+Polly.Policy<TResult>.ExecuteAndCapture(System.Func<TResult> action) -> Polly.PolicyResult<TResult>
+Polly.Policy<TResult>.Policy(Polly.PolicyBuilder<TResult> policyBuilder = null) -> void
+Polly.Policy<TResult>.WithPolicyKey(string policyKey) -> Polly.Policy<TResult>
+Polly.Policy<TResult>.Wrap(Polly.ISyncPolicy innerPolicy) -> Polly.Wrap.PolicyWrap<TResult>
+Polly.Policy<TResult>.Wrap(Polly.ISyncPolicy<TResult> innerPolicy) -> Polly.Wrap.PolicyWrap<TResult>
+Polly.PolicyBase
+Polly.PolicyBase.ExceptionPredicates.get -> Polly.ExceptionPredicates
+Polly.PolicyBase.PolicyBase(Polly.PolicyBuilder policyBuilder) -> void
+Polly.PolicyBase.PolicyKey.get -> string
+Polly.PolicyBase.policyKeyInternal -> string
+Polly.PolicyBase<TResult>
+Polly.PolicyBase<TResult>.PolicyBase(Polly.PolicyBuilder<TResult> policyBuilder) -> void
+Polly.PolicyBase<TResult>.ResultPredicates.get -> Polly.ResultPredicates<TResult>
+Polly.PolicyBuilder
+Polly.PolicyBuilder.GetType() -> System.Type
+Polly.PolicyBuilder.Or<TException>() -> Polly.PolicyBuilder
+Polly.PolicyBuilder.Or<TException>(System.Func<TException, bool> exceptionPredicate) -> Polly.PolicyBuilder
+Polly.PolicyBuilder.OrInner<TException>() -> Polly.PolicyBuilder
+Polly.PolicyBuilder.OrInner<TException>(System.Func<TException, bool> exceptionPredicate) -> Polly.PolicyBuilder
+Polly.PolicyBuilder.OrResult<TResult>(System.Func<TResult, bool> resultPredicate) -> Polly.PolicyBuilder<TResult>
+Polly.PolicyBuilder.OrResult<TResult>(TResult result) -> Polly.PolicyBuilder<TResult>
+Polly.PolicyBuilder<TResult>
+Polly.PolicyBuilder<TResult>.GetType() -> System.Type
+Polly.PolicyBuilder<TResult>.Or<TException>() -> Polly.PolicyBuilder<TResult>
+Polly.PolicyBuilder<TResult>.Or<TException>(System.Func<TException, bool> exceptionPredicate) -> Polly.PolicyBuilder<TResult>
+Polly.PolicyBuilder<TResult>.OrInner<TException>() -> Polly.PolicyBuilder<TResult>
+Polly.PolicyBuilder<TResult>.OrInner<TException>(System.Func<TException, bool> exceptionPredicate) -> Polly.PolicyBuilder<TResult>
+Polly.PolicyBuilder<TResult>.OrResult(System.Func<TResult, bool> resultPredicate) -> Polly.PolicyBuilder<TResult>
+Polly.PolicyBuilder<TResult>.OrResult(TResult result) -> Polly.PolicyBuilder<TResult>
+Polly.PolicyResult
+Polly.PolicyResult.Context.get -> Polly.Context
+Polly.PolicyResult.ExceptionType.get -> Polly.ExceptionType?
+Polly.PolicyResult.FinalException.get -> System.Exception
+Polly.PolicyResult.Outcome.get -> Polly.OutcomeType
+Polly.PolicyResult<TResult>
+Polly.PolicyResult<TResult>.Context.get -> Polly.Context
+Polly.PolicyResult<TResult>.ExceptionType.get -> Polly.ExceptionType?
+Polly.PolicyResult<TResult>.FaultType.get -> Polly.FaultType?
+Polly.PolicyResult<TResult>.FinalException.get -> System.Exception
+Polly.PolicyResult<TResult>.FinalHandledResult.get -> TResult
+Polly.PolicyResult<TResult>.Outcome.get -> Polly.OutcomeType
+Polly.PolicyResult<TResult>.Result.get -> TResult
+Polly.RateLimit.AsyncRateLimitPolicy
+Polly.RateLimit.AsyncRateLimitPolicy<TResult>
+Polly.RateLimit.IRateLimitPolicy
+Polly.RateLimit.IRateLimitPolicy<TResult>
+Polly.RateLimit.RateLimitPolicy
+Polly.RateLimit.RateLimitPolicy<TResult>
+Polly.RateLimit.RateLimitRejectedException
+Polly.RateLimit.RateLimitRejectedException.RateLimitRejectedException(System.TimeSpan retryAfter) -> void
+Polly.RateLimit.RateLimitRejectedException.RateLimitRejectedException(System.TimeSpan retryAfter, string message) -> void
+Polly.RateLimit.RateLimitRejectedException.RateLimitRejectedException(System.TimeSpan retryAfter, string message, System.Exception innerException) -> void
+Polly.RateLimit.RateLimitRejectedException.RateLimitRejectedException(System.TimeSpan retryAfter, System.Exception innerException) -> void
+Polly.RateLimit.RateLimitRejectedException.RetryAfter.get -> System.TimeSpan
+Polly.Registry.IConcurrentPolicyRegistry<TKey>
+Polly.Registry.IConcurrentPolicyRegistry<TKey>.AddOrUpdate<TPolicy>(TKey key, System.Func<TKey, TPolicy> addPolicyFactory, System.Func<TKey, TPolicy, TPolicy> updatePolicyFactory) -> TPolicy
+Polly.Registry.IConcurrentPolicyRegistry<TKey>.AddOrUpdate<TPolicy>(TKey key, TPolicy addPolicy, System.Func<TKey, TPolicy, TPolicy> updatePolicyFactory) -> TPolicy
+Polly.Registry.IConcurrentPolicyRegistry<TKey>.GetOrAdd<TPolicy>(TKey key, System.Func<TKey, TPolicy> policyFactory) -> TPolicy
+Polly.Registry.IConcurrentPolicyRegistry<TKey>.GetOrAdd<TPolicy>(TKey key, TPolicy policy) -> TPolicy
+Polly.Registry.IConcurrentPolicyRegistry<TKey>.TryAdd<TPolicy>(TKey key, TPolicy policy) -> bool
+Polly.Registry.IConcurrentPolicyRegistry<TKey>.TryRemove<TPolicy>(TKey key, out TPolicy policy) -> bool
+Polly.Registry.IConcurrentPolicyRegistry<TKey>.TryUpdate<TPolicy>(TKey key, TPolicy newPolicy, TPolicy comparisonPolicy) -> bool
+Polly.Registry.IPolicyRegistry<TKey>
+Polly.Registry.IPolicyRegistry<TKey>.Add<TPolicy>(TKey key, TPolicy policy) -> void
+Polly.Registry.IPolicyRegistry<TKey>.Clear() -> void
+Polly.Registry.IPolicyRegistry<TKey>.Remove(TKey key) -> bool
+Polly.Registry.IPolicyRegistry<TKey>.this[TKey key].get -> Polly.IsPolicy
+Polly.Registry.IPolicyRegistry<TKey>.this[TKey key].set -> void
+Polly.Registry.IReadOnlyPolicyRegistry<TKey>
+Polly.Registry.IReadOnlyPolicyRegistry<TKey>.ContainsKey(TKey key) -> bool
+Polly.Registry.IReadOnlyPolicyRegistry<TKey>.Count.get -> int
+Polly.Registry.IReadOnlyPolicyRegistry<TKey>.Get<TPolicy>(TKey key) -> TPolicy
+Polly.Registry.IReadOnlyPolicyRegistry<TKey>.this[TKey key].get -> Polly.IsPolicy
+Polly.Registry.IReadOnlyPolicyRegistry<TKey>.TryGet<TPolicy>(TKey key, out TPolicy policy) -> bool
+Polly.Registry.PolicyRegistry
+Polly.Registry.PolicyRegistry.Add<TPolicy>(string key, TPolicy policy) -> void
+Polly.Registry.PolicyRegistry.AddOrUpdate<TPolicy>(string key, System.Func<string, TPolicy> addPolicyFactory, System.Func<string, TPolicy, TPolicy> updatePolicyFactory) -> TPolicy
+Polly.Registry.PolicyRegistry.AddOrUpdate<TPolicy>(string key, TPolicy addPolicy, System.Func<string, TPolicy, TPolicy> updatePolicyFactory) -> TPolicy
+Polly.Registry.PolicyRegistry.Clear() -> void
+Polly.Registry.PolicyRegistry.ContainsKey(string key) -> bool
+Polly.Registry.PolicyRegistry.Count.get -> int
+Polly.Registry.PolicyRegistry.Get<TPolicy>(string key) -> TPolicy
+Polly.Registry.PolicyRegistry.GetEnumerator() -> System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Polly.IsPolicy>>
+Polly.Registry.PolicyRegistry.GetOrAdd<TPolicy>(string key, System.Func<string, TPolicy> policyFactory) -> TPolicy
+Polly.Registry.PolicyRegistry.GetOrAdd<TPolicy>(string key, TPolicy policy) -> TPolicy
+Polly.Registry.PolicyRegistry.PolicyRegistry() -> void
+Polly.Registry.PolicyRegistry.Remove(string key) -> bool
+Polly.Registry.PolicyRegistry.this[string key].get -> Polly.IsPolicy
+Polly.Registry.PolicyRegistry.this[string key].set -> void
+Polly.Registry.PolicyRegistry.TryAdd<TPolicy>(string key, TPolicy policy) -> bool
+Polly.Registry.PolicyRegistry.TryGet<TPolicy>(string key, out TPolicy policy) -> bool
+Polly.Registry.PolicyRegistry.TryRemove<TPolicy>(string key, out TPolicy policy) -> bool
+Polly.Registry.PolicyRegistry.TryUpdate<TPolicy>(string key, TPolicy newPolicy, TPolicy comparisonPolicy) -> bool
+Polly.ResilienceStrategyConversionExtensions
+Polly.ResultPredicate<TResult>
+Polly.ResultPredicates<TResult>
+Polly.ResultPredicates<TResult>.AnyMatch(TResult result) -> bool
+Polly.ResultPredicates<TResult>.ResultPredicates() -> void
+Polly.Retry.AsyncRetryPolicy
+Polly.Retry.AsyncRetryPolicy<TResult>
+Polly.Retry.IRetryPolicy
+Polly.Retry.IRetryPolicy<TResult>
+Polly.Retry.RetryPolicy
+Polly.Retry.RetryPolicy<TResult>
+Polly.RetrySyntax
+Polly.RetryTResultSyntax
+Polly.Timeout.AsyncTimeoutPolicy
+Polly.Timeout.AsyncTimeoutPolicy<TResult>
+Polly.Timeout.ITimeoutPolicy
+Polly.Timeout.ITimeoutPolicy<TResult>
+Polly.Timeout.TimeoutPolicy
+Polly.Timeout.TimeoutPolicy<TResult>
+Polly.Timeout.TimeoutStrategy
+Polly.Timeout.TimeoutStrategy.Optimistic = 0 -> Polly.Timeout.TimeoutStrategy
+Polly.Timeout.TimeoutStrategy.Pessimistic = 1 -> Polly.Timeout.TimeoutStrategy
+Polly.Utilities.ExceptionExtensions
+Polly.Utilities.SystemClock
+Polly.Utilities.TaskHelper
+Polly.Wrap.AsyncPolicyWrap
+Polly.Wrap.AsyncPolicyWrap.Inner.get -> Polly.IsPolicy
+Polly.Wrap.AsyncPolicyWrap.Outer.get -> Polly.IsPolicy
+Polly.Wrap.AsyncPolicyWrap<TResult>
+Polly.Wrap.AsyncPolicyWrap<TResult>.Inner.get -> Polly.IsPolicy
+Polly.Wrap.AsyncPolicyWrap<TResult>.Outer.get -> Polly.IsPolicy
+Polly.Wrap.IPolicyWrap
+Polly.Wrap.IPolicyWrap.Inner.get -> Polly.IsPolicy
+Polly.Wrap.IPolicyWrap.Outer.get -> Polly.IsPolicy
+Polly.Wrap.IPolicyWrap<TResult>
+Polly.Wrap.IPolicyWrapExtension
+Polly.Wrap.PolicyWrap
+Polly.Wrap.PolicyWrap.Inner.get -> Polly.IsPolicy
+Polly.Wrap.PolicyWrap.Outer.get -> Polly.IsPolicy
+Polly.Wrap.PolicyWrap<TResult>
+Polly.Wrap.PolicyWrap<TResult>.Inner.get -> Polly.IsPolicy
+Polly.Wrap.PolicyWrap<TResult>.Outer.get -> Polly.IsPolicy
+readonly Polly.Caching.NonSlidingTtl.absoluteExpirationTime -> System.DateTimeOffset
+static Polly.AdvancedCircuitBreakerSyntax.AdvancedCircuitBreaker(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.AdvancedCircuitBreakerSyntax.AdvancedCircuitBreaker(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<System.Exception, Polly.CircuitBreaker.CircuitState, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.AdvancedCircuitBreakerSyntax.AdvancedCircuitBreaker(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.AdvancedCircuitBreakerSyntax.AdvancedCircuitBreaker(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.AdvancedCircuitBreakerSyntax.AdvancedCircuitBreaker(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan> onBreak, System.Action onReset) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.AdvancedCircuitBreakerSyntax.AdvancedCircuitBreaker(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan> onBreak, System.Action onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.AdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.AdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, Polly.CircuitBreaker.CircuitState, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.AdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.AdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.AdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onBreak, System.Action onReset) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.AdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onBreak, System.Action onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.AsyncAdvancedCircuitBreakerSyntax.AdvancedCircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncAdvancedCircuitBreakerSyntax.AdvancedCircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<System.Exception, Polly.CircuitBreaker.CircuitState, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncAdvancedCircuitBreakerSyntax.AdvancedCircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncAdvancedCircuitBreakerSyntax.AdvancedCircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncAdvancedCircuitBreakerSyntax.AdvancedCircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan> onBreak, System.Action onReset) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncAdvancedCircuitBreakerSyntax.AdvancedCircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan> onBreak, System.Action onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncAdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncAdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, Polly.CircuitBreaker.CircuitState, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncAdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncAdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncAdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onBreak, System.Action onReset) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncAdvancedCircuitBreakerTResultSyntax.AdvancedCircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, double failureThreshold, System.TimeSpan samplingDuration, int minimumThroughput, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onBreak, System.Action onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncCircuitBreakerSyntax.CircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncCircuitBreakerSyntax.CircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<System.Exception, Polly.CircuitBreaker.CircuitState, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncCircuitBreakerSyntax.CircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncCircuitBreakerSyntax.CircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncCircuitBreakerSyntax.CircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan> onBreak, System.Action onReset) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncCircuitBreakerSyntax.CircuitBreakerAsync(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan> onBreak, System.Action onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy
+static Polly.AsyncCircuitBreakerTResultSyntax.CircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncCircuitBreakerTResultSyntax.CircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, Polly.CircuitBreaker.CircuitState, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncCircuitBreakerTResultSyntax.CircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncCircuitBreakerTResultSyntax.CircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncCircuitBreakerTResultSyntax.CircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onBreak, System.Action onReset) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncCircuitBreakerTResultSyntax.CircuitBreakerAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onBreak, System.Action onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<TResult>
+static Polly.AsyncFallbackSyntax.FallbackAsync(this Polly.PolicyBuilder policyBuilder, System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> fallbackAction, System.Func<System.Exception, Polly.Context, System.Threading.Tasks.Task> onFallbackAsync) -> Polly.Fallback.AsyncFallbackPolicy
+static Polly.AsyncFallbackSyntax.FallbackAsync(this Polly.PolicyBuilder policyBuilder, System.Func<System.Exception, Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> fallbackAction, System.Func<System.Exception, Polly.Context, System.Threading.Tasks.Task> onFallbackAsync) -> Polly.Fallback.AsyncFallbackPolicy
+static Polly.AsyncFallbackSyntax.FallbackAsync(this Polly.PolicyBuilder policyBuilder, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> fallbackAction) -> Polly.Fallback.AsyncFallbackPolicy
+static Polly.AsyncFallbackSyntax.FallbackAsync(this Polly.PolicyBuilder policyBuilder, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> fallbackAction, System.Func<System.Exception, System.Threading.Tasks.Task> onFallbackAsync) -> Polly.Fallback.AsyncFallbackPolicy
+static Polly.AsyncFallbackTResultSyntax.FallbackAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> fallbackAction, System.Func<Polly.DelegateResult<TResult>, Polly.Context, System.Threading.Tasks.Task> onFallbackAsync) -> Polly.Fallback.AsyncFallbackPolicy<TResult>
+static Polly.AsyncFallbackTResultSyntax.FallbackAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<Polly.DelegateResult<TResult>, Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> fallbackAction, System.Func<Polly.DelegateResult<TResult>, Polly.Context, System.Threading.Tasks.Task> onFallbackAsync) -> Polly.Fallback.AsyncFallbackPolicy<TResult>
+static Polly.AsyncFallbackTResultSyntax.FallbackAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> fallbackAction) -> Polly.Fallback.AsyncFallbackPolicy<TResult>
+static Polly.AsyncFallbackTResultSyntax.FallbackAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResult>> fallbackAction, System.Func<Polly.DelegateResult<TResult>, System.Threading.Tasks.Task> onFallbackAsync) -> Polly.Fallback.AsyncFallbackPolicy<TResult>
+static Polly.AsyncFallbackTResultSyntax.FallbackAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, TResult fallbackValue) -> Polly.Fallback.AsyncFallbackPolicy<TResult>
+static Polly.AsyncFallbackTResultSyntax.FallbackAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, System.Func<Polly.DelegateResult<TResult>, Polly.Context, System.Threading.Tasks.Task> onFallbackAsync) -> Polly.Fallback.AsyncFallbackPolicy<TResult>
+static Polly.AsyncFallbackTResultSyntax.FallbackAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, System.Func<Polly.DelegateResult<TResult>, System.Threading.Tasks.Task> onFallbackAsync) -> Polly.Fallback.AsyncFallbackPolicy<TResult>
+static Polly.AsyncRetrySyntax.RetryAsync(this Polly.PolicyBuilder policyBuilder) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Action<System.Exception, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Action<System.Exception, int> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<System.Exception, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<System.Exception, int, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryAsync(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryAsync(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception, int> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryAsync(this Polly.PolicyBuilder policyBuilder, System.Func<System.Exception, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryAsync(this Polly.PolicyBuilder policyBuilder, System.Func<System.Exception, int, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryForeverAsync(this Polly.PolicyBuilder policyBuilder) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception, int> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<System.Exception, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<System.Exception, int, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<System.Exception, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.RetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<System.Exception, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, System.TimeSpan, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.Exception, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, System.TimeSpan, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, System.TimeSpan, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, System.TimeSpan, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<System.Exception, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<System.Exception, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<System.Exception, System.TimeSpan> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Func<System.Exception, System.TimeSpan, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Func<System.Exception, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryAsync(this Polly.PolicyBuilder policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Func<System.Exception, System.TimeSpan, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, int, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, int, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.Exception, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, int, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.Exception, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, int, System.TimeSpan> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan> onRetry) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, int, System.TimeSpan, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetrySyntax.WaitAndRetryForeverAsync(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Func<System.Exception, System.TimeSpan, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy
+static Polly.AsyncRetryTResultSyntax.RetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Action<Polly.DelegateResult<TResult>, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Action<Polly.DelegateResult<TResult>, int> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<Polly.DelegateResult<TResult>, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<Polly.DelegateResult<TResult>, int, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>, int> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<Polly.DelegateResult<TResult>, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<Polly.DelegateResult<TResult>, int, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>, int> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<Polly.DelegateResult<TResult>, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<Polly.DelegateResult<TResult>, int, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<Polly.DelegateResult<TResult>, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.RetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<Polly.DelegateResult<TResult>, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, Polly.DelegateResult<TResult>, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, int, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, int, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, int, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.DelegateResult<TResult>, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, int, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.DelegateResult<TResult>, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, int, System.TimeSpan> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onRetry) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, int, System.TimeSpan, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.AsyncRetryTResultSyntax.WaitAndRetryForeverAsync<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Func<Polly.DelegateResult<TResult>, System.TimeSpan, System.Threading.Tasks.Task> onRetryAsync) -> Polly.Retry.AsyncRetryPolicy<TResult>
+static Polly.Caching.CacheProviderExtensions.AsyncFor<TCacheFormat>(this Polly.Caching.IAsyncCacheProvider nonGenericCacheProvider) -> Polly.Caching.IAsyncCacheProvider<TCacheFormat>
+static Polly.Caching.CacheProviderExtensions.For<TCacheFormat>(this Polly.Caching.ISyncCacheProvider nonGenericCacheProvider) -> Polly.Caching.ISyncCacheProvider<TCacheFormat>
+static Polly.Caching.CacheProviderExtensions.WithSerializer<TResult, TSerialized>(this Polly.Caching.IAsyncCacheProvider<TSerialized> cacheProvider, Polly.Caching.ICacheItemSerializer<TResult, TSerialized> serializer) -> Polly.Caching.AsyncSerializingCacheProvider<TResult, TSerialized>
+static Polly.Caching.CacheProviderExtensions.WithSerializer<TResult, TSerialized>(this Polly.Caching.ISyncCacheProvider<TSerialized> cacheProvider, Polly.Caching.ICacheItemSerializer<TResult, TSerialized> serializer) -> Polly.Caching.SerializingCacheProvider<TResult, TSerialized>
+static Polly.Caching.CacheProviderExtensions.WithSerializer<TSerialized>(this Polly.Caching.IAsyncCacheProvider<TSerialized> cacheProvider, Polly.Caching.ICacheItemSerializer<object, TSerialized> serializer) -> Polly.Caching.AsyncSerializingCacheProvider<TSerialized>
+static Polly.Caching.CacheProviderExtensions.WithSerializer<TSerialized>(this Polly.Caching.ISyncCacheProvider<TSerialized> cacheProvider, Polly.Caching.ICacheItemSerializer<object, TSerialized> serializer) -> Polly.Caching.SerializingCacheProvider<TSerialized>
+static Polly.CircuitBreakerSyntax.CircuitBreaker(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.CircuitBreakerSyntax.CircuitBreaker(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<System.Exception, Polly.CircuitBreaker.CircuitState, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.CircuitBreakerSyntax.CircuitBreaker(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.CircuitBreakerSyntax.CircuitBreaker(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.CircuitBreakerSyntax.CircuitBreaker(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan> onBreak, System.Action onReset) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.CircuitBreakerSyntax.CircuitBreaker(this Polly.PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<System.Exception, System.TimeSpan> onBreak, System.Action onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy
+static Polly.CircuitBreakerTResultSyntax.CircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.CircuitBreakerTResultSyntax.CircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, Polly.CircuitBreaker.CircuitState, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.CircuitBreakerTResultSyntax.CircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.CircuitBreakerTResultSyntax.CircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onBreak, System.Action<Polly.Context> onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.CircuitBreakerTResultSyntax.CircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onBreak, System.Action onReset) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.CircuitBreakerTResultSyntax.CircuitBreaker<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, System.TimeSpan durationOfBreak, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onBreak, System.Action onReset, System.Action onHalfOpen) -> Polly.CircuitBreaker.CircuitBreakerPolicy<TResult>
+static Polly.FallbackSyntax.Fallback(this Polly.PolicyBuilder policyBuilder, System.Action fallbackAction) -> Polly.Fallback.FallbackPolicy
+static Polly.FallbackSyntax.Fallback(this Polly.PolicyBuilder policyBuilder, System.Action fallbackAction, System.Action<System.Exception> onFallback) -> Polly.Fallback.FallbackPolicy
+static Polly.FallbackSyntax.Fallback(this Polly.PolicyBuilder policyBuilder, System.Action<Polly.Context, System.Threading.CancellationToken> fallbackAction, System.Action<System.Exception, Polly.Context> onFallback) -> Polly.Fallback.FallbackPolicy
+static Polly.FallbackSyntax.Fallback(this Polly.PolicyBuilder policyBuilder, System.Action<Polly.Context> fallbackAction, System.Action<System.Exception, Polly.Context> onFallback) -> Polly.Fallback.FallbackPolicy
+static Polly.FallbackSyntax.Fallback(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception, Polly.Context, System.Threading.CancellationToken> fallbackAction, System.Action<System.Exception, Polly.Context> onFallback) -> Polly.Fallback.FallbackPolicy
+static Polly.FallbackSyntax.Fallback(this Polly.PolicyBuilder policyBuilder, System.Action<System.Threading.CancellationToken> fallbackAction) -> Polly.Fallback.FallbackPolicy
+static Polly.FallbackSyntax.Fallback(this Polly.PolicyBuilder policyBuilder, System.Action<System.Threading.CancellationToken> fallbackAction, System.Action<System.Exception> onFallback) -> Polly.Fallback.FallbackPolicy
+static Polly.FallbackTResultSyntax.Fallback<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<Polly.Context, System.Threading.CancellationToken, TResult> fallbackAction, System.Action<Polly.DelegateResult<TResult>, Polly.Context> onFallback) -> Polly.Fallback.FallbackPolicy<TResult>
+static Polly.FallbackTResultSyntax.Fallback<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<Polly.Context, TResult> fallbackAction, System.Action<Polly.DelegateResult<TResult>, Polly.Context> onFallback) -> Polly.Fallback.FallbackPolicy<TResult>
+static Polly.FallbackTResultSyntax.Fallback<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<Polly.DelegateResult<TResult>, Polly.Context, System.Threading.CancellationToken, TResult> fallbackAction, System.Action<Polly.DelegateResult<TResult>, Polly.Context> onFallback) -> Polly.Fallback.FallbackPolicy<TResult>
+static Polly.FallbackTResultSyntax.Fallback<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<System.Threading.CancellationToken, TResult> fallbackAction) -> Polly.Fallback.FallbackPolicy<TResult>
+static Polly.FallbackTResultSyntax.Fallback<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<System.Threading.CancellationToken, TResult> fallbackAction, System.Action<Polly.DelegateResult<TResult>> onFallback) -> Polly.Fallback.FallbackPolicy<TResult>
+static Polly.FallbackTResultSyntax.Fallback<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<TResult> fallbackAction) -> Polly.Fallback.FallbackPolicy<TResult>
+static Polly.FallbackTResultSyntax.Fallback<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<TResult> fallbackAction, System.Action<Polly.DelegateResult<TResult>> onFallback) -> Polly.Fallback.FallbackPolicy<TResult>
+static Polly.FallbackTResultSyntax.Fallback<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, TResult fallbackValue) -> Polly.Fallback.FallbackPolicy<TResult>
+static Polly.FallbackTResultSyntax.Fallback<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, System.Action<Polly.DelegateResult<TResult>, Polly.Context> onFallback) -> Polly.Fallback.FallbackPolicy<TResult>
+static Polly.FallbackTResultSyntax.Fallback<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, System.Action<Polly.DelegateResult<TResult>> onFallback) -> Polly.Fallback.FallbackPolicy<TResult>
+static Polly.IAsyncPolicyExtensions.AsAsyncPolicy<TResult>(this Polly.IAsyncPolicy policy) -> Polly.IAsyncPolicy<TResult>
+static Polly.IAsyncPolicyPolicyWrapExtensions.WrapAsync(this Polly.IAsyncPolicy outerPolicy, Polly.IAsyncPolicy innerPolicy) -> Polly.Wrap.AsyncPolicyWrap
+static Polly.IAsyncPolicyPolicyWrapExtensions.WrapAsync<TResult>(this Polly.IAsyncPolicy outerPolicy, Polly.IAsyncPolicy<TResult> innerPolicy) -> Polly.Wrap.AsyncPolicyWrap<TResult>
+static Polly.IAsyncPolicyPolicyWrapExtensions.WrapAsync<TResult>(this Polly.IAsyncPolicy<TResult> outerPolicy, Polly.IAsyncPolicy innerPolicy) -> Polly.Wrap.AsyncPolicyWrap<TResult>
+static Polly.IAsyncPolicyPolicyWrapExtensions.WrapAsync<TResult>(this Polly.IAsyncPolicy<TResult> outerPolicy, Polly.IAsyncPolicy<TResult> innerPolicy) -> Polly.Wrap.AsyncPolicyWrap<TResult>
+static Polly.ISyncPolicyExtensions.AsPolicy<TResult>(this Polly.ISyncPolicy policy) -> Polly.ISyncPolicy<TResult>
+static Polly.ISyncPolicyPolicyWrapExtensions.Wrap(this Polly.ISyncPolicy outerPolicy, Polly.ISyncPolicy innerPolicy) -> Polly.Wrap.PolicyWrap
+static Polly.ISyncPolicyPolicyWrapExtensions.Wrap<TResult>(this Polly.ISyncPolicy outerPolicy, Polly.ISyncPolicy<TResult> innerPolicy) -> Polly.Wrap.PolicyWrap<TResult>
+static Polly.ISyncPolicyPolicyWrapExtensions.Wrap<TResult>(this Polly.ISyncPolicy<TResult> outerPolicy, Polly.ISyncPolicy innerPolicy) -> Polly.Wrap.PolicyWrap<TResult>
+static Polly.ISyncPolicyPolicyWrapExtensions.Wrap<TResult>(this Polly.ISyncPolicy<TResult> outerPolicy, Polly.ISyncPolicy<TResult> innerPolicy) -> Polly.Wrap.PolicyWrap<TResult>
+static Polly.Policy.Bulkhead(int maxParallelization) -> Polly.Bulkhead.BulkheadPolicy
+static Polly.Policy.Bulkhead(int maxParallelization, int maxQueuingActions) -> Polly.Bulkhead.BulkheadPolicy
+static Polly.Policy.Bulkhead(int maxParallelization, int maxQueuingActions, System.Action<Polly.Context> onBulkheadRejected) -> Polly.Bulkhead.BulkheadPolicy
+static Polly.Policy.Bulkhead(int maxParallelization, System.Action<Polly.Context> onBulkheadRejected) -> Polly.Bulkhead.BulkheadPolicy
+static Polly.Policy.Bulkhead<TResult>(int maxParallelization) -> Polly.Bulkhead.BulkheadPolicy<TResult>
+static Polly.Policy.Bulkhead<TResult>(int maxParallelization, int maxQueuingActions) -> Polly.Bulkhead.BulkheadPolicy<TResult>
+static Polly.Policy.Bulkhead<TResult>(int maxParallelization, int maxQueuingActions, System.Action<Polly.Context> onBulkheadRejected) -> Polly.Bulkhead.BulkheadPolicy<TResult>
+static Polly.Policy.Bulkhead<TResult>(int maxParallelization, System.Action<Polly.Context> onBulkheadRejected) -> Polly.Bulkhead.BulkheadPolicy<TResult>
+static Polly.Policy.BulkheadAsync(int maxParallelization) -> Polly.Bulkhead.AsyncBulkheadPolicy
+static Polly.Policy.BulkheadAsync(int maxParallelization, int maxQueuingActions) -> Polly.Bulkhead.AsyncBulkheadPolicy
+static Polly.Policy.BulkheadAsync(int maxParallelization, int maxQueuingActions, System.Func<Polly.Context, System.Threading.Tasks.Task> onBulkheadRejectedAsync) -> Polly.Bulkhead.AsyncBulkheadPolicy
+static Polly.Policy.BulkheadAsync(int maxParallelization, System.Func<Polly.Context, System.Threading.Tasks.Task> onBulkheadRejectedAsync) -> Polly.Bulkhead.AsyncBulkheadPolicy
+static Polly.Policy.BulkheadAsync<TResult>(int maxParallelization) -> Polly.Bulkhead.AsyncBulkheadPolicy<TResult>
+static Polly.Policy.BulkheadAsync<TResult>(int maxParallelization, int maxQueuingActions) -> Polly.Bulkhead.AsyncBulkheadPolicy<TResult>
+static Polly.Policy.BulkheadAsync<TResult>(int maxParallelization, int maxQueuingActions, System.Func<Polly.Context, System.Threading.Tasks.Task> onBulkheadRejectedAsync) -> Polly.Bulkhead.AsyncBulkheadPolicy<TResult>
+static Polly.Policy.BulkheadAsync<TResult>(int maxParallelization, System.Func<Polly.Context, System.Threading.Tasks.Task> onBulkheadRejectedAsync) -> Polly.Bulkhead.AsyncBulkheadPolicy<TResult>
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.Cache<TResult>(Polly.Caching.ISyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.CachePolicy<TResult>
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, Polly.Caching.ITtlStrategy<TResult> ttlStrategy, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, Polly.Caching.ICacheKeyStrategy cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string, System.Exception> onCacheError = null) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.CacheAsync<TResult>(Polly.Caching.IAsyncCacheProvider<TResult> cacheProvider, System.TimeSpan ttl, System.Func<Polly.Context, string> cacheKeyStrategy, System.Action<Polly.Context, string> onCacheGet, System.Action<Polly.Context, string> onCacheMiss, System.Action<Polly.Context, string> onCachePut, System.Action<Polly.Context, string, System.Exception> onCacheGetError, System.Action<Polly.Context, string, System.Exception> onCachePutError) -> Polly.Caching.AsyncCachePolicy<TResult>
+static Polly.Policy.Handle<TException>() -> Polly.PolicyBuilder
+static Polly.Policy.Handle<TException>(System.Func<TException, bool> exceptionPredicate) -> Polly.PolicyBuilder
+static Polly.Policy.HandleInner<TException>() -> Polly.PolicyBuilder
+static Polly.Policy.HandleInner<TException>(System.Func<TException, bool> exceptionPredicate) -> Polly.PolicyBuilder
+static Polly.Policy.HandleResult<TResult>(System.Func<TResult, bool> resultPredicate) -> Polly.PolicyBuilder<TResult>
+static Polly.Policy.HandleResult<TResult>(TResult result) -> Polly.PolicyBuilder<TResult>
+static Polly.Policy.NoOp() -> Polly.NoOp.NoOpPolicy
+static Polly.Policy.NoOp<TResult>() -> Polly.NoOp.NoOpPolicy<TResult>
+static Polly.Policy.NoOpAsync() -> Polly.NoOp.AsyncNoOpPolicy
+static Polly.Policy.NoOpAsync<TResult>() -> Polly.NoOp.AsyncNoOpPolicy<TResult>
+static Polly.Policy.RateLimit(int numberOfExecutions, System.TimeSpan perTimeSpan) -> Polly.RateLimit.RateLimitPolicy
+static Polly.Policy.RateLimit(int numberOfExecutions, System.TimeSpan perTimeSpan, int maxBurst) -> Polly.RateLimit.RateLimitPolicy
+static Polly.Policy.RateLimit<TResult>(int numberOfExecutions, System.TimeSpan perTimeSpan) -> Polly.RateLimit.RateLimitPolicy<TResult>
+static Polly.Policy.RateLimit<TResult>(int numberOfExecutions, System.TimeSpan perTimeSpan, int maxBurst) -> Polly.RateLimit.RateLimitPolicy<TResult>
+static Polly.Policy.RateLimit<TResult>(int numberOfExecutions, System.TimeSpan perTimeSpan, int maxBurst, System.Func<System.TimeSpan, Polly.Context, TResult> retryAfterFactory) -> Polly.RateLimit.RateLimitPolicy<TResult>
+static Polly.Policy.RateLimit<TResult>(int numberOfExecutions, System.TimeSpan perTimeSpan, System.Func<System.TimeSpan, Polly.Context, TResult> retryAfterFactory) -> Polly.RateLimit.RateLimitPolicy<TResult>
+static Polly.Policy.RateLimitAsync(int numberOfExecutions, System.TimeSpan perTimeSpan) -> Polly.RateLimit.AsyncRateLimitPolicy
+static Polly.Policy.RateLimitAsync(int numberOfExecutions, System.TimeSpan perTimeSpan, int maxBurst) -> Polly.RateLimit.AsyncRateLimitPolicy
+static Polly.Policy.RateLimitAsync<TResult>(int numberOfExecutions, System.TimeSpan perTimeSpan) -> Polly.RateLimit.AsyncRateLimitPolicy<TResult>
+static Polly.Policy.RateLimitAsync<TResult>(int numberOfExecutions, System.TimeSpan perTimeSpan, int maxBurst) -> Polly.RateLimit.AsyncRateLimitPolicy<TResult>
+static Polly.Policy.RateLimitAsync<TResult>(int numberOfExecutions, System.TimeSpan perTimeSpan, int maxBurst, System.Func<System.TimeSpan, Polly.Context, TResult> retryAfterFactory) -> Polly.RateLimit.AsyncRateLimitPolicy<TResult>
+static Polly.Policy.RateLimitAsync<TResult>(int numberOfExecutions, System.TimeSpan perTimeSpan, System.Func<System.TimeSpan, Polly.Context, TResult> retryAfterFactory) -> Polly.RateLimit.AsyncRateLimitPolicy<TResult>
+static Polly.Policy.Timeout(int seconds) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(int seconds, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(int seconds, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<Polly.Context, System.TimeSpan> timeoutProvider) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<System.TimeSpan> timeoutProvider) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<System.TimeSpan> timeoutProvider, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.Func<System.TimeSpan> timeoutProvider, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.TimeSpan timeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.TimeSpan timeout, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout(System.TimeSpan timeout, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy
+static Polly.Policy.Timeout<TResult>(int seconds) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(int seconds, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(int seconds, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<System.TimeSpan> timeoutProvider) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<System.TimeSpan> timeoutProvider, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.Func<System.TimeSpan> timeoutProvider, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.TimeSpan timeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.TimeSpan timeout, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.Timeout<TResult>(System.TimeSpan timeout, System.Action<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task> onTimeout) -> Polly.Timeout.TimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync(int seconds) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(int seconds, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(int seconds, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<Polly.Context, System.TimeSpan> timeoutProvider) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<System.TimeSpan> timeoutProvider) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<System.TimeSpan> timeoutProvider, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.Func<System.TimeSpan> timeoutProvider, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.TimeSpan timeout) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.TimeSpan timeout, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync(System.TimeSpan timeout, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy
+static Polly.Policy.TimeoutAsync<TResult>(int seconds) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(int seconds, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(int seconds, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(int seconds, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<Polly.Context, System.TimeSpan> timeoutProvider, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<System.TimeSpan> timeoutProvider) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<System.TimeSpan> timeoutProvider, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<System.TimeSpan> timeoutProvider, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.Func<System.TimeSpan> timeoutProvider, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.TimeSpan timeout) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.TimeSpan timeout, Polly.Timeout.TimeoutStrategy timeoutStrategy, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.TimeSpan timeout, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Exception, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.TimeoutAsync<TResult>(System.TimeSpan timeout, System.Func<Polly.Context, System.TimeSpan, System.Threading.Tasks.Task, System.Threading.Tasks.Task> onTimeoutAsync) -> Polly.Timeout.AsyncTimeoutPolicy<TResult>
+static Polly.Policy.Wrap(params Polly.ISyncPolicy[] policies) -> Polly.Wrap.PolicyWrap
+static Polly.Policy.Wrap<TResult>(params Polly.ISyncPolicy<TResult>[] policies) -> Polly.Wrap.PolicyWrap<TResult>
+static Polly.Policy.WrapAsync(params Polly.IAsyncPolicy[] policies) -> Polly.Wrap.AsyncPolicyWrap
+static Polly.Policy.WrapAsync<TResult>(params Polly.IAsyncPolicy<TResult>[] policies) -> Polly.Wrap.AsyncPolicyWrap<TResult>
+static Polly.Policy<TResult>.Handle<TException>() -> Polly.PolicyBuilder<TResult>
+static Polly.Policy<TResult>.Handle<TException>(System.Func<TException, bool> exceptionPredicate) -> Polly.PolicyBuilder<TResult>
+static Polly.Policy<TResult>.HandleInner<TException>() -> Polly.PolicyBuilder<TResult>
+static Polly.Policy<TResult>.HandleInner<TException>(System.Func<TException, bool> exceptionPredicate) -> Polly.PolicyBuilder<TResult>
+static Polly.Policy<TResult>.HandleResult(System.Func<TResult, bool> resultPredicate) -> Polly.PolicyBuilder<TResult>
+static Polly.Policy<TResult>.HandleResult(TResult result) -> Polly.PolicyBuilder<TResult>
+static Polly.PolicyResult.Failure(System.Exception exception, Polly.ExceptionType exceptionType, Polly.Context context) -> Polly.PolicyResult
+static Polly.PolicyResult.Successful(Polly.Context context) -> Polly.PolicyResult
+static Polly.PolicyResult<TResult>.Failure(System.Exception exception, Polly.ExceptionType exceptionType, Polly.Context context) -> Polly.PolicyResult<TResult>
+static Polly.PolicyResult<TResult>.Failure(TResult handledResult, Polly.Context context) -> Polly.PolicyResult<TResult>
+static Polly.PolicyResult<TResult>.Successful(TResult result, Polly.Context context) -> Polly.PolicyResult<TResult>
+static Polly.ResilienceStrategyConversionExtensions.AsAsyncPolicy(this Polly.ResilienceStrategy strategy) -> Polly.IAsyncPolicy
+static Polly.ResilienceStrategyConversionExtensions.AsAsyncPolicy<TResult>(this Polly.ResilienceStrategy<TResult> strategy) -> Polly.IAsyncPolicy<TResult>
+static Polly.ResilienceStrategyConversionExtensions.AsSyncPolicy(this Polly.ResilienceStrategy strategy) -> Polly.ISyncPolicy
+static Polly.ResilienceStrategyConversionExtensions.AsSyncPolicy<TResult>(this Polly.ResilienceStrategy<TResult> strategy) -> Polly.ISyncPolicy<TResult>
+static Polly.RetrySyntax.Retry(this Polly.PolicyBuilder policyBuilder) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.Retry(this Polly.PolicyBuilder policyBuilder, int retryCount) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.Retry(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Action<System.Exception, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.Retry(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Action<System.Exception, int> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.Retry(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.Retry(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception, int> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.RetryForever(this Polly.PolicyBuilder policyBuilder) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.RetryForever(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.RetryForever(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception, int> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.RetryForever(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.RetryForever(this Polly.PolicyBuilder policyBuilder, System.Action<System.Exception> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.Exception, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<System.Exception, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<System.Exception, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetry(this Polly.PolicyBuilder policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<System.Exception, System.TimeSpan> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetryForever(this Polly.PolicyBuilder policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetryForever(this Polly.PolicyBuilder policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, int, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetryForever(this Polly.PolicyBuilder policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetryForever(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.Exception, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, int, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetryForever(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.Exception, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetryForever(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetryForever(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, int, System.TimeSpan> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetrySyntax.WaitAndRetryForever(this Polly.PolicyBuilder policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<System.Exception, System.TimeSpan> onRetry) -> Polly.Retry.RetryPolicy
+static Polly.RetryTResultSyntax.Retry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.Retry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.Retry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Action<Polly.DelegateResult<TResult>, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.Retry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Action<Polly.DelegateResult<TResult>, int> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.Retry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.Retry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>, int> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.RetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.RetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.RetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>, int> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.RetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.RetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Action<Polly.DelegateResult<TResult>> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, Polly.DelegateResult<TResult>, Polly.Context, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, Polly.DelegateResult<TResult>, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, Polly.DelegateResult<TResult>, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, int retryCount, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, int, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetry<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Collections.Generic.IEnumerable<System.TimeSpan> sleepDurations, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, int, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.DelegateResult<TResult>, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, int, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, Polly.DelegateResult<TResult>, Polly.Context, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan, Polly.Context> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, int, System.TimeSpan> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.RetryTResultSyntax.WaitAndRetryForever<TResult>(this Polly.PolicyBuilder<TResult> policyBuilder, System.Func<int, System.TimeSpan> sleepDurationProvider, System.Action<Polly.DelegateResult<TResult>, System.TimeSpan> onRetry) -> Polly.Retry.RetryPolicy<TResult>
+static Polly.Utilities.ExceptionExtensions.RethrowWithOriginalStackTraceIfDiffersFrom(this System.Exception exceptionPossiblyToThrow, System.Exception exceptionToCompare) -> void
+static Polly.Utilities.SystemClock.CancelTokenAfter -> System.Action<System.Threading.CancellationTokenSource, System.TimeSpan>
+static Polly.Utilities.SystemClock.DateTimeOffsetUtcNow -> System.Func<System.DateTimeOffset>
+static Polly.Utilities.SystemClock.Reset() -> void
+static Polly.Utilities.SystemClock.Sleep -> System.Action<System.TimeSpan, System.Threading.CancellationToken>
+static Polly.Utilities.SystemClock.SleepAsync -> System.Func<System.TimeSpan, System.Threading.CancellationToken, System.Threading.Tasks.Task>
+static Polly.Utilities.SystemClock.UtcNow -> System.Func<System.DateTime>
+static Polly.Utilities.TaskHelper.EmptyTask -> System.Threading.Tasks.Task
+static Polly.Wrap.IPolicyWrapExtension.GetPolicies(this Polly.Wrap.IPolicyWrap policyWrap) -> System.Collections.Generic.IEnumerable<Polly.IsPolicy>
+static Polly.Wrap.IPolicyWrapExtension.GetPolicies<TPolicy>(this Polly.Wrap.IPolicyWrap policyWrap) -> System.Collections.Generic.IEnumerable<TPolicy>
+static Polly.Wrap.IPolicyWrapExtension.GetPolicies<TPolicy>(this Polly.Wrap.IPolicyWrap policyWrap, System.Func<TPolicy, bool> filter) -> System.Collections.Generic.IEnumerable<TPolicy>
+static Polly.Wrap.IPolicyWrapExtension.GetPolicy<TPolicy>(this Polly.Wrap.IPolicyWrap policyWrap) -> TPolicy
+static Polly.Wrap.IPolicyWrapExtension.GetPolicy<TPolicy>(this Polly.Wrap.IPolicyWrap policyWrap, System.Func<TPolicy, bool> filter) -> TPolicy
+static readonly Polly.Caching.ContextualTtl.SlidingExpirationKey -> string
+static readonly Polly.Caching.ContextualTtl.TimeSpanKey -> string
+static readonly Polly.Caching.DefaultCacheKeyStrategy.Instance -> Polly.Caching.ICacheKeyStrategy
+static readonly Polly.ExceptionPredicates.None -> Polly.ExceptionPredicates
+static readonly Polly.ResultPredicates<TResult>.None -> Polly.ResultPredicates<TResult>
+virtual Polly.AsyncPolicy.ImplementationAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+virtual Polly.Policy.Implementation(System.Action<Polly.Context, System.Threading.CancellationToken> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> void

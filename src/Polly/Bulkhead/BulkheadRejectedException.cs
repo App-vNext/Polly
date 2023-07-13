@@ -5,6 +5,8 @@ using System.Runtime.Serialization;
 
 namespace Polly.Bulkhead;
 
+#pragma warning disable RS0016 // Add public types and members to the declared API
+
 /// <summary>
 /// Exception thrown when a bulkhead's semaphore and queue are full.
 /// </summary>

@@ -1,0 +1,18 @@
+﻿#nullable enable
+Polly.Testing.InnerStrategiesDescriptor
+Polly.Testing.InnerStrategiesDescriptor.HasTelemetry.get -> bool
+Polly.Testing.InnerStrategiesDescriptor.HasTelemetry.init -> void
+Polly.Testing.InnerStrategiesDescriptor.InnerStrategiesDescriptor(System.Collections.Generic.IReadOnlyList<Polly.Testing.ResilienceStrategyDescriptor!>! Strategies, bool HasTelemetry, bool IsReloadable) -> void
+Polly.Testing.InnerStrategiesDescriptor.IsReloadable.get -> bool
+Polly.Testing.InnerStrategiesDescriptor.IsReloadable.init -> void
+Polly.Testing.InnerStrategiesDescriptor.Strategies.get -> System.Collections.Generic.IReadOnlyList<Polly.Testing.ResilienceStrategyDescriptor!>!
+Polly.Testing.InnerStrategiesDescriptor.Strategies.init -> void
+Polly.Testing.ResilienceStrategyDescriptor
+Polly.Testing.ResilienceStrategyDescriptor.Options.get -> Polly.ResilienceStrategyOptions?
+Polly.Testing.ResilienceStrategyDescriptor.Options.init -> void
+Polly.Testing.ResilienceStrategyDescriptor.ResilienceStrategyDescriptor(Polly.ResilienceStrategyOptions? Options, System.Type! StrategyType) -> void
+Polly.Testing.ResilienceStrategyDescriptor.StrategyType.get -> System.Type!
+Polly.Testing.ResilienceStrategyDescriptor.StrategyType.init -> void
+Polly.Testing.ResilienceStrategyExtensions
+static Polly.Testing.ResilienceStrategyExtensions.GetInnerStrategies(this Polly.ResilienceStrategy! strategy) -> Polly.Testing.InnerStrategiesDescriptor!
+static Polly.Testing.ResilienceStrategyExtensions.GetInnerStrategies<TResult>(this Polly.ResilienceStrategy<TResult>! strategy) -> Polly.Testing.InnerStrategiesDescriptor!

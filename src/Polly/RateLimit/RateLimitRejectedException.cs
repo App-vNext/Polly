@@ -6,6 +6,8 @@ using System.Runtime.Serialization;
 
 namespace Polly.RateLimit;
 
+#pragma warning disable RS0016 // Add public types and members to the declared API
+
 /// <summary>
 /// Exception thrown when a delegate executed through a <see cref="IRateLimitPolicy"/> is rate-limited.
 /// </summary>
