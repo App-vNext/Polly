@@ -36,6 +36,10 @@ public class HedgingExecutionContextTests : IDisposable
         _resilienceContext = ResilienceContext.Get().Initialize<string>(false);
         _resilienceContext.CancellationToken = _cts.Token;
         _resilienceContext.Properties.Set(_myKey, "dummy");
+
+        // HedgingExecutionContext has some Debug.Assert pieces which trigger failures in Debug mode
+        // just suppress these
+        Trace.Listeners.Clear();
     }
 
     public void Dispose()

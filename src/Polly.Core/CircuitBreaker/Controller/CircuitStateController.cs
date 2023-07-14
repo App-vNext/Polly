@@ -221,7 +221,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         _disposed = true;
     }
 
-    private static async ValueTask ExecuteScheduledTaskAsync(Task? task, ResilienceContext context)
+    internal static async ValueTask ExecuteScheduledTaskAsync(Task? task, ResilienceContext context)
     {
         if (task is not null)
         {

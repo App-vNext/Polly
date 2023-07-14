@@ -403,6 +403,21 @@ public class CircuitStateControllerTests
         controller.CircuitState.Should().Be(CircuitState.Closed);
     }
 
+    [Fact]
+    public async Task ExecuteScheduledTask_Async_Ok()
+    {
+        var source = new TaskCompletionSource<string>();
+        var task = CircuitStateController<string>.ExecuteScheduledTaskAsync(source.Task, ResilienceContext.Get().Initialize<string>(isSynchronous: false)).AsTask();
+
+        task.Wait(3).Should().BeFalse();
+        task.IsCompleted.Should().BeFalse();
+
+        source.SetResult("ok");
+
+        await task;
+        task.IsCompleted.Should().BeTrue();
+    }
+
     private static DateTimeOffset? GetBlockedTill(CircuitStateController<int> controller) =>
         (DateTimeOffset?)controller.GetType().GetField("_blockedUntil", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(controller)!;
 
