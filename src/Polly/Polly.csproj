@@ -15,7 +15,7 @@
     <NoWarn>$(NoWarn);SA1805;SA1129;SA1805;CA1805;CA1821</NoWarn>
 
     <!--Pulic API Analyzers: We do not need to fix these as it would break compatibility with released Polly versions-->
-    <NoWarn>$(NoWarn);RS0026;RS0037</NoWarn>
+    <NoWarn>$(NoWarn);RS0037;</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
