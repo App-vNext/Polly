@@ -202,21 +202,9 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
             return;
         }
 
-        int accepted = 0;
-        TaskExecution<T>? acceptedExecution = null;
+        Debug.Assert(Tasks.Count(t => t.IsAccepted) == 1, $"There must be exactly one accepted outcome for hedging. Found {Tasks.Count(t => t.IsAccepted)}.");
 
-        foreach (var task in Tasks)
-        {
-            if (task.IsAccepted)
-            {
-                accepted++;
-                acceptedExecution = task;
-            }
-        }
-
-        Debug.Assert(accepted == 1, $"There must be exactly one accepted outcome for hedging. Found {accepted}.");
-
-        if (acceptedExecution is not null)
+        if (Tasks.FirstOrDefault(static t => t.IsAccepted) is TaskExecution<T> acceptedExecution)
         {
             originalContext.Properties.Replace(acceptedExecution.Properties);
 
