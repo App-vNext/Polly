@@ -13,6 +13,9 @@
     <NoWarn>$(NoWarn);SA1515;S4023;CA1010;IDE0063;S2681;S3442;S3880;CA1064;SA1110;SA1203;SA1649;SA1625;SA1623;SA1118</NoWarn>
     <NoWarn>$(NoWarn);S3253;S3971;S6605;CA1724;CA1716;SA1108;CA1710;S4049;S3246;SA1204;S3928;CA1508;CA1822;CA2201;SA1642</NoWarn>
     <NoWarn>$(NoWarn);SA1805;SA1129;SA1805;CA1805;CA1821</NoWarn>
+
+    <!--Pulic API Analyzers: We do not need to fix these as it would break compatibility with released Polly versions-->
+    <NoWarn>$(NoWarn);RS0037;</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -43,6 +43,7 @@ public class BrokenCircuitException<TResult> : BrokenCircuitException
     /// </summary>
     public TResult Result { get; }
 
+#pragma warning disable RS0016 // Add public types and members to the declared API
 #if !NETCOREAPP
     /// <summary>
     /// Initializes a new instance of the <see cref="BrokenCircuitException{TResult}"/> class.
@@ -52,4 +53,5 @@ public class BrokenCircuitException<TResult> : BrokenCircuitException
     protected BrokenCircuitException(SerializationInfo info, StreamingContext context)
         : base(info, context) => Result = default!;
 #endif
+#pragma warning restore RS0016 // Add public types and members to the declared API
 }

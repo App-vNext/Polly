@@ -3,6 +3,8 @@ using Polly.Telemetry;
 
 namespace Polly;
 
+#pragma warning disable RS0026 // Do not add multiple public overloads with optional parameters
+
 /// <summary>
 /// A context assigned to a single execution of <see cref="ResilienceStrategy"/>. It is created manually or automatically
 /// when the user calls the various extensions on top of <see cref="ResilienceStrategy"/>. After every execution the context should be discarded and returned to the pool.

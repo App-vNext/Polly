@@ -36,6 +36,7 @@ public abstract class ExecutionRejectedException : Exception
     {
     }
 
+#pragma warning disable RS0016 // Add public types and members to the declared API
 #if !NETCOREAPP
     /// <summary>
     /// Initializes a new instance of the <see cref="ExecutionRejectedException"/> class.
@@ -47,4 +48,5 @@ public abstract class ExecutionRejectedException : Exception
     {
     }
 #endif
+#pragma warning restore RS0016 // Add public types and members to the declared API
 }
