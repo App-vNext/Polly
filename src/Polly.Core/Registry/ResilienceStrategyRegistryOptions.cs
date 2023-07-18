@@ -11,27 +11,27 @@ public class ResilienceStrategyRegistryOptions<TKey>
     /// <summary>
     /// Gets or sets the factory method that creates instances of <see cref="ResilienceStrategyBuilder"/>.
     /// </summary>
-    /// <remarks>
-    /// By default, the factory method creates a new instance of <see cref="ResilienceStrategyBuilder"/> using the default constructor.
-    /// </remarks>
+    /// <value>
+    /// The default value is a function that creates a new instance of <see cref="ResilienceStrategyBuilder"/> using the default constructor.
+    /// </value>
     [Required]
     public Func<ResilienceStrategyBuilder> BuilderFactory { get; set; } = static () => new ResilienceStrategyBuilder();
 
     /// <summary>
     /// Gets or sets the comparer that is used by the registry to retrieve the resilience strategies.
     /// </summary>
-    /// <remarks>
-    /// By default, the comparer uses the default equality comparer for <typeparamref name="TKey"/>.
-    /// </remarks>
+    /// <value>
+    /// The default value is <see cref="EqualityComparer{T}.Default"/>.
+    /// </value>
     [Required]
     public IEqualityComparer<TKey> StrategyComparer { get; set; } = EqualityComparer<TKey>.Default;
 
     /// <summary>
     /// Gets or sets the comparer that is used by the registry to retrieve the resilience strategy builders.
     /// </summary>
-    /// <remarks>
-    /// By default, the comparer uses the default equality comparer for <typeparamref name="TKey"/>.
-    /// </remarks>
+    /// <value>
+    /// The default value is <see cref="EqualityComparer{T}.Default"/>.
+    /// </value>
     [Required]
     public IEqualityComparer<TKey> BuilderComparer { get; set; } = EqualityComparer<TKey>.Default;
 
@@ -40,12 +40,12 @@ public class ResilienceStrategyRegistryOptions<TKey>
     /// represents the instance name of the builder.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="null"/>.
-    /// <para>
     /// Use custom formatter for composite keys in case you want to have different metric values for a builder and instance key.
     /// In general, strategies can have the same builder name and different instance names.
-    /// </para>
     /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
     public Func<TKey, string>? InstanceNameFormatter { get; set; }
 
     /// <summary>
@@ -53,12 +53,12 @@ public class ResilienceStrategyRegistryOptions<TKey>
     /// represents the builder name.
     /// </summary>
     /// <remarks>
-    /// By default, the formatter uses the <see cref="object.ToString"/> method.
-    /// <para>
     /// Use custom formatter for composite keys in case you want to have different metric values for a builder and strategy key.
     /// In general, strategies can have the same builder name and different strategy keys.
-    /// </para>
     /// </remarks>
+    /// <value>
+    /// The default value is a formatter that formats the keys using the <see cref="object.ToString"/> method.
+    /// </value>
     [Required]
     public Func<TKey, string> BuilderNameFormatter { get; set; } = (key) => key?.ToString() ?? string.Empty;
 }

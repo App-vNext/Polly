@@ -23,9 +23,9 @@ public class SimpleCircuitBreakerStrategyOptions<TResult> : CircuitBreakerStrate
     /// <summary>
     /// Gets or sets the number of the outcome failures handled by <see cref="CircuitBreakerStrategyOptions{TResult}.ShouldHandle"/> before opening the circuit.
     /// </summary>
-    /// <remarks>
-    /// Must be greater than 0. Defaults to 100.
-    /// </remarks>
+    /// <value>
+    /// The default value is 100. Must be greater than 0.
+    /// </value>
     [Range(1, int.MaxValue)]
     public int FailureThreshold { get; set; } = CircuitBreakerConstants.DefaultFailureThreshold;
 }

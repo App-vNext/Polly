@@ -37,8 +37,10 @@ public abstract class ResilienceStrategyBuilderBase
     /// </summary>
     /// <remarks>
     /// This property is also included in the telemetry that is produced by the individual resilience strategies.
-    /// Defaults to <see langword="null"/>.
     /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
     public string? BuilderName { get; set; }
 
     /// <summary>
@@ -47,13 +49,18 @@ public abstract class ResilienceStrategyBuilderBase
     /// <remarks>
     /// This property is also included in the telemetry that is produced by the individual resilience strategies.
     /// The instance name can be used to differentiate between multiple builder instances with the same <see cref="BuilderName"/>.
-    /// Defaults to <see langword="null"/>.
     /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
     public string? InstanceName { get; set; }
 
     /// <summary>
     /// Gets the custom properties attached to builder options.
     /// </summary>
+    /// <value>
+    /// The default value is the empty instance of <see cref="ResilienceProperties"/>.
+    /// </value>
     public ResilienceProperties Properties { get; } = new();
 
     /// <summary>
@@ -62,6 +69,9 @@ public abstract class ResilienceStrategyBuilderBase
     /// <remarks>
     /// This property is internal until we switch to official System.TimeProvider.
     /// </remarks>
+    /// <value>
+    /// The default value is <see cref="TimeProvider.System"/>.
+    /// </value>
     [Required]
     internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 
@@ -71,6 +81,9 @@ public abstract class ResilienceStrategyBuilderBase
     /// <remarks>
     /// This property is used by the telemetry infrastructure and should not be used directly by user code.
     /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public Action<IList<ResilienceStrategy>>? OnCreatingStrategy { get; set; }
 
@@ -80,15 +93,18 @@ public abstract class ResilienceStrategyBuilderBase
     /// <remarks>
     /// This property is used by the telemetry infrastructure and should not be used directly by user code.
     /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public DiagnosticSource? DiagnosticSource { get; set; }
 
     /// <summary>
     /// Gets or sets the randomizer that is used by strategies that need to generate random numbers.
     /// </summary>
-    /// <remarks>
-    /// The default randomizer is thread safe and returns values between 0.0 and 1.0.
-    /// </remarks>
+    /// <value>
+    /// The default value is thread-safe randomizer that returns values between 0.0 and 1.0.
+    /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [Required]
     public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;

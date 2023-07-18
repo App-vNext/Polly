@@ -27,11 +27,8 @@ public class AdvancedCircuitBreakerStrategyOptions<TResult> : CircuitBreakerStra
     /// </summary>
     /// <remarks>
     /// A number between zero and one (inclusive) e.g. 0.5 represents breaking if 50% or more of actions result in a handled failure.
-    /// <para>
-    /// A ratio number higher than 0, up to 1.
-    /// Defaults to 0.1 (i.e. 10%).
-    /// </para>
     /// </remarks>
+    /// <value>A ratio number higher than 0, up to 1. The default value is 0.1 (i.e. 10%).</value>
     [Range(0, 1.0)]
     public double FailureThreshold { get; set; } = CircuitBreakerConstants.DefaultAdvancedFailureThreshold;
 
@@ -39,19 +36,18 @@ public class AdvancedCircuitBreakerStrategyOptions<TResult> : CircuitBreakerStra
     /// Gets or sets the minimum throughput: this many actions or more must pass through the circuit in the time-slice,
     /// for statistics to be considered significant and the circuit-breaker to come into action.
     /// </summary>
-    /// <remarks>
-    /// Value must be 2 or greater.
-    /// Defaults to 100.
-    /// </remarks>
+    /// <value>
+    /// The default value is 0.1 (i.e. 10%). The value must be 2 or greater.
+    /// </value>
     [Range(CircuitBreakerConstants.MinimumValidThroughput, int.MaxValue)]
     public int MinimumThroughput { get; set; } = CircuitBreakerConstants.DefaultMinimumThroughput;
 
     /// <summary>
     /// Gets or sets the duration of the sampling over which failure ratios are assessed.
     /// </summary>
-    /// <remarks>
-    /// Value must be greater than 0.5 seconds. Defaults to 30 seconds.
-    /// </remarks>
+    /// <value>
+    /// The default value is 30 seconds. Value must be greater than 0.5 seconds.
+    /// </value>
     [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
     public TimeSpan SamplingDuration { get; set; } = CircuitBreakerConstants.DefaultSamplingDuration;
 }

@@ -14,37 +14,35 @@ public class TelemetryOptions
     /// <summary>
     /// Gets or sets the callback that is raised when <see cref="TelemetryEventArguments"/> is received from Polly.
     /// </summary>
-    /// <remarks>
-    /// Defaults to <see langword="null"/>.
-    /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
     public Action<TelemetryEventArguments>? OnTelemetryEvent { get; set; }
 
     /// <summary>
     /// Gets or sets the logger factory.
     /// </summary>
-    /// <remarks>
-    /// Defaults to <see cref="NullLoggerFactory.Instance"/>.
-    /// </remarks>
+    /// <value>
+    /// The default value is <see cref="NullLoggerFactory.Instance"/>.
+    /// </value>
     [Required]
     public ILoggerFactory LoggerFactory { get; set; } = NullLoggerFactory.Instance;
 
     /// <summary>
     /// Gets the registered resilience telemetry enrichers.
     /// </summary>
-    /// <remarks>
-    /// Defaults to an empty collection.
-    /// </remarks>
+    /// <value>
+    /// The default value is an empty collection.
+    /// </value>
     public ICollection<Action<EnrichmentContext>> Enrichers { get; } = new List<Action<EnrichmentContext>>();
 
     /// <summary>
     /// Gets or sets the result formatter.
     /// </summary>
-    /// <remarks>
-    /// Defaults to a formatter that returns a status code for HTTP based responses and the result as-is for all other result types.
-    /// <para>
+    /// <value>
+    /// The default value is a formatter that returns a status code for HTTP based responses and the result as-is for all other result types.
     /// This property is required.
-    /// </para>
-    /// </remarks>
+    /// </value>
     [Required]
     public Func<ResilienceContext, object?, object?> ResultFormatter { get; set; } = (_, result) => result switch
     {
