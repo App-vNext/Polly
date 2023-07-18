@@ -27,7 +27,7 @@ public class AdvancedCircuitBreakerOptionsTests
         options.MinimumThroughput = 2;
         options.SamplingDuration = TimeSpan.FromMilliseconds(500);
 
-        ValidationHelper.ValidateObject(options, "Dummy.");
+        ValidationHelper.ValidateObject(new(options, "Dummy."));
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class AdvancedCircuitBreakerOptionsTests
         options.MinimumThroughput = 2;
         options.SamplingDuration = TimeSpan.FromMilliseconds(500);
 
-        ValidationHelper.ValidateObject(options, "Dummy.");
+        ValidationHelper.ValidateObject(new(options, "Dummy."));
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public class AdvancedCircuitBreakerOptionsTests
         };
 
         options
-            .Invoking(o => ValidationHelper.ValidateObject(o, "Dummy."))
+            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Dummy.")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""

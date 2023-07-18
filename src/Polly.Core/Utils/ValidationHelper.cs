@@ -7,13 +7,15 @@ namespace Polly.Utils;
 [ExcludeFromCodeCoverage]
 internal static class ValidationHelper
 {
-    public static void ValidateObject(object instance, string mainMessage)
+    public static void ValidateObject(ResilienceValidationContext context)
     {
+        Guard.NotNull(context);
+
         var errors = new List<ValidationResult>();
 
-        if (!Validator.TryValidateObject(instance, new ValidationContext(instance), errors, true))
+        if (!Validator.TryValidateObject(context.Instance, new ValidationContext(context.Instance), errors, true))
         {
-            var stringBuilder = new StringBuilder(mainMessage);
+            var stringBuilder = new StringBuilder(context.PrimaryMessage);
             stringBuilder.AppendLine();
 
             stringBuilder.AppendLine("Validation Errors:");

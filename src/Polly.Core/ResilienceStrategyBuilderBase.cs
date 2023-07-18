@@ -16,6 +16,7 @@ public abstract class ResilienceStrategyBuilderBase
 {
     private readonly List<Entry> _entries = new();
     private bool _used;
+    private Action<ResilienceValidationContext> _validator = ValidationHelper.ValidateObject;
 
     private protected ResilienceStrategyBuilderBase()
     {
@@ -92,6 +93,21 @@ public abstract class ResilienceStrategyBuilderBase
     [Required]
     public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;
 
+    /// <summary>
+    /// Gets or sets the validator that is used for the validation.
+    /// </summary>
+    /// <value>The default value is a validation function that uses data annotations for validation.</value>
+    /// <remarks>
+    /// The validator should throw <see cref="ValidationException"/> when the validated instance is invalid.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when the attempting to assign <see langword="null"/> to this property.</exception>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Action<ResilienceValidationContext> Validator
+    {
+        get => _validator;
+        set => _validator = Guard.NotNull(value);
+    }
+
     internal abstract bool IsGenericBuilder { get; }
 
     internal void AddStrategyCore(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
@@ -99,7 +115,7 @@ public abstract class ResilienceStrategyBuilderBase
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        ValidationHelper.ValidateObject(options, $"The '{TypeNameFormatter.Format(options.GetType())}' are invalid.");
+        Validator(new ResilienceValidationContext(options, $"The '{TypeNameFormatter.Format(options.GetType())}' are invalid."));
 
         if (_used)
         {
@@ -111,7 +127,7 @@ public abstract class ResilienceStrategyBuilderBase
 
     internal ResilienceStrategy BuildStrategy()
     {
-        ValidationHelper.ValidateObject(this, $"The '{nameof(ResilienceStrategyBuilder)}' configuration is invalid.");
+        Validator(new(this, $"The '{nameof(ResilienceStrategyBuilder)}' configuration is invalid."));
 
         _used = true;
 

@@ -48,10 +48,8 @@ public static class TelemetryResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        ValidationHelper.ValidateObject(options, "The resilience telemetry options are invalid.");
-
+        builder.Validator(new(options, $"The '{nameof(TelemetryOptions)}' are invalid."));
         builder.DiagnosticSource = new ResilienceTelemetryDiagnosticSource(options);
-
         builder.OnCreatingStrategy = strategies =>
         {
             var telemetryStrategy = new TelemetryResilienceStrategy(
