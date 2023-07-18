@@ -17,28 +17,27 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <summary>
     /// Gets or sets the outcome predicate for determining whether a fallback should be executed.
     /// </summary>
-    /// <remarks>
-    /// Defaults to a delegate that hedges on any exception except <see cref="OperationCanceledException"/>.
-    /// This property is required.
-    /// </remarks>
+    /// <value>
+    /// The default value is a predicate that fallbacks on any exception except <see cref="OperationCanceledException"/>. This property is required.
+    /// </value>
     [Required]
     public Func<OutcomeArguments<TResult, FallbackPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<FallbackPredicateArguments, TResult>.HandleOutcome;
 
     /// <summary>
     /// Gets or sets the fallback action to be executed when the <see cref="ShouldHandle"/> predicate evaluates as true.
     /// </summary>
-    /// <remarks>
-    /// This property is required. Defaults to <see langword="null"/>.
-    /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>. This property is required.
+    /// </value>
     [Required]
     public Func<OutcomeArguments<TResult, FallbackPredicateArguments>, ValueTask<Outcome<TResult>>>? FallbackAction { get; set; }
 
     /// <summary>
     /// Gets or sets the outcome event instance responsible for triggering fallback events.
     /// </summary>
-    /// <remarks>
-    /// Defaults to <see langword="null"/> instance.
-    /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/> instance.
+    /// </value>
     public Func<OutcomeArguments<TResult, OnFallbackArguments>, ValueTask>? OnFallback { get; set; }
 }
 

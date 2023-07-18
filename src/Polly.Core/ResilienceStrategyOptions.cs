@@ -9,9 +9,10 @@ public abstract class ResilienceStrategyOptions
     /// Gets or sets the name of the strategy.
     /// </summary>
     /// <remarks>
+    /// This name uniquely identifies particular instance of specific strategy.
     /// This property is also included in the telemetry that is produced by the individual resilience strategies.
-    /// Defaults to <see langword="null"/>. This name uniquely identifies particular instance of specific strategy.
     /// </remarks>
+    /// <value>The default value is <see langword="null"/>.</value>
     public string? StrategyName { get; set; }
 
     /// <summary>

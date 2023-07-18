@@ -32,10 +32,8 @@ public sealed class ResilienceContext
     /// Resilience strategy instances are commonly reused across multiple call sites.
     /// Set an <see cref="OperationKey"/> so that logging and metrics can distinguish usages of policy instances at different call sites.
     /// The operation key value should have a low cardinality (i.e. do not assign values such as <see cref="Guid"/> to this property).
-    /// <para>
-    /// Defaults to <see langword="null"/>.
-    /// </para>
     /// </remarks>
+    /// <value>The default value is <see langword="null"/>.</value>
     public string? OperationKey { get; private set; }
 
     /// <summary>

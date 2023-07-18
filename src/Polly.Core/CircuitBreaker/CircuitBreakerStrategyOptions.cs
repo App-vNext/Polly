@@ -26,20 +26,19 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// <summary>
     /// Gets or sets the duration of break the circuit will stay open before resetting.
     /// </summary>
-    /// <remarks>
-    /// Value must be greater than 0.5 seconds.
-    /// Defaults to 5 seconds.
-    /// </remarks>
+    /// <value>
+    /// The default value is 5 seconds. Value must be greater than 0.5 seconds.
+    /// </value>
     [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
     public TimeSpan BreakDuration { get; set; } = CircuitBreakerConstants.DefaultBreakDuration;
 
     /// <summary>
     /// Gets or sets the predicates for the circuit breaker.
     /// </summary>
-    /// <remarks>
-    /// Defaults to a delegate that handles circuit breaker on any exception except <see cref="OperationCanceledException"/>.
+    /// <value>
+    /// The default value is a predicate that handles circuit breaker on any exception except <see cref="OperationCanceledException"/>.
     /// This property is required.
-    /// </remarks>
+    /// </value>
     [Required]
     public Func<OutcomeArguments<TResult, CircuitBreakerPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<CircuitBreakerPredicateArguments, TResult>.HandleOutcome;
 
@@ -55,10 +54,8 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
     /// maintained to ensure the correct sequence of state transitions.
     /// </para>
-    /// <para>
-    /// Defaults to <see langword="null"/>.
-    /// </para>
     /// </remarks>
+    /// <value>The default value is <see langword="null"/>.</value>
     public Func<OutcomeArguments<TResult, OnCircuitClosedArguments>, ValueTask>? OnClosed { get; set; }
 
     /// <summary>
@@ -73,10 +70,8 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
     /// maintained to ensure the correct sequence of state transitions.
     /// </para>
-    /// <para>
-    /// Defaults to <see langword="null"/>.
-    /// </para>
     /// </remarks>
+    /// <value>The default value is <see langword="null"/>.</value>
     public Func<OutcomeArguments<TResult, OnCircuitOpenedArguments>, ValueTask>? OnOpened { get; set; }
 
     /// <summary>
@@ -91,26 +86,20 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
     /// maintained to ensure the correct sequence of state transitions.
     /// </para>
-    /// <para>
-    /// Defaults to <see langword="null"/>.
-    /// </para>
     /// </remarks>
+    /// <value>The default value is <see langword="null"/>.</value>
     public Func<OnCircuitHalfOpenedArguments, ValueTask>? OnHalfOpened { get; set; }
 
     /// <summary>
     /// Gets or sets the manual control for the circuit breaker.
     /// </summary>
-    /// <remarks>
-    /// Defaults to <see langword="null"/>.
-    /// </remarks>
+    /// <value>The default value is <see langword="null"/>.</value>
     public CircuitBreakerManualControl? ManualControl { get; set; }
 
     /// <summary>
     /// Gets or sets the state provider for the circuit breaker.
     /// </summary>
-    /// <remarks>
-    /// Defaults to <see langword="null"/>.
-    /// </remarks>
+    /// <value>The default value is <see langword="null"/>.</value>
     public CircuitBreakerStateProvider? StateProvider { get; set; }
 }
 

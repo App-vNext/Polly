@@ -72,7 +72,7 @@ public partial class PredicateBuilder<TResult>
     /// Adds a predicate for handling results with a specific value.
     /// </summary>
     /// <param name="result">The result value to handle.</param>
-    /// <param name="comparer">The comparer to use for comparing results. If null, the default comparer is used.</param>
+    /// <param name="comparer">The comparer to use for comparing results. If <see langword="null"/> , the default comparer is used.</param>
     /// <returns>The same instance of the <see cref="PredicateBuilder{TResult}"/> for chaining.</returns>
     public PredicateBuilder<TResult> HandleResult(TResult result, IEqualityComparer<TResult>? comparer = null)
     {

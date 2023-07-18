@@ -16,9 +16,9 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// <summary>
     /// Gets or sets the default timeout.
     /// </summary>
-    /// <remarks>
-    /// Defaults to 30 seconds. This value must be greater than 1 second and less than 24 hours.
-    /// </remarks>
+    /// <value>
+    /// This value must be greater than 1 second and less than 24 hours. The default value is 30 seconds.
+    /// </value>
     [Range(typeof(TimeSpan), "00:00:01", "1.00:00:00")]
     public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(30);
 
@@ -31,17 +31,17 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// <para>
     /// Return <see cref="System.Threading.Timeout.InfiniteTimeSpan"/> to disable the timeout for the given execution.
     /// </para>
-    /// <para>
-    /// Defaults to <see langword="null"/>.
-    /// </para>
     /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
     public Func<TimeoutGeneratorArguments, ValueTask<TimeSpan>>? TimeoutGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets the timeout that's raised when timeout occurs.
     /// </summary>
-    /// <remarks>
-    /// Defaults to <see langword="null"/>.
-    /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
     public Func<OnTimeoutArguments, ValueTask>? OnTimeout { get; set; }
 }
