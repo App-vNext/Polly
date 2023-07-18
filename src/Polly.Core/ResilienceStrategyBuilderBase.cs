@@ -102,7 +102,7 @@ public abstract class ResilienceStrategyBuilderBase
     /// Gets or sets the randomizer that is used by strategies that need to generate random numbers.
     /// </summary>
     /// <value>
-    /// The default value is thread safe randomizer function that returns values between 0.0 and 1.0.
+    /// The default value is thread-safe randomizer that returns values between 0.0 and 1.0.
     /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [Required]
