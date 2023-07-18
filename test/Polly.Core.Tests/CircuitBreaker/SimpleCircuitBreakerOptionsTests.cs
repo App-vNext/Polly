@@ -24,7 +24,7 @@ public class SimpleCircuitBreakerOptionsTests
         options.FailureThreshold = 1;
         options.BreakDuration = TimeSpan.FromMilliseconds(500);
 
-        ValidationHelper.ValidateObject(options, "Dummy.");
+        ValidationHelper.ValidateObject(new(options, "Dummy."));
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class SimpleCircuitBreakerOptionsTests
         options.BreakDuration = TimeSpan.FromMilliseconds(500);
 
         options.ShouldHandle = _ => PredicateResult.True;
-        ValidationHelper.ValidateObject(options, "Dummy.");
+        ValidationHelper.ValidateObject(new(options, "Dummy."));
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class SimpleCircuitBreakerOptionsTests
         };
 
         options
-            .Invoking(o => ValidationHelper.ValidateObject(o, "Dummy."))
+            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Dummy.")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""

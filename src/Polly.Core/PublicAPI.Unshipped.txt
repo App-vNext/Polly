@@ -292,6 +292,8 @@ Polly.ResilienceStrategyBuilderBase.OnCreatingStrategy.set -> void
 Polly.ResilienceStrategyBuilderBase.Properties.get -> Polly.ResilienceProperties!
 Polly.ResilienceStrategyBuilderBase.Randomizer.get -> System.Func<double>!
 Polly.ResilienceStrategyBuilderBase.Randomizer.set -> void
+Polly.ResilienceStrategyBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
+Polly.ResilienceStrategyBuilderBase.Validator.set -> void
 Polly.ResilienceStrategyBuilderContext
 Polly.ResilienceStrategyBuilderContext.BuilderInstanceName.get -> string?
 Polly.ResilienceStrategyBuilderContext.BuilderName.get -> string?
@@ -304,6 +306,10 @@ Polly.ResilienceStrategyOptions
 Polly.ResilienceStrategyOptions.ResilienceStrategyOptions() -> void
 Polly.ResilienceStrategyOptions.StrategyName.get -> string?
 Polly.ResilienceStrategyOptions.StrategyName.set -> void
+Polly.ResilienceValidationContext
+Polly.ResilienceValidationContext.Instance.get -> object!
+Polly.ResilienceValidationContext.PrimaryMessage.get -> string!
+Polly.ResilienceValidationContext.ResilienceValidationContext(object! instance, string! primaryMessage) -> void
 Polly.Retry.OnRetryArguments
 Polly.Retry.OnRetryArguments.Attempt.get -> int
 Polly.Retry.OnRetryArguments.Attempt.init -> void

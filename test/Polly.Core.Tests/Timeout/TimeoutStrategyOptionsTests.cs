@@ -26,7 +26,7 @@ public class TimeoutStrategyOptionsTests
         };
 
         options
-            .Invoking(o => ValidationHelper.ValidateObject(o, "Dummy message"))
+            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Dummy message")))
             .Should()
             .Throw<ValidationException>();
     }
@@ -41,7 +41,7 @@ public class TimeoutStrategyOptionsTests
         };
 
         options
-            .Invoking(o => ValidationHelper.ValidateObject(o, "Dummy message"))
+            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Dummy message")))
             .Should()
             .NotThrow();
     }

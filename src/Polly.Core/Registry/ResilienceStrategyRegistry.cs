@@ -46,8 +46,10 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     public ResilienceStrategyRegistry(ResilienceStrategyRegistryOptions<TKey> options)
     {
         Guard.NotNull(options);
-
-        ValidationHelper.ValidateObject(options, "The resilience strategy registry options are invalid.");
+        Guard.NotNull(options.BuilderFactory);
+        Guard.NotNull(options.StrategyComparer);
+        Guard.NotNull(options.BuilderComparer);
+        Guard.NotNull(options.BuilderNameFormatter);
 
         _activator = options.BuilderFactory;
         _builders = new ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>>>(options.BuilderComparer);

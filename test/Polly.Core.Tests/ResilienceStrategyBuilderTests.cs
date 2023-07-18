@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Time.Testing;
 using Moq;
+using Polly.Retry;
 using Polly.Utils;
 
 namespace Polly.Core.Tests;
@@ -120,6 +121,28 @@ public class ResilienceStrategyBuilderTests
             .Should()
             .Throw<InvalidOperationException>()
             .WithMessage("The resilience pipeline must contain unique resilience strategies.");
+    }
+
+    [Fact]
+    public void Validator_Ok()
+    {
+        var builder = new ResilienceStrategyBuilder();
+
+        builder.Validator.Should().NotBeNull();
+        builder.Validator = null!;
+        builder.Validator.Should().NotBeNull();
+
+        builder.Validator(new ResilienceValidationContext("ABC", "ABC"));
+
+        builder
+            .Invoking(b => b.Validator(new ResilienceValidationContext(new RetryStrategyOptions { RetryCount = -4 }, "The primary message.")))
+            .Should()
+            .Throw<ValidationException>()
+            .WithMessage("""
+            The primary message.
+            Validation Errors:
+            The field RetryCount must be between -1 and 100.
+            """);
     }
 
     [Fact]

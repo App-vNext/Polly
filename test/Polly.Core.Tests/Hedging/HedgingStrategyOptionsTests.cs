@@ -71,7 +71,7 @@ public class HedgingStrategyOptionsTests
         };
 
         options
-            .Invoking(o => ValidationHelper.ValidateObject(o, "Invalid."))
+            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid.")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""

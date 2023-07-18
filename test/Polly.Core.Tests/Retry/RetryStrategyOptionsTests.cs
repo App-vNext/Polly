@@ -47,7 +47,7 @@ public class RetryStrategyOptionsTests
             BaseDelay = TimeSpan.MinValue
         };
 
-        options.Invoking(o => ValidationHelper.ValidateObject(o, "Invalid Options"))
+        options.Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid Options")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""
