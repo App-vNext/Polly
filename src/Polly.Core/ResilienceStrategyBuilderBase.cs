@@ -100,11 +100,12 @@ public abstract class ResilienceStrategyBuilderBase
     /// <remarks>
     /// The validator should throw <see cref="ValidationException"/> when the validated instance is invalid.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when the attempting to assign <see langword="null"/> to this property.</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public Action<ResilienceValidationContext> Validator
     {
-        get => _validator ?? ValidationHelper.ValidateObject;
-        set => _validator = value;
+        get => _validator;
+        set => _validator = Guard.NotNull(value);
     }
 
     internal abstract bool IsGenericBuilder { get; }

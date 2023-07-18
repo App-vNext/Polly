@@ -129,8 +129,6 @@ public class ResilienceStrategyBuilderTests
         var builder = new ResilienceStrategyBuilder();
 
         builder.Validator.Should().NotBeNull();
-        builder.Validator = null!;
-        builder.Validator.Should().NotBeNull();
 
         builder.Validator(new ResilienceValidationContext("ABC", "ABC"));
 
@@ -143,6 +141,15 @@ public class ResilienceStrategyBuilderTests
             Validation Errors:
             The field RetryCount must be between -1 and 100.
             """);
+    }
+
+    [Fact]
+    public void Validator_Null_Throws()
+    {
+        new ResilienceStrategyBuilder()
+            .Invoking(b => b.Validator = null!)
+            .Should()
+            .Throw<ArgumentNullException>();
     }
 
     [Fact]
