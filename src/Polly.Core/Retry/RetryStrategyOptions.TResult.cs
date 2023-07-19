@@ -34,6 +34,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// </value>
     public RetryBackoffType BackoffType { get; set; } = RetryConstants.DefaultBackoffType;
 
+#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     /// <summary>
     /// Gets or sets the base delay between retries.
     /// </summary>
@@ -58,7 +59,6 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <value>
     /// The default value is 2 seconds.
     /// </value>
-#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     [Range(typeof(TimeSpan), "00:00:00", "1.00:00:00")]
     public TimeSpan BaseDelay { get; set; } = RetryConstants.DefaultBaseDelay;
 #pragma warning restore IL2026

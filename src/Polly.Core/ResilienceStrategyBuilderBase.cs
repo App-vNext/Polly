@@ -113,7 +113,7 @@ public abstract class ResilienceStrategyBuilderBase
     public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;
 
     /// <summary>
-    /// Gets or sets the validator that is used for the validation.
+    /// Gets the validator that is used for the validation.
     /// </summary>
     /// <value>The default value is a validation function that uses data annotations for validation.</value>
     /// <remarks>

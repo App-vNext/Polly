@@ -13,13 +13,13 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// <remarks>Returns <c>Timeout</c> value.</remarks>
     public sealed override string StrategyType => TimeoutConstants.StrategyType;
 
+#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     /// <summary>
     /// Gets or sets the default timeout.
     /// </summary>
     /// <value>
     /// This value must be greater than 1 second and less than 24 hours. The default value is 30 seconds.
     /// </value>
-#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     [Range(typeof(TimeSpan), "00:00:01", "1.00:00:00")]
     public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(30);
 #pragma warning restore IL2026
