@@ -8,13 +8,13 @@ namespace Polly.Utils;
 internal static class ValidationHelper
 {
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TimeSpan))]
-    [RequiresUnreferencedCode("Calls System.ComponentModel.DataAnnotations.ValidationContext.ValidationContext(Object)")]
     public static void ValidateObject(ResilienceValidationContext context)
     {
         Guard.NotNull(context);
 
         var errors = new List<ValidationResult>();
 
+#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
         if (!Validator.TryValidateObject(context.Instance, new ValidationContext(context.Instance), errors, true))
         {
             var stringBuilder = new StringBuilder(context.PrimaryMessage);
@@ -28,5 +28,6 @@ internal static class ValidationHelper
 
             throw new ValidationException(stringBuilder.ToString());
         }
+#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
     }
 }

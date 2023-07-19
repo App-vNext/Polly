@@ -1,8 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Polly.CircuitBreaker;
 using Polly.CircuitBreaker.Health;
 
 namespace Polly;
+
+#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
 
 /// <summary>
 /// Circuit breaker strategy extensions for <see cref="ResilienceStrategyBuilder"/>.
@@ -110,7 +113,7 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
                     options.MinimumThroughput,
                     HealthMetrics.Create(options.SamplingDuration, context.TimeProvider));
 
-                return CreateStrategy(context, options, behavior);
+                return CreateStrategy<TResult, AdvancedCircuitBreakerStrategyOptions<TResult>>(context, options, behavior);
             },
             options);
     }
@@ -118,10 +121,18 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     private static TBuilder AddSimpleCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, SimpleCircuitBreakerStrategyOptions<TResult> options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
-        return builder.AddStrategy(context => CreateStrategy(context, options, new ConsecutiveFailuresCircuitBehavior(options.FailureThreshold)), options);
+        return builder.AddStrategy(
+            context =>
+            {
+                return CreateStrategy<TResult, SimpleCircuitBreakerStrategyOptions<TResult>>(
+                    context,
+                    options,
+                    new ConsecutiveFailuresCircuitBehavior(options.FailureThreshold));
+            },
+            options);
     }
 
-    internal static CircuitBreakerResilienceStrategy<TResult> CreateStrategy<TResult>(
+    internal static CircuitBreakerResilienceStrategy<TResult> CreateStrategy<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
         ResilienceStrategyBuilderContext context,
         CircuitBreakerStrategyOptions<TResult> options,
         CircuitBehavior behavior)

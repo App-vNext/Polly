@@ -1,6 +1,8 @@
 using System.ComponentModel;
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
 namespace Polly;
 
 /// <summary>
@@ -122,11 +124,12 @@ public abstract class ResilienceStrategyBuilderBase
     public Action<ResilienceValidationContext> Validator
     {
         get => _validator;
-        set => _validator = Guard.NotNull(value);
+        internal set => _validator = Guard.NotNull(value);
     }
 
     internal abstract bool IsGenericBuilder { get; }
 
+    [RequiresUnreferencedCode(Constants.OptionsValidation)]
     internal void AddStrategyCore(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);

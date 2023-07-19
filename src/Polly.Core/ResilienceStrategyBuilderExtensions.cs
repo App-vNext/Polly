@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Polly;
 
@@ -22,7 +23,9 @@ public static class ResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(strategy);
 
+#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
         return builder.AddStrategy(_ => strategy, EmptyOptions.Instance);
+#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
     }
 
     /// <summary>
@@ -53,6 +56,7 @@ public static class ResilienceStrategyBuilderExtensions
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/>, <paramref name="factory"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> is invalid.</exception>
+    [RequiresUnreferencedCode(Constants.OptionsValidation)]
     public static TBuilder AddStrategy<TBuilder>(this TBuilder builder, Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
         where TBuilder : ResilienceStrategyBuilderBase
     {

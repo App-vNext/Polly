@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Polly.Utils;
+﻿namespace Polly.Utils;
 
 internal static class Constants
 {
-    public const string ValidationTrimmingMessage = "The default options validation requires reflection. Use custom 'ResilienceStrategyBuilder.Validator' callback for validation.";
-
-    public const string BuilderTrimmingMessage = $"The default validator uses reflection for validator. " +
-        $"Assign custom '{nameof(Validator)}' validation delegate if your library needs to be AOT friendly.";
+    public const string OptionsValidation = """
+    This call validates the options using the data annotations attributes.
+    Make sure that the options are included using the '[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OptionsType))]' attribute on top of calling method.
+    """;
 }

@@ -1,7 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Polly.Fallback;
 
 namespace Polly;
+
+#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
 
 /// <summary>
 /// Provides extension methods for configuring fallback resilience strategies for <see cref="ResilienceStrategyBuilder"/>.
@@ -22,7 +25,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddFallbackCore(options);
+        builder.AddFallbackCore<TResult, FallbackStrategyOptions<TResult>>(options);
         return builder;
     }
 
@@ -39,11 +42,13 @@ public static class FallbackResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddFallbackCore(options);
+        builder.AddFallbackCore<object, FallbackStrategyOptions>(options);
         return builder;
     }
 
-    internal static void AddFallbackCore<TResult>(this ResilienceStrategyBuilderBase builder, FallbackStrategyOptions<TResult> options)
+    internal static void AddFallbackCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TOptions>(
+        this ResilienceStrategyBuilderBase builder,
+        FallbackStrategyOptions<TResult> options)
     {
         builder.AddStrategy(context =>
         {
