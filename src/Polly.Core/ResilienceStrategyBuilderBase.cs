@@ -1,7 +1,6 @@
 using System.ComponentModel;
 
 using System.ComponentModel.DataAnnotations;
-
 namespace Polly;
 
 /// <summary>
@@ -16,7 +15,9 @@ public abstract class ResilienceStrategyBuilderBase
 {
     private readonly List<Entry> _entries = new();
     private bool _used;
+#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
     private Action<ResilienceValidationContext> _validator = ValidationHelper.ValidateObject;
+#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
 
     private protected ResilienceStrategyBuilderBase()
     {

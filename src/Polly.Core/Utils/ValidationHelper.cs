@@ -7,6 +7,8 @@ namespace Polly.Utils;
 [ExcludeFromCodeCoverage]
 internal static class ValidationHelper
 {
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TimeSpan))]
+    [RequiresUnreferencedCode("Calls System.ComponentModel.DataAnnotations.ValidationContext.ValidationContext(Object)")]
     public static void ValidateObject(ResilienceValidationContext context)
     {
         Guard.NotNull(context);

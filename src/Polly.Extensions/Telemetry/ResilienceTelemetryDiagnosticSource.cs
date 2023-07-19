@@ -4,7 +4,7 @@ using Polly.Telemetry;
 
 namespace Polly.Extensions.Telemetry;
 
-internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
+internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 {
     internal static readonly Meter Meter = new(TelemetryUtil.PollyDiagnosticSource, "1.0");
 
@@ -36,7 +36,11 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 
     public override bool IsEnabled(string name) => true;
 
+#pragma warning disable IL2046 // 'RequiresUnreferencedCodeAttribute' annotations must match across all interface implementations or overrides.
+#pragma warning disable IL3051 // 'RequiresDynamicCodeAttribute' annotations must match across all interface implementations or overrides.
     public override void Write(string name, object? value)
+#pragma warning restore IL3051 // 'RequiresDynamicCodeAttribute' annotations must match across all interface implementations or overrides.
+#pragma warning restore IL2046 // 'RequiresUnreferencedCodeAttribute' annotations must match across all interface implementations or overrides.
     {
         if (value is not TelemetryEventArguments args)
         {

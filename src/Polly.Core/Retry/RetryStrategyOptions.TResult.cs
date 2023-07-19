@@ -58,8 +58,10 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <value>
     /// The default value is 2 seconds.
     /// </value>
+#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     [Range(typeof(TimeSpan), "00:00:00", "1.00:00:00")]
     public TimeSpan BaseDelay { get; set; } = RetryConstants.DefaultBaseDelay;
+#pragma warning restore IL2026
 
     /// <summary>
     /// Gets or sets an outcome predicate that is used to register the predicates to determine if a retry should be performed.

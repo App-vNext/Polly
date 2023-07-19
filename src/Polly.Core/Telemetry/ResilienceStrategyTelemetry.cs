@@ -44,7 +44,11 @@ public sealed class ResilienceStrategyTelemetry
 
         var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, resilienceEvent, context, null, args!);
 
+#pragma warning disable IL2026 // The consumer of this method is Polly.Extensions and it does not use reflection at all
+#pragma warning disable IL3050
         DiagnosticSource.Write(resilienceEvent.EventName, telemetryArgs);
+#pragma warning restore IL3050
+#pragma warning restore IL2026
 
         TelemetryEventArguments.Return(telemetryArgs);
     }
@@ -67,7 +71,11 @@ public sealed class ResilienceStrategyTelemetry
 
         var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, resilienceEvent, args.Context, args.Outcome.AsOutcome(), args.Arguments!);
 
+#pragma warning disable IL2026 // The consumer of this method is Polly.Extensions and it does not use reflection at all
+#pragma warning disable IL3050
         DiagnosticSource.Write(resilienceEvent.EventName, telemetryArgs);
+#pragma warning restore IL3050
+#pragma warning restore IL2026
 
         TelemetryEventArguments.Return(telemetryArgs);
     }

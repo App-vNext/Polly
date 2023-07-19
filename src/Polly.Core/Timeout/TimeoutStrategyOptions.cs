@@ -19,8 +19,10 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// <value>
     /// This value must be greater than 1 second and less than 24 hours. The default value is 30 seconds.
     /// </value>
+#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     [Range(typeof(TimeSpan), "00:00:01", "1.00:00:00")]
     public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(30);
+#pragma warning restore IL2026
 
     /// <summary>
     /// Gets or sets the timeout generator that generates the timeout for a given execution.

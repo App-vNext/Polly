@@ -29,8 +29,10 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// <value>
     /// The default value is 5 seconds. Value must be greater than 0.5 seconds.
     /// </value>
+#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
     public TimeSpan BreakDuration { get; set; } = CircuitBreakerConstants.DefaultBreakDuration;
+#pragma warning restore
 
     /// <summary>
     /// Gets or sets the predicates for the circuit breaker.

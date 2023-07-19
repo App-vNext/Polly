@@ -10,6 +10,10 @@
     <MutationScore>100</MutationScore>
     <LegacySupport>true</LegacySupport>
     <InjectSharedSources>true</InjectSharedSources>
+    <IsTrimmable>true</IsTrimmable>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
+    <EnableAotAnalyzer>true</EnableAotAnalyzer>
   </PropertyGroup>
 
   <ItemGroup>
