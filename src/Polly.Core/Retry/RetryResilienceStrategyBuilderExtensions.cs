@@ -4,8 +4,6 @@ using Polly.Retry;
 
 namespace Polly;
 
-#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
-
 /// <summary>
 /// Retry extension methods for the <see cref="ResilienceStrategyBuilder"/>.
 /// </summary>
@@ -46,6 +44,10 @@ public static class RetryResilienceStrategyBuilderExtensions
         return builder;
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
     private static void AddRetryCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
         this ResilienceStrategyBuilderBase builder,
         RetryStrategyOptions<TResult> options)

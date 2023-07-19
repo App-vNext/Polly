@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Polly.Telemetry;
 
 /// <summary>
@@ -31,6 +33,14 @@ public sealed class ResilienceStrategyTelemetry
     /// <param name="context">The resilience context associated with this event.</param>
     /// <param name="args">The event arguments.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "The reflection is not used when consuming the event.")]
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
+        Justification = "The reflection is not used when consuming the event.")]
     public void Report<TArgs>(ResilienceEvent resilienceEvent, ResilienceContext context, TArgs args)
     {
         Guard.NotNull(context);
@@ -44,11 +54,7 @@ public sealed class ResilienceStrategyTelemetry
 
         var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, resilienceEvent, context, null, args!);
 
-#pragma warning disable IL2026 // The consumer of this method is Polly.Extensions and it does not use reflection at all
-#pragma warning disable IL3050
         DiagnosticSource.Write(resilienceEvent.EventName, telemetryArgs);
-#pragma warning restore IL3050
-#pragma warning restore IL2026
 
         TelemetryEventArguments.Return(telemetryArgs);
     }
@@ -60,6 +66,14 @@ public sealed class ResilienceStrategyTelemetry
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="resilienceEvent">The reported resilience event.</param>
     /// <param name="args">The event arguments.</param>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "The reflection is not used when consuming the event.")]
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
+        Justification = "The reflection is not used when consuming the event.")]
     public void Report<TArgs, TResult>(ResilienceEvent resilienceEvent, OutcomeArguments<TResult, TArgs> args)
     {
         args.Context.AddResilienceEvent(resilienceEvent);
@@ -71,11 +85,7 @@ public sealed class ResilienceStrategyTelemetry
 
         var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, resilienceEvent, args.Context, args.Outcome.AsOutcome(), args.Arguments!);
 
-#pragma warning disable IL2026 // The consumer of this method is Polly.Extensions and it does not use reflection at all
-#pragma warning disable IL3050
         DiagnosticSource.Write(resilienceEvent.EventName, telemetryArgs);
-#pragma warning restore IL3050
-#pragma warning restore IL2026
 
         TelemetryEventArguments.Return(telemetryArgs);
     }

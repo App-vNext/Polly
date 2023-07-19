@@ -144,15 +144,6 @@ public class ResilienceStrategyBuilderTests
     }
 
     [Fact]
-    public void Validator_Null_Throws()
-    {
-        new ResilienceStrategyBuilder()
-            .Invoking(b => b.Validator = null!)
-            .Should()
-            .Throw<ArgumentNullException>();
-    }
-
-    [Fact]
     public void AddStrategy_MultipleNonDelegating_Ok()
     {
         // arrange

@@ -5,8 +5,6 @@ using Polly.Hedging.Utils;
 
 namespace Polly;
 
-#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
-
 /// <summary>
 /// Provides extension methods for configuring hedging resilience strategies for <see cref="ResilienceStrategyBuilder"/>.
 /// </summary>
@@ -47,6 +45,10 @@ public static class HedgingResilienceStrategyBuilderExtensions
         return builder;
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
     internal static void AddHedgingCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
         this ResilienceStrategyBuilderBase builder,
         HedgingStrategyOptions<TResult> options)

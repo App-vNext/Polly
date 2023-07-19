@@ -5,8 +5,6 @@ using Polly.CircuitBreaker.Health;
 
 namespace Polly;
 
-#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
-
 /// <summary>
 /// Circuit breaker strategy extensions for <see cref="ResilienceStrategyBuilder"/>.
 /// </summary>
@@ -102,6 +100,10 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
         return builder.AddSimpleCircuitBreakerCore(options);
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
     private static TBuilder AddAdvancedCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, AdvancedCircuitBreakerStrategyOptions<TResult> options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
@@ -118,6 +120,10 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
             options);
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
     private static TBuilder AddSimpleCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, SimpleCircuitBreakerStrategyOptions<TResult> options)
         where TBuilder : ResilienceStrategyBuilderBase
     {

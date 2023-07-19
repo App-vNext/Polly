@@ -17,15 +17,17 @@ public static class ResilienceStrategyBuilderExtensions
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "The EmptyOptions have nothing to validate.")]
     public static TBuilder AddStrategy<TBuilder>(this TBuilder builder, ResilienceStrategy strategy)
         where TBuilder : ResilienceStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(strategy);
 
-#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
         return builder.AddStrategy(_ => strategy, EmptyOptions.Instance);
-#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
     }
 
     /// <summary>

@@ -4,8 +4,6 @@ using Polly.Fallback;
 
 namespace Polly;
 
-#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
-
 /// <summary>
 /// Provides extension methods for configuring fallback resilience strategies for <see cref="ResilienceStrategyBuilder"/>.
 /// </summary>
@@ -46,6 +44,10 @@ public static class FallbackResilienceStrategyBuilderExtensions
         return builder;
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
     internal static void AddFallbackCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TOptions>(
         this ResilienceStrategyBuilderBase builder,
         FallbackStrategyOptions<TResult> options)
