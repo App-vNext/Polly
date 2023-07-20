@@ -11,7 +11,7 @@ internal static class ValidationHelper
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
-        Justification = "The member of options are preserved and no trimmed. See builder.AddStrategy() extension.")]
+        Justification = "The member of options are preserved and not trimmed. See builder.AddStrategy() extension.")]
     public static void ValidateObject(ResilienceValidationContext context)
     {
         Guard.NotNull(context);
