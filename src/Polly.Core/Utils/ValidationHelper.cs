@@ -7,6 +7,11 @@ namespace Polly.Utils;
 [ExcludeFromCodeCoverage]
 internal static class ValidationHelper
 {
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TimeSpan))]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "The member of options are preserved and no trimmed. See builder.AddStrategy() extension.")]
     public static void ValidateObject(ResilienceValidationContext context)
     {
         Guard.NotNull(context);

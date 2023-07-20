@@ -23,6 +23,7 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// <remarks>Returns <c>CircuitBreaker</c> value.</remarks>
     public sealed override string StrategyType => CircuitBreakerConstants.StrategyType;
 
+#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     /// <summary>
     /// Gets or sets the duration of break the circuit will stay open before resetting.
     /// </summary>
@@ -31,6 +32,7 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// </value>
     [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
     public TimeSpan BreakDuration { get; set; } = CircuitBreakerConstants.DefaultBreakDuration;
+#pragma warning restore
 
     /// <summary>
     /// Gets or sets the predicates for the circuit breaker.

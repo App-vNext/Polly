@@ -42,6 +42,7 @@ public class AdvancedCircuitBreakerStrategyOptions<TResult> : CircuitBreakerStra
     [Range(CircuitBreakerConstants.MinimumValidThroughput, int.MaxValue)]
     public int MinimumThroughput { get; set; } = CircuitBreakerConstants.DefaultMinimumThroughput;
 
+#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     /// <summary>
     /// Gets or sets the duration of the sampling over which failure ratios are assessed.
     /// </summary>
@@ -50,4 +51,5 @@ public class AdvancedCircuitBreakerStrategyOptions<TResult> : CircuitBreakerStra
     /// </value>
     [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
     public TimeSpan SamplingDuration { get; set; } = CircuitBreakerConstants.DefaultSamplingDuration;
+#pragma warning restore IL2026
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Options;
 
 namespace Polly.Extensions.Utils;
@@ -5,7 +6,7 @@ namespace Polly.Extensions.Utils;
 #pragma warning disable CA1001 // we can get away of not disposing this class because it's active for a lifetime of app
 #pragma warning disable S2931
 
-internal sealed class OptionsReloadHelper<T>
+internal sealed class OptionsReloadHelper<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>
 {
     private CancellationTokenSource _cancellation = new();
 

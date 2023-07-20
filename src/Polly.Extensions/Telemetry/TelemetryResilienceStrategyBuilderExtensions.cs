@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Polly.Extensions.Telemetry;
 using Polly.Utils;
@@ -42,6 +43,7 @@ public static class TelemetryResilienceStrategyBuilderExtensions
     /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the strategy pipeline.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TelemetryOptions))]
     public static TBuilder ConfigureTelemetry<TBuilder>(this TBuilder builder, TelemetryOptions options)
         where TBuilder : ResilienceStrategyBuilderBase
     {

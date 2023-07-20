@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Polly.Hedging;
 using Polly.Hedging.Utils;
 
@@ -23,7 +24,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddHedgingCore(options);
+        builder.AddHedgingCore<TResult, HedgingStrategyOptions<TResult>>(options);
         return builder;
     }
 
@@ -40,11 +41,17 @@ public static class HedgingResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddHedgingCore(options);
+        builder.AddHedgingCore<object, HedgingStrategyOptions>(options);
         return builder;
     }
 
-    internal static void AddHedgingCore<TResult>(this ResilienceStrategyBuilderBase builder, HedgingStrategyOptions<TResult> options)
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
+    internal static void AddHedgingCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
+        this ResilienceStrategyBuilderBase builder,
+        HedgingStrategyOptions<TResult> options)
     {
         builder.AddStrategy(context =>
         {

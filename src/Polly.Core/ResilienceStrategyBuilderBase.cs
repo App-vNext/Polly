@@ -1,6 +1,7 @@
 using System.ComponentModel;
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Polly;
 
@@ -16,7 +17,6 @@ public abstract class ResilienceStrategyBuilderBase
 {
     private readonly List<Entry> _entries = new();
     private bool _used;
-    private Action<ResilienceValidationContext> _validator = ValidationHelper.ValidateObject;
 
     private protected ResilienceStrategyBuilderBase()
     {
@@ -110,7 +110,7 @@ public abstract class ResilienceStrategyBuilderBase
     public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;
 
     /// <summary>
-    /// Gets or sets the validator that is used for the validation.
+    /// Gets the validator that is used for the validation.
     /// </summary>
     /// <value>The default value is a validation function that uses data annotations for validation.</value>
     /// <remarks>
@@ -118,14 +118,11 @@ public abstract class ResilienceStrategyBuilderBase
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when the attempting to assign <see langword="null"/> to this property.</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public Action<ResilienceValidationContext> Validator
-    {
-        get => _validator;
-        set => _validator = Guard.NotNull(value);
-    }
+    public Action<ResilienceValidationContext> Validator { get; private protected set; } = ValidationHelper.ValidateObject;
 
     internal abstract bool IsGenericBuilder { get; }
 
+    [RequiresUnreferencedCode(Constants.OptionsValidation)]
     internal void AddStrategyCore(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);

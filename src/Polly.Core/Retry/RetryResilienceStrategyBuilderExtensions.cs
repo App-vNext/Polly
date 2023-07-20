@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Polly.Retry;
 
 namespace Polly;
@@ -21,7 +22,8 @@ public static class RetryResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        return builder.AddRetryCore(options);
+        builder.AddRetryCore<object, RetryStrategyOptions>(options);
+        return builder;
     }
 
     /// <summary>
@@ -38,13 +40,19 @@ public static class RetryResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        return builder.AddRetryCore(options);
+        builder.AddRetryCore<TResult, RetryStrategyOptions<TResult>>(options);
+        return builder;
     }
 
-    private static TBuilder AddRetryCore<TBuilder, TResult>(this TBuilder builder, RetryStrategyOptions<TResult> options)
-        where TBuilder : ResilienceStrategyBuilderBase
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
+    private static void AddRetryCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
+        this ResilienceStrategyBuilderBase builder,
+        RetryStrategyOptions<TResult> options)
     {
-        return builder.AddStrategy(context =>
+        builder.AddStrategy(context =>
             new RetryResilienceStrategy<TResult>(
                 options,
                 context.IsGenericBuilder,

@@ -293,7 +293,6 @@ Polly.ResilienceStrategyBuilderBase.Properties.get -> Polly.ResilienceProperties
 Polly.ResilienceStrategyBuilderBase.Randomizer.get -> System.Func<double>!
 Polly.ResilienceStrategyBuilderBase.Randomizer.set -> void
 Polly.ResilienceStrategyBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
-Polly.ResilienceStrategyBuilderBase.Validator.set -> void
 Polly.ResilienceStrategyBuilderContext
 Polly.ResilienceStrategyBuilderContext.BuilderInstanceName.get -> string?
 Polly.ResilienceStrategyBuilderContext.BuilderName.get -> string?

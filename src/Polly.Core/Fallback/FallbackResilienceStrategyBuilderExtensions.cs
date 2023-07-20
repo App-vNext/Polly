@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Polly.Fallback;
 
 namespace Polly;
@@ -22,7 +23,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddFallbackCore(options);
+        builder.AddFallbackCore<TResult, FallbackStrategyOptions<TResult>>(options);
         return builder;
     }
 
@@ -39,11 +40,17 @@ public static class FallbackResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddFallbackCore(options);
+        builder.AddFallbackCore<object, FallbackStrategyOptions>(options);
         return builder;
     }
 
-    internal static void AddFallbackCore<TResult>(this ResilienceStrategyBuilderBase builder, FallbackStrategyOptions<TResult> options)
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
+    internal static void AddFallbackCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TOptions>(
+        this ResilienceStrategyBuilderBase builder,
+        FallbackStrategyOptions<TResult> options)
     {
         builder.AddStrategy(context =>
         {

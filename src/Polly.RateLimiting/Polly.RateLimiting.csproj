@@ -8,6 +8,10 @@
     <ProjectType>Library</ProjectType>
     <MutationScore>100</MutationScore>
     <LegacySupport>true</LegacySupport>
+    <IsTrimmable>true</IsTrimmable>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
+    <EnableAotAnalyzer>true</EnableAotAnalyzer>
   </PropertyGroup>
 
   <ItemGroup>
