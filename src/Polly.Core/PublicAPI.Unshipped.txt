@@ -92,6 +92,8 @@ Polly.CompositeStrategyBuilderBase.OnCreatingStrategy.set -> void
 Polly.CompositeStrategyBuilderBase.Properties.get -> Polly.ResilienceProperties!
 Polly.CompositeStrategyBuilderBase.Randomizer.get -> System.Func<double>!
 Polly.CompositeStrategyBuilderBase.Randomizer.set -> void
+Polly.CompositeStrategyBuilderBase.TimeProvider.get -> System.TimeProvider!
+Polly.CompositeStrategyBuilderBase.TimeProvider.set -> void
 Polly.CompositeStrategyBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
 Polly.CompositeStrategyBuilderExtensions
 Polly.ExecutionRejectedException
@@ -322,6 +324,7 @@ Polly.StrategyBuilderContext.BuilderName.get -> string?
 Polly.StrategyBuilderContext.BuilderProperties.get -> Polly.ResilienceProperties!
 Polly.StrategyBuilderContext.StrategyName.get -> string?
 Polly.StrategyBuilderContext.Telemetry.get -> Polly.Telemetry.ResilienceStrategyTelemetry!
+Polly.StrategyBuilderContext.TimeProvider.get -> System.TimeProvider!
 Polly.Telemetry.ExecutionAttemptArguments
 Polly.Telemetry.ExecutionAttemptArguments.AttemptNumber.get -> int
 Polly.Telemetry.ExecutionAttemptArguments.ExecutionAttemptArguments(int attemptNumber, System.TimeSpan executionTime, bool handled) -> void
