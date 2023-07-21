@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Retries", "Retries\Retries.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyInjection", "DependencyInjection\DependencyInjection.csproj", "{9B8BFE03-4457-4C55-91AD-4096DDE622C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework", "EntityFramework\EntityFramework.csproj", "{B4149939-0F61-4515-A5B0-1331A65BDAAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{9B8BFE03-4457-4C55-91AD-4096DDE622C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B8BFE03-4457-4C55-91AD-4096DDE622C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B8BFE03-4457-4C55-91AD-4096DDE622C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4149939-0F61-4515-A5B0-1331A65BDAAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4149939-0F61-4515-A5B0-1331A65BDAAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4149939-0F61-4515-A5B0-1331A65BDAAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4149939-0F61-4515-A5B0-1331A65BDAAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
