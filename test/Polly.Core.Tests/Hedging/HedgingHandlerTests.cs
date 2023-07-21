@@ -65,7 +65,12 @@ public class HedgingHandlerTests
             args => () => args.Callback(args.ActionContext),
             false);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<object>(ResilienceContextPool.Shared.Get(), ResilienceContextPool.Shared.Get(), 0, _ => Outcome.FromResultAsTask((object)"callback")))!;
+        var action = handler.GenerateAction(
+            new HedgingActionGeneratorArguments<object>(
+                ResilienceContextPool.Shared.Get(),
+                ResilienceContextPool.Shared.Get(),
+                0,
+                _ => Outcome.FromResultAsTask((object)"callback")))!;
         var res = await action();
         res.Result.Should().Be("callback");
     }
