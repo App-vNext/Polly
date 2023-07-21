@@ -20,7 +20,7 @@ public class FallbackStrategyOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new FallbackStrategyOptions<int>();
-        var args = new FallbackPredicateArguments();
+        var args = default(FallbackPredicateArguments);
         var context = ResilienceContextPool.Shared.Get();
 
         (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);

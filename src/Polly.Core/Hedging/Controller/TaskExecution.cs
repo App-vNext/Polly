@@ -224,7 +224,7 @@ internal sealed class TaskExecution<T>
 
     private async Task UpdateOutcomeAsync(Outcome<T> outcome)
     {
-        var args = new OutcomeArguments<T, HedgingPredicateArguments>(Context, outcome, new HedgingPredicateArguments());
+        var args = new OutcomeArguments<T, HedgingPredicateArguments>(Context, outcome, default);
         Outcome = outcome.AsOutcome();
         IsHandled = await _handler.ShouldHandle(args).ConfigureAwait(Context.ContinueOnCapturedContext);
         TelemetryUtil.ReportExecutionAttempt(_telemetry, Context, outcome, Attempt, ExecutionTime, IsHandled);

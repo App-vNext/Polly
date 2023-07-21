@@ -49,7 +49,7 @@ public class HedgingStrategyOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new HedgingStrategyOptions<int>();
-        var args = new HedgingPredicateArguments();
+        var args = default(HedgingPredicateArguments);
         var context = ResilienceContextPool.Shared.Get();
 
         (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);

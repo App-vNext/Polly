@@ -32,7 +32,7 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : OutcomeResilienceStr
 
         outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
-        var args = new OutcomeArguments<T, CircuitBreakerPredicateArguments>(context, outcome, new CircuitBreakerPredicateArguments());
+        var args = new OutcomeArguments<T, CircuitBreakerPredicateArguments>(context, outcome, default);
         if (await _handler(args).ConfigureAwait(context.ContinueOnCapturedContext))
         {
             await _controller.OnActionFailureAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);

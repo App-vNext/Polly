@@ -99,7 +99,7 @@ internal sealed class HedgingResilienceStrategy<T> : OutcomeResilienceStrategy<T
                 await HandleOnHedgingAsync(
                     context,
                     Outcome.FromResult<T>(default),
-                    new OnHedgingArguments(attempt, HasOutcome: false, ExecutionTime: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
+                    new OnHedgingArguments(attempt, hasOutcome: false, executionTime: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
                 continue;
             }
 
@@ -115,7 +115,7 @@ internal sealed class HedgingResilienceStrategy<T> : OutcomeResilienceStrategy<T
             await HandleOnHedgingAsync(
                 context,
                 outcome,
-                new OnHedgingArguments(attempt, HasOutcome: true, executionTime)).ConfigureAwait(context.ContinueOnCapturedContext);
+                new OnHedgingArguments(attempt, hasOutcome: true, executionTime)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
     }
 

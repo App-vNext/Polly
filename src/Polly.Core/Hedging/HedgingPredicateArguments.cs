@@ -6,4 +6,6 @@ namespace Polly.Hedging;
 /// <remarks>
 /// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
-public readonly record struct HedgingPredicateArguments();
+public readonly struct HedgingPredicateArguments
+{
+}

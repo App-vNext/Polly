@@ -30,7 +30,7 @@ public class SimpleCircuitBreakerOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new SimpleCircuitBreakerStrategyOptions();
-        var args = new CircuitBreakerPredicateArguments();
+        var args = default(CircuitBreakerPredicateArguments);
         var context = ResilienceContextPool.Shared.Get();
 
         (await options.ShouldHandle(new(context, Outcome.FromResult<object>(""), args))).Should().Be(false);

@@ -33,7 +33,7 @@ public class AdvancedCircuitBreakerOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new AdvancedCircuitBreakerStrategyOptions();
-        var args = new CircuitBreakerPredicateArguments();
+        var args = default(CircuitBreakerPredicateArguments);
         var context = ResilienceContextPool.Shared.Get();
 
         (await options.ShouldHandle(new(context, Outcome.FromResult<object>("dummy"), args))).Should().Be(false);
