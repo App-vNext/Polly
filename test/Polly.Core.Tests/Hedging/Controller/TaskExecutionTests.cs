@@ -289,7 +289,7 @@ public class TaskExecutionTests : IDisposable
 
     private void CreateSnapshot(CancellationToken? token = null)
     {
-        _snapshot = new ContextSnapshot(ResilienceContext.Get().Initialize<DisposableResult>(isSynchronous: false), new ResilienceProperties(), token ?? _cts.Token);
+        _snapshot = new ContextSnapshot(ResilienceContextPool.Shared.Get().Initialize<DisposableResult>(isSynchronous: false), new ResilienceProperties(), token ?? _cts.Token);
         _snapshot.Context.CancellationToken = _cts.Token;
         _snapshot.OriginalProperties.Set(_myKey, "dummy-value");
     }

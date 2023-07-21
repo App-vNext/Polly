@@ -66,7 +66,7 @@ For example, the synchronous `Execute` method is implemented as:
 ``` csharp
 public void Execute(Action execute)
 {
-    var context = ResilienceContext.Get();
+    var context = ResilienceContextPool.Shared.Get();
 
     context.IsSynchronous = true;
     context.ResultType = typeof(VoidResult);
@@ -83,7 +83,7 @@ public void Execute(Action execute)
     }
     finally
     {
-        ResilienceContext.Return(context);
+        ResilienceContextPool.Shared.Return(context);
     }
 }
 ```

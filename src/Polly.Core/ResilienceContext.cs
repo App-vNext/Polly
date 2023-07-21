@@ -3,25 +3,22 @@ using Polly.Telemetry;
 
 namespace Polly;
 
-#pragma warning disable RS0026 // Do not add multiple public overloads with optional parameters
-
 /// <summary>
 /// A context assigned to a single execution of <see cref="ResilienceStrategy"/>. It is created manually or automatically
 /// when the user calls the various extensions on top of <see cref="ResilienceStrategy"/>. After every execution the context should be discarded and returned to the pool.
 /// </summary>
 /// <remarks>
 /// Do not re-use an instance of <see cref="ResilienceContext"/> across more than one execution. The <see cref="ResilienceContext"/> is retrieved from the pool
-/// by calling the <see cref="Get(CancellationToken)"/> method. After you are done with it you should return it to the pool by calling the <see cref="Return"/> method.
+/// by calling the <see cref="ResilienceContextPool.Get(CancellationToken)"/> method. After you are done with it you should return it to the pool
+/// by calling the <see cref="ResilienceContextPool.Return(ResilienceContext)"/> method.
 /// </remarks>
 public sealed class ResilienceContext
 {
     private const bool ContinueOnCapturedContextDefault = false;
 
-    private static readonly ObjectPool<ResilienceContext> Pool = new(static () => new ResilienceContext(), static c => c.Reset());
-
     private readonly List<ResilienceEvent> _resilienceEvents = new();
 
-    private ResilienceContext()
+    internal ResilienceContext()
     {
     }
 
@@ -34,7 +31,7 @@ public sealed class ResilienceContext
     /// The operation key value should have a low cardinality (i.e. do not assign values such as <see cref="Guid"/> to this property).
     /// </remarks>
     /// <value>The default value is <see langword="null"/>.</value>
-    public string? OperationKey { get; private set; }
+    public string? OperationKey { get; internal set; }
 
     /// <summary>
     /// Gets the <see cref="CancellationToken"/> associated with the execution.
@@ -79,40 +76,6 @@ public sealed class ResilienceContext
     /// </remarks>
     public IReadOnlyList<ResilienceEvent> ResilienceEvents => _resilienceEvents;
 
-    /// <summary>
-    /// Gets a <see cref="ResilienceContext"/> instance from the pool.
-    /// </summary>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>An instance of <see cref="ResilienceContext"/>.</returns>
-    /// <remarks>
-    /// After the execution is finished you should return the <see cref="ResilienceContext"/> back to the pool
-    /// by calling <see cref="Return(ResilienceContext)"/> method.
-    /// </remarks>
-    public static ResilienceContext Get(CancellationToken cancellationToken = default)
-    {
-        var context = Pool.Get();
-        context.CancellationToken = cancellationToken;
-        return context;
-    }
-
-    /// <summary>
-    /// Gets a <see cref="ResilienceContext"/> instance from the pool.
-    /// </summary>
-    /// <param name="operationKey">An operation key associated with the context.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>An instance of <see cref="ResilienceContext"/>.</returns>
-    /// <remarks>
-    /// After the execution is finished you should return the <see cref="ResilienceContext"/> back to the pool
-    /// by calling <see cref="Return(ResilienceContext)"/> method.
-    /// </remarks>
-    public static ResilienceContext Get(string operationKey, CancellationToken cancellationToken = default)
-    {
-        var context = Pool.Get();
-        context.OperationKey = operationKey;
-        context.CancellationToken = cancellationToken;
-        return context;
-    }
-
     internal void InitializeFrom(ResilienceContext context)
     {
         OperationKey = context.OperationKey;
@@ -122,18 +85,6 @@ public sealed class ResilienceContext
         ContinueOnCapturedContext = context.ContinueOnCapturedContext;
         _resilienceEvents.Clear();
         _resilienceEvents.AddRange(context.ResilienceEvents);
-    }
-
-    /// <summary>
-    /// Returns a <paramref name="context"/> back to the pool.
-    /// </summary>
-    /// <param name="context">The context instance.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
-    public static void Return(ResilienceContext context)
-    {
-        Guard.NotNull(context);
-
-        Pool.Return(context);
     }
 
     [ExcludeFromCodeCoverage]

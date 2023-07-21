@@ -33,7 +33,7 @@ public class HedgingExecutionContextTests : IDisposable
             _ => false
         },
         args => Generator(args));
-        _resilienceContext = ResilienceContext.Get().Initialize<string>(false);
+        _resilienceContext = ResilienceContextPool.Shared.Get().Initialize<string>(false);
         _resilienceContext.CancellationToken = _cts.Token;
         _resilienceContext.Properties.Set(_myKey, "dummy");
 

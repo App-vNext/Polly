@@ -7,7 +7,7 @@ public class HedgingDelayArgumentsTests
     [Fact]
     public void Ctor_Ok()
     {
-        var args = new HedgingDelayArguments(ResilienceContext.Get(), 5);
+        var args = new HedgingDelayArguments(ResilienceContextPool.Shared.Get(), 5);
 
         args.Context.Should().NotBeNull();
         args.Attempt.Should().Be(5);

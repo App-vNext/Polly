@@ -10,7 +10,7 @@ internal static class ResilienceContextFactory
         bool continueOnCapturedContext,
         out IDictionary<string, object> oldProperties)
     {
-        var resilienceContext = ResilienceContext.Get(context.OperationKey, cancellationToken);
+        var resilienceContext = ResilienceContextPool.Shared.Get(context.OperationKey, cancellationToken);
         resilienceContext.ContinueOnCapturedContext = continueOnCapturedContext;
         resilienceContext.Properties.SetProperties(context, out oldProperties);
 
@@ -20,6 +20,6 @@ internal static class ResilienceContextFactory
     public static void Cleanup(ResilienceContext resilienceContext, IDictionary<string, object> oldProperties)
     {
         resilienceContext.Properties.SetProperties(oldProperties, out _);
-        ResilienceContext.Return(resilienceContext);
+        ResilienceContextPool.Shared.Return(resilienceContext);
     }
 }

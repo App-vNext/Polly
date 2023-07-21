@@ -12,14 +12,14 @@ internal static partial class Helper
                 await ((IAsyncPolicy<string>)obj).ExecuteAsync(static _ => Task.FromResult("dummy"), CancellationToken.None).ConfigureAwait(false);
                 return;
             case PollyVersion.V8:
-                var context = ResilienceContext.Get();
+                var context = ResilienceContextPool.Shared.Get();
 
                 await ((ResilienceStrategy<string>)obj).ExecuteOutcomeAsync(
                     static (_, _) => Outcome.FromResultAsTask("dummy"),
                     context,
                     string.Empty).ConfigureAwait(false);
 
-                ResilienceContext.Return(context);
+                ResilienceContextPool.Shared.Return(context);
                 return;
         }
 

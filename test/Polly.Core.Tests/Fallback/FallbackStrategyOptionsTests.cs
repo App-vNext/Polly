@@ -21,7 +21,7 @@ public class FallbackStrategyOptionsTests
     {
         var options = new FallbackStrategyOptions<int>();
         var args = new FallbackPredicateArguments();
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
 
         (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);
         (await options.ShouldHandle(new(context, Outcome.FromException<int>(new OperationCanceledException()), args))).Should().Be(false);

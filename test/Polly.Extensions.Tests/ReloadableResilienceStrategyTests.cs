@@ -39,7 +39,7 @@ public class ReloadableResilienceStrategyTests
 
         var serviceProvider = services.BuildServiceProvider();
         var strategy = serviceProvider.GetRequiredService<ResilienceStrategyProvider<string>>().GetStrategy("my-strategy");
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
 
         // initial
         strategy.Execute(_ => "dummy", context);

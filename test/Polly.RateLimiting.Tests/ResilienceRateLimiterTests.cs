@@ -16,7 +16,7 @@ public class ResilienceRateLimiterTests
 
         var limiter = ResilienceRateLimiter.Create(limiterMock.Object);
 
-        (await limiter.AcquireAsync(ResilienceContext.Get())).Should().Be(lease);
+        (await limiter.AcquireAsync(ResilienceContextPool.Shared.Get())).Should().Be(lease);
         limiter.Limiter.Should().NotBeNull();
         limiterMock.VerifyAll();
     }
@@ -24,7 +24,7 @@ public class ResilienceRateLimiterTests
     [Fact]
     public async Task Create_PartitionedRateLimiter_Ok()
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         var lease = Mock.Of<RateLimitLease>();
         var limiterMock = new Mock<PartitionedRateLimiter<ResilienceContext>>(MockBehavior.Strict);
         limiterMock.Protected().Setup<ValueTask<RateLimitLease>>("AcquireAsyncCore", context, 1, default(CancellationToken)).ReturnsAsync(lease);

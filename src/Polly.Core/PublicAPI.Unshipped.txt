@@ -1,6 +1,8 @@
 ﻿#nullable enable
 abstract Polly.Registry.ResilienceStrategyProvider<TKey>.TryGetStrategy(TKey key, out Polly.ResilienceStrategy? strategy) -> bool
 abstract Polly.Registry.ResilienceStrategyProvider<TKey>.TryGetStrategy<TResult>(TKey key, out Polly.ResilienceStrategy<TResult>? strategy) -> bool
+abstract Polly.ResilienceContextPool.Get(string? operationKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
+abstract Polly.ResilienceContextPool.Return(Polly.ResilienceContext! context) -> void
 abstract Polly.ResilienceStrategy.ExecuteCoreAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 override Polly.Outcome<TResult>.ToString() -> string!
 override Polly.Registry.ResilienceStrategyRegistry<TKey>.TryGetStrategy(TKey key, out Polly.ResilienceStrategy? strategy) -> bool
@@ -221,6 +223,9 @@ Polly.ResilienceContext.OperationKey.get -> string?
 Polly.ResilienceContext.Properties.get -> Polly.ResilienceProperties!
 Polly.ResilienceContext.ResilienceEvents.get -> System.Collections.Generic.IReadOnlyList<Polly.Telemetry.ResilienceEvent>!
 Polly.ResilienceContext.ResultType.get -> System.Type!
+Polly.ResilienceContextPool
+Polly.ResilienceContextPool.Get(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
+Polly.ResilienceContextPool.ResilienceContextPool() -> void
 Polly.ResilienceProperties
 Polly.ResilienceProperties.GetValue<TValue>(Polly.ResiliencePropertyKey<TValue> key, TValue defaultValue) -> TValue
 Polly.ResilienceProperties.ResilienceProperties() -> void
@@ -428,9 +433,7 @@ static Polly.PredicateBuilder<TResult>.implicit operator System.Func<Polly.Outco
 static Polly.PredicateBuilder<TResult>.implicit operator System.Func<Polly.OutcomeArguments<TResult, Polly.Retry.RetryPredicateArguments>, System.Threading.Tasks.ValueTask<bool>>!(Polly.PredicateBuilder<TResult>! builder) -> System.Func<Polly.OutcomeArguments<TResult, Polly.Retry.RetryPredicateArguments>, System.Threading.Tasks.ValueTask<bool>>!
 static Polly.PredicateResult.False.get -> System.Threading.Tasks.ValueTask<bool>
 static Polly.PredicateResult.True.get -> System.Threading.Tasks.ValueTask<bool>
-static Polly.ResilienceContext.Get(string! operationKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
-static Polly.ResilienceContext.Get(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
-static Polly.ResilienceContext.Return(Polly.ResilienceContext! context) -> void
+static Polly.ResilienceContextPool.Shared.get -> Polly.ResilienceContextPool!
 static Polly.ResiliencePropertyKey<TValue>.operator !=(Polly.ResiliencePropertyKey<TValue> left, Polly.ResiliencePropertyKey<TValue> right) -> bool
 static Polly.ResiliencePropertyKey<TValue>.operator ==(Polly.ResiliencePropertyKey<TValue> left, Polly.ResiliencePropertyKey<TValue> right) -> bool
 static Polly.ResilienceStrategyBuilderExtensions.AddStrategy<TBuilder>(this TBuilder! builder, Polly.ResilienceStrategy! strategy) -> TBuilder!

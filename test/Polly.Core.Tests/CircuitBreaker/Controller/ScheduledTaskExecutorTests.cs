@@ -15,7 +15,7 @@ public class ScheduledTaskExecutorTests
                 executed = true;
                 return Task.CompletedTask;
             },
-            ResilienceContext.Get(),
+            ResilienceContextPool.Shared.Get(),
             out var task);
 
         await task;
@@ -29,7 +29,7 @@ public class ScheduledTaskExecutorTests
         using var scheduler = new ScheduledTaskExecutor();
         scheduler.ScheduleTask(
             () => throw new OperationCanceledException(),
-            ResilienceContext.Get(),
+            ResilienceContextPool.Shared.Get(),
             out var task);
 
         await task.Invoking(async t => await task).Should().ThrowAsync<OperationCanceledException>();
@@ -41,7 +41,7 @@ public class ScheduledTaskExecutorTests
         using var scheduler = new ScheduledTaskExecutor();
         scheduler.ScheduleTask(
             () => throw new InvalidOperationException(),
-            ResilienceContext.Get(),
+            ResilienceContextPool.Shared.Get(),
             out var task);
 
         await task.Invoking(async t => await task).Should().ThrowAsync<InvalidOperationException>();
@@ -61,12 +61,12 @@ public class ScheduledTaskExecutorTests
                 verified.WaitOne();
                 return Task.CompletedTask;
             },
-            ResilienceContext.Get(),
+            ResilienceContextPool.Shared.Get(),
             out var task);
 
         executing.WaitOne();
 
-        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContext.Get(), out var otherTask);
+        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(), out var otherTask);
         otherTask.Wait(50).Should().BeFalse();
 
         verified.Set();
@@ -89,11 +89,11 @@ public class ScheduledTaskExecutorTests
                 verified.WaitOne();
                 return Task.CompletedTask;
             },
-            ResilienceContext.Get(),
+            ResilienceContextPool.Shared.Get(),
             out var task);
 
         executing.WaitOne();
-        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContext.Get(), out var otherTask);
+        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(), out var otherTask);
         scheduler.Dispose();
         verified.Set();
         await task;
@@ -101,7 +101,7 @@ public class ScheduledTaskExecutorTests
         await otherTask.Invoking(t => otherTask).Should().ThrowAsync<OperationCanceledException>();
 
         scheduler
-            .Invoking(s => s.ScheduleTask(() => Task.CompletedTask, ResilienceContext.Get(), out _))
+            .Invoking(s => s.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(), out _))
             .Should()
             .Throw<ObjectDisposedException>();
     }
@@ -120,7 +120,7 @@ public class ScheduledTaskExecutorTests
                 disposed.WaitOne();
                 return Task.CompletedTask;
             },
-            ResilienceContext.Get(),
+            ResilienceContextPool.Shared.Get(),
             out var task);
 
         ready.WaitOne(TimeSpan.FromSeconds(2)).Should().BeTrue();
@@ -134,7 +134,7 @@ public class ScheduledTaskExecutorTests
     public async Task Dispose_EnsureNoBackgroundProcessing()
     {
         var scheduler = new ScheduledTaskExecutor();
-        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContext.Get(), out var otherTask);
+        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(), out var otherTask);
         await otherTask;
         scheduler.Dispose();
 #pragma warning disable S3966 // Objects should not be disposed more than once

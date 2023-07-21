@@ -139,7 +139,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         {
             strategy.OnLeaseRejected.Should().NotBeNull();
             strategy
-                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContext.Get(), Mock.Of<RateLimitLease>(), null))
+                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Mock.Of<RateLimitLease>(), null))
                 .Preserve().GetAwaiter().GetResult();
         }
         else
@@ -159,7 +159,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         {
             strategy.OnLeaseRejected.Should().NotBeNull();
             strategy
-                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContext.Get(), Mock.Of<RateLimitLease>(), null))
+                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Mock.Of<RateLimitLease>(), null))
                 .Preserve().GetAwaiter().GetResult();
         }
         else
