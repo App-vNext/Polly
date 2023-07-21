@@ -147,7 +147,7 @@ public class ResilienceContextTests
         context.ResultType.Name.Should().Be("UnknownResult");
         context.IsSynchronous.Should().BeFalse();
         context.CancellationToken.Should().Be(CancellationToken.None);
-        context.Properties.Should().BeEmpty();
+        context.Properties.Options.Should().BeEmpty();
         context.ResilienceEvents.Should().BeEmpty();
         context.OperationKey.Should().BeNull();
     }

@@ -1,5 +1,4 @@
 ﻿#nullable enable
-override sealed Polly.RateLimiting.RateLimiterStrategyOptions.StrategyType.get -> string!
 Polly.RateLimiterResilienceStrategyBuilderExtensions
 Polly.RateLimiting.OnRateLimiterRejectedArguments
 Polly.RateLimiting.OnRateLimiterRejectedArguments.Context.get -> Polly.ResilienceContext!

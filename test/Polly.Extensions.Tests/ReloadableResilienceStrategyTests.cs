@@ -72,8 +72,6 @@ public class ReloadableResilienceStrategyTests
 
     public class ReloadableStrategyOptions : ResilienceStrategyOptions
     {
-        public override string StrategyType => "Reloadable";
-
         public string Tag { get; set; } = string.Empty;
     }
 

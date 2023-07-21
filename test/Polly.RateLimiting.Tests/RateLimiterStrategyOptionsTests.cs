@@ -7,7 +7,6 @@ public class RateLimiterStrategyOptionsTests
     {
         var options = new RateLimiterStrategyOptions();
 
-        options.StrategyType.Should().Be(RateLimiterConstants.StrategyType);
         options.RateLimiter.Should().BeNull();
         options.OnRejected.Should().BeNull();
         options.DefaultRateLimiterOptions.PermitLimit.Should().Be(1000);

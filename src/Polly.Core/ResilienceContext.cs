@@ -37,9 +37,9 @@ public sealed class ResilienceContext
     public string? OperationKey { get; private set; }
 
     /// <summary>
-    /// Gets or sets the <see cref="CancellationToken"/> associated with the execution.
+    /// Gets the <see cref="CancellationToken"/> associated with the execution.
     /// </summary>
-    public CancellationToken CancellationToken { get; set; }
+    public CancellationToken CancellationToken { get; internal set; }
 
     /// <summary>
     /// Gets a value indicating whether the execution is synchronous.
@@ -164,7 +164,7 @@ public sealed class ResilienceContext
         ResultType = typeof(UnknownResult);
         ContinueOnCapturedContext = false;
         CancellationToken = default;
-        ((IDictionary<string, object?>)Properties).Clear();
+        Properties.Options.Clear();
         _resilienceEvents.Clear();
         return true;
     }

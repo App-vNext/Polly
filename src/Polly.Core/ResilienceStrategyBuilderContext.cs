@@ -14,7 +14,6 @@ public sealed class ResilienceStrategyBuilderContext
         string? builderInstanceName,
         ResilienceProperties builderProperties,
         string? strategyName,
-        string strategyType,
         TimeProvider timeProvider,
         bool isGenericBuilder,
         DiagnosticSource? diagnosticSource,
@@ -24,10 +23,9 @@ public sealed class ResilienceStrategyBuilderContext
         BuilderInstanceName = builderInstanceName;
         BuilderProperties = builderProperties;
         StrategyName = strategyName;
-        StrategyType = strategyType;
         TimeProvider = timeProvider;
         IsGenericBuilder = isGenericBuilder;
-        Telemetry = TelemetryUtil.CreateTelemetry(diagnosticSource, builderName, builderInstanceName, builderProperties, strategyName, strategyType);
+        Telemetry = TelemetryUtil.CreateTelemetry(diagnosticSource, builderName, builderInstanceName, builderProperties, strategyName);
         Randomizer = randomizer;
     }
 
@@ -50,11 +48,6 @@ public sealed class ResilienceStrategyBuilderContext
     /// Gets the name of the strategy.
     /// </summary>
     public string? StrategyName { get; }
-
-    /// <summary>
-    /// Gets the type of the strategy.
-    /// </summary>
-    public string StrategyType { get; }
 
     /// <summary>
     /// Gets the resilience telemetry used to report important events.

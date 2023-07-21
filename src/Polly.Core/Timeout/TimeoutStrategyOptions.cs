@@ -7,12 +7,6 @@ namespace Polly.Timeout;
 /// </summary>
 public class TimeoutStrategyOptions : ResilienceStrategyOptions
 {
-    /// <summary>
-    /// Gets the strategy type.
-    /// </summary>
-    /// <remarks>Returns <c>Timeout</c> value.</remarks>
-    public sealed override string StrategyType => TimeoutConstants.StrategyType;
-
 #pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     /// <summary>
     /// Gets or sets the default timeout.

@@ -235,7 +235,7 @@ public class TaskExecutionTests : IDisposable
         // assert
         execution.IsAccepted.Should().BeFalse();
         execution.IsHandled.Should().BeFalse();
-        execution.Properties.Should().HaveCount(0);
+        execution.Properties.Options.Should().HaveCount(0);
         execution.Invoking(e => e.Context).Should().Throw<InvalidOperationException>();
 #if !NETCOREAPP
         token.Invoking(t => t.WaitHandle).Should().Throw<InvalidOperationException>();
@@ -268,7 +268,7 @@ public class TaskExecutionTests : IDisposable
         context.CancellationToken.Should().NotBeSameAs(_snapshot.OriginalCancellationToken);
         context.CancellationToken.CanBeCanceled.Should().BeTrue();
 
-        context.Properties.Should().HaveCount(1);
+        context.Properties.Options.Should().HaveCount(1);
         context.Properties.TryGetValue(_myKey, out var value).Should().BeTrue();
         value.Should().Be("dummy-value");
     }
@@ -282,7 +282,7 @@ public class TaskExecutionTests : IDisposable
         context.CancellationToken.Should().NotBeSameAs(_snapshot.OriginalCancellationToken);
         context.CancellationToken.CanBeCanceled.Should().BeTrue();
 
-        context.Properties.Should().HaveCount(1);
+        context.Properties.Options.Should().HaveCount(1);
         context.Properties.TryGetValue(_myKey, out var value).Should().BeTrue();
         value.Should().Be("dummy-value");
     }

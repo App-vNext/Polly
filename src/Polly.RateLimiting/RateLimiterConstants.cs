@@ -6,7 +6,5 @@ internal static class RateLimiterConstants
 
     public const int DefaultQueueLimit = 0;
 
-    public const string StrategyType = "RateLimiter";
-
     public const string OnRateLimiterRejectedEvent = "OnRateLimiterRejected";
 }

@@ -8,6 +8,5 @@ public class TimeoutConstantsTests
     public void EnsureDefaultValues()
     {
         TimeoutConstants.OnTimeoutEvent.Should().Be("OnTimeout");
-        TimeoutConstants.StrategyType.Should().Be("Timeout");
     }
 }

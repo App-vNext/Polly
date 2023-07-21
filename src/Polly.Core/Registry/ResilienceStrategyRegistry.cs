@@ -298,8 +298,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
                 context.BuilderName,
                 context.BuilderInstanceName,
                 builder.Properties,
-                ReloadableResilienceStrategy.StrategyName,
-                ReloadableResilienceStrategy.StrategyType));
+                null));
     }
 
     private GenericRegistry<TResult> GetGenericRegistry<TResult>()

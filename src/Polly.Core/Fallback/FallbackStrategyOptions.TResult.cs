@@ -9,12 +9,6 @@ namespace Polly.Fallback;
 public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Gets the strategy type.
-    /// </summary>
-    /// <remarks>Returns <c>Fallback</c> value.</remarks>
-    public sealed override string StrategyType => FallbackConstants.StrategyType;
-
-    /// <summary>
     /// Gets or sets the outcome predicate for determining whether a fallback should be executed.
     /// </summary>
     /// <value>

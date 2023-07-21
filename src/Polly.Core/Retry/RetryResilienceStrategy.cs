@@ -103,13 +103,5 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
         }
     }
 
-    private bool IsLastAttempt(int attempt)
-    {
-        if (RetryCount == RetryStrategyOptions.InfiniteRetryCount)
-        {
-            return false;
-        }
-
-        return attempt >= RetryCount;
-    }
+    private bool IsLastAttempt(int attempt) => attempt >= RetryCount;
 }

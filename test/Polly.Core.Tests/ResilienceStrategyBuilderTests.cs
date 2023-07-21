@@ -139,7 +139,7 @@ public class ResilienceStrategyBuilderTests
             .WithMessage("""
             The primary message.
             Validation Errors:
-            The field RetryCount must be between -1 and 100.
+            The field RetryCount must be between 1 and 2147483647.
             """);
     }
 
@@ -299,7 +299,6 @@ The RequiredProperty field is required.
                 context.IsGenericBuilder.Should().BeFalse();
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name");
-                context.StrategyType.Should().Be("Test");
                 context.BuilderProperties.Should().BeSameAs(builder.Properties);
                 context.Telemetry.Should().NotBeNull();
                 context.TimeProvider.Should().Be(builder.TimeProvider);
@@ -308,14 +307,13 @@ The RequiredProperty field is required.
 
                 return new TestResilienceStrategy();
             },
-            new TestResilienceStrategyOptions { StrategyName = "strategy-name" });
+            new TestResilienceStrategyOptions { Name = "strategy-name" });
 
         builder.AddStrategy(
             context =>
             {
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name-2");
-                context.StrategyType.Should().Be("Test");
                 context.BuilderProperties.Should().BeSameAs(builder.Properties);
                 context.Telemetry.Should().NotBeNull();
                 context.TimeProvider.Should().Be(builder.TimeProvider);
@@ -323,7 +321,7 @@ The RequiredProperty field is required.
 
                 return new TestResilienceStrategy();
             },
-            new TestResilienceStrategyOptions { StrategyName = "strategy-name-2" });
+            new TestResilienceStrategyOptions { Name = "strategy-name-2" });
 
         // act
         builder.Build();
@@ -357,7 +355,7 @@ The RequiredProperty field is required.
     }
 
     [Fact]
-    public void EmptyOptions_Ok() => ResilienceStrategyBuilderExtensions.EmptyOptions.Instance.StrategyType.Should().Be("Empty");
+    public void EmptyOptions_Ok() => ResilienceStrategyBuilderExtensions.EmptyOptions.Instance.Name.Should().BeNull();
 
     [Fact]
     public void ExecuteAsync_EnsureReceivedCallbackExecutesNextStrategy()
@@ -456,8 +454,6 @@ The RequiredProperty field is required.
     {
         [Required]
         public string? RequiredProperty { get; set; }
-
-        public override string StrategyType => "Invalid";
     }
 
     private class InvalidResilienceStrategyBuilder : ResilienceStrategyBuilderBase

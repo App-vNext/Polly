@@ -472,7 +472,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         // assert
 
         contexts.Should().HaveCount(2);
-        primaryContext.Properties.Should().HaveCount(2);
+        primaryContext.Properties.Options.Should().HaveCount(2);
         primaryContext.Properties.GetValue(primaryKey, string.Empty).Should().Be("primary");
 
         if (primaryFails)
