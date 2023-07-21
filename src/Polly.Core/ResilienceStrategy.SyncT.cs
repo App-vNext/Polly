@@ -111,7 +111,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            Pool.Return(context);
         }
     }
 
@@ -147,7 +147,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            Pool.Return(context);
         }
     }
 
@@ -185,7 +185,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            Pool.Return(context);
         }
     }
 
@@ -227,13 +227,13 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            Pool.Return(context);
         }
     }
 
     private static ResilienceContext GetSyncContext<TResult>(CancellationToken cancellationToken)
     {
-        var context = ResilienceContext.Get(cancellationToken);
+        var context = Pool.Get(cancellationToken);
 
         InitializeSyncContext<TResult>(context);
 

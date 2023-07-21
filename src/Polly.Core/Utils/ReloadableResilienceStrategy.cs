@@ -48,7 +48,7 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
 
         _registration = token.Register(() =>
         {
-            var context = ResilienceContext.Get().Initialize<VoidResult>(isSynchronous: true);
+            var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
 
 #pragma warning disable CA1031 // Do not catch general exception types
             try
@@ -60,7 +60,7 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
             {
                 var args = new OutcomeArguments<VoidResult, ReloadFailedArguments>(context, Outcome.FromException(e), new ReloadFailedArguments(e));
                 _telemetry.Report(new(ResilienceEventSeverity.Error, ReloadFailedEvent), args);
-                ResilienceContext.Return(context);
+                ResilienceContextPool.Shared.Return(context);
             }
 #pragma warning restore CA1031 // Do not catch general exception types
 

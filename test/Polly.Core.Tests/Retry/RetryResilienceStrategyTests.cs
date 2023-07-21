@@ -37,7 +37,7 @@ public class RetryResilienceStrategyTests
         var sut = CreateSut();
         using var cancellationToken = new CancellationTokenSource();
         cancellationToken.Cancel();
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellationToken.Token;
         var executed = false;
 
@@ -59,7 +59,7 @@ public class RetryResilienceStrategyTests
         };
 
         var sut = CreateSut(TimeProvider.System);
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellationToken.Token;
         var executed = false;
 

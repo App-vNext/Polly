@@ -206,7 +206,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             true when exception => Outcome.FromException<object>(new InvalidOperationException("Dummy message.")),
             _ => Outcome.FromResult<object>(true)
         };
-        ReportEvent(telemetry, outcome, context: ResilienceContext.Get("op-key").WithResultType<bool>());
+        ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>());
 
         var events = GetEvents("resilience-events");
         events.Should().HaveCount(1);
@@ -246,7 +246,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             true when exception => Outcome.FromException<object>(new InvalidOperationException("Dummy message.")),
             _ => Outcome.FromResult<object>(true)
         };
-        ReportEvent(telemetry, outcome, context: ResilienceContext.Get("op-key").WithResultType<bool>(), arg: attemptArg);
+        ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
 
         var events = GetEvents("execution-attempt-duration");
         events.Should().HaveCount(1);
@@ -359,7 +359,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         object? arg = null,
         ResilienceEventSeverity severity = ResilienceEventSeverity.Warning)
     {
-        context ??= ResilienceContext.Get("op-key");
+        context ??= ResilienceContextPool.Shared.Get("op-key");
         var props = new ResilienceProperties();
         if (!string.IsNullOrEmpty(instanceName))
         {

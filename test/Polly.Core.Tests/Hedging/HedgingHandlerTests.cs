@@ -13,7 +13,11 @@ public class HedgingHandlerTests
             args => () => Outcome.FromResultAsTask("ok"),
             true);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => Outcome.FromResultAsTask("primary")))!;
+        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(
+            ResilienceContextPool.Shared.Get(),
+            ResilienceContextPool.Shared.Get(),
+            0,
+            _ => Outcome.FromResultAsTask("primary")))!;
         var res = await action();
 
         res.Result.Should().Be("ok");
@@ -37,7 +41,11 @@ public class HedgingHandlerTests
             },
             false);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<object>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => Outcome.FromResultAsTask((object)"primary")))!;
+        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<object>(
+            ResilienceContextPool.Shared.Get(),
+            ResilienceContextPool.Shared.Get(),
+            0,
+            _ => Outcome.FromResultAsTask((object)"primary")))!;
         if (nullAction)
         {
             action.Should().BeNull();
@@ -57,7 +65,7 @@ public class HedgingHandlerTests
             args => () => args.Callback(args.ActionContext),
             false);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<object>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => Outcome.FromResultAsTask((object)"callback")))!;
+        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<object>(ResilienceContextPool.Shared.Get(), ResilienceContextPool.Shared.Get(), 0, _ => Outcome.FromResultAsTask((object)"callback")))!;
         var res = await action();
         res.Result.Should().Be("callback");
     }

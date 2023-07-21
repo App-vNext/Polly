@@ -61,7 +61,7 @@ public partial class IssuesTests
             {
                 return Task.Run(async () =>
                 {
-                    var context = ResilienceContext.Get();
+                    var context = ResilienceContextPool.Shared.Get();
                     context.Properties.Set(userKey, user);
 
                     await strategy.ExecuteAsync(async _ =>

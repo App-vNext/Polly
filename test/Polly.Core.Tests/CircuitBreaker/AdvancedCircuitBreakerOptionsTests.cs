@@ -34,7 +34,7 @@ public class AdvancedCircuitBreakerOptionsTests
     {
         var options = new AdvancedCircuitBreakerStrategyOptions();
         var args = new CircuitBreakerPredicateArguments();
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
 
         (await options.ShouldHandle(new(context, Outcome.FromResult<object>("dummy"), args))).Should().Be(false);
         (await options.ShouldHandle(new(context, Outcome.FromException<object>(new OperationCanceledException()), args))).Should().Be(false);

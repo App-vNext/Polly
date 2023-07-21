@@ -36,14 +36,14 @@ public partial class ResilienceStrategyTests
             AssertContext = AssertResilienceContextAndToken,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContext.Get(), "dummy-state"), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContextPool.Shared.Get(), "dummy-state"), result)
         {
             Caption = "ExecuteAsyncT_ResilienceContextAndState",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextInitialized,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async _ => result, ResilienceContext.Get()), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async _ => result, ResilienceContextPool.Shared.Get()), result)
         {
             Caption = "ExecuteAsyncT_ResilienceContext",
             AssertContext = AssertResilienceContext,
@@ -92,8 +92,8 @@ public partial class ResilienceStrategyTests
     public async Task ExecuteAsync_T_EnsureCallStackPreserved()
     {
         await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod()));
-        await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod(), ResilienceContext.Get()));
-        await AssertStackTrace(s => s.ExecuteAsync((_, _) => MyThrowingMethod(), ResilienceContext.Get(), "state"));
+        await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod(), ResilienceContextPool.Shared.Get()));
+        await AssertStackTrace(s => s.ExecuteAsync((_, _) => MyThrowingMethod(), ResilienceContextPool.Shared.Get(), "state"));
         await AssertStackTrace(s => s.ExecuteAsync((_, _) => MyThrowingMethod(), "state"));
 
         static async ValueTask AssertStackTrace(Func<ResilienceStrategy, ValueTask<string>> execute)
@@ -124,7 +124,7 @@ public partial class ResilienceStrategyTests
             context.ResultType.Should().Be(typeof(int));
             return Outcome.FromResultAsTask(12345);
         },
-        ResilienceContext.Get(),
+        ResilienceContextPool.Shared.Get(),
         "state");
 
         result.Result.Should().Be(12345);

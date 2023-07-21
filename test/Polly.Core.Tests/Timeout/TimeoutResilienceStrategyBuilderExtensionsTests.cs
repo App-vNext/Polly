@@ -61,6 +61,6 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
             return strategy.DefaultTimeout;
         }
 
-        return strategy.TimeoutGenerator(new TimeoutGeneratorArguments(ResilienceContext.Get())).Preserve().GetAwaiter().GetResult();
+        return strategy.TimeoutGenerator(new TimeoutGeneratorArguments(ResilienceContextPool.Shared.Get())).Preserve().GetAwaiter().GetResult();
     }
 }

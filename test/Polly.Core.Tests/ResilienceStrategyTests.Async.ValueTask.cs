@@ -35,14 +35,14 @@ public partial class ResilienceStrategyTests
             AssertContext = AssertResilienceContextAndToken,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); }, ResilienceContext.Get(), "dummy-state"))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); }, ResilienceContextPool.Shared.Get(), "dummy-state"))
         {
             Caption = "ExecuteAsync_ResilienceContextAndState",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextInitialized,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteAsync(context => default, ResilienceContext.Get()))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(context => default, ResilienceContextPool.Shared.Get()))
         {
             Caption = "ExecuteAsync_ResilienceContext",
             AssertContext = AssertResilienceContext,
@@ -90,8 +90,8 @@ public partial class ResilienceStrategyTests
     public async Task ExecuteAsync_EnsureCallStackPreserved()
     {
         await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod()));
-        await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod(), ResilienceContext.Get()));
-        await AssertStackTrace(s => s.ExecuteAsync((_, _) => MyThrowingMethod(), ResilienceContext.Get(), "state"));
+        await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod(), ResilienceContextPool.Shared.Get()));
+        await AssertStackTrace(s => s.ExecuteAsync((_, _) => MyThrowingMethod(), ResilienceContextPool.Shared.Get(), "state"));
         await AssertStackTrace(s => s.ExecuteAsync((_, _) => MyThrowingMethod(), "state"));
 
         static async ValueTask AssertStackTrace(Func<ResilienceStrategy, ValueTask> execute)

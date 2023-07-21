@@ -11,6 +11,8 @@ namespace Polly;
 /// </remarks>
 public abstract partial class ResilienceStrategy
 {
+    internal static ResilienceContextPool Pool => ResilienceContextPool.Shared;
+
     internal ResilienceStrategyOptions? Options { get; set; }
 
     /// <summary>

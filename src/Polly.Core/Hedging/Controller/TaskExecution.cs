@@ -20,7 +20,7 @@ namespace Polly.Hedging.Controller;
 /// </summary>
 internal sealed class TaskExecution<T>
 {
-    private readonly ResilienceContext _cachedContext = ResilienceContext.Get();
+    private readonly ResilienceContext _cachedContext = ResilienceContextPool.Shared.Get();
     private readonly CancellationTokenSourcePool _cancellationTokenSourcePool;
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;

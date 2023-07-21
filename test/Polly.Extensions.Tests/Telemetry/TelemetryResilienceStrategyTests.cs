@@ -46,7 +46,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
                     ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
                 }
             },
-            ResilienceContext.Get("op-key"), string.Empty);
+            ResilienceContextPool.Shared.Get("op-key"), string.Empty);
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
@@ -74,7 +74,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
     public void Execute_WithException_EnsureLogged()
     {
         var strategy = CreateStrategy();
-        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."), ResilienceContext.Get("op-key"))).Should().Throw<InvalidOperationException>();
+        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."), ResilienceContextPool.Shared.Get("op-key"))).Should().Throw<InvalidOperationException>();
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
@@ -115,7 +115,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
     public void Execute_WithException_EnsureMetered()
     {
         var strategy = CreateStrategy();
-        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."), ResilienceContext.Get("op-key"))).Should().Throw<InvalidOperationException>();
+        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."), ResilienceContextPool.Shared.Get("op-key"))).Should().Throw<InvalidOperationException>();
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 
@@ -160,7 +160,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
 
                 return true;
             },
-            ResilienceContext.Get("op-key"), string.Empty);
+            ResilienceContextPool.Shared.Get("op-key"), string.Empty);
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 
@@ -203,7 +203,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
 
                 return true;
             },
-            ResilienceContext.Get(), string.Empty);
+            ResilienceContextPool.Shared.Get(), string.Empty);
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 

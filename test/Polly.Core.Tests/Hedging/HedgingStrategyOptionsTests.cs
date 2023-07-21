@@ -24,7 +24,7 @@ public class HedgingStrategyOptionsTests
     public async Task HedgingActionGenerator_EnsureDefaults(bool synchronous)
     {
         var options = new HedgingStrategyOptions<int>();
-        var context = ResilienceContext.Get().Initialize<int>(synchronous);
+        var context = ResilienceContextPool.Shared.Get().Initialize<int>(synchronous);
         var threadId = Thread.CurrentThread.ManagedThreadId;
 
         var action = options.HedgingActionGenerator(new HedgingActionGeneratorArguments<int>(context, context, 1, c =>
@@ -50,7 +50,7 @@ public class HedgingStrategyOptionsTests
     {
         var options = new HedgingStrategyOptions<int>();
         var args = new HedgingPredicateArguments();
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
 
         (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);
         (await options.ShouldHandle(new(context, Outcome.FromException<int>(new OperationCanceledException()), args))).Should().Be(false);

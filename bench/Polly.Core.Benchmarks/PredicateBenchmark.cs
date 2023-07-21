@@ -6,7 +6,7 @@ namespace Polly.Core.Benchmarks;
 public class PredicateBenchmark
 {
     private readonly OutcomeArguments<HttpResponseMessage, RetryPredicateArguments> _args = new(
-        ResilienceContext.Get(),
+        ResilienceContextPool.Shared.Get(),
         Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.OK)),
         new RetryPredicateArguments(0));
 

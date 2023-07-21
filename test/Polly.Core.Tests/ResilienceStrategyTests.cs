@@ -23,7 +23,7 @@ public partial class ResilienceStrategyTests
 
                 throw new InvalidOperationException();
             },
-            ResilienceContext.Get(),
+            ResilienceContextPool.Shared.Get(),
             "dummy");
 
             outcome.Exception.Should().BeOfType<InvalidOperationException>();

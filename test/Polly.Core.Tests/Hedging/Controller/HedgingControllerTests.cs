@@ -10,10 +10,10 @@ public class HedgingControllerTests
         var telemetry = TestUtilities.CreateResilienceTelemetry(_ => { });
         var controller = new HedgingController<int>(telemetry, new HedgingTimeProvider(), HedgingHelper.CreateHandler<int>(_ => false, args => null), 3);
 
-        var context1 = controller.GetContext(ResilienceContext.Get());
+        var context1 = controller.GetContext(ResilienceContextPool.Shared.Get());
         await PrepareAsync(context1);
 
-        var context2 = controller.GetContext(ResilienceContext.Get());
+        var context2 = controller.GetContext(ResilienceContextPool.Shared.Get());
         await PrepareAsync(context2);
 
         controller.RentedContexts.Should().Be(2);

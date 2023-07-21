@@ -40,7 +40,7 @@ public class TelemetryUtilTests
             asserted = true;
         });
 
-        TelemetryUtil.ReportExecutionAttempt(telemetry, ResilienceContext.Get(), Outcome.FromResult("dummy"), 0, TimeSpan.Zero, handled);
+        TelemetryUtil.ReportExecutionAttempt(telemetry, ResilienceContextPool.Shared.Get(), Outcome.FromResult("dummy"), 0, TimeSpan.Zero, handled);
         asserted.Should().BeTrue();
     }
 }

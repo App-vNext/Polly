@@ -27,7 +27,7 @@ public class RetryStrategyOptionsTests
     {
         var options = new RetryStrategyOptions<int>();
         var args = new RetryPredicateArguments(0);
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
 
         (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);
         (await options.ShouldHandle(new(context, Outcome.FromException<int>(new OperationCanceledException()), args))).Should().Be(false);

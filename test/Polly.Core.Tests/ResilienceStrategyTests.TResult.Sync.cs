@@ -45,7 +45,7 @@ public partial class ResilienceStrategyTests
 
         strategy =>
         {
-            var context = ResilienceContext.Get();
+            var context = ResilienceContextPool.Shared.Get();
             context.CancellationToken = CancellationToken;
             strategy.Execute(
                 (context, state) =>
@@ -61,7 +61,7 @@ public partial class ResilienceStrategyTests
 
         strategy =>
         {
-            var context = ResilienceContext.Get();
+            var context = ResilienceContextPool.Shared.Get();
             context.CancellationToken = CancellationToken;
             strategy.Execute(
                 (context) =>
