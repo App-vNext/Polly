@@ -71,7 +71,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.Snapshot.Context.Properties.Should().NotBeSameAs(props);
         context.Snapshot.OriginalProperties.Should().BeSameAs(props);
         context.Snapshot.OriginalCancellationToken.Should().Be(_cts.Token);
-        context.Snapshot.Context.Properties.Should().HaveCount(1);
+        context.Snapshot.Context.Properties.Options.Should().HaveCount(1);
         context.IsInitialized.Should().BeTrue();
     }
 
@@ -319,12 +319,12 @@ public class HedgingExecutionContextTests : IDisposable
         _resilienceContext.Properties.Should().BeSameAs(originalProps);
         if (primary)
         {
-            _resilienceContext.Properties.Should().HaveCount(1);
+            _resilienceContext.Properties.Options.Should().HaveCount(1);
             _resilienceContext.ResilienceEvents.Should().HaveCount(1);
         }
         else
         {
-            _resilienceContext.Properties.Should().HaveCount(2);
+            _resilienceContext.Properties.Options.Should().HaveCount(2);
             _resilienceContext.ResilienceEvents.Should().HaveCount(4);
         }
     }

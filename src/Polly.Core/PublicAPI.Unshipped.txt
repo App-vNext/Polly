@@ -220,7 +220,6 @@ Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.StrategyComparer.get -> S
 Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.StrategyComparer.set -> void
 Polly.ResilienceContext
 Polly.ResilienceContext.CancellationToken.get -> System.Threading.CancellationToken
-Polly.ResilienceContext.CancellationToken.set -> void
 Polly.ResilienceContext.ContinueOnCapturedContext.get -> bool
 Polly.ResilienceContext.ContinueOnCapturedContext.set -> void
 Polly.ResilienceContext.IsSynchronous.get -> bool

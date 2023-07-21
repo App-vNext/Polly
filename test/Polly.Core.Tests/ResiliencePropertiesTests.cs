@@ -66,7 +66,7 @@ public class ResiliencePropertiesTests
         props.Set(key1, 12345);
         props.Clear();
 
-        props.Should().HaveCount(0);
+        props.Options.Should().HaveCount(0);
     }
 
     [InlineData(true)]
@@ -83,43 +83,13 @@ public class ResiliencePropertiesTests
         var otherProps = new ResilienceProperties();
         if (!isRawDictionary)
         {
-            otherProps.Options = new ResilienceProperties();
+            otherProps.Options = new Dictionary<string, object?>();
         }
 
         otherProps.Set(key2, "B");
 
         props.Replace(otherProps);
-        props.Should().HaveCount(1);
+        props.Options.Should().HaveCount(1);
         props.GetValue(key2, "").Should().Be("B");
-    }
-
-    [Fact]
-    public void DictionaryOperations_Ok()
-    {
-        IDictionary<string, object?> dict = new ResilienceProperties();
-
-        dict.TryGetValue("xyz", out var _).Should().BeFalse();
-        dict.GetEnumerator().Should().NotBeNull();
-        ((IEnumerable)dict).GetEnumerator().Should().NotBeNull();
-        dict.IsReadOnly.Should().BeFalse();
-        dict.Count.Should().Be(0);
-        dict.Add("dummy", 12345L);
-        dict.Values.Should().Contain(12345L);
-        dict.Keys.Should().Contain("dummy");
-        dict.ContainsKey("dummy").Should().BeTrue();
-        dict.Contains(new KeyValuePair<string, object?>("dummy", 12345L)).Should().BeTrue();
-        dict.Add("dummy2", "xyz");
-        dict["dummy2"].Should().Be("xyz");
-        dict["dummy3"] = "abc";
-        dict["dummy3"].Should().Be("abc");
-        dict.Remove("dummy2").Should().BeTrue();
-        dict.Remove(new KeyValuePair<string, object?>("not-exists", "abc")).Should().BeFalse();
-        dict.Clear();
-        dict.Count.Should().Be(0);
-        dict.Add(new KeyValuePair<string, object?>("dummy", "abc"));
-        var array = new KeyValuePair<string, object?>[1];
-        dict.CopyTo(array, 0);
-        array[0].Key.Should().Be("dummy");
-        array[0].Value.Should().Be("abc");
     }
 }
