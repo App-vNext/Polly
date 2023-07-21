@@ -54,7 +54,7 @@ public class RetryStrategyOptionsTests
             Invalid Options
             
             Validation Errors:
-            The field RetryCount must be between -1 and 100.
+            The field RetryCount must be between 1 and 2147483647.
             The field BaseDelay must be between 00:00:00 and 1.00:00:00.
             The ShouldHandle field is required.
             """);

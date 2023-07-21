@@ -139,7 +139,7 @@ public class ResilienceStrategyBuilderTests
             .WithMessage("""
             The primary message.
             Validation Errors:
-            The field RetryCount must be between -1 and 100.
+            The field RetryCount must be between 1 and 2147483647.
             """);
     }
 

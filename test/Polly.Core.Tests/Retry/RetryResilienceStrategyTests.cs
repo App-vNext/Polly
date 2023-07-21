@@ -132,31 +132,6 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
-    public void Retry_Infinite_Respected()
-    {
-        int calls = 0;
-        _options.BackoffType = RetryBackoffType.Constant;
-        _options.OnRetry = args =>
-        {
-            if (args.Arguments.Attempt > RetryConstants.MaxRetryCount)
-            {
-                throw new InvalidOperationException();
-            }
-
-            calls++;
-            return default;
-        };
-        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
-        _options.RetryCount = RetryStrategyOptions.InfiniteRetryCount;
-        SetupNoDelay();
-        var sut = CreateSut();
-
-        Assert.Throws<InvalidOperationException>(() => sut.Execute(() => 0));
-
-        calls.Should().Be(RetryConstants.MaxRetryCount + 1);
-    }
-
-    [Fact]
     public void RetryDelayGenerator_Respected()
     {
         var retries = 0;
