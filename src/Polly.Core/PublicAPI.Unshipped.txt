@@ -433,6 +433,7 @@ static Polly.PredicateBuilder<TResult>.implicit operator System.Func<Polly.Outco
 static Polly.PredicateBuilder<TResult>.implicit operator System.Func<Polly.OutcomeArguments<TResult, Polly.Retry.RetryPredicateArguments>, System.Threading.Tasks.ValueTask<bool>>!(Polly.PredicateBuilder<TResult>! builder) -> System.Func<Polly.OutcomeArguments<TResult, Polly.Retry.RetryPredicateArguments>, System.Threading.Tasks.ValueTask<bool>>!
 static Polly.PredicateResult.False.get -> System.Threading.Tasks.ValueTask<bool>
 static Polly.PredicateResult.True.get -> System.Threading.Tasks.ValueTask<bool>
+static Polly.ResilienceContextPool.Shared.get -> Polly.ResilienceContextPool!
 static Polly.ResiliencePropertyKey<TValue>.operator !=(Polly.ResiliencePropertyKey<TValue> left, Polly.ResiliencePropertyKey<TValue> right) -> bool
 static Polly.ResiliencePropertyKey<TValue>.operator ==(Polly.ResiliencePropertyKey<TValue> left, Polly.ResiliencePropertyKey<TValue> right) -> bool
 static Polly.ResilienceStrategyBuilderExtensions.AddStrategy<TBuilder>(this TBuilder! builder, Polly.ResilienceStrategy! strategy) -> TBuilder!
@@ -445,6 +446,5 @@ static Polly.TimeoutResilienceStrategyBuilderExtensions.AddTimeout<TBuilder>(thi
 static Polly.Utils.LegacySupport.SetProperties(this Polly.ResilienceProperties! resilienceProperties, System.Collections.Generic.IDictionary<string!, object?>! properties, out System.Collections.Generic.IDictionary<string!, object?>! oldProperties) -> void
 static readonly Polly.NullResilienceStrategy.Instance -> Polly.NullResilienceStrategy!
 static readonly Polly.NullResilienceStrategy<TResult>.Instance -> Polly.NullResilienceStrategy<TResult>!
-static readonly Polly.ResilienceContextPool.Shared -> Polly.ResilienceContextPool!
 virtual Polly.Registry.ResilienceStrategyProvider<TKey>.GetStrategy(TKey key) -> Polly.ResilienceStrategy!
 virtual Polly.Registry.ResilienceStrategyProvider<TKey>.GetStrategy<TResult>(TKey key) -> Polly.ResilienceStrategy<TResult>!

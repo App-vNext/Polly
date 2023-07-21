@@ -9,9 +9,9 @@
 public abstract partial class ResilienceContextPool
 {
     /// <summary>
-    /// The shared pool instance.
+    /// Gets the shared pool instance.
     /// </summary>
-    public static readonly ResilienceContextPool Shared = new SharedPool();
+    public static ResilienceContextPool Shared { get; } = new SharedPool();
 
     /// <summary>
     /// Gets a <see cref="ResilienceContext"/> instance from the pool.
