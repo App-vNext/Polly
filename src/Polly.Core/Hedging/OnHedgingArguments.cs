@@ -3,7 +3,7 @@ namespace Polly.Hedging;
 /// <summary>
 /// Represents arguments used by the on-hedging event.
 /// </summary>
-public class OnHedgingArguments
+public sealed class OnHedgingArguments
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="OnHedgingArguments"/> class.
