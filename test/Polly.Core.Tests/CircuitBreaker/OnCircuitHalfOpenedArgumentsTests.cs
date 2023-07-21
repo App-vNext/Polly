@@ -8,6 +8,6 @@ public class OnCircuitHalfOpenedArgumentsTests
     [Fact]
     public void Ctor_Ok()
     {
-        this.Invoking(_ => new OnCircuitHalfOpenedArguments(ResilienceContextPool.Shared.Get())).Should().NotThrow();
+        new OnCircuitHalfOpenedArguments(ResilienceContextPool.Shared.Get()).Context.Should().NotBeNull();
     }
 }
