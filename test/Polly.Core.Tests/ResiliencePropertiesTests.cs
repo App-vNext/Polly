@@ -1,6 +1,3 @@
-using System.Collections.Specialized;
-using Moq;
-
 namespace Polly.Core.Tests;
 
 public class ResiliencePropertiesTests
