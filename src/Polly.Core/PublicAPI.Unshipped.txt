@@ -319,9 +319,8 @@ Polly.Retry.OnRetryArguments.RetryDelay.get -> System.TimeSpan
 Polly.Retry.OnRetryArguments.RetryDelay.init -> void
 Polly.Retry.RetryBackoffType
 Polly.Retry.RetryBackoffType.Constant = 0 -> Polly.Retry.RetryBackoffType
-Polly.Retry.RetryBackoffType.Exponential = 2 -> Polly.Retry.RetryBackoffType
-Polly.Retry.RetryBackoffType.ExponentialWithJitter = 3 -> Polly.Retry.RetryBackoffType
 Polly.Retry.RetryBackoffType.Linear = 1 -> Polly.Retry.RetryBackoffType
+Polly.Retry.RetryBackoffType.Exponential = 2 -> Polly.Retry.RetryBackoffType
 Polly.Retry.RetryDelayArguments
 Polly.Retry.RetryDelayArguments.Attempt.get -> int
 Polly.Retry.RetryDelayArguments.Attempt.init -> void
@@ -350,6 +349,8 @@ Polly.Retry.RetryStrategyOptions<TResult>.RetryDelayGenerator.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.RetryStrategyOptions() -> void
 Polly.Retry.RetryStrategyOptions<TResult>.ShouldHandle.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Retry.RetryPredicateArguments>, System.Threading.Tasks.ValueTask<bool>>!
 Polly.Retry.RetryStrategyOptions<TResult>.ShouldHandle.set -> void
+Polly.Retry.RetryStrategyOptions<TResult>.UseJitter.get -> bool
+Polly.Retry.RetryStrategyOptions<TResult>.UseJitter.set -> void
 Polly.RetryResilienceStrategyBuilderExtensions
 Polly.Telemetry.ExecutionAttemptArguments
 Polly.Telemetry.ExecutionAttemptArguments.Attempt.get -> int

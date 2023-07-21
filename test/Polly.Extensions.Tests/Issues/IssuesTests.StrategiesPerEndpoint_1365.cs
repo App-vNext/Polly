@@ -49,7 +49,8 @@ public partial class IssuesTests
             {
                 builder.AddRetry(new()
                 {
-                    BackoffType = RetryBackoffType.ExponentialWithJitter,
+                    BackoffType = RetryBackoffType.Exponential,
+                    UseJitter = true,
                     RetryCount = endpointOptions.Retries,
                     StrategyName = $"{context.StrategyKey.EndpointName}-Retry",
                 });
