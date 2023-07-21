@@ -40,8 +40,8 @@ public static class ResilienceStrategyExtensions
 
         return new InnerStrategiesDescriptor(
             innerStrategies.Where(s => !ShouldSkip(s.StrategyType)).ToList().AsReadOnly(),
-            HasTelemetry: innerStrategies.Exists(s => s.StrategyType.FullName == TelemetryResilienceStrategy),
-            IsReloadable: innerStrategies.Exists(s => s.StrategyType == typeof(ReloadableResilienceStrategy)));
+            hasTelemetry: innerStrategies.Exists(s => s.StrategyType.FullName == TelemetryResilienceStrategy),
+            isReloadable: innerStrategies.Exists(s => s.StrategyType == typeof(ReloadableResilienceStrategy)));
     }
 
     private static bool ShouldSkip(Type type) => type == typeof(ReloadableResilienceStrategy) || type.FullName == TelemetryResilienceStrategy;

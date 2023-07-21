@@ -21,7 +21,7 @@ internal sealed class FallbackResilienceStrategy<T> : OutcomeResilienceStrategy<
     protected override async ValueTask<Outcome<T>> ExecuteCallbackAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
         var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-        var handleFallbackArgs = new OutcomeArguments<T, FallbackPredicateArguments>(context, outcome, new FallbackPredicateArguments());
+        var handleFallbackArgs = new OutcomeArguments<T, FallbackPredicateArguments>(context, outcome, default);
         if (!await _handler.ShouldHandle(handleFallbackArgs).ConfigureAwait(context.ContinueOnCapturedContext))
         {
             return outcome;

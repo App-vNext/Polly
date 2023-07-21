@@ -6,4 +6,6 @@ namespace Polly.Fallback;
 /// <remarks>
 /// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
-public readonly record struct FallbackPredicateArguments();
+public readonly struct FallbackPredicateArguments
+{
+}

@@ -2,12 +2,9 @@
 Polly.RateLimiterResilienceStrategyBuilderExtensions
 Polly.RateLimiting.OnRateLimiterRejectedArguments
 Polly.RateLimiting.OnRateLimiterRejectedArguments.Context.get -> Polly.ResilienceContext!
-Polly.RateLimiting.OnRateLimiterRejectedArguments.Context.init -> void
 Polly.RateLimiting.OnRateLimiterRejectedArguments.Lease.get -> System.Threading.RateLimiting.RateLimitLease!
-Polly.RateLimiting.OnRateLimiterRejectedArguments.Lease.init -> void
-Polly.RateLimiting.OnRateLimiterRejectedArguments.OnRateLimiterRejectedArguments(Polly.ResilienceContext! Context, System.Threading.RateLimiting.RateLimitLease! Lease, System.TimeSpan? RetryAfter) -> void
+Polly.RateLimiting.OnRateLimiterRejectedArguments.OnRateLimiterRejectedArguments(Polly.ResilienceContext! context, System.Threading.RateLimiting.RateLimitLease! lease, System.TimeSpan? retryAfter) -> void
 Polly.RateLimiting.OnRateLimiterRejectedArguments.RetryAfter.get -> System.TimeSpan?
-Polly.RateLimiting.OnRateLimiterRejectedArguments.RetryAfter.init -> void
 Polly.RateLimiting.RateLimiterRejectedException
 Polly.RateLimiting.RateLimiterRejectedException.RateLimiterRejectedException() -> void
 Polly.RateLimiting.RateLimiterRejectedException.RateLimiterRejectedException(string! message) -> void

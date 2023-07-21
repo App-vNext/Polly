@@ -128,7 +128,7 @@ internal sealed class CircuitStateController<T> : IDisposable
             if (_circuitState == CircuitState.Open && PermitHalfOpenCircuitTest_NeedsLock())
             {
                 _circuitState = CircuitState.HalfOpen;
-                _telemetry.Report(new(ResilienceEventSeverity.Warning, CircuitBreakerConstants.OnHalfOpenEvent), context, new OnCircuitHalfOpenedArguments());
+                _telemetry.Report(new(ResilienceEventSeverity.Warning, CircuitBreakerConstants.OnHalfOpenEvent), context, new OnCircuitHalfOpenedArguments(context));
                 isHalfOpen = true;
             }
 
@@ -142,7 +142,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
             if (isHalfOpen && _onHalfOpen is not null)
             {
-                _executor.ScheduleTask(() => _onHalfOpen(new OnCircuitHalfOpenedArguments()).AsTask(), context, out task);
+                _executor.ScheduleTask(() => _onHalfOpen(new OnCircuitHalfOpenedArguments(context)).AsTask(), context, out task);
             }
         }
 
