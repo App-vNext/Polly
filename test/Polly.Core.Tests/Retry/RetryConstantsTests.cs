@@ -11,7 +11,6 @@ public class RetryConstantsTests
         RetryConstants.DefaultBaseDelay.Should().Be(TimeSpan.FromSeconds(2));
         RetryConstants.DefaultRetryCount.Should().Be(3);
         RetryConstants.MaxRetryCount.Should().Be(int.MaxValue);
-        RetryConstants.StrategyType.Should().Be("Retry");
         RetryConstants.OnRetryEvent.Should().Be("OnRetry");
     }
 }

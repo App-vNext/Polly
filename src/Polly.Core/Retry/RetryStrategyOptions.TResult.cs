@@ -9,12 +9,6 @@ namespace Polly.Retry;
 public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Gets the strategy type.
-    /// </summary>
-    /// <remarks>Returns <c>Retry</c> value.</remarks>
-    public sealed override string StrategyType => RetryConstants.StrategyType;
-
-    /// <summary>
     /// Gets or sets the maximum number of retries to use, in addition to the original call.
     /// </summary>
     /// <value>

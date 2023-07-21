@@ -17,8 +17,7 @@ public class SimpleCircuitBreakerOptionsTests
         options.OnClosed.Should().BeNull();
         options.OnHalfOpened.Should().BeNull();
         options.ShouldHandle.Should().NotBeNull();
-        options.StrategyType.Should().Be("CircuitBreaker");
-        options.StrategyName.Should().BeNull();
+        options.Name.Should().BeNull();
 
         // now set to min values
         options.FailureThreshold = 1;
@@ -50,8 +49,7 @@ public class SimpleCircuitBreakerOptionsTests
         options.OnClosed.Should().BeNull();
         options.OnHalfOpened.Should().BeNull();
         options.ShouldHandle.Should().NotBeNull();
-        options.StrategyType.Should().Be("CircuitBreaker");
-        options.StrategyName.Should().BeNull();
+        options.Name.Should().BeNull();
 
         // now set to min values
         options.FailureThreshold = 1;

@@ -12,7 +12,7 @@ internal static partial class Log
         EventId = 0,
         Message = "Resilience event occurred. " +
                 "EventName: '{EventName}', " +
-                "Source: '{BuilderName}[{BuilderInstance}]/{StrategyType}[{StrategyName}]', " +
+                "Source: '{BuilderName}[{BuilderInstance}]/{StrategyName}', " +
                 "Operation Key: '{OperationKey}', " +
                 "Result: '{Result}'",
         EventName = "ResilienceEvent")]
@@ -23,7 +23,6 @@ internal static partial class Log
         string? builderName,
         string? builderInstance,
         string? strategyName,
-        string strategyType,
         string? operationKey,
         object? result,
         Exception? exception);
@@ -68,7 +67,7 @@ internal static partial class Log
     [LoggerMessage(
         EventId = 3,
         Message = "Execution attempt. " +
-                "Source: '{BuilderName}[{BuilderInstance}]/{StrategyType}[{StrategyName}]', " +
+                "Source: '{BuilderName}[{BuilderInstance}]/{StrategyName}', " +
                 "Operation Key: '{OperationKey}', " +
                 "Result: '{Result}', " +
                 "Handled: '{Handled}', " +
@@ -82,7 +81,6 @@ internal static partial class Log
         string? builderName,
         string? builderInstance,
         string? strategyName,
-        string strategyType,
         string? operationKey,
         object? result,
         bool handled,

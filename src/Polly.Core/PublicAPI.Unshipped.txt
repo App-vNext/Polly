@@ -2,7 +2,6 @@
 abstract Polly.Registry.ResilienceStrategyProvider<TKey>.TryGetStrategy(TKey key, out Polly.ResilienceStrategy? strategy) -> bool
 abstract Polly.Registry.ResilienceStrategyProvider<TKey>.TryGetStrategy<TResult>(TKey key, out Polly.ResilienceStrategy<TResult>? strategy) -> bool
 abstract Polly.ResilienceStrategy.ExecuteCoreAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
-abstract Polly.ResilienceStrategyOptions.StrategyType.get -> string!
 override Polly.Outcome<TResult>.ToString() -> string!
 override Polly.Registry.ResilienceStrategyRegistry<TKey>.TryGetStrategy(TKey key, out Polly.ResilienceStrategy? strategy) -> bool
 override Polly.Registry.ResilienceStrategyRegistry<TKey>.TryGetStrategy<TResult>(TKey key, out Polly.ResilienceStrategy<TResult>? strategy) -> bool
@@ -10,11 +9,6 @@ override Polly.ResiliencePropertyKey<TValue>.Equals(object? obj) -> bool
 override Polly.ResiliencePropertyKey<TValue>.GetHashCode() -> int
 override Polly.ResiliencePropertyKey<TValue>.ToString() -> string!
 override Polly.Telemetry.ResilienceEvent.ToString() -> string!
-override sealed Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.StrategyType.get -> string!
-override sealed Polly.Fallback.FallbackStrategyOptions<TResult>.StrategyType.get -> string!
-override sealed Polly.Hedging.HedgingStrategyOptions<TResult>.StrategyType.get -> string!
-override sealed Polly.Retry.RetryStrategyOptions<TResult>.StrategyType.get -> string!
-override sealed Polly.Timeout.TimeoutStrategyOptions.StrategyType.get -> string!
 Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions
 Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions.AdvancedCircuitBreakerStrategyOptions() -> void
 Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions<TResult>
@@ -296,13 +290,12 @@ Polly.ResilienceStrategyBuilderContext.BuilderInstanceName.get -> string?
 Polly.ResilienceStrategyBuilderContext.BuilderName.get -> string?
 Polly.ResilienceStrategyBuilderContext.BuilderProperties.get -> Polly.ResilienceProperties!
 Polly.ResilienceStrategyBuilderContext.StrategyName.get -> string?
-Polly.ResilienceStrategyBuilderContext.StrategyType.get -> string!
 Polly.ResilienceStrategyBuilderContext.Telemetry.get -> Polly.Telemetry.ResilienceStrategyTelemetry!
 Polly.ResilienceStrategyBuilderExtensions
 Polly.ResilienceStrategyOptions
 Polly.ResilienceStrategyOptions.ResilienceStrategyOptions() -> void
-Polly.ResilienceStrategyOptions.StrategyName.get -> string?
-Polly.ResilienceStrategyOptions.StrategyName.set -> void
+Polly.ResilienceStrategyOptions.Name.get -> string?
+Polly.ResilienceStrategyOptions.Name.set -> void
 Polly.ResilienceValidationContext
 Polly.ResilienceValidationContext.Instance.get -> object!
 Polly.ResilienceValidationContext.PrimaryMessage.get -> string!
@@ -379,11 +372,9 @@ Polly.Telemetry.ResilienceTelemetrySource.BuilderName.get -> string?
 Polly.Telemetry.ResilienceTelemetrySource.BuilderName.init -> void
 Polly.Telemetry.ResilienceTelemetrySource.BuilderProperties.get -> Polly.ResilienceProperties!
 Polly.Telemetry.ResilienceTelemetrySource.BuilderProperties.init -> void
-Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? BuilderName, string? BuilderInstanceName, Polly.ResilienceProperties! BuilderProperties, string? StrategyName, string! StrategyType) -> void
+Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? BuilderName, string? BuilderInstanceName, Polly.ResilienceProperties! BuilderProperties, string? StrategyName) -> void
 Polly.Telemetry.ResilienceTelemetrySource.StrategyName.get -> string?
 Polly.Telemetry.ResilienceTelemetrySource.StrategyName.init -> void
-Polly.Telemetry.ResilienceTelemetrySource.StrategyType.get -> string!
-Polly.Telemetry.ResilienceTelemetrySource.StrategyType.init -> void
 Polly.Telemetry.TelemetryEventArguments
 Polly.Telemetry.TelemetryEventArguments.Arguments.get -> object!
 Polly.Telemetry.TelemetryEventArguments.Context.get -> Polly.ResilienceContext!

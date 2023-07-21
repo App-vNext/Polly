@@ -2,8 +2,6 @@ namespace Polly.Retry;
 
 internal static class RetryConstants
 {
-    public const string StrategyType = "Retry";
-
     public const string OnRetryEvent = "OnRetry";
 
     public const RetryBackoffType DefaultBackoffType = RetryBackoffType.Constant;

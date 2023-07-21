@@ -11,8 +11,7 @@ public class ResilienceStrategyTelemetryTests
         "builder",
         "instance",
         new ResilienceProperties(),
-        "strategy-name",
-        "strategy-type"), _diagnosticSource.Object);
+        "strategy-name"), _diagnosticSource.Object);
 
     private readonly ResilienceStrategyTelemetry _sut;
 
@@ -31,7 +30,6 @@ public class ResilienceStrategyTelemetryTests
                 args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
                 args.Outcome.Should().BeNull();
                 args.Source.StrategyName.Should().Be("strategy-name");
-                args.Source.StrategyType.Should().Be("strategy-type");
                 args.Source.BuilderProperties.Should().NotBeNull();
                 args.Arguments.Should().BeOfType<TestArguments>();
                 args.Outcome.Should().BeNull();
@@ -57,7 +55,7 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void ResilienceStrategyTelemetry_NoDiagnosticSource_Ok()
     {
-        var source = new ResilienceTelemetrySource("builder", "instance", new ResilienceProperties(), "strategy-name", "strategy-type");
+        var source = new ResilienceTelemetrySource("builder", "instance", new ResilienceProperties(), "strategy-name");
         var sut = new ResilienceStrategyTelemetry(source, null);
         var context = ResilienceContext.Get();
 
@@ -79,7 +77,6 @@ public class ResilienceStrategyTelemetryTests
                 args.Event.EventName.Should().Be("dummy-event");
                 args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
                 args.Source.StrategyName.Should().Be("strategy-name");
-                args.Source.StrategyType.Should().Be("strategy-type");
                 args.Source.BuilderProperties.Should().NotBeNull();
                 args.Arguments.Should().BeOfType<TestArguments>();
                 args.Outcome.Should().NotBeNull();

@@ -4,10 +4,6 @@ namespace Polly.Utils;
 
 internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
 {
-    public const string StrategyName = "ReloadableStrategy";
-
-    public const string StrategyType = "ReloadableStrategy";
-
     public const string ReloadFailedEvent = "ReloadFailed";
 
     public const string OnReloadEvent = "OnReload";

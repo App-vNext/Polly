@@ -93,7 +93,6 @@ Dimensions:
 |`builder-name`| The name of the builder corresponding to the resilience strategy.|
 |`builder-instance`| The instance name of the builder corresponding to the resilience strategy.|
 |`strategy-name`| The name of the strategy generating this event.|
-|`strategy-type`| The type of the strategy generating this event.|
 |`operation-key`| The operation key associated with the call site. |
 |`result-type`| The result type (`string`, `HttpResponseMessage`). |
 |`exception-name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
@@ -113,7 +112,6 @@ Dimensions:
 |`builder-name`| The name of the builder corresponding to the resilience strategy.|
 |`builder-instance`| The instance name of the builder corresponding to the resilience strategy.|
 |`strategy-name`| The name of the strategy generating this event.|
-|`strategy-type`| The type of the strategy generating this event.|
 |`operation-key`| The operation key associated with the call site. |
 |`result-type`| The result type (`string`, `HttpResponseMessage`). |
 |`exception-name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |

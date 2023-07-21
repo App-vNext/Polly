@@ -9,12 +9,6 @@ namespace Polly.RateLimiting;
 public class RateLimiterStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Gets the strategy type.
-    /// </summary>
-    /// <remarks>Returns <c>RateLimiter</c> value.</remarks>
-    public sealed override string StrategyType => RateLimiterConstants.StrategyType;
-
-    /// <summary>
     /// Gets or sets the default rate limiter options.
     /// </summary>
     /// <remarks>

@@ -73,7 +73,5 @@ public static class ResilienceStrategyBuilderExtensions
     internal sealed class EmptyOptions : ResilienceStrategyOptions
     {
         public static readonly EmptyOptions Instance = new();
-
-        public override string StrategyType => "Empty";
     }
 }

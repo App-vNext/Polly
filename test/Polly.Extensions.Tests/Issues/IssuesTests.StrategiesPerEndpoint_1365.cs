@@ -51,7 +51,7 @@ public partial class IssuesTests
                 {
                     BackoffType = RetryBackoffType.ExponentialWithJitter,
                     RetryCount = endpointOptions.Retries,
-                    StrategyName = $"{context.StrategyKey.EndpointName}-Retry",
+                    Name = $"{context.StrategyKey.EndpointName}-Retry",
                 });
             }
 
@@ -59,13 +59,13 @@ public partial class IssuesTests
             builder.AddAdvancedCircuitBreaker(new()
             {
                 BreakDuration = endpointOptions.BreakDuration,
-                StrategyName = $"{context.StrategyKey.EndpointName}-{context.StrategyKey.Resource}-CircuitBreaker"
+                Name = $"{context.StrategyKey.EndpointName}-{context.StrategyKey.Resource}-CircuitBreaker"
             });
 
             // apply timeout
             builder.AddTimeout(new TimeoutStrategyOptions
             {
-                StrategyName = $"{context.StrategyKey.EndpointName}-Timeout",
+                Name = $"{context.StrategyKey.EndpointName}-Timeout",
                 Timeout = endpointOptions.Timeout.Add(TimeSpan.FromSeconds(1)),
             });
         });

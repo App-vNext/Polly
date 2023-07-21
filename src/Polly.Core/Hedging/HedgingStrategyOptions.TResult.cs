@@ -9,12 +9,6 @@ namespace Polly.Hedging;
 public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Gets the strategy type.
-    /// </summary>
-    /// <remarks>Returns <c>Hedging</c> value.</remarks>
-    public sealed override string StrategyType => HedgingConstants.StrategyType;
-
-    /// <summary>
     /// Gets or sets the minimal time of waiting before spawning a new hedged call.
     /// </summary>
     /// <remarks>

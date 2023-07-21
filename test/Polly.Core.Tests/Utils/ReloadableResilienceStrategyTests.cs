@@ -29,8 +29,6 @@ public class ReloadableResilienceStrategyTests : IDisposable
 
         sut.Strategy.Should().Be(strategy);
 
-        ReloadableResilienceStrategy.StrategyType.Should().Be("ReloadableStrategy");
-        ReloadableResilienceStrategy.StrategyName.Should().Be("ReloadableStrategy");
         ReloadableResilienceStrategy.ReloadFailedEvent.Should().Be("ReloadFailed");
     }
 

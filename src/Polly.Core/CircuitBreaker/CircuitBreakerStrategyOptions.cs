@@ -17,12 +17,6 @@ namespace Polly.CircuitBreaker;
 /// </remarks>
 public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
 {
-    /// <summary>
-    /// Gets the strategy type.
-    /// </summary>
-    /// <remarks>Returns <c>CircuitBreaker</c> value.</remarks>
-    public sealed override string StrategyType => CircuitBreakerConstants.StrategyType;
-
 #pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     /// <summary>
     /// Gets or sets the duration of break the circuit will stay open before resetting.

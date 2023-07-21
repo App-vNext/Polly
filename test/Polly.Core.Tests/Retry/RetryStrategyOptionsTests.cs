@@ -11,7 +11,6 @@ public class RetryStrategyOptionsTests
     {
         var options = new RetryStrategyOptions<int>();
 
-        options.StrategyType.Should().Be("Retry");
         options.ShouldHandle.Should().NotBeNull();
 
         options.RetryDelayGenerator.Should().BeNull();
