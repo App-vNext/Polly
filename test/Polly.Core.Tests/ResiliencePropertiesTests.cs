@@ -1,3 +1,6 @@
+using System.Collections.Specialized;
+using Moq;
+
 namespace Polly.Core.Tests;
 
 public class ResiliencePropertiesTests
@@ -83,7 +86,7 @@ public class ResiliencePropertiesTests
         var otherProps = new ResilienceProperties();
         if (!isRawDictionary)
         {
-            otherProps.Options = new Dictionary<string, object?>();
+            otherProps.Options = new ConcurrentDictionary<string, object?>();
         }
 
         otherProps.Set(key2, "B");
