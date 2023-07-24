@@ -795,10 +795,10 @@ var cachePolicy = Policy.Cache(memoryCacheProvider, TimeSpan.FromMinutes(5));
 // - https://github.com/App-vNext/Polly.Caching.IDistributedCache
 
 // Define a cache policy with absolute expiration at midnight tonight.
-var cachePolicy = Policy.Cache(memoryCacheProvider, new AbsoluteTtl(DateTimeOffset.Now.Date.AddDays(1));
+var cachePolicy = Policy.Cache(memoryCacheProvider, new AbsoluteTtl(DateTimeOffset.Now.Date.AddDays(1)));
 
 // Define a cache policy with sliding expiration: items remain valid for another 5 minutes each time the cache item is used.
-var cachePolicy = Policy.Cache(memoryCacheProvider, new SlidingTtl(TimeSpan.FromMinutes(5));
+var cachePolicy = Policy.Cache(memoryCacheProvider, new SlidingTtl(TimeSpan.FromMinutes(5)));
 
 // Define a cache Policy, and catch any cache provider errors for logging.
 var cachePolicy = Policy.Cache(myCacheProvider, TimeSpan.FromMinutes(5),
