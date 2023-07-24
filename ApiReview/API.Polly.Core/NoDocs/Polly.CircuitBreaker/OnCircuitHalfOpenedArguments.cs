@@ -1,13 +1,11 @@
 // Assembly 'Polly.Core'
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace Polly.CircuitBreaker;
 
-public record OnCircuitHalfOpenedArguments
+public sealed class OnCircuitHalfOpenedArguments
 {
-    [CompilerGenerated]
-    protected virtual Type EqualityContract { get; }
-    public OnCircuitHalfOpenedArguments();
+    public ResilienceContext Context { get; }
+    public OnCircuitHalfOpenedArguments(ResilienceContext context);
 }

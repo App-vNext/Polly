@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 namespace Polly.Hedging;
 
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-public readonly record struct HedgingPredicateArguments
+public readonly struct HedgingPredicateArguments
 {
-    public HedgingPredicateArguments();
 }

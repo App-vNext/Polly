@@ -1,5 +1,11 @@
 // Assembly 'Polly.Core'
 
+using System.Runtime.CompilerServices;
+
 namespace Polly.Retry;
 
-public readonly record struct RetryPredicateArguments(int Attempt);
+public readonly struct RetryPredicateArguments
+{
+    public int Attempt { get; }
+    public RetryPredicateArguments(int attempt);
+}

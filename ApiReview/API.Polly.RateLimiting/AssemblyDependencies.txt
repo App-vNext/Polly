@@ -1,5 +1,4 @@
 Polly.Core
-System.Collections
 System.ComponentModel.Annotations
 System.Private.CoreLib
 System.Private.Uri

@@ -5,8 +5,10 @@ using System.Runtime.CompilerServices;
 
 namespace Polly.Timeout;
 
-public record OnTimeoutArguments(ResilienceContext Context, Exception Exception, TimeSpan Timeout)
+public sealed class OnTimeoutArguments
 {
-    [CompilerGenerated]
-    protected virtual Type EqualityContract { get; }
+    public ResilienceContext Context { get; }
+    public Exception Exception { get; }
+    public TimeSpan Timeout { get; }
+    public OnTimeoutArguments(ResilienceContext context, Exception exception, TimeSpan timeout);
 }

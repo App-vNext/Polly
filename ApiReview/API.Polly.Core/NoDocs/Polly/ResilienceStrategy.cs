@@ -19,7 +19,7 @@ public abstract class ResilienceStrategy
     public ValueTask<TResult> ExecuteAsync<TResult>(Func<ResilienceContext, ValueTask<TResult>> callback, ResilienceContext context);
     public ValueTask<TResult> ExecuteAsync<TResult, TState>(Func<TState, CancellationToken, ValueTask<TResult>> callback, TState state, CancellationToken cancellationToken = default(CancellationToken));
     public ValueTask<TResult> ExecuteAsync<TResult>(Func<CancellationToken, ValueTask<TResult>> callback, CancellationToken cancellationToken = default(CancellationToken));
-    protected internal abstract ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state);
+    protected internal abstract ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state);
     public void Execute<TState>(Action<ResilienceContext, TState> callback, ResilienceContext context, TState state);
     public void Execute(Action<ResilienceContext> callback, ResilienceContext context);
     public void Execute<TState>(Action<TState, CancellationToken> callback, TState state, CancellationToken cancellationToken = default(CancellationToken));

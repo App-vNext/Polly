@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 namespace Polly.Fallback;
 
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-public readonly record struct FallbackPredicateArguments
+public readonly struct FallbackPredicateArguments
 {
-    public FallbackPredicateArguments();
 }

@@ -13,6 +13,5 @@ public sealed class ResilienceStrategyBuilderContext
     public string? BuilderInstanceName { get; }
     public ResilienceProperties BuilderProperties { get; }
     public string? StrategyName { get; }
-    public string StrategyType { get; }
     public ResilienceStrategyTelemetry Telemetry { get; }
 }

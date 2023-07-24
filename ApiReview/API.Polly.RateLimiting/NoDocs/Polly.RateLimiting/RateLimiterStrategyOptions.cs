@@ -10,7 +10,6 @@ namespace Polly.RateLimiting;
 
 public class RateLimiterStrategyOptions : ResilienceStrategyOptions
 {
-    public sealed override string StrategyType { get; }
     [Required]
     public ConcurrencyLimiterOptions DefaultRateLimiterOptions { get; set; }
     public Func<OnRateLimiterRejectedArguments, ValueTask>? OnRejected { get; set; }

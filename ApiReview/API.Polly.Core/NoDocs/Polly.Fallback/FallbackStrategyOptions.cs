@@ -9,7 +9,6 @@ namespace Polly.Fallback;
 
 public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
 {
-    public sealed override string StrategyType { get; }
     [Required]
     public Func<OutcomeArguments<TResult, FallbackPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; }
     [Required]

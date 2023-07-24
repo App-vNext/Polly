@@ -1,13 +1,8 @@
 // Assembly 'Polly.Core'
 
-using System;
-using System.Runtime.CompilerServices;
-
 namespace Polly.Fallback;
 
-public record OnFallbackArguments
+public sealed class OnFallbackArguments
 {
-    [CompilerGenerated]
-    protected virtual Type EqualityContract { get; }
     public OnFallbackArguments();
 }

@@ -5,8 +5,10 @@ using System.Runtime.CompilerServices;
 
 namespace Polly.Retry;
 
-public record OnRetryArguments(int Attempt, TimeSpan RetryDelay, TimeSpan ExecutionTime)
+public sealed class OnRetryArguments
 {
-    [CompilerGenerated]
-    protected virtual Type EqualityContract { get; }
+    public int Attempt { get; }
+    public TimeSpan RetryDelay { get; }
+    public TimeSpan ExecutionTime { get; }
+    public OnRetryArguments(int attempt, TimeSpan retryDelay, TimeSpan executionTime);
 }

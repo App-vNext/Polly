@@ -1,12 +1,11 @@
 // Assembly 'Polly.Core'
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace Polly.CircuitBreaker;
 
-public record OnCircuitClosedArguments(bool IsManual)
+public sealed class OnCircuitClosedArguments
 {
-    [CompilerGenerated]
-    protected virtual Type EqualityContract { get; }
+    public bool IsManual { get; }
+    public OnCircuitClosedArguments(bool isManual);
 }

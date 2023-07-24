@@ -5,8 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace Polly.Testing;
 
-public record ResilienceStrategyDescriptor(ResilienceStrategyOptions? Options, Type StrategyType)
+public sealed class ResilienceStrategyDescriptor
 {
-    [CompilerGenerated]
-    protected virtual Type EqualityContract { get; }
+    public ResilienceStrategyOptions? Options { get; }
+    public Type StrategyType { get; }
+    public ResilienceStrategyDescriptor(ResilienceStrategyOptions? options, Type strategyType);
 }

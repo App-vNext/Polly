@@ -6,7 +6,6 @@ namespace Polly;
 
 public abstract class ResilienceStrategyOptions
 {
-    public string? StrategyName { get; set; }
-    public abstract string StrategyType { get; }
+    public string? Name { get; set; }
     protected ResilienceStrategyOptions();
 }

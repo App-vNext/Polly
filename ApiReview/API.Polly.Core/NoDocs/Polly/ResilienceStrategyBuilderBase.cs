@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Polly;
@@ -21,4 +22,6 @@ public abstract class ResilienceStrategyBuilderBase
     [EditorBrowsable(EditorBrowsableState.Never)]
     [Required]
     public Func<double> Randomizer { get; set; }
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Action<ResilienceValidationContext> Validator { get; }
 }

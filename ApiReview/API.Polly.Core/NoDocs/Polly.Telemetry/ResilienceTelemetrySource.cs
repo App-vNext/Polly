@@ -1,8 +1,14 @@
 // Assembly 'Polly.Core'
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace Polly.Telemetry;
 
-public sealed record ResilienceTelemetrySource(string? BuilderName, string? BuilderInstanceName, ResilienceProperties BuilderProperties, string? StrategyName, string StrategyType);
+public sealed class ResilienceTelemetrySource
+{
+    public string? BuilderName { get; }
+    public string? BuilderInstanceName { get; }
+    public ResilienceProperties BuilderProperties { get; }
+    public string? StrategyName { get; }
+    public ResilienceTelemetrySource(string? builderName, string? builderInstanceName, ResilienceProperties builderProperties, string? strategyName);
+}

@@ -9,8 +9,7 @@ namespace Polly.Retry;
 
 public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
 {
-    public sealed override string StrategyType { get; }
-    [Range(-1, 100)]
+    [Range(1, int.MaxValue)]
     public int RetryCount { get; set; }
     public RetryBackoffType BackoffType { get; set; }
     [Range(typeof(TimeSpan), "00:00:00", "1.00:00:00")]

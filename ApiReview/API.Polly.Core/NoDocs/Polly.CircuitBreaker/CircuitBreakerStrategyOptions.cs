@@ -9,7 +9,6 @@ namespace Polly.CircuitBreaker;
 
 public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
 {
-    public sealed override string StrategyType { get; }
     [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
     public TimeSpan BreakDuration { get; set; }
     [Required]

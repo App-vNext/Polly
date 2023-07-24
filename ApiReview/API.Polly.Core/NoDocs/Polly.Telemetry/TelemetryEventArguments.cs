@@ -1,12 +1,11 @@
 // Assembly 'Polly.Core'
 
-using System;
 using System.Runtime.CompilerServices;
 using Polly.Utils;
 
 namespace Polly.Telemetry;
 
-public sealed record TelemetryEventArguments
+public sealed class TelemetryEventArguments
 {
     public ResilienceTelemetrySource Source { get; }
     public ResilienceEvent Event { get; }

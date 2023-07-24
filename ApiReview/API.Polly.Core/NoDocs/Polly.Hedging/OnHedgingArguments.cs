@@ -5,8 +5,10 @@ using System.Runtime.CompilerServices;
 
 namespace Polly.Hedging;
 
-public record OnHedgingArguments(int Attempt, bool HasOutcome, TimeSpan ExecutionTime)
+public sealed class OnHedgingArguments
 {
-    [CompilerGenerated]
-    protected virtual Type EqualityContract { get; }
+    public int Attempt { get; }
+    public bool HasOutcome { get; }
+    public TimeSpan ExecutionTime { get; }
+    public OnHedgingArguments(int attempt, bool hasOutcome, TimeSpan executionTime);
 }

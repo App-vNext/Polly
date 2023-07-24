@@ -9,7 +9,6 @@ namespace Polly.Hedging;
 
 public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
 {
-    public sealed override string StrategyType { get; }
     public TimeSpan HedgingDelay { get; set; }
     [Range(2, 10)]
     public int MaxHedgedAttempts { get; set; }

@@ -1,5 +1,6 @@
 // Assembly 'Polly.Core'
 
+using System.Diagnostics.CodeAnalysis;
 using Polly.Hedging;
 
 namespace Polly;
