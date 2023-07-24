@@ -15,7 +15,7 @@ public sealed class NullResilienceStrategy : ResilienceStrategy
     }
 
     /// <inheritdoc/>
-    protected internal override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)

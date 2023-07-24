@@ -57,7 +57,7 @@ internal sealed partial class ResilienceStrategyPipeline : ResilienceStrategy
 
     public IReadOnlyList<ResilienceStrategy> Strategies { get; }
 
-    protected internal override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context, TState state)
     {
@@ -66,7 +66,7 @@ internal sealed partial class ResilienceStrategyPipeline : ResilienceStrategy
             return Outcome.FromExceptionAsTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
         }
 
-        return _pipeline.ExecuteCoreAsync(callback, context, state);
+        return _pipeline.ExecuteCore(callback, context, state);
     }
 
     /// <summary>
@@ -80,12 +80,12 @@ internal sealed partial class ResilienceStrategyPipeline : ResilienceStrategy
 
         public ResilienceStrategy? Next { get; set; }
 
-        protected internal override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)
         {
-            return _strategy.ExecuteCoreAsync(
+            return _strategy.ExecuteCore(
                 static (context, state) =>
                 {
                     if (context.CancellationToken.IsCancellationRequested)
@@ -93,7 +93,7 @@ internal sealed partial class ResilienceStrategyPipeline : ResilienceStrategy
                         return Outcome.FromExceptionAsTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
                     }
 
-                    return state.Next!.ExecuteCoreAsync(state.callback, context, state.state);
+                    return state.Next!.ExecuteCore(state.callback, context, state.state);
                 },
                 context,
                 (Next, callback, state));

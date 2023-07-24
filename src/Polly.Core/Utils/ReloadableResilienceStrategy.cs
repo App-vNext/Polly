@@ -30,12 +30,12 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
 
     public ResilienceStrategy Strategy { get; private set; }
 
-    protected internal override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)
     {
-        return Strategy.ExecuteCoreAsync(callback, context, state);
+        return Strategy.ExecuteCore(callback, context, state);
     }
 
     private void RegisterOnReload(CancellationToken previousToken)

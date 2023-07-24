@@ -22,7 +22,7 @@ internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
         _isGeneric = isGeneric;
     }
 
-    protected internal sealed override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected internal sealed override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)

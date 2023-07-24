@@ -16,25 +16,29 @@ public abstract partial class ResilienceStrategy
     internal ResilienceStrategyOptions? Options { get; set; }
 
     /// <summary>
-    /// Executes the specified callback.
+    /// An implementation of resilience strategy that executes the specified <paramref name="callback"/>.
     /// </summary>
     /// <typeparam name="TResult">The type of result returned by the callback.</typeparam>
     /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="context">The context associated with the callback.</param>
     /// <param name="state">The state associated with the callback.</param>
-    /// <returns>An instance of <see cref="ValueTask"/> that represents an asynchronous callback.</returns>
+    /// <returns>
+    /// An instance of pending <see cref="ValueTask"/> for asynchronous executions or completed <see cref="ValueTask"/> task for synchronous exexutions.
+    /// </returns>
     /// <remarks>
-    /// This method is called by various methods exposed on <see cref="ResilienceStrategy"/>. These methods make sure that
-    /// <paramref name="context"/> is properly initialized with details about the execution mode.
+    /// <c>This method is called for both synchronous and asynchronous execution flows.</c>
+    /// <para>
+    /// You can use <see cref="ResilienceContext.IsSynchronous"/> to dermine wheether the <paramref name="callback"/> is synchronous or asynchronous one.
+    /// This is usefull when the custom strategy behaves differently in each execution flow. In general, for most strategies, the implementation
+    /// is the same for both execution flows.
+    /// </para>
     /// <para>
     /// The provided callback never throws an exception. Instead, the exception is captured and converted to an <see cref="Outcome{TResult}"/>.
-    /// </para>
-    /// <para>
-    /// Do not throw exceptions from your strategy implementation. Instead, return an exception instance as <see cref="Outcome{TResult}"/>.
+    /// Similarly, do not throw exceptions from your strategy implementation. Instead, return an exception instance as <see cref="Outcome{TResult}"/>.
     /// </para>
     /// </remarks>
-    protected internal abstract ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected internal abstract ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state);
@@ -44,7 +48,7 @@ public abstract partial class ResilienceStrategy
         ResilienceContext context,
         TState state)
     {
-        return ExecuteCoreAsync(
+        return ExecuteCore(
             static (context, state) =>
             {
                 var result = state.callback(context, state.state);

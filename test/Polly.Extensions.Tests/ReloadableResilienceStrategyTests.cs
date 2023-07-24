@@ -60,7 +60,7 @@ public class ReloadableResilienceStrategyTests
 
         public string Tag { get; }
 
-        protected override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)

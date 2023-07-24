@@ -96,7 +96,7 @@ public class ResilienceStrategyExtensionsTests
 
     private sealed class CustomStrategy : ResilienceStrategy
     {
-        protected override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
+        protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
             => throw new NotSupportedException();
     }
 }

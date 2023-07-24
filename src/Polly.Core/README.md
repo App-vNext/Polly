@@ -73,7 +73,7 @@ public void Execute(Action execute)
 
     try
     {
-        strategy.ExecuteCoreAsync(static (context, state) =>
+        strategy.ExecuteAsync(static (context, state) =>
         {
             state();
             return new ValueTask<Outcome<VoidResult>>(new(VoidResult.Instance));
@@ -108,7 +108,7 @@ internal class DelayStrategy : ResilienceStrategy
         _timeProvider = timeProvider;
     }
 
-    protected override async ValueTask<T> ExecuteCoreAsync<T, TState>(
+    protected override async ValueTask<T> ExecuteCore<T, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, 
         ResilienceContext context, 
         TState state)
