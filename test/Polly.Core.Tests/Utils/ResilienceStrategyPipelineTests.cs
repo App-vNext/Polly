@@ -48,7 +48,7 @@ public class ResilienceStrategyPipelineTests
 
         var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
         await pipeline
-            .Invoking(p => p.ExecuteCoreAsync((_, _) => Outcome.FromResultAsTask(10), ResilienceContextPool.Shared.Get(), "state").AsTask())
+            .Invoking(p => p.ExecuteCore((_, _) => Outcome.FromResultAsTask(10), ResilienceContextPool.Shared.Get(), "state").AsTask())
             .Should()
             .ThrowAsync<NotSupportedException>();
     }
@@ -113,7 +113,7 @@ public class ResilienceStrategyPipelineTests
 
     private class Strategy : ResilienceStrategy
     {
-        protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)

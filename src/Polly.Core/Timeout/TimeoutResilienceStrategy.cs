@@ -22,7 +22,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 
     public Func<OnTimeoutArguments, ValueTask>? OnTimeout { get; }
 
-    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)

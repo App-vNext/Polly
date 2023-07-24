@@ -409,7 +409,7 @@ The RequiredProperty field is required.
 
         public Action? After { get; set; }
 
-        protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)
@@ -432,7 +432,7 @@ The RequiredProperty field is required.
 
         public Action? After { get; set; }
 
-        protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)

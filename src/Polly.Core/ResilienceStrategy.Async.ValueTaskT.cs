@@ -29,7 +29,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext<TResult>(context);
 
-        return ExecuteCoreAsync(callback, context, state);
+        return ExecuteCore(callback, context, state);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext<TResult>(context);
 
-        var outcome = await ExecuteCoreAsync(
+        var outcome = await ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -87,7 +87,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext<TResult>(context);
 
-        var outcome = await ExecuteCoreAsync(
+        var outcome = await ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -126,7 +126,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            var outcome = await ExecuteCoreAsync(
+            var outcome = await ExecuteCore(
                 static async (context, state) =>
                 {
                     try
@@ -167,7 +167,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            var outcome = await ExecuteCoreAsync(
+            var outcome = await ExecuteCore(
                 static async (context, state) =>
                 {
                     try

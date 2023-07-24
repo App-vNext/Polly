@@ -45,7 +45,7 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
 
     public Histogram<double> ExecutionDuration { get; }
 
-    protected override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)

@@ -60,7 +60,7 @@ public partial class IssuesTests
 
         public ServiceProviderStrategy(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
-        protected override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)

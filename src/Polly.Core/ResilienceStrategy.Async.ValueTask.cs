@@ -24,7 +24,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext(context);
 
-        var outcome = await ExecuteCoreAsync(
+        var outcome = await ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -59,7 +59,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext(context);
 
-        var outcome = await ExecuteCoreAsync(
+        var outcome = await ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -98,7 +98,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            var outcome = await ExecuteCoreAsync(
+            var outcome = await ExecuteCore(
                 static async (context, state) =>
                 {
                     try
@@ -139,7 +139,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            var outcome = await ExecuteCoreAsync(
+            var outcome = await ExecuteCore(
                 static async (context, state) =>
                 {
                     try
