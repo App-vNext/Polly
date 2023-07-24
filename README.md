@@ -506,13 +506,13 @@ For more information on the Circuit Breaker pattern in general see:
 Policy<UserAvatar>
    .Handle<FooException>()
    .OrResult(null)
-   .Fallback<UserAvatar>(UserAvatar.Blank)
+   .Fallback<UserAvatar>(UserAvatar.Blank);
 
 // Specify a func to provide a substitute value, if execution faults.
 Policy<UserAvatar>
    .Handle<FooException>()
    .OrResult(null)
-   .Fallback<UserAvatar>(() => UserAvatar.GetRandomAvatar()) // where: public UserAvatar GetRandomAvatar() { ... }
+   .Fallback<UserAvatar>(() => UserAvatar.GetRandomAvatar()); // where: public UserAvatar GetRandomAvatar() { ... }
 
 // Specify a substitute value or func, calling an action (eg for logging) if the fallback is invoked.
 Policy<UserAvatar>
