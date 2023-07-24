@@ -30,7 +30,7 @@ public abstract partial class ResilienceStrategy
     /// <c>This method is called for both synchronous and asynchronous execution flows.</c>
     /// <para>
     /// You can use <see cref="ResilienceContext.IsSynchronous"/> to dermine wheether the <paramref name="callback"/> is synchronous or asynchronous one.
-    /// This is usefull when the custom strategy behaves differently in each execution flow. In general, for most strategies, the implementation
+    /// This is useful when the custom strategy behaves differently in each execution flow. In general, for most strategies, the implementation
     /// is the same for both execution flows.
     /// </para>
     /// <para>
