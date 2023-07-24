@@ -627,7 +627,7 @@ Policy
 
 // Configure variable timeout via a func provider.
 Policy
-  .Timeout(myTimeoutProvider)) // Func<TimeSpan> myTimeoutProvider
+  .Timeout(myTimeoutProvider) // Func<TimeSpan> myTimeoutProvider
 
 // Timeout, calling an action if the action times out
 Policy
