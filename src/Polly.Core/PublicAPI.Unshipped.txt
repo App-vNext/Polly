@@ -248,18 +248,18 @@ Polly.ResilienceStrategy.ExecuteAsync<TState>(System.Func<Polly.ResilienceContex
 Polly.ResilienceStrategy.ExecuteAsync<TState>(System.Func<TState, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
 Polly.ResilienceStrategy.ExecuteOutcomeAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 Polly.ResilienceStrategy.ResilienceStrategy() -> void
-Polly.ResilienceStrategy<TResult>
-Polly.ResilienceStrategy<TResult>.Execute(System.Func<Polly.ResilienceContext!, TResult>! callback, Polly.ResilienceContext! context) -> TResult
-Polly.ResilienceStrategy<TResult>.Execute(System.Func<System.Threading.CancellationToken, TResult>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
-Polly.ResilienceStrategy<TResult>.Execute(System.Func<TResult>! callback) -> TResult
-Polly.ResilienceStrategy<TResult>.Execute<TState>(System.Func<Polly.ResilienceContext!, TState, TResult>! callback, Polly.ResilienceContext! context, TState state) -> TResult
-Polly.ResilienceStrategy<TResult>.Execute<TState>(System.Func<TState, System.Threading.CancellationToken, TResult>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
-Polly.ResilienceStrategy<TResult>.Execute<TState>(System.Func<TState, TResult>! callback, TState state) -> TResult
-Polly.ResilienceStrategy<TResult>.ExecuteAsync(System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy<TResult>.ExecuteAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy<TResult>.ExecuteAsync<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy<TResult>.ExecuteAsync<TState>(System.Func<TState, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy<TResult>.ExecuteOutcomeAsync<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+Polly.ResilienceStrategy<T>
+Polly.ResilienceStrategy<T>.Execute<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, TResult>! callback, Polly.ResilienceContext! context, TState state) -> TResult
+Polly.ResilienceStrategy<T>.Execute<TResult, TState>(System.Func<TState, System.Threading.CancellationToken, TResult>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
+Polly.ResilienceStrategy<T>.Execute<TResult, TState>(System.Func<TState, TResult>! callback, TState state) -> TResult
+Polly.ResilienceStrategy<T>.Execute<TResult>(System.Func<Polly.ResilienceContext!, TResult>! callback, Polly.ResilienceContext! context) -> TResult
+Polly.ResilienceStrategy<T>.Execute<TResult>(System.Func<System.Threading.CancellationToken, TResult>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
+Polly.ResilienceStrategy<T>.Execute<TResult>(System.Func<TResult>! callback) -> TResult
+Polly.ResilienceStrategy<T>.ExecuteAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResilienceStrategy<T>.ExecuteAsync<TResult, TState>(System.Func<TState, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResilienceStrategy<T>.ExecuteAsync<TResult>(System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResilienceStrategy<T>.ExecuteAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResilienceStrategy<T>.ExecuteOutcomeAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 Polly.ResilienceStrategyBuilder
 Polly.ResilienceStrategyBuilder.Build() -> Polly.ResilienceStrategy!
 Polly.ResilienceStrategyBuilder.ResilienceStrategyBuilder() -> void
