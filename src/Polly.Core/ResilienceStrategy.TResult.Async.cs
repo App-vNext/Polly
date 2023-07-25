@@ -7,12 +7,12 @@ namespace Polly;
 /// <summary>
 /// Resilience strategy is used to execute the user-provided callbacks.
 /// </summary>
-/// <typeparam name="TResult">The type of result this strategy supports.</typeparam>
+/// <typeparam name="T">The type of result this strategy supports.</typeparam>
 /// <remarks>
-/// Resilience strategy supports various types of callbacks of <typeparamref name="TResult"/> result type
+/// Resilience strategy supports various types of callbacks of <typeparamref name="T"/> result type
 /// and provides a unified way to execute them. This includes overloads for synchronous and asynchronous callbacks.
 /// </remarks>
-public partial class ResilienceStrategy<TResult>
+public partial class ResilienceStrategy<T>
 {
     internal ResilienceStrategy(ResilienceStrategy strategy) => Strategy = strategy;
 
@@ -21,18 +21,18 @@ public partial class ResilienceStrategy<TResult>
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
-    /// <typeparam name="T">The type of the result.</typeparam>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="context">The context associated with the callback.</param>
     /// <param name="state">The state associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public ValueTask<T> ExecuteAsync<T, TState>(
-        Func<ResilienceContext, TState, ValueTask<T>> callback,
+    public ValueTask<TResult> ExecuteAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<TResult>> callback,
         ResilienceContext context,
         TState state)
-        where T : TResult
+        where TResult : T
     {
         Guard.NotNull(callback);
         Guard.NotNull(context);
@@ -43,15 +43,15 @@ public partial class ResilienceStrategy<TResult>
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
-    /// <typeparam name="T">The type of the result.</typeparam>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="context">The context associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public ValueTask<T> ExecuteAsync<T>(
-        Func<ResilienceContext, ValueTask<T>> callback,
+    public ValueTask<TResult> ExecuteAsync<TResult>(
+        Func<ResilienceContext, ValueTask<TResult>> callback,
         ResilienceContext context)
-        where T : TResult
+        where TResult : T
     {
         Guard.NotNull(callback);
         Guard.NotNull(context);
@@ -62,18 +62,18 @@ public partial class ResilienceStrategy<TResult>
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
-    /// <typeparam name="T">The type of the result.</typeparam>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="state">The state associated with the callback.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
-    public ValueTask<T> ExecuteAsync<T, TState>(
-        Func<TState, CancellationToken, ValueTask<T>> callback,
+    public ValueTask<TResult> ExecuteAsync<TResult, TState>(
+        Func<TState, CancellationToken, ValueTask<TResult>> callback,
         TState state,
         CancellationToken cancellationToken = default)
-        where T : TResult
+        where TResult : T
     {
         Guard.NotNull(callback);
 
@@ -83,13 +83,13 @@ public partial class ResilienceStrategy<TResult>
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
-    /// <typeparam name="T">The type of the result.</typeparam>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
-    public ValueTask<T> ExecuteAsync<T>(
-        Func<CancellationToken, ValueTask<T>> callback,
+    public ValueTask<TResult> ExecuteAsync<TResult>(
+        Func<CancellationToken, ValueTask<TResult>> callback,
         CancellationToken cancellationToken = default)
     {
         Guard.NotNull(callback);
@@ -100,7 +100,7 @@ public partial class ResilienceStrategy<TResult>
     /// <summary>
     /// Executes the specified outcome-based callback.
     /// </summary>
-    /// <typeparam name="T">The type of the result.</typeparam>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="context">The context associated with the callback.</param>
@@ -111,11 +111,11 @@ public partial class ResilienceStrategy<TResult>
     /// This method is for advanced and high performance scenarios. The caller must make sure that the <paramref name="callback"/>
     /// does not throw any exceptions. Instead, it converts them to <see cref="Outcome{TResult}"/>.
     /// </remarks>
-    public ValueTask<Outcome<T>> ExecuteOutcomeAsync<T, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
+    public ValueTask<Outcome<TResult>> ExecuteOutcomeAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)
-        where T : TResult
+        where TResult : T
     {
         Guard.NotNull(callback);
         Guard.NotNull(context);
