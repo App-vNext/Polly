@@ -10,10 +10,6 @@
 /// </remarks>
 internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
 {
-    protected OutcomeResilienceStrategy()
-    {
-    }
-
     protected internal sealed override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
