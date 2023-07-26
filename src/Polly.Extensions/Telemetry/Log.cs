@@ -20,8 +20,8 @@ internal static partial class Log
         this ILogger logger,
         LogLevel logLevel,
         string eventName,
-        string? builderName,
-        string? builderInstance,
+        string builderName,
+        string builderInstance,
         string? strategyName,
         string? operationKey,
         object? result,
@@ -37,8 +37,8 @@ internal static partial class Log
         EventName = "StrategyExecuting")]
     public static partial void ExecutingStrategy(
         this ILogger logger,
-        string? builderName,
-        string? builderInstance,
+        string builderName,
+        string builderInstance,
         string? operationKey,
         string resultType);
 
@@ -55,8 +55,8 @@ internal static partial class Log
     public static partial void StrategyExecuted(
         this ILogger logger,
         LogLevel logLevel,
-        string? builderName,
-        string? builderInstance,
+        string builderName,
+        string builderInstance,
         string? operationKey,
         string resultType,
         object? result,
@@ -78,9 +78,9 @@ internal static partial class Log
     public static partial void ExecutionAttempt(
         this ILogger logger,
         LogLevel level,
-        string? builderName,
-        string? builderInstance,
-        string? strategyName,
+        string builderName,
+        string builderInstance,
+        string strategyName,
         string? operationKey,
         object? result,
         bool handled,
