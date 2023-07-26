@@ -59,6 +59,16 @@ internal sealed class HedgingResilienceStrategy<T> : OutcomeResilienceStrategy<T
         }
     }
 
+    protected override Outcome<T> ExecuteCoreSync<TState>(Func<ResilienceContext, TState, Outcome<T>> callback, ResilienceContext context, TState state)
+    {
+        return ExecuteCore(static (c, s) =>
+        {
+            return new ValueTask<Outcome<T>>(s.callback(c, s.state));
+        },
+        context,
+        (callback, state)).GetAwaiter().GetResult();
+    }
+
     private async ValueTask<Outcome<T>> ExecuteCoreAsync<TState>(
         HedgingExecutionContext<T> hedgingContext,
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,

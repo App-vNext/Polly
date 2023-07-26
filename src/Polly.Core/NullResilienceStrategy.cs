@@ -27,4 +27,17 @@ public sealed class NullResilienceStrategy : ResilienceStrategy
 
         return callback(context, state);
     }
+
+    protected internal override Outcome<TResult> ExecuteCoreSync<TResult, TState>(
+        Func<ResilienceContext, TState, Outcome<TResult>> callback,
+        ResilienceContext context,
+        TState state)
+    {
+        Guard.NotNull(callback);
+        Guard.NotNull(context);
+
+        context.AssertInitialized();
+
+        return callback(context, state);
+    }
 }

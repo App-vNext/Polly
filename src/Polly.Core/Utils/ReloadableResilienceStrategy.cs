@@ -38,6 +38,11 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
         return Strategy.ExecuteCore(callback, context, state);
     }
 
+    protected internal override Outcome<TResult> ExecuteCoreSync<TResult, TState>(Func<ResilienceContext, TState, Outcome<TResult>> callback, ResilienceContext context, TState state)
+    {
+        return Strategy.ExecuteCoreSync(callback, context, state);
+    }
+
     private void RegisterOnReload(CancellationToken previousToken)
     {
         var token = _onReload();

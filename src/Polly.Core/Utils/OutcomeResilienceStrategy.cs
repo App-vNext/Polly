@@ -39,8 +39,37 @@ internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
         }
     }
 
+    protected internal sealed override Outcome<TResult> ExecuteCoreSync<TResult, TState>(
+        Func<ResilienceContext, TState, Outcome<TResult>> callback,
+        ResilienceContext context,
+        TState state)
+    {
+        // Check if we can cast directly, thus saving some cycles and improving the performance
+        if (context.ResultType == typeof(T))
+        {
+            // cast is safe here, because TResult and T are the same type
+            var callbackCasted = (Func<ResilienceContext, TState, Outcome<T>>)(object)callback;
+            return ExecuteCoreSync(callbackCasted, context, state).AsOutcome<TResult>();
+        }
+        else
+        {
+            return ExecuteCoreSync(
+                static (context, state) =>
+                {
+                    return state.callback(context, state.state).AsOutcome<T>();
+                },
+                context,
+                (callback, state)).AsOutcome<TResult>();
+        }
+    }
+
     protected abstract ValueTask<Outcome<T>> ExecuteCore<TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
+        ResilienceContext context,
+        TState state);
+
+    protected abstract Outcome<T> ExecuteCoreSync<TState>(
+        Func<ResilienceContext, TState, Outcome<T>> callback,
         ResilienceContext context,
         TState state);
 }

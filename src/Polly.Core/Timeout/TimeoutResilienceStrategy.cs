@@ -78,6 +78,16 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         return outcome;
     }
 
+    protected internal override Outcome<TResult> ExecuteCoreSync<TResult, TState>(Func<ResilienceContext, TState, Outcome<TResult>> callback, ResilienceContext context, TState state)
+    {
+        return ExecuteCore(static (c, s) =>
+        {
+            return new ValueTask<Outcome<TResult>>(s.callback(c, s.state));
+        },
+        context,
+        (callback, state)).GetAwaiter().GetResult();
+    }
+
     private static CancellationTokenRegistration CreateRegistration(CancellationTokenSource cancellationSource, CancellationToken previousToken)
     {
         if (previousToken.CanBeCanceled)

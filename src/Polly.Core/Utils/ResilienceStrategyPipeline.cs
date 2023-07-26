@@ -69,6 +69,18 @@ internal sealed partial class ResilienceStrategyPipeline : ResilienceStrategy
         return _pipeline.ExecuteCore(callback, context, state);
     }
 
+    protected internal override Outcome<TResult> ExecuteCoreSync<TResult, TState>(
+        Func<ResilienceContext, TState, Outcome<TResult>> callback,
+        ResilienceContext context, TState state)
+    {
+        if (context.CancellationToken.IsCancellationRequested)
+        {
+            return Outcome.FromException<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
+        }
+
+        return _pipeline.ExecuteCoreSync(callback, context, state);
+    }
+
     /// <summary>
     /// A resilience strategy that delegates the execution to the next strategy in the chain.
     /// </summary>
@@ -94,6 +106,25 @@ internal sealed partial class ResilienceStrategyPipeline : ResilienceStrategy
                     }
 
                     return state.Next!.ExecuteCore(state.callback, context, state.state);
+                },
+                context,
+                (Next, callback, state));
+        }
+
+        protected internal override Outcome<TResult> ExecuteCoreSync<TResult, TState>(
+            Func<ResilienceContext, TState, Outcome<TResult>> callback,
+            ResilienceContext context,
+            TState state)
+        {
+            return _strategy.ExecuteCoreSync(
+                static (context, state) =>
+                {
+                    if (context.CancellationToken.IsCancellationRequested)
+                    {
+                        return Outcome.FromException<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
+                    }
+
+                    return state.Next!.ExecuteCoreSync(state.callback, context, state.state);
                 },
                 context,
                 (Next, callback, state));
