@@ -17,9 +17,7 @@ internal sealed class HedgingResilienceStrategy<T> : OutcomeResilienceStrategy<T
         Func<OutcomeArguments<T, OnHedgingArguments>, ValueTask>? onHedging,
         Func<HedgingDelayArguments, ValueTask<TimeSpan>>? hedgingDelayGenerator,
         TimeProvider timeProvider,
-        ResilienceStrategyTelemetry telemetry,
-        bool isGeneric)
-        : base(isGeneric)
+        ResilienceStrategyTelemetry telemetry)
     {
         HedgingDelay = hedgingDelay;
         MaxHedgedAttempts = maxHedgedAttempts;
@@ -43,7 +41,7 @@ internal sealed class HedgingResilienceStrategy<T> : OutcomeResilienceStrategy<T
     public Func<OutcomeArguments<T, OnHedgingArguments>, ValueTask>? OnHedging { get; }
 
     [ExcludeFromCodeCoverage] // coverlet issue
-    protected override async ValueTask<Outcome<T>> ExecuteCallbackAsync<TState>(
+    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
         ResilienceContext context,
         TState state)

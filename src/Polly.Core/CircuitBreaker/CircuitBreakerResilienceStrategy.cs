@@ -9,9 +9,7 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : OutcomeResilienceStr
         Func<OutcomeArguments<T, CircuitBreakerPredicateArguments>, ValueTask<bool>> handler,
         CircuitStateController<T> controller,
         CircuitBreakerStateProvider? stateProvider,
-        CircuitBreakerManualControl? manualControl,
-        bool isGeneric)
-        : base(isGeneric)
+        CircuitBreakerManualControl? manualControl)
     {
         _handler = handler;
         _controller = controller;
@@ -23,7 +21,7 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : OutcomeResilienceStr
             _controller.Dispose);
     }
 
-    protected override async ValueTask<Outcome<T>> ExecuteCallbackAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
+    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
         if (await _controller.OnActionPreExecuteAsync(context).ConfigureAwait(context.ContinueOnCapturedContext) is Outcome<T> outcome)
         {

@@ -55,15 +55,6 @@ public class HedgingResilienceStrategyTests : IDisposable
     }
 
     [Fact]
-    public void Execute_Skipped_Ok()
-    {
-        ConfigureHedging();
-        var strategy = Create();
-
-        strategy.Execute(_ => 10).Should().Be(10);
-    }
-
-    [Fact]
     public async Task Execute_CancellationRequested_Throws()
     {
         ConfigureHedging();
@@ -973,6 +964,5 @@ public class HedgingResilienceStrategyTests : IDisposable
         onHedging,
         _options.HedgingDelayGenerator,
         _timeProvider,
-        _telemetry,
-        true);
+        _telemetry);
 }

@@ -11,11 +11,9 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
 
     public RetryResilienceStrategy(
         RetryStrategyOptions<T> options,
-        bool isGeneric,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry,
         Func<double> randomizer)
-        : base(isGeneric)
     {
         ShouldHandle = options.ShouldHandle;
         BaseDelay = options.BaseDelay;
@@ -41,7 +39,7 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
 
     public Func<OutcomeArguments<T, OnRetryArguments>, ValueTask>? OnRetry { get; }
 
-    protected override async ValueTask<Outcome<T>> ExecuteCallbackAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
+    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
         double retryState = 0;
 
