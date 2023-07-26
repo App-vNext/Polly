@@ -6,13 +6,11 @@ internal static class FallbackHelper
 {
     public static FallbackHandler<T> CreateHandler<T>(
         Func<Outcome<T>, bool> shouldHandle,
-        Func<Outcome<T>> fallback,
-        bool isGeneric = true)
+        Func<Outcome<T>> fallback)
     {
         return new FallbackHandler<T>(
             args => new ValueTask<bool>(shouldHandle(args.Outcome)),
-            _ => new ValueTask<Outcome<T>>(fallback()),
-            isGeneric);
+            _ => new ValueTask<Outcome<T>>(fallback()));
     }
 }
 

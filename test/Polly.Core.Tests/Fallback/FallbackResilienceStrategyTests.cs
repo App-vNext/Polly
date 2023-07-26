@@ -84,10 +84,9 @@ public class FallbackResilienceStrategyTests
 
     private void SetHandler(
         Func<Outcome<string>, bool> shouldHandle,
-        Func<Outcome<string>> fallback,
-        bool isGeneric = true)
+        Func<Outcome<string>> fallback)
     {
-        _handler = FallbackHelper.CreateHandler(shouldHandle, fallback, isGeneric);
+        _handler = FallbackHelper.CreateHandler(shouldHandle, fallback);
     }
 
     private FallbackResilienceStrategy<string> Create() => new(

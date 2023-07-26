@@ -12,8 +12,6 @@ namespace Polly;
 /// </remarks>
 public sealed class ResilienceStrategyBuilder : ResilienceStrategyBuilderBase
 {
-    internal override bool IsGenericBuilder => false;
-
     /// <summary>
     /// Builds the resilience strategy.
     /// </summary>

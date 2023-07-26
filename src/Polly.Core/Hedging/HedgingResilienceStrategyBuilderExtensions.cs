@@ -58,7 +58,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
             var handler = new HedgingHandler<TResult>(
                 options.ShouldHandle!,
                 options.HedgingActionGenerator,
-                context.IsGenericBuilder);
+                IsGeneric: builder is not ResilienceStrategyBuilder);
 
             return new HedgingResilienceStrategy<TResult>(
                 options.HedgingDelay,

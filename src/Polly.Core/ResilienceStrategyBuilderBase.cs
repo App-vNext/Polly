@@ -120,8 +120,6 @@ public abstract class ResilienceStrategyBuilderBase
     [EditorBrowsable(EditorBrowsableState.Never)]
     public Action<ResilienceValidationContext> Validator { get; private protected set; } = ValidationHelper.ValidateObject;
 
-    internal abstract bool IsGenericBuilder { get; }
-
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
     internal void AddStrategyCore(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
     {
@@ -168,7 +166,6 @@ public abstract class ResilienceStrategyBuilderBase
             builderProperties: Properties,
             strategyName: entry.Options.Name,
             timeProvider: TimeProvider,
-            isGenericBuilder: IsGenericBuilder,
             diagnosticSource: DiagnosticSource,
             randomizer: Randomizer);
 
