@@ -182,6 +182,13 @@
     <Right>lib/net6.0/Polly.dll</Right>
   </Suppression>
   <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Polly.Timeout.TimeoutRejectedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
+    <Left>lib/netstandard2.0/Polly.dll</Left>
+    <Right>lib/netstandard2.0/Polly.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
     <DiagnosticId>PKV006</DiagnosticId>
     <Target>.NETStandard,Version=v1.1</Target>
   </Suppression>
