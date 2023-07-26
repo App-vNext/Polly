@@ -12,7 +12,9 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
     public void AddHedging_Ok()
     {
         _builder.AddHedging(new HedgingStrategyOptions { ShouldHandle = _ => PredicateResult.True });
-        _builder.Build().Should().BeOfType<HedgingResilienceStrategy<object>>();
+        var strategy = _builder.Build().Should().BeOfType<HedgingResilienceStrategy<object>>()
+            .Subject
+            .HedgingHandler.IsGeneric.Should().BeFalse();
     }
 
     [Fact]
@@ -23,7 +25,9 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
             HedgingActionGenerator = args => () => Outcome.FromResultAsTask("dummy"),
             ShouldHandle = _ => PredicateResult.True
         });
-        _genericBuilder.Build().Strategy.Should().BeOfType<HedgingResilienceStrategy<string>>();
+        _genericBuilder.Build().Strategy
+            .Should().BeOfType<HedgingResilienceStrategy<string>>()
+            .Subject.HedgingHandler.IsGeneric.Should().BeTrue();
     }
 
     [Fact]
