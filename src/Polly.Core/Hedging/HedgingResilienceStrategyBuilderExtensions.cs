@@ -24,7 +24,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddHedgingCore<TResult, HedgingStrategyOptions<TResult>>(options);
+        builder.AddHedgingCore<TResult, HedgingStrategyOptions<TResult>>(options, isGeneric: true);
         return builder;
     }
 
@@ -41,7 +41,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddHedgingCore<object, HedgingStrategyOptions>(options);
+        builder.AddHedgingCore<object, HedgingStrategyOptions>(options, isGeneric: false);
         return builder;
     }
 
@@ -51,14 +51,15 @@ public static class HedgingResilienceStrategyBuilderExtensions
         Justification = "All options members preserved.")]
     internal static void AddHedgingCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
         this ResilienceStrategyBuilderBase builder,
-        HedgingStrategyOptions<TResult> options)
+        HedgingStrategyOptions<TResult> options,
+        bool isGeneric)
     {
         builder.AddStrategy(context =>
         {
             var handler = new HedgingHandler<TResult>(
                 options.ShouldHandle!,
                 options.HedgingActionGenerator,
-                context.IsGenericBuilder);
+                isGeneric);
 
             return new HedgingResilienceStrategy<TResult>(
                 options.HedgingDelay,

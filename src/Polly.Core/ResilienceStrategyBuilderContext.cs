@@ -15,7 +15,6 @@ public sealed class ResilienceStrategyBuilderContext
         ResilienceProperties builderProperties,
         string? strategyName,
         TimeProvider timeProvider,
-        bool isGenericBuilder,
         DiagnosticSource? diagnosticSource,
         Func<double> randomizer)
     {
@@ -24,7 +23,6 @@ public sealed class ResilienceStrategyBuilderContext
         BuilderProperties = builderProperties;
         StrategyName = strategyName;
         TimeProvider = timeProvider;
-        IsGenericBuilder = isGenericBuilder;
         Telemetry = TelemetryUtil.CreateTelemetry(diagnosticSource, builderName, builderInstanceName, builderProperties, strategyName);
         Randomizer = randomizer;
     }
@@ -60,6 +58,4 @@ public sealed class ResilienceStrategyBuilderContext
     internal TimeProvider TimeProvider { get; }
 
     internal Func<double> Randomizer { get; }
-
-    internal bool IsGenericBuilder { get; }
 }

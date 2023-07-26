@@ -16,7 +16,6 @@ public class ResilienceStrategyBuilderTests
         builder.BuilderName.Should().BeNull();
         builder.Properties.Should().NotBeNull();
         builder.TimeProvider.Should().Be(TimeProvider.System);
-        builder.IsGenericBuilder.Should().BeFalse();
         builder.Randomizer.Should().NotBeNull();
     }
 
@@ -296,7 +295,6 @@ The RequiredProperty field is required.
         builder.AddStrategy(
             context =>
             {
-                context.IsGenericBuilder.Should().BeFalse();
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name");
                 context.BuilderProperties.Should().BeSameAs(builder.Properties);
@@ -460,7 +458,5 @@ The RequiredProperty field is required.
     {
         [Required]
         public string? RequiredProperty { get; set; }
-
-        internal override bool IsGenericBuilder => false;
     }
 }

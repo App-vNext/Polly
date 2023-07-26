@@ -56,8 +56,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
         {
             var handler = new FallbackHandler<TResult>(
                 options.ShouldHandle!,
-                options.FallbackAction!,
-                IsGeneric: context.IsGenericBuilder);
+                options.FallbackAction!);
 
             return new FallbackResilienceStrategy<TResult>(
                 handler,
