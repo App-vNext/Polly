@@ -7,6 +7,27 @@ public class CircuitBreakerManualControlTests
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
+    public void Ctor_Isolated(bool isolated)
+    {
+        using var control = new CircuitBreakerManualControl(isolated);
+        var isolateCalled = false;
+
+        control.Initialize(
+            c =>
+            {
+                c.IsSynchronous.Should().BeTrue();
+                isolateCalled = true;
+                return Task.CompletedTask;
+            },
+            _ => Task.CompletedTask,
+            () => { });
+
+        isolateCalled.Should().Be(isolated);
+    }
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
     public async Task IsolateAsync_NotInitialized_Ok(bool closedAfter)
     {
         using var control = new CircuitBreakerManualControl();

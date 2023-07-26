@@ -32,6 +32,7 @@ Polly.CircuitBreaker.BrokenCircuitException<TResult>.BrokenCircuitException(TRes
 Polly.CircuitBreaker.BrokenCircuitException<TResult>.Result.get -> TResult
 Polly.CircuitBreaker.CircuitBreakerManualControl
 Polly.CircuitBreaker.CircuitBreakerManualControl.CircuitBreakerManualControl() -> void
+Polly.CircuitBreaker.CircuitBreakerManualControl.CircuitBreakerManualControl(bool isIsolated) -> void
 Polly.CircuitBreaker.CircuitBreakerManualControl.CloseAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 Polly.CircuitBreaker.CircuitBreakerManualControl.Dispose() -> void
 Polly.CircuitBreaker.CircuitBreakerManualControl.IsolateAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
