@@ -50,10 +50,10 @@ public class TelemetryResilienceStrategyTests : IDisposable
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience strategy executing. Source: 'my-builder[my-instance]', Operation Key: 'op-key', Result Type: 'void'");
+        messages[0].Message.Should().Be("Resilience strategy executing. Source: 'my-builder/my-instance', Operation Key: 'op-key', Result Type: 'void'");
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Match($"Resilience strategy executed. Source: 'my-builder[my-instance]', Operation Key: 'op-key', Result Type: 'void', Result: 'void', Execution Health: '{healthString}', Execution Time: *ms");
+        messages[0].Message.Should().Match($"Resilience strategy executed. Source: 'my-builder/my-instance', Operation Key: 'op-key', Result Type: 'void', Result: 'void', Execution Health: '{healthString}', Execution Time: *ms");
         messages[0].LogLevel.Should().Be(healthy ? LogLevel.Debug : LogLevel.Warning);
 
         // verify reported state
@@ -78,11 +78,11 @@ public class TelemetryResilienceStrategyTests : IDisposable
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience strategy executing. Source: 'my-builder[my-instance]', Operation Key: 'op-key', Result Type: 'void'");
+        messages[0].Message.Should().Be("Resilience strategy executing. Source: 'my-builder/my-instance', Operation Key: 'op-key', Result Type: 'void'");
 
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Match($"Resilience strategy executed. Source: 'my-builder[my-instance]', Operation Key: 'op-key', Result Type: 'void', Result: 'Dummy message.', Execution Health: 'Healthy', Execution Time: *ms");
+        messages[0].Message.Should().Match($"Resilience strategy executed. Source: 'my-builder/my-instance', Operation Key: 'op-key', Result Type: 'void', Result: 'Dummy message.', Execution Health: 'Healthy', Execution Time: *ms");
         messages[0].Exception.Should().BeOfType<InvalidOperationException>();
     }
 

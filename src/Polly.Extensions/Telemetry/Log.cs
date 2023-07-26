@@ -12,7 +12,7 @@ internal static partial class Log
         EventId = 0,
         Message = "Resilience event occurred. " +
                 "EventName: '{EventName}', " +
-                "Source: '{BuilderName}[{BuilderInstance}]/{StrategyName}', " +
+                "Source: '{BuilderName}/{BuilderInstance}/{StrategyName}', " +
                 "Operation Key: '{OperationKey}', " +
                 "Result: '{Result}'",
         EventName = "ResilienceEvent")]
@@ -31,7 +31,7 @@ internal static partial class Log
         1,
         LogLevel.Debug,
         "Resilience strategy executing. " +
-        "Source: '{BuilderName}[{BuilderInstance}]', " +
+        "Source: '{BuilderName}/{BuilderInstance}', " +
         "Operation Key: '{OperationKey}', " +
         "Result Type: '{ResultType}'",
         EventName = "StrategyExecuting")]
@@ -45,7 +45,7 @@ internal static partial class Log
     [LoggerMessage(
         EventId = 2,
         Message = "Resilience strategy executed. " +
-            "Source: '{BuilderName}[{BuilderInstance}]', " +
+            "Source: '{BuilderName}/{BuilderInstance}', " +
             "Operation Key: '{OperationKey}', " +
             "Result Type: '{ResultType}', " +
             "Result: '{Result}', " +
@@ -67,7 +67,7 @@ internal static partial class Log
     [LoggerMessage(
         EventId = 3,
         Message = "Execution attempt. " +
-                "Source: '{BuilderName}[{BuilderInstance}]/{StrategyName}', " +
+                "Source: '{BuilderName}/{BuilderInstance}/{StrategyName}', " +
                 "Operation Key: '{OperationKey}', " +
                 "Result: '{Result}', " +
                 "Handled: '{Handled}', " +
