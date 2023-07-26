@@ -1,3 +1,21 @@
+## 8.0.0-alpha.7
+
+* Introduce ResilienceStrategyBuilder.Validator by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1412
+* Update docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1413
+* Annotate the library with trimming attributes by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1414
+* Update trimming justifications by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1415
+* Fix condition by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1416
+* API Review Feedback (1) by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1420
+* Introduce ResilienceContextPool (ApiReview) by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1421
+* Convert records to classes by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1422
+* Rename ExecuteCoreAsync to ExecuteCore by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1424
+* Benchmark for strategy creation by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1426
+* Fix README.md example syntax errors by [@Sensational-Code](https://github.com/Sensational-Code) in https://github.com/App-vNext/Polly/pull/1427
+* Improve usability of ResilienceStrategy&lt;T&gt; by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1428
+* Cleanup OutcomeResilienceStrategy by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1430
+* Drop the ResilienceStrategyBuilder.IsGenericBuilder property by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1431
+* Allow isolate CircuitBreakerManualControl using constructor by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1432
+
 ## 8.0.0-alpha.6
 
 * Update docs by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1382
