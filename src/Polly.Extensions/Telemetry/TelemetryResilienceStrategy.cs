@@ -6,8 +6,8 @@ namespace Polly.Extensions.Telemetry;
 internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
 {
     private readonly TimeProvider _timeProvider;
-    private readonly string? _builderName;
-    private readonly string? _builderInstance;
+    private readonly string _builderName;
+    private readonly string _builderInstance;
     private readonly List<Action<EnrichmentContext>> _enrichers;
     private readonly ILogger _logger;
     private readonly Func<ResilienceContext, object?, object?> _resultFormatter;
@@ -32,8 +32,8 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
         List<Action<EnrichmentContext>> enrichers)
     {
         _timeProvider = timeProvider;
-        _builderName = builderName;
-        _builderInstance = builderInstance;
+        _builderName = builderName.GetValueOrPlaceholder();
+        _builderInstance = builderInstance.GetValueOrPlaceholder();
         _resultFormatter = resultFormatter;
         _enrichers = enrichers;
         _logger = loggerFactory.CreateLogger(TelemetryUtil.PollyDiagnosticSource);
