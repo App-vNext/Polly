@@ -79,13 +79,13 @@ jobs:
       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
       with:
         name: mutation-report
-        path: StrykerOutput
+        path: ./artifacts/mutation-report
 
     - name: Publish NuGet packages
       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
       with:
         name: packages-${{ matrix.os_name }}
-        path: ./artifacts/nuget-packages
+        path: ./artifacts/package/release
         if-no-files-found: error
 
     - name: Upload signing file list

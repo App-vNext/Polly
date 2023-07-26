@@ -33,11 +33,11 @@ var artifactsDir = Directory("./artifacts");
 var testResultsDir = System.IO.Path.Combine(artifactsDir, Directory("test-results"));
 
 // NuGet
-var nupkgDestDir = System.IO.Path.Combine(artifactsDir, Directory("nuget-packages"));
+var nupkgDestDir = System.IO.Path.Combine(artifactsDir, Directory("package"), Directory("release"));
 
 // Stryker / Mutation Testing
 var strykerConfig = MakeAbsolute(File("./eng/stryker-config.json"));
-var strykerOutput = MakeAbsolute(Directory("StrykerOutput"));
+var strykerOutput = MakeAbsolute(Directory(System.IO.Path.Combine(artifactsDir, Directory("mutation-report"))));
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -65,17 +65,13 @@ Teardown(_ =>
 Task("__Clean")
     .Does(() =>
 {
-    DirectoryPath[] cleanDirectories = new DirectoryPath[]
+    CleanDirectories(new[]
     {
         testResultsDir,
         nupkgDestDir,
         artifactsDir,
         strykerOutput
-  	};
-
-    CleanDirectories(cleanDirectories);
-
-    foreach(var path in cleanDirectories) { EnsureDirectoryExists(path); }
+  	});
 
     foreach(var path in solutionPaths)
     {
