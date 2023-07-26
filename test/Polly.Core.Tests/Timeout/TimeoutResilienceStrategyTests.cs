@@ -25,8 +25,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     public static TheoryData<TimeSpan> Execute_NoTimeout_Data() => new()
     {
         TimeSpan.Zero,
-        TimeSpan.FromMilliseconds(-1),
-        System.Threading.Timeout.InfiniteTimeSpan,
+        System.Threading.Timeout.InfiniteTimeSpan, // xunit flags TimeSpan.FromMilliseconds(-1) as a duplicate of InfiniteTimeSpan
     };
 
     public void Dispose() => _cancellationSource.Dispose();
