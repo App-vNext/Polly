@@ -25,4 +25,11 @@ public class TelemetryUtilTests
         (-1).AsBoxedInt().Should().NotBeSameAs((-1).AsBoxedInt());
         100.AsBoxedInt().Should().NotBeSameAs(100.AsBoxedInt());
     }
+
+    [Fact]
+    public void GetValueOrPlaceholder_Ok()
+    {
+        TelemetryUtil.GetValueOrPlaceholder("dummy").Should().Be("dummy");
+        TelemetryUtil.GetValueOrPlaceholder(null).Should().Be("(null)");
+    }
 }
