@@ -62,8 +62,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
             return new FallbackResilienceStrategy<TResult>(
                 handler,
                 options.OnFallback,
-                context.Telemetry,
-                context.IsGenericBuilder);
+                context.Telemetry);
         },
         options);
     }

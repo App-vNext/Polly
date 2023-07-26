@@ -67,8 +67,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
                 options.OnHedging,
                 options.HedgingDelayGenerator,
                 context.TimeProvider,
-                context.Telemetry,
-                context.IsGenericBuilder);
+                context.Telemetry);
         },
         options);
     }

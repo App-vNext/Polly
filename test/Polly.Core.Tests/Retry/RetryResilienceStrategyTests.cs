@@ -352,7 +352,6 @@ public class RetryResilienceStrategyTests
 
     private RetryResilienceStrategy<object> CreateSut(TimeProvider? timeProvider = null) =>
         new(_options,
-            false,
             timeProvider ?? _timeProvider,
             _telemetry,
             () => 1.0);

@@ -10,16 +10,8 @@
 /// </remarks>
 internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
 {
-    private readonly bool _isGeneric;
-
-    protected OutcomeResilienceStrategy(bool isGeneric)
+    protected OutcomeResilienceStrategy()
     {
-        if (!isGeneric && typeof(T) != typeof(object))
-        {
-            throw new NotSupportedException("For non-generic strategies the generic parameter should be of type 'object'.");
-        }
-
-        _isGeneric = isGeneric;
     }
 
     protected internal sealed override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
@@ -27,54 +19,32 @@ internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
         ResilienceContext context,
         TState state)
     {
-        if (_isGeneric)
+        // Check if we can cast directly, thus saving some cycles and improving the performance
+        if (context.ResultType == typeof(T))
         {
-            if (typeof(TResult) != typeof(T))
-            {
-                return callback(context, state);
-            }
-
             // cast is safe here, because TResult and T are the same type
             var callbackCasted = (Func<ResilienceContext, TState, ValueTask<Outcome<T>>>)(object)callback;
-            var valueTask = ExecuteCallbackAsync(callbackCasted, context, state);
+            var valueTask = ExecuteCore(callbackCasted, context, state);
 
-            return ConvertValueTask<TResult>(valueTask, context);
+            return TaskHelper.ConvertValueTask<T, TResult>(valueTask, context);
         }
         else
         {
-            var valueTask = ExecuteCallbackAsync(
+            var valueTask = ExecuteCore(
                 static async (context, state) =>
                 {
                     var outcome = await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
-
-                    // cast the outcome to "object" based on (T)
                     return outcome.AsOutcome<T>();
                 },
                 context,
                 (callback, state));
 
-            return ConvertValueTask<TResult>(valueTask, context);
+            return TaskHelper.ConvertValueTask<T, TResult>(valueTask, context);
         }
     }
 
-    protected abstract ValueTask<Outcome<T>> ExecuteCallbackAsync<TState>(
+    protected abstract ValueTask<Outcome<T>> ExecuteCore<TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
         ResilienceContext context,
         TState state);
-
-    private static ValueTask<Outcome<TResult>> ConvertValueTask<TResult>(ValueTask<Outcome<T>> valueTask, ResilienceContext resilienceContext)
-    {
-        if (valueTask.IsCompletedSuccessfully)
-        {
-            return new ValueTask<Outcome<TResult>>(valueTask.Result.AsOutcome<TResult>());
-        }
-
-        return ConvertValueTaskAsync(valueTask, resilienceContext);
-
-        static async ValueTask<Outcome<TResult>> ConvertValueTaskAsync(ValueTask<Outcome<T>> valueTask, ResilienceContext resilienceContext)
-        {
-            var outcome = await valueTask.ConfigureAwait(resilienceContext.ContinueOnCapturedContext);
-            return outcome.AsOutcome<TResult>();
-        }
-    }
 }

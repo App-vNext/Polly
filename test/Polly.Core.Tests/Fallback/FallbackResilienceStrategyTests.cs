@@ -19,16 +19,6 @@ public class FallbackResilienceStrategyTests
     }
 
     [Fact]
-    public void DoesntHandle_Skips()
-    {
-        SetHandler(_ => true, () => Outcome.FromResult("dummy"), true);
-
-        Create().Execute(() => -1).Should().Be(-1);
-
-        _args.Should().BeEmpty();
-    }
-
-    [Fact]
     public void Handle_Result_Ok()
     {
         var called = false;
@@ -70,7 +60,7 @@ public class FallbackResilienceStrategyTests
         _options.OnFallback = _ => { called = true; return default; };
         SetHandler(outcome => outcome.Exception is InvalidOperationException, () => { fallbackActionCalled = true; return Outcome.FromResult("secondary"); });
 
-        Create().Invoking(s => s.Execute<int>(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
+        Create().Invoking(s => s.Execute<string>(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
 
         _args.Should().BeEmpty();
         called.Should().BeFalse();
@@ -103,6 +93,5 @@ public class FallbackResilienceStrategyTests
     private FallbackResilienceStrategy<string> Create() => new(
         _handler!,
         _options.OnFallback,
-        _telemetry,
-        true);
+        _telemetry);
 }

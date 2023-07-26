@@ -156,8 +156,7 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
             options.ShouldHandle!,
             controller,
             options.StateProvider,
-            options.ManualControl,
-            context.IsGenericBuilder);
+            options.ManualControl);
     }
 }
 

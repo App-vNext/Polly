@@ -7,15 +7,7 @@ public class OutcomeResilienceStrategyTests
     [Fact]
     public void Ctor_Ok()
     {
-        new Strategy<string>(args => { }, true).Should().NotBeNull();
-        new Strategy<object>(args => { }, false).Should().NotBeNull();
-        new Strategy<object>(args => { }, true).Should().NotBeNull();
-    }
-
-    [Fact]
-    public void Ctor_InvalidArgs_Throws()
-    {
-        this.Invoking(_ => new Strategy<string>(_ => { }, false)).Should().Throw<NotSupportedException>();
+        new Strategy<string>(args => { }).Should().NotBeNull();
     }
 
     [Fact]
@@ -26,8 +18,7 @@ public class OutcomeResilienceStrategyTests
         var strategy = new Strategy<object>(outcome =>
         {
             values.Add(outcome.Result);
-        },
-        false);
+        });
 
         strategy.Execute(args => "dummy");
         strategy.Execute(args => 0);
@@ -48,31 +39,40 @@ public class OutcomeResilienceStrategyTests
         var strategy = new Strategy<string>(outcome =>
         {
             values.Add(outcome.Result);
-        },
-        true);
+        });
 
         strategy.Execute(args => "dummy");
-        strategy.Execute(args => 0);
-        strategy.Execute<object?>(args => null);
-        strategy.Execute(args => true);
 
         values.Should().HaveCount(1);
         values[0].Should().Be("dummy");
+    }
+
+    [Fact]
+    public void Pipeline_TypeCheck_Ok()
+    {
+        var called = false;
+        var strategy = new Strategy<object>(o =>
+        {
+            o.Result.Should().Be(-1);
+            called = true;
+        });
+
+        strategy.Execute(() => -1);
+
+        called.Should().BeTrue();
     }
 
     private class Strategy<T> : OutcomeResilienceStrategy<T>
     {
         private readonly Action<Outcome<T>> _onOutcome;
 
-        public Strategy(Action<Outcome<T>> onOutcome, bool isGeneric)
-            : base(isGeneric) => _onOutcome = onOutcome;
+        public Strategy(Action<Outcome<T>> onOutcome) => _onOutcome = onOutcome;
 
-        protected override async ValueTask<Outcome<T>> ExecuteCallbackAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
+        protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
         {
             var outcome = await callback(context, state);
             _onOutcome(outcome);
             return outcome;
         }
     }
-
 }

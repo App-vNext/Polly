@@ -55,7 +55,6 @@ public static class RetryResilienceStrategyBuilderExtensions
         builder.AddStrategy(context =>
             new RetryResilienceStrategy<TResult>(
                 options,
-                context.IsGenericBuilder,
                 context.TimeProvider,
                 context.Telemetry,
                 context.Randomizer),

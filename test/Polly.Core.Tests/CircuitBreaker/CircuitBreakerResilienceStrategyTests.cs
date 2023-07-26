@@ -127,11 +127,8 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _options.ShouldHandle = _ => PredicateResult.False;
         _behavior.Setup(v => v.OnActionSuccess(CircuitState.Closed));
 
-        Create().Invoking(s => s.Execute(_ => { })).Should().NotThrow();
+        Create().Invoking(s => s.Execute(_ => 0)).Should().NotThrow();
     }
 
-    private CircuitBreakerResilienceStrategy<int> Create()
-    {
-        return new(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl, true);
-    }
+    private CircuitBreakerResilienceStrategy<int> Create() => new(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl);
 }
