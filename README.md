@@ -24,9 +24,25 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 **Keep up to date with new feature announcements, tips & tricks, and other news through [www.thepollyproject.org](https://www.thepollyproject.org)**
 
-[![NuGet version](https://buildstats.info/nuget/Polly?includePreReleases=false)](https://www.nuget.org/packages/Polly/) [![Build status](https://github.com/App-vNext/Polly/workflows/build/badge.svg?branch=main&event=push)](https://github.com/App-vNext/Polly/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush) [![Code coverage](https://codecov.io/gh/App-vNext/Polly/branch/main/graph/badge.svg)](https://codecov.io/gh/App-vNext/Polly) [![Slack Status](http://www.pollytalk.org/badge.svg)](http://www.pollytalk.org)
+[![Build status](https://github.com/App-vNext/Polly/workflows/build/badge.svg?branch=main&event=push)](https://github.com/App-vNext/Polly/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush) [![Code coverage](https://codecov.io/gh/App-vNext/Polly/branch/main/graph/badge.svg)](https://codecov.io/gh/App-vNext/Polly) [![Slack Status](http://www.pollytalk.org/badge.svg)](http://www.pollytalk.org)
 
 ![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)
+
+## NuGet Packages
+
+### Polly v7
+
+[![NuGet vesion](https://buildstats.info/nuget/Polly?includePreReleases=false)](https://www.nuget.org/packages/Polly/)
+
+### Polly v8 Pre-releases
+
+| **Package** | **Latest Version** |
+|:--|:--|
+| Polly | [![NuGet](https://buildstats.info/nuget/Polly?includePreReleases=true)](https://www.nuget.org/packages/Polly/ "Download Polly from NuGet.org") |
+| Polly.Core | [![NuGet](https://buildstats.info/nuget/Polly.Core?includePreReleases=true)](https://www.nuget.org/packages/Polly.Core/ "Download Polly.Core from NuGet.org") |
+| Polly.Extensions | [![NuGet](https://buildstats.info/nuget/Polly.Extensions?includePreReleases=true)](https://www.nuget.org/packages/Polly.Extensions/ "Download Polly.Extensions from NuGet.org") |
+| Polly.RateLimiting | [![NuGet](https://buildstats.info/nuget/Polly.RateLimiting?includePreReleases=true)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") |
+| Polly.Testing | [![NuGet](https://buildstats.info/nuget/Polly.Testing?includePreReleases=true)](https://www.nuget.org/packages/Polly.Testing/ "Download Polly.Testing from NuGet.org") |
 
 ---
 
@@ -34,6 +50,9 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 <!-- Just set the Toc: Levels setting to '2..4', open the command palette,  -->
 <!-- and run 'Markdown All in One: Update Table of Contents'  -->
 - [Polly](#polly)
+  - [NuGet Packages](#nuget-packages)
+    - [Polly v7](#polly-v7)
+    - [Polly v8 Pre-releases](#polly-v8-pre-releases)
   - [Get Started](#get-started)
     - [Installing via the .NET SDK](#installing-via-the-net-sdk)
     - [Supported targets](#supported-targets)
