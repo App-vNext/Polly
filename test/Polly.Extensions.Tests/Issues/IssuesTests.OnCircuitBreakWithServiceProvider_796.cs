@@ -17,9 +17,9 @@ public partial class IssuesTests
         {
             builder
                 .AddStrategy(new ServiceProviderStrategy(context.ServiceProvider))
-                .AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions
+                .AddCircuitBreaker(new CircuitBreakerStrategyOptions
                 {
-                    FailureThreshold = 1,
+                    FailureRatio = 1,
                     MinimumThroughput = 10,
                     OnOpened = async args =>
                     {

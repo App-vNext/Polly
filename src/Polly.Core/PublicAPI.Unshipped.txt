@@ -11,16 +11,6 @@ override Polly.ResiliencePropertyKey<TValue>.Equals(object? obj) -> bool
 override Polly.ResiliencePropertyKey<TValue>.GetHashCode() -> int
 override Polly.ResiliencePropertyKey<TValue>.ToString() -> string!
 override Polly.Telemetry.ResilienceEvent.ToString() -> string!
-Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions
-Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions.AdvancedCircuitBreakerStrategyOptions() -> void
-Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions<TResult>
-Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions<TResult>.AdvancedCircuitBreakerStrategyOptions() -> void
-Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions<TResult>.FailureThreshold.get -> double
-Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions<TResult>.FailureThreshold.set -> void
-Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions<TResult>.MinimumThroughput.get -> int
-Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions<TResult>.MinimumThroughput.set -> void
-Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions<TResult>.SamplingDuration.get -> System.TimeSpan
-Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions<TResult>.SamplingDuration.set -> void
 Polly.CircuitBreaker.BrokenCircuitException
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException() -> void
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message) -> void
@@ -41,19 +31,26 @@ Polly.CircuitBreaker.CircuitBreakerPredicateArguments.CircuitBreakerPredicateArg
 Polly.CircuitBreaker.CircuitBreakerStateProvider
 Polly.CircuitBreaker.CircuitBreakerStateProvider.CircuitBreakerStateProvider() -> void
 Polly.CircuitBreaker.CircuitBreakerStateProvider.CircuitState.get -> Polly.CircuitBreaker.CircuitState
-Polly.CircuitBreaker.CircuitBreakerStateProvider.LastHandledOutcome.get -> Polly.Outcome<object!>?
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions.CircuitBreakerStrategyOptions() -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDuration.get -> System.TimeSpan
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDuration.set -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.CircuitBreakerStrategyOptions() -> void
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.FailureRatio.get -> double
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.FailureRatio.set -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.ManualControl.get -> Polly.CircuitBreaker.CircuitBreakerManualControl?
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.ManualControl.set -> void
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.MinimumThroughput.get -> int
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.MinimumThroughput.set -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnClosed.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.CircuitBreaker.OnCircuitClosedArguments!>, System.Threading.Tasks.ValueTask>?
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnClosed.set -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnHalfOpened.get -> System.Func<Polly.CircuitBreaker.OnCircuitHalfOpenedArguments!, System.Threading.Tasks.ValueTask>?
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnHalfOpened.set -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnOpened.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.CircuitBreaker.OnCircuitOpenedArguments!>, System.Threading.Tasks.ValueTask>?
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnOpened.set -> void
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.SamplingDuration.get -> System.TimeSpan
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.SamplingDuration.set -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.ShouldHandle.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.CircuitBreaker.CircuitBreakerPredicateArguments>, System.Threading.Tasks.ValueTask<bool>>!
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.ShouldHandle.set -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.StateProvider.get -> Polly.CircuitBreaker.CircuitBreakerStateProvider?
@@ -77,12 +74,6 @@ Polly.CircuitBreaker.OnCircuitOpenedArguments
 Polly.CircuitBreaker.OnCircuitOpenedArguments.BreakDuration.get -> System.TimeSpan
 Polly.CircuitBreaker.OnCircuitOpenedArguments.IsManual.get -> bool
 Polly.CircuitBreaker.OnCircuitOpenedArguments.OnCircuitOpenedArguments(System.TimeSpan breakDuration, bool isManual) -> void
-Polly.CircuitBreaker.SimpleCircuitBreakerStrategyOptions
-Polly.CircuitBreaker.SimpleCircuitBreakerStrategyOptions.SimpleCircuitBreakerStrategyOptions() -> void
-Polly.CircuitBreaker.SimpleCircuitBreakerStrategyOptions<TResult>
-Polly.CircuitBreaker.SimpleCircuitBreakerStrategyOptions<TResult>.FailureThreshold.get -> int
-Polly.CircuitBreaker.SimpleCircuitBreakerStrategyOptions<TResult>.FailureThreshold.set -> void
-Polly.CircuitBreaker.SimpleCircuitBreakerStrategyOptions<TResult>.SimpleCircuitBreakerStrategyOptions() -> void
 Polly.CircuitBreakerResilienceStrategyBuilderExtensions
 Polly.ExecutionRejectedException
 Polly.ExecutionRejectedException.ExecutionRejectedException() -> void
@@ -391,10 +382,8 @@ Polly.Timeout.TimeoutStrategyOptions.TimeoutGenerator.set -> void
 Polly.Timeout.TimeoutStrategyOptions.TimeoutStrategyOptions() -> void
 Polly.TimeoutResilienceStrategyBuilderExtensions
 Polly.Utils.LegacySupport
-static Polly.CircuitBreakerResilienceStrategyBuilderExtensions.AddAdvancedCircuitBreaker(this Polly.ResilienceStrategyBuilder! builder, Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions! options) -> Polly.ResilienceStrategyBuilder!
-static Polly.CircuitBreakerResilienceStrategyBuilderExtensions.AddAdvancedCircuitBreaker<TResult>(this Polly.ResilienceStrategyBuilder<TResult>! builder, Polly.CircuitBreaker.AdvancedCircuitBreakerStrategyOptions<TResult>! options) -> Polly.ResilienceStrategyBuilder<TResult>!
-static Polly.CircuitBreakerResilienceStrategyBuilderExtensions.AddSimpleCircuitBreaker(this Polly.ResilienceStrategyBuilder! builder, Polly.CircuitBreaker.SimpleCircuitBreakerStrategyOptions! options) -> Polly.ResilienceStrategyBuilder!
-static Polly.CircuitBreakerResilienceStrategyBuilderExtensions.AddSimpleCircuitBreaker<TResult>(this Polly.ResilienceStrategyBuilder<TResult>! builder, Polly.CircuitBreaker.SimpleCircuitBreakerStrategyOptions<TResult>! options) -> Polly.ResilienceStrategyBuilder<TResult>!
+static Polly.CircuitBreakerResilienceStrategyBuilderExtensions.AddCircuitBreaker(this Polly.ResilienceStrategyBuilder! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions! options) -> Polly.ResilienceStrategyBuilder!
+static Polly.CircuitBreakerResilienceStrategyBuilderExtensions.AddCircuitBreaker<TResult>(this Polly.ResilienceStrategyBuilder<TResult>! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>! options) -> Polly.ResilienceStrategyBuilder<TResult>!
 static Polly.FallbackResilienceStrategyBuilderExtensions.AddFallback<TResult>(this Polly.ResilienceStrategyBuilder<TResult>! builder, Polly.Fallback.FallbackStrategyOptions<TResult>! options) -> Polly.ResilienceStrategyBuilder<TResult>!
 static Polly.HedgingResilienceStrategyBuilderExtensions.AddHedging<TResult>(this Polly.ResilienceStrategyBuilder<TResult>! builder, Polly.Hedging.HedgingStrategyOptions<TResult>! options) -> Polly.ResilienceStrategyBuilder<TResult>!
 static Polly.Outcome.FromException<TResult>(System.Exception! exception) -> Polly.Outcome<TResult>

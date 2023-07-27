@@ -100,7 +100,7 @@ public class PredicateBuilderTests
     [Fact]
     public async Task Operator_AdvancedCircuitBreakerStrategyOptions_Ok()
     {
-        var options = new AdvancedCircuitBreakerStrategyOptions<string>
+        var options = new CircuitBreakerStrategyOptions<string>
         {
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };

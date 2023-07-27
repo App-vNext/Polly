@@ -5,13 +5,13 @@ namespace Polly.CircuitBreaker;
 internal sealed class AdvancedCircuitBehavior : CircuitBehavior
 {
     private readonly HealthMetrics _metrics;
-    private readonly double _failureThreshold;
+    private readonly double _failureRatio;
     private readonly int _minimumThroughput;
 
-    public AdvancedCircuitBehavior(double failureThreshold, int minimumThroughput, HealthMetrics metrics)
+    public AdvancedCircuitBehavior(double failureRatio, int minimumThroughput, HealthMetrics metrics)
     {
         _metrics = metrics;
-        _failureThreshold = failureThreshold;
+        _failureRatio = failureRatio;
         _minimumThroughput = minimumThroughput;
     }
 
@@ -24,7 +24,7 @@ internal sealed class AdvancedCircuitBehavior : CircuitBehavior
             case CircuitState.Closed:
                 _metrics.IncrementFailure();
                 var info = _metrics.GetHealthInfo();
-                shouldBreak = info.Throughput >= _minimumThroughput && info.FailureRate >= _failureThreshold;
+                shouldBreak = info.Throughput >= _minimumThroughput && info.FailureRate >= _failureRatio;
                 break;
 
             case CircuitState.Open:

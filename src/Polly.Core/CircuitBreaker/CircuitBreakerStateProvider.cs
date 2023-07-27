@@ -38,5 +38,5 @@ public sealed class CircuitBreakerStateProvider
     /// <remarks>
     /// This will be null if no exceptions or results have been handled by the circuit-breaker since the circuit last closed.</remarks>
     /// </summary>
-    public Outcome<object>? LastHandledOutcome => _lastHandledOutcomeProvider?.Invoke();
+    internal Outcome<object>? LastHandledOutcome => _lastHandledOutcomeProvider?.Invoke();
 }

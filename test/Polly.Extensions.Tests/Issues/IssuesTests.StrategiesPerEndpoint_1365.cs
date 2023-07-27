@@ -56,7 +56,7 @@ public partial class IssuesTests
             }
 
             // apply circuit breaker
-            builder.AddAdvancedCircuitBreaker(new()
+            builder.AddCircuitBreaker(new()
             {
                 BreakDuration = endpointOptions.BreakDuration,
                 Name = $"{context.StrategyKey.EndpointName}-{context.StrategyKey.Resource}-CircuitBreaker"
