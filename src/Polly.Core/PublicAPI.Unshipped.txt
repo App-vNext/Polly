@@ -268,12 +268,12 @@ Polly.ResilienceStrategyBuilder<TResult>
 Polly.ResilienceStrategyBuilder<TResult>.Build() -> Polly.ResilienceStrategy<TResult>!
 Polly.ResilienceStrategyBuilder<TResult>.ResilienceStrategyBuilder() -> void
 Polly.ResilienceStrategyBuilderBase
-Polly.ResilienceStrategyBuilderBase.BuilderName.get -> string?
-Polly.ResilienceStrategyBuilderBase.BuilderName.set -> void
 Polly.ResilienceStrategyBuilderBase.DiagnosticSource.get -> System.Diagnostics.DiagnosticSource?
 Polly.ResilienceStrategyBuilderBase.DiagnosticSource.set -> void
 Polly.ResilienceStrategyBuilderBase.InstanceName.get -> string?
 Polly.ResilienceStrategyBuilderBase.InstanceName.set -> void
+Polly.ResilienceStrategyBuilderBase.Name.get -> string?
+Polly.ResilienceStrategyBuilderBase.Name.set -> void
 Polly.ResilienceStrategyBuilderBase.OnCreatingStrategy.get -> System.Action<System.Collections.Generic.IList<Polly.ResilienceStrategy!>!>?
 Polly.ResilienceStrategyBuilderBase.OnCreatingStrategy.set -> void
 Polly.ResilienceStrategyBuilderBase.Properties.get -> Polly.ResilienceProperties!
