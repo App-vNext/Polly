@@ -16,13 +16,11 @@ internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
         TState state)
     {
         // Check if we can cast directly, thus saving some cycles and improving the performance
-        if (context.ResultType == typeof(T))
+        if (callback is Func<ResilienceContext, TState, ValueTask<Outcome<T>>> casted)
         {
-            // cast is safe here, because TResult and T are the same type
-            var callbackCasted = (Func<ResilienceContext, TState, ValueTask<Outcome<T>>>)(object)callback;
-            var valueTask = ExecuteCore(callbackCasted, context, state);
-
-            return TaskHelper.ConvertValueTask<T, TResult>(valueTask, context);
+            return TaskHelper.ConvertValueTask<T, TResult>(
+                ExecuteCore(casted, context, state),
+                context);
         }
         else
         {
