@@ -13,11 +13,11 @@ public readonly struct RetryPredicateArguments
     /// <summary>
     /// Initializes a new instance of the <see cref="RetryPredicateArguments"/> struct.
     /// </summary>
-    /// <param name="attempt">The zero-based attempt number.</param>
-    public RetryPredicateArguments(int attempt) => Attempt = attempt;
+    /// <param name="attemptNumber">The zero-based attempt number.</param>
+    public RetryPredicateArguments(int attemptNumber) => AttemptNumber = attemptNumber;
 
     /// <summary>
     /// Gets the zero-based attempt number.
     /// </summary>
-    public int Attempt { get; }
+    public int AttemptNumber { get; }
 }

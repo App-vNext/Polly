@@ -10,6 +10,6 @@ public class HedgingDelayArgumentsTests
         var args = new HedgingDelayArguments(ResilienceContextPool.Shared.Get(), 5);
 
         args.Context.Should().NotBeNull();
-        args.Attempt.Should().Be(5);
+        args.AttemptNumber.Should().Be(5);
     }
 }

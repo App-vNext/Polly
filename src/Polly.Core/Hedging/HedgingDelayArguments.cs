@@ -14,11 +14,11 @@ public readonly struct HedgingDelayArguments
     /// Initializes a new instance of the <see cref="HedgingDelayArguments"/> struct.
     /// </summary>
     /// <param name="context">The context associated with the execution of a user-provided callback.</param>
-    /// <param name="attempt">The zero-based hedging attempt number.</param>
-    public HedgingDelayArguments(ResilienceContext context, int attempt)
+    /// <param name="attemptNumber">The zero-based hedging attempt number.</param>
+    public HedgingDelayArguments(ResilienceContext context, int attemptNumber)
     {
         Context = context;
-        Attempt = attempt;
+        AttemptNumber = attemptNumber;
     }
 
     /// <summary>
@@ -29,5 +29,5 @@ public readonly struct HedgingDelayArguments
     /// <summary>
     /// Gets the zero-based hedging attempt number.
     /// </summary>
-    public int Attempt { get; }
+    public int AttemptNumber { get; }
 }

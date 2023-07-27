@@ -99,7 +99,7 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 
             var enrichmentContext = EnrichmentContext.Get(args.Context, args.Arguments, args.Outcome);
             AddCommonTags(args, source, enrichmentContext);
-            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.AttemptNumber, executionAttempt.Attempt.AsBoxedInt()));
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.AttemptNumber, executionAttempt.AttemptNumber.AsBoxedInt()));
             enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.AttemptHandled, executionAttempt.Handled.AsBoxedBool()));
             EnrichmentUtil.Enrich(enrichmentContext, _enrichers);
             AttemptDuration.Record(executionAttempt.ExecutionTime.TotalMilliseconds, enrichmentContext.TagsSpan);
@@ -142,7 +142,7 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
                     args.Context.OperationKey,
                     result,
                     executionAttempt.Handled,
-                    executionAttempt.Attempt,
+                    executionAttempt.AttemptNumber,
                     executionAttempt.ExecutionTime.TotalMilliseconds,
                     args.Outcome?.Exception);
             }

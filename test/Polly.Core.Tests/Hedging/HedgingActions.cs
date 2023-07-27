@@ -19,11 +19,11 @@ internal class HedgingActions
 
         Generator = args =>
         {
-            if (args.Attempt <= Functions.Count)
+            if (args.AttemptNumber <= Functions.Count)
             {
                 return async () =>
                 {
-                    return await Functions[args.Attempt - 1]!(args.ActionContext);
+                    return await Functions[args.AttemptNumber - 1]!(args.ActionContext);
                 };
             }
 
