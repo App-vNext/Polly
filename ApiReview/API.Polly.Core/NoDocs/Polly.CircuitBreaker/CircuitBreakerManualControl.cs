@@ -11,8 +11,9 @@ namespace Polly.CircuitBreaker;
 
 public sealed class CircuitBreakerManualControl : IDisposable
 {
+    public CircuitBreakerManualControl();
+    public CircuitBreakerManualControl(bool isIsolated);
     public Task IsolateAsync(CancellationToken cancellationToken = default(CancellationToken));
     public Task CloseAsync(CancellationToken cancellationToken = default(CancellationToken));
     public void Dispose();
-    public CircuitBreakerManualControl();
 }
