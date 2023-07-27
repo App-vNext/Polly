@@ -57,12 +57,33 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
     {
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.EventName, args.Event.EventName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.EventSeverity, args.Event.Severity.AsString()));
-        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderName, source.BuilderName));
-        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderInstance, source.BuilderInstanceName));
-        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyName, source.StrategyName));
-        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.OperationKey, enrichmentContext.Context.OperationKey));
+
+        if (source.BuilderName is not null)
+        {
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderName, source.BuilderName));
+        }
+
+        if (source.BuilderInstanceName is not null)
+        {
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderInstance, source.BuilderInstanceName));
+        }
+
+        if (source.StrategyName is not null)
+        {
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyName, source.StrategyName));
+        }
+
+        if (enrichmentContext.Context.OperationKey is not null)
+        {
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.OperationKey, enrichmentContext.Context.OperationKey));
+        }
+
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ResultType, args.Context.GetResultType()));
-        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, args.Outcome?.Exception?.GetType().FullName));
+
+        if (args.Outcome?.Exception is Exception e)
+        {
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, e.GetType().FullName));
+        }
     }
 
     private void MeterEvent(TelemetryEventArguments args)

@@ -140,7 +140,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 
-        ev.Count.Should().Be(7);
+        ev.Count.Should().Be(5);
         ev["my-custom-tag"].Should().Be("my-tag-value");
     }
 
@@ -164,12 +164,12 @@ public class TelemetryResilienceStrategyTests : IDisposable
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 
-        ev.Count.Should().Be(6);
+        ev.Count.Should().Be(5);
         ev["builder-instance"].Should().Be("my-instance");
         ev["operation-key"].Should().Be("op-key");
         ev["builder-name"].Should().Be("my-builder");
         ev["result-type"].Should().Be("Boolean");
-        ev["exception-name"].Should().BeNull();
+        ev.Should().NotContainKey("exception-name");
 
         if (healthy)
         {
