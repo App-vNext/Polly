@@ -24,7 +24,7 @@ public abstract class ResilienceStrategyBuilderBase
 
     private protected ResilienceStrategyBuilderBase(ResilienceStrategyBuilderBase other)
     {
-        BuilderName = other.BuilderName;
+        Name = other.Name;
         Properties = other.Properties;
         TimeProvider = other.TimeProvider;
         OnCreatingStrategy = other.OnCreatingStrategy;
@@ -41,14 +41,14 @@ public abstract class ResilienceStrategyBuilderBase
     /// <value>
     /// The default value is <see langword="null"/>.
     /// </value>
-    public string? BuilderName { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// Gets or sets the instance name of the builder.
     /// </summary>
     /// <remarks>
     /// This property is also included in the telemetry that is produced by the individual resilience strategies.
-    /// The instance name can be used to differentiate between multiple builder instances with the same <see cref="BuilderName"/>.
+    /// The instance name can be used to differentiate between multiple builder instances with the same <see cref="Name"/>.
     /// </remarks>
     /// <value>
     /// The default value is <see langword="null"/>.
@@ -161,7 +161,7 @@ public abstract class ResilienceStrategyBuilderBase
     private ResilienceStrategy CreateResilienceStrategy(Entry entry)
     {
         var context = new ResilienceStrategyBuilderContext(
-            builderName: BuilderName,
+            builderName: Name,
             builderInstanceName: InstanceName,
             builderProperties: Properties,
             strategyName: entry.Options.Name,

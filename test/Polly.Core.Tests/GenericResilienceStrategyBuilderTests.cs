@@ -10,7 +10,7 @@ public class GenericResilienceStrategyBuilderTests
     [Fact]
     public void Ctor_EnsureDefaults()
     {
-        _builder.BuilderName.Should().BeNull();
+        _builder.Name.Should().BeNull();
         _builder.Properties.Should().NotBeNull();
         _builder.TimeProvider.Should().Be(TimeProvider.System);
         _builder.OnCreatingStrategy.Should().BeNull();
@@ -25,8 +25,8 @@ public class GenericResilienceStrategyBuilderTests
     [Fact]
     public void Properties_GetSet_Ok()
     {
-        _builder.BuilderName = "dummy";
-        _builder.BuilderName.Should().Be("dummy");
+        _builder.Name = "dummy";
+        _builder.Name.Should().Be("dummy");
 
         var timeProvider = new FakeTimeProvider();
         _builder.TimeProvider = timeProvider;

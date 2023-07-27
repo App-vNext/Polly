@@ -240,7 +240,7 @@ public class ResilienceStrategyRegistryTests
             context.BuilderName.Should().Be("A");
             context.BuilderInstanceName.Should().Be("Instance1");
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.BuilderName.Should().Be("A");
+            builder.Name.Should().Be("A");
             called = true;
         });
 
@@ -270,7 +270,7 @@ public class ResilienceStrategyRegistryTests
         registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, _) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.BuilderName.Should().Be("A");
+            builder.Name.Should().Be("A");
             builder.InstanceName.Should().Be("Instance1");
             called = true;
         });
