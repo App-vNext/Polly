@@ -55,13 +55,14 @@ public static class TestUtilities
 
     public static IDisposable EnablePollyMetering(ICollection<MeteringEvent> events)
     {
+        var stateStr = Guid.NewGuid().ToString();
         var meterListener = new MeterListener
         {
             InstrumentPublished = (instrument, listener) =>
             {
                 if (instrument.Meter.Name == "Polly")
                 {
-                    listener.EnableMeasurementEvents(instrument);
+                    listener.EnableMeasurementEvents(instrument, stateStr);
                 }
             }
         };
@@ -69,8 +70,13 @@ public static class TestUtilities
         meterListener.SetMeasurementEventCallback<double>(OnMeasurementRecorded);
         meterListener.Start();
 
-        void OnMeasurementRecorded<T>(Instrument instrument, T measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
-            => events.Add(new MeteringEvent(measurement!, instrument.Name, tags.ToArray().ToDictionary(v => v.Key, v => v.Value)));
+        void OnMeasurementRecorded<T>(Instrument instrument, T measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? stateObj)
+        {
+            if (stateObj is string str && str == stateStr)
+            {
+                events.Add(new MeteringEvent(measurement!, instrument.Name, tags.ToArray().ToDictionary(v => v.Key, v => v.Value)));
+            }
+        }
 
         return meterListener;
     }
