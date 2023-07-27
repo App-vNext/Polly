@@ -13,7 +13,7 @@ public class ResilienceStrategyBuilderTests
     {
         var builder = new ResilienceStrategyBuilder();
 
-        builder.BuilderName.Should().BeNull();
+        builder.Name.Should().BeNull();
         builder.Properties.Should().NotBeNull();
         builder.TimeProvider.Should().Be(TimeProvider.System);
         builder.Randomizer.Should().NotBeNull();
@@ -25,7 +25,7 @@ public class ResilienceStrategyBuilderTests
         var builder = new ResilienceStrategyBuilder
         {
             TimeProvider = Mock.Of<TimeProvider>(),
-            BuilderName = "dummy",
+            Name = "dummy",
             Randomizer = () => 0.0,
             DiagnosticSource = Mock.Of<DiagnosticSource>(),
             OnCreatingStrategy = _ => { },
@@ -34,7 +34,7 @@ public class ResilienceStrategyBuilderTests
         builder.Properties.Set(new ResiliencePropertyKey<string>("dummy"), "dummy");
 
         var other = new ResilienceStrategyBuilder<double>(builder);
-        other.BuilderName.Should().Be(builder.BuilderName);
+        other.Name.Should().Be(builder.Name);
         other.TimeProvider.Should().Be(builder.TimeProvider);
         other.Randomizer.Should().BeSameAs(builder.Randomizer);
         other.DiagnosticSource.Should().BeSameAs(builder.DiagnosticSource);
@@ -288,7 +288,7 @@ The RequiredProperty field is required.
 
         var builder = new ResilienceStrategyBuilder
         {
-            BuilderName = "builder-name",
+            Name = "builder-name",
             TimeProvider = new FakeTimeProvider(),
         };
 

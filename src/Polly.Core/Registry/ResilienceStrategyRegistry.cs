@@ -273,7 +273,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
         Func<TBuilder> factory = () =>
         {
             var builder = activator();
-            builder.BuilderName = context.BuilderName;
+            builder.Name = context.BuilderName;
             builder.InstanceName = context.BuilderInstanceName;
             configure(builder, context);
 
