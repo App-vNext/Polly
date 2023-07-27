@@ -212,7 +212,15 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         events.Should().HaveCount(1);
         var ev = events[0];
 
-        ev.Count.Should().Be(8);
+        if (noOutcome && exception)
+        {
+            ev.Count.Should().Be(8);
+        }
+        else
+        {
+            ev.Count.Should().Be(7);
+        }
+
         ev["event-name"].Should().Be("my-event");
         ev["event-severity"].Should().Be("Warning");
         ev["strategy-name"].Should().Be("my-strategy");
@@ -227,7 +235,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         }
         else
         {
-            ev["exception-name"].Should().Be(null);
+            ev.Should().NotContainKey("exception-name");
         }
     }
 
@@ -252,7 +260,15 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         events.Should().HaveCount(1);
         var ev = events[0];
 
-        ev.Count.Should().Be(10);
+        if (noOutcome && exception)
+        {
+            ev.Count.Should().Be(10);
+        }
+        else
+        {
+            ev.Count.Should().Be(9);
+        }
+
         ev["event-name"].Should().Be("my-event");
         ev["event-severity"].Should().Be("Warning");
         ev["strategy-name"].Should().Be("my-strategy");
@@ -269,7 +285,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         }
         else
         {
-            ev["exception-name"].Should().Be(null);
+            ev.Should().NotContainKey("exception-name");
         }
 
         _events.Single(v => v.Name == "execution-attempt-duration").Measurement.Should().Be(50000);
@@ -301,7 +317,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         var events = GetEvents("resilience-events");
         var ev = events[0];
-        ev.Count.Should().Be(DefaultDimensions + count + 2);
+        ev.Count.Should().Be(DefaultDimensions + count + 1);
         ev["other"].Should().Be("other-value");
 
         for (int i = 0; i < count; i++)
@@ -315,7 +331,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     {
         var telemetry = Create();
         ReportEvent(telemetry, null, instanceName: null);
-        var events = GetEvents("resilience-events")[0]["builder-instance"].Should().BeNull();
+        var events = GetEvents("resilience-events")[0].Should().NotContainKey("builder-instance");
     }
 
     [InlineData(true)]
