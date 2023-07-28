@@ -4,9 +4,9 @@ using Polly.CircuitBreaker;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
-public class CircuitBreakerResilienceStrategyBuilderTests
+public class CircuitBreakerCompositeStrategyBuilderTests
 {
-    public static TheoryData<Action<ResilienceStrategyBuilder>> ConfigureData = new()
+    public static TheoryData<Action<CompositeStrategyBuilder>> ConfigureData = new()
     {
         builder => builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions
         {
@@ -14,7 +14,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         }),
     };
 
-    public static TheoryData<Action<ResilienceStrategyBuilder<int>>> ConfigureDataGeneric = new()
+    public static TheoryData<Action<CompositeStrategyBuilder<int>>> ConfigureDataGeneric = new()
     {
         builder => builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions<int>
         {
@@ -24,9 +24,9 @@ public class CircuitBreakerResilienceStrategyBuilderTests
 
     [MemberData(nameof(ConfigureData))]
     [Theory]
-    public void AddCircuitBreaker_Configure(Action<ResilienceStrategyBuilder> builderAction)
+    public void AddCircuitBreaker_Configure(Action<CompositeStrategyBuilder> builderAction)
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new CompositeStrategyBuilder();
 
         builderAction(builder);
 
@@ -37,9 +37,9 @@ public class CircuitBreakerResilienceStrategyBuilderTests
 
     [MemberData(nameof(ConfigureDataGeneric))]
     [Theory]
-    public void AddCircuitBreaker_Generic_Configure(Action<ResilienceStrategyBuilder<int>> builderAction)
+    public void AddCircuitBreaker_Generic_Configure(Action<CompositeStrategyBuilder<int>> builderAction)
     {
-        var builder = new ResilienceStrategyBuilder<int>();
+        var builder = new CompositeStrategyBuilder<int>();
 
         builderAction(builder);
 
@@ -51,12 +51,12 @@ public class CircuitBreakerResilienceStrategyBuilderTests
     [Fact]
     public void AddCircuitBreaker_Validation()
     {
-        new ResilienceStrategyBuilder<int>()
+        new CompositeStrategyBuilder<int>()
             .Invoking(b => b.AddCircuitBreaker(new CircuitBreakerStrategyOptions<int> { BreakDuration = TimeSpan.MinValue }))
             .Should()
             .Throw<ValidationException>();
 
-        new ResilienceStrategyBuilder()
+        new CompositeStrategyBuilder()
             .Invoking(b => b.AddCircuitBreaker(new CircuitBreakerStrategyOptions { BreakDuration = TimeSpan.MinValue }))
             .Should()
             .Throw<ValidationException>();
@@ -82,7 +82,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         };
 
         var timeProvider = new FakeTimeProvider();
-        var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider }.AddCircuitBreaker(options).Build();
+        var strategy = new CompositeStrategyBuilder { TimeProvider = timeProvider }.AddCircuitBreaker(options).Build();
 
         for (int i = 0; i < 10; i++)
         {
@@ -117,11 +117,11 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         var manualControl = new CircuitBreakerManualControl();
         await manualControl.IsolateAsync();
 
-        var strategy1 = new ResilienceStrategyBuilder()
+        var strategy1 = new CompositeStrategyBuilder()
             .AddCircuitBreaker(new() { ManualControl = manualControl })
             .Build();
 
-        var strategy2 = new ResilienceStrategyBuilder()
+        var strategy2 = new CompositeStrategyBuilder()
             .AddCircuitBreaker(new() { ManualControl = manualControl })
             .Build();
 

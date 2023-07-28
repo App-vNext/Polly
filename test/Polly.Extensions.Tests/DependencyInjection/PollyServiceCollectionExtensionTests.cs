@@ -26,18 +26,18 @@ public class PollyServiceCollectionExtensionTests
         _services = new ServiceCollection();
         Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
             Key,
-            (Action<ResilienceStrategyBuilder, AddResilienceStrategyContext<string>>)null!));
+            (Action<CompositeStrategyBuilder, AddResilienceStrategyContext<string>>)null!));
         Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
             Key,
-            (Action<ResilienceStrategyBuilder<string>, AddResilienceStrategyContext<string>>)null!));
+            (Action<CompositeStrategyBuilder<string>, AddResilienceStrategyContext<string>>)null!));
 
         Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
             Key,
-            (Action<ResilienceStrategyBuilder>)null!));
+            (Action<CompositeStrategyBuilder>)null!));
 
         Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
             Key,
-            (Action<ResilienceStrategyBuilder<string>>)null!));
+            (Action<CompositeStrategyBuilder<string>>)null!));
     }
 
     [InlineData(true)]
@@ -56,10 +56,10 @@ public class PollyServiceCollectionExtensionTests
 
         var serviceProvider = _services.BuildServiceProvider();
 
-        serviceProvider.GetServices<ResilienceStrategyBuilder>().Should().NotBeNull();
+        serviceProvider.GetServices<CompositeStrategyBuilder>().Should().NotBeNull();
         serviceProvider.GetServices<ResilienceStrategyRegistry<string>>().Should().NotBeNull();
         serviceProvider.GetServices<ResilienceStrategyProvider<string>>().Should().NotBeNull();
-        serviceProvider.GetServices<ResilienceStrategyBuilder>().Should().NotBeSameAs(serviceProvider.GetServices<ResilienceStrategyBuilder>());
+        serviceProvider.GetServices<CompositeStrategyBuilder>().Should().NotBeSameAs(serviceProvider.GetServices<CompositeStrategyBuilder>());
     }
 
     [Fact]
@@ -161,7 +161,7 @@ public class PollyServiceCollectionExtensionTests
     }
 
     [Fact]
-    public void AddResilienceStrategy_EnsureResilienceStrategyBuilderResolvedCorrectly()
+    public void AddResilienceStrategy_EnsureCompositeStrategyBuilderResolvedCorrectly()
     {
         var asserted = false;
         var key = new ResiliencePropertyKey<int>("A");
@@ -261,7 +261,7 @@ public class PollyServiceCollectionExtensionTests
 
         provider.GetRequiredService<ResilienceStrategyRegistry<string>>().Should().NotBeNull();
         provider.GetRequiredService<ResilienceStrategyProvider<string>>().Should().NotBeNull();
-        provider.GetRequiredService<ResilienceStrategyBuilder>().DiagnosticSource.Should().NotBeNull();
+        provider.GetRequiredService<CompositeStrategyBuilder>().DiagnosticSource.Should().NotBeNull();
     }
 
     [Fact]
@@ -276,7 +276,7 @@ public class PollyServiceCollectionExtensionTests
         provider.GetRequiredService<IOptions<ResilienceStrategyRegistryOptions<string>>>().Value.InstanceNameFormatter.Should().Be(formatter);
     }
 
-    private void AddResilienceStrategy(string key, Action<ResilienceStrategyBuilderContext>? onBuilding = null)
+    private void AddResilienceStrategy(string key, Action<StrategyBuilderContext>? onBuilding = null)
     {
         _services.AddResilienceStrategy(key, builder =>
         {
@@ -288,7 +288,7 @@ public class PollyServiceCollectionExtensionTests
         });
     }
 
-    private void AddResilienceStrategy<TResult>(string key, Action<ResilienceStrategyBuilderContext>? onBuilding = null)
+    private void AddResilienceStrategy<TResult>(string key, Action<StrategyBuilderContext>? onBuilding = null)
     {
         _services.AddResilienceStrategy<string, TResult>(key, builder =>
         {

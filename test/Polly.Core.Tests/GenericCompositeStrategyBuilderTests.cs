@@ -3,9 +3,9 @@ using Polly.Utils;
 
 namespace Polly.Core.Tests;
 
-public class GenericResilienceStrategyBuilderTests
+public class GenericCompositeStrategyBuilderTests
 {
-    private readonly ResilienceStrategyBuilder<string> _builder = new();
+    private readonly CompositeStrategyBuilder<string> _builder = new();
 
     [Fact]
     public void Ctor_EnsureDefaults()
@@ -19,7 +19,7 @@ public class GenericResilienceStrategyBuilderTests
     [Fact]
     public void CopyCtor_Ok()
     {
-        new ResilienceStrategyBuilder<string>(new ResilienceStrategyBuilder()).Should().NotBeNull();
+        new CompositeStrategyBuilder<string>(new CompositeStrategyBuilder()).Should().NotBeNull();
     }
 
     [Fact]
@@ -48,7 +48,7 @@ public class GenericResilienceStrategyBuilderTests
 
         // assert
         strategy.Should().NotBeNull();
-        strategy.Strategy.Should().BeOfType<ResilienceStrategyPipeline>().Subject.Strategies.Should().HaveCount(2);
+        strategy.Strategy.Should().BeOfType<CompositeResilienceStrategy>().Subject.Strategies.Should().HaveCount(2);
     }
 
     [Fact]

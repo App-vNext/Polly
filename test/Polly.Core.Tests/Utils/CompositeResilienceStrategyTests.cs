@@ -2,15 +2,15 @@ using Polly.Utils;
 
 namespace Polly.Core.Tests.Utils;
 
-public class ResilienceStrategyPipelineTests
+public class CompositeResilienceStrategyTests
 {
     [Fact]
-    public void CreatePipeline_ArgValidation()
+    public void Create_ArgValidation()
     {
-        Assert.Throws<ArgumentNullException>(() => ResilienceStrategyPipeline.CreatePipeline(null!));
-        Assert.Throws<InvalidOperationException>(() => ResilienceStrategyPipeline.CreatePipeline(Array.Empty<ResilienceStrategy>()));
-        Assert.Throws<InvalidOperationException>(() => ResilienceStrategyPipeline.CreatePipeline(new ResilienceStrategy[] { new TestResilienceStrategy() }));
-        Assert.Throws<InvalidOperationException>(() => ResilienceStrategyPipeline.CreatePipeline(new ResilienceStrategy[]
+        Assert.Throws<ArgumentNullException>(() => CompositeResilienceStrategy.Create(null!));
+        Assert.Throws<InvalidOperationException>(() => CompositeResilienceStrategy.Create(Array.Empty<ResilienceStrategy>()));
+        Assert.Throws<InvalidOperationException>(() => CompositeResilienceStrategy.Create(new ResilienceStrategy[] { new TestResilienceStrategy() }));
+        Assert.Throws<InvalidOperationException>(() => CompositeResilienceStrategy.Create(new ResilienceStrategy[]
         {
             NullResilienceStrategy.Instance,
             NullResilienceStrategy.Instance
@@ -18,7 +18,7 @@ public class ResilienceStrategyPipelineTests
     }
 
     [Fact]
-    public void CreatePipeline_EnsureOriginalStrategiesPreserved()
+    public void Create_EnsureOriginalStrategiesPreserved()
     {
         var strategies = new ResilienceStrategy[]
         {
@@ -27,7 +27,7 @@ public class ResilienceStrategyPipelineTests
             new TestResilienceStrategy(),
         };
 
-        var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
+        var pipeline = CompositeResilienceStrategy.Create(strategies);
 
         for (var i = 0; i < strategies.Length; i++)
         {
@@ -38,7 +38,7 @@ public class ResilienceStrategyPipelineTests
     }
 
     [Fact]
-    public async Task CreatePipeline_EnsureExceptionsNotWrapped()
+    public async Task Create_EnsureExceptionsNotWrapped()
     {
         var strategies = new ResilienceStrategy[]
         {
@@ -46,7 +46,7 @@ public class ResilienceStrategyPipelineTests
             new Strategy(),
         };
 
-        var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
+        var pipeline = CompositeResilienceStrategy.Create(strategies);
         await pipeline
             .Invoking(p => p.ExecuteCore((_, _) => Outcome.FromResultAsTask(10), ResilienceContextPool.Shared.Get(), "state").AsTask())
             .Should()
@@ -54,7 +54,7 @@ public class ResilienceStrategyPipelineTests
     }
 
     [Fact]
-    public void CreatePipeline_EnsurePipelineReusableAcrossDifferentPipelines()
+    public void Create_EnsurePipelineReusableAcrossDifferentPipelines()
     {
         var strategies = new ResilienceStrategy[]
         {
@@ -63,17 +63,17 @@ public class ResilienceStrategyPipelineTests
             new TestResilienceStrategy(),
         };
 
-        var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
+        var pipeline = CompositeResilienceStrategy.Create(strategies);
 
-        ResilienceStrategyPipeline.CreatePipeline(new ResilienceStrategy[] { NullResilienceStrategy.Instance, pipeline });
+        CompositeResilienceStrategy.Create(new ResilienceStrategy[] { NullResilienceStrategy.Instance, pipeline });
 
-        this.Invoking(_ => ResilienceStrategyPipeline.CreatePipeline(new ResilienceStrategy[] { NullResilienceStrategy.Instance, pipeline }))
+        this.Invoking(_ => CompositeResilienceStrategy.Create(new ResilienceStrategy[] { NullResilienceStrategy.Instance, pipeline }))
             .Should()
             .NotThrow();
     }
 
     [Fact]
-    public async Task CreatePipeline_Cancelled_EnsureNoExecution()
+    public async Task Create_Cancelled_EnsureNoExecution()
     {
         using var cancellation = new CancellationTokenSource();
         cancellation.Cancel();
@@ -83,7 +83,7 @@ public class ResilienceStrategyPipelineTests
             new TestResilienceStrategy(),
         };
 
-        var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
+        var pipeline = CompositeResilienceStrategy.Create(strategies);
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellation.Token;
 
@@ -92,7 +92,7 @@ public class ResilienceStrategyPipelineTests
     }
 
     [Fact]
-    public async Task CreatePipeline_CancelledLater_EnsureNoExecution()
+    public async Task Create_CancelledLater_EnsureNoExecution()
     {
         var executed = false;
         using var cancellation = new CancellationTokenSource();
@@ -102,7 +102,7 @@ public class ResilienceStrategyPipelineTests
             new TestResilienceStrategy(),
         };
 
-        var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
+        var pipeline = CompositeResilienceStrategy.Create(strategies);
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellation.Token;
 

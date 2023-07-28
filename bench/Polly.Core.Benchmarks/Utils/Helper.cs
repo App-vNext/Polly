@@ -26,9 +26,9 @@ internal static partial class Helper
         throw new NotSupportedException();
     }
 
-    private static ResilienceStrategy<string> CreateStrategy(Action<ResilienceStrategyBuilder<string>> configure)
+    private static ResilienceStrategy<string> CreateStrategy(Action<CompositeStrategyBuilder<string>> configure)
     {
-        var builder = new ResilienceStrategyBuilder<string>();
+        var builder = new CompositeStrategyBuilder<string>();
         configure(builder);
         return builder.Build();
     }

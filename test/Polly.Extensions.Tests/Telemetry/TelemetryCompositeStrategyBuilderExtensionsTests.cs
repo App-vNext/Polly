@@ -4,9 +4,9 @@ using Polly.Extensions.Telemetry;
 
 namespace Polly.Extensions.Tests.Telemetry;
 
-public class TelemetryResilienceStrategyBuilderExtensionsTests
+public class TelemetryCompositeStrategyBuilderExtensionsTests
 {
-    private readonly ResilienceStrategyBuilder _builder = new();
+    private readonly CompositeStrategyBuilder _builder = new();
 
     [Fact]
     public void ConfigureTelemetry_EnsureDiagnosticSourceUpdated()

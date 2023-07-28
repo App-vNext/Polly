@@ -9,13 +9,13 @@ namespace Polly.Registry;
 public class ResilienceStrategyRegistryOptions<TKey>
 {
     /// <summary>
-    /// Gets or sets the factory method that creates instances of <see cref="ResilienceStrategyBuilder"/>.
+    /// Gets or sets the factory method that creates instances of <see cref="CompositeStrategyBuilder"/>.
     /// </summary>
     /// <value>
-    /// The default value is a function that creates a new instance of <see cref="ResilienceStrategyBuilder"/> using the default constructor.
+    /// The default value is a function that creates a new instance of <see cref="CompositeStrategyBuilder"/> using the default constructor.
     /// </value>
     [Required]
-    public Func<ResilienceStrategyBuilder> BuilderFactory { get; set; } = static () => new ResilienceStrategyBuilder();
+    public Func<CompositeStrategyBuilder> BuilderFactory { get; set; } = static () => new CompositeStrategyBuilder();
 
     /// <summary>
     /// Gets or sets the comparer that is used by the registry to retrieve the resilience strategies.

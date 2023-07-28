@@ -12,15 +12,15 @@ namespace Polly.Registry;
 /// This class provides a way to organize and manage multiple resilience strategies
 /// using keys of type <typeparamref name="TKey"/>.
 /// <para>
-/// Additionally, it allows registration of callbacks that configure the strategy using <see cref="ResilienceStrategyBuilder"/>.
+/// Additionally, it allows registration of callbacks that configure the strategy using <see cref="CompositeStrategyBuilder"/>.
 /// These callbacks are called when the resilience strategy is not yet cached and it's retrieved for the first time.
 /// </para>
 /// </remarks>
 public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvider<TKey>
     where TKey : notnull
 {
-    private readonly Func<ResilienceStrategyBuilder> _activator;
-    private readonly ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>>> _builders;
+    private readonly Func<CompositeStrategyBuilder> _activator;
+    private readonly ConcurrentDictionary<TKey, Action<CompositeStrategyBuilder, ConfigureBuilderContext<TKey>>> _builders;
     private readonly ConcurrentDictionary<TKey, ResilienceStrategy> _strategies;
     private readonly ConcurrentDictionary<Type, object> _genericRegistry = new();
 
@@ -52,7 +52,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
         Guard.NotNull(options.BuilderNameFormatter);
 
         _activator = options.BuilderFactory;
-        _builders = new ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>>>(options.BuilderComparer);
+        _builders = new ConcurrentDictionary<TKey, Action<CompositeStrategyBuilder, ConfigureBuilderContext<TKey>>>(options.BuilderComparer);
         _strategies = new ConcurrentDictionary<TKey, ResilienceStrategy>(options.StrategyComparer);
         _instanceNameFormatter = options.InstanceNameFormatter;
         _builderNameFormatter = options.BuilderNameFormatter;
@@ -134,7 +134,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// <param name="key">The key used to identify the resilience strategy.</param>
     /// <param name="configure">The callback that configures the strategy builder.</param>
     /// <returns>An instance of strategy.</returns>
-    public ResilienceStrategy GetOrAddStrategy(TKey key, Action<ResilienceStrategyBuilder> configure)
+    public ResilienceStrategy GetOrAddStrategy(TKey key, Action<CompositeStrategyBuilder> configure)
     {
         Guard.NotNull(configure);
 
@@ -147,7 +147,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// <param name="key">The key used to identify the resilience strategy.</param>
     /// <param name="configure">The callback that configures the strategy builder.</param>
     /// <returns>An instance of strategy.</returns>
-    public ResilienceStrategy GetOrAddStrategy(TKey key, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>> configure)
+    public ResilienceStrategy GetOrAddStrategy(TKey key, Action<CompositeStrategyBuilder, ConfigureBuilderContext<TKey>> configure)
     {
         Guard.NotNull(configure);
 
@@ -176,7 +176,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// <param name="key">The key used to identify the resilience strategy.</param>
     /// <param name="configure">The callback that configures the strategy builder.</param>
     /// <returns>An instance of strategy.</returns>
-    public ResilienceStrategy<TResult> GetOrAddStrategy<TResult>(TKey key, Action<ResilienceStrategyBuilder<TResult>> configure)
+    public ResilienceStrategy<TResult> GetOrAddStrategy<TResult>(TKey key, Action<CompositeStrategyBuilder<TResult>> configure)
     {
         Guard.NotNull(configure);
 
@@ -190,7 +190,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// <param name="key">The key used to identify the resilience strategy.</param>
     /// <param name="configure">The callback that configures the strategy builder.</param>
     /// <returns>An instance of strategy.</returns>
-    public ResilienceStrategy<TResult> GetOrAddStrategy<TResult>(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
+    public ResilienceStrategy<TResult> GetOrAddStrategy<TResult>(TKey key, Action<CompositeStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
     {
         Guard.NotNull(configure);
 
@@ -207,7 +207,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// Use this method when you want to create the strategy on-demand when it's first accessed.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
-    public bool TryAddBuilder(TKey key, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>> configure)
+    public bool TryAddBuilder(TKey key, Action<CompositeStrategyBuilder, ConfigureBuilderContext<TKey>> configure)
     {
         Guard.NotNull(configure);
 
@@ -225,7 +225,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// Use this method when you want to create the strategy on-demand when it's first accessed.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
-    public bool TryAddBuilder<TResult>(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
+    public bool TryAddBuilder<TResult>(TKey key, Action<CompositeStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
     {
         Guard.NotNull(configure);
 
@@ -268,7 +268,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
         Func<TBuilder> activator,
         ConfigureBuilderContext<TKey> context,
         Action<TBuilder, ConfigureBuilderContext<TKey>> configure)
-        where TBuilder : ResilienceStrategyBuilderBase
+        where TBuilder : CompositeStrategyBuilderBase
     {
         Func<TBuilder> factory = () =>
         {
@@ -311,7 +311,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
         return (GenericRegistry<TResult>)_genericRegistry.GetOrAdd(typeof(TResult), _ =>
         {
             return new GenericRegistry<TResult>(
-                () => new ResilienceStrategyBuilder<TResult>(_activator()),
+                () => new CompositeStrategyBuilder<TResult>(_activator()),
                 _builderComparer,
                 _strategyComparer,
                 _builderNameFormatter,

@@ -6,9 +6,9 @@ using Polly.CircuitBreaker.Health;
 namespace Polly;
 
 /// <summary>
-/// Circuit breaker strategy extensions for <see cref="ResilienceStrategyBuilder"/>.
+/// Circuit breaker strategy extensions for <see cref="CompositeStrategyBuilder"/>.
 /// </summary>
-public static class CircuitBreakerResilienceStrategyBuilderExtensions
+public static class CircuitBreakerCompositeStrategyBuilderExtensions
 {
     /// <summary>
     /// Add circuit breaker strategy to the builder.
@@ -24,7 +24,7 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static ResilienceStrategyBuilder AddCircuitBreaker(this ResilienceStrategyBuilder builder, CircuitBreakerStrategyOptions options)
+    public static CompositeStrategyBuilder AddCircuitBreaker(this CompositeStrategyBuilder builder, CircuitBreakerStrategyOptions options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -47,7 +47,7 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static ResilienceStrategyBuilder<TResult> AddCircuitBreaker<TResult>(this ResilienceStrategyBuilder<TResult> builder, CircuitBreakerStrategyOptions<TResult> options)
+    public static CompositeStrategyBuilder<TResult> AddCircuitBreaker<TResult>(this CompositeStrategyBuilder<TResult> builder, CircuitBreakerStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -60,7 +60,7 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
     private static TBuilder AddCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, CircuitBreakerStrategyOptions<TResult> options)
-        where TBuilder : ResilienceStrategyBuilderBase
+        where TBuilder : CompositeStrategyBuilderBase
     {
         return builder.AddStrategy(
             context =>
@@ -76,7 +76,7 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     }
 
     internal static CircuitBreakerResilienceStrategy<TResult> CreateStrategy<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
-        ResilienceStrategyBuilderContext context,
+        StrategyBuilderContext context,
         CircuitBreakerStrategyOptions<TResult> options,
         CircuitBehavior behavior)
     {

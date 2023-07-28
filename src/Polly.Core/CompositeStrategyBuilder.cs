@@ -10,7 +10,7 @@ namespace Polly;
 /// The resulting instance of <see cref="ResilienceStrategy"/> created by the <see cref="Build"/> call will execute the strategies in the same order they were added to the builder.
 /// The order of the strategies is important.
 /// </remarks>
-public sealed class ResilienceStrategyBuilder : ResilienceStrategyBuilderBase
+public sealed class CompositeStrategyBuilder : CompositeStrategyBuilderBase
 {
     /// <summary>
     /// Builds the resilience strategy.

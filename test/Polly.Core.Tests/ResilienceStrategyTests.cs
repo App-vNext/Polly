@@ -33,13 +33,13 @@ public partial class ResilienceStrategyTests
     [Fact]
     public void DebuggerProxy_Ok()
     {
-        var pipeline = ResilienceStrategyPipeline.CreatePipeline(new[]
+        var pipeline = CompositeResilienceStrategy.Create(new[]
         {
             new TestResilienceStrategy(),
             new TestResilienceStrategy()
         });
 
-        new ResilienceStrategyPipeline.DebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
+        new CompositeResilienceStrategy.DebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
     }
 
     public class ExecuteParameters<T> : ExecuteParameters

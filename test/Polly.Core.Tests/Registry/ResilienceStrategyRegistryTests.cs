@@ -9,13 +9,13 @@ public class ResilienceStrategyRegistryTests
 {
     private readonly ResilienceStrategyRegistryOptions<StrategyId> _options;
 
-    private Action<ResilienceStrategyBuilder> _callback = _ => { };
+    private Action<CompositeStrategyBuilder> _callback = _ => { };
 
     public ResilienceStrategyRegistryTests() => _options = new()
     {
         BuilderFactory = () =>
         {
-            var builder = new ResilienceStrategyBuilder();
+            var builder = new CompositeStrategyBuilder();
             _callback(builder);
             return builder;
         },

@@ -7,24 +7,24 @@ namespace Polly.Utils;
 /// <summary>
 /// A pipeline of strategies.
 /// </summary>
-[DebuggerDisplay("ResilienceStrategyPipeline, Strategies = {Strategies.Count}")]
+[DebuggerDisplay("CompositeResilienceStrategy, Strategies = {Strategies.Count}")]
 [DebuggerTypeProxy(typeof(DebuggerProxy))]
-internal sealed partial class ResilienceStrategyPipeline : ResilienceStrategy
+internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
 {
     private readonly ResilienceStrategy _pipeline;
 
-    public static ResilienceStrategyPipeline CreatePipeline(IReadOnlyList<ResilienceStrategy> strategies)
+    public static CompositeResilienceStrategy Create(IReadOnlyList<ResilienceStrategy> strategies)
     {
         Guard.NotNull(strategies);
 
         if (strategies.Count < 2)
         {
-            throw new InvalidOperationException("The resilience pipeline must contain at least two resilience strategies.");
+            throw new InvalidOperationException("The composite resilience strategy must contain at least two resilience strategies.");
         }
 
         if (strategies.Distinct().Count() != strategies.Count)
         {
-            throw new InvalidOperationException("The resilience pipeline must contain unique resilience strategies.");
+            throw new InvalidOperationException("The composite resilience strategy must contain unique resilience strategies.");
         }
 
         // convert all strategies to delegating ones (except the last one as it's not required)
@@ -46,10 +46,10 @@ internal sealed partial class ResilienceStrategyPipeline : ResilienceStrategy
             delegatingStrategies[i].Next = delegatingStrategies[i + 1];
         }
 
-        return new ResilienceStrategyPipeline(delegatingStrategies[0], strategies);
+        return new CompositeResilienceStrategy(delegatingStrategies[0], strategies);
     }
 
-    private ResilienceStrategyPipeline(ResilienceStrategy pipeline, IReadOnlyList<ResilienceStrategy> strategies)
+    private CompositeResilienceStrategy(ResilienceStrategy pipeline, IReadOnlyList<ResilienceStrategy> strategies)
     {
         Strategies = strategies;
         _pipeline = pipeline;

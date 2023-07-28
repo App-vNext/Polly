@@ -4,9 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace Polly;
 
 /// <summary>
-/// Extensions for <see cref="ResilienceStrategyBuilderBase"/>.
+/// Extensions for <see cref="CompositeStrategyBuilderBase"/>.
 /// </summary>
-public static class ResilienceStrategyBuilderExtensions
+public static class CompositeStrategyBuilderExtensions
 {
     /// <summary>
     /// Adds an already created strategy instance to the builder.
@@ -22,7 +22,7 @@ public static class ResilienceStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "The EmptyOptions have nothing to validate.")]
     public static TBuilder AddStrategy<TBuilder>(this TBuilder builder, ResilienceStrategy strategy)
-        where TBuilder : ResilienceStrategyBuilderBase
+        where TBuilder : CompositeStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(strategy);
@@ -39,7 +39,7 @@ public static class ResilienceStrategyBuilderExtensions
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
-    public static ResilienceStrategyBuilder<TResult> AddStrategy<TResult>(this ResilienceStrategyBuilder<TResult> builder, ResilienceStrategy<TResult> strategy)
+    public static CompositeStrategyBuilder<TResult> AddStrategy<TResult>(this CompositeStrategyBuilder<TResult> builder, ResilienceStrategy<TResult> strategy)
     {
         Guard.NotNull(builder);
         Guard.NotNull(strategy);
@@ -59,8 +59,8 @@ public static class ResilienceStrategyBuilderExtensions
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> is invalid.</exception>
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
-    public static TBuilder AddStrategy<TBuilder>(this TBuilder builder, Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
-        where TBuilder : ResilienceStrategyBuilderBase
+    public static TBuilder AddStrategy<TBuilder>(this TBuilder builder, Func<StrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
+        where TBuilder : CompositeStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(factory);

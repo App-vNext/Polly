@@ -13,7 +13,7 @@ public class TelemetryBenchmark
     [GlobalSetup]
     public void Prepare()
     {
-        _strategy = Build(new ResilienceStrategyBuilder());
+        _strategy = Build(new CompositeStrategyBuilder());
 
         if (Telemetry)
         {
@@ -38,7 +38,7 @@ public class TelemetryBenchmark
         ResilienceContextPool.Shared.Return(context);
     }
 
-    private ResilienceStrategy Build(ResilienceStrategyBuilder builder)
+    private ResilienceStrategy Build(CompositeStrategyBuilder builder)
     {
         builder.AddStrategy(context => new TelemetryEventStrategy(context.Telemetry), new EmptyResilienceOptions());
 

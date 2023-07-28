@@ -17,7 +17,7 @@ public class ResilienceStrategyExtensionsTests
     public void GetInnerStrategies_Ok()
     {
         // arrange
-        var strategy = new ResilienceStrategyBuilder<string>()
+        var strategy = new CompositeStrategyBuilder<string>()
             .AddFallback(new()
             {
                 FallbackAction = _ => Outcome.FromResultAsTask("dummy"),
@@ -56,7 +56,7 @@ public class ResilienceStrategyExtensionsTests
     public void GetInnerStrategies_SingleStrategy_Ok()
     {
         // arrange
-        var strategy = new ResilienceStrategyBuilder<string>()
+        var strategy = new CompositeStrategyBuilder<string>()
             .AddTimeout(TimeSpan.FromSeconds(1))
             .Build();
 

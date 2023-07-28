@@ -35,7 +35,7 @@ public static class PollyServiceCollectionExtensions
     public static IServiceCollection AddResilienceStrategy<TKey, TResult>(
         this IServiceCollection services,
         TKey key,
-        Action<ResilienceStrategyBuilder<TResult>> configure)
+        Action<CompositeStrategyBuilder<TResult>> configure)
         where TKey : notnull
     {
         Guard.NotNull(services);
@@ -64,7 +64,7 @@ public static class PollyServiceCollectionExtensions
     public static IServiceCollection AddResilienceStrategy<TKey, TResult>(
         this IServiceCollection services,
         TKey key,
-        Action<ResilienceStrategyBuilder<TResult>, AddResilienceStrategyContext<TKey>> configure)
+        Action<CompositeStrategyBuilder<TResult>, AddResilienceStrategyContext<TKey>> configure)
         where TKey : notnull
     {
         Guard.NotNull(services);
@@ -107,7 +107,7 @@ public static class PollyServiceCollectionExtensions
     public static IServiceCollection AddResilienceStrategy<TKey>(
         this IServiceCollection services,
         TKey key,
-        Action<ResilienceStrategyBuilder> configure)
+        Action<CompositeStrategyBuilder> configure)
         where TKey : notnull
     {
         Guard.NotNull(services);
@@ -135,7 +135,7 @@ public static class PollyServiceCollectionExtensions
     public static IServiceCollection AddResilienceStrategy<TKey>(
         this IServiceCollection services,
         TKey key,
-        Action<ResilienceStrategyBuilder, AddResilienceStrategyContext<TKey>> configure)
+        Action<CompositeStrategyBuilder, AddResilienceStrategyContext<TKey>> configure)
         where TKey : notnull
     {
         Guard.NotNull(services);
@@ -210,7 +210,7 @@ public static class PollyServiceCollectionExtensions
 
         services.AddOptions();
         services.Add(RegistryMarker<TKey>.ServiceDescriptor);
-        services.AddResilienceStrategyBuilder();
+        services.AddCompositeStrategyBuilder();
 
         services.TryAddSingleton(serviceProvider =>
         {
@@ -233,13 +233,13 @@ public static class PollyServiceCollectionExtensions
             .AddOptions<ResilienceStrategyRegistryOptions<TKey>>()
             .Configure<IServiceProvider>((options, serviceProvider) =>
             {
-                options.BuilderFactory = () => serviceProvider.GetRequiredService<ResilienceStrategyBuilder>();
+                options.BuilderFactory = () => serviceProvider.GetRequiredService<CompositeStrategyBuilder>();
             });
 
         return services;
     }
 
-    private static void AddResilienceStrategyBuilder(this IServiceCollection services)
+    private static void AddCompositeStrategyBuilder(this IServiceCollection services)
     {
         services
             .AddOptions<TelemetryOptions>()
@@ -250,7 +250,7 @@ public static class PollyServiceCollectionExtensions
 
         services.TryAddTransient(serviceProvider =>
         {
-            var builder = new ResilienceStrategyBuilder();
+            var builder = new CompositeStrategyBuilder();
             builder.Properties.Set(PollyDependencyInjectionKeys.ServiceProvider, serviceProvider);
             builder.ConfigureTelemetry(serviceProvider.GetRequiredService<IOptions<TelemetryOptions>>().Value);
             return builder;

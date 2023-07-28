@@ -6,9 +6,9 @@ using Polly.Hedging.Utils;
 namespace Polly;
 
 /// <summary>
-/// Provides extension methods for configuring hedging resilience strategies for <see cref="ResilienceStrategyBuilder"/>.
+/// Provides extension methods for configuring hedging resilience strategies for <see cref="CompositeStrategyBuilder"/>.
 /// </summary>
-public static class HedgingResilienceStrategyBuilderExtensions
+public static class HedgingCompositeStrategyBuilderExtensions
 {
     /// <summary>
     /// Adds a hedging resilience strategy with the provided options to the builder.
@@ -19,7 +19,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the hedging strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static ResilienceStrategyBuilder<TResult> AddHedging<TResult>(this ResilienceStrategyBuilder<TResult> builder, HedgingStrategyOptions<TResult> options)
+    public static CompositeStrategyBuilder<TResult> AddHedging<TResult>(this CompositeStrategyBuilder<TResult> builder, HedgingStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -36,7 +36,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the hedging strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    internal static ResilienceStrategyBuilder AddHedging(this ResilienceStrategyBuilder builder, HedgingStrategyOptions options)
+    internal static CompositeStrategyBuilder AddHedging(this CompositeStrategyBuilder builder, HedgingStrategyOptions options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -50,7 +50,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
     internal static void AddHedgingCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
-        this ResilienceStrategyBuilderBase builder,
+        this CompositeStrategyBuilderBase builder,
         HedgingStrategyOptions<TResult> options)
     {
         builder.AddStrategy(context =>
@@ -58,7 +58,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
             var handler = new HedgingHandler<TResult>(
                 options.ShouldHandle!,
                 options.HedgingActionGenerator,
-                IsGeneric: builder is not ResilienceStrategyBuilder);
+                IsGeneric: builder is not CompositeStrategyBuilder);
 
             return new HedgingResilienceStrategy<TResult>(
                 options.HedgingDelay,

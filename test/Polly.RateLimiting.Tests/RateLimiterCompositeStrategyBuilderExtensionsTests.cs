@@ -4,9 +4,9 @@ using Moq;
 
 namespace Polly.RateLimiting.Tests;
 
-public class RateLimiterResilienceStrategyBuilderExtensionsTests
+public class RateLimiterCompositeStrategyBuilderExtensionsTests
 {
-    public static readonly TheoryData<Action<ResilienceStrategyBuilder<int>>> Data = new()
+    public static readonly TheoryData<Action<CompositeStrategyBuilder<int>>> Data = new()
     {
         builder =>
         {
@@ -34,9 +34,9 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
 
     [MemberData(nameof(Data))]
     [Theory(Skip = "https://github.com/stryker-mutator/stryker-net/issues/2144")]
-    public void AddRateLimiter_Extensions_Ok(Action<ResilienceStrategyBuilder<int>> configure)
+    public void AddRateLimiter_Extensions_Ok(Action<CompositeStrategyBuilder<int>> configure)
     {
-        var builder = new ResilienceStrategyBuilder<int>();
+        var builder = new CompositeStrategyBuilder<int>();
 
         configure(builder);
 
@@ -48,7 +48,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     {
         Assert.Throws<ArgumentException>(() =>
         {
-            return new ResilienceStrategyBuilder().AddConcurrencyLimiter(new ConcurrencyLimiterOptions
+            return new CompositeStrategyBuilder().AddConcurrencyLimiter(new ConcurrencyLimiterOptions
             {
                 PermitLimit = -10,
                 QueueLimit = -10
@@ -60,9 +60,9 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddRateLimiter_AllExtensions_Ok()
     {
-        foreach (var configure in Data.Select(v => v[0]).Cast<Action<ResilienceStrategyBuilder<int>>>())
+        foreach (var configure in Data.Select(v => v[0]).Cast<Action<CompositeStrategyBuilder<int>>>())
         {
-            var builder = new ResilienceStrategyBuilder<int>();
+            var builder = new CompositeStrategyBuilder<int>();
 
             configure(builder);
 
@@ -79,7 +79,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
             PermitLimit = 10
         });
 
-        new ResilienceStrategyBuilder()
+        new CompositeStrategyBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions
             {
                 RateLimiter = ResilienceRateLimiter.Create(limiter)
@@ -92,7 +92,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddRateLimiter_InvalidOptions_Throws()
     {
-        new ResilienceStrategyBuilder().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! }))
+        new CompositeStrategyBuilder().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""
@@ -106,7 +106,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddGenericRateLimiter_InvalidOptions_Throws()
     {
-        new ResilienceStrategyBuilder<int>().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! }))
+        new CompositeStrategyBuilder<int>().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""
@@ -120,7 +120,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddRateLimiter_Options_Ok()
     {
-        var strategy = new ResilienceStrategyBuilder()
+        var strategy = new CompositeStrategyBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions
             {
                 RateLimiter = ResilienceRateLimiter.Create(Mock.Of<RateLimiter>())
@@ -130,7 +130,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         strategy.Should().BeOfType<RateLimiterResilienceStrategy>();
     }
 
-    private static void AssertRateLimiter(ResilienceStrategyBuilder<int> builder, bool hasEvents, Action<RateLimiter>? assertLimiter = null)
+    private static void AssertRateLimiter(CompositeStrategyBuilder<int> builder, bool hasEvents, Action<RateLimiter>? assertLimiter = null)
     {
         var strategy = GetResilienceStrategy(builder.Build());
         strategy.Limiter.Should().NotBeNull();
@@ -150,7 +150,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         assertLimiter?.Invoke(strategy.Limiter.Limiter!);
     }
 
-    private static void AssertConcurrencyLimiter(ResilienceStrategyBuilder<int> builder, bool hasEvents)
+    private static void AssertConcurrencyLimiter(CompositeStrategyBuilder<int> builder, bool hasEvents)
     {
         var strategy = GetResilienceStrategy(builder.Build());
         strategy.Limiter.Limiter.Should().BeOfType<ConcurrencyLimiter>();

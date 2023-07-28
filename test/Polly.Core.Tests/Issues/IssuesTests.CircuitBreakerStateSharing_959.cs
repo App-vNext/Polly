@@ -23,7 +23,7 @@ public partial class IssuesTests
         };
 
         // create the strategy
-        var strategy = new ResilienceStrategyBuilder { TimeProvider = TimeProvider }.AddCircuitBreaker(options).Build();
+        var strategy = new CompositeStrategyBuilder { TimeProvider = TimeProvider }.AddCircuitBreaker(options).Build();
 
         // now trigger the circuit breaker by evaluating multiple result types
         for (int i = 0; i < 5; i++)
