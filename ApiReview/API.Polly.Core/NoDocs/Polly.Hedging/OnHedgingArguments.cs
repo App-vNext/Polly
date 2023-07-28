@@ -7,8 +7,8 @@ namespace Polly.Hedging;
 
 public sealed class OnHedgingArguments
 {
-    public int Attempt { get; }
+    public int AttemptNumber { get; }
     public bool HasOutcome { get; }
     public TimeSpan ExecutionTime { get; }
-    public OnHedgingArguments(int attempt, bool hasOutcome, TimeSpan executionTime);
+    public OnHedgingArguments(int attemptNumber, bool hasOutcome, TimeSpan executionTime);
 }

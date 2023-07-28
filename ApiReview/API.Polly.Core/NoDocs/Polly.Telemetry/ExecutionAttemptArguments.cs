@@ -8,8 +8,8 @@ namespace Polly.Telemetry;
 
 public class ExecutionAttemptArguments
 {
-    public int Attempt { get; }
+    public int AttemptNumber { get; }
     public TimeSpan ExecutionTime { get; }
     public bool Handled { get; }
-    public ExecutionAttemptArguments(int attempt, TimeSpan executionTime, bool handled);
+    public ExecutionAttemptArguments(int attemptNumber, TimeSpan executionTime, bool handled);
 }

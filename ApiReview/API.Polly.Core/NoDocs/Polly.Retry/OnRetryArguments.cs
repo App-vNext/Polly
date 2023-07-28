@@ -7,8 +7,8 @@ namespace Polly.Retry;
 
 public sealed class OnRetryArguments
 {
-    public int Attempt { get; }
+    public int AttemptNumber { get; }
     public TimeSpan RetryDelay { get; }
     public TimeSpan ExecutionTime { get; }
-    public OnRetryArguments(int attempt, TimeSpan retryDelay, TimeSpan executionTime);
+    public OnRetryArguments(int attemptNumber, TimeSpan retryDelay, TimeSpan executionTime);
 }

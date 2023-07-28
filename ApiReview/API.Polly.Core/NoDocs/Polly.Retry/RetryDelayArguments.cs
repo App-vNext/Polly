@@ -7,7 +7,7 @@ namespace Polly.Retry;
 
 public readonly struct RetryDelayArguments
 {
-    public int Attempt { get; }
+    public int AttemptNumber { get; }
     public TimeSpan DelayHint { get; }
-    public RetryDelayArguments(int attempt, TimeSpan delayHint);
+    public RetryDelayArguments(int attemptNumber, TimeSpan delayHint);
 }

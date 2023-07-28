@@ -7,7 +7,7 @@ using Polly.Telemetry;
 
 namespace Polly;
 
-public sealed class ResilienceStrategyBuilderContext
+public sealed class StrategyBuilderContext
 {
     public string? BuilderName { get; }
     public string? BuilderInstanceName { get; }

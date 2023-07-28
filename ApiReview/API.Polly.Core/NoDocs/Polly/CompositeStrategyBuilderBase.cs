@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 
 namespace Polly;
 
-public abstract class ResilienceStrategyBuilderBase
+public abstract class CompositeStrategyBuilderBase
 {
     public string? Name { get; set; }
     public string? InstanceName { get; set; }

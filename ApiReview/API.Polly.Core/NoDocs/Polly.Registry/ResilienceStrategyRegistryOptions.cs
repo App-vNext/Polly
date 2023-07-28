@@ -10,7 +10,7 @@ namespace Polly.Registry;
 public class ResilienceStrategyRegistryOptions<TKey>
 {
     [Required]
-    public Func<ResilienceStrategyBuilder> BuilderFactory { get; set; }
+    public Func<CompositeStrategyBuilder> BuilderFactory { get; set; }
     [Required]
     public IEqualityComparer<TKey> StrategyComparer { get; set; }
     [Required]
