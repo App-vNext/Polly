@@ -59,7 +59,7 @@ internal static partial class Helper
 
     public static ResilienceStrategy CreateNonGenericStrategyPipeline()
     {
-        return new ResilienceStrategyBuilder()
+        return new CompositeStrategyBuilder()
             .AddConcurrencyLimiter(new ConcurrencyLimiterOptions
             {
                 QueueLimit = 10,

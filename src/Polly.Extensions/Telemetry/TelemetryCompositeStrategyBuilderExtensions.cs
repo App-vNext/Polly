@@ -6,9 +6,9 @@ using Polly.Utils;
 namespace Polly;
 
 /// <summary>
-/// The telemetry extensions for the <see cref="ResilienceStrategyBuilder"/>.
+/// The telemetry extensions for the <see cref="CompositeStrategyBuilder"/>.
 /// </summary>
-public static class TelemetryResilienceStrategyBuilderExtensions
+public static class TelemetryCompositeStrategyBuilderExtensions
 {
     /// <summary>
     /// Enables telemetry for this builder.
@@ -19,11 +19,11 @@ public static class TelemetryResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the telemetry enabled.</returns>
     /// <remarks>
     /// By enabling telemetry, the resilience strategy will log and meter all resilience events.
-    /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the strategy pipeline.
+    /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the composite strategy.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="loggerFactory"/> is <see langword="null"/>.</exception>
     public static TBuilder ConfigureTelemetry<TBuilder>(this TBuilder builder, ILoggerFactory loggerFactory)
-        where TBuilder : ResilienceStrategyBuilderBase
+        where TBuilder : CompositeStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(loggerFactory);
@@ -40,12 +40,12 @@ public static class TelemetryResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the telemetry enabled.</returns>
     /// <remarks>
     /// By enabling telemetry, the resilience strategy will log and meter all resilience events.
-    /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the strategy pipeline.
+    /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the composite strategy.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TelemetryOptions))]
     public static TBuilder ConfigureTelemetry<TBuilder>(this TBuilder builder, TelemetryOptions options)
-        where TBuilder : ResilienceStrategyBuilderBase
+        where TBuilder : CompositeStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);

@@ -6,12 +6,12 @@ using Polly.Utils;
 
 namespace Polly.Core.Tests;
 
-public class ResilienceStrategyBuilderTests
+public class CompositeStrategyBuilderTests
 {
     [Fact]
     public void Ctor_EnsureDefaults()
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new CompositeStrategyBuilder();
 
         builder.Name.Should().BeNull();
         builder.Properties.Should().NotBeNull();
@@ -22,7 +22,7 @@ public class ResilienceStrategyBuilderTests
     [Fact]
     public void CopyCtor_Ok()
     {
-        var builder = new ResilienceStrategyBuilder
+        var builder = new CompositeStrategyBuilder
         {
             TimeProvider = Mock.Of<TimeProvider>(),
             Name = "dummy",
@@ -33,7 +33,7 @@ public class ResilienceStrategyBuilderTests
 
         builder.Properties.Set(new ResiliencePropertyKey<string>("dummy"), "dummy");
 
-        var other = new ResilienceStrategyBuilder<double>(builder);
+        var other = new CompositeStrategyBuilder<double>(builder);
         other.Name.Should().Be(builder.Name);
         other.TimeProvider.Should().Be(builder.TimeProvider);
         other.Randomizer.Should().BeSameAs(builder.Randomizer);
@@ -47,7 +47,7 @@ public class ResilienceStrategyBuilderTests
     {
         // arrange
         var executions = new List<int>();
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new CompositeStrategyBuilder();
         var first = new TestResilienceStrategy
         {
             Before = (_, _) => executions.Add(1),
@@ -71,7 +71,7 @@ public class ResilienceStrategyBuilderTests
     {
         // arrange
         var executions = new List<int>();
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new CompositeStrategyBuilder();
         var first = new TestResilienceStrategy
         {
             Before = (_, _) => executions.Add(1),
@@ -96,7 +96,7 @@ public class ResilienceStrategyBuilderTests
         var strategy = builder.Build();
         strategy
             .Should()
-            .BeOfType<ResilienceStrategyPipeline>()
+            .BeOfType<CompositeResilienceStrategy>()
             .Subject
             .Strategies.Should().HaveCount(3);
 
@@ -112,20 +112,20 @@ public class ResilienceStrategyBuilderTests
     {
         // arrange
         var executions = new List<int>();
-        var builder = new ResilienceStrategyBuilder()
+        var builder = new CompositeStrategyBuilder()
             .AddStrategy(NullResilienceStrategy.Instance)
             .AddStrategy(NullResilienceStrategy.Instance);
 
         builder.Invoking(b => b.Build())
             .Should()
             .Throw<InvalidOperationException>()
-            .WithMessage("The resilience pipeline must contain unique resilience strategies.");
+            .WithMessage("The composite resilience strategy must contain unique resilience strategies.");
     }
 
     [Fact]
     public void Validator_Ok()
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new CompositeStrategyBuilder();
 
         builder.Validator.Should().NotBeNull();
 
@@ -147,7 +147,7 @@ public class ResilienceStrategyBuilderTests
     {
         // arrange
         var executions = new List<int>();
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new CompositeStrategyBuilder();
         var first = new Strategy
         {
             Before = () => executions.Add(1),
@@ -179,12 +179,12 @@ public class ResilienceStrategyBuilderTests
     }
 
     [Fact]
-    public void Build_Empty_ReturnsNullResilienceStrategy() => new ResilienceStrategyBuilder().Build().Should().BeSameAs(NullResilienceStrategy.Instance);
+    public void Build_Empty_ReturnsNullResilienceStrategy() => new CompositeStrategyBuilder().Build().Should().BeSameAs(NullResilienceStrategy.Instance);
 
     [Fact]
     public void AddStrategy_AfterUsed_Throws()
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new CompositeStrategyBuilder();
 
         builder.Build();
 
@@ -198,14 +198,14 @@ public class ResilienceStrategyBuilderTests
     [Fact]
     public void Build_InvalidBuilderOptions_Throw()
     {
-        var builder = new InvalidResilienceStrategyBuilder();
+        var builder = new InvalidCompositeStrategyBuilder();
 
         builder.Invoking(b => b.BuildStrategy())
             .Should()
             .Throw<ValidationException>()
             .WithMessage(
 """
-The 'ResilienceStrategyBuilder' configuration is invalid.
+The 'CompositeStrategyBuilder' configuration is invalid.
 
 Validation Errors:
 The RequiredProperty field is required.
@@ -215,7 +215,7 @@ The RequiredProperty field is required.
     [Fact]
     public void AddStrategy_InvalidOptions_Throws()
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new CompositeStrategyBuilder();
 
         builder
             .Invoking(b => b.AddStrategy(_ => NullResilienceStrategy.Instance, new InvalidResilienceStrategyOptions()))
@@ -233,7 +233,7 @@ The RequiredProperty field is required.
     [Fact]
     public void AddStrategy_NullFactory_Throws()
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new CompositeStrategyBuilder();
 
         builder
             .Invoking(b => b.AddStrategy(null!, new TestResilienceStrategyOptions()))
@@ -260,17 +260,17 @@ The RequiredProperty field is required.
             After = (_, _) => executions.Add(6),
         };
 
-        var pipeline1 = new ResilienceStrategyBuilder().AddStrategy(first).AddStrategy(second).Build();
+        var pipeline1 = new CompositeStrategyBuilder().AddStrategy(first).AddStrategy(second).Build();
 
         var third = new TestResilienceStrategy
         {
             Before = (_, _) => executions.Add(3),
             After = (_, _) => executions.Add(5),
         };
-        var pipeline2 = new ResilienceStrategyBuilder().AddStrategy(third).Build();
+        var pipeline2 = new CompositeStrategyBuilder().AddStrategy(third).Build();
 
         // act
-        var strategy = new ResilienceStrategyBuilder().AddStrategy(pipeline1).AddStrategy(pipeline2).Build();
+        var strategy = new CompositeStrategyBuilder().AddStrategy(pipeline1).AddStrategy(pipeline2).Build();
 
         // assert
         strategy.Execute(_ => executions.Add(4));
@@ -286,7 +286,7 @@ The RequiredProperty field is required.
         var verified1 = false;
         var verified2 = false;
 
-        var builder = new ResilienceStrategyBuilder
+        var builder = new CompositeStrategyBuilder
         {
             Name = "builder-name",
             TimeProvider = new FakeTimeProvider(),
@@ -334,7 +334,7 @@ The RequiredProperty field is required.
     {
         // arrange
         var strategy = new TestResilienceStrategy();
-        var builder = new ResilienceStrategyBuilder
+        var builder = new CompositeStrategyBuilder
         {
             OnCreatingStrategy = strategies =>
             {
@@ -349,11 +349,11 @@ The RequiredProperty field is required.
         var finalStrategy = builder.Build();
 
         // assert
-        finalStrategy.Should().BeOfType<ResilienceStrategyPipeline>();
+        finalStrategy.Should().BeOfType<CompositeResilienceStrategy>();
     }
 
     [Fact]
-    public void EmptyOptions_Ok() => ResilienceStrategyBuilderExtensions.EmptyOptions.Instance.Name.Should().BeNull();
+    public void EmptyOptions_Ok() => CompositeStrategyBuilderExtensions.EmptyOptions.Instance.Name.Should().BeNull();
 
     [Fact]
     public void ExecuteAsync_EnsureReceivedCallbackExecutesNextStrategy()
@@ -378,7 +378,7 @@ The RequiredProperty field is required.
             After = (_, _) => executions.Add("third-end"),
         };
 
-        var strategy = new ResilienceStrategyBuilder().AddStrategy(first).AddStrategy(second).AddStrategy(third).Build();
+        var strategy = new CompositeStrategyBuilder().AddStrategy(first).AddStrategy(second).AddStrategy(third).Build();
 
         // act
         strategy.Execute(_ => executions.Add("execute"));
@@ -454,7 +454,7 @@ The RequiredProperty field is required.
         public string? RequiredProperty { get; set; }
     }
 
-    private class InvalidResilienceStrategyBuilder : ResilienceStrategyBuilderBase
+    private class InvalidCompositeStrategyBuilder : CompositeStrategyBuilderBase
     {
         [Required]
         public string? RequiredProperty { get; set; }

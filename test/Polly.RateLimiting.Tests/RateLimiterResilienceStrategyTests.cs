@@ -95,7 +95,7 @@ public class RateLimiterResilienceStrategyTests
 
     private RateLimiterResilienceStrategy Create()
     {
-        var builder = new ResilienceStrategyBuilder
+        var builder = new CompositeStrategyBuilder
         {
             DiagnosticSource = _diagnosticSource.Object
         };

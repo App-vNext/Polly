@@ -5,9 +5,9 @@ using Polly.Fallback;
 namespace Polly;
 
 /// <summary>
-/// Provides extension methods for configuring fallback resilience strategies for <see cref="ResilienceStrategyBuilder"/>.
+/// Provides extension methods for configuring fallback resilience strategies for <see cref="CompositeStrategyBuilder"/>.
 /// </summary>
-public static class FallbackResilienceStrategyBuilderExtensions
+public static class FallbackCompositeStrategyBuilderExtensions
 {
     /// <summary>
     /// Adds a fallback resilience strategy with the provided options to the builder.
@@ -18,7 +18,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the fallback strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static ResilienceStrategyBuilder<TResult> AddFallback<TResult>(this ResilienceStrategyBuilder<TResult> builder, FallbackStrategyOptions<TResult> options)
+    public static CompositeStrategyBuilder<TResult> AddFallback<TResult>(this CompositeStrategyBuilder<TResult> builder, FallbackStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -35,7 +35,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the fallback strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    internal static ResilienceStrategyBuilder AddFallback(this ResilienceStrategyBuilder builder, FallbackStrategyOptions options)
+    internal static CompositeStrategyBuilder AddFallback(this CompositeStrategyBuilder builder, FallbackStrategyOptions options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -49,7 +49,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
     internal static void AddFallbackCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TOptions>(
-        this ResilienceStrategyBuilderBase builder,
+        this CompositeStrategyBuilderBase builder,
         FallbackStrategyOptions<TResult> options)
     {
         builder.AddStrategy(context =>

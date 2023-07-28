@@ -5,9 +5,9 @@ using Polly.Timeout;
 namespace Polly;
 
 /// <summary>
-/// Extension methods for adding timeouts to a <see cref="ResilienceStrategyBuilder"/>.
+/// Extension methods for adding timeouts to a <see cref="CompositeStrategyBuilder"/>.
 /// </summary>
-public static class TimeoutResilienceStrategyBuilderExtensions
+public static class TimeoutCompositeStrategyBuilderExtensions
 {
     /// <summary>
     /// Adds a timeout resilience strategy to the builder.
@@ -19,7 +19,7 @@ public static class TimeoutResilienceStrategyBuilderExtensions
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
     public static TBuilder AddTimeout<TBuilder>(this TBuilder builder, TimeSpan timeout)
-        where TBuilder : ResilienceStrategyBuilderBase
+        where TBuilder : CompositeStrategyBuilderBase
     {
         Guard.NotNull(builder);
 
@@ -44,7 +44,7 @@ public static class TimeoutResilienceStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
     public static TBuilder AddTimeout<TBuilder>(this TBuilder builder, TimeoutStrategyOptions options)
-        where TBuilder : ResilienceStrategyBuilderBase
+        where TBuilder : CompositeStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);

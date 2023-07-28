@@ -3,10 +3,10 @@ using Polly.Hedging;
 
 namespace Polly.Core.Tests.Hedging;
 
-public class HedgingResilienceStrategyBuilderExtensionsTests
+public class HedgingCompositeStrategyBuilderExtensionsTests
 {
-    private readonly ResilienceStrategyBuilder _builder = new();
-    private readonly ResilienceStrategyBuilder<string> _genericBuilder = new();
+    private readonly CompositeStrategyBuilder _builder = new();
+    private readonly CompositeStrategyBuilder<string> _genericBuilder = new();
 
     [Fact]
     public void AddHedging_Ok()

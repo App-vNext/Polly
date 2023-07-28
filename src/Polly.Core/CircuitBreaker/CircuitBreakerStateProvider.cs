@@ -24,7 +24,7 @@ public sealed class CircuitBreakerStateProvider
     /// </summary>
     /// <remarks>
     /// The initialization happens when the circuit-breaker strategy is attached to this class.
-    /// This happens when the final strategy is created by the <see cref="ResilienceStrategyBuilder.Build"/> call.
+    /// This happens when the final strategy is created by the <see cref="CompositeStrategyBuilder.Build"/> call.
     /// </remarks>
     internal bool IsInitialized => _circuitStateProvider != null;
 

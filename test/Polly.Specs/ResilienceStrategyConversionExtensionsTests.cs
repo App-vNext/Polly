@@ -35,7 +35,7 @@ public class ResilienceStrategyConversionExtensionsTests
             }
         };
 
-        _genericStrategy = new ResilienceStrategyBuilder<string>()
+        _genericStrategy = new CompositeStrategyBuilder<string>()
             .AddStrategy(_strategy)
             .Build();
     }
@@ -158,7 +158,7 @@ public class ResilienceStrategyConversionExtensionsTests
     [Fact]
     public void RetryStrategy_AsSyncPolicy_Ok()
     {
-        var policy = new ResilienceStrategyBuilder<string>()
+        var policy = new CompositeStrategyBuilder<string>()
             .AddRetry(new RetryStrategyOptions<string>
             {
                 ShouldHandle = _ => PredicateResult.True,

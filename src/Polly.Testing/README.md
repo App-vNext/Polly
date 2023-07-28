@@ -4,7 +4,7 @@ This package exposes APIs and utilities that can be used to assert on the compos
 
 ``` csharp
 // Build your resilience strategy.
-ResilienceStrategy strategy = new ResilienceStrategyBuilder()
+ResilienceStrategy strategy = new CompositeStrategyBuilder()
     .AddRetry(new RetryStrategyOptions
     {
         RetryCount = 4

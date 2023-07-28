@@ -5,9 +5,9 @@ namespace Polly.Core.Tests.Retry;
 
 #pragma warning disable CA2012 // Use ValueTasks correctly
 
-public class RetryResilienceStrategyBuilderExtensionsTests
+public class RetryCompositeStrategyBuilderExtensionsTests
 {
-    public static readonly TheoryData<Action<ResilienceStrategyBuilder>> OverloadsData = new()
+    public static readonly TheoryData<Action<CompositeStrategyBuilder>> OverloadsData = new()
     {
         builder =>
         {
@@ -23,7 +23,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
         }
     };
 
-    public static readonly TheoryData<Action<ResilienceStrategyBuilder<int>>> OverloadsDataGeneric = new()
+    public static readonly TheoryData<Action<CompositeStrategyBuilder<int>>> OverloadsDataGeneric = new()
     {
         builder =>
         {
@@ -41,18 +41,18 @@ public class RetryResilienceStrategyBuilderExtensionsTests
 
     [MemberData(nameof(OverloadsData))]
     [Theory]
-    public void AddRetry_Overloads_Ok(Action<ResilienceStrategyBuilder> configure)
+    public void AddRetry_Overloads_Ok(Action<CompositeStrategyBuilder> configure)
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new CompositeStrategyBuilder();
 
         builder.Invoking(b => configure(b)).Should().NotThrow();
     }
 
     [MemberData(nameof(OverloadsDataGeneric))]
     [Theory]
-    public void AddRetry_GenericOverloads_Ok(Action<ResilienceStrategyBuilder<int>> configure)
+    public void AddRetry_GenericOverloads_Ok(Action<CompositeStrategyBuilder<int>> configure)
     {
-        var builder = new ResilienceStrategyBuilder<int>();
+        var builder = new CompositeStrategyBuilder<int>();
 
         builder.Invoking(b => configure(b)).Should().NotThrow();
     }
@@ -60,7 +60,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddRetry_DefaultOptions_Ok()
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new CompositeStrategyBuilder();
         var options = new RetryStrategyOptions { ShouldHandle = _ => PredicateResult.True };
 
         builder.AddRetry(options);
@@ -68,7 +68,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
         AssertStrategy(builder, options.BackoffType, options.RetryCount, options.BaseDelay);
     }
 
-    private static void AssertStrategy(ResilienceStrategyBuilder builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<object>>? assert = null)
+    private static void AssertStrategy(CompositeStrategyBuilder builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<object>>? assert = null)
     {
         var strategy = (RetryResilienceStrategy<object>)builder.Build();
 
@@ -79,7 +79,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
         assert?.Invoke(strategy);
     }
 
-    private static void AssertStrategy<T>(ResilienceStrategyBuilder<T> builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<T>>? assert = null)
+    private static void AssertStrategy<T>(CompositeStrategyBuilder<T> builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<T>>? assert = null)
     {
         var strategy = (RetryResilienceStrategy<T>)builder.Build().Strategy;
 
@@ -93,12 +93,12 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddRetry_InvalidOptions_Throws()
     {
-        new ResilienceStrategyBuilder()
+        new CompositeStrategyBuilder()
             .Invoking(b => b.AddRetry(new RetryStrategyOptions { ShouldHandle = null! }))
             .Should()
             .Throw<ValidationException>();
 
-        new ResilienceStrategyBuilder<int>()
+        new CompositeStrategyBuilder<int>()
             .Invoking(b => b.AddRetry(new RetryStrategyOptions<int> { ShouldHandle = null! }))
             .Should()
             .Throw<ValidationException>();
@@ -125,7 +125,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     {
         var aggregatedDelay = TimeSpan.Zero;
 
-        var strategy = new ResilienceStrategyBuilder { Randomizer = () => 1.0 }.AddRetry(new()
+        var strategy = new CompositeStrategyBuilder { Randomizer = () => 1.0 }.AddRetry(new()
         {
             RetryCount = options.RetryCount,
             BaseDelay = options.BaseDelay,

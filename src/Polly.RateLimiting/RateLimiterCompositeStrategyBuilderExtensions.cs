@@ -6,9 +6,9 @@ using Polly.RateLimiting;
 namespace Polly;
 
 /// <summary>
-/// The rate limiter extensions for <see cref="ResilienceStrategyBuilder"/>.
+/// The rate limiter extensions for <see cref="CompositeStrategyBuilder"/>.
 /// </summary>
-public static class RateLimiterResilienceStrategyBuilderExtensions
+public static class RateLimiterCompositeStrategyBuilderExtensions
 {
     /// <summary>
     /// Adds the concurrency limiter strategy.
@@ -25,7 +25,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
         this TBuilder builder,
         int permitLimit,
         int queueLimit = 0)
-        where TBuilder : ResilienceStrategyBuilderBase
+        where TBuilder : CompositeStrategyBuilderBase
     {
         Guard.NotNull(builder);
 
@@ -49,7 +49,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     public static TBuilder AddConcurrencyLimiter<TBuilder>(
         this TBuilder builder,
         ConcurrencyLimiterOptions options)
-        where TBuilder : ResilienceStrategyBuilderBase
+        where TBuilder : CompositeStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -72,7 +72,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     public static TBuilder AddRateLimiter<TBuilder>(
         this TBuilder builder,
         RateLimiter limiter)
-        where TBuilder : ResilienceStrategyBuilderBase
+        where TBuilder : CompositeStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(limiter);
@@ -101,7 +101,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     public static TBuilder AddRateLimiter<TBuilder>(
         this TBuilder builder,
         RateLimiterStrategyOptions options)
-        where TBuilder : ResilienceStrategyBuilderBase
+        where TBuilder : CompositeStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);

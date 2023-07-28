@@ -9,20 +9,20 @@ namespace Polly;
 /// A builder that is used to create an instance of <see cref="ResilienceStrategy"/>.
 /// </summary>
 /// <remarks>
-/// The builder supports chaining multiple strategies into a pipeline of strategies.
+/// The builder supports combining multiple strategies into a composite resilience strategy.
 /// The resulting instance of <see cref="ResilienceStrategy"/> executes the strategies in the same order they were added to the builder.
 /// The order of the strategies is important.
 /// </remarks>
-public abstract class ResilienceStrategyBuilderBase
+public abstract class CompositeStrategyBuilderBase
 {
     private readonly List<Entry> _entries = new();
     private bool _used;
 
-    private protected ResilienceStrategyBuilderBase()
+    private protected CompositeStrategyBuilderBase()
     {
     }
 
-    private protected ResilienceStrategyBuilderBase(ResilienceStrategyBuilderBase other)
+    private protected CompositeStrategyBuilderBase(CompositeStrategyBuilderBase other)
     {
         Name = other.Name;
         Properties = other.Properties;
@@ -121,7 +121,7 @@ public abstract class ResilienceStrategyBuilderBase
     public Action<ResilienceValidationContext> Validator { get; private protected set; } = ValidationHelper.ValidateObject;
 
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
-    internal void AddStrategyCore(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
+    internal void AddStrategyCore(Func<StrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);
         Guard.NotNull(options);
@@ -138,7 +138,7 @@ public abstract class ResilienceStrategyBuilderBase
 
     internal ResilienceStrategy BuildStrategy()
     {
-        Validator(new(this, $"The '{nameof(ResilienceStrategyBuilder)}' configuration is invalid."));
+        Validator(new(this, $"The '{nameof(CompositeStrategyBuilder)}' configuration is invalid."));
 
         _used = true;
 
@@ -155,12 +155,12 @@ public abstract class ResilienceStrategyBuilderBase
             return strategies[0];
         }
 
-        return ResilienceStrategyPipeline.CreatePipeline(strategies);
+        return CompositeResilienceStrategy.Create(strategies);
     }
 
     private ResilienceStrategy CreateResilienceStrategy(Entry entry)
     {
-        var context = new ResilienceStrategyBuilderContext(
+        var context = new StrategyBuilderContext(
             builderName: Name,
             builderInstanceName: InstanceName,
             builderProperties: Properties,
@@ -174,5 +174,5 @@ public abstract class ResilienceStrategyBuilderBase
         return strategy;
     }
 
-    private sealed record Entry(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> Factory, ResilienceStrategyOptions Options);
+    private sealed record Entry(Func<StrategyBuilderContext, ResilienceStrategy> Factory, ResilienceStrategyOptions Options);
 }

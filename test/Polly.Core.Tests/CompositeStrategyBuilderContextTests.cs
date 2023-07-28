@@ -3,14 +3,14 @@ using Moq;
 
 namespace Polly.Core.Tests;
 
-public class ResilienceStrategyBuilderContextTests
+public class CompositeStrategyBuilderContextTests
 {
     [Fact]
     public void Ctor_EnsureDefaults()
     {
         var properties = new ResilienceProperties();
         var timeProvider = new FakeTimeProvider();
-        var context = new ResilienceStrategyBuilderContext("builder-name", "instance", properties, "strategy-name", timeProvider, Mock.Of<DiagnosticSource>(), () => 1.0);
+        var context = new StrategyBuilderContext("builder-name", "instance", properties, "strategy-name", timeProvider, Mock.Of<DiagnosticSource>(), () => 1.0);
 
         context.BuilderName.Should().Be("builder-name");
         context.BuilderInstanceName.Should().Be("instance");

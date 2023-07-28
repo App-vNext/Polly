@@ -49,7 +49,7 @@ telemetryOptions.OnTelemetryEvent = args =>
     Console.WriteLine($"Telemetry event occurred: {args.Event.EventName}");
 });
 
-var builder = new ResilienceStrategyBuilder()
+var builder = new CompositeStrategyBuilder()
     .AddTimeout(TimeSpan.FromSeconds(1))
     .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
     .Build();

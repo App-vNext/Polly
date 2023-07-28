@@ -3,9 +3,9 @@ using Polly.Fallback;
 
 namespace Polly.Core.Tests.Fallback;
 
-public class FallbackResilienceStrategyBuilderExtensionsTests
+public class FallbackCompositeStrategyBuilderExtensionsTests
 {
-    public static readonly TheoryData<Action<ResilienceStrategyBuilder<int>>> FallbackOverloadsGeneric = new()
+    public static readonly TheoryData<Action<CompositeStrategyBuilder<int>>> FallbackOverloadsGeneric = new()
     {
         builder =>
         {
@@ -19,9 +19,9 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
 
     [MemberData(nameof(FallbackOverloadsGeneric))]
     [Theory]
-    public void AddFallback_Generic_Ok(Action<ResilienceStrategyBuilder<int>> configure)
+    public void AddFallback_Generic_Ok(Action<CompositeStrategyBuilder<int>> configure)
     {
-        var builder = new ResilienceStrategyBuilder<int>();
+        var builder = new CompositeStrategyBuilder<int>();
         configure(builder);
         builder.Build().Strategy.Should().BeOfType<FallbackResilienceStrategy<int>>();
     }
@@ -40,7 +40,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
             FallbackAction = _ => Outcome.FromResultAsTask((object)1)
         };
 
-        var strategy = new ResilienceStrategyBuilder().AddFallback(options).Build();
+        var strategy = new CompositeStrategyBuilder().AddFallback(options).Build();
 
         strategy.Execute<int>(_ => -1).Should().Be(1);
         strategy.Execute<int>(_ => throw new InvalidOperationException()).Should().Be(1);
@@ -49,7 +49,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddFallback_InvalidOptions_Throws()
     {
-        new ResilienceStrategyBuilder()
+        new CompositeStrategyBuilder()
             .Invoking(b => b.AddFallback(new FallbackStrategyOptions()))
             .Should()
             .Throw<ValidationException>();
@@ -58,7 +58,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddFallbackT_InvalidOptions_Throws()
     {
-        new ResilienceStrategyBuilder<double>()
+        new CompositeStrategyBuilder<double>()
             .Invoking(b => b.AddFallback(new FallbackStrategyOptions<double>()))
             .Should()
             .Throw<ValidationException>();

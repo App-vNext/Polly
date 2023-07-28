@@ -48,7 +48,7 @@ public static class ResilienceStrategyExtensions
 
     private static void ExpandStrategies(this ResilienceStrategy strategy, List<ResilienceStrategy> strategies)
     {
-        if (strategy is ResilienceStrategyPipeline pipeline)
+        if (strategy is CompositeResilienceStrategy pipeline)
         {
             foreach (var inner in pipeline.Strategies)
             {

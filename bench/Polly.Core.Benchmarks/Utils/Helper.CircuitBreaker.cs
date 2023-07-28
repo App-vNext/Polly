@@ -13,7 +13,7 @@ internal static partial class Helper
 
         if (version == PollyVersion.V8)
         {
-            var builder = new ResilienceStrategyBuilder();
+            var builder = new CompositeStrategyBuilder();
 
             if (handleOutcome)
             {
