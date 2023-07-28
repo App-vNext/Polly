@@ -23,7 +23,7 @@ public class ResilienceStrategyExtensionsTests
                 FallbackAction = _ => Outcome.FromResultAsTask("dummy"),
             })
             .AddRetry(new())
-            .AddAdvancedCircuitBreaker(new())
+            .AddCircuitBreaker(new())
             .AddTimeout(TimeSpan.FromSeconds(1))
             .AddHedging(new())
             .AddConcurrencyLimiter(10)
@@ -40,7 +40,7 @@ public class ResilienceStrategyExtensionsTests
         descriptor.Strategies.Should().HaveCount(7);
         descriptor.Strategies[0].Options.Should().BeOfType<FallbackStrategyOptions<string>>();
         descriptor.Strategies[1].Options.Should().BeOfType<RetryStrategyOptions<string>>();
-        descriptor.Strategies[2].Options.Should().BeOfType<AdvancedCircuitBreakerStrategyOptions<string>>();
+        descriptor.Strategies[2].Options.Should().BeOfType<CircuitBreakerStrategyOptions<string>>();
         descriptor.Strategies[3].Options.Should().BeOfType<TimeoutStrategyOptions>();
         descriptor.Strategies[3].Options
             .Should()
