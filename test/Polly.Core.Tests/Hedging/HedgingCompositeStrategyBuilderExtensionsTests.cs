@@ -75,7 +75,7 @@ public class HedgingCompositeStrategyBuilderExtensionsTests
                     {
                         await Task.Delay(25, args.ActionContext.CancellationToken);
 
-                        if (args.Attempt == 3)
+                        if (args.AttemptNumber == 3)
                         {
                             return Outcome.FromResult((object)"success");
                         }

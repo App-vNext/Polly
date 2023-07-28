@@ -11,7 +11,7 @@ public class HedgingActionGeneratorArgumentsTests
 
         args.PrimaryContext.Should().NotBeNull();
         args.ActionContext.Should().NotBeNull();
-        args.Attempt.Should().Be(5);
+        args.AttemptNumber.Should().Be(5);
         args.Callback.Should().NotBeNull();
     }
 }

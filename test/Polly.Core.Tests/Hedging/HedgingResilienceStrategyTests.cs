@@ -88,11 +88,11 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         attempts[0].Handled.Should().BeTrue();
         attempts[0].ExecutionTime.Should().BeGreaterThan(TimeSpan.Zero);
-        attempts[0].Attempt.Should().Be(0);
+        attempts[0].AttemptNumber.Should().Be(0);
 
         attempts[1].Handled.Should().BeTrue();
         attempts[1].ExecutionTime.Should().BeGreaterThan(TimeSpan.Zero);
-        attempts[1].Attempt.Should().Be(1);
+        attempts[1].AttemptNumber.Should().Be(1);
     }
 
     [Fact]
@@ -171,7 +171,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             args.Context.Should().Be(primaryContext);
 
-            if (args.Arguments.Attempt == 0)
+            if (args.Arguments.AttemptNumber == 0)
             {
                 args.Context.Properties.Set(key, "dummy");
             }
@@ -738,7 +738,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         },
         args =>
         {
-            Exception exception = args.Attempt switch
+            Exception exception = args.AttemptNumber switch
             {
                 1 => new ArgumentException(),
                 2 => new InvalidOperationException(),
@@ -770,7 +770,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         },
         args =>
         {
-            Exception exception = args.Attempt switch
+            Exception exception = args.AttemptNumber switch
             {
                 1 => new ArgumentException(),
                 2 => new InvalidOperationException(),
@@ -819,7 +819,7 @@ public class HedgingResilienceStrategyTests : IDisposable
             },
             args =>
             {
-                Exception? exception = args.Attempt switch
+                Exception? exception = args.AttemptNumber switch
                 {
                     1 => new ArgumentException(),
                     2 => new InvalidOperationException(),
@@ -887,7 +887,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             args.Arguments.HasOutcome.Should().BeTrue();
             args.Result.Should().Be(Failure);
-            attempts.Add(args.Arguments.Attempt);
+            attempts.Add(args.Arguments.AttemptNumber);
             return default;
         };
 

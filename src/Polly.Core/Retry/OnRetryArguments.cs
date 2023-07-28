@@ -8,12 +8,12 @@ public sealed class OnRetryArguments
     /// <summary>
     /// Initializes a new instance of the <see cref="OnRetryArguments"/> class.
     /// </summary>
-    /// <param name="attempt">The zero-based attempt number.</param>
+    /// <param name="attemptNumber">The zero-based attempt number.</param>
     /// <param name="retryDelay">The delay before the next retry.</param>
     /// <param name="executionTime">The execution time of this attempt.</param>
-    public OnRetryArguments(int attempt, TimeSpan retryDelay, TimeSpan executionTime)
+    public OnRetryArguments(int attemptNumber, TimeSpan retryDelay, TimeSpan executionTime)
     {
-        Attempt = attempt;
+        AttemptNumber = attemptNumber;
         RetryDelay = retryDelay;
         ExecutionTime = executionTime;
     }
@@ -21,7 +21,7 @@ public sealed class OnRetryArguments
     /// <summary>
     /// Gets the zero-based attempt number.
     /// </summary>
-    public int Attempt { get; }
+    public int AttemptNumber { get; }
 
     /// <summary>
     /// Gets the delay before the next retry.

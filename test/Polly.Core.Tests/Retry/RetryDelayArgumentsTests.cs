@@ -9,7 +9,7 @@ public class RetryDelayArgumentsTests
     {
         var args = new RetryDelayArguments(2, TimeSpan.FromSeconds(2));
 
-        args.Attempt.Should().Be(2);
+        args.AttemptNumber.Should().Be(2);
         args.DelayHint.Should().Be(TimeSpan.FromSeconds(2));
     }
 }

@@ -113,16 +113,16 @@ Polly.Fallback.OnFallbackArguments.OnFallbackArguments() -> void
 Polly.FallbackCompositeStrategyBuilderExtensions
 Polly.Hedging.HedgingActionGeneratorArguments<TResult>
 Polly.Hedging.HedgingActionGeneratorArguments<TResult>.ActionContext.get -> Polly.ResilienceContext!
-Polly.Hedging.HedgingActionGeneratorArguments<TResult>.Attempt.get -> int
+Polly.Hedging.HedgingActionGeneratorArguments<TResult>.AttemptNumber.get -> int
 Polly.Hedging.HedgingActionGeneratorArguments<TResult>.Callback.get -> System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>!
 Polly.Hedging.HedgingActionGeneratorArguments<TResult>.HedgingActionGeneratorArguments() -> void
-Polly.Hedging.HedgingActionGeneratorArguments<TResult>.HedgingActionGeneratorArguments(Polly.ResilienceContext! primaryContext, Polly.ResilienceContext! actionContext, int attempt, System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback) -> void
+Polly.Hedging.HedgingActionGeneratorArguments<TResult>.HedgingActionGeneratorArguments(Polly.ResilienceContext! primaryContext, Polly.ResilienceContext! actionContext, int attemptNumber, System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback) -> void
 Polly.Hedging.HedgingActionGeneratorArguments<TResult>.PrimaryContext.get -> Polly.ResilienceContext!
 Polly.Hedging.HedgingDelayArguments
-Polly.Hedging.HedgingDelayArguments.Attempt.get -> int
+Polly.Hedging.HedgingDelayArguments.AttemptNumber.get -> int
 Polly.Hedging.HedgingDelayArguments.Context.get -> Polly.ResilienceContext!
 Polly.Hedging.HedgingDelayArguments.HedgingDelayArguments() -> void
-Polly.Hedging.HedgingDelayArguments.HedgingDelayArguments(Polly.ResilienceContext! context, int attempt) -> void
+Polly.Hedging.HedgingDelayArguments.HedgingDelayArguments(Polly.ResilienceContext! context, int attemptNumber) -> void
 Polly.Hedging.HedgingPredicateArguments
 Polly.Hedging.HedgingPredicateArguments.HedgingPredicateArguments() -> void
 Polly.Hedging.HedgingStrategyOptions<TResult>
@@ -140,11 +140,13 @@ Polly.Hedging.HedgingStrategyOptions<TResult>.OnHedging.set -> void
 Polly.Hedging.HedgingStrategyOptions<TResult>.ShouldHandle.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Hedging.HedgingPredicateArguments>, System.Threading.Tasks.ValueTask<bool>>!
 Polly.Hedging.HedgingStrategyOptions<TResult>.ShouldHandle.set -> void
 Polly.Hedging.OnHedgingArguments
-Polly.Hedging.OnHedgingArguments.Attempt.get -> int
+Polly.Hedging.OnHedgingArguments.AttemptNumber.get -> int
 Polly.Hedging.OnHedgingArguments.ExecutionTime.get -> System.TimeSpan
 Polly.Hedging.OnHedgingArguments.HasOutcome.get -> bool
 Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attempt, bool hasOutcome, System.TimeSpan executionTime) -> void
 Polly.HedgingCompositeStrategyBuilderExtensions
+Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attemptNumber, bool hasOutcome, System.TimeSpan executionTime) -> void
+Polly.HedgingResilienceStrategyBuilderExtensions
 Polly.NullResilienceStrategy
 Polly.NullResilienceStrategy<TResult>
 Polly.Outcome
@@ -280,23 +282,23 @@ Polly.ResilienceValidationContext.Instance.get -> object!
 Polly.ResilienceValidationContext.PrimaryMessage.get -> string!
 Polly.ResilienceValidationContext.ResilienceValidationContext(object! instance, string! primaryMessage) -> void
 Polly.Retry.OnRetryArguments
-Polly.Retry.OnRetryArguments.Attempt.get -> int
+Polly.Retry.OnRetryArguments.AttemptNumber.get -> int
 Polly.Retry.OnRetryArguments.ExecutionTime.get -> System.TimeSpan
-Polly.Retry.OnRetryArguments.OnRetryArguments(int attempt, System.TimeSpan retryDelay, System.TimeSpan executionTime) -> void
+Polly.Retry.OnRetryArguments.OnRetryArguments(int attemptNumber, System.TimeSpan retryDelay, System.TimeSpan executionTime) -> void
 Polly.Retry.OnRetryArguments.RetryDelay.get -> System.TimeSpan
 Polly.Retry.RetryBackoffType
 Polly.Retry.RetryBackoffType.Constant = 0 -> Polly.Retry.RetryBackoffType
 Polly.Retry.RetryBackoffType.Linear = 1 -> Polly.Retry.RetryBackoffType
 Polly.Retry.RetryBackoffType.Exponential = 2 -> Polly.Retry.RetryBackoffType
 Polly.Retry.RetryDelayArguments
-Polly.Retry.RetryDelayArguments.Attempt.get -> int
+Polly.Retry.RetryDelayArguments.AttemptNumber.get -> int
 Polly.Retry.RetryDelayArguments.DelayHint.get -> System.TimeSpan
 Polly.Retry.RetryDelayArguments.RetryDelayArguments() -> void
-Polly.Retry.RetryDelayArguments.RetryDelayArguments(int attempt, System.TimeSpan delayHint) -> void
+Polly.Retry.RetryDelayArguments.RetryDelayArguments(int attemptNumber, System.TimeSpan delayHint) -> void
 Polly.Retry.RetryPredicateArguments
-Polly.Retry.RetryPredicateArguments.Attempt.get -> int
+Polly.Retry.RetryPredicateArguments.AttemptNumber.get -> int
 Polly.Retry.RetryPredicateArguments.RetryPredicateArguments() -> void
-Polly.Retry.RetryPredicateArguments.RetryPredicateArguments(int attempt) -> void
+Polly.Retry.RetryPredicateArguments.RetryPredicateArguments(int attemptNumber) -> void
 Polly.Retry.RetryStrategyOptions
 Polly.Retry.RetryStrategyOptions.RetryStrategyOptions() -> void
 Polly.Retry.RetryStrategyOptions<TResult>
@@ -323,8 +325,8 @@ Polly.StrategyBuilderContext.BuilderProperties.get -> Polly.ResilienceProperties
 Polly.StrategyBuilderContext.StrategyName.get -> string?
 Polly.StrategyBuilderContext.Telemetry.get -> Polly.Telemetry.ResilienceStrategyTelemetry!
 Polly.Telemetry.ExecutionAttemptArguments
-Polly.Telemetry.ExecutionAttemptArguments.Attempt.get -> int
-Polly.Telemetry.ExecutionAttemptArguments.ExecutionAttemptArguments(int attempt, System.TimeSpan executionTime, bool handled) -> void
+Polly.Telemetry.ExecutionAttemptArguments.AttemptNumber.get -> int
+Polly.Telemetry.ExecutionAttemptArguments.ExecutionAttemptArguments(int attemptNumber, System.TimeSpan executionTime, bool handled) -> void
 Polly.Telemetry.ExecutionAttemptArguments.ExecutionTime.get -> System.TimeSpan
 Polly.Telemetry.ExecutionAttemptArguments.Handled.get -> bool
 Polly.Telemetry.ResilienceEvent

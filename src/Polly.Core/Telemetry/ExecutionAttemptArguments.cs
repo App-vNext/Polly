@@ -8,12 +8,12 @@ public partial class ExecutionAttemptArguments
     /// <summary>
     /// Initializes a new instance of the <see cref="ExecutionAttemptArguments"/> class.
     /// </summary>
-    /// <param name="attempt">The execution attempt.</param>
+    /// <param name="attemptNumber">The execution attempt number.</param>
     /// <param name="executionTime">The execution time.</param>
     /// <param name="handled">Determines whether the attempt was handled by the strategy.</param>
-    public ExecutionAttemptArguments(int attempt, TimeSpan executionTime, bool handled)
+    public ExecutionAttemptArguments(int attemptNumber, TimeSpan executionTime, bool handled)
     {
-        Attempt = attempt;
+        AttemptNumber = attemptNumber;
         ExecutionTime = executionTime;
         Handled = handled;
     }
@@ -25,7 +25,7 @@ public partial class ExecutionAttemptArguments
     /// <summary>
     /// Gets the attempt number.
     /// </summary>
-    public int Attempt { get; private set; }
+    public int AttemptNumber { get; private set; }
 
     /// <summary>
     /// Gets the execution time of the attempt.

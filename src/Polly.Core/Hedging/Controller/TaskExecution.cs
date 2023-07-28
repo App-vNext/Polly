@@ -65,7 +65,7 @@ internal sealed class TaskExecution<T>
 
     public TimeSpan ExecutionTime => _timeProvider.GetElapsedTime(_startExecutionTimestamp, _stopExecutionTimestamp);
 
-    public int Attempt { get; private set; }
+    public int AttemptNumber { get; private set; }
 
     public void AcceptOutcome()
     {
@@ -92,9 +92,9 @@ internal sealed class TaskExecution<T>
         ContextSnapshot snapshot,
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback,
         TState state,
-        int attempt)
+        int attemptNumber)
     {
-        Attempt = attempt;
+        AttemptNumber = attemptNumber;
         Type = type;
         _cancellationSource = _cancellationTokenSourcePool.Get(System.Threading.Timeout.InfiniteTimeSpan);
         _startExecutionTimestamp = _timeProvider.GetTimestamp();
@@ -113,7 +113,7 @@ internal sealed class TaskExecution<T>
 
             try
             {
-                action = _handler.GenerateAction(CreateArguments(primaryCallback, snapshot.Context, state, attempt));
+                action = _handler.GenerateAction(CreateArguments(primaryCallback, snapshot.Context, state, attemptNumber));
                 if (action == null)
                 {
                     await ResetAsync().ConfigureAwait(false);
@@ -178,7 +178,7 @@ internal sealed class TaskExecution<T>
         IsHandled = false;
         Properties.Clear();
         OnReset = null;
-        Attempt = 0;
+        AttemptNumber = 0;
         _activeContext = null;
         _cachedContext.Reset();
         _cancellationSource = null!;
@@ -227,7 +227,7 @@ internal sealed class TaskExecution<T>
         var args = new OutcomeArguments<T, HedgingPredicateArguments>(Context, outcome, default);
         Outcome = outcome.AsOutcome();
         IsHandled = await _handler.ShouldHandle(args).ConfigureAwait(Context.ContinueOnCapturedContext);
-        TelemetryUtil.ReportExecutionAttempt(_telemetry, Context, outcome, Attempt, ExecutionTime, IsHandled);
+        TelemetryUtil.ReportExecutionAttempt(_telemetry, Context, outcome, AttemptNumber, ExecutionTime, IsHandled);
     }
 
     private void PrepareContext(ref ContextSnapshot snapshot)

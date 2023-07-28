@@ -23,7 +23,7 @@ public class TaskExecutionTests : IDisposable
         {
             if (args.Arguments is ExecutionAttemptArguments attempt)
             {
-                _args.Add(ExecutionAttemptArguments.Get(attempt.Attempt, attempt.ExecutionTime, attempt.Handled));
+                _args.Add(ExecutionAttemptArguments.Get(attempt.AttemptNumber, attempt.ExecutionTime, attempt.Handled));
             }
         });
 
@@ -64,7 +64,7 @@ public class TaskExecutionTests : IDisposable
 
         _args.Should().HaveCount(1);
         _args[0].Handled.Should().Be(handled);
-        _args[0].Attempt.Should().Be(99);
+        _args[0].AttemptNumber.Should().Be(99);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class TaskExecutionTests : IDisposable
         Generator = args =>
         {
             AssertSecondaryContext(args.ActionContext, execution);
-            args.Attempt.Should().Be(4);
+            args.AttemptNumber.Should().Be(4);
             return () => Outcome.FromResultAsTask(new DisposableResult { Name = value });
         };
 

@@ -124,7 +124,7 @@ public static class TestUtilities
 
             if (arguments is ExecutionAttemptArguments attempt)
             {
-                arguments = ExecutionAttemptArguments.Get(attempt.Attempt, attempt.ExecutionTime, attempt.Handled);
+                arguments = ExecutionAttemptArguments.Get(attempt.AttemptNumber, attempt.ExecutionTime, attempt.Handled);
             }
 
             // copy the args because these are pooled and in tests we want to preserve them
