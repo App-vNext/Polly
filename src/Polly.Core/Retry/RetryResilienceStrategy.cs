@@ -21,6 +21,7 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
         RetryCount = options.RetryCount;
         OnRetry = options.OnRetry;
         DelayGenerator = options.RetryDelayGenerator;
+        UseJitter = options.UseJitter;
 
         _timeProvider = timeProvider;
         _telemetry = telemetry;
@@ -36,6 +37,8 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
     public Func<OutcomeArguments<T, RetryPredicateArguments>, ValueTask<bool>> ShouldHandle { get; }
 
     public Func<OutcomeArguments<T, RetryDelayArguments>, ValueTask<TimeSpan>>? DelayGenerator { get; }
+
+    public bool UseJitter { get; }
 
     public Func<OutcomeArguments<T, OnRetryArguments>, ValueTask>? OnRetry { get; }
 
@@ -60,7 +63,7 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
                 return outcome;
             }
 
-            var delay = RetryHelper.GetRetryDelay(BackoffType, attempt, BaseDelay, ref retryState, _randomizer);
+            var delay = RetryHelper.GetRetryDelay(BackoffType, UseJitter, attempt, BaseDelay, ref retryState, _randomizer);
             if (DelayGenerator is not null)
             {
                 var delayArgs = new OutcomeArguments<T, RetryDelayArguments>(context, outcome, new RetryDelayArguments(attempt, delay));
