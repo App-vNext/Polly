@@ -35,9 +35,9 @@ internal static partial class Helper
                     }
                 })
                 .AddTimeout(TimeSpan.FromSeconds(1))
-                .AddAdvancedCircuitBreaker(new()
+                .AddCircuitBreaker(new()
                 {
-                    FailureThreshold = 0.5,
+                    FailureRatio = 0.5,
                     SamplingDuration = TimeSpan.FromSeconds(30),
                     MinimumThroughput = 10,
                     BreakDuration = TimeSpan.FromSeconds(5),
@@ -79,9 +79,9 @@ internal static partial class Helper
                 }
             })
             .AddTimeout(TimeSpan.FromSeconds(1))
-            .AddAdvancedCircuitBreaker(new()
+            .AddCircuitBreaker(new()
             {
-                FailureThreshold = 0.5,
+                FailureRatio = 0.5,
                 SamplingDuration = TimeSpan.FromSeconds(30),
                 MinimumThroughput = 10,
                 BreakDuration = TimeSpan.FromSeconds(5),

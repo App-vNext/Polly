@@ -49,14 +49,15 @@ public partial class IssuesTests
             {
                 builder.AddRetry(new()
                 {
-                    BackoffType = RetryBackoffType.ExponentialWithJitter,
+                    BackoffType = RetryBackoffType.Exponential,
+                    UseJitter = true,
                     RetryCount = endpointOptions.Retries,
                     Name = $"{context.StrategyKey.EndpointName}-Retry",
                 });
             }
 
             // apply circuit breaker
-            builder.AddAdvancedCircuitBreaker(new()
+            builder.AddCircuitBreaker(new()
             {
                 BreakDuration = endpointOptions.BreakDuration,
                 Name = $"{context.StrategyKey.EndpointName}-{context.StrategyKey.Resource}-CircuitBreaker"

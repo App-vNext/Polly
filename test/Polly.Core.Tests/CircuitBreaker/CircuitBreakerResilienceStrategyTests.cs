@@ -10,7 +10,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     private readonly FakeTimeProvider _timeProvider;
     private readonly Mock<CircuitBehavior> _behavior;
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly SimpleCircuitBreakerStrategyOptions<int> _options;
+    private readonly CircuitBreakerStrategyOptions<int> _options;
     private readonly CircuitStateController<int> _controller;
 
     public CircuitBreakerResilienceStrategyTests()
@@ -18,7 +18,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _timeProvider = new FakeTimeProvider();
         _behavior = new Mock<CircuitBehavior>(MockBehavior.Strict);
         _telemetry = TestUtilities.CreateResilienceTelemetry(Mock.Of<DiagnosticSource>());
-        _options = new SimpleCircuitBreakerStrategyOptions<int>();
+        _options = new CircuitBreakerStrategyOptions<int>();
         _controller = new CircuitStateController<int>(
             CircuitBreakerConstants.DefaultBreakDuration,
             null,

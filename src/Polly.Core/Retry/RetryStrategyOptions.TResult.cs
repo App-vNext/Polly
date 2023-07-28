@@ -28,6 +28,18 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// </value>
     public RetryBackoffType BackoffType { get; set; } = RetryConstants.DefaultBackoffType;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether jitter should be used when calculating the backoff delay between retries.
+    /// </summary>
+    /// <remarks>
+    /// See <see href="https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry#new-jitter-recommendation"/> for more details
+    /// on how jitter can improve the resilience when the retries are correlated.
+    /// </remarks>
+    /// <value>
+    /// The default value is <see langword="false"/>.
+    /// </value>
+    public bool UseJitter { get; set; }
+
 #pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     /// <summary>
     /// Gets or sets the base delay between retries.
@@ -37,9 +49,6 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <list type="bullet">
     /// <item>
     /// <see cref="RetryBackoffType.Exponential"/>: Represents the median delay to target before the first retry.
-    /// </item>
-    /// <item>
-    /// <see cref="RetryBackoffType.ExponentialWithJitter"/>: Represents the median delay to target before the first retry.
     /// </item>
     /// <item>
     /// <see cref="RetryBackoffType.Linear"/>: Represents the initial delay, the following delays increasing linearly with this value.

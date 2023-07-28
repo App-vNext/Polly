@@ -107,7 +107,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void GetAggregatedDelay_ShouldReturnTheSameValue()
     {
-        var options = new RetryStrategyOptions { BackoffType = RetryBackoffType.ExponentialWithJitter };
+        var options = new RetryStrategyOptions { BackoffType = RetryBackoffType.Exponential, UseJitter = true };
 
         var delay = GetAggregatedDelay(options);
         GetAggregatedDelay(options).Should().Be(delay);
