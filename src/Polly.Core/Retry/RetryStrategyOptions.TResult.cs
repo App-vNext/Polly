@@ -35,7 +35,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     public RetryBackoffType BackoffType { get; set; } = RetryConstants.DefaultBackoffType;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the jitter should be used when calculating the backoff delay between retries.
+    /// Gets or sets a value indicating whether jitter should be used when calculating the backoff delay between retries.
     /// </summary>
     /// <remarks>
     /// See <see href="https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry#new-jitter-recommendation"/> for more details
