@@ -138,7 +138,7 @@ This API exposes the following builders:
 - [CompositeStrategyBuilder<T>](CompositeStrategyBuilder.TResult.cs): Used to create generic resilience strategies that can only execute callbacks that return the same result type.
 - [CompositeStrategyBuilderBase](CompositeStrategyBuilderBase.cs): The base class for both builders above. You can use it as a target for strategy extensions that work for both builders above.  
 
-To create a strategy or pipeline of strategies you chain various extensions for `CompositeStrategyBuilder` followed by the `Build` call:
+To create a strategy or composite resilience strategy you chain various extensions for `CompositeStrategyBuilder` followed by the `Build` call:
 
 Single strategy:
 
@@ -146,7 +146,7 @@ Single strategy:
 var resilienceStrategy = new CompositeStrategyBuilder().AddRetry().Build();
 ```
 
-Pipeline of strategies:
+Composite strategy:
 
 ``` csharp
 var resilienceStrategy = new CompositeStrategyBuilder()

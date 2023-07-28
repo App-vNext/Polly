@@ -19,7 +19,7 @@ public static class TelemetryCompositeStrategyBuilderExtensions
     /// <returns>The builder instance with the telemetry enabled.</returns>
     /// <remarks>
     /// By enabling telemetry, the resilience strategy will log and meter all resilience events.
-    /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the strategy pipeline.
+    /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the composite strategy.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="loggerFactory"/> is <see langword="null"/>.</exception>
     public static TBuilder ConfigureTelemetry<TBuilder>(this TBuilder builder, ILoggerFactory loggerFactory)
@@ -40,7 +40,7 @@ public static class TelemetryCompositeStrategyBuilderExtensions
     /// <returns>The builder instance with the telemetry enabled.</returns>
     /// <remarks>
     /// By enabling telemetry, the resilience strategy will log and meter all resilience events.
-    /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the strategy pipeline.
+    /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the composite strategy.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TelemetryOptions))]

@@ -5,13 +5,13 @@ namespace Polly.Utils;
 #pragma warning disable S2302 // "nameof" should be used
 
 /// <summary>
-/// A pipeline of strategies.
+/// A combination of multiple resilience strategies.
 /// </summary>
 [DebuggerDisplay("CompositeResilienceStrategy, Strategies = {Strategies.Count}")]
 [DebuggerTypeProxy(typeof(DebuggerProxy))]
 internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
 {
-    private readonly ResilienceStrategy _pipeline;
+    private readonly ResilienceStrategy _firstStrategy;
 
     public static CompositeResilienceStrategy Create(IReadOnlyList<ResilienceStrategy> strategies)
     {
@@ -49,10 +49,10 @@ internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
         return new CompositeResilienceStrategy(delegatingStrategies[0], strategies);
     }
 
-    private CompositeResilienceStrategy(ResilienceStrategy pipeline, IReadOnlyList<ResilienceStrategy> strategies)
+    private CompositeResilienceStrategy(ResilienceStrategy first, IReadOnlyList<ResilienceStrategy> strategies)
     {
         Strategies = strategies;
-        _pipeline = pipeline;
+        _firstStrategy = first;
     }
 
     public IReadOnlyList<ResilienceStrategy> Strategies { get; }
@@ -66,7 +66,7 @@ internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
             return Outcome.FromExceptionAsTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
         }
 
-        return _pipeline.ExecuteCore(callback, context, state);
+        return _firstStrategy.ExecuteCore(callback, context, state);
     }
 
     /// <summary>

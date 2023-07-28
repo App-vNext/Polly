@@ -7,7 +7,7 @@ namespace Polly;
 /// </summary>
 /// <typeparam name="TResult">The type of result to handle.</typeparam>
 /// <remarks>
-/// The builder supports chaining multiple strategies into a pipeline of strategies.
+/// The builder supports combining multiple strategies into a composite resilience strategy.
 /// The resulting instance of <see cref="ResilienceStrategy{TResult}"/> created by the <see cref="Build"/> call will execute the strategies in the same order they were added to the builder.
 /// The order of the strategies is important.
 /// </remarks>
