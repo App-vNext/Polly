@@ -206,7 +206,7 @@ public class RetryResilienceStrategyTests
         var delays = new List<TimeSpan>();
         _options.OnRetry = args =>
         {
-            attempts.Add(args.Arguments.Attempt);
+            attempts.Add(args.Arguments.AttemptNumber);
             delays.Add(args.Arguments.RetryDelay);
 
             args.Exception.Should().BeNull();
@@ -267,7 +267,7 @@ public class RetryResilienceStrategyTests
             var attempt = args.Arguments.Should().BeOfType<ExecutionAttemptArguments>().Subject;
 
             attempt.Handled.Should().BeFalse();
-            attempt.Attempt.Should().Be(0);
+            attempt.AttemptNumber.Should().Be(0);
             attempt.ExecutionTime.Should().Be(TimeSpan.FromSeconds(1));
             called = true;
         });
@@ -309,7 +309,7 @@ public class RetryResilienceStrategyTests
         var hints = new List<TimeSpan>();
         _options.RetryDelayGenerator = args =>
         {
-            attempts.Add(args.Arguments.Attempt);
+            attempts.Add(args.Arguments.AttemptNumber);
             hints.Add(args.Arguments.DelayHint);
 
             args.Exception.Should().BeNull();

@@ -8,6 +8,6 @@ public class ShouldRetryArgumentsTests
     public void Ctor_Ok()
     {
         var args = new RetryPredicateArguments(2);
-        args.Attempt.Should().Be(2);
+        args.AttemptNumber.Should().Be(2);
     }
 }

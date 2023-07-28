@@ -9,7 +9,7 @@ public class OnHedgingArgumentsTests
     {
         var args = new OnHedgingArguments(1, true, TimeSpan.FromSeconds(1));
 
-        args.Attempt.Should().Be(1);
+        args.AttemptNumber.Should().Be(1);
         args.HasOutcome.Should().BeTrue();
         args.ExecutionTime.Should().Be(TimeSpan.FromSeconds(1));
     }

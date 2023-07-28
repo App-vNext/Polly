@@ -236,7 +236,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.Initialize(_resilienceContext);
         Generator = args =>
         {
-            attempt = args.Attempt;
+            attempt = args.AttemptNumber;
             return null;
         };
 
@@ -453,7 +453,7 @@ public class HedgingExecutionContextTests : IDisposable
     {
         Generator = args =>
         {
-            var attempt = args.Attempt - 1;
+            var attempt = args.AttemptNumber - 1;
 
             if (attempt >= delays.Length)
             {

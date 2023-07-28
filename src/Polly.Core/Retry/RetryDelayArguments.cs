@@ -13,18 +13,18 @@ public readonly struct RetryDelayArguments
     /// <summary>
     /// Initializes a new instance of the <see cref="RetryDelayArguments"/> struct.
     /// </summary>
-    /// <param name="attempt">The zero-based attempt number.</param>
+    /// <param name="attemptNumber">The zero-based attempt number.</param>
     /// <param name="delayHint">The delay suggested by the retry strategy.</param>
-    public RetryDelayArguments(int attempt, TimeSpan delayHint)
+    public RetryDelayArguments(int attemptNumber, TimeSpan delayHint)
     {
-        Attempt = attempt;
+        AttemptNumber = attemptNumber;
         DelayHint = delayHint;
     }
 
     /// <summary>
     /// Gets The zero-based attempt number.
     /// </summary>
-    public int Attempt { get; }
+    public int AttemptNumber { get; }
 
     /// <summary>
     /// Gets the delay suggested by the retry strategy.
