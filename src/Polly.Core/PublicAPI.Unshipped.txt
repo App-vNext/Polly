@@ -41,7 +41,6 @@ Polly.CircuitBreaker.CircuitBreakerPredicateArguments.CircuitBreakerPredicateArg
 Polly.CircuitBreaker.CircuitBreakerStateProvider
 Polly.CircuitBreaker.CircuitBreakerStateProvider.CircuitBreakerStateProvider() -> void
 Polly.CircuitBreaker.CircuitBreakerStateProvider.CircuitState.get -> Polly.CircuitBreaker.CircuitState
-Polly.CircuitBreaker.CircuitBreakerStateProvider.LastHandledOutcome.get -> Polly.Outcome<object!>?
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDuration.get -> System.TimeSpan
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDuration.set -> void
