@@ -23,7 +23,7 @@ namespace Polly.CircuitBreaker;
 public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Gets or sets the failure threshold at which the circuit will break.
+    /// Gets or sets the failure-to-success ratio at which the circuit will break.
     /// </summary>
     /// <remarks>
     /// A number between zero and one (inclusive) e.g. 0.5 represents breaking if 50% or more of actions result in a handled failure.
