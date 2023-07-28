@@ -4,7 +4,7 @@ using Polly.Telemetry;
 // ------------------------------------------------------------------------
 // Usage of custom strategy
 // ------------------------------------------------------------------------
-var strategy = new CompositeStrategyBuilder()
+var strategy = new ResilienceStrategyBuilder()
     // This is custom extension defined in this sample
     .AddMyResilienceStrategy(new MyResilienceStrategyOptions
     {
@@ -23,7 +23,7 @@ strategy.Execute(() => { });
 // SIMPLE EXTENSIBILITY MODEL (INLINE STRATEGY)
 // ------------------------------------------------------------------------
 
-strategy = new CompositeStrategyBuilder()
+strategy = new ResilienceStrategyBuilder()
     // Just add the strategy instance directly
     .AddStrategy(new MySimpleStrategy())
     .Build();
@@ -119,13 +119,13 @@ internal class MyResilienceStrategy : ResilienceStrategy
 }
 
 // ------------------------------------------------------------------------
-// 3. Expose new extensions for CompositeStrategyBuilder
+// 3. Expose new extensions for ResilienceStrategyBuilder
 // ------------------------------------------------------------------------
 
 public static class MyResilienceStrategyExtensions
 {
-    // Add new extension that works for both "CompositeStrategyBuilder" and "CompositeStrategyBuilder<T>"
-    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MyResilienceStrategyOptions options) where TBuilder : CompositeStrategyBuilderBase
+    // Add new extension that works for both "ResilienceStrategyBuilder" and "ResilienceStrategyBuilder<T>"
+    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MyResilienceStrategyOptions options) where TBuilder : ResilienceStrategyBuilderBase
         => builder.AddStrategy(
             // Provide a factory that creates the strategy
             context => new MyResilienceStrategy(context.Telemetry, options),
