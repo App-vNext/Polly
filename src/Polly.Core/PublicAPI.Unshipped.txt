@@ -143,10 +143,8 @@ Polly.Hedging.OnHedgingArguments
 Polly.Hedging.OnHedgingArguments.AttemptNumber.get -> int
 Polly.Hedging.OnHedgingArguments.ExecutionTime.get -> System.TimeSpan
 Polly.Hedging.OnHedgingArguments.HasOutcome.get -> bool
-Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attempt, bool hasOutcome, System.TimeSpan executionTime) -> void
-Polly.HedgingCompositeStrategyBuilderExtensions
 Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attemptNumber, bool hasOutcome, System.TimeSpan executionTime) -> void
-Polly.HedgingResilienceStrategyBuilderExtensions
+Polly.HedgingCompositeStrategyBuilderExtensions
 Polly.NullResilienceStrategy
 Polly.NullResilienceStrategy<TResult>
 Polly.Outcome
@@ -288,8 +286,8 @@ Polly.Retry.OnRetryArguments.OnRetryArguments(int attemptNumber, System.TimeSpan
 Polly.Retry.OnRetryArguments.RetryDelay.get -> System.TimeSpan
 Polly.Retry.RetryBackoffType
 Polly.Retry.RetryBackoffType.Constant = 0 -> Polly.Retry.RetryBackoffType
-Polly.Retry.RetryBackoffType.Linear = 1 -> Polly.Retry.RetryBackoffType
 Polly.Retry.RetryBackoffType.Exponential = 2 -> Polly.Retry.RetryBackoffType
+Polly.Retry.RetryBackoffType.Linear = 1 -> Polly.Retry.RetryBackoffType
 Polly.Retry.RetryDelayArguments
 Polly.Retry.RetryDelayArguments.AttemptNumber.get -> int
 Polly.Retry.RetryDelayArguments.DelayHint.get -> System.TimeSpan
