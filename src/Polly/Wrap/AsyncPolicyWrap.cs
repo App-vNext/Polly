@@ -5,8 +5,8 @@
 /// </summary>
 public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
 {
-    private IAsyncPolicy _outer;
-    private IAsyncPolicy _inner;
+    private readonly IAsyncPolicy _outer;
+    private readonly IAsyncPolicy _inner;
 
     /// <summary>
     /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
@@ -61,11 +61,11 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
 /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
 public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWrap<TResult>
 {
-    private IAsyncPolicy _outerNonGeneric;
-    private IAsyncPolicy _innerNonGeneric;
+    private readonly IAsyncPolicy _outerNonGeneric;
+    private readonly IAsyncPolicy _innerNonGeneric;
 
-    private IAsyncPolicy<TResult> _outerGeneric;
-    private IAsyncPolicy<TResult> _innerGeneric;
+    private readonly IAsyncPolicy<TResult> _outerGeneric;
+    private readonly IAsyncPolicy<TResult> _innerGeneric;
 
     /// <summary>
     /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>

@@ -80,7 +80,7 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
     private readonly Action<Context, string, Exception>? _onCacheGetError;
     private readonly Action<Context, string, Exception>? _onCachePutError;
 
-    private IAsyncCacheProvider<TResult> _asyncCacheProvider;
+    private readonly IAsyncCacheProvider<TResult> _asyncCacheProvider;
 
     internal AsyncCachePolicy(
         IAsyncCacheProvider<TResult> asyncCacheProvider,

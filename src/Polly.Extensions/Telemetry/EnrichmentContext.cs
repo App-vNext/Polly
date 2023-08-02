@@ -7,7 +7,7 @@ public sealed partial class EnrichmentContext
 {
     private const int InitialArraySize = 20;
 
-    private KeyValuePair<string, object?>[] _tagsArray = new KeyValuePair<string, object?>[InitialArraySize];
+    private readonly KeyValuePair<string, object?>[] _tagsArray = new KeyValuePair<string, object?>[InitialArraySize];
 
     private EnrichmentContext()
     {
