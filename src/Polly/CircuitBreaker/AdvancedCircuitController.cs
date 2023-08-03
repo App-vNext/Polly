@@ -29,73 +29,70 @@ internal class AdvancedCircuitController<TResult> : CircuitStateController<TResu
 
     public override void OnCircuitReset(Context context)
     {
-        using (TimedLock.Lock(_lock))
-        {
-            // Is only null during initialization of the current class
-            // as the variable is not set, before the base class calls
-            // current method from constructor.
-            _metrics?.Reset_NeedsLock();
+        using var _ = TimedLock.Lock(_lock);
 
-            ResetInternal_NeedsLock(context);
-        }
+        // Is only null during initialization of the current class
+        // as the variable is not set, before the base class calls
+        // current method from constructor.
+        _metrics?.Reset_NeedsLock();
+
+        ResetInternal_NeedsLock(context);
     }
 
     public override void OnActionSuccess(Context context)
     {
-        using (TimedLock.Lock(_lock))
+        using var _ = TimedLock.Lock(_lock);
+
+        switch (_circuitState)
         {
-            switch (_circuitState)
-            {
-                case CircuitState.HalfOpen:
-                    OnCircuitReset(context);
-                    break;
+            case CircuitState.HalfOpen:
+                OnCircuitReset(context);
+                break;
 
-                case CircuitState.Closed:
-                    break;
+            case CircuitState.Closed:
+                break;
 
-                case CircuitState.Open:
-                case CircuitState.Isolated:
-                    break; // A successful call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no special action; only time passing governs transitioning from Open to HalfOpen state.
+            case CircuitState.Open:
+            case CircuitState.Isolated:
+                break; // A successful call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no special action; only time passing governs transitioning from Open to HalfOpen state.
 
-                default:
-                    throw new InvalidOperationException("Unhandled CircuitState.");
-            }
-
-            _metrics.IncrementSuccess_NeedsLock();
+            default:
+                throw new InvalidOperationException("Unhandled CircuitState.");
         }
+
+        _metrics.IncrementSuccess_NeedsLock();
     }
 
     public override void OnActionFailure(DelegateResult<TResult> outcome, Context context)
     {
-        using (TimedLock.Lock(_lock))
+        using var _ = TimedLock.Lock(_lock);
+
+        _lastOutcome = outcome;
+
+        switch (_circuitState)
         {
-            _lastOutcome = outcome;
+            case CircuitState.HalfOpen:
+                Break_NeedsLock(context);
+                return;
 
-            switch (_circuitState)
-            {
-                case CircuitState.HalfOpen:
+            case CircuitState.Closed:
+                _metrics.IncrementFailure_NeedsLock();
+                var healthCount = _metrics.GetHealthCount_NeedsLock();
+
+                int throughput = healthCount.Total;
+                if (throughput >= _minimumThroughput && (double)healthCount.Failures / throughput >= _failureThreshold)
+                {
                     Break_NeedsLock(context);
-                    return;
+                }
+                break;
 
-                case CircuitState.Closed:
-                    _metrics.IncrementFailure_NeedsLock();
-                    var healthCount = _metrics.GetHealthCount_NeedsLock();
+            case CircuitState.Open:
+            case CircuitState.Isolated:
+                _metrics.IncrementFailure_NeedsLock();
+                break; // A failure call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no action beyond tracking the metric; we do not want to duplicate-signal onBreak; we do not want to extend time for which the circuit is broken.  We do not want to mask the fact that the call executed (as replacing its result with a Broken/IsolatedCircuitException would do).
 
-                    int throughput = healthCount.Total;
-                    if (throughput >= _minimumThroughput && (double)healthCount.Failures / throughput >= _failureThreshold)
-                    {
-                        Break_NeedsLock(context);
-                    }
-                    break;
-
-                case CircuitState.Open:
-                case CircuitState.Isolated:
-                    _metrics.IncrementFailure_NeedsLock();
-                    break; // A failure call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no action beyond tracking the metric; we do not want to duplicate-signal onBreak; we do not want to extend time for which the circuit is broken.  We do not want to mask the fact that the call executed (as replacing its result with a Broken/IsolatedCircuitException would do).
-
-                default:
-                    throw new InvalidOperationException("Unhandled CircuitState.");
-            }
+            default:
+                throw new InvalidOperationException("Unhandled CircuitState.");
         }
     }
 }
