@@ -7,8 +7,8 @@ internal sealed class HedgingController<T>
 {
     private readonly ObjectPool<HedgingExecutionContext<T>> _contextPool;
     private readonly ObjectPool<TaskExecution<T>> _executionPool;
-    private readonly int _rentedContexts;
-    private readonly int _rentedExecutions;
+    private int _rentedContexts;
+    private int _rentedExecutions;
 
     public HedgingController(
         ResilienceStrategyTelemetry telemetry,

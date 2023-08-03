@@ -11,8 +11,8 @@ internal sealed class ObjectPool<T>
 
     private readonly ConcurrentQueue<T> _items = new();
 
-    private readonly T? _fastItem;
-    private readonly int _numItems;
+    private T? _fastItem;
+    private int _numItems;
 
     public ObjectPool(Func<T> createFunc, Action<T> reset)
         : this(createFunc, o => { reset(o); return true; })
