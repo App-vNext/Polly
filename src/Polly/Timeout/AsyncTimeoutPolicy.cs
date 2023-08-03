@@ -43,8 +43,8 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
 /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
 public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<TResult>
 {
+    private readonly TimeoutStrategy _timeoutStrategy;
     private Func<Context, TimeSpan> _timeoutProvider;
-    private TimeoutStrategy _timeoutStrategy;
     private Func<Context, TimeSpan, Task, Exception, Task> _onTimeoutAsync;
 
     internal AsyncTimeoutPolicy(
