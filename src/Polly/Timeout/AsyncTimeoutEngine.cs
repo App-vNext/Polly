@@ -14,45 +14,42 @@ internal static class AsyncTimeoutEngine
         cancellationToken.ThrowIfCancellationRequested();
         TimeSpan timeout = timeoutProvider(context);
 
-        using (CancellationTokenSource timeoutCancellationTokenSource = new CancellationTokenSource())
+        using var timeoutCancellationTokenSource = new CancellationTokenSource();
+        using var combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token);
+
+        Task<TResult> actionTask = null;
+        CancellationToken combinedToken = combinedTokenSource.Token;
+
+        try
         {
-            using (CancellationTokenSource combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token))
+            if (timeoutStrategy == TimeoutStrategy.Optimistic)
             {
-                Task<TResult> actionTask = null;
-                CancellationToken combinedToken = combinedTokenSource.Token;
-
-                try
-                {
-                    if (timeoutStrategy == TimeoutStrategy.Optimistic)
-                    {
-                        SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
-                        return await action(context, combinedToken).ConfigureAwait(continueOnCapturedContext);
-                    }
-
-                    // else: timeoutStrategy == TimeoutStrategy.Pessimistic
-
-                    Task<TResult> timeoutTask = timeoutCancellationTokenSource.Token.AsTask<TResult>();
-
-                    SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
-
-                    actionTask = action(context, combinedToken);
-
-                    return await (await Task.WhenAny(actionTask, timeoutTask).ConfigureAwait(continueOnCapturedContext)).ConfigureAwait(continueOnCapturedContext);
-
-                }
-                catch (Exception ex)
-                {
-                    // Note that we cannot rely on testing (operationCanceledException.CancellationToken == combinedToken || operationCanceledException.CancellationToken == timeoutCancellationTokenSource.Token)
-                    // as either of those tokens could have been onward combined with another token by executed code, and so may not be the token expressed on operationCanceledException.CancellationToken.
-                    if (ex is OperationCanceledException && timeoutCancellationTokenSource.IsCancellationRequested)
-                    {
-                        await onTimeoutAsync(context, timeout, actionTask, ex).ConfigureAwait(continueOnCapturedContext);
-                        throw new TimeoutRejectedException("The delegate executed asynchronously through TimeoutPolicy did not complete within the timeout.", ex);
-                    }
-
-                    throw;
-                }
+                SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
+                return await action(context, combinedToken).ConfigureAwait(continueOnCapturedContext);
             }
+
+            // else: timeoutStrategy == TimeoutStrategy.Pessimistic
+
+            Task<TResult> timeoutTask = timeoutCancellationTokenSource.Token.AsTask<TResult>();
+
+            SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
+
+            actionTask = action(context, combinedToken);
+
+            return await (await Task.WhenAny(actionTask, timeoutTask).ConfigureAwait(continueOnCapturedContext)).ConfigureAwait(continueOnCapturedContext);
+
+        }
+        catch (Exception ex)
+        {
+            // Note that we cannot rely on testing (operationCanceledException.CancellationToken == combinedToken || operationCanceledException.CancellationToken == timeoutCancellationTokenSource.Token)
+            // as either of those tokens could have been onward combined with another token by executed code, and so may not be the token expressed on operationCanceledException.CancellationToken.
+            if (ex is OperationCanceledException && timeoutCancellationTokenSource.IsCancellationRequested)
+            {
+                await onTimeoutAsync(context, timeout, actionTask, ex).ConfigureAwait(continueOnCapturedContext);
+                throw new TimeoutRejectedException("The delegate executed asynchronously through TimeoutPolicy did not complete within the timeout.", ex);
+            }
+
+            throw;
         }
     }
 
