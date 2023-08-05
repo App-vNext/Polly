@@ -12,8 +12,6 @@ internal class ResilienceTelemetryTags
 
     public const string StrategyName = "strategy-name";
 
-    public const string StrategyType = "strategy-type";
-
     public const string ResultType = "result-type";
 
     public const string OperationKey = "operation-key";

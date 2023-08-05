@@ -35,13 +35,13 @@ public class MultipleStrategiesBenchmark
     [Benchmark]
     public async ValueTask ExecuteStrategyPipeline_NonGeneric_V8()
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
 
         await _nonGeneric!.ExecuteOutcomeAsync(
             static (_, _) => new ValueTask<Outcome<string>>(Outcome.FromResult("dummy")),
             context,
             string.Empty).ConfigureAwait(false);
 
-        ResilienceContext.Return(context);
+        ResilienceContextPool.Shared.Return(context);
     }
 }

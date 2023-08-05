@@ -23,7 +23,7 @@ internal sealed class BehaviorChaosStrategy : MonkeyStrategy
 
     public Func<ResilienceContext, ValueTask> Behavior { get; }
 
-    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
     {
         try

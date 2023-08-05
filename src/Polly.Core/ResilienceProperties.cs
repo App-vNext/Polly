@@ -7,7 +7,7 @@ namespace Polly;
 /// <summary>
 /// Represents a collection of custom resilience properties.
 /// </summary>
-public sealed class ResilienceProperties : IDictionary<string, object?>
+public sealed class ResilienceProperties
 {
     internal IDictionary<string, object?> Options { get; set; } = new Dictionary<string, object?>();
 
@@ -80,58 +80,5 @@ public sealed class ResilienceProperties : IDictionary<string, object?>
     }
 
     internal void Clear() => Options.Clear();
-
-    /// <inheritdoc/>
-    object? IDictionary<string, object?>.this[string key]
-    {
-        get => Options[key];
-        set => Options[key] = value;
-    }
-
-    /// <inheritdoc/>
-    ICollection<string> IDictionary<string, object?>.Keys => Options.Keys;
-
-    /// <inheritdoc/>
-    ICollection<object?> IDictionary<string, object?>.Values => Options.Values;
-
-    /// <inheritdoc/>
-    int ICollection<KeyValuePair<string, object?>>.Count => Options.Count;
-
-    /// <inheritdoc/>
-    bool ICollection<KeyValuePair<string, object?>>.IsReadOnly => Options.IsReadOnly;
-
-    /// <inheritdoc/>
-    void IDictionary<string, object?>.Add(string key, object? value) => Options.Add(key, value);
-
-    /// <inheritdoc/>
-    void ICollection<KeyValuePair<string, object?>>.Add(KeyValuePair<string, object?> item) => Options.Add(item);
-
-    /// <inheritdoc/>
-    void ICollection<KeyValuePair<string, object?>>.Clear() => Options.Clear();
-
-    /// <inheritdoc/>
-    bool ICollection<KeyValuePair<string, object?>>.Contains(KeyValuePair<string, object?> item) => Options.Contains(item);
-
-    /// <inheritdoc/>
-    bool IDictionary<string, object?>.ContainsKey(string key) => Options.ContainsKey(key);
-
-    /// <inheritdoc/>
-    void ICollection<KeyValuePair<string, object?>>.CopyTo(KeyValuePair<string, object?>[] array, int arrayIndex) =>
-        Options.CopyTo(array, arrayIndex);
-
-    /// <inheritdoc/>
-    IEnumerator<KeyValuePair<string, object?>> IEnumerable<KeyValuePair<string, object?>>.GetEnumerator() => Options.GetEnumerator();
-
-    /// <inheritdoc/>
-    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Options).GetEnumerator();
-
-    /// <inheritdoc/>
-    bool IDictionary<string, object?>.Remove(string key) => Options.Remove(key);
-
-    /// <inheritdoc/>
-    bool ICollection<KeyValuePair<string, object?>>.Remove(KeyValuePair<string, object?> item) => Options.Remove(item);
-
-    /// <inheritdoc/>
-    bool IDictionary<string, object?>.TryGetValue(string key, out object? value) => Options.TryGetValue(key, out value);
 }
 

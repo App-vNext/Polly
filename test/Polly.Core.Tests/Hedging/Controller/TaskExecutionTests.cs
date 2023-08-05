@@ -23,7 +23,7 @@ public class TaskExecutionTests : IDisposable
         {
             if (args.Arguments is ExecutionAttemptArguments attempt)
             {
-                _args.Add(ExecutionAttemptArguments.Get(attempt.Attempt, attempt.ExecutionTime, attempt.Handled));
+                _args.Add(ExecutionAttemptArguments.Get(attempt.AttemptNumber, attempt.ExecutionTime, attempt.Handled));
             }
         });
 
@@ -64,7 +64,7 @@ public class TaskExecutionTests : IDisposable
 
         _args.Should().HaveCount(1);
         _args[0].Handled.Should().Be(handled);
-        _args[0].Attempt.Should().Be(99);
+        _args[0].AttemptNumber.Should().Be(99);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class TaskExecutionTests : IDisposable
         Generator = args =>
         {
             AssertSecondaryContext(args.ActionContext, execution);
-            args.Attempt.Should().Be(4);
+            args.AttemptNumber.Should().Be(4);
             return () => Outcome.FromResultAsTask(new DisposableResult { Name = value });
         };
 
@@ -235,7 +235,7 @@ public class TaskExecutionTests : IDisposable
         // assert
         execution.IsAccepted.Should().BeFalse();
         execution.IsHandled.Should().BeFalse();
-        execution.Properties.Should().HaveCount(0);
+        execution.Properties.Options.Should().HaveCount(0);
         execution.Invoking(e => e.Context).Should().Throw<InvalidOperationException>();
 #if !NETCOREAPP
         token.Invoking(t => t.WaitHandle).Should().Throw<InvalidOperationException>();
@@ -268,7 +268,7 @@ public class TaskExecutionTests : IDisposable
         context.CancellationToken.Should().NotBeSameAs(_snapshot.OriginalCancellationToken);
         context.CancellationToken.CanBeCanceled.Should().BeTrue();
 
-        context.Properties.Should().HaveCount(1);
+        context.Properties.Options.Should().HaveCount(1);
         context.Properties.TryGetValue(_myKey, out var value).Should().BeTrue();
         value.Should().Be("dummy-value");
     }
@@ -282,14 +282,14 @@ public class TaskExecutionTests : IDisposable
         context.CancellationToken.Should().NotBeSameAs(_snapshot.OriginalCancellationToken);
         context.CancellationToken.CanBeCanceled.Should().BeTrue();
 
-        context.Properties.Should().HaveCount(1);
+        context.Properties.Options.Should().HaveCount(1);
         context.Properties.TryGetValue(_myKey, out var value).Should().BeTrue();
         value.Should().Be("dummy-value");
     }
 
     private void CreateSnapshot(CancellationToken? token = null)
     {
-        _snapshot = new ContextSnapshot(ResilienceContext.Get().Initialize<DisposableResult>(isSynchronous: false), new ResilienceProperties(), token ?? _cts.Token);
+        _snapshot = new ContextSnapshot(ResilienceContextPool.Shared.Get().Initialize<DisposableResult>(isSynchronous: false), new ResilienceProperties(), token ?? _cts.Token);
         _snapshot.Context.CancellationToken = _cts.Token;
         _snapshot.OriginalProperties.Set(_myKey, "dummy-value");
     }

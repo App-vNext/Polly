@@ -1,3 +1,43 @@
+## 8.0.0-alpha.7
+
+* Introduce ResilienceStrategyBuilder.Validator by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1412
+* Update docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1413
+* Annotate the library with trimming attributes by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1414
+* Update trimming justifications by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1415
+* Fix condition by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1416
+* API Review Feedback (1) by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1420
+* Introduce ResilienceContextPool (ApiReview) by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1421
+* Convert records to classes by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1422
+* Rename ExecuteCoreAsync to ExecuteCore by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1424
+* Benchmark for strategy creation by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1426
+* Fix README.md example syntax errors by [@Sensational-Code](https://github.com/Sensational-Code) in https://github.com/App-vNext/Polly/pull/1427
+* Improve usability of ResilienceStrategy&lt;T&gt; by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1428
+* Cleanup OutcomeResilienceStrategy by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1430
+* Drop the ResilienceStrategyBuilder.IsGenericBuilder property by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1431
+* Allow isolate CircuitBreakerManualControl using constructor by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1432
+
+## 8.0.0-alpha.6
+
+* Update docs by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1382
+* Add support for `PartitionedRateLimiter` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1383
+* Fix debugger proxies by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1384
+* Allow adding generic strategies to generic builder by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1386
+* Add new issue that demonstrates how to use PartitionedRateLimiter by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1385
+* Introduce `TelemetryOptions.OnTelemetryEvent` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1387
+* `ResilienceStrategyRegistry` API improvements by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1388
+* Simplify condition by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1391
+* Introduce `ResilienceStrategyBuilder.InstanceName` and use it in telemetry by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1392
+* Introduce `Polly.Testing` package by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1394
+* Kill mutant by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1395
+* Fix unstable test by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1396
+* Rename  AddResilienceStrategy to AddResilienceStrategyRegistry by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1397
+* Update README.md for Polly.Extensions with telemetry info by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1401
+* Kill mutant by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1407
+* Assertion failed when running tests in Visual Studio by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1408
+* Include PublicApiAnalyzers by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1400
+* Kill mutant by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1409
+* Demonstrate how to create dynamic strategies with complex keys by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1366
+
 ## 8.0.0-alpha.5
 
 * Skip mutation tests for tagged builds by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1354

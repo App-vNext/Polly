@@ -7,22 +7,22 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
 {
     private sealed class GenericRegistry<TResult>
     {
-        private readonly Func<ResilienceStrategyBuilder<TResult>> _activator;
-        private readonly ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>>> _builders;
+        private readonly Func<CompositeStrategyBuilder<TResult>> _activator;
+        private readonly ConcurrentDictionary<TKey, Action<CompositeStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>>> _builders;
         private readonly ConcurrentDictionary<TKey, ResilienceStrategy<TResult>> _strategies;
 
         private readonly Func<TKey, string> _builderNameFormatter;
         private readonly Func<TKey, string>? _instanceNameFormatter;
 
         public GenericRegistry(
-            Func<ResilienceStrategyBuilder<TResult>> activator,
+            Func<CompositeStrategyBuilder<TResult>> activator,
             IEqualityComparer<TKey> builderComparer,
             IEqualityComparer<TKey> strategyComparer,
             Func<TKey, string> builderNameFormatter,
             Func<TKey, string>? instanceNameFormatter)
         {
             _activator = activator;
-            _builders = new ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>>>(builderComparer);
+            _builders = new ConcurrentDictionary<TKey, Action<CompositeStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>>>(builderComparer);
             _strategies = new ConcurrentDictionary<TKey, ResilienceStrategy<TResult>>(strategyComparer);
             _builderNameFormatter = builderNameFormatter;
             _instanceNameFormatter = instanceNameFormatter;
@@ -49,7 +49,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
             return false;
         }
 
-        public ResilienceStrategy<TResult> GetOrAdd(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
+        public ResilienceStrategy<TResult> GetOrAdd(TKey key, Action<CompositeStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
         {
             var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _instanceNameFormatter?.Invoke(key));
 
@@ -64,7 +64,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
 #endif
         }
 
-        public bool TryAddBuilder(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);
+        public bool TryAddBuilder(TKey key, Action<CompositeStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);
 
         public bool RemoveBuilder(TKey key) => _builders.TryRemove(key, out _);
 

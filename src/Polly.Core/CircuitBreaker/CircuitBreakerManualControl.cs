@@ -15,6 +15,19 @@ public sealed class CircuitBreakerManualControl : IDisposable
     private readonly HashSet<Func<ResilienceContext, Task>> _onReset = new();
     private bool _isolated;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CircuitBreakerManualControl"/> class.
+    /// </summary>
+    public CircuitBreakerManualControl()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CircuitBreakerManualControl"/> class.
+    /// </summary>
+    /// <param name="isIsolated">Determines whether the circit breaker is isolated immediately after construction.</param>
+    public CircuitBreakerManualControl(bool isIsolated) => _isolated = isIsolated;
+
     internal void Initialize(Func<ResilienceContext, Task> onIsolate, Func<ResilienceContext, Task> onReset, Action onDispose)
     {
         _onDispose.Add(onDispose);
@@ -23,7 +36,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
 
         if (_isolated)
         {
-            var context = ResilienceContext.Get().Initialize<VoidResult>(isSynchronous: true);
+            var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
 
             // if the control indicates that circuit breaker should be isolated, we isolate it right away
             IsolateAsync(context).GetAwaiter().GetResult();
@@ -57,7 +70,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public async Task IsolateAsync(CancellationToken cancellationToken = default)
     {
-        var context = ResilienceContext.Get(cancellationToken).Initialize<VoidResult>(isSynchronous: false);
+        var context = ResilienceContextPool.Shared.Get(cancellationToken).Initialize<VoidResult>(isSynchronous: false);
 
         try
         {
@@ -65,7 +78,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
         }
         finally
         {
-            ResilienceContext.Return(context);
+            ResilienceContextPool.Shared.Return(context);
         }
     }
 
@@ -98,7 +111,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public async Task CloseAsync(CancellationToken cancellationToken = default)
     {
-        var context = ResilienceContext.Get(cancellationToken);
+        var context = ResilienceContextPool.Shared.Get(cancellationToken);
 
         try
         {
@@ -106,7 +119,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
         }
         finally
         {
-            ResilienceContext.Return(context);
+            ResilienceContextPool.Shared.Return(context);
         }
     }
 

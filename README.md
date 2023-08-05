@@ -5,8 +5,8 @@
 > Major performance improvements are on the way! Please see our [blog post](https://www.thepollyproject.org/2023/03/03/we-want-your-feedback-introducing-polly-v8/) to learn more and provide feedback in the [related GitHub issue](https://github.com/App-vNext/Polly/issues/1048).
 >
 > :rotating_light::rotating_light: **Polly v8 feature-complete!** :rotating_light::rotating_light:
-> - Polly v8 Alpha 5 is now available on [NuGet.org](https://www.nuget.org/packages/Polly/8.0.0-alpha.5)
-> - The Alpha 5 version is considered feature-complete. After an internal review of the API to address unresolved issues, we will move on to a Beta release.
+> - Polly v8 Alpha 7 is now available on [NuGet.org](https://www.nuget.org/packages/Polly/8.0.0-alpha.7)
+> - The Alpha 7 version is considered feature-complete. After completing [review of the API](https://github.com/App-vNext/Polly/pull/1233) to address unresolved issues, we will move on to a Beta release.
 > - The v8 docs are not yet finished, but you can take a look at sample code in these locations:
 >     - Within the repo's new [Samples folder](https://github.com/App-vNext/Polly/tree/main/samples)
 >     - By reading `Polly.Core`'s [README](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md)
@@ -24,9 +24,25 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 **Keep up to date with new feature announcements, tips & tricks, and other news through [www.thepollyproject.org](https://www.thepollyproject.org)**
 
-[![NuGet version](https://buildstats.info/nuget/Polly?includePreReleases=false)](https://www.nuget.org/packages/Polly/) [![Build status](https://github.com/App-vNext/Polly/workflows/build/badge.svg?branch=main&event=push)](https://github.com/App-vNext/Polly/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush) [![Code coverage](https://codecov.io/gh/App-vNext/Polly/branch/main/graph/badge.svg)](https://codecov.io/gh/App-vNext/Polly) [![Slack Status](http://www.pollytalk.org/badge.svg)](http://www.pollytalk.org)
+[![Build status](https://github.com/App-vNext/Polly/workflows/build/badge.svg?branch=main&event=push)](https://github.com/App-vNext/Polly/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush) [![Code coverage](https://codecov.io/gh/App-vNext/Polly/branch/main/graph/badge.svg)](https://codecov.io/gh/App-vNext/Polly) [![Slack Status](http://www.pollytalk.org/badge.svg)](http://www.pollytalk.org)
 
 ![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)
+
+## NuGet Packages
+
+### Polly v7
+
+[![NuGet vesion](https://buildstats.info/nuget/Polly?includePreReleases=false)](https://www.nuget.org/packages/Polly/)
+
+### Polly v8 Pre-releases
+
+| **Package** | **Latest Version** |
+|:--|:--|
+| Polly | [![NuGet](https://buildstats.info/nuget/Polly?includePreReleases=true)](https://www.nuget.org/packages/Polly/ "Download Polly from NuGet.org") |
+| Polly.Core | [![NuGet](https://buildstats.info/nuget/Polly.Core?includePreReleases=true)](https://www.nuget.org/packages/Polly.Core/ "Download Polly.Core from NuGet.org") |
+| Polly.Extensions | [![NuGet](https://buildstats.info/nuget/Polly.Extensions?includePreReleases=true)](https://www.nuget.org/packages/Polly.Extensions/ "Download Polly.Extensions from NuGet.org") |
+| Polly.RateLimiting | [![NuGet](https://buildstats.info/nuget/Polly.RateLimiting?includePreReleases=true)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") |
+| Polly.Testing | [![NuGet](https://buildstats.info/nuget/Polly.Testing?includePreReleases=true)](https://www.nuget.org/packages/Polly.Testing/ "Download Polly.Testing from NuGet.org") |
 
 ---
 
@@ -34,6 +50,9 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 <!-- Just set the Toc: Levels setting to '2..4', open the command palette,  -->
 <!-- and run 'Markdown All in One: Update Table of Contents'  -->
 - [Polly](#polly)
+  - [NuGet Packages](#nuget-packages)
+    - [Polly v7](#polly-v7)
+    - [Polly v8 Pre-releases](#polly-v8-pre-releases)
   - [Get Started](#get-started)
     - [Installing via the .NET SDK](#installing-via-the-net-sdk)
     - [Supported targets](#supported-targets)
@@ -506,13 +525,13 @@ For more information on the Circuit Breaker pattern in general see:
 Policy<UserAvatar>
    .Handle<FooException>()
    .OrResult(null)
-   .Fallback<UserAvatar>(UserAvatar.Blank)
+   .Fallback<UserAvatar>(UserAvatar.Blank);
 
 // Specify a func to provide a substitute value, if execution faults.
 Policy<UserAvatar>
    .Handle<FooException>()
    .OrResult(null)
-   .Fallback<UserAvatar>(() => UserAvatar.GetRandomAvatar()) // where: public UserAvatar GetRandomAvatar() { ... }
+   .Fallback<UserAvatar>(() => UserAvatar.GetRandomAvatar()); // where: public UserAvatar GetRandomAvatar() { ... }
 
 // Specify a substitute value or func, calling an action (eg for logging) if the fallback is invoked.
 Policy<UserAvatar>
@@ -627,7 +646,7 @@ Policy
 
 // Configure variable timeout via a func provider.
 Policy
-  .Timeout(myTimeoutProvider)) // Func<TimeSpan> myTimeoutProvider
+  .Timeout(myTimeoutProvider) // Func<TimeSpan> myTimeoutProvider
 
 // Timeout, calling an action if the action times out
 Policy
@@ -795,10 +814,10 @@ var cachePolicy = Policy.Cache(memoryCacheProvider, TimeSpan.FromMinutes(5));
 // - https://github.com/App-vNext/Polly.Caching.IDistributedCache
 
 // Define a cache policy with absolute expiration at midnight tonight.
-var cachePolicy = Policy.Cache(memoryCacheProvider, new AbsoluteTtl(DateTimeOffset.Now.Date.AddDays(1));
+var cachePolicy = Policy.Cache(memoryCacheProvider, new AbsoluteTtl(DateTimeOffset.Now.Date.AddDays(1)));
 
 // Define a cache policy with sliding expiration: items remain valid for another 5 minutes each time the cache item is used.
-var cachePolicy = Policy.Cache(memoryCacheProvider, new SlidingTtl(TimeSpan.FromMinutes(5));
+var cachePolicy = Policy.Cache(memoryCacheProvider, new SlidingTtl(TimeSpan.FromMinutes(5)));
 
 // Define a cache Policy, and catch any cache provider errors for logging.
 var cachePolicy = Policy.Cache(myCacheProvider, TimeSpan.FromMinutes(5),

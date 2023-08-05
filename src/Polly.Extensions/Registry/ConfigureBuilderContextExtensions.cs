@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Options;
 using Polly.Extensions.Utils;
 using Polly.Registry;
 using Polly.Utils;
@@ -25,7 +26,10 @@ public static class ConfigureBuilderContextExtensions
     /// You can listen for changes only for single options. If you call this method multiple times, the preceding calls are ignored and only the last one wins.
     /// </para>
     /// </remarks>
-    public static void EnableReloads<TKey, TOptions>(this ConfigureBuilderContext<TKey> context, IOptionsMonitor<TOptions> optionsMonitor, string? name = null)
+    public static void EnableReloads<TKey, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(
+        this ConfigureBuilderContext<TKey> context,
+        IOptionsMonitor<TOptions> optionsMonitor,
+        string? name = null)
         where TKey : notnull
     {
         Guard.NotNull(context);

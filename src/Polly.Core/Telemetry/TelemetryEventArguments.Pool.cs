@@ -1,6 +1,6 @@
 ﻿namespace Polly.Telemetry;
 
-public sealed partial record class TelemetryEventArguments
+public sealed partial class TelemetryEventArguments
 {
     private static readonly ObjectPool<TelemetryEventArguments> Pool = new(() => new TelemetryEventArguments(), args =>
     {

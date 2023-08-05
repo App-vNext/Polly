@@ -12,7 +12,7 @@ internal static partial class Log
         EventId = 0,
         Message = "Resilience event occurred. " +
                 "EventName: '{EventName}', " +
-                "Source: '{BuilderName}[{BuilderInstance}]/{StrategyType}[{StrategyName}]', " +
+                "Source: '{BuilderName}/{BuilderInstance}/{StrategyName}', " +
                 "Operation Key: '{OperationKey}', " +
                 "Result: '{Result}'",
         EventName = "ResilienceEvent")]
@@ -20,10 +20,9 @@ internal static partial class Log
         this ILogger logger,
         LogLevel logLevel,
         string eventName,
-        string? builderName,
-        string? builderInstance,
+        string builderName,
+        string builderInstance,
         string? strategyName,
-        string strategyType,
         string? operationKey,
         object? result,
         Exception? exception);
@@ -32,21 +31,21 @@ internal static partial class Log
         1,
         LogLevel.Debug,
         "Resilience strategy executing. " +
-        "Source: '{BuilderName}[{BuilderInstance}]', " +
+        "Source: '{BuilderName}/{BuilderInstance}', " +
         "Operation Key: '{OperationKey}', " +
         "Result Type: '{ResultType}'",
         EventName = "StrategyExecuting")]
     public static partial void ExecutingStrategy(
         this ILogger logger,
-        string? builderName,
-        string? builderInstance,
+        string builderName,
+        string builderInstance,
         string? operationKey,
         string resultType);
 
     [LoggerMessage(
         EventId = 2,
         Message = "Resilience strategy executed. " +
-            "Source: '{BuilderName}[{BuilderInstance}]', " +
+            "Source: '{BuilderName}/{BuilderInstance}', " +
             "Operation Key: '{OperationKey}', " +
             "Result Type: '{ResultType}', " +
             "Result: '{Result}', " +
@@ -56,8 +55,8 @@ internal static partial class Log
     public static partial void StrategyExecuted(
         this ILogger logger,
         LogLevel logLevel,
-        string? builderName,
-        string? builderInstance,
+        string builderName,
+        string builderInstance,
         string? operationKey,
         string resultType,
         object? result,
@@ -68,7 +67,7 @@ internal static partial class Log
     [LoggerMessage(
         EventId = 3,
         Message = "Execution attempt. " +
-                "Source: '{BuilderName}[{BuilderInstance}]/{StrategyType}[{StrategyName}]', " +
+                "Source: '{BuilderName}/{BuilderInstance}/{StrategyName}', " +
                 "Operation Key: '{OperationKey}', " +
                 "Result: '{Result}', " +
                 "Handled: '{Handled}', " +
@@ -79,10 +78,9 @@ internal static partial class Log
     public static partial void ExecutionAttempt(
         this ILogger logger,
         LogLevel level,
-        string? builderName,
-        string? builderInstance,
-        string? strategyName,
-        string strategyType,
+        string builderName,
+        string builderInstance,
+        string strategyName,
         string? operationKey,
         object? result,
         bool handled,

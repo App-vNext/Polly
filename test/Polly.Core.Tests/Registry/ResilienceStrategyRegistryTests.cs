@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using Polly.Registry;
 using Polly.Retry;
@@ -10,13 +9,13 @@ public class ResilienceStrategyRegistryTests
 {
     private readonly ResilienceStrategyRegistryOptions<StrategyId> _options;
 
-    private Action<ResilienceStrategyBuilder> _callback = _ => { };
+    private Action<CompositeStrategyBuilder> _callback = _ => { };
 
     public ResilienceStrategyRegistryTests() => _options = new()
     {
         BuilderFactory = () =>
         {
-            var builder = new ResilienceStrategyBuilder();
+            var builder = new CompositeStrategyBuilder();
             _callback(builder);
             return builder;
         },
@@ -35,7 +34,7 @@ public class ResilienceStrategyRegistryTests
     {
         this.Invoking(_ => new ResilienceStrategyRegistry<string>(new ResilienceStrategyRegistryOptions<string> { BuilderFactory = null! }))
             .Should()
-            .Throw<ValidationException>().WithMessage("The resilience strategy registry options are invalid.*");
+            .Throw<ArgumentNullException>();
     }
 
     [Fact]
@@ -241,7 +240,7 @@ public class ResilienceStrategyRegistryTests
             context.BuilderName.Should().Be("A");
             context.BuilderInstanceName.Should().Be("Instance1");
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.BuilderName.Should().Be("A");
+            builder.Name.Should().Be("A");
             called = true;
         });
 
@@ -271,7 +270,7 @@ public class ResilienceStrategyRegistryTests
         registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, _) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.BuilderName.Should().Be("A");
+            builder.Name.Should().Be("A");
             builder.InstanceName.Should().Be("Instance1");
             called = true;
         });

@@ -10,7 +10,6 @@ public class BehaviorStrategyOptionsTests
     public void Ctor_Ok()
     {
         var sut = new BehaviorStrategyOptions();
-        sut.StrategyType.Should().Be(BehaviorConstants.StrategyType);
         sut.Randomizer.Should().NotBeNull();
         sut.Enabled.Should().BeNull();
         sut.EnabledGenerator.Should().BeNull();
@@ -26,7 +25,7 @@ public class BehaviorStrategyOptionsTests
         var sut = new BehaviorStrategyOptions();
 
         sut
-            .Invoking(o => ValidationHelper.ValidateObject(o, "Invalid Options"))
+            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid Options")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""

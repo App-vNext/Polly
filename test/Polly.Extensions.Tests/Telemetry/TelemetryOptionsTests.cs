@@ -14,7 +14,7 @@ public class TelemetryOptionsTests
 
         options.Enrichers.Should().BeEmpty();
         options.LoggerFactory.Should().Be(NullLoggerFactory.Instance);
-        var resilienceContext = ResilienceContext.Get();
+        var resilienceContext = ResilienceContextPool.Shared.Get();
         options.ResultFormatter(resilienceContext, null).Should().BeNull();
         options.ResultFormatter(resilienceContext, "dummy").Should().Be("dummy");
 

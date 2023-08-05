@@ -33,9 +33,13 @@ public class HedgingExecutionContextTests : IDisposable
             _ => false
         },
         args => Generator(args));
-        _resilienceContext = ResilienceContext.Get().Initialize<string>(false);
+        _resilienceContext = ResilienceContextPool.Shared.Get().Initialize<string>(false);
         _resilienceContext.CancellationToken = _cts.Token;
         _resilienceContext.Properties.Set(_myKey, "dummy");
+
+        // HedgingExecutionContext has some Debug.Assert pieces which trigger failures in Debug mode
+        // just suppress these
+        Trace.Listeners.Clear();
     }
 
     public void Dispose()
@@ -67,7 +71,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.Snapshot.Context.Properties.Should().NotBeSameAs(props);
         context.Snapshot.OriginalProperties.Should().BeSameAs(props);
         context.Snapshot.OriginalCancellationToken.Should().Be(_cts.Token);
-        context.Snapshot.Context.Properties.Should().HaveCount(1);
+        context.Snapshot.Context.Properties.Options.Should().HaveCount(1);
         context.IsInitialized.Should().BeTrue();
     }
 
@@ -232,7 +236,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.Initialize(_resilienceContext);
         Generator = args =>
         {
-            attempt = args.Attempt;
+            attempt = args.AttemptNumber;
             return null;
         };
 
@@ -315,12 +319,12 @@ public class HedgingExecutionContextTests : IDisposable
         _resilienceContext.Properties.Should().BeSameAs(originalProps);
         if (primary)
         {
-            _resilienceContext.Properties.Should().HaveCount(1);
+            _resilienceContext.Properties.Options.Should().HaveCount(1);
             _resilienceContext.ResilienceEvents.Should().HaveCount(1);
         }
         else
         {
-            _resilienceContext.Properties.Should().HaveCount(2);
+            _resilienceContext.Properties.Options.Should().HaveCount(2);
             _resilienceContext.ResilienceEvents.Should().HaveCount(4);
         }
     }
@@ -449,7 +453,7 @@ public class HedgingExecutionContextTests : IDisposable
     {
         Generator = args =>
         {
-            var attempt = args.Attempt - 1;
+            var attempt = args.AttemptNumber - 1;
 
             if (attempt >= delays.Length)
             {

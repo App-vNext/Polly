@@ -27,7 +27,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
         var duration = CreateStrategy().ExecutionDuration;
 
         duration.Unit.Should().Be("ms");
-        duration.Description.Should().Be("The execution duration and execution result of resilience strategies.");
+        duration.Description.Should().Be("The execution duration and execution results of resilience strategies.");
     }
 
     [InlineData(true)]
@@ -46,14 +46,14 @@ public class TelemetryResilienceStrategyTests : IDisposable
                     ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
                 }
             },
-            ResilienceContext.Get("op-key"), string.Empty);
+            ResilienceContextPool.Shared.Get("op-key"), string.Empty);
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience strategy executing. Source: 'my-builder[my-instance]', Operation Key: 'op-key', Result Type: 'void'");
+        messages[0].Message.Should().Be("Resilience strategy executing. Source: 'my-builder/my-instance', Operation Key: 'op-key', Result Type: 'void'");
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Match($"Resilience strategy executed. Source: 'my-builder[my-instance]', Operation Key: 'op-key', Result Type: 'void', Result: 'void', Execution Health: '{healthString}', Execution Time: *ms");
+        messages[0].Message.Should().Match($"Resilience strategy executed. Source: 'my-builder/my-instance', Operation Key: 'op-key', Result Type: 'void', Result: 'void', Execution Health: '{healthString}', Execution Time: *ms");
         messages[0].LogLevel.Should().Be(healthy ? LogLevel.Debug : LogLevel.Warning);
 
         // verify reported state
@@ -74,15 +74,15 @@ public class TelemetryResilienceStrategyTests : IDisposable
     public void Execute_WithException_EnsureLogged()
     {
         var strategy = CreateStrategy();
-        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."), ResilienceContext.Get("op-key"))).Should().Throw<InvalidOperationException>();
+        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."), ResilienceContextPool.Shared.Get("op-key"))).Should().Throw<InvalidOperationException>();
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience strategy executing. Source: 'my-builder[my-instance]', Operation Key: 'op-key', Result Type: 'void'");
+        messages[0].Message.Should().Be("Resilience strategy executing. Source: 'my-builder/my-instance', Operation Key: 'op-key', Result Type: 'void'");
 
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Match($"Resilience strategy executed. Source: 'my-builder[my-instance]', Operation Key: 'op-key', Result Type: 'void', Result: 'Dummy message.', Execution Health: 'Healthy', Execution Time: *ms");
+        messages[0].Message.Should().Match($"Resilience strategy executed. Source: 'my-builder/my-instance', Operation Key: 'op-key', Result Type: 'void', Result: 'Dummy message.', Execution Health: 'Healthy', Execution Time: *ms");
         messages[0].Exception.Should().BeOfType<InvalidOperationException>();
     }
 
@@ -115,7 +115,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
     public void Execute_WithException_EnsureMetered()
     {
         var strategy = CreateStrategy();
-        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."), ResilienceContext.Get("op-key"))).Should().Throw<InvalidOperationException>();
+        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."), ResilienceContextPool.Shared.Get("op-key"))).Should().Throw<InvalidOperationException>();
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 
@@ -140,7 +140,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 
-        ev.Count.Should().Be(7);
+        ev.Count.Should().Be(5);
         ev["my-custom-tag"].Should().Be("my-tag-value");
     }
 
@@ -160,16 +160,16 @@ public class TelemetryResilienceStrategyTests : IDisposable
 
                 return true;
             },
-            ResilienceContext.Get("op-key"), string.Empty);
+            ResilienceContextPool.Shared.Get("op-key"), string.Empty);
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 
-        ev.Count.Should().Be(6);
+        ev.Count.Should().Be(5);
         ev["builder-instance"].Should().Be("my-instance");
         ev["operation-key"].Should().Be("op-key");
         ev["builder-name"].Should().Be("my-builder");
         ev["result-type"].Should().Be("Boolean");
-        ev["exception-name"].Should().BeNull();
+        ev.Should().NotContainKey("exception-name");
 
         if (healthy)
         {
@@ -203,7 +203,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
 
                 return true;
             },
-            ResilienceContext.Get(), string.Empty);
+            ResilienceContextPool.Shared.Get(), string.Empty);
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 

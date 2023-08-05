@@ -6,7 +6,7 @@ public class OutcomeArgumentsTests
     public void Ctor_Result_Ok()
     {
         var args = new OutcomeArguments<string, string>(
-            ResilienceContext.Get(),
+            ResilienceContextPool.Shared.Get(),
             Outcome.FromResult("dummy"),
             "args");
 
@@ -21,7 +21,7 @@ public class OutcomeArgumentsTests
     public void Ctor_Exception_Ok()
     {
         var args = new OutcomeArguments<string, string>(
-            ResilienceContext.Get(),
+            ResilienceContextPool.Shared.Get(),
             Outcome.FromException<string>(new InvalidOperationException()),
             "args");
 

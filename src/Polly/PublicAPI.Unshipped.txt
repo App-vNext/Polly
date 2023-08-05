@@ -1,0 +1,5 @@
+﻿Polly.ResilienceStrategyConversionExtensions
+static Polly.ResilienceStrategyConversionExtensions.AsAsyncPolicy(this Polly.ResilienceStrategy strategy) -> Polly.IAsyncPolicy
+static Polly.ResilienceStrategyConversionExtensions.AsAsyncPolicy<TResult>(this Polly.ResilienceStrategy<TResult> strategy) -> Polly.IAsyncPolicy<TResult>
+static Polly.ResilienceStrategyConversionExtensions.AsSyncPolicy(this Polly.ResilienceStrategy strategy) -> Polly.ISyncPolicy
+static Polly.ResilienceStrategyConversionExtensions.AsSyncPolicy<TResult>(this Polly.ResilienceStrategy<TResult> strategy) -> Polly.ISyncPolicy<TResult>

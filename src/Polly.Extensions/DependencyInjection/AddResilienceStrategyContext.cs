@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Polly.Extensions.Registry;
@@ -53,7 +54,8 @@ public sealed class AddResilienceStrategyContext<TKey>
     /// You can listen for changes only for single options. If you call this method multiple times, the preceding calls are ignored and only the last one wins.
     /// </para>
     /// </remarks>
-    public void EnableReloads<TOptions>(string? name = null) => RegistryContext.EnableReloads(ServiceProvider.GetRequiredService<IOptionsMonitor<TOptions>>(), name);
+    public void EnableReloads<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(string? name = null)
+        => RegistryContext.EnableReloads(ServiceProvider.GetRequiredService<IOptionsMonitor<TOptions>>(), name);
 
     /// <summary>
     /// Gets the options identified by <paramref name="name"/>.
@@ -64,7 +66,7 @@ public sealed class AddResilienceStrategyContext<TKey>
     /// <remarks>
     /// If <paramref name="name"/> is <see langword="null"/> then the global options are returned.
     /// </remarks>
-    public TOptions GetOptions<TOptions>(string? name = null)
+    public TOptions GetOptions<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(string? name = null)
     {
         var monitor = ServiceProvider.GetRequiredService<IOptionsMonitor<TOptions>>();
 

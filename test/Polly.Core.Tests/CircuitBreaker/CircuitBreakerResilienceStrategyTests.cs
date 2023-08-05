@@ -10,7 +10,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     private readonly FakeTimeProvider _timeProvider;
     private readonly Mock<CircuitBehavior> _behavior;
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly SimpleCircuitBreakerStrategyOptions<int> _options;
+    private readonly CircuitBreakerStrategyOptions<int> _options;
     private readonly CircuitStateController<int> _controller;
 
     public CircuitBreakerResilienceStrategyTests()
@@ -18,7 +18,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _timeProvider = new FakeTimeProvider();
         _behavior = new Mock<CircuitBehavior>(MockBehavior.Strict);
         _telemetry = TestUtilities.CreateResilienceTelemetry(Mock.Of<DiagnosticSource>());
-        _options = new SimpleCircuitBreakerStrategyOptions<int>();
+        _options = new CircuitBreakerStrategyOptions<int>();
         _controller = new CircuitStateController<int>(
             CircuitBreakerConstants.DefaultBreakDuration,
             null,
@@ -127,11 +127,8 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _options.ShouldHandle = _ => PredicateResult.False;
         _behavior.Setup(v => v.OnActionSuccess(CircuitState.Closed));
 
-        Create().Invoking(s => s.Execute(_ => { })).Should().NotThrow();
+        Create().Invoking(s => s.Execute(_ => 0)).Should().NotThrow();
     }
 
-    private CircuitBreakerResilienceStrategy<int> Create()
-    {
-        return new(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl, true);
-    }
+    private CircuitBreakerResilienceStrategy<int> Create() => new(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl);
 }

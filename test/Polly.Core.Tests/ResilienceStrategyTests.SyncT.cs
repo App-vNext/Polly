@@ -35,14 +35,14 @@ public partial class ResilienceStrategyTests
             AssertContext = AssertResilienceContext,
         };
 
-        yield return new ExecuteParameters<long>(r => r.Execute(_ => result, ResilienceContext.Get()), result)
+        yield return new ExecuteParameters<long>(r => r.Execute(_ => result, ResilienceContextPool.Shared.Get()), result)
         {
             Caption = "ExecuteT_ResilienceContext",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextInitialized
         };
 
-        yield return new ExecuteParameters<long>(r => r.Execute((_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContext.Get(), "dummy-state"), result)
+        yield return new ExecuteParameters<long>(r => r.Execute((_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContextPool.Shared.Get(), "dummy-state"), result)
         {
             Caption = "ExecuteT_ResilienceContext",
             AssertContext = AssertResilienceContext,
@@ -97,9 +97,9 @@ public partial class ResilienceStrategyTests
     {
         AssertStackTrace(s => s.Execute(() => MyThrowingMethod()));
         AssertStackTrace(s => s.Execute(_ => MyThrowingMethod()));
-        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), ResilienceContext.Get()));
-        AssertStackTrace(s => s.Execute((_) => MyThrowingMethod(), ResilienceContext.Get()));
-        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), ResilienceContext.Get(), "state"));
+        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), ResilienceContextPool.Shared.Get()));
+        AssertStackTrace(s => s.Execute((_) => MyThrowingMethod(), ResilienceContextPool.Shared.Get()));
+        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), ResilienceContextPool.Shared.Get(), "state"));
         AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), "state"));
         AssertStackTrace(s => s.Execute((_) => MyThrowingMethod(), "state"));
 

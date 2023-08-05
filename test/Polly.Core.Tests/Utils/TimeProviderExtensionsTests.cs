@@ -15,7 +15,7 @@ public class TimeProviderExtensionsTests
         var token = hasCancellation ? tcs.Token : default;
         var delay = TimeSpan.FromMilliseconds(10);
         var timeProvider = TimeProvider.System;
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.Initialize<VoidResult>(isSynchronous: synchronous);
         context.CancellationToken = token;
 
@@ -31,7 +31,7 @@ public class TimeProviderExtensionsTests
     public async Task DelayAsync_SystemSynchronous_Ok()
     {
         var delay = TimeSpan.FromMilliseconds(5);
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.Initialize<VoidResult>(isSynchronous: true);
 
         await TestUtilities.AssertWithTimeoutAsync(async () =>
@@ -48,7 +48,7 @@ public class TimeProviderExtensionsTests
     {
         using var cts = new CancellationTokenSource(5);
         var delay = TimeSpan.FromMilliseconds(10);
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.Initialize<VoidResult>(isSynchronous: true);
         context.CancellationToken = cts.Token;
 
@@ -71,7 +71,7 @@ public class TimeProviderExtensionsTests
         var token = tcs.Token;
         var delay = TimeSpan.FromMilliseconds(10);
         var timeProvider = TimeProvider.System;
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.Initialize<VoidResult>(isSynchronous: synchronous);
         context.CancellationToken = token;
 
@@ -90,7 +90,7 @@ public class TimeProviderExtensionsTests
             using var tcs = new CancellationTokenSource();
             var token = tcs.Token;
             var timeProvider = TimeProvider.System;
-            var context = ResilienceContext.Get();
+            var context = ResilienceContextPool.Shared.Get();
             context.Initialize<VoidResult>(isSynchronous: synchronous);
             context.CancellationToken = token;
 

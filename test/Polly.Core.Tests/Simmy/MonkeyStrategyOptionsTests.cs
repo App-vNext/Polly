@@ -9,13 +9,9 @@ public class MonkeyStrategyOptionsTests
     {
         var sut = new TestChaosStrategyOptions();
 
-        sut.StrategyType.Should().Be("Test");
-
         sut.Randomizer.Should().NotBeNull();
-
         sut.Enabled.Should().BeNull();
         sut.EnabledGenerator.Should().BeNull();
-
         sut.InjectionRate.Should().BeNull();
         sut.InjectionRateGenerator.Should().BeNull();
     }
@@ -31,7 +27,7 @@ public class MonkeyStrategyOptionsTests
         };
 
         sut
-            .Invoking(o => ValidationHelper.ValidateObject(o, "Invalid Options"))
+            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid Options")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""

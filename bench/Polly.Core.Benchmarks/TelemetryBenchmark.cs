@@ -13,7 +13,7 @@ public class TelemetryBenchmark
     [GlobalSetup]
     public void Prepare()
     {
-        _strategy = Build(new ResilienceStrategyBuilder());
+        _strategy = Build(new CompositeStrategyBuilder());
 
         if (Telemetry)
         {
@@ -33,12 +33,12 @@ public class TelemetryBenchmark
     [Benchmark]
     public async ValueTask Execute()
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         await _strategy!.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state").ConfigureAwait(false);
-        ResilienceContext.Return(context);
+        ResilienceContextPool.Shared.Return(context);
     }
 
-    private ResilienceStrategy Build(ResilienceStrategyBuilder builder)
+    private ResilienceStrategy Build(CompositeStrategyBuilder builder)
     {
         builder.AddStrategy(context => new TelemetryEventStrategy(context.Telemetry), new EmptyResilienceOptions());
 
@@ -73,7 +73,7 @@ public class TelemetryBenchmark
 
         public TelemetryEventStrategy(ResilienceStrategyTelemetry telemetry) => _telemetry = telemetry;
 
-        protected override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)

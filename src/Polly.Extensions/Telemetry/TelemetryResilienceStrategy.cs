@@ -40,18 +40,18 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
         ExecutionDuration = ResilienceTelemetryDiagnosticSource.Meter.CreateHistogram<double>(
             "strategy-execution-duration",
             unit: "ms",
-            description: "The execution duration and execution result of resilience strategies.");
+            description: "The execution duration and execution results of resilience strategies.");
     }
 
     public Histogram<double> ExecutionDuration { get; }
 
-    protected override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)
     {
         var stamp = _timeProvider.GetTimestamp();
-        Log.ExecutingStrategy(_logger, _builderName, _builderInstance, context.OperationKey, context.GetResultType());
+        Log.ExecutingStrategy(_logger, _builderName.GetValueOrPlaceholder(), _builderInstance.GetValueOrPlaceholder(), context.OperationKey, context.GetResultType());
 
         var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
@@ -61,8 +61,8 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
         Log.StrategyExecuted(
             _logger,
             logLevel,
-            _builderName,
-            _builderInstance,
+            _builderName.GetValueOrPlaceholder(),
+            _builderInstance.GetValueOrPlaceholder(),
             context.OperationKey,
             context.GetResultType(),
             ExpandOutcome(context, outcome),
@@ -87,11 +87,29 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
         }
 
         var enrichmentContext = EnrichmentContext.Get(context, null, CreateOutcome(outcome));
-        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderName, _builderName));
-        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderInstance, _builderInstance));
-        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.OperationKey, context.OperationKey));
+
+        if (_builderName is not null)
+        {
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderName, _builderName));
+        }
+
+        if (_builderInstance is not null)
+        {
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderInstance, _builderInstance));
+        }
+
+        if (context.OperationKey is not null)
+        {
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.OperationKey, context.OperationKey));
+        }
+
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ResultType, context.GetResultType()));
-        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, outcome.Exception?.GetType().FullName));
+
+        if (outcome.Exception is Exception e)
+        {
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, e.GetType().FullName));
+        }
+
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth()));
         EnrichmentUtil.Enrich(enrichmentContext, _enrichers);
 

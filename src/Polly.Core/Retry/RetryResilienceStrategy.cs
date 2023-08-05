@@ -11,11 +11,9 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
 
     public RetryResilienceStrategy(
         RetryStrategyOptions<T> options,
-        bool isGeneric,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry,
         Func<double> randomizer)
-        : base(isGeneric)
     {
         ShouldHandle = options.ShouldHandle;
         BaseDelay = options.BaseDelay;
@@ -23,6 +21,7 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
         RetryCount = options.RetryCount;
         OnRetry = options.OnRetry;
         DelayGenerator = options.RetryDelayGenerator;
+        UseJitter = options.UseJitter;
 
         _timeProvider = timeProvider;
         _telemetry = telemetry;
@@ -39,9 +38,11 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
 
     public Func<OutcomeArguments<T, RetryDelayArguments>, ValueTask<TimeSpan>>? DelayGenerator { get; }
 
+    public bool UseJitter { get; }
+
     public Func<OutcomeArguments<T, OnRetryArguments>, ValueTask>? OnRetry { get; }
 
-    protected override async ValueTask<Outcome<T>> ExecuteCallbackAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
+    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
         double retryState = 0;
 
@@ -62,7 +63,7 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
                 return outcome;
             }
 
-            var delay = RetryHelper.GetRetryDelay(BackoffType, attempt, BaseDelay, ref retryState, _randomizer);
+            var delay = RetryHelper.GetRetryDelay(BackoffType, UseJitter, attempt, BaseDelay, ref retryState, _randomizer);
             if (DelayGenerator is not null)
             {
                 var delayArgs = new OutcomeArguments<T, RetryDelayArguments>(context, outcome, new RetryDelayArguments(attempt, delay));
@@ -86,7 +87,7 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
                 await DisposeHelper.TryDisposeSafeAsync(resultValue, context.IsSynchronous).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
-            // stryker disable once equality : no means to test this
+            // stryker disable once all : no means to test this
             if (delay > TimeSpan.Zero)
             {
                 try
@@ -103,13 +104,5 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
         }
     }
 
-    private bool IsLastAttempt(int attempt)
-    {
-        if (RetryCount == RetryStrategyOptions.InfiniteRetryCount)
-        {
-            return false;
-        }
-
-        return attempt >= RetryCount;
-    }
+    private bool IsLastAttempt(int attempt) => attempt >= RetryCount;
 }

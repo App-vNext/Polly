@@ -1,6 +1,7 @@
 namespace Polly;
 
 #pragma warning disable CA1031 // Do not catch general exception types
+#pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
 
 public abstract partial class ResilienceStrategy
 {
@@ -23,7 +24,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext(context);
 
-        var outcome = await ExecuteCoreAsync(
+        var outcome = await ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -58,7 +59,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext(context);
 
-        var outcome = await ExecuteCoreAsync(
+        var outcome = await ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -97,7 +98,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            var outcome = await ExecuteCoreAsync(
+            var outcome = await ExecuteCore(
                 static async (context, state) =>
                 {
                     try
@@ -117,7 +118,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            Pool.Return(context);
         }
     }
 
@@ -138,7 +139,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            var outcome = await ExecuteCoreAsync(
+            var outcome = await ExecuteCore(
                 static async (context, state) =>
                 {
                     try
@@ -159,7 +160,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            Pool.Return(context);
         }
     }
 

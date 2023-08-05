@@ -9,7 +9,7 @@ public class OnRetryArgumentsTests
     {
         var args = new OnRetryArguments(2, TimeSpan.FromSeconds(3), TimeSpan.MaxValue);
 
-        args.Attempt.Should().Be(2);
+        args.AttemptNumber.Should().Be(2);
         args.RetryDelay.Should().Be(TimeSpan.FromSeconds(3));
         args.ExecutionTime.Should().Be(TimeSpan.MaxValue);
     }

@@ -10,11 +10,6 @@ namespace Polly.Simmy.Behavior;
 public class BehaviorStrategyOptions : MonkeyStrategyOptions
 {
     /// <summary>
-    /// Gets the strategy type.
-    /// </summary>
-    public sealed override string StrategyType => BehaviorConstants.StrategyType;
-
-    /// <summary>
     /// Gets or sets the delegate that's raised when the custom behavior is injected.
     /// </summary>
     /// <remarks>

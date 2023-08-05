@@ -9,12 +9,6 @@ namespace Polly.RateLimiting;
 public class RateLimiterStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Gets the strategy type.
-    /// </summary>
-    /// <remarks>Returns <c>RateLimiter</c> value.</remarks>
-    public sealed override string StrategyType => RateLimiterConstants.StrategyType;
-
-    /// <summary>
     /// Gets or sets the default rate limiter options.
     /// </summary>
     /// <remarks>
@@ -34,17 +28,19 @@ public class RateLimiterStrategyOptions : ResilienceStrategyOptions
     /// <summary>
     /// Gets or sets an event that is raised when the execution of user-provided callback is rejected by the rate limiter.
     /// </summary>
-    /// <remarks>
-    /// Defaults to <see langword="null"/>.
-    /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
     public Func<OnRateLimiterRejectedArguments, ValueTask>? OnRejected { get; set; }
 
     /// <summary>
     ///  Gets or sets the rate limiter that the strategy uses.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="null"/>. If this property is <see langword="null"/>,
-    /// then the strategy will use a <see cref="ConcurrencyLimiter"/> created using <see cref="DefaultRateLimiterOptions"/>.
+    /// If this property is <see langword="null"/>, then the strategy will use a <see cref="ConcurrencyLimiter"/> created using <see cref="DefaultRateLimiterOptions"/>.
     /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>. This property is required.
+    /// </value>
     public ResilienceRateLimiter? RateLimiter { get; set; }
 }

@@ -5,7 +5,7 @@ internal static partial class Helper
     public static object CreateOpenedCircuitBreaker(PollyVersion version, bool handleOutcome)
     {
         var manualControl = new CircuitBreakerManualControl();
-        var options = new AdvancedCircuitBreakerStrategyOptions
+        var options = new CircuitBreakerStrategyOptions
         {
             ShouldHandle = _ => PredicateResult.True,
             ManualControl = manualControl,
@@ -13,20 +13,20 @@ internal static partial class Helper
 
         if (version == PollyVersion.V8)
         {
-            var builder = new ResilienceStrategyBuilder();
+            var builder = new CompositeStrategyBuilder();
 
             if (handleOutcome)
             {
                 builder.AddStrategy(new OutcomeHandlingStrategy());
             }
 
-            var strategy = builder.AddAdvancedCircuitBreaker(options).Build();
+            var strategy = builder.AddCircuitBreaker(options).Build();
             manualControl.IsolateAsync().GetAwaiter().GetResult();
             return strategy;
         }
         else
         {
-            var policy = Policy.HandleResult<string>(r => true).AdvancedCircuitBreakerAsync(options.FailureThreshold, options.SamplingDuration, options.MinimumThroughput, options.BreakDuration);
+            var policy = Policy.HandleResult<string>(r => true).AdvancedCircuitBreakerAsync(options.FailureRatio, options.SamplingDuration, options.MinimumThroughput, options.BreakDuration);
             policy.Isolate();
             return policy;
         }
@@ -46,9 +46,9 @@ internal static partial class Helper
 
             PollyVersion.V8 => CreateStrategy(builder =>
             {
-                builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions<string>
+                builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions<string>
                 {
-                    FailureThreshold = 0.5,
+                    FailureRatio = 0.5,
                     SamplingDuration = TimeSpan.FromSeconds(30),
                     MinimumThroughput = 10,
                     BreakDuration = TimeSpan.FromSeconds(5),
@@ -66,7 +66,7 @@ internal static partial class Helper
 
     private class OutcomeHandlingStrategy : ResilienceStrategy
     {
-        protected override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)

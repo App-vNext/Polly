@@ -3,7 +3,33 @@ namespace Polly.Retry;
 /// <summary>
 /// Represents the arguments used by <see cref="RetryStrategyOptions{TResult}.OnRetry"/> for handling the retry event.
 /// </summary>
-/// <param name="Attempt">The zero-based attempt number. The first attempt is 0, the second attempt is 1, and so on.</param>
-/// <param name="RetryDelay">The delay before the next retry.</param>
-/// <param name="ExecutionTime">The execution time of this attempt.</param>
-public record OnRetryArguments(int Attempt, TimeSpan RetryDelay, TimeSpan ExecutionTime);
+public sealed class OnRetryArguments
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OnRetryArguments"/> class.
+    /// </summary>
+    /// <param name="attemptNumber">The zero-based attempt number.</param>
+    /// <param name="retryDelay">The delay before the next retry.</param>
+    /// <param name="executionTime">The execution time of this attempt.</param>
+    public OnRetryArguments(int attemptNumber, TimeSpan retryDelay, TimeSpan executionTime)
+    {
+        AttemptNumber = attemptNumber;
+        RetryDelay = retryDelay;
+        ExecutionTime = executionTime;
+    }
+
+    /// <summary>
+    /// Gets the zero-based attempt number.
+    /// </summary>
+    public int AttemptNumber { get; }
+
+    /// <summary>
+    /// Gets the delay before the next retry.
+    /// </summary>
+    public TimeSpan RetryDelay { get; }
+
+    /// <summary>
+    /// Gets the execution time of this attempt.
+    /// </summary>
+    public TimeSpan ExecutionTime { get; }
+}

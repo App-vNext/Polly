@@ -69,6 +69,6 @@ public class AdvancedCircuitBehaviorTests
 
     private AdvancedCircuitBehavior Create()
     {
-        return new AdvancedCircuitBehavior(CircuitBreakerConstants.DefaultAdvancedFailureThreshold, CircuitBreakerConstants.DefaultMinimumThroughput, _metrics.Object);
+        return new AdvancedCircuitBehavior(CircuitBreakerConstants.DefaultFailureRatio, CircuitBreakerConstants.DefaultMinimumThroughput, _metrics.Object);
     }
 }

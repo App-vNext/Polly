@@ -29,13 +29,13 @@ public class OutcomeChaosStrategyTests
         //    Outcome = outcome
         //};
 
-        var sut = new ResilienceStrategyBuilder<VoidResult>()
+        var sut = new CompositeStrategyBuilder<VoidResult>()
             .AddFault(true, 1, new InvalidOperationException("Dummy exception"))
             .Build();
 
         //var sut = new OutcomeChaosStrategy<VoidResult>(options, _telemetry);
 
-        await sut.Invoking(s => s.ExecuteAsync(_ =>
+        await sut.Invoking(s => s.ExecuteAsync<VoidResult>(_ =>
         {
             userDelegateExecuted = true;
             return default;
@@ -53,7 +53,7 @@ public class OutcomeChaosStrategyTests
         var userDelegateExecuted = false;
 
         // non-generic tests
-        var nonGenericSut = new ResilienceStrategyBuilder()
+        var nonGenericSut = new CompositeStrategyBuilder()
             .AddFault(true, 1, new AggregateException("chimbo"))
             .Build();
 

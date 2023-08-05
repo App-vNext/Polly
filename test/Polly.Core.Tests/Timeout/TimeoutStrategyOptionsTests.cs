@@ -13,7 +13,6 @@ public class TimeoutStrategyOptionsTests
 
         options.TimeoutGenerator.Should().BeNull();
         options.OnTimeout.Should().BeNull();
-        options.StrategyType.Should().Be(TimeoutConstants.StrategyType);
     }
 
     [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
@@ -26,7 +25,7 @@ public class TimeoutStrategyOptionsTests
         };
 
         options
-            .Invoking(o => ValidationHelper.ValidateObject(o, "Dummy message"))
+            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Dummy message")))
             .Should()
             .Throw<ValidationException>();
     }
@@ -41,7 +40,7 @@ public class TimeoutStrategyOptionsTests
         };
 
         options
-            .Invoking(o => ValidationHelper.ValidateObject(o, "Dummy message"))
+            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Dummy message")))
             .Should()
             .NotThrow();
     }

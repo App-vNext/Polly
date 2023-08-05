@@ -7,9 +7,9 @@ public partial class IssuesTests
     [Fact]
     public void CircuitBreakerStateSharing_959()
     {
-        var options = new AdvancedCircuitBreakerStrategyOptions
+        var options = new CircuitBreakerStrategyOptions
         {
-            FailureThreshold = 1,
+            FailureRatio = 1,
             MinimumThroughput = 10,
             ShouldHandle = args => args.Result switch
             {
@@ -23,7 +23,7 @@ public partial class IssuesTests
         };
 
         // create the strategy
-        var strategy = new ResilienceStrategyBuilder { TimeProvider = TimeProvider }.AddAdvancedCircuitBreaker(options).Build();
+        var strategy = new CompositeStrategyBuilder { TimeProvider = TimeProvider }.AddCircuitBreaker(options).Build();
 
         // now trigger the circuit breaker by evaluating multiple result types
         for (int i = 0; i < 5; i++)

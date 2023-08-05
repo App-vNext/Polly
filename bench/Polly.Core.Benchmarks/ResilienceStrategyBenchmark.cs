@@ -9,17 +9,17 @@ public class ResilienceStrategyBenchmark
     [Benchmark(Baseline = true)]
     public async ValueTask ExecuteOutcomeAsync()
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         await NullResilienceStrategy.Instance.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state").ConfigureAwait(false);
-        ResilienceContext.Return(context);
+        ResilienceContextPool.Shared.Return(context);
     }
 
     [Benchmark]
     public async ValueTask ExecuteAsync_ResilienceContextAndState()
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         await NullResilienceStrategy.Instance.ExecuteAsync((_, _) => new ValueTask<string>("dummy"), context, "state").ConfigureAwait(false);
-        ResilienceContext.Return(context);
+        ResilienceContextPool.Shared.Return(context);
     }
 
     [Benchmark]
@@ -37,9 +37,9 @@ public class ResilienceStrategyBenchmark
     [Benchmark]
     public void Execute_ResilienceContextAndState()
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         NullResilienceStrategy.Instance.Execute((_, _) => "dummy", context, "state");
-        ResilienceContext.Return(context);
+        ResilienceContextPool.Shared.Return(context);
     }
 
     [Benchmark]

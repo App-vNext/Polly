@@ -9,7 +9,7 @@ public class ExecutionAttemptArgumentsTests
     {
         var args = new ExecutionAttemptArguments(99, TimeSpan.MaxValue, true);
         Assert.NotNull(args);
-        args.Attempt.Should().Be(99);
+        args.AttemptNumber.Should().Be(99);
         args.ExecutionTime.Should().Be(TimeSpan.MaxValue);
         args.Handled.Should().BeTrue();
     }
@@ -19,7 +19,7 @@ public class ExecutionAttemptArgumentsTests
     {
         var args = ExecutionAttemptArguments.Get(99, TimeSpan.MaxValue, true);
         Assert.NotNull(args);
-        args.Attempt.Should().Be(99);
+        args.AttemptNumber.Should().Be(99);
         args.ExecutionTime.Should().Be(TimeSpan.MaxValue);
         args.Handled.Should().BeTrue();
     }
@@ -31,7 +31,7 @@ public class ExecutionAttemptArgumentsTests
 
         ExecutionAttemptArguments.Return(args);
 
-        args.Attempt.Should().Be(0);
+        args.AttemptNumber.Should().Be(0);
         args.ExecutionTime.Should().Be(TimeSpan.Zero);
         args.Handled.Should().BeFalse();
     }

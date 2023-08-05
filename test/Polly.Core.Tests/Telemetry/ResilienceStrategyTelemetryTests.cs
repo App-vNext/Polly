@@ -11,8 +11,7 @@ public class ResilienceStrategyTelemetryTests
         "builder",
         "instance",
         new ResilienceProperties(),
-        "strategy-name",
-        "strategy-type"), _diagnosticSource.Object);
+        "strategy-name"), _diagnosticSource.Object);
 
     private readonly ResilienceStrategyTelemetry _sut;
 
@@ -31,14 +30,13 @@ public class ResilienceStrategyTelemetryTests
                 args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
                 args.Outcome.Should().BeNull();
                 args.Source.StrategyName.Should().Be("strategy-name");
-                args.Source.StrategyType.Should().Be("strategy-type");
                 args.Source.BuilderProperties.Should().NotBeNull();
                 args.Arguments.Should().BeOfType<TestArguments>();
                 args.Outcome.Should().BeNull();
                 args.Context.Should().NotBeNull();
             });
 
-        _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), ResilienceContext.Get(), new TestArguments());
+        _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments());
 
         _diagnosticSource.VerifyAll();
     }
@@ -48,7 +46,7 @@ public class ResilienceStrategyTelemetryTests
     {
         _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(false);
 
-        _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), ResilienceContext.Get(), new TestArguments());
+        _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments());
 
         _diagnosticSource.VerifyAll();
         _diagnosticSource.VerifyNoOtherCalls();
@@ -57,9 +55,9 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void ResilienceStrategyTelemetry_NoDiagnosticSource_Ok()
     {
-        var source = new ResilienceTelemetrySource("builder", "instance", new ResilienceProperties(), "strategy-name", "strategy-type");
+        var source = new ResilienceTelemetrySource("builder", "instance", new ResilienceProperties(), "strategy-name");
         var sut = new ResilienceStrategyTelemetry(source, null);
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
 
         sut.Invoking(s => s.Report(new(ResilienceEventSeverity.Warning, "dummy"), context, new TestArguments())).Should().NotThrow();
         sut.Invoking(s => s.Report(new(ResilienceEventSeverity.Warning, "dummy"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(1), new TestArguments()))).Should().NotThrow();
@@ -79,7 +77,6 @@ public class ResilienceStrategyTelemetryTests
                 args.Event.EventName.Should().Be("dummy-event");
                 args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
                 args.Source.StrategyName.Should().Be("strategy-name");
-                args.Source.StrategyType.Should().Be("strategy-type");
                 args.Source.BuilderProperties.Should().NotBeNull();
                 args.Arguments.Should().BeOfType<TestArguments>();
                 args.Outcome.Should().NotBeNull();
@@ -87,7 +84,7 @@ public class ResilienceStrategyTelemetryTests
                 args.Context.Should().NotBeNull();
             });
 
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(99), new TestArguments()));
 
         _diagnosticSource.VerifyAll();
@@ -98,9 +95,9 @@ public class ResilienceStrategyTelemetryTests
     {
         _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(true);
 
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(99), new TestArguments()));
-        _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), ResilienceContext.Get(), new TestArguments());
+        _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments());
 
         _diagnosticSource.VerifyAll();
         _diagnosticSource.VerifyNoOtherCalls();
@@ -110,7 +107,7 @@ public class ResilienceStrategyTelemetryTests
     public void Report_OutcomeWhenNotSubscribed_None()
     {
         _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(false);
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(10), new TestArguments()));
 
         _diagnosticSource.VerifyAll();

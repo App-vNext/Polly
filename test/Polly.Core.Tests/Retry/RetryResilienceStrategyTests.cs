@@ -37,7 +37,7 @@ public class RetryResilienceStrategyTests
         var sut = CreateSut();
         using var cancellationToken = new CancellationTokenSource();
         cancellationToken.Cancel();
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellationToken.Token;
         var executed = false;
 
@@ -59,7 +59,7 @@ public class RetryResilienceStrategyTests
         };
 
         var sut = CreateSut(TimeProvider.System);
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellationToken.Token;
         var executed = false;
 
@@ -132,46 +132,20 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
-    public void Retry_Infinite_Respected()
+    public void RetryDelayGenerator_Respected()
     {
-        int calls = 0;
-        _options.BackoffType = RetryBackoffType.Constant;
-        _options.OnRetry = args =>
-        {
-            if (args.Arguments.Attempt > RetryConstants.MaxRetryCount)
-            {
-                throw new InvalidOperationException();
-            }
-
-            calls++;
-            return default;
-        };
-        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
-        _options.RetryCount = RetryStrategyOptions.InfiniteRetryCount;
-        SetupNoDelay();
-        var sut = CreateSut();
-
-        Assert.Throws<InvalidOperationException>(() => sut.Execute(() => 0));
-
-        calls.Should().Be(RetryConstants.MaxRetryCount + 1);
-    }
-
-    [Fact]
-    public async Task RetryDelayGenerator_Respected()
-    {
-        int retries = 0;
-        int generatedValues = 0;
-
+        var retries = 0;
+        var generatedValues = 0;
         var delay = TimeSpan.FromMilliseconds(120);
-        var provider = TimeProvider.System;
 
         _options.ShouldHandle = _ => PredicateResult.True;
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Constant;
 
-        _options.OnRetry = _ =>
+        _options.OnRetry = args =>
         {
             retries++;
+            args.Arguments.RetryDelay.Should().Be(delay);
             return default;
         };
         _options.RetryDelayGenerator = _ =>
@@ -180,16 +154,10 @@ public class RetryResilienceStrategyTests
             return new ValueTask<TimeSpan>(delay);
         };
 
-        var before = provider.GetUtcNow();
-
-        var sut = CreateSut(provider);
-        await sut.ExecuteAsync(_ => default);
+        CreateSut(TimeProvider.System).Execute(_ => { });
 
         retries.Should().Be(3);
         generatedValues.Should().Be(3);
-
-        var after = provider.GetUtcNow();
-        (after - before).Should().BeGreaterThanOrEqualTo(delay.Add(delay).Add(delay));
     }
 
     [Fact]
@@ -238,7 +206,7 @@ public class RetryResilienceStrategyTests
         var delays = new List<TimeSpan>();
         _options.OnRetry = args =>
         {
-            attempts.Add(args.Arguments.Attempt);
+            attempts.Add(args.Arguments.AttemptNumber);
             delays.Add(args.Arguments.RetryDelay);
 
             args.Exception.Should().BeNull();
@@ -299,7 +267,7 @@ public class RetryResilienceStrategyTests
             var attempt = args.Arguments.Should().BeOfType<ExecutionAttemptArguments>().Subject;
 
             attempt.Handled.Should().BeFalse();
-            attempt.Attempt.Should().Be(0);
+            attempt.AttemptNumber.Should().Be(0);
             attempt.ExecutionTime.Should().Be(TimeSpan.FromSeconds(1));
             called = true;
         });
@@ -341,7 +309,7 @@ public class RetryResilienceStrategyTests
         var hints = new List<TimeSpan>();
         _options.RetryDelayGenerator = args =>
         {
-            attempts.Add(args.Arguments.Attempt);
+            attempts.Add(args.Arguments.AttemptNumber);
             hints.Add(args.Arguments.DelayHint);
 
             args.Exception.Should().BeNull();
@@ -384,7 +352,6 @@ public class RetryResilienceStrategyTests
 
     private RetryResilienceStrategy<object> CreateSut(TimeProvider? timeProvider = null) =>
         new(_options,
-            false,
             timeProvider ?? _timeProvider,
             _telemetry,
             () => 1.0);

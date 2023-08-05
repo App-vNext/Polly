@@ -1,6 +1,7 @@
 namespace Polly;
 
 #pragma warning disable CA1031 // Do not catch general exception types
+#pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
 
 public abstract partial class ResilienceStrategy
 {
@@ -110,7 +111,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            Pool.Return(context);
         }
     }
 
@@ -146,7 +147,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            Pool.Return(context);
         }
     }
 
@@ -184,7 +185,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            Pool.Return(context);
         }
     }
 
@@ -226,13 +227,13 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            Pool.Return(context);
         }
     }
 
     private static ResilienceContext GetSyncContext<TResult>(CancellationToken cancellationToken)
     {
-        var context = ResilienceContext.Get(cancellationToken);
+        var context = Pool.Get(cancellationToken);
 
         InitializeSyncContext<TResult>(context);
 

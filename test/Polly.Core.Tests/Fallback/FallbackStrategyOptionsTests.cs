@@ -11,7 +11,6 @@ public class FallbackStrategyOptionsTests
     {
         var options = new FallbackStrategyOptions<int>();
 
-        options.StrategyType.Should().Be("Fallback");
         options.ShouldHandle.Should().NotBeNull();
         options.OnFallback.Should().BeNull();
         options.FallbackAction.Should().BeNull();
@@ -21,8 +20,8 @@ public class FallbackStrategyOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new FallbackStrategyOptions<int>();
-        var args = new FallbackPredicateArguments();
-        var context = ResilienceContext.Get();
+        var args = default(FallbackPredicateArguments);
+        var context = ResilienceContextPool.Shared.Get();
 
         (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);
         (await options.ShouldHandle(new(context, Outcome.FromException<int>(new OperationCanceledException()), args))).Should().Be(false);
@@ -38,7 +37,7 @@ public class FallbackStrategyOptionsTests
         };
 
         options
-            .Invoking(o => ValidationHelper.ValidateObject(o, "Invalid."))
+            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid.")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""

@@ -4,10 +4,6 @@ namespace Polly.Utils;
 
 internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
 {
-    public const string StrategyName = "ReloadableStrategy";
-
-    public const string StrategyType = "ReloadableStrategy";
-
     public const string ReloadFailedEvent = "ReloadFailed";
 
     public const string OnReloadEvent = "OnReload";
@@ -34,12 +30,12 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
 
     public ResilienceStrategy Strategy { get; private set; }
 
-    protected internal override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)
     {
-        return Strategy.ExecuteCoreAsync(callback, context, state);
+        return Strategy.ExecuteCore(callback, context, state);
     }
 
     private void RegisterOnReload(CancellationToken previousToken)
@@ -52,7 +48,7 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
 
         _registration = token.Register(() =>
         {
-            var context = ResilienceContext.Get().Initialize<VoidResult>(isSynchronous: true);
+            var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
 
 #pragma warning disable CA1031 // Do not catch general exception types
             try
@@ -64,7 +60,7 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
             {
                 var args = new OutcomeArguments<VoidResult, ReloadFailedArguments>(context, Outcome.FromException(e), new ReloadFailedArguments(e));
                 _telemetry.Report(new(ResilienceEventSeverity.Error, ReloadFailedEvent), args);
-                ResilienceContext.Return(context);
+                ResilienceContextPool.Shared.Return(context);
             }
 #pragma warning restore CA1031 // Do not catch general exception types
 

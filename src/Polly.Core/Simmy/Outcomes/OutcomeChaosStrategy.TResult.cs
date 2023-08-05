@@ -8,8 +8,8 @@ internal class OutcomeChaosStrategy<T> : OutcomeMonkeyStrategy<T>
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
 
-    public OutcomeChaosStrategy(OutcomeStrategyOptions<Exception> options, ResilienceStrategyTelemetry telemetry, bool isGeneric)
-        : base(isGeneric, options)
+    public OutcomeChaosStrategy(OutcomeStrategyOptions<Exception> options, ResilienceStrategyTelemetry telemetry)
+        : base(options)
     {
         Guard.NotNull(telemetry);
 
@@ -24,8 +24,8 @@ internal class OutcomeChaosStrategy<T> : OutcomeMonkeyStrategy<T>
         FaultGenerator = options.Outcome.Exception is not null ? (_) => new(options.Outcome) : options.OutcomeGenerator;
     }
 
-    public OutcomeChaosStrategy(OutcomeStrategyOptions<T> options, ResilienceStrategyTelemetry telemetry, bool isGeneric)
-        : base(isGeneric, options)
+    public OutcomeChaosStrategy(OutcomeStrategyOptions<T> options, ResilienceStrategyTelemetry telemetry)
+        : base(options)
     {
         Guard.NotNull(telemetry);
 
@@ -52,7 +52,7 @@ internal class OutcomeChaosStrategy<T> : OutcomeMonkeyStrategy<T>
 
     public Outcome<Exception>? Fault { get; }
 
-    protected override async ValueTask<Outcome<T>> ExecuteCallbackAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
+    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
         try
         {

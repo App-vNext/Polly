@@ -8,6 +8,5 @@ public class BehaviorConstantsTests
     public void EnsureDefaults()
     {
         BehaviorConstants.OnBehaviorInjectedEvent.Should().Be("OnBehaviorInjected");
-        BehaviorConstants.StrategyType.Should().Be("Behavior");
     }
 }

@@ -9,7 +9,7 @@ public class CircuitStateControllerTests
 {
     private readonly FakeTimeProvider _timeProvider = new();
 
-    private readonly CircuitBreakerStrategyOptions<int> _options = new SimpleCircuitBreakerStrategyOptions<int>();
+    private readonly CircuitBreakerStrategyOptions<int> _options = new();
     private readonly Mock<CircuitBehavior> _circuitBehavior = new(MockBehavior.Strict);
     private readonly Action<TelemetryEventArguments> _onTelemetry = _ => { };
 
@@ -43,7 +43,7 @@ public class CircuitStateControllerTests
 
         _timeProvider.Advance(TimeSpan.FromSeconds(1));
         using var controller = CreateController();
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
 
         // act
         await controller.IsolateCircuitAsync(context);
@@ -52,13 +52,13 @@ public class CircuitStateControllerTests
         controller.CircuitState.Should().Be(CircuitState.Isolated);
         called.Should().BeTrue();
 
-        var outcome = await controller.OnActionPreExecuteAsync(ResilienceContext.Get());
+        var outcome = await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
         outcome.Value.Exception.Should().BeOfType<IsolatedCircuitException>();
 
         // now close it
         _circuitBehavior.Setup(v => v.OnCircuitClosed());
-        await controller.CloseCircuitAsync(ResilienceContext.Get());
-        await controller.OnActionPreExecuteAsync(ResilienceContext.Get());
+        await controller.CloseCircuitAsync(ResilienceContextPool.Shared.Get());
+        await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
         context.ResilienceEvents.Should().Contain(new ResilienceEvent(ResilienceEventSeverity.Error, "OnCircuitOpened"));
     }
 
@@ -81,9 +81,9 @@ public class CircuitStateControllerTests
 
         _timeProvider.Advance(TimeSpan.FromSeconds(1));
         using var controller = CreateController();
-        await controller.IsolateCircuitAsync(ResilienceContext.Get());
+        await controller.IsolateCircuitAsync(ResilienceContextPool.Shared.Get());
         _circuitBehavior.Setup(v => v.OnCircuitClosed());
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
 
         // act
         await controller.CloseCircuitAsync(context);
@@ -91,7 +91,7 @@ public class CircuitStateControllerTests
         // assert
         called.Should().BeTrue();
 
-        await controller.OnActionPreExecuteAsync(ResilienceContext.Get());
+        await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
         _circuitBehavior.VerifyAll();
         context.ResilienceEvents.Should().Contain(new ResilienceEvent(ResilienceEventSeverity.Information, "OnCircuitClosed"));
     }
@@ -106,11 +106,11 @@ public class CircuitStateControllerTests
         Assert.Throws<ObjectDisposedException>(() => controller.LastException);
         Assert.Throws<ObjectDisposedException>(() => controller.LastHandledOutcome);
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.CloseCircuitAsync(ResilienceContext.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.IsolateCircuitAsync(ResilienceContext.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionPreExecuteAsync(ResilienceContext.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionSuccessAsync(Outcome.FromResult(10), ResilienceContext.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionFailureAsync(Outcome.FromResult(10), ResilienceContext.Get()));
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.CloseCircuitAsync(ResilienceContextPool.Shared.Get()));
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.IsolateCircuitAsync(ResilienceContextPool.Shared.Get()));
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get()));
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionSuccessAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionFailureAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         await OpenCircuit(controller, Outcome.FromResult(99));
-        var error = (BrokenCircuitException<int>)(await controller.OnActionPreExecuteAsync(ResilienceContext.Get())).Value.Exception!;
+        var error = (BrokenCircuitException<int>)(await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception!;
         error.Should().BeOfType<BrokenCircuitException<int>>();
         error.Result.Should().Be(99);
 
@@ -149,14 +149,14 @@ public class CircuitStateControllerTests
             _circuitBehavior.Setup(v => v.OnActionSuccess(CircuitState.HalfOpen));
             _circuitBehavior.Setup(v => v.OnCircuitClosed());
 
-            await controller.OnActionSuccessAsync(Outcome.FromResult(0), ResilienceContext.Get());
+            await controller.OnActionSuccessAsync(Outcome.FromResult(0), ResilienceContextPool.Shared.Get());
             controller.CircuitState.Should().Be(CircuitState.Closed);
         }
         else
         {
             var shouldBreak = true;
             _circuitBehavior.Setup(v => v.OnActionFailure(CircuitState.HalfOpen, out shouldBreak));
-            await controller.OnActionFailureAsync(Outcome.FromResult(0), ResilienceContext.Get());
+            await controller.OnActionFailureAsync(Outcome.FromResult(0), ResilienceContextPool.Shared.Get());
             controller.CircuitState.Should().Be(CircuitState.Open);
         }
     }
@@ -167,7 +167,7 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         await OpenCircuit(controller, Outcome.FromException<int>(new InvalidOperationException()));
-        var error = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(ResilienceContext.Get())).Value.Exception!;
+        var error = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception!;
         error.InnerException.Should().BeOfType<InvalidOperationException>();
     }
 
@@ -189,9 +189,9 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         // act
-        var executeAction = Task.Run(() => controller.OnActionFailureAsync(Outcome.FromResult(0), ResilienceContext.Get()));
+        var executeAction = Task.Run(() => controller.OnActionFailureAsync(Outcome.FromResult(0), ResilienceContextPool.Shared.Get()));
         executing.WaitOne();
-        var executeAction2 = Task.Run(() => controller.OnActionFailureAsync(Outcome.FromResult(0), ResilienceContext.Get()));
+        var executeAction2 = Task.Run(() => controller.OnActionFailureAsync(Outcome.FromResult(0), ResilienceContextPool.Shared.Get()));
 
         // assert
         executeAction.Wait(50).Should().BeFalse();
@@ -217,8 +217,8 @@ public class CircuitStateControllerTests
         AdvanceTime(_options.BreakDuration);
 
         // act
-        await controller.OnActionPreExecuteAsync(ResilienceContext.Get());
-        var error = (await controller.OnActionPreExecuteAsync(ResilienceContext.Get())).Value.Exception;
+        await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
+        var error = (await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception;
         error.Should().BeOfType<BrokenCircuitException<int>>();
 
         // assert
@@ -252,7 +252,7 @@ public class CircuitStateControllerTests
         }
 
         // act
-        await controller.OnActionSuccessAsync(Outcome.FromResult(10), ResilienceContext.Get());
+        await controller.OnActionSuccessAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get());
 
         // assert
         controller.CircuitState.Should().Be(expectedState);
@@ -294,7 +294,7 @@ public class CircuitStateControllerTests
         _circuitBehavior.Setup(v => v.OnActionFailure(state, out shouldBreak));
 
         // act
-        await controller.OnActionFailureAsync(Outcome.FromResult(99), ResilienceContext.Get());
+        await controller.OnActionFailureAsync(Outcome.FromResult(99), ResilienceContextPool.Shared.Get());
 
         // assert
         controller.LastHandledOutcome!.Value.Result.Should().Be(99);
@@ -327,7 +327,7 @@ public class CircuitStateControllerTests
         _circuitBehavior.Setup(v => v.OnActionFailure(CircuitState.HalfOpen, out shouldBreak));
 
         // act
-        await controller.OnActionFailureAsync(Outcome.FromResult(99), ResilienceContext.Get());
+        await controller.OnActionFailureAsync(Outcome.FromResult(99), ResilienceContextPool.Shared.Get());
 
         // assert
         var blockedTill = GetBlockedTill(controller);
@@ -352,11 +352,11 @@ public class CircuitStateControllerTests
         _circuitBehavior.Setup(v => v.OnActionFailure(CircuitState.Open, out shouldBreak));
 
         // act
-        await controller.OnActionFailureAsync(Outcome.FromResult(99), ResilienceContext.Get());
+        await controller.OnActionFailureAsync(Outcome.FromResult(99), ResilienceContextPool.Shared.Get());
 
         // assert
         controller.LastException.Should().BeNull();
-        var outcome = await controller.OnActionPreExecuteAsync(ResilienceContext.Get());
+        var outcome = await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
         outcome.Value.Exception.Should().BeOfType<BrokenCircuitException<int>>();
     }
 
@@ -369,14 +369,14 @@ public class CircuitStateControllerTests
         _circuitBehavior.Setup(v => v.OnActionSuccess(CircuitState.HalfOpen));
         _circuitBehavior.Setup(v => v.OnCircuitClosed());
 
-        await controller.OnActionSuccessAsync(Outcome.FromResult(0), ResilienceContext.Get());
+        await controller.OnActionSuccessAsync(Outcome.FromResult(0), ResilienceContextPool.Shared.Get());
         controller.CircuitState.Should().Be(CircuitState.Closed);
     }
 
     [Fact]
     public async Task Flow_Closed_HalfOpen_Open_HalfOpen_Closed()
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         using var controller = CreateController();
         bool shouldBreak = true;
 
@@ -388,7 +388,7 @@ public class CircuitStateControllerTests
 
         // execution rejected
         AdvanceTime(TimeSpan.FromMilliseconds(1));
-        var outcome = await controller.OnActionPreExecuteAsync(ResilienceContext.Get());
+        var outcome = await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
         outcome.Value.Exception.Should().BeOfType<BrokenCircuitException<int>>();
 
         // wait and try, transition to half open
@@ -399,8 +399,23 @@ public class CircuitStateControllerTests
         // close circuit
         _circuitBehavior.Setup(v => v.OnActionSuccess(CircuitState.HalfOpen));
         _circuitBehavior.Setup(v => v.OnCircuitClosed());
-        await controller.OnActionSuccessAsync(Outcome.FromResult(0), ResilienceContext.Get());
+        await controller.OnActionSuccessAsync(Outcome.FromResult(0), ResilienceContextPool.Shared.Get());
         controller.CircuitState.Should().Be(CircuitState.Closed);
+    }
+
+    [Fact]
+    public async Task ExecuteScheduledTask_Async_Ok()
+    {
+        var source = new TaskCompletionSource<string>();
+        var task = CircuitStateController<string>.ExecuteScheduledTaskAsync(source.Task, ResilienceContextPool.Shared.Get().Initialize<string>(isSynchronous: false)).AsTask();
+
+        task.Wait(3).Should().BeFalse();
+        task.IsCompleted.Should().BeFalse();
+
+        source.SetResult("ok");
+
+        await task;
+        task.IsCompleted.Should().BeTrue();
     }
 
     private static DateTimeOffset? GetBlockedTill(CircuitStateController<int> controller) =>
@@ -418,10 +433,10 @@ public class CircuitStateControllerTests
             case CircuitState.HalfOpen:
                 await OpenCircuit(controller);
                 AdvanceTime(_options.BreakDuration);
-                await controller.OnActionPreExecuteAsync(ResilienceContext.Get());
+                await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
                 break;
             case CircuitState.Isolated:
-                await controller.IsolateCircuitAsync(ResilienceContext.Get());
+                await controller.IsolateCircuitAsync(ResilienceContextPool.Shared.Get());
                 break;
         }
 
@@ -432,7 +447,7 @@ public class CircuitStateControllerTests
     {
         bool breakCircuit = true;
         _circuitBehavior.Setup(v => v.OnActionFailure(CircuitState.Closed, out breakCircuit));
-        await controller.OnActionFailureAsync(outcome ?? Outcome.FromResult(10), ResilienceContext.Get().Initialize<int>(true));
+        await controller.OnActionFailureAsync(outcome ?? Outcome.FromResult(10), ResilienceContextPool.Shared.Get().Initialize<int>(true));
     }
 
     private void AdvanceTime(TimeSpan timespan) => _timeProvider.Advance(timespan);

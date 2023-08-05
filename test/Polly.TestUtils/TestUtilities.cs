@@ -38,10 +38,10 @@ public static class TestUtilities
     }
 
     public static ResilienceStrategyTelemetry CreateResilienceTelemetry(DiagnosticSource source)
-        => new(new ResilienceTelemetrySource("dummy-builder", "dummy-instance", new ResilienceProperties(), "strategy-name", "strategy-type"), source);
+        => new(new ResilienceTelemetrySource("dummy-builder", "dummy-instance", new ResilienceProperties(), "strategy-name"), source);
 
     public static ResilienceStrategyTelemetry CreateResilienceTelemetry(Action<TelemetryEventArguments> callback)
-        => new(new ResilienceTelemetrySource("dummy-builder", "dummy-instance", new ResilienceProperties(), "strategy-name", "strategy-type"), new CallbackDiagnosticSource(callback));
+        => new(new ResilienceTelemetrySource("dummy-builder", "dummy-instance", new ResilienceProperties(), "strategy-name"), new CallbackDiagnosticSource(callback));
 
     public static ILoggerFactory CreateLoggerFactory(out FakeLogger logger)
     {
@@ -55,13 +55,14 @@ public static class TestUtilities
 
     public static IDisposable EnablePollyMetering(ICollection<MeteringEvent> events)
     {
+        var stateStr = Guid.NewGuid().ToString();
         var meterListener = new MeterListener
         {
             InstrumentPublished = (instrument, listener) =>
             {
                 if (instrument.Meter.Name == "Polly")
                 {
-                    listener.EnableMeasurementEvents(instrument);
+                    listener.EnableMeasurementEvents(instrument, stateStr);
                 }
             }
         };
@@ -69,8 +70,13 @@ public static class TestUtilities
         meterListener.SetMeasurementEventCallback<double>(OnMeasurementRecorded);
         meterListener.Start();
 
-        void OnMeasurementRecorded<T>(Instrument instrument, T measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
-            => events.Add(new MeteringEvent(measurement!, instrument.Name, tags.ToArray().ToDictionary(v => v.Key, v => v.Value)));
+        void OnMeasurementRecorded<T>(Instrument instrument, T measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? stateObj)
+        {
+            if (stateObj is string str && str == stateStr)
+            {
+                events.Add(new MeteringEvent(measurement!, instrument.Name, tags.ToArray().ToDictionary(v => v.Key, v => v.Value)));
+            }
+        }
 
         return meterListener;
     }
@@ -82,15 +88,14 @@ public static class TestUtilities
         string builderName,
         string? instanceName,
         ResilienceProperties builderProperties,
-        string strategyName,
-        string strategyType,
+        string? strategyName,
         ResilienceContext context,
         Outcome<object>? outcome,
         object arguments)
 #pragma warning restore S107 // Methods should not have too many parameters
     {
         source.Write(resilienceEvent.EventName, TelemetryEventArguments.Get(
-            new ResilienceTelemetrySource(builderName, instanceName, builderProperties, strategyName, strategyType),
+            new ResilienceTelemetrySource(builderName, instanceName, builderProperties, strategyName),
             resilienceEvent,
             context,
             outcome,
@@ -119,7 +124,7 @@ public static class TestUtilities
 
             if (arguments is ExecutionAttemptArguments attempt)
             {
-                arguments = ExecutionAttemptArguments.Get(attempt.Attempt, attempt.ExecutionTime, attempt.Handled);
+                arguments = ExecutionAttemptArguments.Get(attempt.AttemptNumber, attempt.ExecutionTime, attempt.Handled);
             }
 
             // copy the args because these are pooled and in tests we want to preserve them

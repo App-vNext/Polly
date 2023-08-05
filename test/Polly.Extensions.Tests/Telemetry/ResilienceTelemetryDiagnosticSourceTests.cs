@@ -72,11 +72,11 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         if (noOutcome)
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder[builder-instance]/my-strategy-type[my-strategy]', Operation Key: 'op-key', Result: ''");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: ''");
         }
         else
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder[builder-instance]/my-strategy-type[my-strategy]', Operation Key: 'op-key', Result: '200'");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: '200'");
         }
     }
 
@@ -99,11 +99,11 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         if (noOutcome)
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder[builder-instance]/my-strategy-type[my-strategy]', Operation Key: 'op-key', Result: ''");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: ''");
         }
         else
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder[builder-instance]/my-strategy-type[my-strategy]', Operation Key: 'op-key', Result: 'Dummy message.'");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.'");
         }
     }
 
@@ -115,7 +115,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
 
-        messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder[]/my-strategy-type[my-strategy]', Operation Key: 'op-key', Result: ''");
+        messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/(null)/my-strategy', Operation Key: 'op-key', Result: ''");
     }
 
     [InlineData(ResilienceEventSeverity.Error, LogLevel.Error)]
@@ -150,7 +150,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         var messages = _logger.GetRecords(new EventId(3, "ExecutionAttempt")).ToList();
         messages.Should().HaveCount(1);
 
-        messages[0].Message.Should().Be("Execution attempt. Source: 'my-builder[builder-instance]/my-strategy-type[my-strategy]', Operation Key: 'op-key', Result: 'Dummy message.', Handled: 'True', Attempt: '4', Execution Time: '123'");
+        messages[0].Message.Should().Be("Execution attempt. Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.', Handled: 'True', Attempt: '4', Execution Time: '123'");
     }
 
     [InlineData(true, true)]
@@ -170,11 +170,11 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         if (noOutcome)
         {
             string resultString = string.Empty;
-            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-builder[builder-instance]/my-strategy-type[my-strategy]', Operation Key: 'op-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
+            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
         }
         else
         {
-            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-builder[builder-instance]/my-strategy-type[my-strategy]', Operation Key: 'op-key', Result: '200', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
+            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: '200', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
         }
 
         messages[0].LogLevel.Should().Be(LogLevel.Warning);
@@ -206,16 +206,23 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             true when exception => Outcome.FromException<object>(new InvalidOperationException("Dummy message.")),
             _ => Outcome.FromResult<object>(true)
         };
-        ReportEvent(telemetry, outcome, context: ResilienceContext.Get("op-key").WithResultType<bool>());
+        ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>());
 
         var events = GetEvents("resilience-events");
         events.Should().HaveCount(1);
         var ev = events[0];
 
-        ev.Count.Should().Be(9);
+        if (noOutcome && exception)
+        {
+            ev.Count.Should().Be(8);
+        }
+        else
+        {
+            ev.Count.Should().Be(7);
+        }
+
         ev["event-name"].Should().Be("my-event");
         ev["event-severity"].Should().Be("Warning");
-        ev["strategy-type"].Should().Be("my-strategy-type");
         ev["strategy-name"].Should().Be("my-strategy");
         ev["builder-instance"].Should().Be("builder-instance");
         ev["operation-key"].Should().Be("op-key");
@@ -228,7 +235,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         }
         else
         {
-            ev["exception-name"].Should().Be(null);
+            ev.Should().NotContainKey("exception-name");
         }
     }
 
@@ -247,16 +254,23 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             true when exception => Outcome.FromException<object>(new InvalidOperationException("Dummy message.")),
             _ => Outcome.FromResult<object>(true)
         };
-        ReportEvent(telemetry, outcome, context: ResilienceContext.Get("op-key").WithResultType<bool>(), arg: attemptArg);
+        ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
 
         var events = GetEvents("execution-attempt-duration");
         events.Should().HaveCount(1);
         var ev = events[0];
 
-        ev.Count.Should().Be(11);
+        if (noOutcome && exception)
+        {
+            ev.Count.Should().Be(10);
+        }
+        else
+        {
+            ev.Count.Should().Be(9);
+        }
+
         ev["event-name"].Should().Be("my-event");
         ev["event-severity"].Should().Be("Warning");
-        ev["strategy-type"].Should().Be("my-strategy-type");
         ev["strategy-name"].Should().Be("my-strategy");
         ev["builder-instance"].Should().Be("builder-instance");
         ev["operation-key"].Should().Be("op-key");
@@ -271,7 +285,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         }
         else
         {
-            ev["exception-name"].Should().Be(null);
+            ev.Should().NotContainKey("exception-name");
         }
 
         _events.Single(v => v.Name == "execution-attempt-duration").Measurement.Should().Be(50000);
@@ -282,7 +296,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     [Theory]
     public void WriteEvent_MeteringWithEnrichers_Ok(int count)
     {
-        const int DefaultDimensions = 8;
+        const int DefaultDimensions = 7;
         var telemetry = Create(enrichers =>
         {
             enrichers.Add(context =>
@@ -303,7 +317,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         var events = GetEvents("resilience-events");
         var ev = events[0];
-        ev.Count.Should().Be(DefaultDimensions + count + 2);
+        ev.Count.Should().Be(DefaultDimensions + count + 1);
         ev["other"].Should().Be("other-value");
 
         for (int i = 0; i < count; i++)
@@ -317,7 +331,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     {
         var telemetry = Create();
         ReportEvent(telemetry, null, instanceName: null);
-        var events = GetEvents("resilience-events")[0]["builder-instance"].Should().BeNull();
+        var events = GetEvents("resilience-events")[0].Should().NotContainKey("builder-instance");
     }
 
     [InlineData(true)]
@@ -361,7 +375,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         object? arg = null,
         ResilienceEventSeverity severity = ResilienceEventSeverity.Warning)
     {
-        context ??= ResilienceContext.Get("op-key");
+        context ??= ResilienceContextPool.Shared.Get("op-key");
         var props = new ResilienceProperties();
         if (!string.IsNullOrEmpty(instanceName))
         {
@@ -374,7 +388,6 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             instanceName,
             props,
             "my-strategy",
-            "my-strategy-type",
             context,
             outcome,
             arg ?? new TestArguments());

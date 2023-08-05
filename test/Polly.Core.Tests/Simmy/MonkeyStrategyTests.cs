@@ -33,7 +33,7 @@ public class MonkeyStrategyTests
     [Fact]
     public async Task Ctor_Ok()
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         _options.EnabledGenerator = (_) => new ValueTask<bool>(true);
         _options.InjectionRate = 0.5;
 

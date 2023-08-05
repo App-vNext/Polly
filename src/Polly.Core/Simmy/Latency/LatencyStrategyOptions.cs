@@ -8,11 +8,6 @@
 public class LatencyStrategyOptions : MonkeyStrategyOptions
 {
     /// <summary>
-    /// Gets the strategy type.
-    /// </summary>
-    public sealed override string StrategyType => LatencyConstants.StrategyType;
-
-    /// <summary>
     /// Gets or sets the delegate that's raised when delay occurs.
     /// </summary>
     /// <remarks>

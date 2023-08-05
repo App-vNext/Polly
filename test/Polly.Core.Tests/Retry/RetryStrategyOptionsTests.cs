@@ -11,7 +11,6 @@ public class RetryStrategyOptionsTests
     {
         var options = new RetryStrategyOptions<int>();
 
-        options.StrategyType.Should().Be("Retry");
         options.ShouldHandle.Should().NotBeNull();
 
         options.RetryDelayGenerator.Should().BeNull();
@@ -28,7 +27,7 @@ public class RetryStrategyOptionsTests
     {
         var options = new RetryStrategyOptions<int>();
         var args = new RetryPredicateArguments(0);
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
 
         (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);
         (await options.ShouldHandle(new(context, Outcome.FromException<int>(new OperationCanceledException()), args))).Should().Be(false);
@@ -47,14 +46,14 @@ public class RetryStrategyOptionsTests
             BaseDelay = TimeSpan.MinValue
         };
 
-        options.Invoking(o => ValidationHelper.ValidateObject(o, "Invalid Options"))
+        options.Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid Options")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""
             Invalid Options
             
             Validation Errors:
-            The field RetryCount must be between -1 and 100.
+            The field RetryCount must be between 1 and 2147483647.
             The field BaseDelay must be between 00:00:00 and 1.00:00:00.
             The ShouldHandle field is required.
             """);

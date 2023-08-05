@@ -32,7 +32,7 @@ public partial class ResilienceStrategyTests
 
         async strategy =>
         {
-            var context = ResilienceContext.Get();
+            var context = ResilienceContextPool.Shared.Get();
             context.CancellationToken = CancellationToken;
             (await strategy.ExecuteAsync(
                 (context, state) =>
@@ -47,7 +47,7 @@ public partial class ResilienceStrategyTests
 
         async strategy =>
         {
-            var context = ResilienceContext.Get();
+            var context = ResilienceContextPool.Shared.Get();
             context.CancellationToken = CancellationToken;
             (await strategy.ExecuteAsync(
                 (context) =>
@@ -86,7 +86,7 @@ public partial class ResilienceStrategyTests
             context.ResultType.Should().Be(typeof(int));
             return Outcome.FromResultAsTask(12345);
         },
-        ResilienceContext.Get(),
+        ResilienceContextPool.Shared.Get(),
         "state");
 
         result.Result.Should().Be(12345);

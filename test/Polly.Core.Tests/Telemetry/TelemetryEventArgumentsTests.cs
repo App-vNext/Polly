@@ -4,12 +4,12 @@ namespace Polly.Extensions.Tests.Telemetry;
 
 public class TelemetryEventArgumentsTests
 {
-    private readonly ResilienceTelemetrySource _source = new("builder", "instance", new ResilienceProperties(), "strategy", "type");
+    private readonly ResilienceTelemetrySource _source = new("builder", "instance", new ResilienceProperties(), "strategy");
 
     [Fact]
     public void Get_Ok()
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         var args = TelemetryEventArguments.Get(_source, new ResilienceEvent(ResilienceEventSeverity.Warning, "ev"), context, Outcome.FromResult<object>("dummy"), "arg");
 
         args.Outcome!.Value.Result.Should().Be("dummy");
@@ -24,7 +24,7 @@ public class TelemetryEventArgumentsTests
     [Fact]
     public void Return_EnsurePropertiesCleared()
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         var args = TelemetryEventArguments.Get(_source, new ResilienceEvent(ResilienceEventSeverity.Warning, "ev"), context, Outcome.FromResult<object>("dummy"), "arg");
 
         TelemetryEventArguments.Return(args);

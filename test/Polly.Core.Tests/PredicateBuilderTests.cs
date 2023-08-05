@@ -66,7 +66,7 @@ public class PredicateBuilderTests
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(ResilienceContext.Get(), Outcome.FromResult("error"), new RetryPredicateArguments(0)));
+        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error"), new RetryPredicateArguments(0)));
 
         handled.Should().BeTrue();
     }
@@ -79,7 +79,7 @@ public class PredicateBuilderTests
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(ResilienceContext.Get(), Outcome.FromResult("error"), new FallbackPredicateArguments()));
+        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error"), default));
 
         handled.Should().BeTrue();
     }
@@ -92,7 +92,7 @@ public class PredicateBuilderTests
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(ResilienceContext.Get(), Outcome.FromResult("error"), new HedgingPredicateArguments()));
+        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error"), default));
 
         handled.Should().BeTrue();
     }
@@ -100,12 +100,12 @@ public class PredicateBuilderTests
     [Fact]
     public async Task Operator_AdvancedCircuitBreakerStrategyOptions_Ok()
     {
-        var options = new AdvancedCircuitBreakerStrategyOptions<string>
+        var options = new CircuitBreakerStrategyOptions<string>
         {
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(ResilienceContext.Get(), Outcome.FromResult("error"), new CircuitBreakerPredicateArguments()));
+        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error"), default));
 
         handled.Should().BeTrue();
     }

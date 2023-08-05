@@ -7,6 +7,6 @@ public class HedgingPredicateArgumentsTests
     [Fact]
     public void Ctor_Ok()
     {
-        this.Invoking(_ => new HedgingPredicateArguments()).Should().NotThrow();
+        this.Invoking(_ => default(HedgingPredicateArguments)).Should().NotThrow();
     }
 }

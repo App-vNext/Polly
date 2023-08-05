@@ -130,7 +130,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
             return Outcome.FromResult("dummy");
         },
-        ResilienceContext.Get(),
+        ResilienceContextPool.Shared.Get(),
         "state");
         outcome.Exception.Should().BeOfType<TimeoutRejectedException>();
         outcome.Exception!.StackTrace.Should().Contain("Execute_Timeout_EnsureStackTrace");
@@ -178,7 +178,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         var sut = CreateSut();
 
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cts.Token;
 
         await sut.ExecuteAsync(

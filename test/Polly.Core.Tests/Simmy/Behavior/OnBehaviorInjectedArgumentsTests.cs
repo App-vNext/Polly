@@ -7,7 +7,7 @@ public class OnBehaviorInjectedArgumentsTests
     [Fact]
     public void Ctor_Ok()
     {
-        var args = new OnBehaviorInjectedArguments(ResilienceContext.Get());
+        var args = new OnBehaviorInjectedArguments(ResilienceContextPool.Shared.Get());
         args.Context.Should().NotBeNull();
     }
 }

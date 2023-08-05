@@ -3,7 +3,7 @@ namespace Polly.Telemetry;
 /// <summary>
 /// The arguments of the telemetry event.
 /// </summary>
-public sealed partial record class TelemetryEventArguments
+public sealed partial class TelemetryEventArguments
 {
     private TelemetryEventArguments()
     {

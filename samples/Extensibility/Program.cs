@@ -33,7 +33,10 @@ strategy.Execute(() => { });
 
 internal class MySimpleStrategy : ResilienceStrategy
 {
-    protected override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
+    protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
     {
         Console.WriteLine("MySimpleStrategy executing!");
 
@@ -64,8 +67,6 @@ public readonly record struct OnCustomEventArguments(ResilienceContext Context);
 // 1.B Define the options.
 public class MyResilienceStrategyOptions : ResilienceStrategyOptions
 {
-    public override string StrategyType => "MyCustomStrategy";
-
     // Use the arguments in the delegates.
     // The recommendation is to use asynchronous delegates.
     public Func<OnCustomEventArguments, ValueTask>? OnCustomEvent { get; set; }
@@ -87,7 +88,10 @@ internal class MyResilienceStrategy : ResilienceStrategy
         this.onCustomEvent = options.OnCustomEvent;
     }
 
-    protected override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
+    protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
     {
         // Here, do something before callback execution
         // ...
@@ -129,5 +133,3 @@ public static class MyResilienceStrategyExtensions
             // Pass the options, note that the options instance is automatically validated by the builder
             options);
 }
-
-

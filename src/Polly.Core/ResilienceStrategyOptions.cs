@@ -9,15 +9,9 @@ public abstract class ResilienceStrategyOptions
     /// Gets or sets the name of the strategy.
     /// </summary>
     /// <remarks>
-    /// This property is also included in the telemetry that is produced by the individual resilience strategies.
-    /// Defaults to <see langword="null"/>. This name uniquely identifies particular instance of specific strategy.
+    /// This name uniquely identifies a particular instance of a specific strategy and is also included
+    /// in the telemetry that is produced by the individual resilience strategies.
     /// </remarks>
-    public string? StrategyName { get; set; }
-
-    /// <summary>
-    /// Gets the strategy type.
-    /// </summary>
-    /// <remarks>This property is also included in the telemetry that is produced by the individual resilience strategies.
-    /// The strategy type uniquely identifies the strategy in the telemetry. The name should be in PascalCase (i.e. Retry, CircuitBreaker, Timeout).</remarks>
-    public abstract string StrategyType { get; }
+    /// <value>The default value is <see langword="null"/>.</value>
+    public string? Name { get; set; }
 }

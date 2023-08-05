@@ -24,7 +24,7 @@ public sealed class CircuitBreakerStateProvider
     /// </summary>
     /// <remarks>
     /// The initialization happens when the circuit-breaker strategy is attached to this class.
-    /// This happens when the final strategy is created by the <see cref="ResilienceStrategyBuilder.Build"/> call.
+    /// This happens when the final strategy is created by the <see cref="CompositeStrategyBuilder.Build"/> call.
     /// </remarks>
     internal bool IsInitialized => _circuitStateProvider != null;
 
@@ -38,5 +38,5 @@ public sealed class CircuitBreakerStateProvider
     /// <remarks>
     /// This will be null if no exceptions or results have been handled by the circuit-breaker since the circuit last closed.</remarks>
     /// </summary>
-    public Outcome<object>? LastHandledOutcome => _lastHandledOutcomeProvider?.Invoke();
+    internal Outcome<object>? LastHandledOutcome => _lastHandledOutcomeProvider?.Invoke();
 }

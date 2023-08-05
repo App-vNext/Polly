@@ -39,7 +39,7 @@ public class ReloadableResilienceStrategyTests
 
         var serviceProvider = services.BuildServiceProvider();
         var strategy = serviceProvider.GetRequiredService<ResilienceStrategyProvider<string>>().GetStrategy("my-strategy");
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
 
         // initial
         strategy.Execute(_ => "dummy", context);
@@ -60,7 +60,7 @@ public class ReloadableResilienceStrategyTests
 
         public string Tag { get; }
 
-        protected override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)
@@ -72,8 +72,6 @@ public class ReloadableResilienceStrategyTests
 
     public class ReloadableStrategyOptions : ResilienceStrategyOptions
     {
-        public override string StrategyType => "Reloadable";
-
         public string Tag { get; set; } = string.Empty;
     }
 

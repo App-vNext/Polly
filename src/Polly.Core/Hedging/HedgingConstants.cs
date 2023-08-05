@@ -2,8 +2,6 @@ namespace Polly.Hedging;
 
 internal static class HedgingConstants
 {
-    public const string StrategyType = "Hedging";
-
     public const string OnHedgingEventName = "OnHedging";
 
     public const int DefaultMaxHedgedAttempts = 2;

@@ -9,11 +9,11 @@ public class EnrichmentContextTests
     {
         await TestUtilities.AssertWithTimeoutAsync(() =>
         {
-            var context = EnrichmentContext.Get(ResilienceContext.Get(), null, null);
+            var context = EnrichmentContext.Get(ResilienceContextPool.Shared.Get(), null, null);
 
             EnrichmentContext.Return(context);
 
-            EnrichmentContext.Get(ResilienceContext.Get(), null, null).Should().BeSameAs(context);
+            EnrichmentContext.Get(ResilienceContextPool.Shared.Get(), null, null).Should().BeSameAs(context);
         });
     }
 }

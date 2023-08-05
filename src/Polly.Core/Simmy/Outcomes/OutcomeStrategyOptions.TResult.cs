@@ -9,11 +9,6 @@
 public class OutcomeStrategyOptions<TResult> : MonkeyStrategyOptions
 {
     /// <summary>
-    /// Gets the strategy type.
-    /// </summary>
-    public sealed override string StrategyType => OutcomeConstants.StrategyType;
-
-    /// <summary>
     /// Gets or sets the delegate that's raised when the outcome is injected.
     /// </summary>
     /// <remarks>

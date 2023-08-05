@@ -1,11 +1,33 @@
 namespace Polly.Retry;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// Represents the arguments used by <see cref="RetryStrategyOptions{TResult}.RetryDelayGenerator"/> for generating the next retry delay.
 /// </summary>
-/// <param name="Attempt">The zero-based attempt number. The first attempt is 0, the second attempt is 1, and so on.</param>
-/// <param name="DelayHint">The delay suggested by the retry strategy.</param>
 /// <remarks>
 /// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
-public readonly record struct RetryDelayArguments(int Attempt, TimeSpan DelayHint);
+public readonly struct RetryDelayArguments
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RetryDelayArguments"/> struct.
+    /// </summary>
+    /// <param name="attemptNumber">The zero-based attempt number.</param>
+    /// <param name="delayHint">The delay suggested by the retry strategy.</param>
+    public RetryDelayArguments(int attemptNumber, TimeSpan delayHint)
+    {
+        AttemptNumber = attemptNumber;
+        DelayHint = delayHint;
+    }
+
+    /// <summary>
+    /// Gets The zero-based attempt number.
+    /// </summary>
+    public int AttemptNumber { get; }
+
+    /// <summary>
+    /// Gets the delay suggested by the retry strategy.
+    /// </summary>
+    public TimeSpan DelayHint { get; }
+}

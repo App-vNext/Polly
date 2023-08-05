@@ -70,8 +70,7 @@ public class RateLimiterResilienceStrategyTests
         }
 
         var strategy = Create();
-        var context = ResilienceContext.Get();
-        context.CancellationToken = cts.Token;
+        var context = ResilienceContextPool.Shared.Get(cts.Token);
         var outcome = await strategy.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state");
 
         outcome.Exception
@@ -96,7 +95,7 @@ public class RateLimiterResilienceStrategyTests
 
     private RateLimiterResilienceStrategy Create()
     {
-        var builder = new ResilienceStrategyBuilder
+        var builder = new CompositeStrategyBuilder
         {
             DiagnosticSource = _diagnosticSource.Object
         };

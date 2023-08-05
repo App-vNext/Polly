@@ -11,7 +11,6 @@ public class HedgingStrategyOptionsTests
     {
         var options = new HedgingStrategyOptions<int>();
 
-        options.StrategyType.Should().Be("Hedging");
         options.ShouldHandle.Should().NotBeNull();
         options.HedgingActionGenerator.Should().NotBeNull();
         options.HedgingDelay.Should().Be(TimeSpan.FromSeconds(2));
@@ -25,7 +24,7 @@ public class HedgingStrategyOptionsTests
     public async Task HedgingActionGenerator_EnsureDefaults(bool synchronous)
     {
         var options = new HedgingStrategyOptions<int>();
-        var context = ResilienceContext.Get().Initialize<int>(synchronous);
+        var context = ResilienceContextPool.Shared.Get().Initialize<int>(synchronous);
         var threadId = Thread.CurrentThread.ManagedThreadId;
 
         var action = options.HedgingActionGenerator(new HedgingActionGeneratorArguments<int>(context, context, 1, c =>
@@ -50,8 +49,8 @@ public class HedgingStrategyOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new HedgingStrategyOptions<int>();
-        var args = new HedgingPredicateArguments();
-        var context = ResilienceContext.Get();
+        var args = default(HedgingPredicateArguments);
+        var context = ResilienceContextPool.Shared.Get();
 
         (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);
         (await options.ShouldHandle(new(context, Outcome.FromException<int>(new OperationCanceledException()), args))).Should().Be(false);
@@ -71,7 +70,7 @@ public class HedgingStrategyOptionsTests
         };
 
         options
-            .Invoking(o => ValidationHelper.ValidateObject(o, "Invalid."))
+            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid.")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""

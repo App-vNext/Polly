@@ -8,12 +8,11 @@ public class TelemetryUtilTests
     [Fact]
     public void CreateResilienceTelemetry_Ok()
     {
-        var telemetry = TelemetryUtil.CreateTelemetry(null, "builder", "instance", new ResilienceProperties(), "strategy-name", "strategy-type");
+        var telemetry = TelemetryUtil.CreateTelemetry(null, "builder", "instance", new ResilienceProperties(), "strategy-name");
 
         telemetry.TelemetrySource.BuilderName.Should().Be("builder");
         telemetry.TelemetrySource.BuilderInstanceName.Should().Be("instance");
         telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name");
-        telemetry.TelemetrySource.StrategyType.Should().Be("strategy-type");
         telemetry.DiagnosticSource.Should().BeNull();
     }
 
@@ -23,7 +22,7 @@ public class TelemetryUtilTests
         var props = new ResilienceProperties();
         var source = Mock.Of<DiagnosticSource>();
 
-        var telemetry = TelemetryUtil.CreateTelemetry(source, "builder", "instance", props, "strategy-name", "strategy-type");
+        var telemetry = TelemetryUtil.CreateTelemetry(source, "builder", "instance", props, "strategy-name");
 
         telemetry.DiagnosticSource.Should().Be(source);
     }
@@ -41,7 +40,7 @@ public class TelemetryUtilTests
             asserted = true;
         });
 
-        TelemetryUtil.ReportExecutionAttempt(telemetry, ResilienceContext.Get(), Outcome.FromResult("dummy"), 0, TimeSpan.Zero, handled);
+        TelemetryUtil.ReportExecutionAttempt(telemetry, ResilienceContextPool.Shared.Get(), Outcome.FromResult("dummy"), 0, TimeSpan.Zero, handled);
         asserted.Should().BeTrue();
     }
 }

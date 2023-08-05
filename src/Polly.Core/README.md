@@ -66,14 +66,14 @@ For example, the synchronous `Execute` method is implemented as:
 ``` csharp
 public void Execute(Action execute)
 {
-    var context = ResilienceContext.Get();
+    var context = ResilienceContextPool.Shared.Get();
 
     context.IsSynchronous = true;
     context.ResultType = typeof(VoidResult);
 
     try
     {
-        strategy.ExecuteCoreAsync(static (context, state) =>
+        strategy.ExecuteAsync(static (context, state) =>
         {
             state();
             return new ValueTask<Outcome<VoidResult>>(new(VoidResult.Instance));
@@ -83,7 +83,7 @@ public void Execute(Action execute)
     }
     finally
     {
-        ResilienceContext.Return(context);
+        ResilienceContextPool.Shared.Return(context);
     }
 }
 ```
@@ -108,7 +108,7 @@ internal class DelayStrategy : ResilienceStrategy
         _timeProvider = timeProvider;
     }
 
-    protected override async ValueTask<T> ExecuteCoreAsync<T, TState>(
+    protected override async ValueTask<T> ExecuteCore<T, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, 
         ResilienceContext context, 
         TState state)
@@ -134,22 +134,22 @@ Polly also exposes the sealed `ResilienceStrategy<T>` strategy that is just a si
 
 This API exposes the following builders:
 
-- [ResilienceStrategyBuilder](ResilienceStrategyBuilder.cs): Used to create resilience strategies that can execute all types of callbacks. In general, these strategies only handle exceptions. 
-- [ResilienceStrategyBuilder<T>](ResilienceStrategyBuilder.TResult.cs): Used to create generic resilience strategies that can only execute callbacks that return the same result type.
-- [ResilienceStrategyBuilderBase](ResilienceStrategyBuilderBase.cs): The base class for both builders above. You can use it as a target for strategy extensions that work for both builders above.  
+- [CompositeStrategyBuilder](CompositeStrategyBuilder.cs): Used to create resilience strategies that can execute all types of callbacks. In general, these strategies only handle exceptions. 
+- [CompositeStrategyBuilder<T>](CompositeStrategyBuilder.TResult.cs): Used to create generic resilience strategies that can only execute callbacks that return the same result type.
+- [CompositeStrategyBuilderBase](CompositeStrategyBuilderBase.cs): The base class for both builders above. You can use it as a target for strategy extensions that work for both builders above.  
 
-To create a strategy or pipeline of strategies you chain various extensions for `ResilienceStrategyBuilder` followed by the `Build` call:
+To create a strategy or composite resilience strategy you chain various extensions for `CompositeStrategyBuilder` followed by the `Build` call:
 
 Single strategy:
 
 ``` csharp
-var resilienceStrategy = new ResilienceStrategyBuilder().AddRetry().Build();
+var resilienceStrategy = new CompositeStrategyBuilder().AddRetry().Build();
 ```
 
-Pipeline of strategies:
+Composite strategy:
 
 ``` csharp
-var resilienceStrategy = new ResilienceStrategyBuilder()
+var resilienceStrategy = new CompositeStrategyBuilder()
     .AddRetry()
     .AddCircuitBreaker()
     .AddTimeout(new TimeoutStrategyOptions() { ... })
@@ -158,13 +158,13 @@ var resilienceStrategy = new ResilienceStrategyBuilder()
 
 ## Extensibility
 
-The resilience extensibility is simple. You just expose extensions for `ResilienceStrategyBuilder` that use the `ResilienceStrategyBuilder.AddStrategy` methods.
+The resilience extensibility is simple. You just expose extensions for `CompositeStrategyBuilder` that use the `CompositeStrategyBuilder.AddStrategy` methods.
 
-If you want to create a resilience strategy that works for both generic and non-generic builders you can use `ResilienceStrategyBuilderBase` as a target:
+If you want to create a resilience strategy that works for both generic and non-generic builders you can use `CompositeStrategyBuilderBase` as a target:
 
 ``` csharp
 public static TBuilder AddMyStrategy<TBuilder>(this TBuilder builder)
-    where TBuilder : ResilienceStrategyBuilderBase
+    where TBuilder : CompositeStrategyBuilderBase
 {
     return builder.AddStrategy(new MyStrategy());
 }
@@ -211,7 +211,7 @@ Below are a few examples showcasing the usage of these delegates:
 A non-generic predicate defining retries for multiple result types:
 
 ``` csharp
-new ResilienceStrategyBuilder()
+new CompositeStrategyBuilder()
    .AddRetry(new RetryStrategyOptions
     {
         ShouldRetry = args => args switch
@@ -228,7 +228,7 @@ new ResilienceStrategyBuilder()
 A generic predicate defining retries for a single result type:
 
 ``` csharp
-new ResilienceStrategyBuilder()
+new CompositeStrategyBuilder()
    .AddRetry(new RetryStrategyOptions<string>
     {
         ShouldRetry = args => args switch
@@ -244,3 +244,10 @@ new ResilienceStrategyBuilder()
 ## Registering Custom Callbacks
 
 When setting the delegates, ensure to respect the `ResilienceContext.IsSynchronous` property's value and execute your delegates synchronously for synchronous executions. In addition, use the `ResilienceContext.ContinueOnCapturedContext` property when your user code uses execution with synchronization context (for example, asynchronous calls in UI applications, such as in Windows Forms or WPF applications).
+
+## Telemetry
+
+Each individual resilience strategy can emit telemetry by using the [`ResilienceStrategyTelemetry`](Telemetry/ResilienceStrategyTelemetry.cs) API. Polly wraps the arguments as [`TelemetryEventArguments`](Telemetry/TelemetryEventArguments.cs) and emits them using `DiagnosticSource`.
+To consume the telemetry, Polly adopters needs to assign an instance of `DiagnosticSource` to `CompositeStrategyBuilder.DiagnosticSource` and consume `TelemetryEventArguments`.
+
+For common use-cases, it is anticipated that Polly users would leverage `Polly.Extensions`. This allows all of the aforementioned functionalities by invoking the `CompositeStrategyBuilder.ConfigureTelemetry(...)` extension method. `ConfigureTelemetry` processes `TelemetryEventArguments` and generates logs and metrics from it.

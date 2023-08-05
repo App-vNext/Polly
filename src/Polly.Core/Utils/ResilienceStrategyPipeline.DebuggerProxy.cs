@@ -1,12 +1,12 @@
 ﻿namespace Polly.Utils;
 
-internal partial class ResilienceStrategyPipeline
+internal partial class CompositeResilienceStrategy
 {
     internal sealed class DebuggerProxy
     {
-        private readonly ResilienceStrategyPipeline _resilienceStrategy;
+        private readonly CompositeResilienceStrategy _resilienceStrategy;
 
-        public DebuggerProxy(ResilienceStrategyPipeline resilienceStrategy) => _resilienceStrategy = resilienceStrategy;
+        public DebuggerProxy(CompositeResilienceStrategy resilienceStrategy) => _resilienceStrategy = resilienceStrategy;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public IEnumerable<ResilienceStrategy> Strategies => _resilienceStrategy.Strategies;
