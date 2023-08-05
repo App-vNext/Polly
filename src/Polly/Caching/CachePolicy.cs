@@ -70,8 +70,8 @@ public class CachePolicy<TResult> : Policy<TResult>, ICachePolicy<TResult>
     private readonly Action<Context, string, Exception>? _onCacheGetError;
     private readonly Action<Context, string, Exception>? _onCachePutError;
 
-    private ISyncCacheProvider<TResult> _syncCacheProvider;
-    private ITtlStrategy<TResult> _ttlStrategy;
+    private readonly ISyncCacheProvider<TResult> _syncCacheProvider;
+    private readonly ITtlStrategy<TResult> _ttlStrategy;
     private Func<Context, string> _cacheKeyStrategy;
 
     internal CachePolicy(

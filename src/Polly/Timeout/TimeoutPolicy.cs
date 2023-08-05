@@ -5,8 +5,8 @@
 /// </summary>
 public class TimeoutPolicy : Policy, ITimeoutPolicy
 {
+    private readonly TimeoutStrategy _timeoutStrategy;
     private Func<Context, TimeSpan> _timeoutProvider;
-    private TimeoutStrategy _timeoutStrategy;
     private Action<Context, TimeSpan, Task, Exception> _onTimeout;
 
     internal TimeoutPolicy(
@@ -36,8 +36,8 @@ public class TimeoutPolicy : Policy, ITimeoutPolicy
 /// </summary>
 public class TimeoutPolicy<TResult> : Policy<TResult>, ITimeoutPolicy<TResult>
 {
+    private readonly TimeoutStrategy _timeoutStrategy;
     private Func<Context, TimeSpan> _timeoutProvider;
-    private TimeoutStrategy _timeoutStrategy;
     private Action<Context, TimeSpan, Task, Exception> _onTimeout;
 
     internal TimeoutPolicy(
