@@ -20,12 +20,13 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        return builder.AddFaultCore<CompositeStrategyBuilder<TResult>, TResult>(new OutcomeStrategyOptions<Exception>
+        builder.AddFaultCore<TResult>(new OutcomeStrategyOptions<Exception>
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
             Outcome = new(fault)
         });
+        return builder;
     }
 
     /// <summary>
@@ -42,12 +43,13 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        return builder.AddFaultCore<CompositeStrategyBuilder<TResult>, TResult>(new OutcomeStrategyOptions<Exception>
+        builder.AddFaultCore<TResult>(new OutcomeStrategyOptions<Exception>
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
             OutcomeGenerator = (_) => faultGenerator()
         });
+        return builder;
     }
 
     /// <summary>
@@ -62,7 +64,8 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        return builder.AddFaultCore<CompositeStrategyBuilder<TResult>, TResult>(options);
+        builder.AddFaultCore<TResult>(options);
+        return builder;
     }
 
     /// <summary>
@@ -78,12 +81,13 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        return builder.AddOutcomeCore(new OutcomeStrategyOptions<TResult>
+        builder.AddOutcomeCore<TResult, OutcomeStrategyOptions<TResult>>(new OutcomeStrategyOptions<TResult>
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
             Outcome = new(result)
         });
+        return builder;
     }
 
     /// <summary>
@@ -100,12 +104,13 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        return builder.AddOutcomeCore(new OutcomeStrategyOptions<TResult>
+        builder.AddOutcomeCore<TResult, OutcomeStrategyOptions<TResult>>(new OutcomeStrategyOptions<TResult>
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
             OutcomeGenerator = (_) => outcomeGenerator()
         });
+        return builder;
     }
 
     /// <summary>
@@ -120,17 +125,19 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        return builder.AddOutcomeCore(options);
+        builder.AddOutcomeCore<TResult, OutcomeStrategyOptions<TResult>>(options);
+        return builder;
     }
 
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    private static TBuilder AddOutcomeCore<TBuilder, TResult>(this TBuilder builder, OutcomeStrategyOptions<TResult> options)
-        where TBuilder : CompositeStrategyBuilderBase
+    private static void AddOutcomeCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
+        this CompositeStrategyBuilderBase builder,
+        OutcomeStrategyOptions<TResult> options)
     {
-        return builder.AddStrategy(context =>
+        builder.AddStrategy(context =>
             new OutcomeChaosStrategy<TResult>(
                 options,
                 context.Telemetry),
@@ -141,10 +148,11 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    private static TBuilder AddFaultCore<TBuilder, TResult>(this TBuilder builder, OutcomeStrategyOptions<Exception> options)
-        where TBuilder : CompositeStrategyBuilderBase
+    private static void AddFaultCore<TResult>(
+        this CompositeStrategyBuilderBase builder,
+        OutcomeStrategyOptions<Exception> options)
     {
-        return builder.AddStrategy(context =>
+        builder.AddStrategy(context =>
             new OutcomeChaosStrategy<TResult>(
                 options,
                 context.Telemetry),

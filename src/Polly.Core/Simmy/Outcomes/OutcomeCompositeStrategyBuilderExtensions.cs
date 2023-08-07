@@ -19,12 +19,13 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        return builder.AddFaultCore(new OutcomeStrategyOptions<Exception>
+        builder.AddFaultCore(new OutcomeStrategyOptions<Exception>
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
             Outcome = new(fault)
         });
+        return builder;
     }
 
     /// <summary>
@@ -40,12 +41,13 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        return builder.AddFaultCore(new OutcomeStrategyOptions<Exception>
+        builder.AddFaultCore(new OutcomeStrategyOptions<Exception>
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
             OutcomeGenerator = (_) => faultGenerator()
         });
+        return builder;
     }
 
     /// <summary>
@@ -59,17 +61,17 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        return builder.AddFaultCore(options);
+        builder.AddFaultCore(options);
+        return builder;
     }
 
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    private static TBuilder AddFaultCore<TBuilder>(this TBuilder builder, OutcomeStrategyOptions<Exception> options)
-        where TBuilder : CompositeStrategyBuilderBase
+    private static void AddFaultCore(this CompositeStrategyBuilderBase builder, OutcomeStrategyOptions<Exception> options)
     {
-        return builder.AddStrategy(context =>
+        builder.AddStrategy(context =>
             new OutcomeChaosStrategy(
                 options,
                 context.Telemetry),

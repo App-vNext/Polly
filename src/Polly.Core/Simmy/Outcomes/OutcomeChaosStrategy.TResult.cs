@@ -29,11 +29,6 @@ internal class OutcomeChaosStrategy<T> : OutcomeMonkeyStrategy<T>
     {
         Guard.NotNull(telemetry);
 
-        if (!options.Outcome.HasResult && options.OutcomeGenerator is null)
-        {
-            throw new ArgumentNullException(nameof(options.Outcome), "Either Outcome or OutcomeGenerator is required.");
-        }
-
         _telemetry = telemetry;
         Outcome = options.Outcome;
         OnOutcomeInjected = options.OnOutcomeInjected;
@@ -48,7 +43,7 @@ internal class OutcomeChaosStrategy<T> : OutcomeMonkeyStrategy<T>
 
     public Func<ResilienceContext, ValueTask<Outcome<Exception>>>? FaultGenerator { get; }
 
-    public Outcome<T>? Outcome { get; }
+    public Outcome<T>? Outcome { get; private set; }
 
     public Outcome<Exception>? Fault { get; }
 
@@ -100,18 +95,32 @@ internal class OutcomeChaosStrategy<T> : OutcomeMonkeyStrategy<T>
 
     private async ValueTask<Exception?> InjectFault(ResilienceContext context)
     {
-        var fault = await FaultGenerator!(context).ConfigureAwait(context.ContinueOnCapturedContext);
-        if (fault.Exception is not null)
+        try
         {
-            var args = new OnOutcomeInjectedArguments<Exception>(context, fault);
-            _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnFaultInjectedEvent), context, args);
+            var fault = await FaultGenerator!(context).ConfigureAwait(context.ContinueOnCapturedContext);
 
-            if (OnFaultInjected is not null)
+            // to prevent injecting the fault if it was cancelled while executing the FaultGenerator
+            context.CancellationToken.ThrowIfCancellationRequested();
+
+            if (fault.Exception is not null)
             {
-                await OnFaultInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
-            }
-        }
+                Outcome = new(fault.Exception);
+                var args = new OnOutcomeInjectedArguments<Exception>(context, fault);
+                _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnFaultInjectedEvent), context, args);
 
-        return fault.Exception;
+                if (OnFaultInjected is not null)
+                {
+                    await OnFaultInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
+                }
+            }
+
+            return fault.Exception;
+        }
+        catch (OperationCanceledException)
+        {
+            // fault injection might be cancelled during FaultGenerator, if so we run the user's delegate normally
+            context.CancellationToken = CancellationToken.None;
+            return null;
+        }
     }
 }

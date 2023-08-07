@@ -15,7 +15,13 @@ namespace Polly;
 public readonly struct Outcome<TResult>
 {
     internal Outcome(Exception exception)
-        : this() => ExceptionDispatchInfo = ExceptionDispatchInfo.Capture(Guard.NotNull(exception));
+        : this()
+    {
+        if (exception != null)
+        {
+            ExceptionDispatchInfo = ExceptionDispatchInfo.Capture(exception);
+        }
+    }
 
     internal Outcome(TResult? result)
         : this() => Result = result;

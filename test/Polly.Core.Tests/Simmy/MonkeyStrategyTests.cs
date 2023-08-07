@@ -25,9 +25,14 @@ public class MonkeyStrategyTests
             var _ = new TestChaosStrategy(options);
         };
 
+#if NET481
+act.Should()
+            .Throw<ArgumentNullException>();
+#else
         act.Should()
             .Throw<ArgumentNullException>()
             .WithMessage(message);
+#endif
     }
 
     [Fact]
