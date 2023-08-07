@@ -56,16 +56,16 @@ internal sealed partial class CompositeResilienceStrategy<T> : ResilienceStrateg
 
     public IReadOnlyList<ResilienceStrategy<T>> Strategies { get; }
 
-    protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+    protected override ValueTask<Outcome<T>> ExecuteCore<TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
         ResilienceContext context, TState state)
     {
         if (context.CancellationToken.IsCancellationRequested)
         {
-            return Outcome.FromExceptionAsTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
+            return Outcome.FromExceptionAsTask<T>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
         }
 
-        return _firstStrategy.ExecuteCore(callback, context, state);
+        return _firstStrategy.ExecuteCoreAsync(callback, context, state);
     }
 
     /// <summary>
@@ -79,20 +79,20 @@ internal sealed partial class CompositeResilienceStrategy<T> : ResilienceStrateg
 
         public ResilienceStrategy<T>? Next { get; set; }
 
-        protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        protected override ValueTask<Outcome<T>> ExecuteCore<TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
             ResilienceContext context,
             TState state)
         {
-            return _strategy.ExecuteCore(
+            return _strategy.ExecuteCoreAsync(
                 static (context, state) =>
                 {
                     if (context.CancellationToken.IsCancellationRequested)
                     {
-                        return Outcome.FromExceptionAsTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
+                        return Outcome.FromExceptionAsTask<T>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
                     }
 
-                    return state.Next!.ExecuteCore(state.callback, context, state.state);
+                    return state.Next!.ExecuteCoreAsync(state.callback, context, state.state);
                 },
                 context,
                 (Next, callback, state));

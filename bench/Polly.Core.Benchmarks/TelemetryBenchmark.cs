@@ -73,8 +73,8 @@ public class TelemetryBenchmark
 
         public TelemetryEventStrategy(ResilienceStrategyTelemetry telemetry) => _telemetry = telemetry;
 
-        protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        protected override ValueTask<Outcome<T>> ExecuteCore<TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
             ResilienceContext context,
             TState state)
         {

@@ -4,7 +4,7 @@ namespace Polly.Fallback;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
-internal sealed class FallbackResilienceStrategy<T> : ReactiveResilienceStrategy<T>
+internal sealed class FallbackResilienceStrategy<T> : ResilienceStrategy<T>
 {
     private readonly FallbackHandler<T> _handler;
     private readonly Func<OutcomeArguments<T, OnFallbackArguments>, ValueTask>? _onFallback;

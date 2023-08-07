@@ -28,7 +28,7 @@ public partial class ResilienceStrategy<T>
 
         InitializeAsyncContext<TResult>(context);
 
-        var outcome = await ExecuteCore(
+        var outcome = await ExecuteCoreAsync(
             static async (context, state) =>
             {
                 try
@@ -64,7 +64,7 @@ public partial class ResilienceStrategy<T>
 
         InitializeAsyncContext<TResult>(context);
 
-        var outcome = await ExecuteCore(
+        var outcome = await ExecuteCoreAsync(
             static async (context, state) =>
             {
                 try
@@ -104,7 +104,7 @@ public partial class ResilienceStrategy<T>
 
         try
         {
-            var outcome = await ExecuteCore(
+            var outcome = await ExecuteCoreAsync(
                 static async (context, state) =>
                 {
                     try
@@ -146,7 +146,7 @@ public partial class ResilienceStrategy<T>
 
         try
         {
-            var outcome = await ExecuteCore(
+            var outcome = await ExecuteCoreAsync(
                 static async (context, state) =>
                 {
                     try
@@ -194,7 +194,7 @@ public partial class ResilienceStrategy<T>
 
         InitializeAsyncContext<TResult>(context);
 
-        return ExecuteCore(callback, context, state);
+        return ExecuteCoreAsync(callback, context, state);
     }
 
     private static ResilienceContext GetAsyncContext<TResult>(CancellationToken cancellationToken)

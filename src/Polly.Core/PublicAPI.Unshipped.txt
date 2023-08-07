@@ -2,7 +2,7 @@
 abstract Polly.Registry.ResilienceStrategyProvider<TKey>.TryGetStrategy<TResult>(TKey key, out Polly.ResilienceStrategy<TResult>? strategy) -> bool
 abstract Polly.ResilienceContextPool.Get(string? operationKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
 abstract Polly.ResilienceContextPool.Return(Polly.ResilienceContext! context) -> void
-abstract Polly.ResilienceStrategy<T>.ExecuteCore<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+abstract Polly.ResilienceStrategy<T>.ExecuteCore<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<T>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<T>>
 override Polly.Outcome<TResult>.ToString() -> string!
 override Polly.Registry.ResilienceStrategyRegistry<TKey>.TryGetStrategy(TKey key, out Polly.ResilienceStrategy? strategy) -> bool
 override Polly.Registry.ResilienceStrategyRegistry<TKey>.TryGetStrategy<TResult>(TKey key, out Polly.ResilienceStrategy<TResult>? strategy) -> bool

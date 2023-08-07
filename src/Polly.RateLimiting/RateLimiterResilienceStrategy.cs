@@ -22,8 +22,8 @@ internal sealed class RateLimiterResilienceStrategy<T> : ResilienceStrategy<T>
 
     public Func<OnRateLimiterRejectedArguments, ValueTask>? OnLeaseRejected { get; }
 
-    protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
         ResilienceContext context,
         TState state)
     {
@@ -51,6 +51,6 @@ internal sealed class RateLimiterResilienceStrategy<T> : ResilienceStrategy<T>
 
         var exception = retryAfter.HasValue ? new RateLimiterRejectedException(retryAfter.Value) : new RateLimiterRejectedException();
 
-        return Outcome.FromException<TResult>(exception.TrySetStackTrace());
+        return Outcome.FromException<T>(exception.TrySetStackTrace());
     }
 }

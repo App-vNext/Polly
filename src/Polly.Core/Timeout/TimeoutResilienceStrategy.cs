@@ -22,8 +22,8 @@ internal sealed class TimeoutResilienceStrategy<T> : ResilienceStrategy<T>
 
     public Func<OnTimeoutArguments, ValueTask>? OnTimeout { get; }
 
-    protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
         ResilienceContext context,
         TState state)
     {
@@ -72,7 +72,7 @@ internal sealed class TimeoutResilienceStrategy<T> : ResilienceStrategy<T>
                 timeout,
                 e);
 
-            return Outcome.FromException<TResult>(timeoutException.TrySetStackTrace());
+            return Outcome.FromException<T>(timeoutException.TrySetStackTrace());
         }
 
         return outcome;
