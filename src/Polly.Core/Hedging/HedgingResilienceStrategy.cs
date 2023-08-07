@@ -4,7 +4,7 @@ using Polly.Telemetry;
 
 namespace Polly.Hedging;
 
-internal sealed class HedgingResilienceStrategy<T> : OutcomeResilienceStrategy<T>
+internal sealed class HedgingResilienceStrategy<T> : ReactiveResilienceStrategy<T>
 {
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;

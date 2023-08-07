@@ -3,7 +3,7 @@ using Polly.Telemetry;
 
 namespace Polly.Retry;
 
-internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
+internal sealed class RetryResilienceStrategy<T> : ReactiveResilienceStrategy<T>
 {
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
