@@ -57,9 +57,9 @@ internal static partial class Helper
         _ => throw new NotSupportedException()
     };
 
-    public static ResilienceStrategy CreateNonGenericStrategyPipeline()
+    public static ResilienceStrategy CreateNonGenericStrategyPipeline(bool telemetry)
     {
-        return new CompositeStrategyBuilder()
+        var builder = new CompositeStrategyBuilder()
             .AddConcurrencyLimiter(new ConcurrencyLimiterOptions
             {
                 QueueLimit = 10,
@@ -91,7 +91,13 @@ internal static partial class Helper
                     { Result: string result } when result == Failure => PredicateResult.True,
                     _ => PredicateResult.False
                 }
-            })
-            .Build();
+            });
+
+        if (telemetry)
+        {
+            builder.ConfigureTelemetry(NullLoggerFactory.Instance);
+        }
+
+        return builder.Build();
     }
 }
