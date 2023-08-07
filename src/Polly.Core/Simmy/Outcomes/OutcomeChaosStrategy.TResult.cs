@@ -4,7 +4,7 @@ namespace Polly.Simmy.Outcomes;
 
 #pragma warning disable S3928 // Custom ArgumentNullException message
 
-internal class OutcomeChaosStrategy<T> : OutcomeMonkeyStrategy<T>
+internal class OutcomeChaosStrategy<T> : ReactiveMonkeyStrategy<T>
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
 

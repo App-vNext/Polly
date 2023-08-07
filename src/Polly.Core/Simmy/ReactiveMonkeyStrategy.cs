@@ -9,9 +9,9 @@ using Polly.Simmy;
 /// <remarks>
 /// For strategies that handle all result types the generic parameter must be of type <see cref="object"/>.
 /// </remarks>
-internal abstract class OutcomeMonkeyStrategy<T> : MonkeyStrategy
+internal abstract class ReactiveMonkeyStrategy<T> : MonkeyStrategy
 {
-    protected OutcomeMonkeyStrategy(MonkeyStrategyOptions options)
+    protected ReactiveMonkeyStrategy(MonkeyStrategyOptions options)
         : base(options)
     {
     }
