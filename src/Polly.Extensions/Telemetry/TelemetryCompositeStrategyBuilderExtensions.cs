@@ -46,20 +46,7 @@ public static class TelemetryCompositeStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.Validator(new(options, $"The '{nameof(TelemetryOptions)}' are invalid."));
-        builder.DiagnosticSource = new ResilienceTelemetryDiagnosticSource(options);
-        builder.OnCreatingStrategy = strategies =>
-        {
-            var telemetryStrategy = new TelemetryResilienceStrategy<object>(
-                TimeProvider.System,
-                builder.Name,
-                builder.InstanceName,
-                options.LoggerFactory,
-                options.ResultFormatter,
-                options.Enrichers.ToList());
-
-            strategies.Insert(0, telemetryStrategy);
-        };
+        AddTelemetry(builder, options);
 
         return builder;
     }
@@ -67,6 +54,7 @@ public static class TelemetryCompositeStrategyBuilderExtensions
     /// <summary>
     /// Enables telemetry for this builder.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="loggerFactory">The logger factory to be used for logging.</param>
     /// <returns>The builder instance with the telemetry enabled.</returns>
@@ -86,6 +74,7 @@ public static class TelemetryCompositeStrategyBuilderExtensions
     /// <summary>
     /// Enables telemetry for this builder.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The resilience telemetry options.</param>
     /// <returns>The builder instance with the telemetry enabled.</returns>
@@ -100,6 +89,13 @@ public static class TelemetryCompositeStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
+        AddTelemetry(builder, options);
+
+        return builder;
+    }
+
+    private static void AddTelemetry<TResult>(CompositeStrategyBuilderBase<TResult> builder, TelemetryOptions options)
+    {
         builder.Validator(new(options, $"The '{nameof(TelemetryOptions)}' are invalid."));
         builder.DiagnosticSource = new ResilienceTelemetryDiagnosticSource(options);
         builder.OnCreatingStrategy = strategies =>
@@ -114,7 +110,5 @@ public static class TelemetryCompositeStrategyBuilderExtensions
 
             strategies.Insert(0, telemetryStrategy);
         };
-
-        return builder;
     }
 }

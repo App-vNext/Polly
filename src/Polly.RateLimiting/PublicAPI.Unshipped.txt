@@ -22,9 +22,13 @@ Polly.RateLimiting.RateLimiterStrategyOptions.RateLimiter.get -> Polly.RateLimit
 Polly.RateLimiting.RateLimiterStrategyOptions.RateLimiter.set -> void
 Polly.RateLimiting.RateLimiterStrategyOptions.RateLimiterStrategyOptions() -> void
 Polly.RateLimiting.ResilienceRateLimiter
-static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddConcurrencyLimiter<TBuilder>(this TBuilder! builder, int permitLimit, int queueLimit = 0) -> TBuilder!
-static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddConcurrencyLimiter<TBuilder>(this TBuilder! builder, System.Threading.RateLimiting.ConcurrencyLimiterOptions! options) -> TBuilder!
-static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddRateLimiter<TBuilder>(this TBuilder! builder, Polly.RateLimiting.RateLimiterStrategyOptions! options) -> TBuilder!
-static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddRateLimiter<TBuilder>(this TBuilder! builder, System.Threading.RateLimiting.RateLimiter! limiter) -> TBuilder!
+static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddConcurrencyLimiter(this Polly.CompositeStrategyBuilder! builder, int permitLimit, int queueLimit = 0) -> Polly.CompositeStrategyBuilder!
+static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddConcurrencyLimiter(this Polly.CompositeStrategyBuilder! builder, System.Threading.RateLimiting.ConcurrencyLimiterOptions! options) -> Polly.CompositeStrategyBuilder!
+static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddConcurrencyLimiter<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, int permitLimit, int queueLimit = 0) -> Polly.CompositeStrategyBuilder<TResult>!
+static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddConcurrencyLimiter<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, System.Threading.RateLimiting.ConcurrencyLimiterOptions! options) -> Polly.CompositeStrategyBuilder<TResult>!
+static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddRateLimiter(this Polly.CompositeStrategyBuilder! builder, Polly.RateLimiting.RateLimiterStrategyOptions! options) -> Polly.CompositeStrategyBuilder!
+static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddRateLimiter(this Polly.CompositeStrategyBuilder! builder, System.Threading.RateLimiting.RateLimiter! limiter) -> Polly.CompositeStrategyBuilder!
+static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddRateLimiter<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.RateLimiting.RateLimiterStrategyOptions! options) -> Polly.CompositeStrategyBuilder<TResult>!
+static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddRateLimiter<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, System.Threading.RateLimiting.RateLimiter! limiter) -> Polly.CompositeStrategyBuilder<TResult>!
 static Polly.RateLimiting.ResilienceRateLimiter.Create(System.Threading.RateLimiting.PartitionedRateLimiter<Polly.ResilienceContext!>! rateLimiter) -> Polly.RateLimiting.ResilienceRateLimiter!
 static Polly.RateLimiting.ResilienceRateLimiter.Create(System.Threading.RateLimiting.RateLimiter! rateLimiter) -> Polly.RateLimiting.ResilienceRateLimiter!

@@ -15,6 +15,7 @@ public sealed class NullResilienceStrategy<TResult> : ResilienceStrategy<TResult
     {
     }
 
+    /// <inheritdoc/>
     protected override ValueTask<Outcome<TResult>> ExecuteCore<TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
