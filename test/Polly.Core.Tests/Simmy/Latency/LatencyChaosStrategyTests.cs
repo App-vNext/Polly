@@ -25,7 +25,7 @@ public class LatencyChaosStrategyTests : IDisposable
     public void Dispose() => _cancellationSource.Dispose();
 
     [Fact]
-    public void InjectLatency_Context_Free_Should_Introduce_Delay_If_Enabled()
+    public async Task InjectLatency_Context_Free_Should_Introduce_Delay_If_Enabled()
     {
         var executed = false;
 
@@ -34,18 +34,17 @@ public class LatencyChaosStrategyTests : IDisposable
         _options.Latency = _delay;
         _options.Randomizer = () => 0.5;
 
-        //var sut = CreateSut();
+        var sut = CreateSut();
 
         //var before = _timeProvider.GetUtcNow();
+        //_timeProvider.Advance(_delay);
 
-        //sut.Execute(_ => executed = true);
+        await sut.ExecuteAsync(async _ => { executed = true; await Task.CompletedTask; });
 
-        //executed.Should().BeTrue();
+        executed.Should().BeTrue();
 
         //var after = _timeProvider.GetUtcNow();
         //(after - before).Should().BeGreaterThanOrEqualTo(_delay);
-
-        executed.Should().BeFalse();
     }
 
     private LatencyChaosStrategy CreateSut() => new(_options, _timeProvider, _telemetry);

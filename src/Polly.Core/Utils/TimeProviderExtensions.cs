@@ -30,6 +30,9 @@ internal static class TimeProviderExtensions
             // the use of Thread.Sleep() here because it is not cancellable and to
             // simplify the code. Sync-over-async is not a concern here because it
             // only applies in the case of a resilience event and not on the hot path.
+
+            // re the Sync-over-async I guess that would be a concern when using the LatencyChaosStrategy
+            // since that's running on the hot path, thoughts? 
             timeProvider.Delay(delay, context.CancellationToken).GetAwaiter().GetResult();
 #pragma warning restore CA1849
 
