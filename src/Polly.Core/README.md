@@ -126,6 +126,14 @@ This way, the responsibility of how to execute method is lifted from the user an
 
 The life of extensibility author is also simplified as they only maintain one implementation of strategy instead of multiple ones. See the duplications in [`Polly.Retry`](https://github.com/App-vNext/Polly/tree/main/src/Polly/Retry).
 
+### About Synchronous and Asynchronous Executions
+
+Polly's core, from version 8, fundamentally focuses on asynchronous executions. However, it also supports synchronous executions, which require minimal effort for authors developing custom resilience strategies. This support is enabled by passing and wrapping the synchronous callback provided by the user into an asynchronous one, which returns a completed `ValueTask` upon completion. This feature allows custom resilience strategies to treat all executions as asynchronous. In cases of synchronous execution, the method simply returns a completed task upon awaiting.
+
+There are scenarios where the resilience strategy necessitates genuine asynchronous work. In such cases, authors might decide to optimize for synchronous executions. For instance, they may use `Thread.Sleep` instead of `Task.Delay`. To facilitate this, Polly exposes the `ResilienceContext.IsSynchronous` property, which authors can leverage. It's worth noting, though, that optimizing for synchronous executions might add significant complexity for the author. As a result, some authors may opt to execute the code asynchronously.
+
+A common scenario that illustrates this is the circuit breaker, which allows for hundreds of concurrent executions. In failure scenarios, only one will trigger the opening of the circuit. If this single execution was synchronous, it would involve some synchronous-over-asynchronous code. This situation occurs because, in the circuit breaker, we wanted to avoid duplicating code for synchronous executions. However, this does not impact the scalability of the Circuit Breaker, since such events are rare and do not execute on the hot path.
+
 ### Generic Resilience Strategy
 
 Polly also exposes the sealed `ResilienceStrategy<T>` strategy that is just a simple wrapper over `ResilienceStrategy`. This strategy is used for scenarios when the consumer handles the single result type.

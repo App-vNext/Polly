@@ -1,6 +1,6 @@
 namespace Polly.CircuitBreaker;
 
-internal sealed class CircuitBreakerResilienceStrategy<T> : OutcomeResilienceStrategy<T>
+internal sealed class CircuitBreakerResilienceStrategy<T> : ReactiveResilienceStrategy<T>
 {
     private readonly Func<OutcomeArguments<T, CircuitBreakerPredicateArguments>, ValueTask<bool>> _handler;
     private readonly CircuitStateController<T> _controller;
