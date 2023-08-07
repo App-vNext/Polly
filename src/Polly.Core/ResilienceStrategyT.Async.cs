@@ -79,6 +79,7 @@ public partial class ResilienceStrategy<T>
     public ValueTask<TResult> ExecuteAsync<TResult>(
         Func<CancellationToken, ValueTask<TResult>> callback,
         CancellationToken cancellationToken = default)
+        where TResult : T
     {
         Guard.NotNull(callback);
 
