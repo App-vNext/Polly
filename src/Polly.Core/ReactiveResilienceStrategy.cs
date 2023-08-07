@@ -1,4 +1,4 @@
-﻿namespace Polly.Utils;
+﻿namespace Polly;
 
 /// <summary>
 /// This base strategy class is used to simplify the implementation of generic (reactive)
@@ -8,7 +8,7 @@
 /// <remarks>
 /// For strategies that handle all result types the generic parameter must be of type <see cref="object"/>.
 /// </remarks>
-internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
+internal abstract class ReactiveResilienceStrategy<T> : ResilienceStrategy
 {
     protected internal sealed override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

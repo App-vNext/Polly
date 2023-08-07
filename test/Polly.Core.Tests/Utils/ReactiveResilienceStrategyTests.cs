@@ -1,8 +1,6 @@
-﻿using Polly.Utils;
+﻿namespace Polly.Core.Tests.Utils;
 
-namespace Polly.Core.Tests.Utils;
-
-public class OutcomeResilienceStrategyTests
+public class ReactiveResilienceStrategyTests
 {
     [Fact]
     public void Ctor_Ok()
@@ -62,7 +60,7 @@ public class OutcomeResilienceStrategyTests
         called.Should().BeTrue();
     }
 
-    private class Strategy<T> : OutcomeResilienceStrategy<T>
+    private class Strategy<T> : ReactiveResilienceStrategy<T>
     {
         private readonly Action<Outcome<T>> _onOutcome;
 
