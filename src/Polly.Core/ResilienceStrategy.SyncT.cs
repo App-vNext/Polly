@@ -1,9 +1,11 @@
+using System.Threading;
+
 namespace Polly;
 
-#pragma warning disable CA1031 // Do not catch general exception types
 #pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
+#pragma warning disable CS8631 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match constraint type.
 
-public abstract partial class ResilienceStrategy
+public partial class ResilienceStrategy
 {
     /// <summary>
     /// Executes the specified callback.
@@ -23,23 +25,7 @@ public abstract partial class ResilienceStrategy
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        InitializeSyncContext<TResult>(context);
-
-        return ExecuteCoreSync(
-           static (context, state) =>
-           {
-               try
-               {
-                   var result = state.callback(context, state.state);
-                   return Outcome.FromResult(result);
-               }
-               catch (Exception e)
-               {
-                   return Outcome.FromException<TResult>(e);
-               }
-           },
-           context,
-           (callback, state)).GetResultOrRethrow();
+        return Strategy.Execute(callback, context, state);
     }
 
     /// <summary>
@@ -57,23 +43,7 @@ public abstract partial class ResilienceStrategy
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        InitializeSyncContext<TResult>(context);
-
-        return ExecuteCoreSync(
-            static (context, state) =>
-            {
-                try
-                {
-                    var result = state(context);
-                    return Outcome.FromResult(result);
-                }
-                catch (Exception e)
-                {
-                    return Outcome.FromException<TResult>(e);
-                }
-            },
-            context,
-            callback).GetResultOrRethrow();
+        return Strategy.Execute(callback, context);
     }
 
     /// <summary>
@@ -90,29 +60,7 @@ public abstract partial class ResilienceStrategy
     {
         Guard.NotNull(callback);
 
-        var context = GetSyncContext<TResult>(cancellationToken);
-
-        try
-        {
-            return ExecuteCoreSync(
-                static (context, state) =>
-                {
-                    try
-                    {
-                        return Outcome.FromResult(state(context.CancellationToken));
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException<TResult>(e);
-                    }
-                },
-                context,
-                callback).GetResultOrRethrow();
-        }
-        finally
-        {
-            Pool.Return(context);
-        }
+        return Strategy.Execute(callback, cancellationToken);
     }
 
     /// <summary>
@@ -126,29 +74,8 @@ public abstract partial class ResilienceStrategy
     {
         Guard.NotNull(callback);
 
-        var context = GetSyncContext<TResult>(CancellationToken.None);
+        return Strategy.Execute(callback);
 
-        try
-        {
-            return ExecuteCoreSync(
-                static (_, state) =>
-                {
-                    try
-                    {
-                        return Outcome.FromResult(state());
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException<TResult>(e);
-                    }
-                },
-                context,
-                callback).GetResultOrRethrow();
-        }
-        finally
-        {
-            Pool.Return(context);
-        }
     }
 
     /// <summary>
@@ -164,29 +91,8 @@ public abstract partial class ResilienceStrategy
     {
         Guard.NotNull(callback);
 
-        var context = GetSyncContext<TResult>(CancellationToken.None);
+        return Strategy.Execute(callback, state);
 
-        try
-        {
-            return ExecuteCoreSync(
-                static (_, state) =>
-                {
-                    try
-                    {
-                        return Outcome.FromResult(state.callback(state.state));
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException<TResult>(e);
-                    }
-                },
-                context,
-                (callback, state)).GetResultOrRethrow();
-        }
-        finally
-        {
-            Pool.Return(context);
-        }
     }
 
     /// <summary>
@@ -206,39 +112,7 @@ public abstract partial class ResilienceStrategy
     {
         Guard.NotNull(callback);
 
-        var context = GetSyncContext<TResult>(cancellationToken);
+        return Strategy.Execute(callback, state, cancellationToken);
 
-        try
-        {
-            return ExecuteCoreSync(
-                static (context, state) =>
-                {
-                    try
-                    {
-                        return Outcome.FromResult(state.callback(state.state, context.CancellationToken));
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException<TResult>(e);
-                    }
-                },
-                context,
-                (callback, state)).GetResultOrRethrow();
-        }
-        finally
-        {
-            Pool.Return(context);
-        }
     }
-
-    private static ResilienceContext GetSyncContext<TResult>(CancellationToken cancellationToken)
-    {
-        var context = Pool.Get(cancellationToken);
-
-        InitializeSyncContext<TResult>(context);
-
-        return context;
-    }
-
-    private static void InitializeSyncContext<TResult>(ResilienceContext context) => context.Initialize<TResult>(isSynchronous: true);
 }

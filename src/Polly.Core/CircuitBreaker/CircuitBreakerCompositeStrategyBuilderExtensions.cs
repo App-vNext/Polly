@@ -29,7 +29,8 @@ public static class CircuitBreakerCompositeStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        return builder.AddCircuitBreakerCore(options);
+        builder.AddCircuitBreakerCore(options);
+        return builder;
     }
 
     /// <summary>
@@ -52,17 +53,17 @@ public static class CircuitBreakerCompositeStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        return builder.AddCircuitBreakerCore(options);
+        builder.AddCircuitBreakerCore(options);
+        return builder;
     }
 
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    private static TBuilder AddCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, CircuitBreakerStrategyOptions<TResult> options)
-        where TBuilder : CompositeStrategyBuilderBase
+    private static void AddCircuitBreakerCore<TResult>(this CompositeStrategyBuilderBase<TResult> builder, CircuitBreakerStrategyOptions<TResult> options)
     {
-        return builder.AddStrategy(
+        builder.AddStrategyCore(
             context =>
             {
                 var behavior = new AdvancedCircuitBehavior(

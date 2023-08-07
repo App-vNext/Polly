@@ -8,12 +8,13 @@ namespace Polly;
 /// <summary>
 /// A builder that is used to create an instance of <see cref="ResilienceStrategy"/>.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 /// <remarks>
 /// The builder supports combining multiple strategies into a composite resilience strategy.
 /// The resulting instance of <see cref="ResilienceStrategy"/> executes the strategies in the same order they were added to the builder.
 /// The order of the strategies is important.
 /// </remarks>
-public abstract class CompositeStrategyBuilderBase
+public abstract class CompositeStrategyBuilderBase<TResult>
 {
     private readonly List<Entry> _entries = new();
     private bool _used;
@@ -22,12 +23,11 @@ public abstract class CompositeStrategyBuilderBase
     {
     }
 
-    private protected CompositeStrategyBuilderBase(CompositeStrategyBuilderBase other)
+    private protected CompositeStrategyBuilderBase(CompositeStrategyBuilderBase<object> other)
     {
         Name = other.Name;
         Properties = other.Properties;
         TimeProvider = other.TimeProvider;
-        OnCreatingStrategy = other.OnCreatingStrategy;
         Randomizer = other.Randomizer;
         DiagnosticSource = other.DiagnosticSource;
     }
@@ -85,7 +85,7 @@ public abstract class CompositeStrategyBuilderBase
     /// The default value is <see langword="null"/>.
     /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public Action<IList<ResilienceStrategy>>? OnCreatingStrategy { get; set; }
+    public Action<IList<ResilienceStrategy<TResult>>>? OnCreatingStrategy { get; set; }
 
     /// <summary>
     /// Gets or sets the <see cref="DiagnosticSource"/> that is used by Polly to report resilience events.
@@ -121,7 +121,7 @@ public abstract class CompositeStrategyBuilderBase
     public Action<ResilienceValidationContext> Validator { get; private protected set; } = ValidationHelper.ValidateObject;
 
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
-    internal void AddStrategyCore(Func<StrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
+    internal void AddStrategyCore(Func<StrategyBuilderContext, ResilienceStrategy<TResult>> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);
         Guard.NotNull(options);
@@ -136,7 +136,7 @@ public abstract class CompositeStrategyBuilderBase
         _entries.Add(new Entry(factory, options));
     }
 
-    internal ResilienceStrategy BuildStrategy()
+    internal ResilienceStrategy<TResult> BuildStrategy()
     {
         Validator(new(this, $"The '{nameof(CompositeStrategyBuilder)}' configuration is invalid."));
 
@@ -147,7 +147,7 @@ public abstract class CompositeStrategyBuilderBase
 
         if (strategies.Count == 0)
         {
-            return NullResilienceStrategy.Instance;
+            return NullResilienceStrategy<TResult>.Instance;
         }
 
         if (strategies.Count == 1)
@@ -155,10 +155,10 @@ public abstract class CompositeStrategyBuilderBase
             return strategies[0];
         }
 
-        return CompositeResilienceStrategy.Create(strategies);
+        return CompositeResilienceStrategy<TResult>.Create(strategies);
     }
 
-    private ResilienceStrategy CreateResilienceStrategy(Entry entry)
+    private ResilienceStrategy<TResult> CreateResilienceStrategy(Entry entry)
     {
         var context = new StrategyBuilderContext(
             builderName: Name,
@@ -174,5 +174,5 @@ public abstract class CompositeStrategyBuilderBase
         return strategy;
     }
 
-    private sealed record Entry(Func<StrategyBuilderContext, ResilienceStrategy> Factory, ResilienceStrategyOptions Options);
+    private sealed record Entry(Func<StrategyBuilderContext, ResilienceStrategy<TResult>> Factory, ResilienceStrategyOptions Options);
 }

@@ -14,7 +14,7 @@ namespace Polly;
 /// </remarks>
 public sealed class ResilienceContext
 {
-    private const bool ContinueOnCapturedContextDefault = false;
+    internal const bool ContinueOnCapturedContextDefault = false;
 
     private readonly List<ResilienceEvent> _resilienceEvents = new();
 

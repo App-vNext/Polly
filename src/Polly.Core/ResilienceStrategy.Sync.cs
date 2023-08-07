@@ -1,9 +1,11 @@
+using System.Threading;
+
 namespace Polly;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 #pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
 
-public abstract partial class ResilienceStrategy
+public partial class ResilienceStrategy
 {
     /// <summary>
     /// Executes the specified callback.
@@ -21,23 +23,14 @@ public abstract partial class ResilienceStrategy
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        InitializeSyncContext(context);
-
-        ExecuteCoreSync(
+        Strategy.Execute(
             static (context, state) =>
             {
-                try
-                {
-                    state.callback(context, state.state);
-                    return Outcome.Void;
-                }
-                catch (Exception e)
-                {
-                    return Outcome.FromException(e);
-                }
+                state.callback(context, state.state);
+                return VoidResult.Instance;
             },
             context,
-            (callback, state)).GetResultOrRethrow();
+            (callback, state));
     }
 
     /// <summary>
@@ -53,23 +46,14 @@ public abstract partial class ResilienceStrategy
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        InitializeSyncContext(context);
-
-        ExecuteCoreSync(
+        Strategy.Execute(
             static (context, state) =>
             {
-                try
-                {
-                    state(context);
-                    return Outcome.Void;
-                }
-                catch (Exception e)
-                {
-                    return Outcome.FromException(e);
-                }
+                state(context);
+                return VoidResult.Instance;
             },
             context,
-            callback).GetResultOrRethrow();
+            callback);
     }
 
     /// <summary>
@@ -87,30 +71,14 @@ public abstract partial class ResilienceStrategy
     {
         Guard.NotNull(callback);
 
-        var context = GetSyncContext(cancellationToken);
-
-        try
-        {
-            ExecuteCoreSync(
-                static (context, state) =>
-                {
-                    try
-                    {
-                        state.callback(state.state, context.CancellationToken);
-                        return Outcome.Void;
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException(e);
-                    }
-                },
-                context,
-                (callback, state)).GetResultOrRethrow();
-        }
-        finally
-        {
-            Pool.Return(context);
-        }
+        Strategy.Execute(
+            static (state, token) =>
+            {
+                state.callback(state.state, token);
+                return VoidResult.Instance;
+            },
+            (callback, state),
+            cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -125,30 +93,14 @@ public abstract partial class ResilienceStrategy
     {
         Guard.NotNull(callback);
 
-        var context = GetSyncContext(cancellationToken);
-
-        try
-        {
-            ExecuteCoreSync(
-                static (context, state) =>
-                {
-                    try
-                    {
-                        state(context.CancellationToken);
-                        return Outcome.Void;
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException(e);
-                    }
-                },
-                context,
-                callback).GetResultOrRethrow();
-        }
-        finally
-        {
-            Pool.Return(context);
-        }
+        Strategy.Execute(
+            static (state, token) =>
+            {
+                state(token);
+                return VoidResult.Instance;
+            },
+            callback,
+            cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -164,30 +116,13 @@ public abstract partial class ResilienceStrategy
     {
         Guard.NotNull(callback);
 
-        var context = GetSyncContext(CancellationToken.None);
-
-        try
-        {
-            ExecuteCoreSync(
-                static (_, state) =>
-                {
-                    try
-                    {
-                        state.callback(state.state);
-                        return Outcome.Void;
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException(e);
-                    }
-                },
-                context,
-                (callback, state)).GetResultOrRethrow();
-        }
-        finally
-        {
-            Pool.Return(context);
-        }
+        Strategy.Execute(
+            static state =>
+            {
+                state.callback(state.state);
+                return VoidResult.Instance;
+            },
+            (callback, state));
     }
 
     /// <summary>
@@ -199,33 +134,12 @@ public abstract partial class ResilienceStrategy
     {
         Guard.NotNull(callback);
 
-        var context = GetSyncContext(CancellationToken.None);
-
-        try
-        {
-            ExecuteCoreSync(
-                static (_, state) =>
-                {
-                    try
-                    {
-                        state();
-                        return Outcome.Void;
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException(e);
-                    }
-                },
-                context,
-                callback).GetResultOrRethrow();
-        }
-        finally
-        {
-            Pool.Return(context);
-        }
+        Strategy.Execute(
+            static state =>
+            {
+                state();
+                return VoidResult.Instance;
+            },
+            callback);
     }
-
-    private static ResilienceContext GetSyncContext(CancellationToken cancellationToken) => GetSyncContext<VoidResult>(cancellationToken);
-
-    private static void InitializeSyncContext(ResilienceContext context) => InitializeSyncContext<VoidResult>(context);
 }

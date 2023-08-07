@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Polly.Extensions.Telemetry;
 
-internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
+internal sealed class TelemetryResilienceStrategy<T> : ResilienceStrategy<T>
 {
     private readonly TimeProvider _timeProvider;
     private readonly string? _builderName;

@@ -3,6 +3,7 @@ using Polly.Utils;
 namespace Polly;
 
 #pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
+#pragma warning disable CA1031 // Do not catch general exception types
 
 public partial class ResilienceStrategy<T>
 {
@@ -16,7 +17,7 @@ public partial class ResilienceStrategy<T>
     /// <param name="state">The state associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public ValueTask<TResult> ExecuteAsync<TResult, TState>(
+    public async ValueTask<TResult> ExecuteAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<TResult>> callback,
         ResilienceContext context,
         TState state)
@@ -25,7 +26,24 @@ public partial class ResilienceStrategy<T>
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        return Strategy.ExecuteAsync(callback, context, state);
+        InitializeAsyncContext<TResult>(context);
+
+        var outcome = await ExecuteCore(
+            static async (context, state) =>
+            {
+                try
+                {
+                    return Outcome.FromResult(await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext));
+                }
+                catch (Exception e)
+                {
+                    return Outcome.FromException<TResult>(e);
+                }
+            },
+            context,
+            (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        return outcome.GetResultOrRethrow();
     }
 
     /// <summary>
@@ -36,7 +54,7 @@ public partial class ResilienceStrategy<T>
     /// <param name="context">The context associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public ValueTask<TResult> ExecuteAsync<TResult>(
+    public async ValueTask<TResult> ExecuteAsync<TResult>(
         Func<ResilienceContext, ValueTask<TResult>> callback,
         ResilienceContext context)
         where TResult : T
@@ -44,7 +62,24 @@ public partial class ResilienceStrategy<T>
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        return Strategy.ExecuteAsync(callback, context);
+        InitializeAsyncContext<TResult>(context);
+
+        var outcome = await ExecuteCore(
+            static async (context, state) =>
+            {
+                try
+                {
+                    return Outcome.FromResult(await state(context).ConfigureAwait(context.ContinueOnCapturedContext));
+                }
+                catch (Exception e)
+                {
+                    return Outcome.FromException<TResult>(e);
+                }
+            },
+            context,
+            callback).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        return outcome.GetResultOrRethrow();
     }
 
     /// <summary>
@@ -57,7 +92,7 @@ public partial class ResilienceStrategy<T>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
-    public ValueTask<TResult> ExecuteAsync<TResult, TState>(
+    public async ValueTask<TResult> ExecuteAsync<TResult, TState>(
         Func<TState, CancellationToken, ValueTask<TResult>> callback,
         TState state,
         CancellationToken cancellationToken = default)
@@ -65,7 +100,31 @@ public partial class ResilienceStrategy<T>
     {
         Guard.NotNull(callback);
 
-        return Strategy.ExecuteAsync(callback, state, cancellationToken);
+        var context = GetAsyncContext<TResult>(cancellationToken);
+
+        try
+        {
+            var outcome = await ExecuteCore(
+                static async (context, state) =>
+                {
+                    try
+                    {
+                        return Outcome.FromResult(await state.callback(state.state, context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
+                    }
+                    catch (Exception e)
+                    {
+                        return Outcome.FromException<TResult>(e);
+                    }
+                },
+                context,
+                (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            return outcome.GetResultOrRethrow();
+        }
+        finally
+        {
+            Pool.Return(context);
+        }
     }
 
     /// <summary>
@@ -76,13 +135,38 @@ public partial class ResilienceStrategy<T>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
-    public ValueTask<TResult> ExecuteAsync<TResult>(
+    public async ValueTask<TResult> ExecuteAsync<TResult>(
         Func<CancellationToken, ValueTask<TResult>> callback,
         CancellationToken cancellationToken = default)
+        where TResult : T
     {
         Guard.NotNull(callback);
 
-        return Strategy.ExecuteAsync(callback, cancellationToken);
+        var context = GetAsyncContext<TResult>(cancellationToken);
+
+        try
+        {
+            var outcome = await ExecuteCore(
+                static async (context, state) =>
+                {
+                    try
+                    {
+                        return Outcome.FromResult(await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
+                    }
+                    catch (Exception e)
+                    {
+                        return Outcome.FromException<TResult>(e);
+                    }
+                },
+                context,
+                callback).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            return outcome.GetResultOrRethrow();
+        }
+        finally
+        {
+            Pool.Return(context);
+        }
     }
 
     /// <summary>
@@ -108,6 +192,21 @@ public partial class ResilienceStrategy<T>
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        return Strategy.ExecuteOutcomeAsync(callback, context, state);
+        InitializeAsyncContext<TResult>(context);
+
+        return ExecuteCore(callback, context, state);
     }
+
+    private static ResilienceContext GetAsyncContext<TResult>(CancellationToken cancellationToken)
+        where TResult : T
+    {
+        var context = Pool.Get(cancellationToken);
+
+        InitializeAsyncContext<TResult>(context);
+
+        return context;
+    }
+
+    private static void InitializeAsyncContext<TResult>(ResilienceContext context)
+        where TResult : T => context.Initialize<TResult>(isSynchronous: false);
 }

@@ -12,7 +12,20 @@ public sealed class NullResilienceStrategy<TResult> : ResilienceStrategy<TResult
     public static readonly NullResilienceStrategy<TResult> Instance = new();
 
     private NullResilienceStrategy()
-        : base(NullResilienceStrategy.Instance)
     {
+    }
+
+    /// <inheritdoc/>
+    protected internal override ValueTask<Outcome<TResult1>> ExecuteCore<TResult1, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult1>>> callback,
+        ResilienceContext context,
+        TState state)
+    {
+        Guard.NotNull(callback);
+        Guard.NotNull(context);
+
+        context.AssertInitialized();
+
+        return callback(context, state);
     }
 }

@@ -11,7 +11,7 @@ namespace Polly;
 /// The resulting instance of <see cref="ResilienceStrategy{TResult}"/> created by the <see cref="Build"/> call will execute the strategies in the same order they were added to the builder.
 /// The order of the strategies is important.
 /// </remarks>
-public sealed class CompositeStrategyBuilder<TResult> : CompositeStrategyBuilderBase
+public sealed class CompositeStrategyBuilder<TResult> : CompositeStrategyBuilderBase<TResult>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CompositeStrategyBuilder{TResult}"/> class.
@@ -20,7 +20,7 @@ public sealed class CompositeStrategyBuilder<TResult> : CompositeStrategyBuilder
     {
     }
 
-    internal CompositeStrategyBuilder(CompositeStrategyBuilderBase other)
+    internal CompositeStrategyBuilder(CompositeStrategyBuilderBase<object> other)
         : base(other)
     {
     }
@@ -30,5 +30,5 @@ public sealed class CompositeStrategyBuilder<TResult> : CompositeStrategyBuilder
     /// </summary>
     /// <returns>An instance of <see cref="ResilienceStrategy{TResult}"/>.</returns>
     /// <exception cref="ValidationException">Thrown when this builder has invalid configuration.</exception>
-    public ResilienceStrategy<TResult> Build() => new(BuildStrategy());
+    public ResilienceStrategy<TResult> Build() => BuildStrategy();
 }

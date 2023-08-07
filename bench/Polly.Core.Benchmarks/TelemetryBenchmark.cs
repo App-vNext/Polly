@@ -40,7 +40,7 @@ public class TelemetryBenchmark
 
     private ResilienceStrategy Build(CompositeStrategyBuilder builder)
     {
-        builder.AddStrategy(context => new TelemetryEventStrategy(context.Telemetry), new EmptyResilienceOptions());
+        builder.AddStrategy(context => new TelemetryEventStrategy<object>(context.Telemetry), new EmptyResilienceOptions());
 
         if (Telemetry)
         {
@@ -67,7 +67,7 @@ public class TelemetryBenchmark
         return builder.Build();
     }
 
-    private class TelemetryEventStrategy : ResilienceStrategy
+    private class TelemetryEventStrategy<T> : ResilienceStrategy<T>
     {
         private readonly ResilienceStrategyTelemetry _telemetry;
 

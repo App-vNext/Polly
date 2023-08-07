@@ -49,10 +49,10 @@ public static class FallbackCompositeStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
     internal static void AddFallbackCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TOptions>(
-        this CompositeStrategyBuilderBase builder,
+        this CompositeStrategyBuilderBase<TResult> builder,
         FallbackStrategyOptions<TResult> options)
     {
-        builder.AddStrategy(context =>
+        builder.AddStrategyCore(context =>
         {
             var handler = new FallbackHandler<TResult>(
                 options.ShouldHandle!,

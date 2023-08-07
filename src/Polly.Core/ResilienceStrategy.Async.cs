@@ -1,9 +1,8 @@
 namespace Polly;
 
-#pragma warning disable CA1031 // Do not catch general exception types
 #pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
 
-public abstract partial class ResilienceStrategy
+public partial class ResilienceStrategy
 {
     /// <summary>
     /// Executes the specified callback.
@@ -22,25 +21,14 @@ public abstract partial class ResilienceStrategy
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        InitializeAsyncContext(context);
-
-        var outcome = await ExecuteCore(
+        await Strategy.ExecuteAsync(
             static async (context, state) =>
             {
-                try
-                {
-                    await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
-                    return Outcome.Void;
-                }
-                catch (Exception e)
-                {
-                    return Outcome.FromException(e);
-                }
+                await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
+                return VoidResult.Instance;
             },
             context,
             (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
-
-        outcome.GetResultOrRethrow();
     }
 
     /// <summary>
@@ -57,25 +45,14 @@ public abstract partial class ResilienceStrategy
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        InitializeAsyncContext(context);
-
-        var outcome = await ExecuteCore(
+        await Strategy.ExecuteAsync(
             static async (context, state) =>
             {
-                try
-                {
-                    await state(context).ConfigureAwait(context.ContinueOnCapturedContext);
-                    return Outcome.Void;
-                }
-                catch (Exception e)
-                {
-                    return Outcome.FromException(e);
-                }
+                await state(context).ConfigureAwait(context.ContinueOnCapturedContext);
+                return VoidResult.Instance;
             },
             context,
             callback).ConfigureAwait(context.ContinueOnCapturedContext);
-
-        outcome.GetResultOrRethrow();
     }
 
     /// <summary>
@@ -94,32 +71,14 @@ public abstract partial class ResilienceStrategy
     {
         Guard.NotNull(callback);
 
-        var context = GetAsyncContext(cancellationToken);
-
-        try
-        {
-            var outcome = await ExecuteCore(
-                static async (context, state) =>
-                {
-                    try
-                    {
-                        await state.callback(state.state, context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
-                        return Outcome.Void;
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException(e);
-                    }
-                },
-                context,
-                (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
-
-            outcome.GetResultOrRethrow();
-        }
-        finally
-        {
-            Pool.Return(context);
-        }
+        await Strategy.ExecuteAsync(
+            static async (state, token) =>
+            {
+                await state.callback(state.state, token).ConfigureAwait(ResilienceContext.ContinueOnCapturedContextDefault);
+                return VoidResult.Instance;
+            },
+            (callback, state),
+            cancellationToken).ConfigureAwait(ResilienceContext.ContinueOnCapturedContextDefault);
     }
 
     /// <summary>
@@ -135,36 +94,13 @@ public abstract partial class ResilienceStrategy
     {
         Guard.NotNull(callback);
 
-        var context = GetAsyncContext(cancellationToken);
-
-        try
-        {
-            var outcome = await ExecuteCore(
-                static async (context, state) =>
-                {
-                    try
-                    {
-                        await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
-                        return Outcome.Void;
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException(e);
-                    }
-
-                },
-                context,
-                callback).ConfigureAwait(context.ContinueOnCapturedContext);
-
-            outcome.GetResultOrRethrow();
-        }
-        finally
-        {
-            Pool.Return(context);
-        }
+        await Strategy.ExecuteAsync(
+            static async (state, token) =>
+            {
+                await state(token).ConfigureAwait(ResilienceContext.ContinueOnCapturedContextDefault);
+                return VoidResult.Instance;
+            },
+            callback,
+            cancellationToken).ConfigureAwait(ResilienceContext.ContinueOnCapturedContextDefault);
     }
-
-    private static ResilienceContext GetAsyncContext(CancellationToken cancellationToken) => GetAsyncContext<VoidResult>(cancellationToken);
-
-    private static void InitializeAsyncContext(ResilienceContext context) => InitializeAsyncContext<VoidResult>(context);
 }

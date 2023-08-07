@@ -22,7 +22,7 @@ internal static partial class Helper
                     PermitLimit = 10
                 })
                 .AddTimeout(TimeSpan.FromSeconds(10))
-                .AddRetry(new()
+                .AddRetry(new RetryStrategyOptions<string>
                 {
                     BackoffType = RetryBackoffType.Constant,
                     RetryCount = 3,

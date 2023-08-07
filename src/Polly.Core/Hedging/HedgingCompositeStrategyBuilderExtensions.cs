@@ -50,10 +50,10 @@ public static class HedgingCompositeStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
     internal static void AddHedgingCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
-        this CompositeStrategyBuilderBase builder,
+        this CompositeStrategyBuilderBase<TResult> builder,
         HedgingStrategyOptions<TResult> options)
     {
-        builder.AddStrategy(context =>
+        builder.AddStrategyCore(context =>
         {
             var handler = new HedgingHandler<TResult>(
                 options.ShouldHandle!,

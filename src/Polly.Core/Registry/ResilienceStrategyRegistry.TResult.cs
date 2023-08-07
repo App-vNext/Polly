@@ -56,11 +56,20 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
 #if NETCOREAPP3_0_OR_GREATER
             return _strategies.GetOrAdd(key, static (_, factory) =>
             {
-                return new ResilienceStrategy<TResult>(CreateStrategy(factory.instance._activator, factory.context, factory.configure));
+                return CreateStrategy(
+                    factory.instance._activator,
+                    factory.context,
+                    (builder, context) => factory.configure((CompositeStrategyBuilder<TResult>)builder, context));
             },
             (instance: this, context, configure));
 #else
-            return _strategies.GetOrAdd(key, _ => new ResilienceStrategy<TResult>(CreateStrategy(_activator, context, configure)));
+            return _strategies.GetOrAdd(key, _ =>
+            {
+                return CreateStrategy(
+                    _activator,
+                    context,
+                    (builder, context) => configure((CompositeStrategyBuilder<TResult>)builder, context));
+            });
 #endif
         }
 

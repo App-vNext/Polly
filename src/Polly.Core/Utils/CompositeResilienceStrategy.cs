@@ -8,12 +8,11 @@ namespace Polly.Utils;
 /// A combination of multiple resilience strategies.
 /// </summary>
 [DebuggerDisplay("CompositeResilienceStrategy, Strategies = {Strategies.Count}")]
-[DebuggerTypeProxy(typeof(DebuggerProxy))]
-internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
+internal sealed partial class CompositeResilienceStrategy<T> : ResilienceStrategy<T>
 {
-    private readonly ResilienceStrategy _firstStrategy;
+    private readonly ResilienceStrategy<T> _firstStrategy;
 
-    public static CompositeResilienceStrategy Create(IReadOnlyList<ResilienceStrategy> strategies)
+    public static CompositeResilienceStrategy<T> Create(IReadOnlyList<ResilienceStrategy<T>> strategies)
     {
         Guard.NotNull(strategies);
 
@@ -46,16 +45,16 @@ internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
             delegatingStrategies[i].Next = delegatingStrategies[i + 1];
         }
 
-        return new CompositeResilienceStrategy(delegatingStrategies[0], strategies);
+        return new CompositeResilienceStrategy<T>(delegatingStrategies[0], strategies);
     }
 
-    private CompositeResilienceStrategy(ResilienceStrategy first, IReadOnlyList<ResilienceStrategy> strategies)
+    private CompositeResilienceStrategy(ResilienceStrategy<T> first, IReadOnlyList<ResilienceStrategy<T>> strategies)
     {
         Strategies = strategies;
         _firstStrategy = first;
     }
 
-    public IReadOnlyList<ResilienceStrategy> Strategies { get; }
+    public IReadOnlyList<ResilienceStrategy<T>> Strategies { get; }
 
     protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
@@ -72,13 +71,13 @@ internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
     /// <summary>
     /// A resilience strategy that delegates the execution to the next strategy in the chain.
     /// </summary>
-    private sealed class DelegatingResilienceStrategy : ResilienceStrategy
+    private sealed class DelegatingResilienceStrategy : ResilienceStrategy<T>
     {
-        private readonly ResilienceStrategy _strategy;
+        private readonly ResilienceStrategy<T> _strategy;
 
-        public DelegatingResilienceStrategy(ResilienceStrategy strategy) => _strategy = strategy;
+        public DelegatingResilienceStrategy(ResilienceStrategy<T> strategy) => _strategy = strategy;
 
-        public ResilienceStrategy? Next { get; set; }
+        public ResilienceStrategy<T>? Next { get; set; }
 
         protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

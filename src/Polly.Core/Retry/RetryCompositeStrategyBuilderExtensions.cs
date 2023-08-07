@@ -49,10 +49,10 @@ public static class RetryCompositeStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
     private static void AddRetryCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
-        this CompositeStrategyBuilderBase builder,
+        this CompositeStrategyBuilderBase<TResult> builder,
         RetryStrategyOptions<TResult> options)
     {
-        builder.AddStrategy(context =>
+        builder.AddStrategyCore(context =>
             new RetryResilienceStrategy<TResult>(
                 options,
                 context.TimeProvider,

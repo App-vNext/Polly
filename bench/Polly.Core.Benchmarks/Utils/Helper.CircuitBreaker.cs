@@ -17,7 +17,7 @@ internal static partial class Helper
 
             if (handleOutcome)
             {
-                builder.AddStrategy(new OutcomeHandlingStrategy());
+                builder.AddStrategy(new OutcomeHandlingStrategy<object>());
             }
 
             var strategy = builder.AddCircuitBreaker(options).Build();
@@ -64,7 +64,7 @@ internal static partial class Helper
         };
     }
 
-    private class OutcomeHandlingStrategy : ResilienceStrategy
+    private class OutcomeHandlingStrategy<T> : ResilienceStrategy<T>
     {
         protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

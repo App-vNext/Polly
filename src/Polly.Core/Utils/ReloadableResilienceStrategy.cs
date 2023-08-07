@@ -2,21 +2,21 @@ using Polly.Telemetry;
 
 namespace Polly.Utils;
 
-internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
+internal sealed class ReloadableResilienceStrategy<T> : ResilienceStrategy<T>
 {
     public const string ReloadFailedEvent = "ReloadFailed";
 
     public const string OnReloadEvent = "OnReload";
 
     private readonly Func<CancellationToken> _onReload;
-    private readonly Func<ResilienceStrategy> _resilienceStrategyFactory;
+    private readonly Func<ResilienceStrategy<T>> _resilienceStrategyFactory;
     private readonly ResilienceStrategyTelemetry _telemetry;
     private CancellationTokenRegistration _registration;
 
     public ReloadableResilienceStrategy(
-        ResilienceStrategy initialStrategy,
+        ResilienceStrategy<T> initialStrategy,
         Func<CancellationToken> onReload,
-        Func<ResilienceStrategy> resilienceStrategyFactory,
+        Func<ResilienceStrategy<T>> resilienceStrategyFactory,
         ResilienceStrategyTelemetry telemetry)
     {
         Strategy = initialStrategy;
@@ -28,7 +28,7 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
         RegisterOnReload(default);
     }
 
-    public ResilienceStrategy Strategy { get; private set; }
+    public ResilienceStrategy<T> Strategy { get; private set; }
 
     protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

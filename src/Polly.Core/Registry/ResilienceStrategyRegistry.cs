@@ -161,11 +161,23 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
 #if NETCOREAPP3_0_OR_GREATER
         return _strategies.GetOrAdd(key, static (_, factory) =>
         {
-            return CreateStrategy(factory.instance._activator, factory.context, factory.configure);
+            var strategy = CreateStrategy(
+                factory.instance._activator,
+                factory.context, (builder, context) => factory.configure((CompositeStrategyBuilder)builder, context));
+
+            return new ResilienceStrategy(strategy);
         },
         (instance: this, context, configure));
 #else
-        return _strategies.GetOrAdd(key, _ => CreateStrategy(_activator, context, configure));
+        return _strategies.GetOrAdd(key, _ =>
+        {
+            var strategy = CreateStrategy(
+                _activator,
+                context,
+                (builder, context) => configure((CompositeStrategyBuilder)builder, context));
+
+            return new ResilienceStrategy(strategy);
+        });
 #endif
     }
 
@@ -264,13 +276,12 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// </remarks>
     public void ClearStrategies<TResult>() => GetGenericRegistry<TResult>().Clear();
 
-    private static ResilienceStrategy CreateStrategy<TBuilder>(
-        Func<TBuilder> activator,
+    private static ResilienceStrategy<TResult> CreateStrategy<TResult>(
+        Func<CompositeStrategyBuilderBase<TResult>> activator,
         ConfigureBuilderContext<TKey> context,
-        Action<TBuilder, ConfigureBuilderContext<TKey>> configure)
-        where TBuilder : CompositeStrategyBuilderBase
+        Action<CompositeStrategyBuilderBase<TResult>, ConfigureBuilderContext<TKey>> configure)
     {
-        Func<TBuilder> factory = () =>
+        Func<CompositeStrategyBuilderBase<TResult>> factory = () =>
         {
             var builder = activator();
             builder.Name = context.BuilderName;
@@ -289,7 +300,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
             return strategy;
         }
 
-        return new ReloadableResilienceStrategy(
+        return new ReloadableResilienceStrategy<TResult>(
             strategy,
             context.ReloadTokenProducer(),
             () => factory().BuildStrategy(),
