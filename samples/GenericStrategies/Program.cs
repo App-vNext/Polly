@@ -11,7 +11,7 @@ using System.Net;
 // The generic ResilienceStrategyBuilder<T> creates a ResilienceStrategy<T>
 // that can execute synchronous and asynchronous callbacks that return T.
 
-ResilienceStrategy<HttpResponseMessage> strategy = new ResilienceStrategyBuilder<HttpResponseMessage>()
+ResilienceStrategy<HttpResponseMessage> strategy = new CompositeStrategyBuilder<HttpResponseMessage>()
     .AddFallback(new FallbackStrategyOptions<HttpResponseMessage>
     {
         FallbackAction = _ =>
