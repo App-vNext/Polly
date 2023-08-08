@@ -9,7 +9,7 @@ var helper = new ExecuteHelper();
 // 1. Create a retry strategy that handles all exceptions
 // ------------------------------------------------------------------------
 
-ResilienceStrategy strategy = new ResilienceStrategyBuilder()
+ResilienceStrategy strategy = new CompositeStrategyBuilder()
     // Default retry options handle all exceptions
     .AddRetry(new RetryStrategyOptions())
     .Build();
@@ -21,7 +21,7 @@ strategy.Execute(helper.ExecuteUnstable);
 // 2. Customize the retry behavior
 // ------------------------------------------------------------------------
 
-strategy = new ResilienceStrategyBuilder()
+strategy = new CompositeStrategyBuilder()
     .AddRetry(new RetryStrategyOptions
     {
         // Specify what exceptions should be retried using PredicateBuilder
@@ -31,7 +31,8 @@ strategy = new ResilienceStrategyBuilder()
 
         // The recommended backoff type for HTTP scenarios
         // See here for more information: https://github.com/App-vNext/Polly/wiki/Retry-with-jitter#more-complex-jitter
-        BackoffType = RetryBackoffType.ExponentialWithJitter
+        BackoffType = RetryBackoffType.Exponential,
+        UseJitter = true
     })
     .Build();
 
@@ -42,7 +43,7 @@ strategy.Execute(helper.ExecuteUnstable);
 // 3. Register the callbacks
 // ------------------------------------------------------------------------
 
-strategy = new ResilienceStrategyBuilder()
+strategy = new CompositeStrategyBuilder()
     .AddRetry(new RetryStrategyOptions
     {
         // Specify what exceptions should be retried using switch expressions
@@ -53,7 +54,7 @@ strategy = new ResilienceStrategyBuilder()
         },
         OnRetry = outcome =>
         {
-            Console.WriteLine($"Retrying attempt {outcome.Arguments.Attempt}...");
+            Console.WriteLine($"Retrying attempt {outcome.Arguments.AttemptNumber}...");
             return default;
         }
     })
@@ -66,7 +67,7 @@ strategy.Execute(helper.ExecuteUnstable);
 // 4. Create an HTTP retry strategy that handles both exceptions and results
 // ------------------------------------------------------------------------
 
-ResilienceStrategy<HttpResponseMessage> httpStrategy = new ResilienceStrategyBuilder<HttpResponseMessage>()
+ResilienceStrategy<HttpResponseMessage> httpStrategy = new CompositeStrategyBuilder<HttpResponseMessage>()
     .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
     {
         // Specify what exceptions or results should be retried
