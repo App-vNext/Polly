@@ -1,3 +1,5 @@
+using Polly.Utils;
+
 namespace Polly.CircuitBreaker;
 
 internal sealed class CircuitBreakerResilienceStrategy<T> : ReactiveResilienceStrategy<T>
@@ -28,7 +30,7 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ReactiveResilienceSt
             return outcome;
         }
 
-        outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        outcome = await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         var args = new OutcomeArguments<T, CircuitBreakerPredicateArguments>(context, outcome, default);
         if (await _handler(args).ConfigureAwait(context.ContinueOnCapturedContext))

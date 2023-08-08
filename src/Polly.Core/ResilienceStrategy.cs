@@ -59,9 +59,4 @@ public abstract partial class ResilienceStrategy
             context,
             (callback, state)).GetResult();
     }
-
-    internal static ValueTask<Outcome<TResult>> ExecuteCallbackSafeAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-        ResilienceContext context,
-        TState state) => StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state);
 }

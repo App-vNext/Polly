@@ -37,9 +37,4 @@ public abstract class ReactiveResilienceStrategy<TResult>
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state);
-
-    internal static ValueTask<Outcome<T>> ExecuteCallbackSafeAsync<T, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
-        ResilienceContext context,
-        TState state) => StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state);
 }
