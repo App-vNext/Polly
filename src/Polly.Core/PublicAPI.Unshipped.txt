@@ -1,4 +1,4 @@
-﻿abstract Polly.ReactiveResilienceStrategy<T>.ExecuteCore<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<T>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<T>>
+﻿abstract Polly.ReactiveResilienceStrategy<TResult>.ExecuteCore<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 abstract Polly.Registry.ResilienceStrategyProvider<TKey>.TryGetStrategy(TKey key, out Polly.ResilienceStrategy? strategy) -> bool
 abstract Polly.Registry.ResilienceStrategyProvider<TKey>.TryGetStrategy<TResult>(TKey key, out Polly.ResilienceStrategy<TResult>? strategy) -> bool
 abstract Polly.ResilienceContextPool.Get(string? operationKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
@@ -178,8 +178,8 @@ Polly.PredicateBuilder<TResult>.HandleResult(System.Func<TResult, bool>! predica
 Polly.PredicateBuilder<TResult>.HandleResult(TResult result, System.Collections.Generic.IEqualityComparer<TResult>? comparer = null) -> Polly.PredicateBuilder<TResult>!
 Polly.PredicateBuilder<TResult>.PredicateBuilder() -> void
 Polly.PredicateResult
-Polly.ReactiveResilienceStrategy<T>
-Polly.ReactiveResilienceStrategy<T>.ReactiveResilienceStrategy() -> void
+Polly.ReactiveResilienceStrategy<TResult>
+Polly.ReactiveResilienceStrategy<TResult>.ReactiveResilienceStrategy() -> void
 Polly.Registry.ConfigureBuilderContext<TKey>
 Polly.Registry.ConfigureBuilderContext<TKey>.BuilderInstanceName.get -> string?
 Polly.Registry.ConfigureBuilderContext<TKey>.BuilderName.get -> string!

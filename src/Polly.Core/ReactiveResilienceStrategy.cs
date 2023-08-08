@@ -4,11 +4,11 @@
 /// This base strategy class is used to simplify the implementation of generic (reactive)
 /// strategies by limiting the number of generic types the execute method receives.
 /// </summary>
-/// <typeparam name="T">The type of result this strategy handles.</typeparam>
+/// <typeparam name="TResult">The type of result this strategy handles.</typeparam>
 /// <remarks>
 /// For strategies that handle all result types the generic parameter must be of type <see cref="object"/>.
 /// </remarks>
-public abstract class ReactiveResilienceStrategy<T>
+public abstract class ReactiveResilienceStrategy<TResult>
 {
     /// <summary>
     /// An implementation of resilience strategy that executes the specified <paramref name="callback"/>.
@@ -33,13 +33,13 @@ public abstract class ReactiveResilienceStrategy<T>
     /// Similarly, do not throw exceptions from your strategy implementation. Instead, return an exception instance as <see cref="Outcome{TResult}"/>.
     /// </para>
     /// </remarks>
-    protected internal abstract ValueTask<Outcome<T>> ExecuteCore<TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
+    protected internal abstract ValueTask<Outcome<TResult>> ExecuteCore<TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state);
 
-    internal static ValueTask<Outcome<TResult>> ExecuteCallbackSafeAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+    internal static ValueTask<Outcome<T>> ExecuteCallbackSafeAsync<T, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
         ResilienceContext context,
         TState state) => StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state);
 }
