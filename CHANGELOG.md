@@ -1,3 +1,27 @@
+## 8.0.0-alpha.8
+
+* Updates for 8.0.0-alpha.7 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1433
+* Improve logging messages by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1436
+* Rename `BuilderName` to `Name` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1437
+* Do not record null tags to meter by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1438
+* Fix telemetry test failures by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1439
+* Simplify OutcomeResilienceStrategy by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1440
+* Drop simple circuit breaker by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1444
+* Allow jitter for all backoff types by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1445
+* Rename `Attempt` to `AttemptNumber` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1447
+* Hide `CircuitBreakerStateProvider.LastHandledOutcome` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1446
+* Rename `ResilienceStrategyBuilder` to `CompositeStrategyBuilder` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1448
+* Added `readonly` modifier to private fields which are never changed by [@Lehonti](https://github.com/Lehonti) in https://github.com/App-vNext/Polly/pull/1451
+* Reduced nesting levels through block-scoped `using`s and the inversion of an `if` block. by [@Lehonti](https://github.com/Lehonti) in https://github.com/App-vNext/Polly/pull/1453
+* Simplify file names by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1455
+* Improve `MultipleStrategiesBenchmark` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1457
+* Elaborate about synchronous vs asynchronous executions by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1456
+* Fix some typos in XML docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1458
+* Make `ReactiveResilienceStrategy` public by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1460
+* Make the `ReactiveResilienceStrategy` type-safe by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1462
+* Use `StrategyHelper` for safe executions and drop redundant methods by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1463
+* Drop unnecessary allocation in circuit breaker by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1464
+
 ## 8.0.0-alpha.7
 
 * Introduce ResilienceStrategyBuilder.Validator by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1412
