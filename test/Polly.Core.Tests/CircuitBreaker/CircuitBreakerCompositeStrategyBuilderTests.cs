@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Time.Testing;
 using Polly.CircuitBreaker;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
@@ -32,7 +33,10 @@ public class CircuitBreakerCompositeStrategyBuilderTests
 
         var strategy = builder.Build();
 
-        strategy.Should().BeOfType<CircuitBreakerResilienceStrategy<object>>();
+        strategy
+            .Should().BeOfType<ReactiveResilienceStrategyBridge<object>>().Subject
+            .Strategy
+            .Should().BeOfType<CircuitBreakerResilienceStrategy<object>>();
     }
 
     [MemberData(nameof(ConfigureDataGeneric))]
@@ -45,7 +49,10 @@ public class CircuitBreakerCompositeStrategyBuilderTests
 
         var strategy = builder.Build().Strategy;
 
-        strategy.Should().BeOfType<CircuitBreakerResilienceStrategy<int>>();
+        strategy
+            .Should().BeOfType<ReactiveResilienceStrategyBridge<int>>().Subject
+            .Strategy
+            .Should().BeOfType<CircuitBreakerResilienceStrategy<int>>();
     }
 
     [Fact]

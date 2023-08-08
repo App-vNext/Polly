@@ -41,7 +41,7 @@ internal sealed class HedgingResilienceStrategy<T> : ReactiveResilienceStrategy<
     public Func<OutcomeArguments<T, OnHedgingArguments>, ValueTask>? OnHedging { get; }
 
     [ExcludeFromCodeCoverage] // coverlet issue
-    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(
+    protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
         ResilienceContext context,
         TState state)

@@ -17,7 +17,7 @@ internal sealed class FallbackResilienceStrategy<T> : ReactiveResilienceStrategy
         _telemetry = telemetry;
     }
 
-    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
         var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         var handleFallbackArgs = new OutcomeArguments<T, FallbackPredicateArguments>(context, outcome, default);

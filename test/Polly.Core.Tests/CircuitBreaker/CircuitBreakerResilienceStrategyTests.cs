@@ -2,6 +2,7 @@ using Microsoft.Extensions.Time.Testing;
 using Moq;
 using Polly.CircuitBreaker;
 using Polly.Telemetry;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
@@ -130,5 +131,5 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         Create().Invoking(s => s.Execute(_ => 0)).Should().NotThrow();
     }
 
-    private CircuitBreakerResilienceStrategy<int> Create() => new(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl);
+    private ReactiveResilienceStrategyBridge<int> Create() => new(new CircuitBreakerResilienceStrategy<int>(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl));
 }

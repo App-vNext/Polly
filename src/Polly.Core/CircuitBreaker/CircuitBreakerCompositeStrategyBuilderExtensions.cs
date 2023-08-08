@@ -24,12 +24,17 @@ public static class CircuitBreakerCompositeStrategyBuilderExtensions
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(CircuitBreakerStrategyOptions))]
     public static CompositeStrategyBuilder AddCircuitBreaker(this CompositeStrategyBuilder builder, CircuitBreakerStrategyOptions options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        return builder.AddCircuitBreakerCore(options);
+        return builder.AddStrategy(context => CreateStrategy(context, options), options);
     }
 
     /// <summary>
@@ -47,39 +52,29 @@ public static class CircuitBreakerCompositeStrategyBuilderExtensions
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static CompositeStrategyBuilder<TResult> AddCircuitBreaker<TResult>(this CompositeStrategyBuilder<TResult> builder, CircuitBreakerStrategyOptions<TResult> options)
-    {
-        Guard.NotNull(builder);
-        Guard.NotNull(options);
-
-        return builder.AddCircuitBreakerCore(options);
-    }
-
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    private static TBuilder AddCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, CircuitBreakerStrategyOptions<TResult> options)
-        where TBuilder : CompositeStrategyBuilderBase
+    public static CompositeStrategyBuilder<TResult> AddCircuitBreaker<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(
+        this CompositeStrategyBuilder<TResult> builder,
+        CircuitBreakerStrategyOptions<TResult> options)
     {
-        return builder.AddStrategy(
-            context =>
-            {
-                var behavior = new AdvancedCircuitBehavior(
-                    options.FailureRatio,
-                    options.MinimumThroughput,
-                    HealthMetrics.Create(options.SamplingDuration, context.TimeProvider));
+        Guard.NotNull(builder);
+        Guard.NotNull(options);
 
-                return CreateStrategy<TResult, CircuitBreakerStrategyOptions<TResult>>(context, options, behavior);
-            },
-            options);
+        return builder.AddStrategy(context => CreateStrategy(context, options), options);
     }
 
-    internal static CircuitBreakerResilienceStrategy<TResult> CreateStrategy<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
+    internal static CircuitBreakerResilienceStrategy<TResult> CreateStrategy<TResult>(
         StrategyBuilderContext context,
-        CircuitBreakerStrategyOptions<TResult> options,
-        CircuitBehavior behavior)
+        CircuitBreakerStrategyOptions<TResult> options)
     {
+        var behavior = new AdvancedCircuitBehavior(
+            options.FailureRatio,
+            options.MinimumThroughput,
+            HealthMetrics.Create(options.SamplingDuration, context.TimeProvider));
+
         var controller = new CircuitStateController<TResult>(
             options.BreakDuration,
             options.OnOpened,
