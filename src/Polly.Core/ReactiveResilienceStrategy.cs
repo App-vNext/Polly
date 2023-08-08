@@ -18,12 +18,12 @@ public abstract class ReactiveResilienceStrategy<T> : ResilienceStrategy
     /// <param name="context">The context associated with the callback.</param>
     /// <param name="state">The state associated with the callback.</param>
     /// <returns>
-    /// An instance of pending <see cref="ValueTask"/> for asynchronous executions or completed <see cref="ValueTask"/> task for synchronous executions.
+    /// An instance of a pending <see cref="ValueTask"/> for asynchronous executions or a completed <see cref="ValueTask"/> task for synchronous executions.
     /// </returns>
     /// <remarks>
     /// <strong>This method is called for both synchronous and asynchronous execution flows.</strong>
     /// <para>
-    /// You can use <see cref="ResilienceContext.IsSynchronous"/> to determine whether the <paramref name="callback"/> is synchronous or asynchronous one.
+    /// You can use <see cref="ResilienceContext.IsSynchronous"/> to determine whether <paramref name="callback"/> is synchronous or asynchronous.
     /// This is useful when the custom strategy behaves differently in each execution flow. In general, for most strategies, the implementation
     /// is the same for both execution flows.
     /// See <seealso href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md#about-synchronous-and-asynchronous-executions"/> for more details.
