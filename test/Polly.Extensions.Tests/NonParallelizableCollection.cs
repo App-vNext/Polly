@@ -1,7 +1,7 @@
 namespace Polly.Extensions.Tests;
 
-[CollectionDefinition("NonParallelizableTests", DisableParallelization = true)]
-public class NonParallelizableCollection : ICollectionFixture<NonParallelizableCollectionFixture>
+[CollectionDefinition(nameof(NonParallelizableCollection), DisableParallelization = true)]
+public class NonParallelizableCollection
 {
 }
 
