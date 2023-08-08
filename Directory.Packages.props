@@ -2,7 +2,7 @@
   <PropertyGroup>
     <MicrosoftExtensionsVersion>7.0.0</MicrosoftExtensionsVersion>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <PollyVersion>8.0.0-alpha.7</PollyVersion>
+    <PollyVersion>8.0.0-alpha.8</PollyVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
