@@ -51,7 +51,7 @@ internal sealed class RetryResilienceStrategy<T> : ReactiveResilienceStrategy<T>
         while (true)
         {
             var startTimestamp = _timeProvider.GetTimestamp();
-            var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            var outcome = await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
             var shouldRetryArgs = new OutcomeArguments<T, RetryPredicateArguments>(context, outcome, new RetryPredicateArguments(attempt));
             var handle = await ShouldHandle(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext);
             var executionTime = _timeProvider.GetElapsedTime(startTimestamp);
