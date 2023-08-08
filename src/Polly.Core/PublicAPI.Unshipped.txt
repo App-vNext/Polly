@@ -11,7 +11,6 @@ override Polly.ResiliencePropertyKey<TValue>.Equals(object? obj) -> bool
 override Polly.ResiliencePropertyKey<TValue>.GetHashCode() -> int
 override Polly.ResiliencePropertyKey<TValue>.ToString() -> string!
 override Polly.Telemetry.ResilienceEvent.ToString() -> string!
-override sealed Polly.ReactiveResilienceStrategy<T>.ExecuteCore<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 Polly.CircuitBreaker.BrokenCircuitException
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException() -> void
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message) -> void
@@ -388,9 +387,11 @@ Polly.TimeoutCompositeStrategyBuilderExtensions
 Polly.Utils.LegacySupport
 static Polly.CircuitBreakerCompositeStrategyBuilderExtensions.AddCircuitBreaker(this Polly.CompositeStrategyBuilder! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions! options) -> Polly.CompositeStrategyBuilder!
 static Polly.CircuitBreakerCompositeStrategyBuilderExtensions.AddCircuitBreaker<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
+static Polly.CompositeStrategyBuilderExtensions.AddStrategy(this Polly.CompositeStrategyBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ReactiveResilienceStrategy<object!>!>! factory, Polly.ResilienceStrategyOptions! options) -> Polly.CompositeStrategyBuilder!
 static Polly.CompositeStrategyBuilderExtensions.AddStrategy<TBuilder>(this TBuilder! builder, Polly.ResilienceStrategy! strategy) -> TBuilder!
 static Polly.CompositeStrategyBuilderExtensions.AddStrategy<TBuilder>(this TBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy!>! factory, Polly.ResilienceStrategyOptions! options) -> TBuilder!
 static Polly.CompositeStrategyBuilderExtensions.AddStrategy<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.ResilienceStrategy<TResult>! strategy) -> Polly.CompositeStrategyBuilder<TResult>!
+static Polly.CompositeStrategyBuilderExtensions.AddStrategy<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ReactiveResilienceStrategy<TResult>!>! factory, Polly.ResilienceStrategyOptions! options) -> Polly.CompositeStrategyBuilder<TResult>!
 static Polly.FallbackCompositeStrategyBuilderExtensions.AddFallback<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.Fallback.FallbackStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
 static Polly.HedgingCompositeStrategyBuilderExtensions.AddHedging<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.Hedging.HedgingStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
 static Polly.Outcome.FromException<TResult>(System.Exception! exception) -> Polly.Outcome<TResult>

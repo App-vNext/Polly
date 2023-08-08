@@ -236,7 +236,15 @@ The RequiredProperty field is required.
         var builder = new CompositeStrategyBuilder();
 
         builder
-            .Invoking(b => b.AddStrategy(null!, new TestResilienceStrategyOptions()))
+            .Invoking(b => b.AddStrategy((Func<StrategyBuilderContext, ResilienceStrategy>)null!, new TestResilienceStrategyOptions()))
+            .Should()
+            .Throw<ArgumentNullException>()
+            .And.ParamName
+            .Should()
+            .Be("factory");
+
+        builder
+            .Invoking(b => b.AddStrategy((Func<StrategyBuilderContext, ReactiveResilienceStrategy<object>>)null!, new TestResilienceStrategyOptions()))
             .Should()
             .Throw<ArgumentNullException>()
             .And.ParamName

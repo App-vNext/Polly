@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Hedging;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.Hedging;
 
@@ -12,9 +13,12 @@ public class HedgingCompositeStrategyBuilderExtensionsTests
     public void AddHedging_Ok()
     {
         _builder.AddHedging(new HedgingStrategyOptions { ShouldHandle = _ => PredicateResult.True });
-        var strategy = _builder.Build().Should().BeOfType<HedgingResilienceStrategy<object>>()
-            .Subject
-            .HedgingHandler.IsGeneric.Should().BeFalse();
+
+        _builder.Build()
+            .Should().BeOfType<ReactiveResilienceStrategyBridge<object>>().Subject
+            .Strategy
+            .Should().BeOfType<HedgingResilienceStrategy<object>>()
+            .Subject.HedgingHandler.IsGeneric.Should().BeFalse();
     }
 
     [Fact]
@@ -25,7 +29,10 @@ public class HedgingCompositeStrategyBuilderExtensionsTests
             HedgingActionGenerator = args => () => Outcome.FromResultAsTask("dummy"),
             ShouldHandle = _ => PredicateResult.True
         });
+
         _genericBuilder.Build().Strategy
+            .Should().BeOfType<ReactiveResilienceStrategyBridge<string>>().Subject
+            .Strategy
             .Should().BeOfType<HedgingResilienceStrategy<string>>()
             .Subject.HedgingHandler.IsGeneric.Should().BeTrue();
     }

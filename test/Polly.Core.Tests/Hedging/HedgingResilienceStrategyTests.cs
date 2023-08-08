@@ -1,6 +1,7 @@
 using Polly.Hedging;
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
+using Polly.Utils;
 using Xunit.Abstractions;
 
 namespace Polly.Core.Tests.Hedging;
@@ -46,7 +47,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     public void Ctor_EnsureDefaults()
     {
         ConfigureHedging();
-        var strategy = Create();
+        var strategy = (HedgingResilienceStrategy<string>)Create().Strategy;
 
         strategy.MaxHedgedAttempts.Should().Be(_options.MaxHedgedAttempts);
         strategy.HedgingDelay.Should().Be(_options.HedgingDelay);
@@ -127,7 +128,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     {
         _options.HedgingDelayGenerator = args => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(seconds));
 
-        var strategy = Create();
+        var strategy = (HedgingResilienceStrategy<string>)Create().Strategy;
 
         var result = await strategy.GetHedgingDelayAsync(ResilienceContextPool.Shared.Get(), 0);
 
@@ -139,7 +140,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     {
         _options.HedgingDelay = TimeSpan.FromMilliseconds(123);
 
-        var strategy = Create();
+        var strategy = (HedgingResilienceStrategy<string>)Create().Strategy;
 
         var result = await strategy.GetHedgingDelayAsync(ResilienceContextPool.Shared.Get(), 0);
 
@@ -329,7 +330,7 @@ public class HedgingResilienceStrategyTests : IDisposable
             };
         });
 
-        var strategy = Create(handler, null);
+        var strategy = new ReactiveResilienceStrategyBridge<DisposableResult>(Create(handler, null));
 
         // act
         var resultTask = strategy.ExecuteAsync(async token =>
@@ -953,7 +954,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         return Outcome.FromResult("secondary");
     });
 
-    private HedgingResilienceStrategy<string> Create() => Create(_handler!, _options.OnHedging);
+    private ReactiveResilienceStrategyBridge<string> Create() => new(Create(_handler!, _options.OnHedging));
 
     private HedgingResilienceStrategy<T> Create<T>(
         HedgingHandler<T> handler,

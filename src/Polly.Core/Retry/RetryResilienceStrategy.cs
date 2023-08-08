@@ -42,7 +42,7 @@ internal sealed class RetryResilienceStrategy<T> : ReactiveResilienceStrategy<T>
 
     public Func<OutcomeArguments<T, OnRetryArguments>, ValueTask>? OnRetry { get; }
 
-    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
         double retryState = 0;
 

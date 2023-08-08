@@ -70,6 +70,53 @@ public static class CompositeStrategyBuilderExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Adds a reactive strategy to the builder.
+    /// </summary>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="factory">The factory that creates a resilience strategy.</param>
+    /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
+    /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/>, <paramref name="factory"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> is invalid.</exception>
+    [RequiresUnreferencedCode(Constants.OptionsValidation)]
+    public static CompositeStrategyBuilder AddStrategy(
+        this CompositeStrategyBuilder builder, Func<StrategyBuilderContext, ReactiveResilienceStrategy<object>> factory,
+        ResilienceStrategyOptions options)
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(factory);
+        Guard.NotNull(options);
+
+        builder.AddStrategyCore(context => new ReactiveResilienceStrategyBridge<object>(factory(context)), options);
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds a reactive strategy to the builder.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="factory">The factory that creates a resilience strategy.</param>
+    /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
+    /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/>, <paramref name="factory"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> is invalid.</exception>
+    [RequiresUnreferencedCode(Constants.OptionsValidation)]
+    public static CompositeStrategyBuilder<TResult> AddStrategy<TResult>(
+        this CompositeStrategyBuilder<TResult> builder, Func<StrategyBuilderContext, ReactiveResilienceStrategy<TResult>> factory,
+        ResilienceStrategyOptions options)
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(factory);
+        Guard.NotNull(options);
+
+        builder.AddStrategyCore(context => new ReactiveResilienceStrategyBridge<TResult>(factory(context)), options);
+        return builder;
+    }
+
     internal sealed class EmptyOptions : ResilienceStrategyOptions
     {
         public static readonly EmptyOptions Instance = new();

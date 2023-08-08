@@ -8,7 +8,7 @@
 /// <remarks>
 /// For strategies that handle all result types the generic parameter must be of type <see cref="object"/>.
 /// </remarks>
-public abstract class ReactiveResilienceStrategy<T> : ResilienceStrategy
+public abstract class ReactiveResilienceStrategy<T>
 {
     /// <summary>
     /// An implementation of resilience strategy that executes the specified <paramref name="callback"/>.
@@ -33,36 +33,13 @@ public abstract class ReactiveResilienceStrategy<T> : ResilienceStrategy
     /// Similarly, do not throw exceptions from your strategy implementation. Instead, return an exception instance as <see cref="Outcome{TResult}"/>.
     /// </para>
     /// </remarks>
-    protected abstract ValueTask<Outcome<T>> ExecuteCore<TState>(
+    protected internal abstract ValueTask<Outcome<T>> ExecuteCore<TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
         ResilienceContext context,
         TState state);
 
-    /// <inheritdoc/>
-    protected internal sealed override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+    internal static ValueTask<Outcome<TResult>> ExecuteCallbackSafeAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
-        TState state)
-    {
-        // Check if we can cast directly, thus saving some cycles and improving the performance
-        if (callback is Func<ResilienceContext, TState, ValueTask<Outcome<T>>> casted)
-        {
-            return TaskHelper.ConvertValueTask<T, TResult>(
-                ExecuteCore(casted, context, state),
-                context);
-        }
-        else
-        {
-            var valueTask = ExecuteCore(
-                static async (context, state) =>
-                {
-                    var outcome = await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
-                    return outcome.AsOutcome<T>();
-                },
-                context,
-                (callback, state));
-
-            return TaskHelper.ConvertValueTask<T, TResult>(valueTask, context);
-        }
-    }
+        TState state) => StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state);
 }

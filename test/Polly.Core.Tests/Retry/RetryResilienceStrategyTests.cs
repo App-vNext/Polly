@@ -3,6 +3,7 @@ using Microsoft.Extensions.Time.Testing;
 using Moq;
 using Polly.Retry;
 using Polly.Telemetry;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -338,7 +339,7 @@ public class RetryResilienceStrategyTests
 
     private void SetupNoDelay() => _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.Zero);
 
-    private async ValueTask<int> ExecuteAndAdvance(RetryResilienceStrategy<object> sut)
+    private async ValueTask<int> ExecuteAndAdvance(ReactiveResilienceStrategyBridge<object> sut)
     {
         var executing = sut.ExecuteAsync(_ => new ValueTask<int>(0)).AsTask();
 
@@ -350,9 +351,9 @@ public class RetryResilienceStrategyTests
         return await executing;
     }
 
-    private RetryResilienceStrategy<object> CreateSut(TimeProvider? timeProvider = null) =>
-        new(_options,
+    private ReactiveResilienceStrategyBridge<object> CreateSut(TimeProvider? timeProvider = null) =>
+        new(new RetryResilienceStrategy<object>(_options,
             timeProvider ?? _timeProvider,
             _telemetry,
-            () => 1.0);
+            () => 1.0));
 }
