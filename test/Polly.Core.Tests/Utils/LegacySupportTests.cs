@@ -1,5 +1,3 @@
-using Polly.Utils;
-
 namespace Polly.Core.Tests.Utils;
 
 public class LegacySupportTests

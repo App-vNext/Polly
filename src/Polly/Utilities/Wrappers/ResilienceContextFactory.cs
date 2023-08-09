@@ -1,5 +1,3 @@
-using Polly.Utils;
-
 namespace Polly.Utilities.Wrappers;
 
 internal static class ResilienceContextFactory
