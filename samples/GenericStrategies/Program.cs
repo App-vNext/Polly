@@ -5,10 +5,10 @@ using Polly.Timeout;
 using System.Net;
 
 // ----------------------------------------------------------------------------
-// Create a generic resilience strategy using ResilienceStrategyBuilder<T>
+// Create a generic resilience strategy using CompositeStrategyBuilder<T>
 // ----------------------------------------------------------------------------
 
-// The generic ResilienceStrategyBuilder<T> creates a ResilienceStrategy<T>
+// The generic CompositeStrategyBuilder<T> creates a ResilienceStrategy<T>
 // that can execute synchronous and asynchronous callbacks that return T.
 
 ResilienceStrategy<HttpResponseMessage> strategy = new CompositeStrategyBuilder<HttpResponseMessage>()
@@ -43,7 +43,7 @@ ResilienceStrategy<HttpResponseMessage> strategy = new CompositeStrategyBuilder<
     })
     .AddTimeout(new TimeoutStrategyOptions
     {
-        Timeout = TimeSpan.FromMilliseconds(500),
+        Timeout = TimeSpan.FromSeconds(1),
         // Register user callback called whenever timeout occurs
         OnTimeout = _ => { Console.WriteLine("Timeout occurred!"); return default; }
     })
