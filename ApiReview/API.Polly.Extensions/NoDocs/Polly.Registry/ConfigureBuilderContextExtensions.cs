@@ -2,9 +2,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Options;
-using Polly.Registry;
 
-namespace Polly.Extensions.Registry;
+namespace Polly.Registry;
 
 public static class ConfigureBuilderContextExtensions
 {

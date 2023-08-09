@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Polly.Registry;
 
-namespace Polly.Extensions.DependencyInjection;
+namespace Polly.DependencyInjection;
 
 public sealed class AddResilienceStrategyContext<TKey> where TKey : notnull
 {

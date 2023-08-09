@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Polly.Utils;
+namespace Polly;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class LegacySupport

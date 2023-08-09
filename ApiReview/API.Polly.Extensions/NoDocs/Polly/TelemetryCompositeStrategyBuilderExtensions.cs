@@ -2,7 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using Polly.Extensions.Telemetry;
+using Polly.Telemetry;
 
 namespace Polly;
 

@@ -7,5 +7,6 @@ namespace Polly;
 
 public static class HedgingCompositeStrategyBuilderExtensions
 {
-    public static CompositeStrategyBuilder<TResult> AddHedging<TResult>(this CompositeStrategyBuilder<TResult> builder, HedgingStrategyOptions<TResult> options);
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "All options members preserved.")]
+    public static CompositeStrategyBuilder<TResult> AddHedging<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(this CompositeStrategyBuilder<TResult> builder, HedgingStrategyOptions<TResult> options);
 }

@@ -2,7 +2,7 @@
 
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using Polly.Extensions.DependencyInjection;
+using Polly.DependencyInjection;
 using Polly.Registry;
 
 namespace Polly;

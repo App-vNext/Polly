@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Polly.Utils;
 
-namespace Polly.Extensions.Telemetry;
+namespace Polly.Telemetry;
 
 public sealed class EnrichmentContext
 {
