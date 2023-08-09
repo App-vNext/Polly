@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Polly.Extensions.Registry;
 using Polly.Registry;
 
 namespace Polly.Extensions.DependencyInjection;

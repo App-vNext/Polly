@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.RateLimiting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Polly.Extensions.Registry;
 using Polly.Registry;
 using Polly.Retry;
 using Polly.Timeout;
