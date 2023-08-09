@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Options;
 using Moq;
-using Polly.Extensions.Utils;
+using Polly.Utils;
 
 namespace Polly.Extensions.Tests.Utils;
 

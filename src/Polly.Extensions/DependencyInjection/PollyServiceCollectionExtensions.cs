@@ -3,12 +3,11 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Polly.Extensions.DependencyInjection;
-using Polly.Extensions.Telemetry;
 using Polly.Registry;
+using Polly.Telemetry;
 using Polly.Utils;
 
-namespace Polly;
+namespace Polly.DependencyInjection;
 
 /// <summary>
 /// Provides extension methods for registering resilience strategies using the <see cref="IServiceCollection"/>.
@@ -85,7 +84,7 @@ public static class PollyServiceCollectionExtensions
                 });
             });
 
-        return AddResilienceStrategyRegistry<TKey>(services);
+        return services.AddResilienceStrategyRegistry<TKey>();
     }
 
     /// <summary>
@@ -156,7 +155,7 @@ public static class PollyServiceCollectionExtensions
                 });
             });
 
-        return AddResilienceStrategyRegistry<TKey>(services);
+        return services.AddResilienceStrategyRegistry<TKey>();
     }
 
     /// <summary>

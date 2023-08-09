@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using Polly.Extensions.Telemetry;
+using Polly.Telemetry;
 using Polly.Utils;
 
 namespace Polly;

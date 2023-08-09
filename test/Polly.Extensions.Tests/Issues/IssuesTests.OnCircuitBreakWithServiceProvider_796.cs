@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Polly.CircuitBreaker;
-using Polly.Extensions.DependencyInjection;
+using Polly.DependencyInjection;
 using Polly.Registry;
 
 namespace Polly.Extensions.Tests.Issues;

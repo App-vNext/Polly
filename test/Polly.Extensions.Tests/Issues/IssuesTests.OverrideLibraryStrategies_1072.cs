@@ -1,6 +1,7 @@
 using System.Net.Sockets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Polly.DependencyInjection;
 using Polly.Registry;
 
 namespace Polly.Extensions.Tests.Issues;

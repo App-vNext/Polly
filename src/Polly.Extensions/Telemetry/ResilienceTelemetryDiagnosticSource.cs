@@ -1,8 +1,7 @@
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
-using Polly.Telemetry;
 
-namespace Polly.Extensions.Telemetry;
+namespace Polly.Telemetry;
 
 internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 {
@@ -133,8 +132,7 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         {
             if (_logger.IsEnabled(level))
             {
-                Log.ExecutionAttempt(
-                    _logger,
+                _logger.ExecutionAttempt(
                     level,
                     args.Source.BuilderName.GetValueOrPlaceholder(),
                     args.Source.BuilderInstanceName.GetValueOrPlaceholder(),
@@ -149,8 +147,7 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         }
         else
         {
-            Log.ResilienceEvent(
-                _logger,
+            _logger.ResilienceEvent(
                 level,
                 args.Event.EventName,
                 args.Source.BuilderName.GetValueOrPlaceholder(),

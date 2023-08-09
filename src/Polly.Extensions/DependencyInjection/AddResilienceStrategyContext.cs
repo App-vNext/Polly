@@ -1,10 +1,9 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Polly.Registry;
 
-namespace Polly.Extensions.DependencyInjection;
+namespace Polly.DependencyInjection;
 
 /// <summary>
 /// Represents the context for adding a resilience strategy with the specified key.

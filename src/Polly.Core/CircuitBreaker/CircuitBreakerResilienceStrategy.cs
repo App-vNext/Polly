@@ -1,5 +1,3 @@
-using Polly.Utils;
-
 namespace Polly.CircuitBreaker;
 
 internal sealed class CircuitBreakerResilienceStrategy<T> : ReactiveResilienceStrategy<T>

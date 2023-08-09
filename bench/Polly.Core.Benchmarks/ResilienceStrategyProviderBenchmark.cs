@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Polly.DependencyInjection;
 
 namespace Polly.Core.Benchmarks;
 
