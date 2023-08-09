@@ -1,6 +1,5 @@
 using System.Threading.RateLimiting;
 using Microsoft.Extensions.DependencyInjection;
-using Polly.DependencyInjection;
 using Polly.RateLimiting;
 using Polly.Registry;
 
