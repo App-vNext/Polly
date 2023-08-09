@@ -17,7 +17,7 @@
     <Using Include="FluentAssertions" />
     <Using Include="FluentAssertions.Execution" />
     <Using Include="FluentAssertions.Extensions" />
-    <Using Include="Moq" />
+    <Using Include="NSubstitute" />
     <Using Include="Polly.Specs.Helpers" />
     <Using Include="Polly.Specs.Helpers.Bulkhead" />
     <Using Include="Polly.Specs.Helpers.Caching" />

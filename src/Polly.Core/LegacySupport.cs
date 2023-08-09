@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Polly.Utils;
+namespace Polly;
 
 /// <summary>
 /// Legacy support for older versions of Polly.

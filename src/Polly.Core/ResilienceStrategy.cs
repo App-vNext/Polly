@@ -24,12 +24,12 @@ public abstract partial class ResilienceStrategy
     /// <param name="context">The context associated with the callback.</param>
     /// <param name="state">The state associated with the callback.</param>
     /// <returns>
-    /// An instance of pending <see cref="ValueTask"/> for asynchronous executions or completed <see cref="ValueTask"/> task for synchronous executions.
+    /// An instance of a pending <see cref="ValueTask"/> for asynchronous executions or a completed <see cref="ValueTask"/> task for synchronous executions.
     /// </returns>
     /// <remarks>
     /// <strong>This method is called for both synchronous and asynchronous execution flows.</strong>
     /// <para>
-    /// You can use <see cref="ResilienceContext.IsSynchronous"/> to determine whether the <paramref name="callback"/> is synchronous or asynchronous one.
+    /// You can use <see cref="ResilienceContext.IsSynchronous"/> to determine whether <paramref name="callback"/> is synchronous or asynchronous.
     /// This is useful when the custom strategy behaves differently in each execution flow. In general, for most strategies, the implementation
     /// is the same for both execution flows.
     /// See <seealso href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md#about-synchronous-and-asynchronous-executions"/> for more details.
@@ -58,43 +58,5 @@ public abstract partial class ResilienceStrategy
             },
             context,
             (callback, state)).GetResult();
-    }
-
-    internal static ValueTask<Outcome<TResult>> ExecuteCallbackSafeAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-        ResilienceContext context,
-        TState state)
-    {
-        if (context.CancellationToken.IsCancellationRequested)
-        {
-            return new ValueTask<Outcome<TResult>>(Outcome.FromException<TResult>(new OperationCanceledException(context.CancellationToken)));
-        }
-
-        try
-        {
-            var callbackTask = callback(context, state);
-            if (callbackTask.IsCompleted)
-            {
-                return new ValueTask<Outcome<TResult>>(callbackTask.GetResult());
-            }
-
-            return AwaitTask(callbackTask, context.ContinueOnCapturedContext);
-        }
-        catch (Exception e)
-        {
-            return new ValueTask<Outcome<TResult>>(Outcome.FromException<TResult>(e));
-        }
-
-        static async ValueTask<Outcome<T>> AwaitTask<T>(ValueTask<Outcome<T>> task, bool continueOnCapturedContext)
-        {
-            try
-            {
-                return await task.ConfigureAwait(continueOnCapturedContext);
-            }
-            catch (Exception e)
-            {
-                return Outcome.FromException<T>(e);
-            }
-        }
     }
 }

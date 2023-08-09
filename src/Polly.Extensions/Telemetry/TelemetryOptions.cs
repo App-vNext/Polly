@@ -2,9 +2,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Polly.Telemetry;
 
-namespace Polly.Extensions.Telemetry;
+namespace Polly.Telemetry;
 
 /// <summary>
 /// The options that are used to configure the telemetry that is produced by the resilience strategies.

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Logging.Abstractions;
-using Polly.Extensions.Telemetry;
+using Polly.Telemetry;
 
 namespace Polly.Extensions.Tests.Telemetry;
 

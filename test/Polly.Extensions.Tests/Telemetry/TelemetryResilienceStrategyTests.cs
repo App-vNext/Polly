@@ -1,12 +1,11 @@
 using Microsoft.Extensions.Logging;
-using Polly.Extensions.Telemetry;
 using Polly.Telemetry;
 
 namespace Polly.Extensions.Tests.Telemetry;
 
 #pragma warning disable S103 // Lines should not be too long
 
-[Collection("NonParallelizableTests")]
+[Collection(nameof(NonParallelizableCollection))]
 public class TelemetryResilienceStrategyTests : IDisposable
 {
     private readonly FakeLogger _logger;

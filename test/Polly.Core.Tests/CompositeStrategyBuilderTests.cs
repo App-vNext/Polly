@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Time.Testing;
-using Moq;
+using NSubstitute;
 using Polly.Retry;
 using Polly.Utils;
 
@@ -24,10 +24,10 @@ public class CompositeStrategyBuilderTests
     {
         var builder = new CompositeStrategyBuilder
         {
-            TimeProvider = Mock.Of<TimeProvider>(),
+            TimeProvider = Substitute.For<TimeProvider>(),
             Name = "dummy",
             Randomizer = () => 0.0,
-            DiagnosticSource = Mock.Of<DiagnosticSource>(),
+            DiagnosticSource = Substitute.For<DiagnosticSource>(),
             OnCreatingStrategy = _ => { },
         };
 
@@ -236,7 +236,15 @@ The RequiredProperty field is required.
         var builder = new CompositeStrategyBuilder();
 
         builder
-            .Invoking(b => b.AddStrategy(null!, new TestResilienceStrategyOptions()))
+            .Invoking(b => b.AddStrategy((Func<StrategyBuilderContext, ResilienceStrategy>)null!, new TestResilienceStrategyOptions()))
+            .Should()
+            .Throw<ArgumentNullException>()
+            .And.ParamName
+            .Should()
+            .Be("factory");
+
+        builder
+            .Invoking(b => b.AddStrategy((Func<StrategyBuilderContext, ReactiveResilienceStrategy<object>>)null!, new TestResilienceStrategyOptions()))
             .Should()
             .Throw<ArgumentNullException>()
             .And.ParamName

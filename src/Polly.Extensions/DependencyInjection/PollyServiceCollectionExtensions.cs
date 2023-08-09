@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Polly.Extensions.DependencyInjection;
-using Polly.Extensions.Telemetry;
+using Polly.DependencyInjection;
 using Polly.Registry;
+using Polly.Telemetry;
 using Polly.Utils;
 
 namespace Polly;
@@ -85,7 +85,7 @@ public static class PollyServiceCollectionExtensions
                 });
             });
 
-        return AddResilienceStrategyRegistry<TKey>(services);
+        return services.AddResilienceStrategyRegistry<TKey>();
     }
 
     /// <summary>
@@ -156,7 +156,7 @@ public static class PollyServiceCollectionExtensions
                 });
             });
 
-        return AddResilienceStrategyRegistry<TKey>(services);
+        return services.AddResilienceStrategyRegistry<TKey>();
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
 using Polly.Utils;
 
-namespace Polly.Extensions.Telemetry;
+namespace Polly.Telemetry;
 
 public partial class EnrichmentContext
 {

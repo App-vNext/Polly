@@ -19,13 +19,18 @@ public static class HedgingCompositeStrategyBuilderExtensions
     /// <returns>The builder instance with the hedging strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static CompositeStrategyBuilder<TResult> AddHedging<TResult>(this CompositeStrategyBuilder<TResult> builder, HedgingStrategyOptions<TResult> options)
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
+    public static CompositeStrategyBuilder<TResult> AddHedging<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(
+        this CompositeStrategyBuilder<TResult> builder,
+        HedgingStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddHedgingCore<TResult, HedgingStrategyOptions<TResult>>(options);
-        return builder;
+        return builder.AddStrategy(context => CreateHedgingStrategy(context, options, isGeneric: true), options);
     }
 
     /// <summary>
@@ -36,39 +41,36 @@ public static class HedgingCompositeStrategyBuilderExtensions
     /// <returns>The builder instance with the hedging strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HedgingStrategyOptions))]
     internal static CompositeStrategyBuilder AddHedging(this CompositeStrategyBuilder builder, HedgingStrategyOptions options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddHedgingCore<object, HedgingStrategyOptions>(options);
-        return builder;
+        return builder.AddStrategy(context => CreateHedgingStrategy(context, options, isGeneric: false), options);
     }
 
-    [UnconditionalSuppressMessage(
-        "Trimming",
-        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
-        Justification = "All options members preserved.")]
-    internal static void AddHedgingCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
-        this CompositeStrategyBuilderBase builder,
-        HedgingStrategyOptions<TResult> options)
+    private static HedgingResilienceStrategy<TResult> CreateHedgingStrategy<TResult>(
+        StrategyBuilderContext context,
+        HedgingStrategyOptions<TResult> options,
+        bool isGeneric)
     {
-        builder.AddStrategy(context =>
-        {
-            var handler = new HedgingHandler<TResult>(
-                options.ShouldHandle!,
-                options.HedgingActionGenerator,
-                IsGeneric: builder is not CompositeStrategyBuilder);
+        var handler = new HedgingHandler<TResult>(
+                        options.ShouldHandle!,
+                        options.HedgingActionGenerator,
+                        IsGeneric: isGeneric);
 
-            return new HedgingResilienceStrategy<TResult>(
-                options.HedgingDelay,
-                options.MaxHedgedAttempts,
-                handler,
-                options.OnHedging,
-                options.HedgingDelayGenerator,
-                context.TimeProvider,
-                context.Telemetry);
-        },
-        options);
+        return new HedgingResilienceStrategy<TResult>(
+            options.HedgingDelay,
+            options.MaxHedgedAttempts,
+            handler,
+            options.OnHedging,
+            options.HedgingDelayGenerator,
+            context.TimeProvider,
+            context.Telemetry);
     }
 }

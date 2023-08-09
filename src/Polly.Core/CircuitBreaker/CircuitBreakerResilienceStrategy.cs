@@ -21,14 +21,14 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ReactiveResilienceSt
             _controller.Dispose);
     }
 
-    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
         if (await _controller.OnActionPreExecuteAsync(context).ConfigureAwait(context.ContinueOnCapturedContext) is Outcome<T> outcome)
         {
             return outcome;
         }
 
-        outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        outcome = await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         var args = new OutcomeArguments<T, CircuitBreakerPredicateArguments>(context, outcome, default);
         if (await _handler(args).ConfigureAwait(context.ContinueOnCapturedContext))

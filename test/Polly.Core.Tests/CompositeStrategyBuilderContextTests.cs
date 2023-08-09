@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Time.Testing;
-using Moq;
+using NSubstitute;
 
 namespace Polly.Core.Tests;
 
@@ -10,7 +10,7 @@ public class CompositeStrategyBuilderContextTests
     {
         var properties = new ResilienceProperties();
         var timeProvider = new FakeTimeProvider();
-        var context = new StrategyBuilderContext("builder-name", "instance", properties, "strategy-name", timeProvider, Mock.Of<DiagnosticSource>(), () => 1.0);
+        var context = new StrategyBuilderContext("builder-name", "instance", properties, "strategy-name", timeProvider, Substitute.For<DiagnosticSource>(), () => 1.0);
 
         context.BuilderName.Should().Be("builder-name");
         context.BuilderInstanceName.Should().Be("instance");

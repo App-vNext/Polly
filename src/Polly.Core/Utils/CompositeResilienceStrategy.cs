@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Polly.Utils;
 
 #pragma warning disable S2302 // "nameof" should be used

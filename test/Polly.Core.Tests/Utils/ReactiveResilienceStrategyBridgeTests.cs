@@ -1,6 +1,8 @@
-﻿namespace Polly.Core.Tests.Utils;
+﻿using Polly.Utils;
 
-public class ReactiveResilienceStrategyTests
+namespace Polly.Core.Tests.Utils;
+
+public class ReactiveResilienceStrategyBridgeTests
 {
     [Fact]
     public void Ctor_Ok()
@@ -13,10 +15,10 @@ public class ReactiveResilienceStrategyTests
     {
         var values = new List<object?>();
 
-        var strategy = new Strategy<object>(outcome =>
+        var strategy = new ReactiveResilienceStrategyBridge<object>(new Strategy<object>(outcome =>
         {
             values.Add(outcome.Result);
-        });
+        }));
 
         strategy.Execute(args => "dummy");
         strategy.Execute(args => 0);
@@ -34,10 +36,10 @@ public class ReactiveResilienceStrategyTests
     {
         var values = new List<object?>();
 
-        var strategy = new Strategy<string>(outcome =>
+        var strategy = new ReactiveResilienceStrategyBridge<string>(new Strategy<string>(outcome =>
         {
             values.Add(outcome.Result);
-        });
+        }));
 
         strategy.Execute(args => "dummy");
 
@@ -49,11 +51,11 @@ public class ReactiveResilienceStrategyTests
     public void Pipeline_TypeCheck_Ok()
     {
         var called = false;
-        var strategy = new Strategy<object>(o =>
+        var strategy = new ReactiveResilienceStrategyBridge<object>(new Strategy<object>(o =>
         {
             o.Result.Should().Be(-1);
             called = true;
-        });
+        }));
 
         strategy.Execute(() => -1);
 
@@ -66,7 +68,7 @@ public class ReactiveResilienceStrategyTests
 
         public Strategy(Action<Outcome<T>> onOutcome) => _onOutcome = onOutcome;
 
-        protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
+        protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
         {
             var outcome = await callback(context, state);
             _onOutcome(outcome);

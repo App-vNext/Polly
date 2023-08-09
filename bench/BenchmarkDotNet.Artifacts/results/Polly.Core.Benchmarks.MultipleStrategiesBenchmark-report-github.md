@@ -11,8 +11,8 @@ LaunchCount=2  WarmupCount=10
 ```
 |                                         Method |     Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
 |----------------------------------------------- |---------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
-|             ExecuteStrategyPipeline_Generic_V7 | 2.318 μs | 0.0253 μs | 0.0355 μs |  1.00 |    0.00 | 0.1106 |    2824 B |        1.00 |
-|             ExecuteStrategyPipeline_Generic_V8 | 2.044 μs | 0.0095 μs | 0.0140 μs |  0.88 |    0.02 |      - |      72 B |        0.03 |
-|    ExecuteStrategyPipeline_GenericTelemetry_V8 | 2.950 μs | 0.0059 μs | 0.0089 μs |  1.27 |    0.02 |      - |      72 B |        0.03 |
-|          ExecuteStrategyPipeline_NonGeneric_V8 | 2.295 μs | 0.0176 μs | 0.0264 μs |  0.99 |    0.01 |      - |      72 B |        0.03 |
-| ExecuteStrategyPipeline_NonGenericTelemetry_V8 | 3.153 μs | 0.0058 μs | 0.0085 μs |  1.36 |    0.02 |      - |      72 B |        0.03 |
+|             ExecuteStrategyPipeline_Generic_V7 | 2.523 μs | 0.0207 μs | 0.0303 μs |  1.00 |    0.00 | 0.1106 |    2824 B |        1.00 |
+|             ExecuteStrategyPipeline_Generic_V8 | 1.997 μs | 0.0079 μs | 0.0110 μs |  0.79 |    0.01 |      - |      40 B |        0.01 |
+|    ExecuteStrategyPipeline_GenericTelemetry_V8 | 2.909 μs | 0.0111 μs | 0.0166 μs |  1.15 |    0.01 |      - |      40 B |        0.01 |
+|          ExecuteStrategyPipeline_NonGeneric_V8 | 2.286 μs | 0.0101 μs | 0.0152 μs |  0.91 |    0.01 |      - |      40 B |        0.01 |
+| ExecuteStrategyPipeline_NonGenericTelemetry_V8 | 3.223 μs | 0.0146 μs | 0.0215 μs |  1.28 |    0.02 |      - |      40 B |        0.01 |

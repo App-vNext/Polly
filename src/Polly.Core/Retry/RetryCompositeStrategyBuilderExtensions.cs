@@ -17,13 +17,19 @@ public static class RetryCompositeStrategyBuilderExtensions
     /// <returns>The builder instance with the retry strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(RetryStrategyOptions))]
     public static CompositeStrategyBuilder AddRetry(this CompositeStrategyBuilder builder, RetryStrategyOptions options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddRetryCore<object, RetryStrategyOptions>(options);
-        return builder;
+        return builder.AddStrategy(
+            context => new RetryResilienceStrategy<object>(options, context.TimeProvider, context.Telemetry, context.Randomizer),
+            options);
     }
 
     /// <summary>
@@ -35,29 +41,19 @@ public static class RetryCompositeStrategyBuilderExtensions
     /// <returns>The builder instance with the retry strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static CompositeStrategyBuilder<TResult> AddRetry<TResult>(this CompositeStrategyBuilder<TResult> builder, RetryStrategyOptions<TResult> options)
-    {
-        Guard.NotNull(builder);
-        Guard.NotNull(options);
-
-        builder.AddRetryCore<TResult, RetryStrategyOptions<TResult>>(options);
-        return builder;
-    }
-
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    private static void AddRetryCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
-        this CompositeStrategyBuilderBase builder,
+    public static CompositeStrategyBuilder<TResult> AddRetry<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(
+        this CompositeStrategyBuilder<TResult> builder,
         RetryStrategyOptions<TResult> options)
     {
-        builder.AddStrategy(context =>
-            new RetryResilienceStrategy<TResult>(
-                options,
-                context.TimeProvider,
-                context.Telemetry,
-                context.Randomizer),
+        Guard.NotNull(builder);
+        Guard.NotNull(options);
+
+        return builder.AddStrategy(
+            context => new RetryResilienceStrategy<TResult>(options, context.TimeProvider, context.Telemetry, context.Randomizer),
             options);
     }
 }

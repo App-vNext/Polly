@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
-namespace Polly.Extensions.Telemetry;
+namespace Polly.Telemetry;
 
 #pragma warning disable S107 // Methods should not have too many parameters
 

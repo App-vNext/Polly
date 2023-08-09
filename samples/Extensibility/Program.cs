@@ -4,7 +4,7 @@ using Polly.Telemetry;
 // ------------------------------------------------------------------------
 // Usage of custom strategy
 // ------------------------------------------------------------------------
-var strategy = new ResilienceStrategyBuilder()
+var strategy = new CompositeStrategyBuilder()
     // This is custom extension defined in this sample
     .AddMyResilienceStrategy(new MyResilienceStrategyOptions
     {
@@ -23,7 +23,7 @@ strategy.Execute(() => { });
 // SIMPLE EXTENSIBILITY MODEL (INLINE STRATEGY)
 // ------------------------------------------------------------------------
 
-strategy = new ResilienceStrategyBuilder()
+strategy = new CompositeStrategyBuilder()
     // Just add the strategy instance directly
     .AddStrategy(new MySimpleStrategy())
     .Build();
@@ -76,7 +76,10 @@ public class MyResilienceStrategyOptions : ResilienceStrategyOptions
 // 2. Create a custom resilience strategy that derives from ResilienceStrategy
 // ------------------------------------------------------------------------
 
-// The strategy should be internal and not exposed as part of any public API. Instead, expose options and extensions for resilience strategy builder.
+// The strategy should be internal and not exposed as part of any public API.
+// Instead, expose options and extensions for resilience strategy builder.
+//
+// For reactive startegies, you can use ReactiveResilienceStrategy<T> as base class.
 internal class MyResilienceStrategy : ResilienceStrategy
 {
     private readonly ResilienceStrategyTelemetry telemetry;
@@ -119,13 +122,13 @@ internal class MyResilienceStrategy : ResilienceStrategy
 }
 
 // ------------------------------------------------------------------------
-// 3. Expose new extensions for ResilienceStrategyBuilder
+// 3. Expose new extensions for CompositeStrategyBuilder
 // ------------------------------------------------------------------------
 
 public static class MyResilienceStrategyExtensions
 {
-    // Add new extension that works for both "ResilienceStrategyBuilder" and "ResilienceStrategyBuilder<T>"
-    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MyResilienceStrategyOptions options) where TBuilder : ResilienceStrategyBuilderBase
+    // Add new extension that works for both "CompositeStrategyBuilder" and "CompositeStrategyBuilder<T>"
+    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MyResilienceStrategyOptions options) where TBuilder : CompositeStrategyBuilderBase
         => builder.AddStrategy(
             // Provide a factory that creates the strategy
             context => new MyResilienceStrategy(context.Telemetry, options),

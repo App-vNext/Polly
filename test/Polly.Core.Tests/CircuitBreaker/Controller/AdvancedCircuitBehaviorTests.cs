@@ -1,4 +1,4 @@
-using Moq;
+using NSubstitute;
 using Polly.CircuitBreaker;
 using Polly.CircuitBreaker.Health;
 
@@ -6,7 +6,7 @@ namespace Polly.Core.Tests.CircuitBreaker.Controller;
 
 public class AdvancedCircuitBehaviorTests
 {
-    private Mock<HealthMetrics> _metrics = new(MockBehavior.Strict, TimeProvider.System);
+    private HealthMetrics _metrics = Substitute.For<HealthMetrics>(TimeProvider.System);
 
     [InlineData(10, 10, 0.0, 0.1, false)]
     [InlineData(10, 10, 0.1, 0.1, true)]
@@ -21,15 +21,14 @@ public class AdvancedCircuitBehaviorTests
         double failureThreshold,
         bool expectedShouldBreak)
     {
-        _metrics.Setup(m => m.IncrementFailure());
-        _metrics.Setup(m => m.GetHealthInfo()).Returns(new HealthInfo(throughput, failureRate));
+        _metrics.GetHealthInfo().Returns(new HealthInfo(throughput, failureRate));
 
-        var behavior = new AdvancedCircuitBehavior(failureThreshold, minimumThruput, _metrics.Object);
+        var behavior = new AdvancedCircuitBehavior(failureThreshold, minimumThruput, _metrics);
 
         behavior.OnActionFailure(CircuitState.Closed, out var shouldBreak);
 
         shouldBreak.Should().Be(expectedShouldBreak);
-        _metrics.VerifyAll();
+        _metrics.Received(1).IncrementFailure();
     }
 
     [InlineData(CircuitState.Closed, true)]
@@ -39,7 +38,7 @@ public class AdvancedCircuitBehaviorTests
     [Theory]
     public void OnActionFailure_State_EnsureCorrectCalls(CircuitState state, bool shouldIncrementFailure)
     {
-        _metrics = new(MockBehavior.Loose, TimeProvider.System);
+        _metrics = Substitute.For<HealthMetrics>(TimeProvider.System);
 
         var sut = Create();
 
@@ -48,27 +47,27 @@ public class AdvancedCircuitBehaviorTests
         shouldBreak.Should().BeFalse();
         if (shouldIncrementFailure)
         {
-            _metrics.Verify(v => v.IncrementFailure(), Times.Once());
+            _metrics.Received(1).IncrementFailure();
         }
         else
         {
-            _metrics.Verify(v => v.IncrementFailure(), Times.Never());
+            _metrics.DidNotReceive().IncrementFailure();
         }
     }
 
     [Fact]
     public void OnCircuitClosed_Ok()
     {
-        _metrics = new(MockBehavior.Loose, TimeProvider.System);
+        _metrics = Substitute.For<HealthMetrics>(TimeProvider.System);
         var sut = Create();
 
         sut.OnCircuitClosed();
 
-        _metrics.Verify(v => v.Reset(), Times.Once());
+        _metrics.Received(1).Reset();
     }
 
     private AdvancedCircuitBehavior Create()
     {
-        return new AdvancedCircuitBehavior(CircuitBreakerConstants.DefaultFailureRatio, CircuitBreakerConstants.DefaultMinimumThroughput, _metrics.Object);
+        return new(CircuitBreakerConstants.DefaultFailureRatio, CircuitBreakerConstants.DefaultMinimumThroughput, _metrics);
     }
 }

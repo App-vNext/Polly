@@ -2,8 +2,7 @@ using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Polly.Extensions.DependencyInjection;
-using Polly.Extensions.Telemetry;
+using Polly.DependencyInjection;
 using Polly.Registry;
 using Polly.Telemetry;
 
