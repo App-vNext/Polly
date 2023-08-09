@@ -1,7 +1,7 @@
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
 
-namespace Polly.Extensions.Telemetry;
+namespace Polly.Telemetry;
 
 internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
 {
@@ -51,15 +51,14 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
         TState state)
     {
         var stamp = _timeProvider.GetTimestamp();
-        Log.ExecutingStrategy(_logger, _builderName.GetValueOrPlaceholder(), _builderInstance.GetValueOrPlaceholder(), context.OperationKey, context.GetResultType());
+        _logger.ExecutingStrategy(_builderName.GetValueOrPlaceholder(), _builderInstance.GetValueOrPlaceholder(), context.OperationKey, context.GetResultType());
 
         var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         var duration = _timeProvider.GetElapsedTime(stamp);
         var logLevel = context.IsExecutionHealthy() ? LogLevel.Debug : LogLevel.Warning;
 
-        Log.StrategyExecuted(
-            _logger,
+        _logger.StrategyExecuted(
             logLevel,
             _builderName.GetValueOrPlaceholder(),
             _builderInstance.GetValueOrPlaceholder(),

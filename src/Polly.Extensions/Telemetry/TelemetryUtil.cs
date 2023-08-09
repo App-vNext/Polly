@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
-using Polly.Telemetry;
 
-namespace Polly.Extensions.Telemetry;
+namespace Polly.Telemetry;
 
 internal static class TelemetryUtil
 {

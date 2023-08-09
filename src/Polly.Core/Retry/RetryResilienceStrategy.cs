@@ -1,4 +1,3 @@
-using System;
 using Polly.Telemetry;
 
 namespace Polly.Retry;

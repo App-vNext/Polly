@@ -1,10 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Options;
-using Polly.Extensions.Utils;
-using Polly.Registry;
 using Polly.Utils;
 
-namespace Polly.Extensions.Registry;
+namespace Polly.Registry;
 
 /// <summary>
 /// Extensions for <see cref="ConfigureBuilderContext{TKey}"/>.

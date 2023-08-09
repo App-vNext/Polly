@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Polly.DependencyInjection;
 using Polly.Registry;
 
 namespace Polly.Extensions.Tests;

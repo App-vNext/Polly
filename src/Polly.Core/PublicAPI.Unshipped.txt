@@ -146,6 +146,7 @@ Polly.Hedging.OnHedgingArguments.ExecutionTime.get -> System.TimeSpan
 Polly.Hedging.OnHedgingArguments.HasOutcome.get -> bool
 Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attemptNumber, bool hasOutcome, System.TimeSpan executionTime) -> void
 Polly.HedgingCompositeStrategyBuilderExtensions
+Polly.LegacySupport
 Polly.NullResilienceStrategy
 Polly.NullResilienceStrategy<TResult>
 Polly.Outcome
@@ -384,7 +385,6 @@ Polly.Timeout.TimeoutStrategyOptions.TimeoutGenerator.get -> System.Func<Polly.T
 Polly.Timeout.TimeoutStrategyOptions.TimeoutGenerator.set -> void
 Polly.Timeout.TimeoutStrategyOptions.TimeoutStrategyOptions() -> void
 Polly.TimeoutCompositeStrategyBuilderExtensions
-Polly.Utils.LegacySupport
 static Polly.CircuitBreakerCompositeStrategyBuilderExtensions.AddCircuitBreaker(this Polly.CompositeStrategyBuilder! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions! options) -> Polly.CompositeStrategyBuilder!
 static Polly.CircuitBreakerCompositeStrategyBuilderExtensions.AddCircuitBreaker<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
 static Polly.CompositeStrategyBuilderExtensions.AddStrategy(this Polly.CompositeStrategyBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ReactiveResilienceStrategy<object!>!>! factory, Polly.ResilienceStrategyOptions! options) -> Polly.CompositeStrategyBuilder!
@@ -394,6 +394,7 @@ static Polly.CompositeStrategyBuilderExtensions.AddStrategy<TResult>(this Polly.
 static Polly.CompositeStrategyBuilderExtensions.AddStrategy<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ReactiveResilienceStrategy<TResult>!>! factory, Polly.ResilienceStrategyOptions! options) -> Polly.CompositeStrategyBuilder<TResult>!
 static Polly.FallbackCompositeStrategyBuilderExtensions.AddFallback<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.Fallback.FallbackStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
 static Polly.HedgingCompositeStrategyBuilderExtensions.AddHedging<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.Hedging.HedgingStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
+static Polly.LegacySupport.SetProperties(this Polly.ResilienceProperties! resilienceProperties, System.Collections.Generic.IDictionary<string!, object?>! properties, out System.Collections.Generic.IDictionary<string!, object?>! oldProperties) -> void
 static Polly.Outcome.FromException<TResult>(System.Exception! exception) -> Polly.Outcome<TResult>
 static Polly.Outcome.FromExceptionAsTask<TResult>(System.Exception! exception) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 static Polly.Outcome.FromResult<TResult>(TResult? value) -> Polly.Outcome<TResult>
@@ -411,7 +412,6 @@ static Polly.RetryCompositeStrategyBuilderExtensions.AddRetry(this Polly.Composi
 static Polly.RetryCompositeStrategyBuilderExtensions.AddRetry<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.Retry.RetryStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
 static Polly.TimeoutCompositeStrategyBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, Polly.Timeout.TimeoutStrategyOptions! options) -> TBuilder!
 static Polly.TimeoutCompositeStrategyBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, System.TimeSpan timeout) -> TBuilder!
-static Polly.Utils.LegacySupport.SetProperties(this Polly.ResilienceProperties! resilienceProperties, System.Collections.Generic.IDictionary<string!, object?>! properties, out System.Collections.Generic.IDictionary<string!, object?>! oldProperties) -> void
 static readonly Polly.NullResilienceStrategy.Instance -> Polly.NullResilienceStrategy!
 static readonly Polly.NullResilienceStrategy<TResult>.Instance -> Polly.NullResilienceStrategy<TResult>!
 virtual Polly.Registry.ResilienceStrategyProvider<TKey>.GetStrategy(TKey key) -> Polly.ResilienceStrategy!

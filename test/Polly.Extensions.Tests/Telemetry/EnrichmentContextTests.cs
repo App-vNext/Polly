@@ -1,4 +1,4 @@
-using Polly.Extensions.Telemetry;
+using Polly.Telemetry;
 
 namespace Polly.Extensions.Tests.Telemetry;
 

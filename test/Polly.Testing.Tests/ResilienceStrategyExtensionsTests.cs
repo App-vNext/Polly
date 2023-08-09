@@ -1,6 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.Extensions.Logging.Abstractions;
 using Polly.CircuitBreaker;
 using Polly.Fallback;
 using Polly.Hedging;
