@@ -1,5 +1,6 @@
 ﻿namespace Polly.Utils;
 
+[DebuggerDisplay("{Strategy}")]
 internal sealed class ReactiveResilienceStrategyBridge<T> : ResilienceStrategy
 {
     public ReactiveResilienceStrategyBridge(ReactiveResilienceStrategy<T> strategy) => Strategy = strategy;
