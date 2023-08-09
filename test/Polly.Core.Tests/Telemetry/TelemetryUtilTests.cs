@@ -1,4 +1,4 @@
-using Moq;
+using NSubstitute;
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Telemetry;
@@ -20,7 +20,7 @@ public class TelemetryUtilTests
     public void CreateResilienceTelemetry_DiagnosticSourceFromProperties_Ok()
     {
         var props = new ResilienceProperties();
-        var source = Mock.Of<DiagnosticSource>();
+        var source = Substitute.For<DiagnosticSource>();
 
         var telemetry = TelemetryUtil.CreateTelemetry(source, "builder", "instance", props, "strategy-name");
 

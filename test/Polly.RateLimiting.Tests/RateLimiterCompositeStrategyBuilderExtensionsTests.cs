@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.RateLimiting;
-using Moq;
+using NSubstitute;
 
 namespace Polly.RateLimiting.Tests;
 
@@ -26,7 +26,7 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
         },
         builder =>
         {
-            var expected = Mock.Of<RateLimiter>();
+            var expected = Substitute.For<RateLimiter>();
             builder.AddRateLimiter(expected);
             AssertRateLimiter(builder, hasEvents: false, limiter => limiter.Should().Be(expected));
         }
@@ -123,7 +123,7 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
         var strategy = new CompositeStrategyBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions
             {
-                RateLimiter = ResilienceRateLimiter.Create(Mock.Of<RateLimiter>())
+                RateLimiter = ResilienceRateLimiter.Create(Substitute.For<RateLimiter>())
             })
             .Build();
 
@@ -139,7 +139,7 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
         {
             strategy.OnLeaseRejected.Should().NotBeNull();
             strategy
-                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Mock.Of<RateLimitLease>(), null))
+                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Substitute.For<RateLimitLease>(), null))
                 .Preserve().GetAwaiter().GetResult();
         }
         else
@@ -159,7 +159,7 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
         {
             strategy.OnLeaseRejected.Should().NotBeNull();
             strategy
-                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Mock.Of<RateLimitLease>(), null))
+                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Substitute.For<RateLimitLease>(), null))
                 .Preserve().GetAwaiter().GetResult();
         }
         else

@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Time.Testing;
-using Moq;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Utils;
@@ -93,9 +92,5 @@ public class CancellationTokenSourcePoolTests
         cts.IsCancellationRequested.Should().BeFalse();
     }
 
-    private static TimeProvider GetTimeProvider(object timeProvider) => timeProvider switch
-    {
-        Mock<TimeProvider> m => m.Object,
-        _ => (TimeProvider)timeProvider
-    };
+    private static TimeProvider GetTimeProvider(object timeProvider) => (TimeProvider)timeProvider;
 }

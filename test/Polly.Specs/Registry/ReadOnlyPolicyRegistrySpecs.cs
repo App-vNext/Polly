@@ -256,12 +256,12 @@ public class ReadOnlyPolicyRegistrySpecs
     [Fact]
     public void Calling_The_GetEnumerator_Method_Returning_A_IEnumerator_Of_KeyValuePair_Of_String_And_IsPolicy_Calls_The_Registrys_GetEnumerator_Method()
     {
-        var testDictionary = new Mock<IDictionary<string, IsPolicy>>();
-        var testRegistry = new PolicyRegistry(testDictionary.Object);
+        var testDictionary = Substitute.For<IDictionary<string, IsPolicy>>();
+        var testRegistry = new PolicyRegistry(testDictionary);
 
         testRegistry.GetEnumerator();
 
-        testDictionary.Verify(x => x.GetEnumerator(), Times.Once);
+        testDictionary.Received(1).GetEnumerator();
     }
 
     #endregion

@@ -1,4 +1,4 @@
-using Moq;
+using NSubstitute;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Utils;
@@ -28,11 +28,13 @@ public class DisposeHelperTests
     [Theory]
     public async Task Dispose_AsyncDisposable_Ok(bool synchronous)
     {
-        var disposable = new Mock<IAsyncDisposable>();
+        var disposable = Substitute.For<IAsyncDisposable>();
         bool disposed = false;
-        disposable.Setup(v => v.DisposeAsync()).Returns(default(ValueTask)).Callback(() => disposed = true);
 
-        await DisposeHelper.TryDisposeSafeAsync(disposable.Object, synchronous);
+        disposable.When(async (p) => await p.DisposeAsync())
+                  .Do((_) => disposed = true);
+
+        await DisposeHelper.TryDisposeSafeAsync(disposable, synchronous);
 
         disposed.Should().BeTrue();
     }
@@ -42,10 +44,10 @@ public class DisposeHelperTests
     [Theory]
     public async Task Dispose_DisposeThrows_ExceptionHandled(bool synchronous)
     {
-        var disposable = new Mock<IAsyncDisposable>();
-        disposable.Setup(v => v.DisposeAsync()).Throws(new InvalidOperationException());
+        var disposable = Substitute.For<IAsyncDisposable>();
+        disposable.When(async v => await v.DisposeAsync()).Do((_) => throw new InvalidOperationException());
 
-        await disposable.Object.Invoking(async _ => await DisposeHelper.TryDisposeSafeAsync(disposable.Object, synchronous)).Should().NotThrowAsync();
+        await disposable.Invoking(async _ => await DisposeHelper.TryDisposeSafeAsync(disposable, synchronous)).Should().NotThrowAsync();
     }
 
     [InlineData(true)]

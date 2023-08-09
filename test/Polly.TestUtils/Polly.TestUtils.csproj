@@ -13,6 +13,6 @@
     <Using Remove="System.Net.Http" />
     <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
-    <PackageReference Include="Moq" />
+    <PackageReference Include="NSubstitute" />
   </ItemGroup>
 </Project>
