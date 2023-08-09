@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Options;
-using Moq;
+using NSubstitute;
 using Polly.Utils;
 
 namespace Polly.Extensions.Tests.Utils;
@@ -9,14 +9,14 @@ public class OptionsReloadHelperTests
     [Fact]
     public void Ctor_NamedOptions()
     {
-        var monitor = new Mock<IOptionsMonitor<string>>();
+        var disposable = Substitute.For<IDisposable>();
+        var monitor = Substitute.For<IOptionsMonitor<string>>();
 
-        monitor
-            .Setup(m => m.OnChange(It.IsAny<Action<string, string?>>()))
-            .Returns(() => Mock.Of<IDisposable>());
+        monitor.OnChange(Arg.Any<Action<string, string?>>())
+               .Returns(disposable);
 
-        var helper = new OptionsReloadHelper<string>(monitor.Object, "name");
+        var helper = new OptionsReloadHelper<string>(monitor, "name");
 
-        monitor.VerifyAll();
+        monitor.Received().OnChange(Arg.Any<Action<string, string?>>());
     }
 }

@@ -1,30 +1,30 @@
-using Moq;
+using NSubstitute;
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Telemetry;
 
 public class ResilienceStrategyTelemetryTests
 {
-    private readonly Mock<DiagnosticSource> _diagnosticSource = new(MockBehavior.Strict);
+    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
 
     public ResilienceStrategyTelemetryTests() => _sut = new(new ResilienceTelemetrySource(
         "builder",
         "instance",
         new ResilienceProperties(),
-        "strategy-name"), _diagnosticSource.Object);
+        "strategy-name"), _diagnosticSource);
 
     private readonly ResilienceStrategyTelemetry _sut;
 
     [Fact]
     public void Report_NoOutcome_OK()
     {
-        _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(true);
+        _diagnosticSource.IsEnabled("dummy-event").Returns(true);
         _diagnosticSource
-            .Setup(o => o.Write("dummy-event", It.Is<object>(obj => obj is TelemetryEventArguments)))
-            .Callback<string, object>((_, obj) =>
+            .When(o => o.Write("dummy-event", Arg.Is<object>(obj => obj is TelemetryEventArguments)))
+            .Do((p) =>
             {
-                obj.Should().BeOfType<TelemetryEventArguments>();
-                var args = (TelemetryEventArguments)obj;
+                p[1].Should().BeOfType<TelemetryEventArguments>();
+                var args = (TelemetryEventArguments)p[1];
 
                 args.Event.EventName.Should().Be("dummy-event");
                 args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
@@ -38,18 +38,17 @@ public class ResilienceStrategyTelemetryTests
 
         _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments());
 
-        _diagnosticSource.VerifyAll();
+        _diagnosticSource.Received().Write("dummy-event", Arg.Is<object>(obj => obj is TelemetryEventArguments));
     }
 
     [Fact]
     public void Report_NoOutcomeWhenNotSubscribed_None()
     {
-        _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(false);
+        _diagnosticSource.IsEnabled("dummy-event").Returns(false);
 
         _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments());
 
-        _diagnosticSource.VerifyAll();
-        _diagnosticSource.VerifyNoOtherCalls();
+        _diagnosticSource.DidNotReceiveWithAnyArgs().Write(default!, default);
     }
 
     [Fact]
@@ -66,13 +65,13 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void Report_Outcome_OK()
     {
-        _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(true);
+        _diagnosticSource.IsEnabled("dummy-event").Returns(true);
         _diagnosticSource
-            .Setup(o => o.Write("dummy-event", It.Is<object>(obj => obj is TelemetryEventArguments)))
-            .Callback<string, object>((_, obj) =>
+            .When(o => o.Write("dummy-event", Arg.Is<object>(obj => obj is TelemetryEventArguments)))
+            .Do((obj) =>
             {
-                obj.Should().BeOfType<TelemetryEventArguments>();
-                var args = (TelemetryEventArguments)obj;
+                obj[1].Should().BeOfType<TelemetryEventArguments>();
+                var args = (TelemetryEventArguments)obj[1];
 
                 args.Event.EventName.Should().Be("dummy-event");
                 args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
@@ -87,30 +86,28 @@ public class ResilienceStrategyTelemetryTests
         var context = ResilienceContextPool.Shared.Get();
         _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(99), new TestArguments()));
 
-        _diagnosticSource.VerifyAll();
+        _diagnosticSource.Received().Write("dummy-event", Arg.Is<object>(obj => obj is TelemetryEventArguments));
     }
 
     [Fact]
     public void Report_SeverityNone_Skipped()
     {
-        _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(true);
+        _diagnosticSource.IsEnabled("dummy-event").Returns(true);
 
         var context = ResilienceContextPool.Shared.Get();
         _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(99), new TestArguments()));
         _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments());
 
-        _diagnosticSource.VerifyAll();
-        _diagnosticSource.VerifyNoOtherCalls();
+        _diagnosticSource.DidNotReceiveWithAnyArgs().Write(default!, default);
     }
 
     [Fact]
     public void Report_OutcomeWhenNotSubscribed_None()
     {
-        _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(false);
+        _diagnosticSource.IsEnabled("dummy-event").Returns(false);
         var context = ResilienceContextPool.Shared.Get();
         _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(10), new TestArguments()));
 
-        _diagnosticSource.VerifyAll();
-        _diagnosticSource.VerifyNoOtherCalls();
+        _diagnosticSource.DidNotReceiveWithAnyArgs().Write(default!, default);
     }
 }

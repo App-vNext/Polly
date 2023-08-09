@@ -1,6 +1,6 @@
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using Polly.Telemetry;
 
 namespace Polly.TestUtils;
@@ -46,11 +46,10 @@ public static class TestUtilities
     public static ILoggerFactory CreateLoggerFactory(out FakeLogger logger)
     {
         logger = new FakeLogger();
-        var loggerFactory = new Mock<ILoggerFactory>(MockBehavior.Strict);
-        loggerFactory.Setup(v => v.CreateLogger("Polly")).Returns(logger);
-        loggerFactory.Setup(v => v.Dispose());
+        var loggerFactory = Substitute.For<ILoggerFactory>();
+        loggerFactory.CreateLogger("Polly").Returns(logger);
 
-        return loggerFactory.Object;
+        return loggerFactory;
     }
 
     public static IDisposable EnablePollyMetering(ICollection<MeteringEvent> events)
