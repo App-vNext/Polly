@@ -7,7 +7,7 @@ namespace Polly.Testing;
 /// </summary>
 public static class ResilienceStrategyExtensions
 {
-    private const string TelemetryResilienceStrategy = "Polly.Extensions.Telemetry.TelemetryResilienceStrategy";
+    private const string TelemetryResilienceStrategy = "Polly.Telemetry.TelemetryResilienceStrategy";
 
     /// <summary>
     /// Gets the inner strategies the <paramref name="strategy"/> is composed of.
