@@ -27,11 +27,6 @@ public sealed class InnerStrategiesDescriptor
     public ResilienceStrategyDescriptor FirstStrategy => Strategies[0];
 
     /// <summary>
-    /// Gets a value indicating whether the pipeline has telemetry enabled.
-    /// </summary>
-    public bool HasTelemetry { get; }
-
-    /// <summary>
     /// Gets a value indicating whether the resilience strategy is reloadable.
     /// </summary>
     public bool IsReloadable { get; }

@@ -86,10 +86,11 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
                 RateLimiter = ResilienceRateLimiter.Create(limiter)
             })
             .Build()
-            .GetInnerStrategies().Strategies.Single()
-            .StrategyType
+            .GetInnerStrategies()
+            .FirstStrategy
+            .StrategyInstance
             .Should()
-            .Be<RateLimiterResilienceStrategy>();
+            .BeOfType<RateLimiterResilienceStrategy>();
     }
 
     [Fact]
@@ -129,11 +130,11 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
                 RateLimiter = ResilienceRateLimiter.Create(Substitute.For<RateLimiter>())
             })
             .Build()
-            .GetInnerStrategies().Strategies
-            .Single()
-            .StrategyType
+            .GetInnerStrategies()
+            .FirstStrategy
+            .StrategyInstance
             .Should()
-            .Be<RateLimiterResilienceStrategy>();
+            .BeOfType<RateLimiterResilienceStrategy>();
     }
 
     private static void AssertRateLimiterStrategy(CompositeStrategyBuilder builder, Action<RateLimiterResilienceStrategy>? assert = null, bool hasEvents = false)
@@ -154,7 +155,12 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
             limiterStrategy.OnLeaseRejected.Should().BeNull();
         }
 
-        strategy.GetInnerStrategies().Strategies.Single().StrategyType.Should().Be(typeof(RateLimiterResilienceStrategy));
+        strategy
+            .GetInnerStrategies()
+            .FirstStrategy
+            .StrategyInstance
+            .Should()
+            .BeOfType<RateLimiterResilienceStrategy>();
     }
 
     private static RateLimiterResilienceStrategy GetResilienceStrategy(ResilienceStrategy strategy)

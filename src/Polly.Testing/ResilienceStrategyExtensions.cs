@@ -39,16 +39,11 @@ public static class ResilienceStrategyExtensions
         var strategies = new List<ResilienceStrategy>();
         strategy.ExpandStrategies(strategies);
 
-        var innerStrategies = strategies.Select(s =>
-        {
-            var instance = GetStrategyInstance<T>(s);
-
-            return new ResilienceStrategyDescriptor(s.Options, instance);
-        }).ToList();
+        var innerStrategies = strategies.Select(s => new ResilienceStrategyDescriptor(s.Options, GetStrategyInstance<T>(s))).ToList();
 
         return new InnerStrategiesDescriptor(
             innerStrategies.Where(s => !ShouldSkip(s.StrategyInstance)).ToList().AsReadOnly(),
-            isReloadable: innerStrategies.OfType<ReloadableResilienceStrategy>().Any());
+            isReloadable: innerStrategies.Exists(s => s.StrategyInstance is ReloadableResilienceStrategy));
     }
 
     private static object GetStrategyInstance<T>(ResilienceStrategy strategy)
