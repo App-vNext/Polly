@@ -1,7 +1,7 @@
 ﻿namespace Polly;
 
 /// <summary>
-/// This base class for all non-reactive resilience strategies.
+/// Base class for all non-reactive resilience strategies.
 /// </summary>
 public abstract class NonReactiveResilienceStrategy
 {
