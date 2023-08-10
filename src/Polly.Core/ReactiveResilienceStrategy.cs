@@ -11,7 +11,7 @@
 public abstract class ReactiveResilienceStrategy<TResult>
 {
     /// <summary>
-    /// An implementation of resilience strategy that executes the specified <paramref name="callback"/>.
+    /// An implementation of a reactive resilience strategy that executes the specified <paramref name="callback"/>.
     /// </summary>
     /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
     /// <param name="callback">The user-provided callback.</param>

@@ -6,7 +6,7 @@
 public abstract class NonReactiveResilienceStrategy
 {
     /// <summary>
-    /// An implementation of non-reactive resilience strategy that executes the specified <paramref name="callback"/>.
+    /// An implementation of a non-reactive resilience strategy that executes the specified <paramref name="callback"/>.
     /// </summary>
     /// <typeparam name="TResult">The type of result returned by the callback.</typeparam>
     /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
