@@ -7,12 +7,12 @@ namespace Polly.RateLimiting.Tests;
 
 public class RateLimiterCompositeStrategyBuilderExtensionsTests
 {
-    public static readonly TheoryData<Action<CompositeStrategyBuilder<int>>> Data = new()
+    public static readonly TheoryData<Action<CompositeStrategyBuilder>> Data = new()
     {
         builder =>
         {
             builder.AddConcurrencyLimiter(2, 2);
-            AssertRateLimiterStrategy(builder);
+            AssertRateLimiterStrategy(builder, strategy => strategy.Limiter.Limiter.Should().BeOfType<ConcurrencyLimiter>());
         },
         builder =>
         {
@@ -23,21 +23,21 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
                     QueueLimit = 2
                 });
 
-            AssertRateLimiterStrategy(builder);
+            AssertRateLimiterStrategy(builder, strategy => strategy.Limiter.Limiter.Should().BeOfType<ConcurrencyLimiter>());
         },
         builder =>
         {
             var expected = Substitute.For<RateLimiter>();
             builder.AddRateLimiter(expected);
-            AssertRateLimiterStrategy(builder);
+            AssertRateLimiterStrategy(builder, strategy => strategy.Limiter.Limiter.Should().Be(expected));
         }
     };
 
     [MemberData(nameof(Data))]
     [Theory(Skip = "https://github.com/stryker-mutator/stryker-net/issues/2144")]
-    public void AddRateLimiter_Extensions_Ok(Action<CompositeStrategyBuilder<int>> configure)
+    public void AddRateLimiter_Extensions_Ok(Action<CompositeStrategyBuilder> configure)
     {
-        var builder = new CompositeStrategyBuilder<int>();
+        var builder = new CompositeStrategyBuilder();
 
         configure(builder);
 
@@ -61,13 +61,13 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
     [Fact]
     public void AddRateLimiter_AllExtensions_Ok()
     {
-        foreach (var configure in Data.Select(v => v[0]).Cast<Action<CompositeStrategyBuilder<int>>>())
+        foreach (var configure in Data.Select(v => v[0]).Cast<Action<CompositeStrategyBuilder>>())
         {
-            var builder = new CompositeStrategyBuilder<int>();
+            var builder = new CompositeStrategyBuilder();
 
             configure(builder);
 
-            builder.Build().GetInnerStrategies().Strategies.Single().StrategyType.Should().Be(typeof(RateLimiterResilienceStrategy));
+            AssertRateLimiterStrategy(builder);
         }
     }
 
@@ -136,8 +136,29 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
             .Be<RateLimiterResilienceStrategy>();
     }
 
-    private static void AssertRateLimiterStrategy(CompositeStrategyBuilder<int> builder)
+    private static void AssertRateLimiterStrategy(CompositeStrategyBuilder builder, Action<RateLimiterResilienceStrategy>? assert = null, bool hasEvents = false)
     {
-        builder.Build().GetInnerStrategies().Strategies.Single().StrategyType.Should().Be(typeof(RateLimiterResilienceStrategy));
+        ResilienceStrategy strategy = builder.Build();
+        var limiterStrategy = GetResilienceStrategy(strategy);
+        assert?.Invoke(limiterStrategy);
+
+        if (hasEvents)
+        {
+            limiterStrategy.OnLeaseRejected.Should().NotBeNull();
+            limiterStrategy
+                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Substitute.For<RateLimitLease>(), null))
+                .Preserve().GetAwaiter().GetResult();
+        }
+        else
+        {
+            limiterStrategy.OnLeaseRejected.Should().BeNull();
+        }
+
+        strategy.GetInnerStrategies().Strategies.Single().StrategyType.Should().Be(typeof(RateLimiterResilienceStrategy));
+    }
+
+    private static RateLimiterResilienceStrategy GetResilienceStrategy(ResilienceStrategy strategy)
+    {
+        return (RateLimiterResilienceStrategy)strategy.GetType().GetRuntimeProperty("Strategy")!.GetValue(strategy)!;
     }
 }
