@@ -24,7 +24,7 @@ public class ReloadableResilienceStrategyTests : IDisposable
     [Fact]
     public void Ctor_Ok()
     {
-        var strategy = new TestResilienceStrategy();
+        var strategy = new TestResilienceStrategy().AsStrategy();
         var sut = CreateSut(strategy);
 
         sut.Strategy.Should().Be(strategy);
@@ -35,7 +35,7 @@ public class ReloadableResilienceStrategyTests : IDisposable
     [Fact]
     public void ChangeTriggered_StrategyReloaded()
     {
-        var strategy = new TestResilienceStrategy();
+        var strategy = new TestResilienceStrategy().AsStrategy();
         var sut = CreateSut(strategy);
 
         for (var i = 0; i < 10; i++)
@@ -54,7 +54,7 @@ public class ReloadableResilienceStrategyTests : IDisposable
     [Fact]
     public void ChangeTriggered_FactoryError_LastStrategyUsedAndErrorReported()
     {
-        var strategy = new TestResilienceStrategy();
+        var strategy = new TestResilienceStrategy().AsStrategy();
         var sut = CreateSut(strategy, () => throw new InvalidOperationException());
 
         _cancellationTokenSource.Cancel();
@@ -78,10 +78,10 @@ public class ReloadableResilienceStrategyTests : IDisposable
 
     private ReloadableResilienceStrategy CreateSut(ResilienceStrategy? initial = null, Func<ResilienceStrategy>? factory = null)
     {
-        factory ??= () => new TestResilienceStrategy();
+        factory ??= () => new TestResilienceStrategy().AsStrategy();
 
         return new(
-            initial ?? new TestResilienceStrategy(),
+            initial ?? new TestResilienceStrategy().AsStrategy(),
             () => _cancellationTokenSource.Token,
             factory,
             _telemetry);

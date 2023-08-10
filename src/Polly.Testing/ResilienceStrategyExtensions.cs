@@ -56,6 +56,11 @@ public static class ResilienceStrategyExtensions
             return bridge.Strategy.GetType();
         }
 
+        if (strategy is NonReactiveResilienceStrategyBridge bridge2)
+        {
+            return bridge2.Strategy.GetType();
+        }
+
         return strategy.GetType();
     }
 

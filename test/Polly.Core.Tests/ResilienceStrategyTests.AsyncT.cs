@@ -82,7 +82,7 @@ public partial class ResilienceStrategyTests
             },
         };
 
-        var result = await parameters.Execute(strategy);
+        var result = await parameters.Execute(strategy.AsStrategy());
 
         parameters.AssertContextAfter(context!);
         parameters.AssertResult(result);
@@ -98,7 +98,7 @@ public partial class ResilienceStrategyTests
 
         static async ValueTask AssertStackTrace(Func<ResilienceStrategy, ValueTask<string>> execute)
         {
-            var strategy = new TestResilienceStrategy();
+            var strategy = new TestResilienceStrategy().AsStrategy();
 
             var error = await strategy
                 .Invoking(s =>

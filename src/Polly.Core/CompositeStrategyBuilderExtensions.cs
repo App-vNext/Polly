@@ -27,7 +27,8 @@ public static class CompositeStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(strategy);
 
-        return builder.AddStrategy(_ => strategy, EmptyOptions.Instance);
+        builder.AddStrategyCore(_ => strategy, EmptyOptions.Instance);
+        return builder;
     }
 
     /// <summary>
@@ -59,14 +60,14 @@ public static class CompositeStrategyBuilderExtensions
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> is invalid.</exception>
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
-    public static TBuilder AddStrategy<TBuilder>(this TBuilder builder, Func<StrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
+    public static TBuilder AddStrategy<TBuilder>(this TBuilder builder, Func<StrategyBuilderContext, NonReactiveResilienceStrategy> factory, ResilienceStrategyOptions options)
         where TBuilder : CompositeStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        builder.AddStrategyCore(factory, options);
+        builder.AddStrategyCore(context => new NonReactiveResilienceStrategyBridge(factory(context)), options);
         return builder;
     }
 

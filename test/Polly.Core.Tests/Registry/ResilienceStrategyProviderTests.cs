@@ -29,7 +29,7 @@ public class ResilienceStrategyProviderTests
     [Fact]
     public void Get_Exist_Ok()
     {
-        var provider = new Provider { Strategy = new TestResilienceStrategy() };
+        var provider = new Provider { Strategy = new TestResilienceStrategy().AsStrategy() };
 
         provider.GetStrategy("exists").Should().Be(provider.Strategy);
     }

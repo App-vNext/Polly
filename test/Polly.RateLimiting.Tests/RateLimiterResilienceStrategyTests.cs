@@ -99,19 +99,18 @@ public class RateLimiterResilienceStrategyTests
             .Returns(result);
     }
 
-    private RateLimiterResilienceStrategy Create()
+    private ResilienceStrategy Create()
     {
         var builder = new CompositeStrategyBuilder
         {
             DiagnosticSource = _diagnosticSource
         };
 
-        return (RateLimiterResilienceStrategy)builder
-            .AddRateLimiter(new RateLimiterStrategyOptions
-            {
-                RateLimiter = ResilienceRateLimiter.Create(_limiter),
-                OnRejected = _event
-            })
-            .Build();
+        return builder.AddRateLimiter(new RateLimiterStrategyOptions
+        {
+            RateLimiter = ResilienceRateLimiter.Create(_limiter),
+            OnRejected = _event
+        })
+        .Build();
     }
 }

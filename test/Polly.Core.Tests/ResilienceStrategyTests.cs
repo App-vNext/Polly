@@ -11,8 +11,8 @@ public partial class ResilienceStrategyTests
     {
         var pipeline = CompositeResilienceStrategy.Create(new[]
         {
-            new TestResilienceStrategy(),
-            new TestResilienceStrategy()
+            new TestResilienceStrategy().AsStrategy(),
+            new TestResilienceStrategy().AsStrategy()
         });
 
         new CompositeResilienceStrategy.DebuggerProxy(pipeline).Strategies.Should().HaveCount(2);

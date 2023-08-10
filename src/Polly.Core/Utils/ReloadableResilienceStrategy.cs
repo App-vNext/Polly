@@ -30,7 +30,7 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
 
     public ResilienceStrategy Strategy { get; private set; }
 
-    protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+    internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)
