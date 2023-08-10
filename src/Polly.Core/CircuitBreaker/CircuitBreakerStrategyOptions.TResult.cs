@@ -23,6 +23,11 @@ namespace Polly.CircuitBreaker;
 public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="CircuitBreakerStrategyOptions{TResult}"/> class.
+    /// </summary>
+    public CircuitBreakerStrategyOptions() => Name = CircuitBreakerConstants.DefaultName;
+
+    /// <summary>
     /// Gets or sets the failure-to-success ratio at which the circuit will break.
     /// </summary>
     /// <remarks>

@@ -7,29 +7,6 @@ namespace Polly.Core.Tests.CircuitBreaker;
 public class CircuitBreakerOptionsTests
 {
     [Fact]
-    public void Ctor_Defaults()
-    {
-        var options = new CircuitBreakerStrategyOptions();
-        options.BreakDuration.Should().Be(TimeSpan.FromSeconds(5));
-        options.FailureRatio.Should().Be(0.1);
-        options.MinimumThroughput.Should().Be(100);
-        options.SamplingDuration.Should().Be(TimeSpan.FromSeconds(30));
-        options.OnOpened.Should().BeNull();
-        options.OnClosed.Should().BeNull();
-        options.OnHalfOpened.Should().BeNull();
-        options.ShouldHandle.Should().NotBeNull();
-        options.Name.Should().BeNull();
-
-        // now set to min values
-        options.FailureRatio = 0.001;
-        options.BreakDuration = TimeSpan.FromMilliseconds(500);
-        options.MinimumThroughput = 2;
-        options.SamplingDuration = TimeSpan.FromMilliseconds(500);
-
-        ValidationHelper.ValidateObject(new(options, "Dummy."));
-    }
-
-    [Fact]
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new CircuitBreakerStrategyOptions();
@@ -42,7 +19,7 @@ public class CircuitBreakerOptionsTests
     }
 
     [Fact]
-    public void Ctor_Generic_Defaults()
+    public void Ctor_Defaults()
     {
         var options = new CircuitBreakerStrategyOptions<int>();
 
@@ -54,7 +31,7 @@ public class CircuitBreakerOptionsTests
         options.OnClosed.Should().BeNull();
         options.OnHalfOpened.Should().BeNull();
         options.ShouldHandle.Should().NotBeNull();
-        options.Name.Should().BeNull();
+        options.Name.Should().Be("CircuitBreaker");
 
         // now set to min values
         options.FailureRatio = 0.001;

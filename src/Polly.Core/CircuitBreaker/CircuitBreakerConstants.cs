@@ -2,6 +2,8 @@ namespace Polly.CircuitBreaker;
 
 internal static class CircuitBreakerConstants
 {
+    public const string DefaultName = "CircuitBreaker";
+
     public const string OnCircuitClosed = "OnCircuitClosed";
 
     public const string OnHalfOpenEvent = "OnCircuitHalfOpened";
