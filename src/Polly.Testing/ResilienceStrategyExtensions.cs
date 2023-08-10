@@ -51,14 +51,14 @@ public static class ResilienceStrategyExtensions
 
     private static Type GetStrategyType<T>(ResilienceStrategy strategy)
     {
-        if (strategy is ReactiveResilienceStrategyBridge<T> bridge)
+        if (strategy is ReactiveResilienceStrategyBridge<T> reactiveBridge)
         {
-            return bridge.Strategy.GetType();
+            return reactiveBridge.Strategy.GetType();
         }
 
-        if (strategy is NonReactiveResilienceStrategyBridge bridge2)
+        if (strategy is NonReactiveResilienceStrategyBridge nonReactiveBridge)
         {
-            return bridge2.Strategy.GetType();
+            return nonReactiveBridge.Strategy.GetType();
         }
 
         return strategy.GetType();
