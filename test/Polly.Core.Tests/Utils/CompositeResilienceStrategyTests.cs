@@ -9,7 +9,7 @@ public class CompositeResilienceStrategyTests
     {
         Assert.Throws<ArgumentNullException>(() => CompositeResilienceStrategy.Create(null!));
         Assert.Throws<InvalidOperationException>(() => CompositeResilienceStrategy.Create(Array.Empty<ResilienceStrategy>()));
-        Assert.Throws<InvalidOperationException>(() => CompositeResilienceStrategy.Create(new ResilienceStrategy[] { new TestResilienceStrategy() }));
+        Assert.Throws<InvalidOperationException>(() => CompositeResilienceStrategy.Create(new[] { new TestResilienceStrategy().AsStrategy() }));
         Assert.Throws<InvalidOperationException>(() => CompositeResilienceStrategy.Create(new ResilienceStrategy[]
         {
             NullResilienceStrategy.Instance,
@@ -20,11 +20,11 @@ public class CompositeResilienceStrategyTests
     [Fact]
     public void Create_EnsureOriginalStrategiesPreserved()
     {
-        var strategies = new ResilienceStrategy[]
+        var strategies = new[]
         {
-            new TestResilienceStrategy(),
-            new Strategy(),
-            new TestResilienceStrategy(),
+            new TestResilienceStrategy().AsStrategy(),
+            new Strategy().AsStrategy(),
+            new TestResilienceStrategy().AsStrategy(),
         };
 
         var pipeline = CompositeResilienceStrategy.Create(strategies);
@@ -40,10 +40,10 @@ public class CompositeResilienceStrategyTests
     [Fact]
     public async Task Create_EnsureExceptionsNotWrapped()
     {
-        var strategies = new ResilienceStrategy[]
+        var strategies = new[]
         {
-            new Strategy(),
-            new Strategy(),
+            new Strategy().AsStrategy(),
+            new Strategy().AsStrategy(),
         };
 
         var pipeline = CompositeResilienceStrategy.Create(strategies);
@@ -56,11 +56,11 @@ public class CompositeResilienceStrategyTests
     [Fact]
     public void Create_EnsurePipelineReusableAcrossDifferentPipelines()
     {
-        var strategies = new ResilienceStrategy[]
+        var strategies = new[]
         {
-            new TestResilienceStrategy(),
-            new Strategy(),
-            new TestResilienceStrategy(),
+            new TestResilienceStrategy().AsStrategy(),
+            new Strategy().AsStrategy(),
+            new TestResilienceStrategy().AsStrategy(),
         };
 
         var pipeline = CompositeResilienceStrategy.Create(strategies);
@@ -77,10 +77,10 @@ public class CompositeResilienceStrategyTests
     {
         using var cancellation = new CancellationTokenSource();
         cancellation.Cancel();
-        var strategies = new ResilienceStrategy[]
+        var strategies = new[]
         {
-            new TestResilienceStrategy(),
-            new TestResilienceStrategy(),
+            new TestResilienceStrategy().AsStrategy(),
+            new TestResilienceStrategy().AsStrategy(),
         };
 
         var pipeline = CompositeResilienceStrategy.Create(strategies);
@@ -96,10 +96,10 @@ public class CompositeResilienceStrategyTests
     {
         var executed = false;
         using var cancellation = new CancellationTokenSource();
-        var strategies = new ResilienceStrategy[]
+        var strategies = new[]
         {
-            new TestResilienceStrategy { Before = (_, _) => { executed = true; cancellation.Cancel(); } },
-            new TestResilienceStrategy(),
+            new TestResilienceStrategy { Before = (_, _) => { executed = true; cancellation.Cancel(); } }.AsStrategy(),
+            new TestResilienceStrategy().AsStrategy(),
         };
 
         var pipeline = CompositeResilienceStrategy.Create(strategies);
@@ -111,7 +111,7 @@ public class CompositeResilienceStrategyTests
         executed.Should().BeTrue();
     }
 
-    private class Strategy : ResilienceStrategy
+    private class Strategy : NonReactiveResilienceStrategy
     {
         protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

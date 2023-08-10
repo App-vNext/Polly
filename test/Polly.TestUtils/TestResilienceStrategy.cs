@@ -1,6 +1,6 @@
 namespace Polly.TestUtils;
 
-public class TestResilienceStrategy : ResilienceStrategy
+public class TestResilienceStrategy : NonReactiveResilienceStrategy
 {
     public Action<ResilienceContext, object?>? Before { get; set; }
 

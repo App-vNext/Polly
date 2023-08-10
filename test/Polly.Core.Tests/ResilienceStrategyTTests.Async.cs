@@ -71,7 +71,7 @@ public partial class ResilienceStrategyTests
                 c.ResultType.Should().Be(typeof(string));
                 c.CancellationToken.CanBeCanceled.Should().BeTrue();
             },
-        });
+        }.AsStrategy());
 
         await execute(strategy);
     }

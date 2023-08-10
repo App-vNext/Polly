@@ -55,7 +55,7 @@ internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
 
     public IReadOnlyList<ResilienceStrategy> Strategies { get; }
 
-    protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+    internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context, TState state)
     {
@@ -78,7 +78,7 @@ internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
 
         public ResilienceStrategy? Next { get; set; }
 
-        protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+        internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)

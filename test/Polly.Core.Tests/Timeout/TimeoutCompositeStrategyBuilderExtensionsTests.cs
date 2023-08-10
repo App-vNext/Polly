@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Timeout;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.Timeout;
 
@@ -31,7 +32,8 @@ public class TimeoutCompositeStrategyBuilderExtensionsTests
     {
         var builder = new CompositeStrategyBuilder<int>();
         configure(builder);
-        var strategy = builder.Build().Strategy.Should().BeOfType<TimeoutResilienceStrategy>().Subject;
+
+        var strategy = ((NonReactiveResilienceStrategyBridge)builder.Build().Strategy).Strategy.Should().BeOfType<TimeoutResilienceStrategy>().Subject;
         assert(strategy);
 
         GetTimeout(strategy).Should().Be(timeout);
@@ -42,7 +44,7 @@ public class TimeoutCompositeStrategyBuilderExtensionsTests
     {
         var strategy = new CompositeStrategyBuilder().AddTimeout(new TimeoutStrategyOptions()).Build();
 
-        strategy.Should().BeOfType<TimeoutResilienceStrategy>();
+        ((NonReactiveResilienceStrategyBridge)strategy).Strategy.Should().BeOfType<TimeoutResilienceStrategy>();
     }
 
     [Fact]

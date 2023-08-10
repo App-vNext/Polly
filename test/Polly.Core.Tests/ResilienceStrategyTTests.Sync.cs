@@ -84,7 +84,7 @@ public partial class ResilienceStrategyTests
                 c.IsSynchronous.Should().BeTrue();
                 c.ResultType.Should().Be(typeof(string));
             },
-        });
+        }.AsStrategy());
 
         execute(strategy);
     }
