@@ -3,18 +3,18 @@
 /// <summary>
 /// Arguments that encapsulate the execution attempt for retries or hedging.
 /// </summary>
-public partial class ExecutionAttemptArguments
+public sealed partial class ExecutionAttemptArguments
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ExecutionAttemptArguments"/> class.
     /// </summary>
     /// <param name="attemptNumber">The execution attempt number.</param>
-    /// <param name="executionTime">The execution time.</param>
+    /// <param name="duration">The execution duration.</param>
     /// <param name="handled">Determines whether the attempt was handled by the strategy.</param>
-    public ExecutionAttemptArguments(int attemptNumber, TimeSpan executionTime, bool handled)
+    public ExecutionAttemptArguments(int attemptNumber, TimeSpan duration, bool handled)
     {
         AttemptNumber = attemptNumber;
-        ExecutionTime = executionTime;
+        Duration = duration;
         Handled = handled;
     }
 
@@ -28,9 +28,9 @@ public partial class ExecutionAttemptArguments
     public int AttemptNumber { get; private set; }
 
     /// <summary>
-    /// Gets the execution time of the attempt.
+    /// Gets the execution duration of the attempt.
     /// </summary>
-    public TimeSpan ExecutionTime { get; private set; }
+    public TimeSpan Duration { get; private set; }
 
     /// <summary>
     /// Gets a value indicating whether the outcome was handled by retry or hedging strategy.

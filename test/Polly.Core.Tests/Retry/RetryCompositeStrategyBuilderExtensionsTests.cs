@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Retry;
-using Polly.Utils;
+using Polly.Testing;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -71,7 +71,7 @@ public class RetryCompositeStrategyBuilderExtensionsTests
 
     private static void AssertStrategy(CompositeStrategyBuilder builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<object>>? assert = null)
     {
-        var strategy = (RetryResilienceStrategy<object>)((ReactiveResilienceStrategyBridge<object>)builder.Build()).Strategy;
+        var strategy = builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<RetryResilienceStrategy<object>>().Subject;
 
         strategy.BackoffType.Should().Be(type);
         strategy.RetryCount.Should().Be(retries);
@@ -80,9 +80,14 @@ public class RetryCompositeStrategyBuilderExtensionsTests
         assert?.Invoke(strategy);
     }
 
-    private static void AssertStrategy<T>(CompositeStrategyBuilder<T> builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<T>>? assert = null)
+    private static void AssertStrategy<T>(
+        CompositeStrategyBuilder<T> builder,
+        RetryBackoffType type,
+        int retries,
+        TimeSpan delay,
+        Action<RetryResilienceStrategy<T>>? assert = null)
     {
-        var strategy = (RetryResilienceStrategy<T>)((ReactiveResilienceStrategyBridge<T>)builder.Build().Strategy).Strategy;
+        var strategy = builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<RetryResilienceStrategy<T>>().Subject;
 
         strategy.BackoffType.Should().Be(type);
         strategy.RetryCount.Should().Be(retries);

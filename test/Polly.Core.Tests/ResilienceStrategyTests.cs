@@ -13,7 +13,7 @@ public partial class ResilienceStrategyTests
         {
             new TestResilienceStrategy().AsStrategy(),
             new TestResilienceStrategy().AsStrategy()
-        });
+        }, null!, null!);
 
         new CompositeResilienceStrategy.DebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
     }

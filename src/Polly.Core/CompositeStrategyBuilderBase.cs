@@ -2,6 +2,7 @@ using System.ComponentModel;
 
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using Polly.Telemetry;
 
 namespace Polly;
 
@@ -27,7 +28,6 @@ public abstract class CompositeStrategyBuilderBase
         Name = other.Name;
         Properties = other.Properties;
         TimeProvider = other.TimeProvider;
-        OnCreatingStrategy = other.OnCreatingStrategy;
         Randomizer = other.Randomizer;
         DiagnosticSource = other.DiagnosticSource;
     }
@@ -74,18 +74,6 @@ public abstract class CompositeStrategyBuilderBase
     /// </value>
     [Required]
     internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
-
-    /// <summary>
-    /// Gets or sets the callback that is invoked just before the final resilience strategy is being created.
-    /// </summary>
-    /// <remarks>
-    /// This property is used by the telemetry infrastructure and should not be used directly by user code.
-    /// </remarks>
-    /// <value>
-    /// The default value is <see langword="null"/>.
-    /// </value>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public Action<IList<ResilienceStrategy>>? OnCreatingStrategy { get; set; }
 
     /// <summary>
     /// Gets or sets the <see cref="DiagnosticSource"/> that is used by Polly to report resilience events.
@@ -143,19 +131,16 @@ public abstract class CompositeStrategyBuilderBase
         _used = true;
 
         var strategies = _entries.Select(CreateResilienceStrategy).ToList();
-        OnCreatingStrategy?.Invoke(strategies);
 
         if (strategies.Count == 0)
         {
             return NullResilienceStrategy.Instance;
         }
 
-        if (strategies.Count == 1)
-        {
-            return strategies[0];
-        }
-
-        return CompositeResilienceStrategy.Create(strategies);
+        return CompositeResilienceStrategy.Create(
+            strategies,
+            TelemetryUtil.CreateTelemetry(DiagnosticSource, Name, InstanceName, Properties, null),
+            TimeProvider);
     }
 
     private ResilienceStrategy CreateResilienceStrategy(Entry entry)
