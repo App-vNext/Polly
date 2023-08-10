@@ -304,7 +304,7 @@ public class PollyServiceCollectionExtensionTests
         return _services.BuildServiceProvider().GetRequiredService<ResilienceStrategyProvider<string>>();
     }
 
-    private class TestStrategy : ResilienceStrategy
+    private class TestStrategy : NonReactiveResilienceStrategy
     {
         protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
