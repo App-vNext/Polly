@@ -97,7 +97,7 @@ internal sealed class HedgingResilienceStrategy<T> : ReactiveResilienceStrategy<
                 await HandleOnHedgingAsync(
                     context,
                     Outcome.FromResult<T>(default),
-                    new OnHedgingArguments(attempt, hasOutcome: false, executionTime: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
+                    new OnHedgingArguments(attempt, hasOutcome: false, duration: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
                 continue;
             }
 
