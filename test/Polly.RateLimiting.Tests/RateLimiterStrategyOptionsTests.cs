@@ -11,5 +11,6 @@ public class RateLimiterStrategyOptionsTests
         options.OnRejected.Should().BeNull();
         options.DefaultRateLimiterOptions.PermitLimit.Should().Be(1000);
         options.DefaultRateLimiterOptions.QueueLimit.Should().Be(0);
+        options.Name.Should().Be("RateLimiter");
     }
 }

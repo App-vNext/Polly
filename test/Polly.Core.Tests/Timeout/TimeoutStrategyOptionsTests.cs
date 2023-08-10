@@ -13,6 +13,7 @@ public class TimeoutStrategyOptionsTests
 
         options.TimeoutGenerator.Should().BeNull();
         options.OnTimeout.Should().BeNull();
+        options.Name.Should().Be("Timeout");
     }
 
     [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]

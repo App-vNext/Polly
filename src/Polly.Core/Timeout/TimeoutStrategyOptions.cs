@@ -7,6 +7,11 @@ namespace Polly.Timeout;
 /// </summary>
 public class TimeoutStrategyOptions : ResilienceStrategyOptions
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TimeoutStrategyOptions"/> class.
+    /// </summary>
+    public TimeoutStrategyOptions() => Name = TimeoutConstants.DefaultName;
+
 #pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     /// <summary>
     /// Gets or sets the default timeout.

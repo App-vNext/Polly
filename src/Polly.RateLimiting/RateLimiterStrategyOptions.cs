@@ -9,6 +9,11 @@ namespace Polly.RateLimiting;
 public class RateLimiterStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimiterStrategyOptions"/> class.
+    /// </summary>
+    public RateLimiterStrategyOptions() => Name = RateLimiterConstants.DefaultName;
+
+    /// <summary>
     /// Gets or sets the default rate limiter options.
     /// </summary>
     /// <remarks>
