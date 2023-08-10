@@ -52,7 +52,7 @@ public static class TestUtilities
         return loggerFactory;
     }
 
-    public static IDisposable EnablePollyMetering(ICollection<MeteringEvent> events)
+    public static IDisposable EnablePollyMetering(ICollection<MeteringEvent> events, Predicate<Instrument>? shouldListen = null)
     {
         var stateStr = Guid.NewGuid().ToString();
         var meterListener = new MeterListener
@@ -61,6 +61,11 @@ public static class TestUtilities
             {
                 if (instrument.Meter.Name == "Polly")
                 {
+                    if (shouldListen is not null && !shouldListen(instrument))
+                    {
+                        return;
+                    }
+
                     listener.EnableMeasurementEvents(instrument, stateStr);
                 }
             }
