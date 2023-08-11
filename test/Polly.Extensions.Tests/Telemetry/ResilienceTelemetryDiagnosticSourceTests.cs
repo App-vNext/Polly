@@ -37,6 +37,9 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         source.Counter.Description.Should().Be("Tracks the number of resilience events that occurred in resilience strategies.");
         source.AttemptDuration.Description.Should().Be("Tracks the duration of execution attempts.");
         source.AttemptDuration.Unit.Should().Be("ms");
+
+        source.ExecutionDuration.Description.Should().Be("The execution duration and execution results of resilience pipeplines.");
+        source.ExecutionDuration.Unit.Should().Be("ms");
     }
 
     [Fact]
@@ -363,6 +366,99 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         ReportEvent(telemetry, null, instanceName: null);
 
         called.Should().Be(hasCallback);
+    }
+
+    [InlineData(true, false)]
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    [InlineData(false, true)]
+    [Theory]
+    public void PipelineExecution_Logged(bool healthy, bool exception)
+    {
+        var healthString = healthy ? "Healthy" : "Unhealthy";
+        var context = ResilienceContextPool.Shared.Get("op-key").WithResultType<int>();
+        var telemetry = Create();
+        var outcome = exception ? Outcome.FromException<object>(new InvalidOperationException("dummy message")) : Outcome.FromResult((object)10);
+        var result = exception ? "dummy message" : "10";
+
+        if (!healthy)
+        {
+            ((List<ResilienceEvent>)context.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
+        }
+
+        ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutingArguments(), context: context);
+        ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
+
+        var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
+        messages.Should().HaveCount(1);
+        messages[0].Message.Should().Be("Resilience strategy executing. Source: 'my-builder/builder-instance', Operation Key: 'op-key', Result Type: 'Int32'");
+        messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
+        messages.Should().HaveCount(1);
+        messages[0].Message.Should().Match($"Resilience strategy executed. Source: 'my-builder/builder-instance', Operation Key: 'op-key', Result Type: 'Int32', Result: '{result}', Execution Health: '{healthString}', Execution Time: 10000ms");
+        messages[0].LogLevel.Should().Be(healthy ? LogLevel.Debug : LogLevel.Warning);
+    }
+
+    [InlineData(true, false)]
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    [InlineData(false, true)]
+    [Theory]
+    public void PipelineExecution_Metered(bool healthy, bool exception)
+    {
+        var healthString = healthy ? "Healthy" : "Unhealthy";
+        var context = ResilienceContextPool.Shared.Get("op-key").WithResultType<int>();
+        var outcome = exception ? Outcome.FromException<object>(new InvalidOperationException("dummy message")) : Outcome.FromResult((object)10);
+        var result = exception ? "dummy message" : "10";
+
+        if (!healthy)
+        {
+            ((List<ResilienceEvent>)context.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
+        }
+
+        var telemetry = Create(enrichers =>
+        {
+            enrichers.Add(context =>
+            {
+                if (exception)
+                {
+                    context.Outcome!.Value.Exception.Should().BeOfType<InvalidOperationException>();
+                }
+
+                context.Tags.Add(new("custom-tag", "custom-tag-value"));
+            });
+        });
+
+        ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
+
+        var ev = _events.Single(v => v.Name == "pipeline-execution-duration").Tags;
+
+        ev.Count.Should().Be(exception ? 10 : 9);
+        ev["builder-instance"].Should().Be("builder-instance");
+        ev["operation-key"].Should().Be("op-key");
+        ev["builder-name"].Should().Be("my-builder");
+        ev["result-type"].Should().Be("Int32");
+        ev["event-name"].Should().Be("my-event");
+        ev["event-severity"].Should().Be("Warning");
+        ev["strategy-name"].Should().Be("my-strategy");
+        ev["custom-tag"].Should().Be("custom-tag-value");
+
+        if (exception)
+        {
+            ev["exception-name"].Should().Be("System.InvalidOperationException");
+        }
+        else
+        {
+            ev.Should().NotContainKey("exception-name");
+        }
+
+        if (healthy)
+        {
+            ev["execution-health"].Should().Be("Healthy");
+        }
+        else
+        {
+            ev["execution-health"].Should().Be("Unhealthy");
+        }
     }
 
     private List<Dictionary<string, object?>> GetEvents(string eventName) => _events.Where(e => e.Name == eventName).Select(v => v.Tags).ToList();

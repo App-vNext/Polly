@@ -118,11 +118,11 @@ Dimensions:
 |`attempt-number`| The execution attempt number, starting at 0 (0, 1, 2). |
 |`attempt-handled`| Indicates if the execution outcome was handled. A handled outcome indicates execution failure and the need for retry (`true`, `false`). |
 
-#### strategy-execution-duration
+#### pipeline-execution-duration
 
 - Type: *Histogram*
 - Unit: *milliseconds*
-- Description: Measures the duration and results of resilience strategy executions.
+- Description: Measures the duration and results of resilience pipelines.
 
 Dimensions:
 

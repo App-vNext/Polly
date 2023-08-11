@@ -88,7 +88,7 @@ internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
 
         var durationArgs = PipelineExecutedArguments.Get(_timeProvider.GetElapsedTime(timeStamp));
         _telemetry.Report(
-            new ResilienceEvent(ResilienceEventSeverity.Debug, TelemetryUtil.PipelineExecuted),
+            new ResilienceEvent(ResilienceEventSeverity.Information, TelemetryUtil.PipelineExecuted),
             new OutcomeArguments<TResult, PipelineExecutedArguments>(context, outcome, durationArgs));
         PipelineExecutedArguments.Return(durationArgs);
 
