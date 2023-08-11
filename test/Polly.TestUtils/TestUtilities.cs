@@ -112,6 +112,12 @@ public static class TestUtilities
         return context;
     }
 
+    public static ResilienceContext WithVoidResultType(this ResilienceContext context)
+    {
+        context.Initialize<VoidResult>(true);
+        return context;
+    }
+
     private sealed class CallbackDiagnosticSource : DiagnosticSource
     {
         private readonly Action<TelemetryEventArguments> _callback;

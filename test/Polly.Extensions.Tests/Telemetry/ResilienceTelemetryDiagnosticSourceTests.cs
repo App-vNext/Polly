@@ -399,6 +399,18 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     }
 
     [Fact]
+    public void PipelineExecution_VoidResult_Ok()
+    {
+        var context = ResilienceContextPool.Shared.Get("op-key").WithVoidResultType();
+        var telemetry = Create();
+        ReportEvent(telemetry, outcome: null, arg: new PipelineExecutingArguments(), context: context);
+
+        var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
+        messages.Should().HaveCount(1);
+        messages[0].Message.Should().Be("Resilience strategy executing. Source: 'my-builder/builder-instance', Operation Key: 'op-key', Result Type: 'void'");
+    }
+
+    [Fact]
     public void PipelineExecution_NoOutcome_Logged()
     {
         var context = ResilienceContextPool.Shared.Get("op-key").WithResultType<int>();
