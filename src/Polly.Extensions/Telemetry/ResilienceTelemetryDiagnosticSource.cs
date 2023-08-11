@@ -31,7 +31,7 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         ExecutionDuration = Meter.CreateHistogram<double>(
             "pipeline-execution-duration",
             unit: "ms",
-            description: "The execution duration and execution results of resilience pipeplines.");
+            description: "The execution duration and execution results of resilience pipelines.");
     }
 
     public Counter<int> Counter { get; }

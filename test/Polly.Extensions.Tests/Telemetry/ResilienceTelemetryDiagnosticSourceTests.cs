@@ -38,7 +38,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         source.AttemptDuration.Description.Should().Be("Tracks the duration of execution attempts.");
         source.AttemptDuration.Unit.Should().Be("ms");
 
-        source.ExecutionDuration.Description.Should().Be("The execution duration and execution results of resilience pipeplines.");
+        source.ExecutionDuration.Description.Should().Be("The execution duration and execution results of resilience pipelines.");
         source.ExecutionDuration.Unit.Should().Be("ms");
     }
 
