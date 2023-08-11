@@ -140,9 +140,9 @@ Polly.Hedging.HedgingStrategyOptions<TResult>.ShouldHandle.get -> System.Func<Po
 Polly.Hedging.HedgingStrategyOptions<TResult>.ShouldHandle.set -> void
 Polly.Hedging.OnHedgingArguments
 Polly.Hedging.OnHedgingArguments.AttemptNumber.get -> int
-Polly.Hedging.OnHedgingArguments.ExecutionTime.get -> System.TimeSpan
+Polly.Hedging.OnHedgingArguments.Duration.get -> System.TimeSpan
 Polly.Hedging.OnHedgingArguments.HasOutcome.get -> bool
-Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attemptNumber, bool hasOutcome, System.TimeSpan executionTime) -> void
+Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attemptNumber, bool hasOutcome, System.TimeSpan duration) -> void
 Polly.HedgingCompositeStrategyBuilderExtensions
 Polly.LegacySupport
 Polly.NonReactiveResilienceStrategy
