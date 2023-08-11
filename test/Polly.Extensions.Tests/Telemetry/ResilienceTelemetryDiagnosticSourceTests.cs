@@ -398,6 +398,18 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         messages[0].LogLevel.Should().Be(healthy ? LogLevel.Debug : LogLevel.Warning);
     }
 
+    [Fact]
+    public void PipelineExecution_NoOutcome_Logged()
+    {
+        var context = ResilienceContextPool.Shared.Get("op-key").WithResultType<int>();
+        var telemetry = Create();
+
+        ReportEvent(telemetry, outcome: null, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
+
+        var messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
+        messages[0].Message.Should().Match($"Resilience strategy executed. Source: 'my-builder/builder-instance', Operation Key: 'op-key', Result Type: 'Int32', Result: '', Execution Health: 'Healthy', Execution Time: 10000ms");
+    }
+
     [InlineData(true, false)]
     [InlineData(false, false)]
     [InlineData(true, true)]
@@ -459,6 +471,20 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         {
             ev["execution-health"].Should().Be("Unhealthy");
         }
+    }
+
+    [Fact]
+    public void PipelineExecuted_ShouldBeSkipped()
+    {
+        _metering.Dispose();
+        _metering = TestUtilities.EnablePollyMetering(_events, _ => false);
+
+        var telemetry = Create();
+        var attemptArg = new PipelineExecutedArguments(TimeSpan.FromSeconds(50));
+        ReportEvent(telemetry, Outcome.FromResult<object>(true), context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
+
+        var events = GetEvents("pipeline-execution-duration");
+        events.Should().HaveCount(0);
     }
 
     private List<Dictionary<string, object?>> GetEvents(string eventName) => _events.Where(e => e.Name == eventName).Select(v => v.Tags).ToList();
