@@ -1,8 +1,8 @@
 using System.Globalization;
 using Polly.Registry;
 using Polly.Retry;
+using Polly.Testing;
 using Polly.Timeout;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Registry;
 
@@ -436,8 +436,8 @@ public class ResilienceStrategyRegistryTests
         var strategy = registry.GetOrAddStrategy(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
         var otherStrategy = registry.GetOrAddStrategy(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
 
-        ((NonReactiveResilienceStrategyBridge)strategy).Strategy.Should().BeOfType<TimeoutResilienceStrategy>();
-        strategy.Should().BeSameAs(otherStrategy);
+        strategy.GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<TimeoutResilienceStrategy>();
+
         called.Should().Be(1);
     }
 
@@ -451,8 +451,7 @@ public class ResilienceStrategyRegistryTests
         var strategy = registry.GetOrAddStrategy<string>(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
         var otherStrategy = registry.GetOrAddStrategy<string>(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
 
-        ((NonReactiveResilienceStrategyBridge)strategy.Strategy).Strategy.Should().BeOfType<TimeoutResilienceStrategy>();
-        strategy.Should().BeSameAs(otherStrategy);
+        strategy.GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<TimeoutResilienceStrategy>();
     }
 
     private ResilienceStrategyRegistry<StrategyId> CreateRegistry() => new(_options);

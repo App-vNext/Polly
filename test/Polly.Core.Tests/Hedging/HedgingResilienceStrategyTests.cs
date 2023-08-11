@@ -88,11 +88,11 @@ public class HedgingResilienceStrategyTests : IDisposable
         var attempts = _events.Select(v => v.Arguments).OfType<ExecutionAttemptArguments>().ToArray();
 
         attempts[0].Handled.Should().BeTrue();
-        attempts[0].ExecutionTime.Should().BeGreaterThan(TimeSpan.Zero);
+        attempts[0].Duration.Should().BeGreaterThan(TimeSpan.Zero);
         attempts[0].AttemptNumber.Should().Be(0);
 
         attempts[1].Handled.Should().BeTrue();
-        attempts[1].ExecutionTime.Should().BeGreaterThan(TimeSpan.Zero);
+        attempts[1].Duration.Should().BeGreaterThan(TimeSpan.Zero);
         attempts[1].AttemptNumber.Should().Be(1);
     }
 

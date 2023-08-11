@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Hedging;
-using Polly.Utils;
+using Polly.Testing;
 
 namespace Polly.Core.Tests.Hedging;
 
@@ -14,11 +14,9 @@ public class HedgingCompositeStrategyBuilderExtensionsTests
     {
         _builder.AddHedging(new HedgingStrategyOptions { ShouldHandle = _ => PredicateResult.True });
 
-        _builder.Build()
-            .Should().BeOfType<ReactiveResilienceStrategyBridge<object>>().Subject
-            .Strategy
-            .Should().BeOfType<HedgingResilienceStrategy<object>>()
-            .Subject.HedgingHandler.IsGeneric.Should().BeFalse();
+        _builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance
+            .Should().BeOfType<HedgingResilienceStrategy<object>>().Subject
+            .HedgingHandler.IsGeneric.Should().BeFalse();
     }
 
     [Fact]
@@ -30,11 +28,9 @@ public class HedgingCompositeStrategyBuilderExtensionsTests
             ShouldHandle = _ => PredicateResult.True
         });
 
-        _genericBuilder.Build().Strategy
-            .Should().BeOfType<ReactiveResilienceStrategyBridge<string>>().Subject
-            .Strategy
-            .Should().BeOfType<HedgingResilienceStrategy<string>>()
-            .Subject.HedgingHandler.IsGeneric.Should().BeTrue();
+        _genericBuilder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance
+            .Should().BeOfType<HedgingResilienceStrategy<string>>().Subject
+            .HedgingHandler.IsGeneric.Should().BeTrue();
     }
 
     [Fact]

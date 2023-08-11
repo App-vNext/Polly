@@ -10,12 +10,12 @@ public sealed class OnHedgingArguments
     /// </summary>
     /// <param name="attemptNumber">The zero-based hedging attempt number.</param>
     /// <param name="hasOutcome">Indicates whether outcome is available.</param>
-    /// <param name="executionTime">The execution time of hedging attempt or the hedging delay in case the attempt was not finished in time.</param>
-    public OnHedgingArguments(int attemptNumber, bool hasOutcome, TimeSpan executionTime)
+    /// <param name="duration">The execution duration of hedging attempt or the hedging delay in case the attempt was not finished in time.</param>
+    public OnHedgingArguments(int attemptNumber, bool hasOutcome, TimeSpan duration)
     {
         AttemptNumber = attemptNumber;
         HasOutcome = hasOutcome;
-        ExecutionTime = executionTime;
+        Duration = duration;
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public sealed class OnHedgingArguments
     public bool HasOutcome { get; }
 
     /// <summary>
-    /// Gets the execution time of hedging attempt or the hedging delay in case the attempt was not finished in time.
+    /// Gets the execution duration of hedging attempt or the hedging delay in case the attempt was not finished in time.
     /// </summary>
-    public TimeSpan ExecutionTime { get; }
+    public TimeSpan Duration { get; }
 }

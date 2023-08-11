@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Polly.Retry;
+using Polly.Testing;
 using Polly.Utils;
 
 namespace Polly.Core.Tests;
@@ -28,7 +29,6 @@ public class CompositeStrategyBuilderTests
             Name = "dummy",
             Randomizer = () => 0.0,
             DiagnosticSource = Substitute.For<DiagnosticSource>(),
-            OnCreatingStrategy = _ => { },
         };
 
         builder.Properties.Set(new ResiliencePropertyKey<string>("dummy"), "dummy");
@@ -38,7 +38,6 @@ public class CompositeStrategyBuilderTests
         other.TimeProvider.Should().Be(builder.TimeProvider);
         other.Randomizer.Should().BeSameAs(builder.Randomizer);
         other.DiagnosticSource.Should().BeSameAs(builder.DiagnosticSource);
-        other.OnCreatingStrategy.Should().BeSameAs(builder.OnCreatingStrategy);
         other.Properties.GetValue(new ResiliencePropertyKey<string>("dummy"), "").Should().Be("dummy");
     }
 
@@ -61,7 +60,8 @@ public class CompositeStrategyBuilderTests
 
         // assert
         strategy.Execute(_ => executions.Add(2));
-        ((NonReactiveResilienceStrategyBridge)strategy).Strategy.Should().BeOfType<TestResilienceStrategy>();
+
+        strategy.GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<TestResilienceStrategy>();
         executions.Should().BeInAscendingOrder();
         executions.Should().HaveCount(3);
     }
@@ -335,29 +335,6 @@ The RequiredProperty field is required.
         // assert
         verified1.Should().BeTrue();
         verified2.Should().BeTrue();
-    }
-
-    [Fact]
-    public void Build_OnCreatingStrategy_EnsureRespected()
-    {
-        // arrange
-        var strategy = new TestResilienceStrategy().AsStrategy();
-        var builder = new CompositeStrategyBuilder
-        {
-            OnCreatingStrategy = strategies =>
-            {
-                strategies.Should().ContainSingle(s => s == strategy);
-                strategies.Insert(0, new TestResilienceStrategy().AsStrategy());
-            }
-        };
-
-        builder.AddStrategy(strategy);
-
-        // act
-        var finalStrategy = builder.Build();
-
-        // assert
-        finalStrategy.Should().BeOfType<CompositeResilienceStrategy>();
     }
 
     [Fact]

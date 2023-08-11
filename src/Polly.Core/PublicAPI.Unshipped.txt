@@ -88,8 +88,6 @@ Polly.CompositeStrategyBuilderBase.InstanceName.get -> string?
 Polly.CompositeStrategyBuilderBase.InstanceName.set -> void
 Polly.CompositeStrategyBuilderBase.Name.get -> string?
 Polly.CompositeStrategyBuilderBase.Name.set -> void
-Polly.CompositeStrategyBuilderBase.OnCreatingStrategy.get -> System.Action<System.Collections.Generic.IList<Polly.ResilienceStrategy!>!>?
-Polly.CompositeStrategyBuilderBase.OnCreatingStrategy.set -> void
 Polly.CompositeStrategyBuilderBase.Properties.get -> Polly.ResilienceProperties!
 Polly.CompositeStrategyBuilderBase.Randomizer.get -> System.Func<double>!
 Polly.CompositeStrategyBuilderBase.Randomizer.set -> void
@@ -142,9 +140,9 @@ Polly.Hedging.HedgingStrategyOptions<TResult>.ShouldHandle.get -> System.Func<Po
 Polly.Hedging.HedgingStrategyOptions<TResult>.ShouldHandle.set -> void
 Polly.Hedging.OnHedgingArguments
 Polly.Hedging.OnHedgingArguments.AttemptNumber.get -> int
-Polly.Hedging.OnHedgingArguments.ExecutionTime.get -> System.TimeSpan
+Polly.Hedging.OnHedgingArguments.Duration.get -> System.TimeSpan
 Polly.Hedging.OnHedgingArguments.HasOutcome.get -> bool
-Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attemptNumber, bool hasOutcome, System.TimeSpan executionTime) -> void
+Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attemptNumber, bool hasOutcome, System.TimeSpan duration) -> void
 Polly.HedgingCompositeStrategyBuilderExtensions
 Polly.LegacySupport
 Polly.NonReactiveResilienceStrategy
@@ -329,9 +327,14 @@ Polly.StrategyBuilderContext.StrategyName.get -> string?
 Polly.StrategyBuilderContext.Telemetry.get -> Polly.Telemetry.ResilienceStrategyTelemetry!
 Polly.Telemetry.ExecutionAttemptArguments
 Polly.Telemetry.ExecutionAttemptArguments.AttemptNumber.get -> int
-Polly.Telemetry.ExecutionAttemptArguments.ExecutionAttemptArguments(int attemptNumber, System.TimeSpan executionTime, bool handled) -> void
-Polly.Telemetry.ExecutionAttemptArguments.ExecutionTime.get -> System.TimeSpan
+Polly.Telemetry.ExecutionAttemptArguments.Duration.get -> System.TimeSpan
+Polly.Telemetry.ExecutionAttemptArguments.ExecutionAttemptArguments(int attemptNumber, System.TimeSpan duration, bool handled) -> void
 Polly.Telemetry.ExecutionAttemptArguments.Handled.get -> bool
+Polly.Telemetry.PipelineExecutedArguments
+Polly.Telemetry.PipelineExecutedArguments.Duration.get -> System.TimeSpan
+Polly.Telemetry.PipelineExecutedArguments.PipelineExecutedArguments(System.TimeSpan duration) -> void
+Polly.Telemetry.PipelineExecutingArguments
+Polly.Telemetry.PipelineExecutingArguments.PipelineExecutingArguments() -> void
 Polly.Telemetry.ResilienceEvent
 Polly.Telemetry.ResilienceEvent.EventName.get -> string!
 Polly.Telemetry.ResilienceEvent.ResilienceEvent() -> void

@@ -1,3 +1,5 @@
+using Polly.Telemetry;
+
 namespace Polly.Utils;
 
 #pragma warning disable S2302 // "nameof" should be used
@@ -10,19 +12,26 @@ namespace Polly.Utils;
 internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
 {
     private readonly ResilienceStrategy _firstStrategy;
+    private readonly ResilienceStrategyTelemetry _telemetry;
+    private readonly TimeProvider _timeProvider;
 
-    public static CompositeResilienceStrategy Create(IReadOnlyList<ResilienceStrategy> strategies)
+    public static CompositeResilienceStrategy Create(IReadOnlyList<ResilienceStrategy> strategies, ResilienceStrategyTelemetry telemetry, TimeProvider timeProvider)
     {
         Guard.NotNull(strategies);
 
-        if (strategies.Count < 2)
+        if (strategies.Count == 0)
         {
-            throw new InvalidOperationException("The composite resilience strategy must contain at least two resilience strategies.");
+            throw new InvalidOperationException("The composite resilience strategy must contain at least one resilience strategy.");
         }
 
         if (strategies.Distinct().Count() != strategies.Count)
         {
             throw new InvalidOperationException("The composite resilience strategy must contain unique resilience strategies.");
+        }
+
+        if (strategies.Count == 1)
+        {
+            return new CompositeResilienceStrategy(strategies[0], strategies, telemetry, timeProvider);
         }
 
         // convert all strategies to delegating ones (except the last one as it's not required)
@@ -44,27 +53,46 @@ internal sealed partial class CompositeResilienceStrategy : ResilienceStrategy
             delegatingStrategies[i].Next = delegatingStrategies[i + 1];
         }
 
-        return new CompositeResilienceStrategy(delegatingStrategies[0], strategies);
+        return new CompositeResilienceStrategy(delegatingStrategies[0], strategies, telemetry, timeProvider);
     }
 
-    private CompositeResilienceStrategy(ResilienceStrategy first, IReadOnlyList<ResilienceStrategy> strategies)
+    private CompositeResilienceStrategy(ResilienceStrategy first, IReadOnlyList<ResilienceStrategy> strategies, ResilienceStrategyTelemetry telemetry, TimeProvider timeProvider)
     {
         Strategies = strategies;
+
+        _telemetry = telemetry;
+        _timeProvider = timeProvider;
         _firstStrategy = first;
     }
 
     public IReadOnlyList<ResilienceStrategy> Strategies { get; }
 
-    internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+    internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-        ResilienceContext context, TState state)
+        ResilienceContext context,
+        TState state)
     {
+        var timeStamp = _timeProvider.GetTimestamp();
+        _telemetry.Report(new ResilienceEvent(ResilienceEventSeverity.Debug, TelemetryUtil.PipelineExecuting), context, PipelineExecutingArguments.Instance);
+
+        Outcome<TResult> outcome;
+
         if (context.CancellationToken.IsCancellationRequested)
         {
-            return Outcome.FromExceptionAsTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
+            outcome = Outcome.FromException<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
+        }
+        else
+        {
+            outcome = await _firstStrategy.ExecuteCore(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
-        return _firstStrategy.ExecuteCore(callback, context, state);
+        var durationArgs = PipelineExecutedArguments.Get(_timeProvider.GetElapsedTime(timeStamp));
+        _telemetry.Report(
+            new ResilienceEvent(ResilienceEventSeverity.Information, TelemetryUtil.PipelineExecuted),
+            new OutcomeArguments<TResult, PipelineExecutedArguments>(context, outcome, durationArgs));
+        PipelineExecutedArguments.Return(durationArgs);
+
+        return outcome;
     }
 
     /// <summary>

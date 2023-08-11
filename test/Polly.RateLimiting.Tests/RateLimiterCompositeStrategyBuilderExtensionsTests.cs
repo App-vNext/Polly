@@ -86,10 +86,11 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
                 RateLimiter = ResilienceRateLimiter.Create(limiter)
             })
             .Build()
-            .GetInnerStrategies().Strategies.Single()
-            .StrategyType
+            .GetInnerStrategies()
+            .FirstStrategy
+            .StrategyInstance
             .Should()
-            .Be<RateLimiterResilienceStrategy>();
+            .BeOfType<RateLimiterResilienceStrategy>();
     }
 
     [Fact]
@@ -129,17 +130,19 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
                 RateLimiter = ResilienceRateLimiter.Create(Substitute.For<RateLimiter>())
             })
             .Build()
-            .GetInnerStrategies().Strategies
-            .Single()
-            .StrategyType
+            .GetInnerStrategies()
+            .FirstStrategy
+            .StrategyInstance
             .Should()
-            .Be<RateLimiterResilienceStrategy>();
+            .BeOfType<RateLimiterResilienceStrategy>();
     }
 
     private static void AssertRateLimiterStrategy(CompositeStrategyBuilder builder, Action<RateLimiterResilienceStrategy>? assert = null, bool hasEvents = false)
     {
         ResilienceStrategy strategy = builder.Build();
-        var limiterStrategy = GetResilienceStrategy(strategy);
+
+        var limiterStrategy = (RateLimiterResilienceStrategy)strategy.GetInnerStrategies().FirstStrategy.StrategyInstance;
+
         assert?.Invoke(limiterStrategy);
 
         if (hasEvents)
@@ -154,11 +157,11 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
             limiterStrategy.OnLeaseRejected.Should().BeNull();
         }
 
-        strategy.GetInnerStrategies().Strategies.Single().StrategyType.Should().Be(typeof(RateLimiterResilienceStrategy));
-    }
-
-    private static RateLimiterResilienceStrategy GetResilienceStrategy(ResilienceStrategy strategy)
-    {
-        return (RateLimiterResilienceStrategy)strategy.GetType().GetRuntimeProperty("Strategy")!.GetValue(strategy)!;
+        strategy
+            .GetInnerStrategies()
+            .FirstStrategy
+            .StrategyInstance
+            .Should()
+            .BeOfType<RateLimiterResilienceStrategy>();
     }
 }

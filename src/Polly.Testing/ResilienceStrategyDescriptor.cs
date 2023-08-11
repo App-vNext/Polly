@@ -9,11 +9,11 @@ public sealed class ResilienceStrategyDescriptor
     /// Initializes a new instance of the <see cref="ResilienceStrategyDescriptor"/> class.
     /// </summary>
     /// <param name="options">The options used by the resilience strategy, if any.</param>
-    /// <param name="strategyType">The type of the strategy.</param>
-    public ResilienceStrategyDescriptor(ResilienceStrategyOptions? options, Type strategyType)
+    /// <param name="strategyInstance">The strategy instance.</param>
+    public ResilienceStrategyDescriptor(ResilienceStrategyOptions? options, object strategyInstance)
     {
         Options = options;
-        StrategyType = strategyType;
+        StrategyInstance = strategyInstance;
     }
 
     /// <summary>
@@ -22,7 +22,7 @@ public sealed class ResilienceStrategyDescriptor
     public ResilienceStrategyOptions? Options { get; }
 
     /// <summary>
-    /// Gets the type of the strategy.
+    /// Gets the strategy instance.
     /// </summary>
-    public Type StrategyType { get; }
+    public object StrategyInstance { get; }
 }

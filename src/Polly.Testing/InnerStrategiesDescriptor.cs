@@ -9,12 +9,10 @@ public sealed class InnerStrategiesDescriptor
     /// Initializes a new instance of the <see cref="InnerStrategiesDescriptor"/> class.
     /// </summary>
     /// <param name="strategies">The strategies the pipeline is composed of.</param>
-    /// <param name="hasTelemetry">Determines whether the pipeline has telemetry enabled.</param>
     /// <param name="isReloadable">Determines whether the resilience strategy is reloadable.</param>
-    public InnerStrategiesDescriptor(IReadOnlyList<ResilienceStrategyDescriptor> strategies, bool hasTelemetry, bool isReloadable)
+    public InnerStrategiesDescriptor(IReadOnlyList<ResilienceStrategyDescriptor> strategies, bool isReloadable)
     {
         Strategies = strategies;
-        HasTelemetry = hasTelemetry;
         IsReloadable = isReloadable;
     }
 
@@ -24,9 +22,9 @@ public sealed class InnerStrategiesDescriptor
     public IReadOnlyList<ResilienceStrategyDescriptor> Strategies { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the pipeline has telemetry enabled.
+    /// Gets the first strategy of the pipeline.
     /// </summary>
-    public bool HasTelemetry { get; }
+    public ResilienceStrategyDescriptor FirstStrategy => Strategies[0];
 
     /// <summary>
     /// Gets a value indicating whether the resilience strategy is reloadable.

@@ -98,7 +98,7 @@ public partial class IssuesTests
         provider.GetStrategy(resource2Key).Should().BeSameAs(strategy2);
 
         strategy1.Execute(() => { });
-        events.Should().HaveCount(3);
+        events.Should().HaveCount(5);
         events[0].Tags["builder-name"].Should().Be("endpoint-pipeline");
         events[0].Tags["builder-instance"].Should().Be("Endpoint 1/Resource 1");
     }

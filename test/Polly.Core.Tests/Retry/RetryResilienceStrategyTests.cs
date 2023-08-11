@@ -269,7 +269,7 @@ public class RetryResilienceStrategyTests
 
             attempt.Handled.Should().BeFalse();
             attempt.AttemptNumber.Should().Be(0);
-            attempt.ExecutionTime.Should().Be(TimeSpan.FromSeconds(1));
+            attempt.Duration.Should().Be(TimeSpan.FromSeconds(1));
             called = true;
         });
 
