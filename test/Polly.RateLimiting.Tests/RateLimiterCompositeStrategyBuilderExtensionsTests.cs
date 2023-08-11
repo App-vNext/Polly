@@ -140,7 +140,9 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
     private static void AssertRateLimiterStrategy(CompositeStrategyBuilder builder, Action<RateLimiterResilienceStrategy>? assert = null, bool hasEvents = false)
     {
         ResilienceStrategy strategy = builder.Build();
-        var limiterStrategy = GetResilienceStrategy(strategy);
+
+        var limiterStrategy = (RateLimiterResilienceStrategy)strategy.GetInnerStrategies().FirstStrategy.StrategyInstance;
+
         assert?.Invoke(limiterStrategy);
 
         if (hasEvents)
@@ -161,10 +163,5 @@ public class RateLimiterCompositeStrategyBuilderExtensionsTests
             .StrategyInstance
             .Should()
             .BeOfType<RateLimiterResilienceStrategy>();
-    }
-
-    private static RateLimiterResilienceStrategy GetResilienceStrategy(ResilienceStrategy strategy)
-    {
-        return (RateLimiterResilienceStrategy)strategy.GetType().GetRuntimeProperty("Strategy")!.GetValue(strategy)!;
     }
 }
