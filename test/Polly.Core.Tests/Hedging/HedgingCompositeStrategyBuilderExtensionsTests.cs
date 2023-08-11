@@ -14,7 +14,9 @@ public class HedgingCompositeStrategyBuilderExtensionsTests
     {
         _builder.AddHedging(new HedgingStrategyOptions { ShouldHandle = _ => PredicateResult.True });
 
-        _builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<HedgingResilienceStrategy<object>>();
+        _builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance
+            .Should().BeOfType<HedgingResilienceStrategy<object>>().Subject
+            .HedgingHandler.IsGeneric.Should().BeFalse();
     }
 
     [Fact]
@@ -26,7 +28,9 @@ public class HedgingCompositeStrategyBuilderExtensionsTests
             ShouldHandle = _ => PredicateResult.True
         });
 
-        _genericBuilder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<HedgingResilienceStrategy<string>>();
+        _genericBuilder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance
+            .Should().BeOfType<HedgingResilienceStrategy<string>>().Subject
+            .HedgingHandler.IsGeneric.Should().BeTrue();
     }
 
     [Fact]
