@@ -55,7 +55,7 @@ public class ReloadableResilienceStrategyTests
         }
     }
 
-    public class ReloadableStrategy : ResilienceStrategy
+    public class ReloadableStrategy : NonReactiveResilienceStrategy
     {
         public ReloadableStrategy(string tag) => Tag = tag;
 

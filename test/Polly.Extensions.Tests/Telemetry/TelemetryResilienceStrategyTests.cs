@@ -23,7 +23,8 @@ public class TelemetryResilienceStrategyTests : IDisposable
     [Fact]
     public void Ctor_Ok()
     {
-        var duration = CreateStrategy().ExecutionDuration;
+        var strategy = CreateStrategy();
+        var duration = ((TelemetryResilienceStrategy)strategy.GetType().GetRuntimeProperty("Strategy")!.GetValue(strategy)!).ExecutionDuration;
 
         duration.Unit.Should().Be("ms");
         duration.Description.Should().Be("The execution duration and execution results of resilience strategies.");
@@ -216,7 +217,12 @@ public class TelemetryResilienceStrategyTests : IDisposable
         }
     }
 
-    private TelemetryResilienceStrategy CreateStrategy() => new("my-builder", "my-instance", _loggerFactory, (_, r) => r, new List<Action<EnrichmentContext>> { c => _enricher?.Invoke(c) });
+    private ResilienceStrategy CreateStrategy()
+    {
+        return new CompositeStrategyBuilder()
+            .AddStrategy(_ => new TelemetryResilienceStrategy("my-builder", "my-instance", _loggerFactory, (_, r) => r, new List<Action<EnrichmentContext>> { c => _enricher?.Invoke(c) }), new TestResilienceStrategyOptions())
+            .Build();
+    }
 
     public void Dispose()
     {

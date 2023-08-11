@@ -135,7 +135,7 @@ internal sealed class CircuitStateController<T> : IDisposable
             exception = _circuitState switch
             {
                 CircuitState.Open => _breakingException,
-                CircuitState.HalfOpen when isHalfOpen is false => _breakingException,
+                CircuitState.HalfOpen when !isHalfOpen => _breakingException,
                 CircuitState.Isolated => new IsolatedCircuitException(),
                 _ => null
             };

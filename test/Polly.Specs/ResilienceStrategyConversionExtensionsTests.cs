@@ -50,7 +50,7 @@ public class ResilienceStrategyConversionExtensionsTests
             [Incoming.Key] = "incoming-value"
         };
 
-        _strategy.AsSyncPolicy().Execute(_ =>
+        _strategy.AsStrategy().AsSyncPolicy().Execute(_ =>
         {
             context[Executing.Key] = "executing-value";
         },
@@ -86,7 +86,7 @@ public class ResilienceStrategyConversionExtensionsTests
             [Incoming.Key] = "incoming-value"
         };
 
-        var result = _strategy.AsSyncPolicy().Execute(_ => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
+        var result = _strategy.AsStrategy().AsSyncPolicy().Execute(_ => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
 
         AssertContext(context);
         result.Should().Be("dummy");
@@ -102,7 +102,7 @@ public class ResilienceStrategyConversionExtensionsTests
             [Incoming.Key] = "incoming-value"
         };
 
-        await _strategy.AsAsyncPolicy().ExecuteAsync(_ =>
+        await _strategy.AsStrategy().AsAsyncPolicy().ExecuteAsync(_ =>
         {
             context[Executing.Key] = "executing-value";
             return Task.CompletedTask;
@@ -144,7 +144,7 @@ public class ResilienceStrategyConversionExtensionsTests
             [Incoming.Key] = "incoming-value"
         };
 
-        var result = await _strategy.AsAsyncPolicy().ExecuteAsync(_ =>
+        var result = await _strategy.AsStrategy().AsAsyncPolicy().ExecuteAsync(_ =>
         {
             context[Executing.Key] = "executing-value";
             return Task.FromResult("dummy");

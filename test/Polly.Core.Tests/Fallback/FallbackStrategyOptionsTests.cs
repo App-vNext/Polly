@@ -14,6 +14,7 @@ public class FallbackStrategyOptionsTests
         options.ShouldHandle.Should().NotBeNull();
         options.OnFallback.Should().BeNull();
         options.FallbackAction.Should().BeNull();
+        options.Name.Should().Be("Fallback");
     }
 
     [Fact]

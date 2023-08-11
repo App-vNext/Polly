@@ -44,6 +44,7 @@ public static class TelemetryCompositeStrategyBuilderExtensions
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TelemetryOptions))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TelemetryStrategyOptions))]
     public static TBuilder ConfigureTelemetry<TBuilder>(this TBuilder builder, TelemetryOptions options)
         where TBuilder : CompositeStrategyBuilderBase
     {
@@ -62,9 +63,15 @@ public static class TelemetryCompositeStrategyBuilderExtensions
                 options.ResultFormatter,
                 options.Enrichers.ToList());
 
-            strategies.Insert(0, telemetryStrategy);
+#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
+            strategies.Insert(0, new CompositeStrategyBuilder().AddStrategy(_ => telemetryStrategy, new TelemetryStrategyOptions()).Build());
+#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
         };
 
         return builder;
+    }
+
+    private sealed class TelemetryStrategyOptions : ResilienceStrategyOptions
+    {
     }
 }

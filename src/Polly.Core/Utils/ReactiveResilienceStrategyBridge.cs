@@ -7,7 +7,7 @@ internal sealed class ReactiveResilienceStrategyBridge<T> : ResilienceStrategy
 
     public ReactiveResilienceStrategy<T> Strategy { get; }
 
-    protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+    internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)

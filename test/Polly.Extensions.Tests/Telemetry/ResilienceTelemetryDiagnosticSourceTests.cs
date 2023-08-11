@@ -12,8 +12,8 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     private readonly FakeLogger _logger;
     private readonly ILoggerFactory _loggerFactory;
     private readonly List<MeteringEvent> _events = new();
-    private readonly IDisposable _metering;
     private Action<TelemetryEventArguments>? _onEvent;
+    private IDisposable _metering;
 
     public ResilienceTelemetryDiagnosticSourceTests()
     {
@@ -288,6 +288,20 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         }
 
         _events.Single(v => v.Name == "execution-attempt-duration").Measurement.Should().Be(50000);
+    }
+
+    [Fact]
+    public void WriteExecutionAttemptEvent_ShouldBeSkipped()
+    {
+        _metering.Dispose();
+        _metering = TestUtilities.EnablePollyMetering(_events, _ => false);
+
+        var telemetry = Create();
+        var attemptArg = new ExecutionAttemptArguments(5, TimeSpan.FromSeconds(50), true);
+        ReportEvent(telemetry, Outcome.FromResult<object>(true), context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
+
+        var events = GetEvents("execution-attempt-duration");
+        events.Should().HaveCount(0);
     }
 
     [InlineData(1)]

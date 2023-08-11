@@ -55,7 +55,7 @@ public class GenericCompositeStrategyBuilderTests
     public void AddGenericStrategy_Ok()
     {
         // arrange
-        var testStrategy = new ResilienceStrategy<string>(new TestResilienceStrategy());
+        var testStrategy = new ResilienceStrategy<string>(new TestResilienceStrategy().AsStrategy());
         _builder.AddStrategy(testStrategy);
 
         // act

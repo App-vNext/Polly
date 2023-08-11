@@ -9,6 +9,11 @@ namespace Polly.Retry;
 public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="RetryStrategyOptions{TResult}"/> class.
+    /// </summary>
+    public RetryStrategyOptions() => Name = RetryConstants.DefaultName;
+
+    /// <summary>
     /// Gets or sets the maximum number of retries to use, in addition to the original call.
     /// </summary>
     /// <value>

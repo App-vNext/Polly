@@ -25,7 +25,7 @@ public class ResilienceStrategyExtensionsTests
             .AddTimeout(TimeSpan.FromSeconds(1))
             .AddHedging(new())
             .AddConcurrencyLimiter(10)
-            .AddStrategy(new CustomStrategy())
+            .AddStrategy(_ => new CustomStrategy(), new TestOptions())
             .ConfigureTelemetry(NullLoggerFactory.Instance)
             .Build();
 
@@ -65,7 +65,7 @@ public class ResilienceStrategyExtensionsTests
             .AddCircuitBreaker(new())
             .AddTimeout(TimeSpan.FromSeconds(1))
             .AddConcurrencyLimiter(10)
-            .AddStrategy(new CustomStrategy())
+            .AddStrategy(_ => new CustomStrategy(), new TestOptions())
             .ConfigureTelemetry(NullLoggerFactory.Instance)
             .Build();
 
@@ -120,7 +120,7 @@ public class ResilienceStrategyExtensionsTests
 
             builder
                 .AddConcurrencyLimiter(10)
-                .AddStrategy(new CustomStrategy());
+                .AddStrategy(_ => new CustomStrategy(), new TestOptions());
         });
 
         // act
@@ -134,9 +134,13 @@ public class ResilienceStrategyExtensionsTests
         descriptor.Strategies[1].StrategyType.Should().Be(typeof(CustomStrategy));
     }
 
-    private sealed class CustomStrategy : ResilienceStrategy
+    private sealed class CustomStrategy : NonReactiveResilienceStrategy
     {
         protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
             => throw new NotSupportedException();
+    }
+
+    private class TestOptions : ResilienceStrategyOptions
+    {
     }
 }

@@ -66,7 +66,7 @@ public class TelemetryBenchmark
         return builder.Build();
     }
 
-    private class TelemetryEventStrategy : ResilienceStrategy
+    private class TelemetryEventStrategy : NonReactiveResilienceStrategy
     {
         private readonly ResilienceStrategyTelemetry _telemetry;
 

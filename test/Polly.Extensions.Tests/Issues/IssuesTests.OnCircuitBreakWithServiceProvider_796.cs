@@ -54,7 +54,7 @@ public partial class IssuesTests
         contextChecked.Should().BeTrue();
     }
 
-    private class ServiceProviderStrategy : ResilienceStrategy
+    private class ServiceProviderStrategy : NonReactiveResilienceStrategy
     {
         private readonly IServiceProvider _serviceProvider;
 

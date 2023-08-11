@@ -2,6 +2,7 @@ using System.Globalization;
 using Polly.Registry;
 using Polly.Retry;
 using Polly.Timeout;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.Registry;
 
@@ -44,9 +45,9 @@ public class ResilienceStrategyRegistryTests
 
         registry.TryAddBuilder("C", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
 
-        registry.TryAddStrategy("A", new TestResilienceStrategy());
-        registry.TryAddStrategy("B", new TestResilienceStrategy());
-        registry.TryAddStrategy("C", new TestResilienceStrategy());
+        registry.TryAddStrategy("A", new TestResilienceStrategy().AsStrategy());
+        registry.TryAddStrategy("B", new TestResilienceStrategy().AsStrategy());
+        registry.TryAddStrategy("C", new TestResilienceStrategy().AsStrategy());
 
         registry.ClearStrategies();
 
@@ -78,8 +79,8 @@ public class ResilienceStrategyRegistryTests
     {
         var registry = new ResilienceStrategyRegistry<string>();
 
-        registry.TryAddStrategy("A", new TestResilienceStrategy());
-        registry.TryAddStrategy("B", new TestResilienceStrategy());
+        registry.TryAddStrategy("A", new TestResilienceStrategy().AsStrategy());
+        registry.TryAddStrategy("B", new TestResilienceStrategy().AsStrategy());
 
         registry.RemoveStrategy("A").Should().BeTrue();
         registry.RemoveStrategy("A").Should().BeFalse();
@@ -302,7 +303,7 @@ public class ResilienceStrategyRegistryTests
     [Fact]
     public void TryGet_ExplicitStrategyAdded_Ok()
     {
-        var expectedStrategy = new TestResilienceStrategy();
+        var expectedStrategy = new TestResilienceStrategy().AsStrategy();
         var registry = CreateRegistry();
         var key = StrategyId.Create("A", "Instance");
         registry.TryAddStrategy(key, expectedStrategy).Should().BeTrue();
@@ -328,12 +329,12 @@ public class ResilienceStrategyRegistryTests
     [Fact]
     public void TryAdd_Twice_SecondNotAdded()
     {
-        var expectedStrategy = new TestResilienceStrategy();
+        var expectedStrategy = new TestResilienceStrategy().AsStrategy();
         var registry = CreateRegistry();
         var key = StrategyId.Create("A", "Instance");
         registry.TryAddStrategy(key, expectedStrategy).Should().BeTrue();
 
-        registry.TryAddStrategy(key, new TestResilienceStrategy()).Should().BeFalse();
+        registry.TryAddStrategy(key, new TestResilienceStrategy().AsStrategy()).Should().BeFalse();
 
         registry.TryGetStrategy(key, out var strategy).Should().BeTrue();
         strategy.Should().BeSameAs(expectedStrategy);
@@ -435,7 +436,7 @@ public class ResilienceStrategyRegistryTests
         var strategy = registry.GetOrAddStrategy(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
         var otherStrategy = registry.GetOrAddStrategy(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
 
-        strategy.Should().BeOfType<TimeoutResilienceStrategy>();
+        ((NonReactiveResilienceStrategyBridge)strategy).Strategy.Should().BeOfType<TimeoutResilienceStrategy>();
         strategy.Should().BeSameAs(otherStrategy);
         called.Should().Be(1);
     }
@@ -450,7 +451,7 @@ public class ResilienceStrategyRegistryTests
         var strategy = registry.GetOrAddStrategy<string>(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
         var otherStrategy = registry.GetOrAddStrategy<string>(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
 
-        strategy.Strategy.Should().BeOfType<TimeoutResilienceStrategy>();
+        ((NonReactiveResilienceStrategyBridge)strategy.Strategy).Strategy.Should().BeOfType<TimeoutResilienceStrategy>();
         strategy.Should().BeSameAs(otherStrategy);
     }
 
