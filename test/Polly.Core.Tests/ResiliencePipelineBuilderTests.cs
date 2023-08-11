@@ -192,7 +192,7 @@ public class ResiliencePipelineBuilderTests
             .Invoking(b => b.AddPipeline(NullResiliencePipeline.Instance))
             .Should()
             .Throw<InvalidOperationException>()
-            .WithMessage("Cannot add any more resilience pipelines to the builder after it has been used to build a strategy once.");
+            .WithMessage("Cannot add any more resilience strategies to the builder after it has been used to build a pipeline once.");
     }
 
     [Fact]
