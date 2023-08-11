@@ -74,11 +74,11 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         if (noOutcome)
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: ''");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-pipeline', Operation Key: 'op-key', Result: ''");
         }
         else
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: '200'");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-pipeline', Operation Key: 'op-key', Result: '200'");
         }
     }
 
@@ -101,11 +101,11 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         if (noOutcome)
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: ''");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-pipeline', Operation Key: 'op-key', Result: ''");
         }
         else
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.'");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/builder-instance/my-pipeline', Operation Key: 'op-key', Result: 'Dummy message.'");
         }
     }
 
@@ -117,7 +117,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
 
-        messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/(null)/my-strategy', Operation Key: 'op-key', Result: ''");
+        messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-builder/(null)/my-pipeline', Operation Key: 'op-key', Result: ''");
     }
 
     [InlineData(ResilienceEventSeverity.Error, LogLevel.Error)]
@@ -152,7 +152,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         var messages = _logger.GetRecords(new EventId(3, "ExecutionAttempt")).ToList();
         messages.Should().HaveCount(1);
 
-        messages[0].Message.Should().Be("Execution attempt. Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.', Handled: 'True', Attempt: '4', Execution Time: '123'");
+        messages[0].Message.Should().Be("Execution attempt. Source: 'my-builder/builder-instance/my-pipeline', Operation Key: 'op-key', Result: 'Dummy message.', Handled: 'True', Attempt: '4', Execution Time: '123'");
     }
 
     [InlineData(true, true)]
@@ -172,11 +172,11 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         if (noOutcome)
         {
             string resultString = string.Empty;
-            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
+            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-builder/builder-instance/my-pipeline', Operation Key: 'op-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
         }
         else
         {
-            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-builder/builder-instance/my-strategy', Operation Key: 'op-key', Result: '200', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
+            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-builder/builder-instance/my-pipeline', Operation Key: 'op-key', Result: '200', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
         }
 
         messages[0].LogLevel.Should().Be(LogLevel.Warning);
@@ -225,7 +225,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         ev["event-name"].Should().Be("my-event");
         ev["event-severity"].Should().Be("Warning");
-        ev["strategy-name"].Should().Be("my-strategy");
+        ev["pipeline-name"].Should().Be("my-pipeline");
         ev["builder-instance"].Should().Be("builder-instance");
         ev["operation-key"].Should().Be("op-key");
         ev["builder-name"].Should().Be("my-builder");
@@ -273,7 +273,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         ev["event-name"].Should().Be("my-event");
         ev["event-severity"].Should().Be("Warning");
-        ev["strategy-name"].Should().Be("my-strategy");
+        ev["pipeline-name"].Should().Be("my-pipeline");
         ev["builder-instance"].Should().Be("builder-instance");
         ev["operation-key"].Should().Be("op-key");
         ev["builder-name"].Should().Be("my-builder");
@@ -391,10 +391,10 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience strategy executing. Source: 'my-builder/builder-instance', Operation Key: 'op-key', Result Type: 'Int32'");
+        messages[0].Message.Should().Be("Resilience pipeline executing. Source: 'my-builder/builder-instance', Operation Key: 'op-key', Result Type: 'Int32'");
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Match($"Resilience strategy executed. Source: 'my-builder/builder-instance', Operation Key: 'op-key', Result Type: 'Int32', Result: '{result}', Execution Health: '{healthString}', Execution Time: 10000ms");
+        messages[0].Message.Should().Match($"Resilience pipeline executed. Source: 'my-builder/builder-instance', Operation Key: 'op-key', Result Type: 'Int32', Result: '{result}', Execution Health: '{healthString}', Execution Time: 10000ms");
         messages[0].LogLevel.Should().Be(healthy ? LogLevel.Debug : LogLevel.Warning);
     }
 
@@ -463,7 +463,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         ev["result-type"].Should().Be("Int32");
         ev["event-name"].Should().Be("my-event");
         ev["event-severity"].Should().Be("Warning");
-        ev["strategy-name"].Should().Be("my-strategy");
+        ev["pipeline-name"].Should().Be("my-pipeline");
         ev["custom-tag"].Should().Be("custom-tag-value");
 
         if (exception)
@@ -534,7 +534,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             "my-builder",
             instanceName,
             props,
-            "my-strategy",
+            "my-pipeline",
             context,
             outcome,
             arg ?? new TestArguments());

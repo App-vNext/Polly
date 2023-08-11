@@ -6,7 +6,7 @@ internal static partial class Helper
 {
     public const string Failure = "failure";
 
-    public static ResilienceStrategy<string> CreateHedging()
+    public static ResiliencePipeline<string> CreateHedging()
     {
         return CreateStrategy(builder =>
         {

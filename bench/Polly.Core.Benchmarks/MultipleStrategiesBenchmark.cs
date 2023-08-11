@@ -8,8 +8,8 @@ public class MultipleStrategiesBenchmark
     private object? _strategyV7;
     private object? _strategyV8;
     private object? _strategyTelemetryV8;
-    private ResilienceStrategy? _nonGeneric;
-    private ResilienceStrategy? _nonGenericTelemetry;
+    private ResiliencePipeline? _nonGeneric;
+    private ResiliencePipeline? _nonGenericTelemetry;
 
     [GlobalSetup]
     public void Setup()

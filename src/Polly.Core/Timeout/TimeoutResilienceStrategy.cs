@@ -2,7 +2,7 @@ using Polly.Telemetry;
 
 namespace Polly.Timeout;
 
-internal sealed class TimeoutResilienceStrategy : NonReactiveResilienceStrategy
+internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly CancellationTokenSourcePool _cancellationTokenSourcePool;

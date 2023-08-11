@@ -57,9 +57,9 @@ internal static partial class Helper
         _ => throw new NotSupportedException()
     };
 
-    public static ResilienceStrategy CreateNonGenericStrategyPipeline(bool telemetry)
+    public static ResiliencePipeline CreateNonGenericStrategyPipeline(bool telemetry)
     {
-        var builder = new CompositeStrategyBuilder()
+        var builder = new ResiliencePipelineBuilder()
             .AddConcurrencyLimiter(new ConcurrencyLimiterOptions
             {
                 QueueLimit = 10,

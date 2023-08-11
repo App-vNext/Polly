@@ -2,15 +2,15 @@ namespace Polly.Core.Benchmarks;
 
 public class CircuitBreakerOpenedBenchmark
 {
-    private ResilienceStrategy? _strategy;
-    private ResilienceStrategy? _strategyHandlesOutcome;
+    private ResiliencePipeline? _strategy;
+    private ResiliencePipeline? _strategyHandlesOutcome;
     private IAsyncPolicy<string>? _policy;
 
     [GlobalSetup]
     public void Setup()
     {
-        _strategyHandlesOutcome = (ResilienceStrategy?)Helper.CreateOpenedCircuitBreaker(PollyVersion.V8, handleOutcome: true);
-        _strategy = (ResilienceStrategy?)Helper.CreateOpenedCircuitBreaker(PollyVersion.V8, handleOutcome: false);
+        _strategyHandlesOutcome = (ResiliencePipeline?)Helper.CreateOpenedCircuitBreaker(PollyVersion.V8, handleOutcome: true);
+        _strategy = (ResiliencePipeline?)Helper.CreateOpenedCircuitBreaker(PollyVersion.V8, handleOutcome: false);
         _policy = (IAsyncPolicy<string>?)Helper.CreateOpenedCircuitBreaker(PollyVersion.V7, handleOutcome: false);
     }
 

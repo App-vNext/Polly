@@ -30,12 +30,12 @@ internal static partial class Log
     [LoggerMessage(
         1,
         LogLevel.Debug,
-        "Resilience strategy executing. " +
+        "Resilience pipeline executing. " +
         "Source: '{BuilderName}/{BuilderInstance}', " +
         "Operation Key: '{OperationKey}', " +
         "Result Type: '{ResultType}'",
         EventName = "StrategyExecuting")]
-    public static partial void ExecutingStrategy(
+    public static partial void PipelineExecuting(
         this ILogger logger,
         string builderName,
         string builderInstance,
@@ -44,7 +44,7 @@ internal static partial class Log
 
     [LoggerMessage(
         EventId = 2,
-        Message = "Resilience strategy executed. " +
+        Message = "Resilience pipeline executed. " +
             "Source: '{BuilderName}/{BuilderInstance}', " +
             "Operation Key: '{OperationKey}', " +
             "Result Type: '{ResultType}', " +
@@ -52,7 +52,7 @@ internal static partial class Log
             "Execution Health: '{ExecutionHealth}', " +
             "Execution Time: {ExecutionTime}ms",
         EventName = "StrategyExecuted")]
-    public static partial void StrategyExecuted(
+    public static partial void PipelineExecuted(
         this ILogger logger,
         LogLevel logLevel,
         string builderName,

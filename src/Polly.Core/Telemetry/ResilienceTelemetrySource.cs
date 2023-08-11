@@ -11,18 +11,18 @@ public sealed class ResilienceTelemetrySource
     /// <summary>
     /// Initializes a new instance of the <see cref="ResilienceTelemetrySource"/> class.
     /// </summary>
-    /// <param name="builderName">The builder name.</param>
-    /// <param name="builderInstanceName">The builder instance name.</param>
+    /// <param name="pipelineName">The builder name.</param>
+    /// <param name="pipelineInstanceName">The builder instance name.</param>
     /// <param name="builderProperties">The builder properties.</param>
     /// <param name="strategyName">The strategy name.</param>
     public ResilienceTelemetrySource(
-        string? builderName,
-        string? builderInstanceName,
+        string? pipelineName,
+        string? pipelineInstanceName,
         ResilienceProperties builderProperties,
         string? strategyName)
     {
-        BuilderName = builderName;
-        BuilderInstanceName = builderInstanceName;
+        PipelineName = pipelineName;
+        PipelineInstanceName = pipelineInstanceName;
         BuilderProperties = builderProperties;
         StrategyName = strategyName;
     }
@@ -30,12 +30,12 @@ public sealed class ResilienceTelemetrySource
     /// <summary>
     /// Gets the builder name.
     /// </summary>
-    public string? BuilderName { get; }
+    public string? PipelineName { get; }
 
     /// <summary>
     /// Gets the builder instance name.
     /// </summary>
-    public string? BuilderInstanceName { get; }
+    public string? PipelineInstanceName { get; }
 
     /// <summary>
     /// Gets the builder properties.

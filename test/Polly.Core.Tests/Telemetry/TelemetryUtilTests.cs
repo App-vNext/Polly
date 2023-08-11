@@ -10,8 +10,8 @@ public class TelemetryUtilTests
     {
         var telemetry = TelemetryUtil.CreateTelemetry(null, "builder", "instance", new ResilienceProperties(), "strategy-name");
 
-        telemetry.TelemetrySource.BuilderName.Should().Be("builder");
-        telemetry.TelemetrySource.BuilderInstanceName.Should().Be("instance");
+        telemetry.TelemetrySource.PipelineName.Should().Be("builder");
+        telemetry.TelemetrySource.PipelineInstanceName.Should().Be("instance");
         telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name");
         telemetry.DiagnosticSource.Should().BeNull();
     }

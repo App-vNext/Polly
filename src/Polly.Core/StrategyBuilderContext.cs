@@ -2,8 +2,6 @@ using Polly.Telemetry;
 
 namespace Polly;
 
-#pragma warning disable S107
-
 /// <summary>
 /// The context used for building an individual resilience strategy.
 /// </summary>

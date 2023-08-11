@@ -31,7 +31,7 @@ public partial class IssuesTests
         };
 
         // create the strategy
-        var strategy = new CompositeStrategyBuilder().AddRetry(options).Build();
+        var strategy = new ResiliencePipelineBuilder().AddRetry(options).Build();
 
         // check that int-based results is retried
         bool isRetry = false;

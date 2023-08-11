@@ -64,14 +64,14 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.EventName, args.Event.EventName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.EventSeverity, args.Event.Severity.AsString()));
 
-        if (source.BuilderName is not null)
+        if (source.PipelineName is not null)
         {
-            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderName, source.BuilderName));
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.PipelineName, source.PipelineName));
         }
 
-        if (source.BuilderInstanceName is not null)
+        if (source.PipelineInstanceName is not null)
         {
-            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderInstance, source.BuilderInstanceName));
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.PipelineInstance, source.PipelineInstanceName));
         }
 
         if (source.StrategyName is not null)
@@ -152,9 +152,9 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 
         if (args.Arguments is PipelineExecutingArguments pipelineExecutionStarted)
         {
-            _logger.ExecutingStrategy(
-                args.Source.BuilderName.GetValueOrPlaceholder(),
-                args.Source.BuilderInstanceName.GetValueOrPlaceholder(),
+            _logger.PipelineExecuting(
+                args.Source.PipelineName.GetValueOrPlaceholder(),
+                args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
                 args.Context.OperationKey,
                 args.Context.GetResultType());
         }
@@ -162,10 +162,10 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         {
             var logLevel = args.Context.IsExecutionHealthy() ? LogLevel.Debug : LogLevel.Warning;
 
-            _logger.StrategyExecuted(
+            _logger.PipelineExecuted(
                 logLevel,
-                args.Source.BuilderName.GetValueOrPlaceholder(),
-                args.Source.BuilderInstanceName.GetValueOrPlaceholder(),
+                args.Source.PipelineName.GetValueOrPlaceholder(),
+                args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
                 args.Context.OperationKey,
                 args.Context.GetResultType(),
                 ExpandOutcome(args.Context, args.Outcome),
@@ -179,8 +179,8 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
             {
                 _logger.ExecutionAttempt(
                     level,
-                    args.Source.BuilderName.GetValueOrPlaceholder(),
-                    args.Source.BuilderInstanceName.GetValueOrPlaceholder(),
+                    args.Source.PipelineName.GetValueOrPlaceholder(),
+                    args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
                     args.Source.StrategyName.GetValueOrPlaceholder(),
                     args.Context.OperationKey,
                     result,
@@ -195,8 +195,8 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
             _logger.ResilienceEvent(
                 level,
                 args.Event.EventName,
-                args.Source.BuilderName.GetValueOrPlaceholder(),
-                args.Source.BuilderInstanceName.GetValueOrPlaceholder(),
+                args.Source.PipelineName.GetValueOrPlaceholder(),
+                args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
                 args.Source.StrategyName.GetValueOrPlaceholder(),
                 args.Context.OperationKey,
                 result,

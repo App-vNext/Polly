@@ -19,8 +19,8 @@ public partial class IssuesTests
 
         if (overrideStrategy)
         {
-            // This call overrides the strategy that the library uses. The last call to AddResilienceStrategy wins.
-            services.AddResilienceStrategy("library-strategy", builder => builder.AddRetry(new()
+            // This call overrides the pipeline that the library uses. The last call to AddResiliencePipeline wins.
+            services.AddResiliencePipeline("library-pipeline", builder => builder.AddRetry(new()
             {
                 ShouldHandle = args => args.Exception switch
                 {
@@ -44,7 +44,7 @@ public partial class IssuesTests
         }
         else
         {
-            // Originally, the library strategy only handled InvalidOperationException.
+            // Originally, the library pipeline only handled InvalidOperationException.
             api.Invoking(a => a.ExecuteLibrary(UnstableCall)).Should().Throw<SocketException>();
         }
 
@@ -54,7 +54,7 @@ public partial class IssuesTests
             {
                 failFirstCall = false;
 
-                // This exception was not originally handled by strategy.
+                // This exception was not originally handled by pipeline.
                 throw new SocketException();
             }
         }
@@ -63,7 +63,7 @@ public partial class IssuesTests
     private static void AddLibraryServices(IServiceCollection services)
     {
         services.TryAddSingleton<LibraryApi>();
-        services.AddResilienceStrategy("library-strategy", builder => builder.AddRetry(new()
+        services.AddResiliencePipeline("library-pipeline", builder => builder.AddRetry(new()
         {
             ShouldHandle = args => args.Exception switch
             {
@@ -75,10 +75,10 @@ public partial class IssuesTests
 
     public class LibraryApi
     {
-        private readonly ResilienceStrategy _strategy;
+        private readonly ResiliencePipeline _pipeline;
 
-        public LibraryApi(ResilienceStrategyProvider<string> provider) => _strategy = provider.GetStrategy("library-strategy");
+        public LibraryApi(ResiliencePipelineProvider<string> provider) => _pipeline = provider.GetPipeline("library-pipeline");
 
-        public void ExecuteLibrary(Action execute) => _strategy.Execute(execute);
+        public void ExecuteLibrary(Action execute) => _pipeline.Execute(execute);
     }
 }

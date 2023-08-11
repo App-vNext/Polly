@@ -1,7 +1,7 @@
 ﻿namespace Polly.Testing;
 
 /// <summary>
-/// This class provides additional information about a <see cref="ResilienceStrategy"/>.
+/// This class provides additional information about a <see cref="ResiliencePipeline"/>.
 /// </summary>
 public sealed class ResilienceStrategyDescriptor
 {

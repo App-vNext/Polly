@@ -10,9 +10,9 @@ namespace Polly.Registry;
 public static class ConfigureBuilderContextExtensions
 {
     /// <summary>
-    /// Enables dynamic reloading of the resilience strategy whenever the <typeparamref name="TOptions"/> options are changed.
+    /// Enables dynamic reloading of the resilience pipeline whenever the <typeparamref name="TOptions"/> options are changed.
     /// </summary>
-    /// <typeparam name="TKey">The type of the key used to identify the resilience strategy.</typeparam>
+    /// <typeparam name="TKey">The type of the key used to identify the resilience pipeline.</typeparam>
     /// <typeparam name="TOptions">The options type to listen to.</typeparam>
     /// <param name="context">The builder context.</param>
     /// <param name="optionsMonitor">The options monitor.</param>
