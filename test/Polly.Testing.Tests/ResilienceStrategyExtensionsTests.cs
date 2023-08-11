@@ -35,6 +35,7 @@ public class ResilienceStrategyExtensionsTests
         // assert
         descriptor.IsReloadable.Should().BeFalse();
         descriptor.Strategies.Should().HaveCount(7);
+        descriptor.FirstStrategy.Options.Should().BeOfType<FallbackStrategyOptions<string>>();
         descriptor.Strategies[0].Options.Should().BeOfType<FallbackStrategyOptions<string>>();
         descriptor.Strategies[0].StrategyInstance.GetType().FullName.Should().Contain("Fallback");
         descriptor.Strategies[1].Options.Should().BeOfType<RetryStrategyOptions<string>>();
