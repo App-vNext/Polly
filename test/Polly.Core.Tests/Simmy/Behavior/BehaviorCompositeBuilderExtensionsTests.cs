@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Polly.Simmy;
 using Polly.Simmy.Behavior;
 
 namespace Polly.Core.Tests.Simmy.Behavior;
@@ -15,9 +14,9 @@ public class BehaviorCompositeBuilderExtensionsTests
             (CompositeStrategyBuilder<int> builder) => { builder.AddBehavior(true, 0.5, behavior); },
             (BehaviorChaosStrategy strategy) =>
             {
-                strategy.Behavior.Invoke(context).Preserve().GetAwaiter().IsCompleted.Should().BeTrue();
-                strategy.EnabledGenerator.Invoke(new EnabledGeneratorArguments { Context = context }).Preserve().GetAwaiter().GetResult().Should().BeTrue();
-                strategy.InjectionRateGenerator.Invoke(new InjectionRateGeneratorArguments { Context = context }).Preserve().GetAwaiter().GetResult().Should().Be(0.5);
+                strategy.Behavior!.Invoke(new(context)).Preserve().GetAwaiter().IsCompleted.Should().BeTrue();
+                strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeTrue();
+                strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(0.5);
             }
         };
     }

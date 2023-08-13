@@ -2,8 +2,6 @@
 
 namespace Polly.Simmy.Behavior;
 
-#pragma warning disable CS8618 // Required members are not initialized in constructor since this is a DTO, default value is null
-
 /// <summary>
 /// Represents the options for the Behavior chaos strategy.
 /// </summary>
@@ -24,5 +22,5 @@ public class BehaviorStrategyOptions : MonkeyStrategyOptions
     /// Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<ResilienceContext, ValueTask> BehaviorAction { get; set; }
+    public Func<BehaviorActionArguments, ValueTask>? BehaviorAction { get; set; }
 }

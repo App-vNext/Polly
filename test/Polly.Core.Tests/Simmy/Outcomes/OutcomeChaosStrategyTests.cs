@@ -12,15 +12,34 @@ public class OutcomeChaosStrategyTests
     public OutcomeChaosStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
 
     public static List<object[]> FaultCtorTestCases =>
-    new()
-    {
-            new object[] { null!, "Value cannot be null. (Parameter 'options')" },
-            new object[] { new OutcomeStrategyOptions<Exception>
-            {
-                InjectionRate = 1,
-                Enabled = true,
-            }, "Either Outcome or OutcomeGenerator is required. (Parameter 'Outcome')" },
-    };
+        new()
+        {
+                new object[] { null!, "Value cannot be null. (Parameter 'options')" },
+                new object[]
+                {
+                    new OutcomeStrategyOptions<Exception>
+                    {
+                        InjectionRate = 1,
+                        Enabled = true,
+                    },
+                    "Either Outcome or OutcomeGenerator is required. (Parameter 'Outcome')"
+                },
+        };
+
+    public static List<object[]> ResultCtorTestCases =>
+        new()
+        {
+                new object[] { null!, "Value cannot be null. (Parameter 'options')" },
+                new object[]
+                {
+                    new OutcomeStrategyOptions<int>
+                    {
+                        InjectionRate = 1,
+                        Enabled = true,
+                    },
+                    "Either Outcome or OutcomeGenerator is required. (Parameter 'Outcome')"
+                },
+        };
 
     [Theory]
     [MemberData(nameof(FaultCtorTestCases))]
@@ -29,6 +48,25 @@ public class OutcomeChaosStrategyTests
         Action act = () =>
         {
             var _ = new OutcomeChaosStrategy(options, _telemetry);
+        };
+
+#if NET481
+act.Should()
+            .Throw<ArgumentNullException>();
+#else
+        act.Should()
+            .Throw<ArgumentNullException>()
+            .WithMessage(message);
+#endif
+    }
+
+    [Theory]
+    [MemberData(nameof(ResultCtorTestCases))]
+    public void ResultInvalidCtor(OutcomeStrategyOptions<int> options, string message)
+    {
+        Action act = () =>
+        {
+            var _ = new OutcomeChaosStrategy<int>(options, _telemetry);
         };
 
 #if NET481

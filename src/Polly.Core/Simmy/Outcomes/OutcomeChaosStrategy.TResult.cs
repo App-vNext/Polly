@@ -11,9 +11,7 @@ internal class OutcomeChaosStrategy<T> : ReactiveMonkeyStrategy<T>
     public OutcomeChaosStrategy(OutcomeStrategyOptions<Exception> options, ResilienceStrategyTelemetry telemetry)
         : base(options)
     {
-        Guard.NotNull(telemetry);
-
-        if (options.Outcome.Exception is null && options.OutcomeGenerator is null)
+        if (options.Outcome is null && options.OutcomeGenerator is null)
         {
             throw new ArgumentNullException(nameof(options.Outcome), "Either Outcome or OutcomeGenerator is required.");
         }
@@ -21,27 +19,30 @@ internal class OutcomeChaosStrategy<T> : ReactiveMonkeyStrategy<T>
         _telemetry = telemetry;
         Fault = options.Outcome;
         OnFaultInjected = options.OnOutcomeInjected;
-        FaultGenerator = options.Outcome.Exception is not null ? (_) => new(options.Outcome) : options.OutcomeGenerator;
+        FaultGenerator = options.OutcomeGenerator is not null ? options.OutcomeGenerator : (_) => new(options.Outcome);
     }
 
     public OutcomeChaosStrategy(OutcomeStrategyOptions<T> options, ResilienceStrategyTelemetry telemetry)
         : base(options)
     {
-        Guard.NotNull(telemetry);
+        if (options.Outcome is null && options.OutcomeGenerator is null)
+        {
+            throw new ArgumentNullException(nameof(options.Outcome), "Either Outcome or OutcomeGenerator is required.");
+        }
 
         _telemetry = telemetry;
         Outcome = options.Outcome;
         OnOutcomeInjected = options.OnOutcomeInjected;
-        OutcomeGenerator = options.Outcome.HasResult ? (_) => new(options.Outcome) : options.OutcomeGenerator;
+        OutcomeGenerator = options.OutcomeGenerator is not null ? options.OutcomeGenerator : (_) => new(options.Outcome);
     }
 
-    public Func<OnOutcomeInjectedArguments<T>, ValueTask>? OnOutcomeInjected { get; }
+    public Func<OutcomeArguments<T, OutcomeGeneratorArguments>, ValueTask>? OnOutcomeInjected { get; }
 
-    public Func<OnOutcomeInjectedArguments<Exception>, ValueTask>? OnFaultInjected { get; }
+    public Func<OutcomeArguments<Exception, OutcomeGeneratorArguments>, ValueTask>? OnFaultInjected { get; }
 
-    public Func<ResilienceContext, ValueTask<Outcome<T>?>>? OutcomeGenerator { get; }
+    public Func<OutcomeGeneratorArguments, ValueTask<Outcome<T>?>>? OutcomeGenerator { get; }
 
-    public Func<ResilienceContext, ValueTask<Outcome<Exception>?>>? FaultGenerator { get; }
+    public Func<OutcomeGeneratorArguments, ValueTask<Outcome<Exception>?>>? FaultGenerator { get; }
 
     public Outcome<T>? Outcome { get; private set; }
 
@@ -85,8 +86,9 @@ internal class OutcomeChaosStrategy<T> : ReactiveMonkeyStrategy<T>
 
     private async ValueTask<Outcome<T>?> InjectOutcome(ResilienceContext context)
     {
-        var outcome = await OutcomeGenerator!(context).ConfigureAwait(context.ContinueOnCapturedContext);
-        var args = new OnOutcomeInjectedArguments<T>(context, new Outcome<T>(outcome.Value.Result));
+        var outcomeGeneratorArgs = new OutcomeGeneratorArguments(context);
+        var outcome = await OutcomeGenerator!(outcomeGeneratorArgs).ConfigureAwait(context.ContinueOnCapturedContext);
+        var args = new OutcomeArguments<T, OutcomeGeneratorArguments>(context, outcome.Value, outcomeGeneratorArgs);
         _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnOutcomeInjectedEvent), context, args);
 
         if (OnOutcomeInjected is not null)
@@ -101,7 +103,8 @@ internal class OutcomeChaosStrategy<T> : ReactiveMonkeyStrategy<T>
     {
         try
         {
-            var fault = await FaultGenerator!(context).ConfigureAwait(context.ContinueOnCapturedContext);
+            var outcomeGeneratorArgs = new OutcomeGeneratorArguments(context);
+            var fault = await FaultGenerator!(outcomeGeneratorArgs).ConfigureAwait(context.ContinueOnCapturedContext);
             if (!fault.HasValue)
             {
                 return null;
@@ -111,7 +114,7 @@ internal class OutcomeChaosStrategy<T> : ReactiveMonkeyStrategy<T>
             context.CancellationToken.ThrowIfCancellationRequested();
 
             Outcome = new(fault.Value.Exception!);
-            var args = new OnOutcomeInjectedArguments<Exception>(context, new Outcome<Exception>(fault.Value.Exception!));
+            var args = new OutcomeArguments<Exception, OutcomeGeneratorArguments>(context, new Outcome<Exception>(fault.Value.Exception!), outcomeGeneratorArgs);
             _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnFaultInjectedEvent), context, args);
 
             if (OnFaultInjected is not null)

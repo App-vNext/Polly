@@ -1,6 +1,4 @@
-﻿using Polly.Simmy.Utils;
-
-namespace Polly.Simmy;
+﻿namespace Polly.Simmy;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 #pragma warning disable S3928 // Custom ArgumentNullException message
@@ -42,14 +40,14 @@ public abstract class MonkeyStrategy : ResilienceStrategy
     /// <param name="context">The <see cref="ResilienceContext"/> instance.</param>
     /// <returns>A boolean value that indicates whether or not the chaos strategy should be injected.</returns>
     /// <remarks>Use this method before injecting any chaos strategy to evaluate whether a given chaos strategy needs to be injected during the execution.</remarks>
-    public async ValueTask<bool> ShouldInjectAsync(ResilienceContext context)
+    protected async ValueTask<bool> ShouldInjectAsync(ResilienceContext context)
     {
         Guard.NotNull(context);
 
         // to prevent executing config delegates if token was signaled before to start.
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        if (!await EnabledGenerator(new EnabledGeneratorArguments { Context = context }).ConfigureAwait(context.ContinueOnCapturedContext))
+        if (!await EnabledGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext))
         {
             return false;
         }
@@ -57,13 +55,27 @@ public abstract class MonkeyStrategy : ResilienceStrategy
         // to prevent executing InjectionRate config delegate if token was signaled on Enabled configuration delegate.
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        double injectionThreshold = await InjectionRateGenerator(new InjectionRateGeneratorArguments { Context = context })
-            .ConfigureAwait(context.ContinueOnCapturedContext);
+        double injectionThreshold = await InjectionRateGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
 
         // to prevent executing further config delegates if token was signaled on InjectionRate configuration delegate.
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        injectionThreshold.EnsureInjectionThreshold();
+        injectionThreshold = CoerceInjectionThreshold(injectionThreshold);
         return _randomizer() < injectionThreshold;
+    }
+
+    private static double CoerceInjectionThreshold(double injectionThreshold)
+    {
+        if (injectionThreshold < MonkeyStrategyConstants.MinInjectionThreshold)
+        {
+            return MonkeyStrategyConstants.MinInjectionThreshold;
+        }
+
+        if (injectionThreshold > MonkeyStrategyConstants.MaxInjectionThreshold)
+        {
+            return MonkeyStrategyConstants.MaxInjectionThreshold;
+        }
+
+        return injectionThreshold;
     }
 }

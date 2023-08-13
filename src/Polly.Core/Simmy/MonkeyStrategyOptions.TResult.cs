@@ -14,8 +14,7 @@ public abstract class MonkeyStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the injection rate for a given execution, which the value should be between [0, 1].
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="null"/>. Either <see cref="InjectionRateGenerator"/> or this property is required.
-    /// When this property is <see langword="null"/> the <see cref="InjectionRateGenerator"/> is used.
+    /// Defaults to 0.001. Either <see cref="InjectionRateGenerator"/> or this property is required.
     /// </remarks>
     [Range(MonkeyStrategyConstants.MinInjectionThreshold, MonkeyStrategyConstants.MaxInjectionThreshold)]
     public double InjectionRate { get; set; } = MonkeyStrategyConstants.DefaultInjectionRate;
@@ -42,8 +41,7 @@ public abstract class MonkeyStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets a value indicating whether or not the chaos strategy is enabled for a given execution.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="null"/>. Either <see cref="EnabledGenerator"/> or this property is required.
-    /// When this property is <see langword="null"/> the <see cref="EnabledGenerator"/> is used.
+    /// Defaults to <see langword="false"/>. Either <see cref="EnabledGenerator"/> or this property is required.
     /// </remarks>
     public bool Enabled { get; set; }
 
@@ -56,4 +54,3 @@ public abstract class MonkeyStrategyOptions<TResult> : ResilienceStrategyOptions
     [Required]
     public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;
 }
-

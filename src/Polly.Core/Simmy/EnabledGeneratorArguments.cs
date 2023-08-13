@@ -1,12 +1,20 @@
 ﻿namespace Polly.Simmy;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// Defines the arguments for the <see cref="MonkeyStrategyOptions{TResult}.EnabledGenerator"/>.
 /// </summary>
-public sealed class EnabledGeneratorArguments
+public readonly struct EnabledGeneratorArguments
 {
     /// <summary>
-    /// Gets or sets the ResilienceContext instance.
+    /// Initializes a new instance of the <see cref="EnabledGeneratorArguments"/> struct.
     /// </summary>
-    public ResilienceContext? Context { get; set; }
+    /// <param name="context">The resilience context intance.</param>
+    public EnabledGeneratorArguments(ResilienceContext context) => Context = context;
+
+    /// <summary>
+    /// Gets the ResilienceContext instance.
+    /// </summary>
+    public ResilienceContext Context { get; }
 }

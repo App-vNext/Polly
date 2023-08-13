@@ -1,6 +1,4 @@
-﻿using Polly.Simmy;
-
-namespace Polly.Core.Tests.Simmy;
+﻿namespace Polly.Core.Tests.Simmy;
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 
@@ -45,30 +43,29 @@ act.Should()
         var sut = CreateSut();
 
         sut.EnabledGenerator.Should().NotBeNull();
-        (await sut.EnabledGenerator(new EnabledGeneratorArguments { Context = context })).Should().BeTrue();
+        (await sut.EnabledGenerator(new(context))).Should().BeTrue();
 
         sut.InjectionRateGenerator.Should().NotBeNull();
-        (await sut.InjectionRateGenerator(new InjectionRateGeneratorArguments { Context = context })).Should().Be(0.5);
+        (await sut.InjectionRateGenerator(new(context))).Should().Be(0.5);
     }
 
-    [InlineData(-1)]
-    [InlineData(1.1)]
+    [InlineData(-1, false)]
+    [InlineData(1.1, true)]
     [Theory]
-    public async Task Should_throw_error_when_injection_rate_generator_result_is_not_valid(double injectionRate)
+    public async Task Should_coerce_injection_rate_generator_result_is_not_valid(double injectionRateGeneratorResult, bool shouldBeInjected)
     {
         var wasMonkeyUnleashed = false;
 
         _options.EnabledGenerator = (_) => new ValueTask<bool>(true);
-        _options.InjectionRateGenerator = (_) => new ValueTask<double>(injectionRate);
+        _options.InjectionRateGenerator = (_) => new ValueTask<double>(injectionRateGeneratorResult);
         _options.Randomizer = () => 0.5;
 
         var sut = CreateSut();
+        sut.OnExecute = (_, _) => { wasMonkeyUnleashed = true; return Task.CompletedTask; };
 
-        await sut.Invoking(s => s.ExecuteAsync((_) => { return default; }).AsTask())
-            .Should()
-            .ThrowAsync<ArgumentOutOfRangeException>();
+        await sut.ExecuteAsync((_) => { return default; });
 
-        wasMonkeyUnleashed.Should().BeFalse();
+        wasMonkeyUnleashed.Should().Be(shouldBeInjected);
     }
 
     [Fact]

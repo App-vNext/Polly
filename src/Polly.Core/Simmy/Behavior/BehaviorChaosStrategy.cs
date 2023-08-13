@@ -11,9 +11,6 @@ internal sealed class BehaviorChaosStrategy : MonkeyStrategy
         ResilienceStrategyTelemetry telemetry)
         : base(options)
     {
-        Guard.NotNull(telemetry);
-        Guard.NotNull(options.BehaviorAction);
-
         _telemetry = telemetry;
         OnBehaviorInjected = options.OnBehaviorInjected;
         Behavior = options.BehaviorAction;
@@ -21,16 +18,18 @@ internal sealed class BehaviorChaosStrategy : MonkeyStrategy
 
     public Func<OnBehaviorInjectedArguments, ValueTask>? OnBehaviorInjected { get; }
 
-    public Func<ResilienceContext, ValueTask> Behavior { get; }
+    public Func<BehaviorActionArguments, ValueTask>? Behavior { get; }
 
     protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
     {
         try
         {
             if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext))
             {
-                await Behavior(context).ConfigureAwait(context.ContinueOnCapturedContext);
+                await Behavior!(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
 
                 var args = new OnBehaviorInjectedArguments(context);
                 _telemetry.Report(new(ResilienceEventSeverity.Warning, BehaviorConstants.OnBehaviorInjectedEvent), context, args);

@@ -7,13 +7,15 @@
 /// </summary>
 public class LatencyStrategyOptions : MonkeyStrategyOptions
 {
+    internal static readonly TimeSpan DefaultLatency = TimeSpan.FromSeconds(30);
+
     /// <summary>
     /// Gets or sets the delegate that's raised when delay occurs.
     /// </summary>
     /// <remarks>
     /// Defaults to <see langword="null"/>.
     /// </remarks>
-    public Func<OnDelayedArguments, ValueTask>? OnDelayed { get; set; }
+    public Func<OnLatencyArguments, ValueTask>? OnLatency { get; set; }
 
     /// <summary>
     /// Gets or sets the latency generator that generates the delay for a given execution.
@@ -22,14 +24,13 @@ public class LatencyStrategyOptions : MonkeyStrategyOptions
     /// Defaults to <see langword="null"/>. Either <see cref="Latency"/> or this property is required.
     /// When this property is <see langword="null"/> the <see cref="Latency"/> is used.
     /// </remarks>
-    public Func<ResilienceContext, ValueTask<TimeSpan>> LatencyGenerator { get; set; }
+    public Func<LatencyGeneratorArguments, ValueTask<TimeSpan>>? LatencyGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets the delay for a given execution.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="null"/>. Either <see cref="LatencyGenerator"/> or this property is required.
-    /// When this property is <see langword="null"/> the <see cref="LatencyGenerator"/> is used.
+    /// Defaults to 30 seconds. Either <see cref="LatencyGenerator"/> or this property is required.
     /// </remarks>
-    public TimeSpan? Latency { get; set; }
+    public TimeSpan Latency { get; set; } = LatencyConstants.DefaultLatency;
 }

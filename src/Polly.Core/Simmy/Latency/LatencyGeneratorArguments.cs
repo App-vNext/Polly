@@ -1,17 +1,17 @@
-﻿namespace Polly.Simmy.Behavior;
+﻿namespace Polly.Simmy.Latency;
 
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
 /// <summary>
-/// Arguments used by the behavior chaos strategy to notify that a custom behavior was injected.
+/// Arguments used by the latency chaos strategy to notify that a delayed occurred.
 /// </summary>
-public readonly struct OnBehaviorInjectedArguments
+public readonly struct LatencyGeneratorArguments
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OnBehaviorInjectedArguments"/> struct.
+    /// Initializes a new instance of the <see cref="LatencyGeneratorArguments"/> struct.
     /// </summary>
     /// <param name="context">The context associated with the execution of a user-provided callback.</param>
-    public OnBehaviorInjectedArguments(ResilienceContext context) => Context = context;
+    public LatencyGeneratorArguments(ResilienceContext context) => Context = context;
 
     /// <summary>
     /// Gets the ResilienceContext instance.
