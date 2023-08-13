@@ -99,8 +99,8 @@ public partial class IssuesTests
 
         pipeline1.Execute(() => { });
         events.Should().HaveCount(5);
-        events[0].Tags["builder-name"].Should().Be("endpoint-pipeline");
-        events[0].Tags["builder-instance"].Should().Be("Endpoint 1/Resource 1");
+        events[0].Tags["pipeline-name"].Should().Be("endpoint-pipeline");
+        events[0].Tags["pipeline-instance"].Should().Be("Endpoint 1/Resource 1");
     }
 
     public class EndpointOptions
