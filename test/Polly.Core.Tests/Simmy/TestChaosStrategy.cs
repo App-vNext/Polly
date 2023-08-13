@@ -21,7 +21,7 @@ public sealed class TestChaosStrategy : MonkeyStrategy
 
         try
         {
-            if (await ShouldInject(context).ConfigureAwait(context.ContinueOnCapturedContext))
+            if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext))
             {
                 if (OnExecute != null)
                 {

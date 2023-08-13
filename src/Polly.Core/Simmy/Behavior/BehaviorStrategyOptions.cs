@@ -24,5 +24,5 @@ public class BehaviorStrategyOptions : MonkeyStrategyOptions
     /// Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<ResilienceContext, ValueTask> Behavior { get; set; }
+    public Func<ResilienceContext, ValueTask> BehaviorAction { get; set; }
 }

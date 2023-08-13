@@ -24,7 +24,7 @@ public class BehaviorChaosStrategyTests
         _options.InjectionRate = 0.6;
         _options.Enabled = false;
         _options.Randomizer = () => 0.5;
-        _options.Behavior = (_) => { injectedBehaviourExecuted = true; return default; };
+        _options.BehaviorAction = (_) => { injectedBehaviourExecuted = true; return default; };
 
         var sut = CreateSut();
         sut.Execute(() => { userDelegateExecuted = true; });
@@ -42,7 +42,7 @@ public class BehaviorChaosStrategyTests
         _options.InjectionRate = 0.6;
         _options.Enabled = true;
         _options.Randomizer = () => 0.5;
-        _options.Behavior = (_) => { injectedBehaviourExecuted = true; return default; };
+        _options.BehaviorAction = (_) => { injectedBehaviourExecuted = true; return default; };
 
         var sut = CreateSut();
         await sut.ExecuteAsync((_) => { userDelegateExecuted = true; return default; });
@@ -62,7 +62,7 @@ public class BehaviorChaosStrategyTests
         _options.InjectionRate = 0.6;
         _options.Enabled = true;
         _options.Randomizer = () => 0.5;
-        _options.Behavior = (_) => { injectedBehaviourExecuted = true; return default; };
+        _options.BehaviorAction = (_) => { injectedBehaviourExecuted = true; return default; };
         _options.OnBehaviorInjected = args =>
         {
             args.Context.Should().NotBeNull();
@@ -89,7 +89,7 @@ public class BehaviorChaosStrategyTests
         _options.InjectionRate = 0.4;
         _options.Enabled = false;
         _options.Randomizer = () => 0.5;
-        _options.Behavior = (_) => { injectedBehaviourExecuted = true; return default; };
+        _options.BehaviorAction = (_) => { injectedBehaviourExecuted = true; return default; };
 
         var sut = CreateSut();
         await sut.ExecuteAsync((_) => { userDelegateExecuted = true; return default; });
@@ -107,7 +107,7 @@ public class BehaviorChaosStrategyTests
         _options.InjectionRate = 0.6;
         _options.Enabled = true;
         _options.Randomizer = () => 0.5;
-        _options.Behavior = (_) =>
+        _options.BehaviorAction = (_) =>
         {
             userDelegateExecuted.Should().BeFalse(); // Not yet executed at the time the injected behaviour runs.
             injectedBehaviourExecuted = true;
@@ -131,7 +131,7 @@ public class BehaviorChaosStrategyTests
         _options.InjectionRate = 0.6;
         _options.Enabled = true;
         _options.Randomizer = () => 0.5;
-        _options.Behavior = (_) =>
+        _options.BehaviorAction = (_) =>
         {
             cts.Cancel();
             injectedBehaviourExecuted = true;

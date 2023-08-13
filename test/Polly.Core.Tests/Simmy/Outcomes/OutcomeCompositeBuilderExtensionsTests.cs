@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Polly.Simmy;
 using Polly.Simmy.Outcomes;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
@@ -57,8 +58,8 @@ public class OutcomeCompositeBuilderExtensionsTests
     {
         var context = ResilienceContextPool.Shared.Get();
         var strategy = (OutcomeChaosStrategy<T>)builder.Build().Strategy;
-        strategy.EnabledGenerator.Invoke(context).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
-        strategy.InjectionRateGenerator.Invoke(context).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
+        strategy.EnabledGenerator.Invoke(new EnabledGeneratorArguments { Context = context }).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
+        strategy.InjectionRateGenerator.Invoke(new InjectionRateGeneratorArguments { Context = context }).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
         strategy.OutcomeGenerator.Should().NotBeNull();
         strategy.OutcomeGenerator!.Invoke(context).Preserve().GetAwaiter().GetResult().Should().Be(outcome);
         strategy.Outcome.Should().Be(outcome);
@@ -69,8 +70,8 @@ public class OutcomeCompositeBuilderExtensionsTests
     {
         var context = ResilienceContextPool.Shared.Get();
         var strategy = (OutcomeChaosStrategy<T>)builder.Build().Strategy;
-        strategy.EnabledGenerator.Invoke(context).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
-        strategy.InjectionRateGenerator.Invoke(context).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
+        strategy.EnabledGenerator.Invoke(new EnabledGeneratorArguments { Context = context }).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
+        strategy.InjectionRateGenerator.Invoke(new InjectionRateGeneratorArguments { Context = context }).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
         strategy.FaultGenerator.Should().NotBeNull();
         strategy.Fault.Should().BeOfType(typeof(Outcome<Exception>));
         strategy.Fault.Should().NotBeNull();
@@ -93,8 +94,8 @@ public class OutcomeCompositeBuilderExtensionsTests
     {
         var context = ResilienceContextPool.Shared.Get();
         var strategy = (OutcomeChaosStrategy)builder.Build();
-        strategy.EnabledGenerator.Invoke(context).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
-        strategy.InjectionRateGenerator.Invoke(context).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
+        strategy.EnabledGenerator.Invoke(new EnabledGeneratorArguments { Context = context }).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
+        strategy.InjectionRateGenerator.Invoke(new InjectionRateGeneratorArguments { Context = context }).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
         strategy.FaultGenerator.Should().NotBeNull();
         strategy.Fault.Should().BeOfType(typeof(Outcome<Exception>));
         strategy.Fault.Should().NotBeNull();
@@ -151,7 +152,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     public void AddResult_Shortcut_Option_Throws()
     {
         new CompositeStrategyBuilder<int>()
-            .Invoking(b => b.AddResult(true, -1, () => new ValueTask<Outcome<int>>(Task.FromResult(new Outcome<int>(120)))))
+            .Invoking(b => b.AddResult(true, -1, () => new ValueTask<Outcome<int>?>(new Outcome<int>(120))))
             .Should()
             .Throw<ValidationException>();
     }
@@ -174,7 +175,7 @@ public class OutcomeCompositeBuilderExtensionsTests
             .Invoking(b => b.AddFault(
                 true,
                 1.5,
-                () => new ValueTask<Outcome<Exception>>(Task.FromResult(new Outcome<Exception>(new InvalidOperationException())))))
+                () => new ValueTask<Outcome<Exception>?>(new Outcome<Exception>(new InvalidOperationException()))))
             .Should()
             .Throw<ValidationException>();
     }

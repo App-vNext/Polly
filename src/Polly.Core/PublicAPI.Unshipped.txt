@@ -3,6 +3,8 @@ abstract Polly.Registry.ResilienceStrategyProvider<TKey>.TryGetStrategy<TResult>
 abstract Polly.ResilienceContextPool.Get(string? operationKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
 abstract Polly.ResilienceContextPool.Return(Polly.ResilienceContext! context) -> void
 abstract Polly.ResilienceStrategy.ExecuteCore<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+abstract Polly.Simmy.ReactiveMonkeyStrategy<T>.ExecuteCore<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<T>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<T>>
+abstract ReactiveMonkeyStrategy<T>.ExecuteCore<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<T>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<T>>
 override Polly.Outcome<TResult>.ToString() -> string!
 override Polly.Registry.ResilienceStrategyRegistry<TKey>.TryGetStrategy(TKey key, out Polly.ResilienceStrategy? strategy) -> bool
 override Polly.Registry.ResilienceStrategyRegistry<TKey>.TryGetStrategy<TResult>(TKey key, out Polly.ResilienceStrategy<TResult>? strategy) -> bool
@@ -10,6 +12,8 @@ override Polly.ResiliencePropertyKey<TValue>.Equals(object? obj) -> bool
 override Polly.ResiliencePropertyKey<TValue>.GetHashCode() -> int
 override Polly.ResiliencePropertyKey<TValue>.ToString() -> string!
 override Polly.Telemetry.ResilienceEvent.ToString() -> string!
+override sealed Polly.Simmy.ReactiveMonkeyStrategy<T>.ExecuteCore<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+override sealed ReactiveMonkeyStrategy<T>.ExecuteCore<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 Polly.CircuitBreaker.BrokenCircuitException
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException() -> void
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message) -> void
@@ -318,8 +322,8 @@ Polly.Retry.RetryStrategyOptions<TResult>.UseJitter.set -> void
 Polly.RetryCompositeStrategyBuilderExtensions
 Polly.Simmy.Behavior.BehaviorCompositeStrategyBuilderExtensions
 Polly.Simmy.Behavior.BehaviorStrategyOptions
-Polly.Simmy.Behavior.BehaviorStrategyOptions.Behavior.get -> System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask>!
-Polly.Simmy.Behavior.BehaviorStrategyOptions.Behavior.set -> void
+Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorAction.get -> System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask>!
+Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorAction.set -> void
 Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorStrategyOptions() -> void
 Polly.Simmy.Behavior.BehaviorStrategyOptions.OnBehaviorInjected.get -> System.Func<Polly.Simmy.Behavior.OnBehaviorInjectedArguments, System.Threading.Tasks.ValueTask>?
 Polly.Simmy.Behavior.BehaviorStrategyOptions.OnBehaviorInjected.set -> void
@@ -328,6 +332,10 @@ Polly.Simmy.Behavior.OnBehaviorInjectedArguments.Context.get -> Polly.Resilience
 Polly.Simmy.Behavior.OnBehaviorInjectedArguments.Context.init -> void
 Polly.Simmy.Behavior.OnBehaviorInjectedArguments.OnBehaviorInjectedArguments() -> void
 Polly.Simmy.Behavior.OnBehaviorInjectedArguments.OnBehaviorInjectedArguments(Polly.ResilienceContext! Context) -> void
+Polly.Simmy.InjectionRateGeneratorArguments
+Polly.Simmy.InjectionRateGeneratorArguments.Context.get -> Polly.ResilienceContext?
+Polly.Simmy.InjectionRateGeneratorArguments.Context.set -> void
+Polly.Simmy.InjectionRateGeneratorArguments.InjectionRateGeneratorArguments() -> void
 Polly.Simmy.Latency.LatencyCompositeStrategyBuilderExtensions
 Polly.Simmy.Latency.LatencyStrategyOptions
 Polly.Simmy.Latency.LatencyStrategyOptions.Latency.get -> System.TimeSpan?
@@ -345,26 +353,20 @@ Polly.Simmy.Latency.OnDelayedArguments.Latency.init -> void
 Polly.Simmy.Latency.OnDelayedArguments.OnDelayedArguments() -> void
 Polly.Simmy.Latency.OnDelayedArguments.OnDelayedArguments(Polly.ResilienceContext! Context, System.TimeSpan Latency) -> void
 Polly.Simmy.MonkeyStrategy
-Polly.Simmy.MonkeyStrategy.EnabledGenerator.get -> System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<bool>>!
-Polly.Simmy.MonkeyStrategy.InjectionRateGenerator.get -> System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<double>>!
+Polly.Simmy.MonkeyStrategy.EnabledGenerator.get -> System.Func<Polly.Simmy.EnabledGeneratorArguments!, System.Threading.Tasks.ValueTask<bool>>!
+Polly.Simmy.MonkeyStrategy.InjectionRateGenerator.get -> System.Func<Polly.Simmy.InjectionRateGeneratorArguments!, System.Threading.Tasks.ValueTask<double>>!
 Polly.Simmy.MonkeyStrategy.MonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions! options) -> void
-Polly.Simmy.MonkeyStrategy.ShouldInject(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
-Polly.Simmy.MonkeyStrategy<T>
-Polly.Simmy.MonkeyStrategy<T>.ExecuteAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.Simmy.MonkeyStrategy<T>.ExecuteAsync<TResult, TState>(System.Func<TState, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.Simmy.MonkeyStrategy<T>.ExecuteAsync<TResult>(System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.Simmy.MonkeyStrategy<T>.ExecuteAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.Simmy.MonkeyStrategy<T>.ExecuteOutcomeAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+Polly.Simmy.MonkeyStrategy.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
 Polly.Simmy.MonkeyStrategyOptions
 Polly.Simmy.MonkeyStrategyOptions.MonkeyStrategyOptions() -> void
 Polly.Simmy.MonkeyStrategyOptions<TResult>
-Polly.Simmy.MonkeyStrategyOptions<TResult>.Enabled.get -> bool?
+Polly.Simmy.MonkeyStrategyOptions<TResult>.Enabled.get -> bool
 Polly.Simmy.MonkeyStrategyOptions<TResult>.Enabled.set -> void
-Polly.Simmy.MonkeyStrategyOptions<TResult>.EnabledGenerator.get -> System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<bool>>!
+Polly.Simmy.MonkeyStrategyOptions<TResult>.EnabledGenerator.get -> System.Func<Polly.Simmy.EnabledGeneratorArguments!, System.Threading.Tasks.ValueTask<bool>>?
 Polly.Simmy.MonkeyStrategyOptions<TResult>.EnabledGenerator.set -> void
-Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRate.get -> double?
+Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRate.get -> double
 Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRate.set -> void
-Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRateGenerator.get -> System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<double>>!
+Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRateGenerator.get -> System.Func<Polly.Simmy.InjectionRateGeneratorArguments!, System.Threading.Tasks.ValueTask<double>>?
 Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRateGenerator.set -> void
 Polly.Simmy.MonkeyStrategyOptions<TResult>.MonkeyStrategyOptions() -> void
 Polly.Simmy.MonkeyStrategyOptions<TResult>.Randomizer.get -> System.Func<double>!
@@ -384,9 +386,11 @@ Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OnOutcomeInjected.get -> Sy
 Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OnOutcomeInjected.set -> void
 Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.Outcome.get -> Polly.Outcome<TResult>
 Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.Outcome.set -> void
-Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OutcomeGenerator.get -> System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>!
+Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OutcomeGenerator.get -> System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>!
 Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OutcomeGenerator.set -> void
 Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OutcomeStrategyOptions() -> void
+Polly.Simmy.ReactiveMonkeyStrategy<T>
+Polly.Simmy.ReactiveMonkeyStrategy<T>.ReactiveMonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions! options) -> void
 Polly.StrategyBuilderContext
 Polly.StrategyBuilderContext.BuilderInstanceName.get -> string?
 Polly.StrategyBuilderContext.BuilderName.get -> string?
@@ -453,6 +457,8 @@ Polly.Timeout.TimeoutStrategyOptions.TimeoutGenerator.set -> void
 Polly.Timeout.TimeoutStrategyOptions.TimeoutStrategyOptions() -> void
 Polly.TimeoutCompositeStrategyBuilderExtensions
 Polly.Utils.LegacySupport
+ReactiveMonkeyStrategy<T>
+ReactiveMonkeyStrategy<T>.ReactiveMonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions! options) -> void
 static Polly.CircuitBreakerCompositeStrategyBuilderExtensions.AddCircuitBreaker(this Polly.CompositeStrategyBuilder! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions! options) -> Polly.CompositeStrategyBuilder!
 static Polly.CircuitBreakerCompositeStrategyBuilderExtensions.AddCircuitBreaker<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
 static Polly.CompositeStrategyBuilderExtensions.AddStrategy<TBuilder>(this TBuilder! builder, Polly.ResilienceStrategy! strategy) -> TBuilder!

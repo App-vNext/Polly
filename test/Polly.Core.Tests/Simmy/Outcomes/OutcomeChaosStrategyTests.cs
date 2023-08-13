@@ -123,7 +123,7 @@ act.Should()
             InjectionRate = 0.6,
             Enabled = true,
             Randomizer = () => 0.5,
-            OutcomeGenerator = (_) => new ValueTask<Outcome<Exception>>(Task.FromResult(new Outcome<Exception>(null!)))
+            OutcomeGenerator = (_) => new ValueTask<Outcome<Exception>?>(Task.FromResult<Outcome<Exception>?>(null))
         };
 
         var sut = CreateSut(options);
@@ -150,7 +150,7 @@ act.Should()
             OutcomeGenerator = (_) =>
             {
                 cts.Cancel();
-                return new ValueTask<Outcome<Exception>>(new Outcome<Exception>(fault));
+                return new ValueTask<Outcome<Exception>?>(new Outcome<Exception>(fault));
             }
         };
 
@@ -234,6 +234,29 @@ act.Should()
 
         response.Should().Be(HttpStatusCode.OK);
         userDelegateExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Given_enabled_and_randomly_within_threshold_should_inject_result_even_as_null()
+    {
+        var userDelegateExecuted = false;
+        var options = new OutcomeStrategyOptions<HttpStatusCode?>
+        {
+            InjectionRate = 0.6,
+            Enabled = true,
+            Randomizer = () => 0.5,
+            Outcome = Outcome.FromResult<HttpStatusCode?>(null)
+        };
+
+        var sut = CreateSut(options);
+        var response = await sut.ExecuteAsync<HttpStatusCode?>(async _ =>
+        {
+            userDelegateExecuted = true;
+            return await Task.FromResult(HttpStatusCode.OK);
+        });
+
+        response.Should().Be(null);
+        userDelegateExecuted.Should().BeFalse();
     }
 
     private OutcomeChaosStrategy<TResult> CreateSut<TResult>(OutcomeStrategyOptions<TResult> options) =>

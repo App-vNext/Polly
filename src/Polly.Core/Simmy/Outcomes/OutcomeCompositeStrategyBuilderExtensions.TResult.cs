@@ -39,7 +39,7 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
     /// <param name="faultGenerator">The exception generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static CompositeStrategyBuilder<TResult> AddFault<TResult>(
-        this CompositeStrategyBuilder<TResult> builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<Exception>>> faultGenerator)
+        this CompositeStrategyBuilder<TResult> builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<Exception>?>> faultGenerator)
     {
         Guard.NotNull(builder);
 
@@ -100,7 +100,7 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
     /// <param name="outcomeGenerator">The outcome generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static CompositeStrategyBuilder<TResult> AddResult<TResult>(
-        this CompositeStrategyBuilder<TResult> builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<TResult>>> outcomeGenerator)
+        this CompositeStrategyBuilder<TResult> builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<TResult>?>> outcomeGenerator)
     {
         Guard.NotNull(builder);
 

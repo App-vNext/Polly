@@ -21,30 +21,20 @@ public abstract class MonkeyStrategy : ResilienceStrategy
         Guard.NotNull(options);
         Guard.NotNull(options.Randomizer);
 
-        if (options.InjectionRate is null && options.InjectionRateGenerator is null)
-        {
-            throw new ArgumentNullException(nameof(options.InjectionRate), "Either InjectionRate or InjectionRateGenerator is required.");
-        }
-
-        if (options.Enabled is null && options.EnabledGenerator is null)
-        {
-            throw new ArgumentNullException(nameof(options.Enabled), "Either Enabled or EnabledGenerator is required.");
-        }
-
         _randomizer = options.Randomizer;
-        InjectionRateGenerator = options.InjectionRate.HasValue ? (_) => new(options.InjectionRate.Value) : options.InjectionRateGenerator;
-        EnabledGenerator = options.Enabled.HasValue ? (_) => new(options.Enabled.Value) : options.EnabledGenerator;
+        InjectionRateGenerator = options.InjectionRateGenerator is not null ? options.InjectionRateGenerator : (_) => new(options.InjectionRate);
+        EnabledGenerator = options.EnabledGenerator is not null ? options.EnabledGenerator : (_) => new(options.Enabled);
     }
 
     /// <summary>
     /// Gets the injection rate for a given execution, which the value should be between [0, 1].
     /// </summary>
-    public Func<ResilienceContext, ValueTask<double>> InjectionRateGenerator { get; }
+    public Func<InjectionRateGeneratorArguments, ValueTask<double>> InjectionRateGenerator { get; }
 
     /// <summary>
     /// Gets a value that indicates whether or not the chaos strategy is enabled for a given execution.
     /// </summary>
-    public Func<ResilienceContext, ValueTask<bool>> EnabledGenerator { get; }
+    public Func<EnabledGeneratorArguments, ValueTask<bool>> EnabledGenerator { get; }
 
     /// <summary>
     /// Determines whether or not the chaos strategy should be injected based on the injection rate and enabled flag.
@@ -52,14 +42,14 @@ public abstract class MonkeyStrategy : ResilienceStrategy
     /// <param name="context">The <see cref="ResilienceContext"/> instance.</param>
     /// <returns>A boolean value that indicates whether or not the chaos strategy should be injected.</returns>
     /// <remarks>Use this method before injecting any chaos strategy to evaluate whether a given chaos strategy needs to be injected during the execution.</remarks>
-    public async ValueTask<bool> ShouldInject(ResilienceContext context)
+    public async ValueTask<bool> ShouldInjectAsync(ResilienceContext context)
     {
         Guard.NotNull(context);
 
         // to prevent executing config delegates if token was signaled before to start.
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        if (!await EnabledGenerator(context).ConfigureAwait(context.ContinueOnCapturedContext))
+        if (!await EnabledGenerator(new EnabledGeneratorArguments { Context = context }).ConfigureAwait(context.ContinueOnCapturedContext))
         {
             return false;
         }
@@ -67,7 +57,8 @@ public abstract class MonkeyStrategy : ResilienceStrategy
         // to prevent executing InjectionRate config delegate if token was signaled on Enabled configuration delegate.
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        double injectionThreshold = await InjectionRateGenerator(context).ConfigureAwait(context.ContinueOnCapturedContext);
+        double injectionThreshold = await InjectionRateGenerator(new InjectionRateGeneratorArguments { Context = context })
+            .ConfigureAwait(context.ContinueOnCapturedContext);
 
         // to prevent executing further config delegates if token was signaled on InjectionRate configuration delegate.
         context.CancellationToken.ThrowIfCancellationRequested();

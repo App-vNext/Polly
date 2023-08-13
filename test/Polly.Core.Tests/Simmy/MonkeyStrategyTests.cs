@@ -1,4 +1,6 @@
-﻿namespace Polly.Core.Tests.Simmy;
+﻿using Polly.Simmy;
+
+namespace Polly.Core.Tests.Simmy;
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 
@@ -12,8 +14,6 @@ public class MonkeyStrategyTests
         new()
         {
             new object[] { null, "Value cannot be null. (Parameter 'options')" },
-            new object[] { new TestChaosStrategyOptions(), "Either InjectionRate or InjectionRateGenerator is required. (Parameter 'InjectionRate')" },
-            new object[] { new TestChaosStrategyOptions { InjectionRate = 0.5 }, "Either Enabled or EnabledGenerator is required. (Parameter 'Enabled')" }
         };
 
     [Theory]
@@ -45,10 +45,10 @@ act.Should()
         var sut = CreateSut();
 
         sut.EnabledGenerator.Should().NotBeNull();
-        (await sut.EnabledGenerator(context)).Should().BeTrue();
+        (await sut.EnabledGenerator(new EnabledGeneratorArguments { Context = context })).Should().BeTrue();
 
         sut.InjectionRateGenerator.Should().NotBeNull();
-        (await sut.InjectionRateGenerator(context)).Should().Be(0.5);
+        (await sut.InjectionRateGenerator(new InjectionRateGeneratorArguments { Context = context })).Should().Be(0.5);
     }
 
     [InlineData(-1)]

@@ -39,9 +39,9 @@ internal class OutcomeChaosStrategy<T> : ReactiveMonkeyStrategy<T>
 
     public Func<OnOutcomeInjectedArguments<Exception>, ValueTask>? OnFaultInjected { get; }
 
-    public Func<ResilienceContext, ValueTask<Outcome<T>>>? OutcomeGenerator { get; }
+    public Func<ResilienceContext, ValueTask<Outcome<T>?>>? OutcomeGenerator { get; }
 
-    public Func<ResilienceContext, ValueTask<Outcome<Exception>>>? FaultGenerator { get; }
+    public Func<ResilienceContext, ValueTask<Outcome<Exception>?>>? FaultGenerator { get; }
 
     public Outcome<T>? Outcome { get; private set; }
 
@@ -51,7 +51,7 @@ internal class OutcomeChaosStrategy<T> : ReactiveMonkeyStrategy<T>
     {
         try
         {
-            if (await ShouldInject(context).ConfigureAwait(context.ContinueOnCapturedContext))
+            if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext))
             {
                 if (FaultGenerator is not null)
                 {
@@ -63,7 +63,11 @@ internal class OutcomeChaosStrategy<T> : ReactiveMonkeyStrategy<T>
                 }
                 else if (OutcomeGenerator is not null)
                 {
-                    return await InjectOutcome(context).ConfigureAwait(context.ContinueOnCapturedContext);
+                    var outcome = await InjectOutcome(context).ConfigureAwait(context.ContinueOnCapturedContext);
+                    if (outcome.HasValue)
+                    {
+                        return new Outcome<T>(outcome.Value.Result);
+                    }
                 }
                 else
                 {
@@ -79,10 +83,10 @@ internal class OutcomeChaosStrategy<T> : ReactiveMonkeyStrategy<T>
         }
     }
 
-    private async ValueTask<Outcome<T>> InjectOutcome(ResilienceContext context)
+    private async ValueTask<Outcome<T>?> InjectOutcome(ResilienceContext context)
     {
         var outcome = await OutcomeGenerator!(context).ConfigureAwait(context.ContinueOnCapturedContext);
-        var args = new OnOutcomeInjectedArguments<T>(context, outcome);
+        var args = new OnOutcomeInjectedArguments<T>(context, new Outcome<T>(outcome.Value.Result));
         _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnOutcomeInjectedEvent), context, args);
 
         if (OnOutcomeInjected is not null)
@@ -98,23 +102,24 @@ internal class OutcomeChaosStrategy<T> : ReactiveMonkeyStrategy<T>
         try
         {
             var fault = await FaultGenerator!(context).ConfigureAwait(context.ContinueOnCapturedContext);
+            if (!fault.HasValue)
+            {
+                return null;
+            }
 
             // to prevent injecting the fault if it was cancelled while executing the FaultGenerator
             context.CancellationToken.ThrowIfCancellationRequested();
 
-            if (fault.Exception is not null)
-            {
-                Outcome = new(fault.Exception);
-                var args = new OnOutcomeInjectedArguments<Exception>(context, fault);
-                _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnFaultInjectedEvent), context, args);
+            Outcome = new(fault.Value.Exception!);
+            var args = new OnOutcomeInjectedArguments<Exception>(context, new Outcome<Exception>(fault.Value.Exception!));
+            _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnFaultInjectedEvent), context, args);
 
-                if (OnFaultInjected is not null)
-                {
-                    await OnFaultInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
-                }
+            if (OnFaultInjected is not null)
+            {
+                await OnFaultInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
-            return fault.Exception;
+            return fault.Value.Exception;
         }
         catch (OperationCanceledException)
         {

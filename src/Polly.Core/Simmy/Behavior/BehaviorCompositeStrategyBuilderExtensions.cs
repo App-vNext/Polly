@@ -10,7 +10,7 @@ public static class BehaviorCompositeStrategyBuilderExtensions
 
 {
     /// <summary>
-    /// Adds a latency chaos strategy to the builder.
+    /// Adds a behavior chaos strategy to the builder.
     /// </summary>
     /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>
@@ -29,7 +29,7 @@ public static class BehaviorCompositeStrategyBuilderExtensions
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
-            Behavior = (_) => behavior()
+            BehaviorAction = (_) => behavior()
         });
     }
 

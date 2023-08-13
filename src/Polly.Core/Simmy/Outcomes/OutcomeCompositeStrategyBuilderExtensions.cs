@@ -37,7 +37,7 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
     /// <param name="faultGenerator">The exception generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static CompositeStrategyBuilder AddFault(
-        this CompositeStrategyBuilder builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<Exception>>> faultGenerator)
+        this CompositeStrategyBuilder builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<Exception>?>> faultGenerator)
     {
         Guard.NotNull(builder);
 

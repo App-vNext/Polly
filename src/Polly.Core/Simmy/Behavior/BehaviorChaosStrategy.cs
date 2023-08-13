@@ -12,11 +12,11 @@ internal sealed class BehaviorChaosStrategy : MonkeyStrategy
         : base(options)
     {
         Guard.NotNull(telemetry);
-        Guard.NotNull(options.Behavior);
+        Guard.NotNull(options.BehaviorAction);
 
         _telemetry = telemetry;
         OnBehaviorInjected = options.OnBehaviorInjected;
-        Behavior = options.Behavior;
+        Behavior = options.BehaviorAction;
     }
 
     public Func<OnBehaviorInjectedArguments, ValueTask>? OnBehaviorInjected { get; }
@@ -28,7 +28,7 @@ internal sealed class BehaviorChaosStrategy : MonkeyStrategy
     {
         try
         {
-            if (await ShouldInject(context).ConfigureAwait(context.ContinueOnCapturedContext))
+            if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext))
             {
                 await Behavior(context).ConfigureAwait(context.ContinueOnCapturedContext);
 

@@ -1,4 +1,5 @@
-﻿using Polly.Simmy.Outcomes;
+﻿using Polly.Simmy;
+using Polly.Simmy.Outcomes;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
 
@@ -9,9 +10,9 @@ public class OutcomeStrategyOptionsTests
     {
         var sut = new OutcomeStrategyOptions<int>();
         sut.Randomizer.Should().NotBeNull();
-        sut.Enabled.Should().BeNull();
+        sut.Enabled.Should().BeFalse();
         sut.EnabledGenerator.Should().BeNull();
-        sut.InjectionRate.Should().BeNull();
+        sut.InjectionRate.Should().Be(MonkeyStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();
         sut.Outcome.Should().Be(default(Outcome<int>));
         sut.OnOutcomeInjected.Should().BeNull();

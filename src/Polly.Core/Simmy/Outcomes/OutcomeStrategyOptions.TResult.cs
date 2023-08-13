@@ -23,7 +23,7 @@ public class OutcomeStrategyOptions<TResult> : MonkeyStrategyOptions
     /// Defaults to <see langword="null"/>. Either <see cref="Outcome"/> or this property is required.
     /// When this property is <see langword="null"/> the <see cref="Outcome"/> is used.
     /// </remarks>
-    public Func<ResilienceContext, ValueTask<Outcome<TResult>>> OutcomeGenerator { get; set; }
+    public Func<ResilienceContext, ValueTask<Outcome<TResult>?>> OutcomeGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets the outcome to be injected for a given execution.
