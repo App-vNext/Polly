@@ -39,7 +39,7 @@ public class ResiliencePipelineRegistryTests
     }
 
     [Fact]
-    public void Clear_Ok()
+    public void ClearPipelines_Ok()
     {
         var registry = new ResiliencePipelineRegistry<string>();
 
@@ -49,7 +49,7 @@ public class ResiliencePipelineRegistryTests
         registry.TryAddPipeline("B", new TestResilienceStrategy().AsPipeline());
         registry.TryAddPipeline("C", new TestResilienceStrategy().AsPipeline());
 
-        registry.ClearStrategies();
+        registry.ClearPipelines();
 
         registry.TryGetPipeline("A", out _).Should().BeFalse();
         registry.TryGetPipeline("B", out _).Should().BeFalse();
@@ -57,7 +57,7 @@ public class ResiliencePipelineRegistryTests
     }
 
     [Fact]
-    public void Clear_Generic_Ok()
+    public void ClearPipelines_Generic_Ok()
     {
         var registry = new ResiliencePipelineRegistry<string>();
 
@@ -67,7 +67,7 @@ public class ResiliencePipelineRegistryTests
         registry.TryAddPipeline("B", new TestResiliencePipeline<string>());
         registry.TryAddPipeline("C", new TestResiliencePipeline<string>());
 
-        registry.ClearStrategies<string>();
+        registry.ClearPipelines<string>();
 
         registry.TryGetPipeline<string>("A", out _).Should().BeFalse();
         registry.TryGetPipeline<string>("B", out _).Should().BeFalse();

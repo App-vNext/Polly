@@ -167,8 +167,8 @@ Polly.Registry.ConfigureBuilderContext<TKey>.PipelineKey.get -> TKey
 Polly.Registry.ResiliencePipelineProvider<TKey>
 Polly.Registry.ResiliencePipelineProvider<TKey>.ResiliencePipelineProvider() -> void
 Polly.Registry.ResiliencePipelineRegistry<TKey>
-Polly.Registry.ResiliencePipelineRegistry<TKey>.ClearStrategies() -> void
-Polly.Registry.ResiliencePipelineRegistry<TKey>.ClearStrategies<TResult>() -> void
+Polly.Registry.ResiliencePipelineRegistry<TKey>.ClearPipelines() -> void
+Polly.Registry.ResiliencePipelineRegistry<TKey>.ClearPipelines<TResult>() -> void
 Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline(TKey key, System.Action<Polly.ResiliencePipelineBuilder!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> Polly.ResiliencePipeline!
 Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline(TKey key, System.Action<Polly.ResiliencePipelineBuilder!>! configure) -> Polly.ResiliencePipeline!
 Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline<TResult>(TKey key, System.Action<Polly.ResiliencePipelineBuilder<TResult>!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> Polly.ResiliencePipeline<TResult>!

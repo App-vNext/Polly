@@ -253,7 +253,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// <remarks>
     /// This method only clears the cached pipelines, the registered builders are kept unchanged.
     /// </remarks>
-    public void ClearStrategies() => _pipelines.Clear();
+    public void ClearPipelines() => _pipelines.Clear();
 
     /// <summary>
     /// Clears all cached generic pipelines.
@@ -262,7 +262,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// <remarks>
     /// This method only clears the cached pipelines, the registered builders are kept unchanged.
     /// </remarks>
-    public void ClearStrategies<TResult>() => GetGenericRegistry<TResult>().Clear();
+    public void ClearPipelines<TResult>() => GetGenericRegistry<TResult>().Clear();
 
     private static ResiliencePipeline CreatePipeline<TBuilder>(
         Func<TBuilder> activator,
