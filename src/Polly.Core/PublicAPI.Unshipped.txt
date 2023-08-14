@@ -1,12 +1,12 @@
-﻿abstract Polly.NonReactiveResilienceStrategy.ExecuteCore<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
-abstract Polly.ReactiveResilienceStrategy<TResult>.ExecuteCore<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
-abstract Polly.Registry.ResilienceStrategyProvider<TKey>.TryGetStrategy(TKey key, out Polly.ResilienceStrategy? strategy) -> bool
-abstract Polly.Registry.ResilienceStrategyProvider<TKey>.TryGetStrategy<TResult>(TKey key, out Polly.ResilienceStrategy<TResult>? strategy) -> bool
+﻿abstract Polly.Registry.ResiliencePipelineProvider<TKey>.TryGetPipeline(TKey key, out Polly.ResiliencePipeline? pipeline) -> bool
+abstract Polly.Registry.ResiliencePipelineProvider<TKey>.TryGetPipeline<TResult>(TKey key, out Polly.ResiliencePipeline<TResult>? pipeline) -> bool
 abstract Polly.ResilienceContextPool.Get(string? operationKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
 abstract Polly.ResilienceContextPool.Return(Polly.ResilienceContext! context) -> void
+abstract Polly.ResilienceStrategy.ExecuteCore<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+abstract Polly.ResilienceStrategy<TResult>.ExecuteCore<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 override Polly.Outcome<TResult>.ToString() -> string!
-override Polly.Registry.ResilienceStrategyRegistry<TKey>.TryGetStrategy(TKey key, out Polly.ResilienceStrategy? strategy) -> bool
-override Polly.Registry.ResilienceStrategyRegistry<TKey>.TryGetStrategy<TResult>(TKey key, out Polly.ResilienceStrategy<TResult>? strategy) -> bool
+override Polly.Registry.ResiliencePipelineRegistry<TKey>.TryGetPipeline(TKey key, out Polly.ResiliencePipeline? pipeline) -> bool
+override Polly.Registry.ResiliencePipelineRegistry<TKey>.TryGetPipeline<TResult>(TKey key, out Polly.ResiliencePipeline<TResult>? pipeline) -> bool
 override Polly.ResiliencePropertyKey<TValue>.Equals(object? obj) -> bool
 override Polly.ResiliencePropertyKey<TValue>.GetHashCode() -> int
 override Polly.ResiliencePropertyKey<TValue>.ToString() -> string!
@@ -90,6 +90,7 @@ Polly.CompositeStrategyBuilderBase.Name.get -> string?
 Polly.CompositeStrategyBuilderBase.Name.set -> void
 Polly.CompositeStrategyBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
 Polly.CompositeStrategyBuilderExtensions
+Polly.CircuitBreakerResiliencePipelineBuilderExtensions
 Polly.ExecutionRejectedException
 Polly.ExecutionRejectedException.ExecutionRejectedException() -> void
 Polly.ExecutionRejectedException.ExecutionRejectedException(string! message) -> void
@@ -106,7 +107,7 @@ Polly.Fallback.FallbackStrategyOptions<TResult>.ShouldHandle.get -> System.Func<
 Polly.Fallback.FallbackStrategyOptions<TResult>.ShouldHandle.set -> void
 Polly.Fallback.OnFallbackArguments
 Polly.Fallback.OnFallbackArguments.OnFallbackArguments() -> void
-Polly.FallbackCompositeStrategyBuilderExtensions
+Polly.FallbackResiliencePipelineBuilderExtensions
 Polly.Hedging.HedgingActionGeneratorArguments<TResult>
 Polly.Hedging.HedgingActionGeneratorArguments<TResult>.ActionContext.get -> Polly.ResilienceContext!
 Polly.Hedging.HedgingActionGeneratorArguments<TResult>.AttemptNumber.get -> int
@@ -140,12 +141,10 @@ Polly.Hedging.OnHedgingArguments.AttemptNumber.get -> int
 Polly.Hedging.OnHedgingArguments.Duration.get -> System.TimeSpan
 Polly.Hedging.OnHedgingArguments.HasOutcome.get -> bool
 Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attemptNumber, bool hasOutcome, System.TimeSpan duration) -> void
-Polly.HedgingCompositeStrategyBuilderExtensions
+Polly.HedgingResiliencePipelineBuilderExtensions
 Polly.LegacySupport
-Polly.NonReactiveResilienceStrategy
-Polly.NonReactiveResilienceStrategy.NonReactiveResilienceStrategy() -> void
-Polly.NullResilienceStrategy
-Polly.NullResilienceStrategy<TResult>
+Polly.NullResiliencePipeline
+Polly.NullResiliencePipeline<TResult>
 Polly.Outcome
 Polly.Outcome<TResult>
 Polly.Outcome<TResult>.EnsureSuccess() -> void
@@ -176,44 +175,42 @@ Polly.PredicateBuilder<TResult>.HandleResult(System.Func<TResult, bool>! predica
 Polly.PredicateBuilder<TResult>.HandleResult(TResult result, System.Collections.Generic.IEqualityComparer<TResult>? comparer = null) -> Polly.PredicateBuilder<TResult>!
 Polly.PredicateBuilder<TResult>.PredicateBuilder() -> void
 Polly.PredicateResult
-Polly.ReactiveResilienceStrategy<TResult>
-Polly.ReactiveResilienceStrategy<TResult>.ReactiveResilienceStrategy() -> void
 Polly.Registry.ConfigureBuilderContext<TKey>
 Polly.Registry.ConfigureBuilderContext<TKey>.BuilderInstanceName.get -> string?
 Polly.Registry.ConfigureBuilderContext<TKey>.BuilderName.get -> string!
 Polly.Registry.ConfigureBuilderContext<TKey>.EnableReloads(System.Func<System.Func<System.Threading.CancellationToken>!>! tokenProducerFactory) -> void
-Polly.Registry.ConfigureBuilderContext<TKey>.StrategyKey.get -> TKey
-Polly.Registry.ResilienceStrategyProvider<TKey>
-Polly.Registry.ResilienceStrategyProvider<TKey>.ResilienceStrategyProvider() -> void
-Polly.Registry.ResilienceStrategyRegistry<TKey>
-Polly.Registry.ResilienceStrategyRegistry<TKey>.ClearStrategies() -> void
-Polly.Registry.ResilienceStrategyRegistry<TKey>.ClearStrategies<TResult>() -> void
-Polly.Registry.ResilienceStrategyRegistry<TKey>.GetOrAddStrategy(TKey key, System.Action<Polly.CompositeStrategyBuilder!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> Polly.ResilienceStrategy!
-Polly.Registry.ResilienceStrategyRegistry<TKey>.GetOrAddStrategy(TKey key, System.Action<Polly.CompositeStrategyBuilder!>! configure) -> Polly.ResilienceStrategy!
-Polly.Registry.ResilienceStrategyRegistry<TKey>.GetOrAddStrategy<TResult>(TKey key, System.Action<Polly.CompositeStrategyBuilder<TResult>!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> Polly.ResilienceStrategy<TResult>!
-Polly.Registry.ResilienceStrategyRegistry<TKey>.GetOrAddStrategy<TResult>(TKey key, System.Action<Polly.CompositeStrategyBuilder<TResult>!>! configure) -> Polly.ResilienceStrategy<TResult>!
-Polly.Registry.ResilienceStrategyRegistry<TKey>.RemoveBuilder(TKey key) -> bool
-Polly.Registry.ResilienceStrategyRegistry<TKey>.RemoveBuilder<TResult>(TKey key) -> bool
-Polly.Registry.ResilienceStrategyRegistry<TKey>.RemoveStrategy(TKey key) -> bool
-Polly.Registry.ResilienceStrategyRegistry<TKey>.RemoveStrategy<TResult>(TKey key) -> bool
-Polly.Registry.ResilienceStrategyRegistry<TKey>.ResilienceStrategyRegistry() -> void
-Polly.Registry.ResilienceStrategyRegistry<TKey>.ResilienceStrategyRegistry(Polly.Registry.ResilienceStrategyRegistryOptions<TKey>! options) -> void
-Polly.Registry.ResilienceStrategyRegistry<TKey>.TryAddBuilder(TKey key, System.Action<Polly.CompositeStrategyBuilder!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> bool
-Polly.Registry.ResilienceStrategyRegistry<TKey>.TryAddBuilder<TResult>(TKey key, System.Action<Polly.CompositeStrategyBuilder<TResult>!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> bool
-Polly.Registry.ResilienceStrategyRegistry<TKey>.TryAddStrategy(TKey key, Polly.ResilienceStrategy! strategy) -> bool
-Polly.Registry.ResilienceStrategyRegistry<TKey>.TryAddStrategy<TResult>(TKey key, Polly.ResilienceStrategy<TResult>! strategy) -> bool
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.BuilderComparer.get -> System.Collections.Generic.IEqualityComparer<TKey>!
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.BuilderComparer.set -> void
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.BuilderFactory.get -> System.Func<Polly.CompositeStrategyBuilder!>!
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.BuilderFactory.set -> void
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.BuilderNameFormatter.get -> System.Func<TKey, string!>!
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.BuilderNameFormatter.set -> void
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.InstanceNameFormatter.get -> System.Func<TKey, string!>?
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.InstanceNameFormatter.set -> void
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.ResilienceStrategyRegistryOptions() -> void
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.StrategyComparer.get -> System.Collections.Generic.IEqualityComparer<TKey>!
-Polly.Registry.ResilienceStrategyRegistryOptions<TKey>.StrategyComparer.set -> void
+Polly.Registry.ConfigureBuilderContext<TKey>.PipelineKey.get -> TKey
+Polly.Registry.ResiliencePipelineProvider<TKey>
+Polly.Registry.ResiliencePipelineProvider<TKey>.ResiliencePipelineProvider() -> void
+Polly.Registry.ResiliencePipelineRegistry<TKey>
+Polly.Registry.ResiliencePipelineRegistry<TKey>.ClearPipelines() -> void
+Polly.Registry.ResiliencePipelineRegistry<TKey>.ClearPipelines<TResult>() -> void
+Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline(TKey key, System.Action<Polly.ResiliencePipelineBuilder!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> Polly.ResiliencePipeline!
+Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline(TKey key, System.Action<Polly.ResiliencePipelineBuilder!>! configure) -> Polly.ResiliencePipeline!
+Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline<TResult>(TKey key, System.Action<Polly.ResiliencePipelineBuilder<TResult>!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> Polly.ResiliencePipeline<TResult>!
+Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline<TResult>(TKey key, System.Action<Polly.ResiliencePipelineBuilder<TResult>!>! configure) -> Polly.ResiliencePipeline<TResult>!
+Polly.Registry.ResiliencePipelineRegistry<TKey>.RemoveBuilder(TKey key) -> bool
+Polly.Registry.ResiliencePipelineRegistry<TKey>.RemoveBuilder<TResult>(TKey key) -> bool
+Polly.Registry.ResiliencePipelineRegistry<TKey>.RemovePipeline(TKey key) -> bool
+Polly.Registry.ResiliencePipelineRegistry<TKey>.RemovePipeline<TResult>(TKey key) -> bool
+Polly.Registry.ResiliencePipelineRegistry<TKey>.ResiliencePipelineRegistry() -> void
+Polly.Registry.ResiliencePipelineRegistry<TKey>.ResiliencePipelineRegistry(Polly.Registry.ResiliencePipelineRegistryOptions<TKey>! options) -> void
+Polly.Registry.ResiliencePipelineRegistry<TKey>.TryAddBuilder(TKey key, System.Action<Polly.ResiliencePipelineBuilder!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> bool
+Polly.Registry.ResiliencePipelineRegistry<TKey>.TryAddBuilder<TResult>(TKey key, System.Action<Polly.ResiliencePipelineBuilder<TResult>!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> bool
+Polly.Registry.ResiliencePipelineRegistry<TKey>.TryAddPipeline(TKey key, Polly.ResiliencePipeline! pipeline) -> bool
+Polly.Registry.ResiliencePipelineRegistry<TKey>.TryAddPipeline<TResult>(TKey key, Polly.ResiliencePipeline<TResult>! pipeline) -> bool
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.BuilderComparer.get -> System.Collections.Generic.IEqualityComparer<TKey>!
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.BuilderComparer.set -> void
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.BuilderFactory.get -> System.Func<Polly.ResiliencePipelineBuilder!>!
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.BuilderFactory.set -> void
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.BuilderNameFormatter.get -> System.Func<TKey, string!>!
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.BuilderNameFormatter.set -> void
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.InstanceNameFormatter.get -> System.Func<TKey, string!>?
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.InstanceNameFormatter.set -> void
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.PipelineComparer.get -> System.Collections.Generic.IEqualityComparer<TKey>!
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.PipelineComparer.set -> void
+Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.ResiliencePipelineRegistryOptions() -> void
 Polly.ResilienceContext
 Polly.ResilienceContext.CancellationToken.get -> System.Threading.CancellationToken
 Polly.ResilienceContext.ContinueOnCapturedContext.get -> bool
@@ -227,6 +224,58 @@ Polly.ResilienceContext.ResultType.get -> System.Type!
 Polly.ResilienceContextPool
 Polly.ResilienceContextPool.Get(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
 Polly.ResilienceContextPool.ResilienceContextPool() -> void
+Polly.ResiliencePipeline
+Polly.ResiliencePipeline.Execute(System.Action! callback) -> void
+Polly.ResiliencePipeline.Execute(System.Action<Polly.ResilienceContext!>! callback, Polly.ResilienceContext! context) -> void
+Polly.ResiliencePipeline.Execute(System.Action<System.Threading.CancellationToken>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> void
+Polly.ResiliencePipeline.Execute<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, TResult>! callback, Polly.ResilienceContext! context, TState state) -> TResult
+Polly.ResiliencePipeline.Execute<TResult, TState>(System.Func<TState, System.Threading.CancellationToken, TResult>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
+Polly.ResiliencePipeline.Execute<TResult, TState>(System.Func<TState, TResult>! callback, TState state) -> TResult
+Polly.ResiliencePipeline.Execute<TResult>(System.Func<Polly.ResilienceContext!, TResult>! callback, Polly.ResilienceContext! context) -> TResult
+Polly.ResiliencePipeline.Execute<TResult>(System.Func<System.Threading.CancellationToken, TResult>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
+Polly.ResiliencePipeline.Execute<TResult>(System.Func<TResult>! callback) -> TResult
+Polly.ResiliencePipeline.Execute<TState>(System.Action<Polly.ResilienceContext!, TState>! callback, Polly.ResilienceContext! context, TState state) -> void
+Polly.ResiliencePipeline.Execute<TState>(System.Action<TState, System.Threading.CancellationToken>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> void
+Polly.ResiliencePipeline.Execute<TState>(System.Action<TState>! callback, TState state) -> void
+Polly.ResiliencePipeline.ExecuteAsync(System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask>! callback, Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask
+Polly.ResiliencePipeline.ExecuteAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+Polly.ResiliencePipeline.ExecuteAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResiliencePipeline.ExecuteAsync<TResult, TState>(System.Func<TState, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResiliencePipeline.ExecuteAsync<TResult>(System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResiliencePipeline.ExecuteAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResiliencePipeline.ExecuteAsync<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask
+Polly.ResiliencePipeline.ExecuteAsync<TState>(System.Func<TState, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+Polly.ResiliencePipeline.ExecuteOutcomeAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+Polly.ResiliencePipeline<T>
+Polly.ResiliencePipeline<T>.Execute<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, TResult>! callback, Polly.ResilienceContext! context, TState state) -> TResult
+Polly.ResiliencePipeline<T>.Execute<TResult, TState>(System.Func<TState, System.Threading.CancellationToken, TResult>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
+Polly.ResiliencePipeline<T>.Execute<TResult, TState>(System.Func<TState, TResult>! callback, TState state) -> TResult
+Polly.ResiliencePipeline<T>.Execute<TResult>(System.Func<Polly.ResilienceContext!, TResult>! callback, Polly.ResilienceContext! context) -> TResult
+Polly.ResiliencePipeline<T>.Execute<TResult>(System.Func<System.Threading.CancellationToken, TResult>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
+Polly.ResiliencePipeline<T>.Execute<TResult>(System.Func<TResult>! callback) -> TResult
+Polly.ResiliencePipeline<T>.ExecuteAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResiliencePipeline<T>.ExecuteAsync<TResult, TState>(System.Func<TState, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResiliencePipeline<T>.ExecuteAsync<TResult>(System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResiliencePipeline<T>.ExecuteAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
+Polly.ResiliencePipeline<T>.ExecuteOutcomeAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+Polly.ResiliencePipelineBuilder
+Polly.ResiliencePipelineBuilder.Build() -> Polly.ResiliencePipeline!
+Polly.ResiliencePipelineBuilder.ResiliencePipelineBuilder() -> void
+Polly.ResiliencePipelineBuilder<TResult>
+Polly.ResiliencePipelineBuilder<TResult>.Build() -> Polly.ResiliencePipeline<TResult>!
+Polly.ResiliencePipelineBuilder<TResult>.ResiliencePipelineBuilder() -> void
+Polly.ResiliencePipelineBuilderBase
+Polly.ResiliencePipelineBuilderBase.DiagnosticSource.get -> System.Diagnostics.DiagnosticSource?
+Polly.ResiliencePipelineBuilderBase.DiagnosticSource.set -> void
+Polly.ResiliencePipelineBuilderBase.InstanceName.get -> string?
+Polly.ResiliencePipelineBuilderBase.InstanceName.set -> void
+Polly.ResiliencePipelineBuilderBase.Name.get -> string?
+Polly.ResiliencePipelineBuilderBase.Name.set -> void
+Polly.ResiliencePipelineBuilderBase.Properties.get -> Polly.ResilienceProperties!
+Polly.ResiliencePipelineBuilderBase.Randomizer.get -> System.Func<double>!
+Polly.ResiliencePipelineBuilderBase.Randomizer.set -> void
+Polly.ResiliencePipelineBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
+Polly.ResiliencePipelineBuilderExtensions
 Polly.ResilienceProperties
 Polly.ResilienceProperties.GetValue<TValue>(Polly.ResiliencePropertyKey<TValue> key, TValue defaultValue) -> TValue
 Polly.ResilienceProperties.ResilienceProperties() -> void
@@ -238,39 +287,9 @@ Polly.ResiliencePropertyKey<TValue>.Key.get -> string!
 Polly.ResiliencePropertyKey<TValue>.ResiliencePropertyKey() -> void
 Polly.ResiliencePropertyKey<TValue>.ResiliencePropertyKey(string! key) -> void
 Polly.ResilienceStrategy
-Polly.ResilienceStrategy.Execute(System.Action! callback) -> void
-Polly.ResilienceStrategy.Execute(System.Action<Polly.ResilienceContext!>! callback, Polly.ResilienceContext! context) -> void
-Polly.ResilienceStrategy.Execute(System.Action<System.Threading.CancellationToken>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> void
-Polly.ResilienceStrategy.Execute<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, TResult>! callback, Polly.ResilienceContext! context, TState state) -> TResult
-Polly.ResilienceStrategy.Execute<TResult, TState>(System.Func<TState, System.Threading.CancellationToken, TResult>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
-Polly.ResilienceStrategy.Execute<TResult, TState>(System.Func<TState, TResult>! callback, TState state) -> TResult
-Polly.ResilienceStrategy.Execute<TResult>(System.Func<Polly.ResilienceContext!, TResult>! callback, Polly.ResilienceContext! context) -> TResult
-Polly.ResilienceStrategy.Execute<TResult>(System.Func<System.Threading.CancellationToken, TResult>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
-Polly.ResilienceStrategy.Execute<TResult>(System.Func<TResult>! callback) -> TResult
-Polly.ResilienceStrategy.Execute<TState>(System.Action<Polly.ResilienceContext!, TState>! callback, Polly.ResilienceContext! context, TState state) -> void
-Polly.ResilienceStrategy.Execute<TState>(System.Action<TState, System.Threading.CancellationToken>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> void
-Polly.ResilienceStrategy.Execute<TState>(System.Action<TState>! callback, TState state) -> void
-Polly.ResilienceStrategy.ExecuteAsync(System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask>! callback, Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask
-Polly.ResilienceStrategy.ExecuteAsync(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
-Polly.ResilienceStrategy.ExecuteAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy.ExecuteAsync<TResult, TState>(System.Func<TState, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy.ExecuteAsync<TResult>(System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy.ExecuteAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy.ExecuteAsync<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask
-Polly.ResilienceStrategy.ExecuteAsync<TState>(System.Func<TState, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
-Polly.ResilienceStrategy.ExecuteOutcomeAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
-Polly.ResilienceStrategy<T>
-Polly.ResilienceStrategy<T>.Execute<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, TResult>! callback, Polly.ResilienceContext! context, TState state) -> TResult
-Polly.ResilienceStrategy<T>.Execute<TResult, TState>(System.Func<TState, System.Threading.CancellationToken, TResult>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
-Polly.ResilienceStrategy<T>.Execute<TResult, TState>(System.Func<TState, TResult>! callback, TState state) -> TResult
-Polly.ResilienceStrategy<T>.Execute<TResult>(System.Func<Polly.ResilienceContext!, TResult>! callback, Polly.ResilienceContext! context) -> TResult
-Polly.ResilienceStrategy<T>.Execute<TResult>(System.Func<System.Threading.CancellationToken, TResult>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> TResult
-Polly.ResilienceStrategy<T>.Execute<TResult>(System.Func<TResult>! callback) -> TResult
-Polly.ResilienceStrategy<T>.ExecuteAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy<T>.ExecuteAsync<TResult, TState>(System.Func<TState, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, TState state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy<T>.ExecuteAsync<TResult>(System.Func<Polly.ResilienceContext!, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy<T>.ExecuteAsync<TResult>(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TResult>>! callback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
-Polly.ResilienceStrategy<T>.ExecuteOutcomeAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+Polly.ResilienceStrategy.ResilienceStrategy() -> void
+Polly.ResilienceStrategy<TResult>
+Polly.ResilienceStrategy<TResult>.ResilienceStrategy() -> void
 Polly.ResilienceStrategyOptions
 Polly.ResilienceStrategyOptions.Name.get -> string?
 Polly.ResilienceStrategyOptions.Name.set -> void
@@ -317,7 +336,7 @@ Polly.Retry.RetryStrategyOptions<TResult>.ShouldHandle.get -> System.Func<Polly.
 Polly.Retry.RetryStrategyOptions<TResult>.ShouldHandle.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.UseJitter.get -> bool
 Polly.Retry.RetryStrategyOptions<TResult>.UseJitter.set -> void
-Polly.RetryCompositeStrategyBuilderExtensions
+Polly.RetryResiliencePipelineBuilderExtensions
 Polly.StrategyBuilderContext
 Polly.StrategyBuilderContext.BuilderInstanceName.get -> string?
 Polly.StrategyBuilderContext.BuilderName.get -> string?
@@ -353,6 +372,10 @@ Polly.Telemetry.ResilienceTelemetrySource
 Polly.Telemetry.ResilienceTelemetrySource.BuilderInstanceName.get -> string?
 Polly.Telemetry.ResilienceTelemetrySource.BuilderName.get -> string?
 Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? builderName, string? builderInstanceName, string? strategyName) -> void
+Polly.Telemetry.ResilienceTelemetrySource.BuilderProperties.get -> Polly.ResilienceProperties!
+Polly.Telemetry.ResilienceTelemetrySource.PipelineInstanceName.get -> string?
+Polly.Telemetry.ResilienceTelemetrySource.PipelineName.get -> string?
+Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? pipelineName, string? pipelineInstanceName, Polly.ResilienceProperties! builderProperties, string? strategyName) -> void
 Polly.Telemetry.ResilienceTelemetrySource.StrategyName.get -> string?
 Polly.Telemetry.TelemetryEventArguments
 Polly.Telemetry.TelemetryEventArguments.Arguments.get -> object!
@@ -384,16 +407,11 @@ Polly.Timeout.TimeoutStrategyOptions.Timeout.set -> void
 Polly.Timeout.TimeoutStrategyOptions.TimeoutGenerator.get -> System.Func<Polly.Timeout.TimeoutGeneratorArguments, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
 Polly.Timeout.TimeoutStrategyOptions.TimeoutGenerator.set -> void
 Polly.Timeout.TimeoutStrategyOptions.TimeoutStrategyOptions() -> void
-Polly.TimeoutCompositeStrategyBuilderExtensions
-static Polly.CircuitBreakerCompositeStrategyBuilderExtensions.AddCircuitBreaker(this Polly.CompositeStrategyBuilder! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions! options) -> Polly.CompositeStrategyBuilder!
-static Polly.CircuitBreakerCompositeStrategyBuilderExtensions.AddCircuitBreaker<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
-static Polly.CompositeStrategyBuilderExtensions.AddStrategy(this Polly.CompositeStrategyBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ReactiveResilienceStrategy<object!>!>! factory, Polly.ResilienceStrategyOptions! options) -> Polly.CompositeStrategyBuilder!
-static Polly.CompositeStrategyBuilderExtensions.AddStrategy<TBuilder>(this TBuilder! builder, Polly.ResilienceStrategy! strategy) -> TBuilder!
-static Polly.CompositeStrategyBuilderExtensions.AddStrategy<TBuilder>(this TBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.NonReactiveResilienceStrategy!>! factory, Polly.ResilienceStrategyOptions! options) -> TBuilder!
-static Polly.CompositeStrategyBuilderExtensions.AddStrategy<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.ResilienceStrategy<TResult>! strategy) -> Polly.CompositeStrategyBuilder<TResult>!
-static Polly.CompositeStrategyBuilderExtensions.AddStrategy<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ReactiveResilienceStrategy<TResult>!>! factory, Polly.ResilienceStrategyOptions! options) -> Polly.CompositeStrategyBuilder<TResult>!
-static Polly.FallbackCompositeStrategyBuilderExtensions.AddFallback<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.Fallback.FallbackStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
-static Polly.HedgingCompositeStrategyBuilderExtensions.AddHedging<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.Hedging.HedgingStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
+Polly.TimeoutResiliencePipelineBuilderExtensions
+static Polly.CircuitBreakerResiliencePipelineBuilderExtensions.AddCircuitBreaker(this Polly.ResiliencePipelineBuilder! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions! options) -> Polly.ResiliencePipelineBuilder!
+static Polly.CircuitBreakerResiliencePipelineBuilderExtensions.AddCircuitBreaker<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.FallbackResiliencePipelineBuilderExtensions.AddFallback<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Fallback.FallbackStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.HedgingResiliencePipelineBuilderExtensions.AddHedging<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Hedging.HedgingStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.LegacySupport.SetProperties(this Polly.ResilienceProperties! resilienceProperties, System.Collections.Generic.IDictionary<string!, object?>! properties, out System.Collections.Generic.IDictionary<string!, object?>! oldProperties) -> void
 static Polly.Outcome.FromException<TResult>(System.Exception! exception) -> Polly.Outcome<TResult>
 static Polly.Outcome.FromExceptionAsTask<TResult>(System.Exception! exception) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
@@ -406,13 +424,18 @@ static Polly.PredicateBuilder<TResult>.implicit operator System.Func<Polly.Outco
 static Polly.PredicateResult.False.get -> System.Threading.Tasks.ValueTask<bool>
 static Polly.PredicateResult.True.get -> System.Threading.Tasks.ValueTask<bool>
 static Polly.ResilienceContextPool.Shared.get -> Polly.ResilienceContextPool!
+static Polly.ResiliencePipelineBuilderExtensions.AddPipeline<TBuilder>(this TBuilder! builder, Polly.ResiliencePipeline! pipeline) -> TBuilder!
+static Polly.ResiliencePipelineBuilderExtensions.AddPipeline<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.ResiliencePipeline<TResult>! pipeline) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.ResiliencePipelineBuilderExtensions.AddStrategy(this Polly.ResiliencePipelineBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy<object!>!>! factory, Polly.ResilienceStrategyOptions! options) -> Polly.ResiliencePipelineBuilder!
+static Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TBuilder>(this TBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy!>! factory, Polly.ResilienceStrategyOptions! options) -> TBuilder!
+static Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy<TResult>!>! factory, Polly.ResilienceStrategyOptions! options) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.ResiliencePropertyKey<TValue>.operator !=(Polly.ResiliencePropertyKey<TValue> left, Polly.ResiliencePropertyKey<TValue> right) -> bool
 static Polly.ResiliencePropertyKey<TValue>.operator ==(Polly.ResiliencePropertyKey<TValue> left, Polly.ResiliencePropertyKey<TValue> right) -> bool
-static Polly.RetryCompositeStrategyBuilderExtensions.AddRetry(this Polly.CompositeStrategyBuilder! builder, Polly.Retry.RetryStrategyOptions! options) -> Polly.CompositeStrategyBuilder!
-static Polly.RetryCompositeStrategyBuilderExtensions.AddRetry<TResult>(this Polly.CompositeStrategyBuilder<TResult>! builder, Polly.Retry.RetryStrategyOptions<TResult>! options) -> Polly.CompositeStrategyBuilder<TResult>!
-static Polly.TimeoutCompositeStrategyBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, Polly.Timeout.TimeoutStrategyOptions! options) -> TBuilder!
-static Polly.TimeoutCompositeStrategyBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, System.TimeSpan timeout) -> TBuilder!
-static readonly Polly.NullResilienceStrategy.Instance -> Polly.NullResilienceStrategy!
-static readonly Polly.NullResilienceStrategy<TResult>.Instance -> Polly.NullResilienceStrategy<TResult>!
-virtual Polly.Registry.ResilienceStrategyProvider<TKey>.GetStrategy(TKey key) -> Polly.ResilienceStrategy!
-virtual Polly.Registry.ResilienceStrategyProvider<TKey>.GetStrategy<TResult>(TKey key) -> Polly.ResilienceStrategy<TResult>!
+static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry(this Polly.ResiliencePipelineBuilder! builder, Polly.Retry.RetryStrategyOptions! options) -> Polly.ResiliencePipelineBuilder!
+static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Retry.RetryStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, Polly.Timeout.TimeoutStrategyOptions! options) -> TBuilder!
+static Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, System.TimeSpan timeout) -> TBuilder!
+static readonly Polly.NullResiliencePipeline.Instance -> Polly.NullResiliencePipeline!
+static readonly Polly.NullResiliencePipeline<TResult>.Instance -> Polly.NullResiliencePipeline<TResult>!
+virtual Polly.Registry.ResiliencePipelineProvider<TKey>.GetPipeline(TKey key) -> Polly.ResiliencePipeline!
+virtual Polly.Registry.ResiliencePipelineProvider<TKey>.GetPipeline<TResult>(TKey key) -> Polly.ResiliencePipeline<TResult>!

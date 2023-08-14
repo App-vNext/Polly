@@ -1,5 +1,5 @@
 ﻿#nullable enable
-Polly.RateLimiterCompositeStrategyBuilderExtensions
+Polly.RateLimiterResiliencePipelineBuilderExtensions
 Polly.RateLimiting.OnRateLimiterRejectedArguments
 Polly.RateLimiting.OnRateLimiterRejectedArguments.Context.get -> Polly.ResilienceContext!
 Polly.RateLimiting.OnRateLimiterRejectedArguments.Lease.get -> System.Threading.RateLimiting.RateLimitLease!
@@ -22,11 +22,11 @@ Polly.RateLimiting.RateLimiterStrategyOptions.RateLimiter.get -> Polly.RateLimit
 Polly.RateLimiting.RateLimiterStrategyOptions.RateLimiter.set -> void
 Polly.RateLimiting.RateLimiterStrategyOptions.RateLimiterStrategyOptions() -> void
 Polly.RateLimiting.ResilienceRateLimiter
+static Polly.RateLimiterResiliencePipelineBuilderExtensions.AddConcurrencyLimiter<TBuilder>(this TBuilder! builder, int permitLimit, int queueLimit = 0) -> TBuilder!
+static Polly.RateLimiterResiliencePipelineBuilderExtensions.AddConcurrencyLimiter<TBuilder>(this TBuilder! builder, System.Threading.RateLimiting.ConcurrencyLimiterOptions! options) -> TBuilder!
+static Polly.RateLimiterResiliencePipelineBuilderExtensions.AddRateLimiter<TBuilder>(this TBuilder! builder, Polly.RateLimiting.RateLimiterStrategyOptions! options) -> TBuilder!
+static Polly.RateLimiterResiliencePipelineBuilderExtensions.AddRateLimiter<TBuilder>(this TBuilder! builder, System.Threading.RateLimiting.RateLimiter! limiter) -> TBuilder!
 Polly.RateLimiting.ResilienceRateLimiter.Dispose() -> void
 Polly.RateLimiting.ResilienceRateLimiter.DisposeAsync() -> System.Threading.Tasks.ValueTask
-static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddConcurrencyLimiter<TBuilder>(this TBuilder! builder, int permitLimit, int queueLimit = 0) -> TBuilder!
-static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddConcurrencyLimiter<TBuilder>(this TBuilder! builder, System.Threading.RateLimiting.ConcurrencyLimiterOptions! options) -> TBuilder!
-static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddRateLimiter<TBuilder>(this TBuilder! builder, Polly.RateLimiting.RateLimiterStrategyOptions! options) -> TBuilder!
-static Polly.RateLimiterCompositeStrategyBuilderExtensions.AddRateLimiter<TBuilder>(this TBuilder! builder, System.Threading.RateLimiting.RateLimiter! limiter) -> TBuilder!
 static Polly.RateLimiting.ResilienceRateLimiter.Create(System.Threading.RateLimiting.PartitionedRateLimiter<Polly.ResilienceContext!>! rateLimiter) -> Polly.RateLimiting.ResilienceRateLimiter!
 static Polly.RateLimiting.ResilienceRateLimiter.Create(System.Threading.RateLimiting.RateLimiter! rateLimiter) -> Polly.RateLimiting.ResilienceRateLimiter!

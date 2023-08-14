@@ -4,7 +4,7 @@ The Polly V8 API exposes unified and non-allocating resilience API that is descr
 
 ## Core API
 
-At the heart of Polly V8 is the [ResilienceStrategy](ResilienceStrategy.cs) class that is responsible for execution of user code. It's one class that handles all Polly V7 scenarios:
+At the heart of Polly V8 is the [ResiliencePipeline](ResiliencePipeline.cs) class that is responsible for execution of user code. It's one class that handles all Polly V7 scenarios:
 
 - `ISyncPolicy`
 - `IAsyncPolicy`
@@ -12,12 +12,8 @@ At the heart of Polly V8 is the [ResilienceStrategy](ResilienceStrategy.cs) clas
 - `IAsyncPolicy<T>`
 
 ``` csharp
-public abstract class ResilienceStrategy
+public abstract class ResiliencePipeline
 {
-    // the main method that all the others call
-    protected virtual ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> execution, ResilienceContext context, TState state);
-
-    // convenience methods for various types of user-callbacks
     public void Execute(Action callback);
 
     public TResult Execute<TResult>(Func<TResult> callback);
@@ -53,7 +49,7 @@ public sealed class ResilienceContext
 }
 ```
 
-The `ResilienceStrategy` unifies the 4 different policies used now in Polly. User actions are executed under a single API. The are many methods
+The `ResiliencePipeline` unifies the 4 different policies used now in Polly. User actions are executed under a single API. The are many methods
 exposed on this class that cover different scenarios:
 
 - Synchronous void methods.
@@ -73,7 +69,7 @@ public void Execute(Action execute)
 
     try
     {
-        strategy.ExecuteAsync(static (context, state) =>
+        ExecuteCore(static (context, state) =>
         {
             state();
             return new ValueTask<Outcome<VoidResult>>(new(VoidResult.Instance));
@@ -96,7 +92,13 @@ In the preceding example:
 - We block the execution.
 - We return `ResilienceContext` to the pool.
 
-Underlying implementation decides how to execute this user-callback by reading the `ResilienceContext`:
+
+The resilience pipeline is composed of a single or multiple individual resilience strategies. Polly V8 recognizes the following building blocks for resilience strategies:
+
+- `ResilienceStrategy`: Base class for all non-reactive resilience strategies.
+- `ResilienceStrategy<T>`: Base class for all reactive resilience strategies.
+
+For example we have non-reactive delay strategy that decides how to execute this user-callback by reading the `ResilienceContext`:
 
 ``` csharp
 internal class DelayStrategy : ResilienceStrategy
@@ -122,7 +124,7 @@ internal class DelayStrategy : ResilienceStrategy
 
 In the preceding example we are calling the `DelayAsync` extension for `TimeProvider` that accepts the `ResilienceContext`. The extension is using `Thread.Sleep` for synchronous executions and `Task.Delay` for asynchronous executions.
 
-This way, the responsibility of how to execute method is lifted from the user and instead passed to the policy. User cares only about the `ResilienceStrategy` class. User uses only a single strategy to execute all scenarios. Previously, user had to decide whether to use sync vs async, typed vs non-typed policies.
+This way, the responsibility of how to execute method is lifted from the user and instead passed to the policy. User cares only about the `ResiliencePipeline` class. User uses only a single strategy to execute all scenarios. Previously, user had to decide whether to use sync vs async, typed vs non-typed policies.
 
 The life of extensibility author is also simplified as they only maintain one implementation of strategy instead of multiple ones. See the duplications in [`Polly.Retry`](https://github.com/App-vNext/Polly/tree/main/src/Polly/Retry).
 
@@ -136,43 +138,43 @@ A common scenario that illustrates this is the circuit breaker, which allows for
 
 ### Generic Resilience Strategy
 
-Polly also exposes the sealed `ResilienceStrategy<T>` strategy that is just a simple wrapper over `ResilienceStrategy`. This strategy is used for scenarios when the consumer handles the single result type.
+Polly also exposes the `ResiliencePipeline<T>` that is just a simple wrapper over `ResiliencePipeline`. This pipeline is used for scenarios when the consumer handles the single result type.
 
-## Creation of `ResilienceStrategy`
+## Creation of `ResiliencePipeline`
 
 This API exposes the following builders:
 
-- [CompositeStrategyBuilder](CompositeStrategyBuilder.cs): Used to create resilience strategies that can execute all types of callbacks. In general, these strategies only handle exceptions. 
-- [CompositeStrategyBuilder<T>](CompositeStrategyBuilder.TResult.cs): Used to create generic resilience strategies that can only execute callbacks that return the same result type.
-- [CompositeStrategyBuilderBase](CompositeStrategyBuilderBase.cs): The base class for both builders above. You can use it as a target for strategy extensions that work for both builders above.  
+- [ResiliencePipelineBuilder](ResiliencePipelineBuilder.cs): Used to create resilience strategies that can execute all types of callbacks. In general, these strategies only handle exceptions. 
+- [ResiliencePipelineBuilder<T>](ResiliencePipelineBuilder.TResult.cs): Used to create generic resilience strategies that can only execute callbacks that return the same result type.
+- [ResiliencePipelineBuilderBase](ResiliencePipelineBuilderBase.cs): The base class for both builders above. You can use it as a target for strategy extensions that work for both builders above.  
 
-To create a strategy or composite resilience strategy you chain various extensions for `CompositeStrategyBuilder` followed by the `Build` call:
+To create a strategy or composite resilience strategy you chain various extensions for `ResiliencePipelineBuilder` followed by the `Build` call:
 
-Single strategy:
+Pipeline with a single strategy:
 
 ``` csharp
-var resilienceStrategy = new CompositeStrategyBuilder().AddRetry().Build();
+var ResiliencePipeline = new ResiliencePipelineBuilder().AddRetry(new()).Build();
 ```
 
-Composite strategy:
+Pipeline wiht multiple strategies:
 
 ``` csharp
-var resilienceStrategy = new CompositeStrategyBuilder()
-    .AddRetry()
-    .AddCircuitBreaker()
+var ResiliencePipeline = new ResiliencePipelineBuilder()
+    .AddRetry(new())
+    .AddCircuitBreaker(new())
     .AddTimeout(new TimeoutStrategyOptions() { ... })
     .Build();
 ```
 
 ## Extensibility
 
-The resilience extensibility is simple. You just expose extensions for `CompositeStrategyBuilder` that use the `CompositeStrategyBuilder.AddStrategy` methods.
+The resilience extensibility is simple. You just expose extensions for `ResiliencePipelineBuilder` that use the `ResiliencePipelineBuilder.AddStrategy` methods.
 
-If you want to create a resilience strategy that works for both generic and non-generic builders you can use `CompositeStrategyBuilderBase` as a target:
+If you want to create a resilience strategy that works for both generic and non-generic builders you can use `ResiliencePipelineBuilderBase` as a target:
 
 ``` csharp
 public static TBuilder AddMyStrategy<TBuilder>(this TBuilder builder)
-    where TBuilder : CompositeStrategyBuilderBase
+    where TBuilder : ResiliencePipelineBuilderBase
 {
     return builder.AddStrategy(new MyStrategy());
 }
@@ -180,7 +182,7 @@ public static TBuilder AddMyStrategy<TBuilder>(this TBuilder builder)
 
 # Resilience Strategy Delegates
 
-Resilience strategies leverage the following delegate types:
+Individual resilience strategies leverage the following delegate types:
 
 - **Predicates**: These are essential when a resilience strategy needs to determine whether or not to handle the execution result.
 - **Events**: These are invoked when significant events occur within the resilience strategy.
@@ -219,7 +221,7 @@ Below are a few examples showcasing the usage of these delegates:
 A non-generic predicate defining retries for multiple result types:
 
 ``` csharp
-new CompositeStrategyBuilder()
+new ResiliencePipelineBuilder()
    .AddRetry(new RetryStrategyOptions
     {
         ShouldRetry = args => args switch
@@ -236,7 +238,7 @@ new CompositeStrategyBuilder()
 A generic predicate defining retries for a single result type:
 
 ``` csharp
-new CompositeStrategyBuilder()
+new ResiliencePipelineBuilder()
    .AddRetry(new RetryStrategyOptions<string>
     {
         ShouldRetry = args => args switch
@@ -255,7 +257,7 @@ When setting the delegates, ensure to respect the `ResilienceContext.IsSynchrono
 
 ## Telemetry
 
-Each individual resilience strategy can emit telemetry by using the [`ResilienceStrategyTelemetry`](Telemetry/ResilienceStrategyTelemetry.cs) API. Polly wraps the arguments as [`TelemetryEventArguments`](Telemetry/TelemetryEventArguments.cs) and emits them using `DiagnosticSource`.
-To consume the telemetry, Polly adopters needs to assign an instance of `DiagnosticSource` to `CompositeStrategyBuilder.DiagnosticSource` and consume `TelemetryEventArguments`.
+Each individual resilience strategy can emit telemetry by using the [`ResiliencePipelineTelemetry`](Telemetry/ResiliencePipelineTelemetry.cs) API. Polly wraps the arguments as [`TelemetryEventArguments`](Telemetry/TelemetryEventArguments.cs) and emits them using `DiagnosticSource`.
+To consume the telemetry, Polly adopters needs to assign an instance of `DiagnosticSource` to `ResiliencePipelineBuilder.DiagnosticSource` and consume `TelemetryEventArguments`.
 
-For common use-cases, it is anticipated that Polly users would leverage `Polly.Extensions`. This allows all of the aforementioned functionalities by invoking the `CompositeStrategyBuilder.ConfigureTelemetry(...)` extension method. `ConfigureTelemetry` processes `TelemetryEventArguments` and generates logs and metrics from it.
+For common use-cases, it is anticipated that Polly users would leverage `Polly.Extensions`. This allows all of the aforementioned functionalities by invoking the `ResiliencePipelineBuilder.ConfigureTelemetry(...)` extension method. `ConfigureTelemetry` processes `TelemetryEventArguments` and generates logs and metrics from it.

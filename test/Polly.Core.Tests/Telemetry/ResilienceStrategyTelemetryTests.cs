@@ -50,7 +50,7 @@ public class ResilienceStrategyTelemetryTests
     }
 
     [Fact]
-    public void ResilienceStrategyTelemetry_NoDiagnosticSource_Ok()
+    public void ResiliencePipelineTelemetry_NoDiagnosticSource_Ok()
     {
         var source = new ResilienceTelemetrySource("builder", "instance", "strategy-name");
         var sut = new ResilienceStrategyTelemetry(source, null);

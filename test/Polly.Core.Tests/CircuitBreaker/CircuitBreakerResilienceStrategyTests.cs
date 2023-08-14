@@ -135,6 +135,6 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
     }
 
-    private ReactiveResilienceStrategyBridge<int> Create()
+    private ResiliencePipelineBridge<int> Create()
         => new(new CircuitBreakerResilienceStrategy<int>(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl));
 }

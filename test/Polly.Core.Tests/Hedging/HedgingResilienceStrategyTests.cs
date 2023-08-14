@@ -330,7 +330,7 @@ public class HedgingResilienceStrategyTests : IDisposable
             };
         });
 
-        var strategy = new ReactiveResilienceStrategyBridge<DisposableResult>(Create(handler, null));
+        var strategy = new ResiliencePipelineBridge<DisposableResult>(Create(handler, null));
 
         // act
         var resultTask = strategy.ExecuteAsync(async token =>
@@ -954,7 +954,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         return Outcome.FromResult("secondary");
     });
 
-    private ReactiveResilienceStrategyBridge<string> Create() => new(Create(_handler!, _options.OnHedging));
+    private ResiliencePipelineBridge<string> Create() => new(Create(_handler!, _options.OnHedging));
 
     private HedgingResilienceStrategy<T> Create<T>(
         HedgingHandler<T> handler,

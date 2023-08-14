@@ -340,7 +340,7 @@ public class RetryResilienceStrategyTests
 
     private void SetupNoDelay() => _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.Zero);
 
-    private async ValueTask<int> ExecuteAndAdvance(ReactiveResilienceStrategyBridge<object> sut)
+    private async ValueTask<int> ExecuteAndAdvance(ResiliencePipelineBridge<object> sut)
     {
         var executing = sut.ExecuteAsync(_ => new ValueTask<int>(0)).AsTask();
 
@@ -352,6 +352,6 @@ public class RetryResilienceStrategyTests
         return await executing;
     }
 
-    private ReactiveResilienceStrategyBridge<object> CreateSut(TimeProvider? timeProvider = null) =>
+    private ResiliencePipelineBridge<object> CreateSut(TimeProvider? timeProvider = null) =>
         new(new RetryResilienceStrategy<object>(_options, timeProvider ?? _timeProvider, _telemetry));
 }

@@ -14,8 +14,8 @@ public partial class IssuesTests
     {
         var contextChecked = false;
 
-        // create the strategy
-        var serviceCollection = new ServiceCollection().AddResilienceStrategy("my-strategy", (builder, context) =>
+        // create the pipeline
+        var serviceCollection = new ServiceCollection().AddResiliencePipeline("my-pipeline", (builder, context) =>
         {
             builder
                 .AddStrategy(new ServiceProviderStrategy(context.ServiceProvider))
@@ -40,23 +40,23 @@ public partial class IssuesTests
         });
 
         // retrieve the provider
-        var strategyProvider = serviceCollection.BuildServiceProvider().GetRequiredService<ResilienceStrategyProvider<string>>();
-        var strategy = strategyProvider.GetStrategy("my-strategy");
+        var pipelineProvider = serviceCollection.BuildServiceProvider().GetRequiredService<ResiliencePipelineProvider<string>>();
+        var pipeline = pipelineProvider.GetPipeline("my-pipeline");
 
         // now trigger the circuit breaker by evaluating multiple result types
         for (int i = 0; i < 10; i++)
         {
-            await strategy.ExecuteAsync(_ => new ValueTask<string>("error"));
+            await pipeline.ExecuteAsync(_ => new ValueTask<string>("error"));
         }
 
         // now the circuit breaker should be open
-        await strategy.Invoking(s => s.ExecuteAsync(_ => new ValueTask<string>("valid-result")).AsTask()).Should().ThrowAsync<BrokenCircuitException>();
+        await pipeline.Invoking(s => s.ExecuteAsync(_ => new ValueTask<string>("valid-result")).AsTask()).Should().ThrowAsync<BrokenCircuitException>();
 
         // check that service provider was received in the context
         contextChecked.Should().BeTrue();
     }
 
-    private class ServiceProviderStrategy : NonReactiveResilienceStrategy
+    private class ServiceProviderStrategy : ResilienceStrategy
     {
         private readonly IServiceProvider _serviceProvider;
 

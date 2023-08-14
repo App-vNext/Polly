@@ -15,7 +15,7 @@ public class CreationBenchmark
     [Benchmark]
     public static void Fallback_V8()
     {
-        new CompositeStrategyBuilder<string>()
+        new ResiliencePipelineBuilder<string>()
             .AddFallback(new()
             {
                 FallbackAction = _ => Outcome.FromResultAsTask("fallback")

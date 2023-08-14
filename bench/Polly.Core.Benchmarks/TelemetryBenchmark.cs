@@ -6,13 +6,13 @@ namespace Polly.Core.Benchmarks;
 
 public class TelemetryBenchmark
 {
-    private ResilienceStrategy? _strategy;
+    private ResiliencePipeline? _pipeline;
     private MeterListener? _meterListener;
 
     [GlobalSetup]
     public void Prepare()
     {
-        _strategy = Build(new CompositeStrategyBuilder());
+        _pipeline = Build(new ResiliencePipelineBuilder());
 
         if (Telemetry)
         {
@@ -33,11 +33,11 @@ public class TelemetryBenchmark
     public async ValueTask Execute()
     {
         var context = ResilienceContextPool.Shared.Get();
-        await _strategy!.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state").ConfigureAwait(false);
+        await _pipeline!.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state").ConfigureAwait(false);
         ResilienceContextPool.Shared.Return(context);
     }
 
-    private ResilienceStrategy Build(CompositeStrategyBuilder builder)
+    private ResiliencePipeline Build(ResiliencePipelineBuilder builder)
     {
         builder.AddStrategy(context => new TelemetryEventStrategy(context.Telemetry), new EmptyResilienceOptions());
 
@@ -66,7 +66,7 @@ public class TelemetryBenchmark
         return builder.Build();
     }
 
-    private class TelemetryEventStrategy : NonReactiveResilienceStrategy
+    private class TelemetryEventStrategy : ResilienceStrategy
     {
         private readonly ResilienceStrategyTelemetry _telemetry;
 

@@ -2,15 +2,15 @@ namespace Polly.Core.Benchmarks;
 
 public class CircuitBreakerOpenedBenchmark
 {
-    private ResilienceStrategy? _strategy;
-    private ResilienceStrategy? _strategyHandlesOutcome;
+    private ResiliencePipeline? _pipeline;
+    private ResiliencePipeline? _reactivePipeline;
     private IAsyncPolicy<string>? _policy;
 
     [GlobalSetup]
     public void Setup()
     {
-        _strategyHandlesOutcome = (ResilienceStrategy?)Helper.CreateOpenedCircuitBreaker(PollyVersion.V8, handleOutcome: true);
-        _strategy = (ResilienceStrategy?)Helper.CreateOpenedCircuitBreaker(PollyVersion.V8, handleOutcome: false);
+        _reactivePipeline = (ResiliencePipeline?)Helper.CreateOpenedCircuitBreaker(PollyVersion.V8, handleOutcome: true);
+        _pipeline = (ResiliencePipeline?)Helper.CreateOpenedCircuitBreaker(PollyVersion.V8, handleOutcome: false);
         _policy = (IAsyncPolicy<string>?)Helper.CreateOpenedCircuitBreaker(PollyVersion.V7, handleOutcome: false);
     }
 
@@ -32,7 +32,7 @@ public class CircuitBreakerOpenedBenchmark
     {
         try
         {
-            await _strategy!.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
+            await _pipeline!.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
         }
         catch (BrokenCircuitException)
         {
@@ -43,6 +43,6 @@ public class CircuitBreakerOpenedBenchmark
     [Benchmark(Baseline = true)]
     public async ValueTask ExecuteAsync_Outcome_V8()
     {
-        await _strategyHandlesOutcome!.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
+        await _reactivePipeline!.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
     }
 }
