@@ -355,7 +355,6 @@ Polly.Telemetry.ResilienceEventSeverity.Information = 2 -> Polly.Telemetry.Resil
 Polly.Telemetry.ResilienceEventSeverity.None = 0 -> Polly.Telemetry.ResilienceEventSeverity
 Polly.Telemetry.ResilienceEventSeverity.Warning = 3 -> Polly.Telemetry.ResilienceEventSeverity
 Polly.Telemetry.ResilienceStrategyTelemetry
-Polly.Telemetry.ResilienceStrategyTelemetry.IsEnabled.get -> bool
 Polly.Telemetry.ResilienceStrategyTelemetry.Report<TArgs, TResult>(Polly.Telemetry.ResilienceEvent resilienceEvent, Polly.OutcomeArguments<TResult, TArgs> args) -> void
 Polly.Telemetry.ResilienceStrategyTelemetry.Report<TArgs>(Polly.Telemetry.ResilienceEvent resilienceEvent, Polly.ResilienceContext! context, TArgs args) -> void
 Polly.Telemetry.ResilienceTelemetrySource

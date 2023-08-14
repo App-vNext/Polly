@@ -19,11 +19,6 @@ public sealed class ResilienceStrategyTelemetry
     internal ResilienceTelemetrySource TelemetrySource { get; }
 
     /// <summary>
-    /// Gets a value indicating whether telemetry is enabled.
-    /// </summary>
-    public bool IsEnabled => Listener is not null;
-
-    /// <summary>
     /// Reports an event that occurred in a resilience strategy.
     /// </summary>
     /// <typeparam name="TArgs">The arguments associated with this event.</typeparam>
