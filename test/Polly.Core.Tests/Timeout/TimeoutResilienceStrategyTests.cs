@@ -60,7 +60,6 @@ public class TimeoutResilienceStrategyTests : IDisposable
         var executionTime = _delay + TimeSpan.FromSeconds(1);
         _options.OnTimeout = args =>
         {
-            args.Exception.Should().BeAssignableTo<OperationCanceledException>();
             args.Timeout.Should().Be(_delay);
             args.Context.Should().NotBeNull();
             args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
