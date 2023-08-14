@@ -88,9 +88,6 @@ Polly.CompositeStrategyBuilderBase.InstanceName.get -> string?
 Polly.CompositeStrategyBuilderBase.InstanceName.set -> void
 Polly.CompositeStrategyBuilderBase.Name.get -> string?
 Polly.CompositeStrategyBuilderBase.Name.set -> void
-Polly.CompositeStrategyBuilderBase.Properties.get -> Polly.ResilienceProperties!
-Polly.CompositeStrategyBuilderBase.Randomizer.get -> System.Func<double>!
-Polly.CompositeStrategyBuilderBase.Randomizer.set -> void
 Polly.CompositeStrategyBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
 Polly.CompositeStrategyBuilderExtensions
 Polly.ExecutionRejectedException
@@ -309,6 +306,8 @@ Polly.Retry.RetryStrategyOptions<TResult>.BaseDelay.get -> System.TimeSpan
 Polly.Retry.RetryStrategyOptions<TResult>.BaseDelay.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.OnRetry.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Retry.OnRetryArguments!>, System.Threading.Tasks.ValueTask>?
 Polly.Retry.RetryStrategyOptions<TResult>.OnRetry.set -> void
+Polly.Retry.RetryStrategyOptions<TResult>.Randomizer.get -> System.Func<double>!
+Polly.Retry.RetryStrategyOptions<TResult>.Randomizer.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.RetryCount.get -> int
 Polly.Retry.RetryStrategyOptions<TResult>.RetryCount.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.RetryDelayGenerator.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Retry.RetryDelayArguments>, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
@@ -322,7 +321,6 @@ Polly.RetryCompositeStrategyBuilderExtensions
 Polly.StrategyBuilderContext
 Polly.StrategyBuilderContext.BuilderInstanceName.get -> string?
 Polly.StrategyBuilderContext.BuilderName.get -> string?
-Polly.StrategyBuilderContext.BuilderProperties.get -> Polly.ResilienceProperties!
 Polly.StrategyBuilderContext.StrategyName.get -> string?
 Polly.StrategyBuilderContext.Telemetry.get -> Polly.Telemetry.ResilienceStrategyTelemetry!
 Polly.Telemetry.ExecutionAttemptArguments
@@ -354,8 +352,7 @@ Polly.Telemetry.ResilienceStrategyTelemetry.Report<TArgs>(Polly.Telemetry.Resili
 Polly.Telemetry.ResilienceTelemetrySource
 Polly.Telemetry.ResilienceTelemetrySource.BuilderInstanceName.get -> string?
 Polly.Telemetry.ResilienceTelemetrySource.BuilderName.get -> string?
-Polly.Telemetry.ResilienceTelemetrySource.BuilderProperties.get -> Polly.ResilienceProperties!
-Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? builderName, string? builderInstanceName, Polly.ResilienceProperties! builderProperties, string? strategyName) -> void
+Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? builderName, string? builderInstanceName, string? strategyName) -> void
 Polly.Telemetry.ResilienceTelemetrySource.StrategyName.get -> string?
 Polly.Telemetry.TelemetryEventArguments
 Polly.Telemetry.TelemetryEventArguments.Arguments.get -> object!

@@ -18,6 +18,7 @@ public class RetryResilienceStrategyTests
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource);
         _options.ShouldHandle = _ => new ValueTask<bool>(false);
+        _options.Randomizer = () => 1;
 
     }
 
@@ -352,8 +353,5 @@ public class RetryResilienceStrategyTests
     }
 
     private ReactiveResilienceStrategyBridge<object> CreateSut(TimeProvider? timeProvider = null) =>
-        new(new RetryResilienceStrategy<object>(_options,
-            timeProvider ?? _timeProvider,
-            _telemetry,
-            () => 1.0));
+        new(new RetryResilienceStrategy<object>(_options, timeProvider ?? _timeProvider, _telemetry));
 }

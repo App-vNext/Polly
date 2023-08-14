@@ -165,11 +165,7 @@ public class PollyServiceCollectionExtensionTests
         var asserted = false;
         var key = new ResiliencePropertyKey<int>("A");
 
-        AddResilienceStrategy(Key, context =>
-        {
-            context.BuilderProperties.TryGetValue(PollyDependencyInjectionKeys.ServiceProvider, out _).Should().BeTrue();
-            asserted = true;
-        });
+        AddResilienceStrategy(Key, context => asserted = true);
 
         CreateProvider().GetStrategy(Key);
 

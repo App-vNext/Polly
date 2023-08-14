@@ -177,10 +177,9 @@ public class ResilienceStrategyRegistryTests
         _callback = _ => activatorCalls++;
         var registry = CreateRegistry();
         var called = 0;
-        registry.TryAddBuilder(StrategyId.Create("A"), (builder, context) =>
+        registry.TryAddBuilder(StrategyId.Create("A"), (builder, _) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.Properties.Set(StrategyId.ResilienceKey, context.StrategyKey);
             called++;
         });
 
@@ -206,10 +205,9 @@ public class ResilienceStrategyRegistryTests
         _callback = _ => activatorCalls++;
         var registry = CreateRegistry();
         var called = 0;
-        registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, context) =>
+        registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, _) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.Properties.Set(StrategyId.ResilienceKey, context.StrategyKey);
             called++;
         });
 

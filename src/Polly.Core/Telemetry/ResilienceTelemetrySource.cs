@@ -13,17 +13,14 @@ public sealed class ResilienceTelemetrySource
     /// </summary>
     /// <param name="builderName">The builder name.</param>
     /// <param name="builderInstanceName">The builder instance name.</param>
-    /// <param name="builderProperties">The builder properties.</param>
     /// <param name="strategyName">The strategy name.</param>
     public ResilienceTelemetrySource(
         string? builderName,
         string? builderInstanceName,
-        ResilienceProperties builderProperties,
         string? strategyName)
     {
         BuilderName = builderName;
         BuilderInstanceName = builderInstanceName;
-        BuilderProperties = builderProperties;
         StrategyName = strategyName;
     }
 
@@ -36,11 +33,6 @@ public sealed class ResilienceTelemetrySource
     /// Gets the builder instance name.
     /// </summary>
     public string? BuilderInstanceName { get; }
-
-    /// <summary>
-    /// Gets the builder properties.
-    /// </summary>
-    public ResilienceProperties BuilderProperties { get; }
 
     /// <summary>
     /// Gets the strategy name.

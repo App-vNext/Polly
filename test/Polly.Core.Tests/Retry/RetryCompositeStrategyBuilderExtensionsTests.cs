@@ -131,7 +131,7 @@ public class RetryCompositeStrategyBuilderExtensionsTests
     {
         var aggregatedDelay = TimeSpan.Zero;
 
-        var strategy = new CompositeStrategyBuilder { Randomizer = () => 1.0 }.AddRetry(new()
+        var strategy = new CompositeStrategyBuilder().AddRetry(new()
         {
             RetryCount = options.RetryCount,
             BaseDelay = options.BaseDelay,
@@ -144,7 +144,8 @@ public class RetryCompositeStrategyBuilderExtensionsTests
 
                 // return zero delay, so no waiting
                 return new ValueTask<TimeSpan>(TimeSpan.Zero);
-            }
+            },
+            Randomizer = () => 1.0,
         })
         .Build();
 

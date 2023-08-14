@@ -11,7 +11,6 @@ public class GenericCompositeStrategyBuilderTests
     public void Ctor_EnsureDefaults()
     {
         _builder.Name.Should().BeNull();
-        _builder.Properties.Should().NotBeNull();
         _builder.TimeProvider.Should().Be(TimeProvider.System);
     }
 

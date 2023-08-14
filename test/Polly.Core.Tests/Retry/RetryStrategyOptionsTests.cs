@@ -21,6 +21,7 @@ public class RetryStrategyOptionsTests
         options.BackoffType.Should().Be(RetryBackoffType.Constant);
         options.BaseDelay.Should().Be(TimeSpan.FromSeconds(2));
         options.Name.Should().Be("Retry");
+        options.Randomizer.Should().NotBeNull();
     }
 
     [Fact]

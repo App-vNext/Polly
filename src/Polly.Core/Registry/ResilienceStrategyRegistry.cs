@@ -297,7 +297,6 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
                 diagnosticSource,
                 context.BuilderName,
                 context.BuilderInstanceName,
-                builder.Properties,
                 null));
     }
 

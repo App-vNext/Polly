@@ -38,10 +38,10 @@ public static class TestUtilities
     }
 
     public static ResilienceStrategyTelemetry CreateResilienceTelemetry(DiagnosticSource source)
-        => new(new ResilienceTelemetrySource("dummy-builder", "dummy-instance", new ResilienceProperties(), "strategy-name"), source);
+        => new(new ResilienceTelemetrySource("dummy-builder", "dummy-instance", "strategy-name"), source);
 
     public static ResilienceStrategyTelemetry CreateResilienceTelemetry(Action<TelemetryEventArguments> callback)
-        => new(new ResilienceTelemetrySource("dummy-builder", "dummy-instance", new ResilienceProperties(), "strategy-name"), new CallbackDiagnosticSource(callback));
+        => new(new ResilienceTelemetrySource("dummy-builder", "dummy-instance", "strategy-name"), new CallbackDiagnosticSource(callback));
 
     public static ILoggerFactory CreateLoggerFactory(out FakeLogger logger)
     {
@@ -91,7 +91,6 @@ public static class TestUtilities
         ResilienceEvent resilienceEvent,
         string builderName,
         string? instanceName,
-        ResilienceProperties builderProperties,
         string? strategyName,
         ResilienceContext context,
         Outcome<object>? outcome,
@@ -99,7 +98,7 @@ public static class TestUtilities
 #pragma warning restore S107 // Methods should not have too many parameters
     {
         source.Write(resilienceEvent.EventName, TelemetryEventArguments.Get(
-            new ResilienceTelemetrySource(builderName, instanceName, builderProperties, strategyName),
+            new ResilienceTelemetrySource(builderName, instanceName, strategyName),
             resilienceEvent,
             context,
             outcome,

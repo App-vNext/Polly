@@ -28,7 +28,7 @@ public static class RetryCompositeStrategyBuilderExtensions
         Guard.NotNull(options);
 
         return builder.AddStrategy(
-            context => new RetryResilienceStrategy<object>(options, context.TimeProvider, context.Telemetry, context.Randomizer),
+            context => new RetryResilienceStrategy<object>(options, context.TimeProvider, context.Telemetry),
             options);
     }
 
@@ -53,7 +53,7 @@ public static class RetryCompositeStrategyBuilderExtensions
         Guard.NotNull(options);
 
         return builder.AddStrategy(
-            context => new RetryResilienceStrategy<TResult>(options, context.TimeProvider, context.Telemetry, context.Randomizer),
+            context => new RetryResilienceStrategy<TResult>(options, context.TimeProvider, context.Telemetry),
             options);
     }
 }
