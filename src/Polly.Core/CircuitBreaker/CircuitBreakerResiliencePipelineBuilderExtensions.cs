@@ -11,7 +11,7 @@ namespace Polly;
 public static class CircuitBreakerResiliencePipelineBuilderExtensions
 {
     /// <summary>
-    /// Add circuit breaker to the builder.
+    /// Adds circuit breaker to the builder.
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The options instance.</param>
@@ -39,7 +39,7 @@ public static class CircuitBreakerResiliencePipelineBuilderExtensions
     }
 
     /// <summary>
-    /// Add circuit breaker to the builder.
+    /// Adds circuit breaker to the builder.
     /// </summary>
     /// <typeparam name="TResult">The type of result the circuit breaker handles.</typeparam>
     /// <param name="builder">The builder instance.</param>
