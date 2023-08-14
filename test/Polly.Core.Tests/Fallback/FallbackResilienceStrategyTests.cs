@@ -90,7 +90,7 @@ public class FallbackResilienceStrategyTests
         _handler = FallbackHelper.CreateHandler(shouldHandle, fallback);
     }
 
-    private ReactiveResilienceStrategyBridge<string> Create() => new(new FallbackResilienceStrategy<string>(
+    private ResiliencePipelineBridge<string> Create() => new(new FallbackResilienceStrategy<string>(
         _handler!,
         _options.OnFallback,
         _telemetry));

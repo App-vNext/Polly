@@ -233,5 +233,5 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
     private void SetTimeout(TimeSpan timeout) => _options.TimeoutGenerator = args => new ValueTask<TimeSpan>(timeout);
 
-    private ResilienceStrategy CreateSut() => new TimeoutResilienceStrategy(_options, _timeProvider, _telemetry).AsStrategy();
+    private ResiliencePipeline CreateSut() => new TimeoutResilienceStrategy(_options, _timeProvider, _telemetry).AsPipeline();
 }

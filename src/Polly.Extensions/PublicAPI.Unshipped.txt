@@ -1,10 +1,10 @@
 ﻿#nullable enable
-Polly.DependencyInjection.AddResilienceStrategyContext<TKey>
-Polly.DependencyInjection.AddResilienceStrategyContext<TKey>.BuilderName.get -> string!
-Polly.DependencyInjection.AddResilienceStrategyContext<TKey>.EnableReloads<TOptions>(string? name = null) -> void
-Polly.DependencyInjection.AddResilienceStrategyContext<TKey>.GetOptions<TOptions>(string? name = null) -> TOptions
-Polly.DependencyInjection.AddResilienceStrategyContext<TKey>.ServiceProvider.get -> System.IServiceProvider!
-Polly.DependencyInjection.AddResilienceStrategyContext<TKey>.StrategyKey.get -> TKey
+Polly.DependencyInjection.AddResiliencePipelineContext<TKey>
+Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.BuilderName.get -> string!
+Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.EnableReloads<TOptions>(string? name = null) -> void
+Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.GetOptions<TOptions>(string? name = null) -> TOptions
+Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.ServiceProvider.get -> System.IServiceProvider!
+Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.PipelineKey.get -> TKey
 Polly.PollyServiceCollectionExtensions
 Polly.Registry.ConfigureBuilderContextExtensions
 Polly.Telemetry.EnrichmentContext
@@ -21,13 +21,13 @@ Polly.Telemetry.TelemetryOptions.OnTelemetryEvent.set -> void
 Polly.Telemetry.TelemetryOptions.ResultFormatter.get -> System.Func<Polly.ResilienceContext!, object?, object?>!
 Polly.Telemetry.TelemetryOptions.ResultFormatter.set -> void
 Polly.Telemetry.TelemetryOptions.TelemetryOptions() -> void
-Polly.TelemetryCompositeStrategyBuilderExtensions
-static Polly.PollyServiceCollectionExtensions.AddResilienceStrategy<TKey, TResult>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, TKey key, System.Action<Polly.CompositeStrategyBuilder<TResult>!, Polly.DependencyInjection.AddResilienceStrategyContext<TKey>!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
-static Polly.PollyServiceCollectionExtensions.AddResilienceStrategy<TKey, TResult>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, TKey key, System.Action<Polly.CompositeStrategyBuilder<TResult>!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
-static Polly.PollyServiceCollectionExtensions.AddResilienceStrategy<TKey>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, TKey key, System.Action<Polly.CompositeStrategyBuilder!, Polly.DependencyInjection.AddResilienceStrategyContext<TKey>!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
-static Polly.PollyServiceCollectionExtensions.AddResilienceStrategy<TKey>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, TKey key, System.Action<Polly.CompositeStrategyBuilder!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
-static Polly.PollyServiceCollectionExtensions.AddResilienceStrategyRegistry<TKey>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
-static Polly.PollyServiceCollectionExtensions.AddResilienceStrategyRegistry<TKey>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<Polly.Registry.ResilienceStrategyRegistryOptions<TKey>!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+Polly.TelemetryResiliencePipelineBuilderExtensions
+static Polly.PollyServiceCollectionExtensions.AddResiliencePipeline<TKey, TResult>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, TKey key, System.Action<Polly.ResiliencePipelineBuilder<TResult>!, Polly.DependencyInjection.AddResiliencePipelineContext<TKey>!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static Polly.PollyServiceCollectionExtensions.AddResiliencePipeline<TKey, TResult>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, TKey key, System.Action<Polly.ResiliencePipelineBuilder<TResult>!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static Polly.PollyServiceCollectionExtensions.AddResiliencePipeline<TKey>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, TKey key, System.Action<Polly.ResiliencePipelineBuilder!, Polly.DependencyInjection.AddResiliencePipelineContext<TKey>!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static Polly.PollyServiceCollectionExtensions.AddResiliencePipeline<TKey>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, TKey key, System.Action<Polly.ResiliencePipelineBuilder!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static Polly.PollyServiceCollectionExtensions.AddResiliencePipelineRegistry<TKey>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static Polly.PollyServiceCollectionExtensions.AddResiliencePipelineRegistry<TKey>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<Polly.Registry.ResiliencePipelineRegistryOptions<TKey>!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 static Polly.Registry.ConfigureBuilderContextExtensions.EnableReloads<TKey, TOptions>(this Polly.Registry.ConfigureBuilderContext<TKey>! context, Microsoft.Extensions.Options.IOptionsMonitor<TOptions>! optionsMonitor, string? name = null) -> void
-static Polly.TelemetryCompositeStrategyBuilderExtensions.ConfigureTelemetry<TBuilder>(this TBuilder! builder, Microsoft.Extensions.Logging.ILoggerFactory! loggerFactory) -> TBuilder!
-static Polly.TelemetryCompositeStrategyBuilderExtensions.ConfigureTelemetry<TBuilder>(this TBuilder! builder, Polly.Telemetry.TelemetryOptions! options) -> TBuilder!
+static Polly.TelemetryResiliencePipelineBuilderExtensions.ConfigureTelemetry<TBuilder>(this TBuilder! builder, Microsoft.Extensions.Logging.ILoggerFactory! loggerFactory) -> TBuilder!
+static Polly.TelemetryResiliencePipelineBuilderExtensions.ConfigureTelemetry<TBuilder>(this TBuilder! builder, Polly.Telemetry.TelemetryOptions! options) -> TBuilder!

@@ -4,8 +4,8 @@ using Polly.Telemetry;
 namespace Polly;
 
 /// <summary>
-/// A context assigned to a single execution of <see cref="ResilienceStrategy"/>. It is created manually or automatically
-/// when the user calls the various extensions on top of <see cref="ResilienceStrategy"/>. After every execution the context should be discarded and returned to the pool.
+/// A context assigned to a single execution of <see cref="ResiliencePipeline"/>. It is created manually or automatically
+/// when the user calls the various extensions on top of <see cref="ResiliencePipeline"/>. After every execution the context should be discarded and returned to the pool.
 /// </summary>
 /// <remarks>
 /// Do not re-use an instance of <see cref="ResilienceContext"/> across more than one execution. The <see cref="ResilienceContext"/> is retrieved from the pool
@@ -26,7 +26,7 @@ public sealed class ResilienceContext
     /// Gets a key unique to the call site of the current execution.
     /// </summary>
     /// <remarks>
-    /// Resilience strategy instances are commonly reused across multiple call sites.
+    /// Resilience context instances are commonly reused across multiple call sites.
     /// Set an <see cref="OperationKey"/> so that logging and metrics can distinguish usages of policy instances at different call sites.
     /// The operation key value should have a low cardinality (i.e. do not assign values such as <see cref="Guid"/> to this property).
     /// </remarks>

@@ -8,7 +8,7 @@ public partial class IssuesTests
     public void FlowingContext_849()
     {
         var contextChecked = false;
-        var strategy = new CompositeStrategyBuilder<int>()
+        var strategy = new ResiliencePipelineBuilder<int>()
             .AddRetry(new RetryStrategyOptions<int>
             {
                 // configure the predicate and use the context

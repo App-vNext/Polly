@@ -6,9 +6,9 @@ internal class ResilienceTelemetryTags
 
     public const string EventSeverity = "event-severity";
 
-    public const string BuilderName = "builder-name";
+    public const string PipelineName = "pipeline-name";
 
-    public const string BuilderInstance = "builder-instance";
+    public const string PipelineInstance = "pipeline-instance";
 
     public const string StrategyName = "strategy-name";
 

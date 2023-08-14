@@ -18,7 +18,7 @@ public partial class IssuesTests
         var userKey = new ResiliencePropertyKey<string>("user");
         var services = new ServiceCollection();
         services
-            .AddResilienceStrategy("shared-limiter", (builder, context) =>
+            .AddResiliencePipeline("shared-limiter", (builder, context) =>
             {
                 var partitionedLimiter = PartitionedRateLimiter.Create<ResilienceContext, string>(context =>
                 {
@@ -41,7 +41,7 @@ public partial class IssuesTests
             });
 
         var serviceProvider = services.BuildServiceProvider();
-        var strategy = serviceProvider.GetRequiredService<ResilienceStrategyProvider<string>>().GetStrategy("shared-limiter");
+        var pipeline = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>().GetPipeline("shared-limiter");
 
         // assert user is limited
         using var asserted = new ManualResetEvent(false);
@@ -64,7 +64,7 @@ public partial class IssuesTests
                     var context = ResilienceContextPool.Shared.Get();
                     context.Properties.Set(userKey, user);
 
-                    await strategy.ExecuteAsync(async _ =>
+                    await pipeline.ExecuteAsync(async _ =>
                     {
                         await Task.Yield();
                         waitAsserted.WaitOne();
