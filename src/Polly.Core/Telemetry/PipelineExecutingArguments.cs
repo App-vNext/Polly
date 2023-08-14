@@ -3,7 +3,6 @@
 /// <summary>
 /// Arguments that indicate the pipeline execution started.
 /// </summary>
-public sealed class PipelineExecutingArguments
+public readonly struct PipelineExecutingArguments
 {
-    internal static readonly PipelineExecutingArguments Instance = new();
 }

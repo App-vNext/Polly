@@ -23,7 +23,7 @@ public class TaskExecutionTests : IDisposable
         {
             if (args.Arguments is ExecutionAttemptArguments attempt)
             {
-                _args.Add(ExecutionAttemptArguments.Get(attempt.AttemptNumber, attempt.Duration, attempt.Handled));
+                _args.Add(attempt);
             }
         });
 

@@ -26,7 +26,7 @@ internal sealed class FallbackResilienceStrategy<T> : ResilienceStrategy<T>
             return outcome;
         }
 
-        var onFallbackArgs = new OutcomeArguments<T, OnFallbackArguments>(context, outcome, new OnFallbackArguments());
+        var onFallbackArgs = new OutcomeArguments<T, OnFallbackArguments>(context, outcome, default);
 
         _telemetry.Report(new(ResilienceEventSeverity.Warning, FallbackConstants.OnFallback), onFallbackArgs);
 

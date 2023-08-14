@@ -282,7 +282,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
         var builder = factory();
         var pipeline = builder.BuildPipeline();
-        var diagnosticSource = builder.DiagnosticSource;
+        var diagnosticSource = builder.TelemetryListener;
 
         if (context.ReloadTokenProducer is null)
         {

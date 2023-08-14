@@ -1,12 +1,14 @@
 namespace Polly.CircuitBreaker;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// Arguments used by <see cref="CircuitBreakerStrategyOptions{TResult}.OnHalfOpened"/> event.
 /// </summary>
-public sealed class OnCircuitHalfOpenedArguments
+public readonly struct OnCircuitHalfOpenedArguments
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OnCircuitHalfOpenedArguments"/> class.
+    /// Initializes a new instance of the <see cref="OnCircuitHalfOpenedArguments"/> struct.
     /// </summary>
     /// <param name="context">The context instance.</param>
     public OnCircuitHalfOpenedArguments(ResilienceContext context) => Context = context;

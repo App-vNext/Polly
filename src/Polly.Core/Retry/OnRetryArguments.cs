@@ -1,12 +1,14 @@
 namespace Polly.Retry;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// Represents the arguments used by <see cref="RetryStrategyOptions{TResult}.OnRetry"/> for handling the retry event.
 /// </summary>
-public sealed class OnRetryArguments
+public readonly struct OnRetryArguments
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OnRetryArguments"/> class.
+    /// Initializes a new instance of the <see cref="OnRetryArguments"/> struct.
     /// </summary>
     /// <param name="attemptNumber">The zero-based attempt number.</param>
     /// <param name="retryDelay">The delay before the next retry.</param>

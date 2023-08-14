@@ -1,12 +1,14 @@
 ﻿namespace Polly.Telemetry;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// Arguments that encapsulate the execution attempt for retries or hedging.
 /// </summary>
-public sealed partial class ExecutionAttemptArguments
+public readonly struct ExecutionAttemptArguments
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExecutionAttemptArguments"/> class.
+    /// Initializes a new instance of the <see cref="ExecutionAttemptArguments"/> struct.
     /// </summary>
     /// <param name="attemptNumber">The execution attempt number.</param>
     /// <param name="duration">The execution duration.</param>
@@ -18,22 +20,18 @@ public sealed partial class ExecutionAttemptArguments
         Handled = handled;
     }
 
-    private ExecutionAttemptArguments()
-    {
-    }
-
     /// <summary>
     /// Gets the attempt number.
     /// </summary>
-    public int AttemptNumber { get; private set; }
+    public int AttemptNumber { get; }
 
     /// <summary>
     /// Gets the execution duration of the attempt.
     /// </summary>
-    public TimeSpan Duration { get; private set; }
+    public TimeSpan Duration { get; }
 
     /// <summary>
     /// Gets a value indicating whether the outcome was handled by retry or hedging strategy.
     /// </summary>
-    public bool Handled { get; private set; }
+    public bool Handled { get; }
 }

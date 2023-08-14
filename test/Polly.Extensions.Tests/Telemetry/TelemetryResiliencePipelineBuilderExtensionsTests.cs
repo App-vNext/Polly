@@ -12,7 +12,7 @@ public class TelemetryResiliencePipelineBuilderExtensionsTests
     public void ConfigureTelemetry_EnsureDiagnosticSourceUpdated()
     {
         _builder.ConfigureTelemetry(NullLoggerFactory.Instance);
-        _builder.DiagnosticSource.Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
+        _builder.TelemetryListener.Should().BeOfType<TelemetryListenerImpl>();
         _builder.AddStrategy(new TestResilienceStrategy()).Build().Should().NotBeOfType<TestResilienceStrategy>();
     }
 

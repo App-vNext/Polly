@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Polly.Telemetry;
@@ -7,15 +8,15 @@ namespace Polly.Extensions.Tests.Telemetry;
 #pragma warning disable S103 // Lines should not be too long
 
 [Collection(nameof(NonParallelizableCollection))]
-public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
+public class TelemetryListenerImplTests : IDisposable
 {
     private readonly FakeLogger _logger;
     private readonly ILoggerFactory _loggerFactory;
     private readonly List<MeteringEvent> _events = new();
-    private Action<TelemetryEventArguments>? _onEvent;
+    private Action<TelemetryEventArguments<object, object>>? _onEvent;
     private IDisposable _metering;
 
-    public ResilienceTelemetryDiagnosticSourceTests()
+    public TelemetryListenerImplTests()
     {
         _metering = TestUtilities.EnablePollyMetering(_events);
         _loggerFactory = TestUtilities.CreateLoggerFactory(out _logger);
@@ -30,9 +31,9 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     [Fact]
     public void Meter_Ok()
     {
-        ResilienceTelemetryDiagnosticSource.Meter.Name.Should().Be("Polly");
-        ResilienceTelemetryDiagnosticSource.Meter.Version.Should().Be("1.0");
-        var source = new ResilienceTelemetryDiagnosticSource(new TelemetryOptions());
+        TelemetryListenerImpl.Meter.Name.Should().Be("Polly");
+        TelemetryListenerImpl.Meter.Version.Should().Be("1.0");
+        var source = new TelemetryListenerImpl(new TelemetryOptions());
 
         source.Counter.Description.Should().Be("Tracks the number of resilience events that occurred in resilience strategies.");
         source.AttemptDuration.Description.Should().Be("Tracks the duration of execution attempts.");
@@ -40,24 +41,6 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         source.ExecutionDuration.Description.Should().Be("The execution duration and execution results of resilience pipelines.");
         source.ExecutionDuration.Unit.Should().Be("ms");
-    }
-
-    [Fact]
-    public void IsEnabled_true()
-    {
-        var source = Create();
-
-        source.IsEnabled("dummy").Should().BeTrue();
-    }
-
-    [Fact]
-    public void Write_InvalidType_Nothing()
-    {
-        var source = Create();
-
-        source.Write("dummy", new object());
-
-        _logger.GetRecords().Should().BeEmpty();
     }
 
     [InlineData(true)]
@@ -313,20 +296,21 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     public void WriteEvent_MeteringWithEnrichers_Ok(int count)
     {
         const int DefaultDimensions = 7;
-        var telemetry = Create(enrichers =>
+
+        var telemetry = Create(new[]
         {
-            enrichers.Add(context =>
+            new CallbackEnricher(context =>
             {
                 for (int i = 0; i < count; i++)
                 {
                     context.Tags.Add(new KeyValuePair<string, object?>($"custom-{i}", $"custom-{i}-value"));
                 }
-            });
+            }),
 
-            enrichers.Add(context =>
+            new CallbackEnricher(context =>
             {
                 context.Tags.Add(new KeyValuePair<string, object?>("other", "other-value"));
-            });
+            })
         });
 
         ReportEvent(telemetry, Outcome.FromResult<object>(true));
@@ -386,7 +370,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             ((List<ResilienceEvent>)context.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
         }
 
-        ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutingArguments(), context: context);
+        ReportEvent(telemetry, outcome: outcome, arg: default(PipelineExecutingArguments), context: context);
         ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
@@ -403,7 +387,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     {
         var context = ResilienceContextPool.Shared.Get("op-key").WithVoidResultType();
         var telemetry = Create();
-        ReportEvent(telemetry, outcome: null, arg: new PipelineExecutingArguments(), context: context);
+        ReportEvent(telemetry, outcome: null, arg: default(PipelineExecutingArguments), context: context);
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
@@ -439,17 +423,17 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             ((List<ResilienceEvent>)context.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
         }
 
-        var telemetry = Create(enrichers =>
+        var telemetry = Create(new[]
         {
-            enrichers.Add(context =>
+            new CallbackEnricher(context =>
             {
                 if (exception)
                 {
-                    context.Outcome!.Value.Exception.Should().BeOfType<InvalidOperationException>();
+                    context.TelemetryEvent.Outcome!.Value.Exception.Should().BeOfType<InvalidOperationException>();
                 }
 
                 context.Tags.Add(new("custom-tag", "custom-tag-value"));
-            });
+            })
         });
 
         ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
@@ -501,35 +485,63 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
     private List<Dictionary<string, object?>> GetEvents(string eventName) => _events.Where(e => e.Name == eventName).Select(v => v.Tags).ToList();
 
-    private ResilienceTelemetryDiagnosticSource Create(Action<ICollection<Action<EnrichmentContext>>>? configureEnrichers = null)
+    private TelemetryListenerImpl Create(IEnumerable<MeteringEnricher>? enrichers = null)
     {
         var options = new TelemetryOptions
         {
             LoggerFactory = _loggerFactory,
-            OnTelemetryEvent = _onEvent
         };
 
-        configureEnrichers?.Invoke(options.Enrichers);
+        if (_onEvent is not null)
+        {
+            options.TelemetryListener = new CallbackTelemetryListener(_onEvent);
+        }
+
+        if (enrichers != null)
+        {
+            foreach (var enricher in enrichers)
+            {
+                options.MeteringEnrichers.Add(enricher);
+            }
+        }
 
         return new(options);
     }
 
     private static void ReportEvent(
-        ResilienceTelemetryDiagnosticSource telemetry,
+        TelemetryListenerImpl telemetry,
         Outcome<object>? outcome,
         string? instanceName = "pipeline-instance",
         ResilienceContext? context = null,
-        object? arg = null,
+        TestArguments? arg = null,
+        ResilienceEventSeverity severity = ResilienceEventSeverity.Warning) => ReportEvent<TestArguments>(telemetry, outcome, instanceName, context, arg!, severity);
+
+    private static void ReportEvent<TArgs>(
+        TelemetryListenerImpl telemetry,
+        Outcome<object>? outcome,
+        string? instanceName = "pipeline-instance",
+        ResilienceContext? context = null,
+        TArgs arg = default!,
         ResilienceEventSeverity severity = ResilienceEventSeverity.Warning)
     {
-        context ??= ResilienceContextPool.Shared.Get("op-key");
-        telemetry.ReportEvent(
-            new ResilienceEvent(severity, "my-event"),
-            "my-pipeline",
-            instanceName,
-            "my-strategy",
-            context,
-            outcome,
-            arg ?? new TestArguments());
+        telemetry.Write(
+            new TelemetryEventArguments<object, TArgs>(
+                new ResilienceTelemetrySource("my-pipeline", instanceName, "my-strategy"),
+                new ResilienceEvent(severity, "my-event"),
+                context ?? ResilienceContextPool.Shared.Get("op-key"),
+                arg!,
+                outcome));
+    }
+
+    private class CallbackEnricher : MeteringEnricher
+    {
+        private readonly Action<EnrichmentContext<object, object>> _callback;
+
+        public CallbackEnricher(Action<EnrichmentContext<object, object>> callback) => _callback = callback;
+
+        public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
+        {
+            _callback(new EnrichmentContext<object, object>(context.TelemetryEvent.AsObjectArguments(), context.Tags));
+        }
     }
 }

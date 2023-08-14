@@ -12,7 +12,7 @@ public class TelemetryOptionsTests
     {
         var options = new TelemetryOptions();
 
-        options.Enrichers.Should().BeEmpty();
+        options.MeteringEnrichers.Should().BeEmpty();
         options.LoggerFactory.Should().Be(NullLoggerFactory.Instance);
         var resilienceContext = ResilienceContextPool.Shared.Get();
         options.ResultFormatter(resilienceContext, null).Should().BeNull();

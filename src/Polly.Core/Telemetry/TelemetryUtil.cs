@@ -11,14 +11,14 @@ internal static class TelemetryUtil
     internal const string PipelineExecuted = "PipelineExecuted";
 
     public static ResilienceStrategyTelemetry CreateTelemetry(
-        DiagnosticSource? diagnosticSource,
+        TelemetryListener? listener,
         string? builderName,
         string? builderInstanceName,
         string? strategyName)
     {
         var telemetrySource = new ResilienceTelemetrySource(builderName, builderInstanceName, strategyName);
 
-        return new ResilienceStrategyTelemetry(telemetrySource, diagnosticSource);
+        return new ResilienceStrategyTelemetry(telemetrySource, listener);
     }
 
     public static void ReportExecutionAttempt<TResult>(
@@ -34,10 +34,8 @@ internal static class TelemetryUtil
             return;
         }
 
-        var attemptArgs = ExecutionAttemptArguments.Get(attempt, executionTime, handled);
         telemetry.Report<ExecutionAttemptArguments, TResult>(
             new(handled ? ResilienceEventSeverity.Warning : ResilienceEventSeverity.Information, ExecutionAttempt),
-            new(context, outcome, attemptArgs));
-        ExecutionAttemptArguments.Return(attemptArgs);
+            new(context, outcome, new ExecutionAttemptArguments(attempt, executionTime, handled)));
     }
 }

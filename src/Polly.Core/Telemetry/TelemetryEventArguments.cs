@@ -1,36 +1,53 @@
-namespace Polly.Telemetry;
+﻿namespace Polly.Telemetry;
+
+#pragma warning disable CA1815 // Override equals and operator equals on value types
 
 /// <summary>
-/// The arguments of the telemetry event.
+/// Represents the information about the resilience event.
 /// </summary>
-public sealed partial class TelemetryEventArguments
+/// <typeparam name="TResult">The type of result.</typeparam>
+/// <typeparam name="TArgs">The arguments associated with the resilience event.</typeparam>
+public readonly struct TelemetryEventArguments<TResult, TArgs>
 {
-    private TelemetryEventArguments()
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TelemetryEventArguments{TResult, TArgs}"/> struct.
+    /// </summary>
+    /// <param name="source">The source that produced the resilience event.</param>
+    /// <param name="resilienceEvent">The resilience event.</param>
+    /// <param name="context">The context associated with the resilience event.</param>
+    /// <param name="args">The arguments associated with the resilience event.</param>
+    /// <param name="outcome">The outcome associated with the resilience event, if any.</param>
+    public TelemetryEventArguments(ResilienceTelemetrySource source, ResilienceEvent resilienceEvent, ResilienceContext context, TArgs args, Outcome<TResult>? outcome)
     {
+        Source = source;
+        Event = resilienceEvent;
+        Context = context;
+        Arguments = args;
+        Outcome = outcome;
     }
 
     /// <summary>
-    /// Gets the source of the event.
+    /// Gets the source that produced the resilience event.
     /// </summary>
-    public ResilienceTelemetrySource Source { get; private set; } = null!;
+    public ResilienceTelemetrySource Source { get; }
 
     /// <summary>
-    /// Gets the event.
+    /// Gets the resilience event.
     /// </summary>
-    public ResilienceEvent Event { get; private set; }
+    public ResilienceEvent Event { get; }
 
     /// <summary>
-    /// Gets the resilience context.
+    /// Gets the context associated with the resilience event.
     /// </summary>
-    public ResilienceContext Context { get; private set; } = null!;
+    public ResilienceContext Context { get; }
 
     /// <summary>
-    /// Gets the outcome of an execution.
+    /// Gets the arguments associated with the resilience event.
     /// </summary>
-    public Outcome<object>? Outcome { get; private set; }
+    public TArgs Arguments { get; }
 
     /// <summary>
-    /// Gets the arguments associated with the event.
+    /// Gets the outcome associated with the resilience event, if any.
     /// </summary>
-    public object Arguments { get; private set; } = null!;
+    public Outcome<TResult>? Outcome { get; }
 }

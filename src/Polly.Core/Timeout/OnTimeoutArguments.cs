@@ -1,12 +1,14 @@
 namespace Polly.Timeout;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// Arguments used by the timeout strategy to notify that a timeout occurred.
 /// </summary>
-public sealed class OnTimeoutArguments
+public readonly struct OnTimeoutArguments
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OnTimeoutArguments"/> class.
+    /// Initializes a new instance of the <see cref="OnTimeoutArguments"/> struct.
     /// </summary>
     /// <param name="context">The context associated with the execution of a user-provided callback.</param>
     /// <param name="timeout">The timeout value assigned.</param>

@@ -18,7 +18,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     {
         _timeProvider = new FakeTimeProvider();
         _behavior = Substitute.For<CircuitBehavior>();
-        _telemetry = TestUtilities.CreateResilienceTelemetry(Substitute.For<DiagnosticSource>());
+        _telemetry = TestUtilities.CreateResilienceTelemetry(Substitute.For<TelemetryListener>());
         _options = new CircuitBreakerStrategyOptions<int>();
         _controller = new CircuitStateController<int>(
             CircuitBreakerConstants.DefaultBreakDuration,

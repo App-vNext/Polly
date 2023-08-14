@@ -11,12 +11,12 @@ public class RetryResilienceStrategyTests
 {
     private readonly RetryStrategyOptions _options = new();
     private readonly FakeTimeProvider _timeProvider = new();
-    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
+    private readonly TelemetryListener _listener = Substitute.For<TelemetryListener>();
     private ResilienceStrategyTelemetry _telemetry;
 
     public RetryResilienceStrategyTests()
     {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource);
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_listener);
         _options.ShouldHandle = _ => new ValueTask<bool>(false);
         _options.Randomizer = () => 1;
 
@@ -291,8 +291,6 @@ public class RetryResilienceStrategyTests
         var attempts = new List<int>();
         var delays = new List<TimeSpan>();
 
-        _diagnosticSource.IsEnabled("OnRetry").Returns(true);
-
         _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
@@ -301,7 +299,7 @@ public class RetryResilienceStrategyTests
 
         await ExecuteAndAdvance(sut);
 
-        _diagnosticSource.Received(3).IsEnabled("OnRetry");
+        _listener.ReceivedWithAnyArgs(3).Write<object, OnRetryArguments>(default);
     }
 
     [Fact]

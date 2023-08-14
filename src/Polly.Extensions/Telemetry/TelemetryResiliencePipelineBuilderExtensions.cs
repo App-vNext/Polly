@@ -51,7 +51,7 @@ public static class TelemetryResiliencePipelineBuilderExtensions
         Guard.NotNull(options);
 
         builder.Validator(new(options, $"The '{nameof(TelemetryOptions)}' are invalid."));
-        builder.DiagnosticSource = new ResilienceTelemetryDiagnosticSource(options);
+        builder.TelemetryListener = new TelemetryListenerImpl(options);
 
         return builder;
     }
