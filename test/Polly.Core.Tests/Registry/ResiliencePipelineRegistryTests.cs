@@ -177,10 +177,9 @@ public class ResiliencePipelineRegistryTests
         _callback = _ => activatorCalls++;
         var registry = CreateRegistry();
         var called = 0;
-        registry.TryAddBuilder(StrategyId.Create("A"), (builder, context) =>
+        registry.TryAddBuilder(StrategyId.Create("A"), (builder, _) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.Properties.Set(StrategyId.ResilienceKey, context.PipelineKey);
             called++;
         });
 
@@ -206,10 +205,9 @@ public class ResiliencePipelineRegistryTests
         _callback = _ => activatorCalls++;
         var registry = CreateRegistry();
         var called = 0;
-        registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, context) =>
+        registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, _) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.Properties.Set(StrategyId.ResilienceKey, context.PipelineKey);
             called++;
         });
 
@@ -240,6 +238,8 @@ public class ResiliencePipelineRegistryTests
         {
             context.BuilderName.Should().Be("A");
             context.BuilderInstanceName.Should().Be("Instance1");
+            context.PipelineKey.Should().Be(StrategyId.Create("A", "Instance1"));
+
             builder.AddStrategy(new TestResilienceStrategy());
             builder.Name.Should().Be("A");
             called = true;

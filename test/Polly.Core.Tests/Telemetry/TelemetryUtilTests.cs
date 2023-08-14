@@ -1,4 +1,3 @@
-using NSubstitute;
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Telemetry;
@@ -8,23 +7,12 @@ public class TelemetryUtilTests
     [Fact]
     public void CreateResilienceTelemetry_Ok()
     {
-        var telemetry = TelemetryUtil.CreateTelemetry(null, "builder", "instance", new ResilienceProperties(), "strategy-name");
+        var telemetry = TelemetryUtil.CreateTelemetry(null, "builder", "instance", "strategy-name");
 
         telemetry.TelemetrySource.PipelineName.Should().Be("builder");
         telemetry.TelemetrySource.PipelineInstanceName.Should().Be("instance");
         telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name");
         telemetry.DiagnosticSource.Should().BeNull();
-    }
-
-    [Fact]
-    public void CreateResilienceTelemetry_DiagnosticSourceFromProperties_Ok()
-    {
-        var props = new ResilienceProperties();
-        var source = Substitute.For<DiagnosticSource>();
-
-        var telemetry = TelemetryUtil.CreateTelemetry(source, "builder", "instance", props, "strategy-name");
-
-        telemetry.DiagnosticSource.Should().Be(source);
     }
 
     [InlineData(true, ResilienceEventSeverity.Warning)]

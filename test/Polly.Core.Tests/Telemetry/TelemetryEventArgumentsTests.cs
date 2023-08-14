@@ -4,7 +4,7 @@ namespace Polly.Extensions.Tests.Telemetry;
 
 public class TelemetryEventArgumentsTests
 {
-    private readonly ResilienceTelemetrySource _source = new("builder", "instance", new ResilienceProperties(), "strategy");
+    private readonly ResilienceTelemetrySource _source = new("builder", "instance", "strategy");
 
     [Fact]
     public void Get_Ok()

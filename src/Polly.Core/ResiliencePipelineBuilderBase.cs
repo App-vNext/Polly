@@ -26,9 +26,7 @@ public abstract class ResiliencePipelineBuilderBase
     private protected ResiliencePipelineBuilderBase(ResiliencePipelineBuilderBase other)
     {
         Name = other.Name;
-        Properties = other.Properties;
         TimeProvider = other.TimeProvider;
-        Randomizer = other.Randomizer;
         DiagnosticSource = other.DiagnosticSource;
     }
 
@@ -56,14 +54,6 @@ public abstract class ResiliencePipelineBuilderBase
     public string? InstanceName { get; set; }
 
     /// <summary>
-    /// Gets the custom properties attached to builder options.
-    /// </summary>
-    /// <value>
-    /// The default value is the empty instance of <see cref="ResilienceProperties"/>.
-    /// </value>
-    public ResilienceProperties Properties { get; } = new();
-
-    /// <summary>
     /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
     /// </summary>
     /// <remarks>
@@ -86,16 +76,6 @@ public abstract class ResiliencePipelineBuilderBase
     /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public DiagnosticSource? DiagnosticSource { get; set; }
-
-    /// <summary>
-    /// Gets or sets the randomizer that is used by strategies that need to generate random numbers.
-    /// </summary>
-    /// <value>
-    /// The default value is thread-safe randomizer that returns values between 0.0 and 1.0.
-    /// </value>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [Required]
-    public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;
 
     /// <summary>
     /// Gets the validator that is used for the validation.
@@ -139,7 +119,7 @@ public abstract class ResiliencePipelineBuilderBase
 
         return CompositeResiliencePipeline.Create(
             strategies,
-            TelemetryUtil.CreateTelemetry(DiagnosticSource, Name, InstanceName, Properties, null),
+            TelemetryUtil.CreateTelemetry(DiagnosticSource, Name, InstanceName, null),
             TimeProvider);
     }
 
@@ -148,11 +128,9 @@ public abstract class ResiliencePipelineBuilderBase
         var context = new StrategyBuilderContext(
             builderName: Name,
             builderInstanceName: InstanceName,
-            builderProperties: Properties,
             strategyName: entry.Options.Name,
             timeProvider: TimeProvider,
-            diagnosticSource: DiagnosticSource,
-            randomizer: Randomizer);
+            diagnosticSource: DiagnosticSource);
 
         var strategy = entry.Factory(context);
         strategy.Options = entry.Options;

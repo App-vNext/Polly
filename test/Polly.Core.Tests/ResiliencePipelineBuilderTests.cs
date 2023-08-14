@@ -15,9 +15,7 @@ public class ResiliencePipelineBuilderTests
         var builder = new ResiliencePipelineBuilder();
 
         builder.Name.Should().BeNull();
-        builder.Properties.Should().NotBeNull();
         builder.TimeProvider.Should().Be(TimeProvider.System);
-        builder.Randomizer.Should().NotBeNull();
     }
 
     [Fact]
@@ -27,18 +25,13 @@ public class ResiliencePipelineBuilderTests
         {
             TimeProvider = Substitute.For<TimeProvider>(),
             Name = "dummy",
-            Randomizer = () => 0.0,
             DiagnosticSource = Substitute.For<DiagnosticSource>(),
         };
-
-        builder.Properties.Set(new ResiliencePropertyKey<string>("dummy"), "dummy");
 
         var other = new ResiliencePipelineBuilder<double>(builder);
         other.Name.Should().Be(builder.Name);
         other.TimeProvider.Should().Be(builder.TimeProvider);
-        other.Randomizer.Should().BeSameAs(builder.Randomizer);
         other.DiagnosticSource.Should().BeSameAs(builder.DiagnosticSource);
-        other.Properties.GetValue(new ResiliencePropertyKey<string>("dummy"), "").Should().Be("dummy");
     }
 
     [Fact]
@@ -305,10 +298,8 @@ The RequiredProperty field is required.
             {
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name");
-                context.BuilderProperties.Should().BeSameAs(builder.Properties);
                 context.Telemetry.Should().NotBeNull();
                 context.TimeProvider.Should().Be(builder.TimeProvider);
-                context.Randomizer.Should().BeSameAs(builder.Randomizer);
                 verified1 = true;
 
                 return new TestResilienceStrategy();
@@ -320,7 +311,6 @@ The RequiredProperty field is required.
             {
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name-2");
-                context.BuilderProperties.Should().BeSameAs(builder.Properties);
                 context.Telemetry.Should().NotBeNull();
                 context.TimeProvider.Should().Be(builder.TimeProvider);
                 verified2 = true;

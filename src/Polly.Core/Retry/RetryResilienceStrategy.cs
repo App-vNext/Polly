@@ -11,8 +11,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
     public RetryResilienceStrategy(
         RetryStrategyOptions<T> options,
         TimeProvider timeProvider,
-        ResilienceStrategyTelemetry telemetry,
-        Func<double> randomizer)
+        ResilienceStrategyTelemetry telemetry)
     {
         ShouldHandle = options.ShouldHandle;
         BaseDelay = options.BaseDelay;
@@ -24,7 +23,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
 
         _timeProvider = timeProvider;
         _telemetry = telemetry;
-        _randomizer = randomizer;
+        _randomizer = options.Randomizer;
     }
 
     public TimeSpan BaseDelay { get; }

@@ -131,7 +131,7 @@ public class RetryResiliencePipelineBuilderExtensionsTests
     {
         var aggregatedDelay = TimeSpan.Zero;
 
-        var strategy = new ResiliencePipelineBuilder { Randomizer = () => 1.0 }.AddRetry(new()
+        var strategy = new ResiliencePipelineBuilder().AddRetry(new()
         {
             RetryCount = options.RetryCount,
             BaseDelay = options.BaseDelay,
@@ -144,7 +144,8 @@ public class RetryResiliencePipelineBuilderExtensionsTests
 
                 // return zero delay, so no waiting
                 return new ValueTask<TimeSpan>(TimeSpan.Zero);
-            }
+            },
+            Randomizer = () => 1.0,
         })
         .Build();
 

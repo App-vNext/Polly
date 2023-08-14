@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Polly.Retry;
@@ -103,4 +104,14 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// The default value is <see langword="null"/>.
     /// </value>
     public Func<OutcomeArguments<TResult, OnRetryArguments>, ValueTask>? OnRetry { get; set; }
+
+    /// <summary>
+    /// Gets or sets the randomizer that is used by the retry strategy to generate random numbers.
+    /// </summary>
+    /// <value>
+    /// The default value is thread-safe randomizer that returns values between 0.0 and 1.0.
+    /// </value>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [Required]
+    public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;
 }

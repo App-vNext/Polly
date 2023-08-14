@@ -13,17 +13,14 @@ public sealed class ResilienceTelemetrySource
     /// </summary>
     /// <param name="pipelineName">The pipeline name.</param>
     /// <param name="pipelineInstanceName">The pipeline instance name.</param>
-    /// <param name="builderProperties">The builder properties.</param>
     /// <param name="strategyName">The strategy name.</param>
     public ResilienceTelemetrySource(
         string? pipelineName,
         string? pipelineInstanceName,
-        ResilienceProperties builderProperties,
         string? strategyName)
     {
         PipelineName = pipelineName;
         PipelineInstanceName = pipelineInstanceName;
-        BuilderProperties = builderProperties;
         StrategyName = strategyName;
     }
 
@@ -36,11 +33,6 @@ public sealed class ResilienceTelemetrySource
     /// Gets the pipeline instance name.
     /// </summary>
     public string? PipelineInstanceName { get; }
-
-    /// <summary>
-    /// Gets the builder properties.
-    /// </summary>
-    public ResilienceProperties BuilderProperties { get; }
 
     /// <summary>
     /// Gets the strategy name.

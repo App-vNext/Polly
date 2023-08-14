@@ -251,7 +251,6 @@ public static class PollyServiceCollectionExtensions
         services.TryAddTransient(serviceProvider =>
         {
             var builder = new ResiliencePipelineBuilder();
-            builder.Properties.Set(PollyDependencyInjectionKeys.ServiceProvider, serviceProvider);
             builder.ConfigureTelemetry(serviceProvider.GetRequiredService<IOptions<TelemetryOptions>>().Value);
             return builder;
         });

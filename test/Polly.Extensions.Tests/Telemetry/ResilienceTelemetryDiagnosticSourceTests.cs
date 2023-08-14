@@ -523,17 +523,10 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         ResilienceEventSeverity severity = ResilienceEventSeverity.Warning)
     {
         context ??= ResilienceContextPool.Shared.Get("op-key");
-        var props = new ResilienceProperties();
-        if (!string.IsNullOrEmpty(instanceName))
-        {
-            props.Set(new ResiliencePropertyKey<string?>("Polly.StrategyKey"), instanceName);
-        }
-
         telemetry.ReportEvent(
             new ResilienceEvent(severity, "my-event"),
             "my-pipeline",
             instanceName,
-            props,
             "my-strategy",
             context,
             outcome,

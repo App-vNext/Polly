@@ -7,6 +7,8 @@ namespace Polly.Extensions.Tests.Issues;
 
 public partial class IssuesTests
 {
+    private static readonly ResiliencePropertyKey<IServiceProvider> ServiceProviderKey = new("ServiceProvider");
+
     [Fact]
     public async Task OnCircuitBreakWithServiceProvider_796()
     {
@@ -23,7 +25,7 @@ public partial class IssuesTests
                     MinimumThroughput = 10,
                     OnOpened = async args =>
                     {
-                        args.Context.Properties.GetValue(PollyDependencyInjectionKeys.ServiceProvider, null!).Should().NotBeNull();
+                        args.Context.Properties.GetValue(ServiceProviderKey, null!).Should().NotBeNull();
                         contextChecked = true;
 
                         // do asynchronous call
@@ -65,7 +67,7 @@ public partial class IssuesTests
             ResilienceContext context,
             TState state)
         {
-            context.Properties.Set(PollyDependencyInjectionKeys.ServiceProvider, _serviceProvider);
+            context.Properties.Set(ServiceProviderKey, _serviceProvider);
             return callback(context, state);
         }
     }

@@ -1,4 +1,5 @@
-﻿abstract Polly.Registry.ResiliencePipelineProvider<TKey>.TryGetPipeline(TKey key, out Polly.ResiliencePipeline? pipeline) -> bool
+﻿#nullable enable
+abstract Polly.Registry.ResiliencePipelineProvider<TKey>.TryGetPipeline(TKey key, out Polly.ResiliencePipeline? pipeline) -> bool
 abstract Polly.Registry.ResiliencePipelineProvider<TKey>.TryGetPipeline<TResult>(TKey key, out Polly.ResiliencePipeline<TResult>? pipeline) -> bool
 abstract Polly.ResilienceContextPool.Get(string? operationKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
 abstract Polly.ResilienceContextPool.Return(Polly.ResilienceContext! context) -> void
@@ -255,9 +256,6 @@ Polly.ResiliencePipelineBuilderBase.InstanceName.get -> string?
 Polly.ResiliencePipelineBuilderBase.InstanceName.set -> void
 Polly.ResiliencePipelineBuilderBase.Name.get -> string?
 Polly.ResiliencePipelineBuilderBase.Name.set -> void
-Polly.ResiliencePipelineBuilderBase.Properties.get -> Polly.ResilienceProperties!
-Polly.ResiliencePipelineBuilderBase.Randomizer.get -> System.Func<double>!
-Polly.ResiliencePipelineBuilderBase.Randomizer.set -> void
 Polly.ResiliencePipelineBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
 Polly.ResiliencePipelineBuilderExtensions
 Polly.ResilienceProperties
@@ -309,6 +307,8 @@ Polly.Retry.RetryStrategyOptions<TResult>.BaseDelay.get -> System.TimeSpan
 Polly.Retry.RetryStrategyOptions<TResult>.BaseDelay.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.OnRetry.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Retry.OnRetryArguments!>, System.Threading.Tasks.ValueTask>?
 Polly.Retry.RetryStrategyOptions<TResult>.OnRetry.set -> void
+Polly.Retry.RetryStrategyOptions<TResult>.Randomizer.get -> System.Func<double>!
+Polly.Retry.RetryStrategyOptions<TResult>.Randomizer.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.RetryCount.get -> int
 Polly.Retry.RetryStrategyOptions<TResult>.RetryCount.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.RetryDelayGenerator.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Retry.RetryDelayArguments>, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
@@ -322,7 +322,6 @@ Polly.RetryResiliencePipelineBuilderExtensions
 Polly.StrategyBuilderContext
 Polly.StrategyBuilderContext.BuilderInstanceName.get -> string?
 Polly.StrategyBuilderContext.BuilderName.get -> string?
-Polly.StrategyBuilderContext.BuilderProperties.get -> Polly.ResilienceProperties!
 Polly.StrategyBuilderContext.StrategyName.get -> string?
 Polly.StrategyBuilderContext.Telemetry.get -> Polly.Telemetry.ResilienceStrategyTelemetry!
 Polly.Telemetry.ExecutionAttemptArguments
@@ -352,10 +351,9 @@ Polly.Telemetry.ResilienceStrategyTelemetry.IsEnabled.get -> bool
 Polly.Telemetry.ResilienceStrategyTelemetry.Report<TArgs, TResult>(Polly.Telemetry.ResilienceEvent resilienceEvent, Polly.OutcomeArguments<TResult, TArgs> args) -> void
 Polly.Telemetry.ResilienceStrategyTelemetry.Report<TArgs>(Polly.Telemetry.ResilienceEvent resilienceEvent, Polly.ResilienceContext! context, TArgs args) -> void
 Polly.Telemetry.ResilienceTelemetrySource
-Polly.Telemetry.ResilienceTelemetrySource.BuilderProperties.get -> Polly.ResilienceProperties!
 Polly.Telemetry.ResilienceTelemetrySource.PipelineInstanceName.get -> string?
 Polly.Telemetry.ResilienceTelemetrySource.PipelineName.get -> string?
-Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? pipelineName, string? pipelineInstanceName, Polly.ResilienceProperties! builderProperties, string? strategyName) -> void
+Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? pipelineName, string? pipelineInstanceName, string? strategyName) -> void
 Polly.Telemetry.ResilienceTelemetrySource.StrategyName.get -> string?
 Polly.Telemetry.TelemetryEventArguments
 Polly.Telemetry.TelemetryEventArguments.Arguments.get -> object!

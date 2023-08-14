@@ -297,7 +297,6 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
                 diagnosticSource,
                 context.BuilderName,
                 context.BuilderInstanceName,
-                builder.Properties,
                 null));
     }
 
