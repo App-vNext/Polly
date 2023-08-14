@@ -238,7 +238,7 @@ public class ResiliencePipelineRegistryTests
         {
             context.BuilderName.Should().Be("A");
             context.BuilderInstanceName.Should().Be("Instance1");
-            context.StrategyKey.Should().Be(StrategyId.Create("A", "Instance1"));
+            context.PipelineKey.Should().Be(StrategyId.Create("A", "Instance1"));
 
             builder.AddStrategy(new TestResilienceStrategy());
             builder.Name.Should().Be("A");

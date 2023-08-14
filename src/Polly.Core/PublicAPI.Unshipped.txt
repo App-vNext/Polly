@@ -1,4 +1,5 @@
-﻿abstract Polly.Registry.ResiliencePipelineProvider<TKey>.TryGetPipeline(TKey key, out Polly.ResiliencePipeline? pipeline) -> bool
+﻿#nullable enable
+abstract Polly.Registry.ResiliencePipelineProvider<TKey>.TryGetPipeline(TKey key, out Polly.ResiliencePipeline? pipeline) -> bool
 abstract Polly.Registry.ResiliencePipelineProvider<TKey>.TryGetPipeline<TResult>(TKey key, out Polly.ResiliencePipeline<TResult>? pipeline) -> bool
 abstract Polly.ResilienceContextPool.Get(string? operationKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
 abstract Polly.ResilienceContextPool.Return(Polly.ResilienceContext! context) -> void
@@ -74,22 +75,6 @@ Polly.CircuitBreaker.OnCircuitOpenedArguments
 Polly.CircuitBreaker.OnCircuitOpenedArguments.BreakDuration.get -> System.TimeSpan
 Polly.CircuitBreaker.OnCircuitOpenedArguments.IsManual.get -> bool
 Polly.CircuitBreaker.OnCircuitOpenedArguments.OnCircuitOpenedArguments(System.TimeSpan breakDuration, bool isManual) -> void
-Polly.CircuitBreakerCompositeStrategyBuilderExtensions
-Polly.CompositeStrategyBuilder
-Polly.CompositeStrategyBuilder.Build() -> Polly.ResilienceStrategy!
-Polly.CompositeStrategyBuilder.CompositeStrategyBuilder() -> void
-Polly.CompositeStrategyBuilder<TResult>
-Polly.CompositeStrategyBuilder<TResult>.Build() -> Polly.ResilienceStrategy<TResult>!
-Polly.CompositeStrategyBuilder<TResult>.CompositeStrategyBuilder() -> void
-Polly.CompositeStrategyBuilderBase
-Polly.CompositeStrategyBuilderBase.DiagnosticSource.get -> System.Diagnostics.DiagnosticSource?
-Polly.CompositeStrategyBuilderBase.DiagnosticSource.set -> void
-Polly.CompositeStrategyBuilderBase.InstanceName.get -> string?
-Polly.CompositeStrategyBuilderBase.InstanceName.set -> void
-Polly.CompositeStrategyBuilderBase.Name.get -> string?
-Polly.CompositeStrategyBuilderBase.Name.set -> void
-Polly.CompositeStrategyBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
-Polly.CompositeStrategyBuilderExtensions
 Polly.CircuitBreakerResiliencePipelineBuilderExtensions
 Polly.ExecutionRejectedException
 Polly.ExecutionRejectedException.ExecutionRejectedException() -> void
@@ -271,9 +256,6 @@ Polly.ResiliencePipelineBuilderBase.InstanceName.get -> string?
 Polly.ResiliencePipelineBuilderBase.InstanceName.set -> void
 Polly.ResiliencePipelineBuilderBase.Name.get -> string?
 Polly.ResiliencePipelineBuilderBase.Name.set -> void
-Polly.ResiliencePipelineBuilderBase.Properties.get -> Polly.ResilienceProperties!
-Polly.ResiliencePipelineBuilderBase.Randomizer.get -> System.Func<double>!
-Polly.ResiliencePipelineBuilderBase.Randomizer.set -> void
 Polly.ResiliencePipelineBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
 Polly.ResiliencePipelineBuilderExtensions
 Polly.ResilienceProperties
@@ -369,13 +351,9 @@ Polly.Telemetry.ResilienceStrategyTelemetry.IsEnabled.get -> bool
 Polly.Telemetry.ResilienceStrategyTelemetry.Report<TArgs, TResult>(Polly.Telemetry.ResilienceEvent resilienceEvent, Polly.OutcomeArguments<TResult, TArgs> args) -> void
 Polly.Telemetry.ResilienceStrategyTelemetry.Report<TArgs>(Polly.Telemetry.ResilienceEvent resilienceEvent, Polly.ResilienceContext! context, TArgs args) -> void
 Polly.Telemetry.ResilienceTelemetrySource
-Polly.Telemetry.ResilienceTelemetrySource.BuilderInstanceName.get -> string?
-Polly.Telemetry.ResilienceTelemetrySource.BuilderName.get -> string?
-Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? builderName, string? builderInstanceName, string? strategyName) -> void
-Polly.Telemetry.ResilienceTelemetrySource.BuilderProperties.get -> Polly.ResilienceProperties!
 Polly.Telemetry.ResilienceTelemetrySource.PipelineInstanceName.get -> string?
 Polly.Telemetry.ResilienceTelemetrySource.PipelineName.get -> string?
-Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? pipelineName, string? pipelineInstanceName, Polly.ResilienceProperties! builderProperties, string? strategyName) -> void
+Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? pipelineName, string? pipelineInstanceName, string? strategyName) -> void
 Polly.Telemetry.ResilienceTelemetrySource.StrategyName.get -> string?
 Polly.Telemetry.TelemetryEventArguments
 Polly.Telemetry.TelemetryEventArguments.Arguments.get -> object!
