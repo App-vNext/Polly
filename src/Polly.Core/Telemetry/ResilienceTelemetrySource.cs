@@ -11,8 +11,8 @@ public sealed class ResilienceTelemetrySource
     /// <summary>
     /// Initializes a new instance of the <see cref="ResilienceTelemetrySource"/> class.
     /// </summary>
-    /// <param name="pipelineName">The builder name.</param>
-    /// <param name="pipelineInstanceName">The builder instance name.</param>
+    /// <param name="pipelineName">The pipeline name.</param>
+    /// <param name="pipelineInstanceName">The pipeline instance name.</param>
     /// <param name="builderProperties">The builder properties.</param>
     /// <param name="strategyName">The strategy name.</param>
     public ResilienceTelemetrySource(
