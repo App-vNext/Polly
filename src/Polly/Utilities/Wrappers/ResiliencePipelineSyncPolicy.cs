@@ -2,9 +2,9 @@ namespace Polly.Utilities.Wrappers;
 
 internal sealed class ResiliencePipelineSyncPolicy : Policy
 {
-    private readonly ResiliencePipeline _strategy;
+    private readonly ResiliencePipeline _pipeline;
 
-    public ResiliencePipelineSyncPolicy(ResiliencePipeline strategy) => _strategy = strategy;
+    public ResiliencePipelineSyncPolicy(ResiliencePipeline strategy) => _pipeline = strategy;
 
     protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
     {
@@ -16,7 +16,7 @@ internal sealed class ResiliencePipelineSyncPolicy : Policy
 
         try
         {
-            _strategy.Execute(
+            _pipeline.Execute(
                 static (context, state) =>
                 {
                     state.action(state.context, context.CancellationToken);
@@ -40,7 +40,7 @@ internal sealed class ResiliencePipelineSyncPolicy : Policy
 
         try
         {
-            return _strategy.Execute(
+            return _pipeline.Execute(
                 static (context, state) =>
                 {
                     return state.action(state.context, context.CancellationToken);

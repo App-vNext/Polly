@@ -5,7 +5,7 @@ using Polly.Fallback;
 namespace Polly;
 
 /// <summary>
-/// Provides extension methods for configuring fallback resilience strategies for <see cref="ResiliencePipelineBuilder"/>.
+/// Extensions for adding fallback to <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
 public static class FallbackResiliencePipelineBuilderExtensions
 {

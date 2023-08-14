@@ -6,17 +6,17 @@ using Polly.Hedging.Utils;
 namespace Polly;
 
 /// <summary>
-/// Provides extension methods for configuring hedging resilience strategies for <see cref="ResiliencePipelineBuilder"/>.
+/// Extensions for adding hedging to <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
 public static class HedgingResiliencePipelineBuilderExtensions
 {
     /// <summary>
-    /// Adds a hedging resilience strategy with the provided options to the builder.
+    /// Adds a hedging with the provided options to the builder.
     /// </summary>
     /// <typeparam name="TResult">The result type.</typeparam>
     /// <param name="builder">The resilience pipeline builder.</param>
-    /// <param name="options">The options to configure the hedging resilience strategy.</param>
-    /// <returns>The builder instance with the hedging strategy added.</returns>
+    /// <param name="options">The options to configure the hedging.</param>
+    /// <returns>The builder instance with the hedging added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
     [UnconditionalSuppressMessage(
@@ -34,11 +34,11 @@ public static class HedgingResiliencePipelineBuilderExtensions
     }
 
     /// <summary>
-    /// Adds a hedging resilience strategy with the provided options to the builder.
+    /// Adds a hedging with the provided options to the builder.
     /// </summary>
     /// <param name="builder">The resilience pipeline builder.</param>
-    /// <param name="options">The options to configure the hedging resilience strategy.</param>
-    /// <returns>The builder instance with the hedging strategy added.</returns>
+    /// <param name="options">The options to configure the hedging.</param>
+    /// <returns>The builder instance with the hedging added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
     [UnconditionalSuppressMessage(

@@ -100,9 +100,9 @@ internal sealed partial class CompositeResiliencePipeline : ResiliencePipeline
     /// </summary>
     private sealed class DelegatingResiliencePipeline : ResiliencePipeline
     {
-        private readonly ResiliencePipeline _strategy;
+        private readonly ResiliencePipeline _pipeline;
 
-        public DelegatingResiliencePipeline(ResiliencePipeline strategy) => _strategy = strategy;
+        public DelegatingResiliencePipeline(ResiliencePipeline strategy) => _pipeline = strategy;
 
         public ResiliencePipeline? Next { get; set; }
 
@@ -111,7 +111,7 @@ internal sealed partial class CompositeResiliencePipeline : ResiliencePipeline
             ResilienceContext context,
             TState state)
         {
-            return _strategy.ExecuteCore(
+            return _pipeline.ExecuteCore(
                 static (context, state) =>
                 {
                     if (context.CancellationToken.IsCancellationRequested)

@@ -3,7 +3,7 @@ namespace Polly;
 /// <summary>
 /// A resilience pipeline that executes an user-provided callback without any additional logic.
 /// </summary>
-/// <typeparam name="TResult">The type of result this strategy handles.</typeparam>
+/// <typeparam name="TResult">The type of result this pipeline handles.</typeparam>
 public sealed class NullResiliencePipeline<TResult> : ResiliencePipeline<TResult>
 {
     /// <summary>

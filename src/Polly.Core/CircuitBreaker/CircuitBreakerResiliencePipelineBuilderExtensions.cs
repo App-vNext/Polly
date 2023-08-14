@@ -6,20 +6,21 @@ using Polly.CircuitBreaker.Health;
 namespace Polly;
 
 /// <summary>
-/// Circuit breaker strategy extensions for <see cref="ResiliencePipelineBuilder"/>.
+/// Circuit breaker extensions for <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
 public static class CircuitBreakerResiliencePipelineBuilderExtensions
 {
     /// <summary>
-    /// Add circuit breaker strategy to the builder.
+    /// Add circuit breaker to the builder.
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The options instance.</param>
-    /// <returns>A builder with the circuit breaker strategy added.</returns>
+    /// <returns>A builder with the circuit breaker added.</returns>
     /// <remarks>
-    /// See <see cref="CircuitBreakerStrategyOptions{TResult}"/> for more details about the circuit breaker strategy.
+    /// See <see cref="CircuitBreakerStrategyOptions{TResult}"/> for more details about the circuit breaker.
     /// <para>
-    /// If you are discarding the strategy created by this call make sure to use <see cref="CircuitBreakerManualControl"/> and dispose the manual control instance when the strategy is no longer used.
+    /// If you are discarding the circuit breaker by this call make sure to use <see cref="CircuitBreakerManualControl"/>
+    /// and dispose the manual control instance when the circuit breaker is no longer used.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
@@ -38,16 +39,17 @@ public static class CircuitBreakerResiliencePipelineBuilderExtensions
     }
 
     /// <summary>
-    /// Add circuit breaker strategy to the builder.
+    /// Add circuit breaker to the builder.
     /// </summary>
-    /// <typeparam name="TResult">The type of result the circuit breaker strategy handles.</typeparam>
+    /// <typeparam name="TResult">The type of result the circuit breaker handles.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The options instance.</param>
-    /// <returns>A builder with the circuit breaker strategy added.</returns>
+    /// <returns>A builder with the circuit breaker added.</returns>
     /// <remarks>
-    /// See <see cref="CircuitBreakerStrategyOptions{TResult}"/> for more details about the circuit breaker strategy.
+    /// See <see cref="CircuitBreakerStrategyOptions{TResult}"/> for more details about the circuit breaker.
     /// <para>
-    /// If you are discarding the strategy created by this call make sure to use <see cref="CircuitBreakerManualControl"/> and dispose the manual control instance when the strategy is no longer used.
+    /// If you are discarding the circuit breaker by this call make sure to use <see cref="CircuitBreakerManualControl"/>
+    /// and dispose the manual control instance when the circuit breaker is no longer used.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>

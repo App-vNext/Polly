@@ -28,12 +28,12 @@ public sealed class ResilienceTelemetrySource
     }
 
     /// <summary>
-    /// Gets the builder name.
+    /// Gets the pipeline name.
     /// </summary>
     public string? PipelineName { get; }
 
     /// <summary>
-    /// Gets the builder instance name.
+    /// Gets the pipeline instance name.
     /// </summary>
     public string? PipelineInstanceName { get; }
 

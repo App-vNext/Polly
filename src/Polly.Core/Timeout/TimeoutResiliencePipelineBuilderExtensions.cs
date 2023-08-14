@@ -5,12 +5,12 @@ using Polly.Timeout;
 namespace Polly;
 
 /// <summary>
-/// Extension methods for adding timeouts to a <see cref="ResiliencePipelineBuilder"/>.
+/// Extensions for adding timeout to <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
 public static class TimeoutResiliencePipelineBuilderExtensions
 {
     /// <summary>
-    /// Adds a timeout resilience strategy to the builder.
+    /// Adds a timeout to the builder.
     /// </summary>
     /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>
@@ -30,7 +30,7 @@ public static class TimeoutResiliencePipelineBuilderExtensions
     }
 
     /// <summary>
-    /// Adds a timeout resilience strategy to the builder.
+    /// Adds a timeout to the builder.
     /// </summary>
     /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>

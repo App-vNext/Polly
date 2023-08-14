@@ -6,13 +6,13 @@ namespace Polly.Core.Benchmarks;
 
 public class TelemetryBenchmark
 {
-    private ResiliencePipeline? _strategy;
+    private ResiliencePipeline? _pipeline;
     private MeterListener? _meterListener;
 
     [GlobalSetup]
     public void Prepare()
     {
-        _strategy = Build(new ResiliencePipelineBuilder());
+        _pipeline = Build(new ResiliencePipelineBuilder());
 
         if (Telemetry)
         {
@@ -33,7 +33,7 @@ public class TelemetryBenchmark
     public async ValueTask Execute()
     {
         var context = ResilienceContextPool.Shared.Get();
-        await _strategy!.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state").ConfigureAwait(false);
+        await _pipeline!.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state").ConfigureAwait(false);
         ResilienceContextPool.Shared.Return(context);
     }
 

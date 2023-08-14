@@ -2,9 +2,9 @@ namespace Polly.Utilities.Wrappers;
 
 internal sealed class ResiliencePipelineAsyncPolicy : AsyncPolicy
 {
-    private readonly ResiliencePipeline _strategy;
+    private readonly ResiliencePipeline _pipeline;
 
-    public ResiliencePipelineAsyncPolicy(ResiliencePipeline strategy) => _strategy = strategy;
+    public ResiliencePipelineAsyncPolicy(ResiliencePipeline strategy) => _pipeline = strategy;
 
     protected override async Task ImplementationAsync(
         Func<Context, CancellationToken, Task> action,
@@ -20,7 +20,7 @@ internal sealed class ResiliencePipelineAsyncPolicy : AsyncPolicy
 
         try
         {
-            await _strategy.ExecuteAsync(
+            await _pipeline.ExecuteAsync(
                 static async (resilienceContext, state) =>
                 {
                     await state.action(state.context, resilienceContext.CancellationToken).ConfigureAwait(resilienceContext.ContinueOnCapturedContext);
@@ -48,7 +48,7 @@ internal sealed class ResiliencePipelineAsyncPolicy : AsyncPolicy
 
         try
         {
-            return await _strategy.ExecuteAsync(
+            return await _pipeline.ExecuteAsync(
                 static async (resilienceContext, state) =>
                 {
                     return await state.action(state.context, resilienceContext.CancellationToken).ConfigureAwait(resilienceContext.ContinueOnCapturedContext);
