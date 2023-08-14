@@ -365,8 +365,7 @@ Polly.Telemetry.TelemetryEventArguments.Outcome.get -> Polly.Outcome<object!>?
 Polly.Telemetry.TelemetryEventArguments.Source.get -> Polly.Telemetry.ResilienceTelemetrySource!
 Polly.Timeout.OnTimeoutArguments
 Polly.Timeout.OnTimeoutArguments.Context.get -> Polly.ResilienceContext!
-Polly.Timeout.OnTimeoutArguments.Exception.get -> System.Exception!
-Polly.Timeout.OnTimeoutArguments.OnTimeoutArguments(Polly.ResilienceContext! context, System.Exception! exception, System.TimeSpan timeout) -> void
+Polly.Timeout.OnTimeoutArguments.OnTimeoutArguments(Polly.ResilienceContext! context, System.TimeSpan timeout) -> void
 Polly.Timeout.OnTimeoutArguments.Timeout.get -> System.TimeSpan
 Polly.Timeout.TimeoutGeneratorArguments
 Polly.Timeout.TimeoutGeneratorArguments.Context.get -> Polly.ResilienceContext!
