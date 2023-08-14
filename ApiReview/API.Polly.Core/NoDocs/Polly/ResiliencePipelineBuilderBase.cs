@@ -10,18 +10,12 @@ using System.Runtime.CompilerServices;
 
 namespace Polly;
 
-public abstract class CompositeStrategyBuilderBase
+public abstract class ResiliencePipelineBuilderBase
 {
     public string? Name { get; set; }
     public string? InstanceName { get; set; }
-    public ResilienceProperties Properties { get; }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public Action<IList<ResilienceStrategy>>? OnCreatingStrategy { get; set; }
     [EditorBrowsable(EditorBrowsableState.Never)]
     public DiagnosticSource? DiagnosticSource { get; set; }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [Required]
-    public Func<double> Randomizer { get; set; }
     [EditorBrowsable(EditorBrowsableState.Never)]
     public Action<ResilienceValidationContext> Validator { get; }
 }

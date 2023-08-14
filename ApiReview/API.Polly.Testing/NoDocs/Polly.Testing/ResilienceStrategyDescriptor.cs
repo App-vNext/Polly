@@ -1,6 +1,5 @@
 // Assembly 'Polly.Testing'
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace Polly.Testing;
@@ -8,6 +7,6 @@ namespace Polly.Testing;
 public sealed class ResilienceStrategyDescriptor
 {
     public ResilienceStrategyOptions? Options { get; }
-    public Type StrategyType { get; }
-    public ResilienceStrategyDescriptor(ResilienceStrategyOptions? options, Type strategyType);
+    public object StrategyInstance { get; }
+    public ResilienceStrategyDescriptor(ResilienceStrategyOptions? options, object strategyInstance);
 }

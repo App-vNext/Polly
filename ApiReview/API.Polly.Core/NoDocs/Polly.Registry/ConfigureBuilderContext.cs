@@ -9,7 +9,7 @@ namespace Polly.Registry;
 
 public class ConfigureBuilderContext<TKey> where TKey : notnull
 {
-    public TKey StrategyKey { get; }
+    public TKey PipelineKey { get; }
     public string BuilderName { get; }
     public string? BuilderInstanceName { get; }
     [EditorBrowsable(EditorBrowsableState.Never)]

@@ -6,10 +6,10 @@ using Polly.Utils;
 
 namespace Polly.Telemetry;
 
-public class ExecutionAttemptArguments
+public sealed class ExecutionAttemptArguments
 {
     public int AttemptNumber { get; }
-    public TimeSpan ExecutionTime { get; }
+    public TimeSpan Duration { get; }
     public bool Handled { get; }
-    public ExecutionAttemptArguments(int attemptNumber, TimeSpan executionTime, bool handled);
+    public ExecutionAttemptArguments(int attemptNumber, TimeSpan duration, bool handled);
 }

@@ -7,16 +7,16 @@ using System.Runtime.CompilerServices;
 
 namespace Polly.Registry;
 
-public class ResilienceStrategyRegistryOptions<TKey>
+public class ResiliencePipelineRegistryOptions<TKey>
 {
     [Required]
-    public Func<CompositeStrategyBuilder> BuilderFactory { get; set; }
+    public Func<ResiliencePipelineBuilder> BuilderFactory { get; set; }
     [Required]
-    public IEqualityComparer<TKey> StrategyComparer { get; set; }
+    public IEqualityComparer<TKey> PipelineComparer { get; set; }
     [Required]
     public IEqualityComparer<TKey> BuilderComparer { get; set; }
     public Func<TKey, string>? InstanceNameFormatter { get; set; }
     [Required]
     public Func<TKey, string> BuilderNameFormatter { get; set; }
-    public ResilienceStrategyRegistryOptions();
+    public ResiliencePipelineRegistryOptions();
 }

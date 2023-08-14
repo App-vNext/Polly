@@ -7,10 +7,10 @@ using Polly.Registry;
 
 namespace Polly.DependencyInjection;
 
-public sealed class AddResilienceStrategyContext<TKey> where TKey : notnull
+public sealed class AddResiliencePipelineContext<TKey> where TKey : notnull
 {
     public string BuilderName { get; }
-    public TKey StrategyKey { get; }
+    public TKey PipelineKey { get; }
     public IServiceProvider ServiceProvider { get; }
     public void EnableReloads<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(string? name = null);
     public TOptions GetOptions<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(string? name = null);

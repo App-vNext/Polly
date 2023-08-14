@@ -5,10 +5,10 @@ using System.Runtime.CompilerServices;
 
 namespace Polly.Testing;
 
-public sealed class InnerStrategiesDescriptor
+public sealed class ResiliencePipelineDescriptor
 {
     public IReadOnlyList<ResilienceStrategyDescriptor> Strategies { get; }
-    public bool HasTelemetry { get; }
+    public ResilienceStrategyDescriptor FirstStrategy { get; }
     public bool IsReloadable { get; }
-    public InnerStrategiesDescriptor(IReadOnlyList<ResilienceStrategyDescriptor> strategies, bool hasTelemetry, bool isReloadable);
+    public ResiliencePipelineDescriptor(IReadOnlyList<ResilienceStrategyDescriptor> strategies, bool isReloadable);
 }

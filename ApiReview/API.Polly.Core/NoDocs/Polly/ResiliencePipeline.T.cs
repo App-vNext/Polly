@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Polly;
 
-public class ResilienceStrategy<T>
+public class ResiliencePipeline<T>
 {
     public ValueTask<TResult> ExecuteAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state) where TResult : T;
     public ValueTask<TResult> ExecuteAsync<TResult>(Func<ResilienceContext, ValueTask<TResult>> callback, ResilienceContext context) where TResult : T;
