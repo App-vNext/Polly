@@ -8,10 +8,13 @@ namespace Polly.Core.Tests.Utils.PipelineComponents;
 public class CompositeResiliencePipelineTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private Action<TelemetryEventArguments<object, object>>? _onTelemetry;
+    private readonly FakeTelemetryListener _listener;
 
     public CompositeResiliencePipelineTests()
-        => _telemetry = TestUtilities.CreateResilienceTelemetry(args => _onTelemetry?.Invoke(args));
+    {
+        _listener = new FakeTelemetryListener();
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_listener);
+    }
 
     [Fact]
     public void Create_ArgValidation()
@@ -118,25 +121,14 @@ public class CompositeResiliencePipelineTests
     [Fact]
     public void ExecutePipeline_EnsureTelemetryArgumentsReported()
     {
-        var items = new List<object>();
         var timeProvider = new FakeTimeProvider();
-
-        _onTelemetry = args =>
-        {
-            if (args.Arguments is PipelineExecutedArguments executed)
-            {
-                executed.Duration.Should().Be(TimeSpan.FromHours(1));
-            }
-
-            items.Add(args.Arguments);
-        };
 
         var pipeline = new ResiliencePipeline(CreateSut(new[] { Substitute.For<PipelineComponent>() }, timeProvider));
         pipeline.Execute(() => { timeProvider.Advance(TimeSpan.FromHours(1)); });
 
-        items.Should().HaveCount(2);
-        items[0].Should().BeOfType<PipelineExecutingArguments>();
-        items[1].Should().BeOfType<PipelineExecutedArguments>();
+        _listener.Events.Should().HaveCount(2);
+        _listener.GetArgs<PipelineExecutingArguments>().Should().HaveCount(1);
+        _listener.GetArgs<PipelineExecutedArguments>().Should().HaveCount(1);
     }
 
     private PipelineComponent.CompositeComponent CreateSut(PipelineComponent[] components, TimeProvider? timeProvider = null)

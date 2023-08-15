@@ -44,7 +44,7 @@ public class GenericResiliencePipelineBuilderTests
 
         // assert
         strategy.Should().NotBeNull();
-        strategy.Pipeline.Should().BeOfType<PipelineComponent.CompositeComponent>().Subject.Components.Should().HaveCount(2);
+        strategy.Component.Should().BeOfType<PipelineComponent.CompositeComponent>().Subject.Components.Should().HaveCount(2);
     }
 
     [Fact]

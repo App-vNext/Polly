@@ -14,20 +14,4 @@ public sealed class NullResiliencePipeline : ResiliencePipeline
         : base(PipelineComponent.Null)
     {
     }
-
-    internal class NullStrategy : ResilienceStrategy
-    {
-        protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-            ResilienceContext context,
-            TState state)
-        {
-            Guard.NotNull(callback);
-            Guard.NotNull(context);
-
-            context.AssertInitialized();
-
-            return callback(context, state);
-        }
-    }
 }

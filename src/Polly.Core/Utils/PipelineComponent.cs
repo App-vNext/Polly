@@ -8,6 +8,9 @@ namespace Polly.Utils;
 /// <summary>
 /// Represents a single component of a resilience pipeline.
 /// </summary>
+/// <remarks>
+/// The component of the pipeline can be either strategy, generic strategy or a whole pipeline.
+/// </remarks>
 internal abstract partial class PipelineComponent
 {
     public static PipelineComponent Null { get; } = new NullComponent();

@@ -912,8 +912,8 @@ public class HedgingResilienceStrategyTests : IDisposable
         var strategy = Create();
         await strategy.ExecuteAsync((_, _) => new ValueTask<string>(Failure), context, "state");
 
-        context.ResilienceEvents.Should().HaveCount(_options.MaxHedgedAttempts + 1);
-        context.ResilienceEvents.Select(v => v.EventName).Distinct().Should().HaveCount(2);
+        context.ResilienceEvents.Should().HaveCount(_options.MaxHedgedAttempts + 3);
+        context.ResilienceEvents.Select(v => v.EventName).Distinct().Should().HaveCount(4);
     }
 
     private void ConfigureHedging()
