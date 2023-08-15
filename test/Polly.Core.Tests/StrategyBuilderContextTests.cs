@@ -12,9 +12,9 @@ public class StrategyBuilderContextTests
         var timeProvider = new FakeTimeProvider();
         var context = new StrategyBuilderContext("builder-name", "instance", "strategy-name", timeProvider, Substitute.For<TelemetryListener>());
 
-        context.BuilderName.Should().Be("builder-name");
-        context.BuilderInstanceName.Should().Be("instance");
-        context.StrategyName.Should().Be("strategy-name");
+        context.Telemetry.TelemetrySource.PipelineName.Should().Be("builder-name");
+        context.Telemetry.TelemetrySource.PipelineInstanceName.Should().Be("instance");
+        context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name");
         context.TimeProvider.Should().Be(timeProvider);
         context.Telemetry.Should().NotBeNull();
 

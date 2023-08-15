@@ -14,27 +14,9 @@ public sealed class StrategyBuilderContext
         TimeProvider timeProvider,
         TelemetryListener? telemetryListener)
     {
-        BuilderName = builderName;
-        BuilderInstanceName = builderInstanceName;
-        StrategyName = strategyName;
         TimeProvider = timeProvider;
         Telemetry = TelemetryUtil.CreateTelemetry(telemetryListener, builderName, builderInstanceName, strategyName);
     }
-
-    /// <summary>
-    /// Gets the name of the builder.
-    /// </summary>
-    public string? BuilderName { get; }
-
-    /// <summary>
-    /// Gets the instance name of the builder.
-    /// </summary>
-    public string? BuilderInstanceName { get; }
-
-    /// <summary>
-    /// Gets the name of the strategy.
-    /// </summary>
-    public string? StrategyName { get; }
 
     /// <summary>
     /// Gets the resilience telemetry used to report important events.

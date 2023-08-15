@@ -24,12 +24,12 @@ public class ConfigureBuilderContext<TKey>
     /// <summary>
     /// Gets the builder name for the builder being used to create the strategy.
     /// </summary>
-    public string BuilderName { get; }
+    internal string BuilderName { get; }
 
     /// <summary>
     /// Gets the instance name for the builder being used to create the strategy.
     /// </summary>
-    public string? BuilderInstanceName { get; }
+    internal string? BuilderInstanceName { get; }
 
     internal Func<Func<CancellationToken>>? ReloadTokenProducer { get; private set; }
 
@@ -39,7 +39,7 @@ public class ConfigureBuilderContext<TKey>
     /// <param name="tokenProducerFactory">The producer of <see cref="CancellationToken"/> that is triggered when change occurs.</param>
     /// <remarks>
     /// The <paramref name="tokenProducerFactory"/> should always return function that returns a new <see cref="CancellationToken"/> instance when invoked otherwise
-    /// the reload infrastructure will stop listening for changes. The <paramref name="tokenProducerFactory"/> is called only once for each streategy.
+    /// the reload infrastructure will stop listening for changes. The <paramref name="tokenProducerFactory"/> is called only once for each strategy.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public void EnableReloads(Func<Func<CancellationToken>> tokenProducerFactory)

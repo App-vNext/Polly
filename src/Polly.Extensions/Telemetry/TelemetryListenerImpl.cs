@@ -89,8 +89,6 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
             context.Tags.Add(new(ResilienceTelemetryTags.OperationKey, context.TelemetryEvent.Context.OperationKey));
         }
 
-        context.Tags.Add(new(ResilienceTelemetryTags.ResultType, context.TelemetryEvent.Context.GetResultType()));
-
         if (context.TelemetryEvent.Outcome?.Exception is Exception e)
         {
             context.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, e.GetType().FullName));
@@ -163,8 +161,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
             _logger.PipelineExecuting(
                 args.Source.PipelineName.GetValueOrPlaceholder(),
                 args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
-                args.Context.OperationKey,
-                args.Context.GetResultType());
+                args.Context.OperationKey);
         }
         else if (GetArgs<TArgs, PipelineExecutedArguments>(args.Arguments, out var pipelineExecuted))
         {
@@ -175,7 +172,6 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
                 args.Source.PipelineName.GetValueOrPlaceholder(),
                 args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
                 args.Context.OperationKey,
-                args.Context.GetResultType(),
                 GetResult(args.Context, args.Outcome),
                 args.Context.GetExecutionHealth(),
                 pipelineExecuted.Duration.TotalMilliseconds,

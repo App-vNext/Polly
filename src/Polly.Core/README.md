@@ -156,7 +156,7 @@ Pipeline with a single strategy:
 var ResiliencePipeline = new ResiliencePipelineBuilder().AddRetry(new()).Build();
 ```
 
-Pipeline wiht multiple strategies:
+Pipeline with multiple strategies:
 
 ``` csharp
 var ResiliencePipeline = new ResiliencePipelineBuilder()
@@ -257,7 +257,7 @@ When setting the delegates, ensure to respect the `ResilienceContext.IsSynchrono
 
 ## Telemetry
 
-Each individual resilience strategy can emit telemetry by using the [`ResiliencePipelineTelemetry`](Telemetry/ResiliencePipelineTelemetry.cs) API. Polly wraps the arguments as [`TelemetryEventArguments`](Telemetry/TelemetryEventArguments.cs) and emits them using `DiagnosticSource`.
-To consume the telemetry, Polly adopters needs to assign an instance of `DiagnosticSource` to `ResiliencePipelineBuilder.DiagnosticSource` and consume `TelemetryEventArguments`.
+Each individual resilience strategy can emit telemetry by using the [`ResiliencePipelineTelemetry`](Telemetry/ResiliencePipelineTelemetry.cs) API. Polly wraps the arguments as [`TelemetryEventArguments`](Telemetry/TelemetryEventArguments.cs) and emits them using `TelemetryListener`.
+To consume the telemetry, Polly adopters needs to assign an instance of `TelemetryListener` to `ResiliencePipelineBuilder.DiagnosticSource` and consume `TelemetryEventArguments`.
 
 For common use-cases, it is anticipated that Polly users would leverage `Polly.Extensions`. This allows all of the aforementioned functionalities by invoking the `ResiliencePipelineBuilder.ConfigureTelemetry(...)` extension method. `ConfigureTelemetry` processes `TelemetryEventArguments` and generates logs and metrics from it.

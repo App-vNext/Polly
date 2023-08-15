@@ -16,19 +16,12 @@ public sealed class AddResiliencePipelineContext<TKey>
     {
         RegistryContext = registryContext;
         ServiceProvider = serviceProvider;
-        PipelineKey = registryContext.PipelineKey;
-        BuilderName = registryContext.BuilderName;
     }
 
     /// <summary>
     /// Gets the strategy key for the strategy being created.
     /// </summary>
-    public string BuilderName { get; }
-
-    /// <summary>
-    /// Gets the strategy key for the strategy being created.
-    /// </summary>
-    public TKey PipelineKey { get; }
+    public TKey PipelineKey => RegistryContext.PipelineKey;
 
     /// <summary>
     /// Gets the <see cref="IServiceProvider"/> that provides access to the dependency injection container.

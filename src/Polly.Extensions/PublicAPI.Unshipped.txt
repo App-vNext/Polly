@@ -1,7 +1,6 @@
 ﻿#nullable enable
 abstract Polly.Telemetry.MeteringEnricher.Enrich<TResult, TArgs>(in Polly.Telemetry.EnrichmentContext<TResult, TArgs> context) -> void
 Polly.DependencyInjection.AddResiliencePipelineContext<TKey>
-Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.BuilderName.get -> string!
 Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.EnableReloads<TOptions>(string? name = null) -> void
 Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.GetOptions<TOptions>(string? name = null) -> TOptions
 Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.PipelineKey.get -> TKey
