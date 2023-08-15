@@ -79,22 +79,6 @@ Polly.CircuitBreaker.OnCircuitOpenedArguments.BreakDuration.get -> System.TimeSp
 Polly.CircuitBreaker.OnCircuitOpenedArguments.IsManual.get -> bool
 Polly.CircuitBreaker.OnCircuitOpenedArguments.OnCircuitOpenedArguments() -> void
 Polly.CircuitBreaker.OnCircuitOpenedArguments.OnCircuitOpenedArguments(System.TimeSpan breakDuration, bool isManual) -> void
-Polly.CircuitBreakerCompositeStrategyBuilderExtensions
-Polly.CompositeStrategyBuilder
-Polly.CompositeStrategyBuilder.Build() -> Polly.ResilienceStrategy!
-Polly.CompositeStrategyBuilder.CompositeStrategyBuilder() -> void
-Polly.CompositeStrategyBuilder<TResult>
-Polly.CompositeStrategyBuilder<TResult>.Build() -> Polly.ResilienceStrategy<TResult>!
-Polly.CompositeStrategyBuilder<TResult>.CompositeStrategyBuilder() -> void
-Polly.CompositeStrategyBuilderBase
-Polly.CompositeStrategyBuilderBase.InstanceName.get -> string?
-Polly.CompositeStrategyBuilderBase.InstanceName.set -> void
-Polly.CompositeStrategyBuilderBase.Name.get -> string?
-Polly.CompositeStrategyBuilderBase.Name.set -> void
-Polly.CompositeStrategyBuilderBase.TimeProvider.get -> System.TimeProvider!
-Polly.CompositeStrategyBuilderBase.TimeProvider.set -> void
-Polly.CompositeStrategyBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
-Polly.CompositeStrategyBuilderExtensions
 Polly.CircuitBreakerResiliencePipelineBuilderExtensions
 Polly.ExecutionRejectedException
 Polly.ExecutionRejectedException.ExecutionRejectedException() -> void
