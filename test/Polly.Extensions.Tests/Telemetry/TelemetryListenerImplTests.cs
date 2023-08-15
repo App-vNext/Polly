@@ -14,19 +14,10 @@ public class TelemetryListenerImplTests : IDisposable
     private readonly ILoggerFactory _loggerFactory;
     private readonly List<MeteringEvent> _events = new();
     private Action<TelemetryEventArguments<object, object>>? _onEvent;
-    private IDisposable _metering;
 
-    public TelemetryListenerImplTests()
-    {
-        _metering = TestUtilities.EnablePollyMetering(_events);
-        _loggerFactory = TestUtilities.CreateLoggerFactory(out _logger);
-    }
+    public TelemetryListenerImplTests() => _loggerFactory = TestUtilities.CreateLoggerFactory(out _logger);
 
-    public void Dispose()
-    {
-        _metering.Dispose();
-        _loggerFactory.Dispose();
-    }
+    public void Dispose() => _loggerFactory.Dispose();
 
     [Fact]
     public void Meter_Ok()
@@ -113,6 +104,8 @@ public class TelemetryListenerImplTests : IDisposable
     [Theory]
     public void WriteEvent_EnsureSeverityRespected(ResilienceEventSeverity severity, LogLevel logLevel)
     {
+        using var metering = TestUtilities.EnablePollyMetering(_events);
+
         var telemetry = Create();
         ReportEvent(telemetry, null, severity: severity);
 
@@ -184,6 +177,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Theory]
     public void WriteEvent_MeteringWithoutEnrichers_Ok(bool noOutcome, bool exception)
     {
+        using var metering = TestUtilities.EnablePollyMetering(_events);
         var telemetry = Create();
         Outcome<object>? outcome = noOutcome switch
         {
@@ -231,6 +225,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Theory]
     public void WriteExecutionAttemptEvent_Metering_Ok(bool noOutcome, bool exception)
     {
+        using var metering = TestUtilities.EnablePollyMetering(_events);
         var telemetry = Create();
         var attemptArg = new ExecutionAttemptArguments(5, TimeSpan.FromSeconds(50), true);
         Outcome<object>? outcome = noOutcome switch
@@ -279,8 +274,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Fact]
     public void WriteExecutionAttemptEvent_ShouldBeSkipped()
     {
-        _metering.Dispose();
-        _metering = TestUtilities.EnablePollyMetering(_events, _ => false);
+        using var metering = TestUtilities.EnablePollyMetering(_events, _ => false);
 
         var telemetry = Create();
         var attemptArg = new ExecutionAttemptArguments(5, TimeSpan.FromSeconds(50), true);
@@ -295,6 +289,8 @@ public class TelemetryListenerImplTests : IDisposable
     [Theory]
     public void WriteEvent_MeteringWithEnrichers_Ok(int count)
     {
+        using var metering = TestUtilities.EnablePollyMetering(_events);
+
         const int DefaultDimensions = 7;
 
         var telemetry = Create(new[]
@@ -329,6 +325,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Fact]
     public void WriteEvent_MeteringWithoutBuilderInstance_Ok()
     {
+        using var metering = TestUtilities.EnablePollyMetering(_events);
         var telemetry = Create();
         ReportEvent(telemetry, null, instanceName: null);
         var events = GetEvents("resilience-events")[0].Should().NotContainKey("pipeline-instance");
@@ -413,6 +410,8 @@ public class TelemetryListenerImplTests : IDisposable
     [Theory]
     public void PipelineExecution_Metered(bool healthy, bool exception)
     {
+        using var metering = TestUtilities.EnablePollyMetering(_events);
+
         var healthString = healthy ? "Healthy" : "Unhealthy";
         var context = ResilienceContextPool.Shared.Get("op-key").WithResultType<int>();
         var outcome = exception ? Outcome.FromException<object>(new InvalidOperationException("dummy message")) : Outcome.FromResult((object)10);
@@ -472,8 +471,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Fact]
     public void PipelineExecuted_ShouldBeSkipped()
     {
-        _metering.Dispose();
-        _metering = TestUtilities.EnablePollyMetering(_events, _ => false);
+        using var metering = TestUtilities.EnablePollyMetering(_events, _ => false);
 
         var telemetry = Create();
         var attemptArg = new PipelineExecutedArguments(TimeSpan.FromSeconds(50));
