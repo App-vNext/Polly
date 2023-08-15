@@ -73,7 +73,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
 #pragma warning restore IL2026
 
     /// <summary>
-    /// Gets or sets an outcome predicate that is used to register the predicates to determine if a retry should be performed.
+    /// Gets or sets a predicate that determines whether the retry should be executed for a given outcome.
     /// </summary>
     /// <value>
     /// The default is a delegate that retries on any exception except <see cref="OperationCanceledException"/>. This property is required.
@@ -82,7 +82,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     public Func<OutcomeArguments<TResult, RetryPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<RetryPredicateArguments, TResult>.HandleOutcome;
 
     /// <summary>
-    /// Gets or sets the generator instance that is used to calculate the time between retries.
+    /// Gets or sets a generator instance that calculates the time between retries.
     /// </summary>
     /// <remarks>
     /// The generator has precedence over <see cref="BaseDelay"/> and <see cref="BackoffType"/>.
@@ -93,7 +93,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     public Func<OutcomeArguments<TResult, RetryDelayArguments>, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }
 
     /// <summary>
-    /// Gets or sets an outcome event that is used to register on-retry callbacks.
+    /// Gets or sets an event delegate that is raised when the retry happens.
     /// </summary>
     /// <remarks>
     /// After this event, the result produced the by user-callback is discarded and disposed to prevent resource over-consumption. If
