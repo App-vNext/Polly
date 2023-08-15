@@ -5,12 +5,12 @@ using Polly.Utils;
 
 namespace Polly.Core.Tests.Utils.PipelineComponents;
 
-public class CompositeResiliencePipelineTests
+public class CompositePipelineComponentTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly FakeTelemetryListener _listener;
 
-    public CompositeResiliencePipelineTests()
+    public CompositePipelineComponentTests()
     {
         _listener = new FakeTelemetryListener();
         _telemetry = TestUtilities.CreateResilienceTelemetry(_listener);
@@ -49,8 +49,8 @@ public class CompositeResiliencePipelineTests
     {
         var components = new[]
         {
-            Substitute.For<PipelineComponent>(),
-            Substitute.For<PipelineComponent>(),
+            PipelineComponent.FromStrategy(new TestResilienceStrategy { Before =  (_, _) => throw new NotSupportedException() }),
+            PipelineComponent.FromStrategy(new TestResilienceStrategy { Before =  (_, _) => throw new NotSupportedException() }),
         };
 
         var pipeline = CreateSut(components);

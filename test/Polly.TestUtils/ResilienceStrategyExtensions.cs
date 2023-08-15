@@ -1,6 +1,4 @@
-﻿using Polly.Utils;
-
-namespace Polly.TestUtils;
+﻿namespace Polly.TestUtils;
 
 public static class ResilienceStrategyExtensions
 {
@@ -12,12 +10,8 @@ public static class ResilienceStrategyExtensions
 
     public static TBuilder AddStrategy<TBuilder>(this TBuilder builder, ResilienceStrategy strategy)
         where TBuilder : ResiliencePipelineBuilderBase
-    {
-        return builder.AddStrategy(_ => strategy, new TestResilienceStrategyOptions());
-    }
+        => builder.AddStrategy(_ => strategy, new TestResilienceStrategyOptions());
 
     public static ResiliencePipelineBuilder<T> AddStrategy<T>(this ResiliencePipelineBuilder<T> builder, ResilienceStrategy<T> strategy)
-    {
-        return builder.AddStrategy(_ => strategy, new TestResilienceStrategyOptions());
-    }
+        => builder.AddStrategy(_ => strategy, new TestResilienceStrategyOptions());
 }
