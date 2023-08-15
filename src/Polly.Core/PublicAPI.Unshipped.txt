@@ -261,7 +261,6 @@ Polly.ResiliencePipelineBuilderBase.Name.get -> string?
 Polly.ResiliencePipelineBuilderBase.Name.set -> void
 Polly.ResiliencePipelineBuilderBase.TelemetryListener.get -> Polly.Telemetry.TelemetryListener?
 Polly.ResiliencePipelineBuilderBase.TelemetryListener.set -> void
-Polly.ResiliencePipelineBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
 Polly.ResiliencePipelineBuilderExtensions
 Polly.ResilienceProperties
 Polly.ResilienceProperties.GetValue<TValue>(Polly.ResiliencePropertyKey<TValue> key, TValue defaultValue) -> TValue
@@ -281,10 +280,6 @@ Polly.ResilienceStrategyOptions
 Polly.ResilienceStrategyOptions.Name.get -> string?
 Polly.ResilienceStrategyOptions.Name.set -> void
 Polly.ResilienceStrategyOptions.ResilienceStrategyOptions() -> void
-Polly.ResilienceValidationContext
-Polly.ResilienceValidationContext.Instance.get -> object!
-Polly.ResilienceValidationContext.PrimaryMessage.get -> string!
-Polly.ResilienceValidationContext.ResilienceValidationContext(object! instance, string! primaryMessage) -> void
 Polly.Retry.OnRetryArguments
 Polly.Retry.OnRetryArguments.AttemptNumber.get -> int
 Polly.Retry.OnRetryArguments.ExecutionTime.get -> System.TimeSpan
