@@ -5,6 +5,9 @@ using Polly.Telemetry;
 
 namespace Polly.Utils;
 
+/// <summary>
+/// Represents a single component of a resilience pipeline.
+/// </summary>
 internal abstract partial class PipelineComponent
 {
     public static PipelineComponent Null { get; } = null!;
