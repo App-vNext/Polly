@@ -104,7 +104,7 @@ public abstract class ResiliencePipelineBuilderBase
         _entries.Add(new Entry(factory, options));
     }
 
-    internal PipelineComponent BuildPipeline()
+    internal PipelineComponent BuildPipelineComponent()
     {
         Validator(new(this, $"The '{nameof(ResiliencePipelineBuilder)}' configuration is invalid."));
 

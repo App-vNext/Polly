@@ -14,11 +14,15 @@ internal abstract partial class PipelineComponent
 
     internal ResilienceStrategyOptions? Options { get; set; }
 
-    internal static PipelineComponent FromStrategy(ResilienceStrategy strategy) => new BridgeComponent(strategy);
+    public static PipelineComponent FromPipeline(ResiliencePipeline pipeline) => pipeline.Component;
 
-    internal static PipelineComponent FromStrategy<T>(ResilienceStrategy<T> strategy) => new BridgeComponent<T>(strategy);
+    public static PipelineComponent FromPipeline<T>(ResiliencePipeline<T> pipeline) => pipeline.Component;
 
-    internal static PipelineComponent CreateComposite(
+    public static PipelineComponent FromStrategy(ResilienceStrategy strategy) => new BridgeComponent(strategy);
+
+    public static PipelineComponent FromStrategy<T>(ResilienceStrategy<T> strategy) => new BridgeComponent<T>(strategy);
+
+    public static PipelineComponent CreateComposite(
         IReadOnlyList<PipelineComponent> components,
         ResilienceStrategyTelemetry telemetry,
         TimeProvider timeProvider)
@@ -62,7 +66,7 @@ internal abstract partial class PipelineComponent
         return new CompositeComponent(delegatingStrategies[0], components, telemetry, timeProvider);
     }
 
-    internal static PipelineComponent CreateReloadable(
+    public static PipelineComponent CreateReloadable(
         PipelineComponent initialComponent,
         Func<CancellationToken> onReload,
         Func<PipelineComponent> factory,

@@ -36,7 +36,7 @@ internal abstract partial class PipelineComponent
             TState state)
         {
             var timeStamp = _timeProvider.GetTimestamp();
-            _telemetry.Report(new ResilienceEvent(ResilienceEventSeverity.Debug, TelemetryUtil.PipelineExecuting), context, PipelineExecutingArguments.Instance);
+            _telemetry.Report(new ResilienceEvent(ResilienceEventSeverity.Debug, TelemetryUtil.PipelineExecuting), context, default(PipelineExecutingArguments));
 
             Outcome<TResult> outcome;
 
@@ -49,11 +49,9 @@ internal abstract partial class PipelineComponent
                 outcome = await _firstComponent.ExecuteCore(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
-            var durationArgs = PipelineExecutedArguments.Get(_timeProvider.GetElapsedTime(timeStamp));
             _telemetry.Report(
                 new ResilienceEvent(ResilienceEventSeverity.Information, TelemetryUtil.PipelineExecuted),
-                new OutcomeArguments<TResult, PipelineExecutedArguments>(context, outcome, durationArgs));
-            PipelineExecutedArguments.Return(durationArgs);
+                new OutcomeArguments<TResult, PipelineExecutedArguments>(context, outcome, new PipelineExecutedArguments(_timeProvider.GetElapsedTime(timeStamp))));
 
             return outcome;
         }

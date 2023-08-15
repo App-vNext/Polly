@@ -56,11 +56,11 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 #if NETCOREAPP3_0_OR_GREATER
             return _strategies.GetOrAdd(key, static (_, factory) =>
             {
-                return new ResiliencePipeline<TResult>(CreatePipeline(factory.instance._activator, factory.context, factory.configure));
+                return new ResiliencePipeline<TResult>(CreatePipelineComponent(factory.instance._activator, factory.context, factory.configure));
             },
             (instance: this, context, configure));
 #else
-            return _strategies.GetOrAdd(key, _ => new ResiliencePipeline<TResult>(CreatePipeline(_activator, context, configure)));
+            return _strategies.GetOrAdd(key, _ => new ResiliencePipeline<TResult>(CreatePipelineComponent(_activator, context, configure)));
 #endif
         }
 

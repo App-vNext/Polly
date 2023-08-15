@@ -194,7 +194,7 @@ public class ResiliencePipelineBuilderTests
     {
         var builder = new InvalidResiliencePipelineBuilder();
 
-        builder.Invoking(b => b.BuildPipeline())
+        builder.Invoking(b => b.BuildPipelineComponent())
             .Should()
             .Throw<ValidationException>()
             .WithMessage(
