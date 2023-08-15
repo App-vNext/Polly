@@ -18,7 +18,7 @@ public static class ResiliencePipelineExtensions
     {
         Guard.NotNull(pipeline);
 
-        return GetPipelineDescriptorCore<TResult>(pipeline.Strategy);
+        return GetPipelineDescriptorCore<TResult>(pipeline.Component);
     }
 
     /// <summary>
@@ -31,13 +31,13 @@ public static class ResiliencePipelineExtensions
     {
         Guard.NotNull(pipeline);
 
-        return GetPipelineDescriptorCore<object>(pipeline);
+        return GetPipelineDescriptorCore<object>(pipeline.Component);
     }
 
-    private static ResiliencePipelineDescriptor GetPipelineDescriptorCore<T>(ResiliencePipeline pipeline)
+    private static ResiliencePipelineDescriptor GetPipelineDescriptorCore<T>(PipelineComponent component)
     {
         var components = new List<PipelineComponent>();
-        pipeline.Component.ExpandComponents(components);
+        component.ExpandComponents(components);
 
         var descriptors = components.Select(s => new ResilienceStrategyDescriptor(s.Options, GetStrategyInstance<T>(s))).ToList();
 

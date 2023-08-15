@@ -1,7 +1,7 @@
 using Polly.Hedging;
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
-using Polly.Utils;
+using Polly.Testing;
 using Xunit.Abstractions;
 
 namespace Polly.Core.Tests.Hedging;
@@ -47,7 +47,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     public void Ctor_EnsureDefaults()
     {
         ConfigureHedging();
-        var strategy = (HedgingResilienceStrategy<string>)Create().Strategy;
+        var strategy = (HedgingResilienceStrategy<string>)Create().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
         strategy.MaxHedgedAttempts.Should().Be(_options.MaxHedgedAttempts);
         strategy.HedgingDelay.Should().Be(_options.HedgingDelay);
@@ -128,7 +128,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     {
         _options.HedgingDelayGenerator = args => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(seconds));
 
-        var strategy = (HedgingResilienceStrategy<string>)Create().Strategy;
+        var strategy = (HedgingResilienceStrategy<string>)Create().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
         var result = await strategy.GetHedgingDelayAsync(ResilienceContextPool.Shared.Get(), 0);
 
@@ -140,7 +140,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     {
         _options.HedgingDelay = TimeSpan.FromMilliseconds(123);
 
-        var strategy = (HedgingResilienceStrategy<string>)Create().Strategy;
+        var strategy = (HedgingResilienceStrategy<string>)Create().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
         var result = await strategy.GetHedgingDelayAsync(ResilienceContextPool.Shared.Get(), 0);
 
@@ -330,10 +330,10 @@ public class HedgingResilienceStrategyTests : IDisposable
             };
         });
 
-        var strategy = new ResiliencePipelineBridge<DisposableResult>(Create(handler, null));
+        var pipeline = Create(handler, null).AsPipeline();
 
         // act
-        var resultTask = strategy.ExecuteAsync(async token =>
+        var resultTask = pipeline.ExecuteAsync(async token =>
         {
 #pragma warning disable CA2016 // Forward the 'CancellationToken' parameter to methods
             await _timeProvider.Delay(LongDelay);
@@ -665,7 +665,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         _options.HedgingDelay = TimeSpan.Zero;
 
         // act
-        var task = Create().ExecuteAsync(async c => (await Execute(c)).Result, default);
+        var task = Create().ExecuteAsync(async c => (await Execute(c)).Result!, default);
 
         // assert
         Assert.True(allExecutionsReached.WaitOne(AssertTimeout));
@@ -691,7 +691,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         bool executing = false;
         int executions = 0;
         using var allExecutions = new ManualResetEvent(true);
-        ConfigureHedging(context => Execute(context.CancellationToken));
+        ConfigureHedging(async context => Outcome.FromResult(await Execute(context.CancellationToken)));
 
         // act
         var pending = Create().ExecuteAsync(Execute, _cts.Token);
@@ -699,11 +699,11 @@ public class HedgingResilienceStrategyTests : IDisposable
         // assert
         Assert.True(allExecutions.WaitOne(AssertTimeout));
 
-        async ValueTask<Outcome<string>> Execute(CancellationToken token)
+        async ValueTask<string> Execute(CancellationToken token)
         {
             if (executing)
             {
-                return Outcome.FromException<string>(new InvalidOperationException("Concurrent execution detected!"));
+                throw new InvalidOperationException("Concurrent execution detected!");
             }
 
             executing = true;
@@ -716,7 +716,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
                 await _timeProvider.Delay(LongDelay, token);
 
-                return Outcome.FromResult("dummy");
+                return "dummy";
             }
             finally
             {
@@ -954,7 +954,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         return Outcome.FromResult("secondary");
     });
 
-    private ResiliencePipelineBridge<string> Create() => new(Create(_handler!, _options.OnHedging));
+    private ResiliencePipeline<string> Create() => Create(_handler!, _options.OnHedging).AsPipeline();
 
     private HedgingResilienceStrategy<T> Create<T>(
         HedgingHandler<T> handler,

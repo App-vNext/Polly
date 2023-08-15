@@ -10,7 +10,7 @@ namespace Polly.Utils;
 /// </summary>
 internal abstract partial class PipelineComponent
 {
-    public static PipelineComponent Null { get; } = null!;
+    public static PipelineComponent Null { get; } = new NullComponent();
 
     internal ResilienceStrategyOptions? Options { get; set; }
 
@@ -76,4 +76,10 @@ internal abstract partial class PipelineComponent
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state);
+
+    internal class NullComponent : PipelineComponent
+    {
+        internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
+            => callback(context, state);
+    }
 }

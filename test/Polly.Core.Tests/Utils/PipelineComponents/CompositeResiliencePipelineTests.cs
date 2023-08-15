@@ -3,7 +3,7 @@ using NSubstitute;
 using Polly.Telemetry;
 using Polly.Utils;
 
-namespace Polly.Core.Tests.Utils;
+namespace Polly.Core.Tests.Utils.PipelineComponents;
 
 public class CompositeResiliencePipelineTests
 {
@@ -16,45 +16,41 @@ public class CompositeResiliencePipelineTests
     [Fact]
     public void Create_ArgValidation()
     {
-        Assert.Throws<ArgumentNullException>(() => CompositeResiliencePipeline.Create(null!, null!, null!));
-        Assert.Throws<InvalidOperationException>(() => CompositeResiliencePipeline.Create(Array.Empty<ResiliencePipeline>(), null!, null!));
-        Assert.Throws<InvalidOperationException>(() => CompositeResiliencePipeline.Create(new ResiliencePipeline[]
-        {
-            NullResiliencePipeline.Instance,
-            NullResiliencePipeline.Instance
-        }, null!, null!));
+        Assert.Throws<ArgumentNullException>(() => PipelineComponent.CreateComposite(null!, null!, null!));
+        Assert.Throws<InvalidOperationException>(() => PipelineComponent.CreateComposite(Array.Empty<PipelineComponent>(), null!, null!));
+        Assert.Throws<InvalidOperationException>(() => PipelineComponent.CreateComposite(new[] { PipelineComponent.Null, PipelineComponent.Null, }, null!, null!));
     }
 
     [Fact]
     public void Create_EnsureOriginalStrategiesPreserved()
     {
-        var strategies = new[]
+        var pipelines = new[]
         {
-            new TestResilienceStrategy().AsPipeline(),
-            new Strategy().AsPipeline(),
-            new TestResilienceStrategy().AsPipeline(),
+            Substitute.For<PipelineComponent>(),
+            Substitute.For<PipelineComponent>(),
+            Substitute.For<PipelineComponent>(),
         };
 
-        var pipeline = CreateSut(strategies);
+        var pipeline = CreateSut(pipelines);
 
-        for (var i = 0; i < strategies.Length; i++)
+        for (var i = 0; i < pipelines.Length; i++)
         {
-            pipeline.Strategies[i].Should().BeSameAs(strategies[i]);
+            pipeline.Components[i].Should().BeSameAs(pipelines[i]);
         }
 
-        pipeline.Strategies.SequenceEqual(strategies).Should().BeTrue();
+        pipeline.Components.SequenceEqual(pipelines).Should().BeTrue();
     }
 
     [Fact]
     public async Task Create_EnsureExceptionsNotWrapped()
     {
-        var strategies = new[]
+        var components = new[]
         {
-            new Strategy().AsPipeline(),
-            new Strategy().AsPipeline(),
+            Substitute.For<PipelineComponent>(),
+            Substitute.For<PipelineComponent>(),
         };
 
-        var pipeline = CreateSut(strategies);
+        var pipeline = CreateSut(components);
         await pipeline
             .Invoking(p => p.ExecuteCore((_, _) => Outcome.FromResultAsTask(10), ResilienceContextPool.Shared.Get(), "state").AsTask())
             .Should()
@@ -64,18 +60,19 @@ public class CompositeResiliencePipelineTests
     [Fact]
     public void Create_EnsurePipelineReusableAcrossDifferentPipelines()
     {
-        var strategies = new[]
+        var components = new[]
         {
-            new TestResilienceStrategy().AsPipeline(),
-            new Strategy().AsPipeline(),
-            new TestResilienceStrategy().AsPipeline(),
+            PipelineComponent.FromStrategy(new TestResilienceStrategy()),
+            Substitute.For<PipelineComponent>(),
+            PipelineComponent.FromStrategy(new TestResilienceStrategy()),
+
         };
 
-        var pipeline = CreateSut(strategies);
+        var pipeline = CreateSut(components);
 
-        CreateSut(new ResiliencePipeline[] { NullResiliencePipeline.Instance, pipeline });
+        CreateSut(new PipelineComponent[] { PipelineComponent.Null, pipeline });
 
-        this.Invoking(_ => CreateSut(new ResiliencePipeline[] { NullResiliencePipeline.Instance, pipeline }))
+        this.Invoking(_ => CreateSut(new PipelineComponent[] { PipelineComponent.Null, pipeline }))
             .Should()
             .NotThrow();
     }
@@ -87,11 +84,11 @@ public class CompositeResiliencePipelineTests
         cancellation.Cancel();
         var strategies = new[]
         {
-            new TestResilienceStrategy().AsPipeline(),
-            new TestResilienceStrategy().AsPipeline(),
+            PipelineComponent.FromStrategy(new TestResilienceStrategy()),
+            PipelineComponent.FromStrategy(new TestResilienceStrategy()),
         };
 
-        var pipeline = CreateSut(strategies, new FakeTimeProvider());
+        var pipeline = new ResiliencePipeline(CreateSut(strategies, new FakeTimeProvider()));
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellation.Token;
 
@@ -106,10 +103,10 @@ public class CompositeResiliencePipelineTests
         using var cancellation = new CancellationTokenSource();
         var strategies = new[]
         {
-            new TestResilienceStrategy { Before = (_, _) => { executed = true; cancellation.Cancel(); } }.AsPipeline(),
-            new TestResilienceStrategy().AsPipeline(),
+            PipelineComponent.FromStrategy( new TestResilienceStrategy { Before = (_, _) => { executed = true; cancellation.Cancel(); } }),
+            PipelineComponent.FromStrategy(new TestResilienceStrategy()),
         };
-        var pipeline = CreateSut(strategies, new FakeTimeProvider());
+        var pipeline = new ResiliencePipeline(CreateSut(strategies, new FakeTimeProvider()));
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellation.Token;
 
@@ -119,7 +116,7 @@ public class CompositeResiliencePipelineTests
     }
 
     [Fact]
-    public void ExecuptePipeline_EnsureTelemetryArgumentsReported()
+    public void ExecutePipeline_EnsureTelemetryArgumentsReported()
     {
         var items = new List<object>();
         var timeProvider = new FakeTimeProvider();
@@ -134,7 +131,7 @@ public class CompositeResiliencePipelineTests
             items.Add(args.Arguments);
         };
 
-        var pipeline = CreateSut(new[] { new TestResilienceStrategy().AsPipeline() }, timeProvider);
+        var pipeline = new ResiliencePipeline(CreateSut(new[] { Substitute.For<PipelineComponent>() }, timeProvider));
         pipeline.Execute(() => { timeProvider.Advance(TimeSpan.FromHours(1)); });
 
         items.Should().HaveCount(2);
@@ -142,21 +139,8 @@ public class CompositeResiliencePipelineTests
         items[1].Should().BeOfType<PipelineExecutedArguments>();
     }
 
-    private CompositeResiliencePipeline CreateSut(ResiliencePipeline[] strategies, TimeProvider? timeProvider = null)
+    private PipelineComponent.CompositeComponent CreateSut(PipelineComponent[] components, TimeProvider? timeProvider = null)
     {
-        return CompositeResiliencePipeline.Create(strategies, _telemetry, timeProvider ?? Substitute.For<TimeProvider>());
-    }
-
-    private class Strategy : ResilienceStrategy
-    {
-        protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-            ResilienceContext context,
-            TState state)
-        {
-            await callback(context, state);
-
-            throw new NotSupportedException();
-        }
+        return (PipelineComponent.CompositeComponent)PipelineComponent.CreateComposite(components, _telemetry, timeProvider ?? Substitute.For<TimeProvider>());
     }
 }

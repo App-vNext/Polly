@@ -1,15 +1,16 @@
+using NSubstitute;
 using Polly.Telemetry;
 using Polly.Utils;
 
-namespace Polly.Core.Tests.Utils;
+namespace Polly.Core.Tests.Utils.PipelineComponents;
 
-public class ReloadableResiliencePipelineTests : IDisposable
+public class PipelineComponentTests : IDisposable
 {
     private readonly List<TelemetryEventArguments<object, object>> _events = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
     private CancellationTokenSource _cancellationTokenSource;
 
-    public ReloadableResiliencePipelineTests()
+    public PipelineComponentTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(args =>
         {
@@ -24,19 +25,19 @@ public class ReloadableResiliencePipelineTests : IDisposable
     [Fact]
     public void Ctor_Ok()
     {
-        var strategy = new TestResilienceStrategy().AsPipeline();
-        var sut = CreateSut(strategy);
+        var component = Substitute.For<PipelineComponent>();
+        var sut = CreateSut(component);
 
-        sut.Pipeline.Should().Be(strategy);
+        sut.Component.Should().Be(component);
 
-        ReloadableResiliencePipeline.ReloadFailedEvent.Should().Be("ReloadFailed");
+        PipelineComponent.ReloadableComponent.ReloadFailedEvent.Should().Be("ReloadFailed");
     }
 
     [Fact]
     public void ChangeTriggered_StrategyReloaded()
     {
-        var strategy = new TestResilienceStrategy().AsPipeline();
-        var sut = CreateSut(strategy);
+        var component = Substitute.For<PipelineComponent>();
+        var sut = CreateSut(component);
 
         for (var i = 0; i < 10; i++)
         {
@@ -44,7 +45,7 @@ public class ReloadableResiliencePipelineTests : IDisposable
             _cancellationTokenSource = new CancellationTokenSource();
             src.Cancel();
 
-            sut.Pipeline.Should().NotBe(strategy);
+            sut.Component.Should().NotBe(component);
         }
 
         _events.Where(e => e.Event.EventName == "ReloadFailed").Should().HaveCount(0);
@@ -54,34 +55,33 @@ public class ReloadableResiliencePipelineTests : IDisposable
     [Fact]
     public void ChangeTriggered_FactoryError_LastStrategyUsedAndErrorReported()
     {
-        var strategy = new TestResilienceStrategy().AsPipeline();
-        var sut = CreateSut(strategy, () => throw new InvalidOperationException());
+        var component = Substitute.For<PipelineComponent>();
+        var sut = CreateSut(component, () => throw new InvalidOperationException());
 
         _cancellationTokenSource.Cancel();
 
-        sut.Pipeline.Should().Be(strategy);
+        sut.Component.Should().Be(component);
         _events.Should().HaveCount(2);
 
         _events[0]
             .Arguments
             .Should()
-            .BeOfType<ReloadableResiliencePipeline.OnReloadArguments>();
+            .BeOfType<PipelineComponent.ReloadableComponent.OnReloadArguments>();
 
         var args = _events[1]
             .Arguments
             .Should()
-            .BeOfType<ReloadableResiliencePipeline.ReloadFailedArguments>()
+            .BeOfType<PipelineComponent.ReloadableComponent.ReloadFailedArguments>()
             .Subject;
 
         args.Exception.Should().BeOfType<InvalidOperationException>();
     }
 
-    private ReloadableResiliencePipeline CreateSut(ResiliencePipeline? initial = null, Func<ResiliencePipeline>? factory = null)
+    private PipelineComponent.ReloadableComponent CreateSut(PipelineComponent? initial = null, Func<PipelineComponent>? factory = null)
     {
-        factory ??= () => new TestResilienceStrategy().AsPipeline();
+        factory ??= () => PipelineComponent.Null;
 
-        return new(
-            initial ?? new TestResilienceStrategy().AsPipeline(),
+        return (PipelineComponent.ReloadableComponent)PipelineComponent.CreateReloadable(initial ?? PipelineComponent.Null,
             () => _cancellationTokenSource.Token,
             factory,
             _telemetry);

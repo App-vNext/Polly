@@ -1,3 +1,5 @@
+using Polly.Utils;
+
 namespace Polly.TestUtils;
 
 public class TestResiliencePipeline<T> : ResiliencePipeline<T>

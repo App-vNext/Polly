@@ -89,10 +89,11 @@ public class ResiliencePipelineBuilderTests
         // act
         var strategy = builder.Build();
         strategy
+            .Component
             .Should()
-            .BeOfType<CompositeResiliencePipeline>()
+            .BeOfType<PipelineComponent.CompositeComponent>()
             .Subject
-            .Strategies.Should().HaveCount(3);
+            .Components.Should().HaveCount(3);
 
         // assert
         strategy.Execute(_ => executions.Add(4));
@@ -113,7 +114,7 @@ public class ResiliencePipelineBuilderTests
         builder.Invoking(b => b.Build())
             .Should()
             .Throw<InvalidOperationException>()
-            .WithMessage("The composite resilience strategy must contain unique resilience strategies.");
+            .WithMessage("The composite resilience pipeline must contain unique resilience strategies.");
     }
 
     [Fact]
@@ -173,7 +174,7 @@ public class ResiliencePipelineBuilderTests
     }
 
     [Fact]
-    public void Build_Empty_ReturnsNullResiliencePipeline() => new ResiliencePipelineBuilder().Build().Should().BeSameAs(NullResiliencePipeline.Instance);
+    public void Build_Empty_ReturnsNullResiliencePipeline() => new ResiliencePipelineBuilder().Build().Component.Should().BeSameAs(PipelineComponent.Null);
 
     [Fact]
     public void AddPipeline_AfterUsed_Throws()

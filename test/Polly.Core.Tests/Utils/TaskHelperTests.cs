@@ -2,17 +2,17 @@ using Polly.Utils;
 
 namespace Polly.Core.Tests.Utils;
 
-public class SynchronousExecutionHelperTests
+public class TaskHelperTests
 {
-    public SynchronousExecutionHelperTests() => Trace.Listeners.Clear();
+    public TaskHelperTests() => Trace.Listeners.Clear();
 
     [Fact]
     public void GetResult_ValueTaskT_Ok()
     {
-        var result = SynchronousExecutionHelper.GetResult(new ValueTask<int>(42));
+        var result = TaskHelper.GetResult(new ValueTask<int>(42));
         result.Should().Be(42);
 
-        result = SynchronousExecutionHelper.GetResult(GetValue());
+        result = TaskHelper.GetResult(GetValue());
 
         result.Should().Be(42);
 
@@ -26,9 +26,9 @@ public class SynchronousExecutionHelperTests
     [Fact]
     public void GetResult_ValueTask_Ok()
     {
-        SynchronousExecutionHelper.GetResult(default);
+        TaskHelper.GetResult(default);
 
-        this.Invoking(_ => SynchronousExecutionHelper.GetResult(GetValue())).Should().NotThrow();
+        this.Invoking(_ => TaskHelper.GetResult(GetValue())).Should().NotThrow();
 
         static async ValueTask<VoidResult> GetValue()
         {

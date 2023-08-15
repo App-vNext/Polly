@@ -1,6 +1,5 @@
 using Polly.Fallback;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Fallback;
 
@@ -90,8 +89,6 @@ public class FallbackResilienceStrategyTests
         _handler = FallbackHelper.CreateHandler(shouldHandle, fallback);
     }
 
-    private ResiliencePipelineBridge<string> Create() => new(new FallbackResilienceStrategy<string>(
-        _handler!,
-        _options.OnFallback,
-        _telemetry));
+    private ResiliencePipeline<string> Create()
+        => new FallbackResilienceStrategy<string>(_handler!, _options.OnFallback, _telemetry).AsPipeline();
 }

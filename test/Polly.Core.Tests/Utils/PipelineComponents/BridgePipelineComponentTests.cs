@@ -1,8 +1,8 @@
 ﻿using Polly.Utils;
 
-namespace Polly.Core.Tests.Utils;
+namespace Polly.Core.Tests.Utils.PipelineComponents;
 
-public class ResiliencePipelineBridgeTests
+public class BridgePipelineComponentTests
 {
     [Fact]
     public void Ctor_Ok()
@@ -15,15 +15,15 @@ public class ResiliencePipelineBridgeTests
     {
         var values = new List<object?>();
 
-        var strategy = new ResiliencePipelineBridge<object>(new Strategy<object>(outcome =>
+        var pipeline = new ResiliencePipeline(PipelineComponent.FromStrategy(new Strategy<object>(outcome =>
         {
             values.Add(outcome.Result);
-        }));
+        })));
 
-        strategy.Execute(args => "dummy");
-        strategy.Execute(args => 0);
-        strategy.Execute<object?>(args => null);
-        strategy.Execute(args => true);
+        pipeline.Execute(args => "dummy");
+        pipeline.Execute(args => 0);
+        pipeline.Execute<object?>(args => null);
+        pipeline.Execute(args => true);
 
         values[0].Should().Be("dummy");
         values[1].Should().Be(0);
@@ -36,12 +36,12 @@ public class ResiliencePipelineBridgeTests
     {
         var values = new List<object?>();
 
-        var strategy = new ResiliencePipelineBridge<string>(new Strategy<string>(outcome =>
+        var pipeline = new ResiliencePipeline(PipelineComponent.FromStrategy(new Strategy<string>(outcome =>
         {
             values.Add(outcome.Result);
-        }));
+        })));
 
-        strategy.Execute(args => "dummy");
+        pipeline.Execute(args => "dummy");
 
         values.Should().HaveCount(1);
         values[0].Should().Be("dummy");
@@ -51,13 +51,14 @@ public class ResiliencePipelineBridgeTests
     public void Pipeline_TypeCheck_Ok()
     {
         var called = false;
-        var strategy = new ResiliencePipelineBridge<object>(new Strategy<object>(o =>
-        {
-            o.Result.Should().Be(-1);
-            called = true;
-        }));
 
-        strategy.Execute(() => -1);
+        var pipeline = new ResiliencePipeline(PipelineComponent.FromStrategy(new Strategy<object>(outcome =>
+        {
+            outcome.Result.Should().Be(-1);
+            called = true;
+        })));
+
+        pipeline.Execute(() => -1);
 
         called.Should().BeTrue();
     }

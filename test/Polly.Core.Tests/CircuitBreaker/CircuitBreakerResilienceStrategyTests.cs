@@ -2,7 +2,6 @@ using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Polly.CircuitBreaker;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
@@ -116,7 +115,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _options.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
         var strategy = Create();
 
-        strategy.Invoking(s => s.Execute(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
+        strategy.Invoking(s => s.Execute<int>(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
 
         _behavior.DidNotReceiveWithAnyArgs().OnActionFailure(default, out Arg.Any<bool>());
         _behavior.DidNotReceiveWithAnyArgs().OnActionSuccess(default);
@@ -135,6 +134,6 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
     }
 
-    private ResiliencePipelineBridge<int> Create()
-        => new(new CircuitBreakerResilienceStrategy<int>(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl));
+    private ResiliencePipeline<int> Create()
+        => new CircuitBreakerResilienceStrategy<int>(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl).AsPipeline();
 }
