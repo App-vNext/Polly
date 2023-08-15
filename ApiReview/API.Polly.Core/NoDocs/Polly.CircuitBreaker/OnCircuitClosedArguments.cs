@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Polly.CircuitBreaker;
 
-public sealed class OnCircuitClosedArguments
+public readonly struct OnCircuitClosedArguments
 {
     public bool IsManual { get; }
     public OnCircuitClosedArguments(bool isManual);

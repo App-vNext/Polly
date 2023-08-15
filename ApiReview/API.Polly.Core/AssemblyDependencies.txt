@@ -1,7 +1,6 @@
 System.Collections
 System.Collections.Concurrent
 System.ComponentModel.Annotations
-System.Diagnostics.DiagnosticSource
 System.Linq
 System.Private.CoreLib
 System.Private.Uri

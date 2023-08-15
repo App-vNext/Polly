@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Polly.Timeout;
 
-public sealed class OnTimeoutArguments
+public readonly struct OnTimeoutArguments
 {
     public ResilienceContext Context { get; }
     public TimeSpan Timeout { get; }

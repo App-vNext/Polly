@@ -1,8 +1,10 @@
 // Assembly 'Polly.Core'
 
+using System.Runtime.InteropServices;
+
 namespace Polly.Telemetry;
 
-public sealed class PipelineExecutingArguments
+[StructLayout(LayoutKind.Sequential, Size = 1)]
+public readonly struct PipelineExecutingArguments
 {
-    public PipelineExecutingArguments();
 }

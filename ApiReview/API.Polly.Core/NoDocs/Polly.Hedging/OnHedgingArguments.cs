@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Polly.Hedging;
 
-public sealed class OnHedgingArguments
+public readonly struct OnHedgingArguments
 {
     public int AttemptNumber { get; }
     public bool HasOutcome { get; }

@@ -1,8 +1,10 @@
 // Assembly 'Polly.Core'
 
+using System.Runtime.InteropServices;
+
 namespace Polly.Fallback;
 
-public sealed class OnFallbackArguments
+[StructLayout(LayoutKind.Sequential, Size = 1)]
+public readonly struct OnFallbackArguments
 {
-    public OnFallbackArguments();
 }

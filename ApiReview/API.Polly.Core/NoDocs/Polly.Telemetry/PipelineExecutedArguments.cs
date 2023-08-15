@@ -2,11 +2,10 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using Polly.Utils;
 
 namespace Polly.Telemetry;
 
-public sealed class PipelineExecutedArguments
+public readonly struct PipelineExecutedArguments
 {
     public TimeSpan Duration { get; }
     public PipelineExecutedArguments(TimeSpan duration);

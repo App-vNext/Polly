@@ -1,16 +1,13 @@
 // Assembly 'Polly.Extensions'
 
-using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Polly.Utils;
 
 namespace Polly.Telemetry;
 
-public sealed class EnrichmentContext
+public readonly struct EnrichmentContext<TResult, TArgs>
 {
-    public Outcome<object>? Outcome { get; }
-    public object? Arguments { get; }
-    public ResilienceContext Context { get; }
+    public TelemetryEventArguments<TResult, TArgs> TelemetryEvent { get; }
     public IList<KeyValuePair<string, object?>> Tags { get; }
+    public EnrichmentContext(in TelemetryEventArguments<TResult, TArgs> telemetryEvent, IList<KeyValuePair<string, object?>> tags);
 }

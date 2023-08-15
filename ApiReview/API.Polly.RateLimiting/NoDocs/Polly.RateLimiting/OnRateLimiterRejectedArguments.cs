@@ -6,7 +6,7 @@ using System.Threading.RateLimiting;
 
 namespace Polly.RateLimiting;
 
-public sealed class OnRateLimiterRejectedArguments
+public readonly struct OnRateLimiterRejectedArguments
 {
     public ResilienceContext Context { get; }
     public RateLimitLease Lease { get; }

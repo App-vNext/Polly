@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Polly.Retry;
 
-public sealed class OnRetryArguments
+public readonly struct OnRetryArguments
 {
     public int AttemptNumber { get; }
     public TimeSpan RetryDelay { get; }

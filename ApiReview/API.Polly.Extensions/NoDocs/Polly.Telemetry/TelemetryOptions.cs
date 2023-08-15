@@ -10,10 +10,10 @@ namespace Polly.Telemetry;
 
 public class TelemetryOptions
 {
-    public Action<TelemetryEventArguments>? OnTelemetryEvent { get; set; }
+    public TelemetryListener? TelemetryListener { get; set; }
     [Required]
     public ILoggerFactory LoggerFactory { get; set; }
-    public ICollection<Action<EnrichmentContext>> Enrichers { get; }
+    public ICollection<MeteringEnricher> MeteringEnrichers { get; }
     [Required]
     public Func<ResilienceContext, object?, object?> ResultFormatter { get; set; }
     public TelemetryOptions();

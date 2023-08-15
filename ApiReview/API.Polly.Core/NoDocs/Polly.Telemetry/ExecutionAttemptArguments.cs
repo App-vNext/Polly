@@ -2,11 +2,10 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using Polly.Utils;
 
 namespace Polly.Telemetry;
 
-public sealed class ExecutionAttemptArguments
+public readonly struct ExecutionAttemptArguments
 {
     public int AttemptNumber { get; }
     public TimeSpan Duration { get; }
