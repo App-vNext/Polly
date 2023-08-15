@@ -10,17 +10,6 @@ internal static class TelemetryUtil
 
     internal const string PipelineExecuted = "PipelineExecuted";
 
-    public static ResilienceStrategyTelemetry CreateTelemetry(
-        TelemetryListener? listener,
-        string? builderName,
-        string? builderInstanceName,
-        string? strategyName)
-    {
-        var telemetrySource = new ResilienceTelemetrySource(builderName, builderInstanceName, strategyName);
-
-        return new ResilienceStrategyTelemetry(telemetrySource, listener);
-    }
-
     public static void ReportExecutionAttempt<TResult>(
         ResilienceStrategyTelemetry telemetry,
         ResilienceContext context,

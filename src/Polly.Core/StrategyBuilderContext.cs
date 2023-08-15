@@ -7,15 +7,10 @@ namespace Polly;
 /// </summary>
 public sealed class StrategyBuilderContext
 {
-    internal StrategyBuilderContext(
-        string? builderName,
-        string? builderInstanceName,
-        string? strategyName,
-        TimeProvider timeProvider,
-        TelemetryListener? telemetryListener)
+    internal StrategyBuilderContext(ResilienceStrategyTelemetry telemetry, TimeProvider timeProvider)
     {
         TimeProvider = timeProvider;
-        Telemetry = TelemetryUtil.CreateTelemetry(telemetryListener, builderName, builderInstanceName, strategyName);
+        Telemetry = telemetry;
     }
 
     /// <summary>

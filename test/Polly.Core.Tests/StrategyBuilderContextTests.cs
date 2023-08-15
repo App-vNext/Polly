@@ -10,7 +10,9 @@ public class StrategyBuilderContextTests
     public void Ctor_EnsureDefaults()
     {
         var timeProvider = new FakeTimeProvider();
-        var context = new StrategyBuilderContext("builder-name", "instance", "strategy-name", timeProvider, Substitute.For<TelemetryListener>());
+        var context = new StrategyBuilderContext(
+            new ResilienceStrategyTelemetry(new ResilienceTelemetrySource("builder-name", "instance", "strategy-name"),
+            Substitute.For<TelemetryListener>()), timeProvider);
 
         context.Telemetry.TelemetrySource.PipelineName.Should().Be("builder-name");
         context.Telemetry.TelemetrySource.PipelineInstanceName.Should().Be("instance");

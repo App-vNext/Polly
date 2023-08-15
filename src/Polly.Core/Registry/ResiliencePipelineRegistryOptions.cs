@@ -54,7 +54,7 @@ public class ResiliencePipelineRegistryOptions<TKey>
     /// </summary>
     /// <remarks>
     /// Use custom formatter for composite keys in case you want to have different metric values for a builder and strategy key.
-    /// In general, pipelines can have the same builder name and different pippeline keys.
+    /// In general, pipelines can have the same builder name and different pipeline keys.
     /// </remarks>
     /// <value>
     /// The default value is a formatter that formats the keys using the <see cref="object.ToString"/> method.
