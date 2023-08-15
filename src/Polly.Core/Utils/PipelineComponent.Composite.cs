@@ -7,15 +7,15 @@ internal abstract partial class PipelineComponent
     /// <summary>
     /// A combination of multiple resilience strategies.
     /// </summary>
-    [DebuggerDisplay("CompositeResiliencePipeline, Strategies = {Strategies.Count}")]
+    [DebuggerDisplay("Pipeline, Strategies = {Strategies.Count}")]
     [DebuggerTypeProxy(typeof(CompositeDebuggerProxy))]
-    internal sealed class CompositePipelineComponent : PipelineComponent
+    internal sealed class CompositeComponent : PipelineComponent
     {
         private readonly PipelineComponent _firstComponent;
         private readonly ResilienceStrategyTelemetry _telemetry;
         private readonly TimeProvider _timeProvider;
 
-        public CompositePipelineComponent(
+        public CompositeComponent(
             PipelineComponent first,
             IReadOnlyList<PipelineComponent> components,
             ResilienceStrategyTelemetry telemetry,
@@ -92,9 +92,9 @@ internal abstract partial class PipelineComponent
 
     internal sealed class CompositeDebuggerProxy
     {
-        private readonly CompositePipelineComponent _pipeline;
+        private readonly CompositeComponent _pipeline;
 
-        public CompositeDebuggerProxy(CompositePipelineComponent pipeline) => _pipeline = pipeline;
+        public CompositeDebuggerProxy(CompositeComponent pipeline) => _pipeline = pipeline;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public IEnumerable<PipelineComponent> Strategies => _pipeline.Components;

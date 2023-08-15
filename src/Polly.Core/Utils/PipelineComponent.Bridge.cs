@@ -3,9 +3,9 @@
 internal abstract partial class PipelineComponent
 {
     [DebuggerDisplay("{Strategy}")]
-    private sealed class Bridge<T> : PipelineComponent
+    internal sealed class BridgeComponent<T> : PipelineComponent
     {
-        public Bridge(ResilienceStrategy<T> strategy) => Strategy = strategy;
+        public BridgeComponent(ResilienceStrategy<T> strategy) => Strategy = strategy;
 
         public ResilienceStrategy<T> Strategy { get; }
 
@@ -37,9 +37,10 @@ internal abstract partial class PipelineComponent
         }
     }
 
-    private sealed class Bridge : PipelineComponent
+    [DebuggerDisplay("{Strategy}")]
+    internal sealed class BridgeComponent : PipelineComponent
     {
-        public Bridge(ResilienceStrategy strategy) => Strategy = strategy;
+        public BridgeComponent(ResilienceStrategy strategy) => Strategy = strategy;
 
         public ResilienceStrategy Strategy { get; }
 

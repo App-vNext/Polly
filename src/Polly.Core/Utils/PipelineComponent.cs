@@ -11,9 +11,9 @@ internal abstract partial class PipelineComponent
 
     internal ResilienceStrategyOptions? Options { get; set; }
 
-    internal static PipelineComponent FromStrategy(ResilienceStrategy strategy) => new Bridge(strategy);
+    internal static PipelineComponent FromStrategy(ResilienceStrategy strategy) => new BridgeComponent(strategy);
 
-    internal static PipelineComponent FromStrategy<T>(ResilienceStrategy<T> strategy) => new Bridge<T>(strategy);
+    internal static PipelineComponent FromStrategy<T>(ResilienceStrategy<T> strategy) => new BridgeComponent<T>(strategy);
 
     internal static PipelineComponent CreateComposite(
         IReadOnlyList<PipelineComponent> components,
@@ -34,7 +34,7 @@ internal abstract partial class PipelineComponent
 
         if (components.Count == 1)
         {
-            return new CompositePipelineComponent(components[0], components, telemetry, timeProvider);
+            return new CompositeComponent(components[0], components, telemetry, timeProvider);
         }
 
         // convert all strategies to delegating ones (except the last one as it's not required)
@@ -56,10 +56,14 @@ internal abstract partial class PipelineComponent
             delegatingStrategies[i].Next = delegatingStrategies[i + 1];
         }
 
-        return new CompositePipelineComponent(delegatingStrategies[0], components, telemetry, timeProvider);
+        return new CompositeComponent(delegatingStrategies[0], components, telemetry, timeProvider);
     }
 
-    internal static PipelineComponent CreateReloadable(IEnumerable<ResilienceStrategy> strategy) => null!;
+    internal static PipelineComponent CreateReloadable(
+        PipelineComponent initialComponent,
+        Func<CancellationToken> onReload,
+        Func<PipelineComponent> factory,
+        ResilienceStrategyTelemetry telemetry) => new ReloadableComponent(initialComponent, onReload, factory, telemetry);
 
     internal abstract ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

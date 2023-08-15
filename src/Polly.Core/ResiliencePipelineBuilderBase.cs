@@ -110,7 +110,7 @@ public abstract class ResiliencePipelineBuilderBase
 
         _used = true;
 
-        var components = _entries.Select(CreatePipeline).ToList();
+        var components = _entries.Select(CreateComponent).ToList();
 
         if (components.Count == 0)
         {
@@ -123,7 +123,7 @@ public abstract class ResiliencePipelineBuilderBase
             TimeProvider);
     }
 
-    private PipelineComponent CreatePipeline(Entry entry)
+    private PipelineComponent CreateComponent(Entry entry)
     {
         var context = new StrategyBuilderContext(
             builderName: Name,

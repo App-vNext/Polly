@@ -34,52 +34,52 @@ public static class ResiliencePipelineExtensions
         return GetPipelineDescriptorCore<object>(pipeline);
     }
 
-    private static ResiliencePipelineDescriptor GetPipelineDescriptorCore<T>(ResiliencePipeline strategy)
+    private static ResiliencePipelineDescriptor GetPipelineDescriptorCore<T>(ResiliencePipeline pipeline)
     {
-        var strategies = new List<ResiliencePipeline>();
-        strategy.ExpandStrategies(strategies);
+        var components = new List<PipelineComponent>();
+        pipeline.Component.ExpandComponents(components);
 
-        var innerStrategies = strategies.Select(s => new ResilienceStrategyDescriptor(s.Options, GetStrategyInstance<T>(s))).ToList();
+        var descriptors = components.Select(s => new ResilienceStrategyDescriptor(s.Options, GetStrategyInstance<T>(s))).ToList();
 
         return new ResiliencePipelineDescriptor(
-            innerStrategies.Where(s => !ShouldSkip(s.StrategyInstance)).ToList().AsReadOnly(),
-            isReloadable: innerStrategies.Exists(s => s.StrategyInstance is ReloadableResiliencePipeline));
+            descriptors.Where(s => !ShouldSkip(s.StrategyInstance)).ToList().AsReadOnly(),
+            isReloadable: components.Exists(s => s is PipelineComponent.ReloadableComponent));
     }
 
-    private static object GetStrategyInstance<T>(ResiliencePipeline strategy)
+    private static object GetStrategyInstance<T>(PipelineComponent component)
     {
-        if (strategy is ResiliencePipelineBridge<T> reactiveBridge)
+        if (component is PipelineComponent.BridgeComponent<T> reactiveBridge)
         {
             return reactiveBridge.Strategy;
         }
 
-        if (strategy is ResiliencePipelineBridge nonReactiveBridge)
+        if (component is PipelineComponent.BridgeComponent nonReactiveBridge)
         {
             return nonReactiveBridge.Strategy;
         }
 
-        return strategy;
+        return component;
     }
 
-    private static bool ShouldSkip(object instance) => instance is ReloadableResiliencePipeline;
+    private static bool ShouldSkip(object instance) => instance is PipelineComponent.ReloadableComponent;
 
-    private static void ExpandStrategies(this ResiliencePipeline strategy, List<ResiliencePipeline> strategies)
+    private static void ExpandComponents(this PipelineComponent component, List<PipelineComponent> components)
     {
-        if (strategy is CompositeResiliencePipeline pipeline)
+        if (component is PipelineComponent.CompositeComponent pipeline)
         {
-            foreach (var inner in pipeline.Strategies)
+            foreach (var inner in pipeline.Components)
             {
-                inner.ExpandStrategies(strategies);
+                inner.ExpandComponents(components);
             }
         }
-        else if (strategy is ReloadableResiliencePipeline reloadable)
+        else if (component is PipelineComponent.ReloadableComponent reloadable)
         {
-            strategies.Add(reloadable);
-            ExpandStrategies(reloadable.Pipeline, strategies);
+            components.Add(reloadable);
+            ExpandComponents(reloadable.Component, components);
         }
         else
         {
-            strategies.Add(strategy);
+            components.Add(component);
         }
     }
 }
