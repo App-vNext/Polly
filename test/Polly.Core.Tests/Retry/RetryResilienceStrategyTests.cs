@@ -1,6 +1,5 @@
 using FluentAssertions.Execution;
 using Microsoft.Extensions.Time.Testing;
-using NSubstitute;
 using Polly.Retry;
 using Polly.Telemetry;
 using Polly.Utils;
@@ -11,15 +10,14 @@ public class RetryResilienceStrategyTests
 {
     private readonly RetryStrategyOptions _options = new();
     private readonly FakeTimeProvider _timeProvider = new();
-    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
+    private readonly List<TelemetryEventArguments<object, object>> _args = new();
     private ResilienceStrategyTelemetry _telemetry;
 
     public RetryResilienceStrategyTests()
     {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource);
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_args.Add);
         _options.ShouldHandle = _ => new ValueTask<bool>(false);
         _options.Randomizer = () => 1;
-
     }
 
     [Fact]
@@ -291,8 +289,6 @@ public class RetryResilienceStrategyTests
         var attempts = new List<int>();
         var delays = new List<TimeSpan>();
 
-        _diagnosticSource.IsEnabled("OnRetry").Returns(true);
-
         _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
@@ -301,7 +297,7 @@ public class RetryResilienceStrategyTests
 
         await ExecuteAndAdvance(sut);
 
-        _diagnosticSource.Received(3).IsEnabled("OnRetry");
+        _args.Select(a => a.Arguments).OfType<OnRetryArguments>().Should().HaveCount(3);
     }
 
     [Fact]

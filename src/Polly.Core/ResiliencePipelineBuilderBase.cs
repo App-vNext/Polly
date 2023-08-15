@@ -27,7 +27,7 @@ public abstract class ResiliencePipelineBuilderBase
     {
         Name = other.Name;
         TimeProvider = other.TimeProvider;
-        DiagnosticSource = other.DiagnosticSource;
+        TelemetryListener = other.TelemetryListener;
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public abstract class ResiliencePipelineBuilderBase
     internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 
     /// <summary>
-    /// Gets or sets the <see cref="DiagnosticSource"/> that is used by Polly to report resilience events.
+    /// Gets or sets the <see cref="TelemetryListener"/> that is used by Polly to report resilience events.
     /// </summary>
     /// <remarks>
     /// This property is used by the telemetry infrastructure and should not be used directly by user code.
@@ -75,7 +75,7 @@ public abstract class ResiliencePipelineBuilderBase
     /// The default value is <see langword="null"/>.
     /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public DiagnosticSource? DiagnosticSource { get; set; }
+    public TelemetryListener? TelemetryListener { get; set; }
 
     /// <summary>
     /// Gets the validator that is used for the validation.
@@ -119,7 +119,7 @@ public abstract class ResiliencePipelineBuilderBase
 
         return CompositeResiliencePipeline.Create(
             strategies,
-            TelemetryUtil.CreateTelemetry(DiagnosticSource, Name, InstanceName, null),
+            TelemetryUtil.CreateTelemetry(TelemetryListener, Name, InstanceName, null),
             TimeProvider);
     }
 
@@ -130,7 +130,7 @@ public abstract class ResiliencePipelineBuilderBase
             builderInstanceName: InstanceName,
             strategyName: entry.Options.Name,
             timeProvider: TimeProvider,
-            diagnosticSource: DiagnosticSource);
+            telemetryListener: TelemetryListener);
 
         var strategy = entry.Factory(context);
         strategy.Options = entry.Options;

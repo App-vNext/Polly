@@ -8,30 +8,30 @@ namespace Polly.Testing;
 public static class ResiliencePipelineExtensions
 {
     /// <summary>
-    /// Gets the inner strategies the <paramref name="strategy"/> is composed of.
+    /// Gets the pipeline descriptor.
     /// </summary>
     /// <typeparam name="TResult">The type of result.</typeparam>
-    /// <param name="strategy">The strategy instance.</param>
-    /// <returns>A list of inner strategies.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is <see langword="null"/>.</exception>
-    public static ResiliencePipelineDescriptor GetPipelineDescriptor<TResult>(this ResiliencePipeline<TResult> strategy)
+    /// <param name="pipeline">The pipeline instance.</param>
+    /// <returns>A pipeline descriptor.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pipeline"/> is <see langword="null"/>.</exception>
+    public static ResiliencePipelineDescriptor GetPipelineDescriptor<TResult>(this ResiliencePipeline<TResult> pipeline)
     {
-        Guard.NotNull(strategy);
+        Guard.NotNull(pipeline);
 
-        return GetPipelineDescriptorCore<TResult>(strategy.Strategy);
+        return GetPipelineDescriptorCore<TResult>(pipeline.Strategy);
     }
 
     /// <summary>
-    /// Gets the inner strategies the <paramref name="strategy"/> is composed of.
+    /// Gets the pipeline descriptor.
     /// </summary>
-    /// <param name="strategy">The strategy instance.</param>
-    /// <returns>A list of inner strategies.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is <see langword="null"/>.</exception>
-    public static ResiliencePipelineDescriptor GetPipelineDescriptor(this ResiliencePipeline strategy)
+    /// <param name="pipeline">The pipeline instance.</param>
+    /// <returns>A pipeline descriptor.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pipeline"/> is <see langword="null"/>.</exception>
+    public static ResiliencePipelineDescriptor GetPipelineDescriptor(this ResiliencePipeline pipeline)
     {
-        Guard.NotNull(strategy);
+        Guard.NotNull(pipeline);
 
-        return GetPipelineDescriptorCore<object>(strategy);
+        return GetPipelineDescriptorCore<object>(pipeline);
     }
 
     private static ResiliencePipelineDescriptor GetPipelineDescriptorCore<T>(ResiliencePipeline strategy)

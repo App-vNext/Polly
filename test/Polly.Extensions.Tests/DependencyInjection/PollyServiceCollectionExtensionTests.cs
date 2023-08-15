@@ -144,8 +144,8 @@ public class PollyServiceCollectionExtensionTests
 
         CreateProvider().GetPipeline(Key);
 
-        var diagSource = telemetry!.GetType().GetProperty("DiagnosticSource", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(telemetry);
-        diagSource.Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
+        var diagSource = telemetry!.GetType().GetProperty("Listener", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(telemetry);
+        diagSource.Should().BeOfType<TelemetryListenerImpl>();
 
         var factory = _services.BuildServiceProvider().GetRequiredService<IOptions<TelemetryOptions>>().Value.LoggerFactory;
 
@@ -256,7 +256,7 @@ public class PollyServiceCollectionExtensionTests
 
         provider.GetRequiredService<ResiliencePipelineRegistry<string>>().Should().NotBeNull();
         provider.GetRequiredService<ResiliencePipelineProvider<string>>().Should().NotBeNull();
-        provider.GetRequiredService<ResiliencePipelineBuilder>().DiagnosticSource.Should().NotBeNull();
+        provider.GetRequiredService<ResiliencePipelineBuilder>().TelemetryListener.Should().NotBeNull();
     }
 
     [Fact]

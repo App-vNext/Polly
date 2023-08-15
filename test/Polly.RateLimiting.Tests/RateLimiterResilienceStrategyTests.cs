@@ -1,5 +1,6 @@
 using System.Threading.RateLimiting;
 using NSubstitute;
+using Polly.TestUtils;
 
 namespace Polly.RateLimiting.Tests;
 
@@ -7,7 +8,7 @@ public class RateLimiterResilienceStrategyTests
 {
     private readonly RateLimiter _limiter = Substitute.For<RateLimiter>();
     private readonly RateLimitLease _lease = Substitute.For<RateLimitLease>();
-    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
+    private readonly FakeTelemetryListener _listener = new();
     private Func<OnRateLimiterRejectedArguments, ValueTask>? _event;
 
     [Fact]
@@ -42,9 +43,6 @@ public class RateLimiterResilienceStrategyTests
     [Theory]
     public async Task Execute_LeaseRejected(bool hasEvents, bool hasRetryAfter)
     {
-        _diagnosticSource.IsEnabled("OnRateLimiterRejected").Returns(true);
-        _diagnosticSource.Write("OnRateLimiterRejected", Arg.Is<object>(obj => obj != null));
-
         object? metadata = hasRetryAfter ? TimeSpan.FromSeconds(123) : null;
 
         using var cts = new CancellationTokenSource();
@@ -87,6 +85,8 @@ public class RateLimiterResilienceStrategyTests
 
         await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, default);
         _lease.Received().Dispose();
+
+        _listener.GetArgs<OnRateLimiterRejectedArguments>().Should().HaveCount(1);
     }
 
     private void SetupLimiter(CancellationToken token)
@@ -103,7 +103,7 @@ public class RateLimiterResilienceStrategyTests
     {
         var builder = new ResiliencePipelineBuilder
         {
-            DiagnosticSource = _diagnosticSource
+            TelemetryListener = _listener
         };
 
         return builder.AddRateLimiter(new RateLimiterStrategyOptions

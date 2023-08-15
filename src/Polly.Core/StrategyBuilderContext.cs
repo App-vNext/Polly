@@ -12,13 +12,13 @@ public sealed class StrategyBuilderContext
         string? builderInstanceName,
         string? strategyName,
         TimeProvider timeProvider,
-        DiagnosticSource? diagnosticSource)
+        TelemetryListener? telemetryListener)
     {
         BuilderName = builderName;
         BuilderInstanceName = builderInstanceName;
         StrategyName = strategyName;
         TimeProvider = timeProvider;
-        Telemetry = TelemetryUtil.CreateTelemetry(diagnosticSource, builderName, builderInstanceName, strategyName);
+        Telemetry = TelemetryUtil.CreateTelemetry(telemetryListener, builderName, builderInstanceName, strategyName);
     }
 
     /// <summary>

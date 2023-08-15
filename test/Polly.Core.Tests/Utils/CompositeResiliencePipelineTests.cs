@@ -8,7 +8,7 @@ namespace Polly.Core.Tests.Utils;
 public class CompositeResiliencePipelineTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private Action<TelemetryEventArguments>? _onTelemetry;
+    private Action<TelemetryEventArguments<object, object>>? _onTelemetry;
 
     public CompositeResiliencePipelineTests()
         => _telemetry = TestUtilities.CreateResilienceTelemetry(args => _onTelemetry?.Invoke(args));
@@ -138,7 +138,7 @@ public class CompositeResiliencePipelineTests
         pipeline.Execute(() => { timeProvider.Advance(TimeSpan.FromHours(1)); });
 
         items.Should().HaveCount(2);
-        items[0].Should().Be(PipelineExecutingArguments.Instance);
+        items[0].Should().BeOfType<PipelineExecutingArguments>();
         items[1].Should().BeOfType<PipelineExecutedArguments>();
     }
 

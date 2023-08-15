@@ -3,6 +3,7 @@ Polly.RateLimiterResiliencePipelineBuilderExtensions
 Polly.RateLimiting.OnRateLimiterRejectedArguments
 Polly.RateLimiting.OnRateLimiterRejectedArguments.Context.get -> Polly.ResilienceContext!
 Polly.RateLimiting.OnRateLimiterRejectedArguments.Lease.get -> System.Threading.RateLimiting.RateLimitLease!
+Polly.RateLimiting.OnRateLimiterRejectedArguments.OnRateLimiterRejectedArguments() -> void
 Polly.RateLimiting.OnRateLimiterRejectedArguments.OnRateLimiterRejectedArguments(Polly.ResilienceContext! context, System.Threading.RateLimiting.RateLimitLease! lease, System.TimeSpan? retryAfter) -> void
 Polly.RateLimiting.OnRateLimiterRejectedArguments.RetryAfter.get -> System.TimeSpan?
 Polly.RateLimiting.RateLimiterRejectedException
@@ -16,7 +17,7 @@ Polly.RateLimiting.RateLimiterRejectedException.RetryAfter.get -> System.TimeSpa
 Polly.RateLimiting.RateLimiterStrategyOptions
 Polly.RateLimiting.RateLimiterStrategyOptions.DefaultRateLimiterOptions.get -> System.Threading.RateLimiting.ConcurrencyLimiterOptions!
 Polly.RateLimiting.RateLimiterStrategyOptions.DefaultRateLimiterOptions.set -> void
-Polly.RateLimiting.RateLimiterStrategyOptions.OnRejected.get -> System.Func<Polly.RateLimiting.OnRateLimiterRejectedArguments!, System.Threading.Tasks.ValueTask>?
+Polly.RateLimiting.RateLimiterStrategyOptions.OnRejected.get -> System.Func<Polly.RateLimiting.OnRateLimiterRejectedArguments, System.Threading.Tasks.ValueTask>?
 Polly.RateLimiting.RateLimiterStrategyOptions.OnRejected.set -> void
 Polly.RateLimiting.RateLimiterStrategyOptions.RateLimiter.get -> Polly.RateLimiting.ResilienceRateLimiter?
 Polly.RateLimiting.RateLimiterStrategyOptions.RateLimiter.set -> void

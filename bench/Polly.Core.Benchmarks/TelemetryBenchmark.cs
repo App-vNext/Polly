@@ -47,23 +47,28 @@ public class TelemetryBenchmark
 
             if (Enrichment)
             {
-                options.Enrichers.Add(context =>
-                {
-                    // The Microsoft.Extensions.Resilience library will add around 6 additional tags
-                    // https://github.com/dotnet/extensions/tree/main/src/Libraries/Microsoft.Extensions.Resilience
-                    context.Tags.Add(new("dummy1", "dummy"));
-                    context.Tags.Add(new("dummy2", "dummy"));
-                    context.Tags.Add(new("dummy3", "dummy"));
-                    context.Tags.Add(new("dummy4", "dummy"));
-                    context.Tags.Add(new("dummy5", "dummy"));
-                    context.Tags.Add(new("dummy6", "dummy"));
-                });
+                options.MeteringEnrichers.Add(new CustomEnricher());
             }
 
             builder.ConfigureTelemetry(options);
         }
 
         return builder.Build();
+    }
+
+    private class CustomEnricher : MeteringEnricher
+    {
+        public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
+        {
+            // The Microsoft.Extensions.Resilience library will add around 6 additional tags
+            // https://github.com/dotnet/extensions/tree/main/src/Libraries/Microsoft.Extensions.Resilience
+            context.Tags.Add(new("dummy1", "dummy"));
+            context.Tags.Add(new("dummy2", "dummy"));
+            context.Tags.Add(new("dummy3", "dummy"));
+            context.Tags.Add(new("dummy4", "dummy"));
+            context.Tags.Add(new("dummy5", "dummy"));
+            context.Tags.Add(new("dummy6", "dummy"));
+        }
     }
 
     private class TelemetryEventStrategy : ResilienceStrategy

@@ -9,5 +9,5 @@ Polly.Testing.ResilienceStrategyDescriptor
 Polly.Testing.ResilienceStrategyDescriptor.Options.get -> Polly.ResilienceStrategyOptions?
 Polly.Testing.ResilienceStrategyDescriptor.ResilienceStrategyDescriptor(Polly.ResilienceStrategyOptions? options, object! strategyInstance) -> void
 Polly.Testing.ResilienceStrategyDescriptor.StrategyInstance.get -> object!
-static Polly.Testing.ResiliencePipelineExtensions.GetPipelineDescriptor(this Polly.ResiliencePipeline! strategy) -> Polly.Testing.ResiliencePipelineDescriptor!
-static Polly.Testing.ResiliencePipelineExtensions.GetPipelineDescriptor<TResult>(this Polly.ResiliencePipeline<TResult>! strategy) -> Polly.Testing.ResiliencePipelineDescriptor!
+static Polly.Testing.ResiliencePipelineExtensions.GetPipelineDescriptor(this Polly.ResiliencePipeline! pipeline) -> Polly.Testing.ResiliencePipelineDescriptor!
+static Polly.Testing.ResiliencePipelineExtensions.GetPipelineDescriptor<TResult>(this Polly.ResiliencePipeline<TResult>! pipeline) -> Polly.Testing.ResiliencePipelineDescriptor!

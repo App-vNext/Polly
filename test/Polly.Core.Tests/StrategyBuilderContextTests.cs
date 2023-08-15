@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
+using Polly.Telemetry;
 
 namespace Polly.Core.Tests;
 
@@ -9,7 +10,7 @@ public class StrategyBuilderContextTests
     public void Ctor_EnsureDefaults()
     {
         var timeProvider = new FakeTimeProvider();
-        var context = new StrategyBuilderContext("builder-name", "instance", "strategy-name", timeProvider, Substitute.For<DiagnosticSource>());
+        var context = new StrategyBuilderContext("builder-name", "instance", "strategy-name", timeProvider, Substitute.For<TelemetryListener>());
 
         context.BuilderName.Should().Be("builder-name");
         context.BuilderInstanceName.Should().Be("instance");

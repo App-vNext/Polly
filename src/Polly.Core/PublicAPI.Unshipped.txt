@@ -5,6 +5,7 @@ abstract Polly.ResilienceContextPool.Get(string? operationKey, System.Threading.
 abstract Polly.ResilienceContextPool.Return(Polly.ResilienceContext! context) -> void
 abstract Polly.ResilienceStrategy.ExecuteCore<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 abstract Polly.ResilienceStrategy<TResult>.ExecuteCore<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+abstract Polly.Telemetry.TelemetryListener.Write<TResult, TArgs>(in Polly.Telemetry.TelemetryEventArguments<TResult, TArgs> args) -> void
 override Polly.Outcome<TResult>.ToString() -> string!
 override Polly.Registry.ResiliencePipelineRegistry<TKey>.TryGetPipeline(TKey key, out Polly.ResiliencePipeline? pipeline) -> bool
 override Polly.Registry.ResiliencePipelineRegistry<TKey>.TryGetPipeline<TResult>(TKey key, out Polly.ResiliencePipeline<TResult>? pipeline) -> bool
@@ -44,11 +45,11 @@ Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.ManualControl.get ->
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.ManualControl.set -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.MinimumThroughput.get -> int
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.MinimumThroughput.set -> void
-Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnClosed.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.CircuitBreaker.OnCircuitClosedArguments!>, System.Threading.Tasks.ValueTask>?
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnClosed.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.CircuitBreaker.OnCircuitClosedArguments>, System.Threading.Tasks.ValueTask>?
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnClosed.set -> void
-Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnHalfOpened.get -> System.Func<Polly.CircuitBreaker.OnCircuitHalfOpenedArguments!, System.Threading.Tasks.ValueTask>?
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnHalfOpened.get -> System.Func<Polly.CircuitBreaker.OnCircuitHalfOpenedArguments, System.Threading.Tasks.ValueTask>?
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnHalfOpened.set -> void
-Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnOpened.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.CircuitBreaker.OnCircuitOpenedArguments!>, System.Threading.Tasks.ValueTask>?
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnOpened.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.CircuitBreaker.OnCircuitOpenedArguments>, System.Threading.Tasks.ValueTask>?
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.OnOpened.set -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.SamplingDuration.get -> System.TimeSpan
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.SamplingDuration.set -> void
@@ -67,13 +68,16 @@ Polly.CircuitBreaker.IsolatedCircuitException.IsolatedCircuitException(string! m
 Polly.CircuitBreaker.IsolatedCircuitException.IsolatedCircuitException(string! message, System.Exception! innerException) -> void
 Polly.CircuitBreaker.OnCircuitClosedArguments
 Polly.CircuitBreaker.OnCircuitClosedArguments.IsManual.get -> bool
+Polly.CircuitBreaker.OnCircuitClosedArguments.OnCircuitClosedArguments() -> void
 Polly.CircuitBreaker.OnCircuitClosedArguments.OnCircuitClosedArguments(bool isManual) -> void
 Polly.CircuitBreaker.OnCircuitHalfOpenedArguments
 Polly.CircuitBreaker.OnCircuitHalfOpenedArguments.Context.get -> Polly.ResilienceContext!
+Polly.CircuitBreaker.OnCircuitHalfOpenedArguments.OnCircuitHalfOpenedArguments() -> void
 Polly.CircuitBreaker.OnCircuitHalfOpenedArguments.OnCircuitHalfOpenedArguments(Polly.ResilienceContext! context) -> void
 Polly.CircuitBreaker.OnCircuitOpenedArguments
 Polly.CircuitBreaker.OnCircuitOpenedArguments.BreakDuration.get -> System.TimeSpan
 Polly.CircuitBreaker.OnCircuitOpenedArguments.IsManual.get -> bool
+Polly.CircuitBreaker.OnCircuitOpenedArguments.OnCircuitOpenedArguments() -> void
 Polly.CircuitBreaker.OnCircuitOpenedArguments.OnCircuitOpenedArguments(System.TimeSpan breakDuration, bool isManual) -> void
 Polly.CircuitBreakerResiliencePipelineBuilderExtensions
 Polly.ExecutionRejectedException
@@ -86,7 +90,7 @@ Polly.Fallback.FallbackStrategyOptions<TResult>
 Polly.Fallback.FallbackStrategyOptions<TResult>.FallbackAction.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Fallback.FallbackPredicateArguments>, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>?
 Polly.Fallback.FallbackStrategyOptions<TResult>.FallbackAction.set -> void
 Polly.Fallback.FallbackStrategyOptions<TResult>.FallbackStrategyOptions() -> void
-Polly.Fallback.FallbackStrategyOptions<TResult>.OnFallback.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Fallback.OnFallbackArguments!>, System.Threading.Tasks.ValueTask>?
+Polly.Fallback.FallbackStrategyOptions<TResult>.OnFallback.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Fallback.OnFallbackArguments>, System.Threading.Tasks.ValueTask>?
 Polly.Fallback.FallbackStrategyOptions<TResult>.OnFallback.set -> void
 Polly.Fallback.FallbackStrategyOptions<TResult>.ShouldHandle.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Fallback.FallbackPredicateArguments>, System.Threading.Tasks.ValueTask<bool>>!
 Polly.Fallback.FallbackStrategyOptions<TResult>.ShouldHandle.set -> void
@@ -117,7 +121,7 @@ Polly.Hedging.HedgingStrategyOptions<TResult>.HedgingDelayGenerator.set -> void
 Polly.Hedging.HedgingStrategyOptions<TResult>.HedgingStrategyOptions() -> void
 Polly.Hedging.HedgingStrategyOptions<TResult>.MaxHedgedAttempts.get -> int
 Polly.Hedging.HedgingStrategyOptions<TResult>.MaxHedgedAttempts.set -> void
-Polly.Hedging.HedgingStrategyOptions<TResult>.OnHedging.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Hedging.OnHedgingArguments!>, System.Threading.Tasks.ValueTask>?
+Polly.Hedging.HedgingStrategyOptions<TResult>.OnHedging.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Hedging.OnHedgingArguments>, System.Threading.Tasks.ValueTask>?
 Polly.Hedging.HedgingStrategyOptions<TResult>.OnHedging.set -> void
 Polly.Hedging.HedgingStrategyOptions<TResult>.ShouldHandle.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Hedging.HedgingPredicateArguments>, System.Threading.Tasks.ValueTask<bool>>!
 Polly.Hedging.HedgingStrategyOptions<TResult>.ShouldHandle.set -> void
@@ -125,6 +129,7 @@ Polly.Hedging.OnHedgingArguments
 Polly.Hedging.OnHedgingArguments.AttemptNumber.get -> int
 Polly.Hedging.OnHedgingArguments.Duration.get -> System.TimeSpan
 Polly.Hedging.OnHedgingArguments.HasOutcome.get -> bool
+Polly.Hedging.OnHedgingArguments.OnHedgingArguments() -> void
 Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attemptNumber, bool hasOutcome, System.TimeSpan duration) -> void
 Polly.HedgingResiliencePipelineBuilderExtensions
 Polly.LegacySupport
@@ -250,12 +255,12 @@ Polly.ResiliencePipelineBuilder<TResult>
 Polly.ResiliencePipelineBuilder<TResult>.Build() -> Polly.ResiliencePipeline<TResult>!
 Polly.ResiliencePipelineBuilder<TResult>.ResiliencePipelineBuilder() -> void
 Polly.ResiliencePipelineBuilderBase
-Polly.ResiliencePipelineBuilderBase.DiagnosticSource.get -> System.Diagnostics.DiagnosticSource?
-Polly.ResiliencePipelineBuilderBase.DiagnosticSource.set -> void
 Polly.ResiliencePipelineBuilderBase.InstanceName.get -> string?
 Polly.ResiliencePipelineBuilderBase.InstanceName.set -> void
 Polly.ResiliencePipelineBuilderBase.Name.get -> string?
 Polly.ResiliencePipelineBuilderBase.Name.set -> void
+Polly.ResiliencePipelineBuilderBase.TelemetryListener.get -> Polly.Telemetry.TelemetryListener?
+Polly.ResiliencePipelineBuilderBase.TelemetryListener.set -> void
 Polly.ResiliencePipelineBuilderBase.Validator.get -> System.Action<Polly.ResilienceValidationContext!>!
 Polly.ResiliencePipelineBuilderExtensions
 Polly.ResilienceProperties
@@ -283,6 +288,7 @@ Polly.ResilienceValidationContext.ResilienceValidationContext(object! instance, 
 Polly.Retry.OnRetryArguments
 Polly.Retry.OnRetryArguments.AttemptNumber.get -> int
 Polly.Retry.OnRetryArguments.ExecutionTime.get -> System.TimeSpan
+Polly.Retry.OnRetryArguments.OnRetryArguments() -> void
 Polly.Retry.OnRetryArguments.OnRetryArguments(int attemptNumber, System.TimeSpan retryDelay, System.TimeSpan executionTime) -> void
 Polly.Retry.OnRetryArguments.RetryDelay.get -> System.TimeSpan
 Polly.Retry.RetryBackoffType
@@ -305,7 +311,7 @@ Polly.Retry.RetryStrategyOptions<TResult>.BackoffType.get -> Polly.Retry.RetryBa
 Polly.Retry.RetryStrategyOptions<TResult>.BackoffType.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.BaseDelay.get -> System.TimeSpan
 Polly.Retry.RetryStrategyOptions<TResult>.BaseDelay.set -> void
-Polly.Retry.RetryStrategyOptions<TResult>.OnRetry.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Retry.OnRetryArguments!>, System.Threading.Tasks.ValueTask>?
+Polly.Retry.RetryStrategyOptions<TResult>.OnRetry.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Retry.OnRetryArguments>, System.Threading.Tasks.ValueTask>?
 Polly.Retry.RetryStrategyOptions<TResult>.OnRetry.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.Randomizer.get -> System.Func<double>!
 Polly.Retry.RetryStrategyOptions<TResult>.Randomizer.set -> void
@@ -327,10 +333,12 @@ Polly.StrategyBuilderContext.Telemetry.get -> Polly.Telemetry.ResilienceStrategy
 Polly.Telemetry.ExecutionAttemptArguments
 Polly.Telemetry.ExecutionAttemptArguments.AttemptNumber.get -> int
 Polly.Telemetry.ExecutionAttemptArguments.Duration.get -> System.TimeSpan
+Polly.Telemetry.ExecutionAttemptArguments.ExecutionAttemptArguments() -> void
 Polly.Telemetry.ExecutionAttemptArguments.ExecutionAttemptArguments(int attemptNumber, System.TimeSpan duration, bool handled) -> void
 Polly.Telemetry.ExecutionAttemptArguments.Handled.get -> bool
 Polly.Telemetry.PipelineExecutedArguments
 Polly.Telemetry.PipelineExecutedArguments.Duration.get -> System.TimeSpan
+Polly.Telemetry.PipelineExecutedArguments.PipelineExecutedArguments() -> void
 Polly.Telemetry.PipelineExecutedArguments.PipelineExecutedArguments(System.TimeSpan duration) -> void
 Polly.Telemetry.PipelineExecutingArguments
 Polly.Telemetry.PipelineExecutingArguments.PipelineExecutingArguments() -> void
@@ -347,7 +355,6 @@ Polly.Telemetry.ResilienceEventSeverity.Information = 2 -> Polly.Telemetry.Resil
 Polly.Telemetry.ResilienceEventSeverity.None = 0 -> Polly.Telemetry.ResilienceEventSeverity
 Polly.Telemetry.ResilienceEventSeverity.Warning = 3 -> Polly.Telemetry.ResilienceEventSeverity
 Polly.Telemetry.ResilienceStrategyTelemetry
-Polly.Telemetry.ResilienceStrategyTelemetry.IsEnabled.get -> bool
 Polly.Telemetry.ResilienceStrategyTelemetry.Report<TArgs, TResult>(Polly.Telemetry.ResilienceEvent resilienceEvent, Polly.OutcomeArguments<TResult, TArgs> args) -> void
 Polly.Telemetry.ResilienceStrategyTelemetry.Report<TArgs>(Polly.Telemetry.ResilienceEvent resilienceEvent, Polly.ResilienceContext! context, TArgs args) -> void
 Polly.Telemetry.ResilienceTelemetrySource
@@ -355,14 +362,19 @@ Polly.Telemetry.ResilienceTelemetrySource.PipelineInstanceName.get -> string?
 Polly.Telemetry.ResilienceTelemetrySource.PipelineName.get -> string?
 Polly.Telemetry.ResilienceTelemetrySource.ResilienceTelemetrySource(string? pipelineName, string? pipelineInstanceName, string? strategyName) -> void
 Polly.Telemetry.ResilienceTelemetrySource.StrategyName.get -> string?
-Polly.Telemetry.TelemetryEventArguments
-Polly.Telemetry.TelemetryEventArguments.Arguments.get -> object!
-Polly.Telemetry.TelemetryEventArguments.Context.get -> Polly.ResilienceContext!
-Polly.Telemetry.TelemetryEventArguments.Event.get -> Polly.Telemetry.ResilienceEvent
-Polly.Telemetry.TelemetryEventArguments.Outcome.get -> Polly.Outcome<object!>?
-Polly.Telemetry.TelemetryEventArguments.Source.get -> Polly.Telemetry.ResilienceTelemetrySource!
+Polly.Telemetry.TelemetryEventArguments<TResult, TArgs>
+Polly.Telemetry.TelemetryEventArguments<TResult, TArgs>.Arguments.get -> TArgs
+Polly.Telemetry.TelemetryEventArguments<TResult, TArgs>.Context.get -> Polly.ResilienceContext!
+Polly.Telemetry.TelemetryEventArguments<TResult, TArgs>.Event.get -> Polly.Telemetry.ResilienceEvent
+Polly.Telemetry.TelemetryEventArguments<TResult, TArgs>.Outcome.get -> Polly.Outcome<TResult>?
+Polly.Telemetry.TelemetryEventArguments<TResult, TArgs>.Source.get -> Polly.Telemetry.ResilienceTelemetrySource!
+Polly.Telemetry.TelemetryEventArguments<TResult, TArgs>.TelemetryEventArguments() -> void
+Polly.Telemetry.TelemetryEventArguments<TResult, TArgs>.TelemetryEventArguments(Polly.Telemetry.ResilienceTelemetrySource! source, Polly.Telemetry.ResilienceEvent resilienceEvent, Polly.ResilienceContext! context, TArgs args, Polly.Outcome<TResult>? outcome) -> void
+Polly.Telemetry.TelemetryListener
+Polly.Telemetry.TelemetryListener.TelemetryListener() -> void
 Polly.Timeout.OnTimeoutArguments
 Polly.Timeout.OnTimeoutArguments.Context.get -> Polly.ResilienceContext!
+Polly.Timeout.OnTimeoutArguments.OnTimeoutArguments() -> void
 Polly.Timeout.OnTimeoutArguments.OnTimeoutArguments(Polly.ResilienceContext! context, System.TimeSpan timeout) -> void
 Polly.Timeout.OnTimeoutArguments.Timeout.get -> System.TimeSpan
 Polly.Timeout.TimeoutGeneratorArguments
@@ -378,7 +390,7 @@ Polly.Timeout.TimeoutRejectedException.TimeoutRejectedException(string! message,
 Polly.Timeout.TimeoutRejectedException.TimeoutRejectedException(string! message, System.TimeSpan timeout, System.Exception! innerException) -> void
 Polly.Timeout.TimeoutRejectedException.TimeoutRejectedException(System.TimeSpan timeout) -> void
 Polly.Timeout.TimeoutStrategyOptions
-Polly.Timeout.TimeoutStrategyOptions.OnTimeout.get -> System.Func<Polly.Timeout.OnTimeoutArguments!, System.Threading.Tasks.ValueTask>?
+Polly.Timeout.TimeoutStrategyOptions.OnTimeout.get -> System.Func<Polly.Timeout.OnTimeoutArguments, System.Threading.Tasks.ValueTask>?
 Polly.Timeout.TimeoutStrategyOptions.OnTimeout.set -> void
 Polly.Timeout.TimeoutStrategyOptions.Timeout.get -> System.TimeSpan
 Polly.Timeout.TimeoutStrategyOptions.Timeout.set -> void

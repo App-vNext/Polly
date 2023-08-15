@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Polly.Retry;
+using Polly.Telemetry;
 using Polly.Testing;
 using Polly.Utils;
 
@@ -25,13 +26,13 @@ public class ResiliencePipelineBuilderTests
         {
             TimeProvider = Substitute.For<TimeProvider>(),
             Name = "dummy",
-            DiagnosticSource = Substitute.For<DiagnosticSource>(),
+            TelemetryListener = Substitute.For<TelemetryListener>(),
         };
 
         var other = new ResiliencePipelineBuilder<double>(builder);
         other.Name.Should().Be(builder.Name);
         other.TimeProvider.Should().Be(builder.TimeProvider);
-        other.DiagnosticSource.Should().BeSameAs(builder.DiagnosticSource);
+        other.TelemetryListener.Should().BeSameAs(builder.TelemetryListener);
     }
 
     [Fact]
@@ -49,12 +50,12 @@ public class ResiliencePipelineBuilderTests
         builder.AddPipeline(first.AsPipeline());
 
         // act
-        var strategy = builder.Build();
+        var pipeline = builder.Build();
 
         // assert
-        strategy.Execute(_ => executions.Add(2));
+        pipeline.Execute(_ => executions.Add(2));
 
-        strategy.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<TestResilienceStrategy>();
+        pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<TestResilienceStrategy>();
         executions.Should().BeInAscendingOrder();
         executions.Should().HaveCount(3);
     }

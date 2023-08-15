@@ -11,7 +11,7 @@ public class CircuitStateControllerTests
 
     private readonly CircuitBreakerStrategyOptions<int> _options = new();
     private readonly CircuitBehavior _circuitBehavior = Substitute.For<CircuitBehavior>();
-    private readonly Action<TelemetryEventArguments> _onTelemetry = _ => { };
+    private readonly Action<TelemetryEventArguments<object, object>> _onTelemetry = _ => { };
 
     [Fact]
     public void Ctor_EnsureDefaults()

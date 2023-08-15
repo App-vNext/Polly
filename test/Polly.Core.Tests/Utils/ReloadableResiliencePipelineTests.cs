@@ -5,7 +5,7 @@ namespace Polly.Core.Tests.Utils;
 
 public class ReloadableResiliencePipelineTests : IDisposable
 {
-    private readonly List<TelemetryEventArguments> _events = new();
+    private readonly List<TelemetryEventArguments<object, object>> _events = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
     private CancellationTokenSource _cancellationTokenSource;
 

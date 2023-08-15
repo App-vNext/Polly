@@ -7,7 +7,7 @@ namespace Polly.Core.Tests.Fallback;
 public class FallbackResilienceStrategyTests
 {
     private readonly FallbackStrategyOptions<string> _options = new();
-    private readonly List<TelemetryEventArguments> _args = new();
+    private readonly List<TelemetryEventArguments<object, object>> _args = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
     private FallbackHandler<string>? _handler;
 

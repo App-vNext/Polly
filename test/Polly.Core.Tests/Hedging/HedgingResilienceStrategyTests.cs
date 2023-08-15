@@ -16,7 +16,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     private static readonly TimeSpan AssertTimeout = TimeSpan.FromSeconds(15);
 
     private readonly HedgingStrategyOptions<string> _options = new();
-    private readonly ConcurrentQueue<TelemetryEventArguments> _events = new();
+    private readonly ConcurrentQueue<TelemetryEventArguments<object, object>> _events = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly HedgingTimeProvider _timeProvider;
     private readonly HedgingActions _actions;
