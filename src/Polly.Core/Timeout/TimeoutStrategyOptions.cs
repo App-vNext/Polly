@@ -24,7 +24,7 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
 #pragma warning restore IL2026
 
     /// <summary>
-    /// Gets or sets the timeout generator that generates the timeout for a given execution.
+    /// Gets or sets a timeout generator that generates the timeout for a given execution.
     /// </summary>
     /// <remarks>
     /// If generator returns a <see cref="TimeSpan"/> value that is less or equal to <see cref="TimeSpan.Zero"/>
@@ -39,7 +39,7 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     public Func<TimeoutGeneratorArguments, ValueTask<TimeSpan>>? TimeoutGenerator { get; set; }
 
     /// <summary>
-    /// Gets or sets the timeout that's raised when timeout occurs.
+    /// Gets or sets the timeout delegate that raised when timeout occurs.
     /// </summary>
     /// <value>
     /// The default value is <see langword="null"/>.

@@ -70,7 +70,7 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
 #pragma warning restore
 
     /// <summary>
-    /// Gets or sets the predicates for the circuit breaker.
+    /// Gets or sets a predicate that determines whether the outcome should be handled by the circuit breaker.
     /// </summary>
     /// <value>
     /// The default value is a predicate that handles circuit breaker on any exception except <see cref="OperationCanceledException"/>.
