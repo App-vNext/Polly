@@ -9,7 +9,7 @@
 /// <typeparam name="TArgs">The type of the arguments attached to the resilience event.</typeparam>
 /// <remarks>
 /// This context is passed to enrichers in <see cref="TelemetryOptions.MeteringEnrichers"/>.
-/// Always use constructor when creating this struct, otherwise we do not guarantee the binary compatibility.
+/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
 public readonly struct EnrichmentContext<TResult, TArgs>
 {

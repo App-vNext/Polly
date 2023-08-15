@@ -6,7 +6,7 @@ namespace Polly.Timeout;
 /// Arguments used by the timeout strategy to notify that a timeout occurred.
 /// </summary>
 /// <remarks>
-/// Always use constructor when creating this struct, otherwise we do not guarantee the binary compatibility.
+/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
 public readonly struct OnTimeoutArguments
 {

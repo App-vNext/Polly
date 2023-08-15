@@ -8,7 +8,7 @@ namespace Polly.RateLimiting;
 /// The arguments used by the <see cref="RateLimiterStrategyOptions.OnRejected"/>.
 /// </summary>
 /// <remarks>
-/// Always use constructor when creating this struct, otherwise we do not guarantee the binary compatibility.
+/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
 public readonly struct OnRateLimiterRejectedArguments
 {
