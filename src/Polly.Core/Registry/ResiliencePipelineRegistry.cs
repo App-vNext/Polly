@@ -161,11 +161,11 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 #if NETCOREAPP3_0_OR_GREATER
         return _pipelines.GetOrAdd(key, static (_, factory) =>
         {
-            return CreatePipeline(factory.instance._activator, factory.context, factory.configure);
+            return new ResiliencePipeline(CreatePipeline(factory.instance._activator, factory.context, factory.configure));
         },
         (instance: this, context, configure));
 #else
-        return _pipelines.GetOrAdd(key, _ => CreatePipeline(_activator, context, configure));
+        return _pipelines.GetOrAdd(key, _ => new ResiliencePipeline(CreatePipeline(_activator, context, configure)));
 #endif
     }
 
@@ -264,7 +264,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// </remarks>
     public void ClearPipelines<TResult>() => GetGenericRegistry<TResult>().Clear();
 
-    private static ResiliencePipeline CreatePipeline<TBuilder>(
+    private static PipelineComponent CreatePipeline<TBuilder>(
         Func<TBuilder> activator,
         ConfigureBuilderContext<TKey> context,
         Action<TBuilder, ConfigureBuilderContext<TKey>> configure)
@@ -282,19 +282,19 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
         var builder = factory();
         var pipeline = builder.BuildPipeline();
-        var diagnosticSource = builder.TelemetryListener;
+        var listener = builder.TelemetryListener;
 
         if (context.ReloadTokenProducer is null)
         {
             return pipeline;
         }
 
-        return new ReloadableResiliencePipeline(
+        return PipelineComponent.CreateReloadable(
             pipeline,
             context.ReloadTokenProducer(),
             () => factory().BuildPipeline(),
             TelemetryUtil.CreateTelemetry(
-                diagnosticSource,
+                listener,
                 context.BuilderName,
                 context.BuilderInstanceName,
                 null));

@@ -9,18 +9,16 @@ namespace Polly;
 /// </remarks>
 public partial class ResiliencePipeline
 {
+    internal ResiliencePipeline(PipelineComponent component) => Component = component;
+
     internal static ResilienceContextPool Pool => ResilienceContextPool.Shared;
 
-    internal ResilienceStrategyOptions? Options { get; set; }
+    internal PipelineComponent Component { get; }
 
-    internal ResiliencePipeline()
-    {
-    }
-
-    internal abstract ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+    internal ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
-        TState state);
+        TState state) => Component.ExecuteCore(callback, context, state);
 
     private Outcome<TResult> ExecuteCoreSync<TResult, TState>(
         Func<ResilienceContext, TState, Outcome<TResult>> callback,

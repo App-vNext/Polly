@@ -23,7 +23,7 @@ public partial class ResiliencePipeline<T>
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        return Strategy.Execute(callback, context, state);
+        return Pipeline.Execute(callback, context, state);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public partial class ResiliencePipeline<T>
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        return Strategy.Execute(callback, context);
+        return Pipeline.Execute(callback, context);
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public partial class ResiliencePipeline<T>
     {
         Guard.NotNull(callback);
 
-        return Strategy.Execute(callback, cancellationToken);
+        return Pipeline.Execute(callback, cancellationToken);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public partial class ResiliencePipeline<T>
     {
         Guard.NotNull(callback);
 
-        return Strategy.Execute(callback);
+        return Pipeline.Execute(callback);
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public partial class ResiliencePipeline<T>
     {
         Guard.NotNull(callback);
 
-        return Strategy.Execute(callback, state);
+        return Pipeline.Execute(callback, state);
     }
 
     /// <summary>
@@ -113,6 +113,6 @@ public partial class ResiliencePipeline<T>
     {
         Guard.NotNull(callback);
 
-        return Strategy.Execute(callback, state, cancellationToken);
+        return Pipeline.Execute(callback, state, cancellationToken);
     }
 }

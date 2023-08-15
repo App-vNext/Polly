@@ -12,7 +12,7 @@ public sealed class NullResiliencePipeline<TResult> : ResiliencePipeline<TResult
     public static readonly NullResiliencePipeline<TResult> Instance = new();
 
     private NullResiliencePipeline()
-        : base(NullResiliencePipeline.Instance)
+        : base(PipelineComponent.Null)
     {
     }
 }

@@ -89,7 +89,7 @@ public abstract class ResiliencePipelineBuilderBase
     public Action<ResilienceValidationContext> Validator { get; private protected set; } = ValidationHelper.ValidateObject;
 
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
-    internal void AddStrategyCore(Func<StrategyBuilderContext, ResiliencePipeline> factory, ResilienceStrategyOptions options)
+    internal void AddStrategyCore(Func<StrategyBuilderContext, PipelineComponent> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);
         Guard.NotNull(options);
@@ -104,26 +104,26 @@ public abstract class ResiliencePipelineBuilderBase
         _entries.Add(new Entry(factory, options));
     }
 
-    internal ResiliencePipeline BuildPipeline()
+    internal PipelineComponent BuildPipeline()
     {
         Validator(new(this, $"The '{nameof(ResiliencePipelineBuilder)}' configuration is invalid."));
 
         _used = true;
 
-        var strategies = _entries.Select(CreateResiliencePipeline).ToList();
+        var components = _entries.Select(CreatePipeline).ToList();
 
-        if (strategies.Count == 0)
+        if (components.Count == 0)
         {
-            return NullResiliencePipeline.Instance;
+            return NullResiliencePipeline.Instance.Component;
         }
 
-        return CompositeResiliencePipeline.Create(
-            strategies,
+        return PipelineComponent.CreateComposite(
+            components,
             TelemetryUtil.CreateTelemetry(TelemetryListener, Name, InstanceName, null),
             TimeProvider);
     }
 
-    private ResiliencePipeline CreateResiliencePipeline(Entry entry)
+    private PipelineComponent CreatePipeline(Entry entry)
     {
         var context = new StrategyBuilderContext(
             builderName: Name,
@@ -137,5 +137,5 @@ public abstract class ResiliencePipelineBuilderBase
         return strategy;
     }
 
-    private sealed record Entry(Func<StrategyBuilderContext, ResiliencePipeline> Factory, ResilienceStrategyOptions Options);
+    private sealed record Entry(Func<StrategyBuilderContext, PipelineComponent> Factory, ResilienceStrategyOptions Options);
 }

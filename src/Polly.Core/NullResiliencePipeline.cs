@@ -11,19 +11,23 @@ public sealed class NullResiliencePipeline : ResiliencePipeline
     public static readonly NullResiliencePipeline Instance = new();
 
     private NullResiliencePipeline()
+        : base(PipelineComponent.Null)
     {
     }
 
-    internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-        ResilienceContext context,
-        TState state)
+    internal class NullStrategy : ResilienceStrategy
     {
-        Guard.NotNull(callback);
-        Guard.NotNull(context);
+        protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state)
+        {
+            Guard.NotNull(callback);
+            Guard.NotNull(context);
 
-        context.AssertInitialized();
+            context.AssertInitialized();
 
-        return callback(context, state);
+            return callback(context, state);
+        }
     }
 }

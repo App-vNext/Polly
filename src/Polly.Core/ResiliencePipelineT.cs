@@ -10,7 +10,10 @@ namespace Polly;
 /// </remarks>
 public partial class ResiliencePipeline<T>
 {
-    internal ResiliencePipeline(ResiliencePipeline strategy) => Strategy = strategy;
+    internal ResiliencePipeline(PipelineComponent component) => Pipeline = new ResiliencePipeline(component);
 
-    internal ResiliencePipeline Strategy { get; }
+    internal ResiliencePipeline Pipeline { get; }
+
+    internal PipelineComponent Component => Pipeline.Component;
+
 }

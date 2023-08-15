@@ -43,7 +43,7 @@ public class GenericResiliencePipelineBuilderTests
 
         // assert
         strategy.Should().NotBeNull();
-        strategy.Strategy.Should().BeOfType<CompositeResiliencePipeline>().Subject.Strategies.Should().HaveCount(2);
+        strategy.Pipeline.Should().BeOfType<CompositeResiliencePipeline>().Subject.Strategies.Should().HaveCount(2);
     }
 
     [Fact]
@@ -58,6 +58,6 @@ public class GenericResiliencePipelineBuilderTests
 
         // assert
         strategy.Should().NotBeNull();
-        ((CompositeResiliencePipeline)strategy.Strategy).Strategies[0].Should().Be(testStrategy.Strategy);
+        ((CompositeResiliencePipeline)strategy.Pipeline).Strategies[0].Should().Be(testStrategy.Pipeline);
     }
 }
