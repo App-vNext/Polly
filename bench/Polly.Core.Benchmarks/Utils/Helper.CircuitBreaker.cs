@@ -13,7 +13,7 @@ internal static partial class Helper
 
         if (version == PollyVersion.V8)
         {
-            var builder = new CompositeStrategyBuilder();
+            var builder = new ResiliencePipelineBuilder();
 
             if (handleOutcome)
             {
@@ -64,7 +64,7 @@ internal static partial class Helper
         };
     }
 
-    private class OutcomeHandlingStrategy : NonReactiveResilienceStrategy
+    private class OutcomeHandlingStrategy : ResilienceStrategy
     {
         protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

@@ -5,6 +5,9 @@ namespace Polly.Timeout;
 /// <summary>
 /// Arguments used by the timeout strategy to retrieve a timeout for current execution.
 /// </summary>
+/// <remarks>
+/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
+/// </remarks>
 public readonly struct TimeoutGeneratorArguments
 {
     /// <summary>

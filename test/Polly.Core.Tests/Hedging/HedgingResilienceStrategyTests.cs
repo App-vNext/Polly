@@ -16,7 +16,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     private static readonly TimeSpan AssertTimeout = TimeSpan.FromSeconds(15);
 
     private readonly HedgingStrategyOptions<string> _options = new();
-    private readonly ConcurrentQueue<TelemetryEventArguments> _events = new();
+    private readonly ConcurrentQueue<TelemetryEventArguments<object, object>> _events = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly HedgingTimeProvider _timeProvider;
     private readonly HedgingActions _actions;
@@ -88,11 +88,11 @@ public class HedgingResilienceStrategyTests : IDisposable
         var attempts = _events.Select(v => v.Arguments).OfType<ExecutionAttemptArguments>().ToArray();
 
         attempts[0].Handled.Should().BeTrue();
-        attempts[0].ExecutionTime.Should().BeGreaterThan(TimeSpan.Zero);
+        attempts[0].Duration.Should().BeGreaterThan(TimeSpan.Zero);
         attempts[0].AttemptNumber.Should().Be(0);
 
         attempts[1].Handled.Should().BeTrue();
-        attempts[1].ExecutionTime.Should().BeGreaterThan(TimeSpan.Zero);
+        attempts[1].Duration.Should().BeGreaterThan(TimeSpan.Zero);
         attempts[1].AttemptNumber.Should().Be(1);
     }
 
@@ -334,7 +334,7 @@ public class HedgingResilienceStrategyTests : IDisposable
             };
         });
 
-        var strategy = new ReactiveResilienceStrategyBridge<DisposableResult>(Create(handler, null));
+        var strategy = new ResiliencePipelineBridge<DisposableResult>(Create(handler, null));
 
         // act
         var resultTask = strategy.ExecuteAsync(async token =>
@@ -958,7 +958,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         return Outcome.FromResult("secondary");
     });
 
-    private ReactiveResilienceStrategyBridge<string> Create() => new(Create(_handler!, _options.OnHedging));
+    private ResiliencePipelineBridge<string> Create() => new(Create(_handler!, _options.OnHedging));
 
     private HedgingResilienceStrategy<T> Create<T>(
         HedgingHandler<T> handler,

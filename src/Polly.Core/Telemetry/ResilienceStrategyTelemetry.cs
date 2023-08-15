@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Polly.Telemetry;
 
 /// <summary>
@@ -10,20 +8,15 @@ namespace Polly.Telemetry;
 /// </remarks>
 public sealed class ResilienceStrategyTelemetry
 {
-    internal ResilienceStrategyTelemetry(ResilienceTelemetrySource source, DiagnosticSource? diagnosticSource)
+    internal ResilienceStrategyTelemetry(ResilienceTelemetrySource source, TelemetryListener? listener)
     {
         TelemetrySource = source;
-        DiagnosticSource = diagnosticSource;
+        Listener = listener;
     }
 
-    internal DiagnosticSource? DiagnosticSource { get; }
+    internal TelemetryListener? Listener { get; }
 
     internal ResilienceTelemetrySource TelemetrySource { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether telemetry is enabled.
-    /// </summary>
-    public bool IsEnabled => DiagnosticSource is not null;
 
     /// <summary>
     /// Reports an event that occurred in a resilience strategy.
@@ -33,30 +26,18 @@ public sealed class ResilienceStrategyTelemetry
     /// <param name="context">The resilience context associated with this event.</param>
     /// <param name="args">The event arguments.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
-    [UnconditionalSuppressMessage(
-        "Trimming",
-        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
-        Justification = "Reflection is not used when consuming the event.")]
-    [UnconditionalSuppressMessage(
-        "AOT",
-        "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
-        Justification = "Reflection is not used when consuming the event.")]
     public void Report<TArgs>(ResilienceEvent resilienceEvent, ResilienceContext context, TArgs args)
     {
         Guard.NotNull(context);
 
         context.AddResilienceEvent(resilienceEvent);
 
-        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(resilienceEvent.EventName) || resilienceEvent.Severity == ResilienceEventSeverity.None)
+        if (Listener is null || resilienceEvent.Severity == ResilienceEventSeverity.None)
         {
             return;
         }
 
-        var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, resilienceEvent, context, null, args!);
-
-        DiagnosticSource.Write(resilienceEvent.EventName, telemetryArgs);
-
-        TelemetryEventArguments.Return(telemetryArgs);
+        Listener.Write<object, TArgs>(new(TelemetrySource, resilienceEvent, context, args, null));
     }
 
     /// <summary>
@@ -66,28 +47,16 @@ public sealed class ResilienceStrategyTelemetry
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="resilienceEvent">The reported resilience event.</param>
     /// <param name="args">The event arguments.</param>
-    [UnconditionalSuppressMessage(
-        "Trimming",
-        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
-        Justification = "Reflection is not used when consuming the event.")]
-    [UnconditionalSuppressMessage(
-        "AOT",
-        "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
-        Justification = "Reflection is not used when consuming the event.")]
     public void Report<TArgs, TResult>(ResilienceEvent resilienceEvent, OutcomeArguments<TResult, TArgs> args)
     {
         args.Context.AddResilienceEvent(resilienceEvent);
 
-        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(resilienceEvent.EventName) || resilienceEvent.Severity == ResilienceEventSeverity.None)
+        if (Listener is null || resilienceEvent.Severity == ResilienceEventSeverity.None)
         {
             return;
         }
 
-        var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, resilienceEvent, args.Context, args.Outcome.AsOutcome(), args.Arguments!);
-
-        DiagnosticSource.Write(resilienceEvent.EventName, telemetryArgs);
-
-        TelemetryEventArguments.Return(telemetryArgs);
+        Listener.Write<TResult, TArgs>(new(TelemetrySource, resilienceEvent, args.Context, args.Arguments, args.Outcome));
     }
 }
 

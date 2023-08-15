@@ -18,22 +18,22 @@ public partial class IssuesTests
         using var listener = TestUtilities.EnablePollyMetering(events);
         var services = new ServiceCollection();
 
-        services.AddResilienceStrategyRegistry<string>();
+        services.AddResiliencePipelineRegistry<string>();
         services.AddOptions<EndpointsOptions>();
 
-        // add resilience strategy, keyed by EndpointKey that only defines the builder name
-        services.AddResilienceStrategy(new EndpointKey("endpoint-pipeline", string.Empty, string.Empty), (builder, context) =>
+        // add resilience pipeline, keyed by EndpointKey that only defines the builder name
+        services.AddResiliencePipeline(new EndpointKey("endpoint-pipeline", string.Empty, string.Empty), (builder, context) =>
         {
             var serviceProvider = context.ServiceProvider;
-            var endpointOptions = context.GetOptions<EndpointsOptions>().Endpoints[context.StrategyKey.EndpointName];
-            var registry = context.ServiceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>();
+            var endpointOptions = context.GetOptions<EndpointsOptions>().Endpoints[context.PipelineKey.EndpointName];
+            var registry = context.ServiceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>();
 
             // we want this pipeline to react to changes to the options
             context.EnableReloads<EndpointsOptions>();
 
             // we want to limit the number of concurrent requests per endpoint and not include the resource.
-            // using a registry we can create and cache the shared resilience strategy
-            var rateLimiterStrategy = registry.GetOrAddStrategy($"rate-limiter/{context.StrategyKey.EndpointName}", (builder, context) =>
+            // using a registry we can create and cache the shared resilience pipeline
+            var rateLimiterStrategy = registry.GetOrAddPipeline($"rate-limiter/{context.PipelineKey.EndpointName}", (builder, context) =>
             {
                 // let's also enable reloads for the rate limiter
                 context.EnableReloads(serviceProvider.GetRequiredService<IOptionsMonitor<EndpointsOptions>>());
@@ -41,7 +41,7 @@ public partial class IssuesTests
                 builder.AddConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = endpointOptions.MaxParallelization });
             });
 
-            builder.AddStrategy(rateLimiterStrategy);
+            builder.AddPipeline(rateLimiterStrategy);
 
             // apply retries optionally per-endpoint
             if (endpointOptions.Retries > 0)
@@ -51,7 +51,7 @@ public partial class IssuesTests
                     BackoffType = RetryBackoffType.Exponential,
                     UseJitter = true,
                     RetryCount = endpointOptions.Retries,
-                    Name = $"{context.StrategyKey.EndpointName}-Retry",
+                    Name = $"{context.PipelineKey.EndpointName}-Retry",
                 });
             }
 
@@ -59,22 +59,22 @@ public partial class IssuesTests
             builder.AddCircuitBreaker(new()
             {
                 BreakDuration = endpointOptions.BreakDuration,
-                Name = $"{context.StrategyKey.EndpointName}-{context.StrategyKey.Resource}-CircuitBreaker"
+                Name = $"{context.PipelineKey.EndpointName}-{context.PipelineKey.Resource}-CircuitBreaker"
             });
 
             // apply timeout
             builder.AddTimeout(new TimeoutStrategyOptions
             {
-                Name = $"{context.StrategyKey.EndpointName}-Timeout",
+                Name = $"{context.PipelineKey.EndpointName}-Timeout",
                 Timeout = endpointOptions.Timeout.Add(TimeSpan.FromSeconds(1)),
             });
         });
 
         // configure the registry to allow multi-dimensional keys
-        services.AddResilienceStrategyRegistry<EndpointKey>(options =>
+        services.AddResiliencePipelineRegistry<EndpointKey>(options =>
         {
             options.BuilderComparer = new EndpointKey.BuilderComparer();
-            options.StrategyComparer = new EndpointKey.StrategyComparer();
+            options.PipelineComparer = new EndpointKey.StrategyComparer();
 
             // format the key for telemetry
             options.InstanceNameFormatter = key => $"{key.EndpointName}/{key.Resource}";
@@ -83,24 +83,24 @@ public partial class IssuesTests
             options.BuilderNameFormatter = key => key.BuilderName;
         });
 
-        // create the strategy provider
-        var provider = services.BuildServiceProvider().GetRequiredService<ResilienceStrategyProvider<EndpointKey>>();
+        // create the pipeline provider
+        var provider = services.BuildServiceProvider().GetRequiredService<ResiliencePipelineProvider<EndpointKey>>();
 
         // define a key for each resource/endpoint combination
         var resource1Key = new EndpointKey("endpoint-pipeline", "Endpoint 1", "Resource 1");
         var resource2Key = new EndpointKey("endpoint-pipeline", "Endpoint 1", "Resource 2");
 
-        var strategy1 = provider.GetStrategy(resource1Key);
-        var strategy2 = provider.GetStrategy(resource2Key);
+        var pipeline1 = provider.GetPipeline(resource1Key);
+        var pipeline2 = provider.GetPipeline(resource2Key);
 
-        strategy1.Should().NotBe(strategy2);
-        provider.GetStrategy(resource1Key).Should().BeSameAs(strategy1);
-        provider.GetStrategy(resource2Key).Should().BeSameAs(strategy2);
+        pipeline1.Should().NotBe(pipeline2);
+        provider.GetPipeline(resource1Key).Should().BeSameAs(pipeline1);
+        provider.GetPipeline(resource2Key).Should().BeSameAs(pipeline2);
 
-        strategy1.Execute(() => { });
-        events.Should().HaveCount(3);
-        events[0].Tags["builder-name"].Should().Be("endpoint-pipeline");
-        events[0].Tags["builder-instance"].Should().Be("Endpoint 1/Resource 1");
+        pipeline1.Execute(() => { });
+        events.Should().HaveCount(5);
+        events[0].Tags["pipeline-name"].Should().Be("endpoint-pipeline");
+        events[0].Tags["pipeline-instance"].Should().Be("Endpoint 1/Resource 1");
     }
 
     public class EndpointOptions

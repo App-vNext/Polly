@@ -1,21 +1,26 @@
 namespace Polly.Hedging;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// Represents arguments used by the on-hedging event.
 /// </summary>
-public sealed class OnHedgingArguments
+/// <remarks>
+/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
+/// </remarks>
+public readonly struct OnHedgingArguments
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OnHedgingArguments"/> class.
+    /// Initializes a new instance of the <see cref="OnHedgingArguments"/> struct.
     /// </summary>
     /// <param name="attemptNumber">The zero-based hedging attempt number.</param>
     /// <param name="hasOutcome">Indicates whether outcome is available.</param>
-    /// <param name="executionTime">The execution time of hedging attempt or the hedging delay in case the attempt was not finished in time.</param>
-    public OnHedgingArguments(int attemptNumber, bool hasOutcome, TimeSpan executionTime)
+    /// <param name="duration">The execution duration of hedging attempt or the hedging delay in case the attempt was not finished in time.</param>
+    public OnHedgingArguments(int attemptNumber, bool hasOutcome, TimeSpan duration)
     {
         AttemptNumber = attemptNumber;
         HasOutcome = hasOutcome;
-        ExecutionTime = executionTime;
+        Duration = duration;
     }
 
     /// <summary>
@@ -32,7 +37,7 @@ public sealed class OnHedgingArguments
     public bool HasOutcome { get; }
 
     /// <summary>
-    /// Gets the execution time of hedging attempt or the hedging delay in case the attempt was not finished in time.
+    /// Gets the execution duration of hedging attempt or the hedging delay in case the attempt was not finished in time.
     /// </summary>
-    public TimeSpan ExecutionTime { get; }
+    public TimeSpan Duration { get; }
 }

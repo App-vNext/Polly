@@ -4,7 +4,7 @@ using Polly.Telemetry;
 
 namespace Polly.Hedging;
 
-internal sealed class HedgingResilienceStrategy<T> : ReactiveResilienceStrategy<T>
+internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
 {
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
@@ -97,7 +97,7 @@ internal sealed class HedgingResilienceStrategy<T> : ReactiveResilienceStrategy<
                 await HandleOnHedgingAsync(
                     context,
                     Outcome.FromResult<T>(default),
-                    new OnHedgingArguments(attempt, hasOutcome: false, executionTime: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
+                    new OnHedgingArguments(attempt, hasOutcome: false, duration: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
                 continue;
             }
 

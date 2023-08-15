@@ -1,6 +1,5 @@
 using FluentAssertions.Execution;
 using Microsoft.Extensions.Time.Testing;
-using NSubstitute;
 using Polly.Retry;
 using Polly.Telemetry;
 using Polly.Utils;
@@ -11,14 +10,14 @@ public class RetryResilienceStrategyTests
 {
     private readonly RetryStrategyOptions _options = new();
     private readonly FakeTimeProvider _timeProvider = new();
-    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
+    private readonly List<TelemetryEventArguments<object, object>> _args = new();
     private ResilienceStrategyTelemetry _telemetry;
 
     public RetryResilienceStrategyTests()
     {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource);
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_args.Add);
         _options.ShouldHandle = _ => new ValueTask<bool>(false);
-
+        _options.Randomizer = () => 1;
     }
 
     [Fact]
@@ -269,7 +268,7 @@ public class RetryResilienceStrategyTests
 
             attempt.Handled.Should().BeFalse();
             attempt.AttemptNumber.Should().Be(0);
-            attempt.ExecutionTime.Should().Be(TimeSpan.FromSeconds(1));
+            attempt.Duration.Should().Be(TimeSpan.FromSeconds(1));
             called = true;
         });
 
@@ -290,8 +289,6 @@ public class RetryResilienceStrategyTests
         var attempts = new List<int>();
         var delays = new List<TimeSpan>();
 
-        _diagnosticSource.IsEnabled("OnRetry").Returns(true);
-
         _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
@@ -300,7 +297,7 @@ public class RetryResilienceStrategyTests
 
         await ExecuteAndAdvance(sut);
 
-        _diagnosticSource.Received(3).IsEnabled("OnRetry");
+        _args.Select(a => a.Arguments).OfType<OnRetryArguments>().Should().HaveCount(3);
     }
 
     [Fact]
@@ -339,7 +336,7 @@ public class RetryResilienceStrategyTests
 
     private void SetupNoDelay() => _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.Zero);
 
-    private async ValueTask<int> ExecuteAndAdvance(ReactiveResilienceStrategyBridge<object> sut)
+    private async ValueTask<int> ExecuteAndAdvance(ResiliencePipelineBridge<object> sut)
     {
         var executing = sut.ExecuteAsync(_ => new ValueTask<int>(0)).AsTask();
 
@@ -351,9 +348,6 @@ public class RetryResilienceStrategyTests
         return await executing;
     }
 
-    private ReactiveResilienceStrategyBridge<object> CreateSut(TimeProvider? timeProvider = null) =>
-        new(new RetryResilienceStrategy<object>(_options,
-            timeProvider ?? _timeProvider,
-            _telemetry,
-            () => 1.0));
+    private ResiliencePipelineBridge<object> CreateSut(TimeProvider? timeProvider = null) =>
+        new(new RetryResilienceStrategy<object>(_options, timeProvider ?? _timeProvider, _telemetry));
 }

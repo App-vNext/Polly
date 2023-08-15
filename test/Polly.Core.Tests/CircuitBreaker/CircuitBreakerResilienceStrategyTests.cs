@@ -18,7 +18,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     {
         _timeProvider = new FakeTimeProvider();
         _behavior = Substitute.For<CircuitBehavior>();
-        _telemetry = TestUtilities.CreateResilienceTelemetry(Substitute.For<DiagnosticSource>());
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_ => { });
         _options = new CircuitBreakerStrategyOptions<int>();
         _controller = new CircuitStateController<int>(
             CircuitBreakerConstants.DefaultBreakDuration,
@@ -135,6 +135,6 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
     }
 
-    private ReactiveResilienceStrategyBridge<int> Create()
+    private ResiliencePipelineBridge<int> Create()
         => new(new CircuitBreakerResilienceStrategy<int>(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl));
 }

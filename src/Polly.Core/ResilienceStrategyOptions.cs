@@ -1,7 +1,7 @@
 namespace Polly;
 
 /// <summary>
-/// The options associated with the <see cref="ResilienceStrategy"/>.
+/// The options associated with the individual resilience strategy.
 /// </summary>
 public abstract class ResilienceStrategyOptions
 {

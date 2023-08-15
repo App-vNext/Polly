@@ -11,12 +11,12 @@ namespace Polly.Telemetry;
 public class TelemetryOptions
 {
     /// <summary>
-    /// Gets or sets the callback that is raised when <see cref="TelemetryEventArguments"/> is received from Polly.
+    /// Gets or sets the optional user-specified telemetry listener.
     /// </summary>
     /// <value>
     /// The default value is <see langword="null"/>.
     /// </value>
-    public Action<TelemetryEventArguments>? OnTelemetryEvent { get; set; }
+    public TelemetryListener? TelemetryListener { get; set; }
 
     /// <summary>
     /// Gets or sets the logger factory.
@@ -33,7 +33,7 @@ public class TelemetryOptions
     /// <value>
     /// The default value is an empty collection.
     /// </value>
-    public ICollection<Action<EnrichmentContext>> Enrichers { get; } = new List<Action<EnrichmentContext>>();
+    public ICollection<MeteringEnricher> MeteringEnrichers { get; } = new List<MeteringEnricher>();
 
     /// <summary>
     /// Gets or sets the result formatter.

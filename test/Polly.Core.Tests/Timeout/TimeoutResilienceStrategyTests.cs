@@ -12,12 +12,11 @@ public class TimeoutResilienceStrategyTests : IDisposable
     private readonly TimeoutStrategyOptions _options;
     private readonly CancellationTokenSource _cancellationSource;
     private readonly TimeSpan _delay = TimeSpan.FromSeconds(12);
-
-    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
+    private readonly List<TelemetryEventArguments<object, object>> _args = new();
 
     public TimeoutResilienceStrategyTests()
     {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource);
+        _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
         _options = new TimeoutStrategyOptions();
         _cancellationSource = new CancellationTokenSource();
     }
@@ -51,15 +50,12 @@ public class TimeoutResilienceStrategyTests : IDisposable
     [Fact]
     public async Task Execute_EnsureOnTimeoutCalled()
     {
-        _diagnosticSource.IsEnabled("OnTimeout").Returns(true);
-
         var called = false;
         SetTimeout(_delay);
 
         var executionTime = _delay + TimeSpan.FromSeconds(1);
         _options.OnTimeout = args =>
         {
-            args.Exception.Should().BeAssignableTo<OperationCanceledException>();
             args.Timeout.Should().Be(_delay);
             args.Context.Should().NotBeNull();
             args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
@@ -77,7 +73,9 @@ public class TimeoutResilienceStrategyTests : IDisposable
         .AsTask()).Should().ThrowAsync<TimeoutRejectedException>();
 
         called.Should().BeTrue();
-        _diagnosticSource.Received().IsEnabled("OnTimeout");
+
+        _args.Should().HaveCount(1);
+        _args[0].Arguments.Should().BeOfType<OnTimeoutArguments>();
     }
 
     [MemberData(nameof(Execute_NoTimeout_Data))]
@@ -163,7 +161,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         onTimeoutCalled.Should().BeFalse();
 
-        _diagnosticSource.DidNotReceive().IsEnabled("OnTimeout");
+        _args.Should().HaveCount(0);
     }
 
     [Fact]
@@ -233,5 +231,5 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
     private void SetTimeout(TimeSpan timeout) => _options.TimeoutGenerator = args => new ValueTask<TimeSpan>(timeout);
 
-    private ResilienceStrategy CreateSut() => new TimeoutResilienceStrategy(_options, _timeProvider, _telemetry).AsStrategy();
+    private ResiliencePipeline CreateSut() => new TimeoutResilienceStrategy(_options, _timeProvider, _telemetry).AsPipeline();
 }

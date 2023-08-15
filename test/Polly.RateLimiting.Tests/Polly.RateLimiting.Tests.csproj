@@ -15,5 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Polly.RateLimiting\Polly.RateLimiting.csproj" />
     <ProjectReference Include="..\..\src\Polly.Testing\Polly.Testing.csproj" />
+    <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
   </ItemGroup>
 </Project>

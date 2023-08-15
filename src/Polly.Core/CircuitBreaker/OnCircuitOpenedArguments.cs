@@ -1,12 +1,17 @@
 namespace Polly.CircuitBreaker;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// Arguments used by <see cref="CircuitBreakerStrategyOptions{TResult}.OnOpened"/> event.
 /// </summary>
-public sealed class OnCircuitOpenedArguments
+/// <remarks>
+/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
+/// </remarks>
+public readonly struct OnCircuitOpenedArguments
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OnCircuitOpenedArguments"/> class.
+    /// Initializes a new instance of the <see cref="OnCircuitOpenedArguments"/> struct.
     /// </summary>
     /// <param name="breakDuration">The duration of break.</param>
     /// <param name="isManual">Indicates whether the circuit was opened manually by using <see cref="CircuitBreakerManualControl"/>.</param>
