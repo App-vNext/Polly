@@ -7,6 +7,9 @@
 /// </summary>
 /// <typeparam name="TResult">The type of result.</typeparam>
 /// <typeparam name="TArgs">The arguments associated with the resilience event.</typeparam>
+/// <remarks>
+/// Always use constructor when creating this struct, otherwise we do not guarantee the binary compatibility.
+/// </remarks>
 public readonly struct TelemetryEventArguments<TResult, TArgs>
 {
     /// <summary>

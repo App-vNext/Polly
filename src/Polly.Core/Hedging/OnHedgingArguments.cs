@@ -5,6 +5,9 @@ namespace Polly.Hedging;
 /// <summary>
 /// Represents arguments used by the on-hedging event.
 /// </summary>
+/// <remarks>
+/// Always use constructor when creating this struct, otherwise we do not guarantee the binary compatibility.
+/// </remarks>
 public readonly struct OnHedgingArguments
 {
     /// <summary>

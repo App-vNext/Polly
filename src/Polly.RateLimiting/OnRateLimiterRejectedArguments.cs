@@ -2,13 +2,18 @@ using System.Threading.RateLimiting;
 
 namespace Polly.RateLimiting;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// The arguments used by the <see cref="RateLimiterStrategyOptions.OnRejected"/>.
 /// </summary>
-public sealed class OnRateLimiterRejectedArguments
+/// <remarks>
+/// Always use constructor when creating this struct, otherwise we do not guarantee the binary compatibility.
+/// </remarks>
+public readonly struct OnRateLimiterRejectedArguments
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OnRateLimiterRejectedArguments"/> class.
+    /// Initializes a new instance of the <see cref="OnRateLimiterRejectedArguments"/> struct.
     /// </summary>
     /// <param name="context">The context associated with the execution of a user-provided callback.</param>
     /// <param name="lease">The lease that has no permits and was rejected by the rate limiter.</param>

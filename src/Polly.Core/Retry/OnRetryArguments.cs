@@ -5,6 +5,9 @@ namespace Polly.Retry;
 /// <summary>
 /// Represents the arguments used by <see cref="RetryStrategyOptions{TResult}.OnRetry"/> for handling the retry event.
 /// </summary>
+/// <remarks>
+/// Always use constructor when creating this struct, otherwise we do not guarantee the binary compatibility.
+/// </remarks>
 public readonly struct OnRetryArguments
 {
     /// <summary>
