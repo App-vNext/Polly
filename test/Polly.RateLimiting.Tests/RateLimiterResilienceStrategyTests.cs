@@ -1,6 +1,6 @@
 using System.Threading.RateLimiting;
 using NSubstitute;
-using Polly.Telemetry;
+using Polly.TestUtils;
 
 namespace Polly.RateLimiting.Tests;
 
@@ -8,7 +8,7 @@ public class RateLimiterResilienceStrategyTests
 {
     private readonly RateLimiter _limiter = Substitute.For<RateLimiter>();
     private readonly RateLimitLease _lease = Substitute.For<RateLimitLease>();
-    private readonly TelemetryListener _listener = Substitute.For<TelemetryListener>();
+    private readonly FakeTelemetryListener _listener = new();
     private Func<OnRateLimiterRejectedArguments, ValueTask>? _event;
 
     [Fact]
@@ -86,7 +86,7 @@ public class RateLimiterResilienceStrategyTests
         await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, default);
         _lease.Received().Dispose();
 
-        _listener.ReceivedWithAnyArgs(1).Write<object, OnRateLimiterRejectedArguments>(default);
+        _listener.GetArgs<OnRateLimiterRejectedArguments>().Should().HaveCount(1);
     }
 
     private void SetupLimiter(CancellationToken token)

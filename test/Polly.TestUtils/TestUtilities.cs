@@ -37,11 +37,11 @@ public static class TestUtilities
         }
     }
 
-    public static ResilienceStrategyTelemetry CreateResilienceTelemetry(TelemetryListener listener)
-        => new(new ResilienceTelemetrySource("dummy-builder", "dummy-instance", "strategy-name"), listener);
+    public static ResilienceStrategyTelemetry CreateResilienceTelemetry(TelemetryListener listener, ResilienceTelemetrySource? source = null)
+        => new(source ?? new ResilienceTelemetrySource("dummy-builder", "dummy-instance", "strategy-name"), listener);
 
     public static ResilienceStrategyTelemetry CreateResilienceTelemetry(Action<TelemetryEventArguments<object, object>> callback, ResilienceTelemetrySource? source = null)
-        => new(source ?? new ResilienceTelemetrySource("dummy-builder", "dummy-instance", "strategy-name"), new CallbackTelemetryListener(callback));
+        => CreateResilienceTelemetry(new FakeTelemetryListener(callback), source);
 
     public static ILoggerFactory CreateLoggerFactory(out FakeLogger logger)
     {
