@@ -8,7 +8,7 @@ namespace Polly;
 /// Resilience pipeline supports various types of callbacks of <typeparamref name="T"/> result type
 /// and provides a unified way to execute them. This includes overloads for synchronous and asynchronous callbacks.
 /// </remarks>
-public partial class ResiliencePipeline<T>
+public sealed partial class ResiliencePipeline<T>
 {
     /// <summary>
     /// Resilience pipeline that executes the user-provided callback without any additional logic.
