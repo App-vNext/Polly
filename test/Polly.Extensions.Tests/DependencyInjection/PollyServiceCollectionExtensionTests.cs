@@ -96,7 +96,7 @@ public class PollyServiceCollectionExtensionTests
             {
                 context.RegistryContext.Should().NotBeNull();
                 context.PipelineKey.Should().Be(Key);
-                context.BuilderName.Should().Be(Key);
+                builder.Name.Should().Be(Key);
                 builder.Should().NotBeNull();
                 context.ServiceProvider.Should().NotBeNull();
                 builder.AddStrategy(new TestStrategy());

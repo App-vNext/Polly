@@ -46,12 +46,12 @@ public sealed class ResilienceContext
     /// <summary>
     /// Gets the type of the result associated with the execution.
     /// </summary>
-    public Type ResultType { get; private set; } = typeof(UnknownResult);
+    internal Type ResultType { get; private set; } = typeof(UnknownResult);
 
     /// <summary>
     /// Gets a value indicating whether the execution represents a void result.
     /// </summary>
-    public bool IsVoid => ResultType == typeof(VoidResult);
+    internal bool IsVoid => ResultType == typeof(VoidResult);
 
     /// <summary>
     /// Gets or sets a value indicating whether the execution should continue on the captured context.

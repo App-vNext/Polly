@@ -10,11 +10,13 @@ public class StrategyBuilderContextTests
     public void Ctor_EnsureDefaults()
     {
         var timeProvider = new FakeTimeProvider();
-        var context = new StrategyBuilderContext("builder-name", "instance", "strategy-name", timeProvider, Substitute.For<TelemetryListener>());
+        var context = new StrategyBuilderContext(
+            new ResilienceStrategyTelemetry(new ResilienceTelemetrySource("builder-name", "instance", "strategy-name"),
+            Substitute.For<TelemetryListener>()), timeProvider);
 
-        context.BuilderName.Should().Be("builder-name");
-        context.BuilderInstanceName.Should().Be("instance");
-        context.StrategyName.Should().Be("strategy-name");
+        context.Telemetry.TelemetrySource.PipelineName.Should().Be("builder-name");
+        context.Telemetry.TelemetrySource.PipelineInstanceName.Should().Be("instance");
+        context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name");
         context.TimeProvider.Should().Be(timeProvider);
         context.Telemetry.Should().NotBeNull();
 

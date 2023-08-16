@@ -116,20 +116,15 @@ public abstract class ResiliencePipelineBuilderBase
             return PipelineComponent.Null;
         }
 
-        return PipelineComponent.CreateComposite(
-            components,
-            TelemetryUtil.CreateTelemetry(TelemetryListener, Name, InstanceName, null),
-            TimeProvider);
+        var source = new ResilienceTelemetrySource(Name, InstanceName, null);
+
+        return PipelineComponent.CreateComposite(components, new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProvider);
     }
 
     private PipelineComponent CreateComponent(Entry entry)
     {
-        var context = new StrategyBuilderContext(
-            builderName: Name,
-            builderInstanceName: InstanceName,
-            strategyName: entry.Options.Name,
-            timeProvider: TimeProvider,
-            telemetryListener: TelemetryListener);
+        var source = new ResilienceTelemetrySource(Name, InstanceName, entry.Options.Name);
+        var context = new StrategyBuilderContext(new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProvider);
 
         var strategy = entry.Factory(context);
         strategy.Options = entry.Options;

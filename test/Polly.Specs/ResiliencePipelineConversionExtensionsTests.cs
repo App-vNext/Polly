@@ -14,7 +14,6 @@ public class ResiliencePipelineConversionExtensionsTests
     private readonly ResiliencePipeline<string> _genericStrategy;
     private bool _isSynchronous;
     private bool _isVoid;
-    private Type? _resultType;
 
     public ResiliencePipelineConversionExtensionsTests()
     {
@@ -22,16 +21,11 @@ public class ResiliencePipelineConversionExtensionsTests
         {
             Before = (context, _) =>
             {
-                context.IsVoid.Should().Be(_isVoid);
+                context.GetType().GetProperty("IsVoid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context).Should().Be(_isVoid);
                 context.IsSynchronous.Should().Be(_isSynchronous);
                 context.Properties.Set(Outgoing, "outgoing-value");
                 context.Properties.GetValue(Incoming, string.Empty).Should().Be("incoming-value");
                 context.OperationKey.Should().Be("op-key");
-
-                if (_resultType != null)
-                {
-                    context.ResultType.Should().Be(_resultType);
-                }
             }
         };
 
@@ -64,7 +58,6 @@ public class ResiliencePipelineConversionExtensionsTests
     {
         _isVoid = false;
         _isSynchronous = true;
-        _resultType = typeof(string);
         var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
@@ -80,7 +73,6 @@ public class ResiliencePipelineConversionExtensionsTests
     {
         _isVoid = false;
         _isSynchronous = true;
-        _resultType = typeof(string);
         var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
@@ -117,7 +109,6 @@ public class ResiliencePipelineConversionExtensionsTests
     {
         _isVoid = false;
         _isSynchronous = false;
-        _resultType = typeof(string);
         var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
@@ -138,7 +129,6 @@ public class ResiliencePipelineConversionExtensionsTests
     {
         _isVoid = false;
         _isSynchronous = false;
-        _resultType = typeof(string);
         var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
