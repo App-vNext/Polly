@@ -4,11 +4,13 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly.Utils;
 
 namespace Polly;
 
-public class ResiliencePipeline<T>
+public sealed class ResiliencePipeline<T>
 {
+    public static readonly ResiliencePipeline<T> Null;
     public ValueTask<TResult> ExecuteAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state) where TResult : T;
     public ValueTask<TResult> ExecuteAsync<TResult>(Func<ResilienceContext, ValueTask<TResult>> callback, ResilienceContext context) where TResult : T;
     public ValueTask<TResult> ExecuteAsync<TResult, TState>(Func<TState, CancellationToken, ValueTask<TResult>> callback, TState state, CancellationToken cancellationToken = default(CancellationToken)) where TResult : T;

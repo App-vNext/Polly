@@ -5,11 +5,13 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly.Utils;
 
 namespace Polly;
 
-public abstract class ResiliencePipeline
+public sealed class ResiliencePipeline
 {
+    public static readonly ResiliencePipeline Null;
     public ValueTask ExecuteAsync<TState>(Func<ResilienceContext, TState, ValueTask> callback, ResilienceContext context, TState state);
     public ValueTask ExecuteAsync(Func<ResilienceContext, ValueTask> callback, ResilienceContext context);
     public ValueTask ExecuteAsync<TState>(Func<TState, CancellationToken, ValueTask> callback, TState state, CancellationToken cancellationToken = default(CancellationToken));
