@@ -167,22 +167,14 @@ Polly.Registry.ConfigureBuilderContext<TKey>.PipelineKey.get -> TKey
 Polly.Registry.ResiliencePipelineProvider<TKey>
 Polly.Registry.ResiliencePipelineProvider<TKey>.ResiliencePipelineProvider() -> void
 Polly.Registry.ResiliencePipelineRegistry<TKey>
-Polly.Registry.ResiliencePipelineRegistry<TKey>.ClearPipelines() -> void
-Polly.Registry.ResiliencePipelineRegistry<TKey>.ClearPipelines<TResult>() -> void
 Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline(TKey key, System.Action<Polly.ResiliencePipelineBuilder!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> Polly.ResiliencePipeline!
 Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline(TKey key, System.Action<Polly.ResiliencePipelineBuilder!>! configure) -> Polly.ResiliencePipeline!
 Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline<TResult>(TKey key, System.Action<Polly.ResiliencePipelineBuilder<TResult>!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> Polly.ResiliencePipeline<TResult>!
 Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline<TResult>(TKey key, System.Action<Polly.ResiliencePipelineBuilder<TResult>!>! configure) -> Polly.ResiliencePipeline<TResult>!
-Polly.Registry.ResiliencePipelineRegistry<TKey>.RemoveBuilder(TKey key) -> bool
-Polly.Registry.ResiliencePipelineRegistry<TKey>.RemoveBuilder<TResult>(TKey key) -> bool
-Polly.Registry.ResiliencePipelineRegistry<TKey>.RemovePipeline(TKey key) -> bool
-Polly.Registry.ResiliencePipelineRegistry<TKey>.RemovePipeline<TResult>(TKey key) -> bool
 Polly.Registry.ResiliencePipelineRegistry<TKey>.ResiliencePipelineRegistry() -> void
 Polly.Registry.ResiliencePipelineRegistry<TKey>.ResiliencePipelineRegistry(Polly.Registry.ResiliencePipelineRegistryOptions<TKey>! options) -> void
 Polly.Registry.ResiliencePipelineRegistry<TKey>.TryAddBuilder(TKey key, System.Action<Polly.ResiliencePipelineBuilder!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> bool
 Polly.Registry.ResiliencePipelineRegistry<TKey>.TryAddBuilder<TResult>(TKey key, System.Action<Polly.ResiliencePipelineBuilder<TResult>!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> bool
-Polly.Registry.ResiliencePipelineRegistry<TKey>.TryAddPipeline(TKey key, Polly.ResiliencePipeline! pipeline) -> bool
-Polly.Registry.ResiliencePipelineRegistry<TKey>.TryAddPipeline<TResult>(TKey key, Polly.ResiliencePipeline<TResult>! pipeline) -> bool
 Polly.Registry.ResiliencePipelineRegistryOptions<TKey>
 Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.BuilderComparer.get -> System.Collections.Generic.IEqualityComparer<TKey>!
 Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.BuilderComparer.set -> void

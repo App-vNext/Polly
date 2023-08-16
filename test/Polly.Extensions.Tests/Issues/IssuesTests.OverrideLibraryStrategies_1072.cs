@@ -15,7 +15,6 @@ public partial class IssuesTests
         // arrange
         var services = new ServiceCollection();
         var failFirstCall = true;
-        AddLibraryServices(services);
 
         if (overrideStrategy)
         {
@@ -31,6 +30,8 @@ public partial class IssuesTests
                 BaseDelay = TimeSpan.Zero
             }));
         }
+
+        AddLibraryServices(services);
 
         var serviceProvider = services.BuildServiceProvider();
         var api = serviceProvider.GetRequiredService<LibraryApi>();

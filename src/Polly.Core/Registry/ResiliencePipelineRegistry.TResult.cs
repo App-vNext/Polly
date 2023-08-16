@@ -28,10 +28,6 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
             _instanceNameFormatter = instanceNameFormatter;
         }
 
-        public bool TryAdd(TKey key, ResiliencePipeline<TResult> strategy) => _strategies.TryAdd(key, strategy);
-
-        public bool Remove(TKey key) => _strategies.TryRemove(key, out _);
-
         public bool TryGet(TKey key, [NotNullWhen(true)] out ResiliencePipeline<TResult>? strategy)
         {
             if (_strategies.TryGetValue(key, out strategy))
@@ -65,9 +61,5 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
         }
 
         public bool TryAddBuilder(TKey key, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);
-
-        public bool RemoveBuilder(TKey key) => _builders.TryRemove(key, out _);
-
-        public void Clear() => _strategies.Clear();
     }
 }
