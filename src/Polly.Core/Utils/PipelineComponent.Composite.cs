@@ -5,7 +5,7 @@ namespace Polly.Utils;
 internal abstract partial class PipelineComponent
 {
     /// <summary>
-    /// A combination of multiple resilience strategies.
+    /// A combination of multiple components.
     /// </summary>
     [DebuggerDisplay("Pipeline, Strategies = {Strategies.Count}")]
     [DebuggerTypeProxy(typeof(CompositeDebuggerProxy))]
@@ -48,26 +48,26 @@ internal abstract partial class PipelineComponent
                 return new CompositeComponent(components[0], components, telemetry, timeProvider);
             }
 
-            // convert all strategies to delegating ones (except the last one as it's not required)
-            var delegatingStrategies = components
+            // convert all components to delegating ones (except the last one as it's not required)
+            var delegatingComponents = components
                 .Take(components.Count - 1)
-                .Select(strategy => new DelegatingPipelineComponent(strategy))
+                .Select(strategy => new DelegatingComponent(strategy))
                 .ToList();
 
 #if NET6_0_OR_GREATER
             // link the last one
-            delegatingStrategies[^1].Next = components[^1];
+            delegatingComponents[^1].Next = components[^1];
 #else
-            delegatingStrategies[delegatingStrategies.Count - 1].Next = components[components.Count - 1];
+            delegatingComponents[delegatingComponents.Count - 1].Next = components[components.Count - 1];
 #endif
 
             // link the remaining ones
-            for (var i = 0; i < delegatingStrategies.Count - 1; i++)
+            for (var i = 0; i < delegatingComponents.Count - 1; i++)
             {
-                delegatingStrategies[i].Next = delegatingStrategies[i + 1];
+                delegatingComponents[i].Next = delegatingComponents[i + 1];
             }
 
-            return new CompositeComponent(delegatingStrategies[0], components, telemetry, timeProvider);
+            return new CompositeComponent(delegatingComponents[0], components, telemetry, timeProvider);
         }
 
         public IReadOnlyList<PipelineComponent> Components { get; }
@@ -100,13 +100,13 @@ internal abstract partial class PipelineComponent
     }
 
     /// <summary>
-    /// A resilience strategy that delegates the execution to the next strategy in the chain.
+    /// A component that delegates the execution to the next component in the chain.
     /// </summary>
-    private sealed class DelegatingPipelineComponent : PipelineComponent
+    private sealed class DelegatingComponent : PipelineComponent
     {
         private readonly PipelineComponent _component;
 
-        public DelegatingPipelineComponent(PipelineComponent component) => _component = component;
+        public DelegatingComponent(PipelineComponent component) => _component = component;
 
         public PipelineComponent? Next { get; set; }
 
