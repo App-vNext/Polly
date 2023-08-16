@@ -39,7 +39,7 @@ public sealed class ResilienceContext
     /// <summary>
     /// Gets a value indicating whether the execution is synchronous.
     /// </summary>
-    public bool IsSynchronous { get; private set; }
+    internal bool IsSynchronous { get; private set; }
 
     /// <summary>
     /// Gets the type of the result associated with the execution.

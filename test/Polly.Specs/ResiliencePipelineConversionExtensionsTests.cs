@@ -22,7 +22,7 @@ public class ResiliencePipelineConversionExtensionsTests
             Before = (context, _) =>
             {
                 context.GetType().GetProperty("IsVoid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context).Should().Be(_isVoid);
-                context.IsSynchronous.Should().Be(_isSynchronous);
+                context.GetType().GetProperty("IsSynchronous", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context).Should().Be(_isSynchronous);
                 context.Properties.Set(Outgoing, "outgoing-value");
                 context.Properties.GetValue(Incoming, string.Empty).Should().Be("incoming-value");
                 context.OperationKey.Should().Be("op-key");
