@@ -14,8 +14,6 @@ namespace Polly;
 /// </remarks>
 public sealed class ResilienceContext
 {
-    private const bool ContinueOnCapturedContextDefault = false;
-
     private readonly List<ResilienceEvent> _resilienceEvents = new();
 
     internal ResilienceContext()
@@ -54,9 +52,9 @@ public sealed class ResilienceContext
     internal bool IsVoid => ResultType == typeof(VoidResult);
 
     /// <summary>
-    /// Gets or sets a value indicating whether the execution should continue on the captured context.
+    /// Gets a value indicating whether the execution should continue on the captured context.
     /// </summary>
-    public bool ContinueOnCapturedContext { get; set; }
+    public bool ContinueOnCapturedContext { get; internal set; }
 
     /// <summary>
     /// Gets a value indicating whether the context is initialized.
@@ -98,7 +96,6 @@ public sealed class ResilienceContext
     {
         IsSynchronous = isSynchronous;
         ResultType = typeof(TResult);
-        ContinueOnCapturedContext = ContinueOnCapturedContextDefault;
 
         return this;
     }

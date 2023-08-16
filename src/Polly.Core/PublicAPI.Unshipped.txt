@@ -1,7 +1,7 @@
 ﻿#nullable enable
 abstract Polly.Registry.ResiliencePipelineProvider<TKey>.TryGetPipeline(TKey key, out Polly.ResiliencePipeline? pipeline) -> bool
 abstract Polly.Registry.ResiliencePipelineProvider<TKey>.TryGetPipeline<TResult>(TKey key, out Polly.ResiliencePipeline<TResult>? pipeline) -> bool
-abstract Polly.ResilienceContextPool.Get(string? operationKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
+abstract Polly.ResilienceContextPool.Get(Polly.ResilienceContextCreationArguments arguments) -> Polly.ResilienceContext!
 abstract Polly.ResilienceContextPool.Return(Polly.ResilienceContext! context) -> void
 abstract Polly.ResilienceStrategy.ExecuteCore<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 abstract Polly.ResilienceStrategy<TResult>.ExecuteCore<TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
@@ -198,12 +198,20 @@ Polly.Registry.ResiliencePipelineRegistryOptions<TKey>.ResiliencePipelineRegistr
 Polly.ResilienceContext
 Polly.ResilienceContext.CancellationToken.get -> System.Threading.CancellationToken
 Polly.ResilienceContext.ContinueOnCapturedContext.get -> bool
-Polly.ResilienceContext.ContinueOnCapturedContext.set -> void
 Polly.ResilienceContext.IsSynchronous.get -> bool
 Polly.ResilienceContext.OperationKey.get -> string?
 Polly.ResilienceContext.Properties.get -> Polly.ResilienceProperties!
 Polly.ResilienceContext.ResilienceEvents.get -> System.Collections.Generic.IReadOnlyList<Polly.Telemetry.ResilienceEvent>!
+Polly.ResilienceContextCreationArguments
+Polly.ResilienceContextCreationArguments.CancellationToken.get -> System.Threading.CancellationToken
+Polly.ResilienceContextCreationArguments.ContinueOnCapturedContext.get -> bool?
+Polly.ResilienceContextCreationArguments.OperationKey.get -> string?
+Polly.ResilienceContextCreationArguments.ResilienceContextCreationArguments() -> void
+Polly.ResilienceContextCreationArguments.ResilienceContextCreationArguments(string? operationKey, bool? continueOnCapturedContext, System.Threading.CancellationToken cancellationToken) -> void
 Polly.ResilienceContextPool
+Polly.ResilienceContextPool.Get(bool continueOnCapturedContext, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
+Polly.ResilienceContextPool.Get(string? operationKey, bool? continueOnCapturedContext, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
+Polly.ResilienceContextPool.Get(string? operationKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
 Polly.ResilienceContextPool.Get(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Polly.ResilienceContext!
 Polly.ResilienceContextPool.ResilienceContextPool() -> void
 Polly.ResiliencePipeline
