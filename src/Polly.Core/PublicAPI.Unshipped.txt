@@ -202,7 +202,6 @@ Polly.ResilienceContext.CancellationToken.get -> System.Threading.CancellationTo
 Polly.ResilienceContext.ContinueOnCapturedContext.get -> bool
 Polly.ResilienceContext.ContinueOnCapturedContext.set -> void
 Polly.ResilienceContext.IsSynchronous.get -> bool
-Polly.ResilienceContext.IsVoid.get -> bool
 Polly.ResilienceContext.OperationKey.get -> string?
 Polly.ResilienceContext.Properties.get -> Polly.ResilienceProperties!
 Polly.ResilienceContext.ResilienceEvents.get -> System.Collections.Generic.IReadOnlyList<Polly.Telemetry.ResilienceEvent>!

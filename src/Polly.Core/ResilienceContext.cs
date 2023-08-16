@@ -51,7 +51,7 @@ public sealed class ResilienceContext
     /// <summary>
     /// Gets a value indicating whether the execution represents a void result.
     /// </summary>
-    public bool IsVoid => ResultType == typeof(VoidResult);
+    internal bool IsVoid => ResultType == typeof(VoidResult);
 
     /// <summary>
     /// Gets or sets a value indicating whether the execution should continue on the captured context.
