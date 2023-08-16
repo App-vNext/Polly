@@ -297,8 +297,8 @@ The RequiredProperty field is required.
         builder.AddStrategy(
             context =>
             {
-                context.BuilderName.Should().Be("builder-name");
-                context.StrategyName.Should().Be("strategy-name");
+                context.Telemetry.TelemetrySource.PipelineName.Should().Be("builder-name");
+                context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name");
                 context.Telemetry.Should().NotBeNull();
                 context.TimeProvider.Should().Be(builder.TimeProvider);
                 verified1 = true;
@@ -310,8 +310,8 @@ The RequiredProperty field is required.
         builder.AddStrategy(
             context =>
             {
-                context.BuilderName.Should().Be("builder-name");
-                context.StrategyName.Should().Be("strategy-name-2");
+                context.Telemetry.TelemetrySource.PipelineName.Should().Be("builder-name");
+                context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name-2");
                 context.Telemetry.Should().NotBeNull();
                 context.TimeProvider.Should().Be(builder.TimeProvider);
                 verified2 = true;

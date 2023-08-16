@@ -32,22 +32,19 @@ internal static partial class Log
         LogLevel.Debug,
         "Resilience pipeline executing. " +
         "Source: '{PipelineName}/{PipelineInstance}', " +
-        "Operation Key: '{OperationKey}', " +
-        "Result Type: '{ResultType}'",
+        "Operation Key: '{OperationKey}'",
         EventName = "StrategyExecuting")]
     public static partial void PipelineExecuting(
         this ILogger logger,
         string pipelineName,
         string pipelineInstance,
-        string? operationKey,
-        string resultType);
+        string? operationKey);
 
     [LoggerMessage(
         EventId = 2,
         Message = "Resilience pipeline executed. " +
             "Source: '{PipelineName}/{PipelineInstance}', " +
             "Operation Key: '{OperationKey}', " +
-            "Result Type: '{ResultType}', " +
             "Result: '{Result}', " +
             "Execution Health: '{ExecutionHealth}', " +
             "Execution Time: {ExecutionTime}ms",
@@ -58,7 +55,6 @@ internal static partial class Log
         string pipelineName,
         string pipelineInstance,
         string? operationKey,
-        string resultType,
         object? result,
         string executionHealth,
         double executionTime,

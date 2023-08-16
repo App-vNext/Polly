@@ -94,7 +94,6 @@ Dimensions:
 |`pipeline-instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
 |`strategy-name`| The name of the strategy generating this event.|
 |`operation-key`| The operation key associated with the call site. |
-|`result-type`| The result type (`string`, `HttpResponseMessage`). |
 |`exception-name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 
 #### execution-attempt-duration
@@ -113,7 +112,6 @@ Dimensions:
 |`pipeline-instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
 |`strategy-name`| The name of the strategy generating this event.|
 |`operation-key`| The operation key associated with the call site. |
-|`result-type`| The result type (`string`, `HttpResponseMessage`). |
 |`exception-name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 |`attempt-number`| The execution attempt number, starting at 0 (0, 1, 2). |
 |`attempt-handled`| Indicates if the execution outcome was handled. A handled outcome indicates execution failure and the need for retry (`true`, `false`). |
@@ -131,7 +129,6 @@ Dimensions:
 |`pipeline-name`| The name of the pipeline corresponding to the resilience pipeline.|
 |`pipeline-instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
 |`operation-key`| The operation key associated with the call site. |
-|`result-type`| The result type (`string`, `HttpResponseMessage`). |
 |`exception-name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 |`execution-health`| Indicates whether the execution was healthy or not (`Healthy`, `Unhealthy`). |
 
@@ -141,14 +138,14 @@ Logs are registered under the `Polly` logger name. Here are some examples of the
 
 ``` text
 // This log is recorded whenever a resilience event occurs. EventId = 0
-Resilience event occurred. EventName: '{EventName}', Source: '{BuilderName}[{BuilderInstance}]/{StrategyType}[{StrategyName}]', Operation Key: '{OperationKey}', Result: '{Result}'
+Resilience event occurred. EventName: '{EventName}', Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', Operation Key: '{OperationKey}', Result: '{Result}'
 
 // This log is recorded when a resilience pipeline begins executing. EventId = 1
-Resilience pipeline executing. Source: '{BuilderName}[{BuilderInstance}]', Operation Key: '{OperationKey}', Result Type: '{ResultType}'
+Resilience pipeline executing. Source: '{PipelineName}/{PipelineInstance}', Operation Key: '{OperationKey}'
 
 // This log is recorded when a resilience pipeline finishes execution. EventId = 2
-Resilience pipeline executed. Source: '{BuilderName}[{BuilderInstance}]', Operation Key: '{OperationKey}', Result Type: '{ResultType}', Result: '{Result}', Execution Health: '{ExecutionHealth}', Execution Time: {ExecutionTime}ms
+Resilience pipeline executed. Source: '{PipelineName}/{PipelineInstance}', Operation Key: '{OperationKey}', Result: '{Result}', Execution Health: '{ExecutionHealth}', Execution Time: {ExecutionTime}ms
 
 // This log is recorded upon the completion of every execution attempt. EventId = 3
-Execution attempt. Source: '{BuilderName}[{BuilderInstance}]/{StrategyType}[{StrategyName}]', Operation Key: '{OperationKey}', Result: '{Result}', Handled: '{Handled}', Attempt: '{Attempt}', Execution Time: '{ExecutionTimeMs}'
+Execution attempt. Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', Operation Key: '{OperationKey}', Result: '{Result}', Handled: '{Handled}', Attempt: '{Attempt}', Execution Time: '{ExecutionTimeMs}'
 ```

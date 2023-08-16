@@ -282,22 +282,16 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
         var builder = factory();
         var pipeline = builder.BuildPipeline();
-        var diagnosticSource = builder.TelemetryListener;
+        var telemetry = new ResilienceStrategyTelemetry(
+            new ResilienceTelemetrySource(context.BuilderName, context.BuilderInstanceName, null),
+            builder.TelemetryListener);
 
         if (context.ReloadTokenProducer is null)
         {
             return pipeline;
         }
 
-        return new ReloadableResiliencePipeline(
-            pipeline,
-            context.ReloadTokenProducer(),
-            () => factory().BuildPipeline(),
-            TelemetryUtil.CreateTelemetry(
-                diagnosticSource,
-                context.BuilderName,
-                context.BuilderInstanceName,
-                null));
+        return new ReloadableResiliencePipeline(pipeline, context.ReloadTokenProducer(), () => factory().BuildPipeline(), telemetry);
     }
 
     private GenericRegistry<TResult> GetGenericRegistry<TResult>()

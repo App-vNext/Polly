@@ -4,17 +4,6 @@ namespace Polly.Core.Tests.Telemetry;
 
 public class TelemetryUtilTests
 {
-    [Fact]
-    public void CreateResilienceTelemetry_Ok()
-    {
-        var telemetry = TelemetryUtil.CreateTelemetry(null, "builder", "instance", "strategy-name");
-
-        telemetry.TelemetrySource.PipelineName.Should().Be("builder");
-        telemetry.TelemetrySource.PipelineInstanceName.Should().Be("instance");
-        telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name");
-        telemetry.Listener.Should().BeNull();
-    }
-
     [InlineData(true, ResilienceEventSeverity.Warning)]
     [InlineData(false, ResilienceEventSeverity.Information)]
     [Theory]
