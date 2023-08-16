@@ -4,6 +4,20 @@ namespace Polly.Core.Tests.Utils;
 
 public class StrategyHelperTests
 {
+    [Fact]
+    public async Task ExecuteCallbackSafeAsync_Cancelled_EnsureOperationCanceledException()
+    {
+        using var token = new CancellationTokenSource();
+        token.Cancel();
+
+        var outcome = await StrategyHelper.ExecuteCallbackSafeAsync<string, string>(
+            (_, _) => throw new InvalidOperationException(),
+            ResilienceContextPool.Shared.Get(token.Token),
+            "dummy");
+
+        outcome.Exception.Should().BeOfType<OperationCanceledException>();
+    }
+
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
