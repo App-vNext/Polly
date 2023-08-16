@@ -10,8 +10,6 @@ namespace Polly.Registry;
 public class ConfigureBuilderContext<TKey> where TKey : notnull
 {
     public TKey PipelineKey { get; }
-    public string BuilderName { get; }
-    public string? BuilderInstanceName { get; }
     [EditorBrowsable(EditorBrowsableState.Never)]
     public void EnableReloads(Func<Func<CancellationToken>> tokenProducerFactory);
 }

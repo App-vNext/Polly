@@ -15,8 +15,6 @@ public sealed class ResilienceContext
     public string? OperationKey { get; }
     public CancellationToken CancellationToken { get; }
     public bool IsSynchronous { get; }
-    public Type ResultType { get; }
-    public bool IsVoid { get; }
     public bool ContinueOnCapturedContext { get; set; }
     public ResilienceProperties Properties { get; }
     public IReadOnlyList<ResilienceEvent> ResilienceEvents { get; }

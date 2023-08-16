@@ -16,6 +16,4 @@ public abstract class ResiliencePipelineBuilderBase
     public string? InstanceName { get; set; }
     [EditorBrowsable(EditorBrowsableState.Never)]
     public TelemetryListener? TelemetryListener { get; set; }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public Action<ResilienceValidationContext> Validator { get; }
 }
