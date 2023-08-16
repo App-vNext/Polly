@@ -40,6 +40,36 @@ public class ResilienceContextPoolTests
         context.CancellationToken.Should().Be(token.Token);
     }
 
+    [Fact]
+    public void Get_ContinueOnCapturedContextDefault_ShouldBeFalse()
+    {
+        using var token = new CancellationTokenSource();
+
+        var context = ResilienceContextPool.Shared.Get();
+
+        context.ContinueOnCapturedContext.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Get_ContinueOnCapturedContext_Ok()
+    {
+        var context = ResilienceContextPool.Shared.Get(true);
+
+        context.ContinueOnCapturedContext.Should().Be(true);
+    }
+
+    [Fact]
+    public void Get_OperationKeyContinueOnCapturedContext_Ok()
+    {
+        using var token = new CancellationTokenSource();
+
+        var context = ResilienceContextPool.Shared.Get("dummy", true, token.Token);
+
+        context.ContinueOnCapturedContext.Should().Be(true);
+        context.OperationKey.Should().Be("dummy");
+        context.CancellationToken.Should().Be(token.Token);
+    }
+
     [InlineData(null)]
     [InlineData("")]
     [InlineData("some-key")]
