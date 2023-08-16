@@ -3,6 +3,7 @@ using Polly.Registry;
 using Polly.Retry;
 using Polly.Testing;
 using Polly.Timeout;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.Registry;
 
@@ -63,9 +64,9 @@ public class ResiliencePipelineRegistryTests
 
         registry.TryAddBuilder<string>("C", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
 
-        registry.TryAddPipeline("A", new TestResiliencePipeline<string>());
-        registry.TryAddPipeline("B", new TestResiliencePipeline<string>());
-        registry.TryAddPipeline("C", new TestResiliencePipeline<string>());
+        registry.TryAddPipeline("A", new ResiliencePipeline<string>(PipelineComponent.Null));
+        registry.TryAddPipeline("B", new ResiliencePipeline<string>(PipelineComponent.Null));
+        registry.TryAddPipeline("C", new ResiliencePipeline<string>(PipelineComponent.Null));
 
         registry.ClearPipelines<string>();
 
@@ -94,8 +95,8 @@ public class ResiliencePipelineRegistryTests
     {
         var registry = new ResiliencePipelineRegistry<string>();
 
-        registry.TryAddPipeline("A", new TestResiliencePipeline<string>());
-        registry.TryAddPipeline("B", new TestResiliencePipeline<string>());
+        registry.TryAddPipeline("A", new ResiliencePipeline<string>(PipelineComponent.Null));
+        registry.TryAddPipeline("B", new ResiliencePipeline<string>(PipelineComponent.Null));
 
         registry.RemovePipeline<string>("A").Should().BeTrue();
         registry.RemovePipeline<string>("A").Should().BeFalse();
@@ -316,7 +317,7 @@ public class ResiliencePipelineRegistryTests
     [Fact]
     public void TryGet_GenericExplicitPipelineAdded_Ok()
     {
-        var expectedPipeline = new TestResiliencePipeline<string>();
+        var expectedPipeline = new ResiliencePipeline<string>(PipelineComponent.Null);
         var registry = CreateRegistry();
         var key = StrategyId.Create("A", "Instance");
         registry.TryAddPipeline<string>(key, expectedPipeline).Should().BeTrue();
@@ -343,12 +344,12 @@ public class ResiliencePipelineRegistryTests
     [Fact]
     public void TryAdd_GenericTwice_SecondNotAdded()
     {
-        var expectedPipeline = new TestResiliencePipeline<string>();
+        var expectedPipeline = new ResiliencePipeline<string>(PipelineComponent.Null);
         var registry = CreateRegistry();
         var key = StrategyId.Create("A", "Instance");
         registry.TryAddPipeline(key, expectedPipeline).Should().BeTrue();
 
-        registry.TryAddPipeline(key, new TestResiliencePipeline<string>()).Should().BeFalse();
+        registry.TryAddPipeline(key, new ResiliencePipeline<string>(PipelineComponent.Null)).Should().BeFalse();
 
         registry.TryGetPipeline<string>(key, out var strategy).Should().BeTrue();
         strategy.Should().BeSameAs(expectedPipeline);
