@@ -19,7 +19,7 @@ public sealed class AddResiliencePipelineContext<TKey>
     }
 
     /// <summary>
-    /// Gets the strategy key for the strategy being created.
+    /// Gets the pipeline key for the pipeline being created.
     /// </summary>
     public TKey PipelineKey => RegistryContext.PipelineKey;
 
