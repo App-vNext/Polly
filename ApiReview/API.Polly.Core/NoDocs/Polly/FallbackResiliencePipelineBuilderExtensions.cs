@@ -7,5 +7,5 @@ namespace Polly;
 
 public static class FallbackResiliencePipelineBuilderExtensions
 {
-    public static ResiliencePipelineBuilder<TResult> AddFallback<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(this ResiliencePipelineBuilder<TResult> builder, FallbackStrategyOptions<TResult> options);
+    public static ResiliencePipelineBuilder<TResult> AddFallback<TResult>(this ResiliencePipelineBuilder<TResult> builder, FallbackStrategyOptions<TResult> options);
 }

@@ -11,6 +11,6 @@ public sealed class AddResiliencePipelineContext<TKey> where TKey : notnull
 {
     public TKey PipelineKey { get; }
     public IServiceProvider ServiceProvider { get; }
-    public void EnableReloads<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(string? name = null);
-    public TOptions GetOptions<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(string? name = null);
+    public void EnableReloads<TOptions>(string? name = null);
+    public TOptions GetOptions<TOptions>(string? name = null);
 }

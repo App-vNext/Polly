@@ -7,5 +7,5 @@ namespace Polly.Registry;
 
 public static class ConfigureBuilderContextExtensions
 {
-    public static void EnableReloads<TKey, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(this ConfigureBuilderContext<TKey> context, IOptionsMonitor<TOptions> optionsMonitor, string? name = null) where TKey : notnull;
+    public static void EnableReloads<TKey, TOptions>(this ConfigureBuilderContext<TKey> context, IOptionsMonitor<TOptions> optionsMonitor, string? name = null) where TKey : notnull;
 }

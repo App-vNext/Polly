@@ -7,5 +7,5 @@ namespace Polly;
 
 public static class HedgingResiliencePipelineBuilderExtensions
 {
-    public static ResiliencePipelineBuilder<TResult> AddHedging<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(this ResiliencePipelineBuilder<TResult> builder, HedgingStrategyOptions<TResult> options);
+    public static ResiliencePipelineBuilder<TResult> AddHedging<TResult>(this ResiliencePipelineBuilder<TResult> builder, HedgingStrategyOptions<TResult> options);
 }
