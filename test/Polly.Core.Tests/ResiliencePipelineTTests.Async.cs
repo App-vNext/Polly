@@ -81,7 +81,7 @@ public partial class ResiliencePipelineTests
     [Fact]
     public async Task ExecuteOutcomeAsync_GenericStrategy_Ok()
     {
-        var result = await NullResiliencePipeline<int>.Instance.ExecuteOutcomeAsync((context, state) =>
+        var result = await ResiliencePipeline<int>.Null.ExecuteOutcomeAsync((context, state) =>
         {
             state.Should().Be("state");
             context.IsSynchronous.Should().BeFalse();

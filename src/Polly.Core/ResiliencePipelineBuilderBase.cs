@@ -114,7 +114,7 @@ public abstract class ResiliencePipelineBuilderBase
 
         if (components.Count == 0)
         {
-            return NullResiliencePipeline.Instance.Component;
+            return PipelineComponent.Null;
         }
 
         return PipelineComponent.CreateComposite(

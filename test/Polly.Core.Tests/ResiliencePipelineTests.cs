@@ -8,6 +8,13 @@ public partial class ResiliencePipelineTests
     public static readonly CancellationToken CancellationToken = new CancellationTokenSource().Token;
 
     [Fact]
+    public void Null_Ok()
+    {
+        ResiliencePipeline.Null.Should().NotBeNull();
+        ResiliencePipeline<string>.Null.Should().NotBeNull();
+    }
+
+    [Fact]
     public void DebuggerProxy_Ok()
     {
         var pipeline = (PipelineComponent.CompositeComponent)PipelineComponent.CreateComposite(new[]

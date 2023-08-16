@@ -10,7 +10,7 @@ public class ResiliencePipelineBenchmark
     public async ValueTask ExecuteOutcomeAsync()
     {
         var context = ResilienceContextPool.Shared.Get();
-        await NullResiliencePipeline.Instance.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state").ConfigureAwait(false);
+        await ResiliencePipeline.Null.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state").ConfigureAwait(false);
         ResilienceContextPool.Shared.Return(context);
     }
 
@@ -18,40 +18,40 @@ public class ResiliencePipelineBenchmark
     public async ValueTask ExecuteAsync_ResilienceContextAndState()
     {
         var context = ResilienceContextPool.Shared.Get();
-        await NullResiliencePipeline.Instance.ExecuteAsync((_, _) => new ValueTask<string>("dummy"), context, "state").ConfigureAwait(false);
+        await ResiliencePipeline.Null.ExecuteAsync((_, _) => new ValueTask<string>("dummy"), context, "state").ConfigureAwait(false);
         ResilienceContextPool.Shared.Return(context);
     }
 
     [Benchmark]
     public async ValueTask ExecuteAsync_CancellationToken()
     {
-        await NullResiliencePipeline.Instance.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
+        await ResiliencePipeline.Null.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
     }
 
     [Benchmark]
     public async ValueTask ExecuteAsync_GenericStrategy_CancellationToken()
     {
-        await NullResiliencePipeline<string>.Instance.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
+        await ResiliencePipeline<string>.Null.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
     }
 
     [Benchmark]
     public void Execute_ResilienceContextAndState()
     {
         var context = ResilienceContextPool.Shared.Get();
-        NullResiliencePipeline.Instance.Execute((_, _) => "dummy", context, "state");
+        ResiliencePipeline.Null.Execute((_, _) => "dummy", context, "state");
         ResilienceContextPool.Shared.Return(context);
     }
 
     [Benchmark]
     public void Execute_CancellationToken()
     {
-        NullResiliencePipeline.Instance.Execute(_ => "dummy", CancellationToken.None);
+        ResiliencePipeline.Null.Execute(_ => "dummy", CancellationToken.None);
     }
 
     [Benchmark]
     public void Execute_GenericStrategy_CancellationToken()
     {
-        NullResiliencePipeline<string>.Instance.Execute(_ => "dummy", CancellationToken.None);
+        ResiliencePipeline<string>.Null.Execute(_ => "dummy", CancellationToken.None);
     }
 
     public class NonGenericStrategy

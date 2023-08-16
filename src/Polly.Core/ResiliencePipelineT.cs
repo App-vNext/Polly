@@ -10,6 +10,11 @@ namespace Polly;
 /// </remarks>
 public partial class ResiliencePipeline<T>
 {
+    /// <summary>
+    /// Resilience pipeline that executes the user-provided callback without any additional logic.
+    /// </summary>
+    public static readonly ResiliencePipeline<T> Null = new(PipelineComponent.Null);
+
     internal ResiliencePipeline(PipelineComponent component) => Pipeline = new ResiliencePipeline(component);
 
     internal PipelineComponent Component => Pipeline.Component;

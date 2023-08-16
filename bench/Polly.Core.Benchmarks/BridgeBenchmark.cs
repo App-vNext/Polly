@@ -9,7 +9,7 @@ public class BridgeBenchmark
     public void Setup()
     {
         _policy = Policy.NoOpAsync<string>();
-        _policyWrapped = NullResiliencePipeline<string>.Instance.AsAsyncPolicy();
+        _policyWrapped = ResiliencePipeline<string>.Null.AsAsyncPolicy();
     }
 
     [Benchmark(Baseline = true)]
