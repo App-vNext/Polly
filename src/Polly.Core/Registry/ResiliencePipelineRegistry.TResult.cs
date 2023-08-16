@@ -5,7 +5,7 @@ namespace Polly.Registry;
 public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelineProvider<TKey>
     where TKey : notnull
 {
-    private sealed class GenericRegistry<TResult>
+    private sealed class GenericRegistry<TResult> : IDisposable, IAsyncDisposable
     {
         private readonly Func<ResiliencePipelineBuilder<TResult>> _activator;
         private readonly ConcurrentDictionary<TKey, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>>> _builders;
@@ -52,14 +52,34 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 #if NETCOREAPP3_0_OR_GREATER
             return _strategies.GetOrAdd(key, static (_, factory) =>
             {
-                return new ResiliencePipeline<TResult>(CreatePipelineComponent(factory.instance._activator, factory.context, factory.configure));
+                return new ResiliencePipeline<TResult>(CreatePipelineComponent(factory.instance._activator, factory.context, factory.configure), DisposeBehavior.Reject);
             },
             (instance: this, context, configure));
 #else
-            return _strategies.GetOrAdd(key, _ => new ResiliencePipeline<TResult>(CreatePipelineComponent(_activator, context, configure)));
+            return _strategies.GetOrAdd(key, _ => new ResiliencePipeline<TResult>(CreatePipelineComponent(_activator, context, configure), DisposeBehavior.Reject));
 #endif
         }
 
         public bool TryAddBuilder(TKey key, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);
+
+        public void Dispose()
+        {
+            foreach (var strategy in _strategies.Values)
+            {
+                strategy.DisposeHelper.ForceDispose();
+            }
+
+            _strategies.Clear();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            foreach (var strategy in _strategies.Values)
+            {
+                await strategy.DisposeHelper.ForceDisposeAsync().ConfigureAwait(false);
+            }
+
+            _strategies.Clear();
+        }
     }
 }

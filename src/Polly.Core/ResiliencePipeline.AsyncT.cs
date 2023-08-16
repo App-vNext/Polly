@@ -190,7 +190,7 @@ public partial class ResiliencePipeline
         }
     }
 
-    private static ResilienceContext GetAsyncContext<TResult>(CancellationToken cancellationToken)
+    private ResilienceContext GetAsyncContext<TResult>(CancellationToken cancellationToken)
     {
         var context = Pool.Get(cancellationToken);
 
@@ -199,5 +199,10 @@ public partial class ResiliencePipeline
         return context;
     }
 
-    private static void InitializeAsyncContext<TResult>(ResilienceContext context) => context.Initialize<TResult>(isSynchronous: false);
+    private void InitializeAsyncContext<TResult>(ResilienceContext context)
+    {
+        DisposeHelper.EnsureNotDisposed();
+
+        context.Initialize<TResult>(isSynchronous: false);
+    }
 }

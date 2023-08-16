@@ -9,18 +9,17 @@ public class CircuitBreakerManualControlTests
     [Theory]
     public void Ctor_Isolated(bool isolated)
     {
-        using var control = new CircuitBreakerManualControl(isolated);
+        var control = new CircuitBreakerManualControl(isolated);
         var isolateCalled = false;
 
-        control.Initialize(
+        using var reg = control.Initialize(
             c =>
             {
                 c.IsSynchronous.Should().BeTrue();
                 isolateCalled = true;
                 return Task.CompletedTask;
             },
-            _ => Task.CompletedTask,
-            () => { });
+            _ => Task.CompletedTask);
 
         isolateCalled.Should().Be(isolated);
     }
@@ -30,7 +29,7 @@ public class CircuitBreakerManualControlTests
     [Theory]
     public async Task IsolateAsync_NotInitialized_Ok(bool closedAfter)
     {
-        using var control = new CircuitBreakerManualControl();
+        var control = new CircuitBreakerManualControl();
         await control.IsolateAsync();
         if (closedAfter)
         {
@@ -39,15 +38,14 @@ public class CircuitBreakerManualControlTests
 
         var isolated = false;
 
-        control.Initialize(
+        using var reg = control.Initialize(
             c =>
             {
                 c.IsSynchronous.Should().BeTrue();
                 isolated = true;
                 return Task.CompletedTask;
             },
-            _ => Task.CompletedTask,
-            () => { });
+            _ => Task.CompletedTask);
 
         isolated.Should().Be(!closedAfter);
     }
@@ -55,7 +53,7 @@ public class CircuitBreakerManualControlTests
     [Fact]
     public async Task ResetAsync_NotInitialized_Ok()
     {
-        using var control = new CircuitBreakerManualControl();
+        var control = new CircuitBreakerManualControl();
 
         await control
             .Invoking(c => c.CloseAsync(CancellationToken.None))
@@ -68,15 +66,31 @@ public class CircuitBreakerManualControlTests
     {
         int called = 0;
         var control = new CircuitBreakerManualControl();
-        control.Initialize(_ => Task.CompletedTask, _ => Task.CompletedTask, () => { });
-        control.Initialize(_ => { called++; return Task.CompletedTask; }, _ => { called++; return Task.CompletedTask; }, () => { called++; });
+        control.Initialize(_ => Task.CompletedTask, _ => Task.CompletedTask);
+        control.Initialize(_ => { called++; return Task.CompletedTask; }, _ => { called++; return Task.CompletedTask; });
 
         await control.IsolateAsync();
         await control.CloseAsync();
 
-        control.Dispose();
+        called.Should().Be(2);
+    }
 
-        called.Should().Be(3);
+    [Fact]
+    public async Task Initialize_DisposeRegistration_ShuldBeCancelled()
+    {
+        int called = 0;
+        var control = new CircuitBreakerManualControl();
+        var reg = control.Initialize(_ => { called++; return Task.CompletedTask; }, _ => { called++; return Task.CompletedTask; });
+
+        await control.IsolateAsync();
+        await control.CloseAsync();
+
+        reg.Dispose();
+
+        await control.IsolateAsync();
+        await control.CloseAsync();
+
+        called.Should().Be(2);
     }
 
     [Fact]
@@ -85,7 +99,6 @@ public class CircuitBreakerManualControlTests
         var control = new CircuitBreakerManualControl();
         var isolateCalled = false;
         var resetCalled = false;
-        var disposeCalled = false;
 
         control.Initialize(
             context =>
@@ -101,16 +114,12 @@ public class CircuitBreakerManualControlTests
                 context.IsSynchronous.Should().BeFalse();
                 resetCalled = true;
                 return Task.CompletedTask;
-            },
-            () => disposeCalled = true);
+            });
 
         await control.IsolateAsync(CancellationToken.None);
         await control.CloseAsync(CancellationToken.None);
 
-        control.Dispose();
-
         isolateCalled.Should().BeTrue();
         resetCalled.Should().BeTrue();
-        disposeCalled.Should().BeTrue();
     }
 }

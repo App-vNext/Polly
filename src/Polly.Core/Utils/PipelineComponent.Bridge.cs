@@ -3,9 +3,10 @@
 internal abstract partial class PipelineComponent
 {
     [DebuggerDisplay("{Strategy}")]
-    internal sealed class BridgeComponent<T> : PipelineComponent
+    internal sealed class BridgeComponent<T> : BridgeComponentBase
     {
-        public BridgeComponent(ResilienceStrategy<T> strategy) => Strategy = strategy;
+        public BridgeComponent(ResilienceStrategy<T> strategy)
+            : base(strategy) => Strategy = strategy;
 
         public ResilienceStrategy<T> Strategy { get; }
 
@@ -38,9 +39,10 @@ internal abstract partial class PipelineComponent
     }
 
     [DebuggerDisplay("{Strategy}")]
-    internal sealed class BridgeComponent : PipelineComponent
+    internal sealed class BridgeComponent : BridgeComponentBase
     {
-        public BridgeComponent(ResilienceStrategy strategy) => Strategy = strategy;
+        public BridgeComponent(ResilienceStrategy strategy)
+            : base(strategy) => Strategy = strategy;
 
         public ResilienceStrategy Strategy { get; }
 
@@ -49,4 +51,37 @@ internal abstract partial class PipelineComponent
             ResilienceContext context,
             TState state) => Strategy.ExecuteCore(callback, context, state);
     }
+
+    internal abstract class BridgeComponentBase : PipelineComponent
+    {
+        private readonly object _strategy;
+
+        protected BridgeComponentBase(object strategy) => _strategy = strategy;
+
+        public override void Dispose()
+        {
+            if (_strategy is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+            else if (_strategy is IAsyncDisposable asyncDisposable)
+            {
+                asyncDisposable.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            }
+        }
+
+        public override ValueTask DisposeAsync()
+        {
+            if (_strategy is IAsyncDisposable asyncDisposable)
+            {
+                return asyncDisposable.DisposeAsync();
+            }
+            else
+            {
+                Dispose();
+                return default;
+            }
+        }
+    }
+
 }

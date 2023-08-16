@@ -12,13 +12,19 @@ public sealed partial class ResiliencePipeline
     /// <summary>
     /// Resilience pipeline that executes the user-provided callback without any additional logic.
     /// </summary>
-    public static readonly ResiliencePipeline Null = new(PipelineComponent.Null);
+    public static readonly ResiliencePipeline Null = new(PipelineComponent.Null, DisposeBehavior.Ignore);
 
-    internal ResiliencePipeline(PipelineComponent component) => Component = component;
+    internal ResiliencePipeline(PipelineComponent component, DisposeBehavior disposeBehavior)
+    {
+        Component = component;
+        DisposeHelper = new ComponentDisposeHelper(component, disposeBehavior);
+    }
 
     internal static ResilienceContextPool Pool => ResilienceContextPool.Shared;
 
     internal PipelineComponent Component { get; }
+
+    internal ComponentDisposeHelper DisposeHelper { get; }
 
     internal ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

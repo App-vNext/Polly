@@ -2,6 +2,8 @@
 
 namespace Polly.Utils;
 
+#pragma warning disable CA1031 // Do not catch general exception types
+
 internal abstract partial class PipelineComponent
 {
     internal sealed class ReloadableComponent : PipelineComponent
@@ -40,6 +42,18 @@ internal abstract partial class PipelineComponent
             return Component.ExecuteCore(callback, context, state);
         }
 
+        public override void Dispose()
+        {
+            DisposeRegistration();
+            Component.Dispose();
+        }
+
+        public override ValueTask DisposeAsync()
+        {
+            DisposeRegistration();
+            return Component.DisposeAsync();
+        }
+
         private void RegisterOnReload(CancellationToken previousToken)
         {
             var token = _onReload();
@@ -51,12 +65,14 @@ internal abstract partial class PipelineComponent
             _registration = token.Register(() =>
             {
                 var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
+                PipelineComponent previousComponent = Component;
 
-#pragma warning disable CA1031 // Do not catch general exception types
                 try
                 {
                     _telemetry.Report(new(ResilienceEventSeverity.Information, OnReloadEvent), context, new OnReloadArguments());
                     Component = _factory();
+
+                    previousComponent.Dispose();
                 }
                 catch (Exception e)
                 {
@@ -64,12 +80,15 @@ internal abstract partial class PipelineComponent
                     _telemetry.Report(new(ResilienceEventSeverity.Error, ReloadFailedEvent), args);
                     ResilienceContextPool.Shared.Return(context);
                 }
-#pragma warning restore CA1031 // Do not catch general exception types
 
-                _registration.Dispose();
+                DisposeRegistration();
                 RegisterOnReload(token);
             });
         }
+
+#pragma warning disable S2952 // Classes should "Dispose" of members from the classes' own "Dispose" methods
+        private void DisposeRegistration() => _registration.Dispose();
+#pragma warning restore S2952 // Classes should "Dispose" of members from the classes' own "Dispose" methods
 
         internal readonly record struct ReloadFailedArguments(Exception Exception);
 

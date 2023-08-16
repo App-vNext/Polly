@@ -3,9 +3,76 @@ using Polly.Utils;
 
 namespace Polly.Core.Tests;
 
+#pragma warning disable S3966 // Objects should not be disposed more than once
+
 public partial class ResiliencePipelineTests
 {
     public static readonly CancellationToken CancellationToken = new CancellationTokenSource().Token;
+
+    [Fact]
+    public async Task Dispose_NullPipeline_OK()
+    {
+        ResiliencePipeline.Null.DisposeHelper.Dispose();
+        ResiliencePipeline.Null.DisposeHelper.Dispose();
+        await ResiliencePipeline.Null.DisposeHelper.DisposeAsync();
+        await ResiliencePipeline.Null.DisposeHelper.DisposeAsync();
+
+        ResiliencePipeline.Null.Execute(() => 1).Should().Be(1);
+    }
+
+    [Fact]
+    public async Task Dispose_NullGenericPipeline_OK()
+    {
+        ResiliencePipeline<int>.Null.DisposeHelper.Dispose();
+        ResiliencePipeline<int>.Null.DisposeHelper.Dispose();
+        await ResiliencePipeline<int>.Null.DisposeHelper.DisposeAsync();
+        await ResiliencePipeline<int>.Null.DisposeHelper.DisposeAsync();
+
+        ResiliencePipeline.Null.Execute(() => 1).Should().Be(1);
+    }
+
+    [Fact]
+    public async Task Dispose_Reject_Throws()
+    {
+        var component = Substitute.For<PipelineComponent>();
+        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Reject);
+
+        pipeline.Invoking(p => p.DisposeHelper.Dispose())
+            .Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("Disposing this resilience pipeline is not allowed because it is owned by the pipeline registry.");
+
+        (await pipeline.Invoking(p => p.DisposeHelper.DisposeAsync().AsTask())
+            .Should()
+            .ThrowAsync<InvalidOperationException>())
+            .WithMessage("Disposing this resilience pipeline is not allowed because it is owned by the pipeline registry.");
+    }
+
+    [Fact]
+    public void Dispose_Allowed_Disposed()
+    {
+        var component = Substitute.For<PipelineComponent>();
+        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Allow);
+        pipeline.DisposeHelper.Dispose();
+        pipeline.DisposeHelper.Dispose();
+
+        pipeline.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
+
+        component.Received(1).Dispose();
+    }
+
+    [Fact]
+    public async Task DisposeAsync_Allowed_Disposed()
+    {
+        var component = Substitute.For<PipelineComponent>();
+        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Allow);
+        await pipeline.DisposeHelper.DisposeAsync();
+        await pipeline.DisposeHelper.DisposeAsync();
+
+        pipeline.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
+
+        await component.Received(1).DisposeAsync();
+    }
 
     [Fact]
     public void Null_Ok()
@@ -17,7 +84,7 @@ public partial class ResiliencePipelineTests
     [Fact]
     public void DebuggerProxy_Ok()
     {
-        var pipeline = (PipelineComponent.CompositeComponent)PipelineComponent.CreateComposite(new[]
+        using var pipeline = (PipelineComponent.CompositeComponent)PipelineComponent.CreateComposite(new[]
         {
             Substitute.For<PipelineComponent>(),
             Substitute.For<PipelineComponent>(),

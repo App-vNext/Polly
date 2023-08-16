@@ -30,5 +30,5 @@ public sealed class ResiliencePipelineBuilder<TResult> : ResiliencePipelineBuild
     /// </summary>
     /// <returns>An instance of <see cref="ResiliencePipeline{TResult}"/>.</returns>
     /// <exception cref="ValidationException">Thrown when this builder has invalid configuration.</exception>
-    public ResiliencePipeline<TResult> Build() => new(BuildPipelineComponent());
+    public ResiliencePipeline<TResult> Build() => new(BuildPipelineComponent(), DisposeBehavior.Allow);
 }

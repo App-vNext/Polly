@@ -6,9 +6,9 @@ namespace Polly.CircuitBreaker;
 /// <remarks>
 /// The instance of this class can be reused across multiple circuit breakers.
 /// </remarks>
-public sealed class CircuitBreakerManualControl : IDisposable
+public sealed class CircuitBreakerManualControl
 {
-    private readonly HashSet<Action> _onDispose = new();
+    private readonly object _lock = new();
     private readonly HashSet<Func<ResilienceContext, Task>> _onIsolate = new();
     private readonly HashSet<Func<ResilienceContext, Task>> _onReset = new();
     private bool _isolated;
@@ -26,18 +26,31 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <param name="isIsolated">Determines whether the circit breaker is isolated immediately after construction.</param>
     public CircuitBreakerManualControl(bool isIsolated) => _isolated = isIsolated;
 
-    internal void Initialize(Func<ResilienceContext, Task> onIsolate, Func<ResilienceContext, Task> onReset, Action onDispose)
+    internal bool IsEmpty => _onIsolate.Count == 0 && _onReset.Count == 0;
+
+    internal IDisposable Initialize(Func<ResilienceContext, Task> onIsolate, Func<ResilienceContext, Task> onReset)
     {
-        _onDispose.Add(onDispose);
-        _onIsolate.Add(onIsolate);
-        _onReset.Add(onReset);
-
-        if (_isolated)
+        lock (_lock)
         {
-            var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
+            _onIsolate.Add(onIsolate);
+            _onReset.Add(onReset);
 
-            // if the control indicates that circuit breaker should be isolated, we isolate it right away
-            IsolateAsync(context).GetAwaiter().GetResult();
+            if (_isolated)
+            {
+                var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
+
+                // if the control indicates that circuit breaker should be isolated, we isolate it right away
+                IsolateAsync(context).GetAwaiter().GetResult();
+            }
+
+            return new RegistrationDisposable(() =>
+            {
+                lock (_lock)
+                {
+                    _onIsolate.Remove(onIsolate);
+                    _onReset.Remove(onReset);
+                }
+            });
         }
     }
 
@@ -54,7 +67,14 @@ public sealed class CircuitBreakerManualControl : IDisposable
 
         _isolated = true;
 
-        foreach (var action in _onIsolate)
+        Func<ResilienceContext, Task>[] callbacks;
+
+        lock (_lock)
+        {
+            callbacks = _onIsolate.ToArray();
+        }
+
+        foreach (var action in callbacks)
         {
             await action(context).ConfigureAwait(context.ContinueOnCapturedContext);
         }
@@ -95,7 +115,14 @@ public sealed class CircuitBreakerManualControl : IDisposable
 
         context.Initialize<VoidResult>(isSynchronous: false);
 
-        foreach (var action in _onReset)
+        Func<ResilienceContext, Task>[] callbacks;
+
+        lock (_lock)
+        {
+            callbacks = _onReset.ToArray();
+        }
+
+        foreach (var action in callbacks)
         {
             await action(context).ConfigureAwait(context.ContinueOnCapturedContext);
         }
@@ -121,18 +148,12 @@ public sealed class CircuitBreakerManualControl : IDisposable
         }
     }
 
-    /// <summary>
-    /// Disposes the current class.
-    /// </summary>
-    public void Dispose()
+    private class RegistrationDisposable : IDisposable
     {
-        foreach (var action in _onDispose)
-        {
-            action();
-        }
+        private readonly Action _disposeAction;
 
-        _onDispose.Clear();
-        _onIsolate.Clear();
-        _onReset.Clear();
+        public RegistrationDisposable(Action disposeAction) => _disposeAction = disposeAction;
+
+        public void Dispose() => _disposeAction();
     }
 }

@@ -24,7 +24,7 @@ public class CircuitBreakerStateProviderTests
     [Fact]
     public async Task ResetAsync_NotInitialized_Throws()
     {
-        using var control = new CircuitBreakerManualControl();
+        var control = new CircuitBreakerManualControl();
 
         await control
             .Invoking(c => c.CloseAsync(CancellationToken.None))

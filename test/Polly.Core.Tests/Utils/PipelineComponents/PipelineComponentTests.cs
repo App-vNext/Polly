@@ -1,91 +1,15 @@
-using NSubstitute;
-using Polly.Telemetry;
+﻿using System.Threading.Tasks;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Utils.PipelineComponents;
 
-public class PipelineComponentTests : IDisposable
+public class PipelineComponentTests
 {
-    private readonly List<TelemetryEventArguments<object, object>> _events = new();
-    private readonly ResilienceStrategyTelemetry _telemetry;
-    private CancellationTokenSource _cancellationTokenSource;
-
-    public PipelineComponentTests()
-    {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(args =>
-        {
-            args.Context.IsSynchronous.Should().BeTrue();
-            args.Context.IsVoid.Should().BeTrue();
-            _events.Add(args);
-        });
-
-        _cancellationTokenSource = new CancellationTokenSource();
-    }
-
     [Fact]
-    public void Ctor_Ok()
+    public async Task Dispose_Ok()
     {
-        var component = Substitute.For<PipelineComponent>();
-        var sut = CreateSut(component);
-
-        sut.Component.Should().Be(component);
-
-        PipelineComponent.ReloadableComponent.ReloadFailedEvent.Should().Be("ReloadFailed");
+        PipelineComponent.Null.Should().NotBeNull();
+        PipelineComponent.Null.Dispose();
+        await PipelineComponent.Null.DisposeAsync();
     }
-
-    [Fact]
-    public void ChangeTriggered_StrategyReloaded()
-    {
-        var component = Substitute.For<PipelineComponent>();
-        var sut = CreateSut(component);
-
-        for (var i = 0; i < 10; i++)
-        {
-            var src = _cancellationTokenSource;
-            _cancellationTokenSource = new CancellationTokenSource();
-            src.Cancel();
-
-            sut.Component.Should().NotBe(component);
-        }
-
-        _events.Where(e => e.Event.EventName == "ReloadFailed").Should().HaveCount(0);
-        _events.Where(e => e.Event.EventName == "OnReload").Should().HaveCount(10);
-    }
-
-    [Fact]
-    public void ChangeTriggered_FactoryError_LastStrategyUsedAndErrorReported()
-    {
-        var component = Substitute.For<PipelineComponent>();
-        var sut = CreateSut(component, () => throw new InvalidOperationException());
-
-        _cancellationTokenSource.Cancel();
-
-        sut.Component.Should().Be(component);
-        _events.Should().HaveCount(2);
-
-        _events[0]
-            .Arguments
-            .Should()
-            .BeOfType<PipelineComponent.ReloadableComponent.OnReloadArguments>();
-
-        var args = _events[1]
-            .Arguments
-            .Should()
-            .BeOfType<PipelineComponent.ReloadableComponent.ReloadFailedArguments>()
-            .Subject;
-
-        args.Exception.Should().BeOfType<InvalidOperationException>();
-    }
-
-    private PipelineComponent.ReloadableComponent CreateSut(PipelineComponent? initial = null, Func<PipelineComponent>? factory = null)
-    {
-        factory ??= () => PipelineComponent.Null;
-
-        return (PipelineComponent.ReloadableComponent)PipelineComponent.CreateReloadable(initial ?? PipelineComponent.Null,
-            () => _cancellationTokenSource.Token,
-            factory,
-            _telemetry);
-    }
-
-    public void Dispose() => _cancellationTokenSource.Dispose();
 }

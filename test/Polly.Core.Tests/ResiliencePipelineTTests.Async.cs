@@ -73,7 +73,7 @@ public partial class ResiliencePipelineTests
                 c.ResultType.Should().Be(typeof(string));
                 c.CancellationToken.CanBeCanceled.Should().BeTrue();
             },
-        }));
+        }), DisposeBehavior.Allow);
 
         await execute(pipeline);
     }

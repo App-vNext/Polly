@@ -24,7 +24,6 @@ Polly.CircuitBreaker.CircuitBreakerManualControl
 Polly.CircuitBreaker.CircuitBreakerManualControl.CircuitBreakerManualControl() -> void
 Polly.CircuitBreaker.CircuitBreakerManualControl.CircuitBreakerManualControl(bool isIsolated) -> void
 Polly.CircuitBreaker.CircuitBreakerManualControl.CloseAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-Polly.CircuitBreaker.CircuitBreakerManualControl.Dispose() -> void
 Polly.CircuitBreaker.CircuitBreakerManualControl.IsolateAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 Polly.CircuitBreaker.CircuitBreakerPredicateArguments
 Polly.CircuitBreaker.CircuitBreakerPredicateArguments.CircuitBreakerPredicateArguments() -> void
@@ -167,6 +166,8 @@ Polly.Registry.ConfigureBuilderContext<TKey>.PipelineKey.get -> TKey
 Polly.Registry.ResiliencePipelineProvider<TKey>
 Polly.Registry.ResiliencePipelineProvider<TKey>.ResiliencePipelineProvider() -> void
 Polly.Registry.ResiliencePipelineRegistry<TKey>
+Polly.Registry.ResiliencePipelineRegistry<TKey>.Dispose() -> void
+Polly.Registry.ResiliencePipelineRegistry<TKey>.DisposeAsync() -> System.Threading.Tasks.ValueTask
 Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline(TKey key, System.Action<Polly.ResiliencePipelineBuilder!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> Polly.ResiliencePipeline!
 Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline(TKey key, System.Action<Polly.ResiliencePipelineBuilder!>! configure) -> Polly.ResiliencePipeline!
 Polly.Registry.ResiliencePipelineRegistry<TKey>.GetOrAddPipeline<TResult>(TKey key, System.Action<Polly.ResiliencePipelineBuilder<TResult>!, Polly.Registry.ConfigureBuilderContext<TKey>!>! configure) -> Polly.ResiliencePipeline<TResult>!

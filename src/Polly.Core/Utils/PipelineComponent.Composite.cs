@@ -11,7 +11,6 @@ internal abstract partial class PipelineComponent
     [DebuggerTypeProxy(typeof(CompositeDebuggerProxy))]
     internal sealed class CompositeComponent : PipelineComponent
     {
-        private readonly PipelineComponent _firstComponent;
         private readonly ResilienceStrategyTelemetry _telemetry;
         private readonly TimeProvider _timeProvider;
 
@@ -25,8 +24,10 @@ internal abstract partial class PipelineComponent
 
             _telemetry = telemetry;
             _timeProvider = timeProvider;
-            _firstComponent = first;
+            FirstComponent = first;
         }
+
+        internal PipelineComponent FirstComponent { get; }
 
         public static PipelineComponent Create(
             IReadOnlyList<PipelineComponent> components,
@@ -62,6 +63,22 @@ internal abstract partial class PipelineComponent
 
         public IReadOnlyList<PipelineComponent> Components { get; }
 
+        public override void Dispose()
+        {
+            foreach (var component in Components)
+            {
+                component.Dispose();
+            }
+        }
+
+        public override async ValueTask DisposeAsync()
+        {
+            foreach (var component in Components)
+            {
+                await component.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
@@ -78,7 +95,7 @@ internal abstract partial class PipelineComponent
             }
             else
             {
-                outcome = await _firstComponent.ExecuteCore(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+                outcome = await FirstComponent.ExecuteCore(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
             _telemetry.Report(
@@ -118,6 +135,12 @@ internal abstract partial class PipelineComponent
                 context,
                 (Next, callback, state));
         }
+
+        public override void Dispose()
+        {
+        }
+
+        public override ValueTask DisposeAsync() => default;
     }
 
     internal sealed class CompositeDebuggerProxy
