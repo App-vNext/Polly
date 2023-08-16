@@ -88,7 +88,7 @@ public abstract class ResiliencePipelineBuilderBase
     internal Action<ResilienceValidationContext> Validator { get; private protected set; } = ValidationHelper.ValidateObject;
 
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
-    internal void AddStrategyCore(Func<StrategyBuilderContext, ResiliencePipeline> factory, ResilienceStrategyOptions options)
+    internal void AddStrategyCore(Func<StrategyBuilderContext, PipelineComponent> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);
         Guard.NotNull(options);
@@ -103,28 +103,30 @@ public abstract class ResiliencePipelineBuilderBase
         _entries.Add(new Entry(factory, options));
     }
 
-    internal ResiliencePipeline BuildPipeline()
+    internal PipelineComponent BuildPipelineComponent()
     {
         Validator(new(this, $"The '{nameof(ResiliencePipelineBuilder)}' configuration is invalid."));
 
         _used = true;
 
-        var strategies = _entries.Select(CreateResiliencePipeline).ToList();
+        var components = _entries.Select(CreateComponent).ToList();
 
-        if (strategies.Count == 0)
+        if (components.Count == 0)
         {
-            return NullResiliencePipeline.Instance;
+            return PipelineComponent.Null;
         }
 
         var source = new ResilienceTelemetrySource(Name, InstanceName, null);
 
-        return CompositeResiliencePipeline.Create(
-            strategies,
-            new ResilienceStrategyTelemetry(source, TelemetryListener),
-            TimeProvider);
+        if (components.Distinct().Count() != components.Count)
+        {
+            throw new InvalidOperationException("The resilience pipeline must contain unique resilience strategies.");
+        }
+
+        return PipelineComponent.CreateComposite(components, new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProvider);
     }
 
-    private ResiliencePipeline CreateResiliencePipeline(Entry entry)
+    private PipelineComponent CreateComponent(Entry entry)
     {
         var source = new ResilienceTelemetrySource(Name, InstanceName, entry.Options.Name);
         var context = new StrategyBuilderContext(new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProvider);
@@ -134,5 +136,5 @@ public abstract class ResiliencePipelineBuilderBase
         return strategy;
     }
 
-    private sealed record Entry(Func<StrategyBuilderContext, ResiliencePipeline> Factory, ResilienceStrategyOptions Options);
+    private sealed record Entry(Func<StrategyBuilderContext, PipelineComponent> Factory, ResilienceStrategyOptions Options);
 }

@@ -27,7 +27,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(pipeline);
 
-        builder.AddStrategyCore(_ => pipeline, EmptyOptions.Instance);
+        builder.AddStrategyCore(_ => PipelineComponent.FromPipeline(pipeline), EmptyOptions.Instance);
         return builder;
     }
 
@@ -40,12 +40,17 @@ public static class ResiliencePipelineBuilderExtensions
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="pipeline"/> is null.</exception>
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "The EmptyOptions have nothing to validate.")]
     public static ResiliencePipelineBuilder<TResult> AddPipeline<TResult>(this ResiliencePipelineBuilder<TResult> builder, ResiliencePipeline<TResult> pipeline)
     {
         Guard.NotNull(builder);
         Guard.NotNull(pipeline);
 
-        return builder.AddPipeline(pipeline.Strategy);
+        builder.AddStrategyCore(_ => PipelineComponent.FromPipeline(pipeline), EmptyOptions.Instance);
+        return builder;
     }
 
     /// <summary>
@@ -67,7 +72,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        builder.AddStrategyCore(context => new ResiliencePipelineBridge(factory(context)), options);
+        builder.AddStrategyCore(context => PipelineComponent.FromStrategy(factory(context)), options);
         return builder;
     }
 
@@ -90,7 +95,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        builder.AddStrategyCore(context => new ResiliencePipelineBridge<object>(factory(context)), options);
+        builder.AddStrategyCore(context => PipelineComponent.FromStrategy(factory(context)), options);
         return builder;
     }
 
@@ -114,7 +119,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        builder.AddStrategyCore(context => new ResiliencePipelineBridge<TResult>(factory(context)), options);
+        builder.AddStrategyCore(context => PipelineComponent.FromStrategy(factory(context)), options);
         return builder;
     }
 

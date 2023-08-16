@@ -131,8 +131,6 @@ Polly.Hedging.OnHedgingArguments.OnHedgingArguments() -> void
 Polly.Hedging.OnHedgingArguments.OnHedgingArguments(int attemptNumber, bool hasOutcome, System.TimeSpan duration) -> void
 Polly.HedgingResiliencePipelineBuilderExtensions
 Polly.LegacySupport
-Polly.NullResiliencePipeline
-Polly.NullResiliencePipeline<TResult>
 Polly.Outcome
 Polly.Outcome<TResult>
 Polly.Outcome<TResult>.EnsureSuccess() -> void
@@ -408,7 +406,7 @@ static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry(this Polly.Resili
 static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Retry.RetryStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, Polly.Timeout.TimeoutStrategyOptions! options) -> TBuilder!
 static Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, System.TimeSpan timeout) -> TBuilder!
-static readonly Polly.NullResiliencePipeline.Instance -> Polly.NullResiliencePipeline!
-static readonly Polly.NullResiliencePipeline<TResult>.Instance -> Polly.NullResiliencePipeline<TResult>!
+static readonly Polly.ResiliencePipeline.Null -> Polly.ResiliencePipeline!
+static readonly Polly.ResiliencePipeline<T>.Null -> Polly.ResiliencePipeline<T>!
 virtual Polly.Registry.ResiliencePipelineProvider<TKey>.GetPipeline(TKey key) -> Polly.ResiliencePipeline!
 virtual Polly.Registry.ResiliencePipelineProvider<TKey>.GetPipeline<TResult>(TKey key) -> Polly.ResiliencePipeline<TResult>!

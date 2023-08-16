@@ -1,3 +1,5 @@
+using Polly.Utils;
+
 namespace Polly.Core.Tests;
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -63,7 +65,7 @@ public partial class ResiliencePipelineTests
     [Theory]
     public async Task ExecuteAsync_GenericStrategy_Ok(Func<ResiliencePipeline<string>, ValueTask> execute)
     {
-        var strategy = new ResiliencePipeline<string>(new TestResilienceStrategy
+        var pipeline = new ResiliencePipeline<string>(PipelineComponent.FromStrategy(new TestResilienceStrategy
         {
             Before = (c, _) =>
             {
@@ -71,15 +73,15 @@ public partial class ResiliencePipelineTests
                 c.ResultType.Should().Be(typeof(string));
                 c.CancellationToken.CanBeCanceled.Should().BeTrue();
             },
-        }.AsPipeline());
+        }));
 
-        await execute(strategy);
+        await execute(pipeline);
     }
 
     [Fact]
     public async Task ExecuteOutcomeAsync_GenericStrategy_Ok()
     {
-        var result = await NullResiliencePipeline<int>.Instance.ExecuteOutcomeAsync((context, state) =>
+        var result = await ResiliencePipeline<int>.Null.ExecuteOutcomeAsync((context, state) =>
         {
             state.Should().Be("state");
             context.IsSynchronous.Should().BeFalse();

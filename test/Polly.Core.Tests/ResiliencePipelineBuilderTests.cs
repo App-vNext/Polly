@@ -89,10 +89,11 @@ public class ResiliencePipelineBuilderTests
         // act
         var strategy = builder.Build();
         strategy
+            .Component
             .Should()
-            .BeOfType<CompositeResiliencePipeline>()
+            .BeOfType<PipelineComponent.CompositeComponent>()
             .Subject
-            .Strategies.Should().HaveCount(3);
+            .Components.Should().HaveCount(3);
 
         // assert
         strategy.Execute(_ => executions.Add(4));
@@ -107,13 +108,13 @@ public class ResiliencePipelineBuilderTests
         // arrange
         var executions = new List<int>();
         var builder = new ResiliencePipelineBuilder()
-            .AddPipeline(NullResiliencePipeline.Instance)
-            .AddPipeline(NullResiliencePipeline.Instance);
+            .AddPipeline(ResiliencePipeline.Null)
+            .AddPipeline(ResiliencePipeline.Null);
 
         builder.Invoking(b => b.Build())
             .Should()
             .Throw<InvalidOperationException>()
-            .WithMessage("The composite resilience strategy must contain unique resilience strategies.");
+            .WithMessage("The resilience pipeline must contain unique resilience strategies.");
     }
 
     [Fact]
@@ -173,7 +174,7 @@ public class ResiliencePipelineBuilderTests
     }
 
     [Fact]
-    public void Build_Empty_ReturnsNullResiliencePipeline() => new ResiliencePipelineBuilder().Build().Should().BeSameAs(NullResiliencePipeline.Instance);
+    public void Build_Empty_ReturnsNullResiliencePipeline() => new ResiliencePipelineBuilder().Build().Component.Should().BeSameAs(PipelineComponent.Null);
 
     [Fact]
     public void AddPipeline_AfterUsed_Throws()
@@ -183,7 +184,7 @@ public class ResiliencePipelineBuilderTests
         builder.Build();
 
         builder
-            .Invoking(b => b.AddPipeline(NullResiliencePipeline.Instance))
+            .Invoking(b => b.AddPipeline(ResiliencePipeline.Null))
             .Should()
             .Throw<InvalidOperationException>()
             .WithMessage("Cannot add any more resilience strategies to the builder after it has been used to build a pipeline once.");
@@ -194,7 +195,7 @@ public class ResiliencePipelineBuilderTests
     {
         var builder = new InvalidResiliencePipelineBuilder();
 
-        builder.Invoking(b => b.BuildPipeline())
+        builder.Invoking(b => b.BuildPipelineComponent())
             .Should()
             .Throw<ValidationException>()
             .WithMessage(

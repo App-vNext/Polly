@@ -7,20 +7,23 @@ namespace Polly;
 /// Resilience pipeline supports various types of callbacks and provides a unified way to execute them.
 /// This includes overloads for synchronous and asynchronous callbacks, generic and non-generic callbacks.
 /// </remarks>
-public partial class ResiliencePipeline
+public sealed partial class ResiliencePipeline
 {
+    /// <summary>
+    /// Resilience pipeline that executes the user-provided callback without any additional logic.
+    /// </summary>
+    public static readonly ResiliencePipeline Null = new(PipelineComponent.Null);
+
+    internal ResiliencePipeline(PipelineComponent component) => Component = component;
+
     internal static ResilienceContextPool Pool => ResilienceContextPool.Shared;
 
-    internal ResilienceStrategyOptions? Options { get; set; }
+    internal PipelineComponent Component { get; }
 
-    internal ResiliencePipeline()
-    {
-    }
-
-    internal abstract ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+    internal ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
-        TState state);
+        TState state) => Component.ExecuteCore(callback, context, state);
 
     private Outcome<TResult> ExecuteCoreSync<TResult, TState>(
         Func<ResilienceContext, TState, Outcome<TResult>> callback,

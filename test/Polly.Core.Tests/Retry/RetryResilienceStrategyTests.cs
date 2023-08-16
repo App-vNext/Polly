@@ -2,7 +2,6 @@ using FluentAssertions.Execution;
 using Microsoft.Extensions.Time.Testing;
 using Polly.Retry;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -154,7 +153,7 @@ public class RetryResilienceStrategyTests
             return new ValueTask<TimeSpan>(delay);
         };
 
-        CreateSut(TimeProvider.System).Execute(_ => { });
+        CreateSut(TimeProvider.System).Execute<string>(_ => "dummy");
 
         retries.Should().Be(3);
         generatedValues.Should().Be(3);
@@ -185,7 +184,7 @@ public class RetryResilienceStrategyTests
         };
 
         var sut = CreateSut(provider);
-        await sut.ExecuteAsync(_ => default);
+        await sut.ExecuteAsync(_ => new ValueTask<string>("dummy"));
 
         retries.Should().Be(3);
         generatedValues.Should().Be(3);
@@ -336,7 +335,7 @@ public class RetryResilienceStrategyTests
 
     private void SetupNoDelay() => _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.Zero);
 
-    private async ValueTask<int> ExecuteAndAdvance(ResiliencePipelineBridge<object> sut)
+    private async ValueTask<int> ExecuteAndAdvance(ResiliencePipeline<object> sut)
     {
         var executing = sut.ExecuteAsync(_ => new ValueTask<int>(0)).AsTask();
 
@@ -348,6 +347,6 @@ public class RetryResilienceStrategyTests
         return await executing;
     }
 
-    private ResiliencePipelineBridge<object> CreateSut(TimeProvider? timeProvider = null) =>
-        new(new RetryResilienceStrategy<object>(_options, timeProvider ?? _timeProvider, _telemetry));
+    private ResiliencePipeline<object> CreateSut(TimeProvider? timeProvider = null) =>
+        new RetryResilienceStrategy<object>(_options, timeProvider ?? _timeProvider, _telemetry).AsPipeline();
 }

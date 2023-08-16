@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.Utils;
 
-public class ValidationContextExtensionsTests
+public class ValidationHelperTests
 {
     [Fact]
     public void GetMemberName_Ok()

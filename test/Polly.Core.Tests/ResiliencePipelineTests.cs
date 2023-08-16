@@ -1,3 +1,4 @@
+using NSubstitute;
 using Polly.Utils;
 
 namespace Polly.Core.Tests;
@@ -7,15 +8,22 @@ public partial class ResiliencePipelineTests
     public static readonly CancellationToken CancellationToken = new CancellationTokenSource().Token;
 
     [Fact]
+    public void Null_Ok()
+    {
+        ResiliencePipeline.Null.Should().NotBeNull();
+        ResiliencePipeline<string>.Null.Should().NotBeNull();
+    }
+
+    [Fact]
     public void DebuggerProxy_Ok()
     {
-        var pipeline = CompositeResiliencePipeline.Create(new[]
+        var pipeline = (PipelineComponent.CompositeComponent)PipelineComponent.CreateComposite(new[]
         {
-            new TestResilienceStrategy().AsPipeline(),
-            new TestResilienceStrategy().AsPipeline()
+            Substitute.For<PipelineComponent>(),
+            Substitute.For<PipelineComponent>(),
         }, null!, null!);
 
-        new CompositeResiliencePipeline.DebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
+        new PipelineComponent.CompositeDebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
     }
 
     public class ExecuteParameters<T> : ExecuteParameters
