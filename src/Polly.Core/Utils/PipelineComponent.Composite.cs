@@ -33,16 +33,6 @@ internal abstract partial class PipelineComponent
             ResilienceStrategyTelemetry telemetry,
             TimeProvider timeProvider)
         {
-            if (components.Count == 0)
-            {
-                throw new InvalidOperationException("The composite resilience pipeline must contain at least one resilience strategy.");
-            }
-
-            if (components.Distinct().Count() != components.Count)
-            {
-                throw new InvalidOperationException("The composite resilience pipeline must contain unique resilience strategies.");
-            }
-
             if (components.Count == 1)
             {
                 return new CompositeComponent(components[0], components, telemetry, timeProvider);

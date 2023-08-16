@@ -114,7 +114,7 @@ public class ResiliencePipelineBuilderTests
         builder.Invoking(b => b.Build())
             .Should()
             .Throw<InvalidOperationException>()
-            .WithMessage("The composite resilience pipeline must contain unique resilience strategies.");
+            .WithMessage("The resilience pipeline must contain unique resilience strategies.");
     }
 
     [Fact]

@@ -17,13 +17,6 @@ public class CompositePipelineComponentTests
     }
 
     [Fact]
-    public void Create_ArgValidation()
-    {
-        Assert.Throws<InvalidOperationException>(() => PipelineComponent.CreateComposite(Array.Empty<PipelineComponent>(), null!, null!));
-        Assert.Throws<InvalidOperationException>(() => PipelineComponent.CreateComposite(new[] { PipelineComponent.Null, PipelineComponent.Null, }, null!, null!));
-    }
-
-    [Fact]
     public void Create_EnsureOriginalStrategiesPreserved()
     {
         var pipelines = new[]
