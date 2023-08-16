@@ -39,7 +39,7 @@ public class RateLimiterStrategyOptions : ResilienceStrategyOptions
     public Func<OnRateLimiterRejectedArguments, ValueTask>? OnRejected { get; set; }
 
     /// <summary>
-    ///  Gets or sets the rate limiter that the strategy uses.
+    ///  Gets or sets a rate limiter used by the strategy.
     /// </summary>
     /// <value>
     /// The default value is <see langword="null"/>. If this property is <see langword="null"/>, then the strategy

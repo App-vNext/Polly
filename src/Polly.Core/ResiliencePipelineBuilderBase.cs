@@ -85,8 +85,7 @@ public abstract class ResiliencePipelineBuilderBase
     /// The validator should throw <see cref="ValidationException"/> when the validated instance is invalid.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when the attempting to assign <see langword="null"/> to this property.</exception>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public Action<ResilienceValidationContext> Validator { get; private protected set; } = ValidationHelper.ValidateObject;
+    internal Action<ResilienceValidationContext> Validator { get; private protected set; } = ValidationHelper.ValidateObject;
 
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
     internal void AddStrategyCore(Func<StrategyBuilderContext, PipelineComponent> factory, ResilienceStrategyOptions options)
