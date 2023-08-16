@@ -75,5 +75,4 @@ internal abstract partial class PipelineComponent
 
         internal readonly record struct OnReloadArguments();
     }
-
 }
