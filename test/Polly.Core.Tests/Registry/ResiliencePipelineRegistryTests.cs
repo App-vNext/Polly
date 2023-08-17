@@ -165,7 +165,7 @@ public class ResiliencePipelineRegistryTests
     [Theory]
     public void TryAddBuilder_Twice_EnsureCorrectBehavior(bool generic)
     {
-        var registry = new ResiliencePipelineRegistry<string>();
+        using var registry = new ResiliencePipelineRegistry<string>();
 
         var called1 = false;
         var called2 = false;
