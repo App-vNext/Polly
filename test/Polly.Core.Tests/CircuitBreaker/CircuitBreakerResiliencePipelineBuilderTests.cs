@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Time.Testing;
 using Polly.CircuitBreaker;
 using Polly.Testing;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 

@@ -2,8 +2,9 @@ using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Polly.Telemetry;
 using Polly.Utils;
+using Polly.Utils.Pipeline;
 
-namespace Polly.Core.Tests.Utils.PipelineComponents;
+namespace Polly.Core.Tests.Utils.Pipeline;
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
 
@@ -43,8 +44,8 @@ public class CompositePipelineComponentTests
     {
         var components = new[]
         {
-            PipelineComponent.FromStrategy(new TestResilienceStrategy { Before =  (_, _) => throw new NotSupportedException() }),
-            PipelineComponent.FromStrategy(new TestResilienceStrategy { Before =  (_, _) => throw new NotSupportedException() }),
+            PipelineComponentFactory.FromStrategy(new TestResilienceStrategy { Before =  (_, _) => throw new NotSupportedException() }),
+            PipelineComponentFactory.FromStrategy(new TestResilienceStrategy { Before =  (_, _) => throw new NotSupportedException() }),
         };
 
         var pipeline = CreateSut(components);
@@ -59,9 +60,9 @@ public class CompositePipelineComponentTests
     {
         var components = new[]
         {
-            PipelineComponent.FromStrategy(new TestResilienceStrategy()),
+            PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()),
             Substitute.For<PipelineComponent>(),
-            PipelineComponent.FromStrategy(new TestResilienceStrategy()),
+            PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()),
 
         };
 
@@ -81,8 +82,8 @@ public class CompositePipelineComponentTests
         cancellation.Cancel();
         var strategies = new[]
         {
-            PipelineComponent.FromStrategy(new TestResilienceStrategy()),
-            PipelineComponent.FromStrategy(new TestResilienceStrategy()),
+            PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()),
+            PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()),
         };
 
         var pipeline = new ResiliencePipeline(CreateSut(strategies, new FakeTimeProvider()), DisposeBehavior.Allow);
@@ -100,8 +101,8 @@ public class CompositePipelineComponentTests
         using var cancellation = new CancellationTokenSource();
         var strategies = new[]
         {
-            PipelineComponent.FromStrategy(new TestResilienceStrategy { Before = (_, _) => { executed = true; cancellation.Cancel(); } }),
-            PipelineComponent.FromStrategy(new TestResilienceStrategy()),
+            PipelineComponentFactory.FromStrategy(new TestResilienceStrategy { Before = (_, _) => { executed = true; cancellation.Cancel(); } }),
+            PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()),
         };
         var pipeline = new ResiliencePipeline(CreateSut(strategies, new FakeTimeProvider()), DisposeBehavior.Allow);
         var context = ResilienceContextPool.Shared.Get();
@@ -154,8 +155,8 @@ public class CompositePipelineComponentTests
         await b.Received(1).DisposeAsync();
     }
 
-    private PipelineComponent.CompositeComponent CreateSut(PipelineComponent[] components, TimeProvider? timeProvider = null)
+    private CompositeComponent CreateSut(PipelineComponent[] components, TimeProvider? timeProvider = null)
     {
-        return (PipelineComponent.CompositeComponent)PipelineComponent.CreateComposite(components, _telemetry, timeProvider ?? Substitute.For<TimeProvider>());
+        return (CompositeComponent)PipelineComponentFactory.CreateComposite(components, _telemetry, timeProvider ?? Substitute.For<TimeProvider>());
     }
 }

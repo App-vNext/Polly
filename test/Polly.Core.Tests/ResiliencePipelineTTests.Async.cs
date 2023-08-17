@@ -1,4 +1,5 @@
 using Polly.Utils;
+using Polly.Utils.Pipeline;
 
 namespace Polly.Core.Tests;
 
@@ -65,7 +66,7 @@ public partial class ResiliencePipelineTests
     [Theory]
     public async Task ExecuteAsync_GenericStrategy_Ok(Func<ResiliencePipeline<string>, ValueTask> execute)
     {
-        var pipeline = new ResiliencePipeline<string>(PipelineComponent.FromStrategy(new TestResilienceStrategy
+        var pipeline = new ResiliencePipeline<string>(PipelineComponentFactory.FromStrategy(new TestResilienceStrategy
         {
             Before = (c, _) =>
             {

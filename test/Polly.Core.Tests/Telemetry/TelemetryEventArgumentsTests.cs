@@ -1,6 +1,6 @@
 ﻿using Polly.Telemetry;
 
-namespace Polly.Extensions.Tests.Telemetry;
+namespace Polly.Core.Tests.Telemetry;
 
 public class TelemetryEventArgumentsTests
 {
@@ -10,7 +10,7 @@ public class TelemetryEventArgumentsTests
     public void Ctor_Ok()
     {
         var context = ResilienceContextPool.Shared.Get();
-        var args = new TelemetryEventArguments<string, string>(_source, new ResilienceEvent(ResilienceEventSeverity.Warning, "ev"), context, "arg", Outcome.FromResult<string>("dummy"));
+        var args = new TelemetryEventArguments<string, string>(_source, new ResilienceEvent(ResilienceEventSeverity.Warning, "ev"), context, "arg", Outcome.FromResult("dummy"));
 
         args.Outcome!.Value.Result.Should().Be("dummy");
         args.Context.Should().Be(context);

@@ -23,7 +23,7 @@ public partial class ResiliencePipeline
 
         InitializeSyncContext(context);
 
-        ExecuteCoreSync(
+        Component.ExecuteCoreSync(
             static (context, state) =>
             {
                 try
@@ -55,7 +55,7 @@ public partial class ResiliencePipeline
 
         InitializeSyncContext(context);
 
-        ExecuteCoreSync(
+        Component.ExecuteCoreSync(
             static (context, state) =>
             {
                 try
@@ -91,7 +91,7 @@ public partial class ResiliencePipeline
 
         try
         {
-            ExecuteCoreSync(
+            Component.ExecuteCoreSync(
                 static (context, state) =>
                 {
                     try
@@ -129,7 +129,7 @@ public partial class ResiliencePipeline
 
         try
         {
-            ExecuteCoreSync(
+            Component.ExecuteCoreSync(
                 static (context, state) =>
                 {
                     try
@@ -168,7 +168,7 @@ public partial class ResiliencePipeline
 
         try
         {
-            ExecuteCoreSync(
+            Component.ExecuteCoreSync(
                 static (_, state) =>
                 {
                     try
@@ -203,7 +203,7 @@ public partial class ResiliencePipeline
 
         try
         {
-            ExecuteCoreSync(
+            Component.ExecuteCoreSync(
                 static (_, state) =>
                 {
                     try

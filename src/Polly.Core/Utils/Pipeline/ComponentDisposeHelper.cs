@@ -1,4 +1,4 @@
-﻿namespace Polly.Utils;
+﻿namespace Polly.Utils.Pipeline;
 
 internal sealed class ComponentDisposeHelper : IDisposable, IAsyncDisposable
 {

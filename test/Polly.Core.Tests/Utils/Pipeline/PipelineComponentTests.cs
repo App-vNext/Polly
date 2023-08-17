@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Polly.Utils;
+using Polly.Utils.Pipeline;
 
-namespace Polly.Core.Tests.Utils.PipelineComponents;
+namespace Polly.Core.Tests.Utils.Pipeline;
 
 public class PipelineComponentTests
 {

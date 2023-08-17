@@ -1,5 +1,6 @@
 using NSubstitute;
 using Polly.Utils;
+using Polly.Utils.Pipeline;
 
 namespace Polly.Core.Tests;
 
@@ -84,13 +85,13 @@ public partial class ResiliencePipelineTests
     [Fact]
     public void DebuggerProxy_Ok()
     {
-        using var pipeline = (PipelineComponent.CompositeComponent)PipelineComponent.CreateComposite(new[]
+        using var pipeline = (CompositeComponent)PipelineComponentFactory.CreateComposite(new[]
         {
             Substitute.For<PipelineComponent>(),
             Substitute.For<PipelineComponent>(),
         }, null!, null!);
 
-        new PipelineComponent.CompositeDebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
+        new CompositeComponentDebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
     }
 
     public class ExecuteParameters<T> : ExecuteParameters

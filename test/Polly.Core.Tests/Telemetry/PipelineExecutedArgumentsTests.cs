@@ -1,6 +1,6 @@
 ﻿using Polly.Telemetry;
 
-namespace Polly.Extensions.Tests.Telemetry;
+namespace Polly.Core.Tests.Telemetry;
 
 public class PipelineExecutedArgumentsTests
 {

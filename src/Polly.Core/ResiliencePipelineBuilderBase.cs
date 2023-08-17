@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Polly.Telemetry;
+using Polly.Utils.Pipeline;
 
 namespace Polly;
 
@@ -123,7 +124,7 @@ public abstract class ResiliencePipelineBuilderBase
             throw new InvalidOperationException("The resilience pipeline must contain unique resilience strategies.");
         }
 
-        return PipelineComponent.CreateComposite(components, new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProvider);
+        return PipelineComponentFactory.CreateComposite(components, new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProvider);
     }
 
     private PipelineComponent CreateComponent(Entry entry)

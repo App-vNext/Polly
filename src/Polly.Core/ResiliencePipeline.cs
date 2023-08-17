@@ -1,3 +1,5 @@
+using Polly.Utils.Pipeline;
+
 namespace Polly;
 
 /// <summary>
@@ -25,25 +27,4 @@ public sealed partial class ResiliencePipeline
     internal PipelineComponent Component { get; }
 
     internal ComponentDisposeHelper DisposeHelper { get; }
-
-    internal ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-        ResilienceContext context,
-        TState state) => Component.ExecuteCore(callback, context, state);
-
-    private Outcome<TResult> ExecuteCoreSync<TResult, TState>(
-        Func<ResilienceContext, TState, Outcome<TResult>> callback,
-        ResilienceContext context,
-        TState state)
-    {
-        return ExecuteCore(
-            static (context, state) =>
-            {
-                var result = state.callback(context, state.state);
-
-                return new ValueTask<Outcome<TResult>>(result);
-            },
-            context,
-            (callback, state)).GetResult();
-    }
 }

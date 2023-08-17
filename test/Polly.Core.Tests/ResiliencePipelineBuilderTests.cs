@@ -4,7 +4,7 @@ using NSubstitute;
 using Polly.Retry;
 using Polly.Telemetry;
 using Polly.Testing;
-using Polly.Utils;
+using Polly.Utils.Pipeline;
 
 namespace Polly.Core.Tests;
 
@@ -91,7 +91,7 @@ public class ResiliencePipelineBuilderTests
         strategy
             .Component
             .Should()
-            .BeOfType<PipelineComponent.CompositeComponent>()
+            .BeOfType<CompositeComponent>()
             .Subject
             .Components.Should().HaveCount(3);
 
