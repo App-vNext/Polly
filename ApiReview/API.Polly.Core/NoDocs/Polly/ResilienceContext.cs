@@ -14,8 +14,7 @@ public sealed class ResilienceContext
 {
     public string? OperationKey { get; }
     public CancellationToken CancellationToken { get; }
-    public bool IsSynchronous { get; }
-    public bool ContinueOnCapturedContext { get; set; }
+    public bool ContinueOnCapturedContext { get; }
     public ResilienceProperties Properties { get; }
     public IReadOnlyList<ResilienceEvent> ResilienceEvents { get; }
 }
