@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.Design;
 using System.Threading.RateLimiting;
 using NSubstitute;
 using Polly.Registry;
@@ -143,7 +142,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public async Task DisposePipeline_EnsureRateLimiterDisposed(bool isAsync)
+    public async Task DisposeRegistry_EnsureRateLimiterDisposed(bool isAsync)
     {
         var registry = new ResiliencePipelineRegistry<string>();
         var pipeline = registry.GetOrAddPipeline("limiter", p => p.AddRateLimiter(new RateLimiterStrategyOptions()));
