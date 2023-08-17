@@ -164,7 +164,7 @@ public partial class ResiliencePipeline
         }
     }
 
-    private static ResilienceContext GetAsyncContext(CancellationToken cancellationToken) => GetAsyncContext<VoidResult>(cancellationToken);
+    private ResilienceContext GetAsyncContext(CancellationToken cancellationToken) => GetAsyncContext<VoidResult>(cancellationToken);
 
-    private static void InitializeAsyncContext(ResilienceContext context) => InitializeAsyncContext<VoidResult>(context);
+    private void InitializeAsyncContext(ResilienceContext context) => InitializeAsyncContext<VoidResult>(context);
 }

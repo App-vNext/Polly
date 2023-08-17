@@ -13,12 +13,20 @@ public sealed partial class ResiliencePipeline<T>
     /// <summary>
     /// Resilience pipeline that executes the user-provided callback without any additional logic.
     /// </summary>
-    public static readonly ResiliencePipeline<T> Null = new(PipelineComponent.Null);
+    public static readonly ResiliencePipeline<T> Null = new(PipelineComponent.Null, DisposeBehavior.Ignore);
 
-    internal ResiliencePipeline(PipelineComponent component) => Pipeline = new ResiliencePipeline(component);
+    internal ResiliencePipeline(PipelineComponent component, DisposeBehavior disposeBehavior)
+    {
+        // instead of re-implementing individual Execute* methods we
+        // can just re-use the non-generic ResiliencePipeline and
+        // call it from Execute* methods in this class
+        Pipeline = new ResiliencePipeline(component, disposeBehavior);
+        DisposeHelper = Pipeline.DisposeHelper;
+    }
 
     internal PipelineComponent Component => Pipeline.Component;
 
-    private ResiliencePipeline Pipeline { get; }
+    internal ComponentDisposeHelper DisposeHelper { get; }
 
+    private ResiliencePipeline Pipeline { get; }
 }

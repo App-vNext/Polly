@@ -88,7 +88,7 @@ public abstract class ResiliencePipelineBuilderBase
     internal Action<ResilienceValidationContext> Validator { get; private protected set; } = ValidationHelper.ValidateObject;
 
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
-    internal void AddStrategyCore(Func<StrategyBuilderContext, PipelineComponent> factory, ResilienceStrategyOptions options)
+    internal void AddPipelineComponent(Func<StrategyBuilderContext, PipelineComponent> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);
         Guard.NotNull(options);

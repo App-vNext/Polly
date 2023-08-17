@@ -1,9 +1,10 @@
 namespace Polly.CircuitBreaker;
 
-internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T>
+internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T>, IDisposable
 {
     private readonly Func<OutcomeArguments<T, CircuitBreakerPredicateArguments>, ValueTask<bool>> _handler;
     private readonly CircuitStateController<T> _controller;
+    private readonly IDisposable? _manualControlRegistration;
 
     public CircuitBreakerResilienceStrategy(
         Func<OutcomeArguments<T, CircuitBreakerPredicateArguments>, ValueTask<bool>> handler,
@@ -15,10 +16,15 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T
         _controller = controller;
 
         stateProvider?.Initialize(() => _controller.CircuitState, () => _controller.LastHandledOutcome);
-        manualControl?.Initialize(
+        _manualControlRegistration = manualControl?.Initialize(
             async c => await _controller.IsolateCircuitAsync(c).ConfigureAwait(c.ContinueOnCapturedContext),
-            async c => await _controller.CloseCircuitAsync(c).ConfigureAwait(c.ContinueOnCapturedContext),
-            _controller.Dispose);
+            async c => await _controller.CloseCircuitAsync(c).ConfigureAwait(c.ContinueOnCapturedContext));
+    }
+
+    public void Dispose()
+    {
+        _manualControlRegistration?.Dispose();
+        _controller.Dispose();
     }
 
     protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)

@@ -11,7 +11,7 @@ namespace Polly.Utils;
 /// <remarks>
 /// The component of the pipeline can be either a strategy, a generic strategy or a whole pipeline.
 /// </remarks>
-internal abstract partial class PipelineComponent
+internal abstract partial class PipelineComponent : IDisposable, IAsyncDisposable
 {
     public static PipelineComponent Null { get; } = new NullComponent();
 
@@ -41,9 +41,19 @@ internal abstract partial class PipelineComponent
         ResilienceContext context,
         TState state);
 
-    internal class NullComponent : PipelineComponent
+    public abstract void Dispose();
+
+    public abstract ValueTask DisposeAsync();
+
+    private class NullComponent : PipelineComponent
     {
         internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
             => callback(context, state);
+
+        public override void Dispose()
+        {
+        }
+
+        public override ValueTask DisposeAsync() => default;
     }
 }

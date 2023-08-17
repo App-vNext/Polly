@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Time.Testing;
 using Polly.CircuitBreaker;
 using Polly.Testing;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
@@ -129,5 +130,44 @@ public class CircuitBreakerResiliencePipelineBuilderTests
 
         strategy1.Execute(() => { });
         strategy2.Execute(() => { });
+    }
+
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    [Theory]
+    public async Task DisposePipeline_EnsureCircuitBreakerDisposed(bool isAsync, bool attachManualControl)
+    {
+        var manualControl = attachManualControl ? new CircuitBreakerManualControl() : null;
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ManualControl = manualControl
+            })
+            .Build();
+
+        if (attachManualControl)
+        {
+            manualControl!.IsEmpty.Should().BeFalse();
+        }
+
+        var strategy = (ResilienceStrategy<object>)pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance;
+
+        if (isAsync)
+        {
+            await pipeline.DisposeHelper.DisposeAsync();
+        }
+        else
+        {
+            pipeline.DisposeHelper.Dispose();
+        }
+
+        strategy.AsPipeline().Invoking(s => s.Execute(() => 1)).Should().Throw<ObjectDisposedException>();
+
+        if (attachManualControl)
+        {
+            manualControl!.IsEmpty.Should().BeTrue();
+        }
     }
 }

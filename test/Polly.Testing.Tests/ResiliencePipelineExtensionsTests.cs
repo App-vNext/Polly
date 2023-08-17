@@ -112,7 +112,8 @@ public class ResiliencePipelineExtensionsTests
     public void GetPipelineDescriptor_Reloadable_Ok()
     {
         // arrange
-        var strategy = new ResiliencePipelineRegistry<string>().GetOrAddPipeline("dummy", (builder, context) =>
+        using var registry = new ResiliencePipelineRegistry<string>();
+        var strategy = registry.GetOrAddPipeline("dummy", (builder, context) =>
         {
             context.EnableReloads(() => () => CancellationToken.None);
 

@@ -27,7 +27,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(pipeline);
 
-        builder.AddStrategyCore(_ => PipelineComponent.FromPipeline(pipeline), EmptyOptions.Instance);
+        builder.AddPipelineComponent(_ => PipelineComponent.FromPipeline(pipeline), EmptyOptions.Instance);
         return builder;
     }
 
@@ -49,7 +49,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(pipeline);
 
-        builder.AddStrategyCore(_ => PipelineComponent.FromPipeline(pipeline), EmptyOptions.Instance);
+        builder.AddPipelineComponent(_ => PipelineComponent.FromPipeline(pipeline), EmptyOptions.Instance);
         return builder;
     }
 
@@ -72,7 +72,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        builder.AddStrategyCore(context => PipelineComponent.FromStrategy(factory(context)), options);
+        builder.AddPipelineComponent(context => PipelineComponent.FromStrategy(factory(context)), options);
         return builder;
     }
 
@@ -95,7 +95,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        builder.AddStrategyCore(context => PipelineComponent.FromStrategy(factory(context)), options);
+        builder.AddPipelineComponent(context => PipelineComponent.FromStrategy(factory(context)), options);
         return builder;
     }
 
@@ -119,7 +119,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        builder.AddStrategyCore(context => PipelineComponent.FromStrategy(factory(context)), options);
+        builder.AddPipelineComponent(context => PipelineComponent.FromStrategy(factory(context)), options);
         return builder;
     }
 

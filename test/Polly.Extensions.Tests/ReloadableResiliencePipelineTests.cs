@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using Polly.DependencyInjection;
 using Polly.Registry;
 
@@ -15,6 +16,7 @@ public class ReloadableResiliencePipelineTests
     [Theory]
     public void AddResiliencePipeline_EnsureReloadable(string? name)
     {
+        var resList = new List<IDisposable>();
         var reloadableConfig = new ReloadableConfiguration();
         reloadableConfig.Reload(new() { { "tag", "initial-tag" } });
         var builder = new ConfigurationBuilder().Add(reloadableConfig);
@@ -35,7 +37,13 @@ public class ReloadableResiliencePipelineTests
             var options = context.GetOptions<ReloadableStrategyOptions>(name);
             context.EnableReloads<ReloadableStrategyOptions>(name);
 
-            builder.AddStrategy(_ => new ReloadableStrategy(options.Tag), new ReloadableStrategyOptions());
+            builder.AddStrategy(_ =>
+            {
+                var res = Substitute.For<IDisposable>();
+                resList.Add(res);
+                return new ReloadableStrategy(options.Tag, res);
+            },
+            new ReloadableStrategyOptions());
         });
 
         var serviceProvider = services.BuildServiceProvider();
@@ -53,13 +61,36 @@ public class ReloadableResiliencePipelineTests
             pipeline.Execute(_ => "dummy", context);
             context.Properties.GetValue(TagKey, string.Empty).Should().Be($"reload-{i}");
         }
+
+        // check resource disposed
+        resList.Should().HaveCount(11);
+        for (int i = 0; i < resList.Count - 1; i++)
+        {
+            resList[i].Received(1).Dispose();
+        }
+
+        resList.Last().Received(0).Dispose();
+
+        // check disposal of service provider
+        serviceProvider.Dispose();
+        resList.Last().Received(1).Dispose();
+        pipeline.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
+
     }
 
-    public class ReloadableStrategy : ResilienceStrategy
+    public class ReloadableStrategy : ResilienceStrategy, IDisposable
     {
-        public ReloadableStrategy(string tag) => Tag = tag;
+        public ReloadableStrategy(string tag, IDisposable disposableResource)
+        {
+            Tag = tag;
+            DisposableResource = disposableResource;
+        }
 
         public string Tag { get; }
+
+        public IDisposable DisposableResource { get; }
+
+        public void Dispose() => DisposableResource.Dispose();
 
         protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
