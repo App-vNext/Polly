@@ -64,11 +64,6 @@ internal sealed class ComponentDisposeHelper : IDisposable, IAsyncDisposable
             throw new InvalidOperationException("Disposing this resilience pipeline is not allowed because it is owned by the pipeline registry.");
         }
 
-        if (_disposed)
-        {
-            return false;
-        }
-
-        return true;
+        return !_disposed;
     }
 }

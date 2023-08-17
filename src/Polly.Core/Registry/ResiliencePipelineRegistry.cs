@@ -222,19 +222,14 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     {
         _disposed = true;
 
-        foreach (var pipeline in _pipelines.Values)
-        {
-            pipeline.DisposeHelper.ForceDispose();
-        }
-
+        var pipelines = _pipelines.Values.ToList();
         _pipelines.Clear();
 
-        foreach (var disposable in _genericRegistry.Values.Cast<IDisposable>())
-        {
-            disposable.Dispose();
-        }
-
+        var registries = _genericRegistry.Values.Cast<IDisposable>().ToList();
         _genericRegistry.Clear();
+
+        pipelines.ForEach(p => p.DisposeHelper.ForceDispose());
+        registries.ForEach(p => p.Dispose());
     }
 
     /// <summary>
@@ -249,19 +244,21 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     {
         _disposed = true;
 
-        foreach (var pipeline in _pipelines.Values)
+        var pipelines = _pipelines.Values.ToList();
+        _pipelines.Clear();
+
+        var registries = _genericRegistry.Values.Cast<IAsyncDisposable>().ToList();
+        _genericRegistry.Clear();
+
+        foreach (var pipeline in pipelines)
         {
             await pipeline.DisposeHelper.ForceDisposeAsync().ConfigureAwait(false);
         }
 
-        _pipelines.Clear();
-
-        foreach (var disposable in _genericRegistry.Values.Cast<IAsyncDisposable>())
+        foreach (var disposable in registries)
         {
             await disposable.DisposeAsync().ConfigureAwait(false);
         }
-
-        _genericRegistry.Clear();
     }
 
     private static PipelineComponent CreatePipelineComponent<TBuilder>(
