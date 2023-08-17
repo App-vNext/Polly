@@ -23,10 +23,10 @@ public sealed class CircuitBreakerManualControl
     /// <summary>
     /// Initializes a new instance of the <see cref="CircuitBreakerManualControl"/> class.
     /// </summary>
-    /// <param name="isIsolated">Determines whether the circit breaker is isolated immediately after construction.</param>
+    /// <param name="isIsolated">Determines whether the circuit breaker is isolated immediately after construction.</param>
     public CircuitBreakerManualControl(bool isIsolated) => _isolated = isIsolated;
 
-    internal bool IsEmpty => _onIsolate.Count == 0 && _onReset.Count == 0;
+    internal bool IsEmpty => _onIsolate.Count == 0;
 
     internal IDisposable Initialize(Func<ResilienceContext, Task> onIsolate, Func<ResilienceContext, Task> onReset)
     {
