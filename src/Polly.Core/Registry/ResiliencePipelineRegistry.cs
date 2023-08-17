@@ -60,50 +60,6 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
         _pipelineComparer = options.PipelineComparer;
     }
 
-    /// <summary>
-    /// Tries to add an existing resilience pipeline to the registry.
-    /// </summary>
-    /// <param name="key">The key used to identify the resilience pipeline.</param>
-    /// <param name="pipeline">The resilience pipeline instance.</param>
-    /// <returns><see langword="true"/> if the pipeline was added successfully, <see langword="false"/> otherwise.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pipeline"/> is <see langword="null"/>.</exception>
-    public bool TryAddPipeline(TKey key, ResiliencePipeline pipeline)
-    {
-        Guard.NotNull(pipeline);
-
-        return _pipelines.TryAdd(key, pipeline);
-    }
-
-    /// <summary>
-    /// Tries to add an existing generic resilience pipeline to the registry.
-    /// </summary>
-    /// <typeparam name="TResult">The type of result that the resilience pipeline handles.</typeparam>
-    /// <param name="key">The key used to identify the resilience pipeline.</param>
-    /// <param name="pipeline">The resilience pipeline instance.</param>
-    /// <returns><see langword="true"/> if the pipeline was added successfully, <see langword="false"/> otherwise.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pipeline"/> is <see langword="null"/>.</exception>
-    public bool TryAddPipeline<TResult>(TKey key, ResiliencePipeline<TResult> pipeline)
-    {
-        Guard.NotNull(pipeline);
-
-        return GetGenericRegistry<TResult>().TryAdd(key, pipeline);
-    }
-
-    /// <summary>
-    /// Removes a resilience pipeline from the registry.
-    /// </summary>
-    /// <param name="key">The key used to identify the resilience pipeline.</param>
-    /// <returns><see langword="true"/> if the pipeline was removed successfully, <see langword="false"/> otherwise.</returns>
-    public bool RemovePipeline(TKey key) => _pipelines.TryRemove(key, out _);
-
-    /// <summary>
-    /// Removes a generic resilience pipeline from the registry.
-    /// </summary>
-    /// <typeparam name="TResult">The type of result that the resilience pipeline handles.</typeparam>
-    /// <param name="key">The key used to identify the resilience pipeline.</param>
-    /// <returns><see langword="true"/> if the pipeline was removed successfully, <see langword="false"/> otherwise.</returns>
-    public bool RemovePipeline<TResult>(TKey key) => GetGenericRegistry<TResult>().Remove(key);
-
     /// <inheritdoc/>
     public override bool TryGetPipeline<TResult>(TKey key, [NotNullWhen(true)] out ResiliencePipeline<TResult>? pipeline)
     {
@@ -231,38 +187,6 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
         return GetGenericRegistry<TResult>().TryAddBuilder(key, configure);
     }
-
-    /// <summary>
-    /// Removes a resilience pipeline builder from the registry.
-    /// </summary>
-    /// <param name="key">The key used to identify the resilience pipeline builder.</param>
-    /// <returns><see langword="true"/> if the builder was removed successfully, <see langword="false"/> otherwise.</returns>
-    public bool RemoveBuilder(TKey key) => _builders.TryRemove(key, out _);
-
-    /// <summary>
-    /// Removes a generic resilience pipeline builder from the registry.
-    /// </summary>
-    /// <typeparam name="TResult">The type of result that the resilience pipeline handles.</typeparam>
-    /// <param name="key">The key used to identify the resilience pipeline builder.</param>
-    /// <returns><see langword="true"/> if the builder was removed successfully, <see langword="false"/> otherwise.</returns>
-    public bool RemoveBuilder<TResult>(TKey key) => GetGenericRegistry<TResult>().RemoveBuilder(key);
-
-    /// <summary>
-    /// Clears all cached pipelines.
-    /// </summary>
-    /// <remarks>
-    /// This method only clears the cached pipelines, the registered builders are kept unchanged.
-    /// </remarks>
-    public void ClearPipelines() => _pipelines.Clear();
-
-    /// <summary>
-    /// Clears all cached generic pipelines.
-    /// </summary>
-    /// <typeparam name="TResult">The type of result that the resilience pipeline handles.</typeparam>
-    /// <remarks>
-    /// This method only clears the cached pipelines, the registered builders are kept unchanged.
-    /// </remarks>
-    public void ClearPipelines<TResult>() => GetGenericRegistry<TResult>().Clear();
 
     private static PipelineComponent CreatePipelineComponent<TBuilder>(
         Func<TBuilder> activator,

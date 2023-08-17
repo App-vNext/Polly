@@ -3,7 +3,6 @@ using Polly.Registry;
 using Polly.Retry;
 using Polly.Testing;
 using Polly.Timeout;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Registry;
 
@@ -37,96 +36,6 @@ public class ResiliencePipelineRegistryTests
         this.Invoking(_ => new ResiliencePipelineRegistry<string>(new ResiliencePipelineRegistryOptions<string> { BuilderFactory = null! }))
             .Should()
             .Throw<ArgumentNullException>();
-    }
-
-    [Fact]
-    public void ClearPipelines_Ok()
-    {
-        var registry = new ResiliencePipelineRegistry<string>();
-
-        registry.TryAddBuilder("C", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
-
-        registry.TryAddPipeline("A", new TestResilienceStrategy().AsPipeline());
-        registry.TryAddPipeline("B", new TestResilienceStrategy().AsPipeline());
-        registry.TryAddPipeline("C", new TestResilienceStrategy().AsPipeline());
-
-        registry.ClearPipelines();
-
-        registry.TryGetPipeline("A", out _).Should().BeFalse();
-        registry.TryGetPipeline("B", out _).Should().BeFalse();
-        registry.TryGetPipeline("C", out _).Should().BeTrue();
-    }
-
-    [Fact]
-    public void ClearPipelines_Generic_Ok()
-    {
-        var registry = new ResiliencePipelineRegistry<string>();
-
-        registry.TryAddBuilder<string>("C", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
-
-        registry.TryAddPipeline("A", new ResiliencePipeline<string>(PipelineComponent.Null));
-        registry.TryAddPipeline("B", new ResiliencePipeline<string>(PipelineComponent.Null));
-        registry.TryAddPipeline("C", new ResiliencePipeline<string>(PipelineComponent.Null));
-
-        registry.ClearPipelines<string>();
-
-        registry.TryGetPipeline<string>("A", out _).Should().BeFalse();
-        registry.TryGetPipeline<string>("B", out _).Should().BeFalse();
-        registry.TryGetPipeline<string>("C", out _).Should().BeTrue();
-    }
-
-    [Fact]
-    public void Remove_Ok()
-    {
-        var registry = new ResiliencePipelineRegistry<string>();
-
-        registry.TryAddPipeline("A", new TestResilienceStrategy().AsPipeline());
-        registry.TryAddPipeline("B", new TestResilienceStrategy().AsPipeline());
-
-        registry.RemovePipeline("A").Should().BeTrue();
-        registry.RemovePipeline("A").Should().BeFalse();
-
-        registry.TryGetPipeline("A", out _).Should().BeFalse();
-        registry.TryGetPipeline("B", out _).Should().BeTrue();
-    }
-
-    [Fact]
-    public void Remove_Generic_Ok()
-    {
-        var registry = new ResiliencePipelineRegistry<string>();
-
-        registry.TryAddPipeline("A", new ResiliencePipeline<string>(PipelineComponent.Null));
-        registry.TryAddPipeline("B", new ResiliencePipeline<string>(PipelineComponent.Null));
-
-        registry.RemovePipeline<string>("A").Should().BeTrue();
-        registry.RemovePipeline<string>("A").Should().BeFalse();
-
-        registry.TryGetPipeline<string>("A", out _).Should().BeFalse();
-        registry.TryGetPipeline<string>("B", out _).Should().BeTrue();
-    }
-
-    [Fact]
-    public void RemoveBuilder_Ok()
-    {
-        var registry = new ResiliencePipelineRegistry<string>();
-        registry.TryAddBuilder("A", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
-
-        registry.RemoveBuilder("A").Should().BeTrue();
-        registry.RemoveBuilder("A").Should().BeFalse();
-
-        registry.TryGetPipeline("A", out _).Should().BeFalse();
-    }
-
-    [Fact]
-    public void RemoveBuilder_Generic_Ok()
-    {
-        var registry = new ResiliencePipelineRegistry<string>();
-        registry.TryAddBuilder<string>("A", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
-
-        registry.RemoveBuilder<string>("A").Should().BeTrue();
-        registry.RemoveBuilder<string>("A").Should().BeFalse();
-
-        registry.TryGetPipeline<string>("A", out _).Should().BeFalse();
     }
 
     [Fact]
@@ -172,7 +81,7 @@ public class ResiliencePipelineRegistryTests
     }
 
     [Fact]
-    public void AddBuilder_GetPipeline_EnsureCalled()
+    public void TryAddBuilder_GetPipeline_EnsureCalled()
     {
         var activatorCalls = 0;
         _callback = _ => activatorCalls++;
@@ -200,7 +109,7 @@ public class ResiliencePipelineRegistryTests
     }
 
     [Fact]
-    public void AddBuilder_GenericGetPipeline_EnsureCalled()
+    public void TryAddBuilder_GenericGetPipeline_EnsureCalled()
     {
         var activatorCalls = 0;
         _callback = _ => activatorCalls++;
@@ -228,7 +137,7 @@ public class ResiliencePipelineRegistryTests
     }
 
     [Fact]
-    public void AddBuilder_EnsurePipelineKey()
+    public void TryAddBuilder_EnsurePipelineKey()
     {
         _options.BuilderNameFormatter = k => k.BuilderName;
         _options.InstanceNameFormatter = k => k.InstanceName;
@@ -250,8 +159,46 @@ public class ResiliencePipelineRegistryTests
         called.Should().BeTrue();
     }
 
+    [InlineData(false)]
+    [InlineData(true)]
+    [Theory]
+    public void TryAddBuilder_Twice_EnsureCorrectBehavior(bool generic)
+    {
+        var registry = new ResiliencePipelineRegistry<string>();
+
+        var called1 = false;
+        var called2 = false;
+
+        AddBuilder(() => called1 = true).Should().BeTrue();
+        AddBuilder(() => called2 = true).Should().BeFalse();
+
+        if (generic)
+        {
+            registry.GetPipeline<string>("A");
+        }
+        else
+        {
+            registry.GetPipeline("A");
+        }
+
+        called1.Should().BeTrue();
+        called2.Should().BeFalse();
+
+        bool AddBuilder(Action onCalled)
+        {
+            if (generic)
+            {
+                return registry!.TryAddBuilder<string>("A", (_, _) => onCalled());
+            }
+            else
+            {
+                return registry!.TryAddBuilder("A", (_, _) => onCalled());
+            }
+        }
+    }
+
     [Fact]
-    public void AddBuilder_MultipleGeneric_EnsureDistinctInstances()
+    public void TryAddBuilder_MultipleGeneric_EnsureDistinctInstances()
     {
         var registry = CreateRegistry();
         registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, _) => builder.AddStrategy(new TestResilienceStrategy()));
@@ -262,7 +209,7 @@ public class ResiliencePipelineRegistryTests
     }
 
     [Fact]
-    public void AddBuilder_Generic_EnsurePipelineKey()
+    public void TryAddBuilder_Generic_EnsurePipelineKey()
     {
         _options.BuilderNameFormatter = k => k.BuilderName;
         _options.InstanceNameFormatter = k => k.InstanceName;
@@ -299,60 +246,6 @@ public class ResiliencePipelineRegistryTests
 
         registry.TryGetPipeline<string>(key, out var strategy).Should().BeFalse();
         strategy.Should().BeNull();
-    }
-
-    [Fact]
-    public void TryGet_ExplicitPipelineAdded_Ok()
-    {
-        var expectedPipeline = new TestResilienceStrategy().AsPipeline();
-        var registry = CreateRegistry();
-        var key = StrategyId.Create("A", "Instance");
-        registry.TryAddPipeline(key, expectedPipeline).Should().BeTrue();
-
-        registry.TryGetPipeline(key, out var strategy).Should().BeTrue();
-
-        strategy.Should().BeSameAs(expectedPipeline);
-    }
-
-    [Fact]
-    public void TryGet_GenericExplicitPipelineAdded_Ok()
-    {
-        var expectedPipeline = new ResiliencePipeline<string>(PipelineComponent.Null);
-        var registry = CreateRegistry();
-        var key = StrategyId.Create("A", "Instance");
-        registry.TryAddPipeline<string>(key, expectedPipeline).Should().BeTrue();
-
-        registry.TryGetPipeline<string>(key, out var strategy).Should().BeTrue();
-
-        strategy.Should().BeSameAs(expectedPipeline);
-    }
-
-    [Fact]
-    public void TryAdd_Twice_SecondNotAdded()
-    {
-        var expectedPipeline = new TestResilienceStrategy().AsPipeline();
-        var registry = CreateRegistry();
-        var key = StrategyId.Create("A", "Instance");
-        registry.TryAddPipeline(key, expectedPipeline).Should().BeTrue();
-
-        registry.TryAddPipeline(key, new TestResilienceStrategy().AsPipeline()).Should().BeFalse();
-
-        registry.TryGetPipeline(key, out var strategy).Should().BeTrue();
-        strategy.Should().BeSameAs(expectedPipeline);
-    }
-
-    [Fact]
-    public void TryAdd_GenericTwice_SecondNotAdded()
-    {
-        var expectedPipeline = new ResiliencePipeline<string>(PipelineComponent.Null);
-        var registry = CreateRegistry();
-        var key = StrategyId.Create("A", "Instance");
-        registry.TryAddPipeline(key, expectedPipeline).Should().BeTrue();
-
-        registry.TryAddPipeline(key, new ResiliencePipeline<string>(PipelineComponent.Null)).Should().BeFalse();
-
-        registry.TryGetPipeline<string>(key, out var strategy).Should().BeTrue();
-        strategy.Should().BeSameAs(expectedPipeline);
     }
 
     [Fact]
