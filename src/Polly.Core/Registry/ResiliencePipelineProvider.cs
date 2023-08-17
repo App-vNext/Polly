@@ -17,7 +17,6 @@ public abstract class ResiliencePipelineProvider<TKey>
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <returns>The resilience pipeline associated with the specified key.</returns>
     /// <exception cref="KeyNotFoundException">Thrown when no resilience pipeline is found for the specified key.</exception>
-    /// <exception cref="ObjectDisposedException">Thrown when the provider is already disposed.</exception>
     public virtual ResiliencePipeline GetPipeline(TKey key)
     {
         if (TryGetPipeline(key, out var pipeline))
@@ -36,7 +35,6 @@ public abstract class ResiliencePipelineProvider<TKey>
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <returns>The resilience pipeline associated with the specified key.</returns>
     /// <exception cref="KeyNotFoundException">Thrown when no resilience pipeline is found for the specified key.</exception>
-    /// <exception cref="ObjectDisposedException">Thrown when the provider is already disposed.</exception>
     public virtual ResiliencePipeline<TResult> GetPipeline<TResult>(TKey key)
     {
         if (TryGetPipeline<TResult>(key, out var pipeline))
@@ -54,7 +52,6 @@ public abstract class ResiliencePipelineProvider<TKey>
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <param name="pipeline">The output resilience pipeline if found, <see langword="null"/> otherwise.</param>
     /// <returns><see langword="true"/> if the pipeline was found, <see langword="false"/> otherwise.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the provider is already disposed.</exception>
     public abstract bool TryGetPipeline(TKey key, [NotNullWhen(true)] out ResiliencePipeline? pipeline);
 
     /// <summary>
@@ -64,6 +61,5 @@ public abstract class ResiliencePipelineProvider<TKey>
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <param name="pipeline">The output resilience pipeline if found, <see langword="null"/> otherwise.</param>
     /// <returns><see langword="true"/> if the pipeline was found, <see langword="false"/> otherwise.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the provider is already disposed.</exception>
     public abstract bool TryGetPipeline<TResult>(TKey key, [NotNullWhen(true)] out ResiliencePipeline<TResult>? pipeline);
 }
