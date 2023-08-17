@@ -95,6 +95,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <param name="configure">The callback that configures the pipeline builder.</param>
     /// <returns>An instance of pipeline.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the registry is already disposed.</exception>
     public ResiliencePipeline GetOrAddPipeline(TKey key, Action<ResiliencePipelineBuilder> configure)
     {
         Guard.NotNull(configure);
@@ -110,6 +111,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <param name="configure">The callback that configures the pipeline builder.</param>
     /// <returns>An instance of pipeline.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the registry is already disposed.</exception>
     public ResiliencePipeline GetOrAddPipeline(TKey key, Action<ResiliencePipelineBuilder, ConfigureBuilderContext<TKey>> configure)
     {
         Guard.NotNull(configure);
@@ -141,6 +143,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <param name="configure">The callback that configures the pipeline builder.</param>
     /// <returns>An instance of pipeline.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the registry is already disposed.</exception>
     public ResiliencePipeline<TResult> GetOrAddPipeline<TResult>(TKey key, Action<ResiliencePipelineBuilder<TResult>> configure)
     {
         Guard.NotNull(configure);
@@ -157,6 +160,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <param name="configure">The callback that configures the pipeline builder.</param>
     /// <returns>An instance of pipeline.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the registry is already disposed.</exception>
     public ResiliencePipeline<TResult> GetOrAddPipeline<TResult>(TKey key, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
     {
         Guard.NotNull(configure);
@@ -176,6 +180,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// Use this method when you want to create the pipeline on-demand when it's first accessed.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the registry is already disposed.</exception>
     public bool TryAddBuilder(TKey key, Action<ResiliencePipelineBuilder, ConfigureBuilderContext<TKey>> configure)
     {
         Guard.NotNull(configure);
@@ -196,6 +201,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// Use this method when you want to create the pipeline on-demand when it's first accessed.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the registry is already disposed.</exception>
     public bool TryAddBuilder<TResult>(TKey key, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
     {
         Guard.NotNull(configure);
@@ -205,7 +211,13 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
         return GetGenericRegistry<TResult>().TryAddBuilder(key, configure);
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Disposes all resources that are held by the resilience pipelines created by this builder.
+    /// </summary>
+    /// <remarks>
+    /// After the disposal, all resilience pipelines still used outside of the builder are disposed
+    /// and cannot be used anymore.
+    /// </remarks>
     public void Dispose()
     {
         _disposed = true;
@@ -225,7 +237,14 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
         _genericRegistry.Clear();
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Disposes all resources that are held by the resilience pipelines created by this builder.
+    /// </summary>
+    /// <returns>Returns a task that represents the asynchronous dispose operation.</returns>
+    /// <remarks>
+    /// After the disposal, all resilience pipelines still used outside of the builder are disposed
+    /// and cannot be used anymore.
+    /// </remarks>
     public async ValueTask DisposeAsync()
     {
         _disposed = true;
