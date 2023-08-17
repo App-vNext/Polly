@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using Polly.Utils.Pipeline;
 
 namespace Polly;
 
@@ -27,7 +28,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(pipeline);
 
-        builder.AddPipelineComponent(_ => PipelineComponent.FromPipeline(pipeline), EmptyOptions.Instance);
+        builder.AddPipelineComponent(_ => PipelineComponentFactory.FromPipeline(pipeline), EmptyOptions.Instance);
         return builder;
     }
 
@@ -49,7 +50,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(pipeline);
 
-        builder.AddPipelineComponent(_ => PipelineComponent.FromPipeline(pipeline), EmptyOptions.Instance);
+        builder.AddPipelineComponent(_ => PipelineComponentFactory.FromPipeline(pipeline), EmptyOptions.Instance);
         return builder;
     }
 
@@ -72,7 +73,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        builder.AddPipelineComponent(context => PipelineComponent.FromStrategy(factory(context)), options);
+        builder.AddPipelineComponent(context => PipelineComponentFactory.FromStrategy(factory(context)), options);
         return builder;
     }
 
@@ -95,7 +96,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        builder.AddPipelineComponent(context => PipelineComponent.FromStrategy(factory(context)), options);
+        builder.AddPipelineComponent(context => PipelineComponentFactory.FromStrategy(factory(context)), options);
         return builder;
     }
 
@@ -119,7 +120,7 @@ public static class ResiliencePipelineBuilderExtensions
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        builder.AddPipelineComponent(context => PipelineComponent.FromStrategy(factory(context)), options);
+        builder.AddPipelineComponent(context => PipelineComponentFactory.FromStrategy(factory(context)), options);
         return builder;
     }
 

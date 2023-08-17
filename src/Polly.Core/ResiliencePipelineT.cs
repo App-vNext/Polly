@@ -1,3 +1,5 @@
+using Polly.Utils.Pipeline;
+
 namespace Polly;
 
 /// <summary>

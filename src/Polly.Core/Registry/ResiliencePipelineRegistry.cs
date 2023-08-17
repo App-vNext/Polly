@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Polly.Telemetry;
+using Polly.Utils.Pipeline;
 
 namespace Polly.Registry;
 
@@ -288,7 +289,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
             return pipeline;
         }
 
-        return PipelineComponent.CreateReloadable(pipeline, context.ReloadTokenProducer(), () => factory().BuildPipelineComponent(), telemetry);
+        return PipelineComponentFactory.CreateReloadable(pipeline, context.ReloadTokenProducer(), () => factory().BuildPipelineComponent(), telemetry);
     }
 
     private GenericRegistry<TResult> GetGenericRegistry<TResult>()

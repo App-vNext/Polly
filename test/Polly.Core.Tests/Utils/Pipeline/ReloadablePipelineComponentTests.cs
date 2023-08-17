@@ -1,8 +1,8 @@
 using NSubstitute;
 using Polly.Telemetry;
-using Polly.Utils;
+using Polly.Utils.Pipeline;
 
-namespace Polly.Core.Tests.Utils.PipelineComponents;
+namespace Polly.Core.Tests.Utils.Pipeline;
 
 public class ReloadablePipelineComponentTests : IDisposable
 {
@@ -30,7 +30,7 @@ public class ReloadablePipelineComponentTests : IDisposable
 
         sut.Component.Should().Be(component);
 
-        PipelineComponent.ReloadableComponent.ReloadFailedEvent.Should().Be("ReloadFailed");
+        ReloadableComponent.ReloadFailedEvent.Should().Be("ReloadFailed");
     }
 
     [Fact]
@@ -98,22 +98,22 @@ public class ReloadablePipelineComponentTests : IDisposable
         _events[0]
             .Arguments
             .Should()
-            .BeOfType<PipelineComponent.ReloadableComponent.OnReloadArguments>();
+            .BeOfType<ReloadableComponent.OnReloadArguments>();
 
         var args = _events[1]
             .Arguments
             .Should()
-            .BeOfType<PipelineComponent.ReloadableComponent.ReloadFailedArguments>()
+            .BeOfType<ReloadableComponent.ReloadFailedArguments>()
             .Subject;
 
         args.Exception.Should().BeOfType<InvalidOperationException>();
     }
 
-    private PipelineComponent.ReloadableComponent CreateSut(PipelineComponent? initial = null, Func<PipelineComponent>? factory = null)
+    private ReloadableComponent CreateSut(PipelineComponent? initial = null, Func<PipelineComponent>? factory = null)
     {
         factory ??= () => PipelineComponent.Null;
 
-        return (PipelineComponent.ReloadableComponent)PipelineComponent.CreateReloadable(initial ?? PipelineComponent.Null,
+        return (ReloadableComponent)PipelineComponentFactory.CreateReloadable(initial ?? PipelineComponent.Null,
             () => _cancellationTokenSource.Token,
             factory,
             _telemetry);

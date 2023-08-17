@@ -1,7 +1,8 @@
 ﻿using NSubstitute;
 using Polly.Utils;
+using Polly.Utils.Pipeline;
 
-namespace Polly.Core.Tests.Utils.PipelineComponents;
+namespace Polly.Core.Tests.Utils.Pipeline;
 
 public class BridgePipelineComponentTests
 {
@@ -16,7 +17,7 @@ public class BridgePipelineComponentTests
     {
         var values = new List<object?>();
 
-        var pipeline = new ResiliencePipeline(PipelineComponent.FromStrategy(new Strategy<object>(outcome =>
+        var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new Strategy<object>(outcome =>
         {
             values.Add(outcome.Result);
         })), DisposeBehavior.Allow);
@@ -37,7 +38,7 @@ public class BridgePipelineComponentTests
     {
         var values = new List<object?>();
 
-        var pipeline = new ResiliencePipeline(PipelineComponent.FromStrategy(new Strategy<string>(outcome =>
+        var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new Strategy<string>(outcome =>
         {
             values.Add(outcome.Result);
         })), DisposeBehavior.Allow);
@@ -53,7 +54,7 @@ public class BridgePipelineComponentTests
     {
         var called = false;
 
-        var pipeline = new ResiliencePipeline(PipelineComponent.FromStrategy(new Strategy<object>(outcome =>
+        var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new Strategy<object>(outcome =>
         {
             outcome.Result.Should().Be(-1);
             called = true;
@@ -71,11 +72,11 @@ public class BridgePipelineComponentTests
     public async Task Dispose_EnsureStrategyDisposed(bool isAsync)
     {
         var strategy = Substitute.For<ResilienceStrategy, IDisposable>();
-        await Dispose(PipelineComponent.FromStrategy(strategy), isAsync);
+        await Dispose(PipelineComponentFactory.FromStrategy(strategy), isAsync);
         ((IDisposable)strategy).Received(1).Dispose();
 
         strategy = Substitute.For<ResilienceStrategy, IAsyncDisposable>();
-        await Dispose(PipelineComponent.FromStrategy(strategy), isAsync);
+        await Dispose(PipelineComponentFactory.FromStrategy(strategy), isAsync);
         await ((IAsyncDisposable)strategy).Received(1).DisposeAsync();
     }
 
@@ -85,11 +86,11 @@ public class BridgePipelineComponentTests
     public async Task Dispose_Generic_EnsureStrategyDisposed(bool isAsync)
     {
         var strategy = Substitute.For<ResilienceStrategy<string>, IDisposable>();
-        await Dispose(PipelineComponent.FromStrategy(strategy), isAsync);
+        await Dispose(PipelineComponentFactory.FromStrategy(strategy), isAsync);
         ((IDisposable)strategy).Received(1).Dispose();
 
         strategy = Substitute.For<ResilienceStrategy<string>, IAsyncDisposable>();
-        await Dispose(PipelineComponent.FromStrategy(strategy), isAsync);
+        await Dispose(PipelineComponentFactory.FromStrategy(strategy), isAsync);
         await ((IAsyncDisposable)strategy).Received(1).DisposeAsync();
     }
 #pragma warning restore S1944 // Invalid casts should be avoided

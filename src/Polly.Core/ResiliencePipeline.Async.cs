@@ -24,7 +24,7 @@ public partial class ResiliencePipeline
 
         InitializeAsyncContext(context);
 
-        var outcome = await ExecuteCore(
+        var outcome = await Component.ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -59,7 +59,7 @@ public partial class ResiliencePipeline
 
         InitializeAsyncContext(context);
 
-        var outcome = await ExecuteCore(
+        var outcome = await Component.ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -98,7 +98,7 @@ public partial class ResiliencePipeline
 
         try
         {
-            var outcome = await ExecuteCore(
+            var outcome = await Component.ExecuteCore(
                 static async (context, state) =>
                 {
                     try
@@ -139,7 +139,7 @@ public partial class ResiliencePipeline
 
         try
         {
-            var outcome = await ExecuteCore(
+            var outcome = await Component.ExecuteCore(
                 static async (context, state) =>
                 {
                     try

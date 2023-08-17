@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
-using Polly.Utils;
+using Polly.Utils.Pipeline;
 
 namespace Polly.Core.Tests;
 
@@ -44,7 +44,7 @@ public class GenericResiliencePipelineBuilderTests
 
         // assert
         strategy.Should().NotBeNull();
-        strategy.Component.Should().BeOfType<PipelineComponent.CompositeComponent>().Subject.Components.Should().HaveCount(2);
+        strategy.Component.Should().BeOfType<CompositeComponent>().Subject.Components.Should().HaveCount(2);
     }
 
     [Fact]
@@ -59,6 +59,6 @@ public class GenericResiliencePipelineBuilderTests
 
         // assert
         strategy.Should().NotBeNull();
-        ((PipelineComponent.CompositeComponent)strategy.Component).Components[0].Should().Be(testStrategy.Component);
+        ((CompositeComponent)strategy.Component).Components[0].Should().Be(testStrategy.Component);
     }
 }

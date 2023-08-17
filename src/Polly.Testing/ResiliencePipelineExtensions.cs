@@ -1,4 +1,5 @@
 ﻿using Polly.Utils;
+using Polly.Utils.Pipeline;
 
 namespace Polly.Testing;
 
@@ -43,17 +44,17 @@ public static class ResiliencePipelineExtensions
 
         return new ResiliencePipelineDescriptor(
             descriptors.Where(s => !ShouldSkip(s.StrategyInstance)).ToList().AsReadOnly(),
-            isReloadable: components.Exists(s => s is PipelineComponent.ReloadableComponent));
+            isReloadable: components.Exists(s => s is ReloadableComponent));
     }
 
     private static object GetStrategyInstance<T>(PipelineComponent component)
     {
-        if (component is PipelineComponent.BridgeComponent<T> reactiveBridge)
+        if (component is BridgeComponent<T> reactiveBridge)
         {
             return reactiveBridge.Strategy;
         }
 
-        if (component is PipelineComponent.BridgeComponent nonReactiveBridge)
+        if (component is BridgeComponent nonReactiveBridge)
         {
             return nonReactiveBridge.Strategy;
         }
@@ -61,18 +62,18 @@ public static class ResiliencePipelineExtensions
         return component;
     }
 
-    private static bool ShouldSkip(object instance) => instance is PipelineComponent.ReloadableComponent;
+    private static bool ShouldSkip(object instance) => instance is ReloadableComponent;
 
     private static void ExpandComponents(this PipelineComponent component, List<PipelineComponent> components)
     {
-        if (component is PipelineComponent.CompositeComponent pipeline)
+        if (component is CompositeComponent pipeline)
         {
             foreach (var inner in pipeline.Components)
             {
                 inner.ExpandComponents(components);
             }
         }
-        else if (component is PipelineComponent.ReloadableComponent reloadable)
+        else if (component is ReloadableComponent reloadable)
         {
             components.Add(reloadable);
             ExpandComponents(reloadable.Component, components);
