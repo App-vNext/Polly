@@ -1,7 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Design;
 using System.Threading.RateLimiting;
 using NSubstitute;
+using Polly.Registry;
 using Polly.Testing;
+using Polly.TestUtils;
 
 namespace Polly.RateLimiting.Tests;
 
@@ -135,6 +138,28 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
             .StrategyInstance
             .Should()
             .BeOfType<RateLimiterResilienceStrategy>();
+    }
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task DisposePipeline_EnsureRateLimiterDisposed(bool isAsync)
+    {
+        var registry = new ResiliencePipelineRegistry<string>();
+        var pipeline = registry.GetOrAddPipeline("limiter", p => p.AddRateLimiter(new RateLimiterStrategyOptions()));
+
+        var strategy = (RateLimiterResilienceStrategy)pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance;
+
+        if (isAsync)
+        {
+            await registry.DisposeAsync();
+        }
+        else
+        {
+            registry.Dispose();
+        }
+
+        strategy.AsPipeline().Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
     }
 
     private static void AssertRateLimiterStrategy(ResiliencePipelineBuilder builder, Action<RateLimiterResilienceStrategy>? assert = null, bool hasEvents = false)
