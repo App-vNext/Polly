@@ -71,7 +71,7 @@ public sealed class ResilienceContext
     /// </summary>
     /// <remarks>
     /// If the number of resilience events with severity greater than <see cref="ResilienceEventSeverity.Information"/> is greater than zero it's an indication that the execution was unhealthy.
-    /// Note that the number of reported events depends on whether the telemetry is enabled for the pipeline or not.
+    /// Note that the number of reported events depends on whether telemetry is enabled for the pipeline or not.
     /// </remarks>
     public IReadOnlyList<ResilienceEvent> ResilienceEvents => _resilienceEvents;
 
