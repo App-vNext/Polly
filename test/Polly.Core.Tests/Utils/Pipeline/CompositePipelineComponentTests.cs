@@ -127,6 +127,22 @@ public class CompositePipelineComponentTests
     }
 
     [Fact]
+    public void ExecutePipeline_TelemetryNotEnabled_NoEventsReported()
+    {
+        var component = PipelineComponentFactory.CreateComposite(
+            new[] { Substitute.For<PipelineComponent>() },
+            new ResilienceStrategyTelemetry(_telemetry.TelemetrySource, null),
+            Substitute.For<TimeProvider>());
+
+        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Allow);
+        var context = ResilienceContextPool.Shared.Get();
+
+        pipeline.Execute(_ => { }, context);
+
+        context.ResilienceEvents.Should().BeEmpty();
+    }
+
+    [Fact]
     public void Dispose_EnsureInnerComponentsDisposed()
     {
         var a = Substitute.For<PipelineComponent>();

@@ -5,7 +5,7 @@ namespace Polly.Utils.Pipeline;
 /// <summary>
 /// A combination of multiple components.
 /// </summary>
-[DebuggerDisplay("Pipeline, Strategies = {Strategies.Count}")]
+[DebuggerDisplay("Pipeline, Strategies = {Components.Count}")]
 [DebuggerTypeProxy(typeof(CompositeComponentDebuggerProxy))]
 internal sealed class CompositeComponent : PipelineComponent
 {
@@ -77,24 +77,44 @@ internal sealed class CompositeComponent : PipelineComponent
         }
     }
 
-    internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+    internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
+    {
+        if (!_telemetry.Enabled)
+        {
+            return ExecuteCoreWithoutTelemetry(callback, context, state);
+        }
+
+        return ExecuteCoreWithTelemetry(callback, context, state);
+    }
+
+    private ValueTask<Outcome<TResult>> ExecuteCoreWithoutTelemetry<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
+    {
+        if (context.CancellationToken.IsCancellationRequested)
+        {
+            return Outcome.FromExceptionAsTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
+        }
+        else
+        {
+            return FirstComponent.ExecuteCore(callback, context, state);
+        }
+    }
+
+    private async ValueTask<Outcome<TResult>> ExecuteCoreWithTelemetry<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)
     {
         var timeStamp = _timeProvider.GetTimestamp();
+
         _telemetry.Report(new ResilienceEvent(ResilienceEventSeverity.Debug, TelemetryUtil.PipelineExecuting), context, default(PipelineExecutingArguments));
 
-        Outcome<TResult> outcome;
-
-        if (context.CancellationToken.IsCancellationRequested)
-        {
-            outcome = Outcome.FromException<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
-        }
-        else
-        {
-            outcome = await FirstComponent.ExecuteCore(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-        }
+        var outcome = await ExecuteCoreWithoutTelemetry(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         _telemetry.Report(
             new ResilienceEvent(ResilienceEventSeverity.Information, TelemetryUtil.PipelineExecuted),

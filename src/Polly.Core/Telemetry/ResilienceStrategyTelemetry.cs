@@ -12,7 +12,10 @@ public sealed class ResilienceStrategyTelemetry
     {
         TelemetrySource = source;
         Listener = listener;
+        Enabled = listener is not null;
     }
+
+    internal bool Enabled { get; }
 
     internal TelemetryListener? Listener { get; }
 

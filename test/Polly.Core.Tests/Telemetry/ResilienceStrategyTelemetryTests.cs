@@ -19,6 +19,13 @@ public class ResilienceStrategyTelemetryTests
     }
 
     [Fact]
+    public void Enabled_Ok()
+    {
+        _sut.Enabled.Should().BeTrue();
+        new ResilienceStrategyTelemetry(_source, null).Enabled.Should().BeFalse();
+    }
+
+    [Fact]
     public void Report_NoOutcome_OK()
     {
         _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments());

@@ -70,7 +70,8 @@ public sealed class ResilienceContext
     /// Gets the collection of resilience events that occurred while executing the resilience strategy.
     /// </summary>
     /// <remarks>
-    /// If the number of resilience events is greater than zero it's an indication that the execution was unhealthy.
+    /// If the number of resilience events with severity greater than <see cref="ResilienceEventSeverity.Information"/> is greater than zero it's an indication that the execution was unhealthy.
+    /// Note that the number of reported events depends on whether the telemetry is enabled for the pipeline or not.
     /// </remarks>
     public IReadOnlyList<ResilienceEvent> ResilienceEvents => _resilienceEvents;
 
