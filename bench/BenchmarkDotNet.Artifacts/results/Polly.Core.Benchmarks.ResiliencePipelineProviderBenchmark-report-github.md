@@ -9,7 +9,7 @@ Job=MediumRun  Toolchain=InProcessEmitToolchain  IterationCount=15
 LaunchCount=2  WarmupCount=10  
 
 ```
-|      Method |       Mean |    Error |   StdDev |   Gen0 | Allocated |
-|------------ |-----------:|---------:|---------:|-------:|----------:|
-| Fallback_V7 |   127.9 ns |  5.55 ns |  7.96 ns | 0.0191 |     480 B |
-| Fallback_V8 | 3,633.8 ns | 60.79 ns | 89.11 ns | 0.2136 |    5432 B |
+|                 Method |     Mean |    Error |   StdDev | Allocated |
+|----------------------- |---------:|---------:|---------:|----------:|
+|         GetPipeline_Ok | 19.03 ns | 0.169 ns | 0.248 ns |         - |
+| GetPipeline_Generic_Ok | 51.66 ns | 1.960 ns | 2.811 ns |         - |

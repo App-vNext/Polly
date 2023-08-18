@@ -18,6 +18,11 @@ internal static class TelemetryUtil
         TimeSpan executionTime,
         bool handled)
     {
+        if (!telemetry.Enabled)
+        {
+            return;
+        }
+
         telemetry.Report<ExecutionAttemptArguments, TResult>(
             new(handled ? ResilienceEventSeverity.Warning : ResilienceEventSeverity.Information, ExecutionAttempt),
             new(context, outcome, new ExecutionAttemptArguments(attempt, executionTime, handled)));
