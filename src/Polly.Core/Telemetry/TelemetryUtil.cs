@@ -6,6 +6,10 @@ internal static class TelemetryUtil
 
     internal const string ExecutionAttempt = "ExecutionAttempt";
 
+    internal const string PipelineExecuting = "PipelineExecuting";
+
+    internal const string PipelineExecuted = "PipelineExecuted";
+
     public static ResilienceStrategyTelemetry CreateTelemetry(
         DiagnosticSource? diagnosticSource,
         string? builderName,

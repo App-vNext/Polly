@@ -1,6 +1,5 @@
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging.Abstractions;
-using Polly.Extensions.Telemetry;
 using Polly.Telemetry;
 
 namespace Polly.Core.Benchmarks;
@@ -67,7 +66,7 @@ public class TelemetryBenchmark
         return builder.Build();
     }
 
-    private class TelemetryEventStrategy : ResilienceStrategy
+    private class TelemetryEventStrategy : NonReactiveResilienceStrategy
     {
         private readonly ResilienceStrategyTelemetry _telemetry;
 

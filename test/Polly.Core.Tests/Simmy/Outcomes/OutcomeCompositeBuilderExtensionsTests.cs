@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Simmy.Outcomes;
+using Polly.Testing;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
 
@@ -56,7 +57,8 @@ public class OutcomeCompositeBuilderExtensionsTests
     private static void AssertResultStrategy<T>(CompositeStrategyBuilder<T> builder, bool enabled, double injectionRate, Outcome<T> outcome)
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = (OutcomeChaosStrategy<T>)builder.Build().Strategy;
+        var strategy = builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<T>>().Subject;
+
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
         strategy.OutcomeGenerator.Should().NotBeNull();
@@ -68,7 +70,8 @@ public class OutcomeCompositeBuilderExtensionsTests
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = (OutcomeChaosStrategy<T>)builder.Build().Strategy;
+        var strategy = builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<T>>().Subject;
+
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
         strategy.FaultGenerator.Should().NotBeNull();
@@ -92,7 +95,8 @@ public class OutcomeCompositeBuilderExtensionsTests
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = (OutcomeChaosStrategy)builder.Build();
+        var strategy = builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<object>>().Subject;
+
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
         strategy.FaultGenerator.Should().NotBeNull();

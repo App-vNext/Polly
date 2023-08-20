@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Fallback;
+using Polly.Testing;
 
 namespace Polly.Core.Tests.Fallback;
 
@@ -23,7 +24,8 @@ public class FallbackCompositeStrategyBuilderExtensionsTests
     {
         var builder = new CompositeStrategyBuilder<int>();
         configure(builder);
-        builder.Build().Strategy.Should().BeOfType<FallbackResilienceStrategy<int>>();
+
+        builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType(typeof(FallbackResilienceStrategy<int>));
     }
 
     [Fact]

@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace Polly.Extensions.Telemetry;
+namespace Polly.Telemetry;
 
 internal static class ResilienceContextExtensions
 {
@@ -12,7 +12,7 @@ internal static class ResilienceContextExtensions
     {
         for (int i = 0; i < context.ResilienceEvents.Count; i++)
         {
-            if (context.ResilienceEvents[i].Severity > Polly.Telemetry.ResilienceEventSeverity.Information)
+            if (context.ResilienceEvents[i].Severity > ResilienceEventSeverity.Information)
             {
                 return false;
             }

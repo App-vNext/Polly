@@ -9,6 +9,11 @@ namespace Polly.Fallback;
 public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="FallbackStrategyOptions{TResult}"/> class.
+    /// </summary>
+    public FallbackStrategyOptions() => Name = FallbackConstants.DefaultName;
+
+    /// <summary>
     /// Gets or sets the outcome predicate for determining whether a fallback should be executed.
     /// </summary>
     /// <value>

@@ -1,8 +1,7 @@
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
-using Polly.Telemetry;
 
-namespace Polly.Extensions.Telemetry;
+namespace Polly.Telemetry;
 
 internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 {
@@ -28,11 +27,18 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
             "execution-attempt-duration",
             unit: "ms",
             description: "Tracks the duration of execution attempts.");
+
+        ExecutionDuration = Meter.CreateHistogram<double>(
+            "pipeline-execution-duration",
+            unit: "ms",
+            description: "The execution duration and execution results of resilience pipelines.");
     }
 
     public Counter<int> Counter { get; }
 
     public Histogram<double> AttemptDuration { get; }
+
+    public Histogram<double> ExecutionDuration { get; }
 
     public override bool IsEnabled(string name) => true;
 
@@ -90,7 +96,22 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
     {
         var source = args.Source;
 
-        if (args.Arguments is ExecutionAttemptArguments executionAttempt)
+        if (args.Arguments is PipelineExecutedArguments executionFinishedArguments)
+        {
+            if (!ExecutionDuration.Enabled)
+            {
+                return;
+            }
+
+            var enrichmentContext = EnrichmentContext.Get(args.Context, null, args.Outcome);
+            AddCommonTags(args, source, enrichmentContext);
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExecutionHealth, args.Context.GetExecutionHealth()));
+            EnrichmentUtil.Enrich(enrichmentContext, _enrichers);
+
+            ExecutionDuration.Record(executionFinishedArguments.Duration.TotalMilliseconds, enrichmentContext.TagsSpan);
+            EnrichmentContext.Return(enrichmentContext);
+        }
+        else if (args.Arguments is ExecutionAttemptArguments executionAttempt)
         {
             if (!AttemptDuration.Enabled)
             {
@@ -102,7 +123,7 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
             enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.AttemptNumber, executionAttempt.AttemptNumber.AsBoxedInt()));
             enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.AttemptHandled, executionAttempt.Handled.AsBoxedBool()));
             EnrichmentUtil.Enrich(enrichmentContext, _enrichers);
-            AttemptDuration.Record(executionAttempt.ExecutionTime.TotalMilliseconds, enrichmentContext.TagsSpan);
+            AttemptDuration.Record(executionAttempt.Duration.TotalMilliseconds, enrichmentContext.TagsSpan);
             EnrichmentContext.Return(enrichmentContext);
         }
         else if (Counter.Enabled)
@@ -129,12 +150,34 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 
         var level = args.Event.Severity.AsLogLevel();
 
-        if (args.Arguments is ExecutionAttemptArguments executionAttempt)
+        if (args.Arguments is PipelineExecutingArguments pipelineExecutionStarted)
+        {
+            _logger.ExecutingStrategy(
+                args.Source.BuilderName.GetValueOrPlaceholder(),
+                args.Source.BuilderInstanceName.GetValueOrPlaceholder(),
+                args.Context.OperationKey,
+                args.Context.GetResultType());
+        }
+        else if (args.Arguments is PipelineExecutedArguments pipelineExecutionFinished)
+        {
+            var logLevel = args.Context.IsExecutionHealthy() ? LogLevel.Debug : LogLevel.Warning;
+
+            _logger.StrategyExecuted(
+                logLevel,
+                args.Source.BuilderName.GetValueOrPlaceholder(),
+                args.Source.BuilderInstanceName.GetValueOrPlaceholder(),
+                args.Context.OperationKey,
+                args.Context.GetResultType(),
+                ExpandOutcome(args.Context, args.Outcome),
+                args.Context.GetExecutionHealth(),
+                pipelineExecutionFinished.Duration.TotalMilliseconds,
+                args.Outcome?.Exception);
+        }
+        else if (args.Arguments is ExecutionAttemptArguments executionAttempt)
         {
             if (_logger.IsEnabled(level))
             {
-                Log.ExecutionAttempt(
-                    _logger,
+                _logger.ExecutionAttempt(
                     level,
                     args.Source.BuilderName.GetValueOrPlaceholder(),
                     args.Source.BuilderInstanceName.GetValueOrPlaceholder(),
@@ -143,14 +186,13 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
                     result,
                     executionAttempt.Handled,
                     executionAttempt.AttemptNumber,
-                    executionAttempt.ExecutionTime.TotalMilliseconds,
+                    executionAttempt.Duration.TotalMilliseconds,
                     args.Outcome?.Exception);
             }
         }
         else
         {
-            Log.ResilienceEvent(
-                _logger,
+            _logger.ResilienceEvent(
                 level,
                 args.Event.EventName,
                 args.Source.BuilderName.GetValueOrPlaceholder(),
@@ -160,5 +202,16 @@ internal sealed class ResilienceTelemetryDiagnosticSource : DiagnosticSource
                 result,
                 args.Outcome?.Exception);
         }
+    }
+
+    private object? ExpandOutcome(ResilienceContext context, Outcome<object>? outcome)
+    {
+        if (outcome == null)
+        {
+            return null;
+        }
+
+        // stryker disable once all: no means to test this
+        return (object)outcome.Value.Exception?.Message! ?? _resultFormatter(context, outcome.Value.Result);
     }
 }

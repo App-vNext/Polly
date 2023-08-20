@@ -16,6 +16,7 @@ public class HedgingStrategyOptionsTests
         options.HedgingDelay.Should().Be(TimeSpan.FromSeconds(2));
         options.MaxHedgedAttempts.Should().Be(2);
         options.OnHedging.Should().BeNull();
+        options.Name.Should().Be("Hedging");
     }
 
     [InlineData(true)]

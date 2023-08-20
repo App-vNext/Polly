@@ -3,13 +3,13 @@ using Polly.Retry;
 using Polly.Timeout;
 
 // ------------------------------------------------------------------------
-// 1. Create a simple resilience strategy using ResilienceStrategyBuilder
+// 1. Create a simple resilience strategy using CompositeStrategyBuilder
 // ------------------------------------------------------------------------
 
-// The ResilienceStrategyBuilder creates a ResilienceStrategy
+// The CompositeStrategyBuilder creates a ResilienceStrategy
 // that can be executed synchronously or asynchronously
 // and for both void and result-returning user-callbacks.
-ResilienceStrategy strategy = new ResilienceStrategyBuilder()
+ResilienceStrategy strategy = new CompositeStrategyBuilder()
     // Use convenience extension that accepts TimeSpan
     .AddTimeout(TimeSpan.FromSeconds(5)) 
     .Build();
@@ -37,7 +37,7 @@ strategy.Execute(static state => state, "my-state");
 // 3. Create and execute a pipeline of strategies
 // ------------------------------------------------------------------------
 
-strategy = new ResilienceStrategyBuilder()
+strategy = new CompositeStrategyBuilder()
     // Add retries using the options
     .AddRetry(new RetryStrategyOptions
     {
@@ -51,7 +51,7 @@ strategy = new ResilienceStrategyBuilder()
             _ => PredicateResult.False
         },
         // Register user callback called whenever retry occurs
-        OnRetry = args => { Console.WriteLine($"Retrying...{args.Arguments.Attempt} attempt"); return default; },
+        OnRetry = args => { Console.WriteLine($"Retrying...{args.Arguments.AttemptNumber} attempt"); return default; },
         BaseDelay = TimeSpan.FromMilliseconds(400),
         BackoffType = RetryBackoffType.Constant,
         RetryCount = 3
@@ -59,7 +59,7 @@ strategy = new ResilienceStrategyBuilder()
     // Add timeout using the options
     .AddTimeout(new TimeoutStrategyOptions
     {
-        Timeout = TimeSpan.FromMilliseconds(500),
+        Timeout = TimeSpan.FromSeconds(1),
         // Register user callback called whenever timeout occurs
         OnTimeout = args =>
         {

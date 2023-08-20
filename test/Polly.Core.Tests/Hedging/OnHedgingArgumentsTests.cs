@@ -11,6 +11,6 @@ public class OnHedgingArgumentsTests
 
         args.AttemptNumber.Should().Be(1);
         args.HasOutcome.Should().BeTrue();
-        args.ExecutionTime.Should().Be(TimeSpan.FromSeconds(1));
+        args.Duration.Should().Be(TimeSpan.FromSeconds(1));
     }
 }

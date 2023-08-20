@@ -1,14 +1,13 @@
 using System.Threading.RateLimiting;
-using Moq;
-using Moq.Protected;
+using NSubstitute;
 
 namespace Polly.RateLimiting.Tests;
 
 public class RateLimiterResilienceStrategyTests
 {
-    private readonly Mock<RateLimiter> _limiter = new(MockBehavior.Strict);
-    private readonly Mock<RateLimitLease> _lease = new(MockBehavior.Strict);
-    private readonly Mock<DiagnosticSource> _diagnosticSource = new();
+    private readonly RateLimiter _limiter = Substitute.For<RateLimiter>();
+    private readonly RateLimitLease _lease = Substitute.For<RateLimitLease>();
+    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
     private Func<OnRateLimiterRejectedArguments, ValueTask>? _event;
 
     [Fact]
@@ -18,14 +17,13 @@ public class RateLimiterResilienceStrategyTests
     }
 
     [Fact]
-    public void Execute_HappyPath()
+    public async Task Execute_HappyPath()
     {
         using var cts = new CancellationTokenSource();
 
         SetupLimiter(cts.Token);
 
-        _lease.Setup(v => v.IsAcquired).Returns(true);
-        _lease.Protected().Setup("Dispose", exactParameterMatch: true, true);
+        _lease.IsAcquired.Returns(true);
 
         Create().Should().NotBeNull();
 
@@ -33,8 +31,8 @@ public class RateLimiterResilienceStrategyTests
 
         strategy.Execute(_ => { }, cts.Token);
 
-        _limiter.VerifyAll();
-        _lease.VerifyAll();
+        await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, default);
+        _lease.Received().Dispose();
     }
 
     [InlineData(false, true)]
@@ -44,8 +42,8 @@ public class RateLimiterResilienceStrategyTests
     [Theory]
     public async Task Execute_LeaseRejected(bool hasEvents, bool hasRetryAfter)
     {
-        _diagnosticSource.Setup(v => v.IsEnabled("OnRateLimiterRejected")).Returns(true);
-        _diagnosticSource.Setup(v => v.Write("OnRateLimiterRejected", It.Is<object>(obj => obj != null)));
+        _diagnosticSource.IsEnabled("OnRateLimiterRejected").Returns(true);
+        _diagnosticSource.Write("OnRateLimiterRejected", Arg.Is<object>(obj => obj != null));
 
         object? metadata = hasRetryAfter ? TimeSpan.FromSeconds(123) : null;
 
@@ -53,16 +51,20 @@ public class RateLimiterResilienceStrategyTests
         var eventCalled = false;
         SetupLimiter(cts.Token);
 
-        _lease.Setup(v => v.IsAcquired).Returns(false);
-        _lease.Protected().Setup("Dispose", exactParameterMatch: true, true);
-        _lease.Setup(v => v.TryGetMetadata("RETRY_AFTER", out metadata)).Returns(hasRetryAfter);
+        _lease.IsAcquired.Returns(false);
+        _lease.TryGetMetadata("RETRY_AFTER", out Arg.Any<object?>())
+              .Returns(x =>
+              {
+                  x[1] = hasRetryAfter ? metadata : null;
+                  return hasRetryAfter;
+              });
 
         if (hasEvents)
         {
             _event = args =>
             {
                 args.Context.Should().NotBeNull();
-                args.Lease.Should().Be(_lease.Object);
+                args.Lease.Should().Be(_lease);
                 args.RetryAfter.Should().Be((TimeSpan?)metadata);
                 eventCalled = true;
                 return default;
@@ -81,31 +83,34 @@ public class RateLimiterResilienceStrategyTests
 
         outcome.Exception!.StackTrace.Should().Contain("Execute_LeaseRejected");
 
-        _limiter.VerifyAll();
-        _lease.VerifyAll();
         eventCalled.Should().Be(hasEvents);
 
-        _diagnosticSource.VerifyAll();
+        await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, default);
+        _lease.Received().Dispose();
     }
 
-    private void SetupLimiter(CancellationToken token) => _limiter
-                .Protected()
-                .Setup<ValueTask<RateLimitLease>>("AcquireAsyncCore", 1, token)
-                .Returns(new ValueTask<RateLimitLease>(_lease.Object));
+    private void SetupLimiter(CancellationToken token)
+    {
+        var result = new ValueTask<RateLimitLease>(_lease);
+        _limiter
+            .GetType()
+            .GetMethod("AcquireAsyncCore", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .Invoke(_limiter, new object[] { 1, token })
+            .Returns(result);
+    }
 
-    private RateLimiterResilienceStrategy Create()
+    private ResilienceStrategy Create()
     {
         var builder = new CompositeStrategyBuilder
         {
-            DiagnosticSource = _diagnosticSource.Object
+            DiagnosticSource = _diagnosticSource
         };
 
-        return (RateLimiterResilienceStrategy)builder
-            .AddRateLimiter(new RateLimiterStrategyOptions
-            {
-                RateLimiter = ResilienceRateLimiter.Create(_limiter.Object),
-                OnRejected = _event
-            })
-            .Build();
+        return builder.AddRateLimiter(new RateLimiterStrategyOptions
+        {
+            RateLimiter = ResilienceRateLimiter.Create(_limiter),
+            OnRejected = _event
+        })
+        .Build();
     }
 }

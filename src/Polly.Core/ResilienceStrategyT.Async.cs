@@ -1,5 +1,3 @@
-using Polly.Utils;
-
 namespace Polly;
 
 #pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads

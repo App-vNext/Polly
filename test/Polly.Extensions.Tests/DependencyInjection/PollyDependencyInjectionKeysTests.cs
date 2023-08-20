@@ -1,4 +1,4 @@
-using Polly.Extensions.DependencyInjection;
+using Polly.DependencyInjection;
 
 namespace Polly.Extensions.Tests.DependencyInjection;
 

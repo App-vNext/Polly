@@ -2,7 +2,7 @@ using Polly.Telemetry;
 
 namespace Polly.Timeout;
 
-internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
+internal sealed class TimeoutResilienceStrategy : NonReactiveResilienceStrategy
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly CancellationTokenSourcePool _cancellationTokenSourcePool;
@@ -45,7 +45,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 
         var registration = CreateRegistration(cancellationSource, previousToken);
 
-        var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        var outcome = await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         var isCancellationRequested = cancellationSource.IsCancellationRequested;
 
         // execution is finished, clean up

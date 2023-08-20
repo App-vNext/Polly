@@ -1,6 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.Extensions.Logging.Abstractions;
 using Polly.CircuitBreaker;
 using Polly.Fallback;
 using Polly.Hedging;
@@ -14,7 +12,7 @@ namespace Polly.Testing.Tests;
 public class ResilienceStrategyExtensionsTests
 {
     [Fact]
-    public void GetInnerStrategies_Ok()
+    public void GetInnerStrategies_Generic_Ok()
     {
         // arrange
         var strategy = new CompositeStrategyBuilder<string>()
@@ -27,7 +25,7 @@ public class ResilienceStrategyExtensionsTests
             .AddTimeout(TimeSpan.FromSeconds(1))
             .AddHedging(new())
             .AddConcurrencyLimiter(10)
-            .AddStrategy(new CustomStrategy())
+            .AddStrategy(_ => new CustomStrategy(), new TestOptions())
             .ConfigureTelemetry(NullLoggerFactory.Instance)
             .Build();
 
@@ -35,21 +33,62 @@ public class ResilienceStrategyExtensionsTests
         var descriptor = strategy.GetInnerStrategies();
 
         // assert
-        descriptor.HasTelemetry.Should().BeTrue();
         descriptor.IsReloadable.Should().BeFalse();
         descriptor.Strategies.Should().HaveCount(7);
+        descriptor.FirstStrategy.Options.Should().BeOfType<FallbackStrategyOptions<string>>();
         descriptor.Strategies[0].Options.Should().BeOfType<FallbackStrategyOptions<string>>();
+        descriptor.Strategies[0].StrategyInstance.GetType().FullName.Should().Contain("Fallback");
         descriptor.Strategies[1].Options.Should().BeOfType<RetryStrategyOptions<string>>();
+        descriptor.Strategies[1].StrategyInstance.GetType().FullName.Should().Contain("Retry");
         descriptor.Strategies[2].Options.Should().BeOfType<CircuitBreakerStrategyOptions<string>>();
+        descriptor.Strategies[2].StrategyInstance.GetType().FullName.Should().Contain("CircuitBreaker");
         descriptor.Strategies[3].Options.Should().BeOfType<TimeoutStrategyOptions>();
+        descriptor.Strategies[3].StrategyInstance.GetType().FullName.Should().Contain("Timeout");
         descriptor.Strategies[3].Options
             .Should()
             .BeOfType<TimeoutStrategyOptions>().Subject.Timeout
             .Should().Be(TimeSpan.FromSeconds(1));
 
         descriptor.Strategies[4].Options.Should().BeOfType<HedgingStrategyOptions<string>>();
+        descriptor.Strategies[4].StrategyInstance.GetType().FullName.Should().Contain("Hedging");
         descriptor.Strategies[5].Options.Should().BeOfType<RateLimiterStrategyOptions>();
-        descriptor.Strategies[6].StrategyType.Should().Be(typeof(CustomStrategy));
+        descriptor.Strategies[5].StrategyInstance.GetType().FullName.Should().Contain("RateLimiter");
+        descriptor.Strategies[6].StrategyInstance.GetType().Should().Be(typeof(CustomStrategy));
+    }
+
+    [Fact]
+    public void GetInnerStrategies_NonGeneric_Ok()
+    {
+        // arrange
+        var strategy = new CompositeStrategyBuilder()
+            .AddRetry(new())
+            .AddCircuitBreaker(new())
+            .AddTimeout(TimeSpan.FromSeconds(1))
+            .AddConcurrencyLimiter(10)
+            .AddStrategy(_ => new CustomStrategy(), new TestOptions())
+            .ConfigureTelemetry(NullLoggerFactory.Instance)
+            .Build();
+
+        // act
+        var descriptor = strategy.GetInnerStrategies();
+
+        // assert
+        descriptor.IsReloadable.Should().BeFalse();
+        descriptor.Strategies.Should().HaveCount(5);
+        descriptor.Strategies[0].Options.Should().BeOfType<RetryStrategyOptions>();
+        descriptor.Strategies[0].StrategyInstance.GetType().FullName.Should().Contain("Retry");
+        descriptor.Strategies[1].Options.Should().BeOfType<CircuitBreakerStrategyOptions>();
+        descriptor.Strategies[1].StrategyInstance.GetType().FullName.Should().Contain("CircuitBreaker");
+        descriptor.Strategies[2].Options.Should().BeOfType<TimeoutStrategyOptions>();
+        descriptor.Strategies[2].StrategyInstance.GetType().FullName.Should().Contain("Timeout");
+        descriptor.Strategies[2].Options
+            .Should()
+            .BeOfType<TimeoutStrategyOptions>().Subject.Timeout
+            .Should().Be(TimeSpan.FromSeconds(1));
+
+        descriptor.Strategies[3].Options.Should().BeOfType<RateLimiterStrategyOptions>();
+        descriptor.Strategies[3].StrategyInstance.GetType().FullName.Should().Contain("RateLimiter");
+        descriptor.Strategies[4].StrategyInstance.GetType().Should().Be(typeof(CustomStrategy));
     }
 
     [Fact]
@@ -64,7 +103,6 @@ public class ResilienceStrategyExtensionsTests
         var descriptor = strategy.GetInnerStrategies();
 
         // assert
-        descriptor.HasTelemetry.Should().BeFalse();
         descriptor.IsReloadable.Should().BeFalse();
         descriptor.Strategies.Should().HaveCount(1);
         descriptor.Strategies[0].Options.Should().BeOfType<TimeoutStrategyOptions>();
@@ -80,23 +118,26 @@ public class ResilienceStrategyExtensionsTests
 
             builder
                 .AddConcurrencyLimiter(10)
-                .AddStrategy(new CustomStrategy());
+                .AddStrategy(_ => new CustomStrategy(), new TestOptions());
         });
 
         // act
         var descriptor = strategy.GetInnerStrategies();
 
         // assert
-        descriptor.HasTelemetry.Should().BeFalse();
         descriptor.IsReloadable.Should().BeTrue();
         descriptor.Strategies.Should().HaveCount(2);
         descriptor.Strategies[0].Options.Should().BeOfType<RateLimiterStrategyOptions>();
-        descriptor.Strategies[1].StrategyType.Should().Be(typeof(CustomStrategy));
+        descriptor.Strategies[1].StrategyInstance.GetType().Should().Be(typeof(CustomStrategy));
     }
 
-    private sealed class CustomStrategy : ResilienceStrategy
+    private sealed class CustomStrategy : NonReactiveResilienceStrategy
     {
         protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
             => throw new NotSupportedException();
+    }
+
+    private class TestOptions : ResilienceStrategyOptions
+    {
     }
 }

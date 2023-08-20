@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Polly.DependencyInjection;
 using Polly.Registry;
 
 namespace Polly.Extensions.Tests;
@@ -54,7 +55,7 @@ public class ReloadableResilienceStrategyTests
         }
     }
 
-    public class ReloadableStrategy : ResilienceStrategy
+    public class ReloadableStrategy : NonReactiveResilienceStrategy
     {
         public ReloadableStrategy(string tag) => Tag = tag;
 

@@ -13,7 +13,6 @@ public class GenericCompositeStrategyBuilderTests
         _builder.Name.Should().BeNull();
         _builder.Properties.Should().NotBeNull();
         _builder.TimeProvider.Should().Be(TimeProvider.System);
-        _builder.OnCreatingStrategy.Should().BeNull();
     }
 
     [Fact]
@@ -31,9 +30,6 @@ public class GenericCompositeStrategyBuilderTests
         var timeProvider = new FakeTimeProvider();
         _builder.TimeProvider = timeProvider;
         _builder.TimeProvider.Should().Be(timeProvider);
-
-        _builder.OnCreatingStrategy = s => { };
-        _builder.OnCreatingStrategy.Should().NotBeNull();
     }
 
     [Fact]
@@ -55,7 +51,7 @@ public class GenericCompositeStrategyBuilderTests
     public void AddGenericStrategy_Ok()
     {
         // arrange
-        var testStrategy = new ResilienceStrategy<string>(new TestResilienceStrategy());
+        var testStrategy = new ResilienceStrategy<string>(new TestResilienceStrategy().AsStrategy());
         _builder.AddStrategy(testStrategy);
 
         // act
@@ -63,6 +59,6 @@ public class GenericCompositeStrategyBuilderTests
 
         // assert
         strategy.Should().NotBeNull();
-        strategy.Strategy.Should().Be(testStrategy.Strategy);
+        ((CompositeResilienceStrategy)strategy.Strategy).Strategies[0].Should().Be(testStrategy.Strategy);
     }
 }

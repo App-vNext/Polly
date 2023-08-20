@@ -69,10 +69,10 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    private static void AddFaultCore(this CompositeStrategyBuilderBase builder, OutcomeStrategyOptions<Exception> options)
+    private static void AddFaultCore(this CompositeStrategyBuilder builder, OutcomeStrategyOptions<Exception> options)
     {
         builder.AddStrategy(context =>
-            new OutcomeChaosStrategy(
+            new OutcomeChaosStrategy<object>(
                 options,
                 context.Telemetry),
             options);

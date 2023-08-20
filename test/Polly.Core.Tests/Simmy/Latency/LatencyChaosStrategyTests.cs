@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Time.Testing;
-using Moq;
+using NSubstitute;
 using Polly.Simmy.Latency;
 using Polly.Telemetry;
 
@@ -12,12 +12,11 @@ public class LatencyChaosStrategyTests : IDisposable
     private readonly LatencyStrategyOptions _options;
     private readonly CancellationTokenSource _cancellationSource;
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
-
-    private readonly Mock<DiagnosticSource> _diagnosticSource = new();
+    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
 
     public LatencyChaosStrategyTests()
     {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource);
         _options = new LatencyStrategyOptions();
         _cancellationSource = new CancellationTokenSource();
     }
@@ -47,5 +46,5 @@ public class LatencyChaosStrategyTests : IDisposable
         //(after - before).Should().BeGreaterThanOrEqualTo(_delay);
     }
 
-    private LatencyChaosStrategy CreateSut() => new(_options, _timeProvider, _telemetry);
+    private ResilienceStrategy CreateSut() => new LatencyChaosStrategy(_options, _timeProvider, _telemetry).AsStrategy();
 }

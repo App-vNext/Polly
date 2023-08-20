@@ -135,14 +135,14 @@ internal sealed class CircuitStateController<T> : IDisposable
             exception = _circuitState switch
             {
                 CircuitState.Open => _breakingException,
-                CircuitState.HalfOpen when isHalfOpen is false => _breakingException,
+                CircuitState.HalfOpen when !isHalfOpen => _breakingException,
                 CircuitState.Isolated => new IsolatedCircuitException(),
                 _ => null
             };
 
             if (isHalfOpen && _onHalfOpen is not null)
             {
-                _executor.ScheduleTask(() => _onHalfOpen(new OnCircuitHalfOpenedArguments(context)).AsTask(), context, out task);
+                task = ScheduleHalfOpenTask(context);
             }
         }
 
@@ -326,6 +326,12 @@ internal sealed class CircuitStateController<T> : IDisposable
         {
             _executor.ScheduleTask(() => _onOpened(args).AsTask(), context, out scheduledTask);
         }
+    }
+
+    private Task ScheduleHalfOpenTask(ResilienceContext context)
+    {
+        _executor.ScheduleTask(() => _onHalfOpen!(new OnCircuitHalfOpenedArguments(context)).AsTask(), context, out var task);
+        return task;
     }
 }
 

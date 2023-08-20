@@ -134,13 +134,11 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
     private static void AddOutcomeCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(
-        this CompositeStrategyBuilderBase builder,
+        this CompositeStrategyBuilder<TResult> builder,
         OutcomeStrategyOptions<TResult> options)
     {
-        builder.AddStrategy(context =>
-            new OutcomeChaosStrategy<TResult>(
-                options,
-                context.Telemetry),
+        builder.AddStrategy(
+            context => new OutcomeChaosStrategy<TResult>(options, context.Telemetry),
             options);
     }
 
@@ -149,13 +147,11 @@ public static partial class OutcomeCompositeStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
     private static void AddFaultCore<TResult>(
-        this CompositeStrategyBuilderBase builder,
+        this CompositeStrategyBuilder<TResult> builder,
         OutcomeStrategyOptions<Exception> options)
     {
-        builder.AddStrategy(context =>
-            new OutcomeChaosStrategy<TResult>(
-                options,
-                context.Telemetry),
+        builder.AddStrategy(
+            context => new OutcomeChaosStrategy<TResult>(options, context.Telemetry),
             options);
     }
 }

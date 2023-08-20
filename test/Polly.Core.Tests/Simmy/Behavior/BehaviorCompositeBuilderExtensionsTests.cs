@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Simmy.Behavior;
+using Polly.Testing;
 
 namespace Polly.Core.Tests.Simmy.Behavior;
 
@@ -25,7 +26,7 @@ public class BehaviorCompositeBuilderExtensionsTests
     public void AddBehavior_Shortcut_Option_Ok()
     {
         var sut = new CompositeStrategyBuilder().AddBehavior(true, 0.5, () => new ValueTask(Task.CompletedTask)).Build();
-        sut.Should().BeOfType<BehaviorChaosStrategy>();
+        sut.GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>();
     }
 
     [Fact]
@@ -58,7 +59,7 @@ public class BehaviorCompositeBuilderExtensionsTests
             })
             .Build();
 
-        sut.Should().BeOfType<BehaviorChaosStrategy>();
+        sut.GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>();
     }
 
     [MemberData(nameof(AddBehavior_Ok_Data))]
@@ -67,7 +68,8 @@ public class BehaviorCompositeBuilderExtensionsTests
     {
         var builder = new CompositeStrategyBuilder<int>();
         configure(builder);
-        var strategy = builder.Build().Strategy.Should().BeOfType<BehaviorChaosStrategy>().Subject;
+
+        var strategy = builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>().Subject;
         assert(strategy);
     }
 }

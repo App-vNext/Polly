@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Polly.CircuitBreaker;
-using Polly.Extensions.DependencyInjection;
+using Polly.DependencyInjection;
 using Polly.Registry;
 
 namespace Polly.Extensions.Tests.Issues;
@@ -54,7 +54,7 @@ public partial class IssuesTests
         contextChecked.Should().BeTrue();
     }
 
-    private class ServiceProviderStrategy : ResilienceStrategy
+    private class ServiceProviderStrategy : NonReactiveResilienceStrategy
     {
         private readonly IServiceProvider _serviceProvider;
 

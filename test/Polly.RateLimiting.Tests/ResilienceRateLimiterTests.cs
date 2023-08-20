@@ -1,7 +1,5 @@
 ﻿using System.Threading.RateLimiting;
-using System.Threading.Tasks;
-using Moq;
-using Moq.Protected;
+using NSubstitute;
 
 namespace Polly.RateLimiting.Tests;
 
@@ -10,29 +8,40 @@ public class ResilienceRateLimiterTests
     [Fact]
     public async Task Create_RateLimiter_Ok()
     {
-        var lease = Mock.Of<RateLimitLease>();
-        var limiterMock = new Mock<RateLimiter>(MockBehavior.Strict);
-        limiterMock.Protected().Setup<ValueTask<RateLimitLease>>("AcquireAsyncCore", 1, default(CancellationToken)).ReturnsAsync(lease);
+        var lease = Substitute.For<RateLimitLease>();
+        var leaseTask = new ValueTask<RateLimitLease>(lease);
 
-        var limiter = ResilienceRateLimiter.Create(limiterMock.Object);
+        var rateLimiter = Substitute.For<RateLimiter>();
+        rateLimiter
+            .GetType()
+            .GetMethod("AcquireAsyncCore", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .Invoke(rateLimiter, new object[] { 1, default(CancellationToken) })
+            .Returns(leaseTask);
+
+        var limiter = ResilienceRateLimiter.Create(rateLimiter);
 
         (await limiter.AcquireAsync(ResilienceContextPool.Shared.Get())).Should().Be(lease);
         limiter.Limiter.Should().NotBeNull();
-        limiterMock.VerifyAll();
     }
 
     [Fact]
     public async Task Create_PartitionedRateLimiter_Ok()
     {
         var context = ResilienceContextPool.Shared.Get();
-        var lease = Mock.Of<RateLimitLease>();
-        var limiterMock = new Mock<PartitionedRateLimiter<ResilienceContext>>(MockBehavior.Strict);
-        limiterMock.Protected().Setup<ValueTask<RateLimitLease>>("AcquireAsyncCore", context, 1, default(CancellationToken)).ReturnsAsync(lease);
 
-        var limiter = ResilienceRateLimiter.Create(limiterMock.Object);
+        var lease = Substitute.For<RateLimitLease>();
+        var leaseTask = new ValueTask<RateLimitLease>(lease);
+
+        var rateLimiter = Substitute.For<PartitionedRateLimiter<ResilienceContext>>();
+        rateLimiter
+            .GetType()
+            .GetMethod("AcquireAsyncCore", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .Invoke(rateLimiter, new object[] { context, 1, default(CancellationToken) })
+            .Returns(leaseTask);
+
+        var limiter = ResilienceRateLimiter.Create(rateLimiter);
 
         (await limiter.AcquireAsync(context)).Should().Be(lease);
         limiter.PartitionedLimiter.Should().NotBeNull();
-        limiterMock.VerifyAll();
     }
 }

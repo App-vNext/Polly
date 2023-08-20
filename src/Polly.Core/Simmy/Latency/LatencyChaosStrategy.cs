@@ -50,7 +50,7 @@ internal sealed class LatencyChaosStrategy : MonkeyStrategy
                 }
             }
 
-            return await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         catch (OperationCanceledException e)
         {

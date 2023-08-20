@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Polly.CircuitBreaker;
 
 namespace Polly.Core.Tests.CircuitBreaker;

@@ -1,4 +1,4 @@
-namespace Polly.Extensions.Telemetry;
+namespace Polly.Telemetry;
 
 internal class ResilienceTelemetryTags
 {

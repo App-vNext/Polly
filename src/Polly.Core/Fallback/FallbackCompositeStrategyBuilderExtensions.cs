@@ -18,13 +18,18 @@ public static class FallbackCompositeStrategyBuilderExtensions
     /// <returns>The builder instance with the fallback strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static CompositeStrategyBuilder<TResult> AddFallback<TResult>(this CompositeStrategyBuilder<TResult> builder, FallbackStrategyOptions<TResult> options)
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
+    public static CompositeStrategyBuilder<TResult> AddFallback<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(
+        this CompositeStrategyBuilder<TResult> builder,
+        FallbackStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddFallbackCore<TResult, FallbackStrategyOptions<TResult>>(options);
-        return builder;
+        return builder.AddStrategy(context => CreateFallback(context, options), options);
     }
 
     /// <summary>
@@ -35,34 +40,30 @@ public static class FallbackCompositeStrategyBuilderExtensions
     /// <returns>The builder instance with the fallback strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved.")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(FallbackStrategyOptions))]
     internal static CompositeStrategyBuilder AddFallback(this CompositeStrategyBuilder builder, FallbackStrategyOptions options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddFallbackCore<object, FallbackStrategyOptions>(options);
-        return builder;
+        return builder.AddStrategy(context => CreateFallback(context, options), options);
     }
 
-    [UnconditionalSuppressMessage(
-        "Trimming",
-        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
-        Justification = "All options members preserved.")]
-    internal static void AddFallbackCore<TResult, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TOptions>(
-        this CompositeStrategyBuilderBase builder,
+    private static ReactiveResilienceStrategy<TResult> CreateFallback<TResult>(
+        StrategyBuilderContext context,
         FallbackStrategyOptions<TResult> options)
     {
-        builder.AddStrategy(context =>
-        {
-            var handler = new FallbackHandler<TResult>(
-                options.ShouldHandle!,
-                options.FallbackAction!);
+        var handler = new FallbackHandler<TResult>(
+            options.ShouldHandle!,
+            options.FallbackAction!);
 
-            return new FallbackResilienceStrategy<TResult>(
-                handler,
-                options.OnFallback,
-                context.Telemetry);
-        },
-        options);
+        return new FallbackResilienceStrategy<TResult>(
+            handler,
+            options.OnFallback,
+            context.Telemetry);
     }
 }

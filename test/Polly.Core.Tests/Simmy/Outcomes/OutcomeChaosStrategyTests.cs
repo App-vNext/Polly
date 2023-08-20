@@ -1,15 +1,16 @@
-﻿using Moq;
+﻿using NSubstitute;
 using Polly.Simmy.Outcomes;
 using Polly.Telemetry;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
 
 public class OutcomeChaosStrategyTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly Mock<DiagnosticSource> _diagnosticSource = new();
+    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
 
-    public OutcomeChaosStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
+    public OutcomeChaosStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource);
 
     public static List<object[]> FaultCtorTestCases =>
         new()
@@ -47,12 +48,12 @@ public class OutcomeChaosStrategyTests
     {
         Action act = () =>
         {
-            var _ = new OutcomeChaosStrategy(options, _telemetry);
+            var _ = new OutcomeChaosStrategy<object>(options, _telemetry);
         };
 
 #if NET481
-act.Should()
-            .Throw<ArgumentNullException>();
+        act.Should()
+                    .Throw<ArgumentNullException>();
 #else
         act.Should()
             .Throw<ArgumentNullException>()
@@ -70,8 +71,8 @@ act.Should()
         };
 
 #if NET481
-act.Should()
-            .Throw<ArgumentNullException>();
+        act.Should()
+                    .Throw<ArgumentNullException>();
 #else
         act.Should()
             .Throw<ArgumentNullException>()
@@ -297,14 +298,14 @@ act.Should()
         userDelegateExecuted.Should().BeFalse();
     }
 
-    private OutcomeChaosStrategy<TResult> CreateSut<TResult>(OutcomeStrategyOptions<TResult> options) =>
-        new(options, _telemetry);
+    private ReactiveResilienceStrategyBridge<TResult> CreateSut<TResult>(OutcomeStrategyOptions<TResult> options) =>
+        new(new OutcomeChaosStrategy<TResult>(options, _telemetry));
 
-    private OutcomeChaosStrategy<TResult> CreateSut<TResult>(OutcomeStrategyOptions<Exception> options) =>
-        new(options, _telemetry);
+    private ReactiveResilienceStrategyBridge<TResult> CreateSut<TResult>(OutcomeStrategyOptions<Exception> options) =>
+        new(new OutcomeChaosStrategy<TResult>(options, _telemetry));
 
-    private OutcomeChaosStrategy CreateSut(OutcomeStrategyOptions<Exception> options) =>
-        new(options, _telemetry);
+    private ReactiveResilienceStrategyBridge<object> CreateSut(OutcomeStrategyOptions<Exception> options) =>
+        new(new OutcomeChaosStrategy<object>(options, _telemetry));
 }
 
 /// <summary>

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Time.Testing;
-using Moq;
+using NSubstitute;
 using Polly.Telemetry;
 using Polly.Timeout;
 
@@ -13,11 +13,11 @@ public class TimeoutResilienceStrategyTests : IDisposable
     private readonly CancellationTokenSource _cancellationSource;
     private readonly TimeSpan _delay = TimeSpan.FromSeconds(12);
 
-    private readonly Mock<DiagnosticSource> _diagnosticSource = new();
+    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
 
     public TimeoutResilienceStrategyTests()
     {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource);
         _options = new TimeoutStrategyOptions();
         _cancellationSource = new CancellationTokenSource();
     }
@@ -52,7 +52,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     [Fact]
     public async Task Execute_EnsureOnTimeoutCalled()
     {
-        _diagnosticSource.Setup(v => v.IsEnabled("OnTimeout")).Returns(true);
+        _diagnosticSource.IsEnabled("OnTimeout").Returns(true);
 
         var called = false;
         SetTimeout(_delay);
@@ -78,7 +78,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         .AsTask()).Should().ThrowAsync<TimeoutRejectedException>();
 
         called.Should().BeTrue();
-        _diagnosticSource.VerifyAll();
+        _diagnosticSource.Received().IsEnabled("OnTimeout");
     }
 
     [MemberData(nameof(Execute_NoTimeout_Data))]
@@ -164,7 +164,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         onTimeoutCalled.Should().BeFalse();
 
-        _diagnosticSource.Verify(v => v.IsEnabled("OnTimeout"), Times.Never());
+        _diagnosticSource.DidNotReceive().IsEnabled("OnTimeout");
     }
 
     [Fact]
@@ -202,16 +202,15 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         var sut = CreateSut();
 
-        var mockSynchronizationContext = new Mock<SynchronizationContext>(MockBehavior.Strict);
+        var mockSynchronizationContext = Substitute.For<SynchronizationContext>();
         mockSynchronizationContext
-            .Setup(x => x.Post(It.IsAny<SendOrPostCallback>(), It.IsAny<object>()))
-            .Callback<SendOrPostCallback, object>((callback, state) => callback(state));
+            .When(x => x.Post(Arg.Any<SendOrPostCallback>(), Arg.Any<object>()))
+            .Do((p) => ((SendOrPostCallback)p[1])(p[2]));
 
-        mockSynchronizationContext
-            .Setup(x => x.CreateCopy())
-            .Returns(mockSynchronizationContext.Object);
+        mockSynchronizationContext.CreateCopy()
+            .Returns(mockSynchronizationContext);
 
-        SynchronizationContext.SetSynchronizationContext(mockSynchronizationContext.Object);
+        SynchronizationContext.SetSynchronizationContext(mockSynchronizationContext);
 
         // Act
         try
@@ -230,10 +229,10 @@ public class TimeoutResilienceStrategyTests : IDisposable
         }
 
         // Assert
-        mockSynchronizationContext.Verify(x => x.Post(It.IsAny<SendOrPostCallback>(), It.IsAny<object>()), Times.Never());
+        mockSynchronizationContext.DidNotReceiveWithAnyArgs().Post(default!, default);
     }
 
     private void SetTimeout(TimeSpan timeout) => _options.TimeoutGenerator = args => new ValueTask<TimeSpan>(timeout);
 
-    private TimeoutResilienceStrategy CreateSut() => new(_options, _timeProvider, _telemetry);
+    private ResilienceStrategy CreateSut() => new TimeoutResilienceStrategy(_options, _timeProvider, _telemetry).AsStrategy();
 }

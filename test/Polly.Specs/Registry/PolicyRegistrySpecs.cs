@@ -442,13 +442,13 @@ public class PolicyRegistrySpecs
     [Fact]
     public void Constructor_Called_With_A_Registry_Parameter_Should_Assign_The_Passed_In_Registry_To_The_Registry_Field()
     {
-        var testDictionary = new Mock<IDictionary<string, IsPolicy>>();
-        var testRegistry = new PolicyRegistry(testDictionary.Object);
+        var testDictionary = Substitute.For<IDictionary<string, IsPolicy>>();
+        var testRegistry = new PolicyRegistry(testDictionary);
 
         // Generally, using reflection is a bad practice, but we are accepting it given we own the implementation.
         var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance)!;
         var registryFieldValue = registryField.GetValue(testRegistry);
-        registryFieldValue.Should().Be(testDictionary.Object);
+        registryFieldValue.Should().Be(testDictionary);
     }
 
     [Fact]

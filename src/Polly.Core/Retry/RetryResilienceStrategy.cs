@@ -1,4 +1,3 @@
-using System;
 using Polly.Telemetry;
 
 namespace Polly.Retry;
@@ -42,7 +41,7 @@ internal sealed class RetryResilienceStrategy<T> : ReactiveResilienceStrategy<T>
 
     public Func<OutcomeArguments<T, OnRetryArguments>, ValueTask>? OnRetry { get; }
 
-    protected override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
         double retryState = 0;
 
@@ -51,7 +50,7 @@ internal sealed class RetryResilienceStrategy<T> : ReactiveResilienceStrategy<T>
         while (true)
         {
             var startTimestamp = _timeProvider.GetTimestamp();
-            var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            var outcome = await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
             var shouldRetryArgs = new OutcomeArguments<T, RetryPredicateArguments>(context, outcome, new RetryPredicateArguments(attempt));
             var handle = await ShouldHandle(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext);
             var executionTime = _timeProvider.GetElapsedTime(startTimestamp);

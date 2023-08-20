@@ -7,8 +7,6 @@ namespace Polly.Testing;
 /// </summary>
 public static class ResilienceStrategyExtensions
 {
-    private const string TelemetryResilienceStrategy = "Polly.Extensions.Telemetry.TelemetryResilienceStrategy";
-
     /// <summary>
     /// Gets the inner strategies the <paramref name="strategy"/> is composed of.
     /// </summary>
@@ -20,7 +18,7 @@ public static class ResilienceStrategyExtensions
     {
         Guard.NotNull(strategy);
 
-        return strategy.Strategy.GetInnerStrategies();
+        return GetInnerStrategiesCore<TResult>(strategy.Strategy);
     }
 
     /// <summary>
@@ -33,18 +31,37 @@ public static class ResilienceStrategyExtensions
     {
         Guard.NotNull(strategy);
 
+        return GetInnerStrategiesCore<object>(strategy);
+    }
+
+    private static InnerStrategiesDescriptor GetInnerStrategiesCore<T>(ResilienceStrategy strategy)
+    {
         var strategies = new List<ResilienceStrategy>();
         strategy.ExpandStrategies(strategies);
 
-        var innerStrategies = strategies.Select(s => new ResilienceStrategyDescriptor(s.Options, s.GetType())).ToList();
+        var innerStrategies = strategies.Select(s => new ResilienceStrategyDescriptor(s.Options, GetStrategyInstance<T>(s))).ToList();
 
         return new InnerStrategiesDescriptor(
-            innerStrategies.Where(s => !ShouldSkip(s.StrategyType)).ToList().AsReadOnly(),
-            hasTelemetry: innerStrategies.Exists(s => s.StrategyType.FullName == TelemetryResilienceStrategy),
-            isReloadable: innerStrategies.Exists(s => s.StrategyType == typeof(ReloadableResilienceStrategy)));
+            innerStrategies.Where(s => !ShouldSkip(s.StrategyInstance)).ToList().AsReadOnly(),
+            isReloadable: innerStrategies.Exists(s => s.StrategyInstance is ReloadableResilienceStrategy));
     }
 
-    private static bool ShouldSkip(Type type) => type == typeof(ReloadableResilienceStrategy) || type.FullName == TelemetryResilienceStrategy;
+    private static object GetStrategyInstance<T>(ResilienceStrategy strategy)
+    {
+        if (strategy is ReactiveResilienceStrategyBridge<T> reactiveBridge)
+        {
+            return reactiveBridge.Strategy;
+        }
+
+        if (strategy is NonReactiveResilienceStrategyBridge nonReactiveBridge)
+        {
+            return nonReactiveBridge.Strategy;
+        }
+
+        return strategy;
+    }
+
+    private static bool ShouldSkip(object instance) => instance is ReloadableResilienceStrategy;
 
     private static void ExpandStrategies(this ResilienceStrategy strategy, List<ResilienceStrategy> strategies)
     {

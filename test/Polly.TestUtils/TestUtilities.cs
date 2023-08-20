@@ -1,6 +1,6 @@
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using Polly.Telemetry;
 
 namespace Polly.TestUtils;
@@ -46,14 +46,13 @@ public static class TestUtilities
     public static ILoggerFactory CreateLoggerFactory(out FakeLogger logger)
     {
         logger = new FakeLogger();
-        var loggerFactory = new Mock<ILoggerFactory>(MockBehavior.Strict);
-        loggerFactory.Setup(v => v.CreateLogger("Polly")).Returns(logger);
-        loggerFactory.Setup(v => v.Dispose());
+        var loggerFactory = Substitute.For<ILoggerFactory>();
+        loggerFactory.CreateLogger("Polly").Returns(logger);
 
-        return loggerFactory.Object;
+        return loggerFactory;
     }
 
-    public static IDisposable EnablePollyMetering(ICollection<MeteringEvent> events)
+    public static IDisposable EnablePollyMetering(ICollection<MeteringEvent> events, Predicate<Instrument>? shouldListen = null)
     {
         var stateStr = Guid.NewGuid().ToString();
         var meterListener = new MeterListener
@@ -62,6 +61,11 @@ public static class TestUtilities
             {
                 if (instrument.Meter.Name == "Polly")
                 {
+                    if (shouldListen is not null && !shouldListen(instrument))
+                    {
+                        return;
+                    }
+
                     listener.EnableMeasurementEvents(instrument, stateStr);
                 }
             }
@@ -108,6 +112,12 @@ public static class TestUtilities
         return context;
     }
 
+    public static ResilienceContext WithVoidResultType(this ResilienceContext context)
+    {
+        context.Initialize<VoidResult>(true);
+        return context;
+    }
+
     private sealed class CallbackDiagnosticSource : DiagnosticSource
     {
         private readonly Action<TelemetryEventArguments> _callback;
@@ -124,7 +134,7 @@ public static class TestUtilities
 
             if (arguments is ExecutionAttemptArguments attempt)
             {
-                arguments = ExecutionAttemptArguments.Get(attempt.AttemptNumber, attempt.ExecutionTime, attempt.Handled);
+                arguments = ExecutionAttemptArguments.Get(attempt.AttemptNumber, attempt.Duration, attempt.Handled);
             }
 
             // copy the args because these are pooled and in tests we want to preserve them
