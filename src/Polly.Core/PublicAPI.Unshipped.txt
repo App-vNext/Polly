@@ -397,7 +397,7 @@ Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OutcomeStrategyOptions() ->
 Polly.Simmy.ReactiveMonkeyStrategy<T>
 Polly.Simmy.ReactiveMonkeyStrategy<T>.EnabledGenerator.get -> System.Func<Polly.Simmy.EnabledGeneratorArguments, System.Threading.Tasks.ValueTask<bool>>!
 Polly.Simmy.ReactiveMonkeyStrategy<T>.InjectionRateGenerator.get -> System.Func<Polly.Simmy.InjectionRateGeneratorArguments, System.Threading.Tasks.ValueTask<double>>!
-Polly.Simmy.ReactiveMonkeyStrategy<T>.ReactiveMonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions<T>! options) -> void
+Polly.Simmy.ReactiveMonkeyStrategy<T>.ReactiveMonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions! options) -> void
 Polly.Simmy.ReactiveMonkeyStrategy<T>.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
 Polly.StrategyBuilderContext
 Polly.StrategyBuilderContext.BuilderInstanceName.get -> string?
