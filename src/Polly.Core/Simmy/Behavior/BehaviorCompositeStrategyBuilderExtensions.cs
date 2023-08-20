@@ -4,9 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace Polly.Simmy.Behavior;
 
 /// <summary>
-/// Extension methods for adding custom behaviors to a <see cref="CompositeStrategyBuilder"/>.
+/// Extension methods for adding custom behaviors to a <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
-public static class BehaviorCompositeStrategyBuilderExtensions
+public static class BehaviorResiliencePipelineBuilderExtensions
 
 {
     /// <summary>
@@ -21,7 +21,7 @@ public static class BehaviorCompositeStrategyBuilderExtensions
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
     public static TBuilder AddBehavior<TBuilder>(this TBuilder builder, bool enabled, double injectionRate, Func<ValueTask> behavior)
-        where TBuilder : CompositeStrategyBuilderBase
+        where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
 
@@ -47,7 +47,7 @@ public static class BehaviorCompositeStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
     public static TBuilder AddBehavior<TBuilder>(this TBuilder builder, BehaviorStrategyOptions options)
-        where TBuilder : CompositeStrategyBuilderBase
+        where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);

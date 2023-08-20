@@ -12,7 +12,7 @@ internal static partial class Log
         EventId = 0,
         Message = "Resilience event occurred. " +
                 "EventName: '{EventName}', " +
-                "Source: '{BuilderName}/{BuilderInstance}/{StrategyName}', " +
+                "Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', " +
                 "Operation Key: '{OperationKey}', " +
                 "Result: '{Result}'",
         EventName = "ResilienceEvent")]
@@ -20,8 +20,8 @@ internal static partial class Log
         this ILogger logger,
         LogLevel logLevel,
         string eventName,
-        string builderName,
-        string builderInstance,
+        string pipelineName,
+        string pipelineInstance,
         string? strategyName,
         string? operationKey,
         object? result,
@@ -30,35 +30,31 @@ internal static partial class Log
     [LoggerMessage(
         1,
         LogLevel.Debug,
-        "Resilience strategy executing. " +
-        "Source: '{BuilderName}/{BuilderInstance}', " +
-        "Operation Key: '{OperationKey}', " +
-        "Result Type: '{ResultType}'",
+        "Resilience pipeline executing. " +
+        "Source: '{PipelineName}/{PipelineInstance}', " +
+        "Operation Key: '{OperationKey}'",
         EventName = "StrategyExecuting")]
-    public static partial void ExecutingStrategy(
+    public static partial void PipelineExecuting(
         this ILogger logger,
-        string builderName,
-        string builderInstance,
-        string? operationKey,
-        string resultType);
+        string pipelineName,
+        string pipelineInstance,
+        string? operationKey);
 
     [LoggerMessage(
         EventId = 2,
-        Message = "Resilience strategy executed. " +
-            "Source: '{BuilderName}/{BuilderInstance}', " +
+        Message = "Resilience pipeline executed. " +
+            "Source: '{PipelineName}/{PipelineInstance}', " +
             "Operation Key: '{OperationKey}', " +
-            "Result Type: '{ResultType}', " +
             "Result: '{Result}', " +
             "Execution Health: '{ExecutionHealth}', " +
             "Execution Time: {ExecutionTime}ms",
         EventName = "StrategyExecuted")]
-    public static partial void StrategyExecuted(
+    public static partial void PipelineExecuted(
         this ILogger logger,
         LogLevel logLevel,
-        string builderName,
-        string builderInstance,
+        string pipelineName,
+        string pipelineInstance,
         string? operationKey,
-        string resultType,
         object? result,
         string executionHealth,
         double executionTime,
@@ -67,7 +63,7 @@ internal static partial class Log
     [LoggerMessage(
         EventId = 3,
         Message = "Execution attempt. " +
-                "Source: '{BuilderName}/{BuilderInstance}/{StrategyName}', " +
+                "Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', " +
                 "Operation Key: '{OperationKey}', " +
                 "Result: '{Result}', " +
                 "Handled: '{Handled}', " +
@@ -78,8 +74,8 @@ internal static partial class Log
     public static partial void ExecutionAttempt(
         this ILogger logger,
         LogLevel level,
-        string builderName,
-        string builderInstance,
+        string pipelineName,
+        string pipelineInstance,
         string strategyName,
         string? operationKey,
         object? result,

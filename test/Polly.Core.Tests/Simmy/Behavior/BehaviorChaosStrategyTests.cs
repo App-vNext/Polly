@@ -1,5 +1,4 @@
-﻿using NSubstitute;
-using Polly.Simmy.Behavior;
+﻿using Polly.Simmy.Behavior;
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Simmy.Behavior;
@@ -7,11 +6,11 @@ public class BehaviorChaosStrategyTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly BehaviorStrategyOptions _options;
-    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
+    private readonly List<TelemetryEventArguments<object, object>> _args = new();
 
     public BehaviorChaosStrategyTests()
     {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource);
+        _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
         _options = new();
     }
 
@@ -57,7 +56,6 @@ public class BehaviorChaosStrategyTests
         var called = false;
         var userDelegateExecuted = false;
         var injectedBehaviourExecuted = false;
-        _diagnosticSource.IsEnabled(BehaviorConstants.OnBehaviorInjectedEvent).Returns(true);
 
         _options.InjectionRate = 0.6;
         _options.Enabled = true;
@@ -77,7 +75,8 @@ public class BehaviorChaosStrategyTests
         called.Should().BeTrue();
         userDelegateExecuted.Should().BeTrue();
         injectedBehaviourExecuted.Should().BeTrue();
-        _diagnosticSource.Received().IsEnabled(BehaviorConstants.OnBehaviorInjectedEvent);
+        _args.Should().HaveCount(1);
+        _args[0].Arguments.Should().BeOfType<OnBehaviorInjectedArguments>();
     }
 
     [Fact]
@@ -147,5 +146,5 @@ public class BehaviorChaosStrategyTests
         injectedBehaviourExecuted.Should().BeTrue();
     }
 
-    private ResilienceStrategy CreateSut() => new BehaviorChaosStrategy(_options, _telemetry).AsStrategy();
+    private ResiliencePipeline CreateSut() => new BehaviorChaosStrategy(_options, _telemetry).AsPipeline();
 }

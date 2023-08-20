@@ -3,7 +3,7 @@
 /// <summary>
 /// The validation context that encapsulates parameters for the validation.
 /// </summary>
-public sealed class ResilienceValidationContext
+internal sealed class ResilienceValidationContext
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ResilienceValidationContext"/> class.
@@ -12,8 +12,8 @@ public sealed class ResilienceValidationContext
     /// <param name="primaryMessage">The primary validation message.</param>
     public ResilienceValidationContext(object instance, string primaryMessage)
     {
-        Instance = Guard.NotNull(instance);
-        PrimaryMessage = Guard.NotNull(primaryMessage);
+        Instance = Polly.Utils.Guard.NotNull(instance);
+        PrimaryMessage = Polly.Utils.Guard.NotNull(primaryMessage);
     }
 
     /// <summary>

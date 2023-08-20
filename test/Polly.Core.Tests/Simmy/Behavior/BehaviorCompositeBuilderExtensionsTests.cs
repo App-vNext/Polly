@@ -12,7 +12,7 @@ public class BehaviorCompositeBuilderExtensionsTests
         Func<ValueTask> behavior = () => new ValueTask(Task.CompletedTask);
         yield return new object[]
         {
-            (CompositeStrategyBuilder<int> builder) => { builder.AddBehavior(true, 0.5, behavior); },
+            (ResiliencePipelineBuilder<int> builder) => { builder.AddBehavior(true, 0.5, behavior); },
             (BehaviorChaosStrategy strategy) =>
             {
                 strategy.Behavior!.Invoke(new(context)).Preserve().GetAwaiter().IsCompleted.Should().BeTrue();
@@ -25,14 +25,14 @@ public class BehaviorCompositeBuilderExtensionsTests
     [Fact]
     public void AddBehavior_Shortcut_Option_Ok()
     {
-        var sut = new CompositeStrategyBuilder().AddBehavior(true, 0.5, () => new ValueTask(Task.CompletedTask)).Build();
-        sut.GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>();
+        var sut = new ResiliencePipelineBuilder().AddBehavior(true, 0.5, () => new ValueTask(Task.CompletedTask)).Build();
+        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>();
     }
 
     [Fact]
     public void AddBehavior_Shortcut_Option_Throws()
     {
-        new CompositeStrategyBuilder()
+        new ResiliencePipelineBuilder()
             .Invoking(b => b.AddBehavior(true, -1, () => new ValueTask(Task.CompletedTask)))
             .Should()
             .Throw<ValidationException>();
@@ -41,7 +41,7 @@ public class BehaviorCompositeBuilderExtensionsTests
     [Fact]
     public void AddBehavior_InvalidOptions_Throws()
     {
-        new CompositeStrategyBuilder()
+        new ResiliencePipelineBuilder()
             .Invoking(b => b.AddBehavior(new BehaviorStrategyOptions()))
             .Should()
             .Throw<ValidationException>();
@@ -50,7 +50,7 @@ public class BehaviorCompositeBuilderExtensionsTests
     [Fact]
     public void AddBehavior_Options_Ok()
     {
-        var sut = new CompositeStrategyBuilder()
+        var sut = new ResiliencePipelineBuilder()
             .AddBehavior(new BehaviorStrategyOptions
             {
                 Enabled = true,
@@ -59,17 +59,17 @@ public class BehaviorCompositeBuilderExtensionsTests
             })
             .Build();
 
-        sut.GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>();
+        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>();
     }
 
     [MemberData(nameof(AddBehavior_Ok_Data))]
     [Theory]
-    internal void AddBehavior_Generic_Options_Ok(Action<CompositeStrategyBuilder<int>> configure, Action<BehaviorChaosStrategy> assert)
+    internal void AddBehavior_Generic_Options_Ok(Action<ResiliencePipelineBuilder<int>> configure, Action<BehaviorChaosStrategy> assert)
     {
-        var builder = new CompositeStrategyBuilder<int>();
+        var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 
-        var strategy = builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>().Subject;
         assert(strategy);
     }
 }

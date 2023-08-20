@@ -63,7 +63,7 @@ act.Should()
         var sut = CreateSut();
         sut.OnExecute = (_, _) => { wasMonkeyUnleashed = true; return Task.CompletedTask; };
 
-        await sut.AsStrategy().ExecuteAsync((_) => { return default; });
+        await sut.AsPipeline().ExecuteAsync((_) => { return default; });
 
         wasMonkeyUnleashed.Should().Be(shouldBeInjected);
     }
@@ -91,7 +91,7 @@ act.Should()
         var sut = CreateSut();
         sut.Before = (_, _) => { cts.Cancel(); };
 
-        await sut.Invoking(s => s.AsStrategy().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
+        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
             .Should()
             .ThrowAsync<OperationCanceledException>();
 
@@ -123,7 +123,7 @@ act.Should()
 
         var sut = CreateSut();
 
-        await sut.Invoking(s => s.AsStrategy().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
+        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
             .Should()
             .ThrowAsync<OperationCanceledException>();
 
@@ -155,7 +155,7 @@ act.Should()
 
         var sut = CreateSut();
 
-        await sut.Invoking(s => s.AsStrategy().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
+        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
             .Should()
             .ThrowAsync<OperationCanceledException>();
 
@@ -176,7 +176,7 @@ act.Should()
         var sut = CreateSut();
         sut.OnExecute = (_, _) => { wasMonkeyUnleashed = true; return Task.CompletedTask; };
 
-        await sut.AsStrategy().ExecuteAsync((_) => { return default; });
+        await sut.AsPipeline().ExecuteAsync((_) => { return default; });
 
         wasMonkeyUnleashed.Should().BeTrue();
     }

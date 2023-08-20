@@ -14,7 +14,7 @@ internal static partial class Helper
             case PollyVersion.V8:
                 var context = ResilienceContextPool.Shared.Get();
 
-                await ((ResilienceStrategy<string>)obj).ExecuteOutcomeAsync(
+                await ((ResiliencePipeline<string>)obj).ExecuteOutcomeAsync(
                     static (_, _) => Outcome.FromResultAsTask("dummy"),
                     context,
                     string.Empty).ConfigureAwait(false);
@@ -26,9 +26,9 @@ internal static partial class Helper
         throw new NotSupportedException();
     }
 
-    private static ResilienceStrategy<string> CreateStrategy(Action<CompositeStrategyBuilder<string>> configure)
+    private static ResiliencePipeline<string> CreateStrategy(Action<ResiliencePipelineBuilder<string>> configure)
     {
-        var builder = new CompositeStrategyBuilder<string>();
+        var builder = new ResiliencePipelineBuilder<string>();
         configure(builder);
         return builder.Build();
     }

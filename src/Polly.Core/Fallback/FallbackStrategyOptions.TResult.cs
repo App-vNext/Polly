@@ -14,7 +14,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     public FallbackStrategyOptions() => Name = FallbackConstants.DefaultName;
 
     /// <summary>
-    /// Gets or sets the outcome predicate for determining whether a fallback should be executed.
+    /// Gets or sets a predicate that determines whether the fallback should be executed for a given outcome.
     /// </summary>
     /// <value>
     /// The default value is a predicate that fallbacks on any exception except <see cref="OperationCanceledException"/>. This property is required.
@@ -32,7 +32,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     public Func<OutcomeArguments<TResult, FallbackPredicateArguments>, ValueTask<Outcome<TResult>>>? FallbackAction { get; set; }
 
     /// <summary>
-    /// Gets or sets the outcome event instance responsible for triggering fallback events.
+    /// Gets or sets event delegate that is raised when fallback happens.
     /// </summary>
     /// <value>
     /// The default value is <see langword="null"/> instance.

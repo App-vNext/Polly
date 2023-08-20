@@ -2,7 +2,6 @@ using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Polly.CircuitBreaker;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
@@ -18,7 +17,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     {
         _timeProvider = new FakeTimeProvider();
         _behavior = Substitute.For<CircuitBehavior>();
-        _telemetry = TestUtilities.CreateResilienceTelemetry(Substitute.For<DiagnosticSource>());
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_ => { });
         _options = new CircuitBreakerStrategyOptions<int>();
         _controller = new CircuitStateController<int>(
             CircuitBreakerConstants.DefaultBreakDuration,
@@ -61,9 +60,6 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         await _options.ManualControl.CloseAsync(CancellationToken.None);
 
         strategy.Invoking(s => s.Execute(_ => 0)).Should().NotThrow();
-
-        _options.ManualControl.Dispose();
-        strategy.Invoking(s => s.Execute(_ => 0)).Should().Throw<ObjectDisposedException>();
 
         _behavior.Received().OnCircuitClosed();
         _behavior.Received().OnActionSuccess(CircuitState.Closed);
@@ -116,7 +112,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _options.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
         var strategy = Create();
 
-        strategy.Invoking(s => s.Execute(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
+        strategy.Invoking(s => s.Execute<int>(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
 
         _behavior.DidNotReceiveWithAnyArgs().OnActionFailure(default, out Arg.Any<bool>());
         _behavior.DidNotReceiveWithAnyArgs().OnActionSuccess(default);
@@ -135,6 +131,8 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
     }
 
-    private ReactiveResilienceStrategyBridge<int> Create()
-        => new(new CircuitBreakerResilienceStrategy<int>(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl));
+    private ResiliencePipeline<int> Create()
+#pragma warning disable CA2000 // Dispose objects before losing scope
+        => new CircuitBreakerResilienceStrategy<int>(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl).AsPipeline();
+#pragma warning restore CA2000 // Dispose objects before losing scope
 }

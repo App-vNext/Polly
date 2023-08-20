@@ -10,18 +10,6 @@ internal static class TelemetryUtil
 
     internal const string PipelineExecuted = "PipelineExecuted";
 
-    public static ResilienceStrategyTelemetry CreateTelemetry(
-        DiagnosticSource? diagnosticSource,
-        string? builderName,
-        string? builderInstanceName,
-        ResilienceProperties builderProperties,
-        string? strategyName)
-    {
-        var telemetrySource = new ResilienceTelemetrySource(builderName, builderInstanceName, builderProperties, strategyName);
-
-        return new ResilienceStrategyTelemetry(telemetrySource, diagnosticSource);
-    }
-
     public static void ReportExecutionAttempt<TResult>(
         ResilienceStrategyTelemetry telemetry,
         ResilienceContext context,
@@ -30,15 +18,13 @@ internal static class TelemetryUtil
         TimeSpan executionTime,
         bool handled)
     {
-        if (!telemetry.IsEnabled)
+        if (!telemetry.Enabled)
         {
             return;
         }
 
-        var attemptArgs = ExecutionAttemptArguments.Get(attempt, executionTime, handled);
         telemetry.Report<ExecutionAttemptArguments, TResult>(
             new(handled ? ResilienceEventSeverity.Warning : ResilienceEventSeverity.Information, ExecutionAttempt),
-            new(context, outcome, attemptArgs));
-        ExecutionAttemptArguments.Return(attemptArgs);
+            new(context, outcome, new ExecutionAttemptArguments(attempt, executionTime, handled)));
     }
 }

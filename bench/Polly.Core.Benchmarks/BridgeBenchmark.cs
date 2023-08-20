@@ -9,12 +9,12 @@ public class BridgeBenchmark
     public void Setup()
     {
         _policy = Policy.NoOpAsync<string>();
-        _policyWrapped = NullResilienceStrategy<string>.Instance.AsAsyncPolicy();
+        _policyWrapped = ResiliencePipeline<string>.Null.AsAsyncPolicy();
     }
 
     [Benchmark(Baseline = true)]
     public Task NoOpAsync() => _policy!.ExecuteAsync(() => Task.FromResult("dummy"));
 
     [Benchmark]
-    public Task NullResilienceStrategy() => _policyWrapped!.ExecuteAsync(() => Task.FromResult("dummy"));
+    public Task NullResiliencePipeline() => _policyWrapped!.ExecuteAsync(() => Task.FromResult("dummy"));
 }

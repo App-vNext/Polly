@@ -10,113 +10,113 @@ namespace Polly.Extensions.Tests.DependencyInjection;
 
 public class PollyServiceCollectionExtensionTests
 {
-    private const string Key = "my-strategy";
+    private const string Key = "my-pipeline";
     private ServiceCollection _services;
 
     public PollyServiceCollectionExtensionTests() => _services = new ServiceCollection();
 
     [Fact]
-    public void AddResilienceStrategy_ArgValidation()
+    public void AddResiliencePipeline_ArgValidation()
     {
         _services = null!;
-        Assert.Throws<ArgumentNullException>(() => AddResilienceStrategy(Key));
-        Assert.Throws<ArgumentNullException>(() => AddResilienceStrategy<string>(Key));
+        Assert.Throws<ArgumentNullException>(() => AddResiliencePipeline(Key));
+        Assert.Throws<ArgumentNullException>(() => AddResiliencePipeline<string>(Key));
 
         _services = new ServiceCollection();
-        Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
+        Assert.Throws<ArgumentNullException>(() => _services.AddResiliencePipeline(
             Key,
-            (Action<CompositeStrategyBuilder, AddResilienceStrategyContext<string>>)null!));
-        Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
+            (Action<ResiliencePipelineBuilder, AddResiliencePipelineContext<string>>)null!));
+        Assert.Throws<ArgumentNullException>(() => _services.AddResiliencePipeline(
             Key,
-            (Action<CompositeStrategyBuilder<string>, AddResilienceStrategyContext<string>>)null!));
+            (Action<ResiliencePipelineBuilder<string>, AddResiliencePipelineContext<string>>)null!));
 
-        Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
+        Assert.Throws<ArgumentNullException>(() => _services.AddResiliencePipeline(
             Key,
-            (Action<CompositeStrategyBuilder>)null!));
+            (Action<ResiliencePipelineBuilder>)null!));
 
-        Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
+        Assert.Throws<ArgumentNullException>(() => _services.AddResiliencePipeline(
             Key,
-            (Action<CompositeStrategyBuilder<string>>)null!));
+            (Action<ResiliencePipelineBuilder<string>>)null!));
     }
 
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public void AddResilienceStrategy_EnsureRegisteredServices(bool generic)
+    public void AddResiliencePipeline_EnsureRegisteredServices(bool generic)
     {
         if (generic)
         {
-            AddResilienceStrategy<string>(Key);
+            AddResiliencePipeline<string>(Key);
         }
         else
         {
-            AddResilienceStrategy(Key);
+            AddResiliencePipeline(Key);
         }
 
         var serviceProvider = _services.BuildServiceProvider();
 
-        serviceProvider.GetServices<CompositeStrategyBuilder>().Should().NotBeNull();
-        serviceProvider.GetServices<ResilienceStrategyRegistry<string>>().Should().NotBeNull();
-        serviceProvider.GetServices<ResilienceStrategyProvider<string>>().Should().NotBeNull();
-        serviceProvider.GetServices<CompositeStrategyBuilder>().Should().NotBeSameAs(serviceProvider.GetServices<CompositeStrategyBuilder>());
+        serviceProvider.GetServices<ResiliencePipelineBuilder>().Should().NotBeNull();
+        serviceProvider.GetServices<ResiliencePipelineRegistry<string>>().Should().NotBeNull();
+        serviceProvider.GetServices<ResiliencePipelineProvider<string>>().Should().NotBeNull();
+        serviceProvider.GetServices<ResiliencePipelineBuilder>().Should().NotBeSameAs(serviceProvider.GetServices<ResiliencePipelineBuilder>());
     }
 
     [Fact]
-    public void AddResilienceStrategy_MultipleRegistries_Ok()
+    public void AddResiliencePipeline_MultipleRegistries_Ok()
     {
-        AddResilienceStrategy(Key);
-        AddResilienceStrategy<string>(Key);
-        AddResilienceStrategy<int>(Key);
+        AddResiliencePipeline(Key);
+        AddResiliencePipeline<string>(Key);
+        AddResiliencePipeline<int>(Key);
 
-        _services.AddResilienceStrategy(10, context => context.AddStrategy(new TestStrategy()));
-        _services.AddResilienceStrategy<int, string>(10, context => context.AddStrategy(new TestStrategy()));
-        _services.AddResilienceStrategy<int, int>(10, context => context.AddStrategy(new TestStrategy()));
+        _services.AddResiliencePipeline(10, context => context.AddStrategy(new TestStrategy()));
+        _services.AddResiliencePipeline<int, string>(10, context => context.AddStrategy(new TestStrategy()));
+        _services.AddResiliencePipeline<int, int>(10, context => context.AddStrategy(new TestStrategy()));
 
         var serviceProvider = _services.BuildServiceProvider();
 
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().GetStrategy(Key).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().GetStrategy<string>(Key).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().GetStrategy<int>(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<string>(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<int>(Key).Should().NotBeNull();
 
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().GetStrategy(10).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().GetStrategy<string>(10).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().GetStrategy<int>(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<string>(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<int>(10).Should().NotBeNull();
     }
 
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public void AddResilienceStrategy_EnsureContextFilled(bool generic)
+    public void AddResiliencePipeline_EnsureContextFilled(bool generic)
     {
         var asserted = false;
 
         if (generic)
         {
-            _services.AddResilienceStrategy<string, string>(Key, (builder, context) =>
+            _services.AddResiliencePipeline<string, string>(Key, (builder, context) =>
             {
                 context.RegistryContext.Should().NotBeNull();
-                context.StrategyKey.Should().Be(Key);
-                context.BuilderName.Should().Be(Key);
+                context.PipelineKey.Should().Be(Key);
+                builder.Name.Should().Be(Key);
                 builder.Should().NotBeNull();
                 context.ServiceProvider.Should().NotBeNull();
                 builder.AddStrategy(new TestStrategy());
                 asserted = true;
             });
 
-            CreateProvider().GetStrategy<string>(Key);
+            CreateProvider().GetPipeline<string>(Key);
         }
         else
         {
-            _services.AddResilienceStrategy(Key, (builder, context) =>
+            _services.AddResiliencePipeline(Key, (builder, context) =>
             {
-                context.StrategyKey.Should().Be(Key);
+                context.PipelineKey.Should().Be(Key);
                 builder.Should().NotBeNull();
                 context.ServiceProvider.Should().NotBeNull();
                 builder.AddStrategy(new TestStrategy());
                 asserted = true;
             });
 
-            CreateProvider().GetStrategy(Key);
+            CreateProvider().GetPipeline(Key);
         }
 
         asserted.Should().BeTrue();
@@ -125,7 +125,7 @@ public class PollyServiceCollectionExtensionTests
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public void AddResilienceStrategy_EnsureTelemetryEnabled(bool hasLogging)
+    public void AddResiliencePipeline_EnsureTelemetryEnabled(bool hasLogging)
     {
         ResilienceStrategyTelemetry? telemetry = null;
 
@@ -134,7 +134,7 @@ public class PollyServiceCollectionExtensionTests
             _services.AddLogging();
         }
 
-        _services.AddResilienceStrategy(Key, builder =>
+        _services.AddResiliencePipeline(Key, builder =>
             builder.AddStrategy(context =>
             {
                 telemetry = context.Telemetry;
@@ -142,10 +142,10 @@ public class PollyServiceCollectionExtensionTests
             },
             new TestResilienceStrategyOptions()));
 
-        CreateProvider().GetStrategy(Key);
+        CreateProvider().GetPipeline(Key);
 
-        var diagSource = telemetry!.GetType().GetProperty("DiagnosticSource", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(telemetry);
-        diagSource.Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
+        var diagSource = telemetry!.GetType().GetProperty("Listener", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(telemetry);
+        diagSource.Should().BeOfType<TelemetryListenerImpl>();
 
         var factory = _services.BuildServiceProvider().GetRequiredService<IOptions<TelemetryOptions>>().Value.LoggerFactory;
 
@@ -160,77 +160,73 @@ public class PollyServiceCollectionExtensionTests
     }
 
     [Fact]
-    public void AddResilienceStrategy_EnsureCompositeStrategyBuilderResolvedCorrectly()
+    public void AddResiliencePipeline_EnsureResiliencePipelineBuilderResolvedCorrectly()
     {
         var asserted = false;
         var key = new ResiliencePropertyKey<int>("A");
 
-        AddResilienceStrategy(Key, context =>
-        {
-            context.BuilderProperties.TryGetValue(PollyDependencyInjectionKeys.ServiceProvider, out _).Should().BeTrue();
-            asserted = true;
-        });
+        AddResiliencePipeline(Key, context => asserted = true);
 
-        CreateProvider().GetStrategy(Key);
+        CreateProvider().GetPipeline(Key);
 
         asserted.Should().BeTrue();
     }
 
     [Fact]
-    public void AddResilienceStrategy_EnsureServicesNotAddedTwice()
+    public void AddResiliencePipeline_EnsureServicesNotAddedTwice()
     {
-        AddResilienceStrategy(Key);
+        AddResiliencePipeline(Key);
         var count = _services.Count;
 
-        AddResilienceStrategy(Key);
+        AddResiliencePipeline(Key);
 
         _services.Count.Should().Be(count + 1);
     }
 
     [Fact]
-    public void AddResilienceStrategy_Single_Ok()
+    public void AddResiliencePipeline_Single_Ok()
     {
-        AddResilienceStrategy(Key);
+        AddResiliencePipeline(Key);
 
         var provider = CreateProvider();
 
-        var strategy = provider.GetStrategy(Key);
-        provider.GetStrategy("my-strategy").Should().BeSameAs(provider.GetStrategy("my-strategy"));
+        var pipeline = provider.GetPipeline(Key);
+        provider.GetPipeline("my-pipeline").Should().BeSameAs(provider.GetPipeline("my-pipeline"));
     }
 
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public void AddResilienceStrategy_Twice_LastOneWins(bool generic)
+    public void AddResiliencePipeline_Twice_FirstOneWins(bool generic)
     {
         var firstCalled = false;
         var secondCalled = false;
 
         if (generic)
         {
-            AddResilienceStrategy<string>(Key, _ => firstCalled = true);
-            AddResilienceStrategy<string>(Key, _ => secondCalled = true);
-            CreateProvider().GetStrategy<string>(Key);
+            AddResiliencePipeline<string>(Key, _ => firstCalled = true);
+            AddResiliencePipeline<string>(Key, _ => secondCalled = true);
+            CreateProvider().GetPipeline<string>(Key);
         }
         else
         {
-            AddResilienceStrategy(Key, _ => firstCalled = true);
-            AddResilienceStrategy(Key, _ => secondCalled = true);
-            CreateProvider().GetStrategy(Key);
+            AddResiliencePipeline(Key, _ => firstCalled = true);
+            AddResiliencePipeline(Key, _ => secondCalled = true);
+            CreateProvider().GetPipeline(Key);
         }
 
-        firstCalled.Should().BeFalse();
-        secondCalled.Should().BeTrue();
+        firstCalled.Should().BeTrue();
+        secondCalled.Should().BeFalse();
     }
 
     [Fact]
-    public void AddResilienceStrategy_Multiple_Ok()
+    public void AddResiliencePipeline_Multiple_Ok()
     {
         for (var i = 0; i < 10; i++)
         {
-            AddResilienceStrategy(i.ToString(CultureInfo.InvariantCulture));
-            AddResilienceStrategy<string>(i.ToString(CultureInfo.InvariantCulture));
-            AddResilienceStrategy<int>(i.ToString(CultureInfo.InvariantCulture));
+            AddResiliencePipeline(i.ToString(CultureInfo.InvariantCulture));
+            AddResiliencePipeline<string>(i.ToString(CultureInfo.InvariantCulture));
+            AddResiliencePipeline<int>(i.ToString(CultureInfo.InvariantCulture));
         }
 
         var provider = CreateProvider();
@@ -243,9 +239,9 @@ public class PollyServiceCollectionExtensionTests
 
                 return new object[]
                 {
-                    provider.GetStrategy(name),
-                    provider.GetStrategy<string>(name),
-                    provider.GetStrategy<int>(name)
+                    provider.GetPipeline(name),
+                    provider.GetPipeline<string>(name),
+                    provider.GetPipeline<int>(name)
                 };
             })
             .Distinct()
@@ -254,30 +250,30 @@ public class PollyServiceCollectionExtensionTests
     }
 
     [Fact]
-    public void AddResilienceStrategyRegistry_Ok()
+    public void AddResiliencePipelineRegistry_Ok()
     {
-        var provider = new ServiceCollection().AddResilienceStrategyRegistry<string>().BuildServiceProvider();
+        var provider = new ServiceCollection().AddResiliencePipelineRegistry<string>().BuildServiceProvider();
 
-        provider.GetRequiredService<ResilienceStrategyRegistry<string>>().Should().NotBeNull();
-        provider.GetRequiredService<ResilienceStrategyProvider<string>>().Should().NotBeNull();
-        provider.GetRequiredService<CompositeStrategyBuilder>().DiagnosticSource.Should().NotBeNull();
+        provider.GetRequiredService<ResiliencePipelineRegistry<string>>().Should().NotBeNull();
+        provider.GetRequiredService<ResiliencePipelineProvider<string>>().Should().NotBeNull();
+        provider.GetRequiredService<ResiliencePipelineBuilder>().TelemetryListener.Should().NotBeNull();
     }
 
     [Fact]
-    public void AddResilienceStrategyRegistry_ConfigureCallback_Ok()
+    public void AddResiliencePipelineRegistry_ConfigureCallback_Ok()
     {
         Func<string, string> formatter = s => s;
 
-        var provider = new ServiceCollection().AddResilienceStrategyRegistry<string>(options => options.InstanceNameFormatter = formatter).BuildServiceProvider();
+        var provider = new ServiceCollection().AddResiliencePipelineRegistry<string>(options => options.InstanceNameFormatter = formatter).BuildServiceProvider();
 
-        provider.GetRequiredService<ResilienceStrategyRegistry<string>>().Should().NotBeNull();
-        provider.GetRequiredService<ResilienceStrategyProvider<string>>().Should().NotBeNull();
-        provider.GetRequiredService<IOptions<ResilienceStrategyRegistryOptions<string>>>().Value.InstanceNameFormatter.Should().Be(formatter);
+        provider.GetRequiredService<ResiliencePipelineRegistry<string>>().Should().NotBeNull();
+        provider.GetRequiredService<ResiliencePipelineProvider<string>>().Should().NotBeNull();
+        provider.GetRequiredService<IOptions<ResiliencePipelineRegistryOptions<string>>>().Value.InstanceNameFormatter.Should().Be(formatter);
     }
 
-    private void AddResilienceStrategy(string key, Action<StrategyBuilderContext>? onBuilding = null)
+    private void AddResiliencePipeline(string key, Action<StrategyBuilderContext>? onBuilding = null)
     {
-        _services.AddResilienceStrategy(key, builder =>
+        _services.AddResiliencePipeline(key, builder =>
         {
             builder.AddStrategy(context =>
             {
@@ -287,9 +283,9 @@ public class PollyServiceCollectionExtensionTests
         });
     }
 
-    private void AddResilienceStrategy<TResult>(string key, Action<StrategyBuilderContext>? onBuilding = null)
+    private void AddResiliencePipeline<TResult>(string key, Action<StrategyBuilderContext>? onBuilding = null)
     {
-        _services.AddResilienceStrategy<string, TResult>(key, builder =>
+        _services.AddResiliencePipeline<string, TResult>(key, builder =>
         {
             builder.AddStrategy(context =>
             {
@@ -299,12 +295,12 @@ public class PollyServiceCollectionExtensionTests
         });
     }
 
-    private ResilienceStrategyProvider<string> CreateProvider()
+    private ResiliencePipelineProvider<string> CreateProvider()
     {
-        return _services.BuildServiceProvider().GetRequiredService<ResilienceStrategyProvider<string>>();
+        return _services.BuildServiceProvider().GetRequiredService<ResiliencePipelineProvider<string>>();
     }
 
-    private class TestStrategy : NonReactiveResilienceStrategy
+    private class TestStrategy : ResilienceStrategy
     {
         protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

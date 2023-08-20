@@ -5,7 +5,7 @@ namespace Polly.RateLimiting;
 /// <summary>
 /// This class is just a simple adapter for the built-in limiters in the <c>System.Threading.RateLimiting</c> namespace.
 /// </summary>
-public sealed class ResilienceRateLimiter
+public sealed class ResilienceRateLimiter : IDisposable, IAsyncDisposable
 {
     private ResilienceRateLimiter(RateLimiter? limiter, PartitionedRateLimiter<ResilienceContext>? partitionedLimiter)
     {
@@ -40,6 +40,32 @@ public sealed class ResilienceRateLimiter
         else
         {
             return Limiter!.AcquireAsync(permitCount: 1, context.CancellationToken);
+        }
+    }
+
+    /// <inheritdoc/>
+    public ValueTask DisposeAsync()
+    {
+        if (PartitionedLimiter is not null)
+        {
+            return PartitionedLimiter.DisposeAsync();
+        }
+        else
+        {
+            return Limiter!.DisposeAsync();
+        }
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        if (PartitionedLimiter is not null)
+        {
+            PartitionedLimiter.Dispose();
+        }
+        else
+        {
+            Limiter!.Dispose();
         }
     }
 }

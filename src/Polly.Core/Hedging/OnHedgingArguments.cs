@@ -1,12 +1,17 @@
 namespace Polly.Hedging;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// Represents arguments used by the on-hedging event.
 /// </summary>
-public sealed class OnHedgingArguments
+/// <remarks>
+/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
+/// </remarks>
+public readonly struct OnHedgingArguments
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OnHedgingArguments"/> class.
+    /// Initializes a new instance of the <see cref="OnHedgingArguments"/> struct.
     /// </summary>
     /// <param name="attemptNumber">The zero-based hedging attempt number.</param>
     /// <param name="hasOutcome">Indicates whether outcome is available.</param>

@@ -4,8 +4,8 @@ using Polly.Telemetry;
 namespace Polly;
 
 /// <summary>
-/// A context assigned to a single execution of <see cref="ResilienceStrategy"/>. It is created manually or automatically
-/// when the user calls the various extensions on top of <see cref="ResilienceStrategy"/>. After every execution the context should be discarded and returned to the pool.
+/// A context assigned to a single execution of <see cref="ResiliencePipeline"/>. It is created manually or automatically
+/// when the user calls the various extensions on top of <see cref="ResiliencePipeline"/>. After every execution the context should be discarded and returned to the pool.
 /// </summary>
 /// <remarks>
 /// Do not re-use an instance of <see cref="ResilienceContext"/> across more than one execution. The <see cref="ResilienceContext"/> is retrieved from the pool
@@ -14,8 +14,6 @@ namespace Polly;
 /// </remarks>
 public sealed class ResilienceContext
 {
-    private const bool ContinueOnCapturedContextDefault = false;
-
     private readonly List<ResilienceEvent> _resilienceEvents = new();
 
     internal ResilienceContext()
@@ -26,7 +24,7 @@ public sealed class ResilienceContext
     /// Gets a key unique to the call site of the current execution.
     /// </summary>
     /// <remarks>
-    /// Resilience strategy instances are commonly reused across multiple call sites.
+    /// Resilience context instances are commonly reused across multiple call sites.
     /// Set an <see cref="OperationKey"/> so that logging and metrics can distinguish usages of policy instances at different call sites.
     /// The operation key value should have a low cardinality (i.e. do not assign values such as <see cref="Guid"/> to this property).
     /// </remarks>
@@ -41,22 +39,22 @@ public sealed class ResilienceContext
     /// <summary>
     /// Gets a value indicating whether the execution is synchronous.
     /// </summary>
-    public bool IsSynchronous { get; private set; }
+    internal bool IsSynchronous { get; private set; }
 
     /// <summary>
     /// Gets the type of the result associated with the execution.
     /// </summary>
-    public Type ResultType { get; private set; } = typeof(UnknownResult);
+    internal Type ResultType { get; private set; } = typeof(UnknownResult);
 
     /// <summary>
     /// Gets a value indicating whether the execution represents a void result.
     /// </summary>
-    public bool IsVoid => ResultType == typeof(VoidResult);
+    internal bool IsVoid => ResultType == typeof(VoidResult);
 
     /// <summary>
-    /// Gets or sets a value indicating whether the execution should continue on the captured context.
+    /// Gets a value indicating whether the execution should continue on the captured context.
     /// </summary>
-    public bool ContinueOnCapturedContext { get; set; }
+    public bool ContinueOnCapturedContext { get; internal set; }
 
     /// <summary>
     /// Gets a value indicating whether the context is initialized.
@@ -72,7 +70,8 @@ public sealed class ResilienceContext
     /// Gets the collection of resilience events that occurred while executing the resilience strategy.
     /// </summary>
     /// <remarks>
-    /// If the number of resilience events is greater than zero it's an indication that the execution was unhealthy.
+    /// If the number of resilience events with severity greater than <see cref="ResilienceEventSeverity.Information"/> is greater than zero it's an indication that the execution was unhealthy.
+    /// Note that the number of reported events depends on whether telemetry is enabled for the pipeline or not.
     /// </remarks>
     public IReadOnlyList<ResilienceEvent> ResilienceEvents => _resilienceEvents;
 
@@ -98,7 +97,6 @@ public sealed class ResilienceContext
     {
         IsSynchronous = isSynchronous;
         ResultType = typeof(TResult);
-        ContinueOnCapturedContext = ContinueOnCapturedContextDefault;
 
         return this;
     }

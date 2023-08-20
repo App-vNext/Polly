@@ -6,7 +6,7 @@ namespace Polly.Core.Tests.Simmy.Outcomes;
 
 public class OutcomeCompositeBuilderExtensionsTests
 {
-    public static readonly TheoryData<Action<CompositeStrategyBuilder<int>>> ResultStrategy = new()
+    public static readonly TheoryData<Action<ResiliencePipelineBuilder<int>>> ResultStrategy = new()
     {
         builder =>
         {
@@ -22,7 +22,7 @@ public class OutcomeCompositeBuilderExtensionsTests
         }
     };
 
-    public static readonly TheoryData<Action<CompositeStrategyBuilder<string>>> FaultGenericStrategy = new()
+    public static readonly TheoryData<Action<ResiliencePipelineBuilder<string>>> FaultGenericStrategy = new()
     {
         builder =>
         {
@@ -38,7 +38,7 @@ public class OutcomeCompositeBuilderExtensionsTests
         }
     };
 
-    public static readonly TheoryData<Action<CompositeStrategyBuilder>> FaultStrategy = new()
+    public static readonly TheoryData<Action<ResiliencePipelineBuilder>> FaultStrategy = new()
     {
         builder =>
         {
@@ -54,10 +54,10 @@ public class OutcomeCompositeBuilderExtensionsTests
         }
     };
 
-    private static void AssertResultStrategy<T>(CompositeStrategyBuilder<T> builder, bool enabled, double injectionRate, Outcome<T> outcome)
+    private static void AssertResultStrategy<T>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate, Outcome<T> outcome)
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<T>>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<T>>().Subject;
 
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
@@ -66,11 +66,11 @@ public class OutcomeCompositeBuilderExtensionsTests
         strategy.Outcome.Should().Be(outcome);
     }
 
-    private static void AssertFaultStrategy<T, TException>(CompositeStrategyBuilder<T> builder, bool enabled, double injectionRate, Exception ex)
+    private static void AssertFaultStrategy<T, TException>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate, Exception ex)
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<T>>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<T>>().Subject;
 
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
@@ -91,11 +91,11 @@ public class OutcomeCompositeBuilderExtensionsTests
         }
     }
 
-    private static void AssertFaultStrategy<TException>(CompositeStrategyBuilder builder, bool enabled, double injectionRate, Exception ex)
+    private static void AssertFaultStrategy<TException>(ResiliencePipelineBuilder builder, bool enabled, double injectionRate, Exception ex)
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = builder.Build().GetInnerStrategies().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<object>>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<object>>().Subject;
 
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
@@ -118,32 +118,32 @@ public class OutcomeCompositeBuilderExtensionsTests
 
     [MemberData(nameof(ResultStrategy))]
     [Theory]
-    internal void AddResult_Options_Ok(Action<CompositeStrategyBuilder<int>> configure)
+    internal void AddResult_Options_Ok(Action<ResiliencePipelineBuilder<int>> configure)
     {
-        var builder = new CompositeStrategyBuilder<int>();
+        var builder = new ResiliencePipelineBuilder<int>();
         builder.Invoking(b => configure(b)).Should().NotThrow();
     }
 
     [MemberData(nameof(FaultGenericStrategy))]
     [Theory]
-    internal void AddFault_Generic_Options_Ok(Action<CompositeStrategyBuilder<string>> configure)
+    internal void AddFault_Generic_Options_Ok(Action<ResiliencePipelineBuilder<string>> configure)
     {
-        var builder = new CompositeStrategyBuilder<string>();
+        var builder = new ResiliencePipelineBuilder<string>();
         builder.Invoking(b => configure(b)).Should().NotThrow();
     }
 
     [MemberData(nameof(FaultStrategy))]
     [Theory]
-    internal void AddFault_Options_Ok(Action<CompositeStrategyBuilder> configure)
+    internal void AddFault_Options_Ok(Action<ResiliencePipelineBuilder> configure)
     {
-        var builder = new CompositeStrategyBuilder();
+        var builder = new ResiliencePipelineBuilder();
         builder.Invoking(b => configure(b)).Should().NotThrow();
     }
 
     [Fact]
     public void AddResult_Shortcut_Option_Ok()
     {
-        var builder = new CompositeStrategyBuilder<int>();
+        var builder = new ResiliencePipelineBuilder<int>();
         builder
             .AddResult(true, 0.5, 120)
             .Build();
@@ -154,7 +154,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     [Fact]
     public void AddResult_Shortcut_Option_Throws()
     {
-        new CompositeStrategyBuilder<int>()
+        new ResiliencePipelineBuilder<int>()
             .Invoking(b => b.AddResult(true, -1, () => new ValueTask<Outcome<int>?>(new Outcome<int>(120))))
             .Should()
             .Throw<ValidationException>();
@@ -163,7 +163,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     [Fact]
     public void AddFault_Shortcut_Option_Ok()
     {
-        var builder = new CompositeStrategyBuilder();
+        var builder = new ResiliencePipelineBuilder();
         builder
             .AddFault(true, 0.5, new InvalidOperationException("Dummy exception"))
             .Build();
@@ -174,7 +174,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     [Fact]
     public void AddFault_Shortcut_Option_Throws()
     {
-        new CompositeStrategyBuilder<int>()
+        new ResiliencePipelineBuilder<int>()
             .Invoking(b => b.AddFault(
                 true,
                 1.5,
@@ -186,7 +186,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     [Fact]
     public void AddFault_Generic_Shortcut_Option_Ok()
     {
-        var builder = new CompositeStrategyBuilder<string>();
+        var builder = new ResiliencePipelineBuilder<string>();
         builder
             .AddFault(true, 0.5, new InvalidOperationException("Dummy exception"))
             .Build();
@@ -197,7 +197,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     [Fact]
     public void AddFault_Generic_Shortcut_Option_Throws()
     {
-        new CompositeStrategyBuilder<int>()
+        new ResiliencePipelineBuilder<int>()
             .Invoking(b => b.AddFault(true, -1, new InvalidOperationException()))
             .Should()
             .Throw<ValidationException>();

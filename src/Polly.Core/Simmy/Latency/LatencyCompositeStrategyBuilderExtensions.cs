@@ -4,9 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace Polly.Simmy.Latency;
 
 /// <summary>
-/// Extension methods for adding latency to a <see cref="CompositeStrategyBuilderBase"/>.
+/// Extension methods for adding latency to a <see cref="ResiliencePipelineBuilderBase"/>.
 /// </summary>
-public static class LatencyCompositeStrategyBuilderExtensions
+public static class LatencyResiliencePipelineBuilderExtensions
 {
     /// <summary>
     /// Adds a latency chaos strategy to the builder.
@@ -20,7 +20,7 @@ public static class LatencyCompositeStrategyBuilderExtensions
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
     public static TBuilder AddLatency<TBuilder>(this TBuilder builder, bool enabled, double injectionRate, TimeSpan delay)
-        where TBuilder : CompositeStrategyBuilderBase
+        where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
 
@@ -46,7 +46,7 @@ public static class LatencyCompositeStrategyBuilderExtensions
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
     public static TBuilder AddLatency<TBuilder>(this TBuilder builder, LatencyStrategyOptions options)
-        where TBuilder : CompositeStrategyBuilderBase
+        where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);

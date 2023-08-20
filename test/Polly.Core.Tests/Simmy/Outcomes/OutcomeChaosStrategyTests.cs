@@ -1,16 +1,14 @@
-﻿using NSubstitute;
-using Polly.Simmy.Outcomes;
+﻿using Polly.Simmy.Outcomes;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
 
 public class OutcomeChaosStrategyTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly DiagnosticSource _diagnosticSource = Substitute.For<DiagnosticSource>();
+    private readonly List<TelemetryEventArguments<object, object>> _args = new();
 
-    public OutcomeChaosStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource);
+    public OutcomeChaosStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
 
     public static List<object[]> FaultCtorTestCases =>
         new()
@@ -94,7 +92,7 @@ public class OutcomeChaosStrategyTests
             Outcome = new Outcome<Exception>(fault)
         };
 
-        var sut = CreateSut(options);
+        var sut = new ResiliencePipelineBuilder().AddFault(options).Build();
         sut.Execute(() => { userDelegateExecuted = true; });
 
         userDelegateExecuted.Should().BeTrue();
@@ -119,7 +117,7 @@ public class OutcomeChaosStrategyTests
         await sut.Invoking(s => s.ExecuteAsync(async _ =>
         {
             userDelegateExecuted = true;
-            return await Task.FromResult(new Outcome<int>(200));
+            return await Task.FromResult(200);
         }).AsTask())
             .Should()
             .ThrowAsync<InvalidOperationException>()
@@ -165,7 +163,7 @@ public class OutcomeChaosStrategyTests
             OutcomeGenerator = (_) => new ValueTask<Outcome<Exception>?>(Task.FromResult<Outcome<Exception>?>(null))
         };
 
-        var sut = CreateSut(options);
+        var sut = new ResiliencePipelineBuilder().AddFault(options).Build();
         sut.Execute(_ =>
         {
             userDelegateExecuted = true;
@@ -298,14 +296,11 @@ public class OutcomeChaosStrategyTests
         userDelegateExecuted.Should().BeFalse();
     }
 
-    private ReactiveResilienceStrategyBridge<TResult> CreateSut<TResult>(OutcomeStrategyOptions<TResult> options) =>
-        new(new OutcomeChaosStrategy<TResult>(options, _telemetry));
+    private ResiliencePipeline<TResult> CreateSut<TResult>(OutcomeStrategyOptions<TResult> options) =>
+        new OutcomeChaosStrategy<TResult>(options, _telemetry).AsPipeline();
 
-    private ReactiveResilienceStrategyBridge<TResult> CreateSut<TResult>(OutcomeStrategyOptions<Exception> options) =>
-        new(new OutcomeChaosStrategy<TResult>(options, _telemetry));
-
-    private ReactiveResilienceStrategyBridge<object> CreateSut(OutcomeStrategyOptions<Exception> options) =>
-        new(new OutcomeChaosStrategy<object>(options, _telemetry));
+    private ResiliencePipeline<TResult> CreateSut<TResult>(OutcomeStrategyOptions<Exception> options) =>
+        new OutcomeChaosStrategy<TResult>(options, _telemetry).AsPipeline();
 }
 
 /// <summary>

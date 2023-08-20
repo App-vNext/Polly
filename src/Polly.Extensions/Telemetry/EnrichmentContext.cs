@@ -1,54 +1,39 @@
-namespace Polly.Telemetry;
+﻿namespace Polly.Telemetry;
+
+#pragma warning disable CA1815 // Override equals and operator equals on value types
 
 /// <summary>
-/// Enrichment context used when reporting resilience telemetry. This context is passed to the registered enrichers in <see cref="TelemetryOptions.Enrichers"/>.
+/// Enrichment context used when reporting resilience events.
 /// </summary>
-public sealed partial class EnrichmentContext
+/// <typeparam name="TResult">The type of the result.</typeparam>
+/// <typeparam name="TArgs">The type of the arguments attached to the resilience event.</typeparam>
+/// <remarks>
+/// This context is passed to enrichers in <see cref="TelemetryOptions.MeteringEnrichers"/>.
+/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
+/// </remarks>
+public readonly struct EnrichmentContext<TResult, TArgs>
 {
-    private const int InitialArraySize = 20;
-
-    private KeyValuePair<string, object?>[] _tagsArray = new KeyValuePair<string, object?>[InitialArraySize];
-
-    private EnrichmentContext()
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EnrichmentContext{TResult, TArgs}"/> struct.
+    /// </summary>
+    /// <param name="telemetryEvent">The telemetry event info.</param>
+    /// <param name="tags">Tags associated with the resilience event.</param>
+    public EnrichmentContext(in TelemetryEventArguments<TResult, TArgs> telemetryEvent, IList<KeyValuePair<string, object?>> tags)
     {
+        TelemetryEvent = telemetryEvent;
+        Tags = tags;
     }
 
     /// <summary>
-    /// Gets the outcome of the operation if any.
+    /// Gets the info about the telemetry event.
     /// </summary>
-    public Outcome<object>? Outcome { get; internal set; }
-
-    /// <summary>
-    /// Gets the resilience arguments associated with the resilience event, if any.
-    /// </summary>
-    public object? Arguments { get; internal set; }
-
-    /// <summary>
-    /// Gets the resilience context associated with the operation that produced the resilience event.
-    /// </summary>
-    public ResilienceContext Context { get; internal set; } = null!;
+    public TelemetryEventArguments<TResult, TArgs> TelemetryEvent { get; }
 
     /// <summary>
     /// Gets the tags associated with the resilience event.
     /// </summary>
-    public IList<KeyValuePair<string, object?>> Tags { get; } = new List<KeyValuePair<string, object?>>();
-
-    internal ReadOnlySpan<KeyValuePair<string, object?>> TagsSpan
-    {
-        get
-        {
-            // stryker disable once equality : no means to test this
-            if (Tags.Count > _tagsArray.Length)
-            {
-                Array.Resize(ref _tagsArray, Tags.Count);
-            }
-
-            for (int i = 0; i < Tags.Count; i++)
-            {
-                _tagsArray[i] = Tags[i];
-            }
-
-            return _tagsArray.AsSpan(0, Tags.Count);
-        }
-    }
+    /// <remarks>
+    /// Custom enricher can add tags to this collection.
+    /// </remarks>
+    public IList<KeyValuePair<string, object?>> Tags { get; }
 }

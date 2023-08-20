@@ -4,7 +4,7 @@ namespace Polly.Core.Tests.Timeout;
 
 public static class TimeoutTestUtils
 {
-    public static OnTimeoutArguments OnTimeoutArguments() => new(ResilienceContextPool.Shared.Get(), new InvalidOperationException(), TimeSpan.FromSeconds(1));
+    public static OnTimeoutArguments OnTimeoutArguments() => new(ResilienceContextPool.Shared.Get(), TimeSpan.FromSeconds(1));
 
     public static TimeoutGeneratorArguments TimeoutGeneratorArguments() => new(ResilienceContextPool.Shared.Get());
 

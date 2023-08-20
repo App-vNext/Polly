@@ -41,7 +41,7 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     public int MaxHedgedAttempts { get; set; } = HedgingConstants.DefaultMaxHedgedAttempts;
 
     /// <summary>
-    /// Gets or sets the predicate that determines whether a hedging should be performed for a given result.
+    /// Gets or sets a predicate that determines whether the hedging should be executed for a given outcome.
     /// </summary>
     /// <value>
     /// The default value is a predicate that hedges on any exception except <see cref="OperationCanceledException"/>.
@@ -51,7 +51,7 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     public Func<OutcomeArguments<TResult, HedgingPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<HedgingPredicateArguments, TResult>.HandleOutcome;
 
     /// <summary>
-    /// Gets or sets the hedging action generator that creates hedged actions.
+    /// Gets or sets a generator that creates hedged actions.
     /// </summary>
     /// <value>
     /// The default generator executes the original callback that was passed to the hedging resilience strategy. This property is required.
@@ -71,7 +71,7 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     };
 
     /// <summary>
-    /// Gets or sets the generator that generates hedging delays for each hedging attempt.
+    /// Gets or sets a generator that generates hedging delays for each hedging attempt.
     /// </summary>
     /// <remarks>
     /// The <see cref="HedgingDelayGenerator"/> takes precedence over <see cref="HedgingDelay"/>. If specified, the <see cref="HedgingDelay"/> is ignored.
