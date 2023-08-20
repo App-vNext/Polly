@@ -92,7 +92,7 @@ public class OutcomeChaosStrategyTests
             Outcome = new Outcome<Exception>(fault)
         };
 
-        var sut = new ResiliencePipelineBuilder().AddFault(options).Build();
+        var sut = new ResiliencePipelineBuilder().AddChaosFault(options).Build();
         sut.Execute(() => { userDelegateExecuted = true; });
 
         userDelegateExecuted.Should().BeTrue();
@@ -101,6 +101,7 @@ public class OutcomeChaosStrategyTests
     [Fact]
     public async Task Given_enabled_and_randomly_within_threshold_should_inject_fault()
     {
+        var onFaultInjected = false;
         var userDelegateExecuted = false;
         var exceptionMessage = "Dummy exception";
         var fault = new InvalidOperationException(exceptionMessage);
@@ -110,7 +111,14 @@ public class OutcomeChaosStrategyTests
             InjectionRate = 0.6,
             Enabled = true,
             Randomizer = () => 0.5,
-            Outcome = new Outcome<Exception>(fault)
+            Outcome = new Outcome<Exception>(fault),
+            OnOutcomeInjected = args =>
+            {
+                args.Context.Should().NotBeNull();
+                args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
+                onFaultInjected = true;
+                return default;
+            }
         };
 
         var sut = CreateSut<int>(options);
@@ -124,6 +132,10 @@ public class OutcomeChaosStrategyTests
             .WithMessage(exceptionMessage);
 
         userDelegateExecuted.Should().BeFalse();
+        _args.Should().HaveCount(1);
+        _args[0].Arguments.Should().BeOfType<OutcomeArguments<Exception, OnOutcomeInjectedArguments>>();
+        _args[0].Event.EventName.Should().Be(OutcomeConstants.OnFaultInjectedEvent);
+        onFaultInjected.Should().BeTrue();
     }
 
     [Fact]
@@ -163,7 +175,7 @@ public class OutcomeChaosStrategyTests
             OutcomeGenerator = (_) => new ValueTask<Outcome<Exception>?>(Task.FromResult<Outcome<Exception>?>(null))
         };
 
-        var sut = new ResiliencePipelineBuilder().AddFault(options).Build();
+        var sut = new ResiliencePipelineBuilder().AddChaosFault(options).Build();
         sut.Execute(_ =>
         {
             userDelegateExecuted = true;
@@ -226,6 +238,7 @@ public class OutcomeChaosStrategyTests
     [Fact]
     public async Task Given_enabled_and_randomly_within_threshold_should_inject_result()
     {
+        var onResultInjected = false;
         var userDelegateExecuted = false;
         var fakeResult = HttpStatusCode.TooManyRequests;
 
@@ -234,7 +247,14 @@ public class OutcomeChaosStrategyTests
             InjectionRate = 0.6,
             Enabled = true,
             Randomizer = () => 0.5,
-            Outcome = new Outcome<HttpStatusCode>(fakeResult)
+            Outcome = new Outcome<HttpStatusCode>(fakeResult),
+            OnOutcomeInjected = args =>
+            {
+                args.Context.Should().NotBeNull();
+                args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
+                onResultInjected = true;
+                return default;
+            }
         };
 
         var sut = CreateSut(options);
@@ -246,6 +266,11 @@ public class OutcomeChaosStrategyTests
 
         response.Should().Be(fakeResult);
         userDelegateExecuted.Should().BeFalse();
+
+        _args.Should().HaveCount(1);
+        _args[0].Arguments.Should().BeOfType<OutcomeArguments<HttpStatusCode, OnOutcomeInjectedArguments>>();
+        _args[0].Event.EventName.Should().Be(OutcomeConstants.OnOutcomeInjectedEvent);
+        onResultInjected.Should().BeTrue();
     }
 
     [Fact]

@@ -5,7 +5,7 @@ namespace Polly.Simmy.Outcomes;
 /// <summary>
 /// Extension methods for adding outcome to a <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
-public static partial class OutcomeResiliencePipelineBuilderExtensions
+public static partial class OutcomeChaosPipelineBuilderExtensions
 {
     /// <summary>
     /// Adds a fault chaos strategy to the builder.
@@ -16,7 +16,7 @@ public static partial class OutcomeResiliencePipelineBuilderExtensions
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
     /// <param name="fault">The exception to inject.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder<TResult> AddFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Exception fault)
+    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Exception fault)
     {
         Guard.NotNull(builder);
 
@@ -38,7 +38,7 @@ public static partial class OutcomeResiliencePipelineBuilderExtensions
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
     /// <param name="faultGenerator">The exception generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder<TResult> AddFault<TResult>(
+    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(
         this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<Exception>?>> faultGenerator)
     {
         Guard.NotNull(builder);
@@ -59,7 +59,7 @@ public static partial class OutcomeResiliencePipelineBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The fault strategy options.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder<TResult> AddFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, OutcomeStrategyOptions<Exception> options)
+    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, OutcomeStrategyOptions<Exception> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -77,7 +77,7 @@ public static partial class OutcomeResiliencePipelineBuilderExtensions
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
     /// <param name="result">The outcome to inject.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder<TResult> AddResult<TResult>(this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, TResult result)
+    public static ResiliencePipelineBuilder<TResult> AddChaosResult<TResult>(this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, TResult result)
     {
         Guard.NotNull(builder);
 
@@ -99,7 +99,7 @@ public static partial class OutcomeResiliencePipelineBuilderExtensions
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
     /// <param name="outcomeGenerator">The outcome generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder<TResult> AddResult<TResult>(
+    public static ResiliencePipelineBuilder<TResult> AddChaosResult<TResult>(
         this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<TResult>?>> outcomeGenerator)
     {
         Guard.NotNull(builder);
@@ -120,7 +120,7 @@ public static partial class OutcomeResiliencePipelineBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The outcome strategy options.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder<TResult> AddResult<TResult>(this ResiliencePipelineBuilder<TResult> builder, OutcomeStrategyOptions<TResult> options)
+    public static ResiliencePipelineBuilder<TResult> AddChaosResult<TResult>(this ResiliencePipelineBuilder<TResult> builder, OutcomeStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);

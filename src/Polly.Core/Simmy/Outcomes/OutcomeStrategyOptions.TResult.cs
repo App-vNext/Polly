@@ -14,7 +14,7 @@ public class OutcomeStrategyOptions<TResult> : MonkeyStrategyOptions
     /// <remarks>
     /// Defaults to <see langword="null"/>.
     /// </remarks>
-    public Func<OutcomeArguments<TResult, OutcomeGeneratorArguments>, ValueTask>? OnOutcomeInjected { get; set; }
+    public Func<OutcomeArguments<TResult, OnOutcomeInjectedArguments>, ValueTask>? OnOutcomeInjected { get; set; }
 
     /// <summary>
     /// Gets or sets the outcome generator to be injected for a given execution.

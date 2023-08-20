@@ -4,7 +4,7 @@ using Polly.Testing;
 
 namespace Polly.Core.Tests.Simmy.Behavior;
 
-public class BehaviorCompositeBuilderExtensionsTests
+public class BehaviorChaosPipelineBuilderExtensionsTests
 {
     public static IEnumerable<object[]> AddBehavior_Ok_Data()
     {
@@ -12,7 +12,7 @@ public class BehaviorCompositeBuilderExtensionsTests
         Func<ValueTask> behavior = () => new ValueTask(Task.CompletedTask);
         yield return new object[]
         {
-            (ResiliencePipelineBuilder<int> builder) => { builder.AddBehavior(true, 0.5, behavior); },
+            (ResiliencePipelineBuilder<int> builder) => { builder.AddChaosBehavior(true, 0.5, behavior); },
             (BehaviorChaosStrategy strategy) =>
             {
                 strategy.Behavior!.Invoke(new(context)).Preserve().GetAwaiter().IsCompleted.Should().BeTrue();
@@ -25,7 +25,7 @@ public class BehaviorCompositeBuilderExtensionsTests
     [Fact]
     public void AddBehavior_Shortcut_Option_Ok()
     {
-        var sut = new ResiliencePipelineBuilder().AddBehavior(true, 0.5, () => new ValueTask(Task.CompletedTask)).Build();
+        var sut = new ResiliencePipelineBuilder().AddChaosBehavior(true, 0.5, () => new ValueTask(Task.CompletedTask)).Build();
         sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>();
     }
 
@@ -33,7 +33,7 @@ public class BehaviorCompositeBuilderExtensionsTests
     public void AddBehavior_Shortcut_Option_Throws()
     {
         new ResiliencePipelineBuilder()
-            .Invoking(b => b.AddBehavior(true, -1, () => new ValueTask(Task.CompletedTask)))
+            .Invoking(b => b.AddChaosBehavior(true, -1, () => new ValueTask(Task.CompletedTask)))
             .Should()
             .Throw<ValidationException>();
     }
@@ -42,7 +42,7 @@ public class BehaviorCompositeBuilderExtensionsTests
     public void AddBehavior_InvalidOptions_Throws()
     {
         new ResiliencePipelineBuilder()
-            .Invoking(b => b.AddBehavior(new BehaviorStrategyOptions()))
+            .Invoking(b => b.AddChaosBehavior(new BehaviorStrategyOptions()))
             .Should()
             .Throw<ValidationException>();
     }
@@ -51,7 +51,7 @@ public class BehaviorCompositeBuilderExtensionsTests
     public void AddBehavior_Options_Ok()
     {
         var sut = new ResiliencePipelineBuilder()
-            .AddBehavior(new BehaviorStrategyOptions
+            .AddChaosBehavior(new BehaviorStrategyOptions
             {
                 Enabled = true,
                 InjectionRate = 1,

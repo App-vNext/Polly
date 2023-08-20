@@ -36,9 +36,9 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
         OutcomeGenerator = options.OutcomeGenerator is not null ? options.OutcomeGenerator : (_) => new(options.Outcome);
     }
 
-    public Func<OutcomeArguments<T, OutcomeGeneratorArguments>, ValueTask>? OnOutcomeInjected { get; }
+    public Func<OutcomeArguments<T, OnOutcomeInjectedArguments>, ValueTask>? OnOutcomeInjected { get; }
 
-    public Func<OutcomeArguments<Exception, OutcomeGeneratorArguments>, ValueTask>? OnFaultInjected { get; }
+    public Func<OutcomeArguments<Exception, OnOutcomeInjectedArguments>, ValueTask>? OnFaultInjected { get; }
 
     public Func<OutcomeGeneratorArguments, ValueTask<Outcome<T>?>>? OutcomeGenerator { get; }
 
@@ -86,9 +86,8 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
 
     private async ValueTask<Outcome<T>?> InjectOutcome(ResilienceContext context)
     {
-        var outcomeGeneratorArgs = new OutcomeGeneratorArguments(context);
-        var outcome = await OutcomeGenerator!(outcomeGeneratorArgs).ConfigureAwait(context.ContinueOnCapturedContext);
-        var args = new OutcomeArguments<T, OutcomeGeneratorArguments>(context, outcome.Value, outcomeGeneratorArgs);
+        var outcome = await OutcomeGenerator!(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
+        var args = new OutcomeArguments<T, OnOutcomeInjectedArguments>(context, outcome.Value, new(context));
         _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnOutcomeInjectedEvent), context, args);
 
         if (OnOutcomeInjected is not null)
@@ -103,8 +102,7 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
     {
         try
         {
-            var outcomeGeneratorArgs = new OutcomeGeneratorArguments(context);
-            var fault = await FaultGenerator!(outcomeGeneratorArgs).ConfigureAwait(context.ContinueOnCapturedContext);
+            var fault = await FaultGenerator!(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
             if (!fault.HasValue)
             {
                 return null;
@@ -114,7 +112,7 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
             context.CancellationToken.ThrowIfCancellationRequested();
 
             Outcome = new(fault.Value.Exception!);
-            var args = new OutcomeArguments<Exception, OutcomeGeneratorArguments>(context, new Outcome<Exception>(fault.Value.Exception!), outcomeGeneratorArgs);
+            var args = new OutcomeArguments<Exception, OnOutcomeInjectedArguments>(context, new Outcome<Exception>(fault.Value.Exception!), new(context));
             _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnFaultInjectedEvent), context, args);
 
             if (OnFaultInjected is not null)

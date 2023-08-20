@@ -13,12 +13,12 @@ internal sealed class BehaviorChaosStrategy : MonkeyStrategy
     {
         _telemetry = telemetry;
         OnBehaviorInjected = options.OnBehaviorInjected;
-        Behavior = options.BehaviorAction;
+        Behavior = options.BehaviorAction!;
     }
 
     public Func<OnBehaviorInjectedArguments, ValueTask>? OnBehaviorInjected { get; }
 
-    public Func<BehaviorActionArguments, ValueTask>? Behavior { get; }
+    public Func<BehaviorActionArguments, ValueTask> Behavior { get; }
 
     protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

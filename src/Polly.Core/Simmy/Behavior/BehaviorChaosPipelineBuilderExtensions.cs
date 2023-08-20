@@ -6,7 +6,7 @@ namespace Polly.Simmy.Behavior;
 /// <summary>
 /// Extension methods for adding custom behaviors to a <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
-public static class BehaviorResiliencePipelineBuilderExtensions
+public static class BehaviorChaosPipelineBuilderExtensions
 
 {
     /// <summary>
@@ -20,12 +20,12 @@ public static class BehaviorResiliencePipelineBuilderExtensions
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
-    public static TBuilder AddBehavior<TBuilder>(this TBuilder builder, bool enabled, double injectionRate, Func<ValueTask> behavior)
+    public static TBuilder AddChaosBehavior<TBuilder>(this TBuilder builder, bool enabled, double injectionRate, Func<ValueTask> behavior)
         where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
 
-        return builder.AddBehavior(new BehaviorStrategyOptions
+        return builder.AddChaosBehavior(new BehaviorStrategyOptions
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
@@ -46,7 +46,7 @@ public static class BehaviorResiliencePipelineBuilderExtensions
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    public static TBuilder AddBehavior<TBuilder>(this TBuilder builder, BehaviorStrategyOptions options)
+    public static TBuilder AddChaosBehavior<TBuilder>(this TBuilder builder, BehaviorStrategyOptions options)
         where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);

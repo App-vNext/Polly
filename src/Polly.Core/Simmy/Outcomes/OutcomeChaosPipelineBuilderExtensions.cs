@@ -5,7 +5,7 @@ namespace Polly.Simmy.Outcomes;
 /// <summary>
 /// Extension methods for adding outcome to a <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
-public static partial class OutcomeResiliencePipelineBuilderExtensions
+public static partial class OutcomeChaosPipelineBuilderExtensions
 {
     /// <summary>
     /// Adds a fault chaos strategy to the builder.
@@ -15,7 +15,7 @@ public static partial class OutcomeResiliencePipelineBuilderExtensions
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
     /// <param name="fault">The exception to inject.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder AddFault(this ResiliencePipelineBuilder builder, bool enabled, double injectionRate, Exception fault)
+    public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, bool enabled, double injectionRate, Exception fault)
     {
         Guard.NotNull(builder);
 
@@ -36,7 +36,7 @@ public static partial class OutcomeResiliencePipelineBuilderExtensions
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
     /// <param name="faultGenerator">The exception generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder AddFault(
+    public static ResiliencePipelineBuilder AddChaosFault(
         this ResiliencePipelineBuilder builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<Exception>?>> faultGenerator)
     {
         Guard.NotNull(builder);
@@ -56,7 +56,7 @@ public static partial class OutcomeResiliencePipelineBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The fault strategy options.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder AddFault(this ResiliencePipelineBuilder builder, OutcomeStrategyOptions<Exception> options)
+    public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, OutcomeStrategyOptions<Exception> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);

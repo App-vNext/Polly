@@ -4,13 +4,13 @@ using Polly.Testing;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
 
-public class OutcomeCompositeBuilderExtensionsTests
+public class OutcomeChaosPipelineBuilderExtensionsTests
 {
     public static readonly TheoryData<Action<ResiliencePipelineBuilder<int>>> ResultStrategy = new()
     {
         builder =>
         {
-            builder.AddResult(new OutcomeStrategyOptions<int>
+            builder.AddChaosResult(new OutcomeStrategyOptions<int>
             {
                 InjectionRate = 0.6,
                 Enabled = true,
@@ -26,7 +26,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     {
         builder =>
         {
-            builder.AddFault<string>(new OutcomeStrategyOptions<Exception>
+            builder.AddChaosFault<string>(new OutcomeStrategyOptions<Exception>
             {
                 InjectionRate = 0.6,
                 Enabled = true,
@@ -42,7 +42,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     {
         builder =>
         {
-            builder.AddFault(new OutcomeStrategyOptions<Exception>
+            builder.AddChaosFault(new OutcomeStrategyOptions<Exception>
             {
                 InjectionRate = 0.6,
                 Enabled = true,
@@ -145,7 +145,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     {
         var builder = new ResiliencePipelineBuilder<int>();
         builder
-            .AddResult(true, 0.5, 120)
+            .AddChaosResult(true, 0.5, 120)
             .Build();
 
         AssertResultStrategy(builder, true, 0.5, new(120));
@@ -155,7 +155,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     public void AddResult_Shortcut_Option_Throws()
     {
         new ResiliencePipelineBuilder<int>()
-            .Invoking(b => b.AddResult(true, -1, () => new ValueTask<Outcome<int>?>(new Outcome<int>(120))))
+            .Invoking(b => b.AddChaosResult(true, -1, () => new ValueTask<Outcome<int>?>(new Outcome<int>(120))))
             .Should()
             .Throw<ValidationException>();
     }
@@ -165,7 +165,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     {
         var builder = new ResiliencePipelineBuilder();
         builder
-            .AddFault(true, 0.5, new InvalidOperationException("Dummy exception"))
+            .AddChaosFault(true, 0.5, new InvalidOperationException("Dummy exception"))
             .Build();
 
         AssertFaultStrategy<InvalidOperationException>(builder, true, 0.5, new InvalidOperationException("Dummy exception"));
@@ -175,7 +175,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     public void AddFault_Shortcut_Option_Throws()
     {
         new ResiliencePipelineBuilder<int>()
-            .Invoking(b => b.AddFault(
+            .Invoking(b => b.AddChaosFault(
                 true,
                 1.5,
                 () => new ValueTask<Outcome<Exception>?>(new Outcome<Exception>(new InvalidOperationException()))))
@@ -188,7 +188,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     {
         var builder = new ResiliencePipelineBuilder<string>();
         builder
-            .AddFault(true, 0.5, new InvalidOperationException("Dummy exception"))
+            .AddChaosFault(true, 0.5, new InvalidOperationException("Dummy exception"))
             .Build();
 
         AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.5, new InvalidOperationException("Dummy exception"));
@@ -198,7 +198,7 @@ public class OutcomeCompositeBuilderExtensionsTests
     public void AddFault_Generic_Shortcut_Option_Throws()
     {
         new ResiliencePipelineBuilder<int>()
-            .Invoking(b => b.AddFault(true, -1, new InvalidOperationException()))
+            .Invoking(b => b.AddChaosFault(true, -1, new InvalidOperationException()))
             .Should()
             .Throw<ValidationException>();
     }
