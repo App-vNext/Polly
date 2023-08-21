@@ -126,15 +126,13 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
         var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _instanceNameFormatter?.Invoke(key));
 
-#if NETCOREAPP3_0_OR_GREATER
         return _pipelines.GetOrAdd(key, static (_, factory) =>
         {
-            return new ResiliencePipeline(CreatePipelineComponent(factory.instance._activator, factory.context, factory.configure), DisposeBehavior.Reject);
+            var component = CreatePipelineComponent(factory.instance._activator, factory.context, factory.configure);
+
+            return new ResiliencePipeline(component, DisposeBehavior.Reject);
         },
         (instance: this, context, configure));
-#else
-        return _pipelines.GetOrAdd(key, _ => new ResiliencePipeline(CreatePipelineComponent(_activator, context, configure), DisposeBehavior.Reject));
-#endif
     }
 
     /// <summary>

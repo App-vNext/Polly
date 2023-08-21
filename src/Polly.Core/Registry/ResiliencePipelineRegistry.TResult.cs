@@ -9,7 +9,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     {
         private readonly Func<ResiliencePipelineBuilder<TResult>> _activator;
         private readonly ConcurrentDictionary<TKey, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>>> _builders;
-        private readonly ConcurrentDictionary<TKey, ResiliencePipeline<TResult>> _strategies;
+        private readonly ConcurrentDictionary<TKey, ResiliencePipeline<TResult>> _pipelines;
 
         private readonly Func<TKey, string> _builderNameFormatter;
         private readonly Func<TKey, string>? _instanceNameFormatter;
@@ -23,14 +23,14 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
         {
             _activator = activator;
             _builders = new ConcurrentDictionary<TKey, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>>>(builderComparer);
-            _strategies = new ConcurrentDictionary<TKey, ResiliencePipeline<TResult>>(strategyComparer);
+            _pipelines = new ConcurrentDictionary<TKey, ResiliencePipeline<TResult>>(strategyComparer);
             _builderNameFormatter = builderNameFormatter;
             _instanceNameFormatter = instanceNameFormatter;
         }
 
         public bool TryGet(TKey key, [NotNullWhen(true)] out ResiliencePipeline<TResult>? strategy)
         {
-            if (_strategies.TryGetValue(key, out strategy))
+            if (_pipelines.TryGetValue(key, out strategy))
             {
                 return true;
             }
@@ -49,37 +49,35 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
         {
             var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _instanceNameFormatter?.Invoke(key));
 
-#if NETCOREAPP3_0_OR_GREATER
-            return _strategies.GetOrAdd(key, static (_, factory) =>
+            return _pipelines.GetOrAdd(key, static (_, factory) =>
             {
-                return new ResiliencePipeline<TResult>(CreatePipelineComponent(factory.instance._activator, factory.context, factory.configure), DisposeBehavior.Reject);
+                var component = CreatePipelineComponent(factory.instance._activator, factory.context, factory.configure);
+
+                return new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject);
             },
             (instance: this, context, configure));
-#else
-            return _strategies.GetOrAdd(key, _ => new ResiliencePipeline<TResult>(CreatePipelineComponent(_activator, context, configure), DisposeBehavior.Reject));
-#endif
         }
 
         public bool TryAddBuilder(TKey key, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);
 
         public void Dispose()
         {
-            foreach (var strategy in _strategies.Values)
+            foreach (var strategy in _pipelines.Values)
             {
                 strategy.DisposeHelper.ForceDispose();
             }
 
-            _strategies.Clear();
+            _pipelines.Clear();
         }
 
         public async ValueTask DisposeAsync()
         {
-            foreach (var strategy in _strategies.Values)
+            foreach (var strategy in _pipelines.Values)
             {
                 await strategy.DisposeHelper.ForceDisposeAsync().ConfigureAwait(false);
             }
 
-            _strategies.Clear();
+            _pipelines.Clear();
         }
     }
 }
