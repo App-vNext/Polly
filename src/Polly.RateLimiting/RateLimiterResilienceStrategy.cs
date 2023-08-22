@@ -45,12 +45,12 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy, IDispo
             retryAfter = retryAfterValue;
         }
 
-        var args = new OnRateLimiterRejectedArguments(context, lease, retryAfter);
+        var args = new OnRateLimiterRejectedArguments(context, lease);
         _telemetry.Report(new(ResilienceEventSeverity.Error, RateLimiterConstants.OnRateLimiterRejectedEvent), context, args);
 
         if (OnLeaseRejected != null)
         {
-            await OnLeaseRejected(new OnRateLimiterRejectedArguments(context, lease, retryAfter)).ConfigureAwait(context.ContinueOnCapturedContext);
+            await OnLeaseRejected(new OnRateLimiterRejectedArguments(context, lease)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
         var exception = retryAfter.HasValue ? new RateLimiterRejectedException(retryAfter.Value) : new RateLimiterRejectedException();

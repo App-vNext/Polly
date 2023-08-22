@@ -114,7 +114,7 @@ public abstract class ResiliencePipelineBuilderBase
 
         if (components.Count == 0)
         {
-            return PipelineComponent.Null;
+            return PipelineComponent.Empty;
         }
 
         var source = new ResilienceTelemetrySource(Name, InstanceName, null);

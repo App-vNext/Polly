@@ -134,11 +134,8 @@ Polly.Outcome
 Polly.Outcome<TResult>
 Polly.Outcome<TResult>.EnsureSuccess() -> void
 Polly.Outcome<TResult>.Exception.get -> System.Exception?
-Polly.Outcome<TResult>.HasResult.get -> bool
-Polly.Outcome<TResult>.IsVoidResult.get -> bool
 Polly.Outcome<TResult>.Outcome() -> void
 Polly.Outcome<TResult>.Result.get -> TResult?
-Polly.Outcome<TResult>.TryGetResult(out TResult? result) -> bool
 Polly.OutcomeArguments<TResult, TArgs>
 Polly.OutcomeArguments<TResult, TArgs>.Arguments.get -> TArgs
 Polly.OutcomeArguments<TResult, TArgs>.Context.get -> Polly.ResilienceContext!
@@ -193,7 +190,6 @@ Polly.ResilienceContext.CancellationToken.get -> System.Threading.CancellationTo
 Polly.ResilienceContext.ContinueOnCapturedContext.get -> bool
 Polly.ResilienceContext.OperationKey.get -> string?
 Polly.ResilienceContext.Properties.get -> Polly.ResilienceProperties!
-Polly.ResilienceContext.ResilienceEvents.get -> System.Collections.Generic.IReadOnlyList<Polly.Telemetry.ResilienceEvent>!
 Polly.ResilienceContextCreationArguments
 Polly.ResilienceContextCreationArguments.CancellationToken.get -> System.Threading.CancellationToken
 Polly.ResilienceContextCreationArguments.ContinueOnCapturedContext.get -> bool?
@@ -406,7 +402,7 @@ static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry(this Polly.Resili
 static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Retry.RetryStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, Polly.Timeout.TimeoutStrategyOptions! options) -> TBuilder!
 static Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, System.TimeSpan timeout) -> TBuilder!
-static readonly Polly.ResiliencePipeline.Null -> Polly.ResiliencePipeline!
-static readonly Polly.ResiliencePipeline<T>.Null -> Polly.ResiliencePipeline<T>!
+static readonly Polly.ResiliencePipeline.Empty -> Polly.ResiliencePipeline!
+static readonly Polly.ResiliencePipeline<T>.Empty -> Polly.ResiliencePipeline<T>!
 virtual Polly.Registry.ResiliencePipelineProvider<TKey>.GetPipeline(TKey key) -> Polly.ResiliencePipeline!
 virtual Polly.Registry.ResiliencePipelineProvider<TKey>.GetPipeline<TResult>(TKey key) -> Polly.ResiliencePipeline<TResult>!

@@ -13,23 +13,23 @@ public partial class ResiliencePipelineTests
     [Fact]
     public async Task Dispose_NullPipeline_OK()
     {
-        ResiliencePipeline.Null.DisposeHelper.Dispose();
-        ResiliencePipeline.Null.DisposeHelper.Dispose();
-        await ResiliencePipeline.Null.DisposeHelper.DisposeAsync();
-        await ResiliencePipeline.Null.DisposeHelper.DisposeAsync();
+        ResiliencePipeline.Empty.DisposeHelper.Dispose();
+        ResiliencePipeline.Empty.DisposeHelper.Dispose();
+        await ResiliencePipeline.Empty.DisposeHelper.DisposeAsync();
+        await ResiliencePipeline.Empty.DisposeHelper.DisposeAsync();
 
-        ResiliencePipeline.Null.Execute(() => 1).Should().Be(1);
+        ResiliencePipeline.Empty.Execute(() => 1).Should().Be(1);
     }
 
     [Fact]
     public async Task Dispose_NullGenericPipeline_OK()
     {
-        ResiliencePipeline<int>.Null.DisposeHelper.Dispose();
-        ResiliencePipeline<int>.Null.DisposeHelper.Dispose();
-        await ResiliencePipeline<int>.Null.DisposeHelper.DisposeAsync();
-        await ResiliencePipeline<int>.Null.DisposeHelper.DisposeAsync();
+        ResiliencePipeline<int>.Empty.DisposeHelper.Dispose();
+        ResiliencePipeline<int>.Empty.DisposeHelper.Dispose();
+        await ResiliencePipeline<int>.Empty.DisposeHelper.DisposeAsync();
+        await ResiliencePipeline<int>.Empty.DisposeHelper.DisposeAsync();
 
-        ResiliencePipeline.Null.Execute(() => 1).Should().Be(1);
+        ResiliencePipeline.Empty.Execute(() => 1).Should().Be(1);
     }
 
     [Fact]
@@ -78,8 +78,8 @@ public partial class ResiliencePipelineTests
     [Fact]
     public void Null_Ok()
     {
-        ResiliencePipeline.Null.Should().NotBeNull();
-        ResiliencePipeline<string>.Null.Should().NotBeNull();
+        ResiliencePipeline.Empty.Should().NotBeNull();
+        ResiliencePipeline<string>.Empty.Should().NotBeNull();
     }
 
     [Fact]

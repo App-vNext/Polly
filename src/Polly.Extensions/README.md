@@ -130,7 +130,6 @@ Dimensions:
 |`pipeline-instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
 |`operation-key`| The operation key associated with the call site. |
 |`exception-name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
-|`execution-health`| Indicates whether the execution was healthy or not (`Healthy`, `Unhealthy`). |
 
 ### Logs
 

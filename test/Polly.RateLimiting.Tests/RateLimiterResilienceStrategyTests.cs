@@ -63,7 +63,6 @@ public class RateLimiterResilienceStrategyTests
             {
                 args.Context.Should().NotBeNull();
                 args.Lease.Should().Be(_lease);
-                args.RetryAfter.Should().Be((TimeSpan?)metadata);
                 eventCalled = true;
                 return default;
             };

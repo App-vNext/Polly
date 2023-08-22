@@ -33,8 +33,6 @@ public sealed class ResilienceStrategyTelemetry
     {
         Guard.NotNull(context);
 
-        context.AddResilienceEvent(resilienceEvent);
-
         if (Listener is null || resilienceEvent.Severity == ResilienceEventSeverity.None)
         {
             return;
@@ -52,8 +50,6 @@ public sealed class ResilienceStrategyTelemetry
     /// <param name="args">The event arguments.</param>
     public void Report<TArgs, TResult>(ResilienceEvent resilienceEvent, OutcomeArguments<TResult, TArgs> args)
     {
-        args.Context.AddResilienceEvent(resilienceEvent);
-
         if (Listener is null || resilienceEvent.Severity == ResilienceEventSeverity.None)
         {
             return;

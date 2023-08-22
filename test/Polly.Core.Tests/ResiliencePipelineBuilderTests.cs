@@ -108,8 +108,8 @@ public class ResiliencePipelineBuilderTests
         // arrange
         var executions = new List<int>();
         var builder = new ResiliencePipelineBuilder()
-            .AddPipeline(ResiliencePipeline.Null)
-            .AddPipeline(ResiliencePipeline.Null);
+            .AddPipeline(ResiliencePipeline.Empty)
+            .AddPipeline(ResiliencePipeline.Empty);
 
         builder.Invoking(b => b.Build())
             .Should()
@@ -174,7 +174,7 @@ public class ResiliencePipelineBuilderTests
     }
 
     [Fact]
-    public void Build_Empty_ReturnsNullResiliencePipeline() => new ResiliencePipelineBuilder().Build().Component.Should().BeSameAs(PipelineComponent.Null);
+    public void Build_Empty_ReturnsNullResiliencePipeline() => new ResiliencePipelineBuilder().Build().Component.Should().BeSameAs(PipelineComponent.Empty);
 
     [Fact]
     public void AddPipeline_AfterUsed_Throws()
@@ -184,7 +184,7 @@ public class ResiliencePipelineBuilderTests
         builder.Build();
 
         builder
-            .Invoking(b => b.AddPipeline(ResiliencePipeline.Null))
+            .Invoking(b => b.AddPipeline(ResiliencePipeline.Empty))
             .Should()
             .Throw<InvalidOperationException>()
             .WithMessage("Cannot add any more resilience strategies to the builder after it has been used to build a pipeline once.");

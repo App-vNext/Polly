@@ -4,8 +4,7 @@ Polly.RateLimiting.OnRateLimiterRejectedArguments
 Polly.RateLimiting.OnRateLimiterRejectedArguments.Context.get -> Polly.ResilienceContext!
 Polly.RateLimiting.OnRateLimiterRejectedArguments.Lease.get -> System.Threading.RateLimiting.RateLimitLease!
 Polly.RateLimiting.OnRateLimiterRejectedArguments.OnRateLimiterRejectedArguments() -> void
-Polly.RateLimiting.OnRateLimiterRejectedArguments.OnRateLimiterRejectedArguments(Polly.ResilienceContext! context, System.Threading.RateLimiting.RateLimitLease! lease, System.TimeSpan? retryAfter) -> void
-Polly.RateLimiting.OnRateLimiterRejectedArguments.RetryAfter.get -> System.TimeSpan?
+Polly.RateLimiting.OnRateLimiterRejectedArguments.OnRateLimiterRejectedArguments(Polly.ResilienceContext! context, System.Threading.RateLimiting.RateLimitLease! lease) -> void
 Polly.RateLimiting.RateLimiterRejectedException
 Polly.RateLimiting.RateLimiterRejectedException.RateLimiterRejectedException() -> void
 Polly.RateLimiting.RateLimiterRejectedException.RateLimiterRejectedException(string! message) -> void

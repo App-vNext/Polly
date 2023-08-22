@@ -68,9 +68,9 @@ public class CompositePipelineComponentTests
 
         var pipeline = CreateSut(components);
 
-        CreateSut(new PipelineComponent[] { PipelineComponent.Null, pipeline });
+        CreateSut(new PipelineComponent[] { PipelineComponent.Empty, pipeline });
 
-        this.Invoking(_ => CreateSut(new PipelineComponent[] { PipelineComponent.Null, pipeline }))
+        this.Invoking(_ => CreateSut(new PipelineComponent[] { PipelineComponent.Empty, pipeline }))
             .Should()
             .NotThrow();
     }
@@ -124,22 +124,6 @@ public class CompositePipelineComponentTests
         _listener.Events.Should().HaveCount(2);
         _listener.GetArgs<PipelineExecutingArguments>().Should().HaveCount(1);
         _listener.GetArgs<PipelineExecutedArguments>().Should().HaveCount(1);
-    }
-
-    [Fact]
-    public void ExecutePipeline_TelemetryNotEnabled_NoEventsReported()
-    {
-        var component = PipelineComponentFactory.CreateComposite(
-            new[] { Substitute.For<PipelineComponent>() },
-            new ResilienceStrategyTelemetry(_telemetry.TelemetrySource, null),
-            Substitute.For<TimeProvider>());
-
-        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Allow);
-        var context = ResilienceContextPool.Shared.Get();
-
-        pipeline.Execute(_ => { }, context);
-
-        context.ResilienceEvents.Should().BeEmpty();
     }
 
     [Fact]
