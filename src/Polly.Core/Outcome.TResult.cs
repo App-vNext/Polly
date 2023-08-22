@@ -44,12 +44,12 @@ public readonly struct Outcome<TResult>
     /// <remarks>
     /// Returns <see langword="true"/> even if the result is void. Use <see cref="IsVoidResult"/> to check for void results.
     /// </remarks>
-    public bool HasResult => ExceptionDispatchInfo is null;
+    internal bool HasResult => ExceptionDispatchInfo is null;
 
     /// <summary>
     /// Gets a value indicating whether the operation produced a void result.
     /// </summary>
-    public bool IsVoidResult => Result is VoidResult;
+    internal bool IsVoidResult => Result is VoidResult;
 
     /// <summary>
     /// Throws an exception if the operation produced an exception.
@@ -64,7 +64,7 @@ public readonly struct Outcome<TResult>
     /// </summary>
     /// <param name="result">Output parameter for the result.</param>
     /// <returns><see langword="true"/> if the result is available; <see langword="false"/> otherwise.</returns>
-    public bool TryGetResult(out TResult? result)
+    internal bool TryGetResult(out TResult? result)
     {
         if (HasResult && !IsVoidResult)
         {

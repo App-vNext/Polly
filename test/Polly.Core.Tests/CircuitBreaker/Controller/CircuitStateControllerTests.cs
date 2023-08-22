@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Polly.CircuitBreaker;
-using Polly.Telemetry;
 
 namespace Polly.Core.Tests.CircuitBreaker.Controller;
 
@@ -11,7 +10,7 @@ public class CircuitStateControllerTests
 
     private readonly CircuitBreakerStrategyOptions<int> _options = new();
     private readonly CircuitBehavior _circuitBehavior = Substitute.For<CircuitBehavior>();
-    private readonly Action<TelemetryEventArguments<object, object>> _onTelemetry = _ => { };
+    private readonly FakeTelemetryListener _telemetryListener = new();
 
     [Fact]
     public void Ctor_EnsureDefaults()
@@ -60,7 +59,7 @@ public class CircuitStateControllerTests
         await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
 
         _circuitBehavior.Received().OnCircuitClosed();
-        context.ResilienceEvents.Should().Contain(new ResilienceEvent(ResilienceEventSeverity.Error, "OnCircuitOpened"));
+        _telemetryListener.GetArgs<OnCircuitOpenedArguments>().Should().NotBeEmpty();
     }
 
     [Fact]
@@ -93,7 +92,7 @@ public class CircuitStateControllerTests
 
         await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
         _circuitBehavior.Received().OnCircuitClosed();
-        context.ResilienceEvents.Should().Contain(new ResilienceEvent(ResilienceEventSeverity.Information, "OnCircuitClosed"));
+        _telemetryListener.GetArgs<OnCircuitClosedArguments>().Should().NotBeEmpty();
     }
 
     [Fact]
@@ -467,5 +466,5 @@ public class CircuitStateControllerTests
         _options.OnHalfOpened,
         _circuitBehavior,
         _timeProvider,
-        TestUtilities.CreateResilienceTelemetry(_onTelemetry.Invoke));
+        TestUtilities.CreateResilienceTelemetry(_telemetryListener));
 }

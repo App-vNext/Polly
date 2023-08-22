@@ -111,9 +111,9 @@ public class ReloadablePipelineComponentTests : IDisposable
 
     private ReloadableComponent CreateSut(PipelineComponent? initial = null, Func<PipelineComponent>? factory = null)
     {
-        factory ??= () => PipelineComponent.Null;
+        factory ??= () => PipelineComponent.Empty;
 
-        return (ReloadableComponent)PipelineComponentFactory.CreateReloadable(initial ?? PipelineComponent.Null,
+        return (ReloadableComponent)PipelineComponentFactory.CreateReloadable(initial ?? PipelineComponent.Empty,
             () => _cancellationTokenSource.Token,
             factory,
             _telemetry);

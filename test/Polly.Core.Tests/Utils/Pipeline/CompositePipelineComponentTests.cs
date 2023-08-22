@@ -68,9 +68,9 @@ public class CompositePipelineComponentTests
 
         var pipeline = CreateSut(components);
 
-        CreateSut(new PipelineComponent[] { PipelineComponent.Null, pipeline });
+        CreateSut(new PipelineComponent[] { PipelineComponent.Empty, pipeline });
 
-        this.Invoking(_ => CreateSut(new PipelineComponent[] { PipelineComponent.Null, pipeline }))
+        this.Invoking(_ => CreateSut(new PipelineComponent[] { PipelineComponent.Empty, pipeline }))
             .Should()
             .NotThrow();
     }

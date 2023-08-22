@@ -207,14 +207,6 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
         if (Tasks.FirstOrDefault(static t => t.IsAccepted) is TaskExecution<T> acceptedExecution)
         {
             originalContext.Properties.Replace(acceptedExecution.Properties);
-
-            if (acceptedExecution.Type == HedgedTaskType.Secondary)
-            {
-                foreach (var @event in acceptedExecution.Context.ResilienceEvents)
-                {
-                    originalContext.AddResilienceEvent(@event);
-                }
-            }
         }
     }
 

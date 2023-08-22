@@ -1,20 +1,7 @@
-using Polly.Telemetry;
-
 namespace Polly.Core.Tests;
 
 public class ResilienceContextTests
 {
-    [Fact]
-    public void AddResilienceEvent_Ok()
-    {
-        var context = ResilienceContextPool.Shared.Get();
-
-        context.AddResilienceEvent(new ResilienceEvent(ResilienceEventSeverity.Information, "Dummy"));
-
-        context.ResilienceEvents.Should().HaveCount(1);
-        context.ResilienceEvents.Should().Contain(new ResilienceEvent(ResilienceEventSeverity.Information, "Dummy"));
-    }
-
     [InlineData(true)]
     [InlineData(false)]
     [Theory]

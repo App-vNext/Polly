@@ -109,7 +109,6 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
             var tags = TagsList.Get();
             var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
             UpdateEnrichmentContext(in context);
-            tags.Tags.Add(new(ResilienceTelemetryTags.ExecutionHealth, args.Context.GetExecutionHealth()));
             ExecutionDuration.Record(executionFinished.Duration.TotalMilliseconds, tags.TagsSpan);
             TagsList.Return(tags);
         }
@@ -165,15 +164,12 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
         }
         else if (GetArgs<TArgs, PipelineExecutedArguments>(args.Arguments, out var pipelineExecuted))
         {
-            var logLevel = args.Context.IsExecutionHealthy() ? LogLevel.Debug : LogLevel.Warning;
-
             _logger.PipelineExecuted(
-                logLevel,
+                LogLevel.Debug,
                 args.Source.PipelineName.GetValueOrPlaceholder(),
                 args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
                 args.Context.OperationKey,
                 GetResult(args.Context, args.Outcome),
-                args.Context.GetExecutionHealth(),
                 pipelineExecuted.Duration.TotalMilliseconds,
                 args.Outcome?.Exception);
         }

@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Polly.Telemetry;
 
 namespace Polly;
 
@@ -14,8 +13,6 @@ namespace Polly;
 /// </remarks>
 public sealed class ResilienceContext
 {
-    private readonly List<ResilienceEvent> _resilienceEvents = new();
-
     internal ResilienceContext()
     {
     }
@@ -66,15 +63,6 @@ public sealed class ResilienceContext
     /// </summary>
     public ResilienceProperties Properties { get; internal set; } = new();
 
-    /// <summary>
-    /// Gets the collection of resilience events that occurred while executing the resilience strategy.
-    /// </summary>
-    /// <remarks>
-    /// If the number of resilience events with severity greater than <see cref="ResilienceEventSeverity.Information"/> is greater than zero it's an indication that the execution was unhealthy.
-    /// Note that the number of reported events depends on whether telemetry is enabled for the pipeline or not.
-    /// </remarks>
-    public IReadOnlyList<ResilienceEvent> ResilienceEvents => _resilienceEvents;
-
     internal void InitializeFrom(ResilienceContext context)
     {
         OperationKey = context.OperationKey;
@@ -82,8 +70,6 @@ public sealed class ResilienceContext
         IsSynchronous = context.IsSynchronous;
         CancellationToken = context.CancellationToken;
         ContinueOnCapturedContext = context.ContinueOnCapturedContext;
-        _resilienceEvents.Clear();
-        _resilienceEvents.AddRange(context.ResilienceEvents);
     }
 
     [ExcludeFromCodeCoverage]
@@ -101,11 +87,6 @@ public sealed class ResilienceContext
         return this;
     }
 
-    internal void AddResilienceEvent(ResilienceEvent @event)
-    {
-        _resilienceEvents.Add(@event);
-    }
-
     internal bool Reset()
     {
         OperationKey = null;
@@ -114,7 +95,6 @@ public sealed class ResilienceContext
         ContinueOnCapturedContext = false;
         CancellationToken = default;
         Properties.Options.Clear();
-        _resilienceEvents.Clear();
         return true;
     }
 
