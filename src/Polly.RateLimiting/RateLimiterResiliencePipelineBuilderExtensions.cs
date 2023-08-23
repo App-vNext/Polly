@@ -79,7 +79,7 @@ public static class RateLimiterResiliencePipelineBuilderExtensions
 
         return builder.AddRateLimiter(new RateLimiterStrategyOptions
         {
-            RateLimiter = ResilienceRateLimiter.Create(limiter),
+            RateLimiter = args => limiter.AcquireAsync(1, args.Context.CancellationToken),
         });
     }
 
@@ -109,10 +109,20 @@ public static class RateLimiterResiliencePipelineBuilderExtensions
         return builder.AddStrategy(
             context =>
             {
+                DisposeWrapper? wrapper = default;
+                var limiter = options.RateLimiter;
+                if (limiter is null)
+                {
+                    var defaultLimiter = new ConcurrencyLimiter(options.DefaultRateLimiterOptions);
+                    wrapper = new DisposeWrapper(defaultLimiter);
+                    limiter = args => defaultLimiter.AcquireAsync(1, args.Context.CancellationToken);
+                }
+
                 return new RateLimiterResilienceStrategy(
-                    options.RateLimiter ?? ResilienceRateLimiter.Create(new ConcurrencyLimiter(options.DefaultRateLimiterOptions)),
+                    limiter,
                     options.OnRejected,
-                    context.Telemetry);
+                    context.Telemetry,
+                    wrapper);
             },
             options);
     }
