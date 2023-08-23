@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Polly.Registry;
+using Polly.Utils;
 
 namespace Polly.DependencyInjection;
 
@@ -62,5 +63,16 @@ public sealed class AddResiliencePipelineContext<TKey>
         var monitor = ServiceProvider.GetRequiredService<IOptionsMonitor<TOptions>>();
 
         return name == null ? monitor.CurrentValue : monitor.Get(name);
+    }
+
+    /// <summary>
+    /// Registers a callback that is called when the pipeline instance being configured is disposed.
+    /// </summary>
+    /// <param name="callback">The callback delegate.</param>
+    public void OnPipelineDisposed(Action callback)
+    {
+        Guard.NotNull(callback);
+
+        RegistryContext.OnPipelineDisposed(callback);
     }
 }

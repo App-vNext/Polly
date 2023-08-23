@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Polly.Telemetry;
+
 namespace Polly.Utils.Pipeline;
 
 internal static class PipelineComponentFactory
@@ -12,6 +13,16 @@ internal static class PipelineComponentFactory
     public static PipelineComponent FromStrategy(ResilienceStrategy strategy) => new BridgeComponent(strategy);
 
     public static PipelineComponent FromStrategy<T>(ResilienceStrategy<T> strategy) => new BridgeComponent<T>(strategy);
+
+    public static PipelineComponent WithDisposableCallbacks(PipelineComponent component, List<Action> callbacks)
+    {
+        if (callbacks.Count == 0)
+        {
+            return component;
+        }
+
+        return new ComponentWithDisposeCallbacks(component, callbacks);
+    }
 
     public static PipelineComponent CreateComposite(
         IReadOnlyList<PipelineComponent> components,

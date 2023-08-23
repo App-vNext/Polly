@@ -60,13 +60,17 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
         _configure(builder, context);
 
         return new(
-            builder.BuildPipelineComponent,
+            () => PipelineComponentFactory.WithDisposableCallbacks(
+                    builder.BuildPipelineComponent(),
+                    context.DisposeCallbacks),
             context.ReloadTokenProducer,
+            context.DisposeCallbacks,
             builder.TelemetryListener);
     }
 
     private record Builder(
         Func<PipelineComponent> ComponentFactory,
         Func<Func<CancellationToken>>? ReloadTokenProducer,
+        List<Action> DisposeCallbacks,
         TelemetryListener? Listener);
 }
