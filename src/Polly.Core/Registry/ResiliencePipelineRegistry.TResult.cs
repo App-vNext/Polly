@@ -49,13 +49,17 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
         {
             var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _instanceNameFormatter?.Invoke(key));
 
-            return _pipelines.GetOrAdd(key, static (_, factory) =>
+            return _pipelines.GetOrAdd(key, k =>
             {
-                var component = CreatePipelineComponent(factory.instance._activator, factory.context, factory.configure);
+                var component = new RegistryPipelineComponentBuilder<ResiliencePipelineBuilder<TResult>, TKey>(
+                    _activator,
+                    k,
+                    _builderNameFormatter(k),
+                    _instanceNameFormatter?.Invoke(k),
+                    configure).CreateComponent();
 
                 return new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject);
-            },
-            (instance: this, context, configure));
+            });
         }
 
         public bool TryAddBuilder(TKey key, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);
