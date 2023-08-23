@@ -31,7 +31,7 @@ public class ConfigureBuilderContext<TKey>
     /// </summary>
     internal string? BuilderInstanceName { get; }
 
-    internal Func<Func<CancellationToken>>? ReloadTokenProducer { get; set; }
+    internal Func<Func<CancellationToken>>? ReloadTokenProducer { get; private set; }
 
     /// <summary>
     /// Enables dynamic reloading of the strategy retrieved from <see cref="ResiliencePipelineRegistry{TKey}"/>.
