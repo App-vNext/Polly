@@ -269,9 +269,9 @@ Polly.ResilienceStrategyOptions.Name.set -> void
 Polly.ResilienceStrategyOptions.ResilienceStrategyOptions() -> void
 Polly.Retry.OnRetryArguments
 Polly.Retry.OnRetryArguments.AttemptNumber.get -> int
-Polly.Retry.OnRetryArguments.ExecutionTime.get -> System.TimeSpan
+Polly.Retry.OnRetryArguments.Duration.get -> System.TimeSpan
 Polly.Retry.OnRetryArguments.OnRetryArguments() -> void
-Polly.Retry.OnRetryArguments.OnRetryArguments(int attemptNumber, System.TimeSpan retryDelay, System.TimeSpan executionTime) -> void
+Polly.Retry.OnRetryArguments.OnRetryArguments(int attemptNumber, System.TimeSpan retryDelay, System.TimeSpan duration) -> void
 Polly.Retry.OnRetryArguments.RetryDelay.get -> System.TimeSpan
 Polly.Retry.RetryBackoffType
 Polly.Retry.RetryBackoffType.Constant = 0 -> Polly.Retry.RetryBackoffType

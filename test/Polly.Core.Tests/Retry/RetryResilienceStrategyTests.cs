@@ -238,7 +238,7 @@ public class RetryResilienceStrategyTests
     {
         _options.OnRetry = args =>
         {
-            args.Arguments.ExecutionTime.Should().Be(TimeSpan.FromMinutes(1));
+            args.Arguments.Duration.Should().Be(TimeSpan.FromMinutes(1));
 
             return default;
         };
