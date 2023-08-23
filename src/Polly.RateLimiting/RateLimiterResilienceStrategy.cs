@@ -8,30 +8,42 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy, IDispo
     private readonly ResilienceStrategyTelemetry _telemetry;
 
     public RateLimiterResilienceStrategy(
-        ResilienceRateLimiter limiter,
+        Func<RateLimiterArguments, ValueTask<RateLimitLease>> limiter,
         Func<OnRateLimiterRejectedArguments, ValueTask>? onRejected,
-        ResilienceStrategyTelemetry telemetry)
+        ResilienceStrategyTelemetry telemetry,
+        DisposeWrapper? wrapper)
     {
         Limiter = limiter;
         OnLeaseRejected = onRejected;
 
         _telemetry = telemetry;
+        Wrapper = wrapper;
     }
 
-    public ResilienceRateLimiter Limiter { get; }
+    public Func<RateLimiterArguments, ValueTask<RateLimitLease>> Limiter { get; }
 
     public Func<OnRateLimiterRejectedArguments, ValueTask>? OnLeaseRejected { get; }
 
-    public void Dispose() => Limiter.Dispose();
+    public DisposeWrapper? Wrapper { get; }
 
-    public ValueTask DisposeAsync() => Limiter.DisposeAsync();
+    public void Dispose() => Wrapper?.Dispose();
+
+    public ValueTask DisposeAsync()
+    {
+        if (Wrapper is not null)
+        {
+            return Wrapper.DisposeAsync();
+        }
+
+        return default;
+    }
 
     protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)
     {
-        using var lease = await Limiter.AcquireAsync(context).ConfigureAwait(context.ContinueOnCapturedContext);
+        using var lease = await Limiter(new RateLimiterArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
 
         if (lease.IsAcquired)
         {
