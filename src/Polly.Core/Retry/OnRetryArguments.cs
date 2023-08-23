@@ -15,12 +15,12 @@ public readonly struct OnRetryArguments
     /// </summary>
     /// <param name="attemptNumber">The zero-based attempt number.</param>
     /// <param name="retryDelay">The delay before the next retry.</param>
-    /// <param name="executionTime">The execution time of this attempt.</param>
-    public OnRetryArguments(int attemptNumber, TimeSpan retryDelay, TimeSpan executionTime)
+    /// <param name="duration">The duration of this attempt.</param>
+    public OnRetryArguments(int attemptNumber, TimeSpan retryDelay, TimeSpan duration)
     {
         AttemptNumber = attemptNumber;
         RetryDelay = retryDelay;
-        ExecutionTime = executionTime;
+        Duration = duration;
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public readonly struct OnRetryArguments
     public TimeSpan RetryDelay { get; }
 
     /// <summary>
-    /// Gets the execution time of this attempt.
+    /// Gets the duration of this attempt.
     /// </summary>
-    public TimeSpan ExecutionTime { get; }
+    public TimeSpan Duration { get; }
 }

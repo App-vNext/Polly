@@ -11,6 +11,6 @@ public class OnRetryArgumentsTests
 
         args.AttemptNumber.Should().Be(2);
         args.RetryDelay.Should().Be(TimeSpan.FromSeconds(3));
-        args.ExecutionTime.Should().Be(TimeSpan.MaxValue);
+        args.Duration.Should().Be(TimeSpan.MaxValue);
     }
 }
