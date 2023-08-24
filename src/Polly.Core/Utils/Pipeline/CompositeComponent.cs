@@ -118,7 +118,9 @@ internal sealed class CompositeComponent : PipelineComponent
 
         _telemetry.Report(
             new ResilienceEvent(ResilienceEventSeverity.Information, TelemetryUtil.PipelineExecuted),
-            new OutcomeArguments<TResult, PipelineExecutedArguments>(context, outcome, new PipelineExecutedArguments(_timeProvider.GetElapsedTime(timeStamp))));
+            context,
+            outcome,
+            new PipelineExecutedArguments(_timeProvider.GetElapsedTime(timeStamp)));
 
         return outcome;
     }

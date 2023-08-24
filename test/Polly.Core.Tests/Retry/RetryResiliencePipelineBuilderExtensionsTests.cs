@@ -140,7 +140,7 @@ public class RetryResiliencePipelineBuilderExtensionsTests
             RetryDelayGenerator = args =>
             {
                 // the delay hint is calculated for this attempt by the retry strategy
-                aggregatedDelay += args.Arguments.DelayHint;
+                aggregatedDelay += args.DelayHint;
 
                 // return zero delay, so no waiting
                 return new ValueTask<TimeSpan>(TimeSpan.Zero);

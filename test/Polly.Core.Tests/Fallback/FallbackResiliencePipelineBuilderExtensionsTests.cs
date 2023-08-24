@@ -33,7 +33,7 @@ public class FallbackResiliencePipelineBuilderExtensionsTests
     {
         var options = new FallbackStrategyOptions
         {
-            ShouldHandle = args => args switch
+            ShouldHandle = args => args.Outcome switch
             {
                 { Exception: InvalidOperationException } => PredicateResult.True,
                 { Result: -1 } => PredicateResult.True,

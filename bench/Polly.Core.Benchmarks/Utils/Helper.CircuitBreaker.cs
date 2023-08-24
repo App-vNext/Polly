@@ -52,7 +52,7 @@ internal static partial class Helper
                     SamplingDuration = TimeSpan.FromSeconds(30),
                     MinimumThroughput = 10,
                     BreakDuration = TimeSpan.FromSeconds(5),
-                    ShouldHandle = args => args switch
+                    ShouldHandle = args => args.Outcome switch
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True,
                         { Result: string result } when result == Failure => PredicateResult.True,

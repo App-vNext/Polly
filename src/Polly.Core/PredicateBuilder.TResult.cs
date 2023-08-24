@@ -98,18 +98,8 @@ public partial class PredicateBuilder<TResult>
         _ => CreatePredicate(_predicates.ToArray()),
     };
 
-    /// <summary>
-    /// Builds the predicate for delegates that use <see cref="OutcomeArguments{TResult, TArgs}"/> and return <see cref="ValueTask{TResult}"/> of <see cref="bool"/>.
-    /// </summary>
-    /// <typeparam name="TArgs">The type of arguments used by the delegate.</typeparam>
-    /// <returns>An instance of predicate delegate.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when no predicates were configured using this builder.</exception>
-    /// <remarks>
-    /// The returned predicate will return <see langword="true"/> if any of the configured predicates return <see langword="true"/>.
-    /// Please be aware of the performance penalty if you register too many predicates with this builder. In such case, it's better to create your own predicate
-    /// manually as a delegate.
-    /// </remarks>
-    public Func<OutcomeArguments<TResult, TArgs>, ValueTask<bool>> Build<TArgs>()
+    internal Func<TArgs, ValueTask<bool>> Build<TArgs>()
+        where TArgs : IOutcomeArguments<TResult>
     {
         var predicate = Build();
 

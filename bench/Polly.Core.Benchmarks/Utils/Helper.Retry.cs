@@ -21,7 +21,7 @@ internal static partial class Helper
                     RetryCount = 3,
                     BackoffType = RetryBackoffType.Constant,
                     BaseDelay = delay,
-                    ShouldHandle = args => args switch
+                    ShouldHandle = args => args.Outcome switch
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True,
                         { Result: string result } when result == Failure => PredicateResult.True,

@@ -21,7 +21,7 @@ public partial class IssuesTests
             // This call overrides the pipeline that the library uses. The last call to AddResiliencePipeline wins.
             services.AddResiliencePipeline("library-pipeline", builder => builder.AddRetry(new()
             {
-                ShouldHandle = args => args.Exception switch
+                ShouldHandle = args => args.Outcome.Exception switch
                 {
                     InvalidOperationException => PredicateResult.True,
                     SocketException => PredicateResult.True,
@@ -66,7 +66,7 @@ public partial class IssuesTests
         services.TryAddSingleton<LibraryApi>();
         services.AddResiliencePipeline("library-pipeline", builder => builder.AddRetry(new()
         {
-            ShouldHandle = args => args.Exception switch
+            ShouldHandle = args => args.Outcome.Exception switch
             {
                 InvalidOperationException => PredicateResult.True,
                 _ => PredicateResult.False

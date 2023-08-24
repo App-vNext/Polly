@@ -67,7 +67,7 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
             {
                 MaxHedgedAttempts = 4,
                 HedgingDelay = TimeSpan.FromMilliseconds(20),
-                ShouldHandle = args => args.Result switch
+                ShouldHandle = args => args.Outcome.Result switch
                 {
                     "error" => PredicateResult.True,
                     _ => PredicateResult.False
@@ -88,9 +88,9 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
                 },
                 OnHedging = args =>
                 {
-                    if (args.Arguments.HasOutcome)
+                    if (args.HasOutcome)
                     {
-                        results.Enqueue(args.Result!.ToString()!);
+                        results.Enqueue(args.Outcome.Result!.ToString()!);
                     }
                     else
                     {

@@ -66,7 +66,7 @@ public class PredicateBuilderTests
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error"), new RetryPredicateArguments(0)));
+        var handled = await options.ShouldHandle(new RetryPredicateArguments<string>(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error"), 0));
 
         handled.Should().BeTrue();
     }
@@ -79,7 +79,7 @@ public class PredicateBuilderTests
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error"), default));
+        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error")));
 
         handled.Should().BeTrue();
     }
@@ -92,7 +92,7 @@ public class PredicateBuilderTests
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error"), default));
+        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error")));
 
         handled.Should().BeTrue();
     }
@@ -105,7 +105,7 @@ public class PredicateBuilderTests
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error"), default));
+        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), Outcome.FromResult("error")));
 
         handled.Should().BeTrue();
     }

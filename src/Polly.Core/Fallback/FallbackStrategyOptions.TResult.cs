@@ -20,7 +20,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// The default value is a predicate that fallbacks on any exception except <see cref="OperationCanceledException"/>. This property is required.
     /// </value>
     [Required]
-    public Func<OutcomeArguments<TResult, FallbackPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<FallbackPredicateArguments, TResult>.HandleOutcome;
+    public Func<FallbackPredicateArguments<TResult>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<FallbackPredicateArguments<TResult>, TResult>.HandleOutcome;
 
     /// <summary>
     /// Gets or sets the fallback action to be executed when the <see cref="ShouldHandle"/> predicate evaluates as true.
@@ -29,7 +29,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// The default value is <see langword="null"/>. This property is required.
     /// </value>
     [Required]
-    public Func<OutcomeArguments<TResult, FallbackPredicateArguments>, ValueTask<Outcome<TResult>>>? FallbackAction { get; set; }
+    public Func<FallbackPredicateArguments<TResult>, ValueTask<Outcome<TResult>>>? FallbackAction { get; set; }
 
     /// <summary>
     /// Gets or sets event delegate that is raised when fallback happens.
@@ -37,6 +37,6 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <value>
     /// The default value is <see langword="null"/> instance.
     /// </value>
-    public Func<OutcomeArguments<TResult, OnFallbackArguments>, ValueTask>? OnFallback { get; set; }
+    public Func<OnFallbackArguments<TResult>, ValueTask>? OnFallback { get; set; }
 }
 

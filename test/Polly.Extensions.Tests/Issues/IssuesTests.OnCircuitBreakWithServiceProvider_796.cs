@@ -31,7 +31,7 @@ public partial class IssuesTests
                         // do asynchronous call
                         await Task.Yield();
                     },
-                    ShouldHandle = args => args.Result switch
+                    ShouldHandle = args => args.Outcome.Result switch
                     {
                         string result when result == "error" => PredicateResult.True,
                         _ => PredicateResult.False

@@ -2,12 +2,12 @@ namespace Polly.CircuitBreaker;
 
 internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T>, IDisposable
 {
-    private readonly Func<OutcomeArguments<T, CircuitBreakerPredicateArguments>, ValueTask<bool>> _handler;
+    private readonly Func<CircuitBreakerPredicateArguments<T>, ValueTask<bool>> _handler;
     private readonly CircuitStateController<T> _controller;
     private readonly IDisposable? _manualControlRegistration;
 
     public CircuitBreakerResilienceStrategy(
-        Func<OutcomeArguments<T, CircuitBreakerPredicateArguments>, ValueTask<bool>> handler,
+        Func<CircuitBreakerPredicateArguments<T>, ValueTask<bool>> handler,
         CircuitStateController<T> controller,
         CircuitBreakerStateProvider? stateProvider,
         CircuitBreakerManualControl? manualControl)
@@ -36,7 +36,7 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T
 
         outcome = await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
-        var args = new OutcomeArguments<T, CircuitBreakerPredicateArguments>(context, outcome, default);
+        var args = new CircuitBreakerPredicateArguments<T>(context, outcome);
         if (await _handler(args).ConfigureAwait(context.ContinueOnCapturedContext))
         {
             await _controller.OnActionFailureAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
