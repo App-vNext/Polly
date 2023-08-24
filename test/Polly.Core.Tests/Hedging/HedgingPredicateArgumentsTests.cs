@@ -7,6 +7,9 @@ public class HedgingPredicateArgumentsTests
     [Fact]
     public void Ctor_Ok()
     {
-        this.Invoking(_ => default(HedgingPredicateArguments)).Should().NotThrow();
+        var args = new HedgingPredicateArguments<int>(ResilienceContextPool.Shared.Get(), Outcome.FromResult(1));
+
+        args.Context.Should().NotBeNull();
+        args.Outcome.Result.Should().Be(1);
     }
 }

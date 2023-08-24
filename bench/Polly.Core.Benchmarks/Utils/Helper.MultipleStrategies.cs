@@ -27,7 +27,7 @@ internal static partial class Helper
                     BackoffType = RetryBackoffType.Constant,
                     RetryCount = 3,
                     BaseDelay = TimeSpan.FromSeconds(1),
-                    ShouldHandle = args => args switch
+                    ShouldHandle = args => args.Outcome switch
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True,
                         { Result: var result } when result == Failure => PredicateResult.True,
@@ -41,7 +41,7 @@ internal static partial class Helper
                     SamplingDuration = TimeSpan.FromSeconds(30),
                     MinimumThroughput = 10,
                     BreakDuration = TimeSpan.FromSeconds(5),
-                    ShouldHandle = args => args switch
+                    ShouldHandle = args => args.Outcome switch
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True,
                         { Result: string result } when result == Failure => PredicateResult.True,
@@ -71,7 +71,7 @@ internal static partial class Helper
                 BackoffType = RetryBackoffType.Constant,
                 RetryCount = 3,
                 BaseDelay = TimeSpan.FromSeconds(1),
-                ShouldHandle = args => args switch
+                ShouldHandle = args => args.Outcome switch
                 {
                     { Exception: InvalidOperationException } => PredicateResult.True,
                     { Result: string result } when result == Failure => PredicateResult.True,
@@ -85,7 +85,7 @@ internal static partial class Helper
                 SamplingDuration = TimeSpan.FromSeconds(30),
                 MinimumThroughput = 10,
                 BreakDuration = TimeSpan.FromSeconds(5),
-                ShouldHandle = args => args switch
+                ShouldHandle = args => args.Outcome switch
                 {
                     { Exception: InvalidOperationException } => PredicateResult.True,
                     { Result: string result } when result == Failure => PredicateResult.True,

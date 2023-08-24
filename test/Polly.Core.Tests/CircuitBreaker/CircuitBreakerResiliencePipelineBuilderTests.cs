@@ -72,7 +72,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
             MinimumThroughput = 10,
             SamplingDuration = TimeSpan.FromSeconds(10),
             BreakDuration = TimeSpan.FromSeconds(1),
-            ShouldHandle = args => new ValueTask<bool>(args.Result is -1),
+            ShouldHandle = args => new ValueTask<bool>(args.Outcome.Result is -1),
             OnOpened = _ => { opened++; return default; },
             OnClosed = _ => { closed++; return default; },
             OnHalfOpened = (_) => { halfOpened++; return default; }

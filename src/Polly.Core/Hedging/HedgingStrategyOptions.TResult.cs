@@ -48,7 +48,7 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// This property is required.
     /// </value>
     [Required]
-    public Func<OutcomeArguments<TResult, HedgingPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<HedgingPredicateArguments, TResult>.HandleOutcome;
+    public Func<HedgingPredicateArguments<TResult>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<HedgingPredicateArguments<TResult>, TResult>.HandleOutcome;
 
     /// <summary>
     /// Gets or sets a generator that creates hedged actions.
@@ -91,5 +91,5 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <value>
     /// The default value is <see langword="null"/>.
     /// </value>
-    public Func<OutcomeArguments<TResult, OnHedgingArguments>, ValueTask>? OnHedging { get; set; }
+    public Func<OnHedgingArguments<TResult>, ValueTask>? OnHedging { get; set; }
 }

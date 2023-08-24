@@ -15,10 +15,10 @@ public partial class PredicateBuilder<TResult>
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static implicit operator Func<OutcomeArguments<TResult, RetryPredicateArguments>, ValueTask<bool>>(PredicateBuilder<TResult> builder)
+    public static implicit operator Func<RetryPredicateArguments<TResult>, ValueTask<bool>>(PredicateBuilder<TResult> builder)
     {
         Guard.NotNull(builder);
-        return builder.Build<RetryPredicateArguments>();
+        return builder.Build<RetryPredicateArguments<TResult>>();
     }
 
     /// <summary>
@@ -26,10 +26,10 @@ public partial class PredicateBuilder<TResult>
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static implicit operator Func<OutcomeArguments<TResult, HedgingPredicateArguments>, ValueTask<bool>>(PredicateBuilder<TResult> builder)
+    public static implicit operator Func<HedgingPredicateArguments<TResult>, ValueTask<bool>>(PredicateBuilder<TResult> builder)
     {
         Guard.NotNull(builder);
-        return builder.Build<HedgingPredicateArguments>();
+        return builder.Build<HedgingPredicateArguments<TResult>>();
     }
 
     /// <summary>
@@ -37,10 +37,10 @@ public partial class PredicateBuilder<TResult>
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static implicit operator Func<OutcomeArguments<TResult, FallbackPredicateArguments>, ValueTask<bool>>(PredicateBuilder<TResult> builder)
+    public static implicit operator Func<FallbackPredicateArguments<TResult>, ValueTask<bool>>(PredicateBuilder<TResult> builder)
     {
         Guard.NotNull(builder);
-        return builder.Build<FallbackPredicateArguments>();
+        return builder.Build<FallbackPredicateArguments<TResult>>();
     }
 
     /// <summary>
@@ -48,9 +48,9 @@ public partial class PredicateBuilder<TResult>
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static implicit operator Func<OutcomeArguments<TResult, CircuitBreakerPredicateArguments>, ValueTask<bool>>(PredicateBuilder<TResult> builder)
+    public static implicit operator Func<CircuitBreakerPredicateArguments<TResult>, ValueTask<bool>>(PredicateBuilder<TResult> builder)
     {
         Guard.NotNull(builder);
-        return builder.Build<CircuitBreakerPredicateArguments>();
+        return builder.Build<CircuitBreakerPredicateArguments<TResult>>();
     }
 }

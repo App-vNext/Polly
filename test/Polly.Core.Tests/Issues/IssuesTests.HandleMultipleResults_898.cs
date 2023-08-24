@@ -13,7 +13,7 @@ public partial class IssuesTests
             BackoffType = RetryBackoffType.Constant,
             RetryCount = 1,
             BaseDelay = TimeSpan.FromMilliseconds(1),
-            ShouldHandle = args => args switch
+            ShouldHandle = args => args.Outcome switch
             {
                 // handle string results
                 { Result: string res } when res == "error" => PredicateResult.True,

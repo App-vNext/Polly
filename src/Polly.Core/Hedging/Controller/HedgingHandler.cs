@@ -1,7 +1,7 @@
 namespace Polly.Hedging.Utils;
 
 internal sealed record class HedgingHandler<T>(
-    Func<OutcomeArguments<T, HedgingPredicateArguments>, ValueTask<bool>> ShouldHandle,
+    Func<HedgingPredicateArguments<T>, ValueTask<bool>> ShouldHandle,
     Func<HedgingActionGeneratorArguments<T>, Func<ValueTask<Outcome<T>>>?> ActionGenerator,
     bool IsGeneric)
 {

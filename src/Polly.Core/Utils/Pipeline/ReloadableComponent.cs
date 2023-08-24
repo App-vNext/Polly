@@ -72,8 +72,7 @@ internal sealed class ReloadableComponent : PipelineComponent
             catch (Exception e)
             {
                 _reloadTokens = new List<CancellationToken>();
-                var args = new OutcomeArguments<VoidResult, ReloadFailedArguments>(context, Outcome.FromException(e), new ReloadFailedArguments(e));
-                _telemetry.Report(new(ResilienceEventSeverity.Error, ReloadFailedEvent), args);
+                _telemetry.Report(new(ResilienceEventSeverity.Error, ReloadFailedEvent), context, Outcome.FromException(e), new ReloadFailedArguments(e));
                 ResilienceContextPool.Shared.Return(context);
             }
 

@@ -49,14 +49,14 @@ public class ResilienceStrategyTelemetryTests
         var context = ResilienceContextPool.Shared.Get();
 
         sut.Invoking(s => s.Report(new(ResilienceEventSeverity.Warning, "dummy"), context, new TestArguments())).Should().NotThrow();
-        sut.Invoking(s => s.Report(new(ResilienceEventSeverity.Warning, "dummy"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(1), new TestArguments()))).Should().NotThrow();
+        sut.Invoking(s => s.Report(new(ResilienceEventSeverity.Warning, "dummy"), context, Outcome.FromResult(1), new TestArguments())).Should().NotThrow();
     }
 
     [Fact]
     public void Report_Outcome_OK()
     {
         var context = ResilienceContextPool.Shared.Get();
-        _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(99), new TestArguments()));
+        _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), context, Outcome.FromResult(99), new TestArguments());
 
         _args.Should().HaveCount(1);
         var args = _args.Single();
@@ -73,7 +73,7 @@ public class ResilienceStrategyTelemetryTests
     public void Report_SeverityNone_Skipped()
     {
         var context = ResilienceContextPool.Shared.Get();
-        _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(99), new TestArguments()));
+        _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), context, Outcome.FromResult(99), new TestArguments());
         _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments());
 
         _args.Should().BeEmpty();
@@ -86,7 +86,7 @@ public class ResilienceStrategyTelemetryTests
 
         var context = ResilienceContextPool.Shared.Get();
 
-        sut.Invoking(s => s.Report(new(ResilienceEventSeverity.None, "dummy-event"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(99), new TestArguments())))
+        sut.Invoking(s => s.Report(new(ResilienceEventSeverity.None, "dummy-event"), context, Outcome.FromResult(99), new TestArguments()))
            .Should()
            .NotThrow();
 

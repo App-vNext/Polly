@@ -29,11 +29,11 @@ public class CircuitStateControllerTests
         bool called = false;
         _options.OnOpened = args =>
         {
-            args.Arguments.BreakDuration.Should().Be(TimeSpan.MaxValue);
+            args.BreakDuration.Should().Be(TimeSpan.MaxValue);
             args.Context.IsSynchronous.Should().BeFalse();
             args.Context.IsVoid.Should().BeFalse();
             args.Context.ResultType.Should().Be(typeof(int));
-            args.Arguments.IsManual.Should().BeTrue();
+            args.IsManual.Should().BeTrue();
             args.Outcome.IsVoidResult.Should().BeFalse();
             args.Outcome.Result.Should().Be(0);
             called = true;
@@ -59,7 +59,7 @@ public class CircuitStateControllerTests
         await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
 
         _circuitBehavior.Received().OnCircuitClosed();
-        _telemetryListener.GetArgs<OnCircuitOpenedArguments>().Should().NotBeEmpty();
+        _telemetryListener.GetArgs<OnCircuitOpenedArguments<int>>().Should().NotBeEmpty();
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class CircuitStateControllerTests
             args.Context.IsSynchronous.Should().BeFalse();
             args.Context.IsVoid.Should().BeFalse();
             args.Context.ResultType.Should().Be(typeof(int));
-            args.Arguments.IsManual.Should().BeTrue();
+            args.IsManual.Should().BeTrue();
             args.Outcome.IsVoidResult.Should().BeFalse();
             args.Outcome.Result.Should().Be(0);
             called = true;
@@ -92,7 +92,7 @@ public class CircuitStateControllerTests
 
         await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
         _circuitBehavior.Received().OnCircuitClosed();
-        _telemetryListener.GetArgs<OnCircuitClosedArguments>().Should().NotBeEmpty();
+        _telemetryListener.GetArgs<OnCircuitClosedArguments<int>>().Should().NotBeEmpty();
     }
 
     [Fact]
@@ -236,7 +236,7 @@ public class CircuitStateControllerTests
         var called = false;
         _options.OnClosed = args =>
         {
-            args.Arguments.IsManual.Should().BeFalse();
+            args.IsManual.Should().BeFalse();
             called = true;
             return default;
         };
@@ -273,11 +273,11 @@ public class CircuitStateControllerTests
         {
             if (state == CircuitState.Isolated)
             {
-                args.Arguments.IsManual.Should().BeTrue();
+                args.IsManual.Should().BeTrue();
             }
             else
             {
-                args.Arguments.IsManual.Should().BeFalse();
+                args.IsManual.Should().BeFalse();
             }
 
             called = true;

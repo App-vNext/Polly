@@ -21,12 +21,11 @@ public class FallbackStrategyOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new FallbackStrategyOptions<int>();
-        var args = default(FallbackPredicateArguments);
         var context = ResilienceContextPool.Shared.Get();
 
-        (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);
-        (await options.ShouldHandle(new(context, Outcome.FromException<int>(new OperationCanceledException()), args))).Should().Be(false);
-        (await options.ShouldHandle(new(context, Outcome.FromException<int>(new InvalidOperationException()), args))).Should().Be(true);
+        (await options.ShouldHandle(new FallbackPredicateArguments<int>(context, Outcome.FromResult(0)))).Should().Be(false);
+        (await options.ShouldHandle(new FallbackPredicateArguments<int>(context, Outcome.FromException<int>(new OperationCanceledException())))).Should().Be(false);
+        (await options.ShouldHandle(new FallbackPredicateArguments<int>(context, Outcome.FromException<int>(new InvalidOperationException())))).Should().Be(true);
     }
 
     [Fact]
