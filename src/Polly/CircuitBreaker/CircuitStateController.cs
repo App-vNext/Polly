@@ -38,7 +38,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
 
             using var _ = TimedLock.Lock(_lock);
 
-            if (_circuitState == CircuitState.Open && !IsInAutomatedBreak_NeedsLock)
+            if (!IsInAutomatedBreak_NeedsLock)
             {
                 _circuitState = CircuitState.HalfOpen;
                 _onHalfOpen();

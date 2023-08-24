@@ -54,14 +54,14 @@ public class RateLimitRejectedException : ExecutionRejectedException
     public RateLimitRejectedException(TimeSpan retryAfter, string message, Exception innerException) : base(message, innerException) =>
         SetRetryAfter(retryAfter);
 
+    private static string DefaultMessage(TimeSpan retryAfter) =>
+        $"The operation has been rate-limited and should be retried after {retryAfter}";
+
     private void SetRetryAfter(TimeSpan retryAfter)
     {
         if (retryAfter < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(retryAfter), retryAfter, $"The {nameof(retryAfter)} parameter must be a TimeSpan greater than or equal to TimeSpan.Zero.");
         RetryAfter = retryAfter;
     }
-
-    private static string DefaultMessage(TimeSpan retryAfter) =>
-        $"The operation has been rate-limited and should be retried after {retryAfter}";
 
 #if NETSTANDARD2_0
     /// <summary>
