@@ -37,17 +37,20 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
             new ResilienceTelemetrySource(_builderName, _instanceName, null),
             builder.Listener);
 
-        var initialPipeline = builder.ComponentFactory();
+        var component = builder.ComponentFactory();
 
-        if (builder.ReloadTokenProducer is null)
+        if (builder.ReloadTokens.Count == 0)
         {
-            return initialPipeline;
+            return component;
         }
 
         return PipelineComponentFactory.CreateReloadable(
-            initialPipeline,
-            builder.ReloadTokenProducer(),
-            () => CreateBuilder().ComponentFactory(),
+            new ReloadableComponent.Entry(component, builder.ReloadTokens),
+            () =>
+            {
+                var builder = CreateBuilder();
+                return new ReloadableComponent.Entry(builder.ComponentFactory(), builder.ReloadTokens);
+            },
             telemetry);
     }
 
@@ -63,14 +66,14 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
             () => PipelineComponentFactory.WithDisposableCallbacks(
                     builder.BuildPipelineComponent(),
                     context.DisposeCallbacks),
-            context.ReloadTokenProducer,
+            context.ReloadTokens,
             context.DisposeCallbacks,
             builder.TelemetryListener);
     }
 
     private record Builder(
         Func<PipelineComponent> ComponentFactory,
-        Func<Func<CancellationToken>>? ReloadTokenProducer,
+        List<CancellationToken> ReloadTokens,
         List<Action> DisposeCallbacks,
         TelemetryListener? Listener);
 }
