@@ -112,11 +112,12 @@ public class ResiliencePipelineExtensionsTests
     public void GetPipelineDescriptor_Reloadable_Ok()
     {
         // arrange
+        using var source = new CancellationTokenSource();
         using var registry = new ResiliencePipelineRegistry<string>();
         var strategy = registry.GetOrAddPipeline("dummy", (builder, context) =>
         {
             context.OnPipelineDisposed(() => { });
-            context.AddReloadToken(CancellationToken.None);
+            context.AddReloadToken(source.Token);
 
             builder
                 .AddConcurrencyLimiter(10)
