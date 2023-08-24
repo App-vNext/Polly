@@ -10,9 +10,9 @@ namespace Polly.Fallback;
 public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     [Required]
-    public Func<OutcomeArguments<TResult, FallbackPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; }
+    public Func<FallbackPredicateArguments<TResult>, ValueTask<bool>> ShouldHandle { get; set; }
     [Required]
-    public Func<OutcomeArguments<TResult, FallbackPredicateArguments>, ValueTask<Outcome<TResult>>>? FallbackAction { get; set; }
-    public Func<OutcomeArguments<TResult, OnFallbackArguments>, ValueTask>? OnFallback { get; set; }
+    public Func<FallbackPredicateArguments<TResult>, ValueTask<Outcome<TResult>>>? FallbackAction { get; set; }
+    public Func<OnFallbackArguments<TResult>, ValueTask>? OnFallback { get; set; }
     public FallbackStrategyOptions();
 }

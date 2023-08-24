@@ -1,10 +1,13 @@
 // Assembly 'Polly.Core'
 
-using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+using Polly.Utils;
 
 namespace Polly.Fallback;
 
-[StructLayout(LayoutKind.Sequential, Size = 1)]
-public readonly struct OnFallbackArguments
+public readonly struct OnFallbackArguments<TResult>
 {
+    public Outcome<TResult> Outcome { get; }
+    public ResilienceContext Context { get; }
+    public OnFallbackArguments(ResilienceContext context, Outcome<TResult> outcome);
 }

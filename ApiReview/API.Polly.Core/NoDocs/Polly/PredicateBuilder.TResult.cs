@@ -8,19 +8,20 @@ using Polly.CircuitBreaker;
 using Polly.Fallback;
 using Polly.Hedging;
 using Polly.Retry;
+using Polly.Utils;
 
 namespace Polly;
 
 public class PredicateBuilder<TResult>
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static implicit operator Func<OutcomeArguments<TResult, RetryPredicateArguments>, ValueTask<bool>>(PredicateBuilder<TResult> builder);
+    public static implicit operator Func<RetryPredicateArguments<TResult>, ValueTask<bool>>(PredicateBuilder<TResult> builder);
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static implicit operator Func<OutcomeArguments<TResult, HedgingPredicateArguments>, ValueTask<bool>>(PredicateBuilder<TResult> builder);
+    public static implicit operator Func<HedgingPredicateArguments<TResult>, ValueTask<bool>>(PredicateBuilder<TResult> builder);
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static implicit operator Func<OutcomeArguments<TResult, FallbackPredicateArguments>, ValueTask<bool>>(PredicateBuilder<TResult> builder);
+    public static implicit operator Func<FallbackPredicateArguments<TResult>, ValueTask<bool>>(PredicateBuilder<TResult> builder);
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static implicit operator Func<OutcomeArguments<TResult, CircuitBreakerPredicateArguments>, ValueTask<bool>>(PredicateBuilder<TResult> builder);
+    public static implicit operator Func<CircuitBreakerPredicateArguments<TResult>, ValueTask<bool>>(PredicateBuilder<TResult> builder);
     public PredicateBuilder<TResult> Handle<TException>() where TException : Exception;
     public PredicateBuilder<TResult> Handle<TException>(Func<TException, bool> predicate) where TException : Exception;
     public PredicateBuilder<TResult> HandleInner<TException>() where TException : Exception;
@@ -28,6 +29,5 @@ public class PredicateBuilder<TResult>
     public PredicateBuilder<TResult> HandleResult(Func<TResult, bool> predicate);
     public PredicateBuilder<TResult> HandleResult(TResult result, IEqualityComparer<TResult>? comparer = null);
     public Predicate<Outcome<TResult>> Build();
-    public Func<OutcomeArguments<TResult, TArgs>, ValueTask<bool>> Build<TArgs>();
     public PredicateBuilder();
 }

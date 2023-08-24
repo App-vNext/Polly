@@ -10,5 +10,4 @@ public sealed class ResiliencePipelineDescriptor
     public IReadOnlyList<ResilienceStrategyDescriptor> Strategies { get; }
     public ResilienceStrategyDescriptor FirstStrategy { get; }
     public bool IsReloadable { get; }
-    public ResiliencePipelineDescriptor(IReadOnlyList<ResilienceStrategyDescriptor> strategies, bool isReloadable);
 }

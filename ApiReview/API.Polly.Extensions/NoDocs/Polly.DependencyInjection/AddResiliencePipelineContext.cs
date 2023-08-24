@@ -13,4 +13,5 @@ public sealed class AddResiliencePipelineContext<TKey> where TKey : notnull
     public IServiceProvider ServiceProvider { get; }
     public void EnableReloads<TOptions>(string? name = null);
     public TOptions GetOptions<TOptions>(string? name = null);
+    public void OnPipelineDisposed(Action callback);
 }

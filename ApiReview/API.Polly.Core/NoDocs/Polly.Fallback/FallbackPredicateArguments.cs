@@ -1,9 +1,13 @@
 // Assembly 'Polly.Core'
 
-using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+using Polly.Utils;
 
 namespace Polly.Fallback;
 
-public readonly struct FallbackPredicateArguments
+public readonly struct FallbackPredicateArguments<TResult>
 {
+    public Outcome<TResult> Outcome { get; }
+    public ResilienceContext Context { get; }
+    public FallbackPredicateArguments(ResilienceContext context, Outcome<TResult> outcome);
 }

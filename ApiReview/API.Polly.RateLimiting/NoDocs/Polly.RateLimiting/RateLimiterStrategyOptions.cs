@@ -13,6 +13,6 @@ public class RateLimiterStrategyOptions : ResilienceStrategyOptions
     [Required]
     public ConcurrencyLimiterOptions DefaultRateLimiterOptions { get; set; }
     public Func<OnRateLimiterRejectedArguments, ValueTask>? OnRejected { get; set; }
-    public ResilienceRateLimiter? RateLimiter { get; set; }
+    public Func<RateLimiterArguments, ValueTask<RateLimitLease>>? RateLimiter { get; set; }
     public RateLimiterStrategyOptions();
 }

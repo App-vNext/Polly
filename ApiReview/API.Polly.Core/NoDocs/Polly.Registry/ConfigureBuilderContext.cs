@@ -1,6 +1,7 @@
 // Assembly 'Polly.Core'
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -11,5 +12,6 @@ public class ConfigureBuilderContext<TKey> where TKey : notnull
 {
     public TKey PipelineKey { get; }
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void EnableReloads(Func<Func<CancellationToken>> tokenProducerFactory);
+    public void AddReloadToken(CancellationToken cancellationToken);
+    public void OnPipelineDisposed(Action callback);
 }
