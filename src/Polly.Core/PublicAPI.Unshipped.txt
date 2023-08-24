@@ -159,6 +159,7 @@ Polly.PredicateBuilder<TResult>.PredicateBuilder() -> void
 Polly.PredicateResult
 Polly.Registry.ConfigureBuilderContext<TKey>
 Polly.Registry.ConfigureBuilderContext<TKey>.EnableReloads(System.Func<System.Func<System.Threading.CancellationToken>!>! tokenProducerFactory) -> void
+Polly.Registry.ConfigureBuilderContext<TKey>.OnPipelineDisposed(System.Action! callback) -> void
 Polly.Registry.ConfigureBuilderContext<TKey>.PipelineKey.get -> TKey
 Polly.Registry.ResiliencePipelineProvider<TKey>
 Polly.Registry.ResiliencePipelineProvider<TKey>.ResiliencePipelineProvider() -> void

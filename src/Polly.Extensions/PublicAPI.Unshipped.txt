@@ -3,6 +3,7 @@ abstract Polly.Telemetry.MeteringEnricher.Enrich<TResult, TArgs>(in Polly.Teleme
 Polly.DependencyInjection.AddResiliencePipelineContext<TKey>
 Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.EnableReloads<TOptions>(string? name = null) -> void
 Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.GetOptions<TOptions>(string? name = null) -> TOptions
+Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.OnPipelineDisposed(System.Action! callback) -> void
 Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.PipelineKey.get -> TKey
 Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.ServiceProvider.get -> System.IServiceProvider!
 Polly.PollyServiceCollectionExtensions

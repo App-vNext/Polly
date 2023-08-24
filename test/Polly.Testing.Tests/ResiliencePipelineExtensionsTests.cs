@@ -116,7 +116,7 @@ public class ResiliencePipelineExtensionsTests
         var strategy = registry.GetOrAddPipeline("dummy", (builder, context) =>
         {
             context.EnableReloads(() => () => CancellationToken.None);
-
+            context.OnPipelineDisposed(() => { });
             builder
                 .AddConcurrencyLimiter(10)
                 .AddStrategy(_ => new CustomStrategy(), new TestOptions());

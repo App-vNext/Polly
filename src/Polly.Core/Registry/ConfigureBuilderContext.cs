@@ -33,6 +33,8 @@ public class ConfigureBuilderContext<TKey>
 
     internal Func<Func<CancellationToken>>? ReloadTokenProducer { get; private set; }
 
+    internal List<Action> DisposeCallbacks { get; } = new();
+
     /// <summary>
     /// Enables dynamic reloading of the strategy retrieved from <see cref="ResiliencePipelineRegistry{TKey}"/>.
     /// </summary>
@@ -47,5 +49,16 @@ public class ConfigureBuilderContext<TKey>
         Guard.NotNull(tokenProducerFactory);
 
         ReloadTokenProducer = tokenProducerFactory;
+    }
+
+    /// <summary>
+    /// Registers a callback that is called when the pipeline instance being configured is disposed.
+    /// </summary>
+    /// <param name="callback">The callback delegate.</param>
+    public void OnPipelineDisposed(Action callback)
+    {
+        Guard.NotNull(callback);
+
+        DisposeCallbacks.Add(callback);
     }
 }
