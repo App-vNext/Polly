@@ -31,24 +31,26 @@ public class ConfigureBuilderContext<TKey>
     /// </summary>
     internal string? BuilderInstanceName { get; }
 
-    internal Func<Func<CancellationToken>>? ReloadTokenProducer { get; private set; }
+    internal List<CancellationToken> ReloadTokens { get; } = new();
 
     internal List<Action> DisposeCallbacks { get; } = new();
 
     /// <summary>
-    /// Enables dynamic reloading of the strategy retrieved from <see cref="ResiliencePipelineRegistry{TKey}"/>.
+    /// Reloads the pipeline when <paramref name="cancellationToken"/> is canceled.
     /// </summary>
-    /// <param name="tokenProducerFactory">The producer of <see cref="CancellationToken"/> that is triggered when change occurs.</param>
+    /// <param name="cancellationToken">The cancellation token that triggers the pipeline reload when cancelled.</param>
     /// <remarks>
-    /// The <paramref name="tokenProducerFactory"/> should always return function that returns a new <see cref="CancellationToken"/> instance when invoked otherwise
-    /// the reload infrastructure will stop listening for changes. The <paramref name="tokenProducerFactory"/> is called only once for each strategy.
+    /// You can add multiple reload tokens to the context. Non-cancelable or already canceled tokens are ignored.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void EnableReloads(Func<Func<CancellationToken>> tokenProducerFactory)
+    public void AddReloadToken(CancellationToken cancellationToken)
     {
-        Guard.NotNull(tokenProducerFactory);
+        if (!cancellationToken.CanBeCanceled || cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
 
-        ReloadTokenProducer = tokenProducerFactory;
+        ReloadTokens.Add(cancellationToken);
     }
 
     /// <summary>

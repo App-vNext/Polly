@@ -30,8 +30,7 @@ internal static class PipelineComponentFactory
         TimeProvider timeProvider) => CompositeComponent.Create(components, telemetry, timeProvider);
 
     public static PipelineComponent CreateReloadable(
-        PipelineComponent initialComponent,
-        Func<CancellationToken> onReload,
-        Func<PipelineComponent> factory,
-        ResilienceStrategyTelemetry telemetry) => new ReloadableComponent(initialComponent, onReload, factory, telemetry);
+        ReloadableComponent.Entry initial,
+        Func<ReloadableComponent.Entry> factory,
+        ResilienceStrategyTelemetry telemetry) => new ReloadableComponent(initial, factory, telemetry);
 }

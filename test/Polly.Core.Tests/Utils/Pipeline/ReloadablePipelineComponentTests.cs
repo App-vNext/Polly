@@ -55,24 +55,19 @@ public class ReloadablePipelineComponentTests : IDisposable
         var component = Substitute.For<PipelineComponent>();
         using var sut = CreateSut(component);
 
-        for (var i = 0; i < 10; i++)
-        {
-            var src = _cancellationTokenSource;
-            _cancellationTokenSource = new CancellationTokenSource();
-            src.Cancel();
-
-            sut.Component.Should().NotBe(component);
-        }
+        sut.Component.Should().Be(component);
+        _cancellationTokenSource.Cancel();
+        sut.Component.Should().NotBe(component);
 
         _events.Where(e => e.Event.EventName == "ReloadFailed").Should().HaveCount(0);
-        _events.Where(e => e.Event.EventName == "OnReload").Should().HaveCount(10);
+        _events.Where(e => e.Event.EventName == "OnReload").Should().HaveCount(1);
     }
 
     [Fact]
     public void ChangeTriggered_EnsureOldStrategyDisposed()
     {
         var component = Substitute.For<PipelineComponent>();
-        using var sut = CreateSut(component, () => Substitute.For<PipelineComponent>());
+        using var sut = CreateSut(component, () => new(Substitute.For<PipelineComponent>(), new List<CancellationToken>()));
 
         for (var i = 0; i < 10; i++)
         {
@@ -109,12 +104,12 @@ public class ReloadablePipelineComponentTests : IDisposable
         args.Exception.Should().BeOfType<InvalidOperationException>();
     }
 
-    private ReloadableComponent CreateSut(PipelineComponent? initial = null, Func<PipelineComponent>? factory = null)
+    private ReloadableComponent CreateSut(PipelineComponent? initial = null, Func<ReloadableComponent.Entry>? factory = null)
     {
-        factory ??= () => PipelineComponent.Empty;
+        factory ??= () => new ReloadableComponent.Entry(PipelineComponent.Empty, new List<CancellationToken>());
 
-        return (ReloadableComponent)PipelineComponentFactory.CreateReloadable(initial ?? PipelineComponent.Empty,
-            () => _cancellationTokenSource.Token,
+        return (ReloadableComponent)PipelineComponentFactory.CreateReloadable(
+            new ReloadableComponent.Entry(initial ?? PipelineComponent.Empty, new List<CancellationToken> { _cancellationTokenSource.Token }),
             factory,
             _telemetry);
     }
