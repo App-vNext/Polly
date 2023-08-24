@@ -88,13 +88,18 @@ Polly.ExecutionRejectedException
 Polly.ExecutionRejectedException.ExecutionRejectedException() -> void
 Polly.ExecutionRejectedException.ExecutionRejectedException(string! message) -> void
 Polly.ExecutionRejectedException.ExecutionRejectedException(string! message, System.Exception! inner) -> void
+Polly.Fallback.FallbackActionArguments<TResult>
+Polly.Fallback.FallbackActionArguments<TResult>.Context.get -> Polly.ResilienceContext!
+Polly.Fallback.FallbackActionArguments<TResult>.FallbackActionArguments() -> void
+Polly.Fallback.FallbackActionArguments<TResult>.FallbackActionArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome) -> void
+Polly.Fallback.FallbackActionArguments<TResult>.Outcome.get -> Polly.Outcome<TResult>
 Polly.Fallback.FallbackPredicateArguments<TResult>
 Polly.Fallback.FallbackPredicateArguments<TResult>.Context.get -> Polly.ResilienceContext!
 Polly.Fallback.FallbackPredicateArguments<TResult>.FallbackPredicateArguments() -> void
 Polly.Fallback.FallbackPredicateArguments<TResult>.FallbackPredicateArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome) -> void
 Polly.Fallback.FallbackPredicateArguments<TResult>.Outcome.get -> Polly.Outcome<TResult>
 Polly.Fallback.FallbackStrategyOptions<TResult>
-Polly.Fallback.FallbackStrategyOptions<TResult>.FallbackAction.get -> System.Func<Polly.Fallback.FallbackPredicateArguments<TResult>, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>?
+Polly.Fallback.FallbackStrategyOptions<TResult>.FallbackAction.get -> System.Func<Polly.Fallback.FallbackActionArguments<TResult>, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>?
 Polly.Fallback.FallbackStrategyOptions<TResult>.FallbackAction.set -> void
 Polly.Fallback.FallbackStrategyOptions<TResult>.FallbackStrategyOptions() -> void
 Polly.Fallback.FallbackStrategyOptions<TResult>.OnFallback.get -> System.Func<Polly.Fallback.OnFallbackArguments<TResult>, System.Threading.Tasks.ValueTask>?
@@ -142,10 +147,9 @@ Polly.Hedging.OnHedgingArguments<TResult>
 Polly.Hedging.OnHedgingArguments<TResult>.AttemptNumber.get -> int
 Polly.Hedging.OnHedgingArguments<TResult>.Context.get -> Polly.ResilienceContext!
 Polly.Hedging.OnHedgingArguments<TResult>.Duration.get -> System.TimeSpan
-Polly.Hedging.OnHedgingArguments<TResult>.HasOutcome.get -> bool
 Polly.Hedging.OnHedgingArguments<TResult>.OnHedgingArguments() -> void
-Polly.Hedging.OnHedgingArguments<TResult>.OnHedgingArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome, int attemptNumber, bool hasOutcome, System.TimeSpan duration) -> void
-Polly.Hedging.OnHedgingArguments<TResult>.Outcome.get -> Polly.Outcome<TResult>
+Polly.Hedging.OnHedgingArguments<TResult>.OnHedgingArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult>? outcome, int attemptNumber, System.TimeSpan duration) -> void
+Polly.Hedging.OnHedgingArguments<TResult>.Outcome.get -> Polly.Outcome<TResult>?
 Polly.HedgingResiliencePipelineBuilderExtensions
 Polly.LegacySupport
 Polly.Outcome

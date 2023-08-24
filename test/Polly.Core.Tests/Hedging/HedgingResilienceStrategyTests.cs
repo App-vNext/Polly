@@ -294,7 +294,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var hasOutcome = true;
         _options.OnHedging = args =>
         {
-            hasOutcome = args.HasOutcome;
+            hasOutcome = args.Outcome is not null;
             return default;
         };
 
@@ -886,8 +886,8 @@ public class HedgingResilienceStrategyTests : IDisposable
         var attempts = new List<int>();
         _options.OnHedging = args =>
         {
-            args.HasOutcome.Should().BeTrue();
-            args.Outcome.Result.Should().Be(Failure);
+            args.Outcome.Should().NotBeNull();
+            args.Outcome!.Value.Result.Should().Be(Failure);
             attempts.Add(args.AttemptNumber);
             return default;
         };
@@ -922,7 +922,10 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             lock (_results)
             {
-                _results.Add(args.Outcome.Result!);
+                if (args.Outcome.HasValue)
+                {
+                    _results.Add(args.Outcome.Value.Result!);
+                }
             }
 
             return default;

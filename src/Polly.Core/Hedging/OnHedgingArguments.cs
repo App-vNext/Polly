@@ -9,7 +9,7 @@ namespace Polly.Hedging;
 /// <remarks>
 /// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
-public readonly struct OnHedgingArguments<TResult> : IOutcomeArguments<TResult>
+public readonly struct OnHedgingArguments<TResult>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="OnHedgingArguments{TResult}"/> struct.
@@ -17,24 +17,23 @@ public readonly struct OnHedgingArguments<TResult> : IOutcomeArguments<TResult>
     /// <param name="outcome">The context in which the resilience operation or event occurred.</param>
     /// <param name="context">The outcome of the resilience operation or event.</param>
     /// <param name="attemptNumber">The zero-based hedging attempt number.</param>
-    /// <param name="hasOutcome">Indicates whether outcome is available.</param>
     /// <param name="duration">The execution duration of hedging attempt or the hedging delay in case the attempt was not finished in time.</param>
-    public OnHedgingArguments(ResilienceContext context, Outcome<TResult> outcome, int attemptNumber, bool hasOutcome, TimeSpan duration)
+    public OnHedgingArguments(ResilienceContext context, Outcome<TResult>? outcome, int attemptNumber, TimeSpan duration)
     {
         Context = context;
         Outcome = outcome;
         AttemptNumber = attemptNumber;
-        HasOutcome = hasOutcome;
         Duration = duration;
     }
 
     /// <summary>
-    /// Gets the outcome of the resilience operation or event.
+    /// Gets the outcome that needs to be hedged, if any.
     /// </summary>
-    public Outcome<TResult> Outcome { get; }
+    /// <remarks>If this property is <see langword="null"/>, it's an indication that user-callback or hedged operation did not complete within the hedging delay.</remarks>
+    public Outcome<TResult>? Outcome { get; }
 
     /// <summary>
-    /// Gets the context in which the resilience operation or event occurred.
+    /// Gets the context of this event.
     /// </summary>
     public ResilienceContext Context { get; }
 
@@ -42,14 +41,6 @@ public readonly struct OnHedgingArguments<TResult> : IOutcomeArguments<TResult>
     /// Gets the zero-based hedging attempt number.
     /// </summary>
     public int AttemptNumber { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether the outcome is available before loading the next hedged task.
-    /// </summary>
-    /// <remarks>
-    /// No outcome indicates that the previous action did not finish within the hedging delay.
-    /// </remarks>
-    public bool HasOutcome { get; }
 
     /// <summary>
     /// Gets the execution duration of hedging attempt or the hedging delay in case the attempt was not finished in time.
