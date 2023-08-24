@@ -14,14 +14,14 @@ internal static class PipelineComponentFactory
 
     public static PipelineComponent FromStrategy<T>(ResilienceStrategy<T> strategy) => new BridgeComponent<T>(strategy);
 
-    public static PipelineComponent WithDisposableCallbacks(PipelineComponent component, List<Action> callbacks)
+    public static PipelineComponent WithDisposableCallbacks(PipelineComponent component, IEnumerable<Action> callbacks)
     {
-        if (callbacks.Count == 0)
+        if (!callbacks.Any())
         {
             return component;
         }
 
-        return new ComponentWithDisposeCallbacks(component, callbacks);
+        return new ComponentWithDisposeCallbacks(component, callbacks.ToList());
     }
 
     public static PipelineComponent CreateComposite(

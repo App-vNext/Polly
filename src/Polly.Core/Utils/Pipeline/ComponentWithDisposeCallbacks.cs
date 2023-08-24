@@ -7,7 +7,7 @@ internal class ComponentWithDisposeCallbacks : PipelineComponent
     public ComponentWithDisposeCallbacks(PipelineComponent component, List<Action> callbacks)
     {
         Component = component;
-        _callbacks = callbacks.ToList();
+        _callbacks = callbacks;
     }
 
     internal PipelineComponent Component { get; }

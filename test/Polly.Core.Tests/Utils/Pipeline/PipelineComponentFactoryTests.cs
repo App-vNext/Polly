@@ -17,7 +17,7 @@ public class PipelineComponentFactoryTests
     public void PipelineComponentFactory_Should_Return_WrapperComponent_With_Callbacks()
     {
         var component = Substitute.For<PipelineComponent>();
-        List<Action> callbacks = new List<Action> { () => { } };
+        var callbacks = new List<Action> { () => { } };
 
         var result = PipelineComponentFactory.WithDisposableCallbacks(component, callbacks);
 

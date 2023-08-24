@@ -39,7 +39,7 @@ public class ComponentWithDisposeCallbacksTests
         }
 
         // Assert
-        callbacks.Should().HaveCount(2);
+        callbacks.Should().BeEmpty();
         called1.Should().Be(1);
         called2.Should().Be(1);
     }
