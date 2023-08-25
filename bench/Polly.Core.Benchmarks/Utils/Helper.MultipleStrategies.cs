@@ -30,7 +30,7 @@ internal static partial class Helper
                     ShouldHandle = args => args.Outcome switch
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True,
-                        { Result: var result } when result == Failure => PredicateResult.True,
+                        { Result: string result } when result == Failure => PredicateResult.True,
                         _ => PredicateResult.False
                     }
                 })
