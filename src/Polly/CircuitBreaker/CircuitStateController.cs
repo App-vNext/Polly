@@ -38,11 +38,13 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
 
             using var _ = TimedLock.Lock(_lock);
 
-            if (!IsInAutomatedBreak_NeedsLock)
+#pragma warning disable CA1508 // Avoid dead conditional code. _circuitState is checked again in the lock
+            if (_circuitState == CircuitState.Open && !IsInAutomatedBreak_NeedsLock)
             {
                 _circuitState = CircuitState.HalfOpen;
                 _onHalfOpen();
             }
+#pragma warning restore CA1508 // Avoid dead conditional code. _circuitState is checked again in the lock
 
             return _circuitState;
         }
