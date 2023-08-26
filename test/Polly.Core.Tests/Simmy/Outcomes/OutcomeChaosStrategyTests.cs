@@ -99,6 +99,68 @@ public class OutcomeChaosStrategyTests
     }
 
     [Fact]
+    public async Task Given_not_enabled_should_not_inject_fault_and_return_outcome()
+    {
+        var userDelegateExecuted = false;
+        var fault = new InvalidOperationException("Dummy exception");
+
+        var options = new OutcomeStrategyOptions<Exception>
+        {
+            InjectionRate = 0.6,
+            Enabled = false,
+            Randomizer = () => 0.5,
+            Outcome = new Outcome<Exception>(fault)
+        };
+
+        var sut = new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosFault(options).Build();
+        var response = await sut.ExecuteAsync(async _ =>
+        {
+            userDelegateExecuted = true;
+            return await Task.FromResult(HttpStatusCode.OK);
+        });
+
+        response.Should().Be(HttpStatusCode.OK);
+        userDelegateExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Given_enabled_and_randomly_within_threshold_should_inject_fault_instead_returning_outcome()
+    {
+        var onFaultInjected = false;
+        var userDelegateExecuted = false;
+        var exceptionMessage = "Dummy exception";
+        var fault = new InvalidOperationException(exceptionMessage);
+
+        var options = new OutcomeStrategyOptions<Exception>
+        {
+            InjectionRate = 0.6,
+            Enabled = true,
+            Randomizer = () => 0.5,
+            Outcome = new Outcome<Exception>(fault),
+            OnOutcomeInjected = args =>
+            {
+                args.Context.Should().NotBeNull();
+                args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
+                onFaultInjected = true;
+                return default;
+            }
+        };
+
+        var sut = new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosFault(options).Build();
+        await sut.Invoking(s => s.ExecuteAsync(async _ =>
+        {
+            userDelegateExecuted = true;
+            return await Task.FromResult(HttpStatusCode.OK);
+        }).AsTask())
+            .Should()
+            .ThrowAsync<InvalidOperationException>()
+            .WithMessage(exceptionMessage);
+
+        userDelegateExecuted.Should().BeFalse();
+        onFaultInjected.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task Given_enabled_and_randomly_within_threshold_should_inject_fault()
     {
         var onFaultInjected = false;
