@@ -79,7 +79,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// The default is a delegate that retries on any exception except <see cref="OperationCanceledException"/>. This property is required.
     /// </value>
     [Required]
-    public Func<OutcomeArguments<TResult, RetryPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<RetryPredicateArguments, TResult>.HandleOutcome;
+    public Func<RetryPredicateArguments<TResult>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<RetryPredicateArguments<TResult>, TResult>.HandleOutcome;
 
     /// <summary>
     /// Gets or sets a generator instance that calculates the time between retries.
@@ -90,7 +90,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <value>
     /// The default value is <see langword="null"/>.
     /// </value>
-    public Func<OutcomeArguments<TResult, RetryDelayArguments>, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }
+    public Func<RetryDelayArguments<TResult>, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets an event delegate that is raised when the retry happens.
@@ -103,7 +103,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <value>
     /// The default value is <see langword="null"/>.
     /// </value>
-    public Func<OutcomeArguments<TResult, OnRetryArguments>, ValueTask>? OnRetry { get; set; }
+    public Func<OnRetryArguments<TResult>, ValueTask>? OnRetry { get; set; }
 
     /// <summary>
     /// Gets or sets the randomizer that is used by the retry strategy to generate random numbers.

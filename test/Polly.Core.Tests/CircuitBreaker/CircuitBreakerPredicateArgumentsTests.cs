@@ -7,6 +7,9 @@ public class CircuitBreakerPredicateArgumentsTests
     [Fact]
     public void Ctor_Ok()
     {
-        this.Invoking(_ => default(CircuitBreakerPredicateArguments)).Should().NotThrow();
+        var args = new CircuitBreakerPredicateArguments<int>(ResilienceContextPool.Shared.Get(), Outcome.FromResult(1));
+
+        args.Context.Should().NotBeNull();
+        args.Outcome.Result.Should().Be(1);
     }
 }

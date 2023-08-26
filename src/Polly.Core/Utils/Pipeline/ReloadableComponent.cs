@@ -10,24 +10,21 @@ internal sealed class ReloadableComponent : PipelineComponent
 
     public const string OnReloadEvent = "OnReload";
 
-    private readonly Func<CancellationToken> _onReload;
-    private readonly Func<PipelineComponent> _factory;
+    private readonly Func<Entry> _factory;
     private readonly ResilienceStrategyTelemetry _telemetry;
+    private CancellationTokenSource _tokenSource = null!;
     private CancellationTokenRegistration _registration;
+    private List<CancellationToken> _reloadTokens;
 
-    public ReloadableComponent(
-        PipelineComponent initialComponent,
-        Func<CancellationToken> onReload,
-        Func<PipelineComponent> factory,
-        ResilienceStrategyTelemetry telemetry)
+    public ReloadableComponent(Entry entry, Func<Entry> factory, ResilienceStrategyTelemetry telemetry)
     {
-        Component = initialComponent;
+        Component = entry.Component;
 
-        _onReload = onReload;
+        _reloadTokens = entry.ReloadTokens;
         _factory = factory;
         _telemetry = telemetry;
 
-        RegisterOnReload(default);
+        TryRegisterOnReload();
     }
 
     public PipelineComponent Component { get; private set; }
@@ -52,15 +49,15 @@ internal sealed class ReloadableComponent : PipelineComponent
         return Component.DisposeAsync();
     }
 
-    private void RegisterOnReload(CancellationToken previousToken)
+    private void TryRegisterOnReload()
     {
-        var token = _onReload();
-        if (token == previousToken)
+        if (_reloadTokens.Count == 0)
         {
             return;
         }
 
-        _registration = token.Register(() =>
+        _tokenSource = CancellationTokenSource.CreateLinkedTokenSource(_reloadTokens.ToArray());
+        _registration = _tokenSource.Token.Register(() =>
         {
             var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
             PipelineComponent previousComponent = Component;
@@ -68,27 +65,33 @@ internal sealed class ReloadableComponent : PipelineComponent
             try
             {
                 _telemetry.Report(new(ResilienceEventSeverity.Information, OnReloadEvent), context, new OnReloadArguments());
-                Component = _factory();
+                (Component, _reloadTokens) = _factory();
 
                 previousComponent.Dispose();
             }
             catch (Exception e)
             {
-                var args = new OutcomeArguments<VoidResult, ReloadFailedArguments>(context, Outcome.FromException(e), new ReloadFailedArguments(e));
-                _telemetry.Report(new(ResilienceEventSeverity.Error, ReloadFailedEvent), args);
+                _reloadTokens = new List<CancellationToken>();
+                _telemetry.Report(new(ResilienceEventSeverity.Error, ReloadFailedEvent), context, Outcome.FromException(e), new ReloadFailedArguments(e));
                 ResilienceContextPool.Shared.Return(context);
             }
 
             DisposeRegistration();
-            RegisterOnReload(token);
+            TryRegisterOnReload();
         });
     }
 
 #pragma warning disable S2952 // Classes should "Dispose" of members from the classes' own "Dispose" methods
-    private void DisposeRegistration() => _registration.Dispose();
+    private void DisposeRegistration()
+    {
+        _registration.Dispose();
+        _tokenSource.Dispose();
+    }
 #pragma warning restore S2952 // Classes should "Dispose" of members from the classes' own "Dispose" methods
 
-    internal readonly record struct ReloadFailedArguments(Exception Exception);
+    internal record ReloadFailedArguments(Exception Exception);
 
-    internal readonly record struct OnReloadArguments();
+    internal record OnReloadArguments();
+
+    internal record Entry(PipelineComponent Component, List<CancellationToken> ReloadTokens);
 }

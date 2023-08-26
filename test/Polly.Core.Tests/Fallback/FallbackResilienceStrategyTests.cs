@@ -27,7 +27,7 @@ public class FallbackResilienceStrategyTests
 
         Create().Execute(_ => "error").Should().Be("success");
 
-        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments);
+        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments<string>);
         called.Should().BeTrue();
     }
 
@@ -47,7 +47,7 @@ public class FallbackResilienceStrategyTests
         SetHandler(outcome => outcome.Exception is InvalidOperationException, () => Outcome.FromResult("secondary"));
         Create().Execute<string>(_ => throw new InvalidOperationException()).Should().Be("secondary");
 
-        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments);
+        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments<string>);
         called.Should().BeTrue();
     }
 

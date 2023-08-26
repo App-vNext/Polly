@@ -8,7 +8,7 @@
 /// </remarks>
 internal abstract class PipelineComponent : IDisposable, IAsyncDisposable
 {
-    public static PipelineComponent Null { get; } = new NullComponent();
+    public static PipelineComponent Empty { get; } = new NullComponent();
 
     internal ResilienceStrategyOptions? Options { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using Microsoft.Extensions.Options;
 using Polly.Utils;
 
@@ -33,6 +34,24 @@ public static class ConfigureBuilderContextExtensions
         Guard.NotNull(context);
         Guard.NotNull(optionsMonitor);
 
-        context.EnableReloads(() => new OptionsReloadHelper<TOptions>(optionsMonitor, name ?? Options.DefaultName).GetCancellationToken);
+        name ??= string.Empty;
+
+#pragma warning disable CA2000 // Dispose objects before losing scope
+        var source = new CancellationTokenSource();
+#pragma warning restore CA2000 // Dispose objects before losing scope
+        var registration = optionsMonitor.OnChange((_, changedNamed) =>
+        {
+            if (name == changedNamed)
+            {
+                source.Cancel();
+            }
+        });
+
+        context.AddReloadToken(source.Token);
+        context.OnPipelineDisposed(() =>
+        {
+            registration?.Dispose();
+            source.Dispose();
+        });
     }
 }

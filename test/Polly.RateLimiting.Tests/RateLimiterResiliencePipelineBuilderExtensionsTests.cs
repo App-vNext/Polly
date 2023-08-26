@@ -14,7 +14,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         builder =>
         {
             builder.AddConcurrencyLimiter(2, 2);
-            AssertRateLimiterStrategy(builder, strategy => strategy.Limiter.Limiter.Should().BeOfType<ConcurrencyLimiter>());
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper!.Limiter.Should().BeOfType<ConcurrencyLimiter>());
         },
         builder =>
         {
@@ -25,13 +25,20 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
                     QueueLimit = 2
                 });
 
-            AssertRateLimiterStrategy(builder, strategy => strategy.Limiter.Limiter.Should().BeOfType<ConcurrencyLimiter>());
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper!.Limiter.Should().BeOfType<ConcurrencyLimiter>());
         },
         builder =>
         {
             var expected = Substitute.For<RateLimiter>();
             builder.AddRateLimiter(expected);
-            AssertRateLimiterStrategy(builder, strategy => strategy.Limiter.Limiter.Should().Be(expected));
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper.Should().BeNull());
+        },
+        builder =>
+        {
+            var limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = 1 });
+            builder.AddRateLimiter(limiter);
+            builder.Build().Execute(() => { });
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper.Should().BeNull());
         }
     };
 
@@ -85,7 +92,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         new ResiliencePipelineBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions
             {
-                RateLimiter = ResilienceRateLimiter.Create(limiter)
+                RateLimiter = args => limiter.AcquireAsync(1, args.Context.CancellationToken)
             })
             .Build()
             .GetPipelineDescriptor()
@@ -129,7 +136,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         var strategy = new ResiliencePipelineBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions
             {
-                RateLimiter = ResilienceRateLimiter.Create(Substitute.For<RateLimiter>())
+                RateLimiter = args => new ValueTask<RateLimitLease>(Substitute.For<RateLimitLease>())
             })
             .Build()
             .GetPipelineDescriptor()
@@ -173,7 +180,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         {
             limiterStrategy.OnLeaseRejected.Should().NotBeNull();
             limiterStrategy
-                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Substitute.For<RateLimitLease>(), null))
+                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Substitute.For<RateLimitLease>()))
                 .Preserve().GetAwaiter().GetResult();
         }
         else

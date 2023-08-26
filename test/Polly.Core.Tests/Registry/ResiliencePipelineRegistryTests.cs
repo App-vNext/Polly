@@ -249,18 +249,22 @@ public class ResiliencePipelineRegistryTests
         strategy.Should().BeNull();
     }
 
-    [Fact]
-    public void EnableReloads_Ok()
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void EnableReloads_Ok(bool firstOne)
     {
         // arrange
         var retryCount = 2;
         using var registry = new ResiliencePipelineRegistry<string>();
-        using var changeSource = new CancellationTokenSource();
+        using var token1 = new CancellationTokenSource();
+        using var token2 = new CancellationTokenSource();
 
         registry.TryAddBuilder("dummy", (builder, context) =>
         {
             // this call enables dynamic reloads for the dummy strategy
-            context.EnableReloads(() => () => changeSource.Token);
+            context.AddReloadToken(token1.Token);
+            context.AddReloadToken(token2.Token);
 
             builder.AddRetry(new RetryStrategyOptions
             {
@@ -280,9 +284,49 @@ public class ResiliencePipelineRegistryTests
 
         tries = 0;
         retryCount = 5;
-        changeSource.Cancel();
+
+        if (firstOne)
+        {
+            token1.Cancel();
+        }
+        else
+        {
+            token2.Cancel();
+        }
+
         strategy.Execute(() => tries++);
         tries.Should().Be(retryCount + 1);
+    }
+
+    [Fact]
+    public void EnableReloads_EnsureDisposedCallbackCalled()
+    {
+        // arrange
+        var registry = new ResiliencePipelineRegistry<string>();
+        using var changeSource = new CancellationTokenSource();
+        var disposedCalls = 0;
+
+        registry.TryAddBuilder("dummy", (builder, context) =>
+        {
+            // this call enables dynamic reloads for the dummy strategy
+            context.AddReloadToken(changeSource.Token);
+            context.OnPipelineDisposed(() => disposedCalls++);
+            builder.AddTimeout(TimeSpan.FromSeconds(1));
+        });
+
+        // act
+        var strategy = registry.GetPipeline("dummy");
+
+        // assert
+        disposedCalls.Should().Be(0);
+        strategy.Execute(() => { });
+
+        changeSource.Cancel();
+        disposedCalls.Should().Be(1);
+        strategy.Execute(() => { });
+
+        registry.Dispose();
+        disposedCalls.Should().Be(2);
     }
 
     [Fact]
@@ -296,7 +340,7 @@ public class ResiliencePipelineRegistryTests
         registry.TryAddBuilder<string>("dummy", (builder, context) =>
         {
             // this call enables dynamic reloads for the dummy strategy
-            context.EnableReloads(() => () => changeSource.Token);
+            context.AddReloadToken(changeSource.Token);
 
             builder.AddRetry(new RetryStrategyOptions<string>
             {

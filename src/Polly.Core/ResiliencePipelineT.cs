@@ -15,7 +15,7 @@ public sealed partial class ResiliencePipeline<T>
     /// <summary>
     /// Resilience pipeline that executes the user-provided callback without any additional logic.
     /// </summary>
-    public static readonly ResiliencePipeline<T> Null = new(PipelineComponent.Null, DisposeBehavior.Ignore);
+    public static readonly ResiliencePipeline<T> Empty = new(PipelineComponent.Empty, DisposeBehavior.Ignore);
 
     internal ResiliencePipeline(PipelineComponent component, DisposeBehavior disposeBehavior)
     {

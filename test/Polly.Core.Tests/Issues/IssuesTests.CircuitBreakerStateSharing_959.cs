@@ -11,7 +11,7 @@ public partial class IssuesTests
         {
             FailureRatio = 1,
             MinimumThroughput = 10,
-            ShouldHandle = args => args.Result switch
+            ShouldHandle = args => args.Outcome.Result switch
             {
                 // handle int results
                 int intVal when intVal == -1 => new ValueTask<bool>(true),

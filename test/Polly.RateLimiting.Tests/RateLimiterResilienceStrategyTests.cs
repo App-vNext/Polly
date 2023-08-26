@@ -63,7 +63,6 @@ public class RateLimiterResilienceStrategyTests
             {
                 args.Context.Should().NotBeNull();
                 args.Lease.Should().Be(_lease);
-                args.RetryAfter.Should().Be((TimeSpan?)metadata);
                 eventCalled = true;
                 return default;
             };
@@ -89,6 +88,44 @@ public class RateLimiterResilienceStrategyTests
         _listener.GetArgs<OnRateLimiterRejectedArguments>().Should().HaveCount(1);
     }
 
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task Dispose_DisposableResourcesShouldBeDisposed(bool isAsync)
+    {
+        using var limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = 1 });
+        using var wrapper = new DisposeWrapper(limiter);
+        var strategy = new RateLimiterResilienceStrategy(null!, null, null!, wrapper);
+
+        if (isAsync)
+        {
+            await strategy.DisposeAsync();
+        }
+        else
+        {
+            strategy.Dispose();
+        }
+
+        await limiter.Invoking(l => l.AcquireAsync(1).AsTask()).Should().ThrowAsync<ObjectDisposedException>();
+    }
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task Dispose_NoDisposableResources_ShouldNotThrow(bool isAsync)
+    {
+        using var strategy = new RateLimiterResilienceStrategy(null!, null, null!, null);
+
+        if (isAsync)
+        {
+            await strategy.Invoking(s => s.DisposeAsync().AsTask()).Should().NotThrowAsync();
+        }
+        else
+        {
+            strategy.Invoking(s => s.Dispose()).Should().NotThrow();
+        }
+    }
+
     private void SetupLimiter(CancellationToken token)
     {
         var result = new ValueTask<RateLimitLease>(_lease);
@@ -108,7 +145,7 @@ public class RateLimiterResilienceStrategyTests
 
         return builder.AddRateLimiter(new RateLimiterStrategyOptions
         {
-            RateLimiter = ResilienceRateLimiter.Create(_limiter),
+            RateLimiter = args => _limiter.AcquireAsync(1, args.Context.CancellationToken),
             OnRejected = _event
         })
         .Build();

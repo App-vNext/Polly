@@ -5,12 +5,7 @@
 /// </summary>
 public sealed class ResiliencePipelineDescriptor
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ResiliencePipelineDescriptor"/> class.
-    /// </summary>
-    /// <param name="strategies">The strategies the pipeline is composed of.</param>
-    /// <param name="isReloadable">Determines whether the resilience pipeline is reloadable.</param>
-    public ResiliencePipelineDescriptor(IReadOnlyList<ResilienceStrategyDescriptor> strategies, bool isReloadable)
+    internal ResiliencePipelineDescriptor(IReadOnlyList<ResilienceStrategyDescriptor> strategies, bool isReloadable)
     {
         Strategies = strategies;
         IsReloadable = isReloadable;

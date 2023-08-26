@@ -33,8 +33,6 @@ public sealed class ResilienceStrategyTelemetry
     {
         Guard.NotNull(context);
 
-        context.AddResilienceEvent(resilienceEvent);
-
         if (Listener is null || resilienceEvent.Severity == ResilienceEventSeverity.None)
         {
             return;
@@ -49,17 +47,28 @@ public sealed class ResilienceStrategyTelemetry
     /// <typeparam name="TArgs">The arguments associated with this event.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="resilienceEvent">The reported resilience event.</param>
+    /// <param name="context">The resilience context associated with this event.</param>
+    /// <param name="outcome">The outcome associated with the event.</param>
     /// <param name="args">The event arguments.</param>
-    public void Report<TArgs, TResult>(ResilienceEvent resilienceEvent, OutcomeArguments<TResult, TArgs> args)
+    public void Report<TArgs, TResult>(ResilienceEvent resilienceEvent, ResilienceContext context, Outcome<TResult> outcome, TArgs args)
     {
-        args.Context.AddResilienceEvent(resilienceEvent);
-
         if (Listener is null || resilienceEvent.Severity == ResilienceEventSeverity.None)
         {
             return;
         }
 
-        Listener.Write<TResult, TArgs>(new(TelemetrySource, resilienceEvent, args.Context, args.Arguments, args.Outcome));
+        Listener.Write<TResult, TArgs>(new(TelemetrySource, resilienceEvent, context, args, outcome));
+    }
+
+    internal void Report<TArgs, TResult>(ResilienceEvent resilienceEvent, TArgs args)
+        where TArgs : IOutcomeArguments<TResult>
+    {
+        if (Listener is null || resilienceEvent.Severity == ResilienceEventSeverity.None)
+        {
+            return;
+        }
+
+        Listener.Write<TResult, TArgs>(new(TelemetrySource, resilienceEvent, args.Context, args, args.Outcome));
     }
 }
 

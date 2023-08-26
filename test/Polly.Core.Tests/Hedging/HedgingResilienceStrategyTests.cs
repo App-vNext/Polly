@@ -172,7 +172,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             args.Context.Should().Be(primaryContext);
 
-            if (args.Arguments.AttemptNumber == 0)
+            if (args.AttemptNumber == 0)
             {
                 args.Context.Properties.Set(key, "dummy");
             }
@@ -294,7 +294,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var hasOutcome = true;
         _options.OnHedging = args =>
         {
-            hasOutcome = args.Arguments.HasOutcome;
+            hasOutcome = args.HasOutcome;
             return default;
         };
 
@@ -886,9 +886,9 @@ public class HedgingResilienceStrategyTests : IDisposable
         var attempts = new List<int>();
         _options.OnHedging = args =>
         {
-            args.Arguments.HasOutcome.Should().BeTrue();
-            args.Result.Should().Be(Failure);
-            attempts.Add(args.Arguments.AttemptNumber);
+            args.HasOutcome.Should().BeTrue();
+            args.Outcome.Result.Should().Be(Failure);
+            attempts.Add(args.AttemptNumber);
             return default;
         };
 
@@ -912,8 +912,8 @@ public class HedgingResilienceStrategyTests : IDisposable
         var strategy = Create();
         await strategy.ExecuteAsync((_, _) => new ValueTask<string>(Failure), context, "state");
 
-        context.ResilienceEvents.Should().HaveCount(_options.MaxHedgedAttempts + 1);
-        context.ResilienceEvents.Select(v => v.EventName).Distinct().Should().HaveCount(2);
+        _events.Should().HaveCount(_options.MaxHedgedAttempts + 4);
+        _events.Select(v => v.Event.EventName).Distinct().Should().HaveCount(2);
     }
 
     private void ConfigureHedging()
@@ -922,7 +922,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             lock (_results)
             {
-                _results.Add(args.Result!);
+                _results.Add(args.Outcome.Result!);
             }
 
             return default;
@@ -958,7 +958,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
     private HedgingResilienceStrategy<T> Create<T>(
         HedgingHandler<T> handler,
-        Func<OutcomeArguments<T, OnHedgingArguments>, ValueTask>? onHedging) => new(
+        Func<OnHedgingArguments<T>, ValueTask>? onHedging) => new(
         _options.HedgingDelay,
         _options.MaxHedgedAttempts,
         handler,

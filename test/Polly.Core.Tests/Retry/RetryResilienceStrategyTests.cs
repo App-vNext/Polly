@@ -115,7 +115,7 @@ public class RetryResilienceStrategyTests
         int calls = 0;
         _options.OnRetry = args =>
         {
-            args.Exception.Should().BeOfType<InvalidOperationException>();
+            args.Outcome.Exception.Should().BeOfType<InvalidOperationException>();
             calls++;
             return default;
         };
@@ -144,7 +144,7 @@ public class RetryResilienceStrategyTests
         _options.OnRetry = args =>
         {
             retries++;
-            args.Arguments.RetryDelay.Should().Be(delay);
+            args.RetryDelay.Should().Be(delay);
             return default;
         };
         _options.RetryDelayGenerator = _ =>
@@ -205,11 +205,11 @@ public class RetryResilienceStrategyTests
         var delays = new List<TimeSpan>();
         _options.OnRetry = args =>
         {
-            attempts.Add(args.Arguments.AttemptNumber);
-            delays.Add(args.Arguments.RetryDelay);
+            attempts.Add(args.AttemptNumber);
+            delays.Add(args.RetryDelay);
 
-            args.Exception.Should().BeNull();
-            args.Result.Should().Be(0);
+            args.Outcome.Exception.Should().BeNull();
+            args.Outcome.Result.Should().Be(0);
             return default;
         };
 
@@ -238,7 +238,7 @@ public class RetryResilienceStrategyTests
     {
         _options.OnRetry = args =>
         {
-            args.Arguments.ExecutionTime.Should().Be(TimeSpan.FromMinutes(1));
+            args.Duration.Should().Be(TimeSpan.FromMinutes(1));
 
             return default;
         };
@@ -296,7 +296,7 @@ public class RetryResilienceStrategyTests
 
         await ExecuteAndAdvance(sut);
 
-        _args.Select(a => a.Arguments).OfType<OnRetryArguments>().Should().HaveCount(3);
+        _args.Select(a => a.Arguments).OfType<OnRetryArguments<object>>().Should().HaveCount(3);
     }
 
     [Fact]
@@ -306,11 +306,11 @@ public class RetryResilienceStrategyTests
         var hints = new List<TimeSpan>();
         _options.RetryDelayGenerator = args =>
         {
-            attempts.Add(args.Arguments.AttemptNumber);
-            hints.Add(args.Arguments.DelayHint);
+            attempts.Add(args.AttemptNumber);
+            hints.Add(args.DelayHint);
 
-            args.Exception.Should().BeNull();
-            args.Result.Should().Be(0);
+            args.Outcome.Exception.Should().BeNull();
+            args.Outcome.Result.Should().Be(0);
 
             return new ValueTask<TimeSpan>(TimeSpan.Zero);
         };

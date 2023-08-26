@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using Polly.Telemetry;
 using Polly.Utils.Pipeline;
 
 namespace Polly.Registry;
@@ -124,17 +123,17 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
             return pipeline;
         }
 
-        var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _instanceNameFormatter?.Invoke(key));
-
-#if NETCOREAPP3_0_OR_GREATER
-        return _pipelines.GetOrAdd(key, static (_, factory) =>
+        return _pipelines.GetOrAdd(key, k =>
         {
-            return new ResiliencePipeline(CreatePipelineComponent(factory.instance._activator, factory.context, factory.configure), DisposeBehavior.Reject);
-        },
-        (instance: this, context, configure));
-#else
-        return _pipelines.GetOrAdd(key, _ => new ResiliencePipeline(CreatePipelineComponent(_activator, context, configure), DisposeBehavior.Reject));
-#endif
+            var component = new RegistryPipelineComponentBuilder<ResiliencePipelineBuilder, TKey>(
+                _activator,
+                k,
+                _builderNameFormatter(k),
+                _instanceNameFormatter?.Invoke(k),
+                configure).CreateComponent();
+
+            return new ResiliencePipeline(component, DisposeBehavior.Reject);
+        });
     }
 
     /// <summary>
@@ -260,36 +259,6 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
         {
             await disposable.DisposeAsync().ConfigureAwait(false);
         }
-    }
-
-    private static PipelineComponent CreatePipelineComponent<TBuilder>(
-        Func<TBuilder> activator,
-        ConfigureBuilderContext<TKey> context,
-        Action<TBuilder, ConfigureBuilderContext<TKey>> configure)
-        where TBuilder : ResiliencePipelineBuilderBase
-    {
-        Func<TBuilder> factory = () =>
-        {
-            var builder = activator();
-            builder.Name = context.BuilderName;
-            builder.InstanceName = context.BuilderInstanceName;
-            configure(builder, context);
-
-            return builder;
-        };
-
-        var builder = factory();
-        var pipeline = builder.BuildPipelineComponent();
-        var telemetry = new ResilienceStrategyTelemetry(
-            new ResilienceTelemetrySource(context.BuilderName, context.BuilderInstanceName, null),
-            builder.TelemetryListener);
-
-        if (context.ReloadTokenProducer is null)
-        {
-            return pipeline;
-        }
-
-        return PipelineComponentFactory.CreateReloadable(pipeline, context.ReloadTokenProducer(), () => factory().BuildPipelineComponent(), telemetry);
     }
 
     private GenericRegistry<TResult> GetGenericRegistry<TResult>()

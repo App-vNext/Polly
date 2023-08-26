@@ -46,7 +46,6 @@ internal static partial class Log
             "Source: '{PipelineName}/{PipelineInstance}', " +
             "Operation Key: '{OperationKey}', " +
             "Result: '{Result}', " +
-            "Execution Health: '{ExecutionHealth}', " +
             "Execution Time: {ExecutionTime}ms",
         EventName = "StrategyExecuted")]
     public static partial void PipelineExecuted(
@@ -56,7 +55,6 @@ internal static partial class Log
         string pipelineInstance,
         string? operationKey,
         object? result,
-        string executionHealth,
         double executionTime,
         Exception? exception);
 
