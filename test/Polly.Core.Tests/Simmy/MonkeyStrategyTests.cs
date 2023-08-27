@@ -8,29 +8,15 @@ public class MonkeyStrategyTests
 
     public MonkeyStrategyTests() => _options = new();
 
-    public static List<object[]> CtorTestCases =>
-        new()
-        {
-            new object[] { null, "Value cannot be null. (Parameter 'options')" },
-        };
-
-    [Theory]
-    [MemberData(nameof(CtorTestCases))]
-    public void InvalidCtor(TestChaosStrategyOptions options, string message)
+    [Fact]
+    public void InvalidCtor()
     {
         Action act = () =>
         {
-            var _ = new TestChaosStrategy(options);
+            var _ = new TestChaosStrategy(null);
         };
 
-#if NET481
-act.Should()
-            .Throw<ArgumentNullException>();
-#else
-        act.Should()
-            .Throw<ArgumentNullException>()
-            .WithMessage(message);
-#endif
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [Fact]

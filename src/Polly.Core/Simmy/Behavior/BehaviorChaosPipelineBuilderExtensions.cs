@@ -8,7 +8,6 @@ namespace Polly.Simmy;
 /// Extension methods for adding custom behaviors to a <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
 public static class BehaviorChaosPipelineBuilderExtensions
-
 {
     /// <summary>
     /// Adds a behavior chaos strategy to the builder.

@@ -32,7 +32,7 @@ internal static class TimeProviderExtensions
             // only applies in the case of a resilience event and not on the hot path.
 
             // re the Sync-over-async I guess that would be a concern when using the LatencyChaosStrategy
-            // since that's running on the hot path, thoughts? 
+            // since that's running on the hot path, thoughts?
             timeProvider.Delay(delay, context.CancellationToken).GetAwaiter().GetResult();
 #pragma warning restore CA1849
 

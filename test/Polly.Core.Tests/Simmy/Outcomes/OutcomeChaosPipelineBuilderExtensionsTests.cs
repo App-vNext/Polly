@@ -80,8 +80,10 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
         strategy.Fault.Should().NotBeNull();
 
         // it is supposed that this line should work the same as the try/catch block, but it's not, ideas?
-        //Assert.Throws<TException>(() => { var _ = strategy.Fault.Value; }).Should().Be(ex);
+#pragma warning disable S125 // Sections of code should not be commented out
+        // Assert.Throws<TException>(() => { var _ = strategy.Fault.Value; }).Should().Be(ex);
 
+#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             var _ = strategy.Fault!.Value;
@@ -90,6 +92,8 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
         {
             e.Should().Be(ex);
         }
+#pragma warning restore CA1031 // Do not catch general exception types
+#pragma warning restore S125 // Sections of code should not be commented out
     }
 
     private static void AssertFaultStrategy<TException>(ResiliencePipelineBuilder builder, bool enabled, double injectionRate, Exception ex)
@@ -105,8 +109,10 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
         strategy.Fault.Should().NotBeNull();
 
         // it is supposed that this line should work the same as the try/catch block, but it's not, ideas?
-        //Assert.Throws<TException>(() => { var _ = strategy.Fault.Value; }).Should().Be(ex);
+#pragma warning disable S125 // Sections of code should not be commented out
+        // Assert.Throws<TException>(() => { var _ = strategy.Fault.Value; }).Should().Be(ex);
 
+#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             var _ = strategy.Fault!.Value;
@@ -115,6 +121,8 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
         {
             e.Should().Be(ex);
         }
+#pragma warning restore CA1031 // Do not catch general exception types
+#pragma warning restore S125 // Sections of code should not be commented out
     }
 
     [MemberData(nameof(ResultStrategy))]

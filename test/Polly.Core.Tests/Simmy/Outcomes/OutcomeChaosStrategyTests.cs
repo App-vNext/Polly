@@ -43,7 +43,9 @@ public class OutcomeChaosStrategyTests
 
     [Theory]
     [MemberData(nameof(FaultCtorTestCases))]
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
     public void FaultInvalidCtor(OutcomeStrategyOptions<Exception> options, string message)
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
     {
         Action act = () =>
         {
@@ -51,8 +53,7 @@ public class OutcomeChaosStrategyTests
         };
 
 #if NET481
-        act.Should()
-                    .Throw<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();
 #else
         act.Should()
             .Throw<ArgumentNullException>()
@@ -62,7 +63,9 @@ public class OutcomeChaosStrategyTests
 
     [Theory]
     [MemberData(nameof(ResultCtorTestCases))]
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
     public void ResultInvalidCtor(OutcomeStrategyOptions<int> options, string message)
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
     {
         Action act = () =>
         {
@@ -70,8 +73,7 @@ public class OutcomeChaosStrategyTests
         };
 
 #if NET481
-        act.Should()
-                    .Throw<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();
 #else
         act.Should()
             .Throw<ArgumentNullException>()
