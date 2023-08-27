@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using Polly.Simmy.Latency;
 
-namespace Polly.Simmy.Latency;
+namespace Polly.Simmy;
 
 /// <summary>
 /// Extension methods for adding latency to a <see cref="ResiliencePipelineBuilderBase"/>.
@@ -51,8 +52,7 @@ public static class LatencyChaosPipelineBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddStrategy(context => new LatencyChaosStrategy(options, context.TimeProvider, context.Telemetry), options);
-        return builder;
+        return builder.AddStrategy(context => new LatencyChaosStrategy(options, context.TimeProvider, context.Telemetry), options);
     }
 }
 

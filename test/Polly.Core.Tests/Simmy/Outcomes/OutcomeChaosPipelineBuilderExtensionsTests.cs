@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Polly.Simmy;
 using Polly.Simmy.Outcomes;
 using Polly.Testing;
 
@@ -155,7 +156,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     public void AddResult_Shortcut_Option_Throws()
     {
         new ResiliencePipelineBuilder<int>()
-            .Invoking(b => b.AddChaosResult(true, -1, () => new ValueTask<Outcome<int>?>(new Outcome<int>(120))))
+            .Invoking(b => b.AddChaosResult(true, -1, () => 120))
             .Should()
             .Throw<ValidationException>();
     }
@@ -178,7 +179,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
             .Invoking(b => b.AddChaosFault(
                 true,
                 1.5,
-                () => new ValueTask<Outcome<Exception>?>(new Outcome<Exception>(new InvalidOperationException()))))
+                () => new InvalidOperationException()))
             .Should()
             .Throw<ValidationException>();
     }

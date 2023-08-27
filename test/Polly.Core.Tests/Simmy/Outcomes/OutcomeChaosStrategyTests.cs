@@ -1,4 +1,5 @@
-﻿using Polly.Simmy.Outcomes;
+﻿using Polly.Simmy;
+using Polly.Simmy.Outcomes;
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
@@ -195,7 +196,7 @@ public class OutcomeChaosStrategyTests
 
         userDelegateExecuted.Should().BeFalse();
         _args.Should().HaveCount(1);
-        _args[0].Arguments.Should().BeOfType<OutcomeArguments<Exception, OnOutcomeInjectedArguments>>();
+        _args[0].Arguments.Should().BeOfType<OnOutcomeInjectedArguments<Exception>>();
         _args[0].Event.EventName.Should().Be(OutcomeConstants.OnFaultInjectedEvent);
         onFaultInjected.Should().BeTrue();
     }
@@ -243,36 +244,6 @@ public class OutcomeChaosStrategyTests
             userDelegateExecuted = true;
         });
 
-        userDelegateExecuted.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task Should_not_inject_fault_when_it_was_cancelled_running_the_fault_generator()
-    {
-        var userDelegateExecuted = false;
-        var fault = new InvalidOperationException("Dummy exception");
-
-        using var cts = new CancellationTokenSource();
-        var options = new OutcomeStrategyOptions<Exception>
-        {
-            InjectionRate = 0.6,
-            Enabled = true,
-            Randomizer = () => 0.5,
-            OutcomeGenerator = (_) =>
-            {
-                cts.Cancel();
-                return new ValueTask<Outcome<Exception>?>(new Outcome<Exception>(fault));
-            }
-        };
-
-        var sut = CreateSut<int>(options);
-        var restult = await sut.ExecuteAsync(async _ =>
-        {
-            userDelegateExecuted = true;
-            return await Task.FromResult(200);
-        }, cts.Token);
-
-        restult.Should().Be(200);
         userDelegateExecuted.Should().BeTrue();
     }
 
@@ -330,7 +301,7 @@ public class OutcomeChaosStrategyTests
         userDelegateExecuted.Should().BeFalse();
 
         _args.Should().HaveCount(1);
-        _args[0].Arguments.Should().BeOfType<OutcomeArguments<HttpStatusCode, OnOutcomeInjectedArguments>>();
+        _args[0].Arguments.Should().BeOfType<OnOutcomeInjectedArguments<HttpStatusCode>>();
         _args[0].Event.EventName.Should().Be(OutcomeConstants.OnOutcomeInjectedEvent);
         onResultInjected.Should().BeTrue();
     }

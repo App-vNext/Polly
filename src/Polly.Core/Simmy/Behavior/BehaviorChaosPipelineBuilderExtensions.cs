@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using Polly.Simmy.Behavior;
 
-namespace Polly.Simmy.Behavior;
+namespace Polly.Simmy;
 
 /// <summary>
 /// Extension methods for adding custom behaviors to a <see cref="ResiliencePipelineBuilder"/>.
@@ -52,7 +53,6 @@ public static class BehaviorChaosPipelineBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddStrategy(context => new BehaviorChaosStrategy(options, context.Telemetry), options);
-        return builder;
+        return builder.AddStrategy(context => new BehaviorChaosStrategy(options, context.Telemetry), options);
     }
 }

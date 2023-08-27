@@ -1,3 +1,4 @@
+using Polly.Simmy;
 using Polly.Simmy.Latency;
 using Polly.Testing;
 

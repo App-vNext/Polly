@@ -36,9 +36,9 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
         OutcomeGenerator = options.OutcomeGenerator is not null ? options.OutcomeGenerator : (_) => new(options.Outcome);
     }
 
-    public Func<OutcomeArguments<T, OnOutcomeInjectedArguments>, ValueTask>? OnOutcomeInjected { get; }
+    public Func<OnOutcomeInjectedArguments<T>, ValueTask>? OnOutcomeInjected { get; }
 
-    public Func<OutcomeArguments<Exception, OnOutcomeInjectedArguments>, ValueTask>? OnFaultInjected { get; }
+    public Func<OnOutcomeInjectedArguments<Exception>, ValueTask>? OnFaultInjected { get; }
 
     public Func<OutcomeGeneratorArguments, ValueTask<Outcome<T>?>>? OutcomeGenerator { get; }
 
@@ -87,7 +87,7 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
     private async ValueTask<Outcome<T>?> InjectOutcome(ResilienceContext context)
     {
         var outcome = await OutcomeGenerator!(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
-        var args = new OutcomeArguments<T, OnOutcomeInjectedArguments>(context, outcome.Value, new(context));
+        var args = new OnOutcomeInjectedArguments<T>(context, outcome.Value);
         _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnOutcomeInjectedEvent), context, args);
 
         if (OnOutcomeInjected is not null)
@@ -100,33 +100,20 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
 
     private async ValueTask<Exception?> InjectFault(ResilienceContext context)
     {
-        try
+        var fault = await FaultGenerator!(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
+        if (!fault.HasValue)
         {
-            var fault = await FaultGenerator!(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
-            if (!fault.HasValue)
-            {
-                return null;
-            }
-
-            // to prevent injecting the fault if it was cancelled while executing the FaultGenerator
-            context.CancellationToken.ThrowIfCancellationRequested();
-
-            Outcome = new(fault.Value.Exception!);
-            var args = new OutcomeArguments<Exception, OnOutcomeInjectedArguments>(context, new Outcome<Exception>(fault.Value.Exception!), new(context));
-            _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnFaultInjectedEvent), context, args);
-
-            if (OnFaultInjected is not null)
-            {
-                await OnFaultInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
-            }
-
-            return fault.Value.Exception;
-        }
-        catch (OperationCanceledException)
-        {
-            // fault injection might be cancelled during FaultGenerator, if so we run the user's delegate normally
-            context.CancellationToken = CancellationToken.None;
             return null;
         }
+
+        var args = new OnOutcomeInjectedArguments<Exception>(context, new Outcome<Exception>(fault.Value.Exception!));
+        _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnFaultInjectedEvent), context, args);
+
+        if (OnFaultInjected is not null)
+        {
+            await OnFaultInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
+
+        return fault.Value.Exception;
     }
 }

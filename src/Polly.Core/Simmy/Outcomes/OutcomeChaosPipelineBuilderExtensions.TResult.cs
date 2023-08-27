@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Polly.Simmy.Outcomes;
 
-namespace Polly.Simmy.Outcomes;
+namespace Polly.Simmy;
 
 /// <summary>
 /// Extension methods for adding outcome to a <see cref="ResiliencePipelineBuilder"/>.
@@ -20,7 +21,7 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        builder.AddFaultCore<TResult>(new OutcomeStrategyOptions<Exception>
+        builder.AddFaultCore(new OutcomeStrategyOptions<Exception>
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
@@ -39,15 +40,15 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
     /// <param name="faultGenerator">The exception generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(
-        this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<Exception>?>> faultGenerator)
+        this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Func<Exception?> faultGenerator)
     {
         Guard.NotNull(builder);
 
-        builder.AddFaultCore<TResult>(new OutcomeStrategyOptions<Exception>
+        builder.AddFaultCore(new OutcomeStrategyOptions<Exception>
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
-            OutcomeGenerator = (_) => faultGenerator()
+            OutcomeGenerator = (_) => new ValueTask<Outcome<Exception>?>(Task.FromResult<Outcome<Exception>?>(Outcome.FromResult(faultGenerator())))
         });
         return builder;
     }
@@ -100,7 +101,7 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
     /// <param name="outcomeGenerator">The outcome generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResiliencePipelineBuilder<TResult> AddChaosResult<TResult>(
-        this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<TResult>?>> outcomeGenerator)
+        this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Func<TResult?> outcomeGenerator)
     {
         Guard.NotNull(builder);
 
@@ -108,7 +109,7 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
-            OutcomeGenerator = (_) => outcomeGenerator()
+            OutcomeGenerator = (_) => new ValueTask<Outcome<TResult>?>(Task.FromResult<Outcome<TResult>?>(Outcome.FromResult(outcomeGenerator())))
         });
         return builder;
     }

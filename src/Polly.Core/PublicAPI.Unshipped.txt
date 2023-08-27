@@ -338,6 +338,7 @@ Polly.Simmy.Behavior.OnBehaviorInjectedArguments
 Polly.Simmy.Behavior.OnBehaviorInjectedArguments.Context.get -> Polly.ResilienceContext!
 Polly.Simmy.Behavior.OnBehaviorInjectedArguments.OnBehaviorInjectedArguments() -> void
 Polly.Simmy.Behavior.OnBehaviorInjectedArguments.OnBehaviorInjectedArguments(Polly.ResilienceContext! context) -> void
+Polly.Simmy.BehaviorChaosPipelineBuilderExtensions
 Polly.Simmy.EnabledGeneratorArguments
 Polly.Simmy.EnabledGeneratorArguments.Context.get -> Polly.ResilienceContext!
 Polly.Simmy.EnabledGeneratorArguments.EnabledGeneratorArguments() -> void
@@ -364,6 +365,7 @@ Polly.Simmy.Latency.OnLatencyArguments.Context.get -> Polly.ResilienceContext!
 Polly.Simmy.Latency.OnLatencyArguments.Latency.get -> System.TimeSpan
 Polly.Simmy.Latency.OnLatencyArguments.OnLatencyArguments() -> void
 Polly.Simmy.Latency.OnLatencyArguments.OnLatencyArguments(Polly.ResilienceContext! context, System.TimeSpan latency) -> void
+Polly.Simmy.LatencyChaosPipelineBuilderExtensions
 Polly.Simmy.MonkeyStrategy
 Polly.Simmy.MonkeyStrategy.EnabledGenerator.get -> System.Func<Polly.Simmy.EnabledGeneratorArguments, System.Threading.Tasks.ValueTask<bool>>!
 Polly.Simmy.MonkeyStrategy.InjectionRateGenerator.get -> System.Func<Polly.Simmy.InjectionRateGeneratorArguments, System.Threading.Tasks.ValueTask<double>>!
@@ -388,10 +390,12 @@ Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRateGenerator.set -> void
 Polly.Simmy.MonkeyStrategyOptions<TResult>.MonkeyStrategyOptions() -> void
 Polly.Simmy.MonkeyStrategyOptions<TResult>.Randomizer.get -> System.Func<double>!
 Polly.Simmy.MonkeyStrategyOptions<TResult>.Randomizer.set -> void
-Polly.Simmy.Outcomes.OnOutcomeInjectedArguments
-Polly.Simmy.Outcomes.OnOutcomeInjectedArguments.Context.get -> Polly.ResilienceContext!
-Polly.Simmy.Outcomes.OnOutcomeInjectedArguments.OnOutcomeInjectedArguments() -> void
-Polly.Simmy.Outcomes.OnOutcomeInjectedArguments.OnOutcomeInjectedArguments(Polly.ResilienceContext! context) -> void
+Polly.Simmy.OutcomeChaosPipelineBuilderExtensions
+Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>
+Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.OnOutcomeInjectedArguments() -> void
+Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.OnOutcomeInjectedArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome) -> void
+Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.Outcome.get -> Polly.Outcome<TResult>
 Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions
 Polly.Simmy.Outcomes.OutcomeGeneratorArguments
 Polly.Simmy.Outcomes.OutcomeGeneratorArguments.Context.get -> Polly.ResilienceContext!
@@ -400,7 +404,7 @@ Polly.Simmy.Outcomes.OutcomeGeneratorArguments.OutcomeGeneratorArguments(Polly.R
 Polly.Simmy.Outcomes.OutcomeStrategyOptions
 Polly.Simmy.Outcomes.OutcomeStrategyOptions.OutcomeStrategyOptions() -> void
 Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>
-Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OnOutcomeInjected.get -> System.Func<Polly.OutcomeArguments<TResult, Polly.Simmy.Outcomes.OnOutcomeInjectedArguments>, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OnOutcomeInjected.get -> System.Func<Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>, System.Threading.Tasks.ValueTask>?
 Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OnOutcomeInjected.set -> void
 Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.Outcome.get -> Polly.Outcome<TResult>?
 Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.Outcome.set -> void
@@ -502,15 +506,28 @@ static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry(this Polly.Resili
 static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Retry.RetryStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.Simmy.Behavior.BehaviorChaosPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(this TBuilder! builder, bool enabled, double injectionRate, System.Func<System.Threading.Tasks.ValueTask>! behavior) -> TBuilder!
 static Polly.Simmy.Behavior.BehaviorChaosPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(this TBuilder! builder, Polly.Simmy.Behavior.BehaviorStrategyOptions! options) -> TBuilder!
+static Polly.Simmy.BehaviorChaosPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(this TBuilder! builder, bool enabled, double injectionRate, System.Func<System.Threading.Tasks.ValueTask>! behavior) -> TBuilder!
+static Polly.Simmy.BehaviorChaosPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(this TBuilder! builder, Polly.Simmy.Behavior.BehaviorStrategyOptions! options) -> TBuilder!
 static Polly.Simmy.Latency.LatencyChaosPipelineBuilderExtensions.AddChaosLatency<TBuilder>(this TBuilder! builder, bool enabled, double injectionRate, System.TimeSpan delay) -> TBuilder!
 static Polly.Simmy.Latency.LatencyChaosPipelineBuilderExtensions.AddChaosLatency<TBuilder>(this TBuilder! builder, Polly.Simmy.Latency.LatencyStrategyOptions! options) -> TBuilder!
+static Polly.Simmy.LatencyChaosPipelineBuilderExtensions.AddChaosLatency<TBuilder>(this TBuilder! builder, bool enabled, double injectionRate, System.TimeSpan delay) -> TBuilder!
+static Polly.Simmy.LatencyChaosPipelineBuilderExtensions.AddChaosLatency<TBuilder>(this TBuilder! builder, Polly.Simmy.Latency.LatencyStrategyOptions! options) -> TBuilder!
+static Polly.Simmy.OutcomeChaosPipelineBuilderExtensions.AddChaosFault(this Polly.ResiliencePipelineBuilder! builder, bool enabled, double injectionRate, System.Exception! fault) -> Polly.ResiliencePipelineBuilder!
+static Polly.Simmy.OutcomeChaosPipelineBuilderExtensions.AddChaosFault(this Polly.ResiliencePipelineBuilder! builder, bool enabled, double injectionRate, System.Func<System.Exception?>! faultGenerator) -> Polly.ResiliencePipelineBuilder!
+static Polly.Simmy.OutcomeChaosPipelineBuilderExtensions.AddChaosFault(this Polly.ResiliencePipelineBuilder! builder, Polly.Simmy.Outcomes.OutcomeStrategyOptions<System.Exception!>! options) -> Polly.ResiliencePipelineBuilder!
+static Polly.Simmy.OutcomeChaosPipelineBuilderExtensions.AddChaosFault<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, bool enabled, double injectionRate, System.Exception! fault) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.Simmy.OutcomeChaosPipelineBuilderExtensions.AddChaosFault<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, bool enabled, double injectionRate, System.Func<System.Exception?>! faultGenerator) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.Simmy.OutcomeChaosPipelineBuilderExtensions.AddChaosFault<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Simmy.Outcomes.OutcomeStrategyOptions<System.Exception!>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.Simmy.OutcomeChaosPipelineBuilderExtensions.AddChaosResult<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, bool enabled, double injectionRate, System.Func<TResult?>! outcomeGenerator) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.Simmy.OutcomeChaosPipelineBuilderExtensions.AddChaosResult<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, bool enabled, double injectionRate, TResult result) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.Simmy.OutcomeChaosPipelineBuilderExtensions.AddChaosResult<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosFault(this Polly.ResiliencePipelineBuilder! builder, bool enabled, double injectionRate, System.Exception! fault) -> Polly.ResiliencePipelineBuilder!
-static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosFault(this Polly.ResiliencePipelineBuilder! builder, bool enabled, double injectionRate, System.Func<System.Threading.Tasks.ValueTask<Polly.Outcome<System.Exception!>?>>! faultGenerator) -> Polly.ResiliencePipelineBuilder!
+static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosFault(this Polly.ResiliencePipelineBuilder! builder, bool enabled, double injectionRate, System.Func<System.Exception?>! faultGenerator) -> Polly.ResiliencePipelineBuilder!
 static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosFault(this Polly.ResiliencePipelineBuilder! builder, Polly.Simmy.Outcomes.OutcomeStrategyOptions<System.Exception!>! options) -> Polly.ResiliencePipelineBuilder!
 static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosFault<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, bool enabled, double injectionRate, System.Exception! fault) -> Polly.ResiliencePipelineBuilder<TResult>!
-static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosFault<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, bool enabled, double injectionRate, System.Func<System.Threading.Tasks.ValueTask<Polly.Outcome<System.Exception!>?>>! faultGenerator) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosFault<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, bool enabled, double injectionRate, System.Func<System.Exception?>! faultGenerator) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosFault<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Simmy.Outcomes.OutcomeStrategyOptions<System.Exception!>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
-static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosResult<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, bool enabled, double injectionRate, System.Func<System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>! outcomeGenerator) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosResult<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, bool enabled, double injectionRate, System.Func<TResult?>! outcomeGenerator) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosResult<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, bool enabled, double injectionRate, TResult result) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.Simmy.Outcomes.OutcomeChaosPipelineBuilderExtensions.AddChaosResult<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, Polly.Timeout.TimeoutStrategyOptions! options) -> TBuilder!
