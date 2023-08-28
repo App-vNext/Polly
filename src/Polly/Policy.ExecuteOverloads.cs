@@ -69,7 +69,7 @@ public abstract partial class Policy : ISyncPolicy
         }
         finally
         {
-            RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            PolicyBase.RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
         }
     }
 
@@ -160,7 +160,7 @@ public abstract partial class Policy : ISyncPolicy
         }
         finally
         {
-            RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            PolicyBase.RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
         }
     }
 

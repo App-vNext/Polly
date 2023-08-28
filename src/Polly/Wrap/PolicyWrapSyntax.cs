@@ -1,5 +1,59 @@
 ﻿namespace Polly;
 
+/// <summary>
+/// Defines extensions for configuring <see cref="PolicyWrap"/> instances on an <see cref="ISyncPolicy"/> or <see cref="ISyncPolicy{TResult}"/>.
+/// </summary>
+public static class ISyncPolicyPolicyWrapExtensions
+{
+    /// <summary>
+    /// Wraps the specified outer policy round the inner policy.
+    /// </summary>
+    /// <param name="outerPolicy">The outer policy.</param>
+    /// <param name="innerPolicy">The inner policy.</param>
+    /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
+    public static PolicyWrap Wrap(this ISyncPolicy outerPolicy, ISyncPolicy innerPolicy)
+    {
+        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        return ((Policy)outerPolicy).Wrap(innerPolicy);
+    }
+
+    /// <summary>
+    /// Wraps the specified outer policy round the inner policy.
+    /// </summary>
+    /// <param name="outerPolicy">The outer policy.</param>
+    /// <param name="innerPolicy">The inner policy.</param>
+    /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
+    public static PolicyWrap<TResult> Wrap<TResult>(this ISyncPolicy outerPolicy, ISyncPolicy<TResult> innerPolicy)
+    {
+        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        return ((Policy)outerPolicy).Wrap(innerPolicy);
+    }
+
+    /// <summary>
+    /// Wraps the specified outer policy round the inner policy.
+    /// </summary>
+    /// <param name="outerPolicy">The outer policy.</param>
+    /// <param name="innerPolicy">The inner policy.</param>
+    /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
+    public static PolicyWrap<TResult> Wrap<TResult>(this ISyncPolicy<TResult> outerPolicy, ISyncPolicy innerPolicy)
+    {
+        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        return ((Policy<TResult>)outerPolicy).Wrap(innerPolicy);
+    }
+
+    /// <summary>
+    /// Wraps the specified outer policy round the inner policy.
+    /// </summary>
+    /// <param name="outerPolicy">The outer policy.</param>
+    /// <param name="innerPolicy">The inner policy.</param>
+    /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
+    public static PolicyWrap<TResult> Wrap<TResult>(this ISyncPolicy<TResult> outerPolicy, ISyncPolicy<TResult> innerPolicy)
+    {
+        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        return ((Policy<TResult>)outerPolicy).Wrap(innerPolicy);
+    }
+}
+
 public partial class Policy
 {
     /// <summary>
@@ -110,59 +164,5 @@ public partial class Policy
             default:
                 return Wrap(policies[0], Wrap(policies.Skip(1).ToArray()));
         }
-    }
-}
-
-/// <summary>
-/// Defines extensions for configuring <see cref="PolicyWrap"/> instances on an <see cref="ISyncPolicy"/> or <see cref="ISyncPolicy{TResult}"/>.
-/// </summary>
-public static class ISyncPolicyPolicyWrapExtensions
-{
-    /// <summary>
-    /// Wraps the specified outer policy round the inner policy.
-    /// </summary>
-    /// <param name="outerPolicy">The outer policy.</param>
-    /// <param name="innerPolicy">The inner policy.</param>
-    /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
-    public static PolicyWrap Wrap(this ISyncPolicy outerPolicy, ISyncPolicy innerPolicy)
-    {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
-        return ((Policy) outerPolicy).Wrap(innerPolicy);
-    }
-
-    /// <summary>
-    /// Wraps the specified outer policy round the inner policy.
-    /// </summary>
-    /// <param name="outerPolicy">The outer policy.</param>
-    /// <param name="innerPolicy">The inner policy.</param>
-    /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
-    public static PolicyWrap<TResult> Wrap<TResult>(this ISyncPolicy outerPolicy, ISyncPolicy<TResult> innerPolicy)
-    {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
-        return ((Policy)outerPolicy).Wrap(innerPolicy);
-    }
-
-    /// <summary>
-    /// Wraps the specified outer policy round the inner policy.
-    /// </summary>
-    /// <param name="outerPolicy">The outer policy.</param>
-    /// <param name="innerPolicy">The inner policy.</param>
-    /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
-    public static PolicyWrap<TResult> Wrap<TResult>(this ISyncPolicy<TResult> outerPolicy, ISyncPolicy innerPolicy)
-    {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
-        return ((Policy<TResult>)outerPolicy).Wrap(innerPolicy);
-    }
-
-    /// <summary>
-    /// Wraps the specified outer policy round the inner policy.
-    /// </summary>
-    /// <param name="outerPolicy">The outer policy.</param>
-    /// <param name="innerPolicy">The inner policy.</param>
-    /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
-    public static PolicyWrap<TResult> Wrap<TResult>(this ISyncPolicy<TResult> outerPolicy, ISyncPolicy<TResult> innerPolicy)
-    {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
-        return ((Policy<TResult>)outerPolicy).Wrap(innerPolicy);
     }
 }
