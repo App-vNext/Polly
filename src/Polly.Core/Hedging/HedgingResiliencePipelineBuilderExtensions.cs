@@ -61,15 +61,15 @@ public static class HedgingResiliencePipelineBuilderExtensions
     {
         var handler = new HedgingHandler<TResult>(
                         options.ShouldHandle!,
-                        options.HedgingActionGenerator,
+                        options.ActionGenerator,
                         IsGeneric: isGeneric);
 
         return new HedgingResilienceStrategy<TResult>(
-            options.HedgingDelay,
+            options.Delay,
             options.MaxHedgedAttempts,
             handler,
             options.OnHedging,
-            options.HedgingDelayGenerator,
+            options.DelayGenerator,
             context.TimeProvider,
             context.Telemetry);
     }

@@ -6,9 +6,9 @@ internal static class HedgingConstants
 
     public const string OnHedgingEventName = "OnHedging";
 
-    public const int DefaultMaxHedgedAttempts = 2;
+    public const int DefaultMaxHedgedAttempts = 1;
 
-    public const int MinimumHedgedAttempts = 2;
+    public const int MinimumHedgedAttempts = 1;
 
     public const int MaximumHedgedAttempts = 10;
 

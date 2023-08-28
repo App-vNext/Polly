@@ -48,9 +48,9 @@ public partial class IssuesTests
             {
                 builder.AddRetry(new()
                 {
-                    BackoffType = RetryBackoffType.Exponential,
+                    BackoffType = DelayBackoffType.Exponential,
                     UseJitter = true,
-                    RetryCount = endpointOptions.Retries,
+                    MaxRetryAttempts = endpointOptions.Retries,
                     Name = $"{context.PipelineKey.EndpointName}-Retry",
                 });
             }

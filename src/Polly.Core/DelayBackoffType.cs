@@ -1,38 +1,36 @@
 namespace Polly.Retry;
 
 /// <summary>
-/// The backoff type used by the retry strategy.
+/// The backoff type used by the strategies.
 /// </summary>
-public enum RetryBackoffType
+public enum DelayBackoffType
 {
     /// <summary>
-    /// The constant retry type.
+    /// The constant backoff type.
     /// </summary>
     /// <example>
     /// 200ms, 200ms, 200ms, etc.
     /// </example>
     /// <remarks>
-    /// Ensures a constant wait duration before each retry attempt.
-    /// For concurrent database access with a possibility of conflicting updates,
-    /// retrying the failures in a constant manner allows for consistent transient failure mitigation.
+    /// Ensures a constant backoff for each attempt.
     /// </remarks>
     Constant,
 
     /// <summary>
-    /// The linear retry type.
+    /// The linear backoff type.
     /// </summary>
     /// <example>
     /// 100ms, 200ms, 300ms, 400ms, etc.
     /// </example>
     /// <remarks>
-    /// Generates sleep durations in an linear manner.
+    /// Generates backoffs in an linear manner.
     /// In the case randomization introduced by the jitter and exponential growth are not appropriate,
-    /// the linear growth allows for more precise control over the delay intervals.
+    /// the linear growth allows for more precise control over the backoff intervals.
     /// </remarks>
     Linear,
 
     /// <summary>
-    /// The exponential delay type with the power of 2.
+    /// The exponential backoff type with the power of 2.
     /// </summary>
     /// <example>
     /// 200ms, 400ms, 800ms.

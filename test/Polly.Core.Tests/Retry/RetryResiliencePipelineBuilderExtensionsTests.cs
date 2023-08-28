@@ -14,13 +14,13 @@ public class RetryResiliencePipelineBuilderExtensionsTests
         {
             builder.AddRetry(new RetryStrategyOptions
             {
-                BackoffType = RetryBackoffType.Exponential,
-                RetryCount = 3,
-                BaseDelay = TimeSpan.FromSeconds(2),
+                BackoffType = DelayBackoffType.Exponential,
+                MaxRetryAttempts = 3,
+                Delay = TimeSpan.FromSeconds(2),
                 ShouldHandle = _ => PredicateResult.True,
             });
 
-            AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
+            AssertStrategy(builder, DelayBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
         }
     };
 
@@ -30,13 +30,13 @@ public class RetryResiliencePipelineBuilderExtensionsTests
         {
             builder.AddRetry(new RetryStrategyOptions<int>
             {
-                BackoffType = RetryBackoffType.Exponential,
-                RetryCount = 3,
-                BaseDelay = TimeSpan.FromSeconds(2),
+                BackoffType = DelayBackoffType.Exponential,
+                MaxRetryAttempts = 3,
+                Delay = TimeSpan.FromSeconds(2),
                 ShouldHandle = _ => PredicateResult.True
             });
 
-            AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
+            AssertStrategy(builder, DelayBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
         }
     };
 
@@ -66,10 +66,10 @@ public class RetryResiliencePipelineBuilderExtensionsTests
 
         builder.AddRetry(options);
 
-        AssertStrategy(builder, options.BackoffType, options.RetryCount, options.BaseDelay);
+        AssertStrategy(builder, options.BackoffType, options.MaxRetryAttempts, options.Delay);
     }
 
-    private static void AssertStrategy(ResiliencePipelineBuilder builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<object>>? assert = null)
+    private static void AssertStrategy(ResiliencePipelineBuilder builder, DelayBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<object>>? assert = null)
     {
         var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<RetryResilienceStrategy<object>>().Subject;
 
@@ -82,7 +82,7 @@ public class RetryResiliencePipelineBuilderExtensionsTests
 
     private static void AssertStrategy<T>(
         ResiliencePipelineBuilder<T> builder,
-        RetryBackoffType type,
+        DelayBackoffType type,
         int retries,
         TimeSpan delay,
         Action<RetryResilienceStrategy<T>>? assert = null)
@@ -113,7 +113,7 @@ public class RetryResiliencePipelineBuilderExtensionsTests
     [Fact]
     public void GetAggregatedDelay_ShouldReturnTheSameValue()
     {
-        var options = new RetryStrategyOptions { BackoffType = RetryBackoffType.Exponential, UseJitter = true };
+        var options = new RetryStrategyOptions { BackoffType = DelayBackoffType.Exponential, UseJitter = true };
 
         var delay = GetAggregatedDelay(options);
         GetAggregatedDelay(options).Should().Be(delay);
@@ -122,7 +122,7 @@ public class RetryResiliencePipelineBuilderExtensionsTests
     [Fact]
     public void GetAggregatedDelay_EnsureCorrectValue()
     {
-        var options = new RetryStrategyOptions { BackoffType = RetryBackoffType.Constant, BaseDelay = TimeSpan.FromSeconds(1), RetryCount = 5 };
+        var options = new RetryStrategyOptions { BackoffType = DelayBackoffType.Constant, Delay = TimeSpan.FromSeconds(1), MaxRetryAttempts = 5 };
 
         GetAggregatedDelay(options).Should().Be(TimeSpan.FromSeconds(5));
     }
@@ -133,11 +133,11 @@ public class RetryResiliencePipelineBuilderExtensionsTests
 
         var strategy = new ResiliencePipelineBuilder().AddRetry(new()
         {
-            RetryCount = options.RetryCount,
-            BaseDelay = options.BaseDelay,
+            MaxRetryAttempts = options.MaxRetryAttempts,
+            Delay = options.Delay,
             BackoffType = options.BackoffType,
             ShouldHandle = _ => PredicateResult.True, // always retry until all retries are exhausted
-            RetryDelayGenerator = args =>
+            DelayGenerator = args =>
             {
                 // the delay hint is calculated for this attempt by the retry strategy
                 aggregatedDelay += args.DelayHint;

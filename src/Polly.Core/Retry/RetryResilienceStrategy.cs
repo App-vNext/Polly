@@ -14,11 +14,11 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
         ResilienceStrategyTelemetry telemetry)
     {
         ShouldHandle = options.ShouldHandle;
-        BaseDelay = options.BaseDelay;
+        BaseDelay = options.Delay;
         BackoffType = options.BackoffType;
-        RetryCount = options.RetryCount;
+        RetryCount = options.MaxRetryAttempts;
         OnRetry = options.OnRetry;
-        DelayGenerator = options.RetryDelayGenerator;
+        DelayGenerator = options.DelayGenerator;
         UseJitter = options.UseJitter;
 
         _timeProvider = timeProvider;
@@ -28,7 +28,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
 
     public TimeSpan BaseDelay { get; }
 
-    public RetryBackoffType BackoffType { get; }
+    public DelayBackoffType BackoffType { get; }
 
     public int RetryCount { get; }
 
