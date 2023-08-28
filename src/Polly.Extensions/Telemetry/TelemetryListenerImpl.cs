@@ -10,15 +10,15 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
     private readonly ILogger _logger;
     private readonly Func<ResilienceContext, object?, object?> _resultFormatter;
+    private readonly List<TelemetryListener> _listeners;
     private readonly List<MeteringEnricher> _enrichers;
-    private readonly TelemetryListener? _listener;
 
     public TelemetryListenerImpl(TelemetryOptions options)
     {
         _enrichers = options.MeteringEnrichers.ToList();
         _logger = options.LoggerFactory.CreateLogger(TelemetryUtil.PollyDiagnosticSource);
         _resultFormatter = options.ResultFormatter;
-        _listener = options.TelemetryListener;
+        _listeners = options.TelemetryListeners.ToList();
 
         Counter = Meter.CreateCounter<int>(
             "resilience-events",
@@ -43,7 +43,13 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
     public override void Write<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
     {
-        _listener?.Write(in args);
+        if (_listeners.Count > 0)
+        {
+            foreach (var listener in _listeners)
+            {
+                listener.Write(in args);
+            }
+        }
 
         LogEvent(in args);
         MeterEvent(in args);
