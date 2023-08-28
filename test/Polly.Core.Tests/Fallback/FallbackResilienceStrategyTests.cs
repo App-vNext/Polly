@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using Polly.Fallback;
 using Polly.Telemetry;
 
