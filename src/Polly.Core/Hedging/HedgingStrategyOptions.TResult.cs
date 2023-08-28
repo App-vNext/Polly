@@ -30,9 +30,8 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the maximum hedged attempts to perform the desired task.
     /// </summary>
     /// <remarks>
-    /// The value defines how many concurrent hedged tasks will be triggered by the strategy.
-    /// This includes the primary hedged task that is initially performed, and the further tasks that will
-    /// be fetched from the provider and spawned in parallel.
+    /// The value defines the maximum number of hedged tasks that are executed by the strategy.
+    /// This value does not include the primary hedged task that is always performed initially.
     /// </remarks>
     /// <value>
     /// The default value is 1. The value must be bigger or equal to 1, and lower or equal to 10.
