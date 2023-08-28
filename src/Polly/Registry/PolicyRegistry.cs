@@ -158,13 +158,13 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <summary>
     /// Compares the existing policy for the specified key with a specified policy, and if they are equal, updates the policy with a third value.
     /// </summary>
-    /// <typeparam name="TPolicy">The type of the policy</typeparam>
+    /// <typeparam name="TPolicy">The type of the policy.</typeparam>
     /// <param name="key">The key whose value is compared with comparisonPolicy, and possibly replaced.</param>
     /// <param name="newPolicy">The policy that replaces the value for the specified <paramref name="key"/>, if the comparison results in equality.</param>
     /// <param name="comparisonPolicy">The policy that is compared to the existing policy at the specified key.</param>
     /// <returns>
-    /// true if the value with <paramref name="key"/> was equal to <paramref name="comparisonPolicy"/> and
-    /// replaced with <paramref name="newPolicy"/>; otherwise, false.
+    /// <see langword="true"/> if the value with <paramref name="key"/> was equal to <paramref name="comparisonPolicy"/> and
+    /// replaced with <paramref name="newPolicy"/>; otherwise, <see langword="false"/>.
     /// </returns>
     public bool TryUpdate<TPolicy>(string key, TPolicy newPolicy, TPolicy comparisonPolicy) where TPolicy : IsPolicy
     {
