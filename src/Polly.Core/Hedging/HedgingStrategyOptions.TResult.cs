@@ -79,7 +79,7 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <value>
     /// The default value is <see langword="null"/>.
     /// </value>
-    public Func<HedgingDelayArguments, ValueTask<TimeSpan>>? HedgingDelayGenerator { get; set; }
+    public Func<HedgingDelayGeneratorArguments, ValueTask<TimeSpan>>? HedgingDelayGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when a hedging is performed.

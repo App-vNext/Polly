@@ -90,7 +90,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <value>
     /// The default value is <see langword="null"/>.
     /// </value>
-    public Func<RetryDelayArguments<TResult>, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }
+    public Func<RetryDelayGeneratorArguments<TResult>, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets an event delegate that is raised when the retry happens.

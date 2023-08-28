@@ -8,14 +8,14 @@ namespace Polly.Hedging;
 /// <remarks>
 /// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
-public readonly struct HedgingDelayArguments
+public readonly struct HedgingDelayGeneratorArguments
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="HedgingDelayArguments"/> struct.
+    /// Initializes a new instance of the <see cref="HedgingDelayGeneratorArguments"/> struct.
     /// </summary>
     /// <param name="context">The context associated with the execution of a user-provided callback.</param>
     /// <param name="attemptNumber">The zero-based hedging attempt number.</param>
-    public HedgingDelayArguments(ResilienceContext context, int attemptNumber)
+    public HedgingDelayGeneratorArguments(ResilienceContext context, int attemptNumber)
     {
         Context = context;
         AttemptNumber = attemptNumber;

@@ -15,7 +15,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
         int maxHedgedAttempts,
         HedgingHandler<T> hedgingHandler,
         Func<OnHedgingArguments<T>, ValueTask>? onHedging,
-        Func<HedgingDelayArguments, ValueTask<TimeSpan>>? hedgingDelayGenerator,
+        Func<HedgingDelayGeneratorArguments, ValueTask<TimeSpan>>? hedgingDelayGenerator,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry)
     {
@@ -34,7 +34,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
 
     public int MaxHedgedAttempts { get; }
 
-    public Func<HedgingDelayArguments, ValueTask<TimeSpan>>? HedgingDelayGenerator { get; }
+    public Func<HedgingDelayGeneratorArguments, ValueTask<TimeSpan>>? HedgingDelayGenerator { get; }
 
     public HedgingHandler<T> HedgingHandler { get; }
 
@@ -133,6 +133,6 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
             return new ValueTask<TimeSpan>(HedgingDelay);
         }
 
-        return HedgingDelayGenerator(new HedgingDelayArguments(context, attempt));
+        return HedgingDelayGenerator(new HedgingDelayGeneratorArguments(context, attempt));
     }
 }
