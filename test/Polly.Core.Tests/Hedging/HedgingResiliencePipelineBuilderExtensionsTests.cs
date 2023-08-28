@@ -88,9 +88,9 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
                 },
                 OnHedging = args =>
                 {
-                    if (args.Outcome is not null)
+                    if (args.Outcome is { } outcome)
                     {
-                        results.Enqueue(args.Outcome!.Value.Result!.ToString()!);
+                        results.Enqueue(outcome.Result!.ToString()!);
                     }
                     else
                     {

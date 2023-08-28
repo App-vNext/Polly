@@ -43,6 +43,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
     public override void Write<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
     {
+        // stryker disable once equality : no means to test this
         if (_listeners.Count > 0)
         {
             foreach (var listener in _listeners)

@@ -25,7 +25,7 @@ public readonly struct RetryPredicateArguments<TResult> : IOutcomeArguments<TRes
     }
 
     /// <summary>
-    /// Gets the outcome of user-callback.
+    /// Gets the outcome of the user-specified callback.
     /// </summary>
     public Outcome<TResult> Outcome { get; }
 
