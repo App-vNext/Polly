@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Polly.Fallback;
 using Polly.Telemetry;
 
@@ -28,6 +29,27 @@ public class FallbackResilienceStrategyTests
         Create().Execute(_ => "error").Should().Be("success");
 
         _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments<string>);
+        called.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ShouldHandle_ArgumentsSetCorrectly()
+    {
+        var called = false;
+
+        _handler = new FallbackHandler<string>(
+            args =>
+            {
+                called = true;
+                args.Outcome.Result.Should().Be("ok");
+                args.Context.Should().NotBeNull();
+                called = true;
+
+                return PredicateResult.False;
+            },
+            args => Outcome.FromResultAsTask("fallback"));
+
+        Create().Execute(_ => "ok").Should().Be("ok");
         called.Should().BeTrue();
     }
 
