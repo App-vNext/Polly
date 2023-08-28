@@ -21,8 +21,7 @@ Polly.Telemetry.TelemetryOptions.LoggerFactory.set -> void
 Polly.Telemetry.TelemetryOptions.MeteringEnrichers.get -> System.Collections.Generic.ICollection<Polly.Telemetry.MeteringEnricher!>!
 Polly.Telemetry.TelemetryOptions.ResultFormatter.get -> System.Func<Polly.ResilienceContext!, object?, object?>!
 Polly.Telemetry.TelemetryOptions.ResultFormatter.set -> void
-Polly.Telemetry.TelemetryOptions.TelemetryListener.get -> Polly.Telemetry.TelemetryListener?
-Polly.Telemetry.TelemetryOptions.TelemetryListener.set -> void
+Polly.Telemetry.TelemetryOptions.TelemetryListeners.get -> System.Collections.Generic.ICollection<Polly.Telemetry.TelemetryListener!>!
 Polly.Telemetry.TelemetryOptions.TelemetryOptions() -> void
 Polly.TelemetryResiliencePipelineBuilderExtensions
 static Polly.PollyServiceCollectionExtensions.AddResiliencePipeline<TKey, TResult>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, TKey key, System.Action<Polly.ResiliencePipelineBuilder<TResult>!, Polly.DependencyInjection.AddResiliencePipelineContext<TKey>!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

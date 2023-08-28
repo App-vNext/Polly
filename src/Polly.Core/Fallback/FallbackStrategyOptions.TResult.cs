@@ -29,7 +29,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// The default value is <see langword="null"/>. This property is required.
     /// </value>
     [Required]
-    public Func<FallbackPredicateArguments<TResult>, ValueTask<Outcome<TResult>>>? FallbackAction { get; set; }
+    public Func<FallbackActionArguments<TResult>, ValueTask<Outcome<TResult>>>? FallbackAction { get; set; }
 
     /// <summary>
     /// Gets or sets event delegate that is raised when fallback happens.

@@ -32,6 +32,27 @@ public class FallbackResilienceStrategyTests
     }
 
     [Fact]
+    public void ShouldHandle_ArgumentsSetCorrectly()
+    {
+        var called = false;
+
+        _handler = new FallbackHandler<string>(
+            args =>
+            {
+                called = true;
+                args.Outcome.Result.Should().Be("ok");
+                args.Context.Should().NotBeNull();
+                called = true;
+
+                return PredicateResult.False;
+            },
+            args => Outcome.FromResultAsTask("fallback"));
+
+        Create().Execute(_ => "ok").Should().Be("ok");
+        called.Should().BeTrue();
+    }
+
+    [Fact]
     public void Handle_Result_FallbackActionThrows()
     {
         SetHandler(_ => true, () => throw new InvalidOperationException());

@@ -2,11 +2,11 @@ namespace Polly.Fallback;
 
 internal sealed record class FallbackHandler<T>(
     Func<FallbackPredicateArguments<T>, ValueTask<bool>> ShouldHandle,
-    Func<FallbackPredicateArguments<T>, ValueTask<Outcome<T>>> ActionGenerator)
+    Func<FallbackActionArguments<T>, ValueTask<Outcome<T>>> ActionGenerator)
 {
-    public async ValueTask<Outcome<TResult>> GetFallbackOutcomeAsync<TResult>(FallbackPredicateArguments<T> args)
+    public async ValueTask<Outcome<TResult>> GetFallbackOutcomeAsync<TResult>(FallbackActionArguments<T> args)
     {
-        var copiedArgs = new FallbackPredicateArguments<T>(
+        var copiedArgs = new FallbackActionArguments<T>(
             args.Context,
             args.Outcome.AsOutcome<T>());
 

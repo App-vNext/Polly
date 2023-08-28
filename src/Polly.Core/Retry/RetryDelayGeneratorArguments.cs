@@ -9,16 +9,16 @@ namespace Polly.Retry;
 /// <remarks>
 /// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
-public readonly struct RetryDelayArguments<TResult>
+public readonly struct RetryDelayGeneratorArguments<TResult>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RetryDelayArguments{TResult}"/> struct.
+    /// Initializes a new instance of the <see cref="RetryDelayGeneratorArguments{TResult}"/> struct.
     /// </summary>
     /// <param name="outcome">The context in which the resilience operation or event occurred.</param>
     /// <param name="context">The outcome of the resilience operation or event.</param>
     /// <param name="attemptNumber">The zero-based attempt number.</param>
     /// <param name="delayHint">The delay suggested by the retry strategy.</param>
-    public RetryDelayArguments(ResilienceContext context, Outcome<TResult> outcome, int attemptNumber, TimeSpan delayHint)
+    public RetryDelayGeneratorArguments(ResilienceContext context, Outcome<TResult> outcome, int attemptNumber, TimeSpan delayHint)
     {
         Context = context;
         Outcome = outcome;

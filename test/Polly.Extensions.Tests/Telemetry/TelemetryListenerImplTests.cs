@@ -464,7 +464,7 @@ public class TelemetryListenerImplTests : IDisposable
 
         if (_onEvent is not null)
         {
-            options.TelemetryListener = new FakeTelemetryListener(_onEvent);
+            options.TelemetryListeners.Add(new FakeTelemetryListener(_onEvent));
         }
 
         if (enrichers != null)

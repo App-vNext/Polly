@@ -8,7 +8,7 @@ public class FallbackHandlerTests
     {
         var handler = FallbackHelper.CreateHandler(_ => true, () => Outcome.FromResult("secondary"));
         var context = ResilienceContextPool.Shared.Get();
-        var outcome = await handler.GetFallbackOutcomeAsync<string>(new FallbackPredicateArguments<string>(context, Outcome.FromResult("primary")))!;
+        var outcome = await handler.GetFallbackOutcomeAsync<string>(new FallbackActionArguments<string>(context, Outcome.FromResult("primary")))!;
 
         outcome.Result.Should().Be("secondary");
     }
@@ -18,7 +18,7 @@ public class FallbackHandlerTests
     {
         var handler = FallbackHelper.CreateHandler(_ => true, () => Outcome.FromResult((object)"secondary"));
         var context = ResilienceContextPool.Shared.Get();
-        var outcome = await handler.GetFallbackOutcomeAsync<object>(new FallbackPredicateArguments<object>(context, Outcome.FromResult((object)"primary")))!;
+        var outcome = await handler.GetFallbackOutcomeAsync<object>(new FallbackActionArguments<object>(context, Outcome.FromResult((object)"primary")))!;
 
         outcome.Result.Should().Be("secondary");
     }

@@ -1,29 +1,29 @@
-namespace Polly.Fallback;
+﻿namespace Polly.Fallback;
 
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
 /// <summary>
-/// Represents arguments used in fallback handling scenarios.
+/// Arguments used by <see cref="FallbackStrategyOptions{TResult}.FallbackAction"/>.
 /// </summary>
 /// <typeparam name="TResult">The type of result.</typeparam>
 /// <remarks>
 /// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
-public readonly struct OnFallbackArguments<TResult> : IOutcomeArguments<TResult>
+public readonly struct FallbackActionArguments<TResult> : IOutcomeArguments<TResult>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OnFallbackArguments{TResult}"/> struct.
+    /// Initializes a new instance of the <see cref="FallbackActionArguments{TResult}"/> struct.
     /// </summary>
-    /// <param name="context">The outcome of the resilience operation or event.</param>
     /// <param name="outcome">The context in which the resilience operation or event occurred.</param>
-    public OnFallbackArguments(ResilienceContext context, Outcome<TResult> outcome)
+    /// <param name="context">The outcome of the resilience operation or event.</param>
+    public FallbackActionArguments(ResilienceContext context, Outcome<TResult> outcome)
     {
-        Outcome = outcome;
         Context = context;
+        Outcome = outcome;
     }
 
     /// <summary>
-    /// Gets the outcome that caused the fallback to be executed.
+    /// Gets the outcome that should be handled by the fallback.
     /// </summary>
     public Outcome<TResult> Outcome { get; }
 

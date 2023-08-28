@@ -23,12 +23,12 @@ public readonly struct HedgingPredicateArguments<TResult> : IOutcomeArguments<TR
     }
 
     /// <summary>
-    /// Gets the outcome of the resilience operation or event.
+    /// Gets the outcome of the user-specified callback.
     /// </summary>
     public Outcome<TResult> Outcome { get; }
 
     /// <summary>
-    /// Gets the context in which the resilience operation or event occurred.
+    /// Gets the context of this event.
     /// </summary>
     public ResilienceContext Context { get; }
 }
