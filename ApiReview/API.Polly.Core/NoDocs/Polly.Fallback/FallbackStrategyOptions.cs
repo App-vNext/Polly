@@ -12,7 +12,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     [Required]
     public Func<FallbackPredicateArguments<TResult>, ValueTask<bool>> ShouldHandle { get; set; }
     [Required]
-    public Func<FallbackPredicateArguments<TResult>, ValueTask<Outcome<TResult>>>? FallbackAction { get; set; }
+    public Func<FallbackActionArguments<TResult>, ValueTask<Outcome<TResult>>>? FallbackAction { get; set; }
     public Func<OnFallbackArguments<TResult>, ValueTask>? OnFallback { get; set; }
     public FallbackStrategyOptions();
 }
