@@ -13,9 +13,9 @@ internal sealed record class HedgingHandler<T>(
                 args.PrimaryContext,
                 args.ActionContext,
                 args.AttemptNumber,
-                (Func<ResilienceContext, ValueTask<Outcome<T>>>)(object)args.Callback);
+                args.Callback);
 
-            return (Func<ValueTask<Outcome<T>>>?)(object)ActionGenerator(copiedArgs)!;
+            return ActionGenerator(copiedArgs);
         }
 
         return CreateNonGenericAction(args);
