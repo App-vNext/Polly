@@ -82,7 +82,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     public Func<RetryPredicateArguments<TResult>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<RetryPredicateArguments<TResult>, TResult>.HandleOutcome;
 
     /// <summary>
-    /// Gets or sets a generator instance that calculates the time between retries.
+    /// Gets or sets a generator that calculates the delay between retries.
     /// </summary>
     /// <remarks>
     /// The generator has precedence over <see cref="Delay"/> and <see cref="BackoffType"/>.
