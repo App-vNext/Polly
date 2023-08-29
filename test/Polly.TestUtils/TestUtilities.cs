@@ -104,6 +104,6 @@ public static class TestUtilities
                 args.Event,
                 args.Context,
                 args.Arguments!,
-                args.Outcome.HasValue ? args.Outcome.Value.AsOutcome<object>() : null);
+                args.Outcome.HasValue ? Outcome.ToObjectOutcome(args.Outcome.Value) : null);
     }
 }

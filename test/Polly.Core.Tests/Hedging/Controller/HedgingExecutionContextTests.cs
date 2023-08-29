@@ -103,7 +103,8 @@ public class HedgingExecutionContextTests : IDisposable
 
         task.Should().NotBeNull();
         task!.ExecutionTaskSafe!.IsCompleted.Should().BeTrue();
-        task.Outcome.AsOutcome<DisposableResult>().Result!.Name.Should().Be("dummy");
+
+        Outcome.FromObjectOutcome<DisposableResult>(task.Outcome).Result!.Name.Should().Be("dummy");
         task.AcceptOutcome();
         context.LoadedTasks.Should().Be(1);
     }

@@ -225,7 +225,7 @@ internal sealed class TaskExecution<T>
     private async Task UpdateOutcomeAsync(Outcome<T> outcome)
     {
         var args = new HedgingPredicateArguments<T>(Context, outcome);
-        Outcome = outcome.AsOutcome();
+        Outcome = Polly.Outcome.ToObjectOutcome(outcome);
         IsHandled = await _handler.ShouldHandle(args).ConfigureAwait(Context.ContinueOnCapturedContext);
         TelemetryUtil.ReportExecutionAttempt(_telemetry, Context, outcome, AttemptNumber, ExecutionTime, IsHandled);
     }

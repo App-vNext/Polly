@@ -292,7 +292,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
     private void SetLastHandledOutcome_NeedsLock<TResult>(Outcome<TResult> outcome)
     {
-        _lastOutcome = outcome.AsOutcome();
+        _lastOutcome = Outcome.ToObjectOutcome(outcome);
 
         if (outcome.Exception is Exception exception)
         {

@@ -37,7 +37,7 @@ internal sealed class FallbackResilienceStrategy<T> : ResilienceStrategy<T>
 
         try
         {
-            return await _handler.GetFallbackOutcomeAsync<T>(new FallbackActionArguments<T>(context, outcome)).ConfigureAwait(context.ContinueOnCapturedContext);
+            return await _handler.GetFallbackOutcomeAsync(new FallbackActionArguments<T>(context, outcome)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         catch (Exception e)
         {

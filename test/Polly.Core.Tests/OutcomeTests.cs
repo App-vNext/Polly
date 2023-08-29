@@ -13,10 +13,11 @@ public class OutcomeTests
         result.Should().Be(10);
         outcome.ToString().Should().Be("10");
 
-        outcome.AsOutcome().HasResult.Should().BeTrue();
-        outcome.AsOutcome().Exception.Should().BeNull();
-        outcome.AsOutcome().IsVoidResult.Should().BeFalse();
-        outcome.AsOutcome().TryGetResult(out var resultObj).Should().BeTrue();
+        var objectOutcome = Outcome.ToObjectOutcome(outcome);
+        objectOutcome.HasResult.Should().BeTrue();
+        objectOutcome.Exception.Should().BeNull();
+        objectOutcome.IsVoidResult.Should().BeFalse();
+        objectOutcome.TryGetResult(out var resultObj).Should().BeTrue();
         resultObj.Should().Be(10);
     }
 
@@ -31,11 +32,12 @@ public class OutcomeTests
         outcome.Result.Should().Be(VoidResult.Instance);
         outcome.ToString().Should().Be("void");
 
-        outcome.AsOutcome().HasResult.Should().BeTrue();
-        outcome.AsOutcome().Exception.Should().BeNull();
-        outcome.AsOutcome().IsVoidResult.Should().BeTrue();
-        outcome.AsOutcome().TryGetResult(out _).Should().BeFalse();
-        outcome.AsOutcome().Result.Should().Be(VoidResult.Instance);
+        var objectOutcome = Outcome.ToObjectOutcome(outcome);
+        objectOutcome.HasResult.Should().BeTrue();
+        objectOutcome.Exception.Should().BeNull();
+        objectOutcome.IsVoidResult.Should().BeTrue();
+        objectOutcome.TryGetResult(out _).Should().BeFalse();
+        objectOutcome.Result.Should().Be(VoidResult.Instance);
     }
 
     [Fact]
@@ -49,11 +51,12 @@ public class OutcomeTests
         outcome.TryGetResult(out var result).Should().BeFalse();
         outcome.ToString().Should().Be("Dummy message.");
 
-        outcome.AsOutcome().HasResult.Should().BeFalse();
-        outcome.AsOutcome().Exception.Should().NotBeNull();
-        outcome.AsOutcome().IsVoidResult.Should().BeFalse();
-        outcome.AsOutcome().TryGetResult(out _).Should().BeFalse();
-        outcome.AsOutcome().ExceptionDispatchInfo.Should().Be(outcome.ExceptionDispatchInfo);
+        var objectOutcome = Outcome.ToObjectOutcome(outcome);
+        objectOutcome.HasResult.Should().BeFalse();
+        objectOutcome.Exception.Should().NotBeNull();
+        objectOutcome.IsVoidResult.Should().BeFalse();
+        objectOutcome.TryGetResult(out _).Should().BeFalse();
+        objectOutcome.ExceptionDispatchInfo.Should().Be(outcome.ExceptionDispatchInfo);
     }
 
     [Fact]
