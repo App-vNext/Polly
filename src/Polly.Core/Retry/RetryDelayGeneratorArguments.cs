@@ -3,7 +3,7 @@ namespace Polly.Retry;
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
 /// <summary>
-/// Represents the arguments used by <see cref="RetryStrategyOptions{TResult}.RetryDelayGenerator"/> for generating the next retry delay.
+/// Represents the arguments used by <see cref="RetryStrategyOptions{TResult}.DelayGenerator"/> for generating the next retry delay.
 /// </summary>
 /// <typeparam name="TResult">The type of result.</typeparam>
 /// <remarks>

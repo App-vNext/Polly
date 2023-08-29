@@ -18,9 +18,9 @@ internal static partial class Helper
             {
                 builder.AddRetry(new RetryStrategyOptions<string>
                 {
-                    RetryCount = 3,
-                    BackoffType = RetryBackoffType.Constant,
-                    BaseDelay = delay,
+                    MaxRetryAttempts = 3,
+                    BackoffType = DelayBackoffType.Constant,
+                    Delay = delay,
                     ShouldHandle = args => args.Outcome switch
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True,

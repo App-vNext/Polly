@@ -23,7 +23,7 @@ public class RetryHelperTests
     [Theory]
     public void UnsupportedRetryBackoffType_Throws(bool jitter)
     {
-        RetryBackoffType type = (RetryBackoffType)99;
+        DelayBackoffType type = (DelayBackoffType)99;
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
@@ -43,15 +43,15 @@ public class RetryHelperTests
             _randomizer = () => 0.5;
         }
 
-        RetryHelper.GetRetryDelay(RetryBackoffType.Constant, jitter, 0, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
-        RetryHelper.GetRetryDelay(RetryBackoffType.Constant, jitter, 1, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
-        RetryHelper.GetRetryDelay(RetryBackoffType.Constant, jitter, 2, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Constant, jitter, 0, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Constant, jitter, 1, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Constant, jitter, 2, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
 
         var expected = !jitter ? TimeSpan.FromSeconds(1) : TimeSpan.FromSeconds(1.25);
 
-        RetryHelper.GetRetryDelay(RetryBackoffType.Constant, jitter, 0, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(expected);
-        RetryHelper.GetRetryDelay(RetryBackoffType.Constant, jitter, 1, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(expected);
-        RetryHelper.GetRetryDelay(RetryBackoffType.Constant, jitter, 2, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(expected);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Constant, jitter, 0, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(expected);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Constant, jitter, 1, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(expected);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Constant, jitter, 2, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(expected);
     }
 
     [InlineData(true)]
@@ -61,23 +61,23 @@ public class RetryHelperTests
     {
         double state = 0;
 
-        RetryHelper.GetRetryDelay(RetryBackoffType.Linear, jitter, 0, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
-        RetryHelper.GetRetryDelay(RetryBackoffType.Linear, jitter, 1, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
-        RetryHelper.GetRetryDelay(RetryBackoffType.Linear, jitter, 2, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Linear, jitter, 0, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Linear, jitter, 1, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Linear, jitter, 2, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
 
         if (jitter)
         {
             _randomizer = () => 0.5;
 
-            RetryHelper.GetRetryDelay(RetryBackoffType.Linear, jitter, 0, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(1.25));
-            RetryHelper.GetRetryDelay(RetryBackoffType.Linear, jitter, 1, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(2.5));
-            RetryHelper.GetRetryDelay(RetryBackoffType.Linear, jitter, 2, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(3.75));
+            RetryHelper.GetRetryDelay(DelayBackoffType.Linear, jitter, 0, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(1.25));
+            RetryHelper.GetRetryDelay(DelayBackoffType.Linear, jitter, 1, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(2.5));
+            RetryHelper.GetRetryDelay(DelayBackoffType.Linear, jitter, 2, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(3.75));
         }
         else
         {
-            RetryHelper.GetRetryDelay(RetryBackoffType.Linear, jitter, 0, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(1));
-            RetryHelper.GetRetryDelay(RetryBackoffType.Linear, jitter, 1, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(2));
-            RetryHelper.GetRetryDelay(RetryBackoffType.Linear, jitter, 2, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(3));
+            RetryHelper.GetRetryDelay(DelayBackoffType.Linear, jitter, 0, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(1));
+            RetryHelper.GetRetryDelay(DelayBackoffType.Linear, jitter, 1, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(2));
+            RetryHelper.GetRetryDelay(DelayBackoffType.Linear, jitter, 2, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(3));
         }
     }
 
@@ -86,13 +86,13 @@ public class RetryHelperTests
     {
         double state = 0;
 
-        RetryHelper.GetRetryDelay(RetryBackoffType.Exponential, false, 0, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
-        RetryHelper.GetRetryDelay(RetryBackoffType.Exponential, false, 1, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
-        RetryHelper.GetRetryDelay(RetryBackoffType.Exponential, false, 2, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Exponential, false, 0, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Exponential, false, 1, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
+        RetryHelper.GetRetryDelay(DelayBackoffType.Exponential, false, 2, TimeSpan.Zero, ref state, _randomizer).Should().Be(TimeSpan.Zero);
 
-        RetryHelper.GetRetryDelay(RetryBackoffType.Exponential, false, 0, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(1));
-        RetryHelper.GetRetryDelay(RetryBackoffType.Exponential, false, 1, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(2));
-        RetryHelper.GetRetryDelay(RetryBackoffType.Exponential, false, 2, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(4));
+        RetryHelper.GetRetryDelay(DelayBackoffType.Exponential, false, 0, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(1));
+        RetryHelper.GetRetryDelay(DelayBackoffType.Exponential, false, 1, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(2));
+        RetryHelper.GetRetryDelay(DelayBackoffType.Exponential, false, 2, TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(TimeSpan.FromSeconds(4));
     }
 
     [InlineData(1)]
@@ -136,7 +136,7 @@ public class RetryHelperTests
 
         for (int i = 0; i < retryCount; i++)
         {
-            result.Add(RetryHelper.GetRetryDelay(RetryBackoffType.Exponential, true, i, baseDelay, ref state, random));
+            result.Add(RetryHelper.GetRetryDelay(DelayBackoffType.Exponential, true, i, baseDelay, ref state, random));
         }
 
         return result;

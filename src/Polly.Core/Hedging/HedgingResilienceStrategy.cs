@@ -20,21 +20,21 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
         ResilienceStrategyTelemetry telemetry)
     {
         HedgingDelay = hedgingDelay;
-        MaxHedgedAttempts = maxHedgedAttempts;
-        HedgingDelayGenerator = hedgingDelayGenerator;
+        TotalAttempts = maxHedgedAttempts + 1; // include the initial attempt
+        DelayGenerator = hedgingDelayGenerator;
         _timeProvider = timeProvider;
         HedgingHandler = hedgingHandler;
         OnHedging = onHedging;
 
         _telemetry = telemetry;
-        _controller = new HedgingController<T>(telemetry, timeProvider, HedgingHandler, maxHedgedAttempts);
+        _controller = new HedgingController<T>(telemetry, timeProvider, HedgingHandler, TotalAttempts);
     }
 
     public TimeSpan HedgingDelay { get; }
 
-    public int MaxHedgedAttempts { get; }
+    public int TotalAttempts { get; }
 
-    public Func<HedgingDelayGeneratorArguments, ValueTask<TimeSpan>>? HedgingDelayGenerator { get; }
+    public Func<HedgingDelayGeneratorArguments, ValueTask<TimeSpan>>? DelayGenerator { get; }
 
     public HedgingHandler<T> HedgingHandler { get; }
 
@@ -128,11 +128,11 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
 
     internal ValueTask<TimeSpan> GetHedgingDelayAsync(ResilienceContext context, int attempt)
     {
-        if (HedgingDelayGenerator == null)
+        if (DelayGenerator == null)
         {
             return new ValueTask<TimeSpan>(HedgingDelay);
         }
 
-        return HedgingDelayGenerator(new HedgingDelayGeneratorArguments(context, attempt));
+        return DelayGenerator(new HedgingDelayGeneratorArguments(context, attempt));
     }
 }

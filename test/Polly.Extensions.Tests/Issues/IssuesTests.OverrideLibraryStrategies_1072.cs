@@ -27,7 +27,7 @@ public partial class IssuesTests
                     SocketException => PredicateResult.True,
                     _ => PredicateResult.False
                 },
-                BaseDelay = TimeSpan.Zero
+                Delay = TimeSpan.Zero
             }));
         }
 

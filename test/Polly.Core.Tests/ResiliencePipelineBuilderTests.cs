@@ -127,13 +127,13 @@ public class ResiliencePipelineBuilderTests
         builder.Validator(new ResilienceValidationContext("ABC", "ABC"));
 
         builder
-            .Invoking(b => b.Validator(new ResilienceValidationContext(new RetryStrategyOptions { RetryCount = -4 }, "The primary message.")))
+            .Invoking(b => b.Validator(new ResilienceValidationContext(new RetryStrategyOptions { MaxRetryAttempts = -4 }, "The primary message.")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""
             The primary message.
             Validation Errors:
-            The field RetryCount must be between 1 and 2147483647.
+            The field MaxRetryAttempts must be between 1 and 2147483647.
             """);
     }
 

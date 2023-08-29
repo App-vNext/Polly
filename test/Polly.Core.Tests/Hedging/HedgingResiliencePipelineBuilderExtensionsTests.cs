@@ -24,7 +24,7 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
     {
         _genericBuilder.AddHedging(new HedgingStrategyOptions<string>
         {
-            HedgingActionGenerator = args => () => Outcome.FromResultAsTask("dummy"),
+            ActionGenerator = args => () => Outcome.FromResultAsTask("dummy"),
             ShouldHandle = _ => PredicateResult.True
         });
 
@@ -37,7 +37,7 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
     public void AddHedging_InvalidOptions_Throws()
     {
         _builder
-            .Invoking(b => b.AddHedging(new HedgingStrategyOptions { HedgingActionGenerator = null! }))
+            .Invoking(b => b.AddHedging(new HedgingStrategyOptions { ActionGenerator = null! }))
             .Should()
             .Throw<ValidationException>();
     }
@@ -66,13 +66,13 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
             .AddHedging(new HedgingStrategyOptions
             {
                 MaxHedgedAttempts = 4,
-                HedgingDelay = TimeSpan.FromMilliseconds(20),
+                Delay = TimeSpan.FromMilliseconds(20),
                 ShouldHandle = args => args.Outcome.Result switch
                 {
                     "error" => PredicateResult.True,
                     _ => PredicateResult.False
                 },
-                HedgingActionGenerator = args =>
+                ActionGenerator = args =>
                 {
                     return async () =>
                     {

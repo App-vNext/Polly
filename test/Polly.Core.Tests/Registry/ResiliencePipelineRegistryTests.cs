@@ -269,8 +269,8 @@ public class ResiliencePipelineRegistryTests
             builder.AddRetry(new RetryStrategyOptions
             {
                 ShouldHandle = _ => PredicateResult.True,
-                RetryCount = retryCount,
-                BaseDelay = TimeSpan.FromMilliseconds(2),
+                MaxRetryAttempts = retryCount,
+                Delay = TimeSpan.FromMilliseconds(2),
             });
         });
 
@@ -345,8 +345,8 @@ public class ResiliencePipelineRegistryTests
             builder.AddRetry(new RetryStrategyOptions<string>
             {
                 ShouldHandle = _ => PredicateResult.True,
-                RetryCount = retryCount,
-                BaseDelay = TimeSpan.FromMilliseconds(2),
+                MaxRetryAttempts = retryCount,
+                Delay = TimeSpan.FromMilliseconds(2),
             });
         });
 
