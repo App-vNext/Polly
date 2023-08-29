@@ -28,7 +28,7 @@ internal sealed class BridgeComponent<T> : BridgeComponentBase
                 static async (context, state) =>
                 {
                     var outcome = await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
-                    return AsOutcome<TResult, T>(outcome);
+                    return ConvertOutcome<TResult, T>(outcome);
                 },
                 context,
                 (callback, state));
@@ -41,7 +41,7 @@ internal sealed class BridgeComponent<T> : BridgeComponentBase
     {
         if (valueTask.IsCompletedSuccessfully)
         {
-            return new ValueTask<Outcome<TTo>>(AsOutcome<T, TTo>(valueTask.Result));
+            return new ValueTask<Outcome<TTo>>(ConvertOutcome<T, TTo>(valueTask.Result));
         }
 
         return ConvertValueTaskAsync(valueTask, resilienceContext);
@@ -49,11 +49,11 @@ internal sealed class BridgeComponent<T> : BridgeComponentBase
         static async ValueTask<Outcome<TTo>> ConvertValueTaskAsync(ValueTask<Outcome<T>> valueTask, ResilienceContext resilienceContext)
         {
             var outcome = await valueTask.ConfigureAwait(resilienceContext.ContinueOnCapturedContext);
-            return AsOutcome<T, TTo>(outcome);
+            return ConvertOutcome<T, TTo>(outcome);
         }
     }
 
-    internal static Outcome<TTo> AsOutcome<TFrom, TTo>(Outcome<TFrom> outcome)
+    private static Outcome<TTo> ConvertOutcome<TFrom, TTo>(Outcome<TFrom> outcome)
     {
         if (outcome.ExceptionDispatchInfo is not null)
         {
