@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using Polly.Fallback;
 using Polly.Telemetry;
 
