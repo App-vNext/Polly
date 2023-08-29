@@ -2,7 +2,7 @@
 
 namespace Polly.Retry;
 
-public enum RetryBackoffType
+public enum DelayBackoffType
 {
     Constant = 0,
     Linear = 1,
