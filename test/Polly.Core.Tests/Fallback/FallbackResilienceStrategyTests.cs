@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Polly.Fallback;
 using Polly.Telemetry;
 
@@ -31,25 +32,42 @@ public class FallbackResilienceStrategyTests
         called.Should().BeTrue();
     }
 
-    [Fact]
-    public void ShouldHandle_ArgumentsSetCorrectly()
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void ShouldHandle_ArgumentsSetCorrectly(bool handle)
     {
-        var called = false;
+        var called = 0;
 
         _handler = new FallbackHandler<string>(
             args =>
             {
-                called = true;
                 args.Outcome.Result.Should().Be("ok");
                 args.Context.Should().NotBeNull();
-                called = true;
+                called++;
 
-                return PredicateResult.False;
+                return new ValueTask<bool>(handle);
             },
-            args => Outcome.FromResultAsTask("fallback"));
+            args =>
+            {
+                args.Outcome.Result.Should().Be("ok");
+                args.Context.Should().NotBeNull();
+                called++;
+                return Outcome.FromResultAsTask("fallback");
+            });
 
-        Create().Execute(_ => "ok").Should().Be("ok");
-        called.Should().BeTrue();
+        var result = Create().Execute(_ => "ok");
+
+        if (handle)
+        {
+            result.Should().Be("fallback");
+            called.Should().Be(2);
+        }
+        else
+        {
+            result.Should().Be("ok");
+            called.Should().Be(1);
+        }
     }
 
     [Fact]
