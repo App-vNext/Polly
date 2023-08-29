@@ -18,7 +18,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     private readonly TimeSpan _breakDuration;
     private DateTimeOffset _blockedUntil;
     private CircuitState _circuitState = CircuitState.Closed;
-    private Outcome<object>? _lastOutcome;
+    private Outcome<T>? _lastOutcome;
     private BrokenCircuitException _breakingException = new();
     private bool _disposed;
 
@@ -66,7 +66,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         }
     }
 
-    public Outcome<object>? LastHandledOutcome
+    public Outcome<T>? LastHandledOutcome
     {
         get
         {
@@ -290,9 +290,9 @@ internal sealed class CircuitStateController<T> : IDisposable
         return false;
     }
 
-    private void SetLastHandledOutcome_NeedsLock<TResult>(Outcome<TResult> outcome)
+    private void SetLastHandledOutcome_NeedsLock(Outcome<T> outcome)
     {
-        _lastOutcome = Outcome.ToObjectOutcome(outcome);
+        _lastOutcome = outcome;
 
         if (outcome.Exception is Exception exception)
         {
@@ -300,7 +300,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         }
         else if (outcome.TryGetResult(out var result))
         {
-            _breakingException = new BrokenCircuitException<TResult>(BrokenCircuitException.DefaultMessage, result!);
+            _breakingException = new BrokenCircuitException<T>(BrokenCircuitException.DefaultMessage, result!);
         }
     }
 

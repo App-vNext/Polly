@@ -52,24 +52,4 @@ public static class Outcome
     internal static Outcome<VoidResult> Void => FromResult(VoidResult.Instance);
 
     internal static Outcome<VoidResult> FromException(Exception exception) => FromException<VoidResult>(exception);
-
-    internal static Outcome<object> ToObjectOutcome<T>(Outcome<T> outcome)
-    {
-        if (outcome.ExceptionDispatchInfo is null)
-        {
-            return FromResult((object?)outcome.Result);
-        }
-
-        return new Outcome<object>(outcome.ExceptionDispatchInfo);
-    }
-
-    internal static Outcome<T> FromObjectOutcome<T>(Outcome<object> outcome)
-    {
-        if (outcome.ExceptionDispatchInfo is null)
-        {
-            return FromResult((T)outcome.Result!);
-        }
-
-        return new Outcome<T>(outcome.ExceptionDispatchInfo);
-    }
 }

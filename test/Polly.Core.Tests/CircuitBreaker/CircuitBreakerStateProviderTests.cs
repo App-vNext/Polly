@@ -18,7 +18,6 @@ public class CircuitBreakerStateProviderTests
         var provider = new CircuitBreakerStateProvider();
 
         provider.CircuitState.Should().Be(CircuitState.Closed);
-        provider.LastHandledOutcome.Should().Be(null);
     }
 
     [Fact]
@@ -36,10 +35,10 @@ public class CircuitBreakerStateProviderTests
     public void Initialize_Twice_Throws()
     {
         var provider = new CircuitBreakerStateProvider();
-        provider.Initialize(() => CircuitState.Closed, () => null);
+        provider.Initialize(() => CircuitState.Closed);
 
         provider
-            .Invoking(c => c.Initialize(() => CircuitState.Closed, () => null))
+            .Invoking(c => c.Initialize(() => CircuitState.Closed))
             .Should()
             .Throw<InvalidOperationException>();
     }
@@ -49,24 +48,16 @@ public class CircuitBreakerStateProviderTests
     {
         var provider = new CircuitBreakerStateProvider();
         var stateCalled = false;
-        var exceptionCalled = false;
 
         provider.Initialize(
             () =>
             {
                 stateCalled = true;
                 return CircuitState.HalfOpen;
-            },
-            () =>
-            {
-                exceptionCalled = true;
-                return Outcome.FromException<object>(new InvalidOperationException());
             });
 
         provider.CircuitState.Should().Be(CircuitState.HalfOpen);
-        provider.LastHandledOutcome!.Value.Exception.Should().BeOfType<InvalidOperationException>();
 
         stateCalled.Should().BeTrue();
-        exceptionCalled.Should().BeTrue();
     }
 }

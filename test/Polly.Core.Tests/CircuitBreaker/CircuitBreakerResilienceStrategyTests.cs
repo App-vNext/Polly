@@ -44,7 +44,6 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _options.StateProvider.IsInitialized.Should().BeTrue();
 
         _options.StateProvider.CircuitState.Should().Be(CircuitState.Closed);
-        _options.StateProvider.LastHandledOutcome.Should().Be(null);
     }
 
     [Fact]

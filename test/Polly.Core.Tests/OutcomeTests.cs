@@ -12,13 +12,6 @@ public class OutcomeTests
         outcome.TryGetResult(out var result).Should().BeTrue();
         result.Should().Be(10);
         outcome.ToString().Should().Be("10");
-
-        var objectOutcome = Outcome.ToObjectOutcome(outcome);
-        objectOutcome.HasResult.Should().BeTrue();
-        objectOutcome.Exception.Should().BeNull();
-        objectOutcome.IsVoidResult.Should().BeFalse();
-        objectOutcome.TryGetResult(out var resultObj).Should().BeTrue();
-        resultObj.Should().Be(10);
     }
 
     [Fact]
@@ -31,13 +24,6 @@ public class OutcomeTests
         outcome.TryGetResult(out var result).Should().BeFalse();
         outcome.Result.Should().Be(VoidResult.Instance);
         outcome.ToString().Should().Be("void");
-
-        var objectOutcome = Outcome.ToObjectOutcome(outcome);
-        objectOutcome.HasResult.Should().BeTrue();
-        objectOutcome.Exception.Should().BeNull();
-        objectOutcome.IsVoidResult.Should().BeTrue();
-        objectOutcome.TryGetResult(out _).Should().BeFalse();
-        objectOutcome.Result.Should().Be(VoidResult.Instance);
     }
 
     [Fact]
@@ -50,13 +36,6 @@ public class OutcomeTests
         outcome.IsVoidResult.Should().BeFalse();
         outcome.TryGetResult(out var result).Should().BeFalse();
         outcome.ToString().Should().Be("Dummy message.");
-
-        var objectOutcome = Outcome.ToObjectOutcome(outcome);
-        objectOutcome.HasResult.Should().BeFalse();
-        objectOutcome.Exception.Should().NotBeNull();
-        objectOutcome.IsVoidResult.Should().BeFalse();
-        objectOutcome.TryGetResult(out _).Should().BeFalse();
-        objectOutcome.ExceptionDispatchInfo.Should().Be(outcome.ExceptionDispatchInfo);
     }
 
     [Fact]

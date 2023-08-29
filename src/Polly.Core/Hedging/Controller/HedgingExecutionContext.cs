@@ -156,9 +156,7 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
             var finishedExecution = _tasks.First(static t => t.ExecutionTaskSafe!.IsCompleted);
             finishedExecution.AcceptOutcome();
 
-            var outcome = Outcome.FromObjectOutcome<T>(finishedExecution.Outcome);
-
-            return new ExecutionInfo<T>(null, false, outcome);
+            return new ExecutionInfo<T>(null, false, finishedExecution.Outcome);
         }
 
         return new ExecutionInfo<T>(null, false, null);
