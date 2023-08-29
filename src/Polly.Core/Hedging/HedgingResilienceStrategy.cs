@@ -99,7 +99,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
                 continue;
             }
 
-            outcome = execution.Outcome.AsOutcome<T>();
+            outcome = execution.Outcome;
 
             if (!execution.IsHandled)
             {

@@ -99,11 +99,18 @@ public static class TestUtilities
 
     public static TelemetryEventArguments<object, object> AsObjectArguments<T, TArgs>(this TelemetryEventArguments<T, TArgs> args)
     {
+        Outcome<object>? outcome = args.Outcome switch
+        {
+            null => null,
+            { Exception: { } ex } => Outcome.FromException<object>(ex),
+            _ => Outcome.FromResult<object>(args.Outcome!.Value.Result),
+        };
+
         return new TelemetryEventArguments<object, object>(
                 args.Source,
                 args.Event,
                 args.Context,
                 args.Arguments!,
-                args.Outcome.HasValue ? args.Outcome.Value.AsOutcome<object>() : null);
+                outcome);
     }
 }

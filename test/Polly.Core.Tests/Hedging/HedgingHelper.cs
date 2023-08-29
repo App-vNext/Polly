@@ -9,10 +9,7 @@ internal static class HedgingHelper
         Func<Outcome<T>, bool> shouldHandle,
         Func<HedgingActionGeneratorArguments<T>, Func<ValueTask<Outcome<T>>>?> generator)
     {
-        return new HedgingHandler<T>(
-            args => new ValueTask<bool>(shouldHandle(args.Outcome!))!,
-            generator,
-            true);
+        return new HedgingHandler<T>(args => new ValueTask<bool>(shouldHandle(args.Outcome!))!, generator);
     }
 }
 

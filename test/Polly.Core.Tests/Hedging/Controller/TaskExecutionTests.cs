@@ -58,7 +58,7 @@ public class TaskExecutionTests : IDisposable
             99);
 
         await execution.ExecutionTaskSafe!;
-        ((DisposableResult)execution.Outcome.Result!).Name.Should().Be(value);
+        execution.Outcome.Result!.Name.Should().Be(value);
         execution.IsHandled.Should().Be(handled);
         AssertPrimaryContext(execution.Context, execution);
 
@@ -98,7 +98,7 @@ public class TaskExecutionTests : IDisposable
 
         await execution.ExecutionTaskSafe!;
 
-        ((DisposableResult)execution.Outcome.Result!).Name.Should().Be(value);
+        execution.Outcome.Result!.Name.Should().Be(value);
         execution.IsHandled.Should().Be(handled);
         AssertSecondaryContext(execution.Context, execution);
     }

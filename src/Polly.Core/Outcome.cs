@@ -52,5 +52,4 @@ public static class Outcome
     internal static Outcome<VoidResult> Void => FromResult(VoidResult.Instance);
 
     internal static Outcome<VoidResult> FromException(Exception exception) => FromException<VoidResult>(exception);
-
 }

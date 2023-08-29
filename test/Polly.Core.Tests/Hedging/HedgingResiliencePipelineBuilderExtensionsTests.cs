@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Polly.Hedging;
 using Polly.Testing;
 
@@ -6,51 +7,26 @@ namespace Polly.Core.Tests.Hedging;
 
 public class HedgingResiliencePipelineBuilderExtensionsTests
 {
-    private readonly ResiliencePipelineBuilder _builder = new();
-    private readonly ResiliencePipelineBuilder<string> _genericBuilder = new();
-
-    [Fact]
-    public void AddHedging_Ok()
-    {
-        _builder.AddHedging(new HedgingStrategyOptions { ShouldHandle = _ => PredicateResult.True });
-
-        _builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance
-            .Should().BeOfType<HedgingResilienceStrategy<object>>().Subject
-            .HedgingHandler.IsGeneric.Should().BeFalse();
-    }
+    private readonly ResiliencePipelineBuilder<string> _builder = new();
 
     [Fact]
     public void AddHedging_Generic_Ok()
     {
-        _genericBuilder.AddHedging(new HedgingStrategyOptions<string>
+        _builder.AddHedging(new HedgingStrategyOptions<string>
         {
             ActionGenerator = args => () => Outcome.FromResultAsTask("dummy"),
             ShouldHandle = _ => PredicateResult.True
         });
 
-        _genericBuilder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance
+        _builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance
             .Should().BeOfType<HedgingResilienceStrategy<string>>().Subject
-            .HedgingHandler.IsGeneric.Should().BeTrue();
-    }
-
-    [Fact]
-    public void AddHedging_InvalidOptions_Throws()
-    {
-        _builder
-            .Invoking(b => b.AddHedging(new HedgingStrategyOptions { ActionGenerator = null! }))
-            .Should()
-            .Throw<ValidationException>();
+            .HedgingHandler.ActionGenerator.Should().NotBeNull();
     }
 
     [Fact]
     public void AddHedgingT_InvalidOptions_Throws()
     {
         _builder
-            .Invoking(b => b.AddHedging(new HedgingStrategyOptions { MaxHedgedAttempts = 1000 }))
-            .Should()
-            .Throw<ValidationException>();
-
-        _genericBuilder
             .Invoking(b => b.AddHedging(new HedgingStrategyOptions<string> { ShouldHandle = null! }))
             .Should()
             .Throw<ValidationException>();
@@ -63,7 +39,7 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
         ConcurrentQueue<string> results = new();
 
         var strategy = _builder
-            .AddHedging(new HedgingStrategyOptions
+            .AddHedging(new()
             {
                 MaxHedgedAttempts = 4,
                 Delay = TimeSpan.FromMilliseconds(20),
@@ -80,17 +56,17 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
 
                         if (args.AttemptNumber == 3)
                         {
-                            return Outcome.FromResult((object)"success");
+                            return Outcome.FromResult("success");
                         }
 
-                        return Outcome.FromResult((object)"error");
+                        return Outcome.FromResult("error");
                     };
                 },
                 OnHedging = args =>
                 {
                     if (args.Outcome is { } outcome)
                     {
-                        results.Enqueue(outcome.Result!.ToString()!);
+                        results.Enqueue(outcome.Result!.ToString(CultureInfo.InvariantCulture)!);
                     }
                     else
                     {
