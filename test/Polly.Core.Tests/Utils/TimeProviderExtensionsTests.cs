@@ -99,4 +99,26 @@ public class TimeProviderExtensionsTests
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => timeProvider.DelayAsync(delay, context));
         });
     }
+
+    [Fact]
+    public async Task DelayAsync_MaxTimeSpan_DoesNotThrow()
+    {
+        var delay = TimeSpan.MaxValue;
+
+        await TestUtilities.AssertWithTimeoutAsync(async () =>
+        {
+            using var cancellation = new CancellationTokenSource();
+            var timeProvider = TimeProvider.System;
+            var context = ResilienceContextPool.Shared.Get();
+            context.Initialize<VoidResult>(isSynchronous: false);
+            context.CancellationToken = cancellation.Token;
+
+            var delayTask = timeProvider.DelayAsync(delay, context);
+            delayTask.Wait(TimeSpan.FromMilliseconds(10)).Should().BeFalse();
+
+            cancellation.Cancel();
+
+            await delayTask.Invoking(t => t).Should().ThrowAsync<OperationCanceledException>();
+        });
+    }
 }
