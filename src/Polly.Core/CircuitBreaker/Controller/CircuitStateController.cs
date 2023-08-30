@@ -300,7 +300,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         }
         else if (outcome.TryGetResult(out var result))
         {
-            _breakingException = new BrokenCircuitException<T>(BrokenCircuitException.DefaultMessage, result!);
+            _breakingException = new BrokenCircuitException(BrokenCircuitException.DefaultMessage);
         }
     }
 

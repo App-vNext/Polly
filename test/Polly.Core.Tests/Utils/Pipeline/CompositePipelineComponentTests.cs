@@ -50,7 +50,7 @@ public class CompositePipelineComponentTests
 
         var pipeline = CreateSut(components);
         await pipeline
-            .Invoking(p => p.ExecuteCore((_, _) => Outcome.FromResultAsTask(10), ResilienceContextPool.Shared.Get(), "state").AsTask())
+            .Invoking(p => p.ExecuteCore((_, _) => Outcome.FromResultAsValueTask(10), ResilienceContextPool.Shared.Get(), "state").AsTask())
             .Should()
             .ThrowAsync<NotSupportedException>();
     }
@@ -90,7 +90,7 @@ public class CompositePipelineComponentTests
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellation.Token;
 
-        var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("result"), context, "state");
+        var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("result"), context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
     }
 
@@ -108,7 +108,7 @@ public class CompositePipelineComponentTests
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellation.Token;
 
-        var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("result"), context, "state");
+        var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("result"), context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
         executed.Should().BeTrue();
     }

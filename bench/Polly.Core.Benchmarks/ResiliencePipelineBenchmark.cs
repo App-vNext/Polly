@@ -10,7 +10,7 @@ public class ResiliencePipelineBenchmark
     public async ValueTask ExecuteOutcomeAsync()
     {
         var context = ResilienceContextPool.Shared.Get();
-        await ResiliencePipeline.Empty.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state").ConfigureAwait(false);
+        await ResiliencePipeline.Empty.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("dummy"), context, "state").ConfigureAwait(false);
         ResilienceContextPool.Shared.Return(context);
     }
 

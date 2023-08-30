@@ -97,7 +97,7 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
-        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsTask(new DisposableResult("dummy")), "state");
+        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsValueTask(new DisposableResult("dummy")), "state");
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
 
@@ -182,8 +182,8 @@ public class HedgingExecutionContextTests : IDisposable
 
         var context = Create();
         context.Initialize(_resilienceContext);
-        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsTask(new DisposableResult("dummy")), "state");
-        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsTask(new DisposableResult("dummy")), "state");
+        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsValueTask(new DisposableResult("dummy")), "state");
+        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsValueTask(new DisposableResult("dummy")), "state");
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
 
@@ -199,7 +199,7 @@ public class HedgingExecutionContextTests : IDisposable
         await LoadExecutionAsync(context);
         await LoadExecutionAsync(context);
 
-        Generator = args => () => Outcome.FromResultAsTask(new DisposableResult { Name = "secondary" });
+        Generator = args => () => Outcome.FromResultAsValueTask(new DisposableResult { Name = "secondary" });
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
         task!.Type.Should().Be(HedgedTaskType.Primary);
@@ -470,7 +470,7 @@ public class HedgingExecutionContextTests : IDisposable
 
     private Func<HedgingActionGeneratorArguments<DisposableResult>, Func<ValueTask<Outcome<DisposableResult>>>?> Generator { get; set; } = args =>
     {
-        return () => Outcome.FromResultAsTask(new DisposableResult { Name = Handled });
+        return () => Outcome.FromResultAsValueTask(new DisposableResult { Name = Handled });
     };
 
     private HedgingExecutionContext<DisposableResult> Create()

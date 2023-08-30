@@ -39,7 +39,7 @@ public class HedgingStrategyOptionsTests
                 Thread.CurrentThread.ManagedThreadId.Should().Be(threadId);
             }
 
-            return Outcome.FromResultAsTask(99);
+            return Outcome.FromResultAsValueTask(99);
         }))!;
 
         action.Should().NotBeNull();

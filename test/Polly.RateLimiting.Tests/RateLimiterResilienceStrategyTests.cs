@@ -70,7 +70,7 @@ public class RateLimiterResilienceStrategyTests
 
         var strategy = Create();
         var context = ResilienceContextPool.Shared.Get(cts.Token);
-        var outcome = await strategy.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state");
+        var outcome = await strategy.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("dummy"), context, "state");
 
         outcome.Exception
             .Should()

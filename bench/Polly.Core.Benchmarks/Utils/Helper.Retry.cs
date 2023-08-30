@@ -23,9 +23,9 @@ internal static partial class Helper
                     Delay = delay,
                     ShouldHandle = args => args.Outcome switch
                     {
-                        { Exception: InvalidOperationException } => PredicateResult.True,
-                        { Result: string result } when result == Failure => PredicateResult.True,
-                        _ => PredicateResult.False
+                        { Exception: InvalidOperationException } => PredicateResult.True(),
+                        { Result: string result } when result == Failure => PredicateResult.True(),
+                        _ => PredicateResult.False()
                     },
                     OnRetry = _ => default
                 });

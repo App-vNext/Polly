@@ -18,7 +18,7 @@ public class ResiliencePipelineExtensionsTests
         var strategy = new ResiliencePipelineBuilder<string>()
             .AddFallback(new()
             {
-                FallbackAction = _ => Outcome.FromResultAsTask("dummy"),
+                FallbackAction = _ => Outcome.FromResultAsValueTask("dummy"),
             })
             .AddRetry(new())
             .AddCircuitBreaker(new())

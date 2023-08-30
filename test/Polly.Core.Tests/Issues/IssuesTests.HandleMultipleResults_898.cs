@@ -16,11 +16,11 @@ public partial class IssuesTests
             ShouldHandle = args => args.Outcome switch
             {
                 // handle string results
-                { Result: string res } when res == "error" => PredicateResult.True,
+                { Result: string res } when res == "error" => PredicateResult.True(),
 
                 // handle int results
-                { Result: int res } when res == -1 => PredicateResult.True,
-                _ => PredicateResult.False
+                { Result: int res } when res == -1 => PredicateResult.True(),
+                _ => PredicateResult.False()
             },
             OnRetry = args =>
             {

@@ -15,11 +15,6 @@ Polly.CircuitBreaker.BrokenCircuitException
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException() -> void
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message) -> void
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message, System.Exception! inner) -> void
-Polly.CircuitBreaker.BrokenCircuitException<TResult>
-Polly.CircuitBreaker.BrokenCircuitException<TResult>.BrokenCircuitException(string! message, System.Exception! inner, TResult result) -> void
-Polly.CircuitBreaker.BrokenCircuitException<TResult>.BrokenCircuitException(string! message, TResult result) -> void
-Polly.CircuitBreaker.BrokenCircuitException<TResult>.BrokenCircuitException(TResult result) -> void
-Polly.CircuitBreaker.BrokenCircuitException<TResult>.Result.get -> TResult
 Polly.CircuitBreaker.CircuitBreakerManualControl
 Polly.CircuitBreaker.CircuitBreakerManualControl.CircuitBreakerManualControl() -> void
 Polly.CircuitBreaker.CircuitBreakerManualControl.CircuitBreakerManualControl(bool isIsolated) -> void
@@ -158,10 +153,10 @@ Polly.HedgingResiliencePipelineBuilderExtensions
 Polly.LegacySupport
 Polly.Outcome
 Polly.Outcome<TResult>
-Polly.Outcome<TResult>.EnsureSuccess() -> void
 Polly.Outcome<TResult>.Exception.get -> System.Exception?
 Polly.Outcome<TResult>.Outcome() -> void
 Polly.Outcome<TResult>.Result.get -> TResult?
+Polly.Outcome<TResult>.ThrowIfException() -> void
 Polly.PredicateBuilder
 Polly.PredicateBuilder.PredicateBuilder() -> void
 Polly.PredicateBuilder<TResult>
@@ -296,10 +291,9 @@ Polly.Retry.OnRetryArguments<TResult>.RetryDelay.get -> System.TimeSpan
 Polly.Retry.RetryDelayGeneratorArguments<TResult>
 Polly.Retry.RetryDelayGeneratorArguments<TResult>.AttemptNumber.get -> int
 Polly.Retry.RetryDelayGeneratorArguments<TResult>.Context.get -> Polly.ResilienceContext!
-Polly.Retry.RetryDelayGeneratorArguments<TResult>.DelayHint.get -> System.TimeSpan
 Polly.Retry.RetryDelayGeneratorArguments<TResult>.Outcome.get -> Polly.Outcome<TResult>
 Polly.Retry.RetryDelayGeneratorArguments<TResult>.RetryDelayGeneratorArguments() -> void
-Polly.Retry.RetryDelayGeneratorArguments<TResult>.RetryDelayGeneratorArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome, int attemptNumber, System.TimeSpan delayHint) -> void
+Polly.Retry.RetryDelayGeneratorArguments<TResult>.RetryDelayGeneratorArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome, int attemptNumber) -> void
 Polly.Retry.RetryPredicateArguments<TResult>
 Polly.Retry.RetryPredicateArguments<TResult>.AttemptNumber.get -> int
 Polly.Retry.RetryPredicateArguments<TResult>.Context.get -> Polly.ResilienceContext!
@@ -313,7 +307,7 @@ Polly.Retry.RetryStrategyOptions<TResult>.BackoffType.get -> Polly.DelayBackoffT
 Polly.Retry.RetryStrategyOptions<TResult>.BackoffType.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.Delay.get -> System.TimeSpan
 Polly.Retry.RetryStrategyOptions<TResult>.Delay.set -> void
-Polly.Retry.RetryStrategyOptions<TResult>.DelayGenerator.get -> System.Func<Polly.Retry.RetryDelayGeneratorArguments<TResult>, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
+Polly.Retry.RetryStrategyOptions<TResult>.DelayGenerator.get -> System.Func<Polly.Retry.RetryDelayGeneratorArguments<TResult>, System.Threading.Tasks.ValueTask<System.TimeSpan?>>?
 Polly.Retry.RetryStrategyOptions<TResult>.DelayGenerator.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.MaxRetryAttempts.get -> int
 Polly.Retry.RetryStrategyOptions<TResult>.MaxRetryAttempts.set -> void
@@ -403,15 +397,15 @@ static Polly.FallbackResiliencePipelineBuilderExtensions.AddFallback<TResult>(th
 static Polly.HedgingResiliencePipelineBuilderExtensions.AddHedging<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Hedging.HedgingStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.LegacySupport.SetProperties(this Polly.ResilienceProperties! resilienceProperties, System.Collections.Generic.IDictionary<string!, object?>! properties, out System.Collections.Generic.IDictionary<string!, object?>! oldProperties) -> void
 static Polly.Outcome.FromException<TResult>(System.Exception! exception) -> Polly.Outcome<TResult>
-static Polly.Outcome.FromExceptionAsTask<TResult>(System.Exception! exception) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+static Polly.Outcome.FromExceptionAsValueTask<TResult>(System.Exception! exception) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 static Polly.Outcome.FromResult<TResult>(TResult? value) -> Polly.Outcome<TResult>
-static Polly.Outcome.FromResultAsTask<TResult>(TResult value) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+static Polly.Outcome.FromResultAsValueTask<TResult>(TResult value) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
 static Polly.PredicateBuilder<TResult>.implicit operator System.Func<Polly.CircuitBreaker.CircuitBreakerPredicateArguments<TResult>, System.Threading.Tasks.ValueTask<bool>>!(Polly.PredicateBuilder<TResult>! builder) -> System.Func<Polly.CircuitBreaker.CircuitBreakerPredicateArguments<TResult>, System.Threading.Tasks.ValueTask<bool>>!
 static Polly.PredicateBuilder<TResult>.implicit operator System.Func<Polly.Fallback.FallbackPredicateArguments<TResult>, System.Threading.Tasks.ValueTask<bool>>!(Polly.PredicateBuilder<TResult>! builder) -> System.Func<Polly.Fallback.FallbackPredicateArguments<TResult>, System.Threading.Tasks.ValueTask<bool>>!
 static Polly.PredicateBuilder<TResult>.implicit operator System.Func<Polly.Hedging.HedgingPredicateArguments<TResult>, System.Threading.Tasks.ValueTask<bool>>!(Polly.PredicateBuilder<TResult>! builder) -> System.Func<Polly.Hedging.HedgingPredicateArguments<TResult>, System.Threading.Tasks.ValueTask<bool>>!
 static Polly.PredicateBuilder<TResult>.implicit operator System.Func<Polly.Retry.RetryPredicateArguments<TResult>, System.Threading.Tasks.ValueTask<bool>>!(Polly.PredicateBuilder<TResult>! builder) -> System.Func<Polly.Retry.RetryPredicateArguments<TResult>, System.Threading.Tasks.ValueTask<bool>>!
-static Polly.PredicateResult.False.get -> System.Threading.Tasks.ValueTask<bool>
-static Polly.PredicateResult.True.get -> System.Threading.Tasks.ValueTask<bool>
+static Polly.PredicateResult.False() -> System.Threading.Tasks.ValueTask<bool>
+static Polly.PredicateResult.True() -> System.Threading.Tasks.ValueTask<bool>
 static Polly.ResilienceContextPool.Shared.get -> Polly.ResilienceContextPool!
 static Polly.ResiliencePipelineBuilderExtensions.AddPipeline<TBuilder>(this TBuilder! builder, Polly.ResiliencePipeline! pipeline) -> TBuilder!
 static Polly.ResiliencePipelineBuilderExtensions.AddPipeline<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.ResiliencePipeline<TResult>! pipeline) -> Polly.ResiliencePipelineBuilder<TResult>!

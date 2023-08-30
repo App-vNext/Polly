@@ -4,8 +4,8 @@ internal static class DefaultPredicates<TArgs, TResult>
 {
     public static readonly Func<TArgs, ValueTask<bool>> HandleOutcome = args => args.Outcome.Exception switch
     {
-        OperationCanceledException => PredicateResult.False,
-        Exception => PredicateResult.True,
-        _ => PredicateResult.False
+        OperationCanceledException => PredicateResult.False(),
+        Exception => PredicateResult.True(),
+        _ => PredicateResult.False()
     };
 }

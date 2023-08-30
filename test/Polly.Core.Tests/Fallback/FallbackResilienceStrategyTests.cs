@@ -52,7 +52,7 @@ public class FallbackResilienceStrategyTests
                 args.Outcome.Result.Should().Be("ok");
                 args.Context.Should().NotBeNull();
                 called++;
-                return Outcome.FromResultAsTask("fallback");
+                return Outcome.FromResultAsValueTask("fallback");
             });
 
         var result = Create().Execute(_ => "ok");

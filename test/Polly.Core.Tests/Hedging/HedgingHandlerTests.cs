@@ -9,14 +9,14 @@ public class HedgingHandlerTests
     public async Task GenerateAction_Generic_Ok()
     {
         var handler = new HedgingHandler<string>(
-            args => PredicateResult.True,
-            args => () => Outcome.FromResultAsTask("ok"));
+            args => PredicateResult.True(),
+            args => () => Outcome.FromResultAsValueTask("ok"));
 
         var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(
             ResilienceContextPool.Shared.Get(),
             ResilienceContextPool.Shared.Get(),
             0,
-            _ => Outcome.FromResultAsTask("primary")))!;
+            _ => Outcome.FromResultAsValueTask("primary")))!;
         var res = await action();
 
         res.Result.Should().Be("ok");

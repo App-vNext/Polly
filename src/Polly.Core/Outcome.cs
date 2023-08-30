@@ -19,7 +19,7 @@ public static class Outcome
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="value">The result value.</param>
     /// <returns>A completed <see cref="ValueTask{TResult}"/> that produces <see cref="Outcome{TResult}"/>.</returns>
-    public static ValueTask<Outcome<TResult>> FromResultAsTask<TResult>(TResult value) => new(FromResult(value));
+    public static ValueTask<Outcome<TResult>> FromResultAsValueTask<TResult>(TResult value) => new(FromResult(value));
 
     /// <summary>
     /// Returns a <see cref="Outcome{TResult}"/> with the given <paramref name="exception"/>.
@@ -42,7 +42,7 @@ public static class Outcome
     /// <param name="exception">The exception.</param>
     /// <returns>A completed <see cref="ValueTask{TResult}"/> that produces <see cref="Outcome{TResult}"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <see langword="null"/>.</exception>
-    public static ValueTask<Outcome<TResult>> FromExceptionAsTask<TResult>(Exception exception)
+    public static ValueTask<Outcome<TResult>> FromExceptionAsValueTask<TResult>(Exception exception)
     {
         Guard.NotNull(exception);
 

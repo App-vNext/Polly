@@ -29,9 +29,9 @@ internal static partial class Helper
                     Delay = TimeSpan.FromSeconds(1),
                     ShouldHandle = args => args.Outcome switch
                     {
-                        { Exception: InvalidOperationException } => PredicateResult.True,
-                        { Result: string result } when result == Failure => PredicateResult.True,
-                        _ => PredicateResult.False
+                        { Exception: InvalidOperationException } => PredicateResult.True(),
+                        { Result: string result } when result == Failure => PredicateResult.True(),
+                        _ => PredicateResult.False()
                     }
                 })
                 .AddTimeout(TimeSpan.FromSeconds(1))
@@ -43,9 +43,9 @@ internal static partial class Helper
                     BreakDuration = TimeSpan.FromSeconds(5),
                     ShouldHandle = args => args.Outcome switch
                     {
-                        { Exception: InvalidOperationException } => PredicateResult.True,
-                        { Result: string result } when result == Failure => PredicateResult.True,
-                        _ => PredicateResult.False
+                        { Exception: InvalidOperationException } => PredicateResult.True(),
+                        { Result: string result } when result == Failure => PredicateResult.True(),
+                        _ => PredicateResult.False()
                     }
                 });
 
@@ -73,9 +73,9 @@ internal static partial class Helper
                 Delay = TimeSpan.FromSeconds(1),
                 ShouldHandle = args => args.Outcome switch
                 {
-                    { Exception: InvalidOperationException } => PredicateResult.True,
-                    { Result: string result } when result == Failure => PredicateResult.True,
-                    _ => PredicateResult.False
+                    { Exception: InvalidOperationException } => PredicateResult.True(),
+                    { Result: string result } when result == Failure => PredicateResult.True(),
+                    _ => PredicateResult.False()
                 }
             })
             .AddTimeout(TimeSpan.FromSeconds(1))
@@ -87,9 +87,9 @@ internal static partial class Helper
                 BreakDuration = TimeSpan.FromSeconds(5),
                 ShouldHandle = args => args.Outcome switch
                 {
-                    { Exception: InvalidOperationException } => PredicateResult.True,
-                    { Result: string result } when result == Failure => PredicateResult.True,
-                    _ => PredicateResult.False
+                    { Exception: InvalidOperationException } => PredicateResult.True(),
+                    { Result: string result } when result == Failure => PredicateResult.True(),
+                    _ => PredicateResult.False()
                 }
             });
 
