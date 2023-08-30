@@ -4,9 +4,9 @@ using Polly.Telemetry;
 // ------------------------------------------------------------------------
 // Usage of custom strategy
 // ------------------------------------------------------------------------
-var strategy = new ResiliencePipelineBuilder()
+var pipeline = new ResiliencePipelineBuilder()
     // This is custom extension defined in this sample
-    .AddMyResilienceStrategy(new MyResilienceStrategyOptions
+    .AddMyResilienceStrategy(new MySimpleStrategyOptions
     {
         OnCustomEvent = args =>
         {
@@ -16,20 +16,20 @@ var strategy = new ResiliencePipelineBuilder()
     })
     .Build();
 
-// Execute the strategy
-strategy.Execute(() => { });
+// Execute the pipeline
+pipeline.Execute(() => { });
 
 // ------------------------------------------------------------------------
 // SIMPLE EXTENSIBILITY MODEL (INLINE STRATEGY)
 // ------------------------------------------------------------------------
 
-strategy = new ResiliencePipelineBuilder()
+pipeline = new ResiliencePipelineBuilder()
     // Just add the strategy instance directly
-    .AddStrategy(_ => new MySimpleStrategy())
+    .AddStrategy(_ => new MySimpleStrategy(), new MySimpleStrategyOptions())
     .Build();
 
-// Execute the strategy
-strategy.Execute(() => { });
+// Execute the pipeline
+pipeline.Execute(() => { });
 
 internal class MySimpleStrategy : ResilienceStrategy
 {
@@ -60,7 +60,7 @@ internal class MySimpleStrategy : ResilienceStrategy
 public readonly record struct OnCustomEventArguments(ResilienceContext Context);
 
 // 1.B Define the options.
-public class MyResilienceStrategyOptions : ResilienceStrategyOptions
+public class MySimpleStrategyOptions : ResilienceStrategyOptions
 {
     // Use the arguments in the delegates.
     // The recommendation is to use asynchronous delegates.
@@ -80,7 +80,7 @@ internal class MyResilienceStrategy : ResilienceStrategy
     private readonly ResilienceStrategyTelemetry telemetry;
     private readonly Func<OnCustomEventArguments, ValueTask>? onCustomEvent;
 
-    public MyResilienceStrategy(ResilienceStrategyTelemetry telemetry, MyResilienceStrategyOptions options)
+    public MyResilienceStrategy(ResilienceStrategyTelemetry telemetry, MySimpleStrategyOptions options)
     {
         this.telemetry = telemetry;
         this.onCustomEvent = options.OnCustomEvent;
@@ -123,7 +123,7 @@ internal class MyResilienceStrategy : ResilienceStrategy
 public static class MyResilienceStrategyExtensions
 {
     // Add new extension that works for both "ResiliencePipelineBuilder" and "ResiliencePipelineBuilder<T>"
-    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MyResilienceStrategyOptions options) where TBuilder : ResiliencePipelineBuilderBase
+    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MySimpleStrategyOptions options) where TBuilder : ResiliencePipelineBuilderBase
         => builder.AddStrategy(
             // Provide a factory that creates the strategy
             context => new MyResilienceStrategy(context.Telemetry, options),
