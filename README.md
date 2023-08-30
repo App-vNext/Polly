@@ -5,8 +5,8 @@
 > Major performance improvements are on the way! Please see our [blog post](https://www.thepollyproject.org/2023/03/03/we-want-your-feedback-introducing-polly-v8/) to learn more and provide feedback in the [related GitHub issue](https://github.com/App-vNext/Polly/issues/1048).
 >
 > :rotating_light::rotating_light: **Polly v8 feature-complete!** :rotating_light::rotating_light:
-> - Polly v8 Alpha 8 is now available on [NuGet.org](https://www.nuget.org/packages/Polly/8.0.0-alpha.8)
-> - The Alpha 8 version is considered feature-complete. After completing [review of the API](https://github.com/App-vNext/Polly/pull/1233) to address unresolved issues, we will move on to a Beta release.
+> - Polly v8 Alpha 9 is now available on [NuGet.org](https://www.nuget.org/packages/Polly/8.0.0-alpha.9)
+> - The Alpha 9 version is considered feature-complete. After completing [review of the API](https://github.com/App-vNext/Polly/pull/1233) to address unresolved issues, we will move on to a Beta release.
 > - The v8 docs are not yet finished, but you can take a look at sample code in these locations:
 >     - Within the repo's new [Samples folder](https://github.com/App-vNext/Polly/tree/main/samples)
 >     - By reading `Polly.Core`'s [README](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md)
