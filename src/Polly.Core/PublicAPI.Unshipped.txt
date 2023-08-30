@@ -285,10 +285,6 @@ Polly.ResilienceStrategyOptions
 Polly.ResilienceStrategyOptions.Name.get -> string?
 Polly.ResilienceStrategyOptions.Name.set -> void
 Polly.ResilienceStrategyOptions.ResilienceStrategyOptions() -> void
-Polly.Retry.DelayBackoffType
-Polly.Retry.DelayBackoffType.Constant = 0 -> Polly.Retry.DelayBackoffType
-Polly.Retry.DelayBackoffType.Exponential = 2 -> Polly.Retry.DelayBackoffType
-Polly.Retry.DelayBackoffType.Linear = 1 -> Polly.Retry.DelayBackoffType
 Polly.Retry.OnRetryArguments<TResult>
 Polly.Retry.OnRetryArguments<TResult>.AttemptNumber.get -> int
 Polly.Retry.OnRetryArguments<TResult>.Context.get -> Polly.ResilienceContext!
