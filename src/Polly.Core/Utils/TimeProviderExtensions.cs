@@ -23,6 +23,11 @@ internal static class TimeProviderExtensions
 
         context.CancellationToken.ThrowIfCancellationRequested();
 
+        if (delay == TimeSpan.MaxValue)
+        {
+            delay = System.Threading.Timeout.InfiniteTimeSpan;
+        }
+
         if (context.IsSynchronous)
         {
 #pragma warning disable CA1849
