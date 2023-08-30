@@ -84,6 +84,10 @@ Polly.CircuitBreaker.OnCircuitOpenedArguments<TResult>.OnCircuitOpenedArguments(
 Polly.CircuitBreaker.OnCircuitOpenedArguments<TResult>.OnCircuitOpenedArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome, System.TimeSpan breakDuration, bool isManual) -> void
 Polly.CircuitBreaker.OnCircuitOpenedArguments<TResult>.Outcome.get -> Polly.Outcome<TResult>
 Polly.CircuitBreakerResiliencePipelineBuilderExtensions
+Polly.DelayBackoffType
+Polly.DelayBackoffType.Constant = 0 -> Polly.DelayBackoffType
+Polly.DelayBackoffType.Exponential = 2 -> Polly.DelayBackoffType
+Polly.DelayBackoffType.Linear = 1 -> Polly.DelayBackoffType
 Polly.ExecutionRejectedException
 Polly.ExecutionRejectedException.ExecutionRejectedException() -> void
 Polly.ExecutionRejectedException.ExecutionRejectedException(string! message) -> void
@@ -309,7 +313,7 @@ Polly.Retry.RetryPredicateArguments<TResult>.RetryPredicateArguments(Polly.Resil
 Polly.Retry.RetryStrategyOptions
 Polly.Retry.RetryStrategyOptions.RetryStrategyOptions() -> void
 Polly.Retry.RetryStrategyOptions<TResult>
-Polly.Retry.RetryStrategyOptions<TResult>.BackoffType.get -> Polly.Retry.DelayBackoffType
+Polly.Retry.RetryStrategyOptions<TResult>.BackoffType.get -> Polly.DelayBackoffType
 Polly.Retry.RetryStrategyOptions<TResult>.BackoffType.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.Delay.get -> System.TimeSpan
 Polly.Retry.RetryStrategyOptions<TResult>.Delay.set -> void

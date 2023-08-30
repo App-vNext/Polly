@@ -1,3 +1,4 @@
+using Polly;
 using Polly.TestUtils;
 
 namespace Polly.Specs;

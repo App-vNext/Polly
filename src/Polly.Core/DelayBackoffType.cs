@@ -1,4 +1,4 @@
-namespace Polly.Retry;
+namespace Polly;
 
 /// <summary>
 /// The backoff type used by the strategies.
