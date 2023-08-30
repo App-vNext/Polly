@@ -4,7 +4,7 @@ using Polly.Telemetry;
 // ------------------------------------------------------------------------
 // Usage of custom strategy
 // ------------------------------------------------------------------------
-var strategy = new CompositeStrategyBuilder()
+var strategy = new ResiliencePipelineBuilder()
     // This is custom extension defined in this sample
     .AddMyResilienceStrategy(new MyResilienceStrategyOptions
     {
@@ -23,9 +23,9 @@ strategy.Execute(() => { });
 // SIMPLE EXTENSIBILITY MODEL (INLINE STRATEGY)
 // ------------------------------------------------------------------------
 
-strategy = new CompositeStrategyBuilder()
+strategy = new ResiliencePipelineBuilder()
     // Just add the strategy instance directly
-    .AddStrategy(new MySimpleStrategy())
+    .AddStrategy(_ => new MySimpleStrategy())
     .Build();
 
 // Execute the strategy
@@ -39,11 +39,6 @@ internal class MySimpleStrategy : ResilienceStrategy
         TState state)
     {
         Console.WriteLine("MySimpleStrategy executing!");
-
-        // The "context" holds information about execution mode
-        Console.WriteLine("context.IsSynchronous: {0}", context.IsSynchronous);
-        Console.WriteLine("context.ResultType: {0}", context.ResultType);
-        Console.WriteLine("context.IsVoid: {0}", context.IsVoid);
 
         // The "state" is an ambient value passed by the caller that holds the state.
         // Here, we do not do anything with it, just pass it to the callback.
@@ -79,7 +74,7 @@ public class MyResilienceStrategyOptions : ResilienceStrategyOptions
 // The strategy should be internal and not exposed as part of any public API.
 // Instead, expose options and extensions for resilience strategy builder.
 //
-// For reactive startegies, you can use ReactiveResilienceStrategy<T> as base class.
+// For reactive strategies, you can use ReactiveResilienceStrategy<T> as base class.
 internal class MyResilienceStrategy : ResilienceStrategy
 {
     private readonly ResilienceStrategyTelemetry telemetry;
@@ -122,13 +117,13 @@ internal class MyResilienceStrategy : ResilienceStrategy
 }
 
 // ------------------------------------------------------------------------
-// 3. Expose new extensions for CompositeStrategyBuilder
+// 3. Expose new extensions for ResiliencePipelineBuilder
 // ------------------------------------------------------------------------
 
 public static class MyResilienceStrategyExtensions
 {
-    // Add new extension that works for both "CompositeStrategyBuilder" and "CompositeStrategyBuilder<T>"
-    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MyResilienceStrategyOptions options) where TBuilder : CompositeStrategyBuilderBase
+    // Add new extension that works for both "ResiliencePipelineBuilder" and "ResiliencePipelineBuilder<T>"
+    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MyResilienceStrategyOptions options) where TBuilder : ResiliencePipelineBuilderBase
         => builder.AddStrategy(
             // Provide a factory that creates the strategy
             context => new MyResilienceStrategy(context.Telemetry, options),
