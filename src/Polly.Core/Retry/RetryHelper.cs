@@ -20,7 +20,7 @@ internal static class RetryHelper
         }
     }
 
-    private static TimeSpan GetRetryDelayCore(RetryBackoffType type, bool jitter, int attempt, TimeSpan baseDelay, ref double state, Func<double> randomizer)
+    private static TimeSpan GetRetryDelayCore(DelayBackoffType type, bool jitter, int attempt, TimeSpan baseDelay, ref double state, Func<double> randomizer)
     {
         if (baseDelay == TimeSpan.Zero)
         {
