@@ -17,15 +17,15 @@ ResiliencePipeline<HttpResponseMessage> pipeline = new ResiliencePipelineBuilder
         FallbackAction = _ =>
         {
             // Return fallback result
-            return Outcome.FromResultAsTask(new HttpResponseMessage(HttpStatusCode.OK));
+            return Outcome.FromResultAsValueTask(new HttpResponseMessage(HttpStatusCode.OK));
         },
         // You can also use switch expressions for succinct syntax
         ShouldHandle = arguments => arguments.Outcome switch
         {
             // The "PredicateResult.True" is shorthand to "new ValueTask<bool>(true)"
-            { Exception: HttpRequestException } => PredicateResult.True,
-            { Result: HttpResponseMessage response } when response.StatusCode == HttpStatusCode.InternalServerError => PredicateResult.True,
-            _ => PredicateResult.False
+            { Exception: HttpRequestException } => PredicateResult.True(),
+            { Result: HttpResponseMessage response } when response.StatusCode == HttpStatusCode.InternalServerError => PredicateResult.True(),
+            _ => PredicateResult.False()
         },
         OnFallback = _ =>
         {
