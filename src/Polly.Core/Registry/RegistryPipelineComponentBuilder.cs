@@ -67,13 +67,8 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
                     builder.BuildPipelineComponent(),
                     context.DisposeCallbacks),
             context.ReloadTokens,
-            context.DisposeCallbacks,
             builder.TelemetryListener);
     }
 
-    private record Builder(
-        Func<PipelineComponent> ComponentFactory,
-        List<CancellationToken> ReloadTokens,
-        List<Action> DisposeCallbacks,
-        TelemetryListener? Listener);
+    private record Builder(Func<PipelineComponent> ComponentFactory, List<CancellationToken> ReloadTokens, TelemetryListener? Listener);
 }
