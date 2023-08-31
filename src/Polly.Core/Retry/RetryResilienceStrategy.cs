@@ -34,7 +34,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
 
     public Func<RetryPredicateArguments<T>, ValueTask<bool>> ShouldHandle { get; }
 
-    public Func<RetryDelayGeneratorArguments<T>, ValueTask<TimeSpan>>? DelayGenerator { get; }
+    public Func<RetryDelayGeneratorArguments<T>, ValueTask<TimeSpan?>>? DelayGenerator { get; }
 
     public bool UseJitter { get; }
 
@@ -64,9 +64,9 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
             var delay = RetryHelper.GetRetryDelay(BackoffType, UseJitter, attempt, BaseDelay, ref retryState, _randomizer);
             if (DelayGenerator is not null)
             {
-                var delayArgs = new RetryDelayGeneratorArguments<T>(context, outcome, attempt, delay);
-                var newDelay = await DelayGenerator(delayArgs).ConfigureAwait(false);
-                if (RetryHelper.IsValidDelay(newDelay))
+                var delayArgs = new RetryDelayGeneratorArguments<T>(context, outcome, attempt);
+
+                if (await DelayGenerator(delayArgs).ConfigureAwait(false) is TimeSpan newDelay && RetryHelper.IsValidDelay(newDelay))
                 {
                     delay = newDelay;
                 }

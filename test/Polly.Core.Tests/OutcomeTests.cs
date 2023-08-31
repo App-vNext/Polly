@@ -50,7 +50,7 @@ public class OutcomeTests
     {
         var outcome = Outcome.FromResult("dummy");
 
-        outcome.Invoking(o => o.EnsureSuccess()).Should().NotThrow();
+        outcome.Invoking(o => o.ThrowIfException()).Should().NotThrow();
     }
 
     [Fact]
@@ -58,6 +58,6 @@ public class OutcomeTests
     {
         var outcome = Outcome.FromException<string>(new InvalidOperationException());
 
-        outcome.Invoking(o => o.EnsureSuccess()).Should().Throw<InvalidOperationException>();
+        outcome.Invoking(o => o.ThrowIfException()).Should().Throw<InvalidOperationException>();
     }
 }

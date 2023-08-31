@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using NSubstitute;
 using Polly.Retry;
 using Polly.Testing;
 
@@ -17,7 +18,7 @@ public class RetryResiliencePipelineBuilderExtensionsTests
                 BackoffType = DelayBackoffType.Exponential,
                 MaxRetryAttempts = 3,
                 Delay = TimeSpan.FromSeconds(2),
-                ShouldHandle = _ => PredicateResult.True,
+                ShouldHandle = _ => PredicateResult.True(),
             });
 
             AssertStrategy(builder, DelayBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
@@ -33,7 +34,7 @@ public class RetryResiliencePipelineBuilderExtensionsTests
                 BackoffType = DelayBackoffType.Exponential,
                 MaxRetryAttempts = 3,
                 Delay = TimeSpan.FromSeconds(2),
-                ShouldHandle = _ => PredicateResult.True
+                ShouldHandle = _ => PredicateResult.True()
             });
 
             AssertStrategy(builder, DelayBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
@@ -62,7 +63,7 @@ public class RetryResiliencePipelineBuilderExtensionsTests
     public void AddRetry_DefaultOptions_Ok()
     {
         var builder = new ResiliencePipelineBuilder();
-        var options = new RetryStrategyOptions { ShouldHandle = _ => PredicateResult.True };
+        var options = new RetryStrategyOptions { ShouldHandle = _ => PredicateResult.True() };
 
         builder.AddRetry(options);
 
@@ -131,19 +132,18 @@ public class RetryResiliencePipelineBuilderExtensionsTests
     {
         var aggregatedDelay = TimeSpan.Zero;
 
-        var strategy = new ResiliencePipelineBuilder().AddRetry(new()
+        var strategy = new ResiliencePipelineBuilder { TimeProvider = new NoWaitingTimeProvider() }.AddRetry(new()
         {
             MaxRetryAttempts = options.MaxRetryAttempts,
             Delay = options.Delay,
             BackoffType = options.BackoffType,
-            ShouldHandle = _ => PredicateResult.True, // always retry until all retries are exhausted
-            DelayGenerator = args =>
+            ShouldHandle = _ => PredicateResult.True(), // always retry until all retries are exhausted
+            OnRetry = args =>
             {
                 // the delay hint is calculated for this attempt by the retry strategy
-                aggregatedDelay += args.DelayHint;
+                aggregatedDelay += args.RetryDelay;
 
-                // return zero delay, so no waiting
-                return new ValueTask<TimeSpan>(TimeSpan.Zero);
+                return default;
             },
             Randomizer = () => 1.0,
         })
@@ -153,5 +153,14 @@ public class RetryResiliencePipelineBuilderExtensionsTests
         strategy.Execute(() => { });
 
         return aggregatedDelay;
+    }
+
+    private class NoWaitingTimeProvider : TimeProvider
+    {
+        public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
+        {
+            callback(state);
+            return Substitute.For<ITimer>();
+        }
     }
 }

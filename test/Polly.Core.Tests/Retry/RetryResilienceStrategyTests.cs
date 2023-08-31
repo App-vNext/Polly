@@ -40,7 +40,7 @@ public class RetryResilienceStrategyTests
         context.CancellationToken = cancellationToken.Token;
         var executed = false;
 
-        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsTask("dummy"); }, context, "state");
+        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsValueTask("dummy"); }, context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
         executed.Should().BeFalse();
     }
@@ -50,7 +50,7 @@ public class RetryResilienceStrategyTests
     {
         using var cancellationToken = new CancellationTokenSource();
 
-        _options.ShouldHandle = _ => PredicateResult.True;
+        _options.ShouldHandle = _ => PredicateResult.True();
         _options.OnRetry = _ =>
         {
             cancellationToken.Cancel();
@@ -62,7 +62,7 @@ public class RetryResilienceStrategyTests
         context.CancellationToken = cancellationToken.Token;
         var executed = false;
 
-        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsTask("dummy"); }, context, "state");
+        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsValueTask("dummy"); }, context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
         executed.Should().BeTrue();
     }
@@ -73,7 +73,7 @@ public class RetryResilienceStrategyTests
         // arrange
         _options.MaxRetryAttempts = 5;
         SetupNoDelay();
-        _options.ShouldHandle = _ => PredicateResult.True;
+        _options.ShouldHandle = _ => PredicateResult.True();
         var results = new List<DisposableResult>();
         var sut = CreateSut();
 
@@ -137,7 +137,7 @@ public class RetryResilienceStrategyTests
         var generatedValues = 0;
         var delay = TimeSpan.FromMilliseconds(120);
 
-        _options.ShouldHandle = _ => PredicateResult.True;
+        _options.ShouldHandle = _ => PredicateResult.True();
         _options.MaxRetryAttempts = 3;
         _options.BackoffType = DelayBackoffType.Constant;
 
@@ -150,7 +150,7 @@ public class RetryResilienceStrategyTests
         _options.DelayGenerator = _ =>
         {
             generatedValues++;
-            return new ValueTask<TimeSpan>(delay);
+            return new ValueTask<TimeSpan?>(delay);
         };
 
         CreateSut(TimeProvider.System).Execute<string>(_ => "dummy");
@@ -168,7 +168,7 @@ public class RetryResilienceStrategyTests
         var delay = TimeSpan.Zero;
         var provider = new ThrowingFakeTimeProvider();
 
-        _options.ShouldHandle = _ => PredicateResult.True;
+        _options.ShouldHandle = _ => PredicateResult.True();
         _options.MaxRetryAttempts = 3;
         _options.BackoffType = DelayBackoffType.Constant;
 
@@ -180,7 +180,7 @@ public class RetryResilienceStrategyTests
         _options.DelayGenerator = _ =>
         {
             generatedValues++;
-            return new ValueTask<TimeSpan>(delay);
+            return new ValueTask<TimeSpan?>(delay);
         };
 
         var sut = CreateSut(provider);
@@ -213,7 +213,7 @@ public class RetryResilienceStrategyTests
             return default;
         };
 
-        _options.ShouldHandle = args => PredicateResult.True;
+        _options.ShouldHandle = args => PredicateResult.True();
         _options.MaxRetryAttempts = 3;
         _options.BackoffType = DelayBackoffType.Linear;
 
@@ -243,7 +243,7 @@ public class RetryResilienceStrategyTests
             return default;
         };
 
-        _options.ShouldHandle = _ => PredicateResult.True;
+        _options.ShouldHandle = _ => PredicateResult.True();
         _options.MaxRetryAttempts = 1;
         _options.BackoffType = DelayBackoffType.Constant;
         _options.Delay = TimeSpan.Zero;
@@ -307,12 +307,11 @@ public class RetryResilienceStrategyTests
         _options.DelayGenerator = args =>
         {
             attempts.Add(args.AttemptNumber);
-            hints.Add(args.DelayHint);
 
             args.Outcome.Exception.Should().BeNull();
             args.Outcome.Result.Should().Be(0);
 
-            return new ValueTask<TimeSpan>(TimeSpan.Zero);
+            return new ValueTask<TimeSpan?>(TimeSpan.Zero);
         };
 
         _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
@@ -327,13 +326,33 @@ public class RetryResilienceStrategyTests
         attempts[0].Should().Be(0);
         attempts[1].Should().Be(1);
         attempts[2].Should().Be(2);
-
-        hints[0].Should().Be(TimeSpan.FromSeconds(2));
-        hints[1].Should().Be(TimeSpan.FromSeconds(4));
-        hints[2].Should().Be(TimeSpan.FromSeconds(6));
     }
 
-    private void SetupNoDelay() => _options.DelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.Zero);
+    [Fact]
+    public void RetryDelayGenerator_ReturnsNull_EnsureDefaultRetry()
+    {
+        var delays = new List<TimeSpan>();
+        _options.DelayGenerator = args => new ValueTask<TimeSpan?>((TimeSpan?)null);
+        _options.OnRetry = args =>
+        {
+            delays.Add(args.RetryDelay);
+            return default;
+        };
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
+        _options.MaxRetryAttempts = 2;
+        _options.BackoffType = DelayBackoffType.Constant;
+        _options.Delay = TimeSpan.FromMilliseconds(2);
+
+        var sut = CreateSut(TimeProvider.System);
+
+        sut.Execute(() => 0);
+
+        delays.Should().HaveCount(2);
+        delays[0].Should().Be(TimeSpan.FromMilliseconds(2));
+        delays[1].Should().Be(TimeSpan.FromMilliseconds(2));
+    }
+
+    private void SetupNoDelay() => _options.DelayGenerator = _ => new ValueTask<TimeSpan?>(TimeSpan.Zero);
 
     private async ValueTask<int> ExecuteAndAdvance(ResiliencePipeline<object> sut)
     {

@@ -226,10 +226,10 @@ new ResiliencePipelineBuilder()
     {
         ShouldRetry = args => args switch
         {
-            { Exception: InvalidOperationException } => PredicateResult.True,
-            { Result: string result } when result == Failure => PredicateResult.True,
-            { Result: int result } when result == -1 => PredicateResult.True,
-            _ => PredicateResult.False
+            { Exception: InvalidOperationException } => PredicateResult.True(),
+            { Result: string result } when result == Failure => PredicateResult.True(),
+            { Result: int result } when result == -1 => PredicateResult.True(),
+            _ => PredicateResult.False()
         },
     })
     .Build();
@@ -243,9 +243,9 @@ new ResiliencePipelineBuilder()
     {
         ShouldRetry = args => args switch
         {
-            { Exception: InvalidOperationException } => PredicateResult.True,
-            { Result: result } when result == Failure => PredicateResult.True,
-            _ => PredicateResult.False
+            { Exception: InvalidOperationException } => PredicateResult.True(),
+            { Result: result } when result == Failure => PredicateResult.True(),
+            _ => PredicateResult.False()
         },
     })
     .Build();

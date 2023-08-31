@@ -23,9 +23,9 @@ public partial class IssuesTests
             {
                 ShouldHandle = args => args.Outcome.Exception switch
                 {
-                    InvalidOperationException => PredicateResult.True,
-                    SocketException => PredicateResult.True,
-                    _ => PredicateResult.False
+                    InvalidOperationException => PredicateResult.True(),
+                    SocketException => PredicateResult.True(),
+                    _ => PredicateResult.False()
                 },
                 Delay = TimeSpan.Zero
             }));
@@ -68,8 +68,8 @@ public partial class IssuesTests
         {
             ShouldHandle = args => args.Outcome.Exception switch
             {
-                InvalidOperationException => PredicateResult.True,
-                _ => PredicateResult.False
+                InvalidOperationException => PredicateResult.True(),
+                _ => PredicateResult.False()
             }
         }));
     }

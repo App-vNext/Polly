@@ -14,8 +14,8 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
     {
         _builder.AddHedging(new HedgingStrategyOptions<string>
         {
-            ActionGenerator = args => () => Outcome.FromResultAsTask("dummy"),
-            ShouldHandle = _ => PredicateResult.True
+            ActionGenerator = args => () => Outcome.FromResultAsValueTask("dummy"),
+            ShouldHandle = _ => PredicateResult.True()
         });
 
         _builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance
@@ -45,8 +45,8 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
                 Delay = TimeSpan.FromMilliseconds(20),
                 ShouldHandle = args => args.Outcome.Result switch
                 {
-                    "error" => PredicateResult.True,
-                    _ => PredicateResult.False
+                    "error" => PredicateResult.True(),
+                    _ => PredicateResult.False()
                 },
                 ActionGenerator = args =>
                 {

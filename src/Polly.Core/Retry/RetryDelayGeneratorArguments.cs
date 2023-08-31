@@ -17,13 +17,11 @@ public readonly struct RetryDelayGeneratorArguments<TResult>
     /// <param name="outcome">The context in which the resilience operation or event occurred.</param>
     /// <param name="context">The outcome of the resilience operation or event.</param>
     /// <param name="attemptNumber">The zero-based attempt number.</param>
-    /// <param name="delayHint">The delay suggested by the retry strategy.</param>
-    public RetryDelayGeneratorArguments(ResilienceContext context, Outcome<TResult> outcome, int attemptNumber, TimeSpan delayHint)
+    public RetryDelayGeneratorArguments(ResilienceContext context, Outcome<TResult> outcome, int attemptNumber)
     {
         Context = context;
         Outcome = outcome;
         AttemptNumber = attemptNumber;
-        DelayHint = delayHint;
     }
 
     /// <summary>
@@ -40,9 +38,4 @@ public readonly struct RetryDelayGeneratorArguments<TResult>
     /// Gets The zero-based attempt number.
     /// </summary>
     public int AttemptNumber { get; }
-
-    /// <summary>
-    /// Gets the delay suggested by the retry strategy.
-    /// </summary>
-    public TimeSpan DelayHint { get; }
 }

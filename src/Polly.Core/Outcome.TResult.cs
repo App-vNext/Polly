@@ -56,7 +56,7 @@ public readonly struct Outcome<TResult>
     /// <remarks>
     /// If the operation produced a result, this method does nothing. The thrown exception maintains its original stack trace.
     /// </remarks>
-    public void EnsureSuccess() => ExceptionDispatchInfo?.Throw();
+    public void ThrowIfException() => ExceptionDispatchInfo?.Throw();
 
     /// <summary>
     /// Tries to get the result, if available.

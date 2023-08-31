@@ -123,7 +123,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_Ok()
     {
-        _options.ShouldHandle = _ => PredicateResult.False;
+        _options.ShouldHandle = _ => PredicateResult.False();
 
         Create().Invoking(s => s.Execute(_ => 0)).Should().NotThrow();
 

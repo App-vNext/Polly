@@ -12,8 +12,8 @@ public class FallbackResiliencePipelineBuilderExtensionsTests
         {
             builder.AddFallback(new FallbackStrategyOptions<int>
             {
-                FallbackAction = _ => Outcome.FromResultAsTask(0),
-                ShouldHandle = _ => PredicateResult.False,
+                FallbackAction = _ => Outcome.FromResultAsValueTask(0),
+                ShouldHandle = _ => PredicateResult.False(),
             });
         }
     };

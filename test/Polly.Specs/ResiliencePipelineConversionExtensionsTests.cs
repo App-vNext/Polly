@@ -152,7 +152,7 @@ public class ResiliencePipelineConversionExtensionsTests
         var policy = new ResiliencePipelineBuilder<string>()
             .AddRetry(new RetryStrategyOptions<string>
             {
-                ShouldHandle = _ => PredicateResult.True,
+                ShouldHandle = _ => PredicateResult.True(),
                 BackoffType = DelayBackoffType.Constant,
                 MaxRetryAttempts = 5,
                 Delay = TimeSpan.FromMilliseconds(1)
