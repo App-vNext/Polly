@@ -1,3 +1,10 @@
+## 8.0.0-beta.1
+
+* Updates for alpha.9 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1526
+* Finalize the API review by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1528
+* Disposing pipeline should not dispose external inner pipeline by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1529
+* Clean duplications around disposing the pipelines by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1530
+
 ## 8.0.0-alpha.9
 
 * Updates for alpha.8 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1465

@@ -44,11 +44,11 @@ pipeline = new ResiliencePipelineBuilder()
         // To configure the predicate you can use switch expressions
         ShouldHandle = args => args.Outcome.Exception switch
         {
-            TimeoutRejectedException => PredicateResult.True,
+            TimeoutRejectedException => PredicateResult.True(),
 
             // The "PredicateResult.False" is just shorthand for "new ValueTask<bool>(true)"
             // You can also use "new PredicateBuilder().Handle<TimeoutRejectedException>()"
-            _ => PredicateResult.False
+            _ => PredicateResult.False()
         },
         // Register user callback called whenever retry occurs
         OnRetry = args =>
