@@ -82,6 +82,10 @@ public static class ResiliencePipelineExtensions
         {
             ExpandComponents(callbacks.Component, components);
         }
+        else if (component is ExternalComponent nonDisposable)
+        {
+            ExpandComponents(nonDisposable.Component, components);
+        }
         else
         {
             components.Add(component);

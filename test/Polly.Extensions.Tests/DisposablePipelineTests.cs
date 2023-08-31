@@ -43,6 +43,31 @@ public class DisposablePipelineTests
         IsDisposed(limiters[0]).Should().BeTrue();
     }
 
+    [Fact]
+    public void DisposePipeline_EnsureExternalPipelineNotDisposed()
+    {
+        var registry1 = new ResiliencePipelineRegistry<string>();
+        var pipeline1 = registry1.GetOrAddPipeline("my-pipeline", builder => builder.AddConcurrencyLimiter(1));
+        var pipeline2 = registry1.GetOrAddPipeline<string>("my-pipeline", builder => builder.AddConcurrencyLimiter(1));
+
+        var registry2 = new ResiliencePipelineRegistry<string>();
+        var pipeline3 = registry2.GetOrAddPipeline<string>("my-pipeline", builder => builder
+            .AddPipeline(pipeline1)
+            .AddPipeline(pipeline2));
+
+        pipeline3.Execute(() => string.Empty);
+        registry2.Dispose();
+        pipeline3.Invoking(p => p.Execute(() => string.Empty)).Should().Throw<ObjectDisposedException>();
+
+        pipeline1.Execute(() => { });
+        pipeline2.Execute(() => string.Empty);
+
+        registry1.Dispose();
+
+        pipeline1.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
+        pipeline2.Invoking(p => p.Execute(() => string.Empty)).Should().Throw<ObjectDisposedException>();
+    }
+
     private static bool IsDisposed(RateLimiter limiter)
     {
         try
