@@ -49,8 +49,8 @@ pipeline = new ResiliencePipelineBuilder()
         // Specify what exceptions should be retried using switch expressions
         ShouldHandle = args => args.Outcome.Exception switch
         {
-            InvalidOperationException => PredicateResult.True,
-            _ => PredicateResult.False,
+            InvalidOperationException => PredicateResult.True(),
+            _ => PredicateResult.False(),
         },
         OnRetry = outcome =>
         {
@@ -82,11 +82,11 @@ ResiliencePipeline<HttpResponseMessage> httpPipeline = new ResiliencePipelineBui
                 arguments.Outcome.Result.Headers.TryGetValues("Retry-After", out var value))
             {
                 // Return delay based on header
-                return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(int.Parse(value.Single())));
+                return new ValueTask<TimeSpan?>(TimeSpan.FromSeconds(int.Parse(value.Single())));
             }
 
             // Return delay hinted by the retry strategy
-            return new ValueTask<TimeSpan>(arguments.DelayHint);
+            return new ValueTask<TimeSpan?>(default(TimeSpan?));
         }
     })
     .Build();

@@ -23,9 +23,9 @@ ResiliencePipeline<HttpResponseMessage> pipeline = new ResiliencePipelineBuilder
         ShouldHandle = arguments => arguments.Outcome switch
         {
             // The "PredicateResult.True" is shorthand to "new ValueTask<bool>(true)"
-            { Exception: HttpRequestException } => PredicateResult.True,
-            { Result: HttpResponseMessage response } when response.StatusCode == HttpStatusCode.InternalServerError => PredicateResult.True,
-            _ => PredicateResult.False
+            { Exception: HttpRequestException } => PredicateResult.True(),
+            { Result: HttpResponseMessage response } when response.StatusCode == HttpStatusCode.InternalServerError => PredicateResult.True(),
+            _ => PredicateResult.False()
         },
         OnFallback = _ =>
         {
