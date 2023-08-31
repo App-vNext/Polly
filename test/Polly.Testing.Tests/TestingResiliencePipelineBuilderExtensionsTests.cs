@@ -10,9 +10,6 @@ public class TestingResiliencePipelineBuilderExtensionsTests
         var timeProvider = Substitute.For<TimeProvider>();
         var builder = new ResiliencePipelineBuilder().WithTimeProvider(timeProvider);
 
-        builder
-            .GetType()
-            .GetProperty("TimeProvider", BindingFlags.Instance | BindingFlags.NonPublic)!
-            .GetValue(builder).Should().Be(timeProvider);
+        builder.TimeProvider.Should().BeSameAs(timeProvider);
     }
 }
