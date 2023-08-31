@@ -11,12 +11,12 @@ namespace Polly.Telemetry;
 public class TelemetryOptions
 {
     /// <summary>
-    /// Gets or sets the optional user-specified telemetry listener.
+    /// Gets the collection of telemetry listeners.
     /// </summary>
     /// <value>
-    /// The default value is <see langword="null"/>.
+    /// The default value is an empty collection.
     /// </value>
-    public TelemetryListener? TelemetryListener { get; set; }
+    public ICollection<TelemetryListener> TelemetryListeners { get; } = new List<TelemetryListener>();
 
     /// <summary>
     /// Gets or sets the logger factory.
@@ -28,7 +28,7 @@ public class TelemetryOptions
     public ILoggerFactory LoggerFactory { get; set; } = NullLoggerFactory.Instance;
 
     /// <summary>
-    /// Gets the registered resilience telemetry enrichers.
+    /// Gets the collection of telemetry enrichers.
     /// </summary>
     /// <value>
     /// The default value is an empty collection.

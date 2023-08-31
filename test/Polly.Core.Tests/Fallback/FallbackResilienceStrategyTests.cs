@@ -1,6 +1,5 @@
 using Polly.Fallback;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Fallback;
 
@@ -28,8 +27,46 @@ public class FallbackResilienceStrategyTests
 
         Create().Execute(_ => "error").Should().Be("success");
 
-        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments);
+        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments<string>);
         called.Should().BeTrue();
+    }
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void ShouldHandle_ArgumentsSetCorrectly(bool handle)
+    {
+        var called = 0;
+
+        _handler = new FallbackHandler<string>(
+            args =>
+            {
+                args.Outcome.Result.Should().Be("ok");
+                args.Context.Should().NotBeNull();
+                called++;
+
+                return new ValueTask<bool>(handle);
+            },
+            args =>
+            {
+                args.Outcome.Result.Should().Be("ok");
+                args.Context.Should().NotBeNull();
+                called++;
+                return Outcome.FromResultAsValueTask("fallback");
+            });
+
+        var result = Create().Execute(_ => "ok");
+
+        if (handle)
+        {
+            result.Should().Be("fallback");
+            called.Should().Be(2);
+        }
+        else
+        {
+            result.Should().Be("ok");
+            called.Should().Be(1);
+        }
     }
 
     [Fact]
@@ -48,7 +85,7 @@ public class FallbackResilienceStrategyTests
         SetHandler(outcome => outcome.Exception is InvalidOperationException, () => Outcome.FromResult("secondary"));
         Create().Execute<string>(_ => throw new InvalidOperationException()).Should().Be("secondary");
 
-        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments);
+        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments<string>);
         called.Should().BeTrue();
     }
 
@@ -90,8 +127,6 @@ public class FallbackResilienceStrategyTests
         _handler = FallbackHelper.CreateHandler(shouldHandle, fallback);
     }
 
-    private ResiliencePipelineBridge<string> Create() => new(new FallbackResilienceStrategy<string>(
-        _handler!,
-        _options.OnFallback,
-        _telemetry));
+    private ResiliencePipeline<string> Create()
+        => new FallbackResilienceStrategy<string>(_handler!, _options.OnFallback, _telemetry).AsPipeline();
 }

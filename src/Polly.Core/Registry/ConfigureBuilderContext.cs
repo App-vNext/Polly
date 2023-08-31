@@ -24,28 +24,43 @@ public class ConfigureBuilderContext<TKey>
     /// <summary>
     /// Gets the builder name for the builder being used to create the strategy.
     /// </summary>
-    public string BuilderName { get; }
+    internal string BuilderName { get; }
 
     /// <summary>
     /// Gets the instance name for the builder being used to create the strategy.
     /// </summary>
-    public string? BuilderInstanceName { get; }
+    internal string? BuilderInstanceName { get; }
 
-    internal Func<Func<CancellationToken>>? ReloadTokenProducer { get; private set; }
+    internal List<CancellationToken> ReloadTokens { get; } = new();
+
+    internal List<Action> DisposeCallbacks { get; } = new();
 
     /// <summary>
-    /// Enables dynamic reloading of the strategy retrieved from <see cref="ResiliencePipelineRegistry{TKey}"/>.
+    /// Reloads the pipeline when <paramref name="cancellationToken"/> is canceled.
     /// </summary>
-    /// <param name="tokenProducerFactory">The producer of <see cref="CancellationToken"/> that is triggered when change occurs.</param>
+    /// <param name="cancellationToken">The cancellation token that triggers the pipeline reload when cancelled.</param>
     /// <remarks>
-    /// The <paramref name="tokenProducerFactory"/> should always return function that returns a new <see cref="CancellationToken"/> instance when invoked otherwise
-    /// the reload infrastructure will stop listening for changes. The <paramref name="tokenProducerFactory"/> is called only once for each streategy.
+    /// You can add multiple reload tokens to the context. Non-cancelable or already canceled tokens are ignored.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void EnableReloads(Func<Func<CancellationToken>> tokenProducerFactory)
+    public void AddReloadToken(CancellationToken cancellationToken)
     {
-        Guard.NotNull(tokenProducerFactory);
+        if (!cancellationToken.CanBeCanceled || cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
 
-        ReloadTokenProducer = tokenProducerFactory;
+        ReloadTokens.Add(cancellationToken);
+    }
+
+    /// <summary>
+    /// Registers a callback that is called when the pipeline instance being configured is disposed.
+    /// </summary>
+    /// <param name="callback">The callback delegate.</param>
+    public void OnPipelineDisposed(Action callback)
+    {
+        Guard.NotNull(callback);
+
+        DisposeCallbacks.Add(callback);
     }
 }

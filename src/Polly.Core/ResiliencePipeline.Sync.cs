@@ -3,7 +3,7 @@ namespace Polly;
 #pragma warning disable CA1031 // Do not catch general exception types
 #pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
 
-public abstract partial class ResiliencePipeline
+public partial class ResiliencePipeline
 {
     /// <summary>
     /// Executes the specified callback.
@@ -23,7 +23,7 @@ public abstract partial class ResiliencePipeline
 
         InitializeSyncContext(context);
 
-        ExecuteCoreSync(
+        Component.ExecuteCoreSync(
             static (context, state) =>
             {
                 try
@@ -55,7 +55,7 @@ public abstract partial class ResiliencePipeline
 
         InitializeSyncContext(context);
 
-        ExecuteCoreSync(
+        Component.ExecuteCoreSync(
             static (context, state) =>
             {
                 try
@@ -91,7 +91,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            ExecuteCoreSync(
+            Component.ExecuteCoreSync(
                 static (context, state) =>
                 {
                     try
@@ -129,7 +129,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            ExecuteCoreSync(
+            Component.ExecuteCoreSync(
                 static (context, state) =>
                 {
                     try
@@ -168,7 +168,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            ExecuteCoreSync(
+            Component.ExecuteCoreSync(
                 static (_, state) =>
                 {
                     try
@@ -203,7 +203,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            ExecuteCoreSync(
+            Component.ExecuteCoreSync(
                 static (_, state) =>
                 {
                     try
@@ -225,7 +225,7 @@ public abstract partial class ResiliencePipeline
         }
     }
 
-    private static ResilienceContext GetSyncContext(CancellationToken cancellationToken) => GetSyncContext<VoidResult>(cancellationToken);
+    private ResilienceContext GetSyncContext(CancellationToken cancellationToken) => GetSyncContext<VoidResult>(cancellationToken);
 
-    private static void InitializeSyncContext(ResilienceContext context) => InitializeSyncContext<VoidResult>(context);
+    private void InitializeSyncContext(ResilienceContext context) => InitializeSyncContext<VoidResult>(context);
 }

@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Polly.CircuitBreaker;
-using Polly.Telemetry;
 
 namespace Polly.Core.Tests.CircuitBreaker.Controller;
 
@@ -11,7 +10,7 @@ public class CircuitStateControllerTests
 
     private readonly CircuitBreakerStrategyOptions<int> _options = new();
     private readonly CircuitBehavior _circuitBehavior = Substitute.For<CircuitBehavior>();
-    private readonly Action<TelemetryEventArguments<object, object>> _onTelemetry = _ => { };
+    private readonly FakeTelemetryListener _telemetryListener = new();
 
     [Fact]
     public void Ctor_EnsureDefaults()
@@ -30,11 +29,11 @@ public class CircuitStateControllerTests
         bool called = false;
         _options.OnOpened = args =>
         {
-            args.Arguments.BreakDuration.Should().Be(TimeSpan.MaxValue);
+            args.BreakDuration.Should().Be(TimeSpan.MaxValue);
             args.Context.IsSynchronous.Should().BeFalse();
             args.Context.IsVoid.Should().BeFalse();
             args.Context.ResultType.Should().Be(typeof(int));
-            args.Arguments.IsManual.Should().BeTrue();
+            args.IsManual.Should().BeTrue();
             args.Outcome.IsVoidResult.Should().BeFalse();
             args.Outcome.Result.Should().Be(0);
             called = true;
@@ -60,7 +59,7 @@ public class CircuitStateControllerTests
         await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
 
         _circuitBehavior.Received().OnCircuitClosed();
-        context.ResilienceEvents.Should().Contain(new ResilienceEvent(ResilienceEventSeverity.Error, "OnCircuitOpened"));
+        _telemetryListener.GetArgs<OnCircuitOpenedArguments<int>>().Should().NotBeEmpty();
     }
 
     [Fact]
@@ -73,7 +72,7 @@ public class CircuitStateControllerTests
             args.Context.IsSynchronous.Should().BeFalse();
             args.Context.IsVoid.Should().BeFalse();
             args.Context.ResultType.Should().Be(typeof(int));
-            args.Arguments.IsManual.Should().BeTrue();
+            args.IsManual.Should().BeTrue();
             args.Outcome.IsVoidResult.Should().BeFalse();
             args.Outcome.Result.Should().Be(0);
             called = true;
@@ -93,7 +92,7 @@ public class CircuitStateControllerTests
 
         await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
         _circuitBehavior.Received().OnCircuitClosed();
-        context.ResilienceEvents.Should().Contain(new ResilienceEvent(ResilienceEventSeverity.Information, "OnCircuitClosed"));
+        _telemetryListener.GetArgs<OnCircuitClosedArguments<int>>().Should().NotBeEmpty();
     }
 
     [Fact]
@@ -119,9 +118,8 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         await OpenCircuit(controller, Outcome.FromResult(99));
-        var error = (BrokenCircuitException<int>)(await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception!;
-        error.Should().BeOfType<BrokenCircuitException<int>>();
-        error.Result.Should().Be(99);
+        var error = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception!;
+        error.Should().BeOfType<BrokenCircuitException>();
 
         GetBlockedTill(controller).Should().Be(_timeProvider.GetUtcNow() + _options.BreakDuration);
     }
@@ -220,7 +218,7 @@ public class CircuitStateControllerTests
         // act
         await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
         var error = (await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception;
-        error.Should().BeOfType<BrokenCircuitException<int>>();
+        error.Should().BeOfType<BrokenCircuitException>();
 
         // assert
         controller.CircuitState.Should().Be(CircuitState.HalfOpen);
@@ -237,7 +235,7 @@ public class CircuitStateControllerTests
         var called = false;
         _options.OnClosed = args =>
         {
-            args.Arguments.IsManual.Should().BeFalse();
+            args.IsManual.Should().BeFalse();
             called = true;
             return default;
         };
@@ -274,11 +272,11 @@ public class CircuitStateControllerTests
         {
             if (state == CircuitState.Isolated)
             {
-                args.Arguments.IsManual.Should().BeTrue();
+                args.IsManual.Should().BeTrue();
             }
             else
             {
-                args.Arguments.IsManual.Should().BeFalse();
+                args.IsManual.Should().BeFalse();
             }
 
             called = true;
@@ -358,7 +356,7 @@ public class CircuitStateControllerTests
         // assert
         controller.LastException.Should().BeNull();
         var outcome = await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
-        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException<int>>();
+        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException>();
     }
 
     [Fact]
@@ -393,7 +391,7 @@ public class CircuitStateControllerTests
         // execution rejected
         AdvanceTime(TimeSpan.FromMilliseconds(1));
         var outcome = await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
-        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException<int>>();
+        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException>();
 
         // wait and try, transition to half open
         AdvanceTime(_options.BreakDuration + _options.BreakDuration);
@@ -467,5 +465,5 @@ public class CircuitStateControllerTests
         _options.OnHalfOpened,
         _circuitBehavior,
         _timeProvider,
-        TestUtilities.CreateResilienceTelemetry(_onTelemetry.Invoke));
+        TestUtilities.CreateResilienceTelemetry(_telemetryListener));
 }

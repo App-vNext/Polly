@@ -12,7 +12,19 @@ public abstract partial class PolicyBase
     /// </summary>
     public string PolicyKey => policyKeyInternal ?? (policyKeyInternal = GetType().Name + "-" + KeyHelper.GuidPart());
 
-    internal static ArgumentException PolicyKeyMustBeImmutableException => new("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.", "policyKey");
+    internal static ArgumentException PolicyKeyMustBeImmutableException(string policyKeyParamName) => new ("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.", policyKeyParamName);
+
+    /// <summary>
+    /// Restores the supplied keys to the execution <see cref="Context"/>.
+    /// </summary>
+    /// <param name="executionContext">The execution <see cref="Context"/>.</param>
+    /// <param name="priorPolicyWrapKey">The <see cref="M:Context.PolicyWrapKey"/> prior to execution through this policy.</param>
+    /// <param name="priorPolicyKey">The <see cref="M:Context.PolicyKey"/> prior to execution through this policy.</param>
+    internal static void RestorePolicyContext(Context executionContext, string priorPolicyWrapKey, string priorPolicyKey)
+    {
+        executionContext.PolicyWrapKey = priorPolicyWrapKey;
+        executionContext.PolicyKey = priorPolicyKey;
+    }
 
     /// <summary>
     /// Updates the execution <see cref="Context"/> with context from the executing policy.
@@ -26,17 +38,5 @@ public abstract partial class PolicyBase
         priorPolicyKey = executionContext.PolicyKey;
 
         executionContext.PolicyKey = PolicyKey;
-    }
-
-    /// <summary>
-    /// Restores the supplied keys to the execution <see cref="Context"/>.
-    /// </summary>
-    /// <param name="executionContext">The execution <see cref="Context"/>.</param>
-    /// <param name="priorPolicyWrapKey">The <see cref="M:Context.PolicyWrapKey"/> prior to execution through this policy.</param>
-    /// <param name="priorPolicyKey">The <see cref="M:Context.PolicyKey"/> prior to execution through this policy.</param>
-    internal void RestorePolicyContext(Context executionContext, string priorPolicyWrapKey, string priorPolicyKey)
-    {
-        executionContext.PolicyWrapKey = priorPolicyWrapKey;
-        executionContext.PolicyKey = priorPolicyKey;
     }
 }

@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Polly.Telemetry;
 
 namespace Polly;
 
@@ -14,10 +13,6 @@ namespace Polly;
 /// </remarks>
 public sealed class ResilienceContext
 {
-    private const bool ContinueOnCapturedContextDefault = false;
-
-    private readonly List<ResilienceEvent> _resilienceEvents = new();
-
     internal ResilienceContext()
     {
     }
@@ -41,22 +36,22 @@ public sealed class ResilienceContext
     /// <summary>
     /// Gets a value indicating whether the execution is synchronous.
     /// </summary>
-    public bool IsSynchronous { get; private set; }
+    internal bool IsSynchronous { get; private set; }
 
     /// <summary>
     /// Gets the type of the result associated with the execution.
     /// </summary>
-    public Type ResultType { get; private set; } = typeof(UnknownResult);
+    internal Type ResultType { get; private set; } = typeof(UnknownResult);
 
     /// <summary>
     /// Gets a value indicating whether the execution represents a void result.
     /// </summary>
-    public bool IsVoid => ResultType == typeof(VoidResult);
+    internal bool IsVoid => ResultType == typeof(VoidResult);
 
     /// <summary>
-    /// Gets or sets a value indicating whether the execution should continue on the captured context.
+    /// Gets a value indicating whether the execution should continue on the captured context.
     /// </summary>
-    public bool ContinueOnCapturedContext { get; set; }
+    public bool ContinueOnCapturedContext { get; internal set; }
 
     /// <summary>
     /// Gets a value indicating whether the context is initialized.
@@ -68,14 +63,6 @@ public sealed class ResilienceContext
     /// </summary>
     public ResilienceProperties Properties { get; internal set; } = new();
 
-    /// <summary>
-    /// Gets the collection of resilience events that occurred while executing the resilience strategy.
-    /// </summary>
-    /// <remarks>
-    /// If the number of resilience events is greater than zero it's an indication that the execution was unhealthy.
-    /// </remarks>
-    public IReadOnlyList<ResilienceEvent> ResilienceEvents => _resilienceEvents;
-
     internal void InitializeFrom(ResilienceContext context)
     {
         OperationKey = context.OperationKey;
@@ -83,8 +70,6 @@ public sealed class ResilienceContext
         IsSynchronous = context.IsSynchronous;
         CancellationToken = context.CancellationToken;
         ContinueOnCapturedContext = context.ContinueOnCapturedContext;
-        _resilienceEvents.Clear();
-        _resilienceEvents.AddRange(context.ResilienceEvents);
     }
 
     [ExcludeFromCodeCoverage]
@@ -98,14 +83,8 @@ public sealed class ResilienceContext
     {
         IsSynchronous = isSynchronous;
         ResultType = typeof(TResult);
-        ContinueOnCapturedContext = ContinueOnCapturedContextDefault;
 
         return this;
-    }
-
-    internal void AddResilienceEvent(ResilienceEvent @event)
-    {
-        _resilienceEvents.Add(@event);
     }
 
     internal bool Reset()
@@ -116,7 +95,6 @@ public sealed class ResilienceContext
         ContinueOnCapturedContext = false;
         CancellationToken = default;
         Properties.Options.Clear();
-        _resilienceEvents.Clear();
         return true;
     }
 

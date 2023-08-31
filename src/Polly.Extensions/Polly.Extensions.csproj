@@ -14,8 +14,10 @@
     <EnableAotAnalyzer>true</EnableAotAnalyzer>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\Polly.Core\ResilienceValidationContext.cs" Link="Utils\ResilienceValidationContext.cs" />
     <Compile Include="..\Polly.Core\Utils\Guard.cs" Link="Utils\Guard.cs" />
     <Compile Include="..\Polly.Core\Utils\ObjectPool.cs" Link="Utils\ObjectPool.cs" />
+    <Compile Include="..\Polly.Core\Utils\ValidationHelper.cs" Link="Utils\ValidationHelper.cs" />
   </ItemGroup>
 
   <ItemGroup>

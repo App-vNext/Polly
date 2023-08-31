@@ -1,73 +1,73 @@
-﻿using Polly;
+﻿using System.Net;
+using Polly;
 using Polly.Retry;
 using Retries;
-using System.Net;
 
 var helper = new ExecuteHelper();
 
 // ------------------------------------------------------------------------
-// 1. Create a retry strategy that handles all exceptions
+// 1. Create a retry pipeline that handles all exceptions
 // ------------------------------------------------------------------------
 
-ResilienceStrategy strategy = new CompositeStrategyBuilder()
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     // Default retry options handle all exceptions
     .AddRetry(new RetryStrategyOptions())
     .Build();
 
 Console.WriteLine("---------------------------------------");
-strategy.Execute(helper.ExecuteUnstable);
+pipeline.Execute(helper.ExecuteUnstable);
 
 // ------------------------------------------------------------------------
 // 2. Customize the retry behavior
 // ------------------------------------------------------------------------
 
-strategy = new CompositeStrategyBuilder()
+pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions
     {
         // Specify what exceptions should be retried using PredicateBuilder
         ShouldHandle = new PredicateBuilder().Handle<InvalidOperationException>(),
-        RetryCount = 4,
-        BaseDelay = TimeSpan.FromSeconds(1),
+        MaxRetryAttempts = 4,
+        Delay = TimeSpan.FromSeconds(1),
 
         // The recommended backoff type for HTTP scenarios
         // See here for more information: https://github.com/App-vNext/Polly/wiki/Retry-with-jitter#more-complex-jitter
-        BackoffType = RetryBackoffType.Exponential,
+        BackoffType = DelayBackoffType.Exponential,
         UseJitter = true
     })
     .Build();
 
 Console.WriteLine("---------------------------------------");
-strategy.Execute(helper.ExecuteUnstable);
+pipeline.Execute(helper.ExecuteUnstable);
 
 // ------------------------------------------------------------------------
 // 3. Register the callbacks
 // ------------------------------------------------------------------------
 
-strategy = new CompositeStrategyBuilder()
+pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions
     {
         // Specify what exceptions should be retried using switch expressions
-        ShouldHandle = args => args.Exception switch
+        ShouldHandle = args => args.Outcome.Exception switch
         {
             InvalidOperationException => PredicateResult.True,
             _ => PredicateResult.False,
         },
         OnRetry = outcome =>
         {
-            Console.WriteLine($"Retrying attempt {outcome.Arguments.AttemptNumber}...");
+            Console.WriteLine($"Retrying attempt {outcome.AttemptNumber}...");
             return default;
         }
     })
     .Build();
 
 Console.WriteLine("---------------------------------------");
-strategy.Execute(helper.ExecuteUnstable);
+pipeline.Execute(helper.ExecuteUnstable);
 
 // ------------------------------------------------------------------------
-// 4. Create an HTTP retry strategy that handles both exceptions and results
+// 4. Create an HTTP retry pipeline that handles both exceptions and results
 // ------------------------------------------------------------------------
 
-ResilienceStrategy<HttpResponseMessage> httpStrategy = new CompositeStrategyBuilder<HttpResponseMessage>()
+ResiliencePipeline<HttpResponseMessage> httpPipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
     {
         // Specify what exceptions or results should be retried
@@ -76,19 +76,20 @@ ResilienceStrategy<HttpResponseMessage> httpStrategy = new CompositeStrategyBuil
             .Handle<InvalidOperationException>()
             .HandleResult(r=>r.StatusCode == HttpStatusCode.InternalServerError),
         // Specify delay generator
-        RetryDelayGenerator = outcome =>
+        DelayGenerator = arguments =>
         {
-            if (outcome.Result is not null && outcome.Result.Headers.TryGetValues("Retry-After", out var value))
+            if (arguments.Outcome.Result is not null &&
+                arguments.Outcome.Result.Headers.TryGetValues("Retry-After", out var value))
             {
                 // Return delay based on header
                 return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(int.Parse(value.Single())));
             }
 
             // Return delay hinted by the retry strategy
-            return new ValueTask<TimeSpan>(outcome.Arguments.DelayHint);
+            return new ValueTask<TimeSpan>(arguments.DelayHint);
         }
     })
     .Build();
 
 Console.WriteLine("---------------------------------------");
-httpStrategy.Execute(helper.ExecuteUnstable);
+httpPipeline.Execute(helper.ExecuteUnstable);

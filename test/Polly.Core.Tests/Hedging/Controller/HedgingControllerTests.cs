@@ -28,7 +28,7 @@ public class HedgingControllerTests
 
     private static async Task PrepareAsync(HedgingExecutionContext<int> context)
     {
-        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsTask(10), "state");
+        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsValueTask(10), "state");
         await context.TryWaitForCompletedExecutionAsync(System.Threading.Timeout.InfiniteTimeSpan);
         context.Tasks[0].AcceptOutcome();
     }

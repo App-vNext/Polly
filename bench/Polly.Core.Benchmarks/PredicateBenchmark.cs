@@ -5,20 +5,20 @@ namespace Polly.Core.Benchmarks;
 
 public class PredicateBenchmark
 {
-    private readonly OutcomeArguments<HttpResponseMessage, RetryPredicateArguments> _args = new(
+    private readonly RetryPredicateArguments<HttpResponseMessage> _args = new(
         ResilienceContextPool.Shared.Get(),
         Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.OK)),
-        new RetryPredicateArguments(0));
+        0);
 
     private readonly RetryStrategyOptions<HttpResponseMessage> _delegate = new()
     {
-        ShouldHandle = args => args switch
+        ShouldHandle = args => args.Outcome switch
         {
-            { Result: { StatusCode: HttpStatusCode.InternalServerError } } => PredicateResult.True,
-            { Exception: HttpRequestException } => PredicateResult.True,
-            { Exception: IOException } => PredicateResult.True,
-            { Exception: InvalidOperationException } => PredicateResult.False,
-            _ => PredicateResult.False,
+            { Result: { StatusCode: HttpStatusCode.InternalServerError } } => PredicateResult.True(),
+            { Exception: HttpRequestException } => PredicateResult.True(),
+            { Exception: IOException } => PredicateResult.True(),
+            { Exception: InvalidOperationException } => PredicateResult.False(),
+            _ => PredicateResult.False(),
         }
     };
 

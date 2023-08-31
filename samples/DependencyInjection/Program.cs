@@ -5,49 +5,49 @@ using Polly.Registry;
 using Polly.Timeout;
 
 // ------------------------------------------------------------------------
-// 1. Register your resilience strategy
+// 1. Register your resilience pipeline
 // ------------------------------------------------------------------------
 
 var serviceProvider = new ServiceCollection()
     .AddLogging(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Debug))
-    // Use "AddResilienceStrategy" extension method to configure your named strategy
-    .AddResilienceStrategy("my-strategy", (builder, context) =>
+    // Use "AddResiliencePipeline" extension method to configure your named pipeline
+    .AddResiliencePipeline("my-pipeline", (builder, context) =>
     {
-        // You can resolve any service from DI when building the strategy
+        // You can resolve any service from DI when building the pipeline
         context.ServiceProvider.GetRequiredService<ILoggerFactory>();
 
         builder.AddTimeout(TimeSpan.FromSeconds(1));
     })
-    // You can also register result-based (generic) resilience strategies
+    // You can also register result-based (generic) resilience pipelines
     // First generic parameter is the key type, the second one is the result type
     // This overload does not use the context argument (simple scenarios)
-    .AddResilienceStrategy<string, HttpResponseMessage>("my-http-strategy", builder =>
+    .AddResiliencePipeline<string, HttpResponseMessage>("my-http-pipeline", builder =>
     {
         builder.AddTimeout(TimeSpan.FromSeconds(1));
     })
     .BuildServiceProvider();
 
 // ------------------------------------------------------------------------
-// 2. Retrieve and use your resilience strategy
+// 2. Retrieve and use your resilience pipeline
 // ------------------------------------------------------------------------
 
-// Resolve the resilience strategy provider for string-based keys
-ResilienceStrategyProvider<string> strategyProvider = serviceProvider.GetRequiredService<ResilienceStrategyProvider<string>>();
+// Resolve the resilience pipeline provider for string-based keys
+ResiliencePipelineProvider<string> pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
 
-// Retrieve the strategy by name
-ResilienceStrategy strategy = strategyProvider.GetStrategy("my-strategy");
+// Retrieve the pipeline by name
+ResiliencePipeline pipeline = pipelineProvider.GetPipeline("my-pipeline");
 
-// Retrieve the generic strategy by name
-ResilienceStrategy<HttpResponseMessage> genericStrategy = strategyProvider.GetStrategy<HttpResponseMessage>("my-http-strategy");
+// Retrieve the generic pipeline by name
+ResiliencePipeline<HttpResponseMessage> genericPipeline = pipelineProvider.GetPipeline<HttpResponseMessage>("my-http-pipeline");
 
 try
 {
-    // Execute the strategy
+    // Execute the pipeline
     // Notice in console output that telemetry is automatically enabled
-    await strategy.ExecuteAsync(async token => await Task.Delay(10000, token), CancellationToken.None);
+    await pipeline.ExecuteAsync(async token => await Task.Delay(10000, token), CancellationToken.None);
 }
 catch (TimeoutRejectedException)
 {
-    // The timeout strategy cancels the user callback and throws this exception
+    // The timeout pipeline cancels the user callback and throws this exception
     Console.WriteLine("Timeout!");
 }

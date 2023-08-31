@@ -4,7 +4,7 @@ using NSubstitute;
 using Polly.Retry;
 using Polly.Telemetry;
 using Polly.Testing;
-using Polly.Utils;
+using Polly.Utils.Pipeline;
 
 namespace Polly.Core.Tests;
 
@@ -47,7 +47,7 @@ public class ResiliencePipelineBuilderTests
             After = (_, _) => executions.Add(3),
         };
 
-        builder.AddPipeline(first.AsPipeline());
+        builder.AddStrategy(first);
 
         // act
         var pipeline = builder.Build();
@@ -89,31 +89,17 @@ public class ResiliencePipelineBuilderTests
         // act
         var strategy = builder.Build();
         strategy
+            .Component
             .Should()
-            .BeOfType<CompositeResiliencePipeline>()
+            .BeOfType<CompositeComponent>()
             .Subject
-            .Strategies.Should().HaveCount(3);
+            .Components.Should().HaveCount(3);
 
         // assert
         strategy.Execute(_ => executions.Add(4));
 
         executions.Should().BeInAscendingOrder();
         executions.Should().HaveCount(7);
-    }
-
-    [Fact]
-    public void AddPipeline_Duplicate_Throws()
-    {
-        // arrange
-        var executions = new List<int>();
-        var builder = new ResiliencePipelineBuilder()
-            .AddPipeline(NullResiliencePipeline.Instance)
-            .AddPipeline(NullResiliencePipeline.Instance);
-
-        builder.Invoking(b => b.Build())
-            .Should()
-            .Throw<InvalidOperationException>()
-            .WithMessage("The composite resilience strategy must contain unique resilience strategies.");
     }
 
     [Fact]
@@ -126,13 +112,13 @@ public class ResiliencePipelineBuilderTests
         builder.Validator(new ResilienceValidationContext("ABC", "ABC"));
 
         builder
-            .Invoking(b => b.Validator(new ResilienceValidationContext(new RetryStrategyOptions { RetryCount = -4 }, "The primary message.")))
+            .Invoking(b => b.Validator(new ResilienceValidationContext(new RetryStrategyOptions { MaxRetryAttempts = -4 }, "The primary message.")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""
             The primary message.
             Validation Errors:
-            The field RetryCount must be between 1 and 2147483647.
+            The field MaxRetryAttempts must be between 1 and 2147483647.
             """);
     }
 
@@ -173,7 +159,7 @@ public class ResiliencePipelineBuilderTests
     }
 
     [Fact]
-    public void Build_Empty_ReturnsNullResiliencePipeline() => new ResiliencePipelineBuilder().Build().Should().BeSameAs(NullResiliencePipeline.Instance);
+    public void Build_Empty_ReturnsNullResiliencePipeline() => new ResiliencePipelineBuilder().Build().Component.Should().BeSameAs(PipelineComponent.Empty);
 
     [Fact]
     public void AddPipeline_AfterUsed_Throws()
@@ -183,7 +169,7 @@ public class ResiliencePipelineBuilderTests
         builder.Build();
 
         builder
-            .Invoking(b => b.AddPipeline(NullResiliencePipeline.Instance))
+            .Invoking(b => b.AddPipeline(ResiliencePipeline.Empty))
             .Should()
             .Throw<InvalidOperationException>()
             .WithMessage("Cannot add any more resilience strategies to the builder after it has been used to build a pipeline once.");
@@ -194,7 +180,7 @@ public class ResiliencePipelineBuilderTests
     {
         var builder = new InvalidResiliencePipelineBuilder();
 
-        builder.Invoking(b => b.BuildPipeline())
+        builder.Invoking(b => b.BuildPipelineComponent())
             .Should()
             .Throw<ValidationException>()
             .WithMessage(
@@ -244,6 +230,48 @@ The RequiredProperty field is required.
             .And.ParamName
             .Should()
             .Be("factory");
+    }
+
+    [Fact]
+    public async Task AddPipeline_EnsureNotDisposed()
+    {
+        var externalComponent = Substitute.For<PipelineComponent>();
+        var externalBuilder = new ResiliencePipelineBuilder();
+        externalBuilder.AddPipelineComponent(_ => externalComponent, new TestResilienceStrategyOptions());
+        var externalPipeline = externalBuilder.Build();
+
+        var internalComponent = Substitute.For<PipelineComponent>();
+        var builder = new ResiliencePipelineBuilder();
+        builder
+            .AddPipeline(externalPipeline)
+            .AddPipelineComponent(_ => internalComponent, new TestResilienceStrategyOptions());
+        var pipeline = builder.Build();
+
+        await pipeline.DisposeHelper.DisposeAsync();
+        await externalComponent.Received(0).DisposeAsync();
+        await internalComponent.Received(1).DisposeAsync();
+    }
+
+    [Fact]
+    public async Task AddPipeline_Generic_EnsureNotDisposed()
+    {
+        var externalComponent = Substitute.For<PipelineComponent>();
+        var externalBuilder = new ResiliencePipelineBuilder<string>();
+        externalBuilder.AddPipelineComponent(_ => externalComponent, new TestResilienceStrategyOptions());
+        var externalPipeline = externalBuilder.Build();
+
+        var internalComponent = Substitute.For<PipelineComponent>();
+        var builder = new ResiliencePipelineBuilder<string>();
+        builder
+            .AddPipeline(externalPipeline)
+            .AddPipelineComponent(_ => internalComponent, new TestResilienceStrategyOptions());
+        var pipeline = builder.Build();
+
+        pipeline.Execute(_ => string.Empty);
+
+        await pipeline.DisposeHelper.DisposeAsync();
+        await externalComponent.Received(0).DisposeAsync();
+        await internalComponent.Received(1).DisposeAsync();
     }
 
     [Fact]
@@ -297,8 +325,8 @@ The RequiredProperty field is required.
         builder.AddStrategy(
             context =>
             {
-                context.BuilderName.Should().Be("builder-name");
-                context.StrategyName.Should().Be("strategy-name");
+                context.Telemetry.TelemetrySource.PipelineName.Should().Be("builder-name");
+                context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name");
                 context.Telemetry.Should().NotBeNull();
                 context.TimeProvider.Should().Be(builder.TimeProvider);
                 verified1 = true;
@@ -310,8 +338,8 @@ The RequiredProperty field is required.
         builder.AddStrategy(
             context =>
             {
-                context.BuilderName.Should().Be("builder-name");
-                context.StrategyName.Should().Be("strategy-name-2");
+                context.Telemetry.TelemetrySource.PipelineName.Should().Be("builder-name");
+                context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name-2");
                 context.Telemetry.Should().NotBeNull();
                 context.TimeProvider.Should().Be(builder.TimeProvider);
                 verified2 = true;

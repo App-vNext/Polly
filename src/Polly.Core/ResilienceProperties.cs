@@ -2,13 +2,13 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Polly;
 
-#pragma warning disable CA1710 // Identifiers should have correct suffix
-
 /// <summary>
 /// Represents a collection of custom resilience properties.
 /// </summary>
+[DebuggerDisplay("{Options}")]
 public sealed class ResilienceProperties
 {
+    [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     internal IDictionary<string, object?> Options { get; set; } = new Dictionary<string, object?>();
 
     /// <summary>

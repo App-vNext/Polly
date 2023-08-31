@@ -5,11 +5,11 @@ namespace Polly.Registry;
 public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelineProvider<TKey>
     where TKey : notnull
 {
-    private sealed class GenericRegistry<TResult>
+    private sealed class GenericRegistry<TResult> : IAsyncDisposable
     {
         private readonly Func<ResiliencePipelineBuilder<TResult>> _activator;
         private readonly ConcurrentDictionary<TKey, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>>> _builders;
-        private readonly ConcurrentDictionary<TKey, ResiliencePipeline<TResult>> _strategies;
+        private readonly ConcurrentDictionary<TKey, ResiliencePipeline<TResult>> _pipelines;
 
         private readonly Func<TKey, string> _builderNameFormatter;
         private readonly Func<TKey, string>? _instanceNameFormatter;
@@ -23,18 +23,14 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
         {
             _activator = activator;
             _builders = new ConcurrentDictionary<TKey, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>>>(builderComparer);
-            _strategies = new ConcurrentDictionary<TKey, ResiliencePipeline<TResult>>(strategyComparer);
+            _pipelines = new ConcurrentDictionary<TKey, ResiliencePipeline<TResult>>(strategyComparer);
             _builderNameFormatter = builderNameFormatter;
             _instanceNameFormatter = instanceNameFormatter;
         }
 
-        public bool TryAdd(TKey key, ResiliencePipeline<TResult> strategy) => _strategies.TryAdd(key, strategy);
-
-        public bool Remove(TKey key) => _strategies.TryRemove(key, out _);
-
         public bool TryGet(TKey key, [NotNullWhen(true)] out ResiliencePipeline<TResult>? strategy)
         {
-            if (_strategies.TryGetValue(key, out strategy))
+            if (_pipelines.TryGetValue(key, out strategy))
             {
                 return true;
             }
@@ -53,21 +49,29 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
         {
             var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _instanceNameFormatter?.Invoke(key));
 
-#if NETCOREAPP3_0_OR_GREATER
-            return _strategies.GetOrAdd(key, static (_, factory) =>
+            return _pipelines.GetOrAdd(key, k =>
             {
-                return new ResiliencePipeline<TResult>(CreatePipeline(factory.instance._activator, factory.context, factory.configure));
-            },
-            (instance: this, context, configure));
-#else
-            return _strategies.GetOrAdd(key, _ => new ResiliencePipeline<TResult>(CreatePipeline(_activator, context, configure)));
-#endif
+                var component = new RegistryPipelineComponentBuilder<ResiliencePipelineBuilder<TResult>, TKey>(
+                    _activator,
+                    k,
+                    _builderNameFormatter(k),
+                    _instanceNameFormatter?.Invoke(k),
+                    configure).CreateComponent();
+
+                return new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject);
+            });
         }
 
         public bool TryAddBuilder(TKey key, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);
 
-        public bool RemoveBuilder(TKey key) => _builders.TryRemove(key, out _);
+        public async ValueTask DisposeAsync()
+        {
+            foreach (var strategy in _pipelines.Values)
+            {
+                await strategy.DisposeHelper.ForceDisposeAsync().ConfigureAwait(false);
+            }
 
-        public void Clear() => _strategies.Clear();
+            _pipelines.Clear();
+        }
     }
 }

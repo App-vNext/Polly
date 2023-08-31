@@ -1,5 +1,3 @@
-using Polly.Telemetry;
-
 namespace Polly.Core.Tests;
 
 public class ResilienceContextPoolTests
@@ -37,6 +35,36 @@ public class ResilienceContextPoolTests
 
         var context = ResilienceContextPool.Shared.Get(token.Token);
 
+        context.CancellationToken.Should().Be(token.Token);
+    }
+
+    [Fact]
+    public void Get_ContinueOnCapturedContextDefault_ShouldBeFalse()
+    {
+        using var token = new CancellationTokenSource();
+
+        var context = ResilienceContextPool.Shared.Get();
+
+        context.ContinueOnCapturedContext.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Get_ContinueOnCapturedContext_Ok()
+    {
+        var context = ResilienceContextPool.Shared.Get(true);
+
+        context.ContinueOnCapturedContext.Should().Be(true);
+    }
+
+    [Fact]
+    public void Get_OperationKeyContinueOnCapturedContext_Ok()
+    {
+        using var token = new CancellationTokenSource();
+
+        var context = ResilienceContextPool.Shared.Get("dummy", true, token.Token);
+
+        context.ContinueOnCapturedContext.Should().Be(true);
+        context.OperationKey.Should().Be("dummy");
         context.CancellationToken.Should().Be(token.Token);
     }
 
@@ -83,7 +111,6 @@ public class ResilienceContextPoolTests
             context.Initialize<bool>(true);
             context.CancellationToken.Should().Be(cts.Token);
             context.Properties.Set(new ResiliencePropertyKey<int>("abc"), 10);
-            context.AddResilienceEvent(new ResilienceEvent(ResilienceEventSeverity.Information, "dummy"));
             ResilienceContextPool.Shared.Return(context);
 
             AssertDefaults(context);
@@ -99,7 +126,6 @@ public class ResilienceContextPoolTests
         context.IsSynchronous.Should().BeFalse();
         context.CancellationToken.Should().Be(CancellationToken.None);
         context.Properties.Options.Should().BeEmpty();
-        context.ResilienceEvents.Should().BeEmpty();
         context.OperationKey.Should().BeNull();
     }
 }

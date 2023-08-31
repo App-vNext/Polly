@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Polly.Telemetry;
+using Polly.Utils.Pipeline;
 
 namespace Polly;
 
@@ -82,11 +83,10 @@ public abstract class ResiliencePipelineBuilderBase
     /// The validator should throw <see cref="ValidationException"/> when the validated instance is invalid.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when the attempting to assign <see langword="null"/> to this property.</exception>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public Action<ResilienceValidationContext> Validator { get; private protected set; } = ValidationHelper.ValidateObject;
+    internal Action<ResilienceValidationContext> Validator { get; private protected set; } = ValidationHelper.ValidateObject;
 
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
-    internal void AddStrategyCore(Func<StrategyBuilderContext, ResiliencePipeline> factory, ResilienceStrategyOptions options)
+    internal void AddPipelineComponent(Func<StrategyBuilderContext, PipelineComponent> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);
         Guard.NotNull(options);
@@ -101,38 +101,33 @@ public abstract class ResiliencePipelineBuilderBase
         _entries.Add(new Entry(factory, options));
     }
 
-    internal ResiliencePipeline BuildPipeline()
+    internal PipelineComponent BuildPipelineComponent()
     {
         Validator(new(this, $"The '{nameof(ResiliencePipelineBuilder)}' configuration is invalid."));
 
         _used = true;
 
-        var strategies = _entries.Select(CreateResiliencePipeline).ToList();
+        var components = _entries.Select(CreateComponent).ToList();
 
-        if (strategies.Count == 0)
+        if (components.Count == 0)
         {
-            return NullResiliencePipeline.Instance;
+            return PipelineComponent.Empty;
         }
 
-        return CompositeResiliencePipeline.Create(
-            strategies,
-            TelemetryUtil.CreateTelemetry(TelemetryListener, Name, InstanceName, null),
-            TimeProvider);
+        var source = new ResilienceTelemetrySource(Name, InstanceName, null);
+
+        return PipelineComponentFactory.CreateComposite(components, new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProvider);
     }
 
-    private ResiliencePipeline CreateResiliencePipeline(Entry entry)
+    private PipelineComponent CreateComponent(Entry entry)
     {
-        var context = new StrategyBuilderContext(
-            builderName: Name,
-            builderInstanceName: InstanceName,
-            strategyName: entry.Options.Name,
-            timeProvider: TimeProvider,
-            telemetryListener: TelemetryListener);
+        var source = new ResilienceTelemetrySource(Name, InstanceName, entry.Options.Name);
+        var context = new StrategyBuilderContext(new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProvider);
 
         var strategy = entry.Factory(context);
         strategy.Options = entry.Options;
         return strategy;
     }
 
-    private sealed record Entry(Func<StrategyBuilderContext, ResiliencePipeline> Factory, ResilienceStrategyOptions Options);
+    private sealed record Entry(Func<StrategyBuilderContext, PipelineComponent> Factory, ResilienceStrategyOptions Options);
 }

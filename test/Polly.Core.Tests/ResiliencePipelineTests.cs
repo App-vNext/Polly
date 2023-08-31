@@ -1,21 +1,75 @@
+using NSubstitute;
 using Polly.Utils;
+using Polly.Utils.Pipeline;
 
 namespace Polly.Core.Tests;
+
+#pragma warning disable S3966 // Objects should not be disposed more than once
 
 public partial class ResiliencePipelineTests
 {
     public static readonly CancellationToken CancellationToken = new CancellationTokenSource().Token;
 
     [Fact]
-    public void DebuggerProxy_Ok()
+    public async Task DisposeAsync_NullPipeline_OK()
     {
-        var pipeline = CompositeResiliencePipeline.Create(new[]
+        await ResiliencePipeline.Empty.DisposeHelper.DisposeAsync();
+        await ResiliencePipeline.Empty.DisposeHelper.DisposeAsync();
+
+        ResiliencePipeline.Empty.Execute(() => 1).Should().Be(1);
+    }
+
+    [Fact]
+    public async Task DisposeAsync_NullGenericPipeline_OK()
+    {
+        await ResiliencePipeline<int>.Empty.DisposeHelper.DisposeAsync();
+        await ResiliencePipeline<int>.Empty.DisposeHelper.DisposeAsync();
+
+        ResiliencePipeline.Empty.Execute(() => 1).Should().Be(1);
+    }
+
+    [Fact]
+    public async Task DisposeAsync_Reject_Throws()
+    {
+        var component = Substitute.For<PipelineComponent>();
+        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Reject);
+
+        (await pipeline.Invoking(p => p.DisposeHelper.DisposeAsync().AsTask())
+            .Should()
+            .ThrowAsync<InvalidOperationException>())
+            .WithMessage("Disposing this resilience pipeline is not allowed because it is owned by the pipeline registry.");
+    }
+
+    [Fact]
+    public async Task DisposeAsync_Allowed_Disposed()
+    {
+        var component = Substitute.For<PipelineComponent>();
+        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Allow);
+        await pipeline.DisposeHelper.DisposeAsync();
+        await pipeline.DisposeHelper.DisposeAsync();
+
+        pipeline.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
+
+        await component.Received(1).DisposeAsync();
+    }
+
+    [Fact]
+    public void Null_Ok()
+    {
+        ResiliencePipeline.Empty.Should().NotBeNull();
+        ResiliencePipeline<string>.Empty.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task DebuggerProxy_Ok()
+    {
+        await using var pipeline = (CompositeComponent)PipelineComponentFactory.CreateComposite(new[]
         {
-            new TestResilienceStrategy().AsPipeline(),
-            new TestResilienceStrategy().AsPipeline()
+            Substitute.For<PipelineComponent>(),
+            Substitute.For<PipelineComponent>(),
         }, null!, null!);
 
-        new CompositeResiliencePipeline.DebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
+        new CompositeComponentDebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
     }
 
     public class ExecuteParameters<T> : ExecuteParameters

@@ -3,7 +3,7 @@ namespace Polly;
 #pragma warning disable CA1031 // Do not catch general exception types
 #pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
 
-public abstract partial class ResiliencePipeline
+public partial class ResiliencePipeline
 {
     /// <summary>
     /// Executes the specified callback.
@@ -25,7 +25,7 @@ public abstract partial class ResiliencePipeline
 
         InitializeSyncContext<TResult>(context);
 
-        return ExecuteCoreSync(
+        return Component.ExecuteCoreSync(
            static (context, state) =>
            {
                try
@@ -59,7 +59,7 @@ public abstract partial class ResiliencePipeline
 
         InitializeSyncContext<TResult>(context);
 
-        return ExecuteCoreSync(
+        return Component.ExecuteCoreSync(
             static (context, state) =>
             {
                 try
@@ -94,7 +94,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            return ExecuteCoreSync(
+            return Component.ExecuteCoreSync(
                 static (context, state) =>
                 {
                     try
@@ -130,7 +130,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            return ExecuteCoreSync(
+            return Component.ExecuteCoreSync(
                 static (_, state) =>
                 {
                     try
@@ -168,7 +168,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            return ExecuteCoreSync(
+            return Component.ExecuteCoreSync(
                 static (_, state) =>
                 {
                     try
@@ -210,7 +210,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            return ExecuteCoreSync(
+            return Component.ExecuteCoreSync(
                 static (context, state) =>
                 {
                     try
@@ -231,7 +231,7 @@ public abstract partial class ResiliencePipeline
         }
     }
 
-    private static ResilienceContext GetSyncContext<TResult>(CancellationToken cancellationToken)
+    private ResilienceContext GetSyncContext<TResult>(CancellationToken cancellationToken)
     {
         var context = Pool.Get(cancellationToken);
 
@@ -240,5 +240,10 @@ public abstract partial class ResiliencePipeline
         return context;
     }
 
-    private static void InitializeSyncContext<TResult>(ResilienceContext context) => context.Initialize<TResult>(isSynchronous: true);
+    private void InitializeSyncContext<TResult>(ResilienceContext context)
+    {
+        DisposeHelper.EnsureNotDisposed();
+
+        context.Initialize<TResult>(isSynchronous: true);
+    }
 }

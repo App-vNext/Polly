@@ -96,7 +96,7 @@ public class PollyServiceCollectionExtensionTests
             {
                 context.RegistryContext.Should().NotBeNull();
                 context.PipelineKey.Should().Be(Key);
-                context.BuilderName.Should().Be(Key);
+                builder.Name.Should().Be(Key);
                 builder.Should().NotBeNull();
                 context.ServiceProvider.Should().NotBeNull();
                 builder.AddStrategy(new TestStrategy());
@@ -197,7 +197,7 @@ public class PollyServiceCollectionExtensionTests
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public void AddResiliencePipeline_Twice_LastOneWins(bool generic)
+    public void AddResiliencePipeline_Twice_FirstOneWins(bool generic)
     {
         var firstCalled = false;
         var secondCalled = false;
@@ -215,8 +215,8 @@ public class PollyServiceCollectionExtensionTests
             CreateProvider().GetPipeline(Key);
         }
 
-        firstCalled.Should().BeFalse();
-        secondCalled.Should().BeTrue();
+        firstCalled.Should().BeTrue();
+        secondCalled.Should().BeFalse();
     }
 
     [Fact]

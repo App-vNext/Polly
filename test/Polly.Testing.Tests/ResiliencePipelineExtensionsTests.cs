@@ -18,7 +18,7 @@ public class ResiliencePipelineExtensionsTests
         var strategy = new ResiliencePipelineBuilder<string>()
             .AddFallback(new()
             {
-                FallbackAction = _ => Outcome.FromResultAsTask("dummy"),
+                FallbackAction = _ => Outcome.FromResultAsValueTask("dummy"),
             })
             .AddRetry(new())
             .AddCircuitBreaker(new())
@@ -109,12 +109,15 @@ public class ResiliencePipelineExtensionsTests
     }
 
     [Fact]
-    public void GetPipelineDescriptor_Reloadable_Ok()
+    public async Task GetPipelineDescriptor_Reloadable_Ok()
     {
         // arrange
-        var strategy = new ResiliencePipelineRegistry<string>().GetOrAddPipeline("dummy", (builder, context) =>
+        using var source = new CancellationTokenSource();
+        await using var registry = new ResiliencePipelineRegistry<string>();
+        var strategy = registry.GetOrAddPipeline("dummy", (builder, context) =>
         {
-            context.EnableReloads(() => () => CancellationToken.None);
+            context.OnPipelineDisposed(() => { });
+            context.AddReloadToken(source.Token);
 
             builder
                 .AddConcurrencyLimiter(10)
@@ -129,6 +132,18 @@ public class ResiliencePipelineExtensionsTests
         descriptor.Strategies.Should().HaveCount(2);
         descriptor.Strategies[0].Options.Should().BeOfType<RateLimiterStrategyOptions>();
         descriptor.Strategies[1].StrategyInstance.GetType().Should().Be(typeof(CustomStrategy));
+    }
+
+    [Fact]
+    public void GetPipelineDescriptor_InnerPipeline_Ok()
+    {
+        var descriptor = new ResiliencePipelineBuilder()
+            .AddPipeline(new ResiliencePipelineBuilder().AddConcurrencyLimiter(1).Build())
+            .Build()
+            .GetPipelineDescriptor();
+
+        descriptor.Strategies.Should().HaveCount(1);
+        descriptor.Strategies[0].Options.Should().BeOfType<RateLimiterStrategyOptions>();
     }
 
     private sealed class CustomStrategy : ResilienceStrategy

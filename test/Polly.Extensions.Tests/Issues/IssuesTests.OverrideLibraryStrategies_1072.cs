@@ -15,22 +15,23 @@ public partial class IssuesTests
         // arrange
         var services = new ServiceCollection();
         var failFirstCall = true;
-        AddLibraryServices(services);
 
         if (overrideStrategy)
         {
             // This call overrides the pipeline that the library uses. The last call to AddResiliencePipeline wins.
             services.AddResiliencePipeline("library-pipeline", builder => builder.AddRetry(new()
             {
-                ShouldHandle = args => args.Exception switch
+                ShouldHandle = args => args.Outcome.Exception switch
                 {
-                    InvalidOperationException => PredicateResult.True,
-                    SocketException => PredicateResult.True,
-                    _ => PredicateResult.False
+                    InvalidOperationException => PredicateResult.True(),
+                    SocketException => PredicateResult.True(),
+                    _ => PredicateResult.False()
                 },
-                BaseDelay = TimeSpan.Zero
+                Delay = TimeSpan.Zero
             }));
         }
+
+        AddLibraryServices(services);
 
         var serviceProvider = services.BuildServiceProvider();
         var api = serviceProvider.GetRequiredService<LibraryApi>();
@@ -65,10 +66,10 @@ public partial class IssuesTests
         services.TryAddSingleton<LibraryApi>();
         services.AddResiliencePipeline("library-pipeline", builder => builder.AddRetry(new()
         {
-            ShouldHandle = args => args.Exception switch
+            ShouldHandle = args => args.Outcome.Exception switch
             {
-                InvalidOperationException => PredicateResult.True,
-                _ => PredicateResult.False
+                InvalidOperationException => PredicateResult.True(),
+                _ => PredicateResult.False()
             }
         }));
     }

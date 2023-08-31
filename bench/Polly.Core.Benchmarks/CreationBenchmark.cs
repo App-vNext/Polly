@@ -18,7 +18,7 @@ public class CreationBenchmark
         new ResiliencePipelineBuilder<string>()
             .AddFallback(new()
             {
-                FallbackAction = _ => Outcome.FromResultAsTask("fallback")
+                FallbackAction = _ => Outcome.FromResultAsValueTask("fallback")
             })
             .Build();
     }

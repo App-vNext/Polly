@@ -1,3 +1,4 @@
+using Polly;
 using Polly.TestUtils;
 
 namespace Polly.Specs;
@@ -14,7 +15,6 @@ public class ResiliencePipelineConversionExtensionsTests
     private readonly ResiliencePipeline<string> _genericStrategy;
     private bool _isSynchronous;
     private bool _isVoid;
-    private Type? _resultType;
 
     public ResiliencePipelineConversionExtensionsTests()
     {
@@ -22,16 +22,11 @@ public class ResiliencePipelineConversionExtensionsTests
         {
             Before = (context, _) =>
             {
-                context.IsVoid.Should().Be(_isVoid);
-                context.IsSynchronous.Should().Be(_isSynchronous);
+                context.GetType().GetProperty("IsVoid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context).Should().Be(_isVoid);
+                context.GetType().GetProperty("IsSynchronous", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context).Should().Be(_isSynchronous);
                 context.Properties.Set(Outgoing, "outgoing-value");
                 context.Properties.GetValue(Incoming, string.Empty).Should().Be("incoming-value");
                 context.OperationKey.Should().Be("op-key");
-
-                if (_resultType != null)
-                {
-                    context.ResultType.Should().Be(_resultType);
-                }
             }
         };
 
@@ -64,7 +59,6 @@ public class ResiliencePipelineConversionExtensionsTests
     {
         _isVoid = false;
         _isSynchronous = true;
-        _resultType = typeof(string);
         var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
@@ -80,7 +74,6 @@ public class ResiliencePipelineConversionExtensionsTests
     {
         _isVoid = false;
         _isSynchronous = true;
-        _resultType = typeof(string);
         var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
@@ -117,7 +110,6 @@ public class ResiliencePipelineConversionExtensionsTests
     {
         _isVoid = false;
         _isSynchronous = false;
-        _resultType = typeof(string);
         var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
@@ -138,7 +130,6 @@ public class ResiliencePipelineConversionExtensionsTests
     {
         _isVoid = false;
         _isSynchronous = false;
-        _resultType = typeof(string);
         var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
@@ -161,10 +152,10 @@ public class ResiliencePipelineConversionExtensionsTests
         var policy = new ResiliencePipelineBuilder<string>()
             .AddRetry(new RetryStrategyOptions<string>
             {
-                ShouldHandle = _ => PredicateResult.True,
-                BackoffType = RetryBackoffType.Constant,
-                RetryCount = 5,
-                BaseDelay = TimeSpan.FromMilliseconds(1)
+                ShouldHandle = _ => PredicateResult.True(),
+                BackoffType = DelayBackoffType.Constant,
+                MaxRetryAttempts = 5,
+                Delay = TimeSpan.FromMilliseconds(1)
             })
             .Build()
             .AsSyncPolicy();

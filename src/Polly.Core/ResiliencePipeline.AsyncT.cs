@@ -3,7 +3,7 @@ namespace Polly;
 #pragma warning disable CA1031 // Do not catch general exception types
 #pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
 
-public abstract partial class ResiliencePipeline
+public partial class ResiliencePipeline
 {
     /// <summary>
     /// Executes the specified outcome-based callback.
@@ -29,7 +29,7 @@ public abstract partial class ResiliencePipeline
 
         InitializeAsyncContext<TResult>(context);
 
-        return ExecuteCore(callback, context, state);
+        return Component.ExecuteCore(callback, context, state);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public abstract partial class ResiliencePipeline
 
         InitializeAsyncContext<TResult>(context);
 
-        var outcome = await ExecuteCore(
+        var outcome = await Component.ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -87,7 +87,7 @@ public abstract partial class ResiliencePipeline
 
         InitializeAsyncContext<TResult>(context);
 
-        var outcome = await ExecuteCore(
+        var outcome = await Component.ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -126,7 +126,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            var outcome = await ExecuteCore(
+            var outcome = await Component.ExecuteCore(
                 static async (context, state) =>
                 {
                     try
@@ -167,7 +167,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            var outcome = await ExecuteCore(
+            var outcome = await Component.ExecuteCore(
                 static async (context, state) =>
                 {
                     try
@@ -190,7 +190,7 @@ public abstract partial class ResiliencePipeline
         }
     }
 
-    private static ResilienceContext GetAsyncContext<TResult>(CancellationToken cancellationToken)
+    private ResilienceContext GetAsyncContext<TResult>(CancellationToken cancellationToken)
     {
         var context = Pool.Get(cancellationToken);
 
@@ -199,5 +199,10 @@ public abstract partial class ResiliencePipeline
         return context;
     }
 
-    private static void InitializeAsyncContext<TResult>(ResilienceContext context) => context.Initialize<TResult>(isSynchronous: false);
+    private void InitializeAsyncContext<TResult>(ResilienceContext context)
+    {
+        DisposeHelper.EnsureNotDisposed();
+
+        context.Initialize<TResult>(isSynchronous: false);
+    }
 }

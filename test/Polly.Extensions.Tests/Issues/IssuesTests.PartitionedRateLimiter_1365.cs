@@ -36,7 +36,7 @@ public partial class IssuesTests
 
                 builder.AddRateLimiter(new RateLimiterStrategyOptions
                 {
-                    RateLimiter = ResilienceRateLimiter.Create(partitionedLimiter)
+                    RateLimiter = args => partitionedLimiter.AcquireAsync(args.Context, 1, args.Context.CancellationToken)
                 });
             });
 

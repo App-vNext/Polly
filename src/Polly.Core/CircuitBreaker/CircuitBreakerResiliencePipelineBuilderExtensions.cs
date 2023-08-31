@@ -77,6 +77,7 @@ public static class CircuitBreakerResiliencePipelineBuilderExtensions
             options.MinimumThroughput,
             HealthMetrics.Create(options.SamplingDuration, context.TimeProvider));
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
         var controller = new CircuitStateController<TResult>(
             options.BreakDuration,
             options.OnOpened,
@@ -85,6 +86,7 @@ public static class CircuitBreakerResiliencePipelineBuilderExtensions
             behavior,
             context.TimeProvider,
             context.Telemetry);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
         return new CircuitBreakerResilienceStrategy<TResult>(
             options.ShouldHandle!,

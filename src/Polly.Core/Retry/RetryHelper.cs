@@ -8,7 +8,19 @@ internal static class RetryHelper
 
     public static bool IsValidDelay(TimeSpan delay) => delay >= TimeSpan.Zero;
 
-    public static TimeSpan GetRetryDelay(RetryBackoffType type, bool jitter, int attempt, TimeSpan baseDelay, ref double state, Func<double> randomizer)
+    public static TimeSpan GetRetryDelay(DelayBackoffType type, bool jitter, int attempt, TimeSpan baseDelay, ref double state, Func<double> randomizer)
+    {
+        try
+        {
+            return GetRetryDelayCore(type, jitter, attempt, baseDelay, ref state, randomizer);
+        }
+        catch (OverflowException)
+        {
+            return TimeSpan.MaxValue;
+        }
+    }
+
+    private static TimeSpan GetRetryDelayCore(DelayBackoffType type, bool jitter, int attempt, TimeSpan baseDelay, ref double state, Func<double> randomizer)
     {
         if (baseDelay == TimeSpan.Zero)
         {
@@ -19,22 +31,22 @@ internal static class RetryHelper
         {
             return type switch
             {
-                RetryBackoffType.Constant => ApplyJitter(baseDelay, randomizer),
-                RetryBackoffType.Linear => ApplyJitter(TimeSpan.FromMilliseconds((attempt + 1) * baseDelay.TotalMilliseconds), randomizer),
-                RetryBackoffType.Exponential => DecorrelatedJitterBackoffV2(attempt, baseDelay, ref state, randomizer),
+                DelayBackoffType.Constant => ApplyJitter(baseDelay, randomizer),
+                DelayBackoffType.Linear => ApplyJitter(TimeSpan.FromMilliseconds((attempt + 1) * baseDelay.TotalMilliseconds), randomizer),
+                DelayBackoffType.Exponential => DecorrelatedJitterBackoffV2(attempt, baseDelay, ref state, randomizer),
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, "The retry backoff type is not supported.")
             };
         }
 
         return type switch
         {
-            RetryBackoffType.Constant => baseDelay,
+            DelayBackoffType.Constant => baseDelay,
 #if !NETCOREAPP
-            RetryBackoffType.Linear => TimeSpan.FromMilliseconds((attempt + 1) * baseDelay.TotalMilliseconds),
-            RetryBackoffType.Exponential => TimeSpan.FromMilliseconds(Math.Pow(ExponentialFactor, attempt) * baseDelay.TotalMilliseconds),
+            DelayBackoffType.Linear => TimeSpan.FromMilliseconds((attempt + 1) * baseDelay.TotalMilliseconds),
+            DelayBackoffType.Exponential => TimeSpan.FromMilliseconds(Math.Pow(ExponentialFactor, attempt) * baseDelay.TotalMilliseconds),
 #else
-            RetryBackoffType.Linear => (attempt + 1) * baseDelay,
-            RetryBackoffType.Exponential => Math.Pow(ExponentialFactor, attempt) * baseDelay,
+            DelayBackoffType.Linear => (attempt + 1) * baseDelay,
+            DelayBackoffType.Exponential => Math.Pow(ExponentialFactor, attempt) * baseDelay,
 #endif
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "The retry backoff type is not supported.")
         };

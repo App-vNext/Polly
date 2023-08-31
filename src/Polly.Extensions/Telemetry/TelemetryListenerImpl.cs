@@ -10,15 +10,15 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
     private readonly ILogger _logger;
     private readonly Func<ResilienceContext, object?, object?> _resultFormatter;
+    private readonly List<TelemetryListener> _listeners;
     private readonly List<MeteringEnricher> _enrichers;
-    private readonly TelemetryListener? _listener;
 
     public TelemetryListenerImpl(TelemetryOptions options)
     {
         _enrichers = options.MeteringEnrichers.ToList();
         _logger = options.LoggerFactory.CreateLogger(TelemetryUtil.PollyDiagnosticSource);
         _resultFormatter = options.ResultFormatter;
-        _listener = options.TelemetryListener;
+        _listeners = options.TelemetryListeners.ToList();
 
         Counter = Meter.CreateCounter<int>(
             "resilience-events",
@@ -43,7 +43,14 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
     public override void Write<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
     {
-        _listener?.Write(in args);
+        // stryker disable once equality : no means to test this
+        if (_listeners.Count > 0)
+        {
+            foreach (var listener in _listeners)
+            {
+                listener.Write(in args);
+            }
+        }
 
         LogEvent(in args);
         MeterEvent(in args);
@@ -89,8 +96,6 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
             context.Tags.Add(new(ResilienceTelemetryTags.OperationKey, context.TelemetryEvent.Context.OperationKey));
         }
 
-        context.Tags.Add(new(ResilienceTelemetryTags.ResultType, context.TelemetryEvent.Context.GetResultType()));
-
         if (context.TelemetryEvent.Outcome?.Exception is Exception e)
         {
             context.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, e.GetType().FullName));
@@ -111,7 +116,6 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
             var tags = TagsList.Get();
             var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
             UpdateEnrichmentContext(in context);
-            tags.Tags.Add(new(ResilienceTelemetryTags.ExecutionHealth, args.Context.GetExecutionHealth()));
             ExecutionDuration.Record(executionFinished.Duration.TotalMilliseconds, tags.TagsSpan);
             TagsList.Return(tags);
         }
@@ -163,21 +167,16 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
             _logger.PipelineExecuting(
                 args.Source.PipelineName.GetValueOrPlaceholder(),
                 args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
-                args.Context.OperationKey,
-                args.Context.GetResultType());
+                args.Context.OperationKey);
         }
         else if (GetArgs<TArgs, PipelineExecutedArguments>(args.Arguments, out var pipelineExecuted))
         {
-            var logLevel = args.Context.IsExecutionHealthy() ? LogLevel.Debug : LogLevel.Warning;
-
             _logger.PipelineExecuted(
-                logLevel,
+                LogLevel.Debug,
                 args.Source.PipelineName.GetValueOrPlaceholder(),
                 args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
                 args.Context.OperationKey,
-                args.Context.GetResultType(),
                 GetResult(args.Context, args.Outcome),
-                args.Context.GetExecutionHealth(),
                 pipelineExecuted.Duration.TotalMilliseconds,
                 args.Outcome?.Exception);
         }

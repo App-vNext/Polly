@@ -193,11 +193,11 @@ public class TelemetryListenerImplTests : IDisposable
 
         if (noOutcome && exception)
         {
-            ev.Count.Should().Be(8);
+            ev.Count.Should().Be(7);
         }
         else
         {
-            ev.Count.Should().Be(7);
+            ev.Count.Should().Be(6);
         }
 
         ev["event-name"].Should().Be("my-event");
@@ -206,7 +206,6 @@ public class TelemetryListenerImplTests : IDisposable
         ev["pipeline-instance"].Should().Be("pipeline-instance");
         ev["operation-key"].Should().Be("op-key");
         ev["strategy-name"].Should().Be("my-strategy");
-        ev["result-type"].Should().Be("Boolean");
 
         if (outcome?.Exception is not null)
         {
@@ -242,11 +241,11 @@ public class TelemetryListenerImplTests : IDisposable
 
         if (noOutcome && exception)
         {
-            ev.Count.Should().Be(10);
+            ev.Count.Should().Be(9);
         }
         else
         {
-            ev.Count.Should().Be(9);
+            ev.Count.Should().Be(8);
         }
 
         ev["event-name"].Should().Be("my-event");
@@ -255,7 +254,6 @@ public class TelemetryListenerImplTests : IDisposable
         ev["pipeline-instance"].Should().Be("pipeline-instance");
         ev["operation-key"].Should().Be("op-key");
         ev["pipeline-name"].Should().Be("my-pipeline");
-        ev["result-type"].Should().Be("Boolean");
         ev["attempt-number"].Should().Be(5);
         ev["attempt-handled"].Should().Be(true);
 
@@ -291,7 +289,7 @@ public class TelemetryListenerImplTests : IDisposable
     {
         using var metering = TestUtilities.EnablePollyMetering(_events);
 
-        const int DefaultDimensions = 7;
+        const int DefaultDimensions = 6;
 
         var telemetry = Create(new[]
         {
@@ -349,34 +347,26 @@ public class TelemetryListenerImplTests : IDisposable
         called.Should().Be(hasCallback);
     }
 
-    [InlineData(true, false)]
-    [InlineData(false, false)]
-    [InlineData(true, true)]
-    [InlineData(false, true)]
+    [InlineData(true)]
+    [InlineData(false)]
     [Theory]
-    public void PipelineExecution_Logged(bool healthy, bool exception)
+    public void PipelineExecution_Logged(bool exception)
     {
-        var healthString = healthy ? "Healthy" : "Unhealthy";
         var context = ResilienceContextPool.Shared.Get("op-key").WithResultType<int>();
         var telemetry = Create();
         var outcome = exception ? Outcome.FromException<object>(new InvalidOperationException("dummy message")) : Outcome.FromResult((object)10);
         var result = exception ? "dummy message" : "10";
-
-        if (!healthy)
-        {
-            ((List<ResilienceEvent>)context.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
-        }
 
         ReportEvent(telemetry, outcome: outcome, arg: default(PipelineExecutingArguments), context: context);
         ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience pipeline executing. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key', Result Type: 'Int32'");
+        messages[0].Message.Should().Be("Resilience pipeline executing. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key'");
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Match($"Resilience pipeline executed. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key', Result Type: 'Int32', Result: '{result}', Execution Health: '{healthString}', Execution Time: 10000ms");
-        messages[0].LogLevel.Should().Be(healthy ? LogLevel.Debug : LogLevel.Warning);
+        messages[0].Message.Should().Match($"Resilience pipeline executed. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key', Result: '{result}', Execution Time: 10000ms");
+        messages[0].LogLevel.Should().Be(LogLevel.Debug);
     }
 
     [Fact]
@@ -388,7 +378,7 @@ public class TelemetryListenerImplTests : IDisposable
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience pipeline executing. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key', Result Type: 'void'");
+        messages[0].Message.Should().Be("Resilience pipeline executing. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key'");
     }
 
     [Fact]
@@ -400,27 +390,19 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, outcome: null, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
 
         var messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
-        messages[0].Message.Should().Match($"Resilience pipeline executed. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key', Result Type: 'Int32', Result: '', Execution Health: 'Healthy', Execution Time: 10000ms");
+        messages[0].Message.Should().Match($"Resilience pipeline executed. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key', Result: '', Execution Time: 10000ms");
     }
 
-    [InlineData(true, false)]
-    [InlineData(false, false)]
-    [InlineData(true, true)]
-    [InlineData(false, true)]
+    [InlineData(false)]
+    [InlineData(true)]
     [Theory]
-    public void PipelineExecution_Metered(bool healthy, bool exception)
+    public void PipelineExecution_Metered(bool exception)
     {
         using var metering = TestUtilities.EnablePollyMetering(_events);
 
-        var healthString = healthy ? "Healthy" : "Unhealthy";
         var context = ResilienceContextPool.Shared.Get("op-key").WithResultType<int>();
         var outcome = exception ? Outcome.FromException<object>(new InvalidOperationException("dummy message")) : Outcome.FromResult((object)10);
         var result = exception ? "dummy message" : "10";
-
-        if (!healthy)
-        {
-            ((List<ResilienceEvent>)context.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
-        }
 
         var telemetry = Create(new[]
         {
@@ -439,11 +421,10 @@ public class TelemetryListenerImplTests : IDisposable
 
         var ev = _events.Single(v => v.Name == "pipeline-execution-duration").Tags;
 
-        ev.Count.Should().Be(exception ? 10 : 9);
+        ev.Count.Should().Be(exception ? 8 : 7);
         ev["pipeline-instance"].Should().Be("pipeline-instance");
         ev["operation-key"].Should().Be("op-key");
         ev["pipeline-name"].Should().Be("my-pipeline");
-        ev["result-type"].Should().Be("Int32");
         ev["event-name"].Should().Be("my-event");
         ev["event-severity"].Should().Be("Warning");
         ev["pipeline-name"].Should().Be("my-pipeline");
@@ -456,15 +437,6 @@ public class TelemetryListenerImplTests : IDisposable
         else
         {
             ev.Should().NotContainKey("exception-name");
-        }
-
-        if (healthy)
-        {
-            ev["execution-health"].Should().Be("Healthy");
-        }
-        else
-        {
-            ev["execution-health"].Should().Be("Unhealthy");
         }
     }
 
@@ -492,7 +464,7 @@ public class TelemetryListenerImplTests : IDisposable
 
         if (_onEvent is not null)
         {
-            options.TelemetryListener = new FakeTelemetryListener(_onEvent);
+            options.TelemetryListeners.Add(new FakeTelemetryListener(_onEvent));
         }
 
         if (enrichers != null)

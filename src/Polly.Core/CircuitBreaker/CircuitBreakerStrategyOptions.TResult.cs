@@ -77,7 +77,7 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     /// This property is required.
     /// </value>
     [Required]
-    public Func<OutcomeArguments<TResult, CircuitBreakerPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<CircuitBreakerPredicateArguments, TResult>.HandleOutcome;
+    public Func<CircuitBreakerPredicateArguments<TResult>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<CircuitBreakerPredicateArguments<TResult>, TResult>.HandleOutcome;
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit resets to a <see cref="CircuitState.Closed"/> state.
@@ -93,7 +93,7 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     /// </para>
     /// </remarks>
     /// <value>The default value is <see langword="null"/>.</value>
-    public Func<OutcomeArguments<TResult, OnCircuitClosedArguments>, ValueTask>? OnClosed { get; set; }
+    public Func<OnCircuitClosedArguments<TResult>, ValueTask>? OnClosed { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit transitions to an <see cref="CircuitState.Open"/> state.
@@ -109,7 +109,7 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     /// </para>
     /// </remarks>
     /// <value>The default value is <see langword="null"/>.</value>
-    public Func<OutcomeArguments<TResult, OnCircuitOpenedArguments>, ValueTask>? OnOpened { get; set; }
+    public Func<OnCircuitOpenedArguments<TResult>, ValueTask>? OnOpened { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when when the circuit transitions to an <see cref="CircuitState.HalfOpen"/> state.

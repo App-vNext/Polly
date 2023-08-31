@@ -49,7 +49,7 @@ internal sealed class TaskExecution<T>
     /// </remarks>
     public Task? ExecutionTaskSafe { get; private set; }
 
-    public Outcome<object> Outcome { get; private set; }
+    public Outcome<T> Outcome { get; private set; }
 
     public bool IsHandled { get; private set; }
 
@@ -224,8 +224,8 @@ internal sealed class TaskExecution<T>
 
     private async Task UpdateOutcomeAsync(Outcome<T> outcome)
     {
-        var args = new OutcomeArguments<T, HedgingPredicateArguments>(Context, outcome, default);
-        Outcome = outcome.AsOutcome();
+        var args = new HedgingPredicateArguments<T>(Context, outcome);
+        Outcome = outcome;
         IsHandled = await _handler.ShouldHandle(args).ConfigureAwait(Context.ContinueOnCapturedContext);
         TelemetryUtil.ReportExecutionAttempt(_telemetry, Context, outcome, AttemptNumber, ExecutionTime, IsHandled);
     }

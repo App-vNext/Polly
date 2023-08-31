@@ -2,12 +2,10 @@
 Polly.Testing.ResiliencePipelineDescriptor
 Polly.Testing.ResiliencePipelineDescriptor.FirstStrategy.get -> Polly.Testing.ResilienceStrategyDescriptor!
 Polly.Testing.ResiliencePipelineDescriptor.IsReloadable.get -> bool
-Polly.Testing.ResiliencePipelineDescriptor.ResiliencePipelineDescriptor(System.Collections.Generic.IReadOnlyList<Polly.Testing.ResilienceStrategyDescriptor!>! strategies, bool isReloadable) -> void
 Polly.Testing.ResiliencePipelineDescriptor.Strategies.get -> System.Collections.Generic.IReadOnlyList<Polly.Testing.ResilienceStrategyDescriptor!>!
 Polly.Testing.ResiliencePipelineExtensions
 Polly.Testing.ResilienceStrategyDescriptor
 Polly.Testing.ResilienceStrategyDescriptor.Options.get -> Polly.ResilienceStrategyOptions?
-Polly.Testing.ResilienceStrategyDescriptor.ResilienceStrategyDescriptor(Polly.ResilienceStrategyOptions? options, object! strategyInstance) -> void
 Polly.Testing.ResilienceStrategyDescriptor.StrategyInstance.get -> object!
 Polly.TestingResiliencePipelineBuilderExtensions
 static Polly.Testing.ResiliencePipelineExtensions.GetPipelineDescriptor(this Polly.ResiliencePipeline! pipeline) -> Polly.Testing.ResiliencePipelineDescriptor!

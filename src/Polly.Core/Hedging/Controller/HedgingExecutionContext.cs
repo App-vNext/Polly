@@ -55,7 +55,7 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
     {
         if (LoadedTasks >= _maxAttempts)
         {
-            return CreateExecutionInfoWhenNoExecution<T>();
+            return CreateExecutionInfoWhenNoExecution();
         }
 
         // determine what type of task we are creating
@@ -77,7 +77,7 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
         else
         {
             _executionPool.Return(execution);
-            return CreateExecutionInfoWhenNoExecution<T>();
+            return CreateExecutionInfoWhenNoExecution();
         }
     }
 
@@ -156,17 +156,18 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
         return TryRemoveExecutedTask();
     }
 
-    private ExecutionInfo<TResult> CreateExecutionInfoWhenNoExecution<TResult>()
+    private ExecutionInfo<T> CreateExecutionInfoWhenNoExecution()
     {
         // if there are no more executing tasks we need to check finished ones
         if (_executingTasks.Count == 0)
         {
             var finishedExecution = _tasks.First(static t => t.ExecutionTaskSafe!.IsCompleted);
             finishedExecution.AcceptOutcome();
-            return new ExecutionInfo<TResult>(null, false, finishedExecution.Outcome.AsOutcome<TResult>());
+
+            return new ExecutionInfo<T>(null, false, finishedExecution.Outcome);
         }
 
-        return new ExecutionInfo<TResult>(null, false, null);
+        return new ExecutionInfo<T>(null, false, null);
     }
 
     private Task<Task> WaitForTaskCompetitionAsync()
@@ -215,14 +216,6 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
         if (Tasks.FirstOrDefault(static t => t.IsAccepted) is TaskExecution<T> acceptedExecution)
         {
             originalContext.Properties.Replace(acceptedExecution.Properties);
-
-            if (acceptedExecution.Type == HedgedTaskType.Secondary)
-            {
-                foreach (var @event in acceptedExecution.Context.ResilienceEvents)
-                {
-                    originalContext.AddResilienceEvent(@event);
-                }
-            }
         }
     }
 

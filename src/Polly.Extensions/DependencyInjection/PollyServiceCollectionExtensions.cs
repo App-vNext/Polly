@@ -76,8 +76,6 @@ public static class PollyServiceCollectionExtensions
             {
                 options.Actions.Add((registry) =>
                 {
-                    // the last added builder with the same key wins, this allows overriding the builders
-                    registry.RemoveBuilder<TResult>(key);
                     registry.TryAddBuilder<TResult>(key, (builder, context) =>
                     {
                         configure(builder, new AddResiliencePipelineContext<TKey>(context, serviceProvider));
@@ -148,7 +146,6 @@ public static class PollyServiceCollectionExtensions
                 options.Actions.Add((registry) =>
                 {
                     // the last added builder with the same key wins, this allows overriding the builders
-                    registry.RemoveBuilder(key);
                     registry.TryAddBuilder(key, (builder, context) =>
                     {
                         configure(builder, new AddResiliencePipelineContext<TKey>(context, serviceProvider));

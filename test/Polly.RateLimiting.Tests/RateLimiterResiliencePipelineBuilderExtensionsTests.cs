@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.RateLimiting;
 using NSubstitute;
+using Polly.Registry;
 using Polly.Testing;
+using Polly.TestUtils;
 
 namespace Polly.RateLimiting.Tests;
 
@@ -12,7 +14,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         builder =>
         {
             builder.AddConcurrencyLimiter(2, 2);
-            AssertRateLimiterStrategy(builder, strategy => strategy.Limiter.Limiter.Should().BeOfType<ConcurrencyLimiter>());
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper!.Limiter.Should().BeOfType<ConcurrencyLimiter>());
         },
         builder =>
         {
@@ -23,13 +25,20 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
                     QueueLimit = 2
                 });
 
-            AssertRateLimiterStrategy(builder, strategy => strategy.Limiter.Limiter.Should().BeOfType<ConcurrencyLimiter>());
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper!.Limiter.Should().BeOfType<ConcurrencyLimiter>());
         },
         builder =>
         {
             var expected = Substitute.For<RateLimiter>();
             builder.AddRateLimiter(expected);
-            AssertRateLimiterStrategy(builder, strategy => strategy.Limiter.Limiter.Should().Be(expected));
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper.Should().BeNull());
+        },
+        builder =>
+        {
+            var limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = 1 });
+            builder.AddRateLimiter(limiter);
+            builder.Build().Execute(() => { });
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper.Should().BeNull());
         }
     };
 
@@ -83,7 +92,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         new ResiliencePipelineBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions
             {
-                RateLimiter = ResilienceRateLimiter.Create(limiter)
+                RateLimiter = args => limiter.AcquireAsync(1, args.Context.CancellationToken)
             })
             .Build()
             .GetPipelineDescriptor()
@@ -127,7 +136,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         var strategy = new ResiliencePipelineBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions
             {
-                RateLimiter = ResilienceRateLimiter.Create(Substitute.For<RateLimiter>())
+                RateLimiter = args => new ValueTask<RateLimitLease>(Substitute.For<RateLimitLease>())
             })
             .Build()
             .GetPipelineDescriptor()
@@ -135,6 +144,19 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
             .StrategyInstance
             .Should()
             .BeOfType<RateLimiterResilienceStrategy>();
+    }
+
+    [Fact]
+    public async Task DisposeRegistry_EnsureRateLimiterDisposed()
+    {
+        var registry = new ResiliencePipelineRegistry<string>();
+        var pipeline = registry.GetOrAddPipeline("limiter", p => p.AddRateLimiter(new RateLimiterStrategyOptions()));
+
+        var strategy = (RateLimiterResilienceStrategy)pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance;
+
+        await registry.DisposeAsync();
+
+        strategy.AsPipeline().Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
     }
 
     private static void AssertRateLimiterStrategy(ResiliencePipelineBuilder builder, Action<RateLimiterResilienceStrategy>? assert = null, bool hasEvents = false)
@@ -149,7 +171,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         {
             limiterStrategy.OnLeaseRejected.Should().NotBeNull();
             limiterStrategy
-                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Substitute.For<RateLimitLease>(), null))
+                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Substitute.For<RateLimitLease>()))
                 .Preserve().GetAwaiter().GetResult();
         }
         else

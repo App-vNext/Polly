@@ -2,13 +2,13 @@
   <PropertyGroup>
     <MicrosoftExtensionsVersion>8.0.0-preview.7.23375.6</MicrosoftExtensionsVersion>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <PollyVersion>8.0.0-alpha.8</PollyVersion>
+    <PollyVersion>8.0.0-alpha.9</PollyVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.13.7" />
-    <PackageVersion Include="FluentAssertions" Version="6.11.0" />
-    <PackageVersion Include="GitHubActionsTestLogger" Version="2.3.2" />
+    <PackageVersion Include="FluentAssertions" Version="6.12.0" />
+    <PackageVersion Include="GitHubActionsTestLogger" Version="2.3.3" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Bcl.TimeProvider" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" />
@@ -21,7 +21,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-preview.7.23407.5" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="MinVer" Version="4.3.0" />
     <PackageVersion Include="NSubstitute" Version="5.0.0" />
@@ -29,8 +29,8 @@
     <PackageVersion Include="Polly.Core" Version="$(PollyVersion)" />
     <PackageVersion Include="Polly.Extensions" Version="$(PollyVersion)" />
     <PackageVersion Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
-    <PackageVersion Include="ReportGenerator" Version="5.1.23" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.7.0.75501" />
+    <PackageVersion Include="ReportGenerator" Version="5.1.24" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.8.0.76515" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.507" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="4.5.0" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="$(MicrosoftExtensionsVersion)" />

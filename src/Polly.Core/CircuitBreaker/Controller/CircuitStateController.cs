@@ -9,8 +9,8 @@ internal sealed class CircuitStateController<T> : IDisposable
 {
     private readonly object _lock = new();
     private readonly ScheduledTaskExecutor _executor = new();
-    private readonly Func<OutcomeArguments<T, OnCircuitOpenedArguments>, ValueTask>? _onOpened;
-    private readonly Func<OutcomeArguments<T, OnCircuitClosedArguments>, ValueTask>? _onClosed;
+    private readonly Func<OnCircuitOpenedArguments<T>, ValueTask>? _onOpened;
+    private readonly Func<OnCircuitClosedArguments<T>, ValueTask>? _onClosed;
     private readonly Func<OnCircuitHalfOpenedArguments, ValueTask>? _onHalfOpen;
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
@@ -18,14 +18,14 @@ internal sealed class CircuitStateController<T> : IDisposable
     private readonly TimeSpan _breakDuration;
     private DateTimeOffset _blockedUntil;
     private CircuitState _circuitState = CircuitState.Closed;
-    private Outcome<object>? _lastOutcome;
+    private Outcome<T>? _lastOutcome;
     private BrokenCircuitException _breakingException = new();
     private bool _disposed;
 
     public CircuitStateController(
         TimeSpan breakDuration,
-        Func<OutcomeArguments<T, OnCircuitOpenedArguments>, ValueTask>? onOpened,
-        Func<OutcomeArguments<T, OnCircuitClosedArguments>, ValueTask>? onClosed,
+        Func<OnCircuitOpenedArguments<T>, ValueTask>? onOpened,
+        Func<OnCircuitClosedArguments<T>, ValueTask>? onClosed,
         Func<OnCircuitHalfOpenedArguments, ValueTask>? onHalfOpen,
         CircuitBehavior behavior,
         TimeProvider timeProvider,
@@ -66,7 +66,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         }
     }
 
-    public Outcome<object>? LastHandledOutcome
+    public Outcome<T>? LastHandledOutcome
     {
         get
         {
@@ -268,8 +268,8 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         if (priorState != CircuitState.Closed)
         {
-            var args = new OutcomeArguments<T, OnCircuitClosedArguments>(context, outcome, new OnCircuitClosedArguments(manual));
-            _telemetry.Report(new(ResilienceEventSeverity.Information, CircuitBreakerConstants.OnCircuitClosed), args);
+            var args = new OnCircuitClosedArguments<T>(context, outcome, manual);
+            _telemetry.Report<OnCircuitClosedArguments<T>, T>(new(ResilienceEventSeverity.Information, CircuitBreakerConstants.OnCircuitClosed), args);
 
             if (_onClosed is not null)
             {
@@ -290,17 +290,17 @@ internal sealed class CircuitStateController<T> : IDisposable
         return false;
     }
 
-    private void SetLastHandledOutcome_NeedsLock<TResult>(Outcome<TResult> outcome)
+    private void SetLastHandledOutcome_NeedsLock(Outcome<T> outcome)
     {
-        _lastOutcome = outcome.AsOutcome();
+        _lastOutcome = outcome;
 
         if (outcome.Exception is Exception exception)
         {
             _breakingException = new BrokenCircuitException(BrokenCircuitException.DefaultMessage, exception);
         }
-        else if (outcome.TryGetResult(out var result))
+        else
         {
-            _breakingException = new BrokenCircuitException<TResult>(BrokenCircuitException.DefaultMessage, result!);
+            _breakingException = new BrokenCircuitException(BrokenCircuitException.DefaultMessage);
         }
     }
 
@@ -319,8 +319,8 @@ internal sealed class CircuitStateController<T> : IDisposable
         var transitionedState = _circuitState;
         _circuitState = CircuitState.Open;
 
-        var args = new OutcomeArguments<T, OnCircuitOpenedArguments>(context, outcome, new OnCircuitOpenedArguments(breakDuration, manual));
-        _telemetry.Report(new(ResilienceEventSeverity.Error, CircuitBreakerConstants.OnCircuitOpened), args);
+        var args = new OnCircuitOpenedArguments<T>(context, outcome, breakDuration, manual);
+        _telemetry.Report<OnCircuitOpenedArguments<T>, T>(new(ResilienceEventSeverity.Error, CircuitBreakerConstants.OnCircuitOpened), args);
 
         if (_onOpened is not null)
         {

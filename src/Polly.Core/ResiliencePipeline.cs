@@ -1,3 +1,5 @@
+using Polly.Utils.Pipeline;
+
 namespace Polly;
 
 /// <summary>
@@ -7,34 +9,22 @@ namespace Polly;
 /// Resilience pipeline supports various types of callbacks and provides a unified way to execute them.
 /// This includes overloads for synchronous and asynchronous callbacks, generic and non-generic callbacks.
 /// </remarks>
-public partial class ResiliencePipeline
+public sealed partial class ResiliencePipeline
 {
+    /// <summary>
+    /// Resilience pipeline that executes the user-provided callback without any additional logic.
+    /// </summary>
+    public static readonly ResiliencePipeline Empty = new(PipelineComponent.Empty, DisposeBehavior.Ignore);
+
+    internal ResiliencePipeline(PipelineComponent component, DisposeBehavior disposeBehavior)
+    {
+        Component = component;
+        DisposeHelper = new ComponentDisposeHelper(component, disposeBehavior);
+    }
+
     internal static ResilienceContextPool Pool => ResilienceContextPool.Shared;
 
-    internal ResilienceStrategyOptions? Options { get; set; }
+    internal PipelineComponent Component { get; }
 
-    internal ResiliencePipeline()
-    {
-    }
-
-    internal abstract ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-        ResilienceContext context,
-        TState state);
-
-    private Outcome<TResult> ExecuteCoreSync<TResult, TState>(
-        Func<ResilienceContext, TState, Outcome<TResult>> callback,
-        ResilienceContext context,
-        TState state)
-    {
-        return ExecuteCore(
-            static (context, state) =>
-            {
-                var result = state.callback(context, state.state);
-
-                return new ValueTask<Outcome<TResult>>(result);
-            },
-            context,
-            (callback, state)).GetResult();
-    }
+    internal ComponentDisposeHelper DisposeHelper { get; }
 }

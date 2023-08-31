@@ -2,7 +2,6 @@ using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Polly.CircuitBreaker;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
@@ -45,13 +44,12 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _options.StateProvider.IsInitialized.Should().BeTrue();
 
         _options.StateProvider.CircuitState.Should().Be(CircuitState.Closed);
-        _options.StateProvider.LastHandledOutcome.Should().Be(null);
     }
 
     [Fact]
     public async Task Ctor_ManualControl_EnsureAttached()
     {
-        _options.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Outcome.Exception is InvalidOperationException);
         _options.ManualControl = new CircuitBreakerManualControl();
         var strategy = Create();
 
@@ -62,9 +60,6 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
 
         strategy.Invoking(s => s.Execute(_ => 0)).Should().NotThrow();
 
-        _options.ManualControl.Dispose();
-        strategy.Invoking(s => s.Execute(_ => 0)).Should().Throw<ObjectDisposedException>();
-
         _behavior.Received().OnCircuitClosed();
         _behavior.Received().OnActionSuccess(CircuitState.Closed);
     }
@@ -72,7 +67,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_HandledResult_OnFailureCalled()
     {
-        _options.ShouldHandle = args => new ValueTask<bool>(args.Result is -1);
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Outcome.Result is -1);
         var strategy = Create();
         var shouldBreak = false;
 
@@ -87,7 +82,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_UnhandledResult_OnActionSuccess()
     {
-        _options.ShouldHandle = args => new ValueTask<bool>(args.Result is -1);
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Outcome.Result is -1);
         var strategy = Create();
 
         strategy.Execute(_ => 0).Should().Be(0);
@@ -98,7 +93,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_HandledException_OnFailureCalled()
     {
-        _options.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Outcome.Exception is InvalidOperationException);
         var strategy = Create();
         var shouldBreak = false;
 
@@ -113,10 +108,10 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_UnhandledException_NoCalls()
     {
-        _options.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Outcome.Exception is InvalidOperationException);
         var strategy = Create();
 
-        strategy.Invoking(s => s.Execute(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
+        strategy.Invoking(s => s.Execute<int>(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
 
         _behavior.DidNotReceiveWithAnyArgs().OnActionFailure(default, out Arg.Any<bool>());
         _behavior.DidNotReceiveWithAnyArgs().OnActionSuccess(default);
@@ -128,13 +123,15 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_Ok()
     {
-        _options.ShouldHandle = _ => PredicateResult.False;
+        _options.ShouldHandle = _ => PredicateResult.False();
 
         Create().Invoking(s => s.Execute(_ => 0)).Should().NotThrow();
 
         _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
     }
 
-    private ResiliencePipelineBridge<int> Create()
-        => new(new CircuitBreakerResilienceStrategy<int>(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl));
+    private ResiliencePipeline<int> Create()
+#pragma warning disable CA2000 // Dispose objects before losing scope
+        => new CircuitBreakerResilienceStrategy<int>(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl).AsPipeline();
+#pragma warning restore CA2000 // Dispose objects before losing scope
 }

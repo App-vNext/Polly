@@ -3,46 +3,46 @@ using Polly.Retry;
 using Polly.Timeout;
 
 // ------------------------------------------------------------------------
-// 1. Create a simple resilience strategy using CompositeStrategyBuilder
+// 1. Create a simple resilience pipeline using ResiliencePipelineBuilder
 // ------------------------------------------------------------------------
 
-// The CompositeStrategyBuilder creates a ResilienceStrategy
+// The ResiliencePipelineBuilder creates a ResiliencePipeline
 // that can be executed synchronously or asynchronously
 // and for both void and result-returning user-callbacks.
-ResilienceStrategy strategy = new CompositeStrategyBuilder()
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     // Use convenience extension that accepts TimeSpan
     .AddTimeout(TimeSpan.FromSeconds(5)) 
     .Build();
 
 // ------------------------------------------------------------------------
-// 2. Execute the strategy
+// 2. Execute the pipeline
 // ------------------------------------------------------------------------
 
 // Synchronously
-strategy.Execute(() => { });
+pipeline.Execute(() => { });
 
 // Asynchronously
-await strategy.ExecuteAsync(async token => { await Task.Delay(10, token); }, CancellationToken.None);
+await pipeline.ExecuteAsync(async token => await Task.Delay(10, token), CancellationToken.None);
 
 // Synchronously with result
-strategy.Execute(token => "some-result");
+pipeline.Execute(token => "some-result");
 
 // Asynchronously with result
-await strategy.ExecuteAsync(async token => { await Task.Delay(10, token); return "some-result"; }, CancellationToken.None);
+await pipeline.ExecuteAsync(async token => { await Task.Delay(10, token); return "some-result"; }, CancellationToken.None);
 
 // Use state to avoid lambda allocation
-strategy.Execute(static state => state, "my-state");
+pipeline.Execute(static state => state, "my-state");
 
 // ------------------------------------------------------------------------
 // 3. Create and execute a pipeline of strategies
 // ------------------------------------------------------------------------
 
-strategy = new CompositeStrategyBuilder()
+pipeline = new ResiliencePipelineBuilder()
     // Add retries using the options
     .AddRetry(new RetryStrategyOptions
     {
         // To configure the predicate you can use switch expressions
-        ShouldHandle = args => args.Exception switch
+        ShouldHandle = args => args.Outcome.Exception switch
         {
             TimeoutRejectedException => PredicateResult.True,
 
@@ -51,10 +51,14 @@ strategy = new CompositeStrategyBuilder()
             _ => PredicateResult.False
         },
         // Register user callback called whenever retry occurs
-        OnRetry = args => { Console.WriteLine($"Retrying...{args.Arguments.AttemptNumber} attempt"); return default; },
-        BaseDelay = TimeSpan.FromMilliseconds(400),
-        BackoffType = RetryBackoffType.Constant,
-        RetryCount = 3
+        OnRetry = args =>
+        {
+            Console.WriteLine($"Retrying...{args.AttemptNumber} attempt");
+            return default;
+        },
+        Delay = TimeSpan.FromMilliseconds(400),
+        BackoffType = DelayBackoffType.Constant,
+        MaxRetryAttempts = 3
     })
     // Add timeout using the options
     .AddTimeout(new TimeoutStrategyOptions
@@ -71,7 +75,7 @@ strategy = new CompositeStrategyBuilder()
 
 try
 {
-    await strategy.ExecuteAsync(async token => await Task.Delay(TimeSpan.FromSeconds(2), token), CancellationToken.None);
+    await pipeline.ExecuteAsync(async token => await Task.Delay(TimeSpan.FromSeconds(2), token), CancellationToken.None);
 }
 catch (TimeoutRejectedException)
 {

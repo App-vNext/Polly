@@ -37,7 +37,7 @@ public class ResiliencePipelineProviderTests
     [Fact]
     public void Get_GenericExist_Ok()
     {
-        var provider = new Provider { GenericStrategy = new TestResiliencePipeline<string>() };
+        var provider = new Provider { GenericStrategy = ResiliencePipeline<string>.Empty };
 
         provider.GetPipeline<string>("exists").Should().Be(provider.GenericStrategy);
     }

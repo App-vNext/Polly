@@ -12,9 +12,9 @@ public class HedgingStrategyOptionsTests
         var options = new HedgingStrategyOptions<int>();
 
         options.ShouldHandle.Should().NotBeNull();
-        options.HedgingActionGenerator.Should().NotBeNull();
-        options.HedgingDelay.Should().Be(TimeSpan.FromSeconds(2));
-        options.MaxHedgedAttempts.Should().Be(2);
+        options.ActionGenerator.Should().NotBeNull();
+        options.Delay.Should().Be(TimeSpan.FromSeconds(2));
+        options.MaxHedgedAttempts.Should().Be(1);
         options.OnHedging.Should().BeNull();
         options.Name.Should().Be("Hedging");
     }
@@ -28,7 +28,7 @@ public class HedgingStrategyOptionsTests
         var context = ResilienceContextPool.Shared.Get().Initialize<int>(synchronous);
         var threadId = Thread.CurrentThread.ManagedThreadId;
 
-        var action = options.HedgingActionGenerator(new HedgingActionGeneratorArguments<int>(context, context, 1, c =>
+        var action = options.ActionGenerator(new HedgingActionGeneratorArguments<int>(context, context, 1, c =>
         {
             if (synchronous)
             {
@@ -39,7 +39,7 @@ public class HedgingStrategyOptionsTests
                 Thread.CurrentThread.ManagedThreadId.Should().Be(threadId);
             }
 
-            return Outcome.FromResultAsTask(99);
+            return Outcome.FromResultAsValueTask(99);
         }))!;
 
         action.Should().NotBeNull();
@@ -50,12 +50,11 @@ public class HedgingStrategyOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new HedgingStrategyOptions<int>();
-        var args = default(HedgingPredicateArguments);
         var context = ResilienceContextPool.Shared.Get();
 
-        (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);
-        (await options.ShouldHandle(new(context, Outcome.FromException<int>(new OperationCanceledException()), args))).Should().Be(false);
-        (await options.ShouldHandle(new(context, Outcome.FromException<int>(new InvalidOperationException()), args))).Should().Be(true);
+        (await options.ShouldHandle(new HedgingPredicateArguments<int>(context, Outcome.FromResult(0)))).Should().Be(false);
+        (await options.ShouldHandle(new HedgingPredicateArguments<int>(context, Outcome.FromException<int>(new OperationCanceledException())))).Should().Be(false);
+        (await options.ShouldHandle(new HedgingPredicateArguments<int>(context, Outcome.FromException<int>(new InvalidOperationException())))).Should().Be(true);
     }
 
     [Fact]
@@ -63,11 +62,11 @@ public class HedgingStrategyOptionsTests
     {
         var options = new HedgingStrategyOptions<int>
         {
-            HedgingDelayGenerator = null!,
+            DelayGenerator = null!,
             ShouldHandle = null!,
             MaxHedgedAttempts = -1,
             OnHedging = null!,
-            HedgingActionGenerator = null!
+            ActionGenerator = null!
         };
 
         options
@@ -78,9 +77,9 @@ public class HedgingStrategyOptionsTests
             Invalid.
 
             Validation Errors:
-            The field MaxHedgedAttempts must be between 2 and 10.
+            The field MaxHedgedAttempts must be between 1 and 10.
             The ShouldHandle field is required.
-            The HedgingActionGenerator field is required.
+            The ActionGenerator field is required.
             """);
     }
 }

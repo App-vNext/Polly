@@ -3,7 +3,7 @@ namespace Polly;
 #pragma warning disable CA1031 // Do not catch general exception types
 #pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
 
-public abstract partial class ResiliencePipeline
+public partial class ResiliencePipeline
 {
     /// <summary>
     /// Executes the specified callback.
@@ -24,7 +24,7 @@ public abstract partial class ResiliencePipeline
 
         InitializeAsyncContext(context);
 
-        var outcome = await ExecuteCore(
+        var outcome = await Component.ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -59,7 +59,7 @@ public abstract partial class ResiliencePipeline
 
         InitializeAsyncContext(context);
 
-        var outcome = await ExecuteCore(
+        var outcome = await Component.ExecuteCore(
             static async (context, state) =>
             {
                 try
@@ -98,7 +98,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            var outcome = await ExecuteCore(
+            var outcome = await Component.ExecuteCore(
                 static async (context, state) =>
                 {
                     try
@@ -139,7 +139,7 @@ public abstract partial class ResiliencePipeline
 
         try
         {
-            var outcome = await ExecuteCore(
+            var outcome = await Component.ExecuteCore(
                 static async (context, state) =>
                 {
                     try
@@ -164,7 +164,7 @@ public abstract partial class ResiliencePipeline
         }
     }
 
-    private static ResilienceContext GetAsyncContext(CancellationToken cancellationToken) => GetAsyncContext<VoidResult>(cancellationToken);
+    private ResilienceContext GetAsyncContext(CancellationToken cancellationToken) => GetAsyncContext<VoidResult>(cancellationToken);
 
-    private static void InitializeAsyncContext(ResilienceContext context) => InitializeAsyncContext<VoidResult>(context);
+    private void InitializeAsyncContext(ResilienceContext context) => InitializeAsyncContext<VoidResult>(context);
 }

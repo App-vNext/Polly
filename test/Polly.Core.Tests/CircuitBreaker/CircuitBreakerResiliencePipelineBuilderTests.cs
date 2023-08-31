@@ -11,7 +11,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
     {
         builder => builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions
         {
-            ShouldHandle = _ => PredicateResult.True
+            ShouldHandle = _ => PredicateResult.True()
         }),
     };
 
@@ -19,7 +19,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
     {
         builder => builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions<int>
         {
-            ShouldHandle = _ => PredicateResult.True
+            ShouldHandle = _ => PredicateResult.True()
         }),
     };
 
@@ -72,7 +72,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
             MinimumThroughput = 10,
             SamplingDuration = TimeSpan.FromSeconds(10),
             BreakDuration = TimeSpan.FromSeconds(1),
-            ShouldHandle = args => new ValueTask<bool>(args.Result is -1),
+            ShouldHandle = args => new ValueTask<bool>(args.Outcome.Result is -1),
             OnOpened = _ => { opened++; return default; },
             OnClosed = _ => { closed++; return default; },
             OnHalfOpened = (_) => { halfOpened++; return default; }
@@ -90,12 +90,12 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         opened.Should().Be(1);
         halfOpened.Should().Be(0);
         closed.Should().Be(0);
-        Assert.Throws<BrokenCircuitException<object>>(() => strategy.Execute(_ => 0));
+        Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
 
         // Circuit Half Opened
         timeProvider.Advance(options.BreakDuration);
         strategy.Execute(_ => -1);
-        Assert.Throws<BrokenCircuitException<object>>(() => strategy.Execute(_ => 0));
+        Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
         opened.Should().Be(2);
         halfOpened.Should().Be(1);
         closed.Should().Be(0);
@@ -129,5 +129,35 @@ public class CircuitBreakerResiliencePipelineBuilderTests
 
         strategy1.Execute(() => { });
         strategy2.Execute(() => { });
+    }
+
+    [InlineData(false)]
+    [InlineData(true)]
+    [Theory]
+    public async Task DisposePipeline_EnsureCircuitBreakerDisposed(bool attachManualControl)
+    {
+        var manualControl = attachManualControl ? new CircuitBreakerManualControl() : null;
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ManualControl = manualControl
+            })
+            .Build();
+
+        if (attachManualControl)
+        {
+            manualControl!.IsEmpty.Should().BeFalse();
+        }
+
+        var strategy = (ResilienceStrategy<object>)pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance;
+
+        await pipeline.DisposeHelper.DisposeAsync();
+
+        strategy.AsPipeline().Invoking(s => s.Execute(() => 1)).Should().Throw<ObjectDisposedException>();
+
+        if (attachManualControl)
+        {
+            manualControl!.IsEmpty.Should().BeTrue();
+        }
     }
 }
