@@ -262,6 +262,8 @@ Polly.ResiliencePipelineBuilderBase.Name.get -> string?
 Polly.ResiliencePipelineBuilderBase.Name.set -> void
 Polly.ResiliencePipelineBuilderBase.TelemetryListener.get -> Polly.Telemetry.TelemetryListener?
 Polly.ResiliencePipelineBuilderBase.TelemetryListener.set -> void
+Polly.ResiliencePipelineBuilderBase.TimeProvider.get -> System.TimeProvider!
+Polly.ResiliencePipelineBuilderBase.TimeProvider.set -> void
 Polly.ResiliencePipelineBuilderExtensions
 Polly.ResilienceProperties
 Polly.ResilienceProperties.GetValue<TValue>(Polly.ResiliencePropertyKey<TValue> key, TValue defaultValue) -> TValue

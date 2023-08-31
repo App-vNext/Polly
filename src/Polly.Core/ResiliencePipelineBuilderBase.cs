@@ -60,8 +60,9 @@ public abstract class ResiliencePipelineBuilderBase
     /// <value>
     /// The default value is <see cref="TimeProvider.System"/>.
     /// </value>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     [Required]
-    internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
+    public TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 
     /// <summary>
     /// Gets or sets the <see cref="TelemetryListener"/> that is used by Polly to report resilience events.
