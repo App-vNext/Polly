@@ -47,7 +47,7 @@ public class ResiliencePipelineBuilderTests
             After = (_, _) => executions.Add(3),
         };
 
-        builder.AddPipeline(first.AsPipeline());
+        builder.AddStrategy(first);
 
         // act
         var pipeline = builder.Build();
@@ -100,21 +100,6 @@ public class ResiliencePipelineBuilderTests
 
         executions.Should().BeInAscendingOrder();
         executions.Should().HaveCount(7);
-    }
-
-    [Fact]
-    public void AddPipeline_Duplicate_Throws()
-    {
-        // arrange
-        var executions = new List<int>();
-        var builder = new ResiliencePipelineBuilder()
-            .AddPipeline(ResiliencePipeline.Empty)
-            .AddPipeline(ResiliencePipeline.Empty);
-
-        builder.Invoking(b => b.Build())
-            .Should()
-            .Throw<InvalidOperationException>()
-            .WithMessage("The resilience pipeline must contain unique resilience strategies.");
     }
 
     [Fact]
@@ -245,6 +230,70 @@ The RequiredProperty field is required.
             .And.ParamName
             .Should()
             .Be("factory");
+    }
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task AddPipeline_EnsureNotDisposed(bool isAsync)
+    {
+        var externalComponent = Substitute.For<PipelineComponent>();
+        var externalBuilder = new ResiliencePipelineBuilder();
+        externalBuilder.AddPipelineComponent(_ => externalComponent, new TestResilienceStrategyOptions());
+        var externalPipeline = externalBuilder.Build();
+
+        var internalComponent = Substitute.For<PipelineComponent>();
+        var builder = new ResiliencePipelineBuilder();
+        builder
+            .AddPipeline(externalPipeline)
+            .AddPipelineComponent(_ => internalComponent, new TestResilienceStrategyOptions());
+        var pipeline = builder.Build();
+
+        if (isAsync)
+        {
+            await pipeline.DisposeHelper.DisposeAsync();
+            await externalComponent.Received(0).DisposeAsync();
+            await internalComponent.Received(1).DisposeAsync();
+        }
+        else
+        {
+            pipeline.DisposeHelper.Dispose();
+            externalComponent.Received(0).Dispose();
+            internalComponent.Received(1).Dispose();
+        }
+    }
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task AddPipeline_Generic_EnsureNotDisposed(bool isAsync)
+    {
+        var externalComponent = Substitute.For<PipelineComponent>();
+        var externalBuilder = new ResiliencePipelineBuilder<string>();
+        externalBuilder.AddPipelineComponent(_ => externalComponent, new TestResilienceStrategyOptions());
+        var externalPipeline = externalBuilder.Build();
+
+        var internalComponent = Substitute.For<PipelineComponent>();
+        var builder = new ResiliencePipelineBuilder<string>();
+        builder
+            .AddPipeline(externalPipeline)
+            .AddPipelineComponent(_ => internalComponent, new TestResilienceStrategyOptions());
+        var pipeline = builder.Build();
+
+        pipeline.Execute(_ => string.Empty);
+
+        if (isAsync)
+        {
+            await pipeline.DisposeHelper.DisposeAsync();
+            await externalComponent.Received(0).DisposeAsync();
+            await internalComponent.Received(1).DisposeAsync();
+        }
+        else
+        {
+            pipeline.DisposeHelper.Dispose();
+            externalComponent.Received(0).Dispose();
+            internalComponent.Received(1).Dispose();
+        }
     }
 
     [Fact]

@@ -134,6 +134,18 @@ public class ResiliencePipelineExtensionsTests
         descriptor.Strategies[1].StrategyInstance.GetType().Should().Be(typeof(CustomStrategy));
     }
 
+    [Fact]
+    public void GetPipelineDescriptor_InnerPipeline_Ok()
+    {
+        var descriptor = new ResiliencePipelineBuilder()
+            .AddPipeline(new ResiliencePipelineBuilder().AddConcurrencyLimiter(1).Build())
+            .Build()
+            .GetPipelineDescriptor();
+
+        descriptor.Strategies.Should().HaveCount(1);
+        descriptor.Strategies[0].Options.Should().BeOfType<RateLimiterStrategyOptions>();
+    }
+
     private sealed class CustomStrategy : ResilienceStrategy
     {
         protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
