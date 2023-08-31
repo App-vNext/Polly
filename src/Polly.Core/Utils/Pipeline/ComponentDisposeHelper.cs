@@ -1,6 +1,6 @@
 ﻿namespace Polly.Utils.Pipeline;
 
-internal sealed class ComponentDisposeHelper : IDisposable, IAsyncDisposable
+internal sealed class ComponentDisposeHelper : IAsyncDisposable
 {
     private readonly PipelineComponent _component;
     private readonly DisposeBehavior _disposeBehavior;
@@ -10,14 +10,6 @@ internal sealed class ComponentDisposeHelper : IDisposable, IAsyncDisposable
     {
         _component = component;
         _disposeBehavior = disposeBehavior;
-    }
-
-    public void Dispose()
-    {
-        if (EnsureDisposable())
-        {
-            ForceDispose();
-        }
     }
 
     public ValueTask DisposeAsync()
@@ -36,14 +28,6 @@ internal sealed class ComponentDisposeHelper : IDisposable, IAsyncDisposable
         {
             throw new ObjectDisposedException("ResiliencePipeline", "This resilience pipeline has been disposed and cannot be used anymore.");
         }
-    }
-
-    public void ForceDispose()
-    {
-        _disposed = true;
-#pragma warning disable S2952 // Classes should "Dispose" of members from the classes' own "Dispose" methods
-        _component.Dispose();
-#pragma warning restore S2952 // Classes should "Dispose" of members from the classes' own "Dispose" methods
     }
 
     public ValueTask ForceDisposeAsync()

@@ -218,19 +218,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// After the disposal, all resilience pipelines still used outside of the builder are disposed
     /// and cannot be used anymore.
     /// </remarks>
-    public void Dispose()
-    {
-        _disposed = true;
-
-        var pipelines = _pipelines.Values.ToList();
-        _pipelines.Clear();
-
-        var registries = _genericRegistry.Values.Cast<IDisposable>().ToList();
-        _genericRegistry.Clear();
-
-        pipelines.ForEach(p => p.DisposeHelper.ForceDispose());
-        registries.ForEach(p => p.Dispose());
-    }
+    public void Dispose() => DisposeAsync().AsTask().GetAwaiter().GetResult();
 
     /// <summary>
     /// Disposes all resources that are held by the resilience pipelines created by this builder.

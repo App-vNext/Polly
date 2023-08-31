@@ -5,7 +5,7 @@ namespace Polly.Registry;
 public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelineProvider<TKey>
     where TKey : notnull
 {
-    private sealed class GenericRegistry<TResult> : IDisposable, IAsyncDisposable
+    private sealed class GenericRegistry<TResult> : IAsyncDisposable
     {
         private readonly Func<ResiliencePipelineBuilder<TResult>> _activator;
         private readonly ConcurrentDictionary<TKey, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>>> _builders;
@@ -63,16 +63,6 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
         }
 
         public bool TryAddBuilder(TKey key, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);
-
-        public void Dispose()
-        {
-            foreach (var strategy in _pipelines.Values)
-            {
-                strategy.DisposeHelper.ForceDispose();
-            }
-
-            _pipelines.Clear();
-        }
 
         public async ValueTask DisposeAsync()
         {

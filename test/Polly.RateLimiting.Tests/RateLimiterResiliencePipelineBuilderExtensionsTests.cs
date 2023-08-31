@@ -146,24 +146,15 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
             .BeOfType<RateLimiterResilienceStrategy>();
     }
 
-    [InlineData(true)]
-    [InlineData(false)]
-    [Theory]
-    public async Task DisposeRegistry_EnsureRateLimiterDisposed(bool isAsync)
+    [Fact]
+    public async Task DisposeRegistry_EnsureRateLimiterDisposed()
     {
         var registry = new ResiliencePipelineRegistry<string>();
         var pipeline = registry.GetOrAddPipeline("limiter", p => p.AddRateLimiter(new RateLimiterStrategyOptions()));
 
         var strategy = (RateLimiterResilienceStrategy)pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
-        if (isAsync)
-        {
-            await registry.DisposeAsync();
-        }
-        else
-        {
-            registry.Dispose();
-        }
+        await registry.DisposeAsync();
 
         strategy.AsPipeline().Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
     }

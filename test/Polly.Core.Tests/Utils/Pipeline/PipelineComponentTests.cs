@@ -9,7 +9,6 @@ public class PipelineComponentTests
     public async Task Dispose_Ok()
     {
         PipelineComponent.Empty.Should().NotBeNull();
-        PipelineComponent.Empty.Dispose();
         await PipelineComponent.Empty.DisposeAsync();
     }
 }

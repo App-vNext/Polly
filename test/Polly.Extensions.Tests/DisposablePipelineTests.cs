@@ -44,7 +44,7 @@ public class DisposablePipelineTests
     }
 
     [Fact]
-    public void DisposePipeline_EnsureExternalPipelineNotDisposed()
+    public async Task DisposePipeline_EnsureExternalPipelineNotDisposed()
     {
         var registry1 = new ResiliencePipelineRegistry<string>();
         var pipeline1 = registry1.GetOrAddPipeline("my-pipeline", builder => builder.AddConcurrencyLimiter(1));
@@ -56,13 +56,13 @@ public class DisposablePipelineTests
             .AddPipeline(pipeline2));
 
         pipeline3.Execute(() => string.Empty);
-        registry2.Dispose();
+        await registry2.DisposeAsync();
         pipeline3.Invoking(p => p.Execute(() => string.Empty)).Should().Throw<ObjectDisposedException>();
 
         pipeline1.Execute(() => { });
         pipeline2.Execute(() => string.Empty);
 
-        registry1.Dispose();
+        await registry1.DisposeAsync();
 
         pipeline1.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
         pipeline2.Invoking(p => p.Execute(() => string.Empty)).Should().Throw<ObjectDisposedException>();

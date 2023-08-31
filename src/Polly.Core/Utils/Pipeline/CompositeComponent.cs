@@ -61,14 +61,6 @@ internal sealed class CompositeComponent : PipelineComponent
 
     public IReadOnlyList<PipelineComponent> Components { get; }
 
-    public override void Dispose()
-    {
-        foreach (var component in Components)
-        {
-            component.Dispose();
-        }
-    }
-
     public override async ValueTask DisposeAsync()
     {
         foreach (var component in Components)
@@ -153,10 +145,6 @@ internal sealed class CompositeComponent : PipelineComponent
                 },
                 context,
                 (Next, callback, state));
-        }
-
-        public override void Dispose()
-        {
         }
 
         public override ValueTask DisposeAsync() => default;

@@ -15,11 +15,6 @@ internal class ExternalComponent : PipelineComponent
         ResilienceContext context,
         TState state) => Component.ExecuteCore(callback, context, state);
 
-    public override void Dispose()
-    {
-        // don't dispose component that is external
-    }
-
     public override ValueTask DisposeAsync()
     {
         // don't dispose component that is external

@@ -6,7 +6,7 @@
 /// <remarks>
 /// The component of the pipeline can be either a strategy, a generic strategy or a whole pipeline.
 /// </remarks>
-internal abstract class PipelineComponent : IDisposable, IAsyncDisposable
+internal abstract class PipelineComponent : IAsyncDisposable
 {
     public static PipelineComponent Empty { get; } = new NullComponent();
 
@@ -33,18 +33,12 @@ internal abstract class PipelineComponent : IDisposable, IAsyncDisposable
             (callback, state)).GetResult();
     }
 
-    public abstract void Dispose();
-
     public abstract ValueTask DisposeAsync();
 
     private class NullComponent : PipelineComponent
     {
         internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
             => callback(context, state);
-
-        public override void Dispose()
-        {
-        }
 
         public override ValueTask DisposeAsync() => default;
     }

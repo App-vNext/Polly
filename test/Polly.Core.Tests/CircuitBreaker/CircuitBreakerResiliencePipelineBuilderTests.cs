@@ -131,12 +131,10 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         strategy2.Execute(() => { });
     }
 
-    [InlineData(false, false)]
-    [InlineData(true, false)]
-    [InlineData(false, true)]
-    [InlineData(true, true)]
+    [InlineData(false)]
+    [InlineData(true)]
     [Theory]
-    public async Task DisposePipeline_EnsureCircuitBreakerDisposed(bool isAsync, bool attachManualControl)
+    public async Task DisposePipeline_EnsureCircuitBreakerDisposed(bool attachManualControl)
     {
         var manualControl = attachManualControl ? new CircuitBreakerManualControl() : null;
         var pipeline = new ResiliencePipelineBuilder()
@@ -153,14 +151,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
 
         var strategy = (ResilienceStrategy<object>)pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
-        if (isAsync)
-        {
-            await pipeline.DisposeHelper.DisposeAsync();
-        }
-        else
-        {
-            pipeline.DisposeHelper.Dispose();
-        }
+        await pipeline.DisposeHelper.DisposeAsync();
 
         strategy.AsPipeline().Invoking(s => s.Execute(() => 1)).Should().Throw<ObjectDisposedException>();
 

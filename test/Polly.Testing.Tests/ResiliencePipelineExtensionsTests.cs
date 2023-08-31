@@ -109,11 +109,11 @@ public class ResiliencePipelineExtensionsTests
     }
 
     [Fact]
-    public void GetPipelineDescriptor_Reloadable_Ok()
+    public async Task GetPipelineDescriptor_Reloadable_Ok()
     {
         // arrange
         using var source = new CancellationTokenSource();
-        using var registry = new ResiliencePipelineRegistry<string>();
+        await using var registry = new ResiliencePipelineRegistry<string>();
         var strategy = registry.GetOrAddPipeline("dummy", (builder, context) =>
         {
             context.OnPipelineDisposed(() => { });

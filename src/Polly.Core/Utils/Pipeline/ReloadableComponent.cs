@@ -8,6 +8,8 @@ internal sealed class ReloadableComponent : PipelineComponent
 {
     public const string ReloadFailedEvent = "ReloadFailed";
 
+    public const string DisposeFailedEvent = "DisposeFailed";
+
     public const string OnReloadEvent = "OnReload";
 
     private readonly Func<Entry> _factory;
@@ -37,12 +39,6 @@ internal sealed class ReloadableComponent : PipelineComponent
         return Component.ExecuteCore(callback, context, state);
     }
 
-    public override void Dispose()
-    {
-        DisposeRegistration();
-        Component.Dispose();
-    }
-
     public override ValueTask DisposeAsync()
     {
         DisposeRegistration();
@@ -60,14 +56,12 @@ internal sealed class ReloadableComponent : PipelineComponent
         _registration = _tokenSource.Token.Register(() =>
         {
             var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
-            PipelineComponent previousComponent = Component;
+            var previousComponent = Component;
 
             try
             {
                 _telemetry.Report(new(ResilienceEventSeverity.Information, OnReloadEvent), context, new OnReloadArguments());
                 (Component, _reloadTokens) = _factory();
-
-                previousComponent.Dispose();
             }
             catch (Exception e)
             {
@@ -78,7 +72,25 @@ internal sealed class ReloadableComponent : PipelineComponent
 
             DisposeRegistration();
             TryRegisterOnReload();
+
+            _ = DisposeDiscardedComponentSafeAsync(previousComponent);
         });
+    }
+
+    private async Task DisposeDiscardedComponentSafeAsync(PipelineComponent component)
+    {
+        var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: false);
+
+        try
+        {
+            await component.DisposeAsync().ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            _telemetry.Report(new(ResilienceEventSeverity.Error, DisposeFailedEvent), context, Outcome.FromException(e), new DisposedFailedArguments(e));
+        }
+
+        ResilienceContextPool.Shared.Return(context);
     }
 
 #pragma warning disable S2952 // Classes should "Dispose" of members from the classes' own "Dispose" methods
@@ -90,6 +102,8 @@ internal sealed class ReloadableComponent : PipelineComponent
 #pragma warning restore S2952 // Classes should "Dispose" of members from the classes' own "Dispose" methods
 
     internal record ReloadFailedArguments(Exception Exception);
+
+    internal record DisposedFailedArguments(Exception Exception);
 
     internal record OnReloadArguments();
 
