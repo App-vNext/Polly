@@ -12,13 +12,6 @@ internal class ComponentWithDisposeCallbacks : PipelineComponent
 
     internal PipelineComponent Component { get; }
 
-    public override void Dispose()
-    {
-        ExecuteCallbacks();
-
-        Component.Dispose();
-    }
-
     public override ValueTask DisposeAsync()
     {
         ExecuteCallbacks();

@@ -66,45 +66,34 @@ public class BridgePipelineComponentTests
     }
 
 #pragma warning disable S1944 // Invalid casts should be avoided
-    [InlineData(true)]
-    [InlineData(false)]
-    [Theory]
-    public async Task Dispose_EnsureStrategyDisposed(bool isAsync)
+    [Fact]
+    public async Task Dispose_EnsureStrategyDisposed()
     {
         var strategy = Substitute.For<ResilienceStrategy, IDisposable>();
-        await Dispose(PipelineComponentFactory.FromStrategy(strategy), isAsync);
+        await Dispose(PipelineComponentFactory.FromStrategy(strategy));
         ((IDisposable)strategy).Received(1).Dispose();
 
         strategy = Substitute.For<ResilienceStrategy, IAsyncDisposable>();
-        await Dispose(PipelineComponentFactory.FromStrategy(strategy), isAsync);
+        await Dispose(PipelineComponentFactory.FromStrategy(strategy));
         await ((IAsyncDisposable)strategy).Received(1).DisposeAsync();
     }
 
-    [InlineData(true)]
-    [InlineData(false)]
-    [Theory]
-    public async Task Dispose_Generic_EnsureStrategyDisposed(bool isAsync)
+    [Fact]
+    public async Task Dispose_Generic_EnsureStrategyDisposed()
     {
         var strategy = Substitute.For<ResilienceStrategy<string>, IDisposable>();
-        await Dispose(PipelineComponentFactory.FromStrategy(strategy), isAsync);
+        await Dispose(PipelineComponentFactory.FromStrategy(strategy));
         ((IDisposable)strategy).Received(1).Dispose();
 
         strategy = Substitute.For<ResilienceStrategy<string>, IAsyncDisposable>();
-        await Dispose(PipelineComponentFactory.FromStrategy(strategy), isAsync);
+        await Dispose(PipelineComponentFactory.FromStrategy(strategy));
         await ((IAsyncDisposable)strategy).Received(1).DisposeAsync();
     }
 #pragma warning restore S1944 // Invalid casts should be avoided
 
-    private static async Task Dispose(PipelineComponent component, bool isAsync)
+    private static async Task Dispose(PipelineComponent component)
     {
-        if (isAsync)
-        {
-            await component.DisposeAsync();
-        }
-        else
-        {
-            component.Dispose();
-        }
+        await component.DisposeAsync();
     }
 
     private class Strategy<T> : ResilienceStrategy<T>

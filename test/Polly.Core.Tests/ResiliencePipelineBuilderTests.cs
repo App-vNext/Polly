@@ -232,10 +232,8 @@ The RequiredProperty field is required.
             .Be("factory");
     }
 
-    [InlineData(true)]
-    [InlineData(false)]
-    [Theory]
-    public async Task AddPipeline_EnsureNotDisposed(bool isAsync)
+    [Fact]
+    public async Task AddPipeline_EnsureNotDisposed()
     {
         var externalComponent = Substitute.For<PipelineComponent>();
         var externalBuilder = new ResiliencePipelineBuilder();
@@ -249,24 +247,13 @@ The RequiredProperty field is required.
             .AddPipelineComponent(_ => internalComponent, new TestResilienceStrategyOptions());
         var pipeline = builder.Build();
 
-        if (isAsync)
-        {
-            await pipeline.DisposeHelper.DisposeAsync();
-            await externalComponent.Received(0).DisposeAsync();
-            await internalComponent.Received(1).DisposeAsync();
-        }
-        else
-        {
-            pipeline.DisposeHelper.Dispose();
-            externalComponent.Received(0).Dispose();
-            internalComponent.Received(1).Dispose();
-        }
+        await pipeline.DisposeHelper.DisposeAsync();
+        await externalComponent.Received(0).DisposeAsync();
+        await internalComponent.Received(1).DisposeAsync();
     }
 
-    [InlineData(true)]
-    [InlineData(false)]
-    [Theory]
-    public async Task AddPipeline_Generic_EnsureNotDisposed(bool isAsync)
+    [Fact]
+    public async Task AddPipeline_Generic_EnsureNotDisposed()
     {
         var externalComponent = Substitute.For<PipelineComponent>();
         var externalBuilder = new ResiliencePipelineBuilder<string>();
@@ -282,18 +269,9 @@ The RequiredProperty field is required.
 
         pipeline.Execute(_ => string.Empty);
 
-        if (isAsync)
-        {
-            await pipeline.DisposeHelper.DisposeAsync();
-            await externalComponent.Received(0).DisposeAsync();
-            await internalComponent.Received(1).DisposeAsync();
-        }
-        else
-        {
-            pipeline.DisposeHelper.Dispose();
-            externalComponent.Received(0).Dispose();
-            internalComponent.Received(1).Dispose();
-        }
+        await pipeline.DisposeHelper.DisposeAsync();
+        await externalComponent.Received(0).DisposeAsync();
+        await internalComponent.Received(1).DisposeAsync();
     }
 
     [Fact]

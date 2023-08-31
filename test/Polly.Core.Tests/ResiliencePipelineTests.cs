@@ -11,10 +11,8 @@ public partial class ResiliencePipelineTests
     public static readonly CancellationToken CancellationToken = new CancellationTokenSource().Token;
 
     [Fact]
-    public async Task Dispose_NullPipeline_OK()
+    public async Task DisposeAsync_NullPipeline_OK()
     {
-        ResiliencePipeline.Empty.DisposeHelper.Dispose();
-        ResiliencePipeline.Empty.DisposeHelper.Dispose();
         await ResiliencePipeline.Empty.DisposeHelper.DisposeAsync();
         await ResiliencePipeline.Empty.DisposeHelper.DisposeAsync();
 
@@ -22,10 +20,8 @@ public partial class ResiliencePipelineTests
     }
 
     [Fact]
-    public async Task Dispose_NullGenericPipeline_OK()
+    public async Task DisposeAsync_NullGenericPipeline_OK()
     {
-        ResiliencePipeline<int>.Empty.DisposeHelper.Dispose();
-        ResiliencePipeline<int>.Empty.DisposeHelper.Dispose();
         await ResiliencePipeline<int>.Empty.DisposeHelper.DisposeAsync();
         await ResiliencePipeline<int>.Empty.DisposeHelper.DisposeAsync();
 
@@ -33,33 +29,15 @@ public partial class ResiliencePipelineTests
     }
 
     [Fact]
-    public async Task Dispose_Reject_Throws()
+    public async Task DisposeAsync_Reject_Throws()
     {
         var component = Substitute.For<PipelineComponent>();
         var pipeline = new ResiliencePipeline(component, DisposeBehavior.Reject);
-
-        pipeline.Invoking(p => p.DisposeHelper.Dispose())
-            .Should()
-            .Throw<InvalidOperationException>()
-            .WithMessage("Disposing this resilience pipeline is not allowed because it is owned by the pipeline registry.");
 
         (await pipeline.Invoking(p => p.DisposeHelper.DisposeAsync().AsTask())
             .Should()
             .ThrowAsync<InvalidOperationException>())
             .WithMessage("Disposing this resilience pipeline is not allowed because it is owned by the pipeline registry.");
-    }
-
-    [Fact]
-    public void Dispose_Allowed_Disposed()
-    {
-        var component = Substitute.For<PipelineComponent>();
-        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Allow);
-        pipeline.DisposeHelper.Dispose();
-        pipeline.DisposeHelper.Dispose();
-
-        pipeline.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
-
-        component.Received(1).Dispose();
     }
 
     [Fact]
@@ -83,9 +61,9 @@ public partial class ResiliencePipelineTests
     }
 
     [Fact]
-    public void DebuggerProxy_Ok()
+    public async Task DebuggerProxy_Ok()
     {
-        using var pipeline = (CompositeComponent)PipelineComponentFactory.CreateComposite(new[]
+        await using var pipeline = (CompositeComponent)PipelineComponentFactory.CreateComposite(new[]
         {
             Substitute.For<PipelineComponent>(),
             Substitute.For<PipelineComponent>(),

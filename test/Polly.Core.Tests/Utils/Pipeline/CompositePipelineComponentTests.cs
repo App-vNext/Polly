@@ -127,21 +127,6 @@ public class CompositePipelineComponentTests
     }
 
     [Fact]
-    public void Dispose_EnsureInnerComponentsDisposed()
-    {
-        var a = Substitute.For<PipelineComponent>();
-        var b = Substitute.For<PipelineComponent>();
-
-        var composite = CreateSut(new[] { a, b });
-
-        composite.FirstComponent.Dispose();
-        composite.Dispose();
-
-        a.Received(1).Dispose();
-        b.Received(1).Dispose();
-    }
-
-    [Fact]
     public async Task DisposeAsync_EnsureInnerComponentsDisposed()
     {
         var a = Substitute.For<PipelineComponent>();

@@ -8,7 +8,7 @@ namespace Polly.Extensions.Tests.Registry;
 public class ConfigureBuilderContextExtensionsTests
 {
     [Fact]
-    public void ConfigureReloads_MonitorRegistrationReturnsNull_DoesNotThrow()
+    public async Task ConfigureReloads_MonitorRegistrationReturnsNull_DoesNotThrow()
     {
         var monitor = Substitute.For<IOptionsMonitor<Options>>();
         monitor.OnChange(default!).ReturnsNullForAnyArgs();
@@ -22,7 +22,7 @@ public class ConfigureBuilderContextExtensionsTests
             context.EnableReloads(monitor);
         });
 
-        registry.Dispose();
+        await registry.DisposeAsync();
 
         listener.Events.Should().BeEmpty();
     }
