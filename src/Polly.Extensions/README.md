@@ -1,31 +1,37 @@
 # Polly.Extensions Overview
 
-`Polly.Extensions` provides a set of features that streamline the integration of Polly with the standard `IServiceCollection` Dependency Injection (DI) container. It further enhances telemetry by exposing a `ConfigureTelemetry` extension method that enables [logging](https://learn.microsoft.com/dotnet/core/extensions/logging?tabs=command-line) and [metering](https://learn.microsoft.com/dotnet/core/diagnostics/metrics) for all strategies created via DI extension points. Note that telemetry is enabled by default when utilizing the `AddResiliencePipeline` extension method.
+`Polly.Extensions` provides a set of features that streamline the integration of Polly with the standard `IServiceCollection` Dependency Injection (DI) container. It further enhances telemetry by exposing a `ConfigureTelemetry` extension method that enables [logging](https://learn.microsoft.com/dotnet/core/extensions/logging?tabs=command-line) and [metering](https://learn.microsoft.com/dotnet/core/diagnostics/metrics) for all strategies created via DI extension points. 
 
-Below is an example illustrating these capabilities:
+Below is an example illustrating the usage of `AddResiliencePipeline` extension method:
 
 ``` csharp
 var services = new ServiceCollection();
 
-// Define a strategy
+// Define a resilience pipeline
 services.AddResiliencePipeline(
-  "my-key", 
-  context => context.Builder.AddTimeout(TimeSpan.FromSeconds(10)));
+  "my-key",
+  builder => builder.AddTimeout(TimeSpan.FromSeconds(10)));
 
-// Define a strategy with custom options
+// Define a resilience pipeline with custom options
 services.AddResiliencePipeline(
     "my-timeout",
-    context =>
+    (builder, context) =>
     {
         var myOptions = context.ServiceProvider.GetRequiredService<IOptions<MyTimeoutOptions>>().Value;
-        context.Builder.AddTimeout(myOptions.Timeout);
+        builder.AddTimeout(myOptions.Timeout);
     });
 
-// Utilize the strategy
+// Resolve the resilience pipeline
 var serviceProvider = services.BuildServiceProvider();
-var strategyProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
-var ResiliencePipeline = strategyProvider.Get("my-key");
+var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
+var pipeline = pipelineProvider.GetPipeline("my-key");
+
+// Use it
+await pipeline.ExecuteAsync(cancellation => { ... });
 ```
+
+> [!NOTE]
+> Telemetry is enabled by default when utilizing the `AddResiliencePipeline` extension method.
 
 ## Telemetry Features
 
@@ -38,21 +44,31 @@ var telemetryOptions = new TelemetryOptions();
 telemetryOptions.LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
 
 // Configure enrichers
-telemetryOptions.Enrichers.Add(context =>
-{
-    context.Tags.Add(new("my-custom-tag", "custom-value"));
-});
+telemetryOptions.MeteringEnrichers.Add(new MyMeteringEnricher());
 
-// Manually handle the event
-telemetryOptions.OnTelemetryEvent = args =>
-{
-    Console.WriteLine($"Telemetry event occurred: {args.Event.EventName}");
-});
+// Configure telemetry listeners
+telemetryOptions.TelemetryListeners.Add(new MyTelemetryListener());
 
 var builder = new ResiliencePipelineBuilder()
     .AddTimeout(TimeSpan.FromSeconds(1))
     .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
     .Build();
+
+class MyTelemetryListener : TelemetryListener
+{
+    public override void Write<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
+    {
+        Console.WriteLine($"Telemetry event occurred: {args.Event.EventName}");
+    }
+}
+
+class MyMeteringEnricher : MeteringEnricher
+{
+    public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
+    {
+        context.Tags.Add(new("my-custom-tag", "custom-value");
+    }
+}
 ```
 
 Alternatively, you can use the `AddResiliencePipeline` extension which automatically adds telemetry:
@@ -65,13 +81,10 @@ var serviceCollection = new ServiceCollection()
     .Configure<TelemetryOptions>(options =>
     {
         // Configure enrichers
-        options.Enrichers.Add(context => context.Tags.Add(new("my-custom-tag", "custom-value")));
+        options.MeteringEnrichers.Add(new MyMeteringEnricher());
 
-        // Manually handle the event
-        options.OnTelemetryEvent = args =>
-        {
-            Console.WriteLine($"Telemetry event occurred: {args.Event.EventName}");
-        };
+        // Configure telemetry listeners
+        options.TelemetryListeners.Add(new MyTelemetryListener());
     });
 ```
 
