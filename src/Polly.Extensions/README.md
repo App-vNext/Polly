@@ -1,18 +1,18 @@
 # Polly.Extensions Overview
 
-`Polly.Extensions` provides a set of features that streamline the integration of Polly with the standard `IServiceCollection` Dependency Injection (DI) container. It further enhances telemetry by exposing a `ConfigureTelemetry` extension method that enables [logging](https://learn.microsoft.com/dotnet/core/extensions/logging?tabs=command-line) and [metering](https://learn.microsoft.com/dotnet/core/diagnostics/metrics) for all strategies created via DI extension points. Note that telemetry is enabled by default when utilizing the `AddResiliencePipeline` extension method.
+`Polly.Extensions` provides a set of features that streamline the integration of Polly with the standard `IServiceCollection` Dependency Injection (DI) container. It further enhances telemetry by exposing a `ConfigureTelemetry` extension method that enables [logging](https://learn.microsoft.com/dotnet/core/extensions/logging?tabs=command-line) and [metering](https://learn.microsoft.com/dotnet/core/diagnostics/metrics) for all strategies created via DI extension points. 
 
-Below is an example illustrating these capabilities:
+Below is an example illustrating the usage of `AddResiliencePipeline` extension method:
 
 ``` csharp
 var services = new ServiceCollection();
 
-// Define a strategy
+// Define a resilience pipeline
 services.AddResiliencePipeline(
   "my-key",
   builder => builder.AddTimeout(TimeSpan.FromSeconds(10)));
 
-// Define a strategy with custom options
+// Define a resilience pipeline with custom options
 services.AddResiliencePipeline(
     "my-timeout",
     (builder, context) =>
@@ -21,11 +21,17 @@ services.AddResiliencePipeline(
         builder.AddTimeout(myOptions.Timeout);
     });
 
-// Utilize the strategy
+// Resolve the resilience pipeline
 var serviceProvider = services.BuildServiceProvider();
 var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
 var pipeline = pipelineProvider.GetPipeline("my-key");
+
+// Use it
+await pipeline.ExecuteAsync(cancellation => { ... });
 ```
+
+> [!NOTE]
+> Telemetry is enabled by default when utilizing the `AddResiliencePipeline` extension method.
 
 ## Telemetry Features
 
