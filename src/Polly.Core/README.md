@@ -4,7 +4,7 @@ The Polly V8 API offers a unified, non-allocating resilience API, detailed in th
 
 ## Introduction
 
-At the core of Polly V8 is the [`ResiliencePipeline`](ResiliencePipeline.cs) class, responsible for executing user code. This class handles all scenarios covered in Polly V7, such as:
+At the core of Polly V8 is the [`ResiliencePipeline`](ResiliencePipeline.cs) class, responsible for executing user-provided callbacks. This class handles all scenarios covered in Polly V7, such as:
 
 - `ISyncPolicy`
 - `IAsyncPolicy`
@@ -18,13 +18,21 @@ public abstract class ResiliencePipeline
 
     public TResult Execute<TResult>(Func<TResult> callback);
     
-    public Task ExecuteAsync(Func<CancellationToken, Task> callback, CancellationToken cancellationToken = default);
+    public Task ExecuteAsync(
+        Func<CancellationToken, Task> callback, 
+        CancellationToken cancellationToken = default);
     
-    public Task<TResult> ExecuteAsync(Func<CancellationToken, Task<TResult>> callback, CancellationToken cancellationToken = default);
+    public Task<TResult> ExecuteAsync(
+        Func<CancellationToken, Task<TResult>> callback, 
+        CancellationToken cancellationToken = default);
     
-    public ValueTask ExecuteAsync(Func<CancellationToken, ValueTask> callback, CancellationToken cancellationToken = default);
+    public ValueTask ExecuteAsync(
+        Func<CancellationToken, ValueTask> callback, 
+        CancellationToken cancellationToken = default);
     
-    public ValueTask<TResult> ExecuteAsync(Func<CancellationToken, ValueTask<TResult>> callback, CancellationToken cancellationToken = default);
+    public ValueTask<TResult> ExecuteAsync(
+        Func<CancellationToken, ValueTask<TResult>> callback, 
+        CancellationToken cancellationToken = default);
     
     // Other methods are omitted for simplicity
 }
@@ -42,56 +50,19 @@ public sealed class ResilienceContext
 }
 ```
 
-The `ResiliencePipeline` class unifies the four different policies currently in use by Polly, enabling user actions to be executed via a single API. This class offers various methods to handle different scenarios:
+The `ResiliencePipeline` class unifies the four different policies that were available in Polly v7, enabling user actions to be executed via a single API. This class offers various methods to handle different scenarios:
 
 - Synchronous methods without a return value.
 - Synchronous methods that return a value.
 - Asynchronous methods without a return value.
 - Asynchronous methods that return a value.
 
-> [Note]
+> [!NOTE]
 > Polly also provides a `ResiliencePipeline<T>` class. This specialized pipeline is useful for scenarios where the consumer is concerned with only a single type of result.
-
-### Example: Synchronous `Execute` Method
-
-For instance, the synchronous `Execute` method is implemented as follows:
-
-```csharp
-public void Execute(Action execute)
-{
-    var context = ResilienceContextPool.Shared.Get();
-    
-    context.IsSynchronous = true; // Internal to Polly
-    context.ResultType = typeof(VoidResult); // Internal to Polly
-
-    try
-    {
-        ExecuteCore(static (context, state) =>
-        {
-            state();
-            return new ValueTask<Outcome<VoidResult>>(new(VoidResult.Instance));
-        }, 
-        context, 
-        execute).GetAwaiter().GetResult();
-    }
-    finally
-    {
-        ResilienceContextPool.Shared.Return(context);
-    }
-}
-```
-
-In the example above:
-
-- A `ResilienceContext` object is rented from the pool.
-- The execution mode information is stored by setting `IsSynchronous` and `ResultType` properties on the context.
-- The user callback is passed in and the `state` parameter is used to avoid closure allocation.
-- Execution is blocked until completion.
-- The `ResilienceContext` is returned to the pool.
 
 ## Resilience Strategies
 
-The resilience pipeline may consist of single or multiple individual resilience strategies. Polly V8 categorizes resilience strategies into the following building blocks:
+The resilience pipeline may consist of one or more individual resilience strategies. Polly V8 categorizes resilience strategies into the following building blocks:
 
 - `ResilienceStrategy`: Base class for all non-reactive resilience strategies.
 - `ResilienceStrategy<T>`: Base class for all reactive resilience strategies.
@@ -140,7 +111,7 @@ The API exposes the following builder classes for creating resilience pipelines:
 
 To construct a resilience pipeline, chain various extensions on the `ResiliencePipelineBuilder` and conclude with a `Build` method call.
 
-**For a non-generic pipeline:**
+### Creating a non-generic pipeline
 
 ```csharp
 var pipeline = new ResiliencePipelineBuilder()
@@ -150,7 +121,7 @@ var pipeline = new ResiliencePipelineBuilder()
     .Build();
 ```
 
-**For a generic pipeline:**
+### Creating a generic pipeline
 
 ```csharp
 var pipeline = new ResiliencePipelineBuilder<string>()
@@ -223,7 +194,7 @@ public readonly struct OnTimeoutArguments
         Timeout = timeout;
     }
 
-    public ResilienceContext Context { get; } // Always include the Context property
+    public ResilienceContext Context { get; } // Include the Context property
     public TimeSpan Timeout { get; } // Additional event-related properties
 }
 ```
@@ -240,8 +211,8 @@ public readonly struct OnRetryArguments<TResult>
         AttemptNumber = attemptNumber;
     }
 
-    public ResilienceContext Context { get; } // Always include the Context property
-    public Outcome<TResult> Outcome { get; } // Include the event-associated outcome
+    public ResilienceContext Context { get; } // Include the Context property
+    public Outcome<TResult> Outcome { get; } // Includes the outcome associated with the event
     public int AttemptNumber { get; }
 }
 ```
