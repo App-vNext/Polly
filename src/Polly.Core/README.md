@@ -246,7 +246,7 @@ public readonly struct OnRetryArguments<TResult>
 }
 ```
 
-### Delegate Examples
+### Example: Usage of Delegates
 
 Below are some examples illustrating the usage of these delegates:
 
