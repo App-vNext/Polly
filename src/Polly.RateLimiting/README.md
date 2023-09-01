@@ -14,12 +14,11 @@ builder.AddConcurrencyLimiter(permitLimit: 10, queueLimit: 10);
 
 // Convenience extension method for ConcurrencyLimiter with callback
 builder.AddConcurrencyLimiter(
-    new ConcurrencyLimiter(new ConcurrencyLimiterOptions
+    new ConcurrencyLimiterOptions
     {
         PermitLimit = 10,
         QueueLimit = 10
-    }),
-    args => Console.WriteLine("Rate limiter rejected!"));
+    });
 
 // Convenience extension method with custom limiter creation
 builder.AddRateLimiter(
@@ -27,18 +26,23 @@ builder.AddRateLimiter(
     {
         PermitLimit = 10,
         QueueLimit = 10
-    }),
-    args => Console.WriteLine("Rate limiter rejected!"));
-    
+    }));
+
 // Add rate limiter using the RateLimiterStrategyOptions
+var limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions
+{
+    PermitLimit = 10,
+    QueueLimit = 10
+});
+
 builder.AddRateLimiter(new RateLimiterStrategyOptions
 {
-    RateLimiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions
+    RateLimiter = args => limiter.AcquireAsync(1, args.Context.CancellationToken),
+    OnRejected = _ =>
     {
-        PermitLimit = 10,
-        QueueLimit = 10
-    }),
-    OnRejected = new OnRateLimiterRejectedEvent().Add(() => Console.WriteLine("Rate limiter rejected!"))
+        Console.WriteLine("Rate limiter rejected!");
+        return default;
+    }
 });
 ```
 
