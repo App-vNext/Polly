@@ -118,9 +118,8 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         await OpenCircuit(controller, Outcome.FromResult(99));
-        var error = (BrokenCircuitException<int>)(await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception!;
-        error.Should().BeOfType<BrokenCircuitException<int>>();
-        error.Result.Should().Be(99);
+        var error = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception!;
+        error.Should().BeOfType<BrokenCircuitException>();
 
         GetBlockedTill(controller).Should().Be(_timeProvider.GetUtcNow() + _options.BreakDuration);
     }
@@ -219,7 +218,7 @@ public class CircuitStateControllerTests
         // act
         await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
         var error = (await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception;
-        error.Should().BeOfType<BrokenCircuitException<int>>();
+        error.Should().BeOfType<BrokenCircuitException>();
 
         // assert
         controller.CircuitState.Should().Be(CircuitState.HalfOpen);
@@ -357,7 +356,7 @@ public class CircuitStateControllerTests
         // assert
         controller.LastException.Should().BeNull();
         var outcome = await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
-        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException<int>>();
+        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException>();
     }
 
     [Fact]
@@ -392,7 +391,7 @@ public class CircuitStateControllerTests
         // execution rejected
         AdvanceTime(TimeSpan.FromMilliseconds(1));
         var outcome = await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
-        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException<int>>();
+        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException>();
 
         // wait and try, transition to half open
         AdvanceTime(_options.BreakDuration + _options.BreakDuration);

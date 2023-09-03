@@ -61,14 +61,6 @@ internal sealed class CompositeComponent : PipelineComponent
 
     public IReadOnlyList<PipelineComponent> Components { get; }
 
-    public override void Dispose()
-    {
-        foreach (var component in Components)
-        {
-            component.Dispose();
-        }
-    }
-
     public override async ValueTask DisposeAsync()
     {
         foreach (var component in Components)
@@ -97,7 +89,7 @@ internal sealed class CompositeComponent : PipelineComponent
     {
         if (context.CancellationToken.IsCancellationRequested)
         {
-            return Outcome.FromExceptionAsTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
+            return Outcome.FromExceptionAsValueTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
         }
         else
         {
@@ -146,17 +138,13 @@ internal sealed class CompositeComponent : PipelineComponent
                 {
                     if (context.CancellationToken.IsCancellationRequested)
                     {
-                        return Outcome.FromExceptionAsTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
+                        return Outcome.FromExceptionAsValueTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
                     }
 
                     return state.Next!.ExecuteCore(state.callback, context, state.state);
                 },
                 context,
                 (Next, callback, state));
-        }
-
-        public override void Dispose()
-        {
         }
 
         public override ValueTask DisposeAsync() => default;

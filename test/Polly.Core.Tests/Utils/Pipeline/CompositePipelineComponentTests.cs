@@ -50,7 +50,7 @@ public class CompositePipelineComponentTests
 
         var pipeline = CreateSut(components);
         await pipeline
-            .Invoking(p => p.ExecuteCore((_, _) => Outcome.FromResultAsTask(10), ResilienceContextPool.Shared.Get(), "state").AsTask())
+            .Invoking(p => p.ExecuteCore((_, _) => Outcome.FromResultAsValueTask(10), ResilienceContextPool.Shared.Get(), "state").AsTask())
             .Should()
             .ThrowAsync<NotSupportedException>();
     }
@@ -90,7 +90,7 @@ public class CompositePipelineComponentTests
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellation.Token;
 
-        var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("result"), context, "state");
+        var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("result"), context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
     }
 
@@ -108,7 +108,7 @@ public class CompositePipelineComponentTests
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellation.Token;
 
-        var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("result"), context, "state");
+        var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("result"), context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
         executed.Should().BeTrue();
     }
@@ -124,21 +124,6 @@ public class CompositePipelineComponentTests
         _listener.Events.Should().HaveCount(2);
         _listener.GetArgs<PipelineExecutingArguments>().Should().HaveCount(1);
         _listener.GetArgs<PipelineExecutedArguments>().Should().HaveCount(1);
-    }
-
-    [Fact]
-    public void Dispose_EnsureInnerComponentsDisposed()
-    {
-        var a = Substitute.For<PipelineComponent>();
-        var b = Substitute.For<PipelineComponent>();
-
-        var composite = CreateSut(new[] { a, b });
-
-        composite.FirstComponent.Dispose();
-        composite.Dispose();
-
-        a.Received(1).Dispose();
-        b.Received(1).Dispose();
     }
 
     [Fact]

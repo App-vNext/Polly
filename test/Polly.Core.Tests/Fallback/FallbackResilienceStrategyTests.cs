@@ -31,6 +31,44 @@ public class FallbackResilienceStrategyTests
         called.Should().BeTrue();
     }
 
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void ShouldHandle_ArgumentsSetCorrectly(bool handle)
+    {
+        var called = 0;
+
+        _handler = new FallbackHandler<string>(
+            args =>
+            {
+                args.Outcome.Result.Should().Be("ok");
+                args.Context.Should().NotBeNull();
+                called++;
+
+                return new ValueTask<bool>(handle);
+            },
+            args =>
+            {
+                args.Outcome.Result.Should().Be("ok");
+                args.Context.Should().NotBeNull();
+                called++;
+                return Outcome.FromResultAsValueTask("fallback");
+            });
+
+        var result = Create().Execute(_ => "ok");
+
+        if (handle)
+        {
+            result.Should().Be("fallback");
+            called.Should().Be(2);
+        }
+        else
+        {
+            result.Should().Be("ok");
+            called.Should().Be(1);
+        }
+    }
+
     [Fact]
     public void Handle_Result_FallbackActionThrows()
     {

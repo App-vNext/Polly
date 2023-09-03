@@ -87,7 +87,7 @@ public partial class ResiliencePipelineTests
             state.Should().Be("state");
             context.IsSynchronous.Should().BeFalse();
             context.ResultType.Should().Be(typeof(int));
-            return Outcome.FromResultAsTask(12345);
+            return Outcome.FromResultAsValueTask(12345);
         },
         ResilienceContextPool.Shared.Get(),
         "state");

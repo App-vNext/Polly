@@ -10,7 +10,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     private readonly IDictionary<string, IsPolicy> _registry = new ConcurrentDictionary<string, IsPolicy>();
 
     /// <summary>
-    /// Creates a registry of policies with <see cref="string"/> keys.
+    /// Initializes a new instance of the <see cref="PolicyRegistry"/> class, with <see cref="string"/> keys.
     /// </summary>
     public PolicyRegistry()
     {
@@ -21,12 +21,12 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     }
 
     /// <summary>
-    /// Creates a registry of policies with <see cref="string"/> keys.
+    /// Initializes a new instance of the <see cref="PolicyRegistry"/> class, with <see cref="IDictionary{string, IsPolicy}"/> dictionary.
     /// <remarks>This internal constructor exists solely to facilitate testing of the GetEnumerator() methods, which allow us to support collection initialisation syntax.</remarks>
     /// </summary>
     /// <param name="registry">a dictionary containing keys and policies used for testing.</param>
     internal PolicyRegistry(IDictionary<string, IsPolicy> registry) =>
-        _registry = registry ?? throw new NullReferenceException(nameof(registry));
+        _registry = registry ?? throw new ArgumentNullException(nameof(registry));
 
     private ConcurrentDictionary<string, IsPolicy> ThrowIfNotConcurrentImplementation()
     {
@@ -158,11 +158,14 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <summary>
     /// Compares the existing policy for the specified key with a specified policy, and if they are equal, updates the policy with a third value.
     /// </summary>
-    /// <typeparam name="TPolicy"></typeparam>
+    /// <typeparam name="TPolicy">The type of the policy.</typeparam>
     /// <param name="key">The key whose value is compared with comparisonPolicy, and possibly replaced.</param>
     /// <param name="newPolicy">The policy that replaces the value for the specified <paramref name="key"/>, if the comparison results in equality.</param>
     /// <param name="comparisonPolicy">The policy that is compared to the existing policy at the specified key.</param>
-    /// <returns></returns>
+    /// <returns>
+    /// <see langword="true"/> if the value with <paramref name="key"/> was equal to <paramref name="comparisonPolicy"/> and
+    /// replaced with <paramref name="newPolicy"/>; otherwise, <see langword="false"/>.
+    /// </returns>
     public bool TryUpdate<TPolicy>(string key, TPolicy newPolicy, TPolicy comparisonPolicy) where TPolicy : IsPolicy
     {
         var registry = ThrowIfNotConcurrentImplementation();

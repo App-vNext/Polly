@@ -15,7 +15,7 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T
         _handler = handler;
         _controller = controller;
 
-        stateProvider?.Initialize(() => _controller.CircuitState, () => _controller.LastHandledOutcome);
+        stateProvider?.Initialize(() => _controller.CircuitState);
         _manualControlRegistration = manualControl?.Initialize(
             async c => await _controller.IsolateCircuitAsync(c).ConfigureAwait(c.ContinueOnCapturedContext),
             async c => await _controller.CloseCircuitAsync(c).ConfigureAwait(c.ContinueOnCapturedContext));

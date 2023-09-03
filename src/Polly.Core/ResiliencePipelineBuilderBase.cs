@@ -119,11 +119,6 @@ public abstract class ResiliencePipelineBuilderBase
 
         var source = new ResilienceTelemetrySource(Name, InstanceName, null);
 
-        if (components.Distinct().Count() != components.Count)
-        {
-            throw new InvalidOperationException("The resilience pipeline must contain unique resilience strategies.");
-        }
-
         return PipelineComponentFactory.CreateComposite(components, new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProvider);
     }
 

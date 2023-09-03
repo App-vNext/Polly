@@ -1,6 +1,5 @@
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
-using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 
 namespace Polly;
@@ -20,7 +19,7 @@ public readonly struct Outcome<TResult>
     internal Outcome(TResult? result)
         : this() => Result = result;
 
-    private Outcome(ExceptionDispatchInfo exceptionDispatchInfo)
+    internal Outcome(ExceptionDispatchInfo exceptionDispatchInfo)
         : this() => ExceptionDispatchInfo = Guard.NotNull(exceptionDispatchInfo);
 
     /// <summary>
@@ -57,7 +56,7 @@ public readonly struct Outcome<TResult>
     /// <remarks>
     /// If the operation produced a result, this method does nothing. The thrown exception maintains its original stack trace.
     /// </remarks>
-    public void EnsureSuccess() => ExceptionDispatchInfo?.Throw();
+    public void ThrowIfException() => ExceptionDispatchInfo?.Throw();
 
     /// <summary>
     /// Tries to get the result, if available.
@@ -92,29 +91,4 @@ public readonly struct Outcome<TResult>
         return Result!;
     }
 
-    internal Outcome<object> AsOutcome() => AsOutcome<object>();
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal Outcome<T> AsOutcome<T>()
-    {
-        if (ExceptionDispatchInfo is not null)
-        {
-            return new Outcome<T>(ExceptionDispatchInfo);
-        }
-
-        if (Result is null)
-        {
-            return new Outcome<T>(default(T));
-        }
-
-        if (typeof(T) == typeof(TResult))
-        {
-            var result = Result;
-
-            // We can use the unsafe cast here because we know for sure these two types are the same
-            return new Outcome<T>(Unsafe.As<TResult, T>(ref result));
-        }
-
-        return new Outcome<T>((T)(object)Result);
-    }
 }

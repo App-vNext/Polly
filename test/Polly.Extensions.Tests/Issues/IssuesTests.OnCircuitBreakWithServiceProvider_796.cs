@@ -33,8 +33,8 @@ public partial class IssuesTests
                     },
                     ShouldHandle = args => args.Outcome.Result switch
                     {
-                        string result when result == "error" => PredicateResult.True,
-                        _ => PredicateResult.False
+                        string result when result == "error" => PredicateResult.True(),
+                        _ => PredicateResult.False()
                     }
                 });
         });

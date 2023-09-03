@@ -51,14 +51,18 @@ public class GenericResiliencePipelineBuilderTests
     public void AddGenericStrategy_Ok()
     {
         // arrange
-        var testStrategy = Substitute.For<ResilienceStrategy<string>>().AsPipeline();
-        _builder.AddPipeline(testStrategy);
+        var strategy = Substitute.For<ResilienceStrategy<string>>();
+        _builder.AddStrategy(strategy);
 
         // act
-        var strategy = _builder.Build();
+        var pipeline = _builder.Build();
 
         // assert
         strategy.Should().NotBeNull();
-        ((CompositeComponent)strategy.Component).Components[0].Should().Be(testStrategy.Component);
+        ((CompositeComponent)pipeline.Component).Components[0]
+            .Should()
+            .BeOfType<BridgeComponent<string>>().Subject.Strategy
+            .Should()
+            .Be(strategy);
     }
 }

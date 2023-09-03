@@ -24,14 +24,14 @@ internal static partial class Helper
                 .AddTimeout(TimeSpan.FromSeconds(10))
                 .AddRetry(new()
                 {
-                    BackoffType = RetryBackoffType.Constant,
-                    RetryCount = 3,
-                    BaseDelay = TimeSpan.FromSeconds(1),
+                    BackoffType = DelayBackoffType.Constant,
+                    MaxRetryAttempts = 3,
+                    Delay = TimeSpan.FromSeconds(1),
                     ShouldHandle = args => args.Outcome switch
                     {
-                        { Exception: InvalidOperationException } => PredicateResult.True,
-                        { Result: string result } when result == Failure => PredicateResult.True,
-                        _ => PredicateResult.False
+                        { Exception: InvalidOperationException } => PredicateResult.True(),
+                        { Result: string result } when result == Failure => PredicateResult.True(),
+                        _ => PredicateResult.False()
                     }
                 })
                 .AddTimeout(TimeSpan.FromSeconds(1))
@@ -43,9 +43,9 @@ internal static partial class Helper
                     BreakDuration = TimeSpan.FromSeconds(5),
                     ShouldHandle = args => args.Outcome switch
                     {
-                        { Exception: InvalidOperationException } => PredicateResult.True,
-                        { Result: string result } when result == Failure => PredicateResult.True,
-                        _ => PredicateResult.False
+                        { Exception: InvalidOperationException } => PredicateResult.True(),
+                        { Result: string result } when result == Failure => PredicateResult.True(),
+                        _ => PredicateResult.False()
                     }
                 });
 
@@ -68,14 +68,14 @@ internal static partial class Helper
             .AddTimeout(TimeSpan.FromSeconds(10))
             .AddRetry(new()
             {
-                BackoffType = RetryBackoffType.Constant,
-                RetryCount = 3,
-                BaseDelay = TimeSpan.FromSeconds(1),
+                BackoffType = DelayBackoffType.Constant,
+                MaxRetryAttempts = 3,
+                Delay = TimeSpan.FromSeconds(1),
                 ShouldHandle = args => args.Outcome switch
                 {
-                    { Exception: InvalidOperationException } => PredicateResult.True,
-                    { Result: string result } when result == Failure => PredicateResult.True,
-                    _ => PredicateResult.False
+                    { Exception: InvalidOperationException } => PredicateResult.True(),
+                    { Result: string result } when result == Failure => PredicateResult.True(),
+                    _ => PredicateResult.False()
                 }
             })
             .AddTimeout(TimeSpan.FromSeconds(1))
@@ -87,9 +87,9 @@ internal static partial class Helper
                 BreakDuration = TimeSpan.FromSeconds(5),
                 ShouldHandle = args => args.Outcome switch
                 {
-                    { Exception: InvalidOperationException } => PredicateResult.True,
-                    { Result: string result } when result == Failure => PredicateResult.True,
-                    _ => PredicateResult.False
+                    { Exception: InvalidOperationException } => PredicateResult.True(),
+                    { Result: string result } when result == Failure => PredicateResult.True(),
+                    _ => PredicateResult.False()
                 }
             });
 

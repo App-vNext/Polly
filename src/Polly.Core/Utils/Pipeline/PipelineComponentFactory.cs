@@ -6,9 +6,9 @@ namespace Polly.Utils.Pipeline;
 
 internal static class PipelineComponentFactory
 {
-    public static PipelineComponent FromPipeline(ResiliencePipeline pipeline) => pipeline.Component;
+    public static PipelineComponent FromPipeline(ResiliencePipeline pipeline) => new ExternalComponent(pipeline.Component);
 
-    public static PipelineComponent FromPipeline<T>(ResiliencePipeline<T> pipeline) => pipeline.Component;
+    public static PipelineComponent FromPipeline<T>(ResiliencePipeline<T> pipeline) => new ExternalComponent(pipeline.Component);
 
     public static PipelineComponent FromStrategy(ResilienceStrategy strategy) => new BridgeComponent(strategy);
 

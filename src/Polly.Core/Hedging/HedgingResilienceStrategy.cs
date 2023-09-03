@@ -15,26 +15,26 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
         int maxHedgedAttempts,
         HedgingHandler<T> hedgingHandler,
         Func<OnHedgingArguments<T>, ValueTask>? onHedging,
-        Func<HedgingDelayArguments, ValueTask<TimeSpan>>? hedgingDelayGenerator,
+        Func<HedgingDelayGeneratorArguments, ValueTask<TimeSpan>>? hedgingDelayGenerator,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry)
     {
         HedgingDelay = hedgingDelay;
-        MaxHedgedAttempts = maxHedgedAttempts;
-        HedgingDelayGenerator = hedgingDelayGenerator;
+        TotalAttempts = maxHedgedAttempts + 1; // include the initial attempt
+        DelayGenerator = hedgingDelayGenerator;
         _timeProvider = timeProvider;
         HedgingHandler = hedgingHandler;
         OnHedging = onHedging;
 
         _telemetry = telemetry;
-        _controller = new HedgingController<T>(telemetry, timeProvider, HedgingHandler, maxHedgedAttempts);
+        _controller = new HedgingController<T>(telemetry, timeProvider, HedgingHandler, TotalAttempts);
     }
 
     public TimeSpan HedgingDelay { get; }
 
-    public int MaxHedgedAttempts { get; }
+    public int TotalAttempts { get; }
 
-    public Func<HedgingDelayArguments, ValueTask<TimeSpan>>? HedgingDelayGenerator { get; }
+    public Func<HedgingDelayGeneratorArguments, ValueTask<TimeSpan>>? DelayGenerator { get; }
 
     public HedgingHandler<T> HedgingHandler { get; }
 
@@ -95,11 +95,11 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
                 // If completedHedgedTask is null it indicates that we still do not have any finished hedged task within the hedging delay.
                 // We will create additional hedged task in the next iteration.
                 await HandleOnHedgingAsync(
-                    new OnHedgingArguments<T>(context, Outcome.FromResult<T>(default), attempt, hasOutcome: false, duration: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
+                    new OnHedgingArguments<T>(context, null, attempt, duration: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
                 continue;
             }
 
-            outcome = execution.Outcome.AsOutcome<T>();
+            outcome = execution.Outcome;
 
             if (!execution.IsHandled)
             {
@@ -109,13 +109,13 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
 
             var executionTime = _timeProvider.GetElapsedTime(start);
             await HandleOnHedgingAsync(
-                new OnHedgingArguments<T>(context, outcome, attempt, hasOutcome: true, executionTime)).ConfigureAwait(context.ContinueOnCapturedContext);
+                new OnHedgingArguments<T>(context, outcome, attempt, executionTime)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
     }
 
     private async ValueTask HandleOnHedgingAsync(OnHedgingArguments<T> args)
     {
-        _telemetry.Report<OnHedgingArguments<T>, T>(new(ResilienceEventSeverity.Warning, HedgingConstants.OnHedgingEventName), args);
+        _telemetry.Report<OnHedgingArguments<T>, T>(new(ResilienceEventSeverity.Warning, HedgingConstants.OnHedgingEventName), args.Context, default, args);
 
         if (OnHedging is not null)
         {
@@ -128,11 +128,11 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
 
     internal ValueTask<TimeSpan> GetHedgingDelayAsync(ResilienceContext context, int attempt)
     {
-        if (HedgingDelayGenerator == null)
+        if (DelayGenerator == null)
         {
             return new ValueTask<TimeSpan>(HedgingDelay);
         }
 
-        return HedgingDelayGenerator(new HedgingDelayArguments(context, attempt));
+        return DelayGenerator(new HedgingDelayGeneratorArguments(context, attempt));
     }
 }

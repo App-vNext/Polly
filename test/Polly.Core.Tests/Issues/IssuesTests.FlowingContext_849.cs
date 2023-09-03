@@ -18,7 +18,7 @@ public partial class IssuesTests
                     ResilienceContext context = args.Context;
                     context.Should().NotBeNull();
                     contextChecked = true;
-                    return PredicateResult.False;
+                    return PredicateResult.False();
                 }
             })
             .Build();

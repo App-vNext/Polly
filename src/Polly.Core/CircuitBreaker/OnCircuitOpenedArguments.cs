@@ -27,12 +27,12 @@ public readonly struct OnCircuitOpenedArguments<TResult> : IOutcomeArguments<TRe
     }
 
     /// <summary>
-    /// Gets the outcome of the resilience operation or event.
+    /// Gets the outcome that caused the circuit to open.
     /// </summary>
     public Outcome<TResult> Outcome { get; }
 
     /// <summary>
-    /// Gets the context in which the resilience operation or event occurred.
+    /// Gets the context of this event.
     /// </summary>
     public ResilienceContext Context { get; }
 

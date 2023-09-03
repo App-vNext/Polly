@@ -33,7 +33,7 @@ public class TelemetryBenchmark
     public async ValueTask Execute()
     {
         var context = ResilienceContextPool.Shared.Get();
-        await _pipeline!.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state").ConfigureAwait(false);
+        await _pipeline!.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("dummy"), context, "state").ConfigureAwait(false);
         ResilienceContextPool.Shared.Return(context);
     }
 

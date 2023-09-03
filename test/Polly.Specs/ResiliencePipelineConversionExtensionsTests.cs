@@ -1,3 +1,4 @@
+using Polly;
 using Polly.TestUtils;
 
 namespace Polly.Specs;
@@ -151,10 +152,10 @@ public class ResiliencePipelineConversionExtensionsTests
         var policy = new ResiliencePipelineBuilder<string>()
             .AddRetry(new RetryStrategyOptions<string>
             {
-                ShouldHandle = _ => PredicateResult.True,
-                BackoffType = RetryBackoffType.Constant,
-                RetryCount = 5,
-                BaseDelay = TimeSpan.FromMilliseconds(1)
+                ShouldHandle = _ => PredicateResult.True(),
+                BackoffType = DelayBackoffType.Constant,
+                MaxRetryAttempts = 5,
+                Delay = TimeSpan.FromMilliseconds(1)
             })
             .Build()
             .AsSyncPolicy();

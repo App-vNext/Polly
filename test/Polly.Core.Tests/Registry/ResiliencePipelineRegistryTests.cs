@@ -268,9 +268,9 @@ public class ResiliencePipelineRegistryTests
 
             builder.AddRetry(new RetryStrategyOptions
             {
-                ShouldHandle = _ => PredicateResult.True,
-                RetryCount = retryCount,
-                BaseDelay = TimeSpan.FromMilliseconds(2),
+                ShouldHandle = _ => PredicateResult.True(),
+                MaxRetryAttempts = retryCount,
+                Delay = TimeSpan.FromMilliseconds(2),
             });
         });
 
@@ -344,9 +344,9 @@ public class ResiliencePipelineRegistryTests
 
             builder.AddRetry(new RetryStrategyOptions<string>
             {
-                ShouldHandle = _ => PredicateResult.True,
-                RetryCount = retryCount,
-                BaseDelay = TimeSpan.FromMilliseconds(2),
+                ShouldHandle = _ => PredicateResult.True(),
+                MaxRetryAttempts = retryCount,
+                Delay = TimeSpan.FromMilliseconds(2),
             });
         });
 
@@ -424,22 +424,14 @@ public class ResiliencePipelineRegistryTests
         pipeline4.Invoking(p => p.Execute(() => "dummy")).Should().Throw<ObjectDisposedException>();
     }
 
-    [InlineData(true)]
-    [InlineData(false)]
-    [Theory]
-    public async Task DisposePipeline_NotAllowed(bool isAsync)
+    [Fact]
+    public async Task DisposePipeline_NotAllowed()
     {
         using var registry = CreateRegistry();
         var pipeline = registry.GetOrAddPipeline(StrategyId.Create("A"), builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); });
 
-        if (isAsync)
-        {
-            await pipeline.Invoking(p => p.DisposeHelper.DisposeAsync().AsTask()).Should().ThrowAsync<InvalidOperationException>();
-        }
-        else
-        {
-            pipeline.Invoking(p => p.DisposeHelper.Dispose()).Should().Throw<InvalidOperationException>();
-        }
+        await pipeline.Invoking(p => p.DisposeHelper.DisposeAsync().AsTask()).Should().ThrowAsync<InvalidOperationException>();
+
     }
 
     [InlineData(true)]

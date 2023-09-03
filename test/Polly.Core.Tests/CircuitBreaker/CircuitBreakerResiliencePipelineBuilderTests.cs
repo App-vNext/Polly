@@ -11,7 +11,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
     {
         builder => builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions
         {
-            ShouldHandle = _ => PredicateResult.True
+            ShouldHandle = _ => PredicateResult.True()
         }),
     };
 
@@ -19,7 +19,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
     {
         builder => builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions<int>
         {
-            ShouldHandle = _ => PredicateResult.True
+            ShouldHandle = _ => PredicateResult.True()
         }),
     };
 
@@ -90,12 +90,12 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         opened.Should().Be(1);
         halfOpened.Should().Be(0);
         closed.Should().Be(0);
-        Assert.Throws<BrokenCircuitException<object>>(() => strategy.Execute(_ => 0));
+        Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
 
         // Circuit Half Opened
         timeProvider.Advance(options.BreakDuration);
         strategy.Execute(_ => -1);
-        Assert.Throws<BrokenCircuitException<object>>(() => strategy.Execute(_ => 0));
+        Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
         opened.Should().Be(2);
         halfOpened.Should().Be(1);
         closed.Should().Be(0);
@@ -131,12 +131,10 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         strategy2.Execute(() => { });
     }
 
-    [InlineData(false, false)]
-    [InlineData(true, false)]
-    [InlineData(false, true)]
-    [InlineData(true, true)]
+    [InlineData(false)]
+    [InlineData(true)]
     [Theory]
-    public async Task DisposePipeline_EnsureCircuitBreakerDisposed(bool isAsync, bool attachManualControl)
+    public async Task DisposePipeline_EnsureCircuitBreakerDisposed(bool attachManualControl)
     {
         var manualControl = attachManualControl ? new CircuitBreakerManualControl() : null;
         var pipeline = new ResiliencePipelineBuilder()
@@ -153,14 +151,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
 
         var strategy = (ResilienceStrategy<object>)pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
-        if (isAsync)
-        {
-            await pipeline.DisposeHelper.DisposeAsync();
-        }
-        else
-        {
-            pipeline.DisposeHelper.Dispose();
-        }
+        await pipeline.DisposeHelper.DisposeAsync();
 
         strategy.AsPipeline().Invoking(s => s.Execute(() => 1)).Should().Throw<ObjectDisposedException>();
 

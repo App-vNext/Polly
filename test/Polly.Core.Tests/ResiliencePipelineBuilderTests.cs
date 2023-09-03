@@ -47,7 +47,7 @@ public class ResiliencePipelineBuilderTests
             After = (_, _) => executions.Add(3),
         };
 
-        builder.AddPipeline(first.AsPipeline());
+        builder.AddStrategy(first);
 
         // act
         var pipeline = builder.Build();
@@ -103,21 +103,6 @@ public class ResiliencePipelineBuilderTests
     }
 
     [Fact]
-    public void AddPipeline_Duplicate_Throws()
-    {
-        // arrange
-        var executions = new List<int>();
-        var builder = new ResiliencePipelineBuilder()
-            .AddPipeline(ResiliencePipeline.Empty)
-            .AddPipeline(ResiliencePipeline.Empty);
-
-        builder.Invoking(b => b.Build())
-            .Should()
-            .Throw<InvalidOperationException>()
-            .WithMessage("The resilience pipeline must contain unique resilience strategies.");
-    }
-
-    [Fact]
     public void Validator_Ok()
     {
         var builder = new ResiliencePipelineBuilder();
@@ -127,13 +112,13 @@ public class ResiliencePipelineBuilderTests
         builder.Validator(new ResilienceValidationContext("ABC", "ABC"));
 
         builder
-            .Invoking(b => b.Validator(new ResilienceValidationContext(new RetryStrategyOptions { RetryCount = -4 }, "The primary message.")))
+            .Invoking(b => b.Validator(new ResilienceValidationContext(new RetryStrategyOptions { MaxRetryAttempts = -4 }, "The primary message.")))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""
             The primary message.
             Validation Errors:
-            The field RetryCount must be between 1 and 2147483647.
+            The field MaxRetryAttempts must be between 1 and 2147483647.
             """);
     }
 
@@ -245,6 +230,48 @@ The RequiredProperty field is required.
             .And.ParamName
             .Should()
             .Be("factory");
+    }
+
+    [Fact]
+    public async Task AddPipeline_EnsureNotDisposed()
+    {
+        var externalComponent = Substitute.For<PipelineComponent>();
+        var externalBuilder = new ResiliencePipelineBuilder();
+        externalBuilder.AddPipelineComponent(_ => externalComponent, new TestResilienceStrategyOptions());
+        var externalPipeline = externalBuilder.Build();
+
+        var internalComponent = Substitute.For<PipelineComponent>();
+        var builder = new ResiliencePipelineBuilder();
+        builder
+            .AddPipeline(externalPipeline)
+            .AddPipelineComponent(_ => internalComponent, new TestResilienceStrategyOptions());
+        var pipeline = builder.Build();
+
+        await pipeline.DisposeHelper.DisposeAsync();
+        await externalComponent.Received(0).DisposeAsync();
+        await internalComponent.Received(1).DisposeAsync();
+    }
+
+    [Fact]
+    public async Task AddPipeline_Generic_EnsureNotDisposed()
+    {
+        var externalComponent = Substitute.For<PipelineComponent>();
+        var externalBuilder = new ResiliencePipelineBuilder<string>();
+        externalBuilder.AddPipelineComponent(_ => externalComponent, new TestResilienceStrategyOptions());
+        var externalPipeline = externalBuilder.Build();
+
+        var internalComponent = Substitute.For<PipelineComponent>();
+        var builder = new ResiliencePipelineBuilder<string>();
+        builder
+            .AddPipeline(externalPipeline)
+            .AddPipelineComponent(_ => internalComponent, new TestResilienceStrategyOptions());
+        var pipeline = builder.Build();
+
+        pipeline.Execute(_ => string.Empty);
+
+        await pipeline.DisposeHelper.DisposeAsync();
+        await externalComponent.Received(0).DisposeAsync();
+        await internalComponent.Received(1).DisposeAsync();
     }
 
     [Fact]

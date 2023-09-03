@@ -14,11 +14,11 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
         ResilienceStrategyTelemetry telemetry)
     {
         ShouldHandle = options.ShouldHandle;
-        BaseDelay = options.BaseDelay;
+        BaseDelay = options.Delay;
         BackoffType = options.BackoffType;
-        RetryCount = options.RetryCount;
+        RetryCount = options.MaxRetryAttempts;
         OnRetry = options.OnRetry;
-        DelayGenerator = options.RetryDelayGenerator;
+        DelayGenerator = options.DelayGenerator;
         UseJitter = options.UseJitter;
 
         _timeProvider = timeProvider;
@@ -28,13 +28,13 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
 
     public TimeSpan BaseDelay { get; }
 
-    public RetryBackoffType BackoffType { get; }
+    public DelayBackoffType BackoffType { get; }
 
     public int RetryCount { get; }
 
     public Func<RetryPredicateArguments<T>, ValueTask<bool>> ShouldHandle { get; }
 
-    public Func<RetryDelayArguments<T>, ValueTask<TimeSpan>>? DelayGenerator { get; }
+    public Func<RetryDelayGeneratorArguments<T>, ValueTask<TimeSpan?>>? DelayGenerator { get; }
 
     public bool UseJitter { get; }
 
@@ -64,9 +64,9 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
             var delay = RetryHelper.GetRetryDelay(BackoffType, UseJitter, attempt, BaseDelay, ref retryState, _randomizer);
             if (DelayGenerator is not null)
             {
-                var delayArgs = new RetryDelayArguments<T>(context, outcome, attempt, delay);
-                var newDelay = await DelayGenerator(delayArgs).ConfigureAwait(false);
-                if (RetryHelper.IsValidDelay(newDelay))
+                var delayArgs = new RetryDelayGeneratorArguments<T>(context, outcome, attempt);
+
+                if (await DelayGenerator(delayArgs).ConfigureAwait(false) is TimeSpan newDelay && RetryHelper.IsValidDelay(newDelay))
                 {
                     delay = newDelay;
                 }

@@ -1,33 +1,37 @@
-﻿using Polly;
+﻿using System.Net;
+using Polly;
 using Polly.Fallback;
 using Polly.Retry;
 using Polly.Timeout;
-using System.Net;
 
 // ----------------------------------------------------------------------------
-// Create a generic resilience strategy using CompositeStrategyBuilder<T>
+// Create a generic resilience pipeline using ResiliencePipelineBuilder<T>
 // ----------------------------------------------------------------------------
 
-// The generic CompositeStrategyBuilder<T> creates a ResilienceStrategy<T>
+// The generic ResiliencePipelineBuilder<T> creates a ResiliencePipeline<T>
 // that can execute synchronous and asynchronous callbacks that return T.
 
-ResilienceStrategy<HttpResponseMessage> strategy = new CompositeStrategyBuilder<HttpResponseMessage>()
+ResiliencePipeline<HttpResponseMessage> pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddFallback(new FallbackStrategyOptions<HttpResponseMessage>
     {
         FallbackAction = _ =>
         {
             // Return fallback result
-            return Outcome.FromResultAsTask(new HttpResponseMessage(HttpStatusCode.OK));
+            return Outcome.FromResultAsValueTask(new HttpResponseMessage(HttpStatusCode.OK));
         },
         // You can also use switch expressions for succinct syntax
-        ShouldHandle = outcome => outcome switch
+        ShouldHandle = arguments => arguments.Outcome switch
         {
             // The "PredicateResult.True" is shorthand to "new ValueTask<bool>(true)"
-            { Exception: HttpRequestException } => PredicateResult.True,
-            { Result: HttpResponseMessage response } when response.StatusCode == HttpStatusCode.InternalServerError => PredicateResult.True,
-            _ => PredicateResult.False
+            { Exception: HttpRequestException } => PredicateResult.True(),
+            { Result: HttpResponseMessage response } when response.StatusCode == HttpStatusCode.InternalServerError => PredicateResult.True(),
+            _ => PredicateResult.False()
         },
-        OnFallback = _ => { Console.WriteLine("Fallback!"); return default; }
+        OnFallback = _ =>
+        {
+            Console.WriteLine("Fallback!");
+            return default;
+        }
     })
     .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
     {
@@ -36,20 +40,28 @@ ResilienceStrategy<HttpResponseMessage> strategy = new CompositeStrategyBuilder<
             .HandleResult(r => r.StatusCode == HttpStatusCode.InternalServerError)
             .Handle<HttpRequestException>(),
         // Register user callback called whenever retry occurs
-        OnRetry = outcome => { Console.WriteLine($"Retrying '{outcome.Result?.StatusCode}'..."); return default; },
-        BaseDelay = TimeSpan.FromMilliseconds(400),
-        BackoffType = RetryBackoffType.Constant,
-        RetryCount = 3
+        OnRetry = arguments =>
+        {
+            Console.WriteLine($"Retrying '{arguments.Outcome.Result?.StatusCode}'...");
+            return default;
+        },
+        Delay = TimeSpan.FromMilliseconds(400),
+        BackoffType = DelayBackoffType.Constant,
+        MaxRetryAttempts = 3
     })
     .AddTimeout(new TimeoutStrategyOptions
     {
         Timeout = TimeSpan.FromSeconds(1),
         // Register user callback called whenever timeout occurs
-        OnTimeout = _ => { Console.WriteLine("Timeout occurred!"); return default; }
+        OnTimeout = _ =>
+        {
+            Console.WriteLine("Timeout occurred!");
+            return default;
+        }
     })
     .Build();
 
-var response = await strategy.ExecuteAsync(
+var response = await pipeline.ExecuteAsync(
     async token =>
     {
         await Task.Delay(10, token);

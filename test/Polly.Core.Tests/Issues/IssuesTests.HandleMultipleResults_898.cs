@@ -10,17 +10,17 @@ public partial class IssuesTests
         var isRetryKey = new ResiliencePropertyKey<bool>("is-retry");
         var options = new RetryStrategyOptions
         {
-            BackoffType = RetryBackoffType.Constant,
-            RetryCount = 1,
-            BaseDelay = TimeSpan.FromMilliseconds(1),
+            BackoffType = DelayBackoffType.Constant,
+            MaxRetryAttempts = 1,
+            Delay = TimeSpan.FromMilliseconds(1),
             ShouldHandle = args => args.Outcome switch
             {
                 // handle string results
-                { Result: string res } when res == "error" => PredicateResult.True,
+                { Result: string res } when res == "error" => PredicateResult.True(),
 
                 // handle int results
-                { Result: int res } when res == -1 => PredicateResult.True,
-                _ => PredicateResult.False
+                { Result: int res } when res == -1 => PredicateResult.True(),
+                _ => PredicateResult.False()
             },
             OnRetry = args =>
             {

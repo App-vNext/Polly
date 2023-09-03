@@ -1,3 +1,54 @@
+## 8.0.0-beta.1
+
+* Updates for alpha.9 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1526
+* Finalize the API review by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1528
+* Disposing pipeline should not dispose external inner pipeline by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1529
+* Clean duplications around disposing the pipelines by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1530
+
+## 8.0.0-alpha.9
+
+* Updates for alpha.8 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1465
+* Fix unstable build by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1466
+* Improve samples by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1467
+* Specify DebuggerDisplay for ReactiveResilienceStrategyBridge by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1468
+* Drop the `Extensions` from `Polly.Extensions` namespace by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1469
+* Remove Moq by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1472
+* Add new metering tests to cover uncovered lines by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1474
+* Default names for individual resilience strategies by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1475
+* Introduce `NonReactiveResilienceStrategy` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1476
+* Drop `TelemetryResilienceStrategy` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1482
+* API Review feedback (1) by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1484
+* Rename ResilienceStrategy to ResiliencePipeline by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1483
+* API Review Feedback (2) by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1485
+* Introduce TelemetryListener by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1486
+* Improve documentation by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1487
+* Fix metering tests by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1488
+* Hide validation APIs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1490
+* Logging improvements by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1489
+* Hide/drop some unused APIs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1491
+* Cleanup internals by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1492
+* ResilienceContextPool improvements by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1493
+* Hide IsSynchronous property by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1494
+* Drop unused ResiliencePipelineRegistry APIs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1495
+* `ResiliencePipelineRegistry` is now disposable by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1496
+* Move pipeline-related internals into `Pipeline` folder by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1497
+* Update benchmarks by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1503
+* Minor ResiliencePipelineRegistry cleanup of internals by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1505
+* API Review Feedback by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1506
+* Minor API cleanup by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1508
+* Clenaup rate limiter API by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1509
+* Cleanup ResiliencePipelineRegistry internals by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1510
+* Allow to dispose linked resources on pipeline disposal by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1511
+* Simplify and enhance the pipeline reloads by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1512
+* Drop `OutcomeArguments` struct by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1513
+* API Review Feedback by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1520
+* Got rid of some warnings in the Polly project by [@IgorIgorevich94](https://github.com/IgorIgorevich94) in https://github.com/App-vNext/Polly/pull/1514
+* API Review Feedback by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1521
+* Cleanup Outcome internals and drop unused hedging and fallbacks APIs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1523
+* Improve debugging experience for `ResilienceProperties` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1524
+* Protect against retry delay overflows by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1522
+* Fix DelayAsync extension by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1525
+
 ## 8.0.0-alpha.8
 
 * Updates for 8.0.0-alpha.7 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1433

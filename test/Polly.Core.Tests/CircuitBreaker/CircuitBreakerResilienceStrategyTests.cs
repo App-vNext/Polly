@@ -44,7 +44,6 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _options.StateProvider.IsInitialized.Should().BeTrue();
 
         _options.StateProvider.CircuitState.Should().Be(CircuitState.Closed);
-        _options.StateProvider.LastHandledOutcome.Should().Be(null);
     }
 
     [Fact]
@@ -124,7 +123,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_Ok()
     {
-        _options.ShouldHandle = _ => PredicateResult.False;
+        _options.ShouldHandle = _ => PredicateResult.False();
 
         Create().Invoking(s => s.Execute(_ => 0)).Should().NotThrow();
 

@@ -12,8 +12,8 @@ public class FallbackResiliencePipelineBuilderExtensionsTests
         {
             builder.AddFallback(new FallbackStrategyOptions<int>
             {
-                FallbackAction = _ => Outcome.FromResultAsTask(0),
-                ShouldHandle = _ => PredicateResult.False,
+                FallbackAction = _ => Outcome.FromResultAsValueTask(0),
+                ShouldHandle = _ => PredicateResult.False(),
             });
         }
     };
@@ -26,35 +26,6 @@ public class FallbackResiliencePipelineBuilderExtensionsTests
         configure(builder);
 
         builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType(typeof(FallbackResilienceStrategy<int>));
-    }
-
-    [Fact]
-    public void AddFallback_Ok()
-    {
-        var options = new FallbackStrategyOptions
-        {
-            ShouldHandle = args => args.Outcome switch
-            {
-                { Exception: InvalidOperationException } => PredicateResult.True,
-                { Result: -1 } => PredicateResult.True,
-                _ => PredicateResult.False
-            },
-            FallbackAction = _ => Outcome.FromResultAsTask((object)1)
-        };
-
-        var strategy = new ResiliencePipelineBuilder().AddFallback(options).Build();
-
-        strategy.Execute<int>(_ => -1).Should().Be(1);
-        strategy.Execute<int>(_ => throw new InvalidOperationException()).Should().Be(1);
-    }
-
-    [Fact]
-    public void AddFallback_InvalidOptions_Throws()
-    {
-        new ResiliencePipelineBuilder()
-            .Invoking(b => b.AddFallback(new FallbackStrategyOptions()))
-            .Should()
-            .Throw<ValidationException>();
     }
 
     [Fact]

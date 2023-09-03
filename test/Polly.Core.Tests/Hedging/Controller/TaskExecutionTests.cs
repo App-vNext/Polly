@@ -52,13 +52,13 @@ public class TaskExecutionTests : IDisposable
             {
                 AssertPrimaryContext(context, execution);
                 state.Should().Be("dummy-state");
-                return Outcome.FromResultAsTask(new DisposableResult { Name = value });
+                return Outcome.FromResultAsValueTask(new DisposableResult { Name = value });
             },
             "dummy-state",
             99);
 
         await execution.ExecutionTaskSafe!;
-        ((DisposableResult)execution.Outcome.Result!).Name.Should().Be(value);
+        execution.Outcome.Result!.Name.Should().Be(value);
         execution.IsHandled.Should().Be(handled);
         AssertPrimaryContext(execution.Context, execution);
 
@@ -91,14 +91,14 @@ public class TaskExecutionTests : IDisposable
         {
             AssertSecondaryContext(args.ActionContext, execution);
             args.AttemptNumber.Should().Be(4);
-            return () => Outcome.FromResultAsTask(new DisposableResult { Name = value });
+            return () => Outcome.FromResultAsValueTask(new DisposableResult { Name = value });
         };
 
         (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
 
         await execution.ExecutionTaskSafe!;
 
-        ((DisposableResult)execution.Outcome.Result!).Name.Should().Be(value);
+        execution.Outcome.Result!.Name.Should().Be(value);
         execution.IsHandled.Should().Be(handled);
         AssertSecondaryContext(execution.Context, execution);
     }
@@ -255,7 +255,7 @@ public class TaskExecutionTests : IDisposable
         await execution.InitializeAsync(HedgedTaskType.Primary, _snapshot, (context, _) =>
         {
             onContext?.Invoke(context);
-            return Outcome.FromResultAsTask(result ?? new DisposableResult { Name = Handled });
+            return Outcome.FromResultAsValueTask(result ?? new DisposableResult { Name = Handled });
         }, "dummy-state", 1);
     }
 
@@ -296,7 +296,7 @@ public class TaskExecutionTests : IDisposable
 
     private Func<HedgingActionGeneratorArguments<DisposableResult>, Func<ValueTask<Outcome<DisposableResult>>>?> Generator { get; set; } = args =>
     {
-        return () => Outcome.FromResultAsTask(new DisposableResult { Name = Handled });
+        return () => Outcome.FromResultAsValueTask(new DisposableResult { Name = Handled });
     };
 
     private TaskExecution<DisposableResult> Create() => new(_hedgingHandler, CancellationTokenSourcePool.Create(TimeProvider.System), _timeProvider, _telemetry);

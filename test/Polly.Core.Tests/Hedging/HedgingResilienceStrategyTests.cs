@@ -29,11 +29,11 @@ public class HedgingResilienceStrategyTests : IDisposable
     public HedgingResilienceStrategyTests(ITestOutputHelper testOutput)
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(_events.Enqueue);
-        _timeProvider = new HedgingTimeProvider { AutoAdvance = _options.HedgingDelay };
+        _timeProvider = new HedgingTimeProvider { AutoAdvance = _options.Delay };
         _actions = new HedgingActions(_timeProvider);
         _primaryTasks = new PrimaryStringTasks(_timeProvider);
-        _options.HedgingDelay = TimeSpan.FromSeconds(1);
-        _options.MaxHedgedAttempts = _actions.MaxHedgedTasks;
+        _options.Delay = TimeSpan.FromSeconds(1);
+        _options.MaxHedgedAttempts = _actions.MaxHedgedTasks - 1;
         _testOutput = testOutput;
     }
 
@@ -49,9 +49,9 @@ public class HedgingResilienceStrategyTests : IDisposable
         ConfigureHedging();
         var strategy = (HedgingResilienceStrategy<string>)Create().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
-        strategy.MaxHedgedAttempts.Should().Be(_options.MaxHedgedAttempts);
-        strategy.HedgingDelay.Should().Be(_options.HedgingDelay);
-        strategy.HedgingDelayGenerator.Should().BeNull();
+        strategy.TotalAttempts.Should().Be(_options.MaxHedgedAttempts + 1);
+        strategy.HedgingDelay.Should().Be(_options.Delay);
+        strategy.DelayGenerator.Should().BeNull();
         strategy.HedgingHandler.Should().NotBeNull();
     }
 
@@ -65,7 +65,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = _cts.Token;
 
-        var outcome = await strategy.ExecuteCore((_, _) => Outcome.FromResultAsTask("dummy"), context, "state");
+        var outcome = await strategy.ExecuteCore((_, _) => Outcome.FromResultAsValueTask("dummy"), context, "state");
         outcome.Exception.Should().BeOfType<OperationCanceledException>();
         outcome.Exception!.StackTrace.Should().Contain("Execute_CancellationRequested_Throws");
     }
@@ -80,7 +80,7 @@ public class HedgingResilienceStrategyTests : IDisposable
             return timeStamp;
         };
         _options.MaxHedgedAttempts = 2;
-        ConfigureHedging(_ => true, args => () => Outcome.FromResultAsTask("any"));
+        ConfigureHedging(_ => true, args => () => Outcome.FromResultAsValueTask("any"));
         var strategy = Create();
 
         strategy.Execute(_ => "dummy");
@@ -101,7 +101,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     {
         _options.MaxHedgedAttempts = 2;
 
-        ConfigureHedging(o => o.Result == "primary", args => () => Outcome.FromResultAsTask("secondary"));
+        ConfigureHedging(o => o.Result == "primary", args => () => Outcome.FromResultAsValueTask("secondary"));
         var strategy = Create();
 
         var result = await strategy.ExecuteAsync(
@@ -126,7 +126,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     [Theory]
     public async Task GetHedgingDelayAsync_GeneratorSet_EnsureCorrectGeneratedValue(int seconds)
     {
-        _options.HedgingDelayGenerator = args => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(seconds));
+        _options.DelayGenerator = args => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(seconds));
 
         var strategy = (HedgingResilienceStrategy<string>)Create().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
@@ -138,7 +138,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     [Fact]
     public async Task GetHedgingDelayAsync_NoGeneratorSet_EnsureCorrectValue()
     {
-        _options.HedgingDelay = TimeSpan.FromMilliseconds(123);
+        _options.Delay = TimeSpan.FromMilliseconds(123);
 
         var strategy = (HedgingResilienceStrategy<string>)Create().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
@@ -167,7 +167,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var attempts = 0;
         var key = new ResiliencePropertyKey<string>("primary-key");
 
-        _options.MaxHedgedAttempts = 4;
+        _options.MaxHedgedAttempts = 3;
         _options.OnHedging = args =>
         {
             args.Context.Should().Be(primaryContext);
@@ -186,7 +186,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             args.PrimaryContext.Properties.GetValue(key, string.Empty).Should().Be("dummy");
             args.PrimaryContext.Should().Be(primaryContext);
-            return () => Outcome.FromResultAsTask(Failure);
+            return () => Outcome.FromResultAsValueTask(Failure);
         });
 
         var strategy = Create();
@@ -237,9 +237,9 @@ public class HedgingResilienceStrategyTests : IDisposable
         });
 
         // assert
-        _timeProvider.Advance(_options.HedgingDelay);
+        _timeProvider.Advance(_options.Delay);
         await Task.Delay(20);
-        _timeProvider.Advance(_options.HedgingDelay);
+        _timeProvider.Advance(_options.Delay);
         await Task.Delay(20);
 
         _timeProvider.Advance(TimeSpan.FromHours(1));
@@ -294,11 +294,11 @@ public class HedgingResilienceStrategyTests : IDisposable
         var hasOutcome = true;
         _options.OnHedging = args =>
         {
-            hasOutcome = args.HasOutcome;
+            hasOutcome = args.Outcome is not null;
             return default;
         };
 
-        ConfigureHedging(context => Outcome.FromResultAsTask(Success));
+        ConfigureHedging(context => Outcome.FromResultAsValueTask(Success));
 
         var strategy = Create();
 
@@ -326,7 +326,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             return () =>
             {
-                return Outcome.FromResultAsTask(secondaryResult);
+                return Outcome.FromResultAsValueTask(secondaryResult);
             };
         });
 
@@ -425,7 +425,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     public async Task ExecuteAsync_EnsurePropertiesConsistency(bool primaryFails)
     {
         // arrange
-        _options.MaxHedgedAttempts = 2;
+        _options.MaxHedgedAttempts = 1;
         var attempts = _options.MaxHedgedAttempts;
         var primaryContext = ResilienceContextPool.Shared.Get();
         var storedProps = primaryContext.Properties;
@@ -530,7 +530,7 @@ public class HedgingResilienceStrategyTests : IDisposable
                 args.ActionContext.Properties.TryGetValue(key2, out var val).Should().BeTrue();
                 val.Should().Be("my-value-2");
                 args.ActionContext.Properties.Set(key, "my-value");
-                return Outcome.FromResultAsTask(Success);
+                return Outcome.FromResultAsValueTask(Success);
             };
         });
         var strategy = Create();
@@ -549,7 +549,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     public async Task ExecuteAsync_OnHedgingEventThrows_EnsureExceptionRethrown()
     {
         // arrange
-        ConfigureHedging(args => () => Outcome.FromResultAsTask(Success));
+        ConfigureHedging(args => () => Outcome.FromResultAsValueTask(Success));
         _options.OnHedging = _ => throw new InvalidOperationException("my-exception");
         var strategy = Create();
 
@@ -651,7 +651,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             var delay = Task.Delay(TimeSpan.FromDays(24), resilienceContext.CancellationToken);
             backgroundTasks.Add(delay);
-            return Outcome.FromResultAsTask(Success);
+            return Outcome.FromResultAsValueTask(Success);
         }
     }
 
@@ -662,7 +662,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         int executions = 0;
         using var allExecutionsReached = new ManualResetEvent(false);
         ConfigureHedging(context => Execute(context.CancellationToken));
-        _options.HedgingDelay = TimeSpan.Zero;
+        _options.Delay = TimeSpan.Zero;
 
         // act
         var task = Create().ExecuteAsync(async c => (await Execute(c)).Result!, default);
@@ -833,10 +833,10 @@ public class HedgingResilienceStrategyTests : IDisposable
                 {
                     if (exception != null)
                     {
-                        return Outcome.FromExceptionAsTask<string>(exception);
+                        return Outcome.FromExceptionAsValueTask<string>(exception);
                     }
 
-                    return Outcome.FromResultAsTask(Success);
+                    return Outcome.FromResultAsValueTask(Success);
                 };
             });
 
@@ -849,9 +849,9 @@ public class HedgingResilienceStrategyTests : IDisposable
     public async Task ExecuteAsync_EnsureHedgingDelayGeneratorRespected()
     {
         var delay = TimeSpan.FromMilliseconds(12345);
-        _options.HedgingDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.FromMilliseconds(12345));
+        _options.DelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.FromMilliseconds(12345));
 
-        ConfigureHedging(res => false, args => () => Outcome.FromResultAsTask(Success));
+        ConfigureHedging(res => false, args => () => Outcome.FromResultAsValueTask(Success));
 
         var strategy = Create();
         var task = strategy.ExecuteAsync<string>(async token =>
@@ -886,18 +886,18 @@ public class HedgingResilienceStrategyTests : IDisposable
         var attempts = new List<int>();
         _options.OnHedging = args =>
         {
-            args.HasOutcome.Should().BeTrue();
-            args.Outcome.Result.Should().Be(Failure);
+            args.Outcome.Should().NotBeNull();
+            args.Outcome!.Value.Result.Should().Be(Failure);
             attempts.Add(args.AttemptNumber);
             return default;
         };
 
-        ConfigureHedging(res => res.Result == Failure, args => () => Outcome.FromResultAsTask(Failure));
+        ConfigureHedging(res => res.Result == Failure, args => () => Outcome.FromResultAsValueTask(Failure));
 
         var strategy = Create();
         await strategy.ExecuteAsync(_ => new ValueTask<string>(Failure));
 
-        attempts.Should().HaveCount(_options.MaxHedgedAttempts);
+        attempts.Should().HaveCount(_options.MaxHedgedAttempts + 1);
         attempts.Should().BeInAscendingOrder();
         attempts[0].Should().Be(0);
     }
@@ -907,12 +907,12 @@ public class HedgingResilienceStrategyTests : IDisposable
     {
         var context = ResilienceContextPool.Shared.Get();
 
-        ConfigureHedging(res => res.Result == Failure, args => () => Outcome.FromResultAsTask(Failure));
+        ConfigureHedging(res => res.Result == Failure, args => () => Outcome.FromResultAsValueTask(Failure));
 
         var strategy = Create();
         await strategy.ExecuteAsync((_, _) => new ValueTask<string>(Failure), context, "state");
 
-        _events.Should().HaveCount(_options.MaxHedgedAttempts + 4);
+        _events.Should().HaveCount(_options.MaxHedgedAttempts + 5);
         _events.Select(v => v.Event.EventName).Distinct().Should().HaveCount(2);
     }
 
@@ -922,7 +922,10 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             lock (_results)
             {
-                _results.Add(args.Outcome.Result!);
+                if (args.Outcome.HasValue)
+                {
+                    _results.Add(args.Outcome.Value.Result!);
+                }
             }
 
             return default;
@@ -959,11 +962,11 @@ public class HedgingResilienceStrategyTests : IDisposable
     private HedgingResilienceStrategy<T> Create<T>(
         HedgingHandler<T> handler,
         Func<OnHedgingArguments<T>, ValueTask>? onHedging) => new(
-        _options.HedgingDelay,
+        _options.Delay,
         _options.MaxHedgedAttempts,
         handler,
         onHedging,
-        _options.HedgingDelayGenerator,
+        _options.DelayGenerator,
         _timeProvider,
         _telemetry);
 }

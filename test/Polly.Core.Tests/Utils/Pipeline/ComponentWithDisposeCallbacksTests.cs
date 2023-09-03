@@ -5,10 +5,8 @@ namespace Polly.Core.Tests.Utils.Pipeline;
 
 public class ComponentWithDisposeCallbacksTests
 {
-    [InlineData(true)]
-    [InlineData(false)]
-    [Theory]
-    public async Task Dispose_Ok(bool isAsync)
+    [Fact]
+    public async Task Dispose_Ok()
     {
         // Arrange
         var called1 = 0;
@@ -23,20 +21,9 @@ public class ComponentWithDisposeCallbacksTests
         var sut = new ComponentWithDisposeCallbacks(component, callbacks);
 
         // Act
-        if (isAsync)
-        {
-            await sut.DisposeAsync();
-            await sut.DisposeAsync();
-            await component.Received(2).DisposeAsync();
-        }
-        else
-        {
-            sut.Dispose();
-#pragma warning disable S3966 // Objects should not be disposed more than once
-            sut.Dispose();
-#pragma warning restore S3966 // Objects should not be disposed more than once
-            component.Received(2).Dispose();
-        }
+        await sut.DisposeAsync();
+        await sut.DisposeAsync();
+        await component.Received(2).DisposeAsync();
 
         // Assert
         callbacks.Should().BeEmpty();
