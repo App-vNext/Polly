@@ -20,7 +20,7 @@ public readonly struct OnOutcomeInjectedArguments<TResult>
     }
 
     /// <summary>
-    /// Gets the ResilienceContext instance.
+    /// Gets the context of this event.
     /// </summary>
     public ResilienceContext Context { get; }
 

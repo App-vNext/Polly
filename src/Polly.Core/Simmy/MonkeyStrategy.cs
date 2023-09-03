@@ -29,12 +29,12 @@ public abstract class MonkeyStrategy : ResilienceStrategy
     /// <summary>
     /// Gets the injection rate for a given execution, which the value should be between [0, 1].
     /// </summary>
-    public Func<InjectionRateGeneratorArguments, ValueTask<double>> InjectionRateGenerator { get; }
+    internal Func<InjectionRateGeneratorArguments, ValueTask<double>> InjectionRateGenerator { get; }
 
     /// <summary>
     /// Gets a value that indicates whether or not the chaos strategy is enabled for a given execution.
     /// </summary>
-    public Func<EnabledGeneratorArguments, ValueTask<bool>> EnabledGenerator { get; }
+    internal Func<EnabledGeneratorArguments, ValueTask<bool>> EnabledGenerator { get; }
 
     /// <summary>
     /// Determines whether or not the chaos strategy should be injected based on the injection rate and enabled flag.

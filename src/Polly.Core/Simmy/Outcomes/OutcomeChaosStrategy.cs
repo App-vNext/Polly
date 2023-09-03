@@ -44,7 +44,7 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
 
     public Func<OutcomeGeneratorArguments, ValueTask<Outcome<Exception>?>>? FaultGenerator { get; }
 
-    public Outcome<T>? Outcome { get; private set; }
+    public Outcome<T>? Outcome { get; }
 
     public Outcome<Exception>? Fault { get; }
 

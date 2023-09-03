@@ -16,11 +16,11 @@ public static class LatencyChaosPipelineBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
-    /// <param name="delay">The delay value.</param>
+    /// <param name="latency">The delay value.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
-    public static TBuilder AddChaosLatency<TBuilder>(this TBuilder builder, bool enabled, double injectionRate, TimeSpan delay)
+    public static TBuilder AddChaosLatency<TBuilder>(this TBuilder builder, bool enabled, double injectionRate, TimeSpan latency)
         where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
@@ -29,7 +29,7 @@ public static class LatencyChaosPipelineBuilderExtensions
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
-            LatencyGenerator = (_) => new(delay)
+            Latency = latency
         });
     }
 
