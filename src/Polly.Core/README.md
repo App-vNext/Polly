@@ -71,24 +71,18 @@ The resilience pipeline may consist of one or more individual resilience strateg
 
 Here's an example of a non-reactive strategy that executes a user-provided callback:
 
-```csharp
+<!-- snippet: my-custom-strategy -->
+```cs
 internal class MyCustomStrategy : ResilienceStrategy
 {
-    private readonly TimeProvider _timeProvider;
-
-    public MyCustomStrategy(TimeProvider timeProvider)
-    {
-        _timeProvider = timeProvider;
-    }
-
-    protected override async ValueTask<T> ExecuteCore<T, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, 
-        ResilienceContext context, 
+    protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
         TState state)
     {
         // Perform actions before execution
 
-        var outcome = await callback(context, state).ContinueOnCapturedContext(context.ContinueOnCapturedContext);
+        var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         // Perform actions after execution
 
@@ -96,6 +90,7 @@ internal class MyCustomStrategy : ResilienceStrategy
     }
 }
 ```
+<!-- endSnippet -->
 
 ### About Synchronous and Asynchronous Executions
 
@@ -113,23 +108,27 @@ To construct a resilience pipeline, chain various extensions on the `ResilienceP
 
 ### Creating a non-generic pipeline
 
-```csharp
-var pipeline = new ResiliencePipelineBuilder()
+<!-- snippet: create-generic-pipeline -->
+```cs
+ResiliencePipeline<string> pipeline = new ResiliencePipelineBuilder<string>()
     .AddRetry(new())
     .AddCircuitBreaker(new())
-    .AddTimeout(new TimeoutStrategyOptions() { ... })
+    .AddTimeout(TimeSpan.FromSeconds(1))
     .Build();
 ```
+<!-- endSnippet -->
 
 ### Creating a generic pipeline
 
-```csharp
-var pipeline = new ResiliencePipelineBuilder<string>()
+<!-- snippet: create-non-generic-pipeline -->
+```cs
+ResiliencePipeline<string> pipeline = new ResiliencePipelineBuilder<string>()
     .AddRetry(new())
     .AddCircuitBreaker(new())
-    .AddTimeout(new TimeoutStrategyOptions() { ... })
+    .AddTimeout(TimeSpan.FromSeconds(1))
     .Build();
 ```
+<!-- endSnippet -->
 
 ## Extensibility
 
@@ -137,13 +136,23 @@ Extending the resilience functionality is straightforward. You can create extens
 
 Here's an example:
 
-```csharp
+<!-- snippet: add-my-custom-strategy -->
+```cs
 public static TBuilder AddMyCustomStrategy<TBuilder>(this TBuilder builder, MyCustomStrategyOptions options)
     where TBuilder : ResiliencePipelineBuilderBase
 {
     return builder.AddStrategy(context => new MyCustomStrategy(), options);
 }
+
+public class MyCustomStrategyOptions : ResilienceStrategyOptions
+{
+    public MyCustomStrategyOptions()
+    {
+        Name = "MyCustomStrategy";
+    }
+}
 ```
+<!-- endSnippet -->
 
 To gain insights into implementing custom resilience strategies, you can explore the following Polly strategy examples:
 
@@ -185,7 +194,8 @@ These delegates accept either `Args` or `Args<TResult>` arguments, which encapsu
 
 For non-reactive strategies, the `Args` structure might resemble:
 
-```csharp
+<!-- snippet: on-timeout-args -->
+```cs
 public readonly struct OnTimeoutArguments
 {
     public OnTimeoutArguments(ResilienceContext context, TimeSpan timeout)
@@ -195,39 +205,23 @@ public readonly struct OnTimeoutArguments
     }
 
     public ResilienceContext Context { get; } // Include the Context property
+
     public TimeSpan Timeout { get; } // Additional event-related properties
 }
 ```
-
-For reactive strategies, `Args<TResult>` could look like:
-
-```csharp
-public readonly struct OnRetryArguments<TResult>
-{
-    public OnRetryArguments(ResilienceContext context, Outcome<TResult> outcome, int attemptNumber)
-    {
-        Context = context;
-        Outcome = outcome;
-        AttemptNumber = attemptNumber;
-    }
-
-    public ResilienceContext Context { get; } // Include the Context property
-    public Outcome<TResult> Outcome { get; } // Includes the outcome associated with the event
-    public int AttemptNumber { get; }
-}
-```
+<!-- endSnippet -->
 
 ### Example: Usage of Delegates
 
 Below are some examples illustrating the usage of these delegates:
 
-```csharp
+<!-- snippet: delegate-usage -->
+```cs
 new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions
     {
-
         // Non-Generic predicate for multiple result types
-        ShouldHandle = args => args switch
+        ShouldHandle = args => args.Outcome switch
         {
             { Exception: InvalidOperationException } => PredicateResult.True(),
             { Result: string result } when result == "Failure" => PredicateResult.True(),
@@ -236,22 +230,21 @@ new ResiliencePipelineBuilder()
         },
     })
     .Build();
-```
 
-```csharp
 new ResiliencePipelineBuilder<string>()
     .AddRetry(new RetryStrategyOptions<string>
     {
         // Generic predicate for a single result type
-        ShouldHandle = args => args switch
+        ShouldHandle = args => args.Outcome switch
         {
             { Exception: InvalidOperationException } => PredicateResult.True(),
-            { Result: result } when result == "Failure" => PredicateResult.True(),
+            { Result: { } result } when result == "Failure" => PredicateResult.True(),
             _ => PredicateResult.False()
         },
     })
     .Build();
 ```
+<!-- endSnippet -->
 
 ## Telemetry
 

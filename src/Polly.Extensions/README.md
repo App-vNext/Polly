@@ -4,7 +4,8 @@
 
 Below is an example illustrating the usage of `AddResiliencePipeline` extension method:
 
-``` csharp
+<!-- snippet: add-resilience-pipeline -->
+```cs
 var services = new ServiceCollection();
 
 // Define a resilience pipeline
@@ -13,13 +14,16 @@ services.AddResiliencePipeline(
   builder => builder.AddTimeout(TimeSpan.FromSeconds(10)));
 
 // Define a resilience pipeline with custom options
-services.AddResiliencePipeline(
-    "my-timeout",
-    (builder, context) =>
-    {
-        var myOptions = context.ServiceProvider.GetRequiredService<IOptions<MyTimeoutOptions>>().Value;
-        builder.AddTimeout(myOptions.Timeout);
-    });
+services
+    .Configure<MyTimeoutOptions>(options => options.Timeout = TimeSpan.FromSeconds(10))
+    .AddResiliencePipeline(
+        "my-timeout",
+        (builder, context) =>
+        {
+            var myOptions = context.GetOptions<MyTimeoutOptions>();
+
+            builder.AddTimeout(myOptions.Timeout);
+        });
 
 // Resolve the resilience pipeline
 var serviceProvider = services.BuildServiceProvider();
@@ -27,8 +31,9 @@ var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProv
 var pipeline = pipelineProvider.GetPipeline("my-key");
 
 // Use it
-await pipeline.ExecuteAsync(cancellation => { ... });
+await pipeline.ExecuteAsync(async cancellation => await Task.Delay(100, cancellation));
 ```
+<!-- endSnippet -->
 
 > [!NOTE]
 > Telemetry is enabled by default when utilizing the `AddResiliencePipeline` extension method.
@@ -37,11 +42,13 @@ await pipeline.ExecuteAsync(cancellation => { ... });
 
 Upon invoking the `ConfigureTelemetry` extension method, Polly begins to emit logs and metrics. Here's an example:
 
-``` csharp
-var telemetryOptions = new TelemetryOptions();
-
-// Configure logging
-telemetryOptions.LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+<!-- snippet: configure-telemetry -->
+```cs
+var telemetryOptions = new TelemetryOptions
+{
+    // Configure logging
+    LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole())
+};
 
 // Configure enrichers
 telemetryOptions.MeteringEnrichers.Add(new MyMeteringEnricher());
@@ -53,8 +60,12 @@ var builder = new ResiliencePipelineBuilder()
     .AddTimeout(TimeSpan.FromSeconds(1))
     .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
     .Build();
+```
+<!-- endSnippet -->
 
-class MyTelemetryListener : TelemetryListener
+<!-- snippet: telemetry-listeners -->
+```cs
+internal class MyTelemetryListener : TelemetryListener
 {
     public override void Write<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
     {
@@ -62,22 +73,23 @@ class MyTelemetryListener : TelemetryListener
     }
 }
 
-class MyMeteringEnricher : MeteringEnricher
+internal class MyMeteringEnricher : MeteringEnricher
 {
     public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
     {
-        context.Tags.Add(new("my-custom-tag", "custom-value");
+        context.Tags.Add(new("my-custom-tag", "custom-value"));
     }
 }
 ```
+<!-- endSnippet -->
 
 Alternatively, you can use the `AddResiliencePipeline` extension which automatically adds telemetry:
 
-``` csharp
+<!-- snippet: add-resilience-pipeline-with-telemetry -->
+```cs
 var serviceCollection = new ServiceCollection()
     .AddLogging(builder => builder.AddConsole())
     .AddResiliencePipeline("my-strategy", builder => builder.AddTimeout(TimeSpan.FromSeconds(1)))
-    // Configure the default settings for TelemetryOptions
     .Configure<TelemetryOptions>(options =>
     {
         // Configure enrichers
@@ -87,6 +99,7 @@ var serviceCollection = new ServiceCollection()
         options.TelemetryListeners.Add(new MyTelemetryListener());
     });
 ```
+<!-- endSnippet -->
 
 ### Emitted Metrics
 

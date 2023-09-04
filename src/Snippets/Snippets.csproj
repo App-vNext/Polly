@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ProjectType>Library</ProjectType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);SA1123;SA1515;CA2000;CA2007;CA1303;IDE0021</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Polly.Extensions\Polly.Extensions.csproj" />
+    <ProjectReference Include="..\Polly.RateLimiting\Polly.RateLimiting.csproj" />
+    <ProjectReference Include="..\Polly.Testing\Polly.Testing.csproj" />
+  </ItemGroup>
+
+</Project>
+

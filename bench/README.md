@@ -1,4 +1,4 @@
-﻿# Benchmarks
+# Benchmarks
 
 To run the benchmarks, use the `benchmarks.ps1` script in this repository:
 
