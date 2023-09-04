@@ -16,7 +16,6 @@ The `Polly.RateLimiting` package adopts the [.NET Rate Limiting](https://devblog
 Example:
 
 <!-- snippet: rate-limiter-usage -->
-<a id='snippet-rate-limiter-usage'></a>
 ```cs
 ResiliencePipelineBuilder builder = new ResiliencePipelineBuilder();
 
@@ -56,5 +55,4 @@ builder.AddRateLimiter(new RateLimiterStrategyOptions
     }
 });
 ```
-<sup><a href='/samples/Snippets/RateLimiting/Snippets.cs#L11-L51' title='Snippet source file'>snippet source</a> | <a href='#snippet-rate-limiter-usage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

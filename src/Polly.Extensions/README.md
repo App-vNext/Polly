@@ -12,7 +12,6 @@ To change this file edit the source file and then run MarkdownSnippets.
 Below is an example illustrating the usage of `AddResiliencePipeline` extension method:
 
 <!-- snippet: add-resilience-pipeline -->
-<a id='snippet-add-resilience-pipeline'></a>
 ```cs
 var services = new ServiceCollection();
 
@@ -41,7 +40,6 @@ var pipeline = pipelineProvider.GetPipeline("my-key");
 // Use it
 await pipeline.ExecuteAsync(async cancellation => await Task.Delay(100));
 ```
-<sup><a href='/samples/Snippets/Extensions/Snippets.cs#L39-L68' title='Snippet source file'>snippet source</a> | <a href='#snippet-add-resilience-pipeline' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 > [!NOTE]
@@ -52,7 +50,6 @@ await pipeline.ExecuteAsync(async cancellation => await Task.Delay(100));
 Upon invoking the `ConfigureTelemetry` extension method, Polly begins to emit logs and metrics. Here's an example:
 
 <!-- snippet: configure-telemetry -->
-<a id='snippet-configure-telemetry'></a>
 ```cs
 var telemetryOptions = new TelemetryOptions();
 
@@ -70,11 +67,9 @@ var builder = new ResiliencePipelineBuilder()
     .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
     .Build();
 ```
-<sup><a href='/samples/Snippets/Extensions/Snippets.cs#L16-L34' title='Snippet source file'>snippet source</a> | <a href='#snippet-configure-telemetry' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 <!-- snippet: telemetry-listeners -->
-<a id='snippet-telemetry-listeners'></a>
 ```cs
 class MyTelemetryListener : TelemetryListener
 {
@@ -92,13 +87,11 @@ class MyMeteringEnricher : MeteringEnricher
     }
 }
 ```
-<sup><a href='/samples/Snippets/Extensions/Snippets.cs#L95-L113' title='Snippet source file'>snippet source</a> | <a href='#snippet-telemetry-listeners' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 Alternatively, you can use the `AddResiliencePipeline` extension which automatically adds telemetry:
 
 <!-- snippet: add-resilience-pipeline-with-telemetry -->
-<a id='snippet-add-resilience-pipeline-with-telemetry'></a>
 ```cs
 var serviceCollection = new ServiceCollection()
     .AddLogging(builder => builder.AddConsole())
@@ -113,7 +106,6 @@ var serviceCollection = new ServiceCollection()
         options.TelemetryListeners.Add(new MyTelemetryListener());
     });
 ```
-<sup><a href='/samples/Snippets/Extensions/Snippets.cs#L73-L87' title='Snippet source file'>snippet source</a> | <a href='#snippet-add-resilience-pipeline-with-telemetry' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ### Emitted Metrics

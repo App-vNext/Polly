@@ -10,7 +10,6 @@ To change this file edit the source file and then run MarkdownSnippets.
 This package exposes APIs and utilities that can be used to assert on the composition of resilience pipelines.
 
 <!-- snippet: get-pipeline-descriptor -->
-<a id='snippet-get-pipeline-descriptor'></a>
 ```cs
 // Build your resilience pipeline.
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
@@ -34,5 +33,4 @@ Assert.Equal(4, retryOptions.MaxRetryAttempts);
 var timeoutOptions = Assert.IsType<TimeoutStrategyOptions>(descriptor.Strategies[0].Options);
 Assert.Equal(TimeSpan.FromSeconds(1), timeoutOptions.Timeout);
 ```
-<sup><a href='/samples/Snippets/Testing/Snippets.cs#L14-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-get-pipeline-descriptor' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

@@ -79,7 +79,6 @@ The resilience pipeline may consist of one or more individual resilience strateg
 Here's an example of a non-reactive strategy that executes a user-provided callback:
 
 <!-- snippet: my-custom-strategy -->
-<a id='snippet-my-custom-strategy'></a>
 ```cs
 internal class MyCustomStrategy : ResilienceStrategy
 {
@@ -98,7 +97,6 @@ internal class MyCustomStrategy : ResilienceStrategy
     }
 }
 ```
-<sup><a href='/samples/Snippets/Core/Snippets.cs#L93-L112' title='Snippet source file'>snippet source</a> | <a href='#snippet-my-custom-strategy' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ### About Synchronous and Asynchronous Executions
@@ -118,7 +116,6 @@ To construct a resilience pipeline, chain various extensions on the `ResilienceP
 ### Creating a non-generic pipeline
 
 <!-- snippet: create-generic-pipeline -->
-<a id='snippet-create-generic-pipeline'></a>
 ```cs
 ResiliencePipeline<string> pipeline = new ResiliencePipelineBuilder<string>()
     .AddRetry(new())
@@ -126,13 +123,11 @@ ResiliencePipeline<string> pipeline = new ResiliencePipelineBuilder<string>()
     .AddTimeout(TimeSpan.FromSeconds(1))
     .Build();
 ```
-<sup><a href='/samples/Snippets/Core/Snippets.cs#L26-L34' title='Snippet source file'>snippet source</a> | <a href='#snippet-create-generic-pipeline' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ### Creating a generic pipeline
 
 <!-- snippet: create-non-generic-pipeline -->
-<a id='snippet-create-non-generic-pipeline'></a>
 ```cs
 ResiliencePipeline<string> pipeline = new ResiliencePipelineBuilder<string>()
     .AddRetry(new())
@@ -140,7 +135,6 @@ ResiliencePipeline<string> pipeline = new ResiliencePipelineBuilder<string>()
     .AddTimeout(TimeSpan.FromSeconds(1))
     .Build();
 ```
-<sup><a href='/samples/Snippets/Core/Snippets.cs#L13-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-create-non-generic-pipeline' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Extensibility
@@ -150,7 +144,6 @@ Extending the resilience functionality is straightforward. You can create extens
 Here's an example:
 
 <!-- snippet: add-my-custom-strategy -->
-<a id='snippet-add-my-custom-strategy'></a>
 ```cs
 public static TBuilder AddMyCustomStrategy<TBuilder>(this TBuilder builder, MyCustomStrategyOptions options)
     where TBuilder : ResiliencePipelineBuilderBase
@@ -166,7 +159,6 @@ public class MyCustomStrategyOptions : ResilienceStrategyOptions
     }
 }
 ```
-<sup><a href='/samples/Snippets/Core/Snippets.cs#L74-L90' title='Snippet source file'>snippet source</a> | <a href='#snippet-add-my-custom-strategy' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 To gain insights into implementing custom resilience strategies, you can explore the following Polly strategy examples:
@@ -210,7 +202,6 @@ These delegates accept either `Args` or `Args<TResult>` arguments, which encapsu
 For non-reactive strategies, the `Args` structure might resemble:
 
 <!-- snippet: on-timeout-args -->
-<a id='snippet-on-timeout-args'></a>
 ```cs
 public readonly struct OnTimeoutArguments
 {
@@ -225,7 +216,6 @@ public readonly struct OnTimeoutArguments
     public TimeSpan Timeout { get; } // Additional event-related properties
 }
 ```
-<sup><a href='/samples/Snippets/Core/Snippets.cs#L57-L72' title='Snippet source file'>snippet source</a> | <a href='#snippet-on-timeout-args' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ### Example: Usage of Delegates
@@ -233,7 +223,6 @@ public readonly struct OnTimeoutArguments
 Below are some examples illustrating the usage of these delegates:
 
 <!-- snippet: delegate-usage -->
-<a id='snippet-delegate-usage'></a>
 ```cs
 new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions
@@ -263,7 +252,6 @@ new ResiliencePipelineBuilder<string>()
     })
     .Build();
 ```
-<sup><a href='/samples/Snippets/Core/Snippets.cs#L116-L146' title='Snippet source file'>snippet source</a> | <a href='#snippet-delegate-usage' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ## Telemetry
