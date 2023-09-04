@@ -1,8 +1,13 @@
 <Project>
+
   <PropertyGroup>
     <RunAnalyzers>true</RunAnalyzers>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
+    <ProjectType>Library</ProjectType>
   </PropertyGroup>
+
+  <Import Project="$(MsBuildThisFileDirectory)..\eng\Analyzers.targets" />
+
 </Project>

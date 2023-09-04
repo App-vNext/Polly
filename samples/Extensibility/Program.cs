@@ -12,7 +12,7 @@ var pipeline = new ResiliencePipelineBuilder()
         {
             Console.WriteLine("OnCustomEvent");
             return default;
-        }
+        },
     })
     .Build();
 
@@ -22,7 +22,6 @@ pipeline.Execute(() => { });
 // ------------------------------------------------------------------------
 // SIMPLE EXTENSIBILITY MODEL (INLINE STRATEGY)
 // ------------------------------------------------------------------------
-
 pipeline = new ResiliencePipelineBuilder()
     // Just add the strategy instance directly
     .AddStrategy(_ => new MySimpleStrategy(), new MySimpleStrategyOptions())
@@ -77,13 +76,13 @@ public class MySimpleStrategyOptions : ResilienceStrategyOptions
 // For reactive strategies, you can use ReactiveResilienceStrategy<T> as base class.
 internal class MyResilienceStrategy : ResilienceStrategy
 {
-    private readonly ResilienceStrategyTelemetry telemetry;
-    private readonly Func<OnCustomEventArguments, ValueTask>? onCustomEvent;
+    private readonly ResilienceStrategyTelemetry _telemetry;
+    private readonly Func<OnCustomEventArguments, ValueTask>? _onCustomEvent;
 
     public MyResilienceStrategy(ResilienceStrategyTelemetry telemetry, MySimpleStrategyOptions options)
     {
-        this.telemetry = telemetry;
-        this.onCustomEvent = options.OnCustomEvent;
+        _telemetry = telemetry;
+        _onCustomEvent = options.OnCustomEvent;
     }
 
     protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
@@ -101,15 +100,15 @@ internal class MyResilienceStrategy : ResilienceStrategy
         // ...
 
         // You can then report important telemetry events
-        telemetry.Report(
+        _telemetry.Report(
             new ResilienceEvent(ResilienceEventSeverity.Information, "MyCustomEvent"),
             context,
             new OnCustomEventArguments(context));
 
         // Call the delegate if provided by the user
-        if (onCustomEvent is not null)
+        if (_onCustomEvent is not null)
         {
-            await onCustomEvent(new OnCustomEventArguments(context));
+            await _onCustomEvent(new OnCustomEventArguments(context));
         }
 
         return outcome;
@@ -119,15 +118,14 @@ internal class MyResilienceStrategy : ResilienceStrategy
 // ------------------------------------------------------------------------
 // 3. Expose new extensions for ResiliencePipelineBuilder
 // ------------------------------------------------------------------------
-
 public static class MyResilienceStrategyExtensions
 {
     // Add new extension that works for both "ResiliencePipelineBuilder" and "ResiliencePipelineBuilder<T>"
-    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MySimpleStrategyOptions options) where TBuilder : ResiliencePipelineBuilderBase
-        => builder.AddStrategy(
-            // Provide a factory that creates the strategy
-            context => new MyResilienceStrategy(context.Telemetry, options),
-
-            // Pass the options, note that the options instance is automatically validated by the builder
-            options);
+    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MySimpleStrategyOptions options)
+        where TBuilder : ResiliencePipelineBuilderBase
+    {
+        return builder.AddStrategy(
+            context => new MyResilienceStrategy(context.Telemetry, options),  // Provide a factory that creates the strategy
+            options); // Pass the options, note that the options instance is automatically validated by the builder
+    }
 }
