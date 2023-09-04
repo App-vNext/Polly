@@ -31,7 +31,7 @@ var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProv
 var pipeline = pipelineProvider.GetPipeline("my-key");
 
 // Use it
-await pipeline.ExecuteAsync(async cancellation => await Task.Delay(100));
+await pipeline.ExecuteAsync(async cancellation => await Task.Delay(100, cancellation));
 ```
 <!-- endSnippet -->
 
@@ -44,10 +44,11 @@ Upon invoking the `ConfigureTelemetry` extension method, Polly begins to emit lo
 
 <!-- snippet: configure-telemetry -->
 ```cs
-var telemetryOptions = new TelemetryOptions();
-
-// Configure logging
-telemetryOptions.LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+var telemetryOptions = new TelemetryOptions
+{
+    // Configure logging
+    LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole())
+};
 
 // Configure enrichers
 telemetryOptions.MeteringEnrichers.Add(new MyMeteringEnricher());
@@ -64,7 +65,7 @@ var builder = new ResiliencePipelineBuilder()
 
 <!-- snippet: telemetry-listeners -->
 ```cs
-class MyTelemetryListener : TelemetryListener
+internal class MyTelemetryListener : TelemetryListener
 {
     public override void Write<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
     {
@@ -72,7 +73,7 @@ class MyTelemetryListener : TelemetryListener
     }
 }
 
-class MyMeteringEnricher : MeteringEnricher
+internal class MyMeteringEnricher : MeteringEnricher
 {
     public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
     {
@@ -89,7 +90,6 @@ Alternatively, you can use the `AddResiliencePipeline` extension which automatic
 var serviceCollection = new ServiceCollection()
     .AddLogging(builder => builder.AddConsole())
     .AddResiliencePipeline("my-strategy", builder => builder.AddTimeout(TimeSpan.FromSeconds(1)))
-    // Configure the default settings for TelemetryOptions
     .Configure<TelemetryOptions>(options =>
     {
         // Configure enrichers

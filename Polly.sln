@@ -56,6 +56,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Testing", "src\Polly.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Testing.Tests", "test\Polly.Testing.Tests\Polly.Testing.Tests.csproj", "{D333B5CE-982D-4C11-BDAF-4217AA02306E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snippets", "src\Snippets\Snippets.csproj", "{D812B941-79B0-4E1E-BB70-4FAE345B5234}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +116,10 @@ Global
 		{D333B5CE-982D-4C11-BDAF-4217AA02306E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D333B5CE-982D-4C11-BDAF-4217AA02306E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D333B5CE-982D-4C11-BDAF-4217AA02306E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D812B941-79B0-4E1E-BB70-4FAE345B5234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D812B941-79B0-4E1E-BB70-4FAE345B5234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D812B941-79B0-4E1E-BB70-4FAE345B5234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D812B941-79B0-4E1E-BB70-4FAE345B5234}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,6 +139,7 @@ Global
 		{C04DEE61-C1EA-4028-B457-CDBD304B8ED9} = {A6CC41B9-E0B9-44F8-916B-3E4A78DA3BFB}
 		{9AD2D6AD-56E4-49D6-B6F1-EE975D5760B9} = {B7BF406B-B06F-4025-83E6-7219C53196A6}
 		{D333B5CE-982D-4C11-BDAF-4217AA02306E} = {A6CC41B9-E0B9-44F8-916B-3E4A78DA3BFB}
+		{D812B941-79B0-4E1E-BB70-4FAE345B5234} = {B7BF406B-B06F-4025-83E6-7219C53196A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2E5D54CD-770A-4345-B585-1848FC2EA6F4}

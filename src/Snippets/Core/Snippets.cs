@@ -3,9 +3,6 @@ using Polly.Retry;
 
 namespace Snippets.Core;
 
-#pragma warning disable IDE0022 // Use expression body for method
-#pragma warning disable IDE0021 // Use expression body for constructor
-
 internal static class Snippets
 {
     public static void NonGenericPipeline()
@@ -89,7 +86,6 @@ internal static class Snippets
 
     #endregion
 
-
     #region my-custom-strategy
 
     internal class MyCustomStrategy : ResilienceStrategy
@@ -118,7 +114,6 @@ internal static class Snippets
         new ResiliencePipelineBuilder()
             .AddRetry(new RetryStrategyOptions
             {
-
                 // Non-Generic predicate for multiple result types
                 ShouldHandle = args => args.Outcome switch
                 {

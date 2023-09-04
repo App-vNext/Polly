@@ -1,13 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
-using Polly.Telemetry;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Polly.Registry;
+using Polly.Telemetry;
 
 namespace Snippets.Extensions;
-
-#pragma warning disable IDE0022 // Use expression body for method
 
 internal static class Snippets
 {
@@ -15,10 +12,11 @@ internal static class Snippets
     {
         #region configure-telemetry
 
-        var telemetryOptions = new TelemetryOptions();
-
-        // Configure logging
-        telemetryOptions.LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+        var telemetryOptions = new TelemetryOptions
+        {
+            // Configure logging
+            LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole())
+        };
 
         // Configure enrichers
         telemetryOptions.MeteringEnrichers.Add(new MyMeteringEnricher());
@@ -63,7 +61,7 @@ internal static class Snippets
         var pipeline = pipelineProvider.GetPipeline("my-key");
 
         // Use it
-        await pipeline.ExecuteAsync(async cancellation => await Task.Delay(100));
+        await pipeline.ExecuteAsync(async cancellation => await Task.Delay(100, cancellation));
 
         #endregion
     }
@@ -75,7 +73,6 @@ internal static class Snippets
         var serviceCollection = new ServiceCollection()
             .AddLogging(builder => builder.AddConsole())
             .AddResiliencePipeline("my-strategy", builder => builder.AddTimeout(TimeSpan.FromSeconds(1)))
-            // Configure the default settings for TelemetryOptions
             .Configure<TelemetryOptions>(options =>
             {
                 // Configure enrichers
@@ -94,7 +91,7 @@ internal static class Snippets
 
     #region telemetry-listeners
 
-    class MyTelemetryListener : TelemetryListener
+    internal class MyTelemetryListener : TelemetryListener
     {
         public override void Write<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
         {
@@ -102,7 +99,7 @@ internal static class Snippets
         }
     }
 
-    class MyMeteringEnricher : MeteringEnricher
+    internal class MyMeteringEnricher : MeteringEnricher
     {
         public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
         {

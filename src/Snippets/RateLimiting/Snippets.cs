@@ -1,6 +1,6 @@
-﻿using Polly;
+﻿using System.Threading.RateLimiting;
+using Polly;
 using Polly.RateLimiting;
-using System.Threading.RateLimiting;
 
 namespace Snippets.RateLimiting;
 

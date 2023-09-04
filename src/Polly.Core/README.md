@@ -220,7 +220,6 @@ Below are some examples illustrating the usage of these delegates:
 new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions
     {
-
         // Non-Generic predicate for multiple result types
         ShouldHandle = args => args.Outcome switch
         {

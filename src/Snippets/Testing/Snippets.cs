@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
-using Polly.Retry;
-using Polly.Timeout;
 using Polly;
-using Xunit;
+using Polly.Retry;
 using Polly.Testing;
+using Polly.Timeout;
+using Xunit;
 
 namespace Snippets.Testing;
 
