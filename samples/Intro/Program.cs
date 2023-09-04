@@ -10,8 +10,9 @@ using Polly.Timeout;
 // that can be executed synchronously or asynchronously
 // and for both void and result-returning user-callbacks.
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+
     // Use convenience extension that accepts TimeSpan
-    .AddTimeout(TimeSpan.FromSeconds(5)) 
+    .AddTimeout(TimeSpan.FromSeconds(5))
     .Build();
 
 // ------------------------------------------------------------------------
@@ -28,7 +29,13 @@ await pipeline.ExecuteAsync(async token => await Task.Delay(10, token), Cancella
 pipeline.Execute(token => "some-result");
 
 // Asynchronously with result
-await pipeline.ExecuteAsync(async token => { await Task.Delay(10, token); return "some-result"; }, CancellationToken.None);
+await pipeline.ExecuteAsync(
+    async token =>
+    {
+        await Task.Delay(10, token);
+        return "some-result";
+    },
+    CancellationToken.None);
 
 // Use state to avoid lambda allocation
 pipeline.Execute(static state => state, "my-state");
@@ -36,8 +43,8 @@ pipeline.Execute(static state => state, "my-state");
 // ------------------------------------------------------------------------
 // 3. Create and execute a pipeline of strategies
 // ------------------------------------------------------------------------
-
 pipeline = new ResiliencePipelineBuilder()
+
     // Add retries using the options
     .AddRetry(new RetryStrategyOptions
     {
@@ -48,8 +55,9 @@ pipeline = new ResiliencePipelineBuilder()
 
             // The "PredicateResult.False" is just shorthand for "new ValueTask<bool>(true)"
             // You can also use "new PredicateBuilder().Handle<TimeoutRejectedException>()"
-            _ => PredicateResult.False()
+            _ => PredicateResult.False(),
         },
+
         // Register user callback called whenever retry occurs
         OnRetry = args =>
         {
@@ -58,18 +66,20 @@ pipeline = new ResiliencePipelineBuilder()
         },
         Delay = TimeSpan.FromMilliseconds(400),
         BackoffType = DelayBackoffType.Constant,
-        MaxRetryAttempts = 3
+        MaxRetryAttempts = 3,
     })
+
     // Add timeout using the options
     .AddTimeout(new TimeoutStrategyOptions
     {
         Timeout = TimeSpan.FromSeconds(1),
+
         // Register user callback called whenever timeout occurs
         OnTimeout = args =>
         {
             Console.WriteLine($"Timeout occurred after {args.Timeout}!");
             return default;
-        }
+        },
     })
     .Build();
 

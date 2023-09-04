@@ -1,8 +1,15 @@
 <Project>
+
   <PropertyGroup>
     <RunAnalyzers>true</RunAnalyzers>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
+    <ProjectType>Library</ProjectType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);SA1123;SA1515;CA2000;CA2007;CA1303;IDE0021;RS0037;RS0016;CS1591</NoWarn>
   </PropertyGroup>
+
+  <Import Project="$(MsBuildThisFileDirectory)..\eng\Library.targets" />
+
 </Project>
