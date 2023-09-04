@@ -233,6 +233,16 @@ Task("__CreateNuGetPackages")
     }
 });
 
+Task("__ValidateDocs")
+    .Does(() =>
+{
+    var result = StartProcess("dotnet", "mdsnippets --validate-content");
+    if (result != 0)
+    {
+        throw new InvalidOperationException($"Failed to validate the documentation snippets. Are the links correct?");
+    }
+});
+
 //////////////////////////////////////////////////////////////////////
 // BUILD TASKS
 //////////////////////////////////////////////////////////////////////
@@ -240,6 +250,7 @@ Task("__CreateNuGetPackages")
 Task("Build")
     .IsDependentOn("__Clean")
     .IsDependentOn("__RestoreNuGetPackages")
+    .IsDependentOn("__ValidateDocs")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
     .IsDependentOn("__RunMutationTests")

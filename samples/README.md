@@ -7,5 +7,6 @@ This repository contains a solution with basic examples demonstrating the creati
 - [`Retries`](./Retries) - This part explains how to configure a retry resilience strategy.
 - [`Extensibility`](./Extensibility) - In this part, you can learn how Polly can be extended with custom resilience strategies.
 - [`DependencyInjection`](./DependencyInjection) - This section demonstrates the integration of Polly with `IServiceCollection`.
+- [`Snippets`](./Snippets) - Various code-snippets that are referenced in the documentation.
 
 These examples are designed as a quick-start guide to Polly. If you wish to explore more advanced scenarios and further enhance your learning, consider visiting the [Polly-Samples](https://github.com/App-vNext/Polly-Samples) repository.

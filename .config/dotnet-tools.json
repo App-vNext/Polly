@@ -7,6 +7,12 @@
       "commands": [
         "dotnet-cake"
       ]
+    },
+    "markdownsnippets.tool": {
+      "version": "25.1.0",
+      "commands": [
+        "mdsnippets"
+      ]
     }
   }
 }

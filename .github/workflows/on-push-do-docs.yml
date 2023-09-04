@@ -1,0 +1,45 @@
+name: on-push-do-docs
+
+on:
+  push:
+    branches: [main]
+    paths: [ "samples/Snippets/**", "**/*.source.md" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  update-docs:
+    name: update-docs
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+
+      - name: Run MarkdownSnippets
+        shell: bash
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: true
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+        run: |
+          dotnet tool restore
+          dotnet mdsnippets
+
+      - name: Push changes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          git config --local user.email "138034000+polly-updater-bot[bot]@users.noreply.github.com"
+          git config --local user.name "polly-updater-bot[bot]"
+          git commit -m "Update documentation\n\nUpdate examples in documentation." -a  || echo "Nothing to commit"
+          remote="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          git push "${remote}" "${GITHUB_REF_NAME}" || echo "Nothing to push"

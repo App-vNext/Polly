@@ -1,0 +1,5 @@
+{
+    "$schema": "https://raw.githubusercontent.com/SimonCropp/MarkdownSnippets/master/schema.json",
+    "ExcludeDirectories": [ "test", "artifacts", "bench", "eng" ],
+    "ExcludeSnippetDirectories": [ "src", "artifacts", "test" ]
+  }
