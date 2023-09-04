@@ -127,6 +127,8 @@ ResiliencePipeline<string> pipeline = new ResiliencePipelineBuilder<string>()
     .AddCircuitBreaker(new())
     .AddTimeout(TimeSpan.FromSeconds(1))
     .Build();
+
+// test
 ```
 <!-- endSnippet -->
 
