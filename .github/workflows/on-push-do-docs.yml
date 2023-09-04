@@ -2,7 +2,7 @@ name: on-push-do-docs
 
 on:
   push:
-    branches: [main]
+    branches: [mtomka/code-snippets]
     paths: [ "samples/Snippets/**" ]
   workflow_dispatch:
 
@@ -43,7 +43,10 @@ jobs:
             exit 0
           }
 
-          $BranchName = "docs/update-docs"
+          $TimeStamp = Get-Date -Format "yyyy-MM-dd-HH-mm"
+          $BranchName = "docs/update-docs-$TimeStamp"
+          echo "branchName=$BranchName" >> $env:GITHUB_OUTPUT
+
           $GitEmail = "138034000+polly-updater-bot[bot]@users.noreply.github.com"
           $GitUser = "polly-updater-bot[bot]"
   
@@ -63,17 +66,16 @@ jobs:
           git commit -m "Update the code-snippets in the documentation"
           git push -u origin $BranchName
           "updated-docs=true" >> $env:GITHUB_OUTPUT
-    
-        
+
       - name: Generate GitHub application token
         if: steps.update-docs.outputs.updated-docs == 'true'
         id: generate-application-token
         uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
         with:
-          application-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
-          application-private-key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
+          application_id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
+          application_private_key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
           permissions: "contents:write, pull_requests:write"
-    
+
       - name: Create pull request
         if: steps.update-docs.outputs.updated-docs == 'true'
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
@@ -82,11 +84,12 @@ jobs:
           script: |
             const { repo, owner } = context.repo;
             const workflowUrl = `${{ github.server_url }}/${owner}/${repo}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const branchName = "${{ steps.update-docs.outputs.branchName }}";
             const result = await github.rest.pulls.create({
               title: 'Update the code-snippets in the documentation',
               owner,
               repo,
-              head: 'docs/update-docs',
+              head: branchName,
               base: 'main',
               body: [
                 'This PR updates the code-snippets in the documentation.',
