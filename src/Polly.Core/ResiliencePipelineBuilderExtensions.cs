@@ -55,7 +55,7 @@ public static class ResiliencePipelineBuilderExtensions
     }
 
     /// <summary>
-    /// Adds a non-reactive strategy to the builder.
+    /// Adds a proactive resilience strategy to the builder.
     /// </summary>
     /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>

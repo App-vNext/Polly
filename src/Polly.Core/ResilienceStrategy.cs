@@ -1,12 +1,12 @@
 ﻿namespace Polly;
 
 /// <summary>
-/// Base class for all non-reactive resilience strategies.
+/// Base class for all proactive resilience strategies.
 /// </summary>
 public abstract class ResilienceStrategy
 {
     /// <summary>
-    /// An implementation of a non-reactive resilience strategy that executes the specified <paramref name="callback"/>.
+    /// An implementation of a proactive resilience strategy that executes the specified <paramref name="callback"/>.
     /// </summary>
     /// <typeparam name="TResult">The type of result returned by the callback.</typeparam>
     /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
