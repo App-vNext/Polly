@@ -17,23 +17,23 @@ public abstract class ResiliencePipeline
     public void Execute(Action callback);
 
     public TResult Execute<TResult>(Func<TResult> callback);
-    
+
     public Task ExecuteAsync(
-        Func<CancellationToken, Task> callback, 
+        Func<CancellationToken, Task> callback,
         CancellationToken cancellationToken = default);
-    
+
     public Task<TResult> ExecuteAsync(
-        Func<CancellationToken, Task<TResult>> callback, 
+        Func<CancellationToken, Task<TResult>> callback,
         CancellationToken cancellationToken = default);
-    
+
     public ValueTask ExecuteAsync(
-        Func<CancellationToken, ValueTask> callback, 
+        Func<CancellationToken, ValueTask> callback,
         CancellationToken cancellationToken = default);
-    
+
     public ValueTask<TResult> ExecuteAsync(
-        Func<CancellationToken, ValueTask<TResult>> callback, 
+        Func<CancellationToken, ValueTask<TResult>> callback,
         CancellationToken cancellationToken = default);
-    
+
     // Other methods are omitted for simplicity
 }
 ```
@@ -60,12 +60,15 @@ The `ResiliencePipeline` class unifies the four different policies that were ava
 > [!NOTE]
 > Polly also provides a `ResiliencePipeline<T>` class. This specialized pipeline is useful for scenarios where the consumer is concerned with only a single type of result.
 
-## Resilience Strategies
+### Building resilience pipeline
 
-The resilience pipeline may consist of one or more individual resilience strategies. Polly V8 categorizes resilience strategies into the following building blocks:
+- Use `ResiliencePipelineBuilder` to construct an instance of `ResiliencePipeline`.
+- Use `ResiliencePipelineBuilder<T>` to construct an instance of `ResiliencePipeline<T>`.
 
 - `ResilienceStrategy`: Base class for all proactive resilience strategies.
 - `ResilienceStrategy<T>`: Base class for all reactive resilience strategies.
+
+Polly provides a variety of extension methods to add resilience strategies to each type of builder.
 
 ### Example: Custom Proactive Strategy
 
@@ -105,6 +108,8 @@ The API exposes the following builder classes for creating resilience pipelines:
 - [`ResiliencePipelineBuilderBase`](ResiliencePipelineBuilderBase.cs): This serves as the base class for both of the builders mentioned above. It can be used as a target for strategy extensions compatible with either of the two.
 
 To construct a resilience pipeline, chain various extensions on the `ResiliencePipelineBuilder` and conclude with a `Build` method call.
+
+Explore [resilience pipelines](../../docs/resilience-pipelines.md) page to explore the consumption of resilience pipelines from the user perspective.
 
 ### Creating a non-generic pipeline
 
@@ -182,9 +187,8 @@ Recommended signatures for these delegates are:
 ### Generators
 
 - `Func<Args<TResult>, ValueTask<TValue>>` (Reactive)
-- `Func<Args, ValueTask<TValue>>` (Proactive)
+- `Func<Args, ValueTask<TValue>>` (Non-Reactive)
 
-### Delegate Arguments
 
 These delegates accept either `Args` or `Args<TResult>` arguments, which encapsulate event information. Note that all these delegates are asynchronous and return a `ValueTask`.
 

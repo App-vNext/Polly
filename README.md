@@ -5,11 +5,9 @@
 > Major performance improvements are on the way! Please see our [blog post](https://www.thepollyproject.org/2023/03/03/we-want-your-feedback-introducing-polly-v8/) to learn more and provide feedback in the [related GitHub issue](https://github.com/App-vNext/Polly/issues/1048).
 >
 > :rotating_light::rotating_light: **Polly v8 feature-complete!** :rotating_light::rotating_light:
-> - Polly v8 Beta 1 is now available on [NuGet.org](https://www.nuget.org/packages/Polly/8.0.0-beta.1)
+> - Polly v8 Beta 1 is now available on [NuGet.org](https://www.nuget.org/packages/Polly/8.0.0-beta.1).
 > - The Beta 1 version is considered feature-complete and the public API surface is stable.
-> - The v8 docs are not yet finished, but you can take a look at sample code in these locations:
->     - Within the repo's new [Samples folder](https://github.com/App-vNext/Polly/tree/main/samples)
->     - By reading `Polly.Core`'s [README](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md)
+> - Explore the [v8 documentation](README_V8.md).
 
 # Polly
 
@@ -55,10 +53,6 @@ dotnet add package Polly
 ### Supported targets
 
 For details of supported compilation targets by version, see the [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets) grid.
-
-### Using Polly with HttpClient factory from ASP.NET Core 2.1
-
-For using Polly with HttpClient factory from ASP.NET Core 2.1, see our [detailed wiki page](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory), then come back here or [explore the wiki](https://github.com/App-vNext/Polly/wiki) to learn more about the operation of each policy.
 
 ### Role of the readme and the wiki
 
@@ -1065,8 +1059,4 @@ Licensed under the terms of the [New BSD License](http://opensource.org/licenses
 
 ## Resources
 
-- [Extensibility](docs/v7/extensibility.md): Learn how you can extend Polly with new policies.
-- [Polly-Contrib](docs/polly-contrib.md): Learn how you can contribute to and enhance the Polly ecosystem.
-- [Simmy](docs/simmy.md): Understand chaos engineering through the use of Polly.
-- [3rd Party Libraries and Contributions](docs/libraries-and-contributions.md): Discover the libraries that Polly relies on and the contributors who help improve it.
-- [Blogs, Podcasts, Courses, E-books, etc.](docs/resources.md): Explore additional community resources.
+Visit the [documentation](docs/README.md) to explore more Polly-related resources.
