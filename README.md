@@ -1054,19 +1054,6 @@ This allows collections of similar kinds of policy to be treated as one - for ex
 
 For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
 
-## Custom policies
-
-From Polly v7.0 it is possible to [create your own custom policies](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/) outside Polly.  These custom policies can integrate in to all the existing goodness from Polly: the `Policy.Handle<>()` syntax; PolicyWrap; all the execution-dispatch overloads.
-
-For more info see our blog series:
-
-+ [Part I: Introducing custom Polly policies and the Polly.Contrib](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/)
-+ [Part II: Authoring a non-reactive custom policy](http://www.thepollyproject.org/2019/02/13/authoring-a-proactive-polly-policy-custom-policies-part-ii/) (a policy which acts on all executions)
-+ [Part III: Authoring a reactive custom policy](http://www.thepollyproject.org/2019/02/13/authoring-a-reactive-polly-policy-custom-policies-part-iii-2/) (a policy which react to faults).
-+ [Part IV: Custom policies for all execution types](http://www.thepollyproject.org/2019/02/13/custom-policies-for-all-execution-types-custom-policies-part-iv/): sync and async, generic and non-generic.
-
-We provide a [starter template for a custom policy](https://github.com/Polly-Contrib/Polly.Contrib.CustomPolicyTemplates) for developing your own custom policy.
-
 ## Sample Projects
 
 - [Polly-Samples](https://github.com/App-vNext/Polly-Samples) contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
@@ -1078,6 +1065,7 @@ Licensed under the terms of the [New BSD License](http://opensource.org/licenses
 
 ## Resources
 
+- [Extensibility](docs/v7/extensibility.md): Learn how you can extend Polly with new policies.
 - [Polly-Contrib](docs/polly-contrib.md): Learn how you can contribute to and enhance the Polly ecosystem.
 - [Simmy](docs/simmy.md): Understand chaos engineering through the use of Polly.
 - [3rd Party Libraries and Contributions](docs/libraries-and-contributions.md): Discover the libraries that Polly relies on and the contributors who help improve it.
