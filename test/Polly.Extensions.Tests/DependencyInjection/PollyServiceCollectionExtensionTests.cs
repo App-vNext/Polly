@@ -306,9 +306,11 @@ public class PollyServiceCollectionExtensionTests
         pipeline.Execute(_ => { }, context);
 
         // assert
-        var ev = listener.Events.First(e => e.Event.EventName == "OnRetry").Source;
-        ev.PipelineInstanceName.Should().Be("my-instance");
-        ev.PipelineName.Should().Be("my-pipeline");
+        foreach (var ev in listener.Events)
+        {
+            ev.Source.PipelineInstanceName.Should().Be("my-instance");
+            ev.Source.PipelineName.Should().Be("my-pipeline");
+        }
 
         var record = loggerFactory.FakeLogger.GetRecords(new EventId(0, "ResilienceEvent")).First();
 
