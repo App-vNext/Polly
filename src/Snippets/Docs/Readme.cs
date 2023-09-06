@@ -14,10 +14,7 @@ internal static class Readme
         // Create a instance of builder that exposes various extensions for adding resilience strategies
         var builder = new ResiliencePipelineBuilder();
 
-        // Add retry using the default options:
-        // - 3 retry attempts
-        // - 1-second delay between retries
-        // - Handles all exceptions except OperationCanceledException
+        // Add retry using the default options
         builder.AddRetry(new RetryStrategyOptions());
 
         // Add 10 second timeout
