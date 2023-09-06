@@ -15,8 +15,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Generate GitHub application token
+        if: steps.update-docs.outputs.updated-docs == 'true'
+        id: generate-application-token
+        uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
+        with:
+          application_id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
+          application_private_key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
+          permissions: "contents:write, pull_requests:write"
+
       - name: Checkout code
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        with:
+          token: ${{ steps.generate-application-token.outputs.token }}
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
@@ -63,15 +75,6 @@ jobs:
           git commit -m "Update the code-snippets in the documentation"
           git push -u origin $BranchName
           "updated-docs=true" >> $env:GITHUB_OUTPUT
-
-      - name: Generate GitHub application token
-        if: steps.update-docs.outputs.updated-docs == 'true'
-        id: generate-application-token
-        uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
-        with:
-          application_id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
-          application_private_key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
-          permissions: "contents:write, pull_requests:write"
 
       - name: Create pull request
         if: steps.update-docs.outputs.updated-docs == 'true'
