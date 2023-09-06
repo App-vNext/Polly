@@ -6,6 +6,8 @@
 - **Extensions**: `AddHedging`
 - **Strategy Type**: Reactive
 
+---
+
 > 🚧 This documentation is being written as part of the Polly v8 release.
 
 ## Usage

@@ -425,30 +425,6 @@ new ResiliencePipelineBuilder()
         PermitLimit = 100,
         Window = TimeSpan.FromMinutes(1)
     }));
-
-// Create a custom partitioned rate limiter.
-var partitionedLimiter = PartitionedRateLimiter.Create<Polly.ResilienceContext, string>(context =>
-{
-    // Extract the partition key.
-    string partitionKey = GetPartitionKey(context);
-
-    return RateLimitPartition.GetConcurrencyLimiter(
-        partitionKey,
-        key => new ConcurrencyLimiterOptions
-        {
-            PermitLimit = 100
-        });
-});
-
-new ResiliencePipelineBuilder()
-    .AddRateLimiter(new RateLimiterStrategyOptions
-    {
-        // Provide a custom rate limiter delegate.
-        RateLimiter = args =>
-        {
-            return partitionedLimiter.AcquireAsync(args.Context, 1, args.Context.CancellationToken);
-        }
-    });
 ```
 <!-- endSnippet -->
 
