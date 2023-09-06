@@ -54,8 +54,9 @@ public class ReloadablePipelineComponentTests : IDisposable
     [Fact]
     public async Task ChangeTriggered_EnsureOldStrategyDisposed()
     {
+        var telemetry = TestUtilities.CreateResilienceTelemetry(_listener);
         var component = Substitute.For<PipelineComponent>();
-        await using var sut = CreateSut(component, () => new(Substitute.For<PipelineComponent>(), new List<CancellationToken>()));
+        await using var sut = CreateSut(component, () => new(Substitute.For<PipelineComponent>(), new List<CancellationToken>(), telemetry));
 
         for (var i = 0; i < 10; i++)
         {
@@ -130,12 +131,11 @@ public class ReloadablePipelineComponentTests : IDisposable
 
     private ReloadableComponent CreateSut(PipelineComponent? initial = null, Func<ReloadableComponent.Entry>? factory = null)
     {
-        factory ??= () => new ReloadableComponent.Entry(PipelineComponent.Empty, new List<CancellationToken>());
+        factory ??= () => new ReloadableComponent.Entry(PipelineComponent.Empty, new List<CancellationToken>(), _telemetry);
 
         return (ReloadableComponent)PipelineComponentFactory.CreateReloadable(
-            new ReloadableComponent.Entry(initial ?? PipelineComponent.Empty, new List<CancellationToken> { _cancellationTokenSource.Token }),
-            factory,
-            _telemetry);
+            new ReloadableComponent.Entry(initial ?? PipelineComponent.Empty, new List<CancellationToken> { _cancellationTokenSource.Token }, _telemetry),
+            factory);
     }
 
     public void Dispose() => _cancellationTokenSource.Dispose();
