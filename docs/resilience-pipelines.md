@@ -1,5 +1,8 @@
 # Resilience pipelines
 
+> [!NOTE]
+> This is documentation for the upcoming Polly v8 release.
+
 The `ResiliencePipeline` allows executing arbitrary user-provided callbacks. It is a combination of one or more resilience strategies.
 
 ## Usage

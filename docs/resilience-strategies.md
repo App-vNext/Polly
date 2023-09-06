@@ -1,5 +1,8 @@
 # Resilience Strategies
 
+> [!NOTE]
+> This is documentation for the upcoming Polly v8 release.
+
 Resilience strategies are essential components of Polly, designed to execute user-defined callbacks while adding an extra layer of resilience. These strategies can't be executed directly; they must be run through a **resilience pipeline**. Polly provides an API to construct resilience pipelines by incorporating one or more resilience strategies through the pipeline builders.
 
 ## Usage

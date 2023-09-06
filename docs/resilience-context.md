@@ -1,5 +1,8 @@
 # Resilience Context
 
+> [!NOTE]
+> This is documentation for the upcoming Polly v8 release.
+
 The `ResilienceContext` class in Polly provides an execution-scoped instance that accompanies each execution through a Polly resilience strategy. This class serves to share context and facilitate information exchange between the pre-execution, mid-execution, and post-execution phases.
 
 The resilience context exposes several properties:

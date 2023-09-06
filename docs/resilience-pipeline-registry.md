@@ -1,5 +1,8 @@
 # Resilience Pipeline Registry
 
+> [!NOTE]
+> This is documentation for the upcoming Polly v8 release.
+
 The `ResiliencePipelineRegistry<TKey>` is a generic class that provides the following functionalities:
 
 - Thread-safe retrieval and dynamic creation of both generic and non-generic resilience pipelines.
