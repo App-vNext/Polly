@@ -64,12 +64,12 @@ The `ResiliencePipeline` class unifies the four different policies that were ava
 
 The resilience pipeline may consist of one or more individual resilience strategies. Polly V8 categorizes resilience strategies into the following building blocks:
 
-- `ResilienceStrategy`: Base class for all non-reactive resilience strategies.
+- `ResilienceStrategy`: Base class for all proactive resilience strategies.
 - `ResilienceStrategy<T>`: Base class for all reactive resilience strategies.
 
-### Example: Custom Non-Reactive Strategy
+### Example: Custom Proactive Strategy
 
-Here's an example of a non-reactive strategy that executes a user-provided callback:
+Here's an example of a proactive strategy that executes a user-provided callback:
 
 <!-- snippet: my-custom-strategy -->
 ```cs
@@ -157,7 +157,7 @@ public class MyCustomStrategyOptions : ResilienceStrategyOptions
 To gain insights into implementing custom resilience strategies, you can explore the following Polly strategy examples:
 
 - [**Retry**](Retry/): Demonstrates how to implement a reactive resilience strategy.
-- [**Timeout**](Timeout/): Provides guidance on implementing a non-reactive resilience strategy.
+- [**Timeout**](Timeout/): Provides guidance on implementing a proactive resilience strategy.
 - [**Extensibility Sample**](../../samples/Extensibility/): Offers a practical example of creating a custom resilience strategy.
 
 ## Resilience Strategy Delegates
@@ -170,29 +170,28 @@ Individual resilience strategies make use of several delegate types:
 
 Recommended signatures for these delegates are:
 
-**Predicates**
+### Predicates
 
 - `Func<Args<TResult>, ValueTask<bool>>` (Reactive)
 
-**Events**
+### Events
 
 - `Func<Args<TResult>, ValueTask>` (Reactive)
-- `Func<Args, ValueTask>` (Non-Reactive)
+- `Func<Args, ValueTask>` (Proactive)
 
-**Generators**
+### Generators
 
 - `Func<Args<TResult>, ValueTask<TValue>>` (Reactive)
-- `Func<Args, ValueTask<TValue>>` (Non-Reactive)
+- `Func<Args, ValueTask<TValue>>` (Proactive)
 
+### Delegate Arguments
 
 These delegates accept either `Args` or `Args<TResult>` arguments, which encapsulate event information. Note that all these delegates are asynchronous and return a `ValueTask`.
 
 > [!NOTE]
 > When setting up delegates, consider using the `ResilienceContext.ContinueOnCapturedContext` property if your user code interacts with a synchronization context (as in asynchronous UI applications like Windows Forms or WPF).
 
-### Delegate Arguments
-
-For non-reactive strategies, the `Args` structure might resemble:
+For proactive strategies, the `Args` structure might resemble:
 
 <!-- snippet: on-timeout-args -->
 ```cs
