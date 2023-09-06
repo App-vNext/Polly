@@ -17,7 +17,6 @@ jobs:
     steps:
 
       - name: Generate GitHub application token
-        if: steps.update-docs.outputs.updated-docs == 'true'
         id: generate-application-token
         uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
         with:
