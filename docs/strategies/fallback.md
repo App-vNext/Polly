@@ -60,8 +60,8 @@ new ResiliencePipelineBuilder<UserAvatar>()
 
 ## Defaults
 
-| Property         | Default Value                                                               | Description                                                                                 |
-| ---------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `ShouldHandle`   | Predicate that handles all exceptions except `OperationCancelledException`. | Predicate that determines what results and exceptions are handled by the fallback strategy. |
-| `FallbackAction` | `Null`, **Required**                                                        | Fallback action to be executed.                                                             |
-| `OnFallback`     | `null`                                                                      | Event that is raised when fallback happens.                                                 |
+| Property         | Default Value                                                              | Description                                                                                 |
+| ---------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `ShouldHandle`   | Predicate that handles all exceptions except `OperationCanceledException`. | Predicate that determines what results and exceptions are handled by the fallback strategy. |
+| `FallbackAction` | `Null`, **Required**                                                       | Fallback action to be executed.                                                             |
+| `OnFallback`     | `null`                                                                     | Event that is raised when fallback happens.                                                 |

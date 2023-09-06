@@ -52,11 +52,11 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
 
 ## Defaults
 
-| Property            | Default Value                                                               | Description                                                                              |
-| ------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `ShouldHandle`      | Predicate that handles all exceptions except `OperationCancelledException`. | Predicate that determines what results and exceptions are handled by the retry strategy. |
-| `MaxHedgedAttempts` | 1                                                                           | The maximum number of hedged actions to use, in addition to the original action.         |
-| `Delay`             | 2 seconds                                                                   | The maximum waiting time before spawning a new hedged action.                            |
-| `ActionGenerator`   | Returns the original callback that was passed to the hedging strategy.      | Generator that creates hedged actions.                                                   |
-| `DelayGenerator`    | `null`                                                                      | Used for generating custom delays for hedging.                                           |
-| `OnHedging`         | `null`                                                                      | Event that is raised when a hedging is performed.                                        |
+| Property            | Default Value                                                              | Description                                                                              |
+| ------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `ShouldHandle`      | Predicate that handles all exceptions except `OperationCanceledException`. | Predicate that determines what results and exceptions are handled by the retry strategy. |
+| `MaxHedgedAttempts` | 1                                                                          | The maximum number of hedged actions to use, in addition to the original action.         |
+| `Delay`             | 2 seconds                                                                  | The maximum waiting time before spawning a new hedged action.                            |
+| `ActionGenerator`   | Returns the original callback that was passed to the hedging strategy.     | Generator that creates hedged actions.                                                   |
+| `DelayGenerator`    | `null`                                                                     | Used for generating custom delays for hedging.                                           |
+| `OnHedging`         | `null`                                                                     | Event that is raised when a hedging is performed.                                        |

@@ -24,7 +24,7 @@ public class ScheduledTaskExecutorTests
     }
 
     [Fact]
-    public async Task ScheduleTask_OperationCancelledException_EnsureExecuted()
+    public async Task ScheduleTask_OperationCanceledException_EnsureExecuted()
     {
         using var scheduler = new ScheduledTaskExecutor();
         scheduler.ScheduleTask(
