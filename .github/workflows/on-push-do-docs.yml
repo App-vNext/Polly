@@ -6,8 +6,7 @@ on:
     paths: [ "src/Snippets/**" ]
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   update-docs:
