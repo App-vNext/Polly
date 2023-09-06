@@ -18,6 +18,6 @@ If you're already familiar with the [basic features](../README.md) of Polly, del
 - [Additional Resources](resources.md): Browse through blogs, podcasts, courses, e-books, and other community resources.
 - [Using Polly with HttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory): For using Polly with HttpClientFactory in ASP.NET Core 2.1 and later versions.
 
-## Topics (older Polly versions)
+## Topics (previous Polly versions)
 
 - [Extensibility (v7)](v7/extensibility.md): Learn how you can extend Polly with new policies.
