@@ -2,7 +2,7 @@
 
 ## Supported targets
 
-Polly targets .NET Standard 2.0+ ([coverage](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support): .NET Core 2.0+, .NET Core 3.0, and later Mono, Xamarin and UWP targets). The NuGet package also includes direct targets for .NET Framework 4.6.1 and 4.7.2.
+Polly targets .NET Standard 2.0+ ([coverage](https://docs.microsoft.com/dotnet/standard/net-standard#net-implementation-support): .NET Core 2.0+, .NET Core 3.0, .NET 6.0+ and later Mono, Xamarin and UWP targets). The NuGet package also includes direct targets for .NET Framework 4.6.1 and 4.7.2.
 
 For details of supported compilation targets by version, see the [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets) grid.
 
@@ -42,7 +42,7 @@ The `CancellationToken` you pass to the `ExecuteAsync(...)` method serves multip
 
 - It cancels resilience actions such as retries, wait times between retries, or rate-limiter leases.
 - It is passed to any delegate executed by the strategy as a `CancellationToken` parameter, enabling cancellation during the delegate's execution.
-- Consistent with the .NET Base Class Library's behavior in `Task.Run(...)`, if the cancellation token is cancelled before execution begins, the user-defined delegate will not execute at all.
+- Is consistent with the .NET Base Class Library's (BCL) behavior in `Task.Run(...)`, if the cancellation token is cancelled before execution begins, the user-defined delegate will not execute at all.
 
 <!-- snippet: cancellation-token -->
 ```cs
@@ -65,4 +65,4 @@ await pipeline.ExecuteAsync(
 All Polly resilience strategies are fully thread-safe. You can safely re-use strategies at multiple call sites, and execute through strategies concurrently on different threads.
 
 > [!IMPORTANT]
-> While the internal operation of the strategy is thread-safe, this does not magically make delegates you execute through the strategy thread-safe: if delegates you execute through the strategy are not thread-safe, they remain not thread-safe.
+> While the internal operation of the strategy is thread-safe, this does not automatically make delegates you execute through the strategy thread-safe: if delegates you execute through the strategy are not thread-safe, they remain not thread-safe.

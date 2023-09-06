@@ -187,7 +187,7 @@ Recommended signatures for these delegates are:
 ### Generators
 
 - `Func<Args<TResult>, ValueTask<TValue>>` (Reactive)
-- `Func<Args, ValueTask<TValue>>` (Non-Reactive)
+- `Func<Args, ValueTask<TValue>>` (Proactive)
 
 
 These delegates accept either `Args` or `Args<TResult>` arguments, which encapsulate event information. Note that all these delegates are asynchronous and return a `ValueTask`.

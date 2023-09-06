@@ -4,7 +4,7 @@ The `ResiliencePipeline` allows executing arbitrary user-provided callbacks. It 
 
 ## Usage
 
-The `ResiliencePipeline` allow executing various synchronous and asynchronous user-provided callbacks as seen in the examples bellow:
+The `ResiliencePipeline` allow executing various synchronous and asynchronous user-provided callbacks as seen in the examples below:
 
 <!-- snippet: resilience-pipeline-usage -->
 ```cs
@@ -62,7 +62,7 @@ ResilienceContextPool.Shared.Return(context);
 The above samples demonstrate how to use the resilience pipeline within the same scope. Additionally, consider the following:
 
 - Separate the resilience pipeline's definition from its usage. Inject pipelines into the code that will consume them. This [facilitates various unit-testing scenarios](https://github.com/App-vNext/Polly/wiki/Unit-testing-with-Polly---with-examples).
-- If your application uses Polly in multiple locations, define all pipelines at startup using [`ResiliencePipelineRegistry`](/docs/registry.md-TODO) or using the `AddResiliencePipeline` extension. This is a common approach in .NET Core applications. For example, you could create your own extension method on `IServiceCollection` to configure pipelines consumed elsewhere in your application.
+- If your application uses Polly in multiple locations, define all pipelines at startup using [`ResiliencePipelineRegistry`](/docs/resilience-pipeline-registry.md) or using the `AddResiliencePipeline` extension. This is a common approach in .NET Core applications. For example, you could create your own extension method on `IServiceCollection` to configure pipelines consumed elsewhere in your application.
 
 <!-- snippet: resilience-pipeline-di-usage -->
 ```cs
@@ -78,22 +78,18 @@ public static void ConfigureMyPipelines(IServiceCollection services)
 ```
 <!-- endSnippet -->
 
-> [!NOTE]
-> In certain scenarios, such as testing, you may want to use the ResiliencePipeline.Empty instance. This instance executes the callback without applying any additional logic.
-
 ## Empty resilience pipeline
 
-<!-- Explanation of the Empty Resilience Pipeline -->
 The empty resilience pipeline is a special construct that lacks any resilience strategies. You can access it through the following ways:
 
 - `ResiliencePipeline.Empty`
 - `ResiliencePipeline<T>.Empty`
 
-This is particularly useful in test scenarios where implementing resilience strategies could slow down the test execution.
+This is particularly useful in test scenarios where implementing resilience strategies could slow down the test execution or over-complicate test setup.
 
 ## Retrieving execution results with `Outcome<T>`
 
-The `ResiliencePipeline` class provides the `ExecuteOutcomeAsync` method, which is designed to never throw exceptions. Instead, it stores either the result or the exception within an `Outcome<T>` struct.
+The `ResiliencePipeline` class provides the `ExecuteOutcomeAsync(...)` method, which is designed to never throw exceptions. Instead, it stores either the result or the exception within an `Outcome<T>` struct.
 
 <!-- snippet: resilience-pipeline-outcome -->
 ```cs
@@ -137,4 +133,4 @@ else
 ```
 <!-- endSnippet -->
 
-Utilize `ExecuteOutcomeAsync` in high-performance scenarios where you wish to avoid re-throwing exceptions. Keep in mind that Polly's resilience strategies also make use of the `Outcome` struct to prevent unnecessary exception throwing.
+Use `ExecuteOutcomeAsync(...)` in high-performance scenarios where you wish to avoid re-throwing exceptions. Keep in mind that Polly's resilience strategies also make use of the `Outcome` struct to prevent unnecessary exception throwing.

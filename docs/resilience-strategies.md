@@ -31,7 +31,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 
 Each reactive strategy exposes the `ShouldHandle` predicate property. This property represents a predicate to determine whether the fault or the result returned after executing the resilience strategy should be managed or not.
 
-This is demonstrated bellow:
+This is demonstrated below:
 
 <!-- snippet: should-handle -->
 ```cs
@@ -61,5 +61,5 @@ options.ShouldHandle = args => args.Outcome switch
 Some additional notes from the preceding example:
 
 - `PredicateBuilder` is a utility API designed to make configuring predicates easier.
-- `PredicateResult.True()` is a shorthand for `new ValueTask<bool>(true)`.
+- `PredicateResult.True()` is shorthand for `new ValueTask<bool>(true)`.
 - All `ShouldHandle` predicates are asynchronous and have the type `Func<Args<TResult>, ValueTask<bool>>`. The `Args<TResult>` serves as a placeholder, and each strategy defines its own arguments.

@@ -10,7 +10,7 @@ internal static class RateLimiter
     {
         #region rate-limiter
 
-        // Create a rate limiter with default options that limit to 1000 concurrent executions and no queue.
+        // Add rate limiter with default options.
         new ResiliencePipelineBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions());
 

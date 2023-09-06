@@ -12,14 +12,12 @@ internal static class Hedging
     {
         #region hedging
 
-        // Add a default hedging strategy that retries once if the previous
-        // execution didn't complete within 2 seconds or failed due to an exception.
+        // Add hedging with default options.
         new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddHedging(new HedgingStrategyOptions<HttpResponseMessage>());
 
         // Add a customized hedging strategy that retries up to 3 times if the execution
-        // takes longer than 1 second or if it fails due to an exception
-        // or returns a 500 Internal Server Error.
+        // takes longer than 1 second or if it fails due to an exception  or returns an HTTP 500 Internal Server Error.
         new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddHedging(new HedgingStrategyOptions<HttpResponseMessage>
             {
@@ -44,7 +42,7 @@ internal static class Hedging
             {
                 OnHedging = args =>
                 {
-                    Console.WriteLine("OnHedging: Attempt number {0}", args.AttemptNumber);
+                    Console.WriteLine($"OnHedging: Attempt number {args.AttemptNumber}");
                     return default;
                 }
             });

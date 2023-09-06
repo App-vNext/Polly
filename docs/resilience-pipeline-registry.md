@@ -12,4 +12,4 @@ The `ResiliencePipelineRegistry<TKey>` is a generic class that provides the foll
 
 ## Usage
 
-TODO
+🚧 This documentation is being written as part of the Polly v8 release.

@@ -6,24 +6,16 @@ using Snippets.Docs.Utils;
 
 namespace Snippets.Docs;
 
-#pragma warning disable S103 // Lines should not be too long
-
 internal static class CircuitBreaker
 {
     public static async Task Usage()
     {
         #region circuit-breaker
 
-        // Use the default Circuit Breaker options with pre-configured settings:
-        //
-        // FailureRatio: 0.1 — Opens the circuit if 10% of the calls fail
-        // BreakDuration: 30 seconds — Duration the circuit stays open before another try
-        // MinimumThroughput: 100 — Minimum number of calls required before the circuit can break
-        // SamplingDuration: 30 seconds — Time window for monitoring calls before allowing the circuit to break
-        // ShouldHandle: Handles all exceptions except for OperationCanceledException
+        // Add circuit breaker with default options.
         new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions());
 
-        // Configure custom settings for the Circuit Breaker:
+        // Add circuit breaker with customized options:
         //
         // The circuit will break if more than 50% of actions result in handled exceptions,
         // within any 10-second sampling duration, and at least 8 actions are processed.
@@ -49,10 +41,7 @@ internal static class CircuitBreaker
         var stateProvider = new CircuitBreakerStateProvider();
 
         new ResiliencePipelineBuilder<HttpResponseMessage>()
-            .AddCircuitBreaker(new()
-            {
-                StateProvider = stateProvider
-            })
+            .AddCircuitBreaker(new() { StateProvider = stateProvider })
             .Build();
 
         /*
@@ -66,16 +55,13 @@ internal static class CircuitBreaker
         var manualControl = new CircuitBreakerManualControl();
 
         new ResiliencePipelineBuilder()
-            .AddCircuitBreaker(new()
-            {
-                ManualControl = manualControl
-            })
+            .AddCircuitBreaker(new() { ManualControl = manualControl })
             .Build();
 
         // Manually isolate a circuit, e.g., to isolate a downstream service.
         await manualControl.IsolateAsync();
 
-        // Manually close the circuit to accept actions again.
+        // Manually close the circuit to allow actions to be executed again.
         await manualControl.CloseAsync();
 
         #endregion

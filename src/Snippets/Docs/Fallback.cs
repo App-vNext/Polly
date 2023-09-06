@@ -10,17 +10,14 @@ internal static class Fallback
     {
         #region fallback
 
-        // Use a substitute value if an operation fails.
+        // Use a fallback/substitute value if an operation fails.
         new ResiliencePipelineBuilder<UserAvatar>()
             .AddFallback(new FallbackStrategyOptions<UserAvatar>
             {
                 ShouldHandle = new PredicateBuilder<UserAvatar>()
                     .Handle<SomeExceptionType>()
                     .HandleResult(r => r is null),
-                FallbackAction = args =>
-                {
-                    return Outcome.FromResultAsValueTask(UserAvatar.Blank);
-                }
+                FallbackAction = args => Outcome.FromResultAsValueTask(UserAvatar.Blank)
             });
 
         // Use a dynamically generated value if an operation fails.

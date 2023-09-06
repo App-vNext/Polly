@@ -55,7 +55,7 @@ internal static class Readme
         // Retrieve ResiliencePipelineProvider that caches and dynamically creates the resilience pipelines
         var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
 
-        // Retrieve resilience pipeline by the string-based name
+        // Retrieve resilience pipeline using the name it was registered with
         ResiliencePipeline pipeline = pipelineProvider.GetPipeline("my-pipeline");
 
         // Execute the pipeline
