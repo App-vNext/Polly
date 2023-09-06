@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Registry;
 using Polly.Telemetry;
+using static Snippets.Docs.Telemetry;
 
 namespace Snippets.Extensions;
 
@@ -57,6 +58,7 @@ internal static class Snippets
                 // Configure telemetry listeners
                 options.TelemetryListeners.Add(new MyTelemetryListener());
             });
+
         #endregion
     }
 
