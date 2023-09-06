@@ -3,35 +3,12 @@ using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Registry;
 using Polly.Telemetry;
+using static Snippets.Docs.Telemetry;
 
 namespace Snippets.Extensions;
 
 internal static class Snippets
 {
-    public static void ConfigureTelemetry()
-    {
-        #region configure-telemetry
-
-        var telemetryOptions = new TelemetryOptions
-        {
-            // Configure logging
-            LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole())
-        };
-
-        // Configure enrichers
-        telemetryOptions.MeteringEnrichers.Add(new MyMeteringEnricher());
-
-        // Configure telemetry listeners
-        telemetryOptions.TelemetryListeners.Add(new MyTelemetryListener());
-
-        var builder = new ResiliencePipelineBuilder()
-            .AddTimeout(TimeSpan.FromSeconds(1))
-            .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
-            .Build();
-
-        #endregion
-    }
-
     public static async Task AddResiliencePipeline()
     {
         #region add-resilience-pipeline
@@ -81,6 +58,7 @@ internal static class Snippets
                 // Configure telemetry listeners
                 options.TelemetryListeners.Add(new MyTelemetryListener());
             });
+
         #endregion
     }
 
@@ -88,24 +66,4 @@ internal static class Snippets
     {
         public TimeSpan Timeout { get; set; }
     }
-
-    #region telemetry-listeners
-
-    internal class MyTelemetryListener : TelemetryListener
-    {
-        public override void Write<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
-        {
-            Console.WriteLine($"Telemetry event occurred: {args.Event.EventName}");
-        }
-    }
-
-    internal class MyMeteringEnricher : MeteringEnricher
-    {
-        public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
-        {
-            context.Tags.Add(new("my-custom-tag", "custom-value"));
-        }
-    }
-
-    #endregion
 }
