@@ -75,7 +75,31 @@ var serviceCollection = new ServiceCollection()
 
 ## Metrics
 
-The emitted metrics are emitted under the `Polly` meter name. The subsequent sections provide insights into the metrics produced by Polly. Please note that any custom enriched dimensions are not depicted in the following tables.
+The metrics are emitted under the `Polly` meter name. The subsequent sections provide insights into the metrics produced by Polly. Please note that any custom enriched dimensions are not depicted in the following tables.
+
+Every telemetry event has the following coordinates:
+
+- `pipeline-name`: Optional, comes from `ResiliencePipelineBuilder.Name`.
+- `pipeline-instance`: Optional, comes from `ResiliencePipelineBuilder.InstanceName`.
+- `strategy-name`: Optional, comes from `ResilienceStrategyProperties.Name`.
+
+The sample below demonstrates how to assign the coordinates:
+
+<!-- snippet: telemetry-coordinates -->
+```cs
+var builder = new ResiliencePipelineBuilder();
+builder.Name = "my-name";
+builder.Name = "my-instance-name";
+
+builder.AddRetry(new RetryStrategyOptions
+{
+    // The default value is "Retry"
+    Name = "my-retry-name"
+});
+```
+<!-- endSnippet -->
+
+These values are subsequently reflected in the metrics below:
 
 ### resilience-events
 
@@ -111,14 +135,14 @@ Dimensions:
 |`strategy-name`| The name of the strategy generating this event.|
 |`operation-key`| The operation key associated with the call site. |
 |`exception-name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
-|`attempt-number`| The execution attempt number, starting at 0 (0, 1, 2). |
+|`attempt-number`| The execution attempt number, starting at 0 (0, 1, 2, etc.). |
 |`attempt-handled`| Indicates if the execution outcome was handled. A handled outcome indicates execution failure and the need for retry (`true`, `false`). |
 
 ### pipeline-execution-duration
 
 - Type: *Histogram*
 - Unit: *milliseconds*
-- Description: Measures the duration and results of resilience pipelines.
+- Description: Measures the duration of resilience pipelines.
 
 Dimensions:
 

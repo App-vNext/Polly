@@ -32,7 +32,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
         ExecutionDuration = Meter.CreateHistogram<double>(
             "pipeline-execution-duration",
             unit: "ms",
-            description: "The execution duration and execution results of resilience pipelines.");
+            description: "The execution duration of resilience pipelines.");
     }
 
     public Counter<int> Counter { get; }
