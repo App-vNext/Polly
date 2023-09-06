@@ -87,6 +87,6 @@ catch (RateLimiterRejectedException ex)
 
 | Property                    | Default Value                                        | Description                                                                                     |
 | --------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `RateLimiter`               | `null`                                               | Generator that creates `RateLimitLease` for executions.                                         |
+| `RateLimiter`               | `null`                                               | Generator that creates a `RateLimitLease` for executions.                                       |
 | `DefaultRateLimiterOptions` | `PermitLimit` set to 1000 and `QueueLimit` set to 0. | The options for the default concurrency limiter that will be used when `RateLimiter` is `null`. |
 | `OnRejected`                | `null`                                               | Event that is raised when the execution is rejected by the rate limiter.                        |
