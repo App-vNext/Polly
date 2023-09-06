@@ -77,13 +77,13 @@ var serviceCollection = new ServiceCollection()
 
 The metrics are emitted under the `Polly` meter name. The subsequent sections provide insights into the metrics produced by Polly. Please note that any custom enriched dimensions are not depicted in the following tables.
 
-Every telemetry event has the following coordinates:
+Every telemetry event has the following dimensions:
 
 - `pipeline-name`: Optional, comes from `ResiliencePipelineBuilder.Name`.
 - `pipeline-instance`: Optional, comes from `ResiliencePipelineBuilder.InstanceName`.
-- `strategy-name`: Optional, comes from `ResilienceStrategyProperties.Name`.
+- `strategy-name`: Optional, comes from `RetryStrategyOptions.Name`.
 
-The sample below demonstrates how to assign the coordinates:
+The sample below demonstrates how to assign these dimensions:
 
 <!-- snippet: telemetry-coordinates -->
 ```cs
