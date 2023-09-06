@@ -76,5 +76,5 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
 | Property           | Default Value | Description                                  |
 | ------------------ | ------------- | -------------------------------------------- |
 | `Timeout`          | 30 seconds    | The default timeout used by the strategy.    |
-| `TimeoutGenerator` | `Null`        | Generates the timeout for a given execution. |
-| `OnTimeout`        | `Null`        | Event that is raised when timeout occurs.    |
+| `TimeoutGenerator` | `null`        | Generates the timeout for a given execution. |
+| `OnTimeout`        | `null`        | Event that is raised when timeout occurs.    |

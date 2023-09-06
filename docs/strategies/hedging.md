@@ -6,7 +6,7 @@
 - **Extensions**: `AddHedging`
 - **Strategy Type**: Reactive
 
-🚧 This documentation is being written as part of the Polly v8 release.
+> 🚧 This documentation is being written as part of the Polly v8 release.
 
 ## Usage
 
@@ -58,5 +58,5 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
 | `MaxHedgedAttempts` | 1                                                                           | The maximum number of hedged actions to use, in addition to the original action.         |
 | `Delay`             | 2 seconds                                                                   | The maximum waiting time before spawning a new hedged action.                            |
 | `ActionGenerator`   | Returns the original callback that was passed to the hedging strategy.      | Generator that creates hedged actions.                                                   |
-| `DelayGenerator`    | `Null`                                                                      | Used for generating custom delays for hedging.                                           |
-| `OnHedging`         | `Null`                                                                      | Event that is raised when a hedging is performed.                                        |
+| `DelayGenerator`    | `null`                                                                      | Used for generating custom delays for hedging.                                           |
+| `OnHedging`         | `null`                                                                      | Event that is raised when a hedging is performed.                                        |

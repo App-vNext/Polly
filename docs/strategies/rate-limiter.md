@@ -9,7 +9,7 @@
   - `RateLimiterRejectedException`: Thrown when a rate limiter rejects an execution.
 - **Package**: [Polly.RateLimiting](https://www.nuget.org/packages/Polly.RateLimiting)
 
-🚧 This documentation is being written as part of the Polly v8 release.
+> 🚧 This documentation is being written as part of the Polly v8 release.
 
 ## Usage
 
@@ -87,6 +87,6 @@ catch (RateLimiterRejectedException ex)
 
 | Property                    | Default Value                                        | Description                                                                                     |
 | --------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `RateLimiter`               | `Null`                                               | Generator that creates `RateLimitLease` for executions.                                         |
+| `RateLimiter`               | `null`                                               | Generator that creates `RateLimitLease` for executions.                                         |
 | `DefaultRateLimiterOptions` | `PermitLimit` set to 1000 and `QueueLimit` set to 0. | The options for the default concurrency limiter that will be used when `RateLimiter` is `null`. |
-| `OnRejected`                | `Null`                                               | Event that is raised when the execution is rejected by the rate limiter.                        |
+| `OnRejected`                | `null`                                               | Event that is raised when the execution is rejected by the rate limiter.                        |

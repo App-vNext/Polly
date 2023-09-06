@@ -94,12 +94,12 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 
 ## Defaults
 
-| Property           | Default Value                                                               | Description                                                                              |
-| ------------------ | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `ShouldHandle`     | Predicate that handles all exceptions except `OperationCancelledException`. | Predicate that determines what results and exceptions are handled by the retry strategy. |
-| `MaxRetryAttempts` | 3                                                                           | The maximum number of retries to use, in addition to the original call.                  |
-| `Delay`            | 2 seconds                                                                   | The base delay between retries.                                                          |
-| `BackoffType`      | Constant                                                                    | The type of the back-off used to generate the retry delay.                               |
-| `UseJitter`        | False                                                                       | Allows adding jitter to retry delays.                                                    |
-| `DelayGenerator`   | `Null`                                                                      | Used for generating custom delays for retries.                                           |
-| `OnRetry`          | `Null`                                                                      | Action executed when retry occurs.                                                       |
+| Property           | Default Value                                                              | Description                                                                              |
+| ------------------ | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `ShouldHandle`     | Predicate that handles all exceptions except `OperationCanceledException`. | Predicate that determines what results and exceptions are handled by the retry strategy. |
+| `MaxRetryAttempts` | 3                                                                          | The maximum number of retries to use, in addition to the original call.                  |
+| `Delay`            | 2 seconds                                                                  | The base delay between retries.                                                          |
+| `BackoffType`      | Constant                                                                   | The type of the back-off used to generate the retry delay.                               |
+| `UseJitter`        | False                                                                      | Allows adding jitter to retry delays.                                                    |
+| `DelayGenerator`   | `null`                                                                     | Used for generating custom delays for retries.                                           |
+| `OnRetry`          | `null`                                                                     | Action executed when retry occurs.                                                       |

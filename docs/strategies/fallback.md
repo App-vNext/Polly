@@ -64,4 +64,4 @@ new ResiliencePipelineBuilder<UserAvatar>()
 | ---------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | `ShouldHandle`   | Predicate that handles all exceptions except `OperationCancelledException`. | Predicate that determines what results and exceptions are handled by the fallback strategy. |
 | `FallbackAction` | `Null`, **Required**                                                        | Fallback action to be executed.                                                             |
-| `OnFallback`     | `Null`                                                                      | Event that is raised when fallback happens.                                                 |
+| `OnFallback`     | `null`                                                                      | Event that is raised when fallback happens.                                                 |

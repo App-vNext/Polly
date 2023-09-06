@@ -81,15 +81,15 @@ await manualControl.CloseAsync();
 | Property            | Default Value                                                              | Description                                                                                |
 | ------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
 | `ShouldHandle`      | Predicate that handles all exceptions except `OperationCanceledException`. | Specifies which results and exceptions are managed by the circuit breaker strategy.        |
-| `FailureRatio`      | 0.1                                                                        | The ratio of failures to successes that will cause the circuit to break.                   |
+| `FailureRatio`      | 0.1                                                                        | The ratio of failures to successes that will cause the circuit to break/open.              |
 | `MinimumThroughput` | 100                                                                        | The minimum number of actions that must occur in the circuit within a specific time slice. |
 | `SamplingDuration`  | 30 seconds                                                                 | The time period over which failure ratios are calculated.                                  |
-| `BreakDuration`     | 5 seconds                                                                  | The time period for which the circuit will remain open before attempting to reset.         |
-| `OnClosed`          | `Null`                                                                     | Event triggered when the circuit transitions to the `Closed` state.                        |
-| `OnOpened`          | `Null`                                                                     | Event triggered when the circuit transitions to the `Opened` state.                        |
-| `OnHalfOpened`      | `Null`                                                                     | Event triggered when the circuit transitions to the `HalfOpened` state.                    |
-| `ManualControl`     | `Null`                                                                     | Allows for manual control to isolate or close the circuit.                                 |
-| `StateProvider`     | `Null`                                                                     | Enables the retrieval of the current state of the circuit.                                 |
+| `BreakDuration`     | 5 seconds                                                                  | The time period for which the circuit will remain broken/open before attempting to reset.  |
+| `OnClosed`          | `null`                                                                     | Event triggered when the circuit transitions to the `Closed` state.                        |
+| `OnOpened`          | `null`                                                                     | Event triggered when the circuit transitions to the `Opened` state.                        |
+| `OnHalfOpened`      | `null`                                                                     | Event triggered when the circuit transitions to the `HalfOpened` state.                    |
+| `ManualControl`     | `null`                                                                     | Allows for manual control to isolate or close the circuit.                                 |
+| `StateProvider`     | `null`                                                                     | Enables the retrieval of the current state of the circuit.                                 |
 
 ## Resources
 
