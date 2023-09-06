@@ -10,7 +10,7 @@ namespace Snippets.Docs;
 
 internal static class CircuitBreaker
 {
-    public static async Task CircuitBreakerExample()
+    public static async Task Usage()
     {
         #region circuit-breaker
 

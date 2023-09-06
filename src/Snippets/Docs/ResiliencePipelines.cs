@@ -9,7 +9,7 @@ namespace Snippets.Docs;
 
 internal static class ResiliencePipelines
 {
-    public static async Task ResiliencePipelineUsage()
+    public static async Task Usage()
     {
         var cancellationToken = CancellationToken.None;
         var httpClient = new HttpClient();

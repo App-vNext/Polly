@@ -8,7 +8,7 @@ namespace Snippets.Docs;
 
 internal static class Hedging
 {
-    public static void HedgingSample()
+    public static void Usage()
     {
         #region hedging
 

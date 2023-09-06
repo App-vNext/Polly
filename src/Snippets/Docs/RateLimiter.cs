@@ -6,7 +6,7 @@ namespace Snippets.Docs;
 
 internal static class RateLimiter
 {
-    public static void RateLimiterUsage()
+    public static void Usage()
     {
         #region rate-limiter
 
@@ -53,7 +53,7 @@ internal static class RateLimiter
         #endregion
     }
 
-    public static async Task RateLimiterExecution()
+    public static async Task Execution()
     {
         var cancellationToken = CancellationToken.None;
         var query = "dummy";

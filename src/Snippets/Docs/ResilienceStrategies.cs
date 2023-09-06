@@ -7,7 +7,7 @@ namespace Snippets.Docs;
 
 internal static class ResilienceStrategies
 {
-    public static async Task ResilienceStrategySample()
+    public static async Task Usage()
     {
         #region resilience-strategy-sample
 

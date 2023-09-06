@@ -6,7 +6,7 @@ namespace Snippets.Docs;
 
 internal static class Fallback
 {
-    public static void FallbackExample()
+    public static void Usage()
     {
         #region fallback
 

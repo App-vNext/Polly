@@ -4,7 +4,7 @@ namespace Snippets.Docs;
 
 internal static class ResilienceContextUsage
 {
-    public static async Task ResilienceContextSample()
+    public static async Task Usage()
     {
         var cancellationToken = CancellationToken.None;
 
@@ -51,7 +51,7 @@ internal static class ResilienceContextUsage
         #endregion
     }
 
-    public static async Task ResilienceContextPoolSample()
+    public static async Task Pooling()
     {
         var cancellationToken = CancellationToken.None;
 

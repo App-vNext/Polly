@@ -7,7 +7,7 @@ namespace Snippets.Docs;
 
 internal static class Timeout
 {
-    public static async Task TimeoutExample()
+    public static async Task Usage()
     {
         #region timeout
 

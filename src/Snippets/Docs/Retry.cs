@@ -8,7 +8,7 @@ namespace Snippets.Docs;
 
 internal static class Retry
 {
-    public static void RetryExample()
+    public static void Usage()
     {
         #region retry
 
