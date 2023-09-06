@@ -11,7 +11,8 @@ internal static class Timeout
     {
         #region timeout
 
-        // To add timeout using the default options
+        // Add timeout using the default options.
+        // See https://github.com/App-vNext/Polly/blob/main/docs/strategies/timeout.md#defaults for default values.
         new ResiliencePipelineBuilder()
             .AddTimeout(new TimeoutStrategyOptions());
 

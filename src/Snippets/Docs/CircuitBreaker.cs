@@ -13,6 +13,7 @@ internal static class CircuitBreaker
         #region circuit-breaker
 
         // Add circuit breaker with default options.
+        // See https://github.com/App-vNext/Polly/blob/main/docs/strategies/circuit-breaker.md#defaults for default values.
         new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions());
 
         // Add circuit breaker with customized options:

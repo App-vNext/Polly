@@ -13,6 +13,7 @@ internal static class Hedging
         #region hedging
 
         // Add hedging with default options.
+        // See https://github.com/App-vNext/Polly/blob/main/docs/strategies/hedging.md#defaults for default values.
         new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddHedging(new HedgingStrategyOptions<HttpResponseMessage>());
 

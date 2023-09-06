@@ -12,7 +12,8 @@ internal static class Retry
     {
         #region retry
 
-        // Add retry using the default options
+        // Add retry using the default options.
+        // See https://github.com/App-vNext/Polly/blob/main/docs/strategies/retry.md#defaults for default values.
         new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions());
 
         // For instant retries with no delay

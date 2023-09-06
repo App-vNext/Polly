@@ -11,6 +11,7 @@ internal static class RateLimiter
         #region rate-limiter
 
         // Add rate limiter with default options.
+        // See https://github.com/App-vNext/Polly/blob/main/docs/strategies/rate-limiter.md#defaults for default values.
         new ResiliencePipelineBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions());
 

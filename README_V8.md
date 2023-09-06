@@ -111,12 +111,12 @@ Polly categorizes resilience strategies into two main groups:
 
 | Strategy | Reactive | Premise | AKA | How does the strategy mitigate?|
 | ------------- | --- | ------------- |:-------------: |------------- |
-|**Retry** <br/>(strategy family)<br/><sub>([quickstart](#retry)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Retry))</sub> |Yes|Many faults are transient and may self-correct after a short delay.| *Maybe it's just a blip* |  Allows configuring automatic retries. |
-|**Circuit-breaker**<br/>(strategy family)<br/><sub>([quickstart](#circuit-breaker)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker))</sub>|Yes|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | *Stop doing it if it hurts* <br/><br/>*Give that system a break* | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. |
-|**Timeout**<br/><sub>([quickstart](#timeout)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Timeout))</sub>|No|Beyond a certain wait, a success result is unlikely.| *Don't wait forever*  |Guarantees the caller won't have to wait beyond the timeout. |
-|**Rate Limiter**<br/><sub>([quickstart](#rate-limiter)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Rate-Limit))</sub>|No|Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?*  |Constrains executions to not exceed a certain rate. |
-|**Fallback**<br/><sub>([quickstart](#fallback)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Fallback))</sub>|Yes|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
-|**Hedging**<br/><sub>([quickstart](#hedging)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/TODO))</sub>|Yes|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
+|**Retry** <br/>(strategy family)<br/><sub>([quickstart](#retry)&nbsp;;&nbsp;[deep](docs/strategies/retry.md))</sub> |Yes|Many faults are transient and may self-correct after a short delay.| *Maybe it's just a blip* |  Allows configuring automatic retries. |
+|**Circuit-breaker**<br/>(strategy family)<br/><sub>([quickstart](#circuit-breaker)&nbsp;;&nbsp;[deep](docs/strategies/circuit-breaker.md))</sub>|Yes|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | *Stop doing it if it hurts* <br/><br/>*Give that system a break* | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. |
+|**Timeout**<br/><sub>([quickstart](#timeout)&nbsp;;&nbsp;[deep](docs/strategies/timeout.md))</sub>|No|Beyond a certain wait, a success result is unlikely.| *Don't wait forever*  |Guarantees the caller won't have to wait beyond the timeout. |
+|**Rate Limiter**<br/><sub>([quickstart](#rate-limiter)&nbsp;;&nbsp;[deep](docs/strategies/rate-limiter.md))</sub>|No|Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?*  |Constrains executions to not exceed a certain rate. |
+|**Fallback**<br/><sub>([quickstart](#fallback)&nbsp;;&nbsp;[deep](docs/strategies/fallback.md))</sub>|Yes|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
+|**Hedging**<br/><sub>([quickstart](#hedging)&nbsp;;&nbsp;[deep](docs/strategies/hedging.md))</sub>|Yes|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
 
 Visit [resilience strategies](docs/resilience-strategies.md) docs to explore how to configure individual resilience strategies in more detail.
 
@@ -124,7 +124,8 @@ Visit [resilience strategies](docs/resilience-strategies.md) docs to explore how
 
 <!-- snippet: retry -->
 ```cs
-// Add retry using the default options
+// Add retry using the default options.
+// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/retry.md#defaults for default values.
 new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions());
 
 // For instant retries with no delay
@@ -200,13 +201,14 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
-If all retries fail, a retry strategy rethrows the final exception back to the calling code.  For more details visit the [retry strategy documentation](https://github.com/App-vNext/Polly/wiki/Retry).
+If all retries fail, a retry strategy rethrows the final exception back to the calling code.  For more details visit the [retry strategy documentation](docs/strategies/retry.md).
 
 ### Circuit Breaker
 
 <!-- snippet: circuit-breaker -->
 ```cs
 // Add circuit breaker with default options.
+// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/circuit-breaker.md#defaults for default values.
 new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions());
 
 // Add circuit breaker with customized options:
@@ -260,23 +262,13 @@ await manualControl.CloseAsync();
 ```
 <!-- endSnippet -->
 
-The Circuit Breaker strategy prevents execution by throwing a `BrokenCircuitException` when the circuit is open. For more details, refer to the [Circuit-Breaker documentation on GitHub](https://github.com/App-vNext/Polly/wiki/Advanced-Circuit-Breaker).
-
-> [!NOTE]
-> Be aware that the Circuit Breaker strategy [rethrows all exceptions](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#exception-handling), including those that are handled. A Circuit Breaker's role is to monitor faults and break the circuit when a certain threshold is reached; it does not manage retries. Combine the Circuit Breaker with a Retry strategy if needed.
-
-For more insights on the Circuit Breaker pattern, you can visit:
-
-- [Making the Netflix API More Resilient](https://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
-- [Circuit Breaker by Martin Fowler](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Circuit Breaker Pattern by Microsoft](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
-- [Original Circuit Breaking Article](https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker)
+For more details, refer to the [Circuit-Breaker documentation](docs/strategies/circuit-breaker.md).
 
 ### Fallback
 
 <!-- snippet: fallback -->
 ```cs
-// Use a fallback/substitute value if an operation fails.
+// Add a fallback/substitute value if an operation fails.
 new ResiliencePipelineBuilder<UserAvatar>()
     .AddFallback(new FallbackStrategyOptions<UserAvatar>
     {
@@ -321,13 +313,14 @@ new ResiliencePipelineBuilder<UserAvatar>()
 ```
 <!-- endSnippet -->
 
-For more details, refer to the [Fallback documentation](https://github.com/App-vNext/Polly/wiki/Fallback).
+For more details, refer to the [Fallback documentation](docs/strategies/fallback.md).
 
 ### Hedging
 
 <!-- snippet: Hedging -->
 ```cs
 // Add hedging with default options.
+// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/hedging.md#defaults for default values.
 new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddHedging(new HedgingStrategyOptions<HttpResponseMessage>());
 
@@ -364,7 +357,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
 ```
 <!-- endSnippet -->
 
-If all hedged attempts fail, the hedging strategy will either re-throw the last exception or return the final failed result to the caller. For more information, refer to the [hedging strategy documentation](docs/hedging.md).
+If all hedged attempts fail, the hedging strategy will either re-throw the last exception or return the final failed result to the caller. For more information, refer to the [hedging strategy documentation](docs/strategies/hedging.md).
 
 ### Timeout
 
@@ -372,7 +365,8 @@ The timeout resilience strategy assumes delegates you execute support [co-operat
 
 <!-- snippet: timeout -->
 ```cs
-// To add timeout using the default options
+// Add timeout using the default options.
+// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/timeout.md#defaults for default values.
 new ResiliencePipelineBuilder()
     .AddTimeout(new TimeoutStrategyOptions());
 
@@ -409,31 +403,14 @@ new ResiliencePipelineBuilder()
 ```
 <!-- endSnippet -->
 
-Example execution:
-
-<!-- snippet: timeout-execution -->
-```cs
-var pipeline = new ResiliencePipelineBuilder()
-    .AddTimeout(TimeSpan.FromSeconds(3))
-    .Build();
-
-HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
-      async ct =>
-      {
-          // Execute a delegate that takes a CancellationToken as an input parameter.
-          return await httpClient.GetAsync(endpoint, ct);
-      },
-      cancellationToken);
-```
-<!-- endSnippet -->
-
-Timeout strategies throw `TimeoutRejectedException` when a timeout occurs. For more details see [Timeout strategy documentation](https://github.com/App-vNext/Polly/wiki/Timeout).
+Timeout strategies throw `TimeoutRejectedException` when a timeout occurs. For more details see [Timeout strategy documentation](docs/strategies/timeout.md).
 
 ### Rate Limiter
 
 <!-- snippet: rate-limiter -->
 ```cs
 // Add rate limiter with default options.
+// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/rate-limiter.md#defaults for default values.
 new ResiliencePipelineBuilder()
     .AddRateLimiter(new RateLimiterStrategyOptions());
 
@@ -475,32 +452,7 @@ new ResiliencePipelineBuilder()
 ```
 <!-- endSnippet -->
 
-Example execution:
-
-<!-- snippet: rate-limiter-execution -->
-```cs
-var pipeline = new ResiliencePipelineBuilder().AddConcurrencyLimiter(100, 50).Build();
-
-try
-{
-    // Execute an asynchronous text search operation.
-    var result = await pipeline.ExecuteAsync(
-        token => TextSearchAsync(query, token),
-        cancellationToken);
-}
-catch (RateLimiterRejectedException ex)
-{
-    // Handle RateLimiterRejectedException,
-    // that can optionally contain information about when to retry.
-    if (ex.RetryAfter is TimeSpan retryAfter)
-    {
-        Console.WriteLine($"Retry After: {retryAfter}");
-    }
-}
-```
-<!-- endSnippet -->
-
-Rate limiter strategy throws `RateLimiterRejectedException` if execution is rejected. For more details see [Rate Limiter strategy documentation](https://github.com/App-vNext/Polly/wiki/Rate-Limit).
+Rate limiter strategy throws `RateLimiterRejectedException` if execution is rejected. For more details see [Rate Limiter strategy documentation](docs/strategies/rate-limiter.md).
 
 ## Next steps
 
