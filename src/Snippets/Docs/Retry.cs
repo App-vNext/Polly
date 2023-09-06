@@ -12,13 +12,7 @@ internal static class Retry
     {
         #region retry
 
-        // To use the default retry options with pre-configured settings:
-        //
-        // MaxRetryAttempts: 3,
-        // Delay: 2 seconds,
-        // Backoff Type: Constant,
-        // UseJitter: false,
-        // ShouldHandle: Handles all exceptions except OperationCanceledException
+        // Add retry using the default options
         new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions());
 
         // For instant retries with no delay

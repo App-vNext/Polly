@@ -124,13 +124,7 @@ Visit [resilience strategies](docs/resilience-strategies.md) docs to explore how
 
 <!-- snippet: retry -->
 ```cs
-// To use the default retry options with pre-configured settings:
-//
-// MaxRetryAttempts: 3,
-// Delay: 2 seconds,
-// Backoff Type: Constant,
-// UseJitter: false,
-// ShouldHandle: Handles all exceptions except OperationCanceledException
+// Add retry using the default options
 new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions());
 
 // For instant retries with no delay
@@ -378,7 +372,7 @@ The timeout resilience strategy assumes delegates you execute support [co-operat
 
 <!-- snippet: timeout -->
 ```cs
-// To add a default 30-second timeout
+// To add timeout using the default options
 new ResiliencePipelineBuilder()
     .AddTimeout(new TimeoutStrategyOptions());
 

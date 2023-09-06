@@ -11,7 +11,7 @@ internal static class Timeout
     {
         #region timeout
 
-        // To add a default 30-second timeout
+        // To add timeout using the default options
         new ResiliencePipelineBuilder()
             .AddTimeout(new TimeoutStrategyOptions());
 
