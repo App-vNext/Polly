@@ -271,6 +271,36 @@ public class PollyServiceCollectionExtensionTests
         provider.GetRequiredService<IOptions<ResiliencePipelineRegistryOptions<string>>>().Value.InstanceNameFormatter.Should().Be(formatter);
     }
 
+    [Fact]
+    public void AddResiliencePipeline_CustomInstanceName_EnsureReported()
+    {
+        // arrange
+        var services = new ServiceCollection();
+        var listener = new FakeTelemetryListener();
+        var pipeline = services
+            .AddResiliencePipeline("my-pipeline", builder =>
+            {
+                builder.Name.Should().Be("my-pipeline");
+                builder.InstanceName = "my-instance";
+                builder.AddConcurrencyLimiter(1);
+            })
+            .Configure<TelemetryOptions>(options =>
+            {
+                options.TelemetryListeners.Add(listener);
+            })
+            .BuildServiceProvider()
+            .GetRequiredService<ResiliencePipelineProvider<string>>()
+            .GetPipeline("my-pipeline");
+
+        // act
+        pipeline.Execute(() => { });
+
+        // assert
+        var ev = listener.Events.First().Source;
+        ev.PipelineInstanceName.Should().Be("my-instance");
+        ev.PipelineName.Should().Be("my-pipeline");
+    }
+
     private void AddResiliencePipeline(string key, Action<StrategyBuilderContext>? onBuilding = null)
     {
         _services.AddResiliencePipeline(key, builder =>
