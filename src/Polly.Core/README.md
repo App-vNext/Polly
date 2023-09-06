@@ -189,7 +189,6 @@ Recommended signatures for these delegates are:
 - `Func<Args<TResult>, ValueTask<TValue>>` (Reactive)
 - `Func<Args, ValueTask<TValue>>` (Proactive)
 
-
 These delegates accept either `Args` or `Args<TResult>` arguments, which encapsulate event information. Note that all these delegates are asynchronous and return a `ValueTask`.
 
 > [!NOTE]
@@ -248,11 +247,3 @@ new ResiliencePipelineBuilder<string>()
     .Build();
 ```
 <!-- endSnippet -->
-
-## Telemetry
-
-Each resilience strategy can generate telemetry data through the [`ResiliencePipelineTelemetry`](Telemetry/ResiliencePipelineTelemetry.cs) API. Polly encapsulates event details as [`TelemetryEventArguments`](Telemetry/TelemetryEventArguments.cs) and emits them via `TelemetryListener`.
-
-To leverage this telemetry data, users should assign a `TelemetryListener` instance to `ResiliencePipelineBuilder.TelemetryListener` and then consume the `TelemetryEventArguments`.
-
-For common scenarios, it is expected that users would make use of `Polly.Extensions`. This extension enables telemetry configuration through the `ResiliencePipelineBuilder.ConfigureTelemetry(...)` method, which processes `TelemetryEventArguments` to generate logs and metrics.
