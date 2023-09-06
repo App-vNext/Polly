@@ -2,6 +2,15 @@
 
 If you're already familiar with the [basic features](../README.md) of Polly, delve deeper into its advanced functionalities here.
 
+## Resilience strategies
+
+- [Retry](strategies/retry.md): Allows for the automated re-execution of failed operations according to predefined conditions.
+- [Circuit Breaker](strategies/circuit-breaker.md): Temporarily halts all operations when a defined threshold of failures is exceeded, in order to prevent further issues.
+- [Fallback](strategies/fallback.md): Provides a backup value or executes an alternative action when the primary operation fails, ensuring graceful degradation.
+- [Hedging](strategies/hedging.md): Initiates multiple identical operations in parallel when performance lags, and returns the result of the fastest-completing operation.
+- [Timeout](strategies/timeout.md): Sets a maximum time limit for an operation to complete, preventing indefinite waiting.
+- [Rate Limiter](strategies/rate-limiter.md): Regulates the frequency of operations to ensure they do not exceed a set rate, thereby maintaining system stability.
+
 ## Topics
 
 - [General](general.md): General information about Polly.

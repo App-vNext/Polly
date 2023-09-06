@@ -10,7 +10,7 @@ internal static class Fallback
     {
         #region fallback
 
-        // Use a fallback/substitute value if an operation fails.
+        // Add a fallback/substitute value if an operation fails.
         new ResiliencePipelineBuilder<UserAvatar>()
             .AddFallback(new FallbackStrategyOptions<UserAvatar>
             {
