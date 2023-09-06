@@ -31,6 +31,5 @@ internal static class PipelineComponentFactory
 
     public static PipelineComponent CreateReloadable(
         ReloadableComponent.Entry initial,
-        Func<ReloadableComponent.Entry> factory,
-        ResilienceStrategyTelemetry telemetry) => new ReloadableComponent(initial, factory, telemetry);
+        Func<ReloadableComponent.Entry> factory) => new ReloadableComponent(initial, factory);
 }
