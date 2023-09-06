@@ -2,7 +2,7 @@
 
 namespace Polly.TestUtils;
 
-public class FakeLoggerFactory : ILoggerFactory
+public sealed class FakeLoggerFactory : ILoggerFactory
 {
     public FakeLogger FakeLogger { get; } = new FakeLogger();
 
