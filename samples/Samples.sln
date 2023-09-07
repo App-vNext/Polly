@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Extensibility", "Extensibil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intro", "Intro\Intro.csproj", "{D23FC7B1-B549-405A-823C-CF43382C3432}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericStrategies", "GenericStrategies\GenericStrategies.csproj", "{10175C17-01A5-4936-8966-86FB1C7891C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericPipelines", "GenericPipelines\GenericPipelines.csproj", "{10175C17-01A5-4936-8966-86FB1C7891C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Retries", "Retries\Retries.csproj", "{8A46294C-29CB-4E70-BFE0-5DE386437C50}"
 EndProject
