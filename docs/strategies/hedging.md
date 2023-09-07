@@ -104,7 +104,7 @@ The hedging strategy operates in parallel mode when the `Delay` property is set 
 > Use this mode only when absolutely necessary, as it consumes the most resources, particularly when the hedging strategy uses remote resources such as remote HTTP services.
 
 - All executions are initiated simultaneously, adhering to the `MaxHedgedAttempts` limit.
-- The final result will be the quickest successful execution.
+- The final result will be the fastest successful execution.
 - If all executions fail, the final result will be the first failure encountered.
 
 ### Dynamic mode
