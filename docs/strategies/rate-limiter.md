@@ -99,7 +99,7 @@ services
 ```
 <!-- endSnippet -->
 
-The above example uses the `AddResiliencePipeline` extension method to configure the pipeline. However, a similar approach can be taken when directly using the `ResiliencePipelineRegistry`.
+The above example uses the `AddResiliencePipeline(...)` extension method to configure the pipeline. However, a similar approach can be taken when directly using the `ResiliencePipelineRegistry<T>`.
 
 ## Partitioned rate limiter
 

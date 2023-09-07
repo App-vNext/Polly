@@ -8,7 +8,7 @@
 
 ---
 
-The hedging strategy enables the re-execution of a user-defined callback if the previous execution takes too long. This approach gives you the option to either run the original callback again or specify a new callback for subsequent hedged attempts. Implementing a hedging strategy can boost the overall responsiveness of the system. However, it's essential to note that this improvement comes at the cost of increased resource utilization. If low latency is not a critical requirement, you may opt for [retry strategy](retry.md) instead.
+The hedging strategy enables the re-execution of a user-defined callback if the previous execution takes too long. This approach gives you the option to either run the original callback again or specify a new callback for subsequent hedged attempts. Implementing a hedging strategy can boost the overall responsiveness of the system. However, it's essential to note that this improvement comes at the cost of increased resource utilization. If low latency is not a critical requirement, you may find the [retry strategy](retry.md) is more appropriate.
 
 This strategy also supports multiple [concurrency modes](#concurrency-modes) for added flexibility.
 
@@ -70,11 +70,8 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
 
 You can use the following special values for `Delay` or in `HedgingDelayGenerator`:
 
-- `0 seconds` - the hedging strategy immediately creates a total of `MaxHedgedAttempts` and finishes when the fastest one is done.
-- `-1 millisecond` - this value indicates that the strategy does not create a new hedged task before the previous one finishes. This enables scenarios where having multiple concurrent hedged tasks can cause side effects.
-Certainly! Here's your improved Markdown document with "request" replaced by "execution":
-
----
+- `0 seconds` - the hedging strategy immediately creates a total of `MaxHedgedAttempts` and completes when the fastest acceptable result is available.
+- `-1 millisecond` - this value indicates that the strategy does not create a new hedged task before the previous one completes. This enables scenarios where having multiple concurrent hedged tasks can cause side effects.
 
 ## Concurrency modes
 
@@ -87,7 +84,7 @@ When the `Delay` property is set to a value greater than zero, the hedging strat
 - The primary execution is initiated.
 - If the initial execution either fails or takes longer than the `Delay` to complete, a new execution is initiated.
 - If the first two executions fail or exceed the `Delay` (calculated from the last initiated execution), another execution is triggered.
-- The final result is the result of quickest successful execution.
+- The final result is the result of fastest successful execution.
 - If all executions fail, the final result will be the first failure encountered.
 
 ### Fallback mode
@@ -101,10 +98,10 @@ In fallback mode, the `Delay` value should be less than `TimeSpan.Zero`. This mo
 
 ### Parallel mode
 
-The hedging strategy operates in parallel mode when the `Delay` property is set to `TimeSpan.Zero`. In this mode, all executions are initiated simultaneously, and the strategy waits for the quickest completion.
+The hedging strategy operates in parallel mode when the `Delay` property is set to `TimeSpan.Zero`. In this mode, all executions are initiated simultaneously, and the strategy waits for the fastest completion.
 
 > [!IMPORTANT]
-> Use this mode only when absolutely necessary, as it consumes the most resources, particularly when the hedging strategy remote resources such as remote HTTP service.
+> Use this mode only when absolutely necessary, as it consumes the most resources, particularly when the hedging strategy uses remote resources such as remote HTTP services.
 
 - All executions are initiated simultaneously, adhering to the `MaxHedgedAttempts` limit.
 - The final result will be the quickest successful execution.
@@ -119,7 +116,7 @@ In dynamic mode, you have the flexibility to control how the hedging strategy be
 
 Example scenario:
 
-- Initially, initiate the first two executions in parallel mode.
+- First, initiate the first two executions in parallel mode.
 - Subsequently, switch to fallback mode for additional executions.
 
 To configure hedging according to the above scenario, use the following code:
@@ -147,12 +144,12 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
 
 With this configuration, the hedging strategy:
 
-- Initiates a maximum of `4` executions. This includes initial action and additional 3 attempts.
+- Initiates a maximum of `4` executions. This includes initial action and an additional 3 attempts.
 - Allows the first two executions to proceed in parallel, while the third and fourth executions follow the fallback mode.
 
 ## Action generator
 
-The hedging options include an `ActionGenerator` property, allowing you to customize the actions executed during hedging. By default, the `ActionGenerator` returns the original callback passed to the strategy. The original callback also includes any logic introduced by subsequent resilience strategies. For more advanced scenarios, the `ActionGenerator` can be used to return a entirely new hedged actions, as demonstrated in the example below:
+The hedging options include an `ActionGenerator` property, allowing you to customize the actions executed during hedging. By default, the `ActionGenerator` returns the original callback passed to the strategy. The original callback also includes any logic introduced by subsequent resilience strategies. For more advanced scenarios, the `ActionGenerator` can be used to return entirely new hedged actions, as demonstrated in the example below:
 
 <!-- snippet: hedging-action-generator -->
 ```cs
@@ -169,12 +166,12 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
             // Here, we can access the original callback and return it or return a completely new action
             var callback = args.Callback;
 
-            // A function that returns a ValueTask<Outcome<HttpResponseMessage>> is required.
+            // A delegate that returns a ValueTask<Outcome<HttpResponseMessage>> is required.
             return async () =>
             {
                 try
                 {
-                    // A dedicated ActionContext is provided for each hedged action
+                    // A dedicated ActionContext is provided for each hedged action.
                     // It comes with a separate CancellationToken created specifically for this hedged attempt,
                     // which can be cancelled later if needed.
                     //
@@ -199,7 +196,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
 
 When you have control over the callbacks that the resilience pipeline receives, you can parameterize them. This flexibility allows for reusing the callbacks within an action generator.
 
-A common use case is with the `DelegatingHandler`. Here, you can parameterize the `HttpRequestMessage`:
+A common use case is with [`DelegatingHandler`](https://learn.microsoft.com/aspnet/web-api/overview/advanced/http-message-handlers). Here, you can parameterize the `HttpRequestMessage`:
 
 <!-- snippet: hedging-handler -->
 ```cs
@@ -251,7 +248,7 @@ internal static class ResilienceKeys
 ```
 <!-- endSnippet -->
 
-In your `ActionGenerator`, you can easily provide your own `HttpRequestMessage` to ActionContext, and the original callback will utilize it:
+In your `ActionGenerator`, you can easily provide your own `HttpRequestMessage` to ActionContext, and the original callback will use it:
 
 <!-- snippet: hedging-parametrized-action-generator -->
 ```cs

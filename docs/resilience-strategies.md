@@ -8,7 +8,7 @@ Resilience strategies are essential components of Polly, designed to execute use
 Polly categorizes resilience strategies into two main groups:
 
 - **Reactive**: These strategies handle specific exceptions that are thrown, or results that are returned, by the callbacks executed through the strategy.
-- **Proactive**: Unlike reactive strategies, proactive strategies do not focus on handling errors by the callbacks might throw or return. They can make pro-active decisions to cancel or reject the execution of callbacks (e.g., using a rate limiter or a timeout resilience strategy).
+- **Proactive**: Unlike reactive strategies, proactive strategies do not focus on handling errors by the callbacks might throw or return. They can make proactive decisions to cancel or reject the execution of callbacks (e.g., using a rate limiter or a timeout resilience strategy).
 
 ## Usage
 
