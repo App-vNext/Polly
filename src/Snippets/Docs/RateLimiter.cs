@@ -48,7 +48,7 @@ internal static class RateLimiter
         new ResiliencePipelineBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions
             {
-                // PProvide a custom rate limiter delegate.
+                // Provide a custom rate limiter delegate.
                 RateLimiter = args =>
                 {
                     return partitionedLimiter.AcquireAsync(args.Context, 1, args.Context.CancellationToken);
