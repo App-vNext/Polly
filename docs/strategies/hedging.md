@@ -166,12 +166,12 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
             // Here, we can access the original callback and return it or return a completely new action
             var callback = args.Callback;
 
-            // A delegate that returns a ValueTask<Outcome<HttpResponseMessage>> is required.
+            // A function that returns a ValueTask<Outcome<HttpResponseMessage>> is required.
             return async () =>
             {
                 try
                 {
-                    // A dedicated ActionContext is provided for each hedged action.
+                    // A dedicated ActionContext is provided for each hedged action
                     // It comes with a separate CancellationToken created specifically for this hedged attempt,
                     // which can be cancelled later if needed.
                     //
