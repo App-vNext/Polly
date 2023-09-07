@@ -1,15 +1,96 @@
 # Polly Documentation
 
-If you're already familiar with the [basic features](../README.md) of Polly, delve deeper into its advanced functionalities here.
+Polly is a .NET resilience and transient-fault-handling library that allows developers to express resilience strategies such as Retry, Circuit Breaker, Hedging, Timeout, Rate Limiter and Fallback in a fluent and thread-safe manner.
+
+We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
+
+![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)
+
+## Quick start
+
+To use Polly, you must provide a callback and execute it using [**resilience pipeline**](resilience-pipelines.md). A resilience pipeline is a combination of one or more [**resilience strategies**](resilience-strategies.md) such as retry, timeout, and rate limiter. Polly uses **builders** to integrate these strategies into a pipeline.
+
+To get started, first add the [Polly.Core](https://www.nuget.org/packages/Polly.Core/) package to your project by running the following command:
+
+```sh
+dotnet add package Polly.Core
+```
+
+You can create a `ResiliencePipeline` using the `ResiliencePipelineBuilder` class as shown below:
+
+<!-- snippet: quick-start -->
+```cs
+// Create a instance of builder that exposes various extensions for adding resilience strategies
+var builder = new ResiliencePipelineBuilder();
+
+// Add retry using the default options
+builder.AddRetry(new RetryStrategyOptions());
+
+// Add 10 second timeout
+builder.AddTimeout(TimeSpan.FromSeconds(10));
+
+// Build the resilience pipeline
+ResiliencePipeline pipeline = builder.Build();
+
+// Execute the pipeline
+await pipeline.ExecuteAsync(async token =>
+{
+    // Your custom logic here
+});
+```
+<!-- endSnippet -->
+
+### Dependency injection
+
+If you prefer to define resilience pipelines using [`IServiceCollection`](https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection), you'll need to install the [Polly.Extensions](https://www.nuget.org/packages/Polly.Extensions/) package:
+
+```sh
+dotnet add package Polly.Extensions
+```
+
+You can then define your resilience pipeline using the `AddResiliencePipeline(...)` extension method as shown:
+
+<!-- snippet: quick-start-di -->
+```cs
+var services = new ServiceCollection();
+
+// Define a resilience pipeline with the name "my-pipeline"
+services.AddResiliencePipeline("my-pipeline", builder =>
+{
+    builder
+        .AddRetry(new RetryStrategyOptions())
+        .AddTimeout(TimeSpan.FromSeconds(10));
+});
+
+// Build the service provider
+IServiceProvider serviceProvider = services.BuildServiceProvider();
+
+// Retrieve ResiliencePipelineProvider that caches and dynamically creates the resilience pipelines
+var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
+
+// Retrieve resilience pipeline using the name it was registered with
+ResiliencePipeline pipeline = pipelineProvider.GetPipeline("my-pipeline");
+
+// Execute the pipeline
+await pipeline.ExecuteAsync(async token =>
+{
+    // Your custom logic here
+});
+```
+<!-- endSnippet -->
 
 ## Resilience strategies
 
-- [Retry](strategies/retry.md): Allows for the automated re-execution of failed operations according to predefined conditions.
-- [Circuit Breaker](strategies/circuit-breaker.md): Temporarily halts all operations when a defined threshold of failures is exceeded, in order to prevent further issues.
-- [Fallback](strategies/fallback.md): Provides a backup value or executes an alternative action when the primary operation fails, ensuring graceful degradation.
-- [Hedging](strategies/hedging.md): Initiates multiple identical operations in parallel when performance lags, and returns the result of the fastest-completing operation.
-- [Timeout](strategies/timeout.md): Sets a maximum time limit for an operation to complete, preventing indefinite waiting.
-- [Rate Limiter](strategies/rate-limiter.md): Regulates the frequency of operations to ensure they do not exceed a set rate, thereby maintaining system stability.
+| Strategy | Reactive | Premise | AKA | How does the strategy mitigate?|
+| ------------- | --- | ------------- |:-------------: |------------- |
+|[Retry](strategies/retry.md) |Yes|Many faults are transient and may self-correct after a short delay.| *Maybe it's just a blip* |  Allows configuring automatic retries. |
+|[Circuit-breaker](strategies/circuit-breaker.md) |Yes|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | *Stop doing it if it hurts* <br/><br/>*Give that system a break* | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. |
+|[Timeout](strategies/timeout.md)|No|Beyond a certain wait, a success result is unlikely.| *Don't wait forever*  |Guarantees the caller won't have to wait beyond the timeout. |
+|[Rate Limiter](strategies/rate-limiter.md)|No|Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?*  |Constrains executions to not exceed a certain rate. |
+|[Fallback](strategies/fallback.md)|Yes|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
+|[Hedging](strategies/hedging.md)|Yes|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
+
+Visit the [resilience strategies](resilience-strategies.md) section to understand their structure and explore various configuration methods.
 
 ## Topics
 
