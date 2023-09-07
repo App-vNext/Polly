@@ -11,6 +11,8 @@
   - `BrokenCircuitException`: Thrown when a circuit is broken and the action could not be executed.
   - `IsolatedCircuitException`: Thrown when a circuit is isolated (held open) by manual override.
 
+---
+
 > [!NOTE]
 > Version 8 documentation for this strategy has not yet been migrated. For more information on circuit breaker concepts and behavior, refer to the [older documentation](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
 

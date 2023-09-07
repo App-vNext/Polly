@@ -8,6 +8,8 @@
 - **Exceptions**:
   - `TimeoutRejectedException`: Thrown when a delegate executed through a timeout strategy does not complete before the timeout.
 
+---
+
 > [!NOTE]
 > Version 8 documentation for this strategy has not yet been migrated. For more information on timeout concepts and behavior, refer to the [older documentation](https://github.com/App-vNext/Polly/wiki/Timeout).
 

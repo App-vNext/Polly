@@ -1,4 +1,5 @@
 ﻿using System.Threading.RateLimiting;
+using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.RateLimiting;
 
@@ -27,8 +28,11 @@ internal static class RateLimiter
                 Window = TimeSpan.FromMinutes(1)
             }));
 
-        // Create a custom partitioned rate limiter.
-        var partitionedLimiter = PartitionedRateLimiter.Create<Polly.ResilienceContext, string>(context =>
+        #endregion
+
+        #region rate-limiter-partitioned
+
+        var partitionedLimiter = PartitionedRateLimiter.Create<ResilienceContext, string>(context =>
         {
             // Extract the partition key.
             string partitionKey = GetPartitionKey(context);
@@ -83,7 +87,33 @@ internal static class RateLimiter
         #endregion
     }
 
+    public static async Task Disposal()
+    {
+        var services = new ServiceCollection();
+
+        #region rate-limiter-disposal
+
+        services
+            .AddResiliencePipeline("my-pipeline", (builder, context) =>
+            {
+                var options = context.GetOptions<ConcurrencyLimiterOptions>("my-concurrency-options");
+
+                // This call enables dynamic reloading of the pipeline
+                // when the named ConcurrencyLimiterOptions change.
+                context.EnableReloads<ConcurrencyLimiterOptions>("my-concurrency-options");
+
+                var limiter = new ConcurrencyLimiter(options);
+
+                builder.AddRateLimiter(limiter);
+
+                // Dispose of the limiter when the pipeline is disposed.
+                context.OnPipelineDisposed(() => limiter.Dispose());
+            });
+
+        #endregion
+    }
+
     private static ValueTask<string> TextSearchAsync(string query, CancellationToken token) => new("dummy");
 
-    private static string GetPartitionKey(Polly.ResilienceContext context) => string.Empty;
+    private static string GetPartitionKey(ResilienceContext context) => string.Empty;
 }
