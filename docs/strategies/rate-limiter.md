@@ -74,9 +74,7 @@ catch (RateLimiterRejectedException ex)
 | `DefaultRateLimiterOptions` | `PermitLimit` set to 1000 and `QueueLimit` set to 0. | The options for the default concurrency limiter that will be used when `RateLimiter` is `null`. |
 | `OnRejected`                | `null`                                               | Event that is raised when the execution is rejected by the rate limiter.                        |
 
-## Details
-
-### Disposal of rate limiters
+## Disposal of rate limiters
 
 The `RateLimiter` is a disposable resource. When you explicitly create a `RateLimiter` instance, it's good practice to dispose of it once it's no longer needed. This is usually not an issue when manually creating resilience pipelines using the `ResiliencePipelineBuilder`. However, when dynamic reloads are enabled, failing to dispose of discarded rate limiters can lead to excessive resource consumption. Fortunately, Polly provides a way to dispose of discarded rate limiters, as demonstrated in the example below:
 
@@ -101,7 +99,9 @@ services
 ```
 <!-- endSnippet -->
 
-### Partitioned rate limiter
+The above example uses the `AddResiliencePipeline` extension method to configure the pipeline. However, a similar approach can be taken when directly using the `ResiliencePipelineRegistry`.
+
+## Partitioned rate limiter
 
 For advanced use-cases, the partitioned rate limiter is also available. The following example illustrates how to retrieve a partition key from `ResilienceContext` using the `GetPartitionKey` method:
 
