@@ -111,3 +111,9 @@ Visit the [resilience strategies](resilience-strategies.md) section to understan
 ## Topics (previous Polly versions)
 
 - [Extensibility (v7)](v7/extensibility.md): Learn how you can extend Polly with new policies.
+
+## Samples
+
+- [Samples](samples/README.md): Samples in this repository that serve as an introduction to Polly.
+- [Polly-Samples](https://github.com/App-vNext/Polly-Samples): Contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
+- Microsoft's [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers): Sample project demonstrating a .NET Microservices architecture and using Polly for resilience.
