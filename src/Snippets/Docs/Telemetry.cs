@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
 using Polly.Telemetry;
@@ -44,6 +45,25 @@ internal static class Telemetry
             .AddTimeout(TimeSpan.FromSeconds(1))
             .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
             .Build();
+
+        #endregion
+    }
+
+    public static void AddResiliencePipelineWithTelemetry()
+    {
+        #region add-resilience-pipeline-with-telemetry
+
+        var serviceCollection = new ServiceCollection()
+            .AddLogging(builder => builder.AddConsole())
+            .AddResiliencePipeline("my-strategy", builder => builder.AddTimeout(TimeSpan.FromSeconds(1)))
+            .Configure<TelemetryOptions>(options =>
+            {
+                // Configure enrichers
+                options.MeteringEnrichers.Add(new MyMeteringEnricher());
+
+                // Configure telemetry listeners
+                options.TelemetryListeners.Add(new MyTelemetryListener());
+            });
 
         #endregion
     }

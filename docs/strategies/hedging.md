@@ -68,7 +68,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
 | `DelayGenerator`    | `null`                                                                     | Used for generating custom delays for hedging. If `null` then `Delay` is used.           |
 | `OnHedging`         | `null`                                                                     | Event that is raised when a hedging is performed.                                        |
 
-You can use the following special values for `Delay` or in `HedgingDelayGenerator`:
+You can use the following special values for `Delay` or in `DelayGenerator`:
 
 - `0 seconds` - the hedging strategy immediately creates a total of `MaxHedgedAttempts` and completes when the fastest acceptable result is available.
 - `-1 millisecond` - this value indicates that the strategy does not create a new hedged task before the previous one completes. This enables scenarios where having multiple concurrent hedged tasks can cause side effects.
@@ -109,10 +109,10 @@ The hedging strategy operates in parallel mode when the `Delay` property is set 
 
 ### Dynamic mode
 
-In dynamic mode, you have the flexibility to control how the hedging strategy behaves during each execution. This control is achieved through the `HedgingDelayGenerator` property.
+In dynamic mode, you have the flexibility to control how the hedging strategy behaves during each execution. This control is achieved through the `DelayGenerator` property.
 
 > [!NOTE]
-> The `Delay` property is disregarded when `HedgingDelayGenerator` is set.
+> The `Delay` property is disregarded when `DelayGenerator` is set.
 
 Example scenario:
 

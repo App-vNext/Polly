@@ -101,7 +101,7 @@ internal static class Hedging
                     {
                         try
                         {
-                            // A dedicated ActionContext is provided for each hedged action
+                            // A dedicated ActionContext is provided for each hedged action.
                             // It comes with a separate CancellationToken created specifically for this hedged attempt,
                             // which can be cancelled later if needed.
                             //
