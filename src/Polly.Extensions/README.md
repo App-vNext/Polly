@@ -1,4 +1,4 @@
-# Polly.extensions overview
+# Polly.Extensions overview
 
 This project provides the following features:
 

@@ -1,6 +1,6 @@
 # Dependency injection
 
-Starting with version 8, Polly provides features that make the integration of Polly with the standard [`IServiceCollection`](https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection) Dependency Injection (DI) container more streamlined. This is a thin layer atop the [resilience pipeline registry](resilience-pipeline-registry.md) which manages resilience pipelines.
+Starting with version 8, Polly provides features that make the integration of Polly with the .NET [`IServiceCollection`](https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection) Dependency Injection (DI) container more streamlined. This is a thin layer atop the [resilience pipeline registry](resilience-pipeline-registry.md) which manages resilience pipelines.
 
 ## Usage
 
@@ -90,7 +90,7 @@ await pipeline.ExecuteAsync(
 
 ## Dynamic reloads
 
-The dynamic reloads is a feature of pipeline registry that is also surfaced when using the `AddResiliencePipeline(...)` extension method. Use an overload that provides access to `AddResiliencePipelineContext`:
+Dynamic reloading is a feature of the pipeline registry that is also surfaced when using the `AddResiliencePipeline(...)` extension method. Use an overload that provides access to `AddResiliencePipelineContext`:
 
 <!-- snippet: di-dynamic-reloads -->
 ```cs
@@ -110,7 +110,7 @@ services
 ```
 <!-- endSnippet -->
 
-- `EnableReloads` activates the dynamic reloading of `my-pipeline`.
+- `EnableReloads<T>(...)` activates the dynamic reloading of `my-pipeline`.
 - `RetryStrategyOptions` are fetched using `context.GetOptions(...)` utility method.
 - A retry strategy is added.
 
@@ -123,7 +123,7 @@ If an error occurs during reloading, the old pipeline remains, and dynamic reloa
 
 ## Resource disposal
 
-Like dynamic reloads, the pipeline registry's resource disposal feature lets you register callbacks. These callbacks run when the pipeline is discarded, reloaded, or the registry is disposed at application shutdown.
+Like dynamic reloading, the pipeline registry's resource disposal feature lets you register callbacks. These callbacks run when the pipeline is discarded, reloaded, or the registry is disposed at application shutdown.
 
 See the example below:
 
@@ -172,7 +172,7 @@ services.AddResiliencePipeline(new MyPipelineKey("my-pipeline", string.Empty), b
 ```
 <!-- endSnippet -->
 
-The "my-pipeline" is now registered. Note that the `InstanceName` is an empty string. While we're registering the builder action for a specific pipeline, the `InstanceName` parameter isn't used during the pipeline's registration. Some further modifications are required for this to function.
+The "my-pipeline" pipeline is now registered. Note that the `InstanceName` is an empty string. While we're registering the builder action for a specific pipeline, the `InstanceName` parameter isn't used during the pipeline's registration. Some further modifications are required for this to function.
 
 Introduce the `PipelineNameComparer`:
 
@@ -209,7 +209,7 @@ Let's summarize our actions:
 - We used the `InstanceNameFormatter` delegate to represent the `MyPipelineKey` as an instance name for telemetry purposes, keeping the instance name as it is.
 - Likewise, the `BuilderNameFormatter` delegate represents the `MyPipelineKey` as a builder name in telemetry.
 
-Finally, utilize the `ResiliencePipelineProvider<MyPipelineKey>` to dynamically create and cache multiple instances of the same pipeline:
+Finally, use the `ResiliencePipelineProvider<MyPipelineKey>` to dynamically create and cache multiple instances of the same pipeline:
 
 <!-- snippet: di-registry-multiple-instances -->
 ```cs
