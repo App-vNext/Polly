@@ -193,7 +193,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
     }
 });
 
-// To keep retrying indefinitely until successful
+// To keep retrying indefinitely or until success use int.MaxValue.
 new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 {
     MaxRetryAttempts = int.MaxValue,
