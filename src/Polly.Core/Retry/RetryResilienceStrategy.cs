@@ -56,7 +56,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
 
             TelemetryUtil.ReportExecutionAttempt(_telemetry, context, outcome, attempt, executionTime, handle);
 
-            if (context.CancellationToken.IsCancellationRequested || IsLastAttempt(attempt) || !handle)
+            if (context.CancellationToken.IsCancellationRequested || IsLastAttempt(attempt, out bool incrementAttempts) || !handle)
             {
                 return outcome;
             }
@@ -98,9 +98,22 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
                 }
             }
 
-            attempt++;
+            if (incrementAttempts)
+            {
+                attempt++;
+            }
         }
     }
 
-    private bool IsLastAttempt(int attempt) => attempt >= RetryCount;
+    internal bool IsLastAttempt(int attempt, out bool incrementAttempts)
+    {
+        if (attempt == int.MaxValue)
+        {
+            incrementAttempts = false;
+            return false;
+        }
+
+        incrementAttempts = true;
+        return attempt >= RetryCount;
+    }
 }

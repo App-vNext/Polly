@@ -20,6 +20,9 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <value>
     /// The default value is 3 retries.
     /// </value>
+    /// <remarks>
+    /// To retry indefinitely use <see cref="int.MaxValue"/>. Note that the reported attempt number is capped at <see cref="int.MaxValue"/>.
+    /// </remarks>
     [Range(1, RetryConstants.MaxRetryCount)]
     public int MaxRetryAttempts { get; set; } = RetryConstants.DefaultRetryCount;
 
