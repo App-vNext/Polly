@@ -1,3 +1,33 @@
+## 8.0.0-beta.2
+
+* Updates for beta.1 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1531
+* Drop unused internal property by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1532
+* Update .NET tools by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1533
+* Cleanup the Polly.Core README.md  by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1539
+* Drop table of contents in README.md by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1541
+* Add actionlint by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1542
+* Cleanup samples by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1544
+* Move code from markdown to snippets by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1540
+* Trim the main README.md by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1550
+* Use proactive term instead of non-reactive by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1552
+* Add the v8 README.md by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1548
+* Use token to clone repository by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1554
+* [Docs] Add docs for individual resilience strategies by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1553
+* [Docs] Fix v8 link by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1557
+* Fix Name and InstanceName not being set for reloadable pipelines by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1555
+* [Docs] Telemetry page by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1556
+* Fix the link to v8 docs (second attempt) by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1559
+* Improve the samples by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1562
+* [Docs] Hedging and rate limiter strategy docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1560
+* [Docs] Dependency injection by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1564
+* [Docs] Improve landing page to the docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1566
+* Drop the build target for net7.0 by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1572
+* Drop redundant System.Diagnostics.DiagnosticSource package reference by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1573
+* Improve the docs and behavior around infinite retries by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1574
+* [Docs] Resilience pipeline registry by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1575
+* [Docs] Consolidate headings by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1576
+* Delay pipeline disposal when still in use by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1579
+
 ## 8.0.0-beta.1
 
 * Updates for alpha.9 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1526
