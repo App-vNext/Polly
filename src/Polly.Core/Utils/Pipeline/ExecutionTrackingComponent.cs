@@ -45,6 +45,7 @@ internal sealed class ExecutionTrackingComponent : PipelineComponent
         {
             await _timeProvider.Delay(SleepDelay).ConfigureAwait(false);
 
+            // stryker disable once equality : no means to test this
             if (_timeProvider.GetElapsedTime(start) > Timeout)
             {
                 break;
