@@ -82,7 +82,7 @@ internal static class ResiliencePipelineRegistry
         {
             BuilderComparer = StringComparer.OrdinalIgnoreCase,
             PipelineComparer = StringComparer.OrdinalIgnoreCase,
-            BuilderFactory = () => new ResiliencePipelineBuilder()
+            BuilderFactory = () => new ResiliencePipelineBuilder
             {
                 InstanceName = "lets change the defaults",
                 Name = "lets change the defaults",
@@ -125,7 +125,7 @@ internal static class ResiliencePipelineRegistry
 
         var registry = new ResiliencePipelineRegistry<string>();
 
-        // This instance is valid event after reload.
+        // This instance is valid even after reload.
         ResiliencePipeline pipeline = registry
             .GetOrAddPipeline("A", (builder, context) => builder.AddTimeout(TimeSpan.FromSeconds(10)));
 
@@ -171,7 +171,7 @@ internal static class ResiliencePipelineRegistry
 
     private static void RegisterCancellationSource(CancellationTokenSource cancellation)
     {
-        // register the source
+        // Register the source
     }
 }
 

@@ -92,8 +92,8 @@ The constructor for `ResiliencePipelineRegistry<TKey>` accepts a parameter of ty
 | `BuilderFactory`        | Function returning a new `ResiliencePipelineBuilder` each time. | Allows consumers to customize builder creation.                   |
 | `PipelineComparer`      | `EqualityComparer<TKey>.Default`                                | Comparer the registry uses to fetch resilience pipelines.         |
 | `BuilderComparer`       | `EqualityComparer<TKey>.Default`                                | Comparer the registry uses to fetch registered pipeline builders. |
-| `InstanceNameFormatter` | `null`                                                          | Function formatting `TKey` to instance name.                      |
-| `BuilderNameFormatter`  | Function returning the `key.ToString()` value.                  | Function formatting `TKey` to builder name.                       |
+| `InstanceNameFormatter` | `null`                                                          | Delegate formatting `TKey` to instance name.                      |
+| `BuilderNameFormatter`  | Function returning the `key.ToString()` value.                  | Delegate formatting `TKey` to builder name.                       |
 
 > [>NOTE]
 > The `BuilderName` and `InstanceName` are used in [telemetry](telemetry.md#metrics).
@@ -155,7 +155,7 @@ The registry caches and manages all pipelines and resources linked to them. When
 ```cs
 var registry = new ResiliencePipelineRegistry<string>();
 
-// This instance is valid event after reload.
+// This instance is valid even after reload.
 ResiliencePipeline pipeline = registry
     .GetOrAddPipeline("A", (builder, context) => builder.AddTimeout(TimeSpan.FromSeconds(10)));
 
@@ -173,7 +173,7 @@ catch (ObjectDisposedException)
 ```
 <!-- endSnippet -->
 
-The registry also allows for the registration of dispose callbacks. These are called when a pipeline is discarded, either because of the registry's disposal or after the pipeline is reloaded. The example below works well with dynamic reloads, letting you dispose of the `CancellationTokenSource` when it's not needed anymore.
+The registry also allows for the registration of dispose callbacks. These are called when a pipeline is discarded, either because of the registry's disposal or after the pipeline has reloaded. The example below works well with dynamic reloads, letting you dispose of the `CancellationTokenSource` when it's not needed anymore.
 
 <!-- snippet: registry-reloads-and-dispose -->
 ```cs
@@ -197,7 +197,7 @@ registry.TryAddBuilder("A", (builder, context) =>
 ```
 <!-- endSnippet -->
 
-Both `AddReloadToken(...)` and `OnPipelineDisposed(...)` are used to implement the `EnableReloads<TOptions>(...)` extension method that is used by the [DI layer](dependency-injection.md#dynamic-reloads).
+Both `AddReloadToken(...)` and `OnPipelineDisposed(...)` are used to implement the `EnableReloads<TOptions>(...)` extension method that is used by the [Dependency Injection layer](dependency-injection.md#dynamic-reloads).
 
 ## Complex registry keys
 
