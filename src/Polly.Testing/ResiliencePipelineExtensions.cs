@@ -40,10 +40,10 @@ public static class ResiliencePipelineExtensions
         var components = new List<PipelineComponent>();
         component.ExpandComponents(components);
 
-        var descriptors = components.Select(s => new ResilienceStrategyDescriptor(s.Options, GetStrategyInstance<T>(s))).ToList();
+        var descriptors = components.OfType<BridgeComponentBase>().Select(s => new ResilienceStrategyDescriptor(s.Options, GetStrategyInstance<T>(s))).ToList().AsReadOnly();
 
         return new ResiliencePipelineDescriptor(
-            descriptors.Where(s => !ShouldSkip(s.StrategyInstance)).ToList().AsReadOnly(),
+            descriptors,
             isReloadable: components.Exists(s => s is ReloadableComponent));
     }
 
@@ -54,21 +54,8 @@ public static class ResiliencePipelineExtensions
             return reactiveBridge.Strategy;
         }
 
-        if (component is BridgeComponent nonReactiveBridge)
-        {
-            return nonReactiveBridge.Strategy;
-        }
-
-        return component;
+        return ((BridgeComponent)component).Strategy;
     }
-
-    private static bool ShouldSkip(object instance) => instance switch
-    {
-        ReloadableComponent => true,
-        ComponentWithDisposeCallbacks => true,
-        ExecutionTrackingComponent => true,
-        _ => false
-    };
 
     private static void ExpandComponents(this PipelineComponent component, List<PipelineComponent> components)
     {
