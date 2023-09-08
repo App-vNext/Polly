@@ -24,6 +24,8 @@ internal static class PipelineComponentFactory
         return new ComponentWithDisposeCallbacks(component, callbacks.ToList());
     }
 
+    public static PipelineComponent WithExecutionTracking(PipelineComponent component, TimeProvider timeProvider) => new ExecutionTrackingComponent(component, timeProvider);
+
     public static PipelineComponent CreateComposite(
         IReadOnlyList<PipelineComponent> components,
         ResilienceStrategyTelemetry telemetry,
