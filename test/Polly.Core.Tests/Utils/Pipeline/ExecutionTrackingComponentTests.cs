@@ -136,11 +136,6 @@ public class ExecutionTrackingComponentTests
         {
             OnExecute();
 
-            if (Disposed)
-            {
-                throw new ObjectDisposedException("dummy");
-            }
-
             return await callback(context, state);
         }
     }
