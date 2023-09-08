@@ -1,4 +1,4 @@
-# Resilience Strategies
+# Resilience strategies
 
 > [!NOTE]
 > This is documentation for the upcoming Polly v8 release.

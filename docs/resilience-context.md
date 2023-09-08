@@ -1,4 +1,4 @@
-# Resilience Context
+# Resilience context
 
 > [!NOTE]
 > This is documentation for the upcoming Polly v8 release.
