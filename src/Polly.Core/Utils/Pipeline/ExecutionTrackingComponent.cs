@@ -2,7 +2,7 @@
 
 internal sealed class ExecutionTrackingComponent : PipelineComponent
 {
-    public static readonly TimeSpan Timeout = TimeSpan.FromMinutes(5);
+    public static readonly TimeSpan Timeout = TimeSpan.FromSeconds(30);
 
     public static readonly TimeSpan SleepDelay = TimeSpan.FromSeconds(1);
 
