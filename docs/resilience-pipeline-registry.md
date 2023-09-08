@@ -106,7 +106,7 @@ var options = new ResiliencePipelineRegistryOptions<string>
 {
     BuilderComparer = StringComparer.OrdinalIgnoreCase,
     PipelineComparer = StringComparer.OrdinalIgnoreCase,
-    BuilderFactory = () => new ResiliencePipelineBuilder()
+    BuilderFactory = () => new ResiliencePipelineBuilder
     {
         InstanceName = "lets change the defaults",
         Name = "lets change the defaults",
