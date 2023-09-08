@@ -74,6 +74,52 @@ public class ExecutionTrackingComponentTests
         await execution;
     }
 
+    [Fact]
+    public async Task DisposeAsync_WhenRunningMultipleTasks_Ok()
+    {
+        var tasks = new ConcurrentQueue<ManualResetEvent>();
+        await using var inner = new Inner
+        {
+            OnExecute = () =>
+            {
+                var ev = new ManualResetEvent(false);
+                tasks.Enqueue(ev);
+                ev.WaitOne();
+            }
+        };
+
+        var component = new ExecutionTrackingComponent(inner, TimeProvider.System);
+        var pipeline = new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow);
+
+        for (int i = 0; i < 10; i++)
+        {
+            _ = Task.Run(() => pipeline.Execute(() => { }));
+        }
+
+        while (tasks.Count != 10)
+        {
+            await Task.Delay(1);
+        }
+
+        var disposeTask = component.DisposeAsync().AsTask();
+
+        while (tasks.Count > 1)
+        {
+            tasks.TryDequeue(out var ev).Should().BeTrue();
+            ev!.Set();
+            ev.Dispose();
+            disposeTask.Wait(1).Should().BeFalse();
+            inner.Disposed.Should().BeFalse();
+        }
+
+        // last one
+        tasks.TryDequeue(out var last).Should().BeTrue();
+        last!.Set();
+        last.Dispose();
+        await disposeTask;
+        inner.Disposed.Should().BeTrue();
+    }
+
     private class Inner : PipelineComponent
     {
         public bool Disposed { get; private set; }
@@ -89,6 +135,11 @@ public class ExecutionTrackingComponentTests
         internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
         {
             OnExecute();
+
+            if (Disposed)
+            {
+                throw new ObjectDisposedException("dummy");
+            }
 
             return await callback(context, state);
         }

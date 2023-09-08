@@ -41,7 +41,7 @@ internal sealed class ExecutionTrackingComponent : PipelineComponent
 
         // We don't want to introduce locks or any synchronization primitives to main execution path
         // so we will do "dummy" retries until there are no more executions.
-        while (Interlocked.CompareExchange(ref _pendingExecutions, 0, 0) != 0)
+        while (Interlocked.CompareExchange(ref _pendingExecutions, 0, 0) > 0)
         {
             await _timeProvider.Delay(SleepDelay).ConfigureAwait(false);
 
