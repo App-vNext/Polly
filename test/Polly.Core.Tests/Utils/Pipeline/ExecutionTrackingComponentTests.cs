@@ -43,6 +43,32 @@ public class ExecutionTrackingComponentTests
     }
 
     [Fact]
+    public async Task HasPendingExecutions_Ok()
+    {
+        using var assert = new ManualResetEvent(false);
+        using var executing = new ManualResetEvent(false);
+
+        await using var inner = new Inner
+        {
+            OnExecute = () =>
+            {
+                executing.Set();
+                assert.WaitOne();
+            }
+        };
+
+        await using var component = new ExecutionTrackingComponent(inner, _timeProvider);
+        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow).Execute(() => { }));
+        executing.WaitOne();
+
+        component.HasPendingExecutions.Should().BeTrue();
+        assert.Set();
+        await execution;
+
+        component.HasPendingExecutions.Should().BeFalse();
+    }
+
+    [Fact]
     public async Task DisposeAsync_Timeout_Ok()
     {
         using var assert = new ManualResetEvent(false);
