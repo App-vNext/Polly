@@ -28,7 +28,6 @@
     <PackageReference Include="System.Threading.Tasks.Extensions" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
     <PackageReference Include="System.ValueTuple" Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETFramework'" />
     <PackageReference Include="System.ComponentModel.Annotations" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
   </ItemGroup>
 
 </Project>
