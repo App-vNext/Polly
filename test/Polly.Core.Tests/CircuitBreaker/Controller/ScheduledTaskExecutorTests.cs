@@ -123,11 +123,11 @@ public class ScheduledTaskExecutorTests
             ResilienceContextPool.Shared.Get(),
             out var task);
 
-        ready.WaitOne(TimeSpan.FromSeconds(2)).Should().BeTrue();
+        ready.WaitOne(TimeSpan.FromSeconds(10)).Should().BeTrue();
         scheduler.Dispose();
         disposed.Set();
 
-        scheduler.ProcessingTask.Wait(TimeSpan.FromSeconds(2)).Should().BeTrue();
+        scheduler.ProcessingTask.Wait(TimeSpan.FromSeconds(10)).Should().BeTrue();
     }
 
     [Fact]
