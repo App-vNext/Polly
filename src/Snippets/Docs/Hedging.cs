@@ -191,6 +191,9 @@ internal static class Hedging
                     // - Providing alternate endpoint URLs
                     request = PrepareRequest(request);
 
+                    // Override the request message in the action context
+                    args.ActionContext.Properties.Set(ResilienceKeys.RequestMessage, request);
+
                     // Then, execute the original callback
                     return () => args.Callback(args.ActionContext);
                 }

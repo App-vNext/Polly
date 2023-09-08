@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace Polly.Registry;
 
 /// <summary>
@@ -42,7 +40,6 @@ public class ConfigureBuilderContext<TKey>
     /// <remarks>
     /// You can add multiple reload tokens to the context. Non-cancelable or already canceled tokens are ignored.
     /// </remarks>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public void AddReloadToken(CancellationToken cancellationToken)
     {
         if (!cancellationToken.CanBeCanceled || cancellationToken.IsCancellationRequested)

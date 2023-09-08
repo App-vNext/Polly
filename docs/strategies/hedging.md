@@ -248,7 +248,7 @@ internal static class ResilienceKeys
 ```
 <!-- endSnippet -->
 
-In your `ActionGenerator`, you can easily provide your own `HttpRequestMessage` to ActionContext, and the original callback will use it:
+In your `ActionGenerator`, you can easily provide your own `HttpRequestMessage` to `ActionContext`, and the original callback will use it:
 
 <!-- snippet: hedging-parametrized-action-generator -->
 ```cs
@@ -267,6 +267,9 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
             // - Cloning the request message
             // - Providing alternate endpoint URLs
             request = PrepareRequest(request);
+
+            // Override the request message in the action context
+            args.ActionContext.Properties.Set(ResilienceKeys.RequestMessage, request);
 
             // Then, execute the original callback
             return () => args.Callback(args.ActionContext);
