@@ -62,7 +62,13 @@ public static class ResiliencePipelineExtensions
         return component;
     }
 
-    private static bool ShouldSkip(object instance) => instance is ReloadableComponent || instance is ComponentWithDisposeCallbacks;
+    private static bool ShouldSkip(object instance) => instance switch
+    {
+        ReloadableComponent => true,
+        ComponentWithDisposeCallbacks => true,
+        ExecutionTrackingComponent => true,
+        _ => false
+    };
 
     private static void ExpandComponents(this PipelineComponent component, List<PipelineComponent> components)
     {
@@ -77,6 +83,11 @@ public static class ResiliencePipelineExtensions
         {
             components.Add(reloadable);
             ExpandComponents(reloadable.Component, components);
+        }
+        else if (component is ExecutionTrackingComponent tracking)
+        {
+            components.Add(tracking);
+            ExpandComponents(tracking.Component, components);
         }
         else if (component is ComponentWithDisposeCallbacks callbacks)
         {

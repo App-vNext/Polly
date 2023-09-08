@@ -57,14 +57,17 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
         builder.InstanceName = _instanceName;
         _configure(builder, context);
 
+        var timeProvider = builder.TimeProvider;
         var telemetry = new ResilienceStrategyTelemetry(
             new ResilienceTelemetrySource(builder.Name, builder.InstanceName, null),
             builder.TelemetryListener);
 
         return new(
-            () => PipelineComponentFactory.WithDisposableCallbacks(
-                    builder.BuildPipelineComponent(),
-                    context.DisposeCallbacks),
+            () =>
+            {
+                var innerComponent = PipelineComponentFactory.WithDisposableCallbacks(builder.BuildPipelineComponent(), context.DisposeCallbacks);
+                return PipelineComponentFactory.WithExecutionTracking(innerComponent, timeProvider);
+            },
             context.ReloadTokens,
             telemetry);
     }

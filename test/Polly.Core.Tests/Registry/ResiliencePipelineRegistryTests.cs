@@ -4,6 +4,7 @@ using Polly.Retry;
 using Polly.Testing;
 using Polly.Timeout;
 using Polly.Utils;
+using Polly.Utils.Pipeline;
 
 namespace Polly.Core.Tests.Registry;
 
@@ -378,6 +379,20 @@ public class ResiliencePipelineRegistryTests
         strategy.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<TimeoutResilienceStrategy>();
 
         called.Should().Be(1);
+    }
+
+    [Fact]
+    public void GetOrAddPipeline_EnsureCorrectComponents()
+    {
+        var id = new StrategyId(typeof(string), "A");
+
+        using var registry = CreateRegistry();
+
+        var pipeline = registry.GetOrAddPipeline(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
+        pipeline.Component.Should().BeOfType<ExecutionTrackingComponent>().Subject.Component.Should().BeOfType<CompositeComponent>();
+
+        var genericPipeline = registry.GetOrAddPipeline<string>(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
+        pipeline.Component.Should().BeOfType<ExecutionTrackingComponent>().Subject.Component.Should().BeOfType<CompositeComponent>();
     }
 
     [Fact]
