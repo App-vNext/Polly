@@ -17,12 +17,12 @@ public class OutcomeChaosStrategyTests
                 new object[] { null!, "Value cannot be null. (Parameter 'options')" },
                 new object[]
                 {
-                    new OutcomeStrategyOptions<Exception>
+                    new FaultStrategyOptions
                     {
                         InjectionRate = 1,
                         Enabled = true,
                     },
-                    "Either Outcome or OutcomeGenerator is required. (Parameter 'Outcome')"
+                    "Either Fault or FaultGenerator is required. (Parameter 'Fault')"
                 },
         };
 
@@ -44,7 +44,7 @@ public class OutcomeChaosStrategyTests
     [Theory]
     [MemberData(nameof(FaultCtorTestCases))]
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
-    public void FaultInvalidCtor(OutcomeStrategyOptions<Exception> options, string message)
+    public void FaultInvalidCtor(FaultStrategyOptions options, string message)
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
     {
         Action act = () =>
@@ -87,12 +87,12 @@ public class OutcomeChaosStrategyTests
         var userDelegateExecuted = false;
         var fault = new InvalidOperationException("Dummy exception");
 
-        var options = new OutcomeStrategyOptions<Exception>
+        var options = new FaultStrategyOptions
         {
             InjectionRate = 0.6,
             Enabled = false,
             Randomizer = () => 0.5,
-            Outcome = new Outcome<Exception>(fault)
+            Fault = fault
         };
 
         var sut = new ResiliencePipelineBuilder().AddChaosFault(options).Build();
@@ -107,12 +107,12 @@ public class OutcomeChaosStrategyTests
         var userDelegateExecuted = false;
         var fault = new InvalidOperationException("Dummy exception");
 
-        var options = new OutcomeStrategyOptions<Exception>
+        var options = new FaultStrategyOptions
         {
             InjectionRate = 0.6,
             Enabled = false,
             Randomizer = () => 0.5,
-            Outcome = new Outcome<Exception>(fault)
+            Fault = fault
         };
 
         var sut = new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosFault(options).Build();
@@ -134,13 +134,13 @@ public class OutcomeChaosStrategyTests
         var exceptionMessage = "Dummy exception";
         var fault = new InvalidOperationException(exceptionMessage);
 
-        var options = new OutcomeStrategyOptions<Exception>
+        var options = new FaultStrategyOptions
         {
             InjectionRate = 0.6,
             Enabled = true,
             Randomizer = () => 0.5,
-            Outcome = new Outcome<Exception>(fault),
-            OnOutcomeInjected = args =>
+            Fault = fault,
+            OnFaultInjected = args =>
             {
                 args.Context.Should().NotBeNull();
                 args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
@@ -171,13 +171,13 @@ public class OutcomeChaosStrategyTests
         var exceptionMessage = "Dummy exception";
         var fault = new InvalidOperationException(exceptionMessage);
 
-        var options = new OutcomeStrategyOptions<Exception>
+        var options = new FaultStrategyOptions
         {
             InjectionRate = 0.6,
             Enabled = true,
             Randomizer = () => 0.5,
-            Outcome = new Outcome<Exception>(fault),
-            OnOutcomeInjected = args =>
+            Fault = fault,
+            OnFaultInjected = args =>
             {
                 args.Context.Should().NotBeNull();
                 args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
@@ -209,12 +209,12 @@ public class OutcomeChaosStrategyTests
         var userDelegateExecuted = false;
         var fault = new InvalidOperationException("Dummy exception");
 
-        var options = new OutcomeStrategyOptions<Exception>
+        var options = new FaultStrategyOptions
         {
             InjectionRate = 0.3,
             Enabled = true,
             Randomizer = () => 0.5,
-            Outcome = new Outcome<Exception>(fault)
+            Fault = fault
         };
 
         var sut = CreateSut<int>(options);
@@ -232,12 +232,12 @@ public class OutcomeChaosStrategyTests
     public void Given_enabled_and_randomly_within_threshold_should_not_inject_fault_when_exception_is_null()
     {
         var userDelegateExecuted = false;
-        var options = new OutcomeStrategyOptions<Exception>
+        var options = new FaultStrategyOptions
         {
             InjectionRate = 0.6,
             Enabled = true,
             Randomizer = () => 0.5,
-            OutcomeGenerator = (_) => new ValueTask<Outcome<Exception>?>(Task.FromResult<Outcome<Exception>?>(null))
+            FaultGenerator = (_) => new ValueTask<Exception?>(Task.FromResult<Exception?>(null))
         };
 
         var sut = new ResiliencePipelineBuilder().AddChaosFault(options).Build();
@@ -359,7 +359,7 @@ public class OutcomeChaosStrategyTests
     private ResiliencePipeline<TResult> CreateSut<TResult>(OutcomeStrategyOptions<TResult> options) =>
         new OutcomeChaosStrategy<TResult>(options, _telemetry).AsPipeline();
 
-    private ResiliencePipeline<TResult> CreateSut<TResult>(OutcomeStrategyOptions<Exception> options) =>
+    private ResiliencePipeline<TResult> CreateSut<TResult>(FaultStrategyOptions options) =>
         new OutcomeChaosStrategy<TResult>(options, _telemetry).AsPipeline();
 }
 

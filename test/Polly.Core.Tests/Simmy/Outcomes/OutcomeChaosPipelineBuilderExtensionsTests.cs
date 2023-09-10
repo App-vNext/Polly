@@ -27,15 +27,15 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     {
         builder =>
         {
-            builder.AddChaosFault<string>(new OutcomeStrategyOptions<Exception>
+            builder.AddChaosFault<string>(new FaultStrategyOptions
             {
                 InjectionRate = 0.6,
                 Enabled = true,
                 Randomizer = () => 0.5,
-                Outcome = new(new InvalidOperationException("Dummy exception."))
+                Fault = new InvalidOperationException("Dummy exception.")
             });
 
-            AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.6, new InvalidOperationException("Dummy exception."));
+            AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.6);
         }
     };
 
@@ -43,15 +43,15 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     {
         builder =>
         {
-            builder.AddChaosFault(new OutcomeStrategyOptions<Exception>
+            builder.AddChaosFault(new FaultStrategyOptions
             {
                 InjectionRate = 0.6,
                 Enabled = true,
                 Randomizer = () => 0.5,
-                Outcome = new(new InvalidOperationException("Dummy exception."))
+                Fault = new InvalidOperationException("Dummy exception.")
             });
 
-            AssertFaultStrategy<InvalidOperationException>(builder, true, 0.6, new InvalidOperationException("Dummy exception."));
+            AssertFaultStrategy<InvalidOperationException>(builder, true, 0.6);
         }
     };
 
@@ -67,7 +67,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
         strategy.Outcome.Should().Be(outcome);
     }
 
-    private static void AssertFaultStrategy<T, TException>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate, Exception ex)
+    private static void AssertFaultStrategy<T, TException>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate)
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
@@ -76,27 +76,11 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
         strategy.FaultGenerator.Should().NotBeNull();
-        strategy.Fault.Should().BeOfType(typeof(Outcome<Exception>));
+        strategy.Fault.Should().BeOfType(typeof(TException));
         strategy.Fault.Should().NotBeNull();
-
-        // it is supposed that this line should work the same as the try/catch block, but it's not, ideas?
-#pragma warning disable S125 // Sections of code should not be commented out
-        // Assert.Throws<TException>(() => { var _ = strategy.Fault.Value; }).Should().Be(ex);
-
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
-        {
-            var _ = strategy.Fault!.Value;
-        }
-        catch (Exception e)
-        {
-            e.Should().Be(ex);
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
-#pragma warning restore S125 // Sections of code should not be commented out
     }
 
-    private static void AssertFaultStrategy<TException>(ResiliencePipelineBuilder builder, bool enabled, double injectionRate, Exception ex)
+    private static void AssertFaultStrategy<TException>(ResiliencePipelineBuilder builder, bool enabled, double injectionRate)
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
@@ -105,24 +89,8 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
         strategy.FaultGenerator.Should().NotBeNull();
-        strategy.Fault.Should().BeOfType(typeof(Outcome<Exception>));
+        strategy.Fault.Should().BeOfType(typeof(TException));
         strategy.Fault.Should().NotBeNull();
-
-        // it is supposed that this line should work the same as the try/catch block, but it's not, ideas?
-#pragma warning disable S125 // Sections of code should not be commented out
-        // Assert.Throws<TException>(() => { var _ = strategy.Fault.Value; }).Should().Be(ex);
-
-#pragma warning disable CA1031 // Do not catch general exception types
-        try
-        {
-            var _ = strategy.Fault!.Value;
-        }
-        catch (Exception e)
-        {
-            e.Should().Be(ex);
-        }
-#pragma warning restore CA1031 // Do not catch general exception types
-#pragma warning restore S125 // Sections of code should not be commented out
     }
 
     [MemberData(nameof(ResultStrategy))]
@@ -177,7 +145,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
             .AddChaosFault(true, 0.5, new InvalidOperationException("Dummy exception"))
             .Build();
 
-        AssertFaultStrategy<InvalidOperationException>(builder, true, 0.5, new InvalidOperationException("Dummy exception"));
+        AssertFaultStrategy<InvalidOperationException>(builder, true, 0.5);
     }
 
     [Fact]
@@ -200,7 +168,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
             .AddChaosFault(true, 0.5, new InvalidOperationException("Dummy exception"))
             .Build();
 
-        AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.5, new InvalidOperationException("Dummy exception"));
+        AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.5);
     }
 
     [Fact]

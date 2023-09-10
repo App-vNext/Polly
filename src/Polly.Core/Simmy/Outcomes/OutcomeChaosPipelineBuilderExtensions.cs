@@ -20,11 +20,11 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        builder.AddFaultCore(new OutcomeStrategyOptions<Exception>
+        builder.AddFaultCore(new FaultStrategyOptions
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
-            Outcome = new(fault)
+            Fault = fault
         });
         return builder;
     }
@@ -42,11 +42,11 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        builder.AddFaultCore(new OutcomeStrategyOptions<Exception>
+        builder.AddFaultCore(new FaultStrategyOptions
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
-            OutcomeGenerator = (_) => new ValueTask<Outcome<Exception>?>(Task.FromResult<Outcome<Exception>?>(Outcome.FromResult(faultGenerator())))
+            FaultGenerator = (_) => new ValueTask<Exception?>(Task.FromResult(faultGenerator()))
         });
         return builder;
     }
@@ -57,7 +57,7 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The fault strategy options.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, OutcomeStrategyOptions<Exception> options)
+    public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, FaultStrategyOptions options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -70,7 +70,7 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    private static void AddFaultCore(this ResiliencePipelineBuilder builder, OutcomeStrategyOptions<Exception> options)
+    private static void AddFaultCore(this ResiliencePipelineBuilder builder, FaultStrategyOptions options)
     {
         builder.AddStrategy(context =>
             new OutcomeChaosStrategy<object>(

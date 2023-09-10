@@ -3,7 +3,7 @@
 #pragma warning disable CS8618 // Required members are not initialized in constructor since this is a DTO, default value is null
 
 /// <summary>
-/// Represents the options for the Behavior chaos strategy.
+/// Represents the options for the Outcome chaos strategy.
 /// </summary>
 /// <typeparam name="TResult">The type of the outcome that was injected.</typeparam>
 public class OutcomeStrategyOptions<TResult> : MonkeyStrategyOptions

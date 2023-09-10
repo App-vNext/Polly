@@ -21,11 +21,11 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        builder.AddFaultCore(new OutcomeStrategyOptions<Exception>
+        builder.AddFaultCore(new FaultStrategyOptions
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
-            Outcome = new(fault)
+            Fault = fault
         });
         return builder;
     }
@@ -44,11 +44,11 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        builder.AddFaultCore(new OutcomeStrategyOptions<Exception>
+        builder.AddFaultCore(new FaultStrategyOptions
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
-            OutcomeGenerator = (_) => new ValueTask<Outcome<Exception>?>(Task.FromResult<Outcome<Exception>?>(Outcome.FromResult(faultGenerator())))
+            FaultGenerator = (_) => new ValueTask<Exception?>(Task.FromResult(faultGenerator()))
         });
         return builder;
     }
@@ -60,7 +60,7 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The fault strategy options.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, OutcomeStrategyOptions<Exception> options)
+    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, FaultStrategyOptions options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -149,7 +149,7 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
         Justification = "All options members preserved.")]
     private static void AddFaultCore<TResult>(
         this ResiliencePipelineBuilder<TResult> builder,
-        OutcomeStrategyOptions<Exception> options)
+        FaultStrategyOptions options)
     {
         builder.AddStrategy(
             context => new OutcomeChaosStrategy<TResult>(options, context.Telemetry),

@@ -8,18 +8,18 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
 
-    public OutcomeChaosStrategy(OutcomeStrategyOptions<Exception> options, ResilienceStrategyTelemetry telemetry)
+    public OutcomeChaosStrategy(FaultStrategyOptions options, ResilienceStrategyTelemetry telemetry)
         : base(options)
     {
-        if (options.Outcome is null && options.OutcomeGenerator is null)
+        if (options.Fault is null && options.FaultGenerator is null)
         {
-            throw new ArgumentNullException(nameof(options.Outcome), "Either Outcome or OutcomeGenerator is required.");
+            throw new ArgumentNullException(nameof(options.Fault), "Either Fault or FaultGenerator is required.");
         }
 
         _telemetry = telemetry;
-        Fault = options.Outcome;
-        OnFaultInjected = options.OnOutcomeInjected;
-        FaultGenerator = options.OutcomeGenerator is not null ? options.OutcomeGenerator : (_) => new(options.Outcome);
+        Fault = options.Fault;
+        OnFaultInjected = options.OnFaultInjected;
+        FaultGenerator = options.FaultGenerator is not null ? options.FaultGenerator : (_) => new(options.Fault);
     }
 
     public OutcomeChaosStrategy(OutcomeStrategyOptions<T> options, ResilienceStrategyTelemetry telemetry)
@@ -42,11 +42,11 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
 
     public Func<OutcomeGeneratorArguments, ValueTask<Outcome<T>?>>? OutcomeGenerator { get; }
 
-    public Func<OutcomeGeneratorArguments, ValueTask<Outcome<Exception>?>>? FaultGenerator { get; }
+    public Func<OutcomeGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; }
 
     public Outcome<T>? Outcome { get; }
 
-    public Outcome<Exception>? Fault { get; }
+    public Exception? Fault { get; }
 
     protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
@@ -101,12 +101,12 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
     private async ValueTask<Exception?> InjectFault(ResilienceContext context)
     {
         var fault = await FaultGenerator!(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
-        if (!fault.HasValue)
+        if (fault is null)
         {
             return null;
         }
 
-        var args = new OnOutcomeInjectedArguments<Exception>(context, new Outcome<Exception>(fault.Value.Exception!));
+        var args = new OnOutcomeInjectedArguments<Exception>(context, new Outcome<Exception>(fault));
         _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnFaultInjectedEvent), context, args);
 
         if (OnFaultInjected is not null)
@@ -114,6 +114,6 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
             await OnFaultInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
-        return fault.Value.Exception;
+        return fault;
     }
 }
