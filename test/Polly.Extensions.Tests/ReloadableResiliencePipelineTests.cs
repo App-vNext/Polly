@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Polly.DependencyInjection;
 using Polly.Registry;
+using Polly.Telemetry;
 
 namespace Polly.Extensions.Tests;
 
@@ -20,6 +21,7 @@ public class ReloadableResiliencePipelineTests
         var reloadableConfig = new ReloadableConfiguration();
         reloadableConfig.Reload(new() { { "tag", "initial-tag" } });
         var builder = new ConfigurationBuilder().Add(reloadableConfig);
+        var fakeListener = new FakeTelemetryListener();
 
         var services = new ServiceCollection();
 
@@ -32,8 +34,11 @@ public class ReloadableResiliencePipelineTests
             services.Configure<ReloadableStrategyOptions>(name, builder.Build());
         }
 
+        services.Configure<TelemetryOptions>(options => options.TelemetryListeners.Add(fakeListener));
         services.AddResiliencePipeline("my-pipeline", (builder, context) =>
         {
+            builder.InstanceName = "my-instance";
+
             var options = context.GetOptions<ReloadableStrategyOptions>(name);
             context.EnableReloads<ReloadableStrategyOptions>(name);
 
@@ -76,6 +81,11 @@ public class ReloadableResiliencePipelineTests
         resList.Last().Received(1).Dispose();
         pipeline.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
 
+        foreach (var ev in fakeListener.Events)
+        {
+            ev.Source.PipelineName.Should().Be("my-pipeline");
+            ev.Source.PipelineInstanceName.Should().Be("my-instance");
+        }
     }
 
     public class ReloadableStrategy : ResilienceStrategy, IDisposable

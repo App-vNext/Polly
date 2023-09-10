@@ -1,0 +1,36 @@
+name: actions-lint
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+    - '**/*.gitattributes'
+    - '**/*.gitignore'
+    - '**/*.md'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FORCE_COLOR: 3
+  TERM: xterm
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+
+    - name: Add actionlint problem matcher
+      run: echo "::add-matcher::.github/actionlint-matcher.json"
+
+    - name: Lint workflows
+      uses: docker://rhysd/actionlint@sha256:86ebdb1c0df5a8be92b9d53e2e0c636978a2b3c6e52c86c65a77e2c78a6bd594 # v1.6.25
+      with:
+        args: -color

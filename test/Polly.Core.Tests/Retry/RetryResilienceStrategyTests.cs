@@ -2,6 +2,7 @@ using FluentAssertions.Execution;
 using Microsoft.Extensions.Time.Testing;
 using Polly.Retry;
 using Polly.Telemetry;
+using Polly.Testing;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -188,6 +189,15 @@ public class RetryResilienceStrategyTests
 
         retries.Should().Be(3);
         generatedValues.Should().Be(3);
+    }
+
+    [Fact]
+    public void IsLastAttempt_Ok()
+    {
+        var sut = (RetryResilienceStrategy<object>)CreateSut().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
+
+        sut.IsLastAttempt(int.MaxValue, out var increment).Should().BeFalse();
+        increment.Should().BeFalse();
     }
 
     private sealed class ThrowingFakeTimeProvider : FakeTimeProvider

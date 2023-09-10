@@ -8,7 +8,10 @@ The `Polly.RateLimiting` package adopts the [.NET Rate Limiting](https://devblog
 
 Example:
 
-``` csharp
+<!-- snippet: rate-limiter-usage -->
+```cs
+ResiliencePipelineBuilder builder = new ResiliencePipelineBuilder();
+
 // Convenience extension method for ConcurrencyLimiter
 builder.AddConcurrencyLimiter(permitLimit: 10, queueLimit: 10);
 
@@ -45,4 +48,4 @@ builder.AddRateLimiter(new RateLimiterStrategyOptions
     }
 });
 ```
-
+<!-- endSnippet -->

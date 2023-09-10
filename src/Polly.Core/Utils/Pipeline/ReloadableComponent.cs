@@ -13,18 +13,18 @@ internal sealed class ReloadableComponent : PipelineComponent
     public const string OnReloadEvent = "OnReload";
 
     private readonly Func<Entry> _factory;
-    private readonly ResilienceStrategyTelemetry _telemetry;
+    private ResilienceStrategyTelemetry _telemetry;
     private CancellationTokenSource _tokenSource = null!;
     private CancellationTokenRegistration _registration;
     private List<CancellationToken> _reloadTokens;
 
-    public ReloadableComponent(Entry entry, Func<Entry> factory, ResilienceStrategyTelemetry telemetry)
+    public ReloadableComponent(Entry entry, Func<Entry> factory)
     {
         Component = entry.Component;
 
         _reloadTokens = entry.ReloadTokens;
         _factory = factory;
-        _telemetry = telemetry;
+        _telemetry = entry.Telemetry;
 
         TryRegisterOnReload();
     }
@@ -61,7 +61,7 @@ internal sealed class ReloadableComponent : PipelineComponent
             try
             {
                 _telemetry.Report(new(ResilienceEventSeverity.Information, OnReloadEvent), context, new OnReloadArguments());
-                (Component, _reloadTokens) = _factory();
+                (Component, _reloadTokens, _telemetry) = _factory();
             }
             catch (Exception e)
             {
@@ -107,5 +107,5 @@ internal sealed class ReloadableComponent : PipelineComponent
 
     internal record OnReloadArguments();
 
-    internal record Entry(PipelineComponent Component, List<CancellationToken> ReloadTokens);
+    internal record Entry(PipelineComponent Component, List<CancellationToken> ReloadTokens, ResilienceStrategyTelemetry Telemetry);
 }
