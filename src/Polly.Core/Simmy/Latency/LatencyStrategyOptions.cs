@@ -7,10 +7,8 @@
 /// </summary>
 public class LatencyStrategyOptions : MonkeyStrategyOptions
 {
-    internal static readonly TimeSpan DefaultLatency = TimeSpan.FromSeconds(30);
-
     /// <summary>
-    /// Gets or sets the delegate that's raised when delay occurs.
+    /// Gets or sets the delegate that's raised when a delay occurs.
     /// </summary>
     /// <remarks>
     /// Defaults to <see langword="null"/>.

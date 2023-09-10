@@ -383,14 +383,23 @@ Polly.Simmy.MonkeyStrategyOptions<TResult>.MonkeyStrategyOptions() -> void
 Polly.Simmy.MonkeyStrategyOptions<TResult>.Randomizer.get -> System.Func<double>!
 Polly.Simmy.MonkeyStrategyOptions<TResult>.Randomizer.set -> void
 Polly.Simmy.OutcomeChaosPipelineBuilderExtensions
+Polly.Simmy.Outcomes.FaultGeneratorArguments
+Polly.Simmy.Outcomes.FaultGeneratorArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Outcomes.FaultGeneratorArguments.FaultGeneratorArguments() -> void
+Polly.Simmy.Outcomes.FaultGeneratorArguments.FaultGeneratorArguments(Polly.ResilienceContext! context) -> void
 Polly.Simmy.Outcomes.FaultStrategyOptions
 Polly.Simmy.Outcomes.FaultStrategyOptions.Fault.get -> System.Exception?
 Polly.Simmy.Outcomes.FaultStrategyOptions.Fault.set -> void
-Polly.Simmy.Outcomes.FaultStrategyOptions.FaultGenerator.get -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<System.Exception?>>?
+Polly.Simmy.Outcomes.FaultStrategyOptions.FaultGenerator.get -> System.Func<Polly.Simmy.Outcomes.FaultGeneratorArguments, System.Threading.Tasks.ValueTask<System.Exception?>>?
 Polly.Simmy.Outcomes.FaultStrategyOptions.FaultGenerator.set -> void
 Polly.Simmy.Outcomes.FaultStrategyOptions.FaultStrategyOptions() -> void
-Polly.Simmy.Outcomes.FaultStrategyOptions.OnFaultInjected.get -> System.Func<Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<System.Exception!>, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Outcomes.FaultStrategyOptions.OnFaultInjected.get -> System.Func<Polly.Simmy.Outcomes.OnFaultInjectedArguments, System.Threading.Tasks.ValueTask>?
 Polly.Simmy.Outcomes.FaultStrategyOptions.OnFaultInjected.set -> void
+Polly.Simmy.Outcomes.OnFaultInjectedArguments
+Polly.Simmy.Outcomes.OnFaultInjectedArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Outcomes.OnFaultInjectedArguments.Fault.get -> System.Exception!
+Polly.Simmy.Outcomes.OnFaultInjectedArguments.OnFaultInjectedArguments() -> void
+Polly.Simmy.Outcomes.OnFaultInjectedArguments.OnFaultInjectedArguments(Polly.ResilienceContext! context, System.Exception! fault) -> void
 Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>
 Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.Context.get -> Polly.ResilienceContext!
 Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.OnOutcomeInjectedArguments() -> void

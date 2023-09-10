@@ -77,7 +77,7 @@ public class LatencyChaosStrategyTests : IDisposable
     }
 
     [Fact]
-    public async Task Given_enabled_and_randomly_not_within_threshold_should_not_inject_behaviour()
+    public async Task Given_enabled_and_randomly_not_within_threshold_should_not_inject_latency()
     {
         var userDelegateExecuted = false;
 
@@ -95,6 +95,37 @@ public class LatencyChaosStrategyTests : IDisposable
         userDelegateExecuted.Should().BeTrue();
         var after = _timeProvider.GetUtcNow();
         (after - before).Seconds.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task Given_latency_is_negative_should_not_inject_latency()
+    {
+        var onLatencyExecuted = false;
+        var userDelegateExecuted = false;
+
+        _options.InjectionRate = 0.6;
+        _options.Enabled = true;
+        _options.Latency = TimeSpan.FromSeconds(-1000);
+        _options.Randomizer = () => 0.5;
+
+        _options.OnLatency = args =>
+        {
+            args.Context.Should().NotBeNull();
+            args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
+            onLatencyExecuted = true;
+            return default;
+        };
+
+        var before = _timeProvider.GetUtcNow();
+        var sut = CreateSut();
+        var task = sut.ExecuteAsync(async _ => { userDelegateExecuted = true; await Task.CompletedTask; });
+        _timeProvider.Advance(_delay);
+        await task;
+
+        userDelegateExecuted.Should().BeTrue();
+        var after = _timeProvider.GetUtcNow();
+        (after - before).Seconds.Should().Be(0);
+        onLatencyExecuted.Should().BeFalse();
     }
 
     [Fact]

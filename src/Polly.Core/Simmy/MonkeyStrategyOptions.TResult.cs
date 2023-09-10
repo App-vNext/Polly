@@ -11,16 +11,16 @@ namespace Polly.Simmy;
 public abstract class MonkeyStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Gets or sets the injection rate for a given execution, which the value should be between [0, 1].
+    /// Gets or sets the injection rate for a given execution, which the value should be between [0, 1] (inclusive).
     /// </summary>
     /// <remarks>
-    /// Defaults to 0.001. Either <see cref="InjectionRateGenerator"/> or this property is required.
+    /// Defaults to 0.001, meaning one in a thousand executions/0.1%. Either <see cref="InjectionRateGenerator"/> or this property is required.
     /// </remarks>
     [Range(MonkeyStrategyConstants.MinInjectionThreshold, MonkeyStrategyConstants.MaxInjectionThreshold)]
     public double InjectionRate { get; set; } = MonkeyStrategyConstants.DefaultInjectionRate;
 
     /// <summary>
-    /// Gets or sets the injection rate generator for a given execution, which the value should be between [0, 1].
+    /// Gets or sets the injection rate generator for a given execution, which the value should be between [0, 1] (inclusive).
     /// </summary>
     /// <remarks>
     /// Defaults to <see langword="null"/>. Either <see cref="InjectionRate"/> or this property is required.

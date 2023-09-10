@@ -25,7 +25,7 @@ public readonly struct OnOutcomeInjectedArguments<TResult>
     public ResilienceContext Context { get; }
 
     /// <summary>
-    /// Gets the Outcome that was injeceted.
+    /// Gets the Outcome that was injected.
     /// </summary>
     public Outcome<TResult> Outcome { get; }
 }

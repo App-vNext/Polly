@@ -39,9 +39,14 @@ internal sealed class LatencyChaosStrategy : MonkeyStrategy
             if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext))
             {
                 var latency = await LatencyGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
+                if (latency < TimeSpan.Zero)
+                {
+                    // do nothing
+                    return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+                }
 
                 var args = new OnLatencyArguments(context, latency);
-                _telemetry.Report(new(ResilienceEventSeverity.Warning, LatencyConstants.OnLatencyEvent), context, args);
+                _telemetry.Report(new(ResilienceEventSeverity.Information, LatencyConstants.OnLatencyEvent), context, args);
 
                 await _timeProvider.DelayAsync(latency, context).ConfigureAwait(context.ContinueOnCapturedContext);
 

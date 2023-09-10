@@ -15,7 +15,7 @@ public static class LatencyChaosPipelineBuilderExtensions
     /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
-    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
+    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="latency">The delay value.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>

@@ -198,7 +198,7 @@ public class OutcomeChaosStrategyTests
 
         userDelegateExecuted.Should().BeFalse();
         _args.Should().HaveCount(1);
-        _args[0].Arguments.Should().BeOfType<OnOutcomeInjectedArguments<Exception>>();
+        _args[0].Arguments.Should().BeOfType<OnFaultInjectedArguments>();
         _args[0].Event.EventName.Should().Be(OutcomeConstants.OnFaultInjectedEvent);
         onFaultInjected.Should().BeTrue();
     }

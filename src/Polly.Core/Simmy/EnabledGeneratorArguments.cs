@@ -10,7 +10,7 @@ public readonly struct EnabledGeneratorArguments
     /// <summary>
     /// Initializes a new instance of the <see cref="EnabledGeneratorArguments"/> struct.
     /// </summary>
-    /// <param name="context">The resilience context intance.</param>
+    /// <param name="context">The resilience context instance.</param>
     public EnabledGeneratorArguments(ResilienceContext context) => Context = context;
 
     /// <summary>

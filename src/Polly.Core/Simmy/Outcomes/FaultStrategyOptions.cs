@@ -13,7 +13,7 @@ public class FaultStrategyOptions : MonkeyStrategyOptions
     /// <remarks>
     /// Defaults to <see langword="null"/>.
     /// </remarks>
-    public Func<OnOutcomeInjectedArguments<Exception>, ValueTask>? OnFaultInjected { get; set; }
+    public Func<OnFaultInjectedArguments, ValueTask>? OnFaultInjected { get; set; }
 
     /// <summary>
     /// Gets or sets the outcome generator to be injected for a given execution.
@@ -22,7 +22,7 @@ public class FaultStrategyOptions : MonkeyStrategyOptions
     /// Defaults to <see langword="null"/>. Either <see cref="Fault"/> or this property is required.
     /// When this property is <see langword="null"/> the <see cref="Fault"/> is used.
     /// </remarks>
-    public Func<OutcomeGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; set; }
+    public Func<FaultGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets the outcome to be injected for a given execution.

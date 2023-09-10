@@ -32,7 +32,7 @@ internal sealed class BehaviorChaosStrategy : MonkeyStrategy
                 await Behavior(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
 
                 var args = new OnBehaviorInjectedArguments(context);
-                _telemetry.Report(new(ResilienceEventSeverity.Warning, BehaviorConstants.OnBehaviorInjectedEvent), context, args);
+                _telemetry.Report(new(ResilienceEventSeverity.Information, BehaviorConstants.OnBehaviorInjectedEvent), context, args);
 
                 if (OnBehaviorInjected is not null)
                 {

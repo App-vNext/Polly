@@ -10,7 +10,7 @@ public readonly struct InjectionRateGeneratorArguments
     /// <summary>
     /// Initializes a new instance of the <see cref="InjectionRateGeneratorArguments"/> struct.
     /// </summary>
-    /// <param name="context">The resilience context intance.</param>
+    /// <param name="context">The resilience context instance.</param>
     public InjectionRateGeneratorArguments(ResilienceContext context) => Context = context;
 
     /// <summary>

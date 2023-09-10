@@ -13,7 +13,7 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
-    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
+    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="fault">The exception to inject.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, bool enabled, double injectionRate, Exception fault)
@@ -34,7 +34,7 @@ public static partial class OutcomeChaosPipelineBuilderExtensions
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
-    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
+    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="faultGenerator">The exception generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResiliencePipelineBuilder AddChaosFault(

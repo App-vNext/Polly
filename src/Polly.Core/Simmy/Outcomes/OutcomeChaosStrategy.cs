@@ -38,11 +38,11 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
 
     public Func<OnOutcomeInjectedArguments<T>, ValueTask>? OnOutcomeInjected { get; }
 
-    public Func<OnOutcomeInjectedArguments<Exception>, ValueTask>? OnFaultInjected { get; }
+    public Func<OnFaultInjectedArguments, ValueTask>? OnFaultInjected { get; }
 
     public Func<OutcomeGeneratorArguments, ValueTask<Outcome<T>?>>? OutcomeGenerator { get; }
 
-    public Func<OutcomeGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; }
+    public Func<FaultGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; }
 
     public Outcome<T>? Outcome { get; }
 
@@ -70,10 +70,6 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
                         return new Outcome<T>(outcome.Value.Result);
                     }
                 }
-                else
-                {
-                    throw new InvalidOperationException("Either a fault or fake outcome to inject must be defined.");
-                }
             }
 
             return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
@@ -88,7 +84,7 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
     {
         var outcome = await OutcomeGenerator!(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
         var args = new OnOutcomeInjectedArguments<T>(context, outcome.Value);
-        _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnOutcomeInjectedEvent), context, args);
+        _telemetry.Report(new(ResilienceEventSeverity.Information, OutcomeConstants.OnOutcomeInjectedEvent), context, args);
 
         if (OnOutcomeInjected is not null)
         {
@@ -106,8 +102,8 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
             return null;
         }
 
-        var args = new OnOutcomeInjectedArguments<Exception>(context, new Outcome<Exception>(fault));
-        _telemetry.Report(new(ResilienceEventSeverity.Warning, OutcomeConstants.OnFaultInjectedEvent), context, args);
+        var args = new OnFaultInjectedArguments(context, fault);
+        _telemetry.Report(new(ResilienceEventSeverity.Information, OutcomeConstants.OnFaultInjectedEvent), context, args);
 
         if (OnFaultInjected is not null)
         {

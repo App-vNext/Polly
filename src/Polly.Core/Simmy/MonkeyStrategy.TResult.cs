@@ -29,7 +29,7 @@ public abstract class MonkeyStrategy<T> : ResilienceStrategy<T>
     }
 
     /// <summary>
-    /// Gets the injection rate for a given execution, which the value should be between [0, 1].
+    /// Gets the injection rate for a given execution, which the value should be between [0, 1] (inclusive).
     /// </summary>
     internal Func<InjectionRateGeneratorArguments, ValueTask<double>> InjectionRateGenerator { get; }
 
