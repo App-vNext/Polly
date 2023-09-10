@@ -363,13 +363,9 @@ Polly.Simmy.Latency.OnLatencyArguments.OnLatencyArguments() -> void
 Polly.Simmy.Latency.OnLatencyArguments.OnLatencyArguments(Polly.ResilienceContext! context, System.TimeSpan latency) -> void
 Polly.Simmy.LatencyChaosPipelineBuilderExtensions
 Polly.Simmy.MonkeyStrategy
-Polly.Simmy.MonkeyStrategy.EnabledGenerator.get -> System.Func<Polly.Simmy.EnabledGeneratorArguments, System.Threading.Tasks.ValueTask<bool>>!
-Polly.Simmy.MonkeyStrategy.InjectionRateGenerator.get -> System.Func<Polly.Simmy.InjectionRateGeneratorArguments, System.Threading.Tasks.ValueTask<double>>!
 Polly.Simmy.MonkeyStrategy.MonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions! options) -> void
 Polly.Simmy.MonkeyStrategy.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
 Polly.Simmy.MonkeyStrategy<T>
-Polly.Simmy.MonkeyStrategy<T>.EnabledGenerator.get -> System.Func<Polly.Simmy.EnabledGeneratorArguments, System.Threading.Tasks.ValueTask<bool>>!
-Polly.Simmy.MonkeyStrategy<T>.InjectionRateGenerator.get -> System.Func<Polly.Simmy.InjectionRateGeneratorArguments, System.Threading.Tasks.ValueTask<double>>!
 Polly.Simmy.MonkeyStrategy<T>.MonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions! options) -> void
 Polly.Simmy.MonkeyStrategy<T>.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
 Polly.Simmy.MonkeyStrategyOptions
