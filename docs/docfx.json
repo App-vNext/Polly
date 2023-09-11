@@ -32,8 +32,8 @@
   ],
   "build": {
     "globalMetadata": {
-      "_appLogoPath": "https://github.com/App-vNext/Polly/blob/main/package-icon.png?raw=true",
-      "_appFaviconPath": "https://github.com/App-vNext/Polly/blob/main/package-icon.png?raw=true",
+      "_appLogoPath": "icon.png",
+      "_appFaviconPath": "icon.png",
       "fileMetadata": [
         {
           "src": "readme.md",
@@ -59,9 +59,8 @@
     ],
     "resource": [
       {
-        "cwd": "..",
         "files": [
-          "package-icon.png"
+          "icon.png"
         ]
       },
       {
