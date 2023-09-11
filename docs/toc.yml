@@ -5,10 +5,10 @@
   href: polly.md
 
 - name: Resilience Strategies
-  href: strategies/readme.md
+  href: strategies/
 
 - name: Resilience Pipelines
-  href: pipelines/readme.md
+  href: pipelines/
 
 - name: Advanced Topics
   items:
