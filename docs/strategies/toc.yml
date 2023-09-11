@@ -1,0 +1,12 @@
+- name: Timeout resilience strategy
+  href: timeout.md
+- name: Retry resilience strategy
+  href: retry.md
+- name: Rate limiter resilience strategy
+  href: rate-limiter.md
+- name: Hedging resilience strategy
+  href: hedging.md
+- name: Fallback resilience strategy
+  href: fallback.md
+- name: Circuit breaker resilience strategy
+  href: circuit-breaker.md
