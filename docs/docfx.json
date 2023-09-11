@@ -1,7 +1,4 @@
 {
-  "fileMetadata": {
-    "indexPage": "README.md"
-  },
   "metadata": [
     {
       "src": [
@@ -33,13 +30,7 @@
   "build": {
     "globalMetadata": {
       "_appLogoPath": "icon.png",
-      "_appFaviconPath": "icon.png",
-      "fileMetadata": [
-        {
-          "src": "readme.md",
-          "dest": "index.html"
-        }
-      ]
+      "_appFaviconPath": "icon.png"
     },
     "content": [
       {
