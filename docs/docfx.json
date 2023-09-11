@@ -57,6 +57,11 @@
         "files": [
           "package-icon.png"
         ]
+      },
+      {
+        "files": [
+          "theme/custom-styles/public/main.css"
+        ]
       }
     ],
     "output": "_site",
@@ -65,7 +70,7 @@
     "template": [
       "default",
       "modern",
-      "custom_styles"
+      "custom-styles"
     ],
     "postProcessors": [],
     "keepFileLink": false,
