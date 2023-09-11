@@ -15,6 +15,7 @@ public class LatencyChaosPipelineBuilderExtensionsTests
             (ResiliencePipelineBuilder<int> builder) => { builder.AddChaosLatency(true, 0.5, TimeSpan.FromSeconds(10)); },
             (LatencyChaosStrategy strategy) =>
             {
+                strategy.Latency.Should().Be(TimeSpan.FromSeconds(10));
                 strategy.LatencyGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(TimeSpan.FromSeconds(10));
                 strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeTrue();
                 strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(0.5);

@@ -121,7 +121,7 @@ public class BehaviorChaosStrategyTests
     }
 
     [Fact]
-    public async Task Should_not_execute_user_delegate_when_it_was_cancelled_running_the_strategy()
+    public async Task Should_not_execute_user_delegate_when_it_was_cancelled_running_the_injected_behavior()
     {
         var userDelegateExecuted = false;
         var injectedBehaviourExecuted = false;
@@ -144,6 +144,31 @@ public class BehaviorChaosStrategyTests
 
         userDelegateExecuted.Should().BeFalse();
         injectedBehaviourExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Should_not_execute_user_delegate_when_it_was_cancelled_running_the_strategy()
+    {
+        var userDelegateExecuted = false;
+        var enabledGeneratorExecuted = false;
+
+        using var cts = new CancellationTokenSource();
+        _options.InjectionRate = 0.6;
+        _options.Randomizer = () => 0.5;
+        _options.EnabledGenerator = (_) =>
+        {
+            cts.Cancel();
+            enabledGeneratorExecuted = true;
+            return new ValueTask<bool>(true);
+        };
+
+        var sut = CreateSut();
+        await sut.Invoking(s => s.ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
+            .Should()
+            .ThrowAsync<OperationCanceledException>();
+
+        userDelegateExecuted.Should().BeFalse();
+        enabledGeneratorExecuted.Should().BeTrue();
     }
 
     private ResiliencePipeline CreateSut() => new BehaviorChaosStrategy(_options, _telemetry).AsPipeline();

@@ -9,5 +9,6 @@ public class OnOutcomeInjectedArgumentsTests
     {
         var args = new OnOutcomeInjectedArguments<int>(ResilienceContextPool.Shared.Get(), new(200));
         args.Context.Should().NotBeNull();
+        args.Outcome.Should().NotBeNull();
     }
 }

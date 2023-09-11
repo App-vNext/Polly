@@ -356,6 +356,37 @@ public class OutcomeChaosStrategyTests
         userDelegateExecuted.Should().BeFalse();
     }
 
+    [Fact]
+    public async Task Should_not_execute_user_delegate_when_it_was_cancelled_running_the_strategy()
+    {
+        var userDelegateExecuted = false;
+
+        using var cts = new CancellationTokenSource();
+        var options = new OutcomeStrategyOptions<HttpStatusCode>
+        {
+            InjectionRate = 0.6,
+            Randomizer = () => 0.5,
+            EnabledGenerator = (_) =>
+            {
+                cts.Cancel();
+                return new ValueTask<bool>(true);
+            },
+            Outcome = Outcome.FromResult(HttpStatusCode.TooManyRequests)
+        };
+
+        var sut = CreateSut(options);
+        await sut.Invoking(s => s.ExecuteAsync(async _ =>
+        {
+            userDelegateExecuted = true;
+            return await Task.FromResult(HttpStatusCode.OK);
+        }, cts.Token)
+        .AsTask())
+            .Should()
+            .ThrowAsync<OperationCanceledException>();
+
+        userDelegateExecuted.Should().BeFalse();
+    }
+
     private ResiliencePipeline<TResult> CreateSut<TResult>(OutcomeStrategyOptions<TResult> options) =>
         new OutcomeChaosStrategy<TResult>(options, _telemetry).AsPipeline();
 

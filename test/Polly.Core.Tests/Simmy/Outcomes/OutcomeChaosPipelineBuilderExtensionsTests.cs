@@ -19,7 +19,8 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
                 Outcome = new(100)
             });
 
-            AssertResultStrategy(builder, true, 0.6, new(100));
+            AssertResultStrategy(builder, true, 0.6, new(100))
+            .Outcome.Should().Be(new Outcome<int>(100));
         }
     };
 
@@ -35,7 +36,8 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
                 Fault = new InvalidOperationException("Dummy exception.")
             });
 
-            AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.6);
+            AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.6)
+            .Fault.Should().BeOfType(typeof(InvalidOperationException));
         }
     };
 
@@ -51,23 +53,24 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
                 Fault = new InvalidOperationException("Dummy exception.")
             });
 
-            AssertFaultStrategy<InvalidOperationException>(builder, true, 0.6);
+            AssertFaultStrategy<InvalidOperationException>(builder, true, 0.6)
+            .Fault.Should().BeOfType(typeof(InvalidOperationException));
         }
     };
 
-    private static void AssertResultStrategy<T>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate, Outcome<T> outcome)
+    private static OutcomeChaosStrategy<T> AssertResultStrategy<T>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate, Outcome<T> outcome)
     {
         var context = ResilienceContextPool.Shared.Get();
         var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<T>>().Subject;
 
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
-        strategy.OutcomeGenerator.Should().NotBeNull();
         strategy.OutcomeGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(outcome);
-        strategy.Outcome.Should().Be(outcome);
+
+        return strategy;
     }
 
-    private static void AssertFaultStrategy<T, TException>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate)
+    private static OutcomeChaosStrategy<T> AssertFaultStrategy<T, TException>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate)
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
@@ -75,12 +78,12 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
 
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
-        strategy.FaultGenerator.Should().NotBeNull();
-        strategy.Fault.Should().BeOfType(typeof(TException));
-        strategy.Fault.Should().NotBeNull();
+        strategy.FaultGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeOfType(typeof(TException));
+
+        return strategy;
     }
 
-    private static void AssertFaultStrategy<TException>(ResiliencePipelineBuilder builder, bool enabled, double injectionRate)
+    private static OutcomeChaosStrategy<object> AssertFaultStrategy<TException>(ResiliencePipelineBuilder builder, bool enabled, double injectionRate)
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
@@ -88,9 +91,9 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
 
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
-        strategy.FaultGenerator.Should().NotBeNull();
-        strategy.Fault.Should().BeOfType(typeof(TException));
-        strategy.Fault.Should().NotBeNull();
+        strategy.FaultGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeOfType(typeof(TException));
+
+        return strategy;
     }
 
     [MemberData(nameof(ResultStrategy))]
@@ -129,6 +132,17 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     }
 
     [Fact]
+    public void AddResult_Shortcut_Generator_Option_Ok()
+    {
+        var builder = new ResiliencePipelineBuilder<int>();
+        builder
+            .AddChaosResult(true, 0.5, () => 120)
+            .Build();
+
+        AssertResultStrategy(builder, true, 0.5, new(120));
+    }
+
+    [Fact]
     public void AddResult_Shortcut_Option_Throws()
     {
         new ResiliencePipelineBuilder<int>()
@@ -149,7 +163,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddFault_Shortcut_Option_Throws()
+    public void AddFault_Generic_Shortcut_Generator_Option_Throws()
     {
         new ResiliencePipelineBuilder<int>()
             .Invoking(b => b.AddChaosFault(
@@ -158,6 +172,29 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
                 () => new InvalidOperationException()))
             .Should()
             .Throw<ValidationException>();
+    }
+
+    [Fact]
+    public void AddFault_Shortcut_Generator_Option_Throws()
+    {
+        new ResiliencePipelineBuilder()
+            .Invoking(b => b.AddChaosFault(
+                true,
+                1.5,
+                () => new InvalidOperationException()))
+            .Should()
+            .Throw<ValidationException>();
+    }
+
+    [Fact]
+    public void AddFault_Shortcut_Generator_Option_Ok()
+    {
+        var builder = new ResiliencePipelineBuilder();
+        builder
+            .AddChaosFault(true, 0.5, () => new InvalidOperationException("Dummy exception"))
+            .Build();
+
+        AssertFaultStrategy<InvalidOperationException>(builder, true, 0.5);
     }
 
     [Fact]
@@ -178,5 +215,16 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
             .Invoking(b => b.AddChaosFault(true, -1, new InvalidOperationException()))
             .Should()
             .Throw<ValidationException>();
+    }
+
+    [Fact]
+    public void AddFault_Generic_Shortcut_Generator_Option_Ok()
+    {
+        var builder = new ResiliencePipelineBuilder<string>();
+        builder
+            .AddChaosFault(true, 0.5, () => new InvalidOperationException("Dummy exception"))
+            .Build();
+
+        AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.5);
     }
 }
