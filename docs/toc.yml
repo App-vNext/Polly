@@ -11,21 +11,16 @@
   href: pipelines/readme.md
 
 - name: Advanced Topics
-  href: advanced.md
+  items:
   - name: Telemetry and Monitoring
     href: telemetry.md
   - name: Chaos Engineering with Simmy
     href: simmy.md
-  - name: Pipeline Registry and Resilience Context
-    href: resilience-pipeline-registry.md
-    href: resilience-context.md
-  - name: Extending Polly with Custom Behaviors
-    href: extensibility.md
   - name: Integrating Polly with Dependency Injection Frameworks
     href: dependency-injection.md
 
 - name: Community and Resources
-  href: community.md
+  items:
   - name: Polly-Contrib Projects and Libraries
     href: polly-contrib.md
   - name: Other 3rd Party Libraries and Contributions
