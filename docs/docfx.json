@@ -1,4 +1,7 @@
 {
+  "fileMetadata": {
+    "indexPage": "README.md"
+  },
   "metadata": [
     {
       "src": [
@@ -61,7 +64,8 @@
     "fileMetadataFiles": [],
     "template": [
       "default",
-      "modern"
+      "modern",
+      "custom_styles"
     ],
     "postProcessors": [],
     "keepFileLink": false,
