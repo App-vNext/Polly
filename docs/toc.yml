@@ -1,29 +1,50 @@
 - name: Introduction
-  href: index.md
+  href: readme.md
 
-- name: Getting Started with Polly
-  href: polly.md
+- name: Getting started
+  href: getting-started.md
 
-- name: Resilience Strategies
-  href: strategies/
-
-- name: Resilience Pipelines
-  href: pipelines/
-
-- name: Advanced Topics
+- name: Resilience strategies
+  href: strategies/readme.md
+  expanded: true
   items:
-  - name: Telemetry and Monitoring
+  - name: Timeout resilience strategy
+    href: strategies/timeout.md
+  - name: Retry resilience strategy
+    href: strategies/retry.md
+  - name: Rate limiter resilience strategy
+    href: strategies/rate-limiter.md
+  - name: Hedging resilience strategy
+    href: strategies/hedging.md
+  - name: Fallback resilience strategy
+    href: strategies/fallback.md
+  - name: Circuit breaker resilience strategy
+    href: strategies/circuit-breaker.md
+
+
+- name: Resilience pipelines
+  href: pipelines/readme.md
+  expanded: true
+  items:
+  - name: Resilience pipeline registry
+    href: pipelines/resilience-pipeline-registry.md
+
+- name: Advanced topics
+  expanded: true
+  items:
+  - name: Telemetry and monitoring
     href: telemetry.md
-  - name: Chaos Engineering with Simmy
+  - name: Chaos engineering
     href: simmy.md
-  - name: Integrating Polly with Dependency Injection Frameworks
+  - name: Dependency injection
     href: dependency-injection.md
 
-- name: Community and Resources
+- name: Community and resources
+  expanded: true
   items:
-  - name: Polly-Contrib Projects and Libraries
+  - name: Polly-Contrib projects and libraries
     href: polly-contrib.md
-  - name: Other 3rd Party Libraries and Contributions
+  - name: Libraries and contributions
     href: libraries-and-contributions.md
-  - name: Useful Resources and Links
+  - name: Useful resources and links
     href: resources.md
