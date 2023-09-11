@@ -48,3 +48,6 @@
     href: libraries-and-contributions.md
   - name: Useful resources and links
     href: resources.md
+
+- name: API
+  href: api/
