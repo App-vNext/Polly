@@ -11,7 +11,8 @@
             "**/obj/**",
             "**/bin/**",
             "_site/**",
-            "Polly/**"
+            "Polly/**",
+            "v7/**"
           ]
         }
       ],
@@ -27,25 +28,35 @@
     }
   ],
   "build": {
+    "globalMetadata": {
+      "_appLogoPath": "https://github.com/App-vNext/Polly/blob/main/package-icon.png?raw=true",
+      "_appFaviconPath": "https://github.com/App-vNext/Polly/blob/main/package-icon.png?raw=true",
+      "_layout": "landing"
+    },
     "content": [
       {
         "files": [
           "api/**.yml",
-          "api/index.md"
+          "api/readme.md"
         ]
       },
       {
         "files": [
           "**.md",
           "**.yml",
-          "articles/**.md",
-          "articles/**/toc.yml",
           "toc.yml",
           "*.md"
         ]
       }
     ],
-    "_appLo"
+    "resource": [
+      {
+        "cwd": "..",
+        "files": [
+          "package-icon.png"
+        ]
+      }
+    ],
     "output": "_site",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],

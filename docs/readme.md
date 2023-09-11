@@ -92,7 +92,7 @@ await pipeline.ExecuteAsync(async token =>
 
 Visit the [resilience strategies](resilience-strategies.md) section to understand their structure and explore various configuration methods.
 
-## Topics
+## Articles
 
 - [General](general.md): General information about Polly.
 - [Resilience pipelines](resilience-pipelines.md): Understanding the use of resilience pipelines.
@@ -108,7 +108,7 @@ Visit the [resilience strategies](resilience-strategies.md) section to understan
 - [Resources](resources.md): Browse through blogs, podcasts, courses, e-books, and other community resources.
 - [Using Polly with HttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory): For using Polly with HttpClientFactory in ASP.NET Core 2.1 and later versions.
 
-## Topics (previous Polly versions)
+## Articles (previous Polly versions)
 
 - [Extensibility (v7)](v7/extensibility.md): Learn how you can extend Polly with new policies.
 

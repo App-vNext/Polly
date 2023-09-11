@@ -1,3 +1,5 @@
+- name: Strategies overview
+  href: readme.md
 - name: Timeout resilience strategy
   href: timeout.md
 - name: Retry resilience strategy

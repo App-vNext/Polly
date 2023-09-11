@@ -1,26 +1,34 @@
-- name: Telemetry
-  href: telemetry.md
-- name: Chaos engineering with Simmy
-  href: simmy.md
-- name: Resources
-  href: resources.md
-- name: Resilience strategies
-  href: resilience-strategies.md
-- name: Resilience pipelines
-  href: resilience-pipelines.md
-- name: Resilience pipeline registry
-  href: resilience-pipeline-registry.md
-- name: Resilience context
-  href: resilience-context.md
-- name: Polly-Contrib
-  href: polly-contrib.md
-- name: 3rd Party Libraries and Contributions
-  href: libraries-and-contributions.md
-- name: Polly Documentation
+- name: Introduction
   href: index.md
-- name: General
-  href: general.md
-- name: Extensibility
-  href: extensiblity.md
-- name: Dependency injection
-  href: dependency-injection.md
+
+- name: Getting Started with Polly
+  href: polly.md
+
+- name: Resilience Strategies
+  href: strategies/readme.md
+
+- name: Resilience Pipelines
+  href: pipelines/readme.md
+
+- name: Advanced Topics
+  href: advanced.md
+  - name: Telemetry and Monitoring
+    href: telemetry.md
+  - name: Chaos Engineering with Simmy
+    href: simmy.md
+  - name: Pipeline Registry and Resilience Context
+    href: resilience-pipeline-registry.md
+    href: resilience-context.md
+  - name: Extending Polly with Custom Behaviors
+    href: extensibility.md
+  - name: Integrating Polly with Dependency Injection Frameworks
+    href: dependency-injection.md
+
+- name: Community and Resources
+  href: community.md
+  - name: Polly-Contrib Projects and Libraries
+    href: polly-contrib.md
+  - name: Other 3rd Party Libraries and Contributions
+    href: libraries-and-contributions.md
+  - name: Useful Resources and Links
+    href: resources.md
