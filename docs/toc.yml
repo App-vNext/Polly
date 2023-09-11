@@ -34,10 +34,14 @@
   items:
   - name: Telemetry and monitoring
     href: advanced/telemetry.md
-  - name: Chaos engineering
-    href: advanced/simmy.md
+  - name: Extensibility
+    href: advanced/extensibility.md
   - name: Dependency injection
     href: advanced/dependency-injection.md
+  - name: Resilience context
+    href: advanced/resilience-context.md
+  - name: Chaos engineering
+    href: advanced/simmy.md
 
 - name: Community and resources
   expanded: true
