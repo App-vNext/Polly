@@ -8,17 +8,17 @@
   href: strategies/readme.md
   expanded: true
   items:
-  - name: Timeout resilience strategy
+  - name: Timeout
     href: strategies/timeout.md
-  - name: Retry resilience strategy
+  - name: Retry
     href: strategies/retry.md
-  - name: Rate limiter resilience strategy
+  - name: Rate limiter
     href: strategies/rate-limiter.md
-  - name: Hedging resilience strategy
+  - name: Hedging
     href: strategies/hedging.md
-  - name: Fallback resilience strategy
+  - name: Fallback
     href: strategies/fallback.md
-  - name: Circuit breaker resilience strategy
+  - name: Circuit breaker
     href: strategies/circuit-breaker.md
 
 
