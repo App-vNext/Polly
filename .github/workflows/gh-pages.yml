@@ -28,6 +28,7 @@ jobs:
     - run: dotnet tool update -g docfx
 
     - name: Prepare documentation
+      shell: pwsh
       run: ./.github/workflows/scripts/gh-pages-prepare.sh ../../../docs
 
     - run: docfx docs/docfx.json
