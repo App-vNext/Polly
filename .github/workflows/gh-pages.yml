@@ -25,13 +25,14 @@ jobs:
       with:
         dotnet-version: 7.x
 
+    - run: dotnet tool update -g docfx
+
     - run: docfx metadata docs/docfx.json
 
     - name: Prepare documentation
       shell: bash
       run: ./.github/workflows/scripts/gh-pages-prepare.sh /home/runner/work/Polly/Polly/docs
 
-    - run: dotnet tool update -g docfx
     - run: docfx docs/docfx.json
 
     - name: Deploy
