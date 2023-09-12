@@ -23,7 +23,11 @@ transform_link() {
     # Replace all '/' with '.'
     input=${input//\//.}
 
+    # Replace 'Polly.Core' with 'Polly'
     input=${input//Polly.Core/Polly}
+
+    # Replace .TResult with -1 (docfx does not use Tresult in paths)
+    input=${input//.TResult/-1}
 
     # Prepend 'api/' and append '.html' to the result
     echo "api/${input}.html"
