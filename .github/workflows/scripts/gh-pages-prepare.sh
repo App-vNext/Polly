@@ -265,6 +265,11 @@ main() {
     local dry_run root_folder
     read -r dry_run root_folder <<<"$(parse_options "$@")"
 
+    if [ ! -d "$root_folder" ]; then
+        echo -e "${red}${cross_mark}Error: Root folder does not exist."
+        exit 1
+    fi
+
     # Check if dry run is enabled
     if [[ $dry_run == true ]]; then
         # Print the dry run mode message
