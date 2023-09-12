@@ -25,12 +25,11 @@ jobs:
       with:
         dotnet-version: 7.x
 
-    - run: dotnet tool update -g docfx
-
     - name: Prepare documentation
       shell: bash
       run: ./.github/workflows/scripts/gh-pages-prepare.sh ../../../docs
 
+    - run: dotnet tool update -g docfx
     - run: docfx docs/docfx.json
 
     - name: Deploy
