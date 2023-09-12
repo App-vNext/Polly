@@ -26,6 +26,13 @@ jobs:
         dotnet-version: 7.x
 
     - run: dotnet tool update -g docfx
+
+    - name: Run script
+      run: |
+        #!/bin/bash
+
+        # Replace cs links with pages
+        find . -name "*.md" -type f -exec sed -i 's|\.\./\.\./src/\(.*\)\.cs|api/\1.html|g' {} +
     - run: docfx docs/docfx.json
 
     - name: Deploy

@@ -5,7 +5,8 @@
         {
           "cwd": "../src",
           "files": [
-            "**/**.csproj"
+            "**/**.csproj",
+            "**/**.cs"
           ],
           "exclude": [
             "**/obj/**",
@@ -46,17 +47,17 @@
           "toc.yml",
           "*.md"
         ]
+      },
+      {
+        "files": "**/*.{cs}",
+        "src": "src",
+        "dest": "api"
       }
     ],
     "resource": [
       {
         "files": [
           "icon.png"
-        ]
-      },
-      {
-        "files": [
-          "theme/custom-styles/public/main.css"
         ]
       }
     ],
@@ -65,8 +66,7 @@
     "fileMetadataFiles": [],
     "template": [
       "default",
-      "modern",
-      "custom-styles"
+      "modern"
     ],
     "postProcessors": [],
     "keepFileLink": false,
