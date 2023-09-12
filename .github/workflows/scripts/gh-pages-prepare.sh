@@ -91,24 +91,8 @@ relative_path_to_root() {
 }
 
 create_index_file() {
-    # Check for the dry run option
-    if [[ $1 == true ]]; then
-        local dry_run=true
-        shift
-    fi
-
-    # Check for the root folder argument
-    if [[ -z $1 ]]; then
-        echo -e "${red}${cross_mark} Usage: $0 [--dry-run] root-folder${reset}"
-        exit 1
-    fi
-    local root_folder=$1
-    shift
-
     # Set the file path
     local file_path="$root_folder/index.md"
-
-    echo $root_folder
 
     # Define the file content
     file_content=$(
@@ -139,22 +123,8 @@ EOL
 }
 
 rename_readme() {
-    # Check for the dry run option
-    if [[ $1 == true ]]; then
-        local dry_run=true
-        shift
-    fi
-
-    # Check for the root folder argument
-    if [[ -z $1 ]]; then
-        echo -e "${red}${cross_mark} Usage: $0 [--dry-run] root-folder${reset}"
-        exit 1
-    fi
-    local root_folder=$1
-    shift
-
     # Check if the dry run option is given
-    if [[ $dry_run ]]; then
+    if [[ $dry_run == true ]]; then
         # Print the readme file renaming message
         echo -e "${yellow}${warning_mark} The following README.md files would be renamed to index.md:${reset}"
         find $root_folder -name "README.md" -exec bash -c 'echo "$0 -> ${0%README.md}index.md"' {} \; | sed "s/^/${info_mark} /"
@@ -197,20 +167,6 @@ rename_readme() {
 }
 
 transform_links() {
-    # Check for the dry run option
-    if [[ $1 == true ]]; then
-        local dry_run=true
-        shift
-    fi
-
-    # Check for the root folder argument
-    if [[ -z $1 ]]; then
-        echo -e "${red}${cross_mark} Usage: $0 [--dry-run] root-folder${reset}"
-        exit 1
-    fi
-    local root_folder=$1
-    shift
-
     # Print the link transformation message
     echo -e "${blue}${info_mark} The following links to source code files are transformed to point to the api documentation in all markdown files:${reset}"
     # Find all markdown files in the root folder and its subdirectories, excluding the 'api' directory
@@ -248,14 +204,14 @@ transform_links() {
             done
 
             # Print the new line
-            if [[ ! $dry_run ]]; then
+            if [[ $dry_run == false ]]; then
                 # In normal mode, print the new line to a temporary file
                 echo "$line" >>"${file}.tmp"
             fi
         done <"$file"
 
         # If not in dry run mode, replace the original file with the temporary file
-        if [[ ! $dry_run ]]; then
+        if [[ $dry_run == false ]]; then
             mv "${file}.tmp" "$file"
         fi
     done
@@ -268,7 +224,7 @@ main() {
     read -r dry_run root_folder <<<"$(parse_options "$@")"
 
     if [ ! -d "$root_folder" ]; then
-        echo -e "${red}${cross_mark}Error: Root folder does not exist."
+        echo -e "${red}${cross_mark}Error: Root folder does not exist.${reset}"
         exit 1
     fi
 
@@ -284,13 +240,13 @@ main() {
     fi
 
     # Transform the links in the markdown files
-    transform_links "$dry_run" "$root_folder"
+    transform_links "${dry_run}" "${root_folder}"
 
     # Create the index file in the root folder
-    create_index_file "$dry_run" "$root_folder"
+    create_index_file "${dry_run}" "${root_folder}"
 
     # Rename the readme files to index files
-    rename_readme "$dry_run" "$root_folder"
+    rename_readme "${dry_run}" "${root_folder}"
 }
 
 # Call the main function with the arguments
