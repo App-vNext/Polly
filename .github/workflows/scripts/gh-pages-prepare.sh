@@ -90,38 +90,6 @@ relative_path_to_root() {
     echo "$path"
 }
 
-create_index_file() {
-    # Set the file path
-    local file_path="$root_folder/index.md"
-
-    # Define the file content
-    file_content=$(
-        cat <<EOL
----
-redirect_url: readme.html
----
-This file will redirect users to readme.html
-EOL
-    )
-
-    # Check if dry run is enabled
-    if [[ $dry_run == true ]]; then
-        # Print the index file creation message
-        echo -e "${yellow}${warning_mark} The index.md file would be created at $file_path with the following content:${reset}"
-        echo "$file_content"
-        echo ""
-        return 0
-    fi
-
-    # Create the file with the specified content
-    echo "$file_content" >$file_path
-
-    # Print the index file creation message
-    echo -e "${green}${check_mark} The index.md file has been successfully created at $file_path with the following content:${reset}"
-    cat "$file_path"
-    echo ""
-}
-
 rename_readme() {
     # Check if the dry run option is given
     if [[ $dry_run == true ]]; then
@@ -241,9 +209,6 @@ main() {
 
     # Transform the links in the markdown files
     transform_links "${dry_run}" "${root_folder}"
-
-    # Create the index file in the root folder
-    create_index_file "${dry_run}" "${root_folder}"
 
     # Rename the readme files to index files
     rename_readme "${dry_run}" "${root_folder}"
