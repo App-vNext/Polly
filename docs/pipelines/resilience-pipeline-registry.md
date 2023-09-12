@@ -197,8 +197,8 @@ registry.TryAddBuilder("A", (builder, context) =>
 ```
 <!-- endSnippet -->
 
-Both `AddReloadToken(...)` and `OnPipelineDisposed(...)` are used to implement the `EnableReloads<TOptions>(...)` extension method that is used by the [Dependency Injection layer](dependency-injection.md#dynamic-reloads).
+Both `AddReloadToken(...)` and `OnPipelineDisposed(...)` are used to implement the `EnableReloads<TOptions>(...)` extension method that is used by the [Dependency Injection layer](../advanced/dependency-injection.md#dynamic-reloads).
 
 ## Complex registry keys
 
-Though the pipeline registry supports complex keys, we suggest you use them when defining pipelines with the [Dependency Injection](dependency-injection.md) (DI) containers. For further information, see the [section on complex pipeline keys](dependency-injection.md#complex-pipeline-keys).
+Though the pipeline registry supports complex keys, we suggest you use them when defining pipelines with the [Dependency Injection](../advanced/dependency-injection.md) (DI) containers. For further information, see the [section on complex pipeline keys](../advanced/dependency-injection.md#complex-pipeline-keys).

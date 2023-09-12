@@ -40,7 +40,7 @@ Visit the [resilience strategies](resilience-strategies.md) section to understan
   - [Polly-Contrib projects and libraries](community/polly-contrib.md): Learn how to contribute to and extend the project ecosystem.
   - [Libraries and contributions](community/libraries-and-contributions.md): Find out which libraries the project depends on and who contributes to its development.
   - [Useful resources and links](community/resources.md): Browse through blogs, podcasts, courses, e-books, and other community resources.
-- [API](api/): The API documentation for the project.
+- [API](api/readme.md): The API documentation for the project.
 
 ## Articles (previous Polly versions)
 
@@ -48,6 +48,6 @@ Visit the [resilience strategies](resilience-strategies.md) section to understan
 
 ## Samples
 
-- [Samples](samples/README.md): Samples in this repository that serve as an introduction to Polly.
+- [Samples](https://github.com/App-vNext/Polly/tree/main/samples): Samples in this repository that serve as an introduction to Polly.
 - [Polly-Samples](https://github.com/App-vNext/Polly-Samples): Contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
 - Microsoft's [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers): Sample project demonstrating a .NET Microservices architecture and using Polly for resilience.
