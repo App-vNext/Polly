@@ -1,18 +1,48 @@
 #!/bin/bash
 
-# Check for the dry run option
-if [[ $1 == "--dry-run" ]]; then
-    dry_run=true
-    shift
-fi
+# Set the error handling options
+set -eu
 
-# Check for the root folder argument
-if [[ -z $1 ]]; then
-    echo "Usage: $0 [--dry-run] root-folder"
-    exit 1
-fi
-root_folder=$1
-shift
+# Define a function to parse the command-line options
+parse_options() {
+    # Use getopt to handle long and short options
+    local options
+    options=$(getopt -o d --long dry-run -- "$@") || exit 1
+    eval set -- "$options"
+
+    # Use a case statement to handle different options
+    local dry_run=false # Initialize the dry run flag to false
+    while true; do
+        case "$1" in
+            -d|--dry-run)
+                # Set the dry run flag to true
+                dry_run=true
+                shift
+                ;;
+            --)
+                # End of options
+                shift
+                break
+                ;;
+            *)
+                # Invalid option
+                echo "Usage: $0 [-d|--dry-run] root-folder"
+                exit 1
+                ;;
+        esac
+    done
+
+    # Check for the root folder argument
+    if [[ -z $1 ]]; then
+        echo "Usage: $0 [-d|--dry-run] root-folder"
+        exit 1
+    fi
+    local root_folder=$1
+    shift
+
+    # Return the dry run flag and the root folder
+    echo "$dry_run" "$root_folder"
+}
 
 # Define a function to transform the link
 transform_link() {
@@ -49,8 +79,8 @@ relative_path_to_root() {
 
 create_index_file() {
     # Check for the dry run option
-    if [[ $1 == "--dry-run" ]]; then
-        dry_run=true
+    if [[ $1 == true ]]; then
+        local dry_run=true
         shift
     fi
 
@@ -59,20 +89,21 @@ create_index_file() {
         echo "Usage: $0 [--dry-run] root-folder"
         exit 1
     fi
-    root_folder=$1
+    local root_folder=$1
     shift
 
+echo $root_folder
     # Set the file path
-    local FILE_PATH="$root_folder/index.md"
+    local file_path="$root_folder/index.md"
 
     # Check if dry run is enabled
     if [[ $dry_run == true ]]; then
-        echo "Dry run: The index.md file would be created at $FILE_PATH"
+        echo "Dry run: The index.md file would be created at $file_path"
         return 0
     fi
 
     # Create the file with the specified content
-    cat >$FILE_PATH <<EOL
+    cat >$file_path <<EOL
 ---
 redirect_url: readme.html
 ---
@@ -80,82 +111,120 @@ This file will redirect users to readme.html
 EOL
 
     # Print a success message
-    echo "The index.md file has been successfully created at $FILE_PATH"
+    echo "The index.md file has been successfully created at $file_path"
 }
 
-function rename_readme() {
+rename_readme() {
+    # Check for the dry run option
+    if [[ $1 == true ]]; then
+        local dry_run=true
+        shift
+    fi
+
     # Check for the root folder argument
     if [[ -z $1 ]]; then
         echo "Usage: $0 [--dry-run] root-folder"
         exit 1
     fi
-    root_folder=$1
+    local root_folder=$1
     shift
 
+    # Check if the dry run option is given
+    if [[ $dry_run ]]; then
+        # Print what the function would do without actually doing it
+        echo "This is a dry run. The following actions would be performed:"
+        # Rename all README.md files to index.md
+        find $root_folder -name "README.md" -exec bash -c 'echo mv "$0" "${0%README.md}index.md"' {} \;
+
+        # Replace all links to README.md with index.md in all markdown files
+        find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} +
+    else
+        # Rename all README.md files to index.md
+        find $root_folder -name "README.md" -exec bash -c 'mv "$0" "${0%README.md}index.md"' {} \;
+
+        # Replace all links to README.md with index.md in all markdown files
+        find $root_folder -name "*.md" -type f -exec sed -i 's/README.md/index.md/g' {} +
+    fi
 }
 
-# Find all markdown files in the root folder and its subdirectories, excluding the 'api' directory
-find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | while IFS= read -r -d '' file; do
-    # Get the relative path to the root folder
-    relative_path=$(relative_path_to_root "${file#$root_folder/}")
-
-    # Process the file
-    while IFS= read -r line; do
-        iterator_line=$line
-        # Check if the line contains a link
-        while [[ $iterator_line =~ \]\(([^\)]+)\) ]]; do
-            # Extract the link
-            link=${BASH_REMATCH[1]}
-
-            # Check if the link contains 'src/' and is a relative path
-            if [[ $link == *src/* && $link != http* ]]; then
-                # Transform the link
-                new_link=$(transform_link "$link")
-
-                # Prepend the relative path to the root folder
-                new_link="${relative_path}${new_link}"
-
-                # Replace the link in the new line
-                line=${line/$link/$new_link}
-
-                # Print the changed link in dry run mode
-                echo "File: $file"
-                echo "Original link: $link"
-                echo "New link: $new_link"
-                echo ""
-            fi
-
-            iterator_line=${iterator_line/${BASH_REMATCH[0]}/}
-        done
-
-        # Print the new line
-        if [[ ! $dry_run ]]; then
-            # In normal mode, print the new line to a temporary file
-            echo "$line" >>"${file}.tmp"
-        fi
-    done <"$file"
-
-    # If not in dry run mode, replace the original file with the temporary file
-    if [[ ! $dry_run ]]; then
-        mv "${file}.tmp" "$file"
+transform_links() {
+    # Check for the dry run option
+    if [[ $1 == true ]]; then
+        local dry_run=true
+        shift
     fi
-done
 
-create_index_file "$root_folder"
+    # Check for the root folder argument
+    if [[ -z $1 ]]; then
+        echo "Usage: $0 [--dry-run] root-folder"
+        exit 1
+    fi
+    local root_folder=$1
+    shift
 
-# Check if the dry run option is given
-if [[ $dry_run ]]; then
-    # Print what the function would do without actually doing it
-    echo "This is a dry run. The following actions would be performed:"
-    # Rename all README.md files to index.md
-    find $root_folder -name "README.md" -exec bash -c 'echo mv "$0" "${0%README.md}index.md"' {} \;
+    # Find all markdown files in the root folder and its subdirectories, excluding the 'api' directory
+    find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | while IFS= read -r -d '' file; do
+        # Get the relative path to the root folder
+        local relative_path=$(relative_path_to_root "${file#$root_folder/}")
 
-    # Replace all links to README.md with index.md in all markdown files
-    find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} +
-else
-    # Rename all README.md files to index.md
-    find $root_folder -name "README.md" -exec bash -c 'mv "$0" "${0%README.md}index.md"' {} \;
+        # Process the file
+        while IFS= read -r line; do
+            local iterator_line=$line
+            # Check if the line contains a link
+            while [[ $iterator_line =~ \]\(([^\)]+)\) ]]; do
+                # Extract the link
+                local link=${BASH_REMATCH[1]}
 
-    # Replace all links to README.md with index.md in all markdown files
-    find $root_folder -name "*.md" -type f -exec sed -i 's/README.md/index.md/g' {} +
-fi
+                # Check if the link contains 'src/' and is a relative path
+                if [[ $link == *src/* && $link != http* ]]; then
+                    # Transform the link
+                    local new_link=$(transform_link "$link")
+
+                    # Prepend the relative path to the root folder
+                    new_link="${relative_path}${new_link}"
+
+                    # Replace the link in the new line
+                    line=${line/$link/$new_link}
+
+                    # Print the changed link in dry run mode
+                    echo "File: $file"
+                    echo "Original link: $link"
+                    echo "New link: $new_link"
+                    echo ""
+                fi
+
+                iterator_line=${iterator_line/${BASH_REMATCH[0]}/}
+            done
+
+            # Print the new line
+            if [[ ! $dry_run ]]; then
+                # In normal mode, print the new line to a temporary file
+                echo "$line" >>"${file}.tmp"
+            fi
+        done <"$file"
+
+        # If not in dry run mode, replace the original file with the temporary file
+        if [[ ! $dry_run ]]; then
+            mv "${file}.tmp" "$file"
+        fi
+    done
+}
+
+# Define a main function to run the script
+main() {
+    # Parse the command-line options
+    local dry_run root_folder
+    read -r dry_run root_folder <<<"$(parse_options "$@")"
+
+    # Transform the links in the markdown files
+    transform_links "$dry_run" "$root_folder"
+
+    # Create the index file in the root folder
+    create_index_file "$dry_run" "$root_folder"
+
+    # Rename the readme files to index files
+    rename_readme "$dry_run" "$root_folder"
+}
+
+# Call the main function with the arguments
+main "$@"
