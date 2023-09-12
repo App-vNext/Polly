@@ -83,6 +83,22 @@ EOL
     echo "The index.md file has been successfully created at $FILE_PATH"
 }
 
+function rename_readme() {
+  # Check for the root folder argument
+  if [[ -z $1 ]]; then
+      echo "Usage: $0 [--dry-run] root-folder"
+      exit 1
+  fi
+  root_folder=$1
+  shift
+
+  # Rename all README.md files to index.md
+  find $root_folder -name "README.md" -exec bash -c 'mv "$0" "${0%README.md}index.md"' {} \;
+
+  # Replace all links to README.md with index.md in all markdown files
+  find $root_folder -name "*.md" -type f -exec sed -i 's/README.md/index.md/g' {} +
+}
+
 # Find all markdown files in the root folder and its subdirectories, excluding the 'api' directory
 find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | while IFS= read -r -d '' file; do
     # Get the relative path to the root folder
@@ -131,3 +147,14 @@ find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | wh
 done
 
 create_index_file "$root_folder"
+
+# Check if the dry run option is given
+if [[ $dry_run ]]; then
+  # Print what the function would do without actually doing it
+  echo "This is a dry run. The following actions would be performed:"
+  find $root_folder -name "README.md" -exec echo "Rename {} to ${}/index.md" \;
+  find $root_folder -name "*.md" -exec grep -l "README.md" {} \; | xargs echo "Replace links to README.md with index.md in"
+else
+  # Call the function
+  rename_readme "$root_folder"
+fi
