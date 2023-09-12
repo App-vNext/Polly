@@ -108,6 +108,8 @@ create_index_file() {
     # Set the file path
     local file_path="$root_folder/index.md"
 
+    echo $root_folder
+
     # Define the file content
     file_content=$(
         cat <<EOL
@@ -210,7 +212,7 @@ transform_links() {
     shift
 
     # Print the link transformation message
-    echo -e "${blue}${info_mark} The following links to source code files would be transformed to point to the api documentation in all markdown files:${reset}"
+    echo -e "${blue}${info_mark} The following links to source code files are transformed to point to the api documentation in all markdown files:${reset}"
     # Find all markdown files in the root folder and its subdirectories, excluding the 'api' directory
     find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | while IFS= read -r -d '' file; do
         # Get the relative path to the root folder
