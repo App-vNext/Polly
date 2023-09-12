@@ -17,7 +17,7 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 |[Fallback](strategies/fallback.md)|Yes|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
 |[Hedging](strategies/hedging.md)|Yes|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
 
-Visit the [resilience strategies](strategies/readme.md) section to understand their structure and explore various configuration methods.
+Visit the [resilience strategies](strategies/README.md) section to understand their structure and explore various configuration methods.
 
 ## Next steps
 
@@ -25,7 +25,7 @@ Visit the [getting started](getting-started.md) section and learn how to quickly
 
 ## Articles
 
-- [Introduction](readme.md): General information about the project and its goals.
+- [Introduction](README.md): General information about the project and its goals.
 - [Getting started](getting-started.md): A guide to help you get started with the project.
 - Resilience strategies: A collection of strategies for improving the resilience of your system.
   - [Timeout](strategies/timeout.md): A strategy for setting a maximum time limit for a request.
@@ -44,7 +44,7 @@ Visit the [getting started](getting-started.md) section and learn how to quickly
   - [Polly-Contrib projects and libraries](community/polly-contrib.md): Learn how to contribute to and extend the project ecosystem.
   - [Libraries and contributions](community/libraries-and-contributions.md): Find out which libraries the project depends on and who contributes to its development.
   - [Useful resources and links](community/resources.md): Browse through blogs, podcasts, courses, e-books, and other community resources.
-- [API](api/readme.md): The API documentation for the project.
+- [API](api/README.md): The API documentation for the project.
 
 ## Articles (previous Polly versions)
 

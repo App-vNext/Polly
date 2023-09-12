@@ -1,11 +1,11 @@
 - name: Introduction
-  href: readme.md
+  href: README.md
 
 - name: Getting started
   href: getting-started.md
 
 - name: Resilience strategies
-  href: strategies/readme.md
+  href: strategies/README.md
   expanded: true
   items:
   - name: Timeout
@@ -23,7 +23,7 @@
 
 
 - name: Resilience pipelines
-  href: pipelines/readme.md
+  href: pipelines/README.md
   expanded: true
   items:
   - name: Resilience pipeline registry
