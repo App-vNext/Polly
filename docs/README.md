@@ -19,6 +19,10 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 Visit the [resilience strategies](strategies/readme.md) section to understand their structure and explore various configuration methods.
 
+## Next steps
+
+Visit the [getting started](getting-started.md) section and learn how to quickly start using Polly.
+
 ## Articles
 
 - [Introduction](readme.md): General information about the project and its goals.
