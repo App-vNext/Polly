@@ -1,6 +1,6 @@
 # Dependency injection
 
-Starting with version 8, Polly provides features that make the integration of Polly with the .NET [`IServiceCollection`](https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection) Dependency Injection (DI) container more streamlined. This is a thin layer atop the [resilience pipeline registry](resilience-pipeline-registry.md) which manages resilience pipelines.
+Starting with version 8, Polly provides features that make the integration of Polly with the .NET [`IServiceCollection`](https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection) Dependency Injection (DI) container more streamlined. This is a thin layer atop the [resilience pipeline registry](../pipelines/resilience-pipeline-registry.md) which manages resilience pipelines.
 
 ## Usage
 
@@ -49,7 +49,8 @@ The `AddResiliencePipeline` extension method also registers the following servic
 - `ResiliencePipelineProvider<string>`: Allows retrieving resilience pipelines.
 - `IOptions<ResiliencePipelineRegistryOptions<string>>`: Options for `ResiliencePipelineRegistry<string>`.
 
-> [!NOTE] The generic `string`` is inferred since the pipeline was defined using the "my-key" value.
+> [!NOTE]
+> The generic `string`` is inferred since the pipeline was defined using the "my-key" value.
 
 If you only need the registry without defining a pipeline, use the `AddResiliencePipelineRegistry(...)` method.
 
