@@ -18,43 +18,16 @@ reset="\033[0m"
 
 # Define a function to parse the command-line options
 parse_options() {
-    # Use getopt to handle long and short options
-    local options
-    options=$(getopt -o d --long dry-run -- "$@") || exit 1
-    eval set -- "$options"
-
-    # Use a case statement to handle different options
-    local dry_run=false # Initialize the dry run flag to false
-    while true; do
-        case "$1" in
-        -d | --dry-run)
-            # Set the dry run flag to true
-            dry_run=true
-            shift
-            ;;
-        --)
-            # End of options
-            shift
-            break
-            ;;
-        *)
-            # Invalid option
-            echo -e "${red}${cross_mark} Usage: $0 [-d|--dry-run] root-folder${reset}"
-            exit 1
-            ;;
-        esac
-    done
-
     # Check for the root folder argument
     if [[ -z $1 ]]; then
-        echo -e "${red}${cross_mark} Usage: $0 [-d|--dry-run] root-folder${reset}"
+        echo -e "${red}${cross_mark} Usage: $0 root-folder${reset}"
         exit 1
     fi
     local root_folder=$1
     shift
 
-    # Return the dry run flag and the root folder
-    echo "$dry_run" "$root_folder"
+    # Return the root folder
+    echo "$root_folder"
 }
 
 # Define a function to transform the link
@@ -104,47 +77,29 @@ relative_path_to_root() {
 }
 
 rename_readme() {
-    # Check if the dry run option is given
-    if [[ $dry_run == true ]]; then
-        # Print the readme file renaming message
-        echo -e "${yellow}${warning_mark} The following README.md files would be renamed to index.md:${reset}"
-        find $root_folder -name "README.md" -exec bash -c 'echo "$0 -> ${0%README.md}index.md"' {} \; | sed "s/^/${info_mark} /"
-        echo ""
+    # Rename all README.md files to index.md
+    find $root_folder -name "README.md" -exec bash -c 'mv "$0" "${0%README.md}index.md"' {} \;
 
-        # Print the link replacement message
-        echo -e "${yellow}${warning_mark} The following links to README.md would be replaced with index.md in all markdown files:${reset}"
-        find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} \; | sed "s/^/${info_mark} /"
-        echo ""
+    # Print the readme file renaming message
+    echo -e "${green}${check_mark} The following README.md files have been renamed to index.md:${reset}"
+    find $root_folder -name "index.md" -exec bash -c 'echo "${0%index.md}README.md -> $0"' {} \; | sed "s/^/${info_mark} /"
+    echo ""
 
-        # Print the link replacement message
-        echo -e "${yellow}${warning_mark} The following references to README.md would be replaced with index.md in all toc.yml files:${reset}"
-        find $root_folder -name "toc.yml" -type f -exec sed -n 's/README.md/index.md/gp' {} + | sed "s/^/${info_mark} /"
-        echo ""
-    else
-        # Rename all README.md files to index.md
-        find $root_folder -name "README.md" -exec bash -c 'mv "$0" "${0%README.md}index.md"' {} \;
+    # Replace all links to README.md with index.md in all markdown files
+    find $root_folder -name "*.md" -type f -exec sed -i 's/README.md/index.md/g' {} +
 
-        # Print the readme file renaming message
-        echo -e "${green}${check_mark} The following README.md files have been renamed to index.md:${reset}"
-        find $root_folder -name "index.md" -exec bash -c 'echo "${0%index.md}README.md -> $0"' {} \; | sed "s/^/${info_mark} /"
-        echo ""
+    # Print the link replacement message
+    echo -e "${green}${check_mark} The following links to README.md have been replaced with index.md in all markdown files:${reset}"
+    find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} + | sed "s/^/${info_mark} /"
+    echo ""
 
-        # Replace all links to README.md with index.md in all markdown files
-        find $root_folder -name "*.md" -type f -exec sed -i 's/README.md/index.md/g' {} +
+    # Replace all references to README.md with index.md in all toc.yml files
+    find $root_folder -name "toc.yml" -type f -exec sed -i 's/README.md/index.md/g' {} +
 
-        # Print the link replacement message
-        echo -e "${green}${check_mark} The following links to README.md have been replaced with index.md in all markdown files:${reset}"
-        find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} + | sed "s/^/${info_mark} /"
-        echo ""
-
-        # Replace all references to README.md with index.md in all toc.yml files
-        find $root_folder -name "toc.yml" -type f -exec sed -i 's/README.md/index.md/g' {} +
-
-        # Print the link replacement message
-        echo -e "${green}${check_mark} The following references to README.md have been replaced with index.md in all toc.yml files:${reset}"
-        find $root_folder -name "toc.yml" -type f -exec sed -n 's/README.md/index.md/gp' {} + | sed "s/^/${info_mark} /"
-        echo ""
-    fi
+    # Print the link replacement message
+    echo -e "${green}${check_mark} The following references to README.md have been replaced with index.md in all toc.yml files:${reset}"
+    find $root_folder -name "toc.yml" -type f -exec sed -n 's/README.md/index.md/gp' {} + | sed "s/^/${info_mark} /"
+    echo ""
 }
 
 transform_links() {
@@ -182,40 +137,29 @@ transform_links() {
             done
 
             # Print the new line
-            if [[ $dry_run == false ]]; then
-                # In normal mode, print the new line to a temporary file
-                echo "$line" >>"${file}.tmp"
-            fi
+            # In normal mode, print the new line to a temporary file
+            echo "$line" >>"${file}.tmp"
         done <"$file"
 
-        # If not in dry run mode, replace the original file with the temporary file
-        if [[ $dry_run == false ]]; then
-            mv "${file}.tmp" "$file"
-        fi
+        # Replace the original file with the temporary file
+        mv "${file}.tmp" "$file"
     done
 }
 
 # Define a main function to run the script
 main() {
     # Parse the command-line options
-    local dry_run root_folder
-    read -r dry_run root_folder <<<"$(parse_options "$@")"
+    local root_folder
+    read -r root_folder <<<"$(parse_options "$@")"
 
     if [ ! -d "$root_folder" ]; then
         echo -e "${red}${cross_mark}Error: Root folder does not exist.${reset}"
         exit 1
     fi
 
-    # Check if dry run is enabled
-    if [[ $dry_run == true ]]; then
-        # Print the dry run mode message
-        echo -e "${yellow}${warning_mark} This is a dry run. No changes will be made to the files. The following actions would be performed:${reset}"
-        echo ""
-    else
-        # Print the normal mode message
-        echo -e "${green}${check_mark} This is not a dry run. The following changes will be made to the files:${reset}"
-        echo ""
-    fi
+    # Print the normal mode message
+    echo -e "${green}${check_mark} The following changes will be made to the files:${reset}"
+    echo ""
 
     # Load the mappings
     local uids=()
@@ -225,10 +169,10 @@ main() {
     done < <(grep -oP '(?<=uid: ).*' "$root_folder/_site/xrefmap.yml")
 
     # Transform the links in the markdown files
-    transform_links "${dry_run}" "${root_folder}" "${uids}"
+    transform_links "${root_folder}" "${uids}"
 
     # Rename the readme files to index files
-    rename_readme "${dry_run}" "${root_folder}"
+    rename_readme "${root_folder}"
 }
 
 # Call the main function with the arguments
