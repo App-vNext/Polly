@@ -91,7 +91,7 @@ find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | wh
     # Process the file
     while IFS= read -r line; do
         # Check if the line contains a link
-        if [[ $line =~ \]\(([^\)]+)\) ]]; then
+        while [[ $line =~ \]\(([^\)]+)\) ]]; do
             # Extract the link
             link=${BASH_REMATCH[1]}
 
@@ -103,22 +103,23 @@ find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | wh
                 # Prepend the relative path to the root folder
                 new_link="${relative_path}${new_link}"
 
-                # Replace the link in the line
+                # Replace the link in the new line
                 line=${line/$link/$new_link}
 
                 # Print the changed link in dry run mode
-                #if [[ $dry_run ]]; then
                 echo "File: $file"
                 echo "Original link: $link"
                 echo "New link: $new_link"
                 echo ""
-                #fi
+            else
+                # Remove the link from the new line
+                line=${line/${BASH_REMATCH[0]}/}
             fi
-        fi
+        done
 
-        # Print the line
+        # Print the new line
         if [[ ! $dry_run ]]; then
-            # In normal mode, print the line to a temporary file
+            # In normal mode, print the new line to a temporary file
             echo "$line" >>"${file}.tmp"
         fi
     done <"$file"
