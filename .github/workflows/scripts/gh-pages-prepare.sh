@@ -24,47 +24,64 @@ transform_link() {
     input=${input//\//.}
 
     # Prepend 'api/' and append '.html' to the result
-    echo "/api/${input}.html"
+    echo "api/${input}.html"
+}
+
+# Define a function to generate the relative path to the root folder
+relative_path_to_root() {
+    # Get the depth of the current file
+    local depth=$(tr -dc '/' <<<"$1" | awk '{ print length }')
+
+    # Generate the relative path
+    local path=""
+    for ((i = 0; i < depth; i++)); do
+        path="../${path}"
+    done
+
+    echo "$path"
 }
 
 create_index_file() {
-  # Check for the dry run option
-  if [[ $1 == "--dry-run" ]]; then
-      dry_run=true
-      shift
-  fi
+    # Check for the dry run option
+    if [[ $1 == "--dry-run" ]]; then
+        dry_run=true
+        shift
+    fi
 
-  # Check for the root folder argument
-  if [[ -z $1 ]]; then
-      echo "Usage: $0 [--dry-run] root-folder"
-      exit 1
-  fi
-  root_folder=$1
-  shift
+    # Check for the root folder argument
+    if [[ -z $1 ]]; then
+        echo "Usage: $0 [--dry-run] root-folder"
+        exit 1
+    fi
+    root_folder=$1
+    shift
 
-  # Set the file path
-  local FILE_PATH="$root_folder/index.md"
+    # Set the file path
+    local FILE_PATH="$root_folder/index.md"
 
-  # Check if dry run is enabled
-  if [[ $dry_run == true ]]; then
-    echo "Dry run: The index.md file would be created at $FILE_PATH"
-    return 0
-  fi
+    # Check if dry run is enabled
+    if [[ $dry_run == true ]]; then
+        echo "Dry run: The index.md file would be created at $FILE_PATH"
+        return 0
+    fi
 
-  # Create the file with the specified content
-  cat > $FILE_PATH <<EOL
+    # Create the file with the specified content
+    cat >$FILE_PATH <<EOL
 ---
 redirect_url: readme.html
 ---
 This file will redirect users to readme.html
 EOL
 
-  # Print a success message
-  echo "The index.md file has been successfully created at $FILE_PATH"
+    # Print a success message
+    echo "The index.md file has been successfully created at $FILE_PATH"
 }
 
 # Find all markdown files in the root folder and its subdirectories, excluding the 'api' directory
 find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | while IFS= read -r -d '' file; do
+    # Get the relative path to the root folder
+    relative_path=$(relative_path_to_root "${file#$root_folder/}")
+
     # Process the file
     while IFS= read -r line; do
         # Check if the line contains a link
@@ -77,29 +94,31 @@ find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | wh
                 # Transform the link
                 new_link=$(transform_link "$link")
 
+                # Prepend the relative path to the root folder
+                new_link="${relative_path}${new_link}"
+
                 # Replace the link in the line
                 line=${line/$link/$new_link}
 
                 # Print the changed link in dry run mode
-                # if [[ $dry_run ]]; then
+                #if [[ $dry_run ]]; then
                 echo "File: $file"
                 echo "Original link: $link"
                 echo "New link: $new_link"
                 echo ""
-                # fi
+                #fi
             fi
         fi
 
         # Print the line
         if [[ ! $dry_run ]]; then
             # In normal mode, print the line to a temporary file
-            echo "$line" >> "${file}.tmp"
+            echo "$line" >>"${file}.tmp"
         fi
-    done < "$file"
+    done <"$file"
 
     # If not in dry run mode, replace the original file with the temporary file
     if [[ ! $dry_run ]]; then
         mv "${file}.tmp" "$file"
     fi
 done
-
