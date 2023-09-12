@@ -46,11 +46,6 @@
           "toc.yml",
           "*.md"
         ]
-      },
-      {
-        "files": "**/*.{cs}",
-        "src": "src",
-        "dest": "api"
       }
     ],
     "resource": [
