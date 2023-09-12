@@ -17,7 +17,7 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 |[Fallback](strategies/fallback.md)|Yes|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
 |[Hedging](strategies/hedging.md)|Yes|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
 
-Visit the [resilience strategies](resilience-strategies.md) section to understand their structure and explore various configuration methods.
+Visit the [resilience strategies](strategies/readme.md) section to understand their structure and explore various configuration methods.
 
 ## Articles
 
