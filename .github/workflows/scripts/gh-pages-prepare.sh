@@ -23,6 +23,8 @@ transform_link() {
     # Replace all '/' with '.'
     input=${input//\//.}
 
+    input=${input//Polly.Core/Polly}
+
     # Prepend 'api/' and append '.html' to the result
     echo "api/${input}.html"
 }
