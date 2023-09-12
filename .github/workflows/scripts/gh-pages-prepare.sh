@@ -60,7 +60,8 @@ parse_options() {
 # Define a function to transform the link
 transform_link() {
     # Remove the leading path up to and including 'src/' and the trailing '.cs' from the input
-    local input=${1#*src/}
+    local input=${link#*src/}
+    local original_input=$input
     input=${input%.cs}
 
     # Replace all '/' with '.'
@@ -70,10 +71,22 @@ transform_link() {
     input=${input//Polly.Core/Polly}
 
     # Replace .TResult with -1 (docfx does not use Tresult in paths)
-    input=${input//.TResult/-1}
+    input=${input//.TResult/}
 
-    # Prepend 'api/' and append '.html' to the result
-    echo "api/${input}.html"
+    match=false
+    # Check if the link is in the mappings
+    for uuid in "${uids[@]}"; do
+        if [[ $uuid == "$input" || $uuid =~ ^$input[\`\#] ]]; then
+            match=$uuid
+            break
+        fi
+    done
+
+    if [[ $match == false ]]; then
+        echo "https://github.com/App-vNext/Polly/tree/main/src/$original_input"
+    else
+        echo "xref:${match}"
+    fi
 }
 
 # Define a function to generate the relative path to the root folder
@@ -153,10 +166,7 @@ transform_links() {
                 # Check if the link contains 'src/' and is a relative path
                 if [[ $link == *src/* && $link != http* ]]; then
                     # Transform the link
-                    local new_link=$(transform_link "$link")
-
-                    # Prepend the relative path to the root folder
-                    new_link="${relative_path}${new_link}"
+                    local new_link=$(transform_link "${link}" "${uids}" "${relative_path}")
 
                     # Replace the link in the new line
                     line=${line/$link/$new_link}
@@ -207,8 +217,15 @@ main() {
         echo ""
     fi
 
+    # Load the mappings
+    local uids=()
+    while read -r line; do
+        line=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+        uids+=("$line")
+    done < <(grep -oP '(?<=uid: ).*' "$root_folder/_site/xrefmap.yml")
+
     # Transform the links in the markdown files
-    transform_links "${dry_run}" "${root_folder}"
+    transform_links "${dry_run}" "${root_folder}" "${uids}"
 
     # Rename the readme files to index files
     rename_readme "${dry_run}" "${root_folder}"
