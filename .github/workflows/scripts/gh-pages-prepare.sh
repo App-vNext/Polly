@@ -92,13 +92,20 @@ create_index_file() {
     local root_folder=$1
     shift
 
-echo $root_folder
     # Set the file path
     local file_path="$root_folder/index.md"
 
     # Check if dry run is enabled
     if [[ $dry_run == true ]]; then
-        echo "Dry run: The index.md file would be created at $file_path"
+        # Print the index file creation message
+        echo "The index.md file would be created at $file_path with the following content:"
+        cat <<EOL
+---
+redirect_url: readme.html
+---
+This file will redirect users to readme.html
+EOL
+        echo ""
         return 0
     fi
 
@@ -110,8 +117,10 @@ redirect_url: readme.html
 This file will redirect users to readme.html
 EOL
 
-    # Print a success message
-    echo "The index.md file has been successfully created at $file_path"
+    # Print the index file creation message
+    echo "The index.md file has been successfully created at $file_path with the following content:"
+    cat "$file_path"
+    echo ""
 }
 
 rename_readme() {
@@ -131,19 +140,31 @@ rename_readme() {
 
     # Check if the dry run option is given
     if [[ $dry_run ]]; then
-        # Print what the function would do without actually doing it
-        echo "This is a dry run. The following actions would be performed:"
-        # Rename all README.md files to index.md
-        find $root_folder -name "README.md" -exec bash -c 'echo mv "$0" "${0%README.md}index.md"' {} \;
+        # Print the readme file renaming message
+        echo "The following README.md files would be renamed to index.md:"
+        find $root_folder -name "README.md" -exec bash -c 'echo "$0 -> ${0%README.md}index.md"' {} \;
+        echo ""
 
-        # Replace all links to README.md with index.md in all markdown files
+        # Print the link replacement message
+        echo "The following links to README.md would be replaced with index.md in all markdown files:"
         find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} +
+        echo ""
     else
         # Rename all README.md files to index.md
         find $root_folder -name "README.md" -exec bash -c 'mv "$0" "${0%README.md}index.md"' {} \;
 
+        # Print the readme file renaming message
+        echo "The following README.md files have been renamed to index.md:"
+        find $root_folder -name "index.md" -exec bash -c 'echo "${0%index.md}README.md -> $0"' {} \;
+        echo ""
+
         # Replace all links to README.md with index.md in all markdown files
         find $root_folder -name "*.md" -type f -exec sed -i 's/README.md/index.md/g' {} +
+
+        # Print the link replacement message
+        echo "The following links to README.md have been replaced with index.md in all markdown files:"
+        find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} +
+        echo ""
     fi
 }
 
@@ -162,6 +183,8 @@ transform_links() {
     local root_folder=$1
     shift
 
+    # Print the link transformation message
+    echo "The following links to source code files would be transformed to point to the api documentation in all markdown files:"
     # Find all markdown files in the root folder and its subdirectories, excluding the 'api' directory
     find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | while IFS= read -r -d '' file; do
         # Get the relative path to the root folder
@@ -186,7 +209,7 @@ transform_links() {
                     # Replace the link in the new line
                     line=${line/$link/$new_link}
 
-                    # Print the changed link in dry run mode
+                    # Print the changed link
                     echo "File: $file"
                     echo "Original link: $link"
                     echo "New link: $new_link"
@@ -215,6 +238,17 @@ main() {
     # Parse the command-line options
     local dry_run root_folder
     read -r dry_run root_folder <<<"$(parse_options "$@")"
+
+    # Check if dry run is enabled
+    if [[ $dry_run == true ]]; then
+        # Print the dry run mode message
+        echo "This is a dry run. No changes will be made to the files. The following actions would be performed:"
+        echo ""
+    else
+        # Print the normal mode message
+        echo "This is not a dry run. The following changes will be made to the files:"
+        echo ""
+    fi
 
     # Transform the links in the markdown files
     transform_links "$dry_run" "$root_folder"
