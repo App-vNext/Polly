@@ -27,7 +27,7 @@ jobs:
 
     - name: Prepare documentation
       shell: bash
-      run: ./.github/workflows/scripts/gh-pages-prepare.sh /home/runner/work/
+      run: ./.github/workflows/scripts/gh-pages-prepare.sh /home/runner/work/docs/
 
     - run: dotnet tool update -g docfx
     - run: docfx docs/docfx.json

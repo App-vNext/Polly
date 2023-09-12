@@ -27,6 +27,42 @@ transform_link() {
     echo "/api/${input}.html"
 }
 
+create_index_file() {
+  # Check for the dry run option
+  if [[ $1 == "--dry-run" ]]; then
+      dry_run=true
+      shift
+  fi
+
+  # Check for the root folder argument
+  if [[ -z $1 ]]; then
+      echo "Usage: $0 [--dry-run] root-folder"
+      exit 1
+  fi
+  root_folder=$1
+  shift
+
+  # Set the file path
+  local FILE_PATH="$root_folder/index.md"
+
+  # Check if dry run is enabled
+  if [[ $dry_run == true ]]; then
+    echo "Dry run: The index.md file would be created at $FILE_PATH"
+    return 0
+  fi
+
+  # Create the file with the specified content
+  cat > $FILE_PATH <<EOL
+---
+redirect_url: readme.html
+---
+This file will redirect users to readme.html
+EOL
+
+  # Print a success message
+  echo "The index.md file has been successfully created at $FILE_PATH"
+}
+
 # Find all markdown files in the root folder and its subdirectories, excluding the 'api' directory
 find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | while IFS= read -r -d '' file; do
     # Process the file
