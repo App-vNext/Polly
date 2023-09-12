@@ -108,27 +108,27 @@ create_index_file() {
     # Set the file path
     local file_path="$root_folder/index.md"
 
-    # Check if dry run is enabled
-    if [[ $dry_run == true ]]; then
-        # Print the index file creation message
-        echo -e "${yellow}${warning_mark} The index.md file would be created at $file_path with the following content:${reset}"
+    # Define the file content
+    file_content=$(
         cat <<EOL
 ---
 redirect_url: readme.html
 ---
 This file will redirect users to readme.html
 EOL
+    )
+
+    # Check if dry run is enabled
+    if [[ $dry_run == true ]]; then
+        # Print the index file creation message
+        echo -e "${yellow}${warning_mark} The index.md file would be created at $file_path with the following content:${reset}"
+        echo "$file_content"
         echo ""
         return 0
     fi
 
     # Create the file with the specified content
-    cat >$file_path <<EOL
----
-redirect_url: readme.html
----
-This file will redirect users to readme.html
-EOL
+    echo "$file_content" >$file_path
 
     # Print the index file creation message
     echo -e "${green}${check_mark} The index.md file has been successfully created at $file_path with the following content:${reset}"
@@ -173,7 +173,7 @@ rename_readme() {
 
         # Print the readme file renaming message
         echo -e "${green}${check_mark} The following README.md files have been renamed to index.md:${reset}"
-        find $root_folder -name "index.md" -exec bash -c 'echo "${0%index.md}README.md -> $0"' {} \;  | sed "s/^/${info_mark} /"
+        find $root_folder -name "index.md" -exec bash -c 'echo "${0%index.md}README.md -> $0"' {} \; | sed "s/^/${info_mark} /"
         echo ""
 
         # Replace all links to README.md with index.md in all markdown files
@@ -181,7 +181,7 @@ rename_readme() {
 
         # Print the link replacement message
         echo -e "${green}${check_mark} The following links to README.md have been replaced with index.md in all markdown files:${reset}"
-        find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} +  | sed "s/^/${info_mark} /"
+        find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} + | sed "s/^/${info_mark} /"
         echo ""
 
         # Replace all references to README.md with index.md in all toc.yml files
@@ -189,7 +189,7 @@ rename_readme() {
 
         # Print the link replacement message
         echo -e "${green}${check_mark} The following references to README.md have been replaced with index.md in all toc.yml files:${reset}"
-        find $root_folder -name "toc.yml" -type f -exec sed -n 's/README.md/index.md/gp' {} +  | sed "s/^/${info_mark} /"
+        find $root_folder -name "toc.yml" -type f -exec sed -n 's/README.md/index.md/gp' {} + | sed "s/^/${info_mark} /"
         echo ""
     fi
 }
