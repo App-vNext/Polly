@@ -124,3 +124,5 @@ find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | wh
         mv "${file}.tmp" "$file"
     fi
 done
+
+create_index_file "$root_folder"
