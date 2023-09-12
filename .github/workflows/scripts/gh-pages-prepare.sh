@@ -24,7 +24,7 @@ transform_link() {
     input=${input//\//.}
 
     # Prepend 'api/' and append '.html' to the result
-    echo "api/${input}.html"
+    echo "/api/${input}.html"
 }
 
 # Find all markdown files in the root folder and its subdirectories, excluding the 'api' directory
