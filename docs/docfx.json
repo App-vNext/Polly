@@ -5,8 +5,7 @@
         {
           "cwd": "../src",
           "files": [
-            "**/**.csproj",
-            "**/**.cs"
+            "**/**.csproj"
           ],
           "exclude": [
             "**/obj/**",
