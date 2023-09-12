@@ -3,6 +3,19 @@
 # Set the error handling options
 set -eu
 
+# Define some emoji for the messages
+check_mark="\xE2\x9C\x85"
+cross_mark="\xE2\x9D\x8C"
+warning_mark="\xE2\x9A\xA0"
+info_mark="\xE2\x84\xB9"
+
+# Define some colors for the messages
+green="\033[0;32m"
+red="\033[0;31m"
+yellow="\033[0;33m"
+blue="\033[0;34m"
+reset="\033[0m"
+
 # Define a function to parse the command-line options
 parse_options() {
     # Use getopt to handle long and short options
@@ -14,27 +27,27 @@ parse_options() {
     local dry_run=false # Initialize the dry run flag to false
     while true; do
         case "$1" in
-            -d|--dry-run)
-                # Set the dry run flag to true
-                dry_run=true
-                shift
-                ;;
-            --)
-                # End of options
-                shift
-                break
-                ;;
-            *)
-                # Invalid option
-                echo "Usage: $0 [-d|--dry-run] root-folder"
-                exit 1
-                ;;
+        -d | --dry-run)
+            # Set the dry run flag to true
+            dry_run=true
+            shift
+            ;;
+        --)
+            # End of options
+            shift
+            break
+            ;;
+        *)
+            # Invalid option
+            echo -e "${red}${cross_mark} Usage: $0 [-d|--dry-run] root-folder${reset}"
+            exit 1
+            ;;
         esac
     done
 
     # Check for the root folder argument
     if [[ -z $1 ]]; then
-        echo "Usage: $0 [-d|--dry-run] root-folder"
+        echo -e "${red}${cross_mark} Usage: $0 [-d|--dry-run] root-folder${reset}"
         exit 1
     fi
     local root_folder=$1
@@ -86,7 +99,7 @@ create_index_file() {
 
     # Check for the root folder argument
     if [[ -z $1 ]]; then
-        echo "Usage: $0 [--dry-run] root-folder"
+        echo -e "${red}${cross_mark} Usage: $0 [--dry-run] root-folder${reset}"
         exit 1
     fi
     local root_folder=$1
@@ -98,7 +111,7 @@ create_index_file() {
     # Check if dry run is enabled
     if [[ $dry_run == true ]]; then
         # Print the index file creation message
-        echo "The index.md file would be created at $file_path with the following content:"
+        echo -e "${yellow}${warning_mark} The index.md file would be created at $file_path with the following content:${reset}"
         cat <<EOL
 ---
 redirect_url: readme.html
@@ -118,7 +131,7 @@ This file will redirect users to readme.html
 EOL
 
     # Print the index file creation message
-    echo "The index.md file has been successfully created at $file_path with the following content:"
+    echo -e "${green}${check_mark} The index.md file has been successfully created at $file_path with the following content:${reset}"
     cat "$file_path"
     echo ""
 }
@@ -132,7 +145,7 @@ rename_readme() {
 
     # Check for the root folder argument
     if [[ -z $1 ]]; then
-        echo "Usage: $0 [--dry-run] root-folder"
+        echo -e "${red}${cross_mark} Usage: $0 [--dry-run] root-folder${reset}"
         exit 1
     fi
     local root_folder=$1
@@ -141,29 +154,42 @@ rename_readme() {
     # Check if the dry run option is given
     if [[ $dry_run ]]; then
         # Print the readme file renaming message
-        echo "The following README.md files would be renamed to index.md:"
-        find $root_folder -name "README.md" -exec bash -c 'echo "$0 -> ${0%README.md}index.md"' {} \;
+        echo -e "${yellow}${warning_mark} The following README.md files would be renamed to index.md:${reset}"
+        find $root_folder -name "README.md" -exec bash -c 'echo "$0 -> ${0%README.md}index.md"' {} \; | sed "s/^/${info_mark} /"
         echo ""
 
         # Print the link replacement message
-        echo "The following links to README.md would be replaced with index.md in all markdown files:"
-        find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} +
+        echo -e "${yellow}${warning_mark} The following links to README.md would be replaced with index.md in all markdown files:${reset}"
+        find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} \; | sed "s/^/${info_mark} /"
+        echo ""
+
+        # Print the link replacement message
+        echo -e "${yellow}${warning_mark} The following references to README.md would be replaced with index.md in all toc.yml files:${reset}"
+        find $root_folder -name "toc.yml" -type f -exec sed -n 's/README.md/index.md/gp' {} + | sed "s/^/${info_mark} /"
         echo ""
     else
         # Rename all README.md files to index.md
         find $root_folder -name "README.md" -exec bash -c 'mv "$0" "${0%README.md}index.md"' {} \;
 
         # Print the readme file renaming message
-        echo "The following README.md files have been renamed to index.md:"
-        find $root_folder -name "index.md" -exec bash -c 'echo "${0%index.md}README.md -> $0"' {} \;
+        echo -e "${green}${check_mark} The following README.md files have been renamed to index.md:${reset}"
+        find $root_folder -name "index.md" -exec bash -c 'echo "${0%index.md}README.md -> $0"' {} \;  | sed "s/^/${info_mark} /"
         echo ""
 
         # Replace all links to README.md with index.md in all markdown files
         find $root_folder -name "*.md" -type f -exec sed -i 's/README.md/index.md/g' {} +
 
         # Print the link replacement message
-        echo "The following links to README.md have been replaced with index.md in all markdown files:"
-        find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} +
+        echo -e "${green}${check_mark} The following links to README.md have been replaced with index.md in all markdown files:${reset}"
+        find $root_folder -name "*.md" -type f -exec sed -n 's/README.md/index.md/gp' {} +  | sed "s/^/${info_mark} /"
+        echo ""
+
+        # Replace all references to README.md with index.md in all toc.yml files
+        find $root_folder -name "toc.yml" -type f -exec sed -i 's/README.md/index.md/g' {} +
+
+        # Print the link replacement message
+        echo -e "${green}${check_mark} The following references to README.md have been replaced with index.md in all toc.yml files:${reset}"
+        find $root_folder -name "toc.yml" -type f -exec sed -n 's/README.md/index.md/gp' {} +  | sed "s/^/${info_mark} /"
         echo ""
     fi
 }
@@ -177,14 +203,14 @@ transform_links() {
 
     # Check for the root folder argument
     if [[ -z $1 ]]; then
-        echo "Usage: $0 [--dry-run] root-folder"
+        echo -e "${red}${cross_mark} Usage: $0 [--dry-run] root-folder${reset}"
         exit 1
     fi
     local root_folder=$1
     shift
 
     # Print the link transformation message
-    echo "The following links to source code files would be transformed to point to the api documentation in all markdown files:"
+    echo -e "${blue}${info_mark} The following links to source code files would be transformed to point to the api documentation in all markdown files:${reset}"
     # Find all markdown files in the root folder and its subdirectories, excluding the 'api' directory
     find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | while IFS= read -r -d '' file; do
         # Get the relative path to the root folder
@@ -210,9 +236,9 @@ transform_links() {
                     line=${line/$link/$new_link}
 
                     # Print the changed link
-                    echo "File: $file"
-                    echo "Original link: $link"
-                    echo "New link: $new_link"
+                    echo -e "${blue}${info_mark} File: $file${reset}"
+                    echo -e "${blue}${info_mark} Original link: $link${reset}"
+                    echo -e "${blue}${info_mark} New link: $new_link${reset}"
                     echo ""
                 fi
 
@@ -242,11 +268,11 @@ main() {
     # Check if dry run is enabled
     if [[ $dry_run == true ]]; then
         # Print the dry run mode message
-        echo "This is a dry run. No changes will be made to the files. The following actions would be performed:"
+        echo -e "${yellow}${warning_mark} This is a dry run. No changes will be made to the files. The following actions would be performed:${reset}"
         echo ""
     else
         # Print the normal mode message
-        echo "This is not a dry run. The following changes will be made to the files:"
+        echo -e "${green}${check_mark} This is not a dry run. The following changes will be made to the files:${reset}"
         echo ""
     fi
 
