@@ -45,12 +45,12 @@ find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | wh
                 line=${line/$link/$new_link}
 
                 # Print the changed link in dry run mode
-                if [[ $dry_run ]]; then
-                    echo "File: $file"
-                    echo "Original link: $link"
-                    echo "New link: $new_link"
-                    echo ""
-                fi
+                # if [[ $dry_run ]]; then
+                echo "File: $file"
+                echo "Original link: $link"
+                echo "New link: $new_link"
+                echo ""
+                # fi
             fi
         fi
 
