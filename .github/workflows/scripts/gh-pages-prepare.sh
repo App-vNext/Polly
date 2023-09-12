@@ -90,8 +90,9 @@ find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | wh
 
     # Process the file
     while IFS= read -r line; do
+        iterator_line=$line
         # Check if the line contains a link
-        while [[ $line =~ \]\(([^\)]+)\) ]]; do
+        while [[ $iterator_line =~ \]\(([^\)]+)\) ]]; do
             # Extract the link
             link=${BASH_REMATCH[1]}
 
@@ -111,10 +112,9 @@ find "$root_folder" -path "$root_folder/api" -prune -o -name '*.md' -print0 | wh
                 echo "Original link: $link"
                 echo "New link: $new_link"
                 echo ""
-            else
-                # Remove the link from the new line
-                line=${line/${BASH_REMATCH[0]}/}
             fi
+
+            iterator_line=${iterator_line/${BASH_REMATCH[0]}/}
         done
 
         # Print the new line
