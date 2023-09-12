@@ -27,7 +27,7 @@ jobs:
 
     - run: dotnet tool update -g docfx
 
-    - run: docfx metadata docs/docfx.json
+    - run: docfx docs/docfx.json
 
     - name: Prepare documentation
       shell: bash
