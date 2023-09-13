@@ -75,15 +75,15 @@ var serviceCollection = new ServiceCollection()
 
 ## Metrics
 
-The metrics are emitted under the `Polly` meter name. The subsequent sections provide insights into the metrics produced by Polly. Please note that any custom enriched dimensions are not depicted in the following tables.
+The metrics are emitted under the `Polly` meter name. The subsequent sections provide insights into the metrics produced by Polly. Please note that any custom enriched tags are not depicted in the following tables.
 
-Every telemetry event has the following dimensions:
+Every telemetry event has the following tags:
 
 - `pipeline_name`: Optional, comes from `ResiliencePipelineBuilder.Name`.
 - `pipeline_instance`: Optional, comes from `ResiliencePipelineBuilder.InstanceName`.
 - `strategy_name`: Optional, comes from `RetryStrategyOptions.Name`.
 
-The sample below demonstrates how to assign these dimensions:
+The sample below demonstrates how to assign these tags:
 
 <!-- snippet: telemetry-coordinates -->
 ```cs
@@ -99,14 +99,14 @@ builder.AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
-These values are subsequently reflected in the metrics below:
+These values are subsequently reflected in the following metering instruments exposed by the Polly:
 
 ### Instrument: `polly.resilience_events`
 
 - Type: *Counter*
 - Description: Emitted upon the occurrence of a resilience event.
 
-Dimensions:
+Tags:
 
 |Name|Description|
 |---| ---|
@@ -124,7 +124,7 @@ Dimensions:
 - Unit: *milliseconds*
 - Description: Tracks the duration of execution attempts, produced by `Retry` and `Hedging` resilience strategies.
 
-Dimensions:
+Tags:
 
 |Name|Description|
 |---| ---|
@@ -138,13 +138,13 @@ Dimensions:
 |`attempt_number`| The execution attempt number, starting at 0 (0, 1, 2, etc.). |
 |`attempt_handled`| Indicates if the execution outcome was handled. A handled outcome indicates execution failure and the need for retry (`true`, `false`). |
 
-### Instrument: polly.pipeline_execution_duration
+### Instrument: `polly.pipeline_execution_duration`
 
 - Type: *Histogram*
 - Unit: *milliseconds*
 - Description: Measures the duration of resilience pipelines.
 
-Dimensions:
+Tags:
 
 |Name|Description|
 |---| ---|
