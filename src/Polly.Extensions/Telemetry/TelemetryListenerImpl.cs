@@ -21,16 +21,16 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
         _listeners = options.TelemetryListeners.ToList();
 
         Counter = Meter.CreateCounter<int>(
-            "resilience-events",
+            "polly.resilience_events",
             description: "Tracks the number of resilience events that occurred in resilience strategies.");
 
         AttemptDuration = Meter.CreateHistogram<double>(
-            "execution-attempt-duration",
+            "polly.execution_attempt_duration",
             unit: "ms",
             description: "Tracks the duration of execution attempts.");
 
         ExecutionDuration = Meter.CreateHistogram<double>(
-            "pipeline-execution-duration",
+            "polly.pipeline_execution_duration",
             unit: "ms",
             description: "The execution duration of resilience pipelines.");
     }

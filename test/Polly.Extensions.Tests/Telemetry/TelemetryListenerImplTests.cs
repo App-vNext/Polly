@@ -48,11 +48,11 @@ public class TelemetryListenerImplTests : IDisposable
 
         if (noOutcome)
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/pipeline-instance/my-strategy', Operation Key: 'op-key', Result: ''");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/pipeline_instance/my-strategy', Operation Key: 'op-key', Result: ''");
         }
         else
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/pipeline-instance/my-strategy', Operation Key: 'op-key', Result: '200'");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/pipeline_instance/my-strategy', Operation Key: 'op-key', Result: '200'");
         }
     }
 
@@ -75,11 +75,11 @@ public class TelemetryListenerImplTests : IDisposable
 
         if (noOutcome)
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/pipeline-instance/my-strategy', Operation Key: 'op-key', Result: ''");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/pipeline_instance/my-strategy', Operation Key: 'op-key', Result: ''");
         }
         else
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/pipeline-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.'");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/pipeline_instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.'");
         }
     }
 
@@ -113,9 +113,9 @@ public class TelemetryListenerImplTests : IDisposable
 
         messages[0].LogLevel.Should().Be(logLevel);
 
-        var events = GetEvents("resilience-events");
+        var events = GetEvents("polly.resilience_events");
         events.Should().HaveCount(1);
-        var ev = events[0]["event-severity"].Should().Be(severity.ToString());
+        var ev = events[0]["event_severity"].Should().Be(severity.ToString());
     }
 
     [Fact]
@@ -128,7 +128,7 @@ public class TelemetryListenerImplTests : IDisposable
         var messages = _logger.GetRecords(new EventId(3, "ExecutionAttempt")).ToList();
         messages.Should().HaveCount(1);
 
-        messages[0].Message.Should().Be("Execution attempt. Source: 'my-pipeline/pipeline-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.', Handled: 'True', Attempt: '4', Execution Time: '123'");
+        messages[0].Message.Should().Be("Execution attempt. Source: 'my-pipeline/pipeline_instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.', Handled: 'True', Attempt: '4', Execution Time: '123'");
     }
 
     [InlineData(true, true)]
@@ -148,11 +148,11 @@ public class TelemetryListenerImplTests : IDisposable
         if (noOutcome)
         {
             string resultString = string.Empty;
-            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-pipeline/pipeline-instance/my-strategy', Operation Key: 'op-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
+            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-pipeline/pipeline_instance/my-strategy', Operation Key: 'op-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
         }
         else
         {
-            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-pipeline/pipeline-instance/my-strategy', Operation Key: 'op-key', Result: '200', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
+            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-pipeline/pipeline_instance/my-strategy', Operation Key: 'op-key', Result: '200', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
         }
 
         messages[0].LogLevel.Should().Be(LogLevel.Warning);
@@ -187,7 +187,7 @@ public class TelemetryListenerImplTests : IDisposable
         };
         ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>());
 
-        var events = GetEvents("resilience-events");
+        var events = GetEvents("polly.resilience_events");
         events.Should().HaveCount(1);
         var ev = events[0];
 
@@ -200,20 +200,20 @@ public class TelemetryListenerImplTests : IDisposable
             ev.Count.Should().Be(6);
         }
 
-        ev["event-name"].Should().Be("my-event");
-        ev["event-severity"].Should().Be("Warning");
-        ev["pipeline-name"].Should().Be("my-pipeline");
-        ev["pipeline-instance"].Should().Be("pipeline-instance");
-        ev["operation-key"].Should().Be("op-key");
-        ev["strategy-name"].Should().Be("my-strategy");
+        ev["event_name"].Should().Be("my-event");
+        ev["event_severity"].Should().Be("Warning");
+        ev["pipeline_name"].Should().Be("my-pipeline");
+        ev["pipeline_instance"].Should().Be("pipeline_instance");
+        ev["operation_key"].Should().Be("op-key");
+        ev["strategy_name"].Should().Be("my-strategy");
 
         if (outcome?.Exception is not null)
         {
-            ev["exception-name"].Should().Be("System.InvalidOperationException");
+            ev["exception_name"].Should().Be("System.InvalidOperationException");
         }
         else
         {
-            ev.Should().NotContainKey("exception-name");
+            ev.Should().NotContainKey("exception_name");
         }
     }
 
@@ -235,7 +235,7 @@ public class TelemetryListenerImplTests : IDisposable
         };
         ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
 
-        var events = GetEvents("execution-attempt-duration");
+        var events = GetEvents("polly.execution_attempt_duration");
         events.Should().HaveCount(1);
         var ev = events[0];
 
@@ -248,25 +248,25 @@ public class TelemetryListenerImplTests : IDisposable
             ev.Count.Should().Be(8);
         }
 
-        ev["event-name"].Should().Be("my-event");
-        ev["event-severity"].Should().Be("Warning");
-        ev["pipeline-name"].Should().Be("my-pipeline");
-        ev["pipeline-instance"].Should().Be("pipeline-instance");
-        ev["operation-key"].Should().Be("op-key");
-        ev["pipeline-name"].Should().Be("my-pipeline");
-        ev["attempt-number"].Should().Be(5);
-        ev["attempt-handled"].Should().Be(true);
+        ev["event_name"].Should().Be("my-event");
+        ev["event_severity"].Should().Be("Warning");
+        ev["pipeline_name"].Should().Be("my-pipeline");
+        ev["pipeline_instance"].Should().Be("pipeline_instance");
+        ev["operation_key"].Should().Be("op-key");
+        ev["pipeline_name"].Should().Be("my-pipeline");
+        ev["attempt_number"].Should().Be(5);
+        ev["attempt_handled"].Should().Be(true);
 
         if (outcome?.Exception is not null)
         {
-            ev["exception-name"].Should().Be("System.InvalidOperationException");
+            ev["exception_name"].Should().Be("System.InvalidOperationException");
         }
         else
         {
-            ev.Should().NotContainKey("exception-name");
+            ev.Should().NotContainKey("exception_name");
         }
 
-        _events.Single(v => v.Name == "execution-attempt-duration").Measurement.Should().Be(50000);
+        _events.Single(v => v.Name == "polly.execution_attempt_duration").Measurement.Should().Be(50000);
     }
 
     [Fact]
@@ -278,7 +278,7 @@ public class TelemetryListenerImplTests : IDisposable
         var attemptArg = new ExecutionAttemptArguments(5, TimeSpan.FromSeconds(50), true);
         ReportEvent(telemetry, Outcome.FromResult<object>(true), context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
 
-        var events = GetEvents("execution-attempt-duration");
+        var events = GetEvents("polly.execution_attempt_duration");
         events.Should().HaveCount(0);
     }
 
@@ -309,7 +309,7 @@ public class TelemetryListenerImplTests : IDisposable
 
         ReportEvent(telemetry, Outcome.FromResult<object>(true));
 
-        var events = GetEvents("resilience-events");
+        var events = GetEvents("polly.resilience_events");
         var ev = events[0];
         ev.Count.Should().Be(DefaultDimensions + count + 1);
         ev["other"].Should().Be("other-value");
@@ -326,7 +326,7 @@ public class TelemetryListenerImplTests : IDisposable
         using var metering = TestUtilities.EnablePollyMetering(_events);
         var telemetry = Create();
         ReportEvent(telemetry, null, instanceName: null);
-        var events = GetEvents("resilience-events")[0].Should().NotContainKey("pipeline-instance");
+        var events = GetEvents("polly.resilience_events")[0].Should().NotContainKey("pipeline_instance");
     }
 
     [InlineData(true)]
@@ -362,10 +362,10 @@ public class TelemetryListenerImplTests : IDisposable
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience pipeline executing. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key'");
+        messages[0].Message.Should().Be("Resilience pipeline executing. Source: 'my-pipeline/pipeline_instance', Operation Key: 'op-key'");
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Match($"Resilience pipeline executed. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key', Result: '{result}', Execution Time: 10000ms");
+        messages[0].Message.Should().Match($"Resilience pipeline executed. Source: 'my-pipeline/pipeline_instance', Operation Key: 'op-key', Result: '{result}', Execution Time: 10000ms");
         messages[0].LogLevel.Should().Be(LogLevel.Debug);
     }
 
@@ -378,7 +378,7 @@ public class TelemetryListenerImplTests : IDisposable
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience pipeline executing. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key'");
+        messages[0].Message.Should().Be("Resilience pipeline executing. Source: 'my-pipeline/pipeline_instance', Operation Key: 'op-key'");
     }
 
     [Fact]
@@ -390,7 +390,7 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, outcome: null, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
 
         var messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
-        messages[0].Message.Should().Match($"Resilience pipeline executed. Source: 'my-pipeline/pipeline-instance', Operation Key: 'op-key', Result: '', Execution Time: 10000ms");
+        messages[0].Message.Should().Match($"Resilience pipeline executed. Source: 'my-pipeline/pipeline_instance', Operation Key: 'op-key', Result: '', Execution Time: 10000ms");
     }
 
     [InlineData(false)]
@@ -419,24 +419,24 @@ public class TelemetryListenerImplTests : IDisposable
 
         ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
 
-        var ev = _events.Single(v => v.Name == "pipeline-execution-duration").Tags;
+        var ev = _events.Single(v => v.Name == "polly.pipeline_execution_duration").Tags;
 
         ev.Count.Should().Be(exception ? 8 : 7);
-        ev["pipeline-instance"].Should().Be("pipeline-instance");
-        ev["operation-key"].Should().Be("op-key");
-        ev["pipeline-name"].Should().Be("my-pipeline");
-        ev["event-name"].Should().Be("my-event");
-        ev["event-severity"].Should().Be("Warning");
-        ev["pipeline-name"].Should().Be("my-pipeline");
+        ev["pipeline_instance"].Should().Be("pipeline_instance");
+        ev["operation_key"].Should().Be("op-key");
+        ev["pipeline_name"].Should().Be("my-pipeline");
+        ev["event_name"].Should().Be("my-event");
+        ev["event_severity"].Should().Be("Warning");
+        ev["pipeline_name"].Should().Be("my-pipeline");
         ev["custom-tag"].Should().Be("custom-tag-value");
 
         if (exception)
         {
-            ev["exception-name"].Should().Be("System.InvalidOperationException");
+            ev["exception_name"].Should().Be("System.InvalidOperationException");
         }
         else
         {
-            ev.Should().NotContainKey("exception-name");
+            ev.Should().NotContainKey("exception_name");
         }
     }
 
@@ -449,7 +449,7 @@ public class TelemetryListenerImplTests : IDisposable
         var attemptArg = new PipelineExecutedArguments(TimeSpan.FromSeconds(50));
         ReportEvent(telemetry, Outcome.FromResult<object>(true), context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
 
-        var events = GetEvents("pipeline-execution-duration");
+        var events = GetEvents("polly.pipeline_execution_duration");
         events.Should().HaveCount(0);
     }
 
@@ -481,7 +481,7 @@ public class TelemetryListenerImplTests : IDisposable
     private static void ReportEvent(
         TelemetryListenerImpl telemetry,
         Outcome<object>? outcome,
-        string? instanceName = "pipeline-instance",
+        string? instanceName = "pipeline_instance",
         ResilienceContext? context = null,
         TestArguments? arg = null,
         ResilienceEventSeverity severity = ResilienceEventSeverity.Warning) => ReportEvent<TestArguments>(telemetry, outcome, instanceName, context, arg!, severity);
@@ -489,7 +489,7 @@ public class TelemetryListenerImplTests : IDisposable
     private static void ReportEvent<TArgs>(
         TelemetryListenerImpl telemetry,
         Outcome<object>? outcome,
-        string? instanceName = "pipeline-instance",
+        string? instanceName = "pipeline_instance",
         ResilienceContext? context = null,
         TArgs arg = default!,
         ResilienceEventSeverity severity = ResilienceEventSeverity.Warning)
