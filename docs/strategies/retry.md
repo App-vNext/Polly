@@ -3,8 +3,8 @@
 ## About
 
 - **Options**:
-  - [`RetryStrategyOptions`](../../src/Polly.Core/Retry/RetryStrategyOptions.cs)
-  - [`RetryStrategyOptions<T>`](../../src/Polly.Core/Retry/RetryStrategyOptions.TResult.cs)
+  - [`RetryStrategyOptions`](xref:Polly.Retry.RetryStrategyOptions)
+  - [`RetryStrategyOptions<T>`](xref:Polly.Retry.RetryStrategyOptions`1)
 - **Extensions**: `AddRetry`
 - **Strategy Type**: Reactive
 
