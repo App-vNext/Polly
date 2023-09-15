@@ -2,7 +2,7 @@
 
 ## About
 
-- **Options**: [`RateLimiterStrategyOptions`](../../src/Polly.RateLimiting/RateLimiterStrategyOptions.cs)
+- **Options**: [`RateLimiterStrategyOptions`](xref:Polly.RateLimiting.RateLimiterStrategyOptions)
 - **Extensions**: `AddRateLimiter`, `AddConcurrencyLimiter`
 - **Strategy Type**: Proactive
 - **Exceptions**:
