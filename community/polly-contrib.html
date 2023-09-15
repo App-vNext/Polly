@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Polly-Contrib </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Polly-Contrib ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/community/polly-contrib.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="polly-contrib">Polly-Contrib</h1>
+
+<p>Polly now has a <a href="https://github.com/Polly-Contrib">Polly-Contrib</a> to allow the community to contribute policies or other enhancements around Polly with a low burden of ceremony.</p>
+<p>Have a contrib you'd like to publish under Polly-Contrib? Contact us with  an issue here or on <a href="http://pollytalk.slack.com">Polly's slack</a>, and we can set up a CI-ready Polly.Contrib repo to which you have full rights, to help you manage and deliver your awesomeness to the community!</p>
+<p>We also provide:</p>
+<ul>
+<li>a blank <a href="https://github.com/Polly-Contrib/Polly.Contrib.CustomPolicyTemplates">starter template for a custom policy</a> (see above for more on custom policies)</li>
+<li>a <a href="https://github.com/Polly-Contrib/Polly.Contrib.BlankTemplate">template repo for any other contrib</a></li>
+</ul>
+<p>Both templates contain a full project structure referencing Polly, Polly's default build targets, and a build to build and test your contrib and make a NuGet package.</p>
+<h2 id="available-via-polly-contrib">Available via Polly-Contrib</h2>
+<ul>
+<li><a href="https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry">Polly.Contrib.WaitAndRetry</a>: a collection of concise helper methods for common wait-and-retry strategies; and a new jitter formula combining exponential backoff with a very even distribution of randomly-jittered retry intervals.</li>
+<li><a href="https://github.com/Polly-Contrib/Polly.Contrib.AzureFunctions.CircuitBreaker">Polly.Contrib.AzureFunctions.CircuitBreaker</a>: a distributed circuit-breaker implemented in Azure Functions; consumable in Azure Functions, or from anywhere over http.</li>
+<li><a href="https://github.com/Polly-Contrib/Simmy">Simmy</a>: our chaos engineering project.</li>
+<li><a href="https://github.com/Polly-Contrib/Polly.Contrib.TimingPolicy">Polly.Contrib.TimingPolicy</a>: a starter policy to publish execution timings of any call executed through Policy.</li>
+<li><a href="https://github.com/Polly-Contrib/Polly.Contrib.LoggingPolicy">Polly.Contrib.LoggingPolicy</a>: a policy simply to log handled exceptions/faults, and rethrow or bubble the fault outwards.</li>
+</ul>
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/community/polly-contrib.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

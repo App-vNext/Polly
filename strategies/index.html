@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Resilience strategies </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Resilience strategies ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/strategies/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="resilience-strategies">Resilience strategies</h1>
+
+<div class="NOTE">
+<h5>Note</h5>
+<p>This is documentation for the upcoming Polly v8 release.</p>
+</div>
+<p>Resilience strategies are essential components of Polly, designed to execute user-defined callbacks while adding an extra layer of resilience. These strategies can't be executed directly; they must be run through a <strong>resilience pipeline</strong>. Polly provides an API to construct resilience pipelines by incorporating one or more resilience strategies through the pipeline builders.</p>
+<p>Polly categorizes resilience strategies into two main groups:</p>
+<ul>
+<li><strong>Reactive</strong>: These strategies handle specific exceptions that are thrown, or results that are returned, by the callbacks executed through the strategy.</li>
+<li><strong>Proactive</strong>: Unlike reactive strategies, proactive strategies do not focus on handling errors by the callbacks might throw or return. They can make proactive decisions to cancel or reject the execution of callbacks (e.g., using a rate limiter or a timeout resilience strategy).</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<p>Extensions for adding resilience strategies to the builders are provided by each strategy. Depending on the type of strategy, these extensions may be available for both <code>ResiliencePipelineBuilder</code> and <code>ResiliencePipelineBuilder&lt;T&gt;</code> or just one of them. Proactive strategies like timeout or rate limiter are available for both types of builders, while specialized reactive strategies are only available for <code>ResiliencePipelineBuilder&lt;T&gt;</code>. Adding multiple resilience strategies is supported.</p>
+<p>Each resilience strategy provides:</p>
+<ul>
+<li>Extensions for the resilience strategy builders.</li>
+<li>Configuration options (e.g., <code>RetryStrategyOptions</code>) to specify the strategy's behavior.</li>
+</ul>
+<p>Here's an simple example:</p>
+<!-- snippet: resilience-strategy-sample -->
+<pre><code class="lang-cs">ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddTimeout(new TimeoutStrategyOptions
+    {
+        Timeout = TimeSpan.FromSeconds(5)
+    })
+    .Build();
+</code></pre>
+<!-- endSnippet -->
+<div class="NOTE">
+<h5>Note</h5>
+<p>The configuration options are automatically validated by Polly and come with sensible defaults. Therefore, you don't have to specify all the properties unless needed.</p>
+</div>
+<h2 id="fault-handling-in-reactive-strategies">Fault-handling in reactive strategies</h2>
+<p>Each reactive strategy exposes the <code>ShouldHandle</code> predicate property. This property represents a predicate to determine whether the fault or the result returned after executing the resilience strategy should be managed or not.</p>
+<p>This is demonstrated below:</p>
+<!-- snippet: should-handle -->
+<pre><code class="lang-cs">// Create an instance of options for a retry strategy. In this example,
+// we use RetryStrategyOptions. You could also use other options like
+// CircuitBreakerStrategyOptions or FallbackStrategyOptions.
+var options = new RetryStrategyOptions&lt;HttpResponseMessage&gt;();
+
+// PredicateBuilder can simplify the setup of the ShouldHandle predicate.
+options.ShouldHandle = new PredicateBuilder&lt;HttpResponseMessage&gt;()
+    .HandleResult(response =&gt; !response.IsSuccessStatusCode)
+    .Handle&lt;HttpRequestException&gt;();
+
+// For greater flexibility, you can directly use the ShouldHandle delegate with switch expressions.
+options.ShouldHandle = args =&gt; args.Outcome switch
+{
+    // Strategies may offer additional context for result handling.
+    // For instance, the retry strategy exposes the number of attempts made.
+    _ when args.AttemptNumber &gt; 3 =&gt; PredicateResult.False(),
+    { Exception: HttpRequestException } =&gt; PredicateResult.True(),
+    { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode =&gt; PredicateResult.True(),
+    _ =&gt; PredicateResult.False()
+};
+</code></pre>
+<!-- endSnippet -->
+<p>Some additional notes from the preceding example:</p>
+<ul>
+<li><code>PredicateBuilder</code> is a utility API designed to make configuring predicates easier.</li>
+<li><code>PredicateResult.True()</code> is shorthand for <code>new ValueTask&lt;bool&gt;(true)</code>.</li>
+<li>All <code>ShouldHandle</code> predicates are asynchronous and have the type <code>Func&lt;Args&lt;TResult&gt;, ValueTask&lt;bool&gt;&gt;</code>. The <code>Args&lt;TResult&gt;</code> serves as a placeholder, and each strategy defines its own arguments.</li>
+</ul>
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/strategies/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

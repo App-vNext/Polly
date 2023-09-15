@@ -1,0 +1,498 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PredicateBuilder&lt;TResult&gt;
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PredicateBuilder&lt;TResult&gt;
+ ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/new/docs/gh-pages/apiSpec/new?filename=Polly_PredicateBuilder_1.md&amp;value=---%0Auid%3A%20Polly.PredicateBuilder%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Polly.PredicateBuilder`1">
+
+
+
+  <h1 id="Polly_PredicateBuilder_1" data-uid="Polly.PredicateBuilder`1" class="text-break">
+    Class PredicateBuilder&lt;TResult&gt;
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/src/Polly.Core/PredicateBuilder.TResult.cs/#L7"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Polly.html">Polly</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Polly.Core.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Defines a builder for creating predicates for <code class="typeparamref">TResult</code> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.exception">Exception</a> combinations.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class PredicateBuilder&lt;TResult&gt;</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The type of the result.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PredicateBuilder&lt;TResult&gt;</span></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="Polly.PredicateBuilder.html">PredicateBuilder</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Polly_PredicateBuilder_1_Build_" data-uid="Polly.PredicateBuilder`1.Build*"></a>
+
+  <h3 id="Polly_PredicateBuilder_1_Build" data-uid="Polly.PredicateBuilder`1.Build">
+  Build()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/src/Polly.Core/PredicateBuilder.TResult.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the predicate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Predicate&lt;Outcome&lt;TResult&gt;&gt; Build()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.predicate-1">Predicate</a>&lt;<a class="xref" href="Polly.Outcome-1.html">Outcome</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>An instance of predicate delegate.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Polly_PredicateBuilder_1_Build_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The returned predicate will return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if any of the configured predicates return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.
+Please be aware of the performance penalty if you register too many predicates with this builder. In such case, it's better to create your own predicate
+manually as a delegate.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when no predicates were configured using this builder.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Polly_PredicateBuilder_1_HandleInner_" data-uid="Polly.PredicateBuilder`1.HandleInner*"></a>
+
+  <h3 id="Polly_PredicateBuilder_1_HandleInner__1" data-uid="Polly.PredicateBuilder`1.HandleInner``1">
+  HandleInner&lt;TException&gt;()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/src/Polly.Core/PredicateBuilder.TResult.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a predicate for handling inner exceptions of the specified type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PredicateBuilder&lt;TResult&gt; HandleInner&lt;TException&gt;() where TException : Exception</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder</a>&lt;TResult&gt;</dt>
+    <dd><p>The same instance of the <a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder&lt;TResult&gt;</a> for chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TException</code></dt>
+    <dd><p>The type of the inner exception to handle.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Polly_PredicateBuilder_1_HandleInner_" data-uid="Polly.PredicateBuilder`1.HandleInner*"></a>
+
+  <h3 id="Polly_PredicateBuilder_1_HandleInner__1_System_Func___0_System_Boolean__" data-uid="Polly.PredicateBuilder`1.HandleInner``1(System.Func{``0,System.Boolean})">
+  HandleInner&lt;TException&gt;(Func&lt;TException, bool&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/src/Polly.Core/PredicateBuilder.TResult.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a predicate for handling inner exceptions of the specified type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PredicateBuilder&lt;TResult&gt; HandleInner&lt;TException&gt;(Func&lt;TException, bool&gt; predicate) where TException : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>predicate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TException, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>The predicate function to use for handling the inner exception.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder</a>&lt;TResult&gt;</dt>
+    <dd><p>The same instance of the <a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder&lt;TResult&gt;</a> for chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TException</code></dt>
+    <dd><p>The type of the inner exception to handle.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when the <code class="paramref">predicate</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Polly_PredicateBuilder_1_HandleResult_" data-uid="Polly.PredicateBuilder`1.HandleResult*"></a>
+
+  <h3 id="Polly_PredicateBuilder_1_HandleResult_System_Func__0_System_Boolean__" data-uid="Polly.PredicateBuilder`1.HandleResult(System.Func{`0,System.Boolean})">
+  HandleResult(Func&lt;TResult, bool&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/src/Polly.Core/PredicateBuilder.TResult.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a predicate for handling results.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PredicateBuilder&lt;TResult&gt; HandleResult(Func&lt;TResult, bool&gt; predicate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>predicate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TResult, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>The predicate function to use for handling the result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder</a>&lt;TResult&gt;</dt>
+    <dd><p>The same instance of the <a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder&lt;TResult&gt;</a> for chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Polly_PredicateBuilder_1_HandleResult_" data-uid="Polly.PredicateBuilder`1.HandleResult*"></a>
+
+  <h3 id="Polly_PredicateBuilder_1_HandleResult__0_System_Collections_Generic_IEqualityComparer__0__" data-uid="Polly.PredicateBuilder`1.HandleResult(`0,System.Collections.Generic.IEqualityComparer{`0})">
+  HandleResult(TResult, IEqualityComparer&lt;TResult&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/src/Polly.Core/PredicateBuilder.TResult.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a predicate for handling results with a specific value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PredicateBuilder&lt;TResult&gt; HandleResult(TResult result, IEqualityComparer&lt;TResult&gt;? comparer = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <span class="xref">TResult</span></dt>
+    <dd><p>The result value to handle.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer</a>&lt;TResult&gt;</dt>
+    <dd><p>The comparer to use for comparing results. If <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> , the default comparer is used.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder</a>&lt;TResult&gt;</dt>
+    <dd><p>The same instance of the <a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder&lt;TResult&gt;</a> for chaining.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Polly_PredicateBuilder_1_Handle_" data-uid="Polly.PredicateBuilder`1.Handle*"></a>
+
+  <h3 id="Polly_PredicateBuilder_1_Handle__1" data-uid="Polly.PredicateBuilder`1.Handle``1">
+  Handle&lt;TException&gt;()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/src/Polly.Core/PredicateBuilder.TResult.cs/#L16"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a predicate for handling exceptions of the specified type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PredicateBuilder&lt;TResult&gt; Handle&lt;TException&gt;() where TException : Exception</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder</a>&lt;TResult&gt;</dt>
+    <dd><p>The same instance of the <a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder&lt;TResult&gt;</a> for chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TException</code></dt>
+    <dd><p>The type of the exception to handle.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Polly_PredicateBuilder_1_Handle_" data-uid="Polly.PredicateBuilder`1.Handle*"></a>
+
+  <h3 id="Polly_PredicateBuilder_1_Handle__1_System_Func___0_System_Boolean__" data-uid="Polly.PredicateBuilder`1.Handle``1(System.Func{``0,System.Boolean})">
+  Handle&lt;TException&gt;(Func&lt;TException, bool&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/src/Polly.Core/PredicateBuilder.TResult.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a predicate for handling exceptions of the specified type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PredicateBuilder&lt;TResult&gt; Handle&lt;TException&gt;(Func&lt;TException, bool&gt; predicate) where TException : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>predicate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TException, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>The predicate function to use for handling the exception.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder</a>&lt;TResult&gt;</dt>
+    <dd><p>The same instance of the <a class="xref" href="Polly.PredicateBuilder-1.html">PredicateBuilder&lt;TResult&gt;</a> for chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TException</code></dt>
+    <dd><p>The type of the exception to handle.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when the <code class="paramref">predicate</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/src/Polly.Core/PredicateBuilder.TResult.cs/#L7" class="edit-link">Edit this page</a>
+        </div>
+
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

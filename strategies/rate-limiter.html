@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Rate limiter resilience strategy </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Rate limiter resilience strategy ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/strategies/rate-limiter.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="rate-limiter-resilience-strategy">Rate limiter resilience strategy</h1>
+
+<h2 id="about">About</h2>
+<ul>
+<li><strong>Options</strong>: <a class="xref" href="../api/Polly.RateLimiting.RateLimiterStrategyOptions.html"><code>RateLimiterStrategyOptions</code></a></li>
+<li><strong>Extensions</strong>: <code>AddRateLimiter</code>, <code>AddConcurrencyLimiter</code></li>
+<li><strong>Strategy Type</strong>: Proactive</li>
+<li><strong>Exceptions</strong>:
+<ul>
+<li><code>RateLimiterRejectedException</code>: Thrown when a rate limiter rejects an execution.</li>
+</ul>
+</li>
+<li><strong>Package</strong>: <a href="https://www.nuget.org/packages/Polly.RateLimiting">Polly.RateLimiting</a></li>
+</ul>
+<hr>
+<p>The rate limiter resilience strategy controls the number of operations that can pass through it. This strategy is a thin layer over the API provided by the <a href="https://www.nuget.org/packages/System.Threading.RateLimiting"><code>System.Threading.RateLimiting</code></a> package.</p>
+<p>Further reading:</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-rate-limiting-for-dotnet/">Announcing rate limiting for .NET</a></li>
+<li><a href="https://learn.microsoft.com/dotnet/api/system.threading.ratelimiting">Rate limiting API documentation</a></li>
+</ul>
+<h2 id="usage">Usage</h2>
+<!-- snippet: rate-limiter -->
+<pre><code class="lang-cs">// Add rate limiter with default options.
+// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/rate-limiter.md#defaults for default values.
+new ResiliencePipelineBuilder()
+    .AddRateLimiter(new RateLimiterStrategyOptions());
+
+// Create a rate limiter to allow a maximum of 100 concurrent executions and a queue of 50.
+new ResiliencePipelineBuilder()
+    .AddConcurrencyLimiter(100, 50);
+
+// Create a rate limiter that allows 100 executions per minute.
+new ResiliencePipelineBuilder()
+    .AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
+    {
+        PermitLimit = 100,
+        Window = TimeSpan.FromMinutes(1)
+    }));
+</code></pre>
+<!-- endSnippet -->
+<p>Example execution:</p>
+<!-- snippet: rate-limiter-execution -->
+<pre><code class="lang-cs">var pipeline = new ResiliencePipelineBuilder().AddConcurrencyLimiter(100, 50).Build();
+
+try
+{
+    // Execute an asynchronous text search operation.
+    var result = await pipeline.ExecuteAsync(
+        token =&gt; TextSearchAsync(query, token),
+        cancellationToken);
+}
+catch (RateLimiterRejectedException ex)
+{
+    // Handle RateLimiterRejectedException,
+    // that can optionally contain information about when to retry.
+    if (ex.RetryAfter is TimeSpan retryAfter)
+    {
+        Console.WriteLine($&quot;Retry After: {retryAfter}&quot;);
+    }
+}
+</code></pre>
+<!-- endSnippet -->
+<h2 id="defaults">Defaults</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RateLimiter</code></td>
+<td><code>null</code></td>
+<td>Generator that creates a <code>RateLimitLease</code> for executions.</td>
+</tr>
+<tr>
+<td><code>DefaultRateLimiterOptions</code></td>
+<td><code>PermitLimit</code> set to 1000 and <code>QueueLimit</code> set to 0.</td>
+<td>The options for the default concurrency limiter that will be used when <code>RateLimiter</code> is <code>null</code>.</td>
+</tr>
+<tr>
+<td><code>OnRejected</code></td>
+<td><code>null</code></td>
+<td>Event that is raised when the execution is rejected by the rate limiter.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="disposal-of-rate-limiters">Disposal of rate limiters</h2>
+<p>The <code>RateLimiter</code> is a disposable resource. When you explicitly create a <code>RateLimiter</code> instance, it's good practice to dispose of it once it's no longer needed. This is usually not an issue when manually creating resilience pipelines using the <code>ResiliencePipelineBuilder</code>. However, when dynamic reloads are enabled, failing to dispose of discarded rate limiters can lead to excessive resource consumption. Fortunately, Polly provides a way to dispose of discarded rate limiters, as demonstrated in the example below:</p>
+<!-- snippet: rate-limiter-disposal -->
+<pre><code class="lang-cs">services
+    .AddResiliencePipeline(&quot;my-pipeline&quot;, (builder, context) =&gt;
+    {
+        var options = context.GetOptions&lt;ConcurrencyLimiterOptions&gt;(&quot;my-concurrency-options&quot;);
+
+        // This call enables dynamic reloading of the pipeline
+        // when the named ConcurrencyLimiterOptions change.
+        context.EnableReloads&lt;ConcurrencyLimiterOptions&gt;(&quot;my-concurrency-options&quot;);
+
+        var limiter = new ConcurrencyLimiter(options);
+
+        builder.AddRateLimiter(limiter);
+
+        // Dispose of the limiter when the pipeline is disposed.
+        context.OnPipelineDisposed(() =&gt; limiter.Dispose());
+    });
+</code></pre>
+<!-- endSnippet -->
+<p>The above example uses the <code>AddResiliencePipeline(...)</code> extension method to configure the pipeline. However, a similar approach can be taken when directly using the <code>ResiliencePipelineRegistry&lt;T&gt;</code>.</p>
+<h2 id="partitioned-rate-limiter">Partitioned rate limiter</h2>
+<p>For advanced use-cases, the partitioned rate limiter is also available. The following example illustrates how to retrieve a partition key from <code>ResilienceContext</code> using the <code>GetPartitionKey</code> method:</p>
+<!-- snippet: rate-limiter-partitioned -->
+<pre><code class="lang-cs">var partitionedLimiter = PartitionedRateLimiter.Create&lt;ResilienceContext, string&gt;(context =&gt;
+{
+    // Extract the partition key.
+    string partitionKey = GetPartitionKey(context);
+
+    return RateLimitPartition.GetConcurrencyLimiter(
+        partitionKey,
+        key =&gt; new ConcurrencyLimiterOptions
+        {
+            PermitLimit = 100
+        });
+});
+
+new ResiliencePipelineBuilder()
+    .AddRateLimiter(new RateLimiterStrategyOptions
+    {
+        // Provide a custom rate limiter delegate.
+        RateLimiter = args =&gt;
+        {
+            return partitionedLimiter.AcquireAsync(args.Context, 1, args.Context.CancellationToken);
+        }
+    });
+</code></pre>
+<!-- endSnippet -->
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/strategies/rate-limiter.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

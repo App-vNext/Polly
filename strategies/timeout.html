@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Timeout resilience strategy </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Timeout resilience strategy ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/strategies/timeout.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="timeout-resilience-strategy">Timeout resilience strategy</h1>
+
+<h2 id="about">About</h2>
+<ul>
+<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Timeout.TimeoutStrategyOptions.html"><code>TimeoutStrategyOptions</code></a></li>
+<li><strong>Extensions</strong>: <code>AddTimeout</code></li>
+<li><strong>Strategy Type</strong>: Proactive</li>
+<li><strong>Exceptions</strong>:
+<ul>
+<li><code>TimeoutRejectedException</code>: Thrown when a delegate executed through a timeout strategy does not complete before the timeout.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Version 8 documentation for this strategy has not yet been migrated. For more information on timeout concepts and behavior, refer to the <a href="https://github.com/App-vNext/Polly/wiki/Timeout">older documentation</a>.</p>
+</div>
+<h2 id="usage">Usage</h2>
+<!-- snippet: timeout -->
+<pre><code class="lang-cs">// Add timeout using the default options.
+// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/timeout.md#defaults for default values.
+new ResiliencePipelineBuilder()
+    .AddTimeout(new TimeoutStrategyOptions());
+
+// To add a timeout with a custom TimeSpan duration
+new ResiliencePipelineBuilder()
+    .AddTimeout(TimeSpan.FromSeconds(3));
+
+// To add a timeout using a custom timeout generator function
+new ResiliencePipelineBuilder()
+    .AddTimeout(new TimeoutStrategyOptions
+    {
+        TimeoutGenerator = args =&gt;
+        {
+            // Note: the timeout generator supports asynchronous operations
+            return new ValueTask&lt;TimeSpan&gt;(TimeSpan.FromSeconds(123));
+        }
+    });
+
+// To add a timeout and listen for timeout events
+new ResiliencePipelineBuilder()
+    .AddTimeout(new TimeoutStrategyOptions
+    {
+        TimeoutGenerator = args =&gt;
+        {
+            // Note: the timeout generator supports asynchronous operations
+            return new ValueTask&lt;TimeSpan&gt;(TimeSpan.FromSeconds(123));
+        },
+        OnTimeout = args =&gt;
+        {
+            Console.WriteLine($&quot;{args.Context.OperationKey}: Execution timed out after {args.Timeout.TotalSeconds} seconds.&quot;);
+            return default;
+        }
+    });
+</code></pre>
+<!-- endSnippet -->
+<p>Example execution:</p>
+<!-- snippet: timeout-execution -->
+<pre><code class="lang-cs">var pipeline = new ResiliencePipelineBuilder()
+    .AddTimeout(TimeSpan.FromSeconds(3))
+    .Build();
+
+HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
+      async ct =&gt;
+      {
+          // Execute a delegate that takes a CancellationToken as an input parameter.
+          return await httpClient.GetAsync(endpoint, ct);
+      },
+      cancellationToken);
+</code></pre>
+<!-- endSnippet -->
+<h2 id="defaults">Defaults</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Timeout</code></td>
+<td>30 seconds</td>
+<td>The default timeout used by the strategy.</td>
+</tr>
+<tr>
+<td><code>TimeoutGenerator</code></td>
+<td><code>null</code></td>
+<td>Generates the timeout for a given execution.</td>
+</tr>
+<tr>
+<td><code>OnTimeout</code></td>
+<td><code>null</code></td>
+<td>Event that is raised when timeout occurs.</td>
+</tr>
+</tbody>
+</table>
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/strategies/timeout.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

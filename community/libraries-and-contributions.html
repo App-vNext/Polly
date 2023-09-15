@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>3rd Party Libraries and Contributions </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="3rd Party Libraries and Contributions ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/community/libraries-and-contributions.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="3rd-party-libraries-and-contributions">3rd Party Libraries and Contributions</h1>
+
+<ul>
+<li><a href="https://github.com/fluentassertions/fluentassertions">Fluent Assertions</a> - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | <a href="https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE">Apache License 2.0 (Apache)</a></li>
+<li><a href="https://github.com/xunit/xunit">xUnit.net</a> - Free, open source, community-focused unit testing tool for the .NET Framework | <a href="https://github.com/xunit/xunit/blob/main/license.txt">Apache License 2.0 (Apache)</a></li>
+<li><a href="http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking">Ian Griffith's TimedLock</a></li>
+<li><a href="http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29">Steven van Deursen's ReadOnlyDictionary</a> (until Polly v5.0.6)</li>
+<li><a href="https://github.com/StephenCleary/AsyncEx">Stephen Cleary's AsyncEx library</a> for AsyncSemaphore (supports BulkheadAsync policy for .NET4.0 only) (until Polly v5.9.0) | <a href="https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE">MIT license</a></li>
+<li><a href="https://github.com/theraot">@theraot</a>'s <a href="https://stackoverflow.com/a/31226509/">ExceptionDispatchInfo implementation for .NET4.0</a> (supports Timeout policy for .NET4.0 only) (until Polly v5.9.0) including also a contribution by <a href="https://github.com/migueldeicaza">@migueldeicaza</a> | Licensed under and distributed under <a href="https://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution Share Alike license</a> per <a href="https://stackexchange.com/legal">StackExchange Terms of Service</a></li>
+<li>Build powered by <a href="https://cakebuild.net/">Cake</a> and <a href="https://github.com/adamralph/minver">MinVer</a>.  Developers powered by <a href="https://www.jetbrains.com/resharper/">Resharper</a>, with thanks to JetBrains for <a href="https://www.jetbrains.com/support/community/#section=open-source">OSS licensing</a>.</li>
+</ul>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<ul>
+<li><a href="https://github.com/Lokad/lokad-shared-libraries">lokad-shared-libraries</a> - Helper assemblies originally for .NET 3.5 and Silverlight 2.0 which were developed as part of the Open Source effort by Lokad.com (discontinued) | <a href="https://raw.github.com/Lokad/lokad-shared-libraries/master/Lokad.Shared.License.txt">New BSD License</a></li>
+<li><a href="https://github.com/michael-wolfenden">@michael-wolfenden</a> - The creator and mastermind of Polly!</li>
+<li><a href="https://github.com/ghuntley">@ghuntley</a> - Portable Class Library implementation.</li>
+<li><a href="https://github.com/mauricedb">@mauricedb</a> - Initial async implementation.</li>
+<li><a href="https://github.com/RobGibbens">@robgibbens</a> - Added existing async files to PCL project</li>
+<li><a href="https://github.com/hacko-bede">Hacko</a> - Added extra <code>NotOnCapturedContext</code> call to prevent potential deadlocks when blocking on asynchronous calls</li>
+<li><a href="https://github.com/ThomasMentzel">@ThomasMentzel</a> - Added ability to capture the results of executing a policy via <code>ExecuteAndCapture</code></li>
+<li><a href="https://github.com/yevhen">@yevhen</a> - Added full control of whether to continue on captured synchronization context or not</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Added full async cancellation support</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Added async support for ContextualPolicy</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Added ContextualPolicy support for circuit-breaker</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Extended circuit-breaker for public monitoring and control</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Added ExecuteAndCapture support with arbitrary context data</li>
+<li><a href="https://github.com/kristianhald">@kristianhald</a> and <a href="https://github.com/reisenberger">@reisenberger</a> - Added AdvancedCircuitBreaker</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Allowed async onRetry delegates to async retry policies</li>
+<li><a href="https://github.com/Lumirris">@Lumirris</a> - Add new Polly.Net40Async project/package supporting async for .NET40 via Microsoft.Bcl.Async</li>
+<li><a href="https://github.com/SteveCote">@SteveCote</a> - Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Allowed policies to handle returned results; added strongly-typed policies Policy&lt;TResult&gt;;.</li>
+<li><a href="https://github.com/christopherbahr">@christopherbahr</a> - Added optimisation for circuit-breaker hot path.</li>
+<li><a href="https://github.com/Finity">@Finity</a> - Fixed circuit-breaker threshold bug.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Add some missing ExecuteAndCapture/Async overloads.</li>
+<li><a href="https://github.com/brunolauze">@brunolauze</a> - Add CancellationToken support to synchronous executions (to support TimeoutPolicy).</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Add PolicyWrap.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Add Fallback policy.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Add PolicyKeys and context to all policy executions, as bedrock for policy events and metrics tracking executions.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a>,  and contributions from <a href="https://github.com/brunolauze">@brunolauze</a> -  Add Bulkhead Isolation policy.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Add Timeout policy.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Fix .NETStandard 1.0 targeting.  Remove PCL259 target.  PCL259 support is provided via .NETStandard1.0 target, going forward.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Fix CircuitBreaker HalfOpen state and cases when breakDuration is shorter than typical call timeout.  Thanks to <a href="https://github.com/vgouw">@vgouw</a> and <a href="https://github.com/kharos">@kharos</a> for the reports and insightful thinking.</li>
+<li><a href="https://github.com/lakario">@lakario</a> - Tidy CircuitBreaker LastException property.</li>
+<li><a href="https://github.com/lakario">@lakario</a> - Add NoOpPolicy.</li>
+<li><a href="https://github.com/Julien-Mialon">@Julien-Mialon</a> - Fixes, support and examples for .NETStandard compatibility with Xamarin PCL projects</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Add mutable Context and extra overloads taking Context.  Allows different parts of a policy execution to exchange data via the mutable Context travelling with each execution.</li>
+<li><a href="https://github.com/ankitbko">@ankitbko</a> - Add PolicyRegistry for storing and retrieving policies.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Add interfaces by policy type and execution type.</li>
+<li><a href="https://github.com/SeanFarrow">@seanfarrow</a> - Add IReadOnlyPolicyRegistry interface.</li>
+<li><a href="https://github.com/Kesmy">@kesmy</a> - Migrate solution to msbuild15, banish project.json and packages.config</li>
+<li><a href="https://github.com/hambudi">@hambudi</a> - Ensure sync TimeoutPolicy with TimeoutStrategy.Pessimistic rethrows delegate exceptions without additional AggregateException.</li>
+<li><a href="https://github.com/jiimaho">@jiimaho</a> and <a href="https://github.com/ExtRemo75">@Extremo75</a> - Provide public factory methods for PolicyResult, to support testing.</li>
+<li><a href="https://github.com/ExtRemo75">@Extremo75</a> - Allow fallback delegates to take handled fault as input parameter.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> and <a href="https://github.com/SeanFarrow">@seanfarrow</a> - Add CachePolicy, with interfaces for pluggable cache providers and serializers.</li>
+<li>Thanks to the awesome devs at <a href="https://github.com/tretton37">@tretton37</a> who delivered the following as part of a one-day in-company hackathon led by <a href="https://github.com/reisenberger">@reisenberger</a>, sponsored by <a href="https://github.com/tretton37">@tretton37</a> and convened by <a href="https://github.com/thecodejunkie">@thecodejunkie</a>
+<ul>
+<li><a href="https://github.com/matst80">@matst80</a> - Allow WaitAndRetry to take handled fault as an input to the sleepDurationProvider, allowing WaitAndRetry to take account of systems which specify a duration to wait as part of a fault response; eg Azure CosmosDB may specify this in <code>x-ms-retry-after-ms</code> headers or in a property to an exception thrown by the Azure CosmosDB SDK.</li>
+<li><a href="https://github.com/martinsstewart">@MartinSStewart</a> - Add GetPolicies() extension methods to IPolicyWrap.</li>
+<li><a href="https://github.com/jbergens37">@jbergens37</a> - Parallelize test running where possible, to improve overall build speed.</li>
+</ul>
+</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Add new <code>.HandleInner&lt;TException&gt;(...)</code> syntax for handling inner exceptions natively.</li>
+<li><a href="https://github.com/rjongeneelen">@rjongeneelen</a> and <a href="https://github.com/reisenberger">@reisenberger</a> - Allow PolicyWrap configuration to configure policies via interfaces.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Performance improvements.</li>
+<li><a href="https://github.com/awarrenlove">@awarrenlove</a> - Add ability to calculate cache Ttl based on item to cache.</li>
+<li><a href="https://github.com/erickhouse">@erickhouse</a> - Add a new onBreak overload that provides the prior state on a transition to an open state.</li>
+<li><a href="https://github.com/benagain">@benagain</a> - Bug fix: RelativeTtl in CachePolicy now always returns a ttl relative to time item is cached.</li>
+<li><a href="https://github.com/urig">@urig</a> - Allow TimeoutPolicy to be configured with Timeout.InfiniteTimeSpan.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Integration with <a href="https://github.com/aspnet/HttpClientFactory/">IHttpClientFactory</a> for ASPNET Core 2.1.</li>
+<li><a href="https://github.com/Freakazoid182">@freakazoid182</a> - WaitAnd/RetryForever overloads where onRetry takes the retry number as a parameter.</li>
+<li><a href="https://github.com/dustyhoppe">@dustyhoppe</a> - Overloads where onTimeout takes thrown exception as a parameter.</li>
+<li><a href="https://github.com/flin-zap">@flin-zap</a> - Catch missing async continuation control.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Clarify separation of sync and async policies.</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> - Enable extensibility by custom policies hosted external to Polly.</li>
+<li><a href="https://github.com/SeanFarrow">@seanfarrow</a> - Enable collection initialization syntax for PolicyRegistry.</li>
+<li><a href="https://github.com/moerwald">@moerwald</a> - Code clean-ups, usage of more concise C# members.</li>
+<li><a href="https://github.com/cmeeren">@cmeeren</a> - Enable cache policies to cache values of default(TResult).</li>
+<li><a href="https://github.com/aprooks">@aprooks</a> - Build script tweaks for Mac and mono.</li>
+<li><a href="https://github.com/Kesmy">@kesmy</a> - Add Soucelink support, clean up cake build.</li>
+<li><a href="https://github.com/simluk">@simluk</a> - Fix continueOnCaptureContext not being honored in async retry implementation (bug in v7.1.0 only).</li>
+<li><a href="https://github.com/jnyrup">@jnyrup</a> - Upgrade tests to Fluent Assertions v5.9.0</li>
+<li><a href="https://github.com/SimonCropp">@SimonCropp</a> - Add netcoreapp3.0 target; code clean-ups.</li>
+<li><a href="https://github.com/aerotog">@aerotog</a> and <a href="https://github.com/reisenberger">@reisenberger</a> - IConcurrentPolicyRegistry methods on PolicyRegistry</li>
+<li><a href="https://github.com/reisenberger">@reisenberger</a> and <a href="https://github.com/martincostello">@martincostello</a> - Add RateLimit policy.</li>
+</ul>
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/community/libraries-and-contributions.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

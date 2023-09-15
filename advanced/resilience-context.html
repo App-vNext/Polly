@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Resilience context </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Resilience context ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/advanced/resilience-context.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="resilience-context">Resilience context</h1>
+
+<div class="NOTE">
+<h5>Note</h5>
+<p>This is documentation for the upcoming Polly v8 release.</p>
+</div>
+<p>The <code>ResilienceContext</code> class in Polly provides an execution-scoped instance that accompanies each execution through a Polly resilience strategy. This class serves to share context and facilitate information exchange between the pre-execution, mid-execution, and post-execution phases.</p>
+<p>The resilience context exposes several properties:</p>
+<ul>
+<li><code>OperationKey</code>: A user-defined identifier for the operation.</li>
+<li><code>CancellationToken</code>: The cancellation token linked to the operation.</li>
+<li><code>Properties</code>: An instance of <code>ResilienceProperties</code> for attaching custom data to the context.</li>
+<li><code>ContinueOnCapturedContext</code>: Specifies whether the asynchronous execution should continue on the captured context.</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<p>Below is an example demonstrating how to work with <code>ResilienceContext</code>:</p>
+<!-- snippet: resilience-context -->
+<pre><code class="lang-cs">// Retrieve a context with a cancellation token
+ResilienceContext context = ResilienceContextPool.Shared.Get(cancellationToken);
+
+// Attach custom data to the context
+
+context.Properties.Set(MyResilienceKeys.Key1, &quot;my-data&quot;);
+context.Properties.Set(MyResilienceKeys.Key2, 123);
+
+// Utilize the context in a resilience pipeline
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        OnRetry = static args =&gt;
+        {
+            // Retrieve custom data from the context, if available
+            if (args.Context.Properties.TryGetValue(MyResilienceKeys.Key1, out var data))
+            {
+                Console.WriteLine(&quot;OnRetry, Custom Data: {0}&quot;, data);
+            }
+
+            return default;
+        }
+    })
+    .Build();
+
+// Execute the resilience pipeline asynchronously
+await pipeline.ExecuteAsync(
+    async context =&gt;
+    {
+        // Insert your execution logic here
+    },
+    context);
+
+// Return the context to the pool
+ResilienceContextPool.Shared.Return(context);
+</code></pre>
+<!-- endSnippet -->
+<p>Where <code>ResilienceKeys</code> is defined as:</p>
+<!-- snippet: resilience-keys -->
+<pre><code class="lang-cs">public static class MyResilienceKeys
+{
+    public static readonly ResiliencePropertyKey&lt;string&gt; Key1 = new(&quot;my-key-1&quot;);
+
+    public static readonly ResiliencePropertyKey&lt;int&gt; Key2 = new(&quot;my-key-2&quot;);
+}
+</code></pre>
+<!-- endSnippet -->
+<h2 id="resilient-context-pooling">Resilient context pooling</h2>
+<!-- Overview -->
+<p>The <code>ResilienceContext</code> object is resource-intensive to create, and recreating it for each execution would negatively impact performance. To address this issue, Polly provides a <code>ResilienceContextPool</code>. This pool allows you to obtain and reuse <code>ResilienceContext</code> instances. Once you've finished using a context instance, you can return it to the pool. This action will reset the context to its initial state, making it available for reuse.</p>
+<!-- Methods -->
+<p>The <code>ResilienceContextPool</code> offers several <code>Get</code> methods. These methods not only allow you to retrieve a <code>ResilienceContext</code> instance, but also enable you to initialize some of its properties at the time of retrieval.</p>
+<!-- snippet: resilience-context-pool -->
+<pre><code class="lang-cs">// Retrieve a context with a cancellation token
+ResilienceContext context = ResilienceContextPool.Shared.Get(cancellationToken);
+
+try
+{
+    // Retrieve a context with a specific operation key
+    context = ResilienceContextPool.Shared.Get(&quot;my-operation-key&quot;, cancellationToken);
+
+    // Retrieve a context with multiple properties
+    context = ResilienceContextPool.Shared.Get(
+        operationKey: &quot;my-operation-key&quot;,
+        continueOnCapturedContext: true,
+        cancellationToken: cancellationToken);
+
+    // Use the pool here
+}
+finally
+{
+    // Returning the context back to the pool is recommended, but not required as it reduces the allocations.
+    // It is also OK to not return the context in case of exceptions, if you want to avoid try-catch blocks.
+    ResilienceContextPool.Shared.Return(context);
+}
+</code></pre>
+<!-- endSnippet -->
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/advanced/resilience-context.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

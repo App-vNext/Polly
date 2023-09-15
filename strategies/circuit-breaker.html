@@ -1,0 +1,263 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Circuit breaker resilience strategy </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Circuit breaker resilience strategy ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/strategies/circuit-breaker.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="circuit-breaker-resilience-strategy">Circuit breaker resilience strategy</h1>
+
+<h2 id="about">About</h2>
+<ul>
+<li><strong>Options</strong>:
+<ul>
+<li><a class="xref" href="../api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions.html"><code>CircuitBreakerStrategyOptions</code></a></li>
+<li><a class="xref" href="../api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions.html"><code>CircuitBreakerStrategyOptions&lt;T&gt;</code></a></li>
+</ul>
+</li>
+<li><strong>Extensions</strong>: <code>AddCircuitBreaker</code></li>
+<li><strong>Strategy Type</strong>: Reactive</li>
+<li><strong>Exceptions</strong>:
+<ul>
+<li><code>BrokenCircuitException</code>: Thrown when a circuit is broken and the action could not be executed.</li>
+<li><code>IsolatedCircuitException</code>: Thrown when a circuit is isolated (held open) by manual override.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Version 8 documentation for this strategy has not yet been migrated. For more information on circuit breaker concepts and behavior, refer to the <a href="https://github.com/App-vNext/Polly/wiki/Circuit-Breaker">older documentation</a>.</p>
+</div>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Be aware that the Circuit Breaker strategy <a href="https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#exception-handling">rethrows all exceptions</a>, including those that are handled. A Circuit Breaker's role is to monitor faults and break the circuit when a certain threshold is reached; it does not manage retries. Combine the Circuit Breaker with a Retry strategy if needed.</p>
+</div>
+<h2 id="usage">Usage</h2>
+<!-- snippet: circuit-breaker -->
+<pre><code class="lang-cs">// Add circuit breaker with default options.
+// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/circuit-breaker.md#defaults for default values.
+new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions());
+
+// Add circuit breaker with customized options:
+//
+// The circuit will break if more than 50% of actions result in handled exceptions,
+// within any 10-second sampling duration, and at least 8 actions are processed.
+new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
+{
+    FailureRatio = 0.5,
+    SamplingDuration = TimeSpan.FromSeconds(10),
+    MinimumThroughput = 8,
+    BreakDuration = TimeSpan.FromSeconds(30),
+    ShouldHandle = new PredicateBuilder().Handle&lt;SomeExceptionType&gt;()
+});
+
+// Handle specific failed results for HttpResponseMessage:
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
+    .AddCircuitBreaker(new CircuitBreakerStrategyOptions&lt;HttpResponseMessage&gt;
+    {
+        ShouldHandle = new PredicateBuilder&lt;HttpResponseMessage&gt;()
+            .Handle&lt;SomeExceptionType&gt;()
+            .HandleResult(response =&gt; response.StatusCode == HttpStatusCode.InternalServerError)
+    });
+
+// Monitor the circuit state, useful for health reporting:
+var stateProvider = new CircuitBreakerStateProvider();
+
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
+    .AddCircuitBreaker(new() { StateProvider = stateProvider })
+    .Build();
+
+/*
+CircuitState.Closed - Normal operation; actions are executed.
+CircuitState.Open - Circuit is open; actions are blocked.
+CircuitState.HalfOpen - Recovery state after break duration expires; actions are permitted.
+CircuitState.Isolated - Circuit is manually held open; actions are blocked.
+*/
+
+// Manually control the Circuit Breaker state:
+var manualControl = new CircuitBreakerManualControl();
+
+new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new() { ManualControl = manualControl })
+    .Build();
+
+// Manually isolate a circuit, e.g., to isolate a downstream service.
+await manualControl.IsolateAsync();
+
+// Manually close the circuit to allow actions to be executed again.
+await manualControl.CloseAsync();
+</code></pre>
+<!-- endSnippet -->
+<h2 id="defaults">Defaults</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ShouldHandle</code></td>
+<td>Predicate that handles all exceptions except <code>OperationCanceledException</code>.</td>
+<td>Specifies which results and exceptions are managed by the circuit breaker strategy.</td>
+</tr>
+<tr>
+<td><code>FailureRatio</code></td>
+<td>0.1</td>
+<td>The ratio of failures to successes that will cause the circuit to break/open.</td>
+</tr>
+<tr>
+<td><code>MinimumThroughput</code></td>
+<td>100</td>
+<td>The minimum number of actions that must occur in the circuit within a specific time slice.</td>
+</tr>
+<tr>
+<td><code>SamplingDuration</code></td>
+<td>30 seconds</td>
+<td>The time period over which failure ratios are calculated.</td>
+</tr>
+<tr>
+<td><code>BreakDuration</code></td>
+<td>5 seconds</td>
+<td>The time period for which the circuit will remain broken/open before attempting to reset.</td>
+</tr>
+<tr>
+<td><code>OnClosed</code></td>
+<td><code>null</code></td>
+<td>Event triggered when the circuit transitions to the <code>Closed</code> state.</td>
+</tr>
+<tr>
+<td><code>OnOpened</code></td>
+<td><code>null</code></td>
+<td>Event triggered when the circuit transitions to the <code>Opened</code> state.</td>
+</tr>
+<tr>
+<td><code>OnHalfOpened</code></td>
+<td><code>null</code></td>
+<td>Event triggered when the circuit transitions to the <code>HalfOpened</code> state.</td>
+</tr>
+<tr>
+<td><code>ManualControl</code></td>
+<td><code>null</code></td>
+<td>Allows for manual control to isolate or close the circuit.</td>
+</tr>
+<tr>
+<td><code>StateProvider</code></td>
+<td><code>null</code></td>
+<td>Enables the retrieval of the current state of the circuit.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html">Making the Netflix API More Resilient</a></li>
+<li><a href="https://martinfowler.com/bliki/CircuitBreaker.html">Circuit Breaker by Martin Fowler</a></li>
+<li><a href="https://msdn.microsoft.com/en-us/library/dn589784.aspx">Circuit Breaker Pattern by Microsoft</a></li>
+<li><a href="https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker">Original Circuit Breaking Article</a></li>
+</ul>
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/strategies/circuit-breaker.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

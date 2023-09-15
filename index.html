@@ -1,509 +1,219 @@
-<!DOCTYPE html>
-<html lang="en-us">
+﻿<!DOCTYPE html>
+<html>
   <head>
-    <meta charset="UTF-8">
-    <title>Polly by App-vNext</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <meta charset="utf-8">
+      <title>Polly Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Polly Documentation ">
+      
+      <link rel="icon" href="icon.png">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
   </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">Polly</h1>
-      <h2 class="project-tagline">Polly is a .NET 3.5 / 4.0 / 4.5 / PCL library that allows developers to express transient exception handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.</h2>
-      <a href="https://github.com/App-vNext/Polly" class="btn">View on GitHub</a>
-      <a href="https://github.com/App-vNext/Polly/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/App-vNext/Polly/tarball/master" class="btn">Download .tar.gz</a>
-    </section>
 
-    <section class="main-content">
-      <h1>
-<a id="polly" class="anchor" href="#polly" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Polly</h1>
+  <script type="module">
+    import options from './public/main.js'
+    import { init } from './public/docfx.min.js'
+    init(options)
+  </script>
 
-<p>Polly is a .NET 3.5 / 4.0 / 4.5 / PCL (Profile 259) library that allows developers to express transient exception handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.</p>
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
 
-<p><a href="https://badge.fury.io/nu/polly"><img src="https://badge.fury.io/nu/polly.svg" alt="NuGet version"></a> <a href="https://ci.appveyor.com/project/joelhulen/polly"><img src="https://ci.appveyor.com/api/projects/status/imt7dymt50346k5u?svg=true" alt="Build status"></a></p>
 
-<p><img src="https://raw.github.com/App-vNext/Polly/master/Polly.png" alt=""></p>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
 
-<h1>
-<a id="installing-via-nuget" class="anchor" href="#installing-via-nuget" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installing via NuGet</h1>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
 
-<pre><code>Install-Package Polly
-</code></pre>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
 
-<p>You can install the Strongly Named version via: </p>
+          <nav id="breadcrumb"></nav>
+        </div>
 
-<pre><code>Install-Package Polly-Signed
-</code></pre>
+        <article data-uid="">
+<h1 id="polly-documentation">Polly Documentation</h1>
 
-<h1>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h1>
-
-<h2>
-<a id="step-1--specify-the-type-of-exceptions-you-want-the-policy-to-handle" class="anchor" href="#step-1--specify-the-type-of-exceptions-you-want-the-policy-to-handle" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 1 : Specify the type of exceptions you want the policy to handle</h2>
-
-<div class="highlight highlight-source-cs"><pre><span class="pl-c">// Single exception type</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-
-<span class="pl-c">// Single exception type with condition</span>
-Policy
-  .Handle&lt;SqlException&gt;(ex =&gt; ex.Number == <span class="pl-c1">1205</span>)
-
-<span class="pl-c">// Multiple exception types</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .Or&lt;ArgumentException&gt;()
-
-<span class="pl-c">// Multiple exception types with condition</span>
-Policy
-  .Handle&lt;SqlException&gt;(ex =&gt; ex.Number == <span class="pl-c1">1205</span>)
-  .Or&lt;ArgumentException&gt;(ex =&gt; ex.ParamName == <span class="pl-s"><span class="pl-pds">"</span>example<span class="pl-pds">"</span></span>)</pre></div>
-
-<h2>
-<a id="step-2--specify-how-the-policy-should-handle-those-exceptions" class="anchor" href="#step-2--specify-how-the-policy-should-handle-those-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 2 : Specify how the policy should handle those exceptions</h2>
-
-<h3>
-<a id="retry" class="anchor" href="#retry" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Retry</h3>
-
-<div class="highlight highlight-source-cs"><pre><span class="pl-c">// Retry once</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .Retry()
-
-<span class="pl-c">// Retry multiple times</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .Retry(<span class="pl-c1">3</span>)
-
-<span class="pl-c">// Retry multiple times, calling an action on each retry </span>
-<span class="pl-c">// with the current exception and retry count</span>
-Policy
-    .Handle&lt;DivideByZeroException&gt;()
-    .Retry(<span class="pl-c1">3</span>, (exception, retryCount) =&gt;
-    {
-        <span class="pl-c">// do something </span>
-    });
-
-<span class="pl-c">// Retry multiple times, calling an action on each retry </span>
-<span class="pl-c">// with the current exception, retry count and context </span>
-<span class="pl-c">// provided to Execute()</span>
-Policy
-    .Handle&lt;DivideByZeroException&gt;()
-    .Retry(<span class="pl-c1">3</span>, (exception, retryCount, context) =&gt;
-    {
-        <span class="pl-c">// do something </span>
-    });</pre></div>
-
-<h3>
-<a id="retry-forever" class="anchor" href="#retry-forever" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Retry forever</h3>
-
-<div class="highlight highlight-source-cs"><pre>
-<span class="pl-c">// Retry forever</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .RetryForever()
-
-<span class="pl-c">// Retry forever, calling an action on each retry with the </span>
-<span class="pl-c">// current exception</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .RetryForever(exception =&gt;
-  {
-        <span class="pl-c">// do something       </span>
-  });
-
-<span class="pl-c">// Retry forever, calling an action on each retry with the</span>
-<span class="pl-c">// current exception and context provided to Execute()</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .RetryForever((exception, context) =&gt;
-  {
-        <span class="pl-c">// do something       </span>
-  });</pre></div>
-
-<h3>
-<a id="retry-and-wait" class="anchor" href="#retry-and-wait" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Retry and Wait</h3>
-
-<div class="highlight highlight-source-cs"><pre><span class="pl-c">// Retry, waiting a specified duration between each retry</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .WaitAndRetry(<span class="pl-k">new</span>[]
-  {
-    TimeSpan.FromSeconds(<span class="pl-c1">1</span>),
-    TimeSpan.FromSeconds(<span class="pl-c1">2</span>),
-    TimeSpan.FromSeconds(<span class="pl-c1">3</span>)
-  });
-
-<span class="pl-c">// Retry, waiting a specified duration between each retry, </span>
-<span class="pl-c">// calling an action on each retry with the current exception</span>
-<span class="pl-c">// and duration</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .WaitAndRetry(<span class="pl-k">new</span>[]
-  {
-    <span class="pl-c1">1.</span>Seconds(),
-    <span class="pl-c1">2.</span>Seconds(),
-    <span class="pl-c1">3.</span>Seconds()
-  }, (exception, timeSpan) =&gt; {
-    <span class="pl-c">// do something    </span>
-  }); 
-
-<span class="pl-c">// Retry, waiting a specified duration between each retry, </span>
-<span class="pl-c">// calling an action on each retry with the current exception, </span>
-<span class="pl-c">// duration and context provided to Execute()</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .WaitAndRetry(<span class="pl-k">new</span>[]
-  {
-    <span class="pl-c1">1.</span>Seconds(),
-    <span class="pl-c1">2.</span>Seconds(),
-    <span class="pl-c1">3.</span>Seconds()
-  }, (exception, timeSpan, context) =&gt; {
-    <span class="pl-c">// do something    </span>
-  });
-
-<span class="pl-c">// Retry a specified number of times, using a function to </span>
-<span class="pl-c">// calculate the duration to wait between retries based on </span>
-<span class="pl-c">// the current retry attempt (allows for exponential backoff)</span>
-<span class="pl-c">// In this case will wait for</span>
-<span class="pl-c">//  2 ^ 1 = 2 seconds then</span>
-<span class="pl-c">//  2 ^ 2 = 4 seconds then</span>
-<span class="pl-c">//  2 ^ 3 = 8 seconds then</span>
-<span class="pl-c">//  2 ^ 4 = 16 seconds then</span>
-<span class="pl-c">//  2 ^ 5 = 32 seconds</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .WaitAndRetry(<span class="pl-c1">5</span>, retryAttempt =&gt; 
-    TimeSpan.FromSeconds(Math.Pow(<span class="pl-c1">2</span>, retryAttempt)) 
-  );
-
-<span class="pl-c">// Retry a specified number of times, using a function to </span>
-<span class="pl-c">// calculate the duration to wait between retries based on </span>
-<span class="pl-c">// the current retry attempt, calling an action on each retry </span>
-<span class="pl-c">// with the current exception, duration and context provided </span>
-<span class="pl-c">// to Execute()</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .WaitAndRetry(
-    <span class="pl-c1">5</span>, 
-    retryAttempt =&gt; TimeSpan.FromSeconds(Math.Pow(<span class="pl-c1">2</span>, retryAttempt)), 
-    (exception, timeSpan, context) =&gt; {
-      <span class="pl-c">// do something</span>
-    }
-  );</pre></div>
-
-<h3>
-<a id="wait-and-retry-forever" class="anchor" href="#wait-and-retry-forever" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Wait and retry forever</h3>
-
-<div class="highlight highlight-source-cs"><pre>
-<span class="pl-c">// Wait and retry forever</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .WaitAndRetryForever(retryAttempt =&gt; 
-    TimeSpan.FromSeconds(Math.Pow(<span class="pl-c1">2</span>, retryAttempt))
-    );
-
-<span class="pl-c">// Wait and retry forever, calling an action on each retry with the </span>
-<span class="pl-c">// current exception and the time to wait</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .WaitAndRetryForever(
-    retryAttempt =&gt; TimeSpan.FromSeconds(Math.Pow(<span class="pl-c1">2</span>, retryAttempt)),    
-    (exception, timespan) =&gt;
-    {
-        <span class="pl-c">// do something       </span>
-    });
-
-<span class="pl-c">// Wait and retry forever, calling an action on each retry with the</span>
-<span class="pl-c">// current exception, time to wait, and context provided to Execute()</span>
-Policy
-  .Handle&lt;DivideByZeroException&gt;()
-  .WaitAndRetryForever(
-    retryAttempt =&gt; TimeSpan.FromSeconds(Math.Pow(<span class="pl-c1">2</span>, retryAttempt)),    
-    (exception, timespan, context) =&gt;
-    {
-        <span class="pl-c">// do something       </span>
-    });</pre></div>
-
-<h3>
-<a id="circuit-breaker" class="anchor" href="#circuit-breaker" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Circuit Breaker</h3>
-
-<div class="highlight highlight-source-cs"><pre><span class="pl-c">// Break the circuit after the specified number of exceptions</span>
-<span class="pl-c">// and keep circuit broken for the specified duration.</span>
-Policy
-    .Handle&lt;DivideByZeroException&gt;()
-    .CircuitBreaker(<span class="pl-c1">2</span>, TimeSpan.FromMinutes(<span class="pl-c1">1</span>));
-
-<span class="pl-c">// Break the circuit after the specified number of exceptions</span>
-<span class="pl-c">// and keep circuit broken for the specified duration,</span>
-<span class="pl-c">// calling an action on change of circuit state.</span>
-Action&lt;Exception, TimeSpan&gt; onBreak = (exception, timespan) =&gt; { ... };
-Action onReset = () =&gt; { ... };
-CircuitBreakerPolicy breaker = Policy
-    .Handle&lt;DivideByZeroException&gt;()
-    .CircuitBreaker(<span class="pl-c1">2</span>, TimeSpan.FromMinutes(<span class="pl-c1">1</span>), onBreak, onReset);
-
-<span class="pl-c">// Break the circuit after the specified number of exceptions</span>
-<span class="pl-c">// and keep circuit broken for the specified duration,</span>
-<span class="pl-c">// calling an action on change of circuit state,</span>
-<span class="pl-c">// passing a context provided to Execute().</span>
-Action&lt;Exception, TimeSpan, Context&gt; onBreak = (exception, timespan, context) =&gt; { ... };
-Action&lt;Context&gt; onReset = context =&gt; { ... };
-CircuitBreakerPolicy breaker = Policy
-    .Handle&lt;DivideByZeroException&gt;()
-    .CircuitBreaker(<span class="pl-c1">2</span>, TimeSpan.FromMinutes(<span class="pl-c1">1</span>), onBreak, onReset);
-
-<span class="pl-c">// Monitor the circuit state, for example for health reporting.</span>
-CircuitState state = breaker.CircuitState;
-
-<span class="pl-c">/*</span>
-<span class="pl-c">CircuitState.Closed - Normal operation. Execution of actions allowed.</span>
-<span class="pl-c">CircuitState.Open - The automated controller has opened the circuit. Execution of actions blocked.</span>
-<span class="pl-c">CircuitState.HalfOpen - Recovering from open state, after the automated break duration has expired. Execution of actions permitted. Success of subsequent action/s controls onward transition to Open or Closed state.</span>
-<span class="pl-c">CircuitState.Isolated - Circuit held manually in an open state. Execution of actions blocked.</span>
-<span class="pl-c">*/</span>
-
-<span class="pl-c">// Manually open (and hold open) a circuit breaker - for example to manually isolate a downstream service.</span>
-breaker.Isolate(); 
-<span class="pl-c">// Reset the breaker to closed state, to start accepting actions again.</span>
-breaker.Reset(); 
-
-</pre></div>
-
-<h3>
-<a id="advanced-circuit-breaker" class="anchor" href="#advanced-circuit-breaker" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Advanced Circuit Breaker</h3>
-
-<div class="highlight highlight-source-cs"><pre><span class="pl-c">// Break the circuit if, within any period of duration samplingDuration, </span>
-<span class="pl-c">// the proportion of actions resulting in a handled exception exceeds failureThreshold, </span>
-<span class="pl-c">// provided also that the number of actions through the circuit in the period</span>
-<span class="pl-c">// is at least minimumThroughput.</span>
-
-Policy
-    .Handle&lt;DivideByZeroException&gt;()
-    .AdvancedCircuitBreaker(
-        failureThreshold: <span class="pl-c1">0.5</span>, <span class="pl-c">// Break on &gt;=50% actions result in handled exceptions...</span>
-        samplingDuration: TimeSpan.FromSeconds(<span class="pl-c1">10</span>), <span class="pl-c">// ... over any 10 second period</span>
-        minimumThroughput: <span class="pl-c1">8</span>, <span class="pl-c">// ... provided at least 8 actions in the 10 second period.</span>
-        durationOfBreak: TimeSpan.FromSeconds(<span class="pl-c1">30</span>) <span class="pl-c">// Break for 30 seconds.</span>
-                );
-
-<span class="pl-c">// Configuration overloads taking stage-change delegates are</span>
-<span class="pl-c">// available as described for CircuitBreaker above.</span>
-
-<span class="pl-c">// Circuit state monitoring and manual controls are</span>
-<span class="pl-c">// available as described for CircuitBreaker above.</span></pre></div>
-
-<p>For further information on the operation of the Advanced Circuit Breaker, see the <a href="https://github.com/App-vNext/Polly/wiki/Advanced-Circuit-Breaker">Wiki</a></p>
-
-<p>For more information on the Circuit Breaker pattern in general see:</p>
-
+<p>Polly is a .NET resilience and transient-fault-handling library that allows developers to express resilience strategies such as Retry, Circuit Breaker, Hedging, Timeout, Rate Limiter and Fallback in a fluent and thread-safe manner.</p>
+<p>We are a member of the <a href="https://www.dotnetfoundation.org/about">.NET Foundation</a>!</p>
+<p><img src="https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png" alt="Polly logo"></p>
+<h2 id="resilience-strategies">Resilience strategies</h2>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Reactive</th>
+<th>Premise</th>
+<th style="text-align: center;">AKA</th>
+<th>How does the strategy mitigate?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="strategies/retry.html">Retry</a></td>
+<td>Yes</td>
+<td>Many faults are transient and may self-correct after a short delay.</td>
+<td style="text-align: center;"><em>Maybe it's just a blip</em></td>
+<td>Allows configuring automatic retries.</td>
+</tr>
+<tr>
+<td><a href="strategies/circuit-breaker.html">Circuit-breaker</a></td>
+<td>Yes</td>
+<td>When a system is seriously struggling, failing fast is better than making users/callers wait.  <br><br>Protecting a faulting system from overload can help it recover.</td>
+<td style="text-align: center;"><em>Stop doing it if it hurts</em> <br><br><em>Give that system a break</em></td>
+<td>Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold.</td>
+</tr>
+<tr>
+<td><a href="strategies/timeout.html">Timeout</a></td>
+<td>No</td>
+<td>Beyond a certain wait, a success result is unlikely.</td>
+<td style="text-align: center;"><em>Don't wait forever</em></td>
+<td>Guarantees the caller won't have to wait beyond the timeout.</td>
+</tr>
+<tr>
+<td><a href="strategies/rate-limiter.html">Rate Limiter</a></td>
+<td>No</td>
+<td>Limiting the rate a system handles requests is another way to control load. <br><br> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services.</td>
+<td style="text-align: center;"><em>Slow down a bit, will you?</em></td>
+<td>Constrains executions to not exceed a certain rate.</td>
+</tr>
+<tr>
+<td><a href="strategies/fallback.html">Fallback</a></td>
+<td>Yes</td>
+<td>Things will still fail - plan what you will do when that happens.</td>
+<td style="text-align: center;"><em>Degrade gracefully</em></td>
+<td>Defines an alternative value to be returned (or action to be executed) on failure.</td>
+</tr>
+<tr>
+<td><a href="strategies/hedging.html">Hedging</a></td>
+<td>Yes</td>
+<td>Things can be slow sometimes, plan what you will do when that happens.</td>
+<td style="text-align: center;"><em>Hedge your bets</em></td>
+<td>Executes parallel actions when things are slow and waits for the fastest one.</td>
+</tr>
+</tbody>
+</table>
+<p>Visit the <a href="strategies/index.html">resilience strategies</a> section to understand their structure and explore various configuration methods.</p>
+<h2 id="next-steps">Next steps</h2>
+<p>Visit the <a href="getting-started.html">getting started</a> section and learn how to quickly start using Polly.</p>
+<h2 id="articles">Articles</h2>
 <ul>
-<li><a href="http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html">Making the Netflix API More Resilient</a></li>
-<li><a href="http://martinfowler.com/bliki/CircuitBreaker.html">Circuit Breaker (Martin Fowler)</a></li>
-<li><a href="https://msdn.microsoft.com/en-us/library/dn589784.aspx">Circuit Breaker Pattern (Microsoft)</a></li>
-<li><a href="http://blog.jaywayco.co.uk/circuit-breaking-with-polly/">Circuit breaking with Polly</a></li>
-<li><a href="https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker">Original Circuit Breaking Link</a></li>
+<li><a href="index.html">Introduction</a>: General information about the project and its goals.</li>
+<li><a href="getting-started.html">Getting started</a>: A guide to help you get started with the project.</li>
+<li>Resilience strategies: A collection of strategies for improving the resilience of your system.
+<ul>
+<li><a href="strategies/timeout.html">Timeout</a>: A strategy for setting a maximum time limit for a request.</li>
+<li><a href="strategies/retry.html">Retry</a>: A strategy for retrying failed requests.</li>
+<li><a href="strategies/rate-limiter.html">Rate limiter</a>: A strategy for limiting the rate of requests.</li>
+<li><a href="strategies/hedging.html">Hedging</a>: A strategy for hedging against long request times.</li>
+<li><a href="strategies/fallback.html">Fallback</a>: A strategy for providing a fallback response in case of failure.</li>
+<li><a href="strategies/circuit-breaker.html">Circuit breaker</a>: A strategy for breaking the circuit when a system is down.</li>
 </ul>
-
-<h2>
-<a id="step-3--execute-the-policy" class="anchor" href="#step-3--execute-the-policy" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 3 : Execute the policy</h2>
-
-<div class="highlight highlight-source-cs"><pre><span class="pl-c">// Execute an action</span>
-<span class="pl-k">var</span> policy = Policy
-              .Handle&lt;DivideByZeroException&gt;()
-              .Retry();
-
-policy.Execute(() =&gt; DoSomething());
-
-<span class="pl-c">// Execute an action passing arbitrary context data</span>
-<span class="pl-k">var</span> policy = Policy
-    .Handle&lt;DivideByZeroException&gt;()
-    .Retry(<span class="pl-c1">3</span>, (exception, retryCount, context) =&gt;
-    {
-        <span class="pl-k">var</span> methodThatRaisedException = context[<span class="pl-s"><span class="pl-pds">"</span>methodName<span class="pl-pds">"</span></span>];
-        Log(exception, methodThatRaisedException);
-    });
-
-policy.Execute(
-    () =&gt; DoSomething(),
-    <span class="pl-k">new</span> Dictionary&lt;<span class="pl-k">string</span>, <span class="pl-k">object</span>&gt;() {{ <span class="pl-s"><span class="pl-pds">"</span>methodName<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>some method<span class="pl-pds">"</span></span> }}
-);
-
-<span class="pl-c">// Execute a function returning a result</span>
-<span class="pl-k">var</span> policy = Policy
-              .Handle&lt;DivideByZeroException&gt;()
-              .Retry();
-
-<span class="pl-k">var</span> result = policy.Execute(() =&gt; DoSomething());
-
-<span class="pl-c">// Execute a function returning a result passing arbitrary context data</span>
-<span class="pl-k">var</span> policy = Policy
-    .Handle&lt;DivideByZeroException&gt;()
-    .Retry(<span class="pl-c1">3</span>, (exception, retryCount, context) =&gt;
-    {
-        <span class="pl-k">object</span> methodThatRaisedException = context[<span class="pl-s"><span class="pl-pds">"</span>methodName<span class="pl-pds">"</span></span>];
-        Log(exception, methodThatRaisedException)
-    });
-
-<span class="pl-k">var</span> result = policy.Execute(
-    () =&gt; DoSomething(),
-    <span class="pl-k">new</span> Dictionary&lt;<span class="pl-k">string</span>, <span class="pl-k">object</span>&gt;() {{ <span class="pl-s"><span class="pl-pds">"</span>methodName<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>some method<span class="pl-pds">"</span></span> }}
-);
-
-<span class="pl-c">// You can of course chain it all together</span>
-Policy
-  .Handle&lt;SqlException&gt;(ex =&gt; ex.Number == <span class="pl-c1">1205</span>)
-  .Or&lt;ArgumentException&gt;(ex =&gt; ex.ParamName == <span class="pl-s"><span class="pl-pds">"</span>example<span class="pl-pds">"</span></span>)
-  .Retry()
-  .Execute(() =&gt; DoSomething());</pre></div>
-
-<h1>
-<a id="post-execution-steps" class="anchor" href="#post-execution-steps" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Post Execution Steps</h1>
-
-<p>Using the <code>ExecuteAndCapture</code> method you can capture the result of executing a policy.</p>
-
-<div class="highlight highlight-source-cs"><pre><span class="pl-k">var</span> policyResult = Policy
-              .Handle&lt;DivideByZeroException&gt;()
-              .Retry()
-              .ExecuteAndCapture(() =&gt; DoSomething());
-<span class="pl-c">/*              </span>
-<span class="pl-c">policyResult.Outcome - whether the call succeeded or failed         </span>
-<span class="pl-c">policyResult.FinalException - the final exception captured, will be null if the call succeeded</span>
-<span class="pl-c">policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception). Will be null if the call succeeded.</span>
-<span class="pl-c">policyResult.Result - if executing a func, the result if the call succeeded or the type's default value</span>
-<span class="pl-c">*/</span></pre></div>
-
-<h1>
-<a id="asynchronous-support-net-45-and-pcl-only" class="anchor" href="#asynchronous-support-net-45-and-pcl-only" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Asynchronous Support (.NET 4.5 and PCL Only)</h1>
-
-<p>You can use Polly with asynchronous functions by using the asynchronous methods</p>
-
-<ul>
-<li><code>RetryAsync</code></li>
-<li><code>RetryForeverAsync</code></li>
-<li><code>WaitAndRetryAsync</code></li>
-<li><code>CircuitBreakerAsync</code></li>
-<li><code>ExecuteAsync</code></li>
-<li><code>ExecuteAndCaptureAsync</code></li>
-</ul>
-
-<p>In place of their synchronous counterparts</p>
-
-<ul>
-<li><code>Retry</code></li>
-<li><code>RetryForever</code></li>
-<li><code>WaitAndRetry</code></li>
-<li><code>CircuitBreaker</code></li>
-<li><code>Execute</code></li>
-<li><code>ExecuteAndCapture</code></li>
-</ul>
-
-<p>For example</p>
-
-<div class="highlight highlight-source-cs"><pre><span class="pl-k">await</span> Policy
-  .Handle&lt;SqlException&gt;(ex =&gt; ex.Number == <span class="pl-c1">1205</span>)
-  .Or&lt;ArgumentException&gt;(ex =&gt; ex.ParamName == <span class="pl-s"><span class="pl-pds">"</span>example<span class="pl-pds">"</span></span>)
-  .RetryAsync()
-  .ExecuteAsync(() =&gt; DoSomethingAsync());
-</pre></div>
-
-<h3>
-<a id="synchronizationcontext" class="anchor" href="#synchronizationcontext" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SynchronizationContext</h3>
-
-<p>Async continuations and retries by default do not run on a captured synchronization context. To change this, use <code>.ExecuteAsync(...)</code> overloads taking a boolean <code>continueOnCapturedContext</code> parameter.  </p>
-
-<h3>
-<a id="cancellation-support" class="anchor" href="#cancellation-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cancellation support</h3>
-
-<p>Async policy execution supports cancellation via <code>.ExecuteAsync(...)</code> overloads taking a <code>CancellationToken</code>.  </p>
-
-<p>Cancellation cancels Policy actions such as further retries and waits between retries.  The delegate taken by the relevant <code>.ExecuteAsync(...)</code> overloads also takes a cancellation token input parameter, to support cancellation during delegate execution.  </p>
-
-<div class="highlight highlight-source-cs"><pre><span class="pl-c">// Try several times to retrieve from a uri, but support cancellation at any time.</span>
-CancellationToken cancellationToken = <span class="pl-c">// ...</span>
-<span class="pl-k">var</span> policy = Policy
-    .Handle&lt;WebException&gt;()
-    .Or&lt;HttpRequestException&gt;()
-    .WaitAndRetryAsync(<span class="pl-k">new</span>[] { 
-        TimeSpan.FromSeconds(<span class="pl-c1">1</span>), 
-        TimeSpan.FromSeconds(<span class="pl-c1">2</span>), 
-        TimeSpan.FromSeconds(<span class="pl-c1">4</span>) 
-    });
-<span class="pl-k">var</span> response = <span class="pl-k">await</span> policy.ExecuteAsync(ct =&gt; httpClient.GetAsync(uri, ct), cancellationToken);</pre></div>
-
-<h1>
-<a id="3rd-party-libraries" class="anchor" href="#3rd-party-libraries" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>3rd Party Libraries</h1>
-
-<ul>
-<li>
-<a href="https://github.com/dennisdoomen/fluentassertions">Fluent Assertions</a> - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | <a href="https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE">Apache License 2.0 (Apache)</a>
 </li>
-<li>
-<a href="https://github.com/xunit/xunit">xUnit.net</a> - Free, open source, community-focused unit testing tool for the .NET Framework | <a href="https://github.com/xunit/xunit/blob/master/license.txt">Apache License 2.0 (Apache)</a>
-</li>
-<li><a href="http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking">Ian Griffith's TimedLock</a></li>
-<li><a href="http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29">Steven van Deursen's ReadOnlyDictionary</a></li>
-</ul>
-
-<h1>
-<a id="acknowledgements" class="anchor" href="#acknowledgements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Acknowledgements</h1>
-
+<li>Resilience pipelines: Understanding the use of resilience pipelines.
 <ul>
-<li>
-<a href="https://github.com/Lokad/lokad-shared-libraries">lokad-shared-libraries</a> - Helper assemblies for .NET 3.5 and Silverlight 2.0 that are being developed as part of the Open Source effort by Lokad.com (discontinued) | <a href="https://raw.github.com/Lokad/lokad-shared-libraries/master/Lokad.Shared.License.txt">New BSD License</a>
-</li>
-<li>
-<a href="https://github.com/michael-wolfenden">@michael-wolfenden</a> - The creator and mastermind of Polly!</li>
-<li>
-<a href="https://github.com/ghuntley">@ghuntley</a> - Portable Class Library implementation.</li>
-<li>
-<a href="https://github.com/mauricedb">@mauricedb</a> - Async implementation.</li>
-<li>
-<a href="https://github.com/RobGibbens">@robgibbens</a> - Added existing async files to PCL project</li>
-<li>
-<a href="https://github.com/hacko-bede">Hacko</a> - Added extra <code>NotOnCapturedContext</code> call to prevent potential deadlocks when blocking on asynchronous calls</li>
-<li>
-<a href="https://github.com/ThomasMentzel">@ThomasMentzel</a> - Added ability to capture the results of executing a policy via <code>ExecuteAndCapture</code>
-</li>
-<li>
-<a href="https://github.com/yevhen">@yevhen</a> - Added full control of whether to continue on captured synchronization context or not</li>
-<li>
-<a href="https://github.com/reisenberger">@reisenberger</a> - Added full async cancellation support</li>
-<li>
-<a href="https://github.com/reisenberger">@reisenberger</a> - Added async support for ContextualPolicy</li>
-<li>
-<a href="https://github.com/reisenberger">@reisenberger</a> - Added ContextualPolicy support for circuit-breaker</li>
-<li>
-<a href="https://github.com/reisenberger">@reisenberger</a> - Extended circuit-breaker for public monitoring and control</li>
+<li><a href="pipelines/resilience-pipeline-registry.html">Resilience pipeline registry</a>: Exploring the registry that stores resilience pipelines.</li>
 </ul>
+</li>
+<li>vanced topics: A collection of advanced topics for further learning.
+<ul>
+<li><a href="advanced/telemetry.html">Telemetry and monitoring</a>: Insights into telemetry generated by resilience pipelines and strategies.</li>
+<li><a href="advanced/simmy.html">Chaos engineering</a>: Get to know chaos engineering via the project's capabilities.</li>
+<li><a href="advanced/dependency-injection.html">Dependency injection</a>: How the project integrates with Dependency Injection.</li>
+</ul>
+</li>
+<li>Community and resources: A collection of resources and community contributions.
+<ul>
+<li><a href="community/polly-contrib.html">Polly-Contrib projects and libraries</a>: Learn how to contribute to and extend the project ecosystem.</li>
+<li><a href="community/libraries-and-contributions.html">Libraries and contributions</a>: Find out which libraries the project depends on and who contributes to its development.</li>
+<li><a href="community/resources.html">Useful resources and links</a>: Browse through blogs, podcasts, courses, e-books, and other community resources.</li>
+</ul>
+</li>
+<li><a href="api/index.html">API</a>: The API documentation for the project.</li>
+</ul>
+<h2 id="articles-previous-polly-versions">Articles (previous Polly versions)</h2>
+<ul>
+<li><a href="v7/extensibility.html">Extensibility (v7)</a>: Learn how you can extend Polly with new policies.</li>
+</ul>
+<h2 id="samples">Samples</h2>
+<ul>
+<li><a href="https://github.com/App-vNext/Polly/tree/main/samples">Samples</a>: Samples in this repository that serve as an introduction to Polly.</li>
+<li><a href="https://github.com/App-vNext/Polly-Samples">Polly-Samples</a>: Contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.</li>
+<li>Microsoft's <a href="https://github.com/dotnet-architecture/eShopOnContainers">eShopOnContainers project</a>: Sample project demonstrating a .NET Microservices architecture and using Polly for resilience.</li>
+</ul>
+</article>
 
-<h1>
-<a id="sample-projects" class="anchor" href="#sample-projects" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample Projects</h1>
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
 
-<p><a href="https://github.com/App-vNext/Polly-Samples">Polly-Samples</a> contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.</p>
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
 
-<h1>
-<a id="instructions-for-contributing" class="anchor" href="#instructions-for-contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Instructions for Contributing</h1>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-<p>Please check out our <a href="https://github.com/App-vNext/Polly/wiki/Git-Workflow">Wiki</a> for contributing guidelines. We are following the excellent GitHub Flow process, and would like to make sure you have all of the information needed to be a world-class contributor!</p>
 
-<h1>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h1>
-
-<p>Licensed under the terms of the <a href="http://opensource.org/licenses/BSD-3-Clause">New BSD License</a></p>
-
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/App-vNext/Polly">Polly</a> is maintained by <a href="https://github.com/App-vNext">App-vNext</a>.</span>
-
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
-
-    </section>
-
-  
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

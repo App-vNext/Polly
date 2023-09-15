@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Resilience pipelines </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Resilience pipelines ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/pipelines/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="resilience-pipelines">Resilience pipelines</h1>
+
+<div class="NOTE">
+<h5>Note</h5>
+<p>This is documentation for the upcoming Polly v8 release.</p>
+</div>
+<p>The <code>ResiliencePipeline</code> allows executing arbitrary user-provided callbacks. It is a combination of one or more resilience strategies.</p>
+<h2 id="usage">Usage</h2>
+<p>The <code>ResiliencePipeline</code> allow executing various synchronous and asynchronous user-provided callbacks as seen in the examples below:</p>
+<!-- snippet: resilience-pipeline-usage -->
+<pre><code class="lang-cs">// Creating a new resilience pipeline
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddConcurrencyLimiter(100)
+    .Build();
+
+// Executing an asynchronous void callback
+await pipeline.ExecuteAsync(
+    async token =&gt; await MyMethodAsync(token),
+    cancellationToken);
+
+// Executing a synchronous void callback
+pipeline.Execute(() =&gt; MyMethod());
+
+// Executing an asynchronous callback that returns a value
+await pipeline.ExecuteAsync(
+    async token =&gt; await httpClient.GetAsync(endpoint, token),
+    cancellationToken);
+
+// Executing an asynchronous callback without allocating a lambda
+await pipeline.ExecuteAsync(
+    static async (state, token) =&gt; await state.httpClient.GetAsync(state.endpoint, token),
+    (httpClient, endpoint),  // State provided here
+    cancellationToken);
+
+// Executing an asynchronous callback and passing custom data
+
+// 1. Retrieve a context from the shared pool
+ResilienceContext context = ResilienceContextPool.Shared.Get(cancellationToken);
+
+// 2. Add custom data to the context
+context.Properties.Set(new ResiliencePropertyKey&lt;string&gt;(&quot;my-custom-data&quot;), &quot;my-custom-data&quot;);
+
+// 3. Execute the callback
+await pipeline.ExecuteAsync(static async context =&gt;
+{
+    // Retrieve custom data from the context
+    var customData = context.Properties.GetValue(
+        new ResiliencePropertyKey&lt;string&gt;(&quot;my-custom-data&quot;),
+        &quot;default-value&quot;);
+
+    Console.WriteLine(&quot;Custom Data: {0}&quot;, customData);
+
+    await MyMethodAsync(context.CancellationToken);
+},
+context);
+
+// 4. Optionally, return the context to the shared pool
+ResilienceContextPool.Shared.Return(context);
+</code></pre>
+<!-- endSnippet -->
+<p>The above samples demonstrate how to use the resilience pipeline within the same scope. Additionally, consider the following:</p>
+<ul>
+<li>Separate the resilience pipeline's definition from its usage. Inject pipelines into the code that will consume them. This <a href="https://github.com/App-vNext/Polly/wiki/Unit-testing-with-Polly---with-examples">facilitates various unit-testing scenarios</a>.</li>
+<li>If your application uses Polly in multiple locations, define all pipelines at startup using <a href="/docs/resilience-pipeline-registry.md"><code>ResiliencePipelineRegistry</code></a> or using the <code>AddResiliencePipeline</code> extension. This is a common approach in .NET Core applications. For example, you could create your own extension method on <code>IServiceCollection</code> to configure pipelines consumed elsewhere in your application.</li>
+</ul>
+<!-- snippet: resilience-pipeline-di-usage -->
+<pre><code class="lang-cs">public static void ConfigureMyPipelines(IServiceCollection services)
+{
+    services.AddResiliencePipeline(&quot;pipeline-A&quot;, builder =&gt; builder.AddConcurrencyLimiter(100));
+    services.AddResiliencePipeline(&quot;pipeline-B&quot;, builder =&gt; builder.AddRetry(new()));
+
+    // Later, resolve the pipeline by name using ResiliencePipelineProvider&lt;string&gt; or ResiliencePipelineRegistry&lt;string&gt;
+    var pipelineProvider = services.BuildServiceProvider().GetRequiredService&lt;ResiliencePipelineProvider&lt;string&gt;&gt;();
+    pipelineProvider.GetPipeline(&quot;pipeline-A&quot;).Execute(() =&gt; { });
+}
+</code></pre>
+<!-- endSnippet -->
+<h2 id="empty-resilience-pipeline">Empty resilience pipeline</h2>
+<p>The empty resilience pipeline is a special construct that lacks any resilience strategies. You can access it through the following ways:</p>
+<ul>
+<li><code>ResiliencePipeline.Empty</code></li>
+<li><code>ResiliencePipeline&lt;T&gt;.Empty</code></li>
+</ul>
+<p>This is particularly useful in test scenarios where implementing resilience strategies could slow down the test execution or over-complicate test setup.</p>
+<h2 id="retrieving-execution-results-with-outcomet">Retrieving execution results with <code>Outcome&lt;T&gt;</code></h2>
+<p>The <code>ResiliencePipeline</code> class provides the <code>ExecuteOutcomeAsync(...)</code> method, which is designed to never throw exceptions. Instead, it stores either the result or the exception within an <code>Outcome&lt;T&gt;</code> struct.</p>
+<!-- snippet: resilience-pipeline-outcome -->
+<pre><code class="lang-cs">// Acquire a ResilienceContext from the pool
+ResilienceContext context = ResilienceContextPool.Shared.Get();
+
+// Execute the pipeline and store the result in an Outcome&lt;bool&gt;
+Outcome&lt;bool&gt; outcome = await pipeline.ExecuteOutcomeAsync(
+    static async (context, state) =&gt;
+    {
+        Console.WriteLine(&quot;State: {0}&quot;, state);
+
+        try
+        {
+            await MyMethodAsync(context.CancellationToken);
+
+            // Use static utility methods from Outcome to easily create an Outcome&lt;T&gt; instance
+            return Outcome.FromResult(true);
+        }
+        catch (Exception e)
+        {
+            // Create an Outcome&lt;T&gt; instance that holds the exception
+            return Outcome.FromException&lt;bool&gt;(e);
+        }
+    },
+    context,
+    &quot;my-state&quot;);
+
+// Return the acquired ResilienceContext to the pool
+ResilienceContextPool.Shared.Return(context);
+
+// Evaluate the outcome
+if (outcome.Exception is not null)
+{
+    Console.WriteLine(&quot;Execution Failed: {0}&quot;, outcome.Exception.Message);
+}
+else
+{
+    Console.WriteLine(&quot;Execution Result: {0}&quot;, outcome.Result);
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Use <code>ExecuteOutcomeAsync(...)</code> in high-performance scenarios where you wish to avoid re-throwing exceptions. Keep in mind that Polly's resilience strategies also make use of the <code>Outcome</code> struct to prevent unnecessary exception throwing.</p>
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/pipelines/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

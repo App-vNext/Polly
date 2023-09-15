@@ -1,0 +1,253 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Retry resilience strategy </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Retry resilience strategy ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/strategies/retry.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="retry-resilience-strategy">Retry resilience strategy</h1>
+
+<h2 id="about">About</h2>
+<ul>
+<li><strong>Options</strong>:
+<ul>
+<li><a class="xref" href="../api/Polly.Retry.RetryStrategyOptions.html"><code>RetryStrategyOptions</code></a></li>
+<li><a class="xref" href="../api/Polly.Retry.RetryStrategyOptions-1.html"><code>RetryStrategyOptions&lt;T&gt;</code></a></li>
+</ul>
+</li>
+<li><strong>Extensions</strong>: <code>AddRetry</code></li>
+<li><strong>Strategy Type</strong>: Reactive</li>
+</ul>
+<hr>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Version 8 documentation for this strategy has not yet been migrated. For more information on retry concepts and behavior, refer to the <a href="https://github.com/App-vNext/Polly/wiki/Retry">older documentation</a>.</p>
+</div>
+<h2 id="usage">Usage</h2>
+<!-- snippet: Retry -->
+<pre><code class="lang-cs">// Add retry using the default options.
+// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/retry.md#defaults for default values.
+new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions());
+
+// For instant retries with no delay
+new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+{
+    Delay = TimeSpan.Zero
+});
+
+// For advanced control over the retry behavior, including the number of attempts,
+// delay between retries, and the types of exceptions to handle.
+new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+{
+    ShouldHandle = new PredicateBuilder().Handle&lt;SomeExceptionType&gt;(),
+    BackoffType = DelayBackoffType.Exponential,
+    UseJitter = true,  // Adds a random factor to the delay
+    MaxRetryAttempts = 4,
+    Delay = TimeSpan.FromSeconds(3),
+});
+
+// To use a custom function to generate the delay for retries
+new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+{
+    MaxRetryAttempts = 2,
+    DelayGenerator = args =&gt;
+    {
+        var delay = args.AttemptNumber switch
+        {
+            0 =&gt; TimeSpan.Zero,
+            1 =&gt; TimeSpan.FromSeconds(1),
+            _ =&gt; TimeSpan.FromSeconds(5)
+        };
+
+        // This example uses a synchronous delay generator,
+        // but the API also supports asynchronous implementations.
+        return new ValueTask&lt;TimeSpan?&gt;(delay);
+    }
+});
+
+// To extract the delay from the result object
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(new RetryStrategyOptions&lt;HttpResponseMessage&gt;
+{
+    DelayGenerator = args =&gt;
+    {
+        if (args.Outcome.Result is HttpResponseMessage responseMessage &amp;&amp;
+            TryGetDelay(responseMessage, out TimeSpan delay))
+        {
+            return new ValueTask&lt;TimeSpan?&gt;(delay);
+        }
+
+        // Returning null means the retry strategy will use its internal delay for this attempt.
+        return new ValueTask&lt;TimeSpan?&gt;((TimeSpan?)null);
+    }
+});
+
+// To get notifications when a retry is performed
+new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+{
+    MaxRetryAttempts = 2,
+    OnRetry = args =&gt;
+    {
+        Console.WriteLine(&quot;OnRetry, Attempt: {0}&quot;, args.AttemptNumber);
+
+        // Event handlers can be asynchronous; here, we return an empty ValueTask.
+        return default;
+    }
+});
+
+// To keep retrying indefinitely or until success use int.MaxValue.
+new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+{
+    MaxRetryAttempts = int.MaxValue,
+});
+</code></pre>
+<!-- endSnippet -->
+<h2 id="defaults">Defaults</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ShouldHandle</code></td>
+<td>Predicate that handles all exceptions except <code>OperationCanceledException</code>.</td>
+<td>Predicate that determines what results and exceptions are handled by the retry strategy.</td>
+</tr>
+<tr>
+<td><code>MaxRetryAttempts</code></td>
+<td>3</td>
+<td>The maximum number of retries to use, in addition to the original call.</td>
+</tr>
+<tr>
+<td><code>Delay</code></td>
+<td>2 seconds</td>
+<td>The base delay between retries.</td>
+</tr>
+<tr>
+<td><code>BackoffType</code></td>
+<td>Constant</td>
+<td>The type of the back-off used to generate the retry delay.</td>
+</tr>
+<tr>
+<td><code>UseJitter</code></td>
+<td>False</td>
+<td>Allows adding jitter to retry delays.</td>
+</tr>
+<tr>
+<td><code>DelayGenerator</code></td>
+<td><code>null</code></td>
+<td>Used for generating custom delays for retries.</td>
+</tr>
+<tr>
+<td><code>OnRetry</code></td>
+<td><code>null</code></td>
+<td>Action executed when retry occurs.</td>
+</tr>
+</tbody>
+</table>
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/strategies/retry.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

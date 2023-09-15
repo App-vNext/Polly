@@ -1,0 +1,296 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Dependency injection </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Dependency injection ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/advanced/dependency-injection.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="dependency-injection">Dependency injection</h1>
+
+<p>Starting with version 8, Polly provides features that make the integration of Polly with the .NET <a href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection"><code>IServiceCollection</code></a> Dependency Injection (DI) container more streamlined. This is a thin layer atop the <a href="../pipelines/resilience-pipeline-registry.html">resilience pipeline registry</a> which manages resilience pipelines.</p>
+<h2 id="usage">Usage</h2>
+<p>To use the DI functionality, add the <code>Polly.Extensions</code> package to your project:</p>
+<pre><code class="lang-sh">dotnet add package Polly.Extensions
+</code></pre>
+<p>Afterwards, you can use the <code>AddResiliencePipeline(...)</code> extension method to set up your pipeline:</p>
+<!-- snippet: add-resilience-pipeline -->
+<pre><code class="lang-cs">var services = new ServiceCollection();
+
+// Define a resilience pipeline
+services.AddResiliencePipeline(&quot;my-key&quot;, builder =&gt;
+{
+    // Add strategies to your pipeline here, timeout for example
+    builder.AddTimeout(TimeSpan.FromSeconds(10));
+});
+
+// You can also access IServiceProvider by using the alternate overload
+services.AddResiliencePipeline(&quot;my-key&quot;, (builder, context) =&gt;
+{
+    // Resolve any service from DI
+    var loggerFactory = context.ServiceProvider.GetRequiredService&lt;ILoggerFactory&gt;();
+
+    // Add strategies to your pipeline here
+    builder.AddTimeout(TimeSpan.FromSeconds(10));
+});
+
+// Resolve the resilience pipeline
+ServiceProvider serviceProvider = services.BuildServiceProvider();
+ResiliencePipelineProvider&lt;string&gt; pipelineProvider = serviceProvider.GetRequiredService&lt;ResiliencePipelineProvider&lt;string&gt;&gt;();
+ResiliencePipeline pipeline = pipelineProvider.GetPipeline(&quot;my-key&quot;);
+
+// Use it
+await pipeline.ExecuteAsync(async cancellation =&gt; await Task.Delay(100, cancellation));
+</code></pre>
+<!-- endSnippet -->
+<p>The <code>AddResiliencePipeline</code> extension method also registers the following services into the DI:</p>
+<ul>
+<li><code>ResiliencePipelineRegistry&lt;string&gt;</code>: Allows adding and retrieving resilience pipelines.</li>
+<li><code>ResiliencePipelineProvider&lt;string&gt;</code>: Allows retrieving resilience pipelines.</li>
+<li><code>IOptions&lt;ResiliencePipelineRegistryOptions&lt;string&gt;&gt;</code>: Options for <code>ResiliencePipelineRegistry&lt;string&gt;</code>.</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The generic `string`` is inferred since the pipeline was defined using the &quot;my-key&quot; value.</p>
+</div>
+<p>If you only need the registry without defining a pipeline, use the <code>AddResiliencePipelineRegistry(...)</code> method.</p>
+<h3 id="generic-resilience-pipelines">Generic resilience pipelines</h3>
+<p>You can also define generic resilience pipelines (<code>ResiliencePipeline&lt;T&gt;</code>), as demonstrated below:</p>
+<!-- snippet: add-resilience-pipeline-generic -->
+<pre><code class="lang-cs">var services = new ServiceCollection();
+
+// Define a generic resilience pipeline
+// First parameter is the type of key, second one is the type of the results the generic pipeline works with
+services.AddResiliencePipeline&lt;string, HttpResponseMessage&gt;(&quot;my-pipeline&quot;, builder =&gt;
+{
+    builder.AddRetry(new()
+    {
+        MaxRetryAttempts = 2,
+        ShouldHandle = new PredicateBuilder&lt;HttpResponseMessage&gt;()
+            .Handle&lt;HttpRequestException&gt;()
+            .Handle&lt;TimeoutRejectedException&gt;()
+            .HandleResult(response =&gt; response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+    })
+    .AddTimeout(TimeSpan.FromSeconds(2));
+});
+
+// Resolve the resilience pipeline
+ServiceProvider serviceProvider = services.BuildServiceProvider();
+ResiliencePipelineProvider&lt;string&gt; pipelineProvider = serviceProvider.GetRequiredService&lt;ResiliencePipelineProvider&lt;string&gt;&gt;();
+ResiliencePipeline&lt;HttpResponseMessage&gt; pipeline = pipelineProvider.GetPipeline&lt;HttpResponseMessage&gt;(&quot;my-key&quot;);
+
+// Use it
+await pipeline.ExecuteAsync(
+    async cancellation =&gt; await client.GetAsync(endpoint, cancellation),
+    cancellationToken);
+</code></pre>
+<!-- endSnippet -->
+<h2 id="dynamic-reloads">Dynamic reloads</h2>
+<p>Dynamic reloading is a feature of the pipeline registry that is also surfaced when using the <code>AddResiliencePipeline(...)</code> extension method. Use an overload that provides access to <code>AddResiliencePipelineContext</code>:</p>
+<!-- snippet: di-dynamic-reloads -->
+<pre><code class="lang-cs">services
+    .Configure&lt;RetryStrategyOptions&gt;(&quot;my-retry-options&quot;, configurationSection) // Configure the options
+    .AddResiliencePipeline(&quot;my-pipeline&quot;, (builder, context) =&gt;
+    {
+        // Enable the reloads whenever the named options change
+        context.EnableReloads&lt;RetryStrategyOptions&gt;(&quot;my-retry-options&quot;);
+
+        // Utility method to retrieve the named options
+        var retryOptions = context.GetOptions&lt;RetryStrategyOptions&gt;(&quot;my-retry-options&quot;);
+
+        // Add retries using the resolved options
+        builder.AddRetry(retryOptions);
+    });
+</code></pre>
+<!-- endSnippet -->
+<ul>
+<li><code>EnableReloads&lt;T&gt;(...)</code> activates the dynamic reloading of <code>my-pipeline</code>.</li>
+<li><code>RetryStrategyOptions</code> are fetched using <code>context.GetOptions(...)</code> utility method.</li>
+<li>A retry strategy is added.</li>
+</ul>
+<p>During a reload:</p>
+<ul>
+<li>The callback re-executes.</li>
+<li>The previous pipeline is discarded.</li>
+</ul>
+<p>If an error occurs during reloading, the old pipeline remains, and dynamic reloading stops.</p>
+<h2 id="resource-disposal">Resource disposal</h2>
+<p>Like dynamic reloading, the pipeline registry's resource disposal feature lets you register callbacks. These callbacks run when the pipeline is discarded, reloaded, or the registry is disposed at application shutdown.</p>
+<p>See the example below:</p>
+<!-- snippet: di-resource-disposal -->
+<pre><code class="lang-cs">services.AddResiliencePipeline(&quot;my-pipeline&quot;, (builder, context) =&gt;
+{
+    // Create disposable resource
+    var limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = 100, QueueLimit = 100 });
+
+    // Use it
+    builder.AddRateLimiter(limiter);
+
+    // Dispose the resource created in the callback when the pipeline is discarded
+    context.OnPipelineDisposed(() =&gt; limiter.Dispose());
+});
+</code></pre>
+<!-- endSnippet -->
+<p>This feature ensures that resources are properly disposed when a pipeline reloads, discarding the old version.</p>
+<h2 id="complex-pipeline-keys">Complex pipeline keys</h2>
+<p>The <code>AddResiliencePipeline(...)</code> method supports complex pipeline keys. This capability allows you to define the structure of your pipeline and dynamically resolve and cache multiple instances of the pipeline with different keys.</p>
+<p>Start by defining your complex key:</p>
+<!-- snippet: di-registry-complex-key -->
+<pre><code class="lang-cs">public record struct MyPipelineKey(string PipelineName, string InstanceName)
+{
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Next, register your pipeline:</p>
+<!-- snippet: di-registry-add-pipeline -->
+<pre><code class="lang-cs">services.AddResiliencePipeline(new MyPipelineKey(&quot;my-pipeline&quot;, string.Empty), builder =&gt;
+{
+    // Circuit breaker is a stateful strategy. To isolate the builder across different pipelines,
+    // we must use multiple instances.
+    builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions());
+});
+</code></pre>
+<!-- endSnippet -->
+<p>The &quot;my-pipeline&quot; pipeline is now registered. Note that the <code>InstanceName</code> is an empty string. While we're registering the builder action for a specific pipeline, the <code>InstanceName</code> parameter isn't used during the pipeline's registration. Some further modifications are required for this to function.</p>
+<p>Introduce the <code>PipelineNameComparer</code>:</p>
+<!-- snippet: di-complex-key-comparer -->
+<pre><code class="lang-cs">public sealed class PipelineNameComparer : IEqualityComparer&lt;MyPipelineKey&gt;
+{
+    public bool Equals(MyPipelineKey x, MyPipelineKey y) =&gt; x.PipelineName == y.PipelineName;
+
+    public int GetHashCode(MyPipelineKey obj) =&gt; (obj.PipelineName, obj.InstanceName).GetHashCode();
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Then, configure the registry behavior:</p>
+<!-- snippet: di-registry-configure -->
+<pre><code class="lang-cs">services
+    .AddResiliencePipelineRegistry&lt;MyPipelineKey&gt;(options =&gt;
+    {
+        options.BuilderComparer = new PipelineNameComparer();
+
+        options.InstanceNameFormatter = key =&gt; key.InstanceName;
+
+        options.BuilderNameFormatter = key =&gt; key.PipelineName;
+    });
+</code></pre>
+<!-- endSnippet -->
+<p>Let's summarize our actions:</p>
+<ul>
+<li>We assigned the <code>PipelineNameComparer</code> instance to the <code>BuilderComparer</code> property. This action changes the default registry behavior, ensuring that only the <code>PipelineName</code> is used to find the associated builder.</li>
+<li>We used the <code>InstanceNameFormatter</code> delegate to represent the <code>MyPipelineKey</code> as an instance name for telemetry purposes, keeping the instance name as it is.</li>
+<li>Likewise, the <code>BuilderNameFormatter</code> delegate represents the <code>MyPipelineKey</code> as a builder name in telemetry.</li>
+</ul>
+<p>Finally, use the <code>ResiliencePipelineProvider&lt;MyPipelineKey&gt;</code> to dynamically create and cache multiple instances of the same pipeline:</p>
+<!-- snippet: di-registry-multiple-instances -->
+<pre><code class="lang-cs">ResiliencePipelineProvider&lt;MyPipelineKey&gt; pipelineProvider = serviceProvider.GetRequiredService&lt;ResiliencePipelineProvider&lt;MyPipelineKey&gt;&gt;();
+
+// The registry dynamically creates and caches instance-A using the associated builder action
+ResiliencePipeline instanceA = pipelineProvider.GetPipeline(new MyPipelineKey(&quot;my-pipeline&quot;, &quot;instance-A&quot;));
+
+// The registry creates and caches instance-B
+ResiliencePipeline instanceB = pipelineProvider.GetPipeline(new MyPipelineKey(&quot;my-pipeline&quot;, &quot;instance-B&quot;));
+</code></pre>
+<!-- endSnippet -->
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/docs/gh-pages/docs/advanced/dependency-injection.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
