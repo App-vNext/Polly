@@ -2,7 +2,7 @@
 
 ## About
 
-- **Options**: [`FallbackStrategyOptions<T>`](../../src/Polly.Core/Fallback/FallbackStrategyOptions.TResult.cs)
+- **Options**: [`FallbackStrategyOptions<T>`](xref:Polly.Fallback.FallbackStrategyOptions`1)
 - **Extensions**: `AddFallback`
 - **Strategy Type**: Reactive
 
