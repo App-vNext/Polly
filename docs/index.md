@@ -6,22 +6,22 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 ![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)
 
-## Resilience strategies
+## What can Polly do for you?
 
-| Strategy | Reactive | Premise | AKA | How does the strategy mitigate?|
-| ------------- | --- | ------------- |:-------------: |------------- |
-|[Retry](strategies/retry.md) |Yes|Many faults are transient and may self-correct after a short delay.| *Maybe it's just a blip* |  Allows configuring automatic retries. |
-|[Circuit-breaker](strategies/circuit-breaker.md) |Yes|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | *Stop doing it if it hurts* <br/><br/>*Give that system a break* | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. |
-|[Timeout](strategies/timeout.md)|No|Beyond a certain wait, a success result is unlikely.| *Don't wait forever*  |Guarantees the caller won't have to wait beyond the timeout. |
-|[Rate Limiter](strategies/rate-limiter.md)|No|Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?*  |Constrains executions to not exceed a certain rate. |
-|[Fallback](strategies/fallback.md)|Yes|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
-|[Hedging](strategies/hedging.md)|Yes|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
+Polly lets you express different resilience strategies to cope with various scenarios, such as:
 
-Visit the [resilience strategies](strategies/index.md) section to understand their structure and explore various configuration methods.
+- [Retry](strategies/retry.md): Automatically retry failed requests after a short delay. Useful for transient errors that may self-correct.
+- [Circuit Breaker](strategies/circuit-breaker.md): Fail fast and stop making requests when a system is overloaded or unhealthy. Useful for protecting a system from further damage and giving it time to recover.
+- [Timeout](strategies/timeout.md): Set a maximum time limit for a request and abort it if it takes too long. Useful for avoiding indefinite waits and freeing up resources.
+- [Rate Limiter](strategies/rate-limiter.md): Control the rate of requests to a system and reject or queue them if they exceed the limit. Useful for managing load and preventing throttling or overloading.
+- [Fallback](strategies/fallback.md): Provide an alternative response or action in case of failure. Useful for degrading gracefully and maintaining user experience.
+- [Hedging](strategies/hedging.md): Execute parallel requests when a system is slow and take the fastest one. Useful for reducing latency and improving responsiveness.
 
-## Next steps
+You can learn more about each strategy and how to configure it in the [resilience strategies](strategies/index.md) section.
 
-Visit the [getting started](getting-started.md) section and learn how to quickly start using Polly.
+## Getting started
+
+Polly is easy to install and use. You can follow the [getting started](getting-started.md) guide to set up Polly in your project and start applying resilience strategies in your projects.
 
 ## Articles
 
