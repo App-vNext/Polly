@@ -34,21 +34,21 @@ jobs:
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
 
     - name: Setup NuGet cache
-      uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+      uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
         restore-keys: ${{ runner.os }}-nuget-
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@00e563ead9f72a8461b24876bee2d0c2e8bd2ee8 # v2.21.5
+      uses: github/codeql-action/init@701f152f28d4350ad289a5e31435e9ab6169a7ca # v2.21.6
       with:
         languages: ${{ matrix.language }}
 
     - name: Autobuild
-      uses: github/codeql-action/autobuild@00e563ead9f72a8461b24876bee2d0c2e8bd2ee8 # v2.21.5
+      uses: github/codeql-action/autobuild@701f152f28d4350ad289a5e31435e9ab6169a7ca # v2.21.6
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@00e563ead9f72a8461b24876bee2d0c2e8bd2ee8 # v2.21.5
+      uses: github/codeql-action/analyze@701f152f28d4350ad289a5e31435e9ab6169a7ca # v2.21.6
       with:
         category: "/language:${{ matrix.language }}"

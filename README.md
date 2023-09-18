@@ -42,6 +42,10 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 | Polly.RateLimiting | [![NuGet](https://buildstats.info/nuget/Polly.RateLimiting?includePreReleases=true)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") |
 | Polly.Testing | [![NuGet](https://buildstats.info/nuget/Polly.Testing?includePreReleases=true)](https://www.nuget.org/packages/Polly.Testing/ "Download Polly.Testing from NuGet.org") |
 
+## Documentation
+
+Read the official documentation at <https://www.pollydocs.org/>
+
 ## Get Started
 
 ### Installing via the .NET SDK
