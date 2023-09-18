@@ -7,7 +7,7 @@ namespace Polly.Simmy;
 /// <summary>
 /// Extension methods for adding latency to a <see cref="ResiliencePipelineBuilderBase"/>.
 /// </summary>
-public static class LatencyChaosPipelineBuilderExtensions
+public static class LatencyPipelineBuilderExtensions
 {
     /// <summary>
     /// Adds a latency chaos strategy to the builder.

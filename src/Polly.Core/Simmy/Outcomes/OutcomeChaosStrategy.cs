@@ -13,7 +13,7 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
     {
         if (options.Fault is null && options.FaultGenerator is null)
         {
-            throw new ArgumentNullException(nameof(options.Fault), "Either Fault or FaultGenerator is required.");
+            throw new InvalidOperationException("Either Fault or FaultGenerator is required.");
         }
 
         _telemetry = telemetry;
@@ -27,7 +27,7 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
     {
         if (options.Outcome is null && options.OutcomeGenerator is null)
         {
-            throw new ArgumentNullException(nameof(options.Outcome), "Either Outcome or OutcomeGenerator is required.");
+            throw new InvalidOperationException("Either Outcome or OutcomeGenerator is required.");
         }
 
         _telemetry = telemetry;

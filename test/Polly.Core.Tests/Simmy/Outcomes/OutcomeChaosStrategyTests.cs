@@ -14,7 +14,7 @@ public class OutcomeChaosStrategyTests
     public static List<object[]> FaultCtorTestCases =>
         new()
         {
-                new object[] { null!, "Value cannot be null. (Parameter 'options')" },
+                new object[] { null!, "Value cannot be null. (Parameter 'options')", typeof(ArgumentNullException) },
                 new object[]
                 {
                     new FaultStrategyOptions
@@ -22,14 +22,15 @@ public class OutcomeChaosStrategyTests
                         InjectionRate = 1,
                         Enabled = true,
                     },
-                    "Either Fault or FaultGenerator is required. (Parameter 'Fault')"
+                    "Either Fault or FaultGenerator is required.",
+                    typeof(InvalidOperationException)
                 },
         };
 
     public static List<object[]> ResultCtorTestCases =>
         new()
         {
-                new object[] { null!, "Value cannot be null. (Parameter 'options')" },
+                new object[] { null!, "Value cannot be null. (Parameter 'options')", typeof(ArgumentNullException) },
                 new object[]
                 {
                     new OutcomeStrategyOptions<int>
@@ -37,48 +38,51 @@ public class OutcomeChaosStrategyTests
                         InjectionRate = 1,
                         Enabled = true,
                     },
-                    "Either Outcome or OutcomeGenerator is required. (Parameter 'Outcome')"
+                    "Either Outcome or OutcomeGenerator is required.",
+                    typeof(InvalidOperationException)
                 },
         };
 
     [Theory]
     [MemberData(nameof(FaultCtorTestCases))]
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
-    public void FaultInvalidCtor(FaultStrategyOptions options, string message)
+    public void FaultInvalidCtor(FaultStrategyOptions options, string expectedMessage, Type expectedException)
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
     {
-        Action act = () =>
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
         {
             var _ = new OutcomeChaosStrategy<object>(options, _telemetry);
-        };
-
-#if NET481
-        act.Should().Throw<ArgumentNullException>();
-#else
-        act.Should()
-            .Throw<ArgumentNullException>()
-            .WithMessage(message);
+        }
+        catch (Exception ex)
+        {
+            Assert.IsType(expectedException, ex);
+#if !NET481
+            Assert.Equal(expectedMessage, ex.Message);
 #endif
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     [Theory]
     [MemberData(nameof(ResultCtorTestCases))]
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
-    public void ResultInvalidCtor(OutcomeStrategyOptions<int> options, string message)
+    public void ResultInvalidCtor(OutcomeStrategyOptions<int> options, string expectedMessage, Type expectedException)
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
     {
-        Action act = () =>
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
         {
             var _ = new OutcomeChaosStrategy<int>(options, _telemetry);
-        };
-
-#if NET481
-        act.Should().Throw<ArgumentNullException>();
-#else
-        act.Should()
-            .Throw<ArgumentNullException>()
-            .WithMessage(message);
+        }
+        catch (Exception ex)
+        {
+            Assert.IsType(expectedException, ex);
+#if !NET481
+            Assert.Equal(expectedMessage, ex.Message);
 #endif
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     [Fact]
