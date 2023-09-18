@@ -65,10 +65,7 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
                 else if (OutcomeGenerator is not null)
                 {
                     var outcome = await InjectOutcome(context).ConfigureAwait(context.ContinueOnCapturedContext);
-                    if (outcome.HasValue)
-                    {
-                        return new Outcome<T>(outcome.Value.Result);
-                    }
+                    return new Outcome<T>(outcome.Value.Result);
                 }
             }
 
