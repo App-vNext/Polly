@@ -202,7 +202,7 @@
   <div class="markdown level1 remarks"><p>You can decide based on the <code class="paramref">name</code> to listen for changes in global options or named options.
 If <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> then the global options are listened to.</p>
 <p>
-You can listen for changes only for single options. If you call this method multiple times, the preceding calls are ignored and only the last one wins.
+You can listen for changes from multiple options by calling this method with different <code class="typeparamref">TOptions</code> types.
 </p>
 </div>
 
