@@ -4,6 +4,9 @@
 - name: Getting started
   href: getting-started.md
 
+- name: Migrate to v8
+  href: migration-v8.md
+
 - name: Resilience strategies
   href: strategies/index.md
   expanded: true
