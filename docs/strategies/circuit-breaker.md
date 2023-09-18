@@ -3,8 +3,8 @@
 ## About
 
 - **Options**:
-  - [`CircuitBreakerStrategyOptions`](../../src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.cs)
-  - [`CircuitBreakerStrategyOptions<T>`](../../src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs)
+  - [`CircuitBreakerStrategyOptions`](xref:Polly.CircuitBreaker.CircuitBreakerStrategyOptions)
+  - [`CircuitBreakerStrategyOptions<T>`](xref:Polly.CircuitBreaker.CircuitBreakerStrategyOptions)
 - **Extensions**: `AddCircuitBreaker`
 - **Strategy Type**: Reactive
 - **Exceptions**:

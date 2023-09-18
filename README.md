@@ -7,7 +7,7 @@
 > :rotating_light::rotating_light: **Polly v8 feature-complete!** :rotating_light::rotating_light:
 > - Polly v8 Beta 2 is now available on [NuGet.org](https://www.nuget.org/packages/Polly/8.0.0-beta.2).
 > - The Beta 2 version is considered feature-complete and the public API surface is stable.
-> - Explore the [v8 documentation](https://github.com/App-vNext/Polly/blob/main/README_V8.md).
+> - Explore the [v8 documentation](https://www.pollydocs.org/).
 
 # Polly
 
@@ -1063,4 +1063,4 @@ Licensed under the terms of the [New BSD License](http://opensource.org/licenses
 
 ## Resources
 
-Visit the [documentation](docs/README.md) to explore more Polly-related resources.
+Visit the [documentation](<https://www.pollydocs.org/>) to explore more Polly-related resources.

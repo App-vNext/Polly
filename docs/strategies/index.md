@@ -10,9 +10,20 @@ Polly categorizes resilience strategies into two main groups:
 - **Reactive**: These strategies handle specific exceptions that are thrown, or results that are returned, by the callbacks executed through the strategy.
 - **Proactive**: Unlike reactive strategies, proactive strategies do not focus on handling errors by the callbacks might throw or return. They can make proactive decisions to cancel or reject the execution of callbacks (e.g., using a rate limiter or a timeout resilience strategy).
 
+## Built-in strategies
+
+| Strategy | Reactive | Premise | AKA | How does the strategy mitigate?|
+| ------------- | --- | ------------- |:-------------: |------------- |
+|[Retry](retry.md) |Yes|Many faults are transient and may self-correct after a short delay.| *Maybe it's just a blip* |  Allows configuring automatic retries. |
+|[Circuit-breaker](circuit-breaker.md) |Yes|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | *Stop doing it if it hurts* <br/><br/>*Give that system a break* | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. |
+|[Timeout](timeout.md)|No|Beyond a certain wait, a success result is unlikely.| *Don't wait forever*  |Guarantees the caller won't have to wait beyond the timeout. |
+|[Rate Limiter](rate-limiter.md)|No|Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?*  |Constrains executions to not exceed a certain rate. |
+|[Fallback](fallback.md)|Yes|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
+|[Hedging](hedging.md)|Yes|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
+
 ## Usage
 
-Extensions for adding resilience strategies to the builders are provided by each strategy. Depending on the type of strategy, these extensions may be available for both `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>` or just one of them. Proactive strategies like timeout or rate limiter are available for both types of builders, while specialized reactive strategies are only available for `ResiliencePipelineBuilder<T>`. Adding multiple resilience strategies is supported.
+Extensions for adding resilience strategies to e builders are provided by each strategy. Depending on the type of strategy, these extensions may be available for both `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>` or just one of them. Proactive strategies like timeout or rate limiter are available for both types of builders, while specialized reactive strategies are only available for `ResiliencePipelineBuilder<T>`. Adding multiple resilience strategies is supported.
 
 Each resilience strategy provides:
 
