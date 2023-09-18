@@ -43,7 +43,7 @@ public sealed class AddResiliencePipelineContext<TKey>
     /// You can decide based on the <paramref name="name"/> to listen for changes in global options or named options.
     /// If <paramref name="name"/> is <see langword="null"/> then the global options are listened to.
     /// <para>
-    /// You can listen for changes only for single options. If you call this method multiple times, the preceding calls are ignored and only the last one wins.
+    /// You can listen for changes from multiple options by calling this method with different <typeparamref name="TOptions"/> types.
     /// </para>
     /// </remarks>
     public void EnableReloads<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(string? name = null)
