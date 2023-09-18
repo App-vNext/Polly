@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
-using Polly;
 using Polly.Retry;
 using Polly.Testing;
 using Polly.Timeout;

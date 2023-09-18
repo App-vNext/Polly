@@ -1,5 +1,4 @@
-﻿using Polly;
-using Polly.Retry;
+﻿using Polly.Retry;
 
 namespace Snippets.Core;
 

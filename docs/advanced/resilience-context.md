@@ -22,7 +22,6 @@ Below is an example demonstrating how to work with `ResilienceContext`:
 ResilienceContext context = ResilienceContextPool.Shared.Get(cancellationToken);
 
 // Attach custom data to the context
-
 context.Properties.Set(MyResilienceKeys.Key1, "my-data");
 context.Properties.Set(MyResilienceKeys.Key2, 123);
 
@@ -68,6 +67,9 @@ public static class MyResilienceKeys
 }
 ```
 <!-- endSnippet -->
+
+> [!NOTE]
+> We recommend defining a static class to hold the resilience property keys used in your project. This approach makes these keys easier to discover and maintain. For simpler scenarios, you can directly use the creation of `ResiliencePropertyKey<string>` since it's a cheap, struct-based API.
 
 ## Resilient context pooling
 

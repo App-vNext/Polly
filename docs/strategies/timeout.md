@@ -18,7 +18,7 @@
 <!-- snippet: timeout -->
 ```cs
 // Add timeout using the default options.
-// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/timeout.md#defaults for default values.
+// See https://www.pollydocs.org/strategies/timeout#defaults for defaults.
 new ResiliencePipelineBuilder()
     .AddTimeout(new TimeoutStrategyOptions());
 

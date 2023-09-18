@@ -1,6 +1,5 @@
 ﻿using System.Threading.RateLimiting;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
 using Polly.RateLimiting;
 
 namespace Snippets.Docs;
@@ -12,7 +11,7 @@ internal static class RateLimiter
         #region rate-limiter
 
         // Add rate limiter with default options.
-        // See https://github.com/App-vNext/Polly/blob/main/docs/strategies/rate-limiter.md#defaults for default values.
+        // See https://www.pollydocs.org/strategies/rate-limiter#defaults for defaults.
         new ResiliencePipelineBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions());
 

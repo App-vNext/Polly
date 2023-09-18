@@ -1,6 +1,5 @@
 ﻿using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
 using Polly.Registry;
 
 namespace Snippets.Docs;
