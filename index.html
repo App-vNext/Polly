@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Polly Documentation </title>
+      <title>Meet Polly: The .NET resilience library </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Polly Documentation ">
+      <meta name="title" content="Meet Polly: The .NET resilience library ">
       
       <link rel="icon" href="icon.png">
       <link rel="stylesheet" href="public/docfx.min.css">
@@ -83,69 +83,43 @@
         </div>
 
         <article data-uid="">
-<h1 id="polly-documentation">Polly Documentation</h1>
+<h1 id="meet-polly-the-net-resilience-library">Meet Polly: The .NET resilience library</h1>
 
-<p>Polly is a .NET resilience and transient-fault-handling library that allows developers to express resilience strategies such as Retry, Circuit Breaker, Hedging, Timeout, Rate Limiter and Fallback in a fluent and thread-safe manner.</p>
-<p>We are a member of the <a href="https://www.dotnetfoundation.org/about">.NET Foundation</a>!</p>
 <p><img src="https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png" alt="Polly logo"></p>
+<p>Polly is a powerful library for .NET that helps you handle transient faults and improve the resilience of your applications. With Polly, you can easily define and apply strategies such as Retry, Circuit Breaker, Hedging, Timeout, Rate Limiter and Fallback to handle failures and slowdowns in a fluent and thread-safe way.</p>
+<p>Polly is part of the <a href="https://www.dotnetfoundation.org/about">.NET Foundation</a>!</p>
 <h2 id="what-can-polly-do-for-you">What can Polly do for you?</h2>
 <p>Polly lets you express different resilience strategies to cope with various scenarios, such as:</p>
 <ul>
-<li><a href="strategies/retry.html">Retry</a>: Automatically retry failed requests after a short delay. Useful for transient errors that may self-correct.</li>
-<li><a href="strategies/circuit-breaker.html">Circuit Breaker</a>: Fail fast and stop making requests when a system is overloaded or unhealthy. Useful for protecting a system from further damage and giving it time to recover.</li>
-<li><a href="strategies/timeout.html">Timeout</a>: Set a maximum time limit for a request and abort it if it takes too long. Useful for avoiding indefinite waits and freeing up resources.</li>
-<li><a href="strategies/rate-limiter.html">Rate Limiter</a>: Control the rate of requests to a system and reject or queue them if they exceed the limit. Useful for managing load and preventing throttling or overloading.</li>
-<li><a href="strategies/fallback.html">Fallback</a>: Provide an alternative response or action in case of failure. Useful for degrading gracefully and maintaining user experience.</li>
-<li><a href="strategies/hedging.html">Hedging</a>: Execute parallel requests when a system is slow and take the fastest one. Useful for reducing latency and improving responsiveness.</li>
+<li><a href="strategies/retry.html">Retry</a>: Try again if something fails. This can be useful when the problem is temporary and might go away.</li>
+<li><a href="strategies/circuit-breaker.html">Circuit Breaker</a>: Stop trying if something is broken or busy. This can benefit you by avoiding wasting time and making things worse. It can also support the system to recover.</li>
+<li><a href="strategies/timeout.html">Timeout</a>: Give up if something takes too long. This can improve your performance by freeing up space and resources.</li>
+<li><a href="strategies/rate-limiter.html">Rate Limiter</a>: Limit how many requests you make or accept. This can enable you to control the load and prevent problems or penalties.</li>
+<li><a href="strategies/fallback.html">Fallback</a>: Do something else if something fails. This can improve your user experience and keep the program working.</li>
+<li><a href="strategies/hedging.html">Hedging</a>: Do more than one thing at the same time and take the fastest one. This can make your program faster and more responsive.</li>
 </ul>
-<p>You can learn more about each strategy and how to configure it in the <a href="strategies/index.html">resilience strategies</a> section.</p>
-<h2 id="getting-started">Getting started</h2>
-<p>Polly is easy to install and use. You can follow the <a href="getting-started.html">getting started</a> guide to set up Polly in your project and start applying resilience strategies in your projects.</p>
-<h2 id="articles">Articles</h2>
+<p>You can learn more about each strategy and how to use them <a href="strategies/index.html">resilience strategies</a> section.</p>
+<h2 id="how-to-get-started-with-polly">How to get started with Polly?</h2>
+<p>Polly is easy to install and use. You can follow the <a href="getting-started.html">getting started</a> guide to add Polly to your project and use it for your requests.</p>
+<h2 id="where-to-find-more-information">Where to find more information?</h2>
+<p>Polly has a rich documentation that covers various topics, such as:</p>
 <ul>
-<li><a href="index.html">Introduction</a>: General information about the project and its goals.</li>
-<li><a href="getting-started.html">Getting started</a>: A guide to help you get started with the project.</li>
-<li>Resilience strategies: A collection of strategies for improving the resilience of your system.
-<ul>
-<li><a href="strategies/timeout.html">Timeout</a>: A strategy for setting a maximum time limit for a request.</li>
-<li><a href="strategies/retry.html">Retry</a>: A strategy for retrying failed requests.</li>
-<li><a href="strategies/rate-limiter.html">Rate limiter</a>: A strategy for limiting the rate of requests.</li>
-<li><a href="strategies/hedging.html">Hedging</a>: A strategy for hedging against long request times.</li>
-<li><a href="strategies/fallback.html">Fallback</a>: A strategy for providing a fallback response in case of failure.</li>
-<li><a href="strategies/circuit-breaker.html">Circuit breaker</a>: A strategy for breaking the circuit when a system is down.</li>
+<li><a href="strategies/index.html">Resilience strategies</a>: A collection of strategies for improving the resilience of your system.</li>
+<li><a href="pipelines/index.html">Resilience pipelines</a>: How to combine and reuse strategies in a flexible and modular way.</li>
+<li><a href="advanced/telemetry.html">Telemetry and monitoring</a>: How to access and analyze the data generated by Polly strategies and pipelines.</li>
+<li><a href="advanced/dependency-injection.html">Dependency injection</a>: How to integrate Polly with dependency injection frameworks and containers.</li>
+<li><a href="advanced/extensibility.html">Extensibility</a>: How to create and use custom strategies and extensions for Polly.</li>
+<li><a href="advanced/simmy.html">Chaos engineering</a>: How to use Polly to inject faults and test the resilience of your system.</li>
 </ul>
-</li>
-<li>Resilience pipelines: Understanding the use of resilience pipelines.
-<ul>
-<li><a href="pipelines/resilience-pipeline-registry.html">Resilience pipeline registry</a>: Exploring the registry that stores resilience pipelines.</li>
-</ul>
-</li>
-<li>vanced topics: A collection of advanced topics for further learning.
-<ul>
-<li><a href="advanced/telemetry.html">Telemetry and monitoring</a>: Insights into telemetry generated by resilience pipelines and strategies.</li>
-<li><a href="advanced/simmy.html">Chaos engineering</a>: Get to know chaos engineering via the project's capabilities.</li>
-<li><a href="advanced/dependency-injection.html">Dependency injection</a>: How the project integrates with Dependency Injection.</li>
-</ul>
-</li>
-<li>Community and resources: A collection of resources and community contributions.
-<ul>
-<li><a href="community/polly-contrib.html">Polly-Contrib projects and libraries</a>: Learn how to contribute to and extend the project ecosystem.</li>
-<li><a href="community/libraries-and-contributions.html">Libraries and contributions</a>: Find out which libraries the project depends on and who contributes to its development.</li>
-<li><a href="community/resources.html">Useful resources and links</a>: Browse through blogs, podcasts, courses, e-books, and other community resources.</li>
-</ul>
-</li>
-<li><a href="api/index.html">API</a>: The API documentation for the project.</li>
-</ul>
-<h2 id="articles-previous-polly-versions">Articles (previous Polly versions)</h2>
-<ul>
-<li><a href="v7/extensibility.html">Extensibility (v7)</a>: Learn how you can extend Polly with new policies.</li>
-</ul>
-<h2 id="samples">Samples</h2>
+<p>You can also find many resources and community contributions, such as:</p>
 <ul>
 <li><a href="https://github.com/App-vNext/Polly/tree/main/samples">Samples</a>: Samples in this repository that serve as an introduction to Polly.</li>
-<li><a href="https://github.com/App-vNext/Polly-Samples">Polly-Samples</a>: Contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.</li>
+<li><a href="https://github.com/App-vNext/Polly-Samples">Practical Samples</a>: Practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.</li>
+<li><a href="community/polly-contrib.html">Polly-Contrib</a>): Community projects and libraries that extend and enhance Polly's functionality and ecosystem.</li>
+<li><a href="community/libraries-and-contributions.html">Libraries and contributions</a>: Dependencies and contributors that make Polly possible and awesome.</li>
 <li>Microsoft's <a href="https://github.com/dotnet-architecture/eShopOnContainers">eShopOnContainers project</a>: Sample project demonstrating a .NET Microservices architecture and using Polly for resilience.</li>
 </ul>
+<p>You can browse the documentation using the sidebar or visit the <a href="api/index.html">API</a> section for the reference documentation.</p>
 </article>
 
         <div class="contribution d-print-none">

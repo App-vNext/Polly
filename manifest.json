@@ -1087,11 +1087,24 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
       "type": "Conceptual",
       "source_relative_path": "index.md",
       "output": {
         ".html": {
           "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "migration-v8.md",
+      "output": {
+        ".html": {
+          "relative_path": "migration-v8.html"
         }
       },
       "version": ""
@@ -1147,6 +1160,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
       "type": "Conceptual",
       "source_relative_path": "strategies/index.md",
       "output": {
