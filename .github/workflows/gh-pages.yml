@@ -30,6 +30,7 @@ jobs:
     - run: dotnet docfx docs/docfx.json
 
     - name: Deploy
+      if: github.event_name != 'pull_request'
       # if: startsWith(github.ref, 'refs/tags/')
       uses: peaceiris/actions-gh-pages@v3
       with:
