@@ -108,42 +108,42 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="strategies/retry.md">Retry</a></td>
+<td><a href="retry.html">Retry</a></td>
 <td>Yes</td>
 <td>Many faults are transient and may self-correct after a short delay.</td>
 <td style="text-align: center;"><em>Maybe it's just a blip</em></td>
 <td>Allows configuring automatic retries.</td>
 </tr>
 <tr>
-<td><a href="strategies/circuit-breaker.md">Circuit-breaker</a></td>
+<td><a href="circuit-breaker.html">Circuit-breaker</a></td>
 <td>Yes</td>
 <td>When a system is seriously struggling, failing fast is better than making users/callers wait.  <br><br>Protecting a faulting system from overload can help it recover.</td>
 <td style="text-align: center;"><em>Stop doing it if it hurts</em> <br><br><em>Give that system a break</em></td>
 <td>Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold.</td>
 </tr>
 <tr>
-<td><a href="strategies/timeout.md">Timeout</a></td>
+<td><a href="timeout.html">Timeout</a></td>
 <td>No</td>
 <td>Beyond a certain wait, a success result is unlikely.</td>
 <td style="text-align: center;"><em>Don't wait forever</em></td>
 <td>Guarantees the caller won't have to wait beyond the timeout.</td>
 </tr>
 <tr>
-<td><a href="strategies/rate-limiter.md">Rate Limiter</a></td>
+<td><a href="rate-limiter.html">Rate Limiter</a></td>
 <td>No</td>
 <td>Limiting the rate a system handles requests is another way to control load. <br><br> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services.</td>
 <td style="text-align: center;"><em>Slow down a bit, will you?</em></td>
 <td>Constrains executions to not exceed a certain rate.</td>
 </tr>
 <tr>
-<td><a href="strategies/fallback.md">Fallback</a></td>
+<td><a href="fallback.html">Fallback</a></td>
 <td>Yes</td>
 <td>Things will still fail - plan what you will do when that happens.</td>
 <td style="text-align: center;"><em>Degrade gracefully</em></td>
 <td>Defines an alternative value to be returned (or action to be executed) on failure.</td>
 </tr>
 <tr>
-<td><a href="strategies/hedging.md">Hedging</a></td>
+<td><a href="hedging.html">Hedging</a></td>
 <td>Yes</td>
 <td>Things can be slow sometimes, plan what you will do when that happens.</td>
 <td style="text-align: center;"><em>Hedge your bets</em></td>
