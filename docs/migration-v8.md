@@ -198,7 +198,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 
 We will only include the retry policy as migration showcase. Migrating other policies uses the same approach.
 
-### Retries in v7
+### Retries without waiting in v7
 
 <!-- snippet: migration-retry-v7 -->
 ```cs
@@ -219,7 +219,13 @@ Policy
     {
         // Add logic to be executed before each retry, such as logging
     });
+```
+<!-- endSnippet -->
 
+### Retries with waiting in v7
+
+<!-- snippet: migration-retry-wait-v7 -->
+```cs
 // Retry forever
 Policy
     .Handle<SomeExceptionType>()
@@ -245,7 +251,7 @@ Policy
 ```
 <!-- endSnippet -->
 
-### Retries in v8
+### Retries without waiting in v8
 
 <!-- snippet: migration-retry-v8 -->
 ```cs
@@ -289,7 +295,13 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
     Delay = TimeSpan.Zero,
 })
 .Build();
+```
+<!-- endSnippet -->
 
+### Retries with waiting in v8
+
+<!-- snippet: migration-retry-wait-v8 -->
+```cs
 // Wait and retry multiple times
 new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 {

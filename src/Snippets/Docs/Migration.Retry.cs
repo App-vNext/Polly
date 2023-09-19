@@ -27,6 +27,10 @@ internal static partial class Migration
                 // Add logic to be executed before each retry, such as logging
             });
 
+        #endregion
+
+        #region migration-retry-wait-v7
+
         // Retry forever
         Policy
             .Handle<SomeExceptionType>()
@@ -51,6 +55,7 @@ internal static partial class Migration
             .WaitAndRetryForever(_ => TimeSpan.FromSeconds(1));
 
         #endregion
+
     }
 
     public static void Retry_V8()
@@ -97,6 +102,10 @@ internal static partial class Migration
             Delay = TimeSpan.Zero,
         })
         .Build();
+
+        #endregion
+
+        #region migration-retry-wait-v8
 
         // Wait and retry multiple times
         new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
