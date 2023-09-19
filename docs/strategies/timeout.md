@@ -2,7 +2,7 @@
 
 ## About
 
-- **Options**: [`TimeoutStrategyOptions`](../../src/Polly.Core/Timeout/TimeoutStrategyOptions.cs)
+- **Options**: [`TimeoutStrategyOptions`](xref:Polly.Timeout.TimeoutStrategyOptions)
 - **Extensions**: `AddTimeout`
 - **Strategy Type**: Proactive
 - **Exceptions**:

@@ -16,7 +16,7 @@ namespace Polly;
 public static class PollyServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds a generic resilience pipeline to service collection.
+    /// Adds a resilience pipeline that handles <typeparamref name="TResult"/> to service collection.
     /// </summary>
     /// <typeparam name="TKey">The type of the key used to identify the resilience pipeline.</typeparam>
     /// <typeparam name="TResult">The type of result that the resilience pipeline handles.</typeparam>
@@ -24,7 +24,6 @@ public static class PollyServiceCollectionExtensions
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <param name="configure">An action that configures the resilience pipeline.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with the registered resilience pipeline.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the resilience pipeline builder with the provided key has already been added to the registry.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
@@ -45,7 +44,7 @@ public static class PollyServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds a generic resilience pipeline to service collection.
+    /// Adds a resilience pipeline that handles <typeparamref name="TResult"/> to service collection.
     /// </summary>
     /// <typeparam name="TKey">The type of the key used to identify the resilience pipeline.</typeparam>
     /// <typeparam name="TResult">The type of result that the resilience pipeline handles.</typeparam>
@@ -53,7 +52,6 @@ public static class PollyServiceCollectionExtensions
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <param name="configure">An action that configures the resilience pipeline.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with the registered resilience pipeline.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the resilience pipeline builder with the provided key has already been added to the registry.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
@@ -94,7 +92,6 @@ public static class PollyServiceCollectionExtensions
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <param name="configure">An action that configures the resilience pipeline.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with the registered resilience pipeline.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the resilience pipeline builder with the provided key has already been added to the registry.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
@@ -122,7 +119,6 @@ public static class PollyServiceCollectionExtensions
     /// <param name="key">The key used to identify the resilience pipeline.</param>
     /// <param name="configure">An action that configures the resilience pipeline.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with the registered resilience pipeline.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the resilience pipeline builder with the provided key has already been added to the registry.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
@@ -157,7 +153,7 @@ public static class PollyServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds <see cref="ResiliencePipelineRegistry{TKey}"/> and <see cref="ResiliencePipelineProvider{TKey}"/> that allows configuring
+    /// Adds <see cref="ResiliencePipelineRegistry{TKey}"/> and <see cref="ResiliencePipelineProvider{TKey}"/> to service collection that allows configuring
     /// and retrieving resilience pipelines using the <typeparamref name="TKey"/> key.
     /// </summary>
     /// <typeparam name="TKey">The type of the key used to identify the resilience pipeline.</typeparam>
@@ -183,7 +179,7 @@ public static class PollyServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds <see cref="ResiliencePipelineRegistry{TKey}"/> and <see cref="ResiliencePipelineProvider{TKey}"/> that allows configuring
+    /// Adds <see cref="ResiliencePipelineRegistry{TKey}"/> and <see cref="ResiliencePipelineProvider{TKey}"/> to service collection that allows configuring
     /// and retrieving resilience pipelines using the <typeparamref name="TKey"/> key.
     /// </summary>
     /// <typeparam name="TKey">The type of the key used to identify the resilience pipeline.</typeparam>

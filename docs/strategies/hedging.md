@@ -2,7 +2,7 @@
 
 ## About
 
-- **Options**: [`HedgingStrategyOptions<T>`](../../src/Polly.Core/Hedging/HedgingStrategyOptions.TResult.cs)
+- **Options**: [`HedgingStrategyOptions<T>`](xref:Polly.Hedging.HedgingStrategyOptions`1)
 - **Extensions**: `AddHedging`
 - **Strategy Type**: Reactive
 

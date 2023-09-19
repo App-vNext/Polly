@@ -173,7 +173,7 @@ Execution attempt. Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', O
 
 ## Emitting telemetry events
 
-Each resilience strategy can generate telemetry data through the [`ResilienceStrategyTelemetry`](../src/Polly.Core/Telemetry/ResilienceStrategyTelemetry.cs) API. Polly encapsulates event details as [`TelemetryEventArguments`](../src/Polly.Core/Telemetry/TelemetryEventArguments.cs) and emits them via `TelemetryListener`.
+Each resilience strategy can generate telemetry data through the [`ResilienceStrategyTelemetry`](xref:Polly.Telemetry.ResilienceStrategyTelemetry) API. Polly encapsulates event details as [`TelemetryEventArguments`](xref:Polly.Telemetry.TelemetryEventArguments`2) and emits them via `TelemetryListener`.
 
 To leverage this telemetry data, users should assign a `TelemetryListener` instance to `ResiliencePipelineBuilder.TelemetryListener` and then consume the `TelemetryEventArguments`.
 
