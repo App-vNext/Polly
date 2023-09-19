@@ -627,3 +627,29 @@ registry.TryAddBuilder("my-key", (builder, context) => builder.AddTimeout(TimeSp
 registry.GetOrAddPipeline("my-key", builder => builder.AddTimeout(TimeSpan.FromSeconds(10)));
 ```
 <!-- endSnippet -->
+
+## Interoperability between policies and resilience pipelines
+
+In certain scenarios, you might not want to migrate your code to v8. Instead, you may prefer to use strategies from v8 and apply them to v7 APIs. Polly provides a set of extensions to support easy conversion from v8 to v7 APIs, as shown in the example below:
+
+<!-- snippet: migration-interoperability -->
+```cs
+// First, create a resilience pipeline.
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddRateLimiter(new FixedWindowRateLimiter(new FixedWindowRateLimiterOptions
+    {
+        Window = TimeSpan.FromSeconds(10),
+        PermitLimit = 100
+    }))
+    .Build();
+
+// Now, convert it to a v7 policy. Note that it can be converted to both sync and async policies.
+ISyncPolicy syncPolicy = pipeline.AsSyncPolicy();
+IAsyncPolicy asyncPolicy = pipeline.AsAsyncPolicy();
+
+// Finally, use it in a policy wrap.
+ISyncPolicy wrappedPolicy = Policy.Wrap(
+    syncPolicy,
+    Policy.Handle<SomeExceptionType>().Retry(3));
+```
+<!-- endSnippet -->
