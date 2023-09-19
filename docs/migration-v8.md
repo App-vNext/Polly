@@ -144,7 +144,7 @@ cancellationToken);
 Here are the primary changes:
 
 - `ResiliencePipelineBuilder` is used to start building the resilience pipeline, instead of the static `Policy.HandleException<TException>(...)`.
-- For building generic resilience pipelines, `ResiliencePipelineBuilder<T>` replaces the static `Policy.handleResult<HttpResponseMessage>(...)`.
+- For building generic resilience pipelines, `ResiliencePipelineBuilder<T>` replaces the static `Policy.HandleResult<HttpResponseMessage>(...)`.
 - Resilience strategies are configured using options, such as `RetryStrategyOptions` and `RetryStrategyOptions<T>`.
 - `PredicateBuilder` determines which exceptions or results are handled.
 - The final `ResiliencePipeline` is created with a `Build()` call.
