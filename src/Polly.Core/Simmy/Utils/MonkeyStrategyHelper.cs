@@ -32,11 +32,13 @@ internal static class MonkeyStrategyHelper
 
     private static double CoerceInjectionThreshold(double injectionThreshold)
     {
+        // stryker disable once equality : no means to test this
         if (injectionThreshold < MonkeyStrategyConstants.MinInjectionThreshold)
         {
             return MonkeyStrategyConstants.MinInjectionThreshold;
         }
 
+        // stryker disable once equality : no means to test this
         if (injectionThreshold > MonkeyStrategyConstants.MaxInjectionThreshold)
         {
             return MonkeyStrategyConstants.MaxInjectionThreshold;
