@@ -42,22 +42,13 @@ You can create a `ResiliencePipeline` using the `ResiliencePipelineBuilder` clas
 <!-- snippet: quick-start -->
 ```cs
 // Create a instance of builder that exposes various extensions for adding resilience strategies
-var builder = new ResiliencePipelineBuilder();
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddRetry(new RetryStrategyOptions()) // Add retry using the default options
+    .AddTimeout(TimeSpan.FromSeconds(10)) // Add 10 second timeout
+    .Build(); // Builds the resilience pipeline
 
-// Add retry using the default options
-builder.AddRetry(new RetryStrategyOptions());
-
-// Add 10 second timeout
-builder.AddTimeout(TimeSpan.FromSeconds(10));
-
-// Build the resilience pipeline
-ResiliencePipeline pipeline = builder.Build();
-
-// Execute the pipeline
-await pipeline.ExecuteAsync(async token =>
-{
-    // Your custom logic here
-});
+// Execute the pipeline asynchronously
+await pipeline.ExecuteAsync(async cancellationToken => { /*Your custom logic here */ }, cancellationToken);
 ```
 <!-- endSnippet -->
 

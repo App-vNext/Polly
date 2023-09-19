@@ -29,3 +29,4 @@ Here are some tips if you want to archive best possible performance when using P
 
 Lambdas that capture variables from outer scope allocate per each execution. Polly gives you tools to avoid this overhead as demonstrated in the example bellow:
 
+### Use switch expressions for predicates
