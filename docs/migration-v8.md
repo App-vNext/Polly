@@ -16,7 +16,11 @@ Welcome to the migration guide for Polly's v8 version. The v8 version of Polly b
 - **Built-in telemetry**: Polly v8 now has built-in telemetry support.
 - **Improved performance and low-allocation APIs**: Polly v8 boasts significant performance enhancements and provides zero-allocation APIs for advanced use cases.
 
-## Migrating policies
+## Migrating execution policies
+
+This section describes how to migrate from execution policies (i.e. `IAsyncPolicy`, `ISyncPolicy`) to resilience pipelines (i.e. `ResiliencePipeline`, `ResiliencePipeline<T>`).
+
+### Configuring policies in v7
 
 In earlier versions, Polly exposed various interfaces to execute user code:
 
@@ -24,8 +28,6 @@ In earlier versions, Polly exposed various interfaces to execute user code:
 - `IAsyncPolicy<T>`
 - `ISyncPolicy`
 - `ISyncPolicy<T>`
-
-### Configuring policies in v7
 
 These interfaces were created and used as:
 
@@ -148,7 +150,7 @@ Here are the primary changes:
 - The final `ResiliencePipeline` is created with a `Build()` call.
 - `ResiliencePipeline` can execute both synchronous and asynchronous tasks.
 
-## Migrating `PolicyWrap`
+## Migrating policy wrap
 
 ### Policy wrap in v7
 
