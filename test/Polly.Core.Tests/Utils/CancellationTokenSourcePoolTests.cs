@@ -77,7 +77,7 @@ public class CancellationTokenSourcePoolTests
 
         await Task.Delay(100);
 
-        cts.IsCancellationRequested.Should().BeTrue();
+        await TestUtilities.AssertWithTimeoutAsync(() => cts.IsCancellationRequested.Should().BeTrue());
     }
 
     [MemberData(nameof(TimeProviders))]
