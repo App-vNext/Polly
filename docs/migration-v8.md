@@ -3,7 +3,7 @@
 Welcome to the migration guide for Polly's v8 version. The v8 version of Polly brings major new enhancements and supports all the same scenarios as previous versions. In the following sections, we'll detail the differences between the v7 and v8 APIs and provide steps on how to transition smoothly.
 
 > [!NOTE]
-> The v7 API is still available and fully supported even when using the v8 version.
+> The v7 API is still available and fully supported even when using the v8 version by referencing [Polly](https://www.nuget.org/packages/Polly) package.
 
 ## Major differences
 
