@@ -79,9 +79,9 @@ The metrics are emitted under the `Polly` meter name. The subsequent sections pr
 
 Every telemetry event has the following tags:
 
-- `pipeline_name`: Optional, comes from `ResiliencePipelineBuilder.Name`.
-- `pipeline_instance`: Optional, comes from `ResiliencePipelineBuilder.InstanceName`.
-- `strategy_name`: Optional, comes from `RetryStrategyOptions.Name`.
+- `pipeline.name`: Optional, comes from `ResiliencePipelineBuilder.Name`.
+- `pipeline.instance`: Optional, comes from `ResiliencePipelineBuilder.InstanceName`.
+- `strategy.name`: Optional, comes from `RetryStrategyOptions.Name`.
 
 The sample below demonstrates how to assign these tags:
 
@@ -101,7 +101,7 @@ builder.AddRetry(new RetryStrategyOptions
 
 These values are subsequently reflected in the following metering instruments exposed by the Polly:
 
-### Instrument: `polly.resilience_events`
+### Instrument: `resilience.polly.strategy.events`
 
 - Type: *Counter*
 - Description: Emitted upon the occurrence of a resilience event.
@@ -110,15 +110,15 @@ Tags:
 
 |Name|Description|
 |---| ---|
-|`event_name`| The name of the emitted event.|
-|`event_severity`| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
-|`pipeline_name`| The name of the pipeline corresponding to the resilience pipeline.|
-|`pipeline_instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
-|`strategy_name`| The name of the strategy generating this event.|
-|`operation_key`| The operation key associated with the call site. |
-|`exception_name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
+|`event.name`| The name of the emitted event.|
+|`event.severity`| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
+|`pipeline.name`| The name of the pipeline corresponding to the resilience pipeline.|
+|`pipeline.instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
+|`strategy.name`| The name of the strategy generating this event.|
+|`operation.key`| The operation key associated with the call site. |
+|`exception.type`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 
-### Instrument: `polly.execution_attempt_duration`
+### Instrument: `resilience.polly.strategy.attempt.duration`
 
 - Type: *Histogram*
 - Unit: *milliseconds*
@@ -128,17 +128,17 @@ Tags:
 
 |Name|Description|
 |---| ---|
-|`event_name`| The name of the emitted event.|
-|`event_severity`| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
-|`pipeline_name`| The name of the pipeline corresponding to the resilience pipeline.|
-|`pipeline_instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
-|`strategy_name`| The name of the strategy generating this event.|
-|`operation_key`| The operation key associated with the call site. |
-|`exception_name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
-|`attempt_number`| The execution attempt number, starting at 0 (0, 1, 2, etc.). |
-|`attempt_handled`| Indicates if the execution outcome was handled. A handled outcome indicates execution failure and the need for retry (`true`, `false`). |
+|`event.name`| The name of the emitted event.|
+|`event.severity`| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
+|`pipeline.name`| The name of the pipeline corresponding to the resilience pipeline.|
+|`pipeline.instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
+|`strategy.name`| The name of the strategy generating this event.|
+|`operation.key`| The operation key associated with the call site. |
+|`exception.type`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
+|`attempt.number`| The execution attempt number, starting at 0 (0, 1, 2, etc.). |
+|`attempt.handled`| Indicates if the execution outcome was handled. A handled outcome indicates execution failure and the need for retry (`true`, `false`). |
 
-### Instrument: `polly.pipeline_execution_duration`
+### Instrument: `resilience.polly.pipeline.duration`
 
 - Type: *Histogram*
 - Unit: *milliseconds*
@@ -148,10 +148,10 @@ Tags:
 
 |Name|Description|
 |---| ---|
-|`pipeline_name`| The name of the pipeline corresponding to the resilience pipeline.|
-|`pipeline_instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
-|`operation_key`| The operation key associated with the call site. |
-|`exception_name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
+|`pipeline.name`| The name of the pipeline corresponding to the resilience pipeline.|
+|`pipeline.instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
+|`operation.key`| The operation key associated with the call site. |
+|`exception.type`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 
 ## Logs
 
