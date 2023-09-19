@@ -3,12 +3,10 @@ using System.Threading.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Polly;
 using Polly.CircuitBreaker;
 using Polly.Registry;
 using Polly.Retry;
 using Polly.Timeout;
-using static Snippets.Docs.Telemetry;
 
 namespace Snippets.Docs;
 

@@ -125,7 +125,7 @@ Visit [resilience strategies](docs/resilience-strategies.md) docs to explore how
 <!-- snippet: retry -->
 ```cs
 // Add retry using the default options.
-// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/retry.md#defaults for default values.
+// See https://www.pollydocs.org/strategies/retry#defaults for defaults.
 new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions());
 
 // For instant retries with no delay
@@ -208,7 +208,7 @@ If all retries fail, a retry strategy rethrows the final exception back to the c
 <!-- snippet: circuit-breaker -->
 ```cs
 // Add circuit breaker with default options.
-// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/circuit-breaker.md#defaults for default values.
+// See https://www.pollydocs.org/strategies/circuit-breaker#defaults for defaults.
 new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions());
 
 // Add circuit breaker with customized options:
@@ -320,7 +320,7 @@ For more details, refer to the [Fallback documentation](docs/strategies/fallback
 <!-- snippet: Hedging -->
 ```cs
 // Add hedging with default options.
-// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/hedging.md#defaults for default values.
+// See https://www.pollydocs.org/strategies/hedging#defaults for defaults.
 new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddHedging(new HedgingStrategyOptions<HttpResponseMessage>());
 
@@ -366,7 +366,7 @@ The timeout resilience strategy assumes delegates you execute support [co-operat
 <!-- snippet: timeout -->
 ```cs
 // Add timeout using the default options.
-// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/timeout.md#defaults for default values.
+// See https://www.pollydocs.org/strategies/timeout#defaults for defaults.
 new ResiliencePipelineBuilder()
     .AddTimeout(new TimeoutStrategyOptions());
 
@@ -410,7 +410,7 @@ Timeout strategies throw `TimeoutRejectedException` when a timeout occurs. For m
 <!-- snippet: rate-limiter -->
 ```cs
 // Add rate limiter with default options.
-// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/rate-limiter.md#defaults for default values.
+// See https://www.pollydocs.org/strategies/rate-limiter#defaults for defaults.
 new ResiliencePipelineBuilder()
     .AddRateLimiter(new RateLimiterStrategyOptions());
 

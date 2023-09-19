@@ -1,6 +1,4 @@
 ﻿using System.Net.Http;
-using System.Threading;
-using Polly;
 using Polly.Registry;
 using Polly.Retry;
 

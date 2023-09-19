@@ -1,5 +1,4 @@
-﻿using Polly;
-using Polly.Fallback;
+﻿using Polly.Fallback;
 using Snippets.Docs.Utils;
 
 namespace Snippets.Docs;

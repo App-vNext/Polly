@@ -1,5 +1,4 @@
 ﻿using System.Threading.RateLimiting;
-using Polly;
 using Polly.RateLimiting;
 
 namespace Snippets.RateLimiting;

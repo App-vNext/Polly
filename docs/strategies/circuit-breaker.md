@@ -24,7 +24,7 @@
 <!-- snippet: circuit-breaker -->
 ```cs
 // Add circuit breaker with default options.
-// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/circuit-breaker.md#defaults for default values.
+// See https://www.pollydocs.org/strategies/circuit-breaker#defaults for defaults.
 new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions());
 
 // Add circuit breaker with customized options:

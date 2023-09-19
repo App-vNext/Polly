@@ -41,8 +41,8 @@ You can also find many resources and community contributions, such as:
 
 - [Samples](https://github.com/App-vNext/Polly/tree/main/samples): Samples in this repository that serve as an introduction to Polly.
 - [Practical Samples](https://github.com/App-vNext/Polly-Samples): Practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
-- [Polly-Contrib](community/polly-contrib.md)): Community projects and libraries that extend and enhance Polly's functionality and ecosystem.
-- [Libraries and contributions](community/libraries-and-contributions.html): Dependencies and contributors that make Polly possible and awesome.
+- [Polly-Contrib](community/polly-contrib.md): Community projects and libraries that extend and enhance Polly's functionality and ecosystem.
+- [Libraries and contributions](community/libraries-and-contributions): Dependencies and contributors that make Polly possible and awesome.
 - Microsoft's [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers): Sample project demonstrating a .NET Microservices architecture and using Polly for resilience.
 
 You can browse the documentation using the sidebar or visit the [API](api/index.md) section for the reference documentation.
