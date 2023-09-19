@@ -346,9 +346,71 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 
 It's important to remember that the configuration in v8 is options based, i.e. `RetryStrategyOptions` are used.
 
+## Migrating rate limit policy
+
+The rate limit policy is now replaced by the [rate limiter strategy](strategies/rate-limiter.md) which uses the [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) package. Polly does not implement its own rate limiter anymore.
+
+### Rate limit in v7
+
+<!-- snippet: migration-rate-limit-v7 -->
+```cs
+// Create sync rate limiter
+ISyncPolicy syncPolicy = Policy.RateLimit(
+    numberOfExecutions: 100,
+    perTimeSpan: TimeSpan.FromMinutes(1));
+
+// Create async rate limiter
+IAsyncPolicy asyncPolicy = Policy.RateLimitAsync(
+    numberOfExecutions: 100,
+    perTimeSpan: TimeSpan.FromMinutes(1));
+
+// Create generic sync rate limiter
+ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy.RateLimit<HttpResponseMessage>(
+    numberOfExecutions: 100,
+    perTimeSpan: TimeSpan.FromMinutes(1));
+
+// Create generic async rate limiter
+IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy.RateLimitAsync<HttpResponseMessage>(
+    numberOfExecutions: 100,
+    perTimeSpan: TimeSpan.FromMinutes(1));
+```
+<!-- endSnippet -->
+
+### Rate limit in v8
+
+<!-- snippet: migration-rate-limit-v8 -->
+```cs
+// The equivalent to Polly v7's RateLimit is the SlidingWindowRateLimiter.
+//
+// Polly exposes just a simple wrapper to the APIs exposed by the System.Threading.RateLimiting APIs.
+// There is no need to create separate instances for sync and async flows as ResiliencePipeline handles both scenarios.
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
+    {
+        PermitLimit = 100,
+        Window = TimeSpan.FromMinutes(1),
+    }))
+    .Build();
+
+// The creation of generic pipeline is almost identical.
+//
+// Polly exposes the same set of rate-limiter extensions for both ResiliencePipeline<HttpResponseMessage> and ResiliencePipeline.
+ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
+    .AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
+    {
+        PermitLimit = 100,
+        Window = TimeSpan.FromMinutes(1),
+    }))
+    .Build();
+```
+<!-- endSnippet -->
+
 ## Migrating bulkhead policy
 
 The bulkhead policy is now replaced by the [rate limiter strategy](strategies/rate-limiter.md) which uses the [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) package. The new counterpart to bulkhead is `ConcurrencyLimiter`.
+
+> [!NOTE]
+> In v7, the bulkhead was presented as an individual strategy. In v8, it's not separately exposed because it's essentially a specialized type of rate limiter: the `ConcurrencyLimiter`.
 
 ### Bulkhead in v7
 
@@ -368,7 +430,7 @@ IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy.BulkheadAsync<HttpRespon
 ```
 <!-- endSnippet -->
 
-### Concurrency limiter in v8
+### Bulkhead in v8
 
 <!-- snippet: migration-bulkhead-v8 -->
 ```cs
@@ -451,7 +513,7 @@ For more details, refer to the [Resilience context](advanced/resilience-context.
 
 ## Migrating no-op policy
 
-- For `Policy.NoOp` or `Policy.NoOpAsync`, now use `ResiliencePipeline.Empty`.
+- For `Policy.NoOp` or `Policy.NoOpAsync`, switch to `ResiliencePipeline.Empty`.
 - For `Policy.NoOp<T>` or `Policy.NoOpAsync<T>`, switch to `ResiliencePipeline<T>.Empty`.
 
 ## Migrating policy registry
