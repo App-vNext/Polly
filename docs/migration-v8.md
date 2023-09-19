@@ -198,7 +198,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 
 We will only include the retry policy as migration showcase. Migrating other policies uses the same approach.
 
-### Retries without waiting in v7
+### Retry in v7
 
 <!-- snippet: migration-retry-v7 -->
 ```cs
@@ -222,36 +222,7 @@ Policy
 ```
 <!-- endSnippet -->
 
-### Retries with waiting in v7
-
-<!-- snippet: migration-retry-wait-v7 -->
-```cs
-// Retry forever
-Policy
-    .Handle<SomeExceptionType>()
-    .WaitAndRetryForever(_ => TimeSpan.FromSeconds(1));
-
-// Wait and retry multiple times
-Policy
-  .Handle<SomeExceptionType>()
-  .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
-
-// Wait and retry multiple times with callback
-Policy
-    .Handle<SomeExceptionType>()
-    .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1), onRetry: (exception, retryCount) =>
-    {
-        // Add logic to be executed before each retry, such as logging
-    });
-
-// Wait and retry forever
-Policy
-    .Handle<SomeExceptionType>()
-    .WaitAndRetryForever(_ => TimeSpan.FromSeconds(1));
-```
-<!-- endSnippet -->
-
-### Retries without waiting in v8
+### Retry in v8
 
 <!-- snippet: migration-retry-v8 -->
 ```cs
@@ -298,7 +269,36 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
-### Retries with waiting in v8
+### Retry and wait in v7
+
+<!-- snippet: migration-retry-wait-v7 -->
+```cs
+// Retry forever
+Policy
+    .Handle<SomeExceptionType>()
+    .WaitAndRetryForever(_ => TimeSpan.FromSeconds(1));
+
+// Wait and retry multiple times
+Policy
+  .Handle<SomeExceptionType>()
+  .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+
+// Wait and retry multiple times with callback
+Policy
+    .Handle<SomeExceptionType>()
+    .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1), onRetry: (exception, retryCount) =>
+    {
+        // Add logic to be executed before each retry, such as logging
+    });
+
+// Wait and retry forever
+Policy
+    .Handle<SomeExceptionType>()
+    .WaitAndRetryForever(_ => TimeSpan.FromSeconds(1));
+```
+<!-- endSnippet -->
+
+### Retry and wait in v8
 
 <!-- snippet: migration-retry-wait-v8 -->
 ```cs
