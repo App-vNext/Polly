@@ -16,6 +16,9 @@ Welcome to the migration guide for Polly's v8 version. The v8 version of Polly b
 - **Built-in telemetry**: Polly v8 now has built-in telemetry support.
 - **Improved performance and low-allocation APIs**: Polly v8 boasts significant performance enhancements and provides zero-allocation APIs for advanced use cases.
 
+> [!NOTE]
+> Please read the comments in the code carefully for additional context and explanations.
+
 ## Migrating execution policies
 
 This section describes how to migrate from execution policies (i.e. `IAsyncPolicy`, `ISyncPolicy`) to resilience pipelines (i.e. `ResiliencePipeline`, `ResiliencePipeline<T>`).
@@ -33,7 +36,7 @@ These interfaces were created and used as:
 
 <!-- snippet: migration-policies-v7 -->
 ```cs
-// Create and use the ISyncPolicy
+// Create and use the ISyncPolicy.
 ISyncPolicy syncPolicy = Policy.Handle<Exception>().WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 syncPolicy.Execute(() =>
 {
@@ -74,20 +77,16 @@ await asyncPolicyT.ExecuteAsync(
 ```
 <!-- endSnippet -->
 
-Points to note from the example:
-
-- `Policy.Handle<Exception>()` determines which exceptions are handled.
-- `Policy.HandleResult<HttpResponseMessage>()` determines which results are managed.
-- The final `WaitAndRetry()` produces an `ISyncPolicy`, while `WaitAndRetryAsync()` results in an `IAsyncPolicy`.
-- The retry policy tries 3 times, waiting 1 second between attempts.
-
 ### Configuring strategies in v8
 
 In Polly v8, the previous code becomes:
 
 <!-- snippet: migration-policies-v8 -->
 ```cs
-// Create and use the ResiliencePipeline
+// Create and use the ResiliencePipeline.
+//
+// The ResiliencePipelineBuilder is used to start building the resilience pipeline,
+// instead of the static Policy.HandleException<TException>() call.
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions
     {
@@ -96,7 +95,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
         MaxRetryAttempts = 3,
         BackoffType = DelayBackoffType.Constant
     })
-    .Build();
+    .Build(); // After all necessary strategies are added, call build to create the pipeline.
 
 // Synchronous execution
 pipeline.Execute(() =>
@@ -104,15 +103,19 @@ pipeline.Execute(() =>
     // your code here
 });
 
-// Asynchronous execution
+// Asynchronous execution is also supported with the same pipeline instance
 await pipeline.ExecuteAsync(async cancellationToken =>
 {
     // your code here
 },
 cancellationToken);
 
-// Create and use the ResiliencePipeline<T>
+// Create and use the ResiliencePipeline<T>.
+//
+// Building of generic resilience pipeline is very similar to non-generic one.
 ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
+    // Notice the use of generic RetryStrategyOptions<HttpResponseMessage> to configure the strategy
+    // As opposed to providing the arguments into the method.
     .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
     {
         ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
@@ -140,15 +143,6 @@ await pipelineT.ExecuteAsync(async cancellationToken =>
 cancellationToken);
 ```
 <!-- endSnippet -->
-
-Here are the primary changes:
-
-- `ResiliencePipelineBuilder` is used to start building the resilience pipeline, instead of the static `Policy.HandleException<TException>(...)`.
-- For building generic resilience pipelines, `ResiliencePipelineBuilder<T>` replaces the static `Policy.HandleResult<HttpResponseMessage>(...)`.
-- Resilience strategies are configured using options, such as `RetryStrategyOptions` and `RetryStrategyOptions<T>`.
-- `PredicateBuilder` determines which exceptions or results are handled.
-- The final `ResiliencePipeline` is created with a `Build()` call.
-- `ResiliencePipeline` can execute both synchronous and asynchronous tasks.
 
 ## Migrating policy wrap
 
@@ -231,10 +225,16 @@ In v8 the retry strategy is configured as:
 <!-- snippet: migration-retry-v8 -->
 ```cs
 // Retry once
+//
+// Because we are adding retries to a non-generic pipeline,
+// we use the non-generic RetryStrategyOptions.
 new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 {
+    // PredicateBuilder is used to simplify the initialization of predicates.
+    // Its API should be familiar to v7 way of configuring what exceptions to handle.
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
     MaxRetryAttempts = 1,
+    // To disable waiting between retries, set the Delay property to TimeSpan.Zero.
     Delay = TimeSpan.Zero,
 })
 .Build();
@@ -266,15 +266,13 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 {
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
+    // To retry forever, set the MaxRetryAttempts property to int.MaxValue.
     MaxRetryAttempts = int.MaxValue,
     Delay = TimeSpan.Zero,
 })
 .Build();
 ```
 <!-- endSnippet -->
-
-- To disable waiting between retries, set the `Delay` property to `TimeSpan.Zero`.
-- To retry forever, set the `MaxRetryAttempts` property to `int.MaxValue`.
 
 ### Retry and wait in v7
 
@@ -346,9 +344,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
-- It's important to remember that the configuration in v8 is options based, i.e. `RetryStrategyOptions` are used.
-- Notice that to disable waiting between retries the `Delay` property is set to `TimeSpan.Zero`.
-- To retry forever set `MaxRetryAttempts` to `int.MaxValue`.
+It's important to remember that the configuration in v8 is options based, i.e. `RetryStrategyOptions` are used.
 
 ## Migrating bulkhead policy
 

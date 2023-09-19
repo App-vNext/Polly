@@ -11,7 +11,7 @@ internal static partial class Migration
 
         #region migration-policies-v7
 
-        // Create and use the ISyncPolicy
+        // Create and use the ISyncPolicy.
         ISyncPolicy syncPolicy = Policy.Handle<Exception>().WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
         syncPolicy.Execute(() =>
         {
@@ -59,7 +59,10 @@ internal static partial class Migration
 
         #region migration-policies-v8
 
-        // Create and use the ResiliencePipeline
+        // Create and use the ResiliencePipeline.
+        //
+        // The ResiliencePipelineBuilder is used to start building the resilience pipeline,
+        // instead of the static Policy.HandleException<TException>() call.
         ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
             .AddRetry(new RetryStrategyOptions
             {
@@ -68,7 +71,7 @@ internal static partial class Migration
                 MaxRetryAttempts = 3,
                 BackoffType = DelayBackoffType.Constant
             })
-            .Build();
+            .Build(); // After all necessary strategies are added, call build to create the pipeline.
 
         // Synchronous execution
         pipeline.Execute(() =>
@@ -76,15 +79,19 @@ internal static partial class Migration
             // your code here
         });
 
-        // Asynchronous execution
+        // Asynchronous execution is also supported with the same pipeline instance
         await pipeline.ExecuteAsync(async cancellationToken =>
         {
             // your code here
         },
         cancellationToken);
 
-        // Create and use the ResiliencePipeline<T>
+        // Create and use the ResiliencePipeline<T>.
+        //
+        // Building of generic resilience pipeline is very similar to non-generic one.
         ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
+            // Notice the use of generic RetryStrategyOptions<HttpResponseMessage> to configure the strategy
+            // As opposed to providing the arguments into the method.
             .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
             {
                 ShouldHandle = new PredicateBuilder<HttpResponseMessage>()

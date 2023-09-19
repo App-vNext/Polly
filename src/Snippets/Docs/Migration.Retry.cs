@@ -1,10 +1,12 @@
-﻿using Polly.Retry;
+﻿using System.Runtime.Versioning;
+using Polly.Retry;
 using Snippets.Docs.Utils;
 
 namespace Snippets.Docs;
 
 internal static partial class Migration
 {
+    [RequiresPreviewFeatures]
     public static void Retry_V7()
     {
         #region migration-retry-v7
@@ -63,10 +65,16 @@ internal static partial class Migration
         #region migration-retry-v8
 
         // Retry once
+        //
+        // Because we are adding retries to a non-generic pipeline,
+        // we use the non-generic RetryStrategyOptions.
         new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
         {
+            // PredicateBuilder is used to simplify the initialization of predicates.
+            // Its API should be familiar to v7 way of configuring what exceptions to handle.
             ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
             MaxRetryAttempts = 1,
+            // To disable waiting between retries, set the Delay property to TimeSpan.Zero.
             Delay = TimeSpan.Zero,
         })
         .Build();
@@ -98,6 +106,7 @@ internal static partial class Migration
         new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
         {
             ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
+            // To retry forever, set the MaxRetryAttempts property to int.MaxValue.
             MaxRetryAttempts = int.MaxValue,
             Delay = TimeSpan.Zero,
         })
