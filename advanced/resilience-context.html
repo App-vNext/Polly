@@ -104,7 +104,6 @@
 ResilienceContext context = ResilienceContextPool.Shared.Get(cancellationToken);
 
 // Attach custom data to the context
-
 context.Properties.Set(MyResilienceKeys.Key1, &quot;my-data&quot;);
 context.Properties.Set(MyResilienceKeys.Key2, 123);
 
@@ -147,6 +146,10 @@ ResilienceContextPool.Shared.Return(context);
 }
 </code></pre>
 <!-- endSnippet -->
+<div class="NOTE">
+<h5>Note</h5>
+<p>We recommend defining a static class to hold the resilience property keys used in your project. This approach makes these keys easier to discover and maintain. For simpler scenarios, you can directly use the creation of <code>ResiliencePropertyKey&lt;string&gt;</code> since it's a cheap, struct-based API.</p>
+</div>
 <h2 id="resilient-context-pooling">Resilient context pooling</h2>
 <!-- Overview -->
 <p>The <code>ResilienceContext</code> object is resource-intensive to create, and recreating it for each execution would negatively impact performance. To address this issue, Polly provides a <code>ResilienceContextPool</code>. This pool allows you to obtain and reuse <code>ResilienceContext</code> instances. Once you've finished using a context instance, you can return it to the pool. This action will reset the context to its initial state, making it available for reuse.</p>
