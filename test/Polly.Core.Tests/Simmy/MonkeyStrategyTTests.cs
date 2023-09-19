@@ -35,7 +35,10 @@ public class MonkeyStrategyTTests
         (await sut.InjectionRateGenerator(new(context))).Should().Be(0.5);
     }
 
+    [InlineData(0, false)]
+    [InlineData(0.5, false)]
     [InlineData(-1, false)]
+    [InlineData(1, true)]
     [InlineData(1.1, true)]
     [Theory]
     public async Task Should_coerce_injection_rate_generator_result_is_not_valid(double injectionRateGeneratorResult, bool shouldBeInjected)

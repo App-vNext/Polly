@@ -97,15 +97,17 @@ public class LatencyChaosStrategyTests : IDisposable
         (after - before).Seconds.Should().Be(0);
     }
 
-    [Fact]
-    public async Task Given_latency_is_negative_should_not_inject_latency()
+    [InlineData(-1000)]
+    [InlineData(0)]
+    [Theory]
+    public async Task Given_latency_is_negative_should_not_inject_latency(double latency)
     {
         var onLatencyExecuted = false;
         var userDelegateExecuted = false;
 
         _options.InjectionRate = 0.6;
         _options.Enabled = true;
-        _options.Latency = TimeSpan.FromSeconds(-1000);
+        _options.Latency = TimeSpan.FromSeconds(latency);
         _options.Randomizer = () => 0.5;
 
         _options.OnLatency = args =>
