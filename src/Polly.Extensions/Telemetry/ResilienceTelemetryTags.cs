@@ -14,7 +14,7 @@ internal class ResilienceTelemetryTags
 
     public const string OperationKey = "operation.key";
 
-    public const string ExceptionName = "exception.type";
+    public const string ExceptionType = "exception.type";
 
     public const string AttemptNumber = "attempt.number";
 

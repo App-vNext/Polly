@@ -98,7 +98,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
         if (context.TelemetryEvent.Outcome?.Exception is Exception e)
         {
-            context.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, e.GetType().FullName));
+            context.Tags.Add(new(ResilienceTelemetryTags.ExceptionType, e.GetType().FullName));
         }
     }
 
