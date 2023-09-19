@@ -344,6 +344,50 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
+### Retry results in v7
+
+<!-- snippet: migration-retry-reactive-v7 -->
+```cs
+// Wait and retry with result handling
+Policy
+  .Handle<SomeExceptionType>()
+  .OrResult<HttpResponseMessage>(response => response.StatusCode == HttpStatusCode.InternalServerError)
+  .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+```
+<!-- endSnippet -->
+
+### Retry results in v8
+
+<!-- snippet: migration-retry-reactive-v8 -->
+```cs
+// Shows how to add a retry strategy that also retries particular results.
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyOptions<HttpResponseMessage>
+{
+    // PredicateBuilder is a convenience API that can used to configure the ShouldHandle predicate.
+    ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+        .Handle<SomeExceptionType>()
+        .HandleResult(result => result.StatusCode == HttpStatusCode.InternalServerError),
+    MaxRetryAttempts = 3,
+})
+.Build();
+
+// The same as above, but using the switch expressions for max performance.
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyOptions<HttpResponseMessage>
+{
+    // Determine what results to retry using switch expressions.
+    // Note that PredicateResult.True() is just a shortcut for "new ValueTask<bool>(true)".
+    ShouldHandle = args => args.Outcome switch
+    {
+        { Exception: SomeExceptionType } => PredicateResult.True(),
+        { Result: { StatusCode: HttpStatusCode.InternalServerError } } => PredicateResult.True(),
+        _ => PredicateResult.False()
+    },
+    MaxRetryAttempts = 3,
+})
+.Build();
+```
+<!-- endSnippet -->
+
 It's important to remember that the configuration in v8 is options based, i.e. `RetryStrategyOptions` are used.
 
 ## Migrating rate limit policy

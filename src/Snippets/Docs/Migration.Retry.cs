@@ -1,4 +1,6 @@
-﻿using System.Runtime.Versioning;
+﻿using System.Net;
+using System.Net.Http;
+using System.Runtime.Versioning;
 using Polly.Retry;
 using Snippets.Docs.Utils;
 
@@ -58,6 +60,15 @@ internal static partial class Migration
 
         #endregion
 
+        #region migration-retry-reactive-v7
+
+        // Wait and retry with result handling
+        Policy
+          .Handle<SomeExceptionType>()
+          .OrResult<HttpResponseMessage>(response => response.StatusCode == HttpStatusCode.InternalServerError)
+          .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+
+        #endregion
     }
 
     public static void Retry_V8()
@@ -148,6 +159,36 @@ internal static partial class Migration
             MaxRetryAttempts = int.MaxValue,
             Delay = TimeSpan.FromSeconds(1),
             BackoffType = DelayBackoffType.Constant
+        })
+        .Build();
+
+        #endregion
+
+        #region migration-retry-reactive-v8
+
+        // Shows how to add a retry strategy that also retries particular results.
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyOptions<HttpResponseMessage>
+        {
+            // PredicateBuilder is a convenience API that can used to configure the ShouldHandle predicate.
+            ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+                .Handle<SomeExceptionType>()
+                .HandleResult(result => result.StatusCode == HttpStatusCode.InternalServerError),
+            MaxRetryAttempts = 3,
+        })
+        .Build();
+
+        // The same as above, but using the switch expressions for max performance.
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyOptions<HttpResponseMessage>
+        {
+            // Determine what results to retry using switch expressions.
+            // Note that PredicateResult.True() is just a shortcut for "new ValueTask<bool>(true)".
+            ShouldHandle = args => args.Outcome switch
+            {
+                { Exception: SomeExceptionType } => PredicateResult.True(),
+                { Result: { StatusCode: HttpStatusCode.InternalServerError } } => PredicateResult.True(),
+                _ => PredicateResult.False()
+            },
+            MaxRetryAttempts = 3,
         })
         .Build();
 
