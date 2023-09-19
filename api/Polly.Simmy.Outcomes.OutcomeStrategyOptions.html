@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Class ResilienceStrategy
+      <title>Class OutcomeStrategyOptions
  </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Class ResilienceStrategy
+      <meta name="title" content="Class OutcomeStrategyOptions
  ">
       
       <link rel="icon" href="../icon.png">
@@ -17,7 +17,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/new/main/apiSpec/new?filename=Polly_ResilienceStrategy.md&amp;value=---%0Auid%3A%20Polly.ResilienceStrategy%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/new/main/apiSpec/new?filename=Polly_Simmy_Outcomes_OutcomeStrategyOptions.md&amp;value=---%0Auid%3A%20Polly.Simmy.Outcomes.OutcomeStrategyOptions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -84,26 +84,26 @@
           <nav id="breadcrumb"></nav>
         </div>
 
-        <article data-uid="Polly.ResilienceStrategy">
+        <article data-uid="Polly.Simmy.Outcomes.OutcomeStrategyOptions">
 
 
 
-  <h1 id="Polly_ResilienceStrategy" data-uid="Polly.ResilienceStrategy" class="text-break">
-    Class ResilienceStrategy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResilienceStrategy.cs/#L6"><i class="bi bi-code-slash"></i></a>
+  <h1 id="Polly_Simmy_Outcomes_OutcomeStrategyOptions" data-uid="Polly.Simmy.Outcomes.OutcomeStrategyOptions" class="text-break">
+    Class OutcomeStrategyOptions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Outcomes/OutcomeStrategyOptions.cs/#L4"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="Polly.html">Polly</a></dd></dl>
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Polly.html">Polly</a>.<a class="xref" href="Polly.Simmy.html">Simmy</a>.<a class="xref" href="Polly.Simmy.Outcomes.html">Outcomes</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Polly.Core.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Base class for all proactive resilience strategies.</p>
+  <div class="markdown summary"><p>Represents the options for the Outcome chaos strategy.</p>
 </div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract class ResilienceStrategy</code></pre>
+    <pre><code class="lang-csharp hljs">public class OutcomeStrategyOptions : OutcomeStrategyOptions&lt;object&gt;</code></pre>
   </div>
 
 
@@ -113,21 +113,46 @@
     <dt>Inheritance</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-      <div><span class="xref">ResilienceStrategy</span></div>
+      <div><a class="xref" href="Polly.ResilienceStrategyOptions.html">ResilienceStrategyOptions</a></div>
+      <div><a class="xref" href="Polly.Simmy.MonkeyStrategyOptions-1.html">MonkeyStrategyOptions</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</div>
+      <div><a class="xref" href="Polly.Simmy.MonkeyStrategyOptions.html">MonkeyStrategyOptions</a></div>
+      <div><a class="xref" href="Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html">OutcomeStrategyOptions</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</div>
+      <div><span class="xref">OutcomeStrategyOptions</span></div>
     </dd>
   </dl>
 
 
-  <dl class="typelist derived">
-    <dt>Derived</dt>
-    <dd>
-      <div><a class="xref" href="Polly.Simmy.MonkeyStrategy.html">MonkeyStrategy</a></div>
-    </dd>
-  </dl>
 
   <dl class="typelist derived">
     <dt>Inherited Members</dt>
     <dd>
+    <div>
+      <a class="xref" href="Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1_OnOutcomeInjected">OutcomeStrategyOptions&lt;object&gt;.OnOutcomeInjected</a>
+    </div>
+    <div>
+      <a class="xref" href="Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1_OutcomeGenerator">OutcomeStrategyOptions&lt;object&gt;.OutcomeGenerator</a>
+    </div>
+    <div>
+      <a class="xref" href="Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1_Outcome">OutcomeStrategyOptions&lt;object&gt;.Outcome</a>
+    </div>
+    <div>
+      <a class="xref" href="Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_InjectionRate">MonkeyStrategyOptions&lt;object&gt;.InjectionRate</a>
+    </div>
+    <div>
+      <a class="xref" href="Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_InjectionRateGenerator">MonkeyStrategyOptions&lt;object&gt;.InjectionRateGenerator</a>
+    </div>
+    <div>
+      <a class="xref" href="Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_EnabledGenerator">MonkeyStrategyOptions&lt;object&gt;.EnabledGenerator</a>
+    </div>
+    <div>
+      <a class="xref" href="Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_Enabled">MonkeyStrategyOptions&lt;object&gt;.Enabled</a>
+    </div>
+    <div>
+      <a class="xref" href="Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_Randomizer">MonkeyStrategyOptions&lt;object&gt;.Randomizer</a>
+    </div>
+    <div>
+      <a class="xref" href="Polly.ResilienceStrategyOptions.html#Polly_ResilienceStrategyOptions_Name">ResilienceStrategyOptions.Name</a>
+    </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -156,73 +181,11 @@
 
 
 
-  <h2 class="section" id="methods">Methods
-</h2>
-
-
-  <a id="Polly_ResilienceStrategy_ExecuteCore_" data-uid="Polly.ResilienceStrategy.ExecuteCore*"></a>
-
-  <h3 id="Polly_ResilienceStrategy_ExecuteCore__2_System_Func_Polly_ResilienceContext___1_System_Threading_Tasks_ValueTask_Polly_Outcome___0____Polly_ResilienceContext___1_" data-uid="Polly.ResilienceStrategy.ExecuteCore``2(System.Func{Polly.ResilienceContext,``1,System.Threading.Tasks.ValueTask{Polly.Outcome{``0}}},Polly.ResilienceContext,``1)">
-  ExecuteCore&lt;TResult, TState&gt;(Func&lt;ResilienceContext, TState, ValueTask&lt;Outcome&lt;TResult&gt;&gt;&gt;, ResilienceContext, TState)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResilienceStrategy.cs/#L23"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"><p>An implementation of a proactive resilience strategy that executes the specified <code class="paramref">callback</code>.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected abstract ValueTask&lt;Outcome&lt;TResult&gt;&gt; ExecuteCore&lt;TResult, TState&gt;(Func&lt;ResilienceContext, TState, ValueTask&lt;Outcome&lt;TResult&gt;&gt;&gt; callback, ResilienceContext context, TState state)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>callback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-3">Func</a>&lt;<a class="xref" href="Polly.ResilienceContext.html">ResilienceContext</a>, TState, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1">ValueTask</a>&lt;<a class="xref" href="Polly.Outcome-1.html">Outcome</a>&lt;TResult&gt;&gt;&gt;</dt>
-    <dd><p>The user-provided callback.</p>
-</dd>
-    <dt><code>context</code> <a class="xref" href="Polly.ResilienceContext.html">ResilienceContext</a></dt>
-    <dd><p>The context associated with the callback.</p>
-</dd>
-    <dt><code>state</code> <span class="xref">TState</span></dt>
-    <dd><p>The state associated with the callback.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1">ValueTask</a>&lt;<a class="xref" href="Polly.Outcome-1.html">Outcome</a>&lt;TResult&gt;&gt;</dt>
-    <dd><p>An instance of a pending <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a> for asynchronous executions or a completed <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a> task for synchronous executions.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>TResult</code></dt>
-    <dd><p>The type of result returned by the callback.</p>
-</dd>
-    <dt><code>TState</code></dt>
-    <dd><p>The type of state associated with the callback.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="Polly_ResilienceStrategy_ExecuteCore__2_System_Func_Polly_ResilienceContext___1_System_Threading_Tasks_ValueTask_Polly_Outcome___0____Polly_ResilienceContext___1__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>The provided callback never throws an exception. Instead, the exception is captured and converted to an <a class="xref" href="Polly.Outcome-1.html">Outcome&lt;TResult&gt;</a>.
-Similarly, do not throw exceptions from your strategy implementation. Instead, return an exception instance as <a class="xref" href="Polly.Outcome-1.html">Outcome&lt;TResult&gt;</a>.</p>
-</div>
-
-
-
-
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResilienceStrategy.cs/#L6" class="edit-link">Edit this page</a>
+          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Outcomes/OutcomeStrategyOptions.cs/#L4" class="edit-link">Edit this page</a>
         </div>
 
         
