@@ -27,7 +27,6 @@ internal static partial class Migration
             syncPolicy,
             Policy.Handle<SomeExceptionType>().Retry(3));
 
-
         #endregion
     }
 }
