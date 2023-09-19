@@ -196,9 +196,11 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 
 ## Migrating retry policy
 
-We will only include the retry policy as migration showcase. Migrating other policies uses the same approach.
+This section describes how to migrate the v7 retry policy to a resilience strategy in v8.
 
 ### Retry in v7
+
+In v7 the retry policy is configured as:
 
 <!-- snippet: migration-retry-v7 -->
 ```cs
@@ -223,6 +225,8 @@ Policy
 <!-- endSnippet -->
 
 ### Retry in v8
+
+In v8 the retry strategy is configured as:
 
 <!-- snippet: migration-retry-v8 -->
 ```cs
@@ -385,6 +389,14 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
     .Build();
 ```
 <!-- endSnippet -->
+
+## Migrating other policies
+
+Migrating is a process similar to the one described in previous sections. Keep in mind:
+
+- Strategy configurations (or policies in v7) are now in options. Property names should match the v7 APIs and scenarios.
+- Use `ResiliencePipelineBuilder` or `ResiliencePipelineBuilder<T>` and their respective extensions to add specific strategies.
+- For more details on each strategy, refer to the [resilience strategies](strategies/index.md) documentation.
 
 ## Migrating `Polly.Context`
 
