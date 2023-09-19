@@ -9,7 +9,7 @@ Welcome to the migration guide for Polly's v8 version. The v8 version of Polly b
 
 - **The term *Policy* is now replaced with *Strategy***: In previous versions, Polly used the term *policy* for retries, timeouts, etc. In v8, these are referred to as *resilience strategies*.
 - **Introduction of Resilience Pipelines**: The [resilience pipeline](pipelines/index.md) combines one or more resilience strategies. This is the foundational API for Polly v8, similar to the **Policy Wrap** in previous versions but integrated into the core API.
-- **Unification of interfaces**: Interfaces such as `IAsyncPolicy`, `IAsyncPolicy<T>`, `ISyncPolicy`, `ISyncPolicy<T>`, and `IPolicy` are now unified under `ResiliencePipeline` and `ResiliencePipeline<T>`. The resilience pipeline supports both synchronous and asynchronous executions.
+- **Unified sync and async flows**: Interfaces such as `IAsyncPolicy`, `IAsyncPolicy<T>`, `ISyncPolicy`, `ISyncPolicy<T>`, and `IPolicy` are now unified under `ResiliencePipeline` and `ResiliencePipeline<T>`. The resilience pipeline supports both synchronous and asynchronous execution flows.
 - **Native async support**: Polly v8 was designed with asynchronous support from the start.
 - **No static APIs**: Unlike previous versions, v8 doesn't use static APIs. This improves testability and extensibility while maintaining ease of use.
 - **Options-based configuration**: Configuring individual resilience strategies is now options-based, offering more flexibility and improving maintainability and extensibility.
