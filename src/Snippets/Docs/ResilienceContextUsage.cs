@@ -1,6 +1,4 @@
-﻿using Polly;
-
-namespace Snippets.Docs;
+﻿namespace Snippets.Docs;
 
 internal static class ResilienceContextUsage
 {
@@ -25,7 +23,6 @@ internal static class ResilienceContextUsage
         ResilienceContext context = ResilienceContextPool.Shared.Get(cancellationToken);
 
         // Attach custom data to the context
-
         context.Properties.Set(MyResilienceKeys.Key1, "my-data");
         context.Properties.Set(MyResilienceKeys.Key2, 123);
 

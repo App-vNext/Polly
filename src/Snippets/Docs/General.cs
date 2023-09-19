@@ -1,6 +1,4 @@
-﻿using Polly;
-
-namespace Snippets.Docs;
+﻿namespace Snippets.Docs;
 
 internal static class General
 {

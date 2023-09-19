@@ -18,7 +18,7 @@
 <!-- snippet: Retry -->
 ```cs
 // Add retry using the default options.
-// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/retry.md#defaults for default values.
+// See https://www.pollydocs.org/strategies/retry#defaults for defaults.
 new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions());
 
 // For instant retries with no delay

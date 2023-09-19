@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using Polly;
 using Polly.Retry;
 using Polly.Timeout;
 

@@ -20,7 +20,7 @@ This strategy also supports multiple [concurrency modes](#concurrency-modes) for
 <!-- snippet: hedging -->
 ```cs
 // Add hedging with default options.
-// See https://github.com/App-vNext/Polly/blob/main/docs/strategies/hedging.md#defaults for default values.
+// See https://www.pollydocs.org/strategies/hedging#defaults for defaults.
 new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddHedging(new HedgingStrategyOptions<HttpResponseMessage>());
 
