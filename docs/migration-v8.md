@@ -269,6 +269,9 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
+- To disable waiting between retries, set the `Delay` property to `TimeSpan.Zero`.
+- To retry forever, set the `MaxRetryAttempts` property to `int.MaxValue`.
+
 ### Retry and wait in v7
 
 <!-- snippet: migration-retry-wait-v7 -->
