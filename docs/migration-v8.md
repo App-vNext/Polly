@@ -113,9 +113,9 @@ cancellationToken);
 // Create and use the ResiliencePipeline<T>.
 //
 // Building of generic resilience pipeline is very similar to non-generic one.
+// Notice the use of generic RetryStrategyOptions<HttpResponseMessage> to configure the strategy
+// As opposed to providing the arguments into the method.
 ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
-    // Notice the use of generic RetryStrategyOptions<HttpResponseMessage> to configure the strategy
-    // As opposed to providing the arguments into the method.
     .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
     {
         ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
