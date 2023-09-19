@@ -3,7 +3,7 @@
 Welcome to the migration guide for Polly's v8 version. The v8 version of Polly brings major new enhancements and supports all the same scenarios as previous versions. In the following sections, we'll detail the differences between the v7 and v8 APIs and provide steps on how to transition smoothly.
 
 > [!NOTE]
-> The v7 API is still available and fully supported when using the v8 version.
+> The v7 API is still available and fully supported even when using the v8 version.
 
 ## Major differences
 
@@ -150,7 +150,9 @@ Here are the primary changes:
 
 ## Migrating `PolicyWrap`
 
-`PolicyWrap` is used to combine multiple policies into one as shown below:
+### Policy wrap in v7
+
+Policy wrap is used to combine multiple policies into one as shown in the v7 example below:
 
 <!-- snippet: migration-policy-wrap-v7 -->
 ```cs
@@ -165,7 +167,9 @@ IAsyncPolicy wrappedPolicy = Policy.WrapAsync(timeoutPolicy, retryPolicy);
 ```
 <!-- endSnippet -->
 
-In v8, there's no need to use `PolicyWrap` explicitly. Instead, policy wrapping is smoothly integrated into `ResiliencePipelineBuilder`, as shown in the example below:
+### Policy wrap in v8
+
+In v8, there's no need to use policy wrap explicitly. Instead, policy wrapping is smoothly integrated into `ResiliencePipelineBuilder`, as shown in the example below:
 
 <!-- snippet: migration-policy-wrap-v8 -->
 ```cs
@@ -186,7 +190,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 
 > [!IMPORTANT]
-> In v7, the `PolicyWrap` ordering was different; the policy added first was executed last. In v8, the execution order matches the order in which they were added.
+> In v7, the policy wrap ordering is different; the policy added first was executed last. In v8, the execution order matches the order in which they were added.
 
 ## Migrating retry policy
 
