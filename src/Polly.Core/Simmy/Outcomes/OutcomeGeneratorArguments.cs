@@ -5,7 +5,7 @@
 /// <summary>
 /// Arguments used by the outcome chaos strategy to ge the outcome that is going to be injected.
 /// </summary>
-public readonly struct OutcomeGeneratorArguments
+internal readonly struct OutcomeGeneratorArguments
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="OutcomeGeneratorArguments"/> struct.

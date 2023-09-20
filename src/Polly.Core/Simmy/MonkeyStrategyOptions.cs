@@ -5,7 +5,7 @@
 /// <summary>
 /// The options associated with the <see cref="MonkeyStrategy"/>.
 /// </summary>
-public abstract class MonkeyStrategyOptions : MonkeyStrategyOptions<object>
+internal abstract class MonkeyStrategyOptions : MonkeyStrategyOptions<object>
 {
 }
 

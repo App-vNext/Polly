@@ -6,7 +6,7 @@
 /// Arguments used by the outcome chaos strategy to notify that an outcome was injected.
 /// </summary>
 /// <typeparam name="TResult">The type of the outcome that was injected.</typeparam>
-public readonly struct OnOutcomeInjectedArguments<TResult>
+internal readonly struct OnOutcomeInjectedArguments<TResult>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="OnOutcomeInjectedArguments{TResult}"/> struct.
