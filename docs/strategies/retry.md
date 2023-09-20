@@ -112,9 +112,10 @@ Throughout the years many people have used Polly in so many different ways. Some
 ### 1 - Overusing builder methods
 
 ❌ DON'T
+
 Use more than one `Handle/HandleResult`
 ```cs
-var retryPolicy = new ResiliencePipelineBuilder()
+var retry = new ResiliencePipelineBuilder()
     .AddRetry(new() {
         ShouldHandle = new PredicateBuilder()
         .Handle<HttpRequestException>()
@@ -131,7 +132,8 @@ var retryPolicy = new ResiliencePipelineBuilder()
 - A better approach would be to tell  _please trigger retry if the to-be-decorated code throws one of the retriable exceptions_.
 
 ✅ DO
-Use collections and predicates
+
+Use collections and simple predicate functions
 ```cs
 ImmutableArray<Type> networkExceptions = new[] {
     typeof(SocketException),
@@ -144,7 +146,7 @@ ImmutableArray<Type> policyExceptions = new[] {
     typeof(RateLimitRejectedException),
 }.ToImmutableArray();
 
-var retryPolicy = new ResiliencePipelineBuilder()
+var retry = new ResiliencePipelineBuilder()
     .AddRetry(new() {
         ShouldHandle = ex => new ValueTask<bool>(
             networkExceptions.Union(policyExceptions).Contains(ex.GetType())),
@@ -158,11 +160,13 @@ var retryPolicy = new ResiliencePipelineBuilder()
 
 ### 2 - Using retry as a periodical executor
 
-The retry strategy can be defined in a way to run forever in a given frequency.
+
 
 ❌ DON'T
+
+Define a retry strategy to run forever in a given frequency
 ```cs
-var retryForeverDaily = new ResiliencePipelineBuilder()
+var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
     {
         ShouldHandle = _ => ValueTask.FromResult(true),
@@ -175,8 +179,98 @@ var retryForeverDaily = new ResiliencePipelineBuilder()
 - Even if it is used in a non-blocking manner it consumes (_unnecessarily_) memory which can't be garbage collected.
 
 ✅ DO
+
 Use appropriate tool to schedule recurring jobs like *Quartz.Net*, *Hangfire* or similar.
 
 **Reasoning**:
 - Polly was never design to support this use case rather than its main aim is to help you overcome **short** transient failures.
 - Dedicated job scheduler tools are more efficient (in terms of memory) and can be configured to withstand machine failure by utilizing persistence storage.
+
+### 3 - Combining multiple sleep duration strategies
+
+❌ DON'T
+
+Mix the ever increasing values with constant ones
+```cs
+var retry = new ResiliencePipelineBuilder()
+    .AddRetry(new() {
+        DelayGenerator = args =>
+        {
+            var delay = args.AttemptNumber switch
+            {
+                <= 5 => TimeSpan.FromSeconds(Math.Pow(2, args.AttemptNumber)),
+                 _ => TimeSpan.FromMinutes(3)
+            };
+            return new ValueTask<TimeSpan?>(delay);
+        }
+    })
+    .Build();
+```
+Reasoning:
+- By changing the behaviour based on state we basically created here a state machine
+- Even though it is a really compact/concise way to express sleep durations there are three main drawbacks
+  - This approach does not embrace re-usability (you can't re-use only the quick retries)
+  - The sleep duration logic is tightly coupled to the `AttemptNumber`
+  - It is harder to unit test
+
+✅ DO
+
+Define two separate retry strategy options and chain them
+```cs
+var slowRetries = new RetryStrategyOptions {
+    MaxRetryAttempts = 5,
+    Delay = TimeSpan.FromMinutes(3),
+    BackoffType = DelayBackoffType.Constant
+};
+
+var quickRetries = new RetryStrategyOptions {
+    MaxRetryAttempts = 5,
+    Delay = TimeSpan.FromSeconds(1),
+    UseJitter = true,
+    BackoffType = DelayBackoffType.Exponential
+};
+
+var retry = new ResiliencePipelineBuilder()
+    .AddRetry(slowRetries)
+    .AddRetry(quickRetries)
+    .Build();
+}
+```
+Reasoning:
+- Even though this approach is a bit more verbose (compared to the previous one) it is more flexible
+- You can compose the retry strategies in any order (slower is the outer and quicker is the inner or vice versa)
+- You can define different triggers for the retry policies
+  - Which allows you to switch back and forth between the policies based on the thrown exception or on the result
+  - There is no strict order so, quick and slow retries can interleave
+
+### 4 - Branching retry logic based on request url
+
+Lets suppose you have an `HttpClient` and you want to decorate it with a retry only if a request is against a certain endpoint
+
+❌ DON'T
+
+Use `ResiliencePipeline.Empty` and `?:` operator
+```cs
+var retry =
+    shouldRetry(req.RequestUri)
+        ? new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(...).Build()
+        : ResiliencePipeline<HttpResponseMessage>.Empty;
+```
+**Reasoning**:
+- In this case the triggering conditions/logic are scattered in multiple places
+- From extensibility perspective it is also not desirable since it can easily become less and less legible as you add more conditions
+
+✅ DO
+
+Use the `ShouldHandle` clause to define triggering logic
+```cs
+var retry =  new ResiliencePipelineBuilder<HttpResponseMessage>()
+    .AddRetry(new() {
+        ShouldHandle = _ => ValueTask.FromResult(shouldRetry(req.RequestUri))
+    })
+    .Build();
+```
+**Reasoning**:
+- The triggering conditions are located in a single, well-known place
+- There is no need to cover _"what to do when policy shouldn't trigger"_
+
