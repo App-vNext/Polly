@@ -1,27 +1,10 @@
-# Extensibility
-
-This article explains how to extend Polly with new [resilience strategies](../strategies/index.md). Polly recognizes two families of resilience strategies:
-
-- **Reactive**: These strategies handle specific exceptions that are thrown, or results that are returned, by the callbacks executed through the strategy.
-- **Proactive**: Unlike reactive strategies, proactive strategies do not focus on handling errors by the callbacks might throw or return. They can make proactive decisions to cancel or reject the execution of callbacks (e.g., using a rate limiter or a timeout resilience strategy).
-
-This article will guide you through the process of creating a new demonstrative resilience strategy for each family type.
-
-## Basics of extensibility
-
-Irregardless of whether the strategy is reactive or proactive, every new resilience strategy should expose the following components:
-
-- The options that describe the configuration of the strategy. These should derive from `ResilienceStrategyOptions`.
-- Extensions for `ResiliencePipelineBuilder` or for `ResiliencePipelineBuilder<T>`.
-- Custom arguments types used by delegates that hold the information about particular event.
-
-## Proactive strategy
+# Proactive resilience strategy
 
 This section will guide you through the creation of **Timing Resilience Strategy** that track execution times of callbacks and reports when the execution time took longer that expected. This is a good example of proactive strategy as we do not really care about individual results produced by callbacks. This way,  this strategy can used across all types of results.
 
-### Implementation of proactive strategy
+## Implementation
 
-Proactive resilience strategies derive from [`ResilienceStrategy`](xref:Polly:ResilienceStrategy) base class. In case of this particular strategy, the implementation can look like:
+Proactive resilience strategies derive from [`ResilienceStrategy`](xref:Polly.ResilienceStrategy) base class. In case of this particular strategy, the implementation is:
 
 <!-- snippet: ext-proactive-strategy -->
 ```cs
@@ -109,7 +92,7 @@ The arguments should always end with `Arguments` suffix and should contain the `
 
 In this case the `ThresholdExceededArguments` holds information about actual execution time and threshold so any listener can react to this event or provide a custom callback to be executed when this situation occurs.
 
-### Proactive options
+## Options
 
 In previous section we implemented the `TimingResilienceStrategy`. Now, we need to integrate it into Polly and it's public API.
 
@@ -142,7 +125,7 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
 
 The options are our public contract with the consumer. Using them allows easily add new members to it without breaking changes and also perform validation in a standard way.
 
-### Proactive extensions
+## Extensions
 
 At this point we have:
 
@@ -183,10 +166,10 @@ public static class TimingResilienceStrategyBuilderExtensions
 ```
 <!-- endSnippet -->
 
-### Proactive resources
+## Resources
 
 To learn more about proactive resilience strategies you can explore the following resources:
 
-- [Timing Strategy Sample](https://github.com/App-vNext/Polly/tree/main/samples/Extensibility/Proactive): The working sample from this article.
-- [Timeout Resilience Startegy]
-
+- [Timing strategy sample](https://github.com/App-vNext/Polly/tree/main/samples/Extensibility/Proactive): The working sample from this article.
+- [Timeout resilience strategy]()
+- [Rate limiter resilience strategy]()

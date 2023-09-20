@@ -37,8 +37,6 @@
   items:
   - name: Telemetry and monitoring
     href: advanced/telemetry.md
-  - name: Extensibility
-    href: advanced/extensibility.md
   - name: Dependency injection
     href: advanced/dependency-injection.md
   - name: Resilience context
@@ -47,6 +45,15 @@
     href: advanced/performance.md
   - name: Chaos engineering
     href: advanced/simmy.md
+
+- name: Extensibility
+  href: extensibility/index.md
+  expanded: true
+  items:
+  - name: Proactive strategy
+    href: extensibility/proactive-strategy.md
+  - name: Reactive strategy
+    href: extensibility/reactive-strategy.md
 
 - name: Community and resources
   expanded: true
