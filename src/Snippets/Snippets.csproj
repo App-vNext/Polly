@@ -8,7 +8,7 @@
     <ProjectType>Library</ProjectType>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
-    <NoWarn>$(NoWarn);SA1123;SA1515;CA2000;CA2007;CA1303;IDE0021;IDE0017;IDE0060;CS1998;CA1064;S3257;IDE0028</NoWarn>
+    <NoWarn>$(NoWarn);SA1123;SA1515;CA2000;CA2007;CA1303;IDE0021;IDE0017;IDE0060;CS1998;CA1064;S3257;IDE0028;CA1031;CA1848</NoWarn>
     <RootNamespace>Snippets</RootNamespace>
   </PropertyGroup>
 
