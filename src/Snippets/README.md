@@ -18,18 +18,13 @@ Next, set up your code snippet. Ideally, use a new method and enclose the sectio
 public static void MySnippet()
 {
     #region my-snippet
+
     // your code here
+
     #endregion
 }
 ```
 
-In your markdown documentation, refer to your snippet as:
-
-```text
-Your documentation text:
-
-<!-- snippet: my-snippet -->
-<!-- endSnippet -->
-```
+In your markdown documentation, refer to your code snippet by adding `<!-- snippet: my-snippet -->` and `<!-- endSnippet -->` comments to your markdown file.
 
 To conclude, run the `dotnet mdsnippets` command from the root directory to refresh snippets throughout all markdown files.
