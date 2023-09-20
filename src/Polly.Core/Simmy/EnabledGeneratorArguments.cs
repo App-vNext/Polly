@@ -5,7 +5,7 @@
 /// <summary>
 /// Defines the arguments for the <see cref="MonkeyStrategyOptions{TResult}.EnabledGenerator"/>.
 /// </summary>
-public readonly struct EnabledGeneratorArguments
+internal readonly struct EnabledGeneratorArguments
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="EnabledGeneratorArguments"/> struct.

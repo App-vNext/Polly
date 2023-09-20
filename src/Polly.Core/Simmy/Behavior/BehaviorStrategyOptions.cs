@@ -5,7 +5,7 @@ namespace Polly.Simmy.Behavior;
 /// <summary>
 /// Represents the options for the Behavior chaos strategy.
 /// </summary>
-public class BehaviorStrategyOptions : MonkeyStrategyOptions
+internal class BehaviorStrategyOptions : MonkeyStrategyOptions
 {
     /// <summary>
     /// Gets or sets the delegate that's raised when the custom behavior is injected.

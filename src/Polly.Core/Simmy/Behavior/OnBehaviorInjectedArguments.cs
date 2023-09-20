@@ -5,7 +5,7 @@
 /// <summary>
 /// Arguments used by the behavior chaos strategy to notify that a custom behavior was injected.
 /// </summary>
-public readonly struct OnBehaviorInjectedArguments
+internal readonly struct OnBehaviorInjectedArguments
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="OnBehaviorInjectedArguments"/> struct.

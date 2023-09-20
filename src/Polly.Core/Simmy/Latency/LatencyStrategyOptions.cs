@@ -5,7 +5,7 @@
 /// <summary>
 /// Represents the options for the Latency chaos strategy.
 /// </summary>
-public class LatencyStrategyOptions : MonkeyStrategyOptions
+internal class LatencyStrategyOptions : MonkeyStrategyOptions
 {
     /// <summary>
     /// Gets or sets the delegate that's raised when a delay occurs.

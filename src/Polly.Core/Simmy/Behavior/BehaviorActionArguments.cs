@@ -5,7 +5,7 @@
 /// <summary>
 /// Arguments used by the behavior chaos strategy to execute a user's delegate custom action.
 /// </summary>
-public readonly struct BehaviorActionArguments
+internal readonly struct BehaviorActionArguments
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="BehaviorActionArguments"/> struct.

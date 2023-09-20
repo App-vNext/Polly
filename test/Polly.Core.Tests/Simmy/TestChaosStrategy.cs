@@ -1,7 +1,8 @@
 ﻿using Polly.Simmy;
 
 namespace Polly.Core.Tests.Simmy;
-public sealed class TestChaosStrategy : MonkeyStrategy
+
+internal sealed class TestChaosStrategy : MonkeyStrategy
 {
     public TestChaosStrategy(TestChaosStrategyOptions options)
         : base(options)

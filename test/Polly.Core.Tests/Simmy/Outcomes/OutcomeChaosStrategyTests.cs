@@ -46,13 +46,13 @@ public class OutcomeChaosStrategyTests
     [Theory]
     [MemberData(nameof(FaultCtorTestCases))]
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
-    public void FaultInvalidCtor(FaultStrategyOptions options, string expectedMessage, Type expectedException)
+    public void FaultInvalidCtor(object options, string expectedMessage, Type expectedException)
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
     {
 #pragma warning disable CA1031 // Do not catch general exception types
         try
         {
-            var _ = new OutcomeChaosStrategy<object>(options, _telemetry);
+            var _ = new OutcomeChaosStrategy<object>((FaultStrategyOptions)options, _telemetry);
         }
         catch (Exception ex)
         {
@@ -67,13 +67,13 @@ public class OutcomeChaosStrategyTests
     [Theory]
     [MemberData(nameof(ResultCtorTestCases))]
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
-    public void ResultInvalidCtor(OutcomeStrategyOptions<int> options, string expectedMessage, Type expectedException)
+    public void ResultInvalidCtor(object options, string expectedMessage, Type expectedException)
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
     {
 #pragma warning disable CA1031 // Do not catch general exception types
         try
         {
-            var _ = new OutcomeChaosStrategy<int>(options, _telemetry);
+            var _ = new OutcomeChaosStrategy<int>((OutcomeStrategyOptions<int>)options, _telemetry);
         }
         catch (Exception ex)
         {

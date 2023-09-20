@@ -6,7 +6,7 @@
 /// Represents the options for the Outcome chaos strategy.
 /// </summary>
 /// <typeparam name="TResult">The type of the outcome that was injected.</typeparam>
-public class OutcomeStrategyOptions<TResult> : MonkeyStrategyOptions
+internal class OutcomeStrategyOptions<TResult> : MonkeyStrategyOptions
 {
     /// <summary>
     /// Gets or sets the delegate that's raised when the outcome is injected.

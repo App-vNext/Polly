@@ -5,7 +5,7 @@
 /// <summary>
 /// Defines the arguments for the <see cref="MonkeyStrategyOptions{TResult}.InjectionRateGenerator"/>.
 /// </summary>
-public readonly struct InjectionRateGeneratorArguments
+internal readonly struct InjectionRateGeneratorArguments
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="InjectionRateGeneratorArguments"/> struct.
