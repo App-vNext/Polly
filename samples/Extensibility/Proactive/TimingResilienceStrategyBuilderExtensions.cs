@@ -11,7 +11,7 @@ public static class TimingResilienceStrategyBuilderExtensions
     // The extensions should return the builder for fluent API.
     // For proactive strategies we can target both "ResiliencePipelineBuilderBase" and "ResiliencePipelineBuilder<T>"
     // by using generic constraints.
-    public static TBuilder AddTiming<TBuilder>(this TBuilder builder, TimeoutStrategyOptions options)
+    public static TBuilder AddTiming<TBuilder>(this TBuilder builder, TimingStrategyOptions options)
         where TBuilder : ResiliencePipelineBuilderBase
     {
         // The strategy should be added via AddStrategy method that accepts a factory delegate

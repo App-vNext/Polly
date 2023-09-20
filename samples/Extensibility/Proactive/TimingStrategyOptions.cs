@@ -5,9 +5,9 @@ namespace Extensibility.Proactive;
 
 #region ext-proactive-options
 
-public class TimeoutStrategyOptions : ResilienceStrategyOptions
+public class TimingStrategyOptions : ResilienceStrategyOptions
 {
-    public TimeoutStrategyOptions()
+    public TimingStrategyOptions()
     {
         // It's recommended to set the default name for the options so
         // the consumer can get additional information in the telemetry.

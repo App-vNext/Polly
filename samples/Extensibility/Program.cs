@@ -7,7 +7,7 @@ using System.Net.Http.Headers;
 // ------------------------------------------------------------------------
 var pipeline = new ResiliencePipelineBuilder()
     // This is custom extension defined in this sample
-    .AddTiming(new TimeoutStrategyOptions
+    .AddTiming(new TimingStrategyOptions
     {
         Threshold = TimeSpan.FromSeconds(1),
         ThresholdExceeded = args =>
