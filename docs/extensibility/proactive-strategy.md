@@ -94,7 +94,7 @@ Arguments should always have an `Arguments` suffix and include a `Context` prope
 
 In the previous section, we implemented the `TimingResilienceStrategy`. Now, it's time to integrate it with Polly and its public API.
 
-Let's define the public `TimeoutStrategyOptions` to configure our strategy:
+Let's define the public `TimingResilienceStrategy` to configure our strategy:
 
 <!-- snippet: ext-proactive-options -->
 ```cs
@@ -127,7 +127,7 @@ Options represent our public contract with the consumer. By using them, we can e
 
 So far, we have:
 
-- Public `TimeoutStrategyOptions` and the public arguments associated with them.
+- Public `TimingResilienceStrategy` and the public arguments associated with them.
 - Our proactive strategy implementation - `TimingResilienceStrategy`.
 
 The last step is to combine these components by introducing new extensions for the `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>`. As both builders share the same base class, we can present a single extension for `ResiliencePipelineBuilderBase` to cater to both.
