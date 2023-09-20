@@ -25,6 +25,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "advanced/performance.md",
+      "output": {
+        ".html": {
+          "relative_path": "advanced/performance.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "advanced/resilience-context.md",
       "output": {
         ".html": {

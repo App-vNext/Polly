@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Performance </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Performance ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/main/docs/advanced/performance.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="performance">Performance</h1>
+
+<p>Polly is fast and avoids allocations wherever possible. We use a comprehensive set of <a href="https://github.com/App-vNext/Polly/tree/main/bench/Polly.Core.Benchmarks">performance benchmarks</a> to monitor Polly's performance.</p>
+<p>Here's an example of results from an advanced pipeline composed of the following strategies:</p>
+<ul>
+<li>Timeout (outer)</li>
+<li>Rate limiter</li>
+<li>Retry</li>
+<li>Circuit breaker</li>
+<li>Timeout (inner)</li>
+</ul>
+<hr>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th style="text-align: right;">Mean</th>
+<th style="text-align: right;">Error</th>
+<th style="text-align: right;">StdDev</th>
+<th style="text-align: right;">Ratio</th>
+<th style="text-align: right;">RatioSD</th>
+<th style="text-align: right;">Gen0</th>
+<th style="text-align: right;">Allocated</th>
+<th style="text-align: right;">Alloc Ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Execute policy v7</td>
+<td style="text-align: right;">2.277 μs</td>
+<td style="text-align: right;">0.0133 μs</td>
+<td style="text-align: right;">0.0191 μs</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.1106</td>
+<td style="text-align: right;">2824 B</td>
+<td style="text-align: right;">1.00</td>
+</tr>
+<tr>
+<td>Execute pipeline v8</td>
+<td style="text-align: right;">2.089 μs</td>
+<td style="text-align: right;">0.0105 μs</td>
+<td style="text-align: right;">0.0157 μs</td>
+<td style="text-align: right;">0.92</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">40 B</td>
+<td style="text-align: right;">0.01</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>Compared to older versions, Polly v8 is both faster and more memory efficient.</p>
+<h2 id="performance-tips">Performance tips</h2>
+<p>If you're aiming for the best performance with Polly, consider these tips:</p>
+<h3 id="use-static-lambdas">Use static lambdas</h3>
+<p>Lambdas capturing variables from their outer scope will allocate on every execution. Polly provides tools to avoid this overhead, as shown in the example below:</p>
+<!-- snippet: perf-lambdas -->
+<pre><code class="lang-cs">// This call allocates for each invocation since the &quot;userId&quot; variable is captured from the outer scope.
+await resiliencePipeline.ExecuteAsync(
+    cancellationToken =&gt; GetMemberAsync(userId, cancellationToken),
+    cancellationToken);
+
+// This approach uses a static lambda, avoiding allocations.
+// The &quot;userId&quot; is stored as state, and the lambda reads it.
+await resiliencePipeline.ExecuteAsync(
+    static (state, cancellationToken) =&gt; GetMemberAsync(state, cancellationToken),
+    userId,
+    cancellationToken);
+</code></pre>
+<!-- endSnippet -->
+<h3 id="use-switch-expressions-for-predicates">Use switch expressions for predicates</h3>
+<p>The <code>PredicateBuilder</code> maintains a list of all registered predicates. To determine whether the results should be processed, it iterates through this list. Using switch expressions can help you bypass this overhead.</p>
+<!-- snippet: perf-switch-expressions -->
+<pre><code class="lang-cs">// Here, PredicateBuilder is used to configure which exceptions the retry strategy should handle.
+new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        ShouldHandle = new PredicateBuilder()
+            .Handle&lt;SomeExceptionType&gt;()
+            .Handle&lt;InvalidOperationException&gt;()
+            .Handle&lt;HttpRequestException&gt;()
+    })
+    .Build();
+
+// For optimal performance, it's recommended to use switch expressions over PredicateBuilder.
+new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        ShouldHandle = args =&gt; args.Outcome.Exception switch
+        {
+            SomeExceptionType =&gt; PredicateResult.True(),
+            InvalidOperationException =&gt; PredicateResult.True(),
+            HttpRequestException =&gt; PredicateResult.True(),
+            _ =&gt; PredicateResult.False()
+        }
+    })
+    .Build();
+</code></pre>
+<!-- endSnippet -->
+<h3 id="execute-callbacks-without-throwing-exceptions">Execute callbacks without throwing exceptions</h3>
+<p>Polly provides the <code>ExecuteOutcomeAsync</code> API, returning results as <code>Outcome&lt;T&gt;</code>. The <code>Outcome&lt;T&gt;</code> might contain an exception instance, which you can check without it being thrown. This is beneficial when employing exception-heavy resilience strategies, like circuit breakers.</p>
+<!-- snippet: perf-execute-outcome -->
+<pre><code class="lang-cs">// Execute GetMemberAsync and handle exceptions externally.
+try
+{
+    await pipeline.ExecuteAsync(cancellationToken =&gt; GetMemberAsync(id, cancellationToken), cancellationToken);
+}
+catch (Exception e)
+{
+    // Log the exception here.
+    logger.LogWarning(e, &quot;Failed to get member with id '{id}'.&quot;, id);
+}
+
+// The example above can be restructured as:
+
+// Acquire a context from the pool
+ResilienceContext context = ResilienceContextPool.Shared.Get(cancellationToken);
+
+// Instead of wrapping pipeline execution with try-catch, use ExecuteOutcomeAsync(...).
+// Certain strategies are optimized for this method, returning an exception instance without actually throwing it.
+Outcome&lt;Member&gt; outcome = await pipeline.ExecuteOutcomeAsync(
+    static async (context, state) =&gt;
+    {
+        // The callback for ExecuteOutcomeAsync must return an Outcome&lt;T&gt; instance. Hence, some wrapping is needed.
+        try
+        {
+            return Outcome.FromResult(await GetMemberAsync(state, context.CancellationToken));
+        }
+        catch (Exception e)
+        {
+            return Outcome.FromException&lt;Member&gt;(e);
+        }
+    },
+    context,
+    id);
+
+// Handle exceptions using the Outcome&lt;T&gt; instance instead of try-catch.
+if (outcome.Exception is not null)
+{
+    logger.LogWarning(outcome.Exception, &quot;Failed to get member with id '{id}'.&quot;, id);
+}
+
+// Release the context back to the pool
+ResilienceContextPool.Shared.Return(context);
+</code></pre>
+<!-- endSnippet -->
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/main/docs/advanced/performance.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
