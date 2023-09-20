@@ -47,6 +47,8 @@ await resiliencePipeline.ExecuteAsync(
 
 ### Use switch expressions for predicates
 
+The `PredicateBuilder` maintains a list of all registered predicates. To determine whether the results should be processed, it iterates through this list. Using switch expressions can help you bypass this overhead.
+
 <!-- snippet: perf-switch-expressions -->
 ```cs
 // Here, PredicateBuilder is used to configure which exceptions the retry strategy should handle.
@@ -73,5 +75,56 @@ new ResiliencePipelineBuilder()
         }
     })
     .Build();
+```
+<!-- endSnippet -->
+
+### Execute callbacks without throwing exceptions
+
+Polly provides the `ExecuteOutcomeAsync` API, returning results as `Outcome<T>`. The `Outcome<T>` might contain an exception instance, which you can check without it being thrown. This is beneficial when employing exception-heavy resilience strategies, like circuit breakers.
+
+<!-- snippet: perf-execute-outcome -->
+```cs
+// Execute GetMemberAsync and handle exceptions externally.
+try
+{
+    await pipeline.ExecuteAsync(cancellationToken => GetMemberAsync(id, cancellationToken), cancellationToken);
+}
+catch (Exception e)
+{
+    // Log the exception here.
+    logger.LogWarning(e, "Failed to get member with id '{id}'.", id);
+}
+
+// The example above can be restructured as:
+
+// Acquire a context from the pool
+ResilienceContext context = ResilienceContextPool.Shared.Get(cancellationToken);
+
+// Instead of wrapping pipeline execution with try-catch, use ExecuteOutcomeAsync(...).
+// Certain strategies are optimized for this method, returning an exception instance without actually throwing it.
+Outcome<Member> outcome = await pipeline.ExecuteOutcomeAsync(
+    static async (context, state) =>
+    {
+        // The callback for ExecuteOutcomeAsync must return an Outcome<T> instance. Hence, some wrapping is needed.
+        try
+        {
+            return Outcome.FromResult(await GetMemberAsync(state, context.CancellationToken));
+        }
+        catch (Exception e)
+        {
+            return Outcome.FromException<Member>(e);
+        }
+    },
+    context,
+    id);
+
+// Handle exceptions using the Outcome<T> instance instead of try-catch.
+if (outcome.Exception is not null)
+{
+    logger.LogWarning(outcome.Exception, "Failed to get member with id '{id}'.", id);
+}
+
+// Release the context back to the pool
+ResilienceContextPool.Shared.Return(context);
 ```
 <!-- endSnippet -->

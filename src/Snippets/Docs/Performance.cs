@@ -1,4 +1,6 @@
 ﻿using System.Net.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Snippets.Docs.Utils;
 
 namespace Snippets.Docs;
@@ -60,5 +62,64 @@ internal static class Performance
         #endregion
     }
 
-    private static ValueTask GetMemberAsync(string id, CancellationToken token) => default;
+    public static async Task ExecuteOutcomeAsync()
+    {
+        var pipeline = ResiliencePipeline.Empty;
+        var cancellationToken = CancellationToken.None;
+        var logger = NullLogger.Instance;
+        var id = "id";
+
+        #region perf-execute-outcome
+
+        // Execute GetMemberAsync and handle exceptions externally.
+        try
+        {
+            await pipeline.ExecuteAsync(cancellationToken => GetMemberAsync(id, cancellationToken), cancellationToken);
+        }
+        catch (Exception e)
+        {
+            // Log the exception here.
+            logger.LogWarning(e, "Failed to get member with id '{id}'.", id);
+        }
+
+        // The example above can be restructured as:
+
+        // Acquire a context from the pool
+        ResilienceContext context = ResilienceContextPool.Shared.Get(cancellationToken);
+
+        // Instead of wrapping pipeline execution with try-catch, use ExecuteOutcomeAsync(...).
+        // Certain strategies are optimized for this method, returning an exception instance without actually throwing it.
+        Outcome<Member> outcome = await pipeline.ExecuteOutcomeAsync(
+            static async (context, state) =>
+            {
+                // The callback for ExecuteOutcomeAsync must return an Outcome<T> instance. Hence, some wrapping is needed.
+                try
+                {
+                    return Outcome.FromResult(await GetMemberAsync(state, context.CancellationToken));
+                }
+                catch (Exception e)
+                {
+                    return Outcome.FromException<Member>(e);
+                }
+            },
+            context,
+            id);
+
+        // Handle exceptions using the Outcome<T> instance instead of try-catch.
+        if (outcome.Exception is not null)
+        {
+            logger.LogWarning(outcome.Exception, "Failed to get member with id '{id}'.", id);
+        }
+
+        // Release the context back to the pool
+        ResilienceContextPool.Shared.Return(context);
+
+        #endregion
+    }
+
+    private static ValueTask<Member> GetMemberAsync(string id, CancellationToken token) => default;
+
+    public class Member
+    {
+    }
 }
