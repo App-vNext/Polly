@@ -252,7 +252,7 @@ Lets suppose you have an `HttpClient` and you want to decorate it with a retry o
 Use `ResiliencePipeline.Empty` and `?:` operator
 ```cs
 var retry =
-    shouldRetry(req.RequestUri)
+    IsRetryable(req.RequestUri)
         ? new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(...).Build()
         : ResiliencePipeline<HttpResponseMessage>.Empty;
 ```
@@ -266,7 +266,7 @@ Use the `ShouldHandle` clause to define triggering logic
 ```cs
 var retry =  new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddRetry(new() {
-        ShouldHandle = _ => ValueTask.FromResult(shouldRetry(req.RequestUri))
+        ShouldHandle = _ => ValueTask.FromResult(IsRetryable(req.RequestUri))
     })
     .Build();
 ```
@@ -274,3 +274,143 @@ var retry =  new ResiliencePipelineBuilder<HttpResponseMessage>()
 - The triggering conditions are located in a single, well-known place
 - There is no need to cover _"what to do when policy shouldn't trigger"_
 
+### 5 - Calling a given method before/after each retry attempt
+
+❌ DON'T
+
+Call explicitly a given method before `Execute`/`ExecuteAsync`
+```cs
+var retry =  new ResiliencePipelineBuilder()
+    .AddRetry(new() {
+        OnRetry = args => { BeforeEachAttempt(); return ValueTask.CompletedTask; },
+    })
+    .Build();
+...
+BeforeEachAttempt();
+await retry.ExecuteAsync(DoSomething);
+```
+**Reasoning**:
+- The `OnRetry` is called before each **retry** attempt.
+  - So, it won't be called before the very first initial attempt (because that is not a retry)
+- If this strategy is used in multiple places it is quite likely that you will forgot to call `BeforeEachAttempt` before every `Execute` calls
+- Here the naming is very explicit but in real world scenario your method might not be prefixed with `Before`
+  - So, one might call it after the `Execute` call which is not the intended usage
+
+✅ DO
+
+Decorate the two method calls together
+```cs
+var retry =  new ResiliencePipelineBuilder()
+    .AddRetry(new() {...})
+    .Build();
+...
+await retry.ExecuteAsync(ct => {
+    BeforeEachAttempt();
+    return DoSomething(ct);
+});
+```
+**Reasoning**:
+- If the `DoSomething` and `BeforeEachRetry` coupled together then decorate them together
+  - Or create a simple wrapper to call them in the desired order
+
+### 6 - Having a single policy to cover multiple failures
+
+Lets suppose we have an `HttpClient` which issues a request and then we try to parse a large Json
+
+❌ DON'T
+
+Have a single policy to cover everything
+```cs
+var builder = new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+        MaxRetryAttempts = ...
+    });
+
+builder.AddTimeout(TimeSpan.FromMinutes(1));
+
+var pipeline = builder.Build();
+await pipeline.ExecuteAsync(async (ct) =>
+{
+     var stream = await httpClient.GetStreamAsync(endpoint, ct);
+     var foo = await JsonSerializer.DeserializeAsync<Foo>(stream, cancellationToken: ct);
+     ...
+});
+```
+**Reasoning**:
+- In the previous point it was suggested that  _if the `X` and `Y` coupled together then decorate them together_
+   - only if they are all part of the same failure domain
+   - in other words a pipeline should cover one failure domain
+
+✅ DO
+
+Define a strategy per failure domain
+```cs
+var retry = new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+        MaxRetryAttempts = ...
+    })
+    .Build();
+
+var stream = await retry.ExecuteAsync((ct) => httpClient.GetStreamAsync(endpoint, ct));
+
+var timeout = new ResiliencePipelineBuilder<Foo>()
+    .AddTimeout(TimeSpan.FromMinutes(1))
+    .Build();
+
+var foo = await timeout.ExecuteAsync((ct) => JsonSerializer.DeserializeAsync<Foo>(stream, cancellationToken: ct));
+```
+**Reasoning**:
+- Network call's failure domain is different than deserialization's failures
+  - Having dedicated strategies makes the application more robust against different transient failures
+
+### 7 - Cancelling retry in case of given exception
+
+After you receive a `TimeoutException` you don't want to perform any more retries
+
+❌ DON'T
+
+Add cancellation logic inside `OnRetry`
+```cs
+...
+.WaitAndRetryAsync(
+var ctsKey = new ResiliencePropertyKey<CancellationTokenSource>("cts");
+var retry =  new ResiliencePipelineBuilder()
+    .AddRetry(new() {
+        OnRetry = args =>
+        {
+            if(args.Outcome.Exception is TimeoutException)
+            {
+                if(args.Context.Properties.TryGetValue(ctsKey, out var cts))
+                {
+                    cts.Cancel();
+                }
+            }
+            return ValueTask.CompletedTask;
+        },
+        ...
+    })
+    .Build();
+```
+**Reasoning**:
+- The triggering logic/conditions should be placed inside `ShouldHandle`
+- "Jumping out from a strategy" from a user-defined delegate either via an `Exception` or by a `CancellationToken` just complicates the control flow unnecessarily
+
+✅ DO
+
+Define triggering logic inside `ShouldHandle`
+```cs
+...
+var retry =  new ResiliencePipelineBuilder()
+    .AddRetry(new() {
+        ShouldHandle = args => ValueTask.FromResult(args.Outcome.Exception is not TimeoutException),
+        ...
+    })
+    .Build();
+```
+**Reasoning**:
+- As it was stated above please use the dedicated place to define triggering condition
+   - Try to rephrase your original exit condition in a way to express _when should a retry trigger_
