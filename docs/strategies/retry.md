@@ -105,3 +105,78 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 | `UseJitter`        | False                                                                      | Allows adding jitter to retry delays.                                                    |
 | `DelayGenerator`   | `null`                                                                     | Used for generating custom delays for retries.                                           |
 | `OnRetry`          | `null`                                                                     | Action executed when retry occurs.                                                       |
+
+## Patterns and Anti-patterns
+Throughout the years many people have used Polly in so many different ways. Some reoccuring patterns are suboptimal. So, this section shows the donts and dos.
+
+### 1 - Overusing builder methods
+
+❌ DON'T
+Use more than one `Handle/HandleResult`
+```cs
+var retryPolicy = new ResiliencePipelineBuilder()
+    .AddRetry(new() {
+        ShouldHandle = new PredicateBuilder()
+        .Handle<HttpRequestException>()
+        .Handle<BrokenCircuitException>()
+        .Handle<TimeoutRejectedException>()
+        .Handle<SocketException>()
+        .Handle<RateLimitRejectedException>(),
+        MaxRetryAttempts = ...,
+    })
+    .Build();
+```
+**Reasoning**:
+- Even though this builder method signature is quite concise you repeat the same thing over and over (_please trigger retry if the to-be-decorated code throws XYZ exception_).
+- A better approach would be to tell  _please trigger retry if the to-be-decorated code throws one of the retriable exceptions_.
+
+✅ DO
+Use collections and predicates
+```cs
+ImmutableArray<Type> networkExceptions = new[] {
+    typeof(SocketException),
+    typeof(HttpRequestException),
+}.ToImmutableArray();
+
+ImmutableArray<Type> policyExceptions = new[] {
+    typeof(TimeoutRejectedException),
+    typeof(BrokenCircuitException),
+    typeof(RateLimitRejectedException),
+}.ToImmutableArray();
+
+var retryPolicy = new ResiliencePipelineBuilder()
+    .AddRetry(new() {
+        ShouldHandle = ex => new ValueTask<bool>(
+            networkExceptions.Union(policyExceptions).Contains(ex.GetType())),
+        MaxRetryAttempts = ...,
+    })
+    .Build();
+```
+**Reasoning**:
+- This approach embraces re-usability.
+  - For instance the `networkExceptions` can be reused across many the strategies (retry, circuit breaker, etc..).
+
+### 2 - Using retry as a periodical executor
+
+The retry strategy can be defined in a way to run forever in a given frequency.
+
+❌ DON'T
+```cs
+var retryForeverDaily = new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        ShouldHandle = _ => ValueTask.FromResult(true),
+        Delay = TimeSpan.FromHours(24),
+    })
+    .Build();
+```
+**Reasoning**:
+- The sleep period can be blocking or non-blocking depending on how you define your strategy/pipeline.
+- Even if it is used in a non-blocking manner it consumes (_unnecessarily_) memory which can't be garbage collected.
+
+✅ DO
+Use appropriate tool to schedule recurring jobs like *Quartz.Net*, *Hangfire* or similar.
+
+**Reasoning**:
+- Polly was never design to support this use case rather than its main aim is to help you overcome **short** transient failures.
+- Dedicated job scheduler tools are more efficient (in terms of memory) and can be configured to withstand machine failure by utilizing persistence storage.
