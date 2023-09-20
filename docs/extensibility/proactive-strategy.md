@@ -1,14 +1,14 @@
 # Proactive resilience strategy
 
-This section will guide you through the creation of **Timing Resilience Strategy** that track execution times of callbacks and reports when the execution time took longer that expected. This is a good example of proactive strategy as we do not really care about individual results produced by callbacks. This way,  this strategy can used across all types of results.
+This section guides you in creating a **Timing resilience strategy** that tracks the execution times of callbacks and reports when the execution time exceeds the expected duration. This is a prime example of a proactive strategy because we aren't concerned with the individual results produced by the callbacks. Hence, this strategy can be used across various result types.
 
 ## Implementation
 
-Proactive resilience strategies derive from [`ResilienceStrategy`](xref:Polly.ResilienceStrategy) base class. In case of this particular strategy, the implementation is:
+Proactive resilience strategies are derived from the [`ResilienceStrategy`](xref:Polly.ResilienceStrategy) base class. For this strategy, the implementation is:
 
 <!-- snippet: ext-proactive-strategy -->
 ```cs
-// The strategies should be internal and exposed as part of the library's public API.
+// The strategies should be internal and not exposed as part of the library's public API.
 // The configuration of strategy should be done via extension methods and options.
 internal sealed class TimingResilienceStrategy : ResilienceStrategy
 {
@@ -62,7 +62,7 @@ internal sealed class TimingResilienceStrategy : ResilienceStrategy
 ```
 <!-- endSnippet -->
 
-Review the code and comments to learn about the implementation. Notice the `ThresholdExceededArguments` struct:
+Review the code and comments to understand the implementation. Take note of the `ThresholdExceededArguments` struct:
 
 <!-- snippet: ext-proactive-args -->
 ```cs
@@ -88,15 +88,13 @@ public readonly struct ThresholdExceededArguments
 ```
 <!-- endSnippet -->
 
-The arguments should always end with `Arguments` suffix and should contain the `Context` property. Using arguments improves the extensibility and maintainability of the API as adding new members to it is a non-breaking change.
-
-In this case the `ThresholdExceededArguments` holds information about actual execution time and threshold so any listener can react to this event or provide a custom callback to be executed when this situation occurs.
+Arguments should always have an `Arguments` suffix and include a `Context` property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change. The `ThresholdExceededArguments` provides details about the actual execution time and threshold, allowing listeners to respond to this event or supply a custom callback for such situations.
 
 ## Options
 
-In previous section we implemented the `TimingResilienceStrategy`. Now, we need to integrate it into Polly and it's public API.
+In the previous section, we implemented the `TimingResilienceStrategy`. Now, it's time to integrate it with Polly and its public API.
 
-First let's define public `TimeoutStrategyOptions` that will be used to configure our strategy:
+Let's define the public `TimeoutStrategyOptions` to configure our strategy:
 
 <!-- snippet: ext-proactive-options -->
 ```cs
@@ -123,16 +121,16 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
 ```
 <!-- endSnippet -->
 
-The options are our public contract with the consumer. Using them allows easily add new members to it without breaking changes and also perform validation in a standard way.
+Options represent our public contract with the consumer. By using them, we can easily add new members without breaking changes and perform validation consistently.
 
 ## Extensions
 
-At this point we have:
+So far, we have:
 
-- Public `TimeoutStrategyOptions` alongside public arguments used by them.
-- Implementation of our proactive strategy - `TimingResilienceStrategy`.
+- Public `TimeoutStrategyOptions` and the public arguments associated with them.
+- Our proactive strategy implementation - `TimingResilienceStrategy`.
 
-The final part is to integrate these components by exposing new extensions for the `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>`. Because both builders share the same base class, we can expose a single extension for `ResiliencePipelineBuilderBase` that will work for both derived builders.
+The last step is to combine these components by introducing new extensions for the `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>`. As both builders share the same base class, we can present a single extension for `ResiliencePipelineBuilderBase` to cater to both.
 
 <!-- snippet: ext-proactive-extensions -->
 ```cs
@@ -168,8 +166,8 @@ public static class TimingResilienceStrategyBuilderExtensions
 
 ## Resources
 
-To learn more about proactive resilience strategies you can explore the following resources:
+For further understanding of proactive resilience strategies, consider exploring these resources:
 
-- [Timing strategy sample](https://github.com/App-vNext/Polly/tree/main/samples/Extensibility/Proactive): The working sample from this article.
-- [Timeout resilience strategy]()
-- [Rate limiter resilience strategy]()
+- [Timing strategy sample](https://github.com/App-vNext/Polly/tree/main/samples/Extensibility/Proactive): A practical example from this guide.
+- [Timeout resilience strategy](https://github.com/App-vNext/Polly/tree/main/src/Polly.Core/Timeout): Discover the built-in timeout resilience strategy implementation.
+- [Rate limiter resilience strategy](https://github.com/App-vNext/Polly/tree/main/src/Polly.RateLimiting): DIscover how rate limiter strategy is implemented.

@@ -6,7 +6,7 @@ namespace Extensibility.Proactive;
 
 #region ext-proactive-strategy
 
-// The strategies should be internal and exposed as part of the library's public API.
+// The strategies should be internal and not exposed as part of the library's public API.
 // The configuration of strategy should be done via extension methods and options.
 internal sealed class TimingResilienceStrategy : ResilienceStrategy
 {
