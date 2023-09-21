@@ -38,7 +38,7 @@ public static class TestUtilities
     }
 
     public static ResilienceStrategyTelemetry CreateResilienceTelemetry(TelemetryListener listener, ResilienceTelemetrySource? source = null)
-        => new(source ?? new ResilienceTelemetrySource("dummy-builder", "dummy-instance", "strategy-name"), listener);
+        => new(source ?? new ResilienceTelemetrySource("dummy-builder", "dummy-instance", "strategy_name"), listener);
 
     public static ResilienceStrategyTelemetry CreateResilienceTelemetry(Action<TelemetryEventArguments<object, object>> callback, ResilienceTelemetrySource? source = null)
         => CreateResilienceTelemetry(new FakeTelemetryListener(callback), source);
