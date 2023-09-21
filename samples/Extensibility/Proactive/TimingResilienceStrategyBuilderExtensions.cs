@@ -16,7 +16,6 @@ public static class TimingResilienceStrategyBuilderExtensions
     {
         // Add the strategy through the AddStrategy method. This method accepts a factory delegate
         // and automatically validates the options.
-
         return builder.AddStrategy(
             context =>
             {

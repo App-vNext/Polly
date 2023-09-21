@@ -24,7 +24,7 @@ By default, asynchronous continuations and retries do not execute on a captured 
 ResilienceContext context = ResilienceContextPool.Shared.Get(continueOnCapturedContext: true);
 
 await pipeline.ExecuteAsync(
-    async context =>
+    static async context =>
     {
         // Execute your code, honoring the ContinueOnCapturedContext setting
         await MyMethodAsync(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
@@ -51,7 +51,7 @@ The `CancellationToken` you pass to the `ExecuteAsync(...)` method serves multip
 ```cs
 // Execute your code with cancellation support
 await pipeline.ExecuteAsync(
-    async token => await MyMethodAsync(token),
+    static async token => await MyMethodAsync(token),
     cancellationToken);
 
 // Use ResilienceContext for more advanced scenarios

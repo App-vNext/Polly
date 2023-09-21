@@ -1,6 +1,6 @@
 # Proactive resilience strategy
 
-This section guides you in creating a **Timing resilience strategy** that tracks the execution times of callbacks and reports when the execution time exceeds the expected duration. This is a prime example of a proactive strategy because we aren't concerned with the individual results produced by the callbacks. Hence, this strategy can be used across various result types.
+This document guides you in creating a **Timing resilience strategy** that tracks the execution times of callbacks and reports when the execution time exceeds the expected duration. This is a prime example of a proactive strategy because we aren't concerned with the individual results produced by the callbacks. Hence, this strategy can be used across various result types.
 
 ## Implementation
 
@@ -139,7 +139,6 @@ public static class TimingResilienceStrategyBuilderExtensions
     {
         // Add the strategy through the AddStrategy method. This method accepts a factory delegate
         // and automatically validates the options.
-
         return builder.AddStrategy(
             context =>
             {
@@ -156,6 +155,26 @@ public static class TimingResilienceStrategyBuilderExtensions
             options);
     }
 }
+```
+<!-- endSnippet -->
+
+## Usage
+
+<!-- snippet: ext-proactive-strategy-usage -->
+```cs
+// Add the proactive strategy to the builder
+var pipeline = new ResiliencePipelineBuilder()
+    // This is custom extension defined in this sample
+    .AddTiming(new TimingStrategyOptions
+    {
+        Threshold = TimeSpan.FromSeconds(1),
+        ThresholdExceeded = args =>
+        {
+            Console.WriteLine("Execution threshold exceeded!");
+            return default;
+        },
+    })
+    .Build();
 ```
 <!-- endSnippet -->
 
