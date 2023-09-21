@@ -128,3 +128,47 @@ if (outcome.Exception is not null)
 ResilienceContextPool.Shared.Return(context);
 ```
 <!-- endSnippet -->
+
+### Reuse resilience pipeline instances
+
+Creating a resilience pipeline can be resource-intensive, so it's advisable not to discard the instance after each use. Instead, you can either cache the resilience pipeline or use the `GetOrAddPipeline(...)` method from `ResiliencePipelineRegistry<T>` to cache the pipeline dynamically:
+
+<!-- snippet: perf-reuse-pipelines -->
+```cs
+public class MyApi
+{
+    private readonly ResiliencePipelineRegistry<string> _registry;
+
+    // Share a single instance of the registry throughout your application.
+    public MyApi(ResiliencePipelineRegistry<string> registry)
+    {
+        _registry = registry;
+    }
+
+    public async Task UpdateData(CancellationToken cancellationToken)
+    {
+        // Get or create and cache the pipeline for subsequent use.
+        // Choose a sufficiently unique key to prevent collisions.
+        var pipeline = _registry.GetOrAddPipeline("my-app.my-api", builder =>
+        {
+            builder.AddRetry(new()
+            {
+                ShouldHandle = new PredicateBuilder()
+                    .Handle<InvalidOperationException>()
+                    .Handle<HttpRequestException>()
+            });
+        });
+
+        await pipeline.ExecuteAsync(async token =>
+        {
+            // Place your logic here
+        },
+        cancellationToken);
+
+    }
+}
+```
+<!-- endSnippet -->
+
+> [!NOTE]
+> You can also define your pipeline on startup using [dependency injection](dependency-injection.md#usage) and then use `ResiliencePipelineProvider<T>` to retrieve the instance.
