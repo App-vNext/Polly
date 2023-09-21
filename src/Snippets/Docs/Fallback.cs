@@ -97,14 +97,14 @@ internal static class Fallback
         #endregion
     }
 
-    private static readonly ResiliencePipeline<HttpResponseMessage> WhateverPolicy = ResiliencePipeline<HttpResponseMessage>.Empty;
+    private static readonly ResiliencePipeline<HttpResponseMessage> WhateverPipeline = ResiliencePipeline<HttpResponseMessage>.Empty;
     private static ValueTask<Outcome<HttpResponseMessage>> Action(ResilienceContext context, string state) => Outcome.FromResultAsValueTask(new HttpResponseMessage());
     public static async Task Pattern_1()
     {
         var context = ResilienceContextPool.Shared.Get();
         #region fallback-pattern-1
 
-        var outcome = await WhateverPolicy.ExecuteOutcomeAsync(Action, context, "state");
+        var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, "state");
         if (outcome.Exception is HttpRequestException hre)
         {
             throw new CustomNetworkException("Replace thrown exception", hre);
@@ -118,7 +118,7 @@ internal static class Fallback
     public static async ValueTask<HttpResponseMessage> Action()
     {
         var context = ResilienceContextPool.Shared.Get();
-        var outcome = await WhateverPolicy.ExecuteOutcomeAsync<HttpResponseMessage, string>(
+        var outcome = await WhateverPipeline.ExecuteOutcomeAsync<HttpResponseMessage, string>(
             async (ctx, state) =>
             {
                 var result = await ActionCore();

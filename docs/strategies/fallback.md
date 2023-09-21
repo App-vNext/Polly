@@ -68,6 +68,7 @@ new ResiliencePipelineBuilder<UserAvatar>()
 | `FallbackAction` | `Null`, **Required**                                                       | Fallback action to be executed.                                                             |
 | `OnFallback`     | `null`                                                                     | Event that is raised when fallback happens.                                                 |
 
+
 ## Patterns and Anti-patterns
 Throughout the years many people have used Polly in so many different ways. Some reoccuring patterns are suboptimal. So, this section shows the donts and dos.
 
@@ -91,8 +92,7 @@ var fallback = new ResiliencePipelineBuilder<HttpResponseMessage>()
 <!-- endSnippet -->
 
 **Reasoning**:
-- Throwing an exception in an user-defined delegate is never a good idea
-  - It is breaking the normal control flow
+- Throwing an exception in an user-defined delegate is never a good idea because it is breaking the normal control flow.
 
 ✅ DO
 
@@ -100,14 +100,13 @@ Use `ExecuteOutcomeAsync` and then assess `Exception`
 
 <!-- snippet: fallback-pattern-1 -->
 ```cs
-var outcome = await WhateverPolicy.ExecuteOutcomeAsync(Action, context, "state");
+var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, "state");
 if (outcome.Exception is HttpRequestException hre)
 {
     throw new CustomNetworkException("Replace thrown exception", hre);
 }
 ```
 <!-- endSnippet -->
-
 
 **Reasoning**:
 - This approach executes the strategy/pipeline without "jumping out from the normal flow"
@@ -120,7 +119,7 @@ if (outcome.Exception is HttpRequestException hre)
 public static async ValueTask<HttpResponseMessage> Action()
 {
     var context = ResilienceContextPool.Shared.Get();
-    var outcome = await WhateverPolicy.ExecuteOutcomeAsync<HttpResponseMessage, string>(
+    var outcome = await WhateverPipeline.ExecuteOutcomeAsync<HttpResponseMessage, string>(
         async (ctx, state) =>
         {
             var result = await ActionCore();
@@ -186,7 +185,7 @@ return result;
 <!-- endSnippet -->
 
 **Reasoning**:
-- Retry policy by default executes the exact same operation at most `n` times
+- Retry strategy by default executes the exact same operation at most `n` times
   - where `n` equals to the initial attempt + `MaxRetryAttempts`
   - So, in this particular case this means __2__
 - Here the fallback is produced as a side-effect rather than as a substitute
@@ -218,7 +217,8 @@ return await fallback.ExecuteAsync(CallPrimary, CancellationToken.None);
 
 There are many ways to combine multiple strategies together. One of the least desired one is the `Execute` hell.
 
-**NOTE:** _This is not strictly related to Fallback but we have seen it many times when Fallback was the most outer._
+> [!NOTE]
+> This is not strictly related to Fallback but we have seen it many times when Fallback was the most outer.
 
 ❌ DON'T
 
