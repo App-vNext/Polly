@@ -169,6 +169,179 @@ new ResiliencePipelineBuilder&lt;UserAvatar&gt;()
 </tr>
 </tbody>
 </table>
+<h2 id="patterns-and-anti-patterns">Patterns and Anti-patterns</h2>
+<p>Throughout the years many people have used Polly in so many different ways. Some reoccuring patterns are suboptimal. So, this section shows the donts and dos.</p>
+<h3 id="1---using-fallback-to-replace-thrown-exception">1 - Using fallback to replace thrown exception</h3>
+<p>❌ DON'T</p>
+<p>Throw custom exception from the <code>OnFallback</code></p>
+<!-- snippet: fallback-anti-pattern-1 -->
+<pre><code class="lang-cs">var fallback = new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
+    .AddFallback(new()
+    {
+        ShouldHandle = new PredicateBuilder&lt;HttpResponseMessage&gt;().Handle&lt;HttpRequestException&gt;(),
+        FallbackAction = args =&gt; Outcome.FromResultAsValueTask(new HttpResponseMessage()),
+        OnFallback = args =&gt; throw new CustomNetworkException(&quot;Replace thrown exception&quot;, args.Outcome.Exception!)
+    })
+    .Build();
+</code></pre>
+<!-- endSnippet -->
+<p><strong>Reasoning</strong>:</p>
+<ul>
+<li>Throwing an exception in an user-defined delegate is never a good idea because it is breaking the normal control flow.</li>
+</ul>
+<p>✅ DO</p>
+<p>Use <code>ExecuteOutcomeAsync</code> and then assess <code>Exception</code></p>
+<!-- snippet: fallback-pattern-1 -->
+<pre><code class="lang-cs">var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, &quot;state&quot;);
+if (outcome.Exception is HttpRequestException hre)
+{
+    throw new CustomNetworkException(&quot;Replace thrown exception&quot;, hre);
+}
+</code></pre>
+<!-- endSnippet -->
+<p><strong>Reasoning</strong>:</p>
+<ul>
+<li>This approach executes the strategy/pipeline without &quot;jumping out from the normal flow&quot;</li>
+<li>If you find yourself in a situation that you write this Exception &quot;remapping&quot; logic again and again
+<ul>
+<li>then mark the to-be-decorated method as <code>private</code></li>
+<li>and expose the &quot;remapping&quot; logic as <code>public</code></li>
+</ul>
+</li>
+</ul>
+<!-- snippet: fallback-pattern-1-ext -->
+<pre><code class="lang-cs">public static async ValueTask&lt;HttpResponseMessage&gt; Action()
+{
+    var context = ResilienceContextPool.Shared.Get();
+    var outcome = await WhateverPipeline.ExecuteOutcomeAsync&lt;HttpResponseMessage, string&gt;(
+        async (ctx, state) =&gt;
+        {
+            var result = await ActionCore();
+            return Outcome.FromResult(result);
+        }, context, &quot;state&quot;);
+
+    if (outcome.Exception is HttpRequestException hre)
+    {
+        throw new CustomNetworkException(&quot;Replace thrown exception&quot;, hre);
+    }
+
+    ResilienceContextPool.Shared.Return(context);
+    return outcome.Result!;
+}
+
+private static ValueTask&lt;HttpResponseMessage&gt; ActionCore()
+{
+    // The core logic
+    return ValueTask.FromResult(new HttpResponseMessage());
+}
+</code></pre>
+<!-- endSnippet -->
+<h3 id="2---using-retry-to-perform-fallback">2 - Using retry to perform fallback</h3>
+<p>Lets suppose you have a primary and a secondary endpoints. If primary fails then you want to call the secondary.</p>
+<p>❌ DON'T</p>
+<p>Use retry to perform fallback</p>
+<!-- snippet: fallback-anti-pattern-2 -->
+<pre><code class="lang-cs">var fallback = new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
+    .AddRetry(new()
+    {
+        ShouldHandle = new PredicateBuilder&lt;HttpResponseMessage&gt;()
+            .HandleResult(res =&gt; res.StatusCode == HttpStatusCode.RequestTimeout),
+        MaxRetryAttempts = 1,
+        OnRetry = async args =&gt;
+        {
+            args.Context.Properties.Set(fallbackKey, await CallSecondary(args.Context.CancellationToken));
+        }
+    })
+    .Build();
+
+var context = ResilienceContextPool.Shared.Get();
+var outcome = await fallback.ExecuteOutcomeAsync&lt;HttpResponseMessage, string&gt;(
+    async (ctx, state) =&gt;
+    {
+        var result = await CallPrimary(ctx.CancellationToken);
+        return Outcome.FromResult(result);
+    }, context, &quot;none&quot;);
+
+var result = outcome.Result is not null
+    ? outcome.Result
+    : context.Properties.GetValue(fallbackKey, default);
+
+ResilienceContextPool.Shared.Return(context);
+
+return result;
+</code></pre>
+<!-- endSnippet -->
+<p><strong>Reasoning</strong>:</p>
+<ul>
+<li>Retry strategy by default executes the exact same operation at most <code>n</code> times
+<ul>
+<li>where <code>n</code> equals to the initial attempt + <code>MaxRetryAttempts</code></li>
+<li>So, in this particular case this means <strong>2</strong></li>
+</ul>
+</li>
+<li>Here the fallback is produced as a side-effect rather than as a substitute</li>
+</ul>
+<p>✅ DO</p>
+<p>Use fallback to call secondary</p>
+<!-- snippet: fallback-pattern-2 -->
+<pre><code class="lang-cs">var fallback = new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
+    .AddFallback(new()
+    {
+        ShouldHandle = new PredicateBuilder&lt;HttpResponseMessage&gt;()
+            .HandleResult(res =&gt; res.StatusCode == HttpStatusCode.RequestTimeout),
+        OnFallback = async args =&gt; await CallSecondary(args.Context.CancellationToken)
+    })
+    .Build();
+
+return await fallback.ExecuteAsync(CallPrimary, CancellationToken.None);
+</code></pre>
+<!-- endSnippet -->
+<p><strong>Reasoning</strong>:</p>
+<ul>
+<li>The to-be-decorated code is executed only once</li>
+<li>The fallback value will be returned without any extra code (no need for <code>Context</code> or <code>ExecuteOutcomeAsync</code>)</li>
+</ul>
+<h3 id="3---nesting-executeasync-calls">3 - Nesting <code>ExecuteAsync</code> calls</h3>
+<p>There are many ways to combine multiple strategies together. One of the least desired one is the <code>Execute</code> hell.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>This is not strictly related to Fallback but we have seen it many times when Fallback was the most outer.</p>
+</div>
+<p>❌ DON'T</p>
+<p>Nest <code>ExecuteAsync</code> calls</p>
+<!-- snippet: fallback-anti-pattern-3 -->
+<pre><code class="lang-cs">var result = await fallback.ExecuteAsync(async (CancellationToken outerCT) =&gt;
+{
+    return await timeout.ExecuteAsync(async (CancellationToken innerCT) =&gt;
+    {
+        return await CallExternalSystem(innerCT);
+    }, outerCT);
+}, CancellationToken.None);
+
+return result;
+</code></pre>
+<!-- endSnippet -->
+<p><strong>Reasoning</strong>:</p>
+<ul>
+<li>This is the same as javascript's callback hell or pyramid of doom</li>
+<li>It is pretty easy to refer to the wrong <code>CancellationToken</code> parameter</li>
+</ul>
+<p>✅ DO
+Use <code>ResiliencePipelineBuilder</code> to chain them</p>
+<!-- snippet: fallback-pattern-3 -->
+<pre><code class="lang-cs">var pipeline = new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
+    .AddPipeline(timeout)
+    .AddPipeline(fallback)
+    .Build();
+
+return await pipeline.ExecuteAsync(CallExternalSystem, CancellationToken.None);
+</code></pre>
+<!-- endSnippet -->
+<p><strong>Reasoning</strong>:</p>
+<ul>
+<li>Here we are relying Polly provided escalation mechanism rather than building our own via nesting</li>
+<li>The <code>CancellationToken</code>s are propagated between the policies automatically on your behalf</li>
+</ul>
 </article>
 
         <div class="contribution d-print-none">
