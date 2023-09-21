@@ -85,7 +85,7 @@
         <article data-uid="">
 <h1 id="proactive-resilience-strategy">Proactive resilience strategy</h1>
 
-<p>This section guides you in creating a <strong>Timing resilience strategy</strong> that tracks the execution times of callbacks and reports when the execution time exceeds the expected duration. This is a prime example of a proactive strategy because we aren't concerned with the individual results produced by the callbacks. Hence, this strategy can be used across various result types.</p>
+<p>This document guides you in creating a <strong>Timing resilience strategy</strong> that tracks the execution times of callbacks and reports when the execution time exceeds the expected duration. This is a prime example of a proactive strategy because we aren't concerned with the individual results produced by the callbacks. Hence, this strategy can be used across various result types.</p>
 <h2 id="implementation">Implementation</h2>
 <p>Proactive resilience strategies are derived from the <a class="xref" href="../api/Polly.ResilienceStrategy.html"><code>ResilienceStrategy</code></a> base class. For this strategy, the implementation is:</p>
 <!-- snippet: ext-proactive-strategy -->
@@ -206,7 +206,6 @@ public readonly struct ThresholdExceededArguments
     {
         // Add the strategy through the AddStrategy method. This method accepts a factory delegate
         // and automatically validates the options.
-
         return builder.AddStrategy(
             context =&gt;
             {
@@ -223,6 +222,23 @@ public readonly struct ThresholdExceededArguments
             options);
     }
 }
+</code></pre>
+<!-- endSnippet -->
+<h2 id="usage">Usage</h2>
+<!-- snippet: ext-proactive-strategy-usage -->
+<pre><code class="lang-cs">// Add the proactive strategy to the builder
+var pipeline = new ResiliencePipelineBuilder()
+    // This is custom extension defined in this sample
+    .AddTiming(new TimingStrategyOptions
+    {
+        Threshold = TimeSpan.FromSeconds(1),
+        ThresholdExceeded = args =&gt;
+        {
+            Console.WriteLine(&quot;Execution threshold exceeded!&quot;);
+            return default;
+        },
+    })
+    .Build();
 </code></pre>
 <!-- endSnippet -->
 <h2 id="resources">Resources</h2>

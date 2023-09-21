@@ -85,6 +85,225 @@
         <article data-uid="">
 <h1 id="reactive-resilience-strategy">Reactive resilience strategy</h1>
 
+<p>This document describes how to set up a <strong>Result reporting resilience strategy</strong>. This strategy lets you listen for specific results and report them to other components. It serves as a good example of a reactive strategy because it deals with specific results.</p>
+<h2 id="implementation">Implementation</h2>
+<p>Reactive resilience strategies inherit from the <a class="xref" href="../api/Polly.ResilienceStrategy-1.html"><code>ResilienceStrategy&lt;T&gt;</code></a> base class. The implementation for this specific strategy is as follows:</p>
+<!-- snippet: ext-reactive-strategy -->
+<pre><code class="lang-cs">// Strategies should be internal and not exposed in the library's public API.
+// Use extension methods and options to configure the strategy.
+internal sealed class ResultReportingResilienceStrategy&lt;T&gt; : ResilienceStrategy&lt;T&gt;
+{
+    private readonly Func&lt;ResultReportingPredicateArguments&lt;T&gt;, ValueTask&lt;bool&gt;&gt; _shouldHandle;
+    private readonly Func&lt;OnReportResultArguments&lt;T&gt;, ValueTask&gt; _onReportResult;
+    private readonly ResilienceStrategyTelemetry _telemetry;
+
+    public ResultReportingResilienceStrategy(
+        Func&lt;ResultReportingPredicateArguments&lt;T&gt;, ValueTask&lt;bool&gt;&gt; shouldHandle,
+        Func&lt;OnReportResultArguments&lt;T&gt;, ValueTask&gt; onReportResult,
+        ResilienceStrategyTelemetry telemetry)
+    {
+        _shouldHandle = shouldHandle;
+        _onReportResult = onReportResult;
+        _telemetry = telemetry;
+    }
+
+    protected override async ValueTask&lt;Outcome&lt;T&gt;&gt; ExecuteCore&lt;TState&gt;(
+        Func&lt;ResilienceContext, TState, ValueTask&lt;Outcome&lt;T&gt;&gt;&gt; callback,
+        ResilienceContext context,
+        TState state)
+    {
+        Outcome&lt;T&gt; outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        // Check if the outcome should be reported using the &quot;ShouldHandle&quot; predicate.
+        if (await _shouldHandle(new ResultReportingPredicateArguments&lt;T&gt;(context, outcome)).ConfigureAwait(context.ContinueOnCapturedContext))
+        {
+            var args = new OnReportResultArguments&lt;T&gt;(context, outcome);
+
+            // Report the event with an informational severity level to the telemetry infrastructure.
+            _telemetry.Report(new ResilienceEvent(ResilienceEventSeverity.Information, &quot;ResultReported&quot;), context, outcome, args);
+
+            // Call the &quot;OnReportResult&quot; callback.
+            await _onReportResult(args).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
+
+        return outcome;
+    }
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Reactive strategies use the <code>ShouldHandle</code> predicate to decide whether to handle the outcome of a user callback. The convention is to name the predicate's arguments using the <code>&lt;StrategyName&gt;PredicateArguments</code> pattern and return a <code>ValueTask&lt;bool&gt;</code>. Here, we use <code>ResultReportingPredicateArguments&lt;TResult&gt;</code>:</p>
+<!-- snippet: ext-reactive-predicate-args -->
+<pre><code class="lang-cs">public struct ResultReportingPredicateArguments&lt;TResult&gt;
+{
+    public ResultReportingPredicateArguments(ResilienceContext context, Outcome&lt;TResult&gt; outcome)
+    {
+        Context = context;
+        Outcome = outcome;
+    }
+
+    // Always include the &quot;Context&quot; property in the arguments.
+    public ResilienceContext Context { get; }
+
+    // Always have the &quot;Outcome&quot; property in reactive arguments.
+    public Outcome&lt;TResult&gt; Outcome { get; }
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Reactive arguments always contain the <code>Context</code> and <code>Outcome</code> properties.</p>
+<p>Additionally, to report the outcome, the strategy uses <code>OnReportResultArguments&lt;TResult&gt;</code>:</p>
+<!-- snippet: ext-reactive-event-args -->
+<pre><code class="lang-cs">public struct OnReportResultArguments&lt;TResult&gt;
+{
+    public OnReportResultArguments(ResilienceContext context, Outcome&lt;TResult&gt; outcome)
+    {
+        Context = context;
+        Outcome = outcome;
+    }
+
+    // Always include the &quot;Context&quot; property in the arguments.
+    public ResilienceContext Context { get; }
+
+    // Always have the &quot;Outcome&quot; property in reactive arguments.
+    public Outcome&lt;TResult&gt; Outcome { get; }
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Using arguments in callbacks supports a more maintainable and extensible API.</p>
+<h2 id="options">Options</h2>
+<p>In the previous section, we implemented the <code>ResultReportingResilienceStrategy&lt;T&gt;</code>. Now, we need to integrate it with Polly and its public API.</p>
+<p>Define the public <code>ResultReportingStrategyOptions&lt;TResult&gt;</code> to configure our strategy:</p>
+<!-- snippet: ext-reactive-options -->
+<pre><code class="lang-cs">public class ResultReportingStrategyOptions&lt;TResult&gt; : ResilienceStrategyOptions
+{
+    public ResultReportingStrategyOptions()
+    {
+        // Set a default name for the options to enhance telemetry insights.
+        Name = &quot;ResultReporting&quot;;
+    }
+
+    // Options for reactive strategies should always include a &quot;ShouldHandle&quot; delegate.
+    // Set a sensible default when possible. Here, we handle all exceptions.
+    public Func&lt;ResultReportingPredicateArguments&lt;TResult&gt;, ValueTask&lt;bool&gt;&gt; ShouldHandle { get; set; } = args =&gt;
+    {
+        return new ValueTask&lt;bool&gt;(args.Outcome.Exception is not null);
+    };
+
+    // This illustrates an event delegate. Note that the arguments struct carries the same name as the delegate but with an &quot;Arguments&quot; suffix.
+    // The event follows the async convention and must be set by the user.
+    //
+    // The [Required] enforces the consumer to specify this property, used when some properties do not have sensible defaults and are required.
+    [Required]
+    public Func&lt;OnReportResultArguments&lt;TResult&gt;, ValueTask&gt;? OnReportResult { get; set; }
+}
+</code></pre>
+<!-- endSnippet -->
+<p>If you want to support non-generic options for the <code>ResiliencePipelineBuilder</code>, you can expose them as well:</p>
+<!-- snippet: ext-reactive-non-generic-options -->
+<pre><code class="lang-cs">// Simply derive from the generic options, using 'object' as the result type.
+// This allows the strategy to manage all results.
+public class ResultReportingStrategyOptions : ResultReportingStrategyOptions&lt;object&gt;
+{
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Using options as a public contract helps us ensure flexibility with consumers. By adopting this method, you can effortlessly introduce new members without inducing breaking changes and maintain consistent validation.</p>
+<h2 id="extensions">Extensions</h2>
+<p>Up until now, we've discussed:</p>
+<ul>
+<li>The public <code>ResultReportingStrategyOptions&lt;TResult&gt;</code> and the related arguments.</li>
+<li>The proactive strategy implementation called <code>ResultReportingResilienceStrategy&lt;TResult&gt;</code>.</li>
+</ul>
+<p>The next step is to combine these elements by introducing new extensions for <code>ResiliencePipelineBuilder&lt;T&gt;</code> and, optionally, <code>ResiliencePipelineBuilder</code>.</p>
+<!-- snippet: ext-reactive-extensions -->
+<pre><code class="lang-cs">public static class ResultReportingResilienceStrategyBuilderExtensions
+{
+    // Add extensions for the generic builder.
+    // Extensions should return the builder to support a fluent API.
+    public static ResiliencePipelineBuilder&lt;TResult&gt; AddResultReporting&lt;TResult&gt;(this ResiliencePipelineBuilder&lt;TResult&gt; builder, ResultReportingStrategyOptions&lt;TResult&gt; options)
+    {
+        // Incorporate the strategy using the AddStrategy method. This method receives a factory delegate
+        // and automatically checks the options.
+        return builder.AddStrategy(
+            context =&gt;
+            {
+                // The &quot;context&quot; offers various properties for the strategy to use.
+                // Here, we simply use the &quot;Telemetry&quot; and hand it over to the strategy.
+                // The ShouldHandle and OnReportResult values come from the options.
+                var strategy = new ResultReportingResilienceStrategy&lt;TResult&gt;(
+                    options.ShouldHandle,
+                    options.OnReportResult!,
+                    context.Telemetry);
+
+                return strategy;
+            },
+            options);
+    }
+
+    // Optionally, if suitable for the strategy, add support for non-generic builders.
+    // Observe the use of the non-generic ResultReportingStrategyOptions.
+    public static ResiliencePipelineBuilder AddResultReporting(this ResiliencePipelineBuilder builder, ResultReportingStrategyOptions options)
+    {
+        return builder.AddStrategy(
+            context =&gt;
+            {
+                var strategy = new ResultReportingResilienceStrategy&lt;object&gt;(
+                    options.ShouldHandle,
+                    options.OnReportResult!,
+                    context.Telemetry);
+
+                return strategy;
+            },
+            options);
+    }
+}
+</code></pre>
+<!-- endSnippet -->
+<h2 id="usage">Usage</h2>
+<!-- snippet: ext-reactive-strategy-usage -->
+<pre><code class="lang-cs">// Add reactive strategy to the builder
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
+    .AddResultReporting(new ResultReportingStrategyOptions&lt;HttpResponseMessage&gt;
+    {
+        // Define what outcomes to handle
+        ShouldHandle = args =&gt; args.Outcome switch
+        {
+            { Exception: { } } =&gt; PredicateResult.True(),
+            { Result: { StatusCode: HttpStatusCode.InternalServerError } } =&gt; PredicateResult.True(),
+            _ =&gt; PredicateResult.False()
+        },
+        OnReportResult = args =&gt;
+        {
+            Console.WriteLine($&quot;Result: {args.Outcome}&quot;);
+            return default;
+        }
+    });
+
+// You can also use the non-generic ResiliencePipelineBuilder to handle any kind of result.
+new ResiliencePipelineBuilder()
+    .AddResultReporting(new ResultReportingStrategyOptions
+    {
+        // Define what outcomes to handle
+        ShouldHandle = args =&gt; args.Outcome switch
+        {
+            { Exception: { } } =&gt; PredicateResult.True(),
+            { Result: HttpResponseMessage message } when message.StatusCode == HttpStatusCode.InternalServerError =&gt; PredicateResult.True(),
+            _ =&gt; PredicateResult.False()
+        },
+        OnReportResult = args =&gt;
+        {
+            Console.WriteLine($&quot;Result: {args.Outcome}&quot;);
+            return default;
+        }
+    });
+</code></pre>
+<!-- endSnippet -->
+<h2 id="resources">Resources</h2>
+<p>For further understanding of reactive resilience strategies, consider exploring these resources:</p>
+<ul>
+<li><a href="https://github.com/App-vNext/Polly/tree/main/samples/Extensibility/Reactive">Result reporting strategy sample</a>: A practical example from this guide.</li>
+<li><a href="https://github.com/App-vNext/Polly/tree/main/src/Polly.Core/Retry">Retry resilience strategy</a>: Discover the built-in retry resilience strategy implementation.</li>
+<li><a href="https://github.com/App-vNext/Polly/tree/main/src/Polly.Core/Fallback">Fallback resilience strategy</a>: Discover the built-in fallback resilience strategy implementation.</li>
+</ul>
 </article>
 
         <div class="contribution d-print-none">

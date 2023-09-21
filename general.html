@@ -102,7 +102,7 @@
 ResilienceContext context = ResilienceContextPool.Shared.Get(continueOnCapturedContext: true);
 
 await pipeline.ExecuteAsync(
-    async context =&gt;
+    static async context =&gt;
     {
         // Execute your code, honoring the ContinueOnCapturedContext setting
         await MyMethodAsync(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
@@ -125,7 +125,7 @@ ResilienceContextPool.Shared.Return(context);
 <!-- snippet: cancellation-token -->
 <pre><code class="lang-cs">// Execute your code with cancellation support
 await pipeline.ExecuteAsync(
-    async token =&gt; await MyMethodAsync(token),
+    static async token =&gt; await MyMethodAsync(token),
     cancellationToken);
 
 // Use ResilienceContext for more advanced scenarios
