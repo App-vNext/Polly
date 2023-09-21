@@ -314,11 +314,12 @@ internal static class Retry
         builder.AddTimeout(TimeSpan.FromMinutes(1));
 
         var pipeline = builder.Build();
-        await pipeline.ExecuteAsync(async (ct) =>
+        await pipeline.ExecuteAsync(static async (httpClient, ct) =>
         {
             var stream = await httpClient.GetStreamAsync(new Uri("endpoint"), ct);
             var foo = await JsonSerializer.DeserializeAsync<Foo>(stream, cancellationToken: ct);
-        });
+        },
+        httpClient);
 
         #endregion
     }
@@ -337,7 +338,10 @@ internal static class Retry
             })
             .Build();
 
-        var stream = await retry.ExecuteAsync(async (ct) => await httpClient.GetStreamAsync(new Uri("endpoint"), ct));
+        var stream = await retry.ExecuteAsync(
+            static async (httpClient, ct) =>
+                await httpClient.GetStreamAsync(new Uri("endpoint"), ct),
+            httpClient);
 
         var timeout = new ResiliencePipelineBuilder<Foo>()
             .AddTimeout(TimeSpan.FromMinutes(1))

@@ -208,7 +208,7 @@ internal static class Fallback
         #region fallback-anti-pattern-3
         var result = await fallback.ExecuteAsync(async (CancellationToken outerCT) =>
         {
-            return await timeout.ExecuteAsync(async (CancellationToken innerCT) =>
+            return await timeout.ExecuteAsync(static async (CancellationToken innerCT) =>
             {
                 return await CallExternalSystem(innerCT);
             }, outerCT);

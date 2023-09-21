@@ -80,7 +80,7 @@ internal static partial class Migration
         });
 
         // Asynchronous execution is also supported with the same pipeline instance
-        await pipeline.ExecuteAsync(async cancellationToken =>
+        await pipeline.ExecuteAsync(static async cancellationToken =>
         {
             // your code here
         },
@@ -111,7 +111,7 @@ internal static partial class Migration
         });
 
         // Asynchronous execution
-        await pipelineT.ExecuteAsync(async cancellationToken =>
+        await pipelineT.ExecuteAsync(static async cancellationToken =>
         {
             // your code here
             return await GetResponseAsync(cancellationToken);
