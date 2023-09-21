@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Extensibility </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Extensibility ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/main/docs/extensibility/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="extensibility">Extensibility</h1>
+
+<p>This article explains how to extend Polly with new <a href="../strategies/index.html">resilience strategies</a>. Polly identifies two types of resilience strategies:</p>
+<ul>
+<li><strong>Reactive</strong>: These strategies handle specific exceptions that are thrown, or results that are returned, by the callbacks executed through the strategy.</li>
+<li><strong>Proactive</strong>: Unlike reactive strategies, proactive strategies do not focus on handling errors by the callbacks might throw or return. They can make proactive decisions to cancel or reject the execution of callbacks (e.g., using a rate limiter or a timeout resilience strategy).</li>
+</ul>
+<p>This guide will help you create a new illustrative resilience strategy for each type.</p>
+<h2 id="basics-of-extensibility">Basics of extensibility</h2>
+<p>Regardless of whether the strategy is reactive or proactive, every new resilience strategy should include the following components:</p>
+<ul>
+<li>Options detailing the strategy's configuration. These should inherit from <a class="xref" href="../api/Polly.ResilienceStrategyOptions.html"><code>ResilienceStrategyOptions</code></a>.</li>
+<li>Extensions for <code>ResiliencePipelineBuilder</code> or <code>ResiliencePipelineBuilder&lt;T&gt;</code>.</li>
+<li>Custom argument types for delegates that contain information about a specific event.</li>
+</ul>
+<p>The strategy options contain properties of following types:</p>
+<ul>
+<li><strong>Common types</strong>: Such as <code>int</code>, <code>bool</code>, <code>TimeSpan</code>, etc.</li>
+<li><strong>Delegates</strong>: For example when strategy need to raise an event, or generate a value. In general, the delegates should by asynchronous.</li>
+<li><strong>Arguments</strong>: Used by the delegates to pass the information to consumers.</li>
+</ul>
+<h2 id="delegates">Delegates</h2>
+<p>Individual resilience strategies make use of several delegate types:</p>
+<ul>
+<li><strong>Predicates</strong>: Vital for determining whether a resilience strategy should handle the given execution result.</li>
+<li><strong>Events</strong>: Triggered when significant actions or states occur within the resilience strategy.</li>
+<li><strong>Generators</strong>: Invoked when the resilience strategy needs specific information or values from the caller.</li>
+</ul>
+<p>Recommended signatures for these delegates are:</p>
+<h3 id="predicates">Predicates</h3>
+<ul>
+<li><code>Func&lt;Args&lt;TResult&gt;, ValueTask&lt;bool&gt;&gt;</code> (Reactive)</li>
+</ul>
+<h3 id="events">Events</h3>
+<ul>
+<li><code>Func&lt;Args&lt;TResult&gt;, ValueTask&gt;</code> (Reactive)</li>
+<li><code>Func&lt;Args, ValueTask&gt;</code> (Proactive)</li>
+</ul>
+<h3 id="generators">Generators</h3>
+<ul>
+<li><code>Func&lt;Args&lt;TResult&gt;, ValueTask&lt;TValue&gt;&gt;</code> (Reactive)</li>
+<li><code>Func&lt;Args, ValueTask&lt;TValue&gt;&gt;</code> (Proactive)</li>
+</ul>
+<p>These delegates accept either <code>Args</code> or <code>Args&lt;TResult&gt;</code> arguments, which encapsulate event information. Note that all these delegates are asynchronous and return a <code>ValueTask</code>. Learn more about <a href="#arguments">arguments</a> in the sections bellow.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>When setting up delegates, consider using the <code>ResilienceContext.ContinueOnCapturedContext</code> property if your user code interacts with a synchronization context (as in asynchronous UI applications like Windows Forms or WPF).</p>
+</div>
+<h3 id="how-to-use-delegates">How to use delegates</h3>
+<p>Below are some examples illustrating the usage of these delegates:</p>
+<!-- snippet: delegate-usage -->
+<pre><code class="lang-cs">new ResiliencePipelineBuilder()
+    .AddRetry(new RetryStrategyOptions
+    {
+        // Non-Generic predicate for multiple result types
+        ShouldHandle = args =&gt; args.Outcome switch
+        {
+            { Exception: InvalidOperationException } =&gt; PredicateResult.True(),
+            { Result: string result } when result == &quot;Failure&quot; =&gt; PredicateResult.True(),
+            { Result: int result } when result == -1 =&gt; PredicateResult.True(),
+            _ =&gt; PredicateResult.False()
+        },
+    })
+    .Build();
+
+new ResiliencePipelineBuilder&lt;string&gt;()
+    .AddRetry(new RetryStrategyOptions&lt;string&gt;
+    {
+        // Generic predicate for a single result type
+        ShouldHandle = args =&gt; args.Outcome switch
+        {
+            { Exception: InvalidOperationException } =&gt; PredicateResult.True(),
+            { Result: { } result } when result == &quot;Failure&quot; =&gt; PredicateResult.True(),
+            _ =&gt; PredicateResult.False()
+        },
+    })
+    .Build();
+</code></pre>
+<!-- endSnippet -->
+<h2 id="arguments">Arguments</h2>
+<p>Arguments are used by individual delegate types to flow information to the consumer. Arguments should always have an <code>Arguments</code> suffix and include a <code>Context</code> property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change.  For proactive strategies, the arguments structure might resemble:</p>
+<!-- snippet: ext-proactive-args -->
+<pre><code class="lang-cs">// Structs for arguments encapsulate details about specific events within the resilience strategy.
+// Relevant properties to the event can be exposed. In this event, the actual execution time and the exceeded threshold are included.
+public readonly struct ThresholdExceededArguments
+{
+    public ThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
+    {
+        Context = context;
+        Threshold = threshold;
+        Duration = duration;
+    }
+
+    public TimeSpan Threshold { get; }
+
+    public TimeSpan Duration { get; }
+
+    // As per convention, all arguments should provide a &quot;Context&quot; property.
+    public ResilienceContext Context { get; }
+}
+</code></pre>
+<!-- endSnippet -->
+<h2 id="implementing-a-resilience-strategy">Implementing a resilience strategy</h2>
+<p>To understand the details of implementing a strategy, use the links below:</p>
+<ul>
+<li><a href="proactive-strategy.html">Proactive strategy</a>: Explains how to implement a proactive resilience strategy.</li>
+<li><a href="reactive-strategy.html">Reactive strategy</a>: Explains how to implement a reactive resilience strategy.</li>
+</ul>
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/main/docs/extensibility/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

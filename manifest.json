@@ -15,16 +15,6 @@
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "advanced/extensibility.md",
-      "output": {
-        ".html": {
-          "relative_path": "advanced/extensibility.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
       "source_relative_path": "advanced/performance.md",
       "output": {
         ".html": {
@@ -1068,6 +1058,36 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "extensibility/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "extensibility/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "extensibility/proactive-strategy.md",
+      "output": {
+        ".html": {
+          "relative_path": "extensibility/proactive-strategy.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "extensibility/reactive-strategy.md",
+      "output": {
+        ".html": {
+          "relative_path": "extensibility/reactive-strategy.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "general.md",
       "output": {
         ".html": {
@@ -1097,9 +1117,6 @@
       "version": ""
     },
     {
-      "log_codes": [
-        "InvalidFileLink"
-      ],
       "type": "Conceptual",
       "source_relative_path": "index.md",
       "output": {

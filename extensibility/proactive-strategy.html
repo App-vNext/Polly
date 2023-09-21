@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Proactive resilience strategy </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Proactive resilience strategy ">
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/main/docs/extensibility/proactive-strategy.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="proactive-resilience-strategy">Proactive resilience strategy</h1>
+
+<p>This section guides you in creating a <strong>Timing resilience strategy</strong> that tracks the execution times of callbacks and reports when the execution time exceeds the expected duration. This is a prime example of a proactive strategy because we aren't concerned with the individual results produced by the callbacks. Hence, this strategy can be used across various result types.</p>
+<h2 id="implementation">Implementation</h2>
+<p>Proactive resilience strategies are derived from the <a class="xref" href="../api/Polly.ResilienceStrategy.html"><code>ResilienceStrategy</code></a> base class. For this strategy, the implementation is:</p>
+<!-- snippet: ext-proactive-strategy -->
+<pre><code class="lang-cs">// Strategies should be internal and not exposed in the library's public API.
+// Configure the strategy through extension methods and options.
+internal sealed class TimingResilienceStrategy : ResilienceStrategy
+{
+    private readonly TimeSpan _threshold;
+    private readonly Func&lt;ThresholdExceededArguments, ValueTask&gt;? _thresholdExceeded;
+    private readonly ResilienceStrategyTelemetry _telemetry;
+
+    public TimingResilienceStrategy(
+        TimeSpan threshold,
+        Func&lt;ThresholdExceededArguments, ValueTask&gt;? thresholdExceeded,
+        ResilienceStrategyTelemetry telemetry)
+    {
+        _threshold = threshold;
+        _telemetry = telemetry;
+        _thresholdExceeded = thresholdExceeded;
+    }
+
+    protected override async ValueTask&lt;Outcome&lt;TResult&gt;&gt; ExecuteCore&lt;TResult, TState&gt;(
+        Func&lt;ResilienceContext, TState, ValueTask&lt;Outcome&lt;TResult&gt;&gt;&gt; callback,
+        ResilienceContext context,
+        TState state)
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        // Execute the given callback and adhere to the ContinueOnCapturedContext property value.
+        Outcome&lt;TResult&gt; outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        if (stopwatch.Elapsed &gt; _threshold)
+        {
+            // Bundle information about the event into arguments.
+            var args = new ThresholdExceededArguments(context, _threshold, stopwatch.Elapsed);
+
+            // Report this as a resilience event if the execution took longer than the threshold.
+            _telemetry.Report(
+                new ResilienceEvent(ResilienceEventSeverity.Warning, &quot;ExecutionThresholdExceeded&quot;),
+                context,
+                args);
+
+            if (_thresholdExceeded is not null)
+            {
+                await _thresholdExceeded(args).ConfigureAwait(context.ContinueOnCapturedContext);
+            }
+        }
+
+        // Return the outcome directly.
+        return outcome;
+    }
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Review the code and comments to understand the implementation. Take note of the <code>ThresholdExceededArguments</code> struct:</p>
+<!-- snippet: ext-proactive-args -->
+<pre><code class="lang-cs">// Structs for arguments encapsulate details about specific events within the resilience strategy.
+// Relevant properties to the event can be exposed. In this event, the actual execution time and the exceeded threshold are included.
+public readonly struct ThresholdExceededArguments
+{
+    public ThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
+    {
+        Context = context;
+        Threshold = threshold;
+        Duration = duration;
+    }
+
+    public TimeSpan Threshold { get; }
+
+    public TimeSpan Duration { get; }
+
+    // As per convention, all arguments should provide a &quot;Context&quot; property.
+    public ResilienceContext Context { get; }
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Arguments should always have an <code>Arguments</code> suffix and include a <code>Context</code> property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change. The <code>ThresholdExceededArguments</code> provides details about the actual execution time and threshold, allowing listeners to respond to this event or supply a custom callback for such situations.</p>
+<h2 id="options">Options</h2>
+<p>In the previous section, we implemented the <code>TimingResilienceStrategy</code>. Now, it's time to integrate it with Polly and its public API.</p>
+<p>Let's define the public <code>TimingStrategyOptions</code> to configure our strategy:</p>
+<!-- snippet: ext-proactive-options -->
+<pre><code class="lang-cs">public class TimingStrategyOptions : ResilienceStrategyOptions
+{
+    public TimingStrategyOptions()
+    {
+        // Assign a default name to the options for more detailed telemetry insights.
+        Name = &quot;Timing&quot;;
+    }
+
+    // Apply validation attributes to guarantee the options' validity.
+    // The pipeline will handle validation automatically during its construction.
+    [Range(typeof(TimeSpan), &quot;00:00:00&quot;, &quot;1.00:00:00&quot;)]
+    [Required]
+    public TimeSpan? Threshold { get; set; }
+
+    // Provide the delegate to be called when the threshold is surpassed.
+    // Ideally, arguments should share the delegate's name, but with an &quot;Arguments&quot; suffix.
+    public Func&lt;ThresholdExceededArguments, ValueTask&gt;? ThresholdExceeded { get; set; }
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Options represent our public contract with the consumer. By using them, we can easily add new members without breaking changes and perform validation consistently.</p>
+<h2 id="extensions">Extensions</h2>
+<p>So far, we've covered:</p>
+<ul>
+<li>The public <code>TimingStrategyOptions</code> and its associated arguments.</li>
+<li>The proactive strategy implementation named <code>TimingResilienceStrategy</code>.</li>
+</ul>
+<p>The final step is to integrate these components by adding new extensions for both <code>ResiliencePipelineBuilder</code> and <code>ResiliencePipelineBuilder&lt;T&gt;</code>. Since both builders inherit from the same base class, we can introduce a single extension for <code>ResiliencePipelineBuilderBase</code> to serve both.</p>
+<!-- snippet: ext-proactive-extensions -->
+<pre><code class="lang-cs">public static class TimingResilienceStrategyBuilderExtensions
+{
+    // The extensions should return the builder to support a fluent API.
+    // For proactive strategies, we can target both &quot;ResiliencePipelineBuilderBase&quot; and &quot;ResiliencePipelineBuilder&lt;T&gt;&quot;
+    // using generic constraints.
+    public static TBuilder AddTiming&lt;TBuilder&gt;(this TBuilder builder, TimingStrategyOptions options)
+        where TBuilder : ResiliencePipelineBuilderBase
+    {
+        // Add the strategy through the AddStrategy method. This method accepts a factory delegate
+        // and automatically validates the options.
+
+        return builder.AddStrategy(
+            context =&gt;
+            {
+                // The &quot;context&quot; provides various properties for the strategy's use.
+                // In this case, we simply use the &quot;Telemetry&quot; and pass it to the strategy.
+                // The Threshold and ThresholdExceeded values are sourced from the options.
+                var strategy = new TimingResilienceStrategy(
+                    options.Threshold!.Value,
+                    options.ThresholdExceeded,
+                    context.Telemetry);
+
+                return strategy;
+            },
+            options);
+    }
+}
+</code></pre>
+<!-- endSnippet -->
+<h2 id="resources">Resources</h2>
+<p>For further understanding of proactive resilience strategies, consider exploring these resources:</p>
+<ul>
+<li><a href="https://github.com/App-vNext/Polly/tree/main/samples/Extensibility/Proactive">Timing strategy sample</a>: A practical example from this guide.</li>
+<li><a href="https://github.com/App-vNext/Polly/tree/main/src/Polly.Core/Timeout">Timeout resilience strategy</a>: Discover the built-in timeout resilience strategy implementation.</li>
+<li><a href="https://github.com/App-vNext/Polly/tree/main/src/Polly.RateLimiting">Rate limiter resilience strategy</a>: Discover how rate limiter strategy is implemented.</li>
+</ul>
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/main/docs/extensibility/proactive-strategy.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
