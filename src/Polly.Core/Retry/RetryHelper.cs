@@ -4,15 +4,38 @@ internal static class RetryHelper
 {
     private const double JitterFactor = 0.5;
 
+    private const double MaxDelayJitterFactor = JitterFactor / 2.0;
+
     private const double ExponentialFactor = 2.0;
 
     public static bool IsValidDelay(TimeSpan delay) => delay >= TimeSpan.Zero;
 
-    public static TimeSpan GetRetryDelay(DelayBackoffType type, bool jitter, int attempt, TimeSpan baseDelay, ref double state, Func<double> randomizer)
+    public static TimeSpan GetRetryDelay(
+        DelayBackoffType type,
+        bool jitter,
+        int attempt,
+        TimeSpan baseDelay,
+        TimeSpan? maxDelay,
+        ref double state,
+        Func<double> randomizer)
     {
         try
         {
-            return GetRetryDelayCore(type, jitter, attempt, baseDelay, ref state, randomizer);
+            var delay = GetRetryDelayCore(type, jitter, attempt, baseDelay, ref state, randomizer);
+
+            // stryker disable once equality : no means to test this
+            if (maxDelay is TimeSpan maxDelayValue && delay > maxDelayValue)
+            {
+                if (jitter)
+                {
+                    // Apply jitter also to max delay, we are only allowed to substract from the delay not add to it.
+                    return ApplyJitterForMaxDelay(maxDelayValue, randomizer);
+                }
+
+                return maxDelay.Value;
+            }
+
+            return delay;
         }
         catch (OverflowException)
         {
@@ -89,7 +112,7 @@ internal static class RetryHelper
         long targetTicksFirstDelay = baseDelay.Ticks;
 
         double t = attempt + randomizer();
-        double next = Math.Pow(2, t) * Math.Tanh(Math.Sqrt(PFactor * t));
+        double next = Math.Pow(ExponentialFactor, t) * Math.Tanh(Math.Sqrt(PFactor * t));
 
         double formulaIntrinsicValue = next - prev;
         prev = next;
@@ -98,5 +121,19 @@ internal static class RetryHelper
     }
 
     private static TimeSpan ApplyJitter(TimeSpan delay, Func<double> randomizer)
-        => TimeSpan.FromMilliseconds(delay.TotalMilliseconds + ((delay.TotalMilliseconds * JitterFactor) * randomizer()));
+    {
+        var offset = (delay.TotalMilliseconds * JitterFactor) / 2;
+        var randomDelay = (delay.TotalMilliseconds * JitterFactor * randomizer()) - offset;
+        var newDelay = delay.TotalMilliseconds + randomDelay;
+
+        return TimeSpan.FromMilliseconds(newDelay);
+    }
+
+    private static TimeSpan ApplyJitterForMaxDelay(TimeSpan delay, Func<double> randomizer)
+    {
+        var randomDelay = delay.TotalMilliseconds * MaxDelayJitterFactor * randomizer();
+        var newDelay = delay.TotalMilliseconds - randomDelay;
+
+        return TimeSpan.FromMilliseconds(newDelay);
+    }
 }

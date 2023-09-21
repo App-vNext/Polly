@@ -15,6 +15,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
     {
         ShouldHandle = options.ShouldHandle;
         BaseDelay = options.Delay;
+        MaxDelay = options.MaxDelay;
         BackoffType = options.BackoffType;
         RetryCount = options.MaxRetryAttempts;
         OnRetry = options.OnRetry;
@@ -27,6 +28,8 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
     }
 
     public TimeSpan BaseDelay { get; }
+
+    public TimeSpan? MaxDelay { get; }
 
     public DelayBackoffType BackoffType { get; }
 
@@ -61,7 +64,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
                 return outcome;
             }
 
-            var delay = RetryHelper.GetRetryDelay(BackoffType, UseJitter, attempt, BaseDelay, ref retryState, _randomizer);
+            var delay = RetryHelper.GetRetryDelay(BackoffType, UseJitter, attempt, BaseDelay, MaxDelay, ref retryState, _randomizer);
             if (DelayGenerator is not null)
             {
                 var delayArgs = new RetryDelayGeneratorArguments<T>(context, outcome, attempt);

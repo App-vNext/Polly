@@ -244,6 +244,30 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public async void MaxDelay_EnsureRespected()
+    {
+        var delays = new List<TimeSpan>();
+        _options.OnRetry = args =>
+        {
+            delays.Add(args.RetryDelay);
+            return default;
+        };
+
+        _options.ShouldHandle = args => PredicateResult.True();
+        _options.MaxRetryAttempts = 3;
+        _options.BackoffType = DelayBackoffType.Linear;
+        _options.MaxDelay = TimeSpan.FromMilliseconds(123);
+
+        var sut = CreateSut();
+
+        await ExecuteAndAdvance(sut);
+
+        delays[0].Should().Be(TimeSpan.FromMilliseconds(123));
+        delays[1].Should().Be(TimeSpan.FromMilliseconds(123));
+        delays[2].Should().Be(TimeSpan.FromMilliseconds(123));
+    }
+
+    [Fact]
     public async Task OnRetry_EnsureExecutionTime()
     {
         _options.OnRetry = args =>

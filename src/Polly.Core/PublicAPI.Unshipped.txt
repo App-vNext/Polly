@@ -309,6 +309,8 @@ Polly.Retry.RetryStrategyOptions<TResult>.Delay.get -> System.TimeSpan
 Polly.Retry.RetryStrategyOptions<TResult>.Delay.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.DelayGenerator.get -> System.Func<Polly.Retry.RetryDelayGeneratorArguments<TResult>, System.Threading.Tasks.ValueTask<System.TimeSpan?>>?
 Polly.Retry.RetryStrategyOptions<TResult>.DelayGenerator.set -> void
+Polly.Retry.RetryStrategyOptions<TResult>.MaxDelay.get -> System.TimeSpan?
+Polly.Retry.RetryStrategyOptions<TResult>.MaxDelay.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.MaxRetryAttempts.get -> int
 Polly.Retry.RetryStrategyOptions<TResult>.MaxRetryAttempts.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.OnRetry.get -> System.Func<Polly.Retry.OnRetryArguments<TResult>, System.Threading.Tasks.ValueTask>?
