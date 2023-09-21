@@ -20,7 +20,3 @@ public struct OnReportResultArguments<TResult>
 }
 
 #endregion
-
-
-
-public class ResultReportingStrategyOptions : resilience
