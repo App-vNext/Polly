@@ -43,6 +43,8 @@
     href: advanced/resilience-context.md
   - name: Performance
     href: advanced/performance.md
+  - name: Testing
+    href: advanced/testing.md
   - name: Chaos engineering
     href: advanced/simmy.md
 

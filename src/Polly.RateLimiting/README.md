@@ -6,46 +6,28 @@ The `Polly.RateLimiting` package adopts the [.NET Rate Limiting](https://devblog
 - It exposes the `AddConcurrencyLimiter` convenience extension methods for `ResiliencePipelineBuilder`.
 - It exposes the `RateLimiterRejectedException` class to notify the caller that the operation was rate limited.
 
-Example:
+See <https://www.pollydocs.org/strategies/rate-limiter> for more details.
 
-<!-- snippet: rate-limiter-usage -->
+## Usage
+
+<!-- snippet: rate-limiter -->
 ```cs
-ResiliencePipelineBuilder builder = new ResiliencePipelineBuilder();
+// Add rate limiter with default options.
+// See https://www.pollydocs.org/strategies/rate-limiter#defaults for defaults.
+new ResiliencePipelineBuilder()
+    .AddRateLimiter(new RateLimiterStrategyOptions());
 
-// Convenience extension method for ConcurrencyLimiter
-builder.AddConcurrencyLimiter(permitLimit: 10, queueLimit: 10);
+// Create a rate limiter to allow a maximum of 100 concurrent executions and a queue of 50.
+new ResiliencePipelineBuilder()
+    .AddConcurrencyLimiter(100, 50);
 
-// Convenience extension method for ConcurrencyLimiter with callback
-builder.AddConcurrencyLimiter(
-    new ConcurrencyLimiterOptions
+// Create a rate limiter that allows 100 executions per minute.
+new ResiliencePipelineBuilder()
+    .AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
     {
-        PermitLimit = 10,
-        QueueLimit = 10
-    });
-
-// Convenience extension method with custom limiter creation
-builder.AddRateLimiter(
-    new ConcurrencyLimiter(new ConcurrencyLimiterOptions
-    {
-        PermitLimit = 10,
-        QueueLimit = 10
+        PermitLimit = 100,
+        Window = TimeSpan.FromMinutes(1)
     }));
-
-// Add rate limiter using the RateLimiterStrategyOptions
-var limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions
-{
-    PermitLimit = 10,
-    QueueLimit = 10
-});
-
-builder.AddRateLimiter(new RateLimiterStrategyOptions
-{
-    RateLimiter = args => limiter.AcquireAsync(1, args.Context.CancellationToken),
-    OnRejected = _ =>
-    {
-        Console.WriteLine("Rate limiter rejected!");
-        return default;
-    }
-});
 ```
 <!-- endSnippet -->
+

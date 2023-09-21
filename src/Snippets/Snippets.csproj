@@ -23,7 +23,7 @@
     <ProjectReference Include="..\Polly.Testing\Polly.Testing.csproj" />
     <ProjectReference Include="..\Polly\Polly.csproj" />
 
-    <Using Include="Polly"/>
+    <Using Include="Polly" />
   </ItemGroup>
 
 </Project>
