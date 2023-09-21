@@ -1,10 +1,11 @@
 ﻿using Extensibility.Proactive;
+using Extensibility.Reactive;
 using Polly;
-using System.Net.Http.Headers;
+using System.Net;
 
-// ------------------------------------------------------------------------
-// Usage of custom proactive strategy
-// ------------------------------------------------------------------------
+#region ext-proactive-strategy-usage
+
+// Add the proactive strategy to the builder
 var pipeline = new ResiliencePipelineBuilder()
     // This is custom extension defined in this sample
     .AddTiming(new TimingStrategyOptions
@@ -17,6 +18,48 @@ var pipeline = new ResiliencePipelineBuilder()
         },
     })
     .Build();
+
+#endregion
+
+#region ext-reactive-strategy-usage
+
+// Add reactive strategy to the builder
+new ResiliencePipelineBuilder<HttpResponseMessage>()
+    .AddResultReporting(new ResultReportingStrategyOptions<HttpResponseMessage>
+    {
+        // Define what outcomes to handle
+        ShouldHandle = args => args.Outcome switch
+        {
+            { Exception: { } } => PredicateResult.True(),
+            { Result: { StatusCode: HttpStatusCode.InternalServerError } } => PredicateResult.True(),
+            _ => PredicateResult.False()
+        },
+        OnReportResult = args =>
+        {
+            Console.WriteLine($"Result: {args.Outcome}");
+            return default;
+        }
+    });
+
+// You can also use the non-generic ResiliencePipelineBuilder to handle any kind of result.
+new ResiliencePipelineBuilder()
+    .AddResultReporting(new ResultReportingStrategyOptions
+    {
+        // Define what outcomes to handle
+        ShouldHandle = args => args.Outcome switch
+        {
+            { Exception: { } } => PredicateResult.True(),
+            { Result: HttpResponseMessage message } when message.StatusCode == HttpStatusCode.InternalServerError => PredicateResult.True(),
+            _ => PredicateResult.False()
+        },
+        OnReportResult = args =>
+        {
+            Console.WriteLine($"Result: {args.Outcome}");
+            return default;
+        }
+    });
+
+#endregion
 
 // Execute the pipeline
 await pipeline.ExecuteAsync(async token => await Task.Delay(1500, token), CancellationToken.None);
