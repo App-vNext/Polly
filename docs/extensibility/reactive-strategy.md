@@ -122,6 +122,8 @@ public class ResultReportingStrategyOptions<TResult> : ResilienceStrategyOptions
 
     // This illustrates an event delegate. Note that the arguments struct carries the same name as the delegate but with an "Arguments" suffix.
     // The event follows the async convention and must be set by the user.
+    //
+    // The [Required] enforces the consumer to specify this property, used when some properties do not have sensible defaults and are required.
     [Required]
     public Func<OnReportResultArguments<TResult>, ValueTask>? OnReportResult { get; set; }
 }
@@ -149,7 +151,7 @@ Up until now, we've discussed:
 - The public `ResultReportingStrategyOptions<TResult>` and the related arguments.
 - The proactive strategy implementation called `ResultReportingResilienceStrategy<TResult>`.
 
-The next action is to combine these elements by introducing new extensions for `ResiliencePipelineBuilder<T>` and, optionally, `ResiliencePipelineBuilder`.
+The next step is to combine these elements by introducing new extensions for `ResiliencePipelineBuilder<T>` and, optionally, `ResiliencePipelineBuilder`.
 
 <!-- snippet: ext-reactive-extensions -->
 ```cs
