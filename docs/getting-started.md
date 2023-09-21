@@ -19,7 +19,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .Build(); // Builds the resilience pipeline
 
 // Execute the pipeline asynchronously
-await pipeline.ExecuteAsync(async cancellationToken => { /*Your custom logic here */ }, cancellationToken);
+await pipeline.ExecuteAsync(static async cancellationToken => { /*Your custom logic here */ }, cancellationToken);
 ```
 <!-- endSnippet -->
 
@@ -55,7 +55,7 @@ var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProv
 ResiliencePipeline pipeline = pipelineProvider.GetPipeline("my-pipeline");
 
 // Execute the pipeline
-await pipeline.ExecuteAsync(async token =>
+await pipeline.ExecuteAsync(static async token =>
 {
     // Your custom logic here
 });
