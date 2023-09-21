@@ -9,20 +9,18 @@ public class TimingStrategyOptions : ResilienceStrategyOptions
 {
     public TimingStrategyOptions()
     {
-        // It's recommended to set the default name for the options so
-        // the consumer can get additional information in the telemetry.
+        // Assign a default name to the options for more detailed telemetry insights.
         Name = "Timing";
     }
 
-    // You can use the validation attributes to ensure the options are valid.
-    // The validation will be performed automatically when building the pipeline.
+    // Apply validation attributes to guarantee the options' validity.
+    // The pipeline will handle validation automatically during its construction.
     [Range(typeof(TimeSpan), "00:00:00", "1.00:00:00")]
     [Required]
     public TimeSpan? Threshold { get; set; }
 
-    // Expose the delegate that will be invoked when the threshold is exceeded.
-    // The recommendation is that the arguments should have the same name as the delegate but with "Arguments" suffix.
-    // Notice that the delegate is not required.
+    // Provide the delegate to be called when the threshold is surpassed.
+    // Ideally, arguments should share the delegate's name, but with an "Arguments" suffix.
     public Func<ThresholdExceededArguments, ValueTask>? ThresholdExceeded { get; set; }
 }
 

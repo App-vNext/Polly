@@ -4,9 +4,8 @@ namespace Extensibility.Proactive;
 
 #region ext-proactive-args
 
-// Arguments-based structs encapsulate information about particular event that occurred inside resilience strategy.
-// They cna expose any properties that are relevant to the event.
-// For this event the actual duration of execution and the threshold that was exceeded are relevant.
+// Structs for arguments encapsulate details about specific events within the resilience strategy.
+// Relevant properties to the event can be exposed. In this event, the actual execution time and the exceeded threshold are included.
 public readonly struct ThresholdExceededArguments
 {
     public ThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
@@ -20,7 +19,7 @@ public readonly struct ThresholdExceededArguments
 
     public TimeSpan Duration { get; }
 
-    // By convention, all arguments should expose the "Context" property.
+    // As per convention, all arguments should provide a "Context" property.
     public ResilienceContext Context { get; }
 }
 

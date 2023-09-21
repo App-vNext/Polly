@@ -8,21 +8,21 @@ namespace Extensibility.Proactive;
 
 public static class TimingResilienceStrategyBuilderExtensions
 {
-    // The extensions should return the builder for fluent API.
-    // For proactive strategies we can target both "ResiliencePipelineBuilderBase" and "ResiliencePipelineBuilder<T>"
-    // by using generic constraints.
+    // The extensions should return the builder to support a fluent API.
+    // For proactive strategies, we can target both "ResiliencePipelineBuilderBase" and "ResiliencePipelineBuilder<T>"
+    // using generic constraints.
     public static TBuilder AddTiming<TBuilder>(this TBuilder builder, TimingStrategyOptions options)
         where TBuilder : ResiliencePipelineBuilderBase
     {
-        // The strategy should be added via AddStrategy method that accepts a factory delegate
-        // and validates the options automatically.
+        // Add the strategy through the AddStrategy method. This method accepts a factory delegate
+        // and automatically validates the options.
 
         return builder.AddStrategy(
             context =>
             {
-                // The "context" contains various properties that can be used by the strategy.
-                // Here, we just use the "Telemetry" and pass it to the strategy.
-                // The Threshold and ThresholdExceeded is passed from the options.
+                // The "context" provides various properties for the strategy's use.
+                // In this case, we simply use the "Telemetry" and pass it to the strategy.
+                // The Threshold and ThresholdExceeded values are sourced from the options.
                 var strategy = new TimingResilienceStrategy(
                     options.Threshold!.Value,
                     options.ThresholdExceeded,

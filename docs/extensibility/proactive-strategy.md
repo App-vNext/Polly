@@ -8,14 +8,12 @@ Proactive resilience strategies are derived from the [`ResilienceStrategy`](xref
 
 <!-- snippet: ext-proactive-strategy -->
 ```cs
-// The strategies should be internal and not exposed as part of the library's public API.
-// The configuration of strategy should be done via extension methods and options.
+// Strategies should be internal and not exposed in the library's public API.
+// Configure the strategy through extension methods and options.
 internal sealed class TimingResilienceStrategy : ResilienceStrategy
 {
     private readonly TimeSpan _threshold;
-
     private readonly Func<ThresholdExceededArguments, ValueTask>? _thresholdExceeded;
-
     private readonly ResilienceStrategyTelemetry _telemetry;
 
     public TimingResilienceStrategy(
@@ -35,19 +33,19 @@ internal sealed class TimingResilienceStrategy : ResilienceStrategy
     {
         var stopwatch = Stopwatch.StartNew();
 
-        // Execute the provided callback and respect the value of ContinueOnCapturedContext property.
+        // Execute the given callback and adhere to the ContinueOnCapturedContext property value.
         Outcome<TResult> outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         if (stopwatch.Elapsed > _threshold)
         {
-            // Create arguments that encapsulate the information about the event.
+            // Bundle information about the event into arguments.
             var args = new ThresholdExceededArguments(context, _threshold, stopwatch.Elapsed);
 
-            // Since we detected that this execution took longer than the threshold, we will report this as an resilience event.
+            // Report this as a resilience event if the execution took longer than the threshold.
             _telemetry.Report(
-                new ResilienceEvent(ResilienceEventSeverity.Warning, "ExecutionThresholdExceeded"), // Pass the event severity and the event name
-                context, // Forward the context
-                 args); // Forward the arguments so any listeners can recognize this particular event
+                new ResilienceEvent(ResilienceEventSeverity.Warning, "ExecutionThresholdExceeded"),
+                context,
+                args);
 
             if (_thresholdExceeded is not null)
             {
@@ -55,7 +53,7 @@ internal sealed class TimingResilienceStrategy : ResilienceStrategy
             }
         }
 
-        // Just return the outcome
+        // Return the outcome directly.
         return outcome;
     }
 }
@@ -66,9 +64,8 @@ Review the code and comments to understand the implementation. Take note of the 
 
 <!-- snippet: ext-proactive-args -->
 ```cs
-// Arguments-based structs encapsulate information about particular event that occurred inside resilience strategy.
-// They cna expose any properties that are relevant to the event.
-// For this event the actual duration of execution and the threshold that was exceeded are relevant.
+// Structs for arguments encapsulate details about specific events within the resilience strategy.
+// Relevant properties to the event can be exposed. In this event, the actual execution time and the exceeded threshold are included.
 public readonly struct ThresholdExceededArguments
 {
     public ThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
@@ -82,7 +79,7 @@ public readonly struct ThresholdExceededArguments
 
     public TimeSpan Duration { get; }
 
-    // By convention, all arguments should expose the "Context" property.
+    // As per convention, all arguments should provide a "Context" property.
     public ResilienceContext Context { get; }
 }
 ```
@@ -94,7 +91,7 @@ Arguments should always have an `Arguments` suffix and include a `Context` prope
 
 In the previous section, we implemented the `TimingResilienceStrategy`. Now, it's time to integrate it with Polly and its public API.
 
-Let's define the public `TimingResilienceStrategy` to configure our strategy:
+Let's define the public `TimingStrategyOptions` to configure our strategy:
 
 <!-- snippet: ext-proactive-options -->
 ```cs
@@ -102,20 +99,18 @@ public class TimingStrategyOptions : ResilienceStrategyOptions
 {
     public TimingStrategyOptions()
     {
-        // It's recommended to set the default name for the options so
-        // the consumer can get additional information in the telemetry.
+        // Assign a default name to the options for more detailed telemetry insights.
         Name = "Timing";
     }
 
-    // You can use the validation attributes to ensure the options are valid.
-    // The validation will be performed automatically when building the pipeline.
+    // Apply validation attributes to guarantee the options' validity.
+    // The pipeline will handle validation automatically during its construction.
     [Range(typeof(TimeSpan), "00:00:00", "1.00:00:00")]
     [Required]
     public TimeSpan? Threshold { get; set; }
 
-    // Expose the delegate that will be invoked when the threshold is exceeded.
-    // The recommendation is that the arguments should have the same name as the delegate but with "Arguments" suffix.
-    // Notice that the delegate is not required.
+    // Provide the delegate to be called when the threshold is surpassed.
+    // Ideally, arguments should share the delegate's name, but with an "Arguments" suffix.
     public Func<ThresholdExceededArguments, ValueTask>? ThresholdExceeded { get; set; }
 }
 ```
@@ -125,32 +120,32 @@ Options represent our public contract with the consumer. By using them, we can e
 
 ## Extensions
 
-So far, we have:
+So far, we've covered:
 
-- Public `TimingResilienceStrategy` and the public arguments associated with them.
-- Our proactive strategy implementation - `TimingResilienceStrategy`.
+- The public `TimingStrategyOptions` and its associated arguments.
+- The proactive strategy implementation named `TimingResilienceStrategy`.
 
-The last step is to combine these components by introducing new extensions for the `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>`. As both builders share the same base class, we can present a single extension for `ResiliencePipelineBuilderBase` to cater to both.
+The final step is to integrate these components by adding new extensions for both `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>`. Since both builders inherit from the same base class, we can introduce a single extension for `ResiliencePipelineBuilderBase` to serve both.
 
 <!-- snippet: ext-proactive-extensions -->
 ```cs
 public static class TimingResilienceStrategyBuilderExtensions
 {
-    // The extensions should return the builder for fluent API.
-    // For proactive strategies we can target both "ResiliencePipelineBuilderBase" and "ResiliencePipelineBuilder<T>"
-    // by using generic constraints.
+    // The extensions should return the builder to support a fluent API.
+    // For proactive strategies, we can target both "ResiliencePipelineBuilderBase" and "ResiliencePipelineBuilder<T>"
+    // using generic constraints.
     public static TBuilder AddTiming<TBuilder>(this TBuilder builder, TimingStrategyOptions options)
         where TBuilder : ResiliencePipelineBuilderBase
     {
-        // The strategy should be added via AddStrategy method that accepts a factory delegate
-        // and validates the options automatically.
+        // Add the strategy through the AddStrategy method. This method accepts a factory delegate
+        // and automatically validates the options.
 
         return builder.AddStrategy(
             context =>
             {
-                // The "context" contains various properties that can be used by the strategy.
-                // Here, we just use the "Telemetry" and pass it to the strategy.
-                // The Threshold and ThresholdExceeded is passed from the options.
+                // The "context" provides various properties for the strategy's use.
+                // In this case, we simply use the "Telemetry" and pass it to the strategy.
+                // The Threshold and ThresholdExceeded values are sourced from the options.
                 var strategy = new TimingResilienceStrategy(
                     options.Threshold!.Value,
                     options.ThresholdExceeded,
@@ -170,4 +165,4 @@ For further understanding of proactive resilience strategies, consider exploring
 
 - [Timing strategy sample](https://github.com/App-vNext/Polly/tree/main/samples/Extensibility/Proactive): A practical example from this guide.
 - [Timeout resilience strategy](https://github.com/App-vNext/Polly/tree/main/src/Polly.Core/Timeout): Discover the built-in timeout resilience strategy implementation.
-- [Rate limiter resilience strategy](https://github.com/App-vNext/Polly/tree/main/src/Polly.RateLimiting): DIscover how rate limiter strategy is implemented.
+- [Rate limiter resilience strategy](https://github.com/App-vNext/Polly/tree/main/src/Polly.RateLimiting): Discover how rate limiter strategy is implemented.
