@@ -3987,6 +3987,23 @@ references:
   fullName.vb: Polly.Retry.RetryStrategyOptions(Of TResult).DelayGenerator
   nameWithType: RetryStrategyOptions<TResult>.DelayGenerator
   nameWithType.vb: RetryStrategyOptions(Of TResult).DelayGenerator
+- uid: Polly.Retry.RetryStrategyOptions`1.MaxDelay
+  name: MaxDelay
+  href: api/Polly.Retry.RetryStrategyOptions-1.html#Polly_Retry_RetryStrategyOptions_1_MaxDelay
+  commentId: P:Polly.Retry.RetryStrategyOptions`1.MaxDelay
+  fullName: Polly.Retry.RetryStrategyOptions<TResult>.MaxDelay
+  fullName.vb: Polly.Retry.RetryStrategyOptions(Of TResult).MaxDelay
+  nameWithType: RetryStrategyOptions<TResult>.MaxDelay
+  nameWithType.vb: RetryStrategyOptions(Of TResult).MaxDelay
+- uid: Polly.Retry.RetryStrategyOptions`1.MaxDelay*
+  name: MaxDelay
+  href: api/Polly.Retry.RetryStrategyOptions-1.html#Polly_Retry_RetryStrategyOptions_1_MaxDelay_
+  commentId: Overload:Polly.Retry.RetryStrategyOptions`1.MaxDelay
+  isSpec: "True"
+  fullName: Polly.Retry.RetryStrategyOptions<TResult>.MaxDelay
+  fullName.vb: Polly.Retry.RetryStrategyOptions(Of TResult).MaxDelay
+  nameWithType: RetryStrategyOptions<TResult>.MaxDelay
+  nameWithType.vb: RetryStrategyOptions(Of TResult).MaxDelay
 - uid: Polly.Retry.RetryStrategyOptions`1.MaxRetryAttempts
   name: MaxRetryAttempts
   href: api/Polly.Retry.RetryStrategyOptions-1.html#Polly_Retry_RetryStrategyOptions_1_MaxRetryAttempts
