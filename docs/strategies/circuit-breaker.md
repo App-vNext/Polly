@@ -99,3 +99,229 @@ await manualControl.CloseAsync();
 - [Circuit Breaker by Martin Fowler](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [Circuit Breaker Pattern by Microsoft](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
 - [Original Circuit Breaking Article](https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker)
+
+## Patterns and Anti-patterns
+Throughout the years many people have used Polly in so many different ways. Some reoccuring patterns are suboptimal. So, this section shows the donts and dos.
+
+### 1 - Using different sleep duration between retry attempts based on Circuit Breaker state
+
+Imagine that we have an inner Circuit Breaker and an outer Retry strategies.
+We would like to define the retry in a way that the sleep duration calculation is taking into account the Circuit Breaker's state.
+
+❌ DON'T
+
+Use closure to branch based on circuit breaker state
+
+<!-- snippet: circuit-breaker-anti-pattern-1 -->
+```cs
+var stateProvider = new CircuitBreakerStateProvider();
+var circuitBreaker = new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new()
+    {
+        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+        BreakDuration = TimeSpan.FromSeconds(5),
+        StateProvider = stateProvider
+    })
+    .Build();
+
+var retry = new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        ShouldHandle = new PredicateBuilder()
+            .Handle<HttpRequestException>()
+            .Handle<BrokenCircuitException>(),
+        DelayGenerator = args =>
+        {
+            TimeSpan? delay = TimeSpan.FromSeconds(1);
+            if (stateProvider.CircuitState == CircuitState.Open)
+            {
+                delay = TimeSpan.FromSeconds(5);
+            }
+
+            return ValueTask.FromResult(delay);
+        }
+    })
+    .Build();
+```
+<!-- endSnippet -->
+
+**Reasoning**:
+- By default each strategy is independent and do not have any reference to other strategies
+- Here we are using the (`stateProvider`) to access the Circuit Breaker's state
+  - Which is still suboptimal since the retry strategy's `DelayGenerator` branches based on state
+- Also this solution is fragile since the break duration and the sleep duration are not connected
+  - If a future maintainer of code changes the `circuitBreaker`'s `BreakDuration` then (s)he might forget to change sleep duration as well
+
+✅ DO
+
+Use `Context` to pass information between strategies
+
+<!-- snippet: circuit-breaker-pattern-1 -->
+```cs
+var circuitBreaker = new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new()
+    {
+        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+        BreakDuration = TimeSpan.FromSeconds(5),
+        OnOpened = static args =>
+        {
+            args.Context.Properties.Set(SleepDurationKey, args.BreakDuration);
+            return ValueTask.CompletedTask;
+        },
+        OnClosed = args =>
+        {
+            args.Context.Properties.Set(SleepDurationKey, null);
+            return ValueTask.CompletedTask;
+        }
+    })
+    .Build();
+
+var retry = new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        ShouldHandle = new PredicateBuilder()
+            .Handle<HttpRequestException>()
+            .Handle<BrokenCircuitException>(),
+        DelayGenerator = static args =>
+        {
+            _ = args.Context.Properties.TryGetValue(SleepDurationKey, out var delay);
+            delay ??= TimeSpan.FromSeconds(1);
+            return ValueTask.FromResult(delay);
+        }
+    })
+    .Build();
+```
+<!-- endSnippet -->
+
+**Reasoning**:
+- With this approach the two strategies are less coupled
+  - They both use the context and the `sleepDurationKey` components
+- The Circuit Breaker shares the `BreakDuration` via the context whenever it breaks
+  - When it transitions back to Closed then it "revokes" the sharring
+- The Retry do not have any circuit breaker specific logic
+  - It dynamically fetches the sleep duration whithout knowing anything about the circuit breaker
+  - Also if `BreakDuration` needs to be adjusted then it can be done in a single place
+
+### 2 - Using different duration for breaks
+
+In case of Retry you can specify dynamically the sleep duration via the `DelayGenerator`.
+In case of Circuit Breaker the `BreakDuration` is considered constant (can't be changed between breaks).
+
+❌ DON'T
+
+Use `Task.Delay` inside `OnOpened`
+
+<!-- snippet: circuit-breaker-anti-pattern-2 -->
+```cs
+static IEnumerable<TimeSpan> GetSleepDuration()
+{
+    for (int i = 1; i < 10; i++)
+    {
+        yield return TimeSpan.FromSeconds(i);
+    }
+}
+
+var sleepDurationProvider = GetSleepDuration().GetEnumerator();
+sleepDurationProvider.MoveNext();
+
+var circuitBreaker = new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new()
+    {
+        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+        BreakDuration = TimeSpan.FromSeconds(0.5),
+        OnOpened = async args =>
+        {
+            await Task.Delay(sleepDurationProvider.Current);
+            sleepDurationProvider.MoveNext();
+        }
+
+    })
+    .Build();
+```
+<!-- endSnippet -->
+
+**Reasoning**:
+- The lowest value of break duration is half second
+  - That means each sleep is actually takes `sleepDurationProvider.Current` + half second
+- You might think that setting the `BreakDuration` to the `sleepDurationProvider.Current` solves the problem
+  - But it doesn't since the `BreakDuration` is set only once and not re-evalutated at every break
+
+<!-- snippet: circuit-breaker-anti-pattern-2-ext -->
+```cs
+circuitBreaker = new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new()
+    {
+        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+        BreakDuration = sleepDurationProvider.Current,
+        OnOpened = async args =>
+        {
+            Console.WriteLine($"Break: {sleepDurationProvider.Current}");
+            sleepDurationProvider.MoveNext();
+        }
+
+    })
+    .Build();
+```
+<!-- endSnippet -->
+
+✅ DO
+
+The `CircuitBreakerStartegyOptions` currently do not provide a way to define break durations dynamically.
+This might be re-evaluted later until that use the first example as a workaround with caution.
+
+### 3 - Wrapping each endpoint with a circuit breaker
+
+Imagine that you have to call N number of services via `HttpClient`s.
+You want to decorate all downstream calls with the service-aware Circuit Breaker.
+
+❌ DON'T
+
+Use a collection of Circuit Breakers and explicitly call `ExecuteAsync`
+
+<!-- snippet: circuit-breaker-anti-pattern-3 -->
+```cs
+// Defined in a common place
+var uriToCbMappings = new Dictionary<Uri, ResiliencePipeline>
+{
+    { new Uri("https://downstream1.com"), GetCircuitBreaker() },
+    // ...
+    { new Uri("https://downstreamN.com"), GetCircuitBreaker() }
+};
+
+// Used in the downstream 1 client
+var downstream1Uri = new Uri("https://downstream1.com");
+await uriToCbMappings[downstream1Uri].ExecuteAsync(CallXYZOnDownstream1, CancellationToken.None);
+```
+<!-- endSnippet -->
+
+**Reasoning**:
+- In every places where you use an `HttpClient` you have to have a reference to the  `uriToCbMappings`
+- It is your responsibility to decorate each and every network call with the related circuit breaker
+
+✅ DO
+
+Use named and typed `HttpClient`s
+
+```cs
+foreach (string uri in uris)
+{
+    builder.Services
+      .AddHttpClient<IResilientClient, ResilientClient>(uri, client => client.BaseAddress = new Uri(uri))
+      .AddPolicyHandler(GetCircuitBreaker().AsAsyncPolicy<HttpResponseMessage>());
+}
+
+...
+private const string serviceUrl = "https://downstream1.com";
+public Downstream1Client(
+   IHttpClientFactory namedClientFactory,
+   ITypedHttpClientFactory<ResilientClient> typedClientFactory)
+{
+    var namedClient = namedClientFactory.CreateClient(serviceUrl);
+    var namedTypedClient = typedClientFactory.CreateClient(namedClient);
+    ...
+}
+```
+
+**Reasoning**:
+- The HttpClient - Circuit Breaker integrations are done at startup time
+- There is no need to explicitly call `ExecuteAsync` since the underlying `DelegatingHandler` will do it on your behalf
