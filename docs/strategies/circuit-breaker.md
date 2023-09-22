@@ -147,6 +147,7 @@ var retry = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 
 **Reasoning**:
+
 - By default, each strategy is independent and has no any reference to other strategies.
 - We use the (`stateProvider`) to access the Circuit Breaker's state. However, this approach is not optimal as the retry strategy's `DelayGenerator` varies based on state.
 - This solution is delicate because the break duration and the sleep duration aren't linked:
@@ -194,6 +195,7 @@ var retry = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 
 **Reasoning**:
+
 - Both strategies are less coupled in this approach since they rely on the context and the `sleepDurationKey` components.
 - The Circuit Breaker shares the `BreakDuration` through the context when it breaks.
 When it transitions back to Closed, the sharring is revoked.
@@ -239,6 +241,7 @@ var circuitBreaker = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 
 **Reasoning**:
+
 - The minimum break duration value is half second. This implies that each sleep lasts for `sleepDurationProvider.Current` plus an additional half second.
 - One might think that setting the `BreakDuration` to `sleepDurationProvider.Current` would addres this, but it doesn't. This is because the `BreakDuration` is established only once and  isn't reassessed during each break.
 
@@ -290,6 +293,7 @@ await uriToCbMappings[downstream1Uri].ExecuteAsync(CallXYZOnDownstream1, Cancell
 <!-- endSnippet -->
 
 **Reasoning**:
+
 - Whenever you use an `HttpClient`, you must have a reference to the  `uriToCbMappings`.
 - It's your responsibility to decorate each network call with the corresponding circuit breaker.
 
@@ -318,6 +322,7 @@ public Downstream1Client(
 ```
 
 **Reasoning**:
+
 - The `HttpClient` integrates with Circuit Breaker during startup.
 - There's no need to call `ExecuteAsync` directly. The `DelegatingHandler` handles it automatically.
 
