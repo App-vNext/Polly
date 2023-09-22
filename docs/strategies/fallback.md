@@ -68,15 +68,15 @@ new ResiliencePipelineBuilder<UserAvatar>()
 | `FallbackAction` | `Null`, **Required**                                                       | Fallback action to be executed.                                                             |
 | `OnFallback`     | `null`                                                                     | Event that is raised when fallback happens.                                                 |
 
+## Patterns and anti-patterns
 
-## Patterns and Anti-patterns
-Throughout the years many people have used Polly in so many different ways. Some reoccuring patterns are suboptimal. So, this section shows the donts and dos.
+Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
 
 ### 1 - Using fallback to replace thrown exception
 
 ❌ DON'T
 
-Throw custom exception from the `OnFallback`
+Throw custom exceptions from the `OnFallback`:
 
 <!-- snippet: fallback-anti-pattern-1 -->
 ```cs
@@ -92,11 +92,12 @@ var fallback = new ResiliencePipelineBuilder<HttpResponseMessage>()
 <!-- endSnippet -->
 
 **Reasoning**:
-- Throwing an exception in an user-defined delegate is never a good idea because it is breaking the normal control flow.
+
+Throwing an exception from a user-defined delegate can disrupt the normal control flow.
 
 ✅ DO
 
-Use `ExecuteOutcomeAsync` and then assess `Exception`
+Use `ExecuteOutcomeAsync` and then evaluate the `Exception`:
 
 <!-- snippet: fallback-pattern-1 -->
 ```cs
@@ -109,10 +110,8 @@ if (outcome.Exception is HttpRequestException hre)
 <!-- endSnippet -->
 
 **Reasoning**:
-- This approach executes the strategy/pipeline without "jumping out from the normal flow"
-- If you find yourself in a situation that you write this Exception "remapping" logic again and again
-  - then mark the to-be-decorated method as `private`
-  - and expose the "remapping" logic as `public`
+
+This method lets you execute the strategy or pipeline smoothly, without unexpected interruptions. If you repeatedly find yourself writing this exception "remapping" logic, consider marking the method you wish to decorate as `private` and expose the "remapping" logic publicly.
 
 <!-- snippet: fallback-pattern-1-ext -->
 ```cs
@@ -143,13 +142,13 @@ private static ValueTask<HttpResponseMessage> ActionCore()
 ```
 <!-- endSnippet -->
 
-### 2 - Using retry to perform fallback
+### 2 - Using retry for fallback
 
-Lets suppose you have a primary and a secondary endpoints. If primary fails then you want to call the secondary.
+Suppose you have a primary and a secondary endpoint. If the primary fails, you want to call the secondary.
 
 ❌ DON'T
 
-Use retry to perform fallback
+Use retry for fallback:
 
 <!-- snippet: fallback-anti-pattern-2 -->
 ```cs
@@ -185,14 +184,12 @@ return result;
 <!-- endSnippet -->
 
 **Reasoning**:
-- Retry strategy by default executes the exact same operation at most `n` times
-  - where `n` equals to the initial attempt + `MaxRetryAttempts`
-  - So, in this particular case this means __2__
-- Here the fallback is produced as a side-effect rather than as a substitute
+
+A retry strategy by default executes the same operation up to `n` times, where `n` equals the initial attempt plus `MaxRetryAttempts`. In this case, that means **2** times. Here, the fallback is introduced as a side effect rather than a replacement.
 
 ✅ DO
 
-Use fallback to call secondary
+Use fallback to call the secondary:
 
 <!-- snippet: fallback-pattern-2 -->
 ```cs
@@ -210,19 +207,20 @@ return await fallback.ExecuteAsync(CallPrimary, CancellationToken.None);
 <!-- endSnippet -->
 
 **Reasoning**:
-- The to-be-decorated code is executed only once
-- The fallback value will be returned without any extra code (no need for `Context` or `ExecuteOutcomeAsync`)
+
+- The target code is executed only once.
+- The fallback value is returned directly, eliminating the need for additional code like `Context` or `ExecuteOutcomeAsync`.
 
 ### 3 - Nesting `ExecuteAsync` calls
 
-There are many ways to combine multiple strategies together. One of the least desired one is the `Execute` hell.
+Combining multiple strategies can be achieved in various ways. However, deeply nesting `ExecuteAsync` calls can lead to what's commonly referred to as `Execute` hell.
 
 > [!NOTE]
-> This is not strictly related to Fallback but we have seen it many times when Fallback was the most outer.
+> While this isn't strictly tied to the Fallback mechanism, it's frequently observed when Fallback is the outermost layer.
 
 ❌ DON'T
 
-Nest `ExecuteAsync` calls
+Avoid nesting `ExecuteAsync` calls.
 
 <!-- snippet: fallback-anti-pattern-3 -->
 ```cs
@@ -239,11 +237,12 @@ return result;
 <!-- endSnippet -->
 
 **Reasoning**:
-- This is the same as javascript's callback hell or pyramid of doom
-- It is pretty easy to refer to the wrong `CancellationToken` parameter
+
+This is akin to JavaScript's callback hell or the pyramid of doom. It's easy to mistakenly reference the wrong `CancellationToken` parameter.
 
 ✅ DO
-Use `ResiliencePipelineBuilder` to chain them
+
+Use `ResiliencePipelineBuilder` to chain strategies.
 
 <!-- snippet: fallback-pattern-3 -->
 ```cs
@@ -257,5 +256,5 @@ return await pipeline.ExecuteAsync(CallExternalSystem, CancellationToken.None);
 <!-- endSnippet -->
 
 **Reasoning**:
-- Here we are relying Polly provided escalation mechanism rather than building our own via nesting
-- The `CancellationToken`s are propagated between the policies automatically on your behalf
+
+In this approach, we leverage the escalation mechanism provided by Polly rather than creating our own through nesting. `CancellationToken`s are automatically propagated between the strategies for you.
