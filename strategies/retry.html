@@ -226,11 +226,11 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 </tr>
 </tbody>
 </table>
-<h2 id="patterns-and-anti-patterns">Patterns and Anti-patterns</h2>
-<p>Throughout the years many people have used Polly in so many different ways. Some reoccuring patterns are suboptimal. So, this section shows the donts and dos.</p>
+<h2 id="patterns-and-anti-patterns">Patterns and anti-patterns</h2>
+<p>Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.</p>
 <h3 id="1---overusing-builder-methods">1 - Overusing builder methods</h3>
 <p>❌ DON'T</p>
-<p>Use more than one <code>Handle/HandleResult</code></p>
+<p>Overuse <code>Handle/HandleResult</code>:</p>
 <!-- snippet: retry-anti-pattern-1 -->
 <pre><code class="lang-cs">var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -247,12 +247,9 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<ul>
-<li>Even though this builder method signature is quite concise you repeat the same thing over and over (<em>please trigger retry if the to-be-decorated code throws XYZ exception</em>).</li>
-<li>A better approach would be to tell  <em>please trigger retry if the to-be-decorated code throws one of the retriable exceptions</em>.</li>
-</ul>
+<p>Using multiple <code>Handle/HandleResult</code> methods is redundant. Instead of specifying to retry if the decorated code throws a certain exception repeatedly, it's more efficient to state that retries should occur if any of the retryable exceptions are thrown.</p>
 <p>✅ DO</p>
-<p>Use collections and simple predicate functions</p>
+<p>Use collections and simple predicate functions:</p>
 <!-- snippet: retry-pattern-1 -->
 <pre><code class="lang-cs">ImmutableArray&lt;Type&gt; networkExceptions = new[]
 {
@@ -260,14 +257,14 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
     typeof(HttpRequestException),
 }.ToImmutableArray();
 
-ImmutableArray&lt;Type&gt; policyExceptions = new[]
+ImmutableArray&lt;Type&gt; strategyExceptions = new[]
 {
     typeof(TimeoutRejectedException),
     typeof(BrokenCircuitException),
     typeof(RateLimitRejectedException),
 }.ToImmutableArray();
 
-ImmutableArray&lt;Type&gt; retryableExceptions = networkExceptions.Union(policyExceptions)
+ImmutableArray&lt;Type&gt; retryableExceptions = networkExceptions.Union(strategyExceptions)
     .ToImmutableArray();
 
 var retry = new ResiliencePipelineBuilder()
@@ -280,16 +277,10 @@ var retry = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<ul>
-<li>This approach embraces re-usability.
-<ul>
-<li>For instance the <code>networkExceptions</code> can be reused across many the strategies (retry, circuit breaker, etc..).</li>
-</ul>
-</li>
-</ul>
-<h3 id="2---using-retry-as-a-periodical-executor">2 - Using retry as a periodical executor</h3>
+<p>Grouping exceptions simplifies the configuration and improves reusability. For example, <code>networkExceptions</code> can be reused in various strategies such as retry, circuit breaker, and more.</p>
+<h3 id="2---using-retry-for-periodic-execution">2 - Using retry for periodic execution</h3>
 <p>❌ DON'T</p>
-<p>Define a retry strategy to run forever in a given frequency</p>
+<p>Use a retry strategy to run indefinitely at a specified interval:</p>
 <!-- snippet: retry-anti-pattern-2 -->
 <pre><code class="lang-cs">var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -301,20 +292,17 @@ var retry = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<ul>
-<li>The sleep period can be blocking or non-blocking depending on how you define your strategy/pipeline.</li>
-<li>Even if it is used in a non-blocking manner it consumes (<em>unnecessarily</em>) memory which can't be garbage collected.</li>
-</ul>
+<p>The waiting period can be either blocking or non-blocking, based on the defined strategy/pipeline. Even when used non-blockingly, it unnecessarily consumes memory that can't be reclaimed by the garbage collector.</p>
 <p>✅ DO</p>
-<p>Use appropriate tool to schedule recurring jobs like <em>Quartz.Net</em>, <em>Hangfire</em> or similar.</p>
+<p>Use a suitable tool to schedule recurring tasks, such as <em>Quartz.Net</em>, <em>Hangfire</em>, or others.</p>
 <p><strong>Reasoning</strong>:</p>
 <ul>
-<li>Polly was never design to support this use case rather than its main aim is to help you overcome <strong>short</strong> transient failures.</li>
-<li>Dedicated job scheduler tools are more efficient (in terms of memory) and can be configured to withstand machine failure by utilizing persistence storage.</li>
+<li>Polly was not designed to support this scenario; its primary purpose is to help manage <strong>brief</strong> transient failures.</li>
+<li>Specialized job scheduling tools are more memory-efficient and can be set up to withstand machine failures by using persistent storage.</li>
 </ul>
 <h3 id="3---combining-multiple-sleep-duration-strategies">3 - Combining multiple sleep duration strategies</h3>
 <p>❌ DON'T</p>
-<p>Mix the ever increasing values with constant ones</p>
+<p>Mix increasing values with constant ones:</p>
 <!-- snippet: retry-anti-pattern-3 -->
 <pre><code class="lang-cs">var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -332,19 +320,15 @@ var retry = new ResiliencePipelineBuilder()
     .Build();
 </code></pre>
 <!-- endSnippet -->
-<p>Reasoning:</p>
+<p><strong>Reasoning:</strong></p>
+<p>Using this approach essentially turns the logic into a state machine. Although this offers a concise way to express sleep durations, it has several disadvantages:</p>
 <ul>
-<li>By changing the behaviour based on state we basically created here a state machine</li>
-<li>Even though it is a really compact/concise way to express sleep durations there are three main drawbacks
-<ul>
-<li>This approach does not embrace re-usability (you can't re-use only the quick retries)</li>
-<li>The sleep duration logic is tightly coupled to the <code>AttemptNumber</code></li>
-<li>It is harder to unit test</li>
-</ul>
-</li>
+<li>It doesn't support reusability (for instance, you can't use only the quick retries).</li>
+<li>The sleep duration logic is closely tied to the <code>AttemptNumber</code>.</li>
+<li>Testing becomes more challenging.</li>
 </ul>
 <p>✅ DO</p>
-<p>Define two separate retry strategy options and chain them</p>
+<p>Use two distinct retry strategy options and link them:</p>
 <!-- snippet: retry-pattern-3 -->
 <pre><code class="lang-cs">var slowRetries = new RetryStrategyOptions
 {
@@ -367,21 +351,16 @@ var retry = new ResiliencePipelineBuilder()
     .Build();
 </code></pre>
 <!-- endSnippet -->
-<p>Reasoning:</p>
+<p><strong>Reasoning</strong>:</p>
 <ul>
-<li>Even though this approach is a bit more verbose (compared to the previous one) it is more flexible</li>
-<li>You can compose the retry strategies in any order (slower is the outer and quicker is the inner or vice versa)</li>
-<li>You can define different triggers for the retry policies
-<ul>
-<li>Which allows you to switch back and forth between the policies based on the thrown exception or on the result</li>
-<li>There is no strict order so, quick and slow retries can interleave</li>
+<li>While this method may appear more verbose than the first, it offers greater flexibility.</li>
+<li>Retry strategies can be arranged in any order (either slower first and then quicker, or the other way around).</li>
+<li>Different triggers can be defined for the retry strategies, allowing for switches between them based on exceptions or results. The order isn't fixed, so quick and slow retries can alternate.</li>
 </ul>
-</li>
-</ul>
-<h3 id="4---branching-retry-logic-based-on-request-url">4 - Branching retry logic based on request url</h3>
-<p>Lets suppose you have an <code>HttpClient</code> and you want to decorate it with a retry only if a request is against a certain endpoint</p>
+<h3 id="4---branching-retry-logic-based-on-request-url">4 - Branching retry logic based on request URL</h3>
+<p>Suppose you have an <code>HttpClient</code> and you want to add a retry only for specific endpoints.</p>
 <p>❌ DON'T</p>
-<p>Use <code>ResiliencePipeline.Empty</code> and <code>?:</code> operator</p>
+<p>Use <code>ResiliencePipeline.Empty</code> and the <code>?:</code> operator:</p>
 <!-- snippet: retry-anti-pattern-4 -->
 <pre><code class="lang-cs">var retry =
     IsRetryable(req.RequestUri)
@@ -390,12 +369,9 @@ var retry = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<ul>
-<li>In this case the triggering conditions/logic are scattered in multiple places</li>
-<li>From extensibility perspective it is also not desirable since it can easily become less and less legible as you add more conditions</li>
-</ul>
+<p>The triggering conditions and logic are spread across different sections. This design is not ideal for extensibility since adding more conditions can make the code less readable.</p>
 <p>✅ DO</p>
-<p>Use the <code>ShouldHandle</code> clause to define triggering logic</p>
+<p>Use the <code>ShouldHandle</code> clause to define the triggering logic:</p>
 <!-- snippet: retry-pattern-4 -->
 <pre><code class="lang-cs">var retry = new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     .AddRetry(new()
@@ -407,12 +383,12 @@ var retry = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
 <ul>
-<li>The triggering conditions are located in a single, well-known place</li>
-<li>There is no need to cover <em>&quot;what to do when policy shouldn't trigger&quot;</em></li>
+<li>The conditions for triggering are consolidated in a familiar and easily accessible location.</li>
+<li>You don't need to specify actions for scenarios when the strategy shouldn't be triggered.</li>
 </ul>
-<h3 id="5---calling-a-given-method-beforeafter-each-retry-attempt">5 - Calling a given method before/after each retry attempt</h3>
+<h3 id="5---calling-a-method-beforeafter-each-retry-attempt">5 - Calling a method before/after each retry attempt</h3>
 <p>❌ DON'T</p>
-<p>Call explicitly a given method before <code>Execute</code>/<code>ExecuteAsync</code></p>
+<p>Call a specific method before <code>Execute</code>/<code>ExecuteAsync</code>:</p>
 <!-- snippet: retry-anti-pattern-5 -->
 <pre><code class="lang-cs">var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -431,20 +407,12 @@ await retry.ExecuteAsync(DoSomething);
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
 <ul>
-<li>The <code>OnRetry</code> is called before each <strong>retry</strong> attempt.
-<ul>
-<li>So, it won't be called before the very first initial attempt (because that is not a retry)</li>
-</ul>
-</li>
-<li>If this strategy is used in multiple places it is quite likely that you will forgot to call <code>BeforeEachAttempt</code> before every <code>Execute</code> calls</li>
-<li>Here the naming is very explicit but in real world scenario your method might not be prefixed with <code>Before</code>
-<ul>
-<li>So, one might call it after the <code>Execute</code> call which is not the intended usage</li>
-</ul>
-</li>
+<li>The <code>OnRetry</code> function is triggered before each <strong>retry</strong> attempt, but it doesn't activate before the initial attempt since it's not considered a retry.</li>
+<li>Using this method across various parts can lead to accidentally omitting the <code>BeforeEachAttempt</code> call before every <code>Execute</code>.</li>
+<li>Even though the naming here is straightforward, in real-world scenarios, your method might not start with 'Before', leading to potential misuse by calling it after the <code>Execute</code>.</li>
 </ul>
 <p>✅ DO</p>
-<p>Decorate the two method calls together</p>
+<p>Group the two method calls:</p>
 <!-- snippet: retry-pattern-5 -->
 <pre><code class="lang-cs">var retry = new ResiliencePipelineBuilder()
     .AddRetry(new())
@@ -458,17 +426,11 @@ await retry.ExecuteAsync(ct =&gt;
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<ul>
-<li>If the <code>DoSomething</code> and <code>BeforeEachRetry</code> coupled together then decorate them together
-<ul>
-<li>Or create a simple wrapper to call them in the desired order</li>
-</ul>
-</li>
-</ul>
-<h3 id="6---having-a-single-policy-to-cover-multiple-failures">6 - Having a single policy to cover multiple failures</h3>
-<p>Lets suppose we have an <code>HttpClient</code> which issues a request and then we try to parse a large Json</p>
+<p>If <code>DoSomething</code> and <code>BeforeEachAttempt</code> are interdependent, group them or craft a simple wrapper to invoke them in the correct sequence.</p>
+<h3 id="6---having-a-single-strategy-for-multiple-failures">6 - Having a single strategy for multiple failures</h3>
+<p>Suppose we have an <code>HttpClient</code> that issues a request and then we try to parse a large JSON.</p>
 <p>❌ DON'T</p>
-<p>Have a single policy to cover everything</p>
+<p>Use a single strategy for everything:</p>
 <!-- snippet: retry-anti-pattern-6 -->
 <pre><code class="lang-cs">var builder = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -489,16 +451,9 @@ httpClient);
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<ul>
-<li>In the previous point it was suggested that  <em>if the <code>X</code> and <code>Y</code> coupled together then decorate them together</em>
-<ul>
-<li>only if they are all part of the same failure domain</li>
-<li>in other words a pipeline should cover one failure domain</li>
-</ul>
-</li>
-</ul>
+<p>Previously, it was suggested that you should combine <code>X</code> and <code>Y</code> only if they are part of the same failure domain. In simpler terms, a pipeline should address only one type of failure.</p>
 <p>✅ DO</p>
-<p>Define a strategy per failure domain</p>
+<p>Define a strategy for each failure domain:</p>
 <!-- snippet: retry-pattern-6 -->
 <pre><code class="lang-cs">var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -521,17 +476,11 @@ var foo = await timeout.ExecuteAsync((ct) =&gt; JsonSerializer.DeserializeAsync&
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<ul>
-<li>Network call's failure domain is different than deserialization's failures
-<ul>
-<li>Having dedicated strategies makes the application more robust against different transient failures</li>
-</ul>
-</li>
-</ul>
-<h3 id="7---cancelling-retry-in-case-of-given-exception">7 - Cancelling retry in case of given exception</h3>
-<p>After you receive a <code>TimeoutException</code> you don't want to perform any more retries</p>
+<p>The failure domain of a network call is different from that of deserialization. Using dedicated strategies makes the application more resilient to various transient failures.</p>
+<h3 id="7---cancelling-retry-for-specific-exceptions">7 - Cancelling retry for specific exceptions</h3>
+<p>If you encounter a <code>TimeoutException</code>, you may not want to retry the operation.</p>
 <p>❌ DON'T</p>
-<p>Add cancellation logic inside <code>OnRetry</code></p>
+<p>Embed cancellation logic within <code>OnRetry</code>:</p>
 <!-- snippet: retry-anti-pattern-7 -->
 <pre><code class="lang-cs">var ctsKey = new ResiliencePropertyKey&lt;CancellationTokenSource&gt;(&quot;cts&quot;);
 var retry = new ResiliencePipelineBuilder()
@@ -554,12 +503,9 @@ var retry = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<ul>
-<li>The triggering logic/conditions should be placed inside <code>ShouldHandle</code></li>
-<li>&quot;Jumping out from a strategy&quot; from a user-defined delegate either via an <code>Exception</code> or by a <code>CancellationToken</code> just complicates the control flow unnecessarily</li>
-</ul>
+<p>Conditions for triggering retries should be located in <code>ShouldHandle</code>. Bypassing the strategy from within a user-defined delegate—either through an <code>Exception</code> or a <code>CancellationToken</code>—unnecessarily complicates the control flow.</p>
 <p>✅ DO</p>
-<p>Define triggering logic inside <code>ShouldHandle</code></p>
+<p>Set the condition for retry within <code>ShouldHandle</code>:</p>
 <!-- snippet: retry-pattern-7 -->
 <pre><code class="lang-cs">var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -570,13 +516,7 @@ var retry = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<ul>
-<li>As it was stated above please use the dedicated place to define triggering condition
-<ul>
-<li>Try to rephrase your original exit condition in a way to express <em>when should a retry trigger</em></li>
-</ul>
-</li>
-</ul>
+<p>As previously mentioned, always use the designated area to define retry conditions. Reframe your original exit conditions to specify when a retry should be initiated.</p>
 </article>
 
         <div class="contribution d-print-none">
