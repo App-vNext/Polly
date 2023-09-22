@@ -12,7 +12,7 @@ Begin by adding the `Polly.Testing` package to your test project:
 dotnet add package Polly.Testing
 ```
 
-Use the `GetPipelineDescriptor` extension method to get the `ResiliencePipelineDescriptor` which provides details on the pipeline's composition:
+Use the `GetPipelineDescriptor` extension method to get the [`ResiliencePipelineDescriptor`](xref:Polly.Testing.ResiliencePipelineDescriptor) which provides details on the pipeline's composition:
 
 <!-- snippet: get-pipeline-descriptor -->
 ```cs
