@@ -117,7 +117,8 @@ ResiliencePipelineProvider&lt;string&gt; pipelineProvider = serviceProvider.GetR
 ResiliencePipeline pipeline = pipelineProvider.GetPipeline(&quot;my-key&quot;);
 
 // Use it
-await pipeline.ExecuteAsync(async cancellation =&gt; await Task.Delay(100, cancellation));
+await pipeline.ExecuteAsync(
+    static async cancellation =&gt; await Task.Delay(100, cancellation));
 </code></pre>
 <!-- endSnippet -->
 <p>The <code>AddResiliencePipeline</code> extension method also registers the following services into the DI:</p>

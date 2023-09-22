@@ -480,11 +480,12 @@ await retry.ExecuteAsync(ct =&gt;
 builder.AddTimeout(TimeSpan.FromMinutes(1));
 
 var pipeline = builder.Build();
-await pipeline.ExecuteAsync(async (ct) =&gt;
+await pipeline.ExecuteAsync(static async (httpClient, ct) =&gt;
 {
     var stream = await httpClient.GetStreamAsync(new Uri(&quot;endpoint&quot;), ct);
     var foo = await JsonSerializer.DeserializeAsync&lt;Foo&gt;(stream, cancellationToken: ct);
-});
+},
+httpClient);
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
@@ -507,7 +508,10 @@ await pipeline.ExecuteAsync(async (ct) =&gt;
     })
     .Build();
 
-var stream = await retry.ExecuteAsync(async (ct) =&gt; await httpClient.GetStreamAsync(new Uri(&quot;endpoint&quot;), ct));
+var stream = await retry.ExecuteAsync(
+    static async (httpClient, ct) =&gt;
+        await httpClient.GetStreamAsync(new Uri(&quot;endpoint&quot;), ct),
+    httpClient);
 
 var timeout = new ResiliencePipelineBuilder&lt;Foo&gt;()
     .AddTimeout(TimeSpan.FromMinutes(1))

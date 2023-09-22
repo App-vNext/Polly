@@ -312,7 +312,7 @@ return await fallback.ExecuteAsync(CallPrimary, CancellationToken.None);
 <!-- snippet: fallback-anti-pattern-3 -->
 <pre><code class="lang-cs">var result = await fallback.ExecuteAsync(async (CancellationToken outerCT) =&gt;
 {
-    return await timeout.ExecuteAsync(async (CancellationToken innerCT) =&gt;
+    return await timeout.ExecuteAsync(static async (CancellationToken innerCT) =&gt;
     {
         return await CallExternalSystem(innerCT);
     }, outerCT);
