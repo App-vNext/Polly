@@ -39,7 +39,8 @@ ResiliencePipelineProvider<string> pipelineProvider = serviceProvider.GetRequire
 ResiliencePipeline pipeline = pipelineProvider.GetPipeline("my-key");
 
 // Use it
-await pipeline.ExecuteAsync(async cancellation => await Task.Delay(100, cancellation));
+await pipeline.ExecuteAsync(
+    static async cancellation => await Task.Delay(100, cancellation));
 ```
 <!-- endSnippet -->
 

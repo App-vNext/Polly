@@ -44,7 +44,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 
 // Execute the resilience pipeline asynchronously
 await pipeline.ExecuteAsync(
-    async context =>
+    static async context =>
     {
         // Insert your execution logic here
     },

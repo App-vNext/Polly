@@ -58,7 +58,7 @@ await pipeline.ExecuteAsync(
 ResilienceContext context = ResilienceContextPool.Shared.Get(cancellationToken: cancellationToken);
 
 await pipeline.ExecuteAsync(
-    async context => await MyMethodAsync(context.CancellationToken),
+    static async context => await MyMethodAsync(context.CancellationToken),
     context);
 ```
 <!-- endSnippet -->

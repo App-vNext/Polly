@@ -151,13 +151,13 @@ internal static class Hedging
 
             try
             {
-                return await _pipeline.ExecuteAsync(async context =>
+                return await _pipeline.ExecuteAsync(async cxt =>
                 {
                     // Allow the pipeline to use request message that was stored in the context.
                     // This allows replacing the request message with a new one in the resilience pipeline.
-                    request = context.Properties.GetValue(ResilienceKeys.RequestMessage, request);
+                    request = cxt.Properties.GetValue(ResilienceKeys.RequestMessage, request);
 
-                    return await base.SendAsync(request, context.CancellationToken);
+                    return await base.SendAsync(request, cxt.CancellationToken);
                 },
                 context);
             }
