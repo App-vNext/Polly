@@ -139,14 +139,14 @@ internal static class Retry
             typeof(HttpRequestException),
         }.ToImmutableArray();
 
-        ImmutableArray<Type> policyExceptions = new[]
+        ImmutableArray<Type> strategyExceptions = new[]
         {
             typeof(TimeoutRejectedException),
             typeof(BrokenCircuitException),
             typeof(RateLimitRejectedException),
         }.ToImmutableArray();
 
-        ImmutableArray<Type> retryableExceptions = networkExceptions.Union(policyExceptions)
+        ImmutableArray<Type> retryableExceptions = networkExceptions.Union(strategyExceptions)
             .ToImmutableArray();
 
         var retry = new ResiliencePipelineBuilder()
