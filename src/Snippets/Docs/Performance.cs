@@ -155,7 +155,6 @@ internal static class Performance
                 // Place your logic here
             },
             cancellationToken);
-
         }
     }
 

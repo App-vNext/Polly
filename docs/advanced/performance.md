@@ -164,7 +164,6 @@ public class MyApi
             // Place your logic here
         },
         cancellationToken);
-
     }
 }
 ```
