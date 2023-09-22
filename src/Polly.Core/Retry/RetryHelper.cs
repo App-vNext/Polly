@@ -4,8 +4,6 @@ internal static class RetryHelper
 {
     private const double JitterFactor = 0.5;
 
-    private const double MaxDelayJitterFactor = JitterFactor / 2.0;
-
     private const double ExponentialFactor = 2.0;
 
     public static bool IsValidDelay(TimeSpan delay) => delay >= TimeSpan.Zero;
@@ -26,12 +24,6 @@ internal static class RetryHelper
             // stryker disable once equality : no means to test this
             if (maxDelay is TimeSpan maxDelayValue && delay > maxDelayValue)
             {
-                if (jitter)
-                {
-                    // Apply jitter also to max delay, we are only allowed to substract from the delay not add to it.
-                    return ApplyJitterForMaxDelay(maxDelayValue, randomizer);
-                }
-
                 return maxDelay.Value;
             }
 
@@ -125,14 +117,6 @@ internal static class RetryHelper
         var offset = (delay.TotalMilliseconds * JitterFactor) / 2;
         var randomDelay = (delay.TotalMilliseconds * JitterFactor * randomizer()) - offset;
         var newDelay = delay.TotalMilliseconds + randomDelay;
-
-        return TimeSpan.FromMilliseconds(newDelay);
-    }
-
-    private static TimeSpan ApplyJitterForMaxDelay(TimeSpan delay, Func<double> randomizer)
-    {
-        var randomDelay = delay.TotalMilliseconds * MaxDelayJitterFactor * randomizer();
-        var newDelay = delay.TotalMilliseconds - randomDelay;
 
         return TimeSpan.FromMilliseconds(newDelay);
     }

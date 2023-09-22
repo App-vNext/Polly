@@ -156,7 +156,7 @@ public class RetryHelperTests
     public void MaxDelay_Ok(DelayBackoffType type, bool jitter)
     {
         _randomizer = () => 0.5;
-        var expected = jitter ? TimeSpan.FromSeconds(0.875) : TimeSpan.FromSeconds(1);
+        var expected = TimeSpan.FromSeconds(1);
         double state = 0;
 
         RetryHelper.GetRetryDelay(type, jitter, 2, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(1), ref state, _randomizer).Should().Be(expected);
