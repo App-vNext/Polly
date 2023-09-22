@@ -368,7 +368,7 @@ If `DoSomething` and `BeforeEachAttempt` are interdependent, group them or craft
 
 Suppose we have an `HttpClient` that issues a request and then we try to parse a large JSON.
 
-❌ **Don't**
+❌ DON'T
 
 Use a single strategy for everything:
 
@@ -396,7 +396,7 @@ await pipeline.ExecuteAsync(async (ct) =>
 
 Previously, it was suggested that you should combine `X` and `Y` only if they are part of the same failure domain. In simpler terms, a pipeline should address only one type of failure.
 
-✅ **Do**
+✅ DO
 
 Define a strategy for each failure domain:
 

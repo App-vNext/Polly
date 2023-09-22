@@ -220,7 +220,7 @@ Combining multiple strategies can be achieved in various ways. However, deeply n
 
 ❌ DON'T
 
-Avoid nesting `ExecuteAsync` calls.
+Nest `ExecuteAsync` calls:
 
 <!-- snippet: fallback-anti-pattern-3 -->
 ```cs
@@ -242,7 +242,7 @@ This is akin to JavaScript's callback hell or the pyramid of doom. It's easy to 
 
 ✅ DO
 
-Use `ResiliencePipelineBuilder` to chain strategies.
+Use `ResiliencePipelineBuilder` to chain strategies:
 
 <!-- snippet: fallback-pattern-3 -->
 ```cs
