@@ -100,6 +100,7 @@ await manualControl.CloseAsync();
 - [Circuit Breaker Pattern by Microsoft](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
 - [Original Circuit Breaking Article](https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker)
 
+
 ## Patterns and Anti-patterns
 Throughout the years many people have used Polly in so many different ways. Some reoccuring patterns are suboptimal. So, this section shows the donts and dos.
 
@@ -110,7 +111,7 @@ We would like to define the retry in a way that the sleep duration calculation i
 
 ❌ DON'T
 
-Use closure to branch based on circuit breaker state
+Use closure to branch based on circuit breaker state:
 
 <!-- snippet: circuit-breaker-anti-pattern-1 -->
 ```cs
@@ -146,15 +147,14 @@ var retry = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 
 **Reasoning**:
-- By default each strategy is independent and do not have any reference to other strategies
-- Here we are using the (`stateProvider`) to access the Circuit Breaker's state
-  - Which is still suboptimal since the retry strategy's `DelayGenerator` branches based on state
-- Also this solution is fragile since the break duration and the sleep duration are not connected
-  - If a future maintainer of code changes the `circuitBreaker`'s `BreakDuration` then (s)he might forget to change sleep duration as well
+- By default, each strategy is independent and has no any reference to other strategies.
+- We use the (`stateProvider`) to access the Circuit Breaker's state. However, this approach is not optimal as the retry strategy's `DelayGenerator` varies based on state.
+- This solution is delicate because the break duration and the sleep duration aren't linked:
+- If a future code maintainer modifies the `circuitBreaker`'s `BreakDuration`, they might overlook adjusting the sleep duration.
 
 ✅ DO
 
-Use `Context` to pass information between strategies
+Use `Context` to pass information between strategies:
 
 <!-- snippet: circuit-breaker-pattern-1 -->
 ```cs
@@ -194,13 +194,11 @@ var retry = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 
 **Reasoning**:
-- With this approach the two strategies are less coupled
-  - They both use the context and the `sleepDurationKey` components
-- The Circuit Breaker shares the `BreakDuration` via the context whenever it breaks
-  - When it transitions back to Closed then it "revokes" the sharring
-- The Retry do not have any circuit breaker specific logic
-  - It dynamically fetches the sleep duration whithout knowing anything about the circuit breaker
-  - Also if `BreakDuration` needs to be adjusted then it can be done in a single place
+- Both strategies are less coupled in this approach since they rely on the context and the `sleepDurationKey` components.
+- The Circuit Breaker shares the `BreakDuration` through the context when it breaks.
+When it transitions back to Closed, the sharring is revoked.
+- The Retry strategy fetches the sleep duration dyanmically whithout knowing any specific knowledge about the Circuit Breaker.
+- If adjustments are needed for the `BreakDuration`, they can be made in one place.
 
 ### 2 - Using different duration for breaks
 
@@ -209,7 +207,7 @@ In case of Circuit Breaker the `BreakDuration` is considered constant (can't be 
 
 ❌ DON'T
 
-Use `Task.Delay` inside `OnOpened`
+Use `Task.Delay` inside `OnOpened`:
 
 <!-- snippet: circuit-breaker-anti-pattern-2 -->
 ```cs
@@ -241,10 +239,8 @@ var circuitBreaker = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 
 **Reasoning**:
-- The lowest value of break duration is half second
-  - That means each sleep is actually takes `sleepDurationProvider.Current` + half second
-- You might think that setting the `BreakDuration` to the `sleepDurationProvider.Current` solves the problem
-  - But it doesn't since the `BreakDuration` is set only once and not re-evalutated at every break
+- The minimum break duration value is half second. This implies that each sleep lasts for `sleepDurationProvider.Current` plus an additional half second.
+- One might think that setting the `BreakDuration` to `sleepDurationProvider.Current` would addres this, but it doesn't. This is because the `BreakDuration` is established only once and  isn't reassessed during each break.
 
 <!-- snippet: circuit-breaker-anti-pattern-2-ext -->
 ```cs
@@ -266,8 +262,7 @@ circuitBreaker = new ResiliencePipelineBuilder()
 
 ✅ DO
 
-The `CircuitBreakerStartegyOptions` currently do not provide a way to define break durations dynamically.
-This might be re-evaluted later until that use the first example as a workaround with caution.
+The `CircuitBreakerStartegyOptions` currently do not support defining break durations dynamically. This may be re-evaluted in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.
 
 ### 3 - Wrapping each endpoint with a circuit breaker
 
@@ -276,7 +271,7 @@ You want to decorate all downstream calls with the service-aware Circuit Breaker
 
 ❌ DON'T
 
-Use a collection of Circuit Breakers and explicitly call `ExecuteAsync`
+Use a collection of Circuit Breakers and explicitly call `ExecuteAsync`:
 
 <!-- snippet: circuit-breaker-anti-pattern-3 -->
 ```cs
@@ -295,12 +290,12 @@ await uriToCbMappings[downstream1Uri].ExecuteAsync(CallXYZOnDownstream1, Cancell
 <!-- endSnippet -->
 
 **Reasoning**:
-- In every places where you use an `HttpClient` you have to have a reference to the  `uriToCbMappings`
-- It is your responsibility to decorate each and every network call with the related circuit breaker
+- Whenever you use an `HttpClient`, you must have a reference to the  `uriToCbMappings`.
+- It's your responsibility to decorate each network call with the corresponding circuit breaker.
 
 ✅ DO
 
-Use named and typed `HttpClient`s
+Use named and typed `HttpClient`s:
 
 ```cs
 foreach (string uri in uris)
@@ -323,5 +318,10 @@ public Downstream1Client(
 ```
 
 **Reasoning**:
-- The HttpClient - Circuit Breaker integrations are done at startup time
-- There is no need to explicitly call `ExecuteAsync` since the underlying `DelegatingHandler` will do it on your behalf
+- The `HttpClient` integrates with Circuit Breaker during startup.
+- There's no need to call `ExecuteAsync` directly. The `DelegatingHandler` handles it automatically.
+
+> [!NOTE]
+> The above sample code used the `AsAsyncPolicy<HttpResponseMessage>()` method to convert the `ResiliencePipeline<HttpResponseMessage>` to `IAsyncPolicy<HttpResponseMessage>`.
+> It is required because the `AddPolicyHandler` anticipates an `IAsyncPolicy<HttpResponse>` parameter.
+> Please be aware that, later an `AddResilienceHandler` will be introduced in the `Microsoft.Extensions.Http.Resilience` package which is the successor of the `Microsoft.Extensions.Http.Polly`.
