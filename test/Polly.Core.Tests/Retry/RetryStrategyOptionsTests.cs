@@ -44,7 +44,8 @@ public class RetryStrategyOptionsTests
             DelayGenerator = null!,
             OnRetry = null!,
             MaxRetryAttempts = -3,
-            Delay = TimeSpan.MinValue
+            Delay = TimeSpan.MinValue,
+            MaxDelay = TimeSpan.FromSeconds(-10)
         };
 
         options.Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid Options")))
@@ -56,6 +57,7 @@ public class RetryStrategyOptionsTests
             Validation Errors:
             The field MaxRetryAttempts must be between 1 and 2147483647.
             The field Delay must be between 00:00:00 and 1.00:00:00.
+            The field MaxDelay must be between 00:00:00 and 1.00:00:00.
             The ShouldHandle field is required.
             """);
     }
