@@ -54,6 +54,16 @@
       "version": ""
     },
     {
+      "type": "Conceptual",
+      "source_relative_path": "advanced/testing.md",
+      "output": {
+        ".html": {
+          "relative_path": "advanced/testing.html"
+        }
+      },
+      "version": ""
+    },
+    {
       "type": "ManagedReference",
       "source_relative_path": "api/Polly.CircuitBreaker.BrokenCircuitException.yml",
       "output": {
