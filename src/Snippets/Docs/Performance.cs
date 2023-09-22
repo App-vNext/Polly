@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Polly.Registry;
 using Snippets.Docs.Utils;
 
 namespace Snippets.Docs;
@@ -122,4 +123,40 @@ internal static class Performance
     public class Member
     {
     }
+
+    #region perf-reuse-pipelines
+
+    public class MyApi
+    {
+        private readonly ResiliencePipelineRegistry<string> _registry;
+
+        // Share a single instance of the registry throughout your application.
+        public MyApi(ResiliencePipelineRegistry<string> registry)
+        {
+            _registry = registry;
+        }
+
+        public async Task UpdateData(CancellationToken cancellationToken)
+        {
+            // Get or create and cache the pipeline for subsequent use.
+            // Choose a sufficiently unique key to prevent collisions.
+            var pipeline = _registry.GetOrAddPipeline("my-app.my-api", builder =>
+            {
+                builder.AddRetry(new()
+                {
+                    ShouldHandle = new PredicateBuilder()
+                        .Handle<InvalidOperationException>()
+                        .Handle<HttpRequestException>()
+                });
+            });
+
+            await pipeline.ExecuteAsync(async token =>
+            {
+                // Place your logic here
+            },
+            cancellationToken);
+        }
+    }
+
+    #endregion
 }
