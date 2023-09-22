@@ -200,7 +200,7 @@ internal static class Fallback
     }
 
     private static ValueTask<HttpResponseMessage> CallExternalSystem(CancellationToken ct) => ValueTask.FromResult(new HttpResponseMessage());
-    public static async ValueTask<HttpResponseMessage?> Anti_Pattern_3()
+    public static async ValueTask<HttpResponseMessage?> AntiPattern_3()
     {
         var timeout = ResiliencePipeline<HttpResponseMessage>.Empty;
         var fallback = ResiliencePipeline<HttpResponseMessage>.Empty;

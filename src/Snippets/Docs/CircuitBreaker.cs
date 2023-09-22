@@ -66,4 +66,148 @@ internal static class CircuitBreaker
 
         #endregion
     }
+
+    public static void AntiPattern_1()
+    {
+        #region circuit-breaker-anti-pattern-1
+        var stateProvider = new CircuitBreakerStateProvider();
+        var circuitBreaker = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+                BreakDuration = TimeSpan.FromSeconds(5),
+                StateProvider = stateProvider
+            })
+            .Build();
+
+        var retry = new ResiliencePipelineBuilder()
+            .AddRetry(new()
+            {
+                ShouldHandle = new PredicateBuilder()
+                    .Handle<HttpRequestException>()
+                    .Handle<BrokenCircuitException>(),
+                DelayGenerator = args =>
+                {
+                    TimeSpan? delay = TimeSpan.FromSeconds(1);
+                    if (stateProvider.CircuitState == CircuitState.Open)
+                    {
+                        delay = TimeSpan.FromSeconds(5);
+                    }
+
+                    return ValueTask.FromResult(delay);
+                }
+            })
+            .Build();
+
+        #endregion
+    }
+
+    private static readonly ResiliencePropertyKey<TimeSpan?> SleepDurationKey = new("sleep_duration");
+    public static void Pattern_1()
+    {
+        #region circuit-breaker-pattern-1
+        var circuitBreaker = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+                BreakDuration = TimeSpan.FromSeconds(5),
+                OnOpened = static args =>
+                {
+                    args.Context.Properties.Set(SleepDurationKey, args.BreakDuration);
+                    return ValueTask.CompletedTask;
+                },
+                OnClosed = args =>
+                {
+                    args.Context.Properties.Set(SleepDurationKey, null);
+                    return ValueTask.CompletedTask;
+                }
+            })
+            .Build();
+
+        var retry = new ResiliencePipelineBuilder()
+            .AddRetry(new()
+            {
+                ShouldHandle = new PredicateBuilder()
+                    .Handle<HttpRequestException>()
+                    .Handle<BrokenCircuitException>(),
+                DelayGenerator = static args =>
+                {
+                    _ = args.Context.Properties.TryGetValue(SleepDurationKey, out var delay);
+                    delay ??= TimeSpan.FromSeconds(1);
+                    return ValueTask.FromResult(delay);
+                }
+            })
+            .Build();
+
+        #endregion
+    }
+
+    public static void AntiPattern_2()
+    {
+        #region circuit-breaker-anti-pattern-2
+        static IEnumerable<TimeSpan> GetSleepDuration()
+        {
+            for (int i = 1; i < 10; i++)
+            {
+                yield return TimeSpan.FromSeconds(i);
+            }
+        }
+
+        var sleepDurationProvider = GetSleepDuration().GetEnumerator();
+        sleepDurationProvider.MoveNext();
+
+        var circuitBreaker = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+                BreakDuration = TimeSpan.FromSeconds(0.5),
+                OnOpened = async args =>
+                {
+                    await Task.Delay(sleepDurationProvider.Current);
+                    sleepDurationProvider.MoveNext();
+                }
+
+            })
+            .Build();
+
+        #endregion
+
+        #region circuit-breaker-anti-pattern-2-ext
+
+        circuitBreaker = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+                BreakDuration = sleepDurationProvider.Current,
+                OnOpened = async args =>
+                {
+                    Console.WriteLine($"Break: {sleepDurationProvider.Current}");
+                    sleepDurationProvider.MoveNext();
+                }
+
+            })
+            .Build();
+
+        #endregion
+    }
+
+    public static async ValueTask AntiPattern_3()
+    {
+        static ValueTask CallXYZOnDownstream1(CancellationToken ct) => ValueTask.CompletedTask;
+        static ResiliencePipeline GetCircuitBreaker() => ResiliencePipeline.Empty;
+
+        #region circuit-breaker-anti-pattern-3
+        // Defined in a common place
+        var uriToCbMappings = new Dictionary<Uri, ResiliencePipeline>
+        {
+            { new Uri("https://downstream1.com"), GetCircuitBreaker() },
+            // ...
+            { new Uri("https://downstreamN.com"), GetCircuitBreaker() }
+        };
+
+        // Used in the downstream 1 client
+        var downstream1Uri = new Uri("https://downstream1.com");
+        await uriToCbMappings[downstream1Uri].ExecuteAsync(CallXYZOnDownstream1, CancellationToken.None);
+        #endregion
+    }
 }
