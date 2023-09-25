@@ -153,7 +153,7 @@ public static class PollyServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds <see cref="ResiliencePipelineRegistry{TKey}"/> and <see cref="ResiliencePipelineProvider{TKey}"/> to service collection that allows configuring
+    /// Adds <see cref="ResiliencePipelineRegistry{TKey}"/> and <see cref="ResiliencePipelineProvider{TKey}"/> to the service collection that allows configuring
     /// and retrieving resilience pipelines using the <typeparamref name="TKey"/> key.
     /// </summary>
     /// <typeparam name="TKey">The type of the key used to identify the resilience pipeline.</typeparam>
@@ -179,7 +179,7 @@ public static class PollyServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds <see cref="ResiliencePipelineRegistry{TKey}"/> and <see cref="ResiliencePipelineProvider{TKey}"/> to service collection that allows configuring
+    /// Adds <see cref="ResiliencePipelineRegistry{TKey}"/> and <see cref="ResiliencePipelineProvider{TKey}"/> to the service collection that allows configuring
     /// and retrieving resilience pipelines using the <typeparamref name="TKey"/> key.
     /// </summary>
     /// <typeparam name="TKey">The type of the key used to identify the resilience pipeline.</typeparam>
