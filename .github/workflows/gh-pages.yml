@@ -1,38 +1,40 @@
-# This is a basic workflow to help you get started with Actions
-
 name: github-pages
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [ main ]
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+permissions:
+  contents: read
+
 jobs:
   publish-docs:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pages: write
+
     steps:
     - name: Checkout
-      uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
-    - name: Dotnet Setup
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.x
+      uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
 
-    - run: dotnet tool restore
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
 
-    - run: dotnet docfx docs/docfx.json
+    - name: Generate documentation
+      run: |
+        dotnet tool restore
+        dotnet docfx docs/docfx.json
 
     - name: Deploy
-      if: github.event_name != 'pull_request'
-      # if: startsWith(github.ref, 'refs/tags/')
-      uses: peaceiris/actions-gh-pages@v3
+      if: |
+        github.event.repository.fork == false &&
+        github.ref_name == github.event.repository.default_branch
+      uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a2847 # v3.9.3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: docs/_site
