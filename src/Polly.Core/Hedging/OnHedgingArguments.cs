@@ -14,36 +14,31 @@ public readonly struct OnHedgingArguments<TResult>
     /// <summary>
     /// Initializes a new instance of the <see cref="OnHedgingArguments{TResult}"/> struct.
     /// </summary>
-    /// <param name="outcome">The context in which the resilience operation or event occurred.</param>
-    /// <param name="context">The outcome of the resilience operation or event.</param>
+    /// <param name="primaryContext">The outcome of the resilience operation or event.</param>
+    /// <param name="actionContext">The action context.</param>
     /// <param name="attemptNumber">The zero-based hedging attempt number.</param>
-    /// <param name="duration">The execution duration of hedging attempt or the hedging delay in case the attempt was not finished in time.</param>
-    public OnHedgingArguments(ResilienceContext context, Outcome<TResult>? outcome, int attemptNumber, TimeSpan duration)
+    public OnHedgingArguments(ResilienceContext primaryContext, ResilienceContext actionContext, int attemptNumber)
     {
-        Context = context;
-        Outcome = outcome;
+        PrimaryContext = primaryContext;
+        ActionContext = actionContext;
         AttemptNumber = attemptNumber;
-        Duration = duration;
     }
 
     /// <summary>
-    /// Gets the outcome that needs to be hedged, if any.
+    /// Gets the primary resilience context.
     /// </summary>
-    /// <remarks>If this property is <see langword="null"/>, it's an indication that user-callback or hedged operation did not complete within the hedging delay.</remarks>
-    public Outcome<TResult>? Outcome { get; }
+    public ResilienceContext PrimaryContext { get; }
 
     /// <summary>
-    /// Gets the context of this event.
+    /// Gets the action context that will be used for the hedged action.
     /// </summary>
-    public ResilienceContext Context { get; }
+    /// <remarks>
+    /// This context is cloned from <see cref="PrimaryContext"/>.
+    /// </remarks>
+    public ResilienceContext ActionContext { get; }
 
     /// <summary>
     /// Gets the zero-based hedging attempt number.
     /// </summary>
     public int AttemptNumber { get; }
-
-    /// <summary>
-    /// Gets the execution duration of hedging attempt or the hedging delay in case the attempt was not finished in time.
-    /// </summary>
-    public TimeSpan Duration { get; }
 }

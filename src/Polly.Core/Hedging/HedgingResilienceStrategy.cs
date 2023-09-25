@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Polly.Hedging.Controller;
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
 
@@ -6,15 +7,12 @@ namespace Polly.Hedging;
 
 internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
 {
-    private readonly TimeProvider _timeProvider;
-    private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly HedgingController<T> _controller;
 
     public HedgingResilienceStrategy(
         TimeSpan hedgingDelay,
         int maxHedgedAttempts,
         HedgingHandler<T> hedgingHandler,
-        Func<OnHedgingArguments<T>, ValueTask>? onHedging,
         Func<HedgingDelayGeneratorArguments, ValueTask<TimeSpan>>? hedgingDelayGenerator,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry)
@@ -22,11 +20,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
         HedgingDelay = hedgingDelay;
         TotalAttempts = maxHedgedAttempts + 1; // include the initial attempt
         DelayGenerator = hedgingDelayGenerator;
-        _timeProvider = timeProvider;
         HedgingHandler = hedgingHandler;
-        OnHedging = onHedging;
-
-        _telemetry = telemetry;
         _controller = new HedgingController<T>(telemetry, timeProvider, HedgingHandler, TotalAttempts);
     }
 
@@ -37,8 +31,6 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
     public Func<HedgingDelayGeneratorArguments, ValueTask<TimeSpan>>? DelayGenerator { get; }
 
     public HedgingHandler<T> HedgingHandler { get; }
-
-    public Func<OnHedgingArguments<T>, ValueTask>? OnHedging { get; }
 
     [ExcludeFromCodeCoverage] // coverlet issue
     protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(
@@ -72,10 +64,10 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
         var continueOnCapturedContext = context.ContinueOnCapturedContext;
 
         var attempt = -1;
+
         while (true)
         {
             attempt++;
-            var start = _timeProvider.GetTimestamp();
             if (cancellationToken.IsCancellationRequested)
             {
                 return Outcome.FromException<T>(new OperationCanceledException(cancellationToken).TrySetStackTrace());
@@ -92,10 +84,6 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
             var execution = await hedgingContext.TryWaitForCompletedExecutionAsync(delay).ConfigureAwait(continueOnCapturedContext);
             if (execution is null)
             {
-                // If completedHedgedTask is null it indicates that we still do not have any finished hedged task within the hedging delay.
-                // We will create additional hedged task in the next iteration.
-                await HandleOnHedgingAsync(
-                    new OnHedgingArguments<T>(context, null, attempt, duration: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
                 continue;
             }
 
@@ -106,23 +94,6 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
                 execution.AcceptOutcome();
                 return outcome;
             }
-
-            var executionTime = _timeProvider.GetElapsedTime(start);
-            await HandleOnHedgingAsync(
-                new OnHedgingArguments<T>(context, outcome, attempt, executionTime)).ConfigureAwait(context.ContinueOnCapturedContext);
-        }
-    }
-
-    private async ValueTask HandleOnHedgingAsync(OnHedgingArguments<T> args)
-    {
-        _telemetry.Report<OnHedgingArguments<T>, T>(new(ResilienceEventSeverity.Warning, HedgingConstants.OnHedgingEventName), args.Context, default, args);
-
-        if (OnHedging is not null)
-        {
-            // If nothing has been returned or thrown yet, the result is a transient failure,
-            // and other hedged request will be awaited.
-            // Before it, one needs to perform the task adjacent to each hedged call.
-            await OnHedging(args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
         }
     }
 

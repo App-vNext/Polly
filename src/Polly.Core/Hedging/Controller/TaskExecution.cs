@@ -127,6 +127,8 @@ internal sealed class TaskExecution<T>
                 return true;
             }
 
+            await HandleOnHedgingAsync(snapshot.Context, attemptNumber - 1).ConfigureAwait(Context.ContinueOnCapturedContext);
+
             ExecutionTaskSafe = ExecuteSecondaryActionAsync(action);
         }
         else
@@ -135,6 +137,21 @@ internal sealed class TaskExecution<T>
         }
 
         return true;
+    }
+
+    private async Task HandleOnHedgingAsync(ResilienceContext primaryContext, int attemptNumber)
+    {
+        var args = new OnHedgingArguments<T>(
+            primaryContext,
+            Context,
+            attemptNumber);
+
+        _telemetry.Report(new(ResilienceEventSeverity.Warning, HedgingConstants.OnHedgingEventName), Context, args);
+
+        if (_handler.OnHedging is not null)
+        {
+            await _handler.OnHedging(args).ConfigureAwait(Context.ContinueOnCapturedContext);
+        }
     }
 
     private HedgingActionGeneratorArguments<TResult> CreateArguments<TResult, TState>(
