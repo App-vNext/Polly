@@ -63,11 +63,8 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
         var cancellationToken = context.CancellationToken;
         var continueOnCapturedContext = context.ContinueOnCapturedContext;
 
-        var attempt = -1;
-
         while (true)
         {
-            attempt++;
             if (cancellationToken.IsCancellationRequested)
             {
                 return Outcome.FromException<T>(new OperationCanceledException(cancellationToken).TrySetStackTrace());
