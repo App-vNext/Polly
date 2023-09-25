@@ -190,30 +190,6 @@ internal static class DependencyInjection
         #endregion
     }
 
-    // public static void AntiPattern_1()
-    // {
-    //     ResiliencePipeline pipeline1 = ResiliencePipeline.Empty;
-    //     ResiliencePipeline pipeline3 = ResiliencePipeline.Empty;
-    //     var registry = new ResiliencePipelineRegistry<string>();
-    //     registry.TryAddBuilder("myOtherFavioriteStrategy", (builder, context) =>
-    //         builder.AddPipeline(ResiliencePipeline.Empty));
-
-    //     #region di-anti-pattern-1
-
-    //     var services = new ServiceCollection();
-    //     services.AddResiliencePipeline("myFavoriteStrategy", builder =>
-    //     {
-    //         builder.AddPipeline(pipeline1);
-    //         if (registry.TryGetPipeline("myOtherFavioriteStrategy", out var pipeline2))
-    //         {
-    //             builder.AddPipeline(pipeline2);
-    //         }
-    //         builder.AddPipeline(pipeline3);
-    //     });
-
-    //     #endregion
-    // }
-
     public static void AntiPattern_1()
     {
         #region di-anti-pattern-1
