@@ -102,7 +102,8 @@ await manualControl.CloseAsync();
 
 
 ## Patterns and Anti-patterns
-Throughout the years many people have used Polly in so many different ways. Some reoccuring patterns are suboptimal. So, this section shows the donts and dos.
+
+Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
 
 ### 1 - Using different sleep duration between retry attempts based on Circuit Breaker state
 

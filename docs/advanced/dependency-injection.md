@@ -224,3 +224,61 @@ ResiliencePipeline instanceA = pipelineProvider.GetPipeline(new MyPipelineKey("m
 ResiliencePipeline instanceB = pipelineProvider.GetPipeline(new MyPipelineKey("my-pipeline", "instance-B"));
 ```
 <!-- endSnippet -->
+
+
+## Patterns and Anti-patterns
+
+Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
+
+### 1 - Accessing the `IServiceCollection` instead of `IServiceProvider`
+
+❌ DON'T
+
+Capture `IServiceCollection` inside `AddResiliencePipeline`
+
+<!-- snippet: di-anti-pattern-1 -->
+```cs
+var services = new ServiceCollection();
+services.AddResiliencePipeline("myFavoriteStrategy", builder =>
+{
+    builder.AddRetry(new()
+    {
+        OnRetry = args =>
+        {
+            var serviceProvider = services.BuildServiceProvider();
+            var logger = serviceProvider.GetService<ILogger>();
+            // ...
+            return ValueTask.CompletedTask;
+        }
+    });
+});
+```
+<!-- endSnippet -->
+
+**Reasoning**:
+This approach builds a new `ServiceProvider` before each retry attempt _unnecessarily_.
+
+✅ DO
+
+Use another overload of `AddResiliencePipeline` which allows access to `IServiceProvider`
+
+<!-- snippet: di-pattern-1 -->
+```cs
+var services = new ServiceCollection();
+services.AddResiliencePipeline("myFavoriteStrategy", static (builder, context) =>
+{
+    builder.AddRetry(new()
+    {
+        OnRetry = args =>
+        {
+            var logger = context.ServiceProvider.GetService<ILogger>();
+            // ...
+            return ValueTask.CompletedTask;
+        }
+    });
+});
+```
+<!-- endSnippet -->
+
+**Reasoning**:
+This approach uses the already built `ServiceProvider` and uses the same instance before every retry attempts.

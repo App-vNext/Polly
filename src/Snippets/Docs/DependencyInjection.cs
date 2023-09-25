@@ -189,4 +189,67 @@ internal static class DependencyInjection
 
         #endregion
     }
+
+    // public static void AntiPattern_1()
+    // {
+    //     ResiliencePipeline pipeline1 = ResiliencePipeline.Empty;
+    //     ResiliencePipeline pipeline3 = ResiliencePipeline.Empty;
+    //     var registry = new ResiliencePipelineRegistry<string>();
+    //     registry.TryAddBuilder("myOtherFavioriteStrategy", (builder, context) =>
+    //         builder.AddPipeline(ResiliencePipeline.Empty));
+
+    //     #region di-anti-pattern-1
+
+    //     var services = new ServiceCollection();
+    //     services.AddResiliencePipeline("myFavoriteStrategy", builder =>
+    //     {
+    //         builder.AddPipeline(pipeline1);
+    //         if (registry.TryGetPipeline("myOtherFavioriteStrategy", out var pipeline2))
+    //         {
+    //             builder.AddPipeline(pipeline2);
+    //         }
+    //         builder.AddPipeline(pipeline3);
+    //     });
+
+    //     #endregion
+    // }
+
+    public static void AntiPattern_1()
+    {
+        #region di-anti-pattern-1
+        var services = new ServiceCollection();
+        services.AddResiliencePipeline("myFavoriteStrategy", builder =>
+        {
+            builder.AddRetry(new()
+            {
+                OnRetry = args =>
+                {
+                    var serviceProvider = services.BuildServiceProvider();
+                    var logger = serviceProvider.GetService<ILogger>();
+                    // ...
+                    return ValueTask.CompletedTask;
+                }
+            });
+        });
+        #endregion
+    }
+
+    public static void Pattern_1()
+    {
+        #region di-pattern-1
+        var services = new ServiceCollection();
+        services.AddResiliencePipeline("myFavoriteStrategy", static (builder, context) =>
+        {
+            builder.AddRetry(new()
+            {
+                OnRetry = args =>
+                {
+                    var logger = context.ServiceProvider.GetService<ILogger>();
+                    // ...
+                    return ValueTask.CompletedTask;
+                }
+            });
+        });
+        #endregion
+    }
 }
