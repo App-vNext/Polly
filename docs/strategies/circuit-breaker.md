@@ -101,7 +101,7 @@ await manualControl.CloseAsync();
 - [Original Circuit Breaking Article](https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker)
 
 
-## Patterns and Anti-patterns
+## Patterns and anti-patterns
 
 Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
 

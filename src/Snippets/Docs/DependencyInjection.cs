@@ -203,7 +203,7 @@ internal static class DependencyInjection
                     var serviceProvider = services.BuildServiceProvider();
                     var logger = serviceProvider.GetService<ILogger>();
                     // ...
-                    return ValueTask.CompletedTask;
+                    return default;
                 }
             });
         });
@@ -222,7 +222,7 @@ internal static class DependencyInjection
                 {
                     var logger = context.ServiceProvider.GetService<ILogger>();
                     // ...
-                    return ValueTask.CompletedTask;
+                    return default;
                 }
             });
         });
