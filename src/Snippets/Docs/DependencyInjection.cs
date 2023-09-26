@@ -189,4 +189,43 @@ internal static class DependencyInjection
 
         #endregion
     }
+
+    public static void AntiPattern_1()
+    {
+        #region di-anti-pattern-1
+        var services = new ServiceCollection();
+        services.AddResiliencePipeline("myFavoriteStrategy", builder =>
+        {
+            builder.AddRetry(new()
+            {
+                OnRetry = args =>
+                {
+                    var serviceProvider = services.BuildServiceProvider();
+                    var logger = serviceProvider.GetService<ILogger>();
+                    // ...
+                    return default;
+                }
+            });
+        });
+        #endregion
+    }
+
+    public static void Pattern_1()
+    {
+        #region di-pattern-1
+        var services = new ServiceCollection();
+        services.AddResiliencePipeline("myFavoriteStrategy", static (builder, context) =>
+        {
+            builder.AddRetry(new()
+            {
+                OnRetry = args =>
+                {
+                    var logger = context.ServiceProvider.GetService<ILogger>();
+                    // ...
+                    return default;
+                }
+            });
+        });
+        #endregion
+    }
 }
