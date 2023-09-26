@@ -492,6 +492,47 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
+## Migrating timeout policy
+
+> [!NOTE]
+> In v8, the timeout resilience strategy does not support pessimistic timeouts because they can cause thread-pool starvation and non-cancellable background tasks. To address this, you can use [this workaround](https://github.com/davidfowl/AspNetCoreDiagnosticScenarios/blob/master/AsyncGuidance.md#cancelling-uncancellable-operations) to make the action cancellable.
+
+### Timeout in v7
+
+<!-- snippet: migration-timeout-v7 -->
+```cs
+// Create sync timeout
+ISyncPolicy syncPolicy = Policy.Timeout(TimeSpan.FromSeconds(10));
+
+// Create async timeout
+IAsyncPolicy asyncPolicy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10));
+
+// Create generic sync timeout
+ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy.Timeout<HttpResponseMessage>(TimeSpan.FromSeconds(10));
+
+// Create generic async timeout
+IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(10));
+```
+<!-- endSnippet -->
+
+### Timeout in v8
+
+<!-- snippet: migration-timeout-v8 -->
+```cs
+// Create pipeline with timeout. Because ResiliencePipeline supports both sync and async
+// callbacks, there is no need to define it twice.
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddTimeout(TimeSpan.FromSeconds(10))
+    .Build();
+
+// Create a generic pipeline with timeout. Because ResiliencePipeline<T> supports both sync and async
+// callbacks, there is no need to define it twice.
+ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
+    .AddTimeout(TimeSpan.FromSeconds(10))
+    .Build();
+```
+<!-- endSnippet -->
+
 ## Migrating other policies
 
 Migrating is a process similar to the one described in previous sections. Keep in mind:
