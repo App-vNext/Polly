@@ -1,3 +1,4 @@
+using NSubstitute;
 using Polly.Hedging;
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
@@ -852,17 +853,31 @@ public class HedgingResilienceStrategyTests : IDisposable
     [Fact]
     public async Task ExecuteAsync_EnsureOnHedgingCalled()
     {
+        var primaryContext = ResilienceContextPool.Shared.Get();
+        var key = new ResiliencePropertyKey<string>("my-key");
+        primaryContext.Properties.Set(key, "my-value");
+
         var attempts = new List<int>();
         _options.OnHedging = args =>
         {
+            args.PrimaryContext.Should().Be(primaryContext);
+            args.ActionContext.Should().NotBe(args.PrimaryContext);
+            args.PrimaryContext.Properties.GetValue(key, string.Empty).Should().Be("my-value");
+            args.ActionContext.Properties.GetValue(key, string.Empty).Should().Be("my-value");
+            args.ActionContext.Properties.Set(key, "new-value");
             attempts.Add(args.AttemptNumber);
             return default;
         };
 
-        ConfigureHedging(res => res.Result == Failure, args => () => Outcome.FromResultAsValueTask(Failure));
+        ConfigureHedging(res => res.Result == Failure,
+            args => () =>
+            {
+                args.ActionContext.Properties.GetValue(key, string.Empty).Should().Be("new-value");
+                return Outcome.FromResultAsValueTask(Failure);
+            });
 
         var strategy = Create();
-        await strategy.ExecuteAsync(_ => new ValueTask<string>(Failure));
+        await strategy.ExecuteAsync(_ => new ValueTask<string>(Failure), primaryContext);
 
         attempts.Should().HaveCount(_options.MaxHedgedAttempts);
         attempts.Should().BeInAscendingOrder();
