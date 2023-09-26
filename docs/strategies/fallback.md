@@ -209,11 +209,11 @@ return await fallback.ExecuteAsync(CallPrimary, CancellationToken.None);
 **Reasoning**:
 
 - The target code is executed only once.
-- The fallback value is returned directly, eliminating the need for additional code like `Context` or `ExecuteOutcomeAsync`.
+- The fallback value is returned directly, eliminating the need for additional code like `Context` or `ExecuteOutcomeAsync()`.
 
 ### 3 - Nesting `ExecuteAsync` calls
 
-Combining multiple strategies can be achieved in various ways. However, deeply nesting `ExecuteAsync` calls can lead to what's commonly referred to as _`Execute` hell_.
+Combining multiple strategies can be achieved in various ways. However, deeply nesting `ExecuteAsync` calls can lead to what's commonly referred to as _`Execute` Hell_.
 
 > [!NOTE]
 > While this isn't strictly tied to the Fallback mechanism, it's frequently observed when Fallback is the outermost layer.

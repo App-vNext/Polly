@@ -138,7 +138,7 @@ internal static class Performance
 
         public async Task UpdateData(CancellationToken cancellationToken)
         {
-            // Get or create and cache the pipeline for subsequent use.
+            // Get or create the pipeline, and then cache it for subsequent use.
             // Choose a sufficiently unique key to prevent collisions.
             var pipeline = _registry.GetOrAddPipeline("my-app.my-api", builder =>
             {
