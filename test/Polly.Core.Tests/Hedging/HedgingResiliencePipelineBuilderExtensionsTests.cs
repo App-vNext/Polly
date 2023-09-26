@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using Polly.Hedging;
 using Polly.Testing;
 
@@ -35,8 +34,7 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
     [Fact]
     public async Task AddHedging_IntegrationTest()
     {
-        var hedgingWithoutOutcome = false;
-        ConcurrentQueue<string> results = new();
+        int hedgingCount = 0;
 
         var strategy = _builder
             .AddHedging(new()
@@ -64,15 +62,7 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
                 },
                 OnHedging = args =>
                 {
-                    if (args.Outcome is { } outcome)
-                    {
-                        results.Enqueue(outcome.Result!.ToString(CultureInfo.InvariantCulture)!);
-                    }
-                    else
-                    {
-                        hedgingWithoutOutcome = true;
-                    }
-
+                    hedgingCount++;
                     return default;
                 }
             })
@@ -85,8 +75,6 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
         });
 
         result.Should().Be("success");
-        results.Should().HaveCountGreaterThan(0);
-        results.Distinct().Should().ContainSingle("error");
-        hedgingWithoutOutcome.Should().BeTrue();
+        hedgingCount.Should().Be(4);
     }
 }

@@ -143,12 +143,11 @@ Polly.Hedging.HedgingStrategyOptions<TResult>.OnHedging.set -> void
 Polly.Hedging.HedgingStrategyOptions<TResult>.ShouldHandle.get -> System.Func<Polly.Hedging.HedgingPredicateArguments<TResult>, System.Threading.Tasks.ValueTask<bool>>!
 Polly.Hedging.HedgingStrategyOptions<TResult>.ShouldHandle.set -> void
 Polly.Hedging.OnHedgingArguments<TResult>
+Polly.Hedging.OnHedgingArguments<TResult>.ActionContext.get -> Polly.ResilienceContext!
 Polly.Hedging.OnHedgingArguments<TResult>.AttemptNumber.get -> int
-Polly.Hedging.OnHedgingArguments<TResult>.Context.get -> Polly.ResilienceContext!
-Polly.Hedging.OnHedgingArguments<TResult>.Duration.get -> System.TimeSpan
 Polly.Hedging.OnHedgingArguments<TResult>.OnHedgingArguments() -> void
-Polly.Hedging.OnHedgingArguments<TResult>.OnHedgingArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult>? outcome, int attemptNumber, System.TimeSpan duration) -> void
-Polly.Hedging.OnHedgingArguments<TResult>.Outcome.get -> Polly.Outcome<TResult>?
+Polly.Hedging.OnHedgingArguments<TResult>.OnHedgingArguments(Polly.ResilienceContext! primaryContext, Polly.ResilienceContext! actionContext, int attemptNumber) -> void
+Polly.Hedging.OnHedgingArguments<TResult>.PrimaryContext.get -> Polly.ResilienceContext!
 Polly.HedgingResiliencePipelineBuilderExtensions
 Polly.LegacySupport
 Polly.Outcome

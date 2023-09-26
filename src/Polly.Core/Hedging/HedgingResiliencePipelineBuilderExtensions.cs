@@ -35,13 +35,12 @@ public static class HedgingResiliencePipelineBuilderExtensions
 
     private static HedgingResilienceStrategy<TResult> CreateHedgingStrategy<TResult>(StrategyBuilderContext context, HedgingStrategyOptions<TResult> options)
     {
-        var handler = new HedgingHandler<TResult>(options.ShouldHandle!, options.ActionGenerator);
+        var handler = new HedgingHandler<TResult>(options.ShouldHandle!, options.ActionGenerator, options.OnHedging);
 
         return new HedgingResilienceStrategy<TResult>(
             options.Delay,
             options.MaxHedgedAttempts,
             handler,
-            options.OnHedging,
             options.DelayGenerator,
             context.TimeProvider,
             context.Telemetry);

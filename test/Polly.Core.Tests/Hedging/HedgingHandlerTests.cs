@@ -10,7 +10,10 @@ public class HedgingHandlerTests
     {
         var handler = new HedgingHandler<string>(
             args => PredicateResult.True(),
-            args => () => Outcome.FromResultAsValueTask("ok"));
+            args => () => Outcome.FromResultAsValueTask("ok"),
+            args => default);
+
+        handler.OnHedging.Should().NotBeNull();
 
         var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(
             ResilienceContextPool.Shared.Get(),
