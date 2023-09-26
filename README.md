@@ -1070,4 +1070,3 @@ Licensed under the terms of the [New BSD License](http://opensource.org/licenses
 Visit the [documentation][polly-docs] to explore more Polly-related resources.
 
 [polly-docs]: https://www.pollydocs.org/
-
