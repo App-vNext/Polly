@@ -15,7 +15,9 @@ namespace Polly;
 /// The resulting instance of <see cref="ResiliencePipeline"/> executes the strategies in the same order they were added to the builder.
 /// The order of the strategies is important.
 /// </remarks>
+#pragma warning disable S1694 // An abstract class should have both abstract and concrete methods
 public abstract class ResiliencePipelineBuilderBase
+#pragma warning restore S1694 // An abstract class should have both abstract and concrete methods
 {
     private readonly List<Entry> _entries = new();
     private bool _used;
