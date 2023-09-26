@@ -224,6 +224,11 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 <td><code>null</code></td>
 <td>Action executed when retry occurs.</td>
 </tr>
+<tr>
+<td><code>MaxDelay</code></td>
+<td><code>null</code></td>
+<td>Caps the calculated retry delay to a specified maximum duration.</td>
+</tr>
 </tbody>
 </table>
 <h2 id="patterns-and-anti-patterns">Patterns and anti-patterns</h2>
@@ -517,6 +522,36 @@ var retry = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
 <p>As previously mentioned, always use the designated area to define retry conditions. Reframe your original exit conditions to specify when a retry should be initiated.</p>
+<h3 id="limiting-the-maximum-delay">Limiting the maximum delay</h3>
+<p>In some cases, you might want to set a limit on the calculated delay. This is beneficial when multiple retries are anticipated, and you wish to prevent excessive wait times between these retries.</p>
+<p>Consider the following example of a long-running background job:</p>
+<!-- snippet: retry-pattern-max-delay -->
+<pre><code class="lang-cs">ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        Delay = TimeSpan.FromSeconds(2),
+        MaxRetryAttempts = int.MaxValue,
+
+        // Initially we want to retry with exponential backoff, but after certain amount of retries we want to cap the delay to 15 minutes
+        MaxDelay = TimeSpan.FromMinutes(15),
+        UseJitter = true
+    })
+    .Build();
+
+// Background processing
+while (!cancellationToken.IsCancellationRequested)
+{
+    await pipeline.ExecuteAsync(async token =&gt;
+    {
+        // We can afford waiting for successful retry here in case of long-term service outage because this is background job
+        await SynchronizeDataAsync(token);
+    },
+    cancellationToken);
+
+    await Task.Delay(TimeSpan.FromMinutes(30)); // the sync runs every 30 minutes
+}
+</code></pre>
+<!-- endSnippet -->
 </article>
 
         <div class="contribution d-print-none">
