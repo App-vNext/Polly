@@ -1,4 +1,3 @@
-using NSubstitute;
 using Polly.Hedging;
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
