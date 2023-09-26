@@ -156,7 +156,8 @@ ImmutableArray<Type> strategyExceptions = new[]
     typeof(RateLimitRejectedException),
 }.ToImmutableArray();
 
-ImmutableArray<Type> retryableExceptions = networkExceptions.Union(strategyExceptions)
+ImmutableArray<Type> retryableExceptions = networkExceptions
+    .Union(strategyExceptions)
     .ToImmutableArray();
 
 var retry = new ResiliencePipelineBuilder()
@@ -171,7 +172,7 @@ var retry = new ResiliencePipelineBuilder()
 
 **Reasoning**:
 
-Grouping exceptions simplifies the configuration and improves reusability. For example, `networkExceptions` can be reused in various strategies such as retry, circuit breaker, and more.
+Grouping exceptions simplifies the configuration and improves reusability. For example, the `networkExceptions` array can be reused in various strategies such as retry, circuit breaker, and more.
 
 ### 2 - Using retry for periodic execution
 
@@ -197,7 +198,7 @@ The waiting period can be either blocking or non-blocking, based on the defined 
 
 ✅ DO
 
-Use a suitable tool to schedule recurring tasks, such as *Quartz.Net*, *Hangfire*, or others.
+Use a suitable tool to schedule recurring tasks, such as [*Quartz.Net*](https://www.quartz-scheduler.net/), [*Hangfire*](https://www.hangfire.io/), or others.
 
 **Reasoning**:
 
@@ -239,7 +240,7 @@ Using this approach essentially turns the logic into a state machine. Although t
 
 ✅ DO
 
-Use two distinct retry strategy options and link them:
+Use two distinct retry strategy options and combine them:
 
 <!-- snippet: retry-pattern-3 -->
 ```cs
@@ -282,7 +283,7 @@ Use `ResiliencePipeline.Empty` and the `?:` operator:
 <!-- snippet: retry-anti-pattern-4 -->
 ```cs
 var retry =
-    IsRetryable(req.RequestUri)
+    IsRetryable(request.RequestUri)
         ? new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new()).Build()
         : ResiliencePipeline<HttpResponseMessage>.Empty;
 ```
@@ -301,7 +302,7 @@ Use the `ShouldHandle` clause to define the triggering logic:
 var retry = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddRetry(new()
     {
-        ShouldHandle = _ => ValueTask.FromResult(IsRetryable(req.RequestUri))
+        ShouldHandle = _ => ValueTask.FromResult(IsRetryable(request.RequestUri))
     })
     .Build();
 ```
@@ -362,11 +363,11 @@ await retry.ExecuteAsync(ct =>
 
 **Reasoning**:
 
-If `DoSomething` and `BeforeEachAttempt` are interdependent, group them or craft a simple wrapper to invoke them in the correct sequence.
+If `DoSomething` and `BeforeEachAttempt` are interdependent, group them or declare a simple wrapper to invoke them in the correct sequence.
 
 ### 6 - Having a single strategy for multiple failures
 
-Suppose we have an `HttpClient` that issues a request and then we try to parse a large JSON.
+Suppose we have an `HttpClient` that issues a request and then we try to parse a large JSON response.
 
 ❌ DON'T
 
