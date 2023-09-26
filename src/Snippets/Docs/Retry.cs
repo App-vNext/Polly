@@ -109,6 +109,42 @@ internal static class Retry
         return false;
     }
 
+    public static async Task MaxDelay()
+    {
+        var cancellationToken = CancellationToken.None;
+
+        #region retry-pattern-max-delay
+
+        ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+            .AddRetry(new()
+            {
+                Delay = TimeSpan.FromSeconds(2),
+                MaxRetryAttempts = int.MaxValue,
+
+                // Initially, we aim for an exponential backoff, but after a certain number of retries, we set a maximum delay of 15 minutes.
+                MaxDelay = TimeSpan.FromMinutes(15),
+                UseJitter = true
+            })
+            .Build();
+
+        // Background processing
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            await pipeline.ExecuteAsync(async token =>
+            {
+                // In the event of a prolonged service outage, we can afford to wait for a successful retry since this is a background task.
+                await SynchronizeDataAsync(token);
+            },
+            cancellationToken);
+
+            await Task.Delay(TimeSpan.FromMinutes(30)); // The sync runs every 30 minutes.
+        }
+
+        #endregion
+
+        static ValueTask SynchronizeDataAsync(CancellationToken cancellationToken) => default;
+    }
+
     public static void AntiPattern_1()
     {
         #region retry-anti-pattern-1
