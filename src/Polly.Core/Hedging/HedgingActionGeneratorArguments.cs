@@ -8,8 +8,8 @@ namespace Polly.Hedging;
 /// <typeparam name="TResult">The type of the result.</typeparam>
 /// <remarks>
 /// The <see cref="PrimaryContext"/> represents the context that was received by the hedging strategy and used to execute the primary action.
-/// To prevent race conditions, hedging strategy then clones the primary context into <see cref="ActionContext"/> and uses it to execute the hedged action.
-/// Every hedged action gets its own context that is cloned from primary.
+/// To prevent race conditions, the hedging strategy then clones the primary context into <see cref="ActionContext"/> and uses it to execute the hedged action.
+/// Every hedged action gets its own context that is cloned from the primary.
 /// <para>
 /// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </para>
@@ -22,7 +22,7 @@ public readonly struct HedgingActionGeneratorArguments<TResult>
     /// <param name="primaryContext">The primary context received by hedging strategy.</param>
     /// <param name="actionContext">The action context. cloned from the primary context.</param>
     /// <param name="attemptNumber">The zero-based hedging attempt number.</param>
-    /// <param name="callback">The callback passed to hedging strategy.</param>
+    /// <param name="callback">The callback passed to the hedging strategy.</param>
     public HedgingActionGeneratorArguments(
         ResilienceContext primaryContext,
         ResilienceContext actionContext,
@@ -36,7 +36,7 @@ public readonly struct HedgingActionGeneratorArguments<TResult>
     }
 
     /// <summary>
-    /// Gets the primary resilience context as received by hedging strategy.
+    /// Gets the primary resilience context as received by the hedging strategy.
     /// </summary>
     public ResilienceContext PrimaryContext { get; }
 
@@ -54,7 +54,7 @@ public readonly struct HedgingActionGeneratorArguments<TResult>
     public int AttemptNumber { get; }
 
     /// <summary>
-    /// Gets the callback passed to hedging strategy.
+    /// Gets the callback passed to the hedging strategy.
     /// </summary>
     public Func<ResilienceContext, ValueTask<Outcome<TResult>>> Callback { get; }
 }
