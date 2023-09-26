@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Polly.Extensions\Polly.Extensions.csproj" />
     <ProjectReference Include="..\Polly.RateLimiting\Polly.RateLimiting.csproj" />
     <ProjectReference Include="..\Polly.Testing\Polly.Testing.csproj" />
+    <ProjectReference Include="..\..\test\Polly.TestUtils\Polly.TestUtils.csproj" />
     <ProjectReference Include="..\Polly\Polly.csproj" />
 
     <Using Include="Polly" />
