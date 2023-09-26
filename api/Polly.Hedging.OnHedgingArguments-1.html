@@ -90,7 +90,7 @@
 
   <h1 id="Polly_Hedging_OnHedgingArguments_1" data-uid="Polly.Hedging.OnHedgingArguments`1" class="text-break">
     Struct OnHedgingArguments&lt;TResult&gt;
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L12"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -145,12 +145,7 @@
 
 
   <h2 id="Polly_Hedging_OnHedgingArguments_1_remarks">Remarks</h2>
-  <div class="markdown level0 remarks"><p>The <a class="xref" href="Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_PrimaryContext">PrimaryContext</a> represents the context that was received by the hedging strategy and used to execute the primary action.
-To prevent race conditions, the hedging strategy then clones the primary context into <a class="xref" href="Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_ActionContext">ActionContext</a> and uses it to execute the hedged action.
-Every hedged action gets its own context that is cloned from the primary.</p>
-<p>
-Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
-</p>
+  <div class="markdown level0 remarks"><p>Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.</p>
 </div>
 
 
@@ -160,9 +155,9 @@ Always use the constructor when creating this struct, otherwise we do not guaran
 
   <a id="Polly_Hedging_OnHedgingArguments_1__ctor_" data-uid="Polly.Hedging.OnHedgingArguments`1.#ctor*"></a>
 
-  <h3 id="Polly_Hedging_OnHedgingArguments_1__ctor_Polly_ResilienceContext_Polly_ResilienceContext_System_Int32_" data-uid="Polly.Hedging.OnHedgingArguments`1.#ctor(Polly.ResilienceContext,Polly.ResilienceContext,System.Int32)">
-  OnHedgingArguments(ResilienceContext, ResilienceContext, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Polly_Hedging_OnHedgingArguments_1__ctor_Polly_ResilienceContext_System_Nullable_Polly_Outcome__0___System_Int32_System_TimeSpan_" data-uid="Polly.Hedging.OnHedgingArguments`1.#ctor(Polly.ResilienceContext,System.Nullable{Polly.Outcome{`0}},System.Int32,System.TimeSpan)">
+  OnHedgingArguments(ResilienceContext, Outcome&lt;TResult&gt;?, int, TimeSpan)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Polly.Hedging.OnHedgingArguments-1.html">OnHedgingArguments&lt;TResult&gt;</a> struct.</p>
@@ -170,19 +165,22 @@ Always use the constructor when creating this struct, otherwise we do not guaran
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public OnHedgingArguments(ResilienceContext primaryContext, ResilienceContext actionContext, int attemptNumber)</code></pre>
+    <pre><code class="lang-csharp hljs">public OnHedgingArguments(ResilienceContext context, Outcome&lt;TResult&gt;? outcome, int attemptNumber, TimeSpan duration)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>primaryContext</code> <a class="xref" href="Polly.ResilienceContext.html">ResilienceContext</a></dt>
-    <dd><p>The primary context received by the hedging strategy.</p>
+    <dt><code>context</code> <a class="xref" href="Polly.ResilienceContext.html">ResilienceContext</a></dt>
+    <dd><p>The outcome of the resilience operation or event.</p>
 </dd>
-    <dt><code>actionContext</code> <a class="xref" href="Polly.ResilienceContext.html">ResilienceContext</a></dt>
-    <dd><p>The action context. cloned from the primary context.</p>
+    <dt><code>outcome</code> <a class="xref" href="Polly.Outcome-1.html">Outcome</a>&lt;TResult&gt;?</dt>
+    <dd><p>The context in which the resilience operation or event occurred.</p>
 </dd>
     <dt><code>attemptNumber</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
     <dd><p>The zero-based hedging attempt number.</p>
+</dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The execution duration of hedging attempt or the hedging delay in case the attempt was not finished in time.</p>
 </dd>
   </dl>
 
@@ -201,46 +199,11 @@ Always use the constructor when creating this struct, otherwise we do not guaran
 </h2>
 
 
-  <a id="Polly_Hedging_OnHedgingArguments_1_ActionContext_" data-uid="Polly.Hedging.OnHedgingArguments`1.ActionContext*"></a>
-
-  <h3 id="Polly_Hedging_OnHedgingArguments_1_ActionContext" data-uid="Polly.Hedging.OnHedgingArguments`1.ActionContext">
-  ActionContext
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L43"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"><p>Gets the action context that will be used for the hedged action.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ResilienceContext ActionContext { get; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="Polly.ResilienceContext.html">ResilienceContext</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-  <h4 class="section" id="Polly_Hedging_OnHedgingArguments_1_ActionContext_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This context is cloned from <a class="xref" href="Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_PrimaryContext">PrimaryContext</a>.</p>
-</div>
-
-
-
-
   <a id="Polly_Hedging_OnHedgingArguments_1_AttemptNumber_" data-uid="Polly.Hedging.OnHedgingArguments`1.AttemptNumber*"></a>
 
   <h3 id="Polly_Hedging_OnHedgingArguments_1_AttemptNumber" data-uid="Polly.Hedging.OnHedgingArguments`1.AttemptNumber">
   AttemptNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the zero-based hedging attempt number.</p>
@@ -268,19 +231,19 @@ Always use the constructor when creating this struct, otherwise we do not guaran
 
 
 
-  <a id="Polly_Hedging_OnHedgingArguments_1_PrimaryContext_" data-uid="Polly.Hedging.OnHedgingArguments`1.PrimaryContext*"></a>
+  <a id="Polly_Hedging_OnHedgingArguments_1_Context_" data-uid="Polly.Hedging.OnHedgingArguments`1.Context*"></a>
 
-  <h3 id="Polly_Hedging_OnHedgingArguments_1_PrimaryContext" data-uid="Polly.Hedging.OnHedgingArguments`1.PrimaryContext">
-  PrimaryContext
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Polly_Hedging_OnHedgingArguments_1_Context" data-uid="Polly.Hedging.OnHedgingArguments`1.Context">
+  Context
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the primary resilience context as received by the hedging strategy.</p>
+  <div class="markdown level1 summary"><p>Gets the context of this event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ResilienceContext PrimaryContext { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ResilienceContext Context { get; }</code></pre>
   </div>
 
 
@@ -300,11 +263,78 @@ Always use the constructor when creating this struct, otherwise we do not guaran
 
 
 
+  <a id="Polly_Hedging_OnHedgingArguments_1_Duration_" data-uid="Polly.Hedging.OnHedgingArguments`1.Duration*"></a>
+
+  <h3 id="Polly_Hedging_OnHedgingArguments_1_Duration" data-uid="Polly.Hedging.OnHedgingArguments`1.Duration">
+  Duration
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the execution duration of hedging attempt or the hedging delay in case the attempt was not finished in time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeSpan Duration { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Polly_Hedging_OnHedgingArguments_1_Outcome_" data-uid="Polly.Hedging.OnHedgingArguments`1.Outcome*"></a>
+
+  <h3 id="Polly_Hedging_OnHedgingArguments_1_Outcome" data-uid="Polly.Hedging.OnHedgingArguments`1.Outcome">
+  Outcome
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the outcome that needs to be hedged, if any.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Outcome&lt;TResult&gt;? Outcome { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Polly.Outcome-1.html">Outcome</a>&lt;TResult&gt;?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Polly_Hedging_OnHedgingArguments_1_Outcome_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If this property is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, it's an indication that user-callback or hedged operation did not complete within the hedging delay.</p>
+</div>
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L17" class="edit-link">Edit this page</a>
+          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Hedging/OnHedgingArguments.cs/#L12" class="edit-link">Edit this page</a>
         </div>
 
         
