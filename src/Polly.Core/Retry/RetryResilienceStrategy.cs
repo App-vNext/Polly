@@ -15,6 +15,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
     {
         ShouldHandle = options.ShouldHandle;
         BaseDelay = options.Delay;
+        MaxDelay = options.MaxDelay;
         BackoffType = options.BackoffType;
         RetryCount = options.MaxRetryAttempts;
         OnRetry = options.OnRetry;
@@ -27,6 +28,8 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
     }
 
     public TimeSpan BaseDelay { get; }
+
+    public TimeSpan? MaxDelay { get; }
 
     public DelayBackoffType BackoffType { get; }
 
@@ -56,12 +59,12 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
 
             TelemetryUtil.ReportExecutionAttempt(_telemetry, context, outcome, attempt, executionTime, handle);
 
-            if (context.CancellationToken.IsCancellationRequested || IsLastAttempt(attempt) || !handle)
+            if (context.CancellationToken.IsCancellationRequested || IsLastAttempt(attempt, out bool incrementAttempts) || !handle)
             {
                 return outcome;
             }
 
-            var delay = RetryHelper.GetRetryDelay(BackoffType, UseJitter, attempt, BaseDelay, ref retryState, _randomizer);
+            var delay = RetryHelper.GetRetryDelay(BackoffType, UseJitter, attempt, BaseDelay, MaxDelay, ref retryState, _randomizer);
             if (DelayGenerator is not null)
             {
                 var delayArgs = new RetryDelayGeneratorArguments<T>(context, outcome, attempt);
@@ -98,9 +101,22 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
                 }
             }
 
-            attempt++;
+            if (incrementAttempts)
+            {
+                attempt++;
+            }
         }
     }
 
-    private bool IsLastAttempt(int attempt) => attempt >= RetryCount;
+    internal bool IsLastAttempt(int attempt, out bool incrementAttempts)
+    {
+        if (attempt == int.MaxValue)
+        {
+            incrementAttempts = false;
+            return false;
+        }
+
+        incrementAttempts = true;
+        return attempt >= RetryCount;
+    }
 }

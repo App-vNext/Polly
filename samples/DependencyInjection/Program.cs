@@ -7,9 +7,9 @@ using Polly.Timeout;
 // ------------------------------------------------------------------------
 // 1. Register your resilience pipeline
 // ------------------------------------------------------------------------
-
 var serviceProvider = new ServiceCollection()
     .AddLogging(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Debug))
+
     // Use "AddResiliencePipeline" extension method to configure your named pipeline
     .AddResiliencePipeline("my-pipeline", (builder, context) =>
     {
@@ -18,6 +18,7 @@ var serviceProvider = new ServiceCollection()
 
         builder.AddTimeout(TimeSpan.FromSeconds(1));
     })
+
     // You can also register result-based (generic) resilience pipelines
     // First generic parameter is the key type, the second one is the result type
     // This overload does not use the context argument (simple scenarios)

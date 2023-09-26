@@ -14,6 +14,15 @@ public class RateLimiterStrategyOptions : ResilienceStrategyOptions
     public RateLimiterStrategyOptions() => Name = RateLimiterConstants.DefaultName;
 
     /// <summary>
+    ///  Gets or sets a rate limiter delegate that produces <see cref="RateLimitLease"/>.
+    /// </summary>
+    /// <value>
+    /// The default value is <see langword="null"/>. If this property is <see langword="null"/>, then the strategy
+    /// will use a <see cref="ConcurrencyLimiter"/> created using <see cref="DefaultRateLimiterOptions"/>.
+    /// </value>
+    public Func<RateLimiterArguments, ValueTask<RateLimitLease>>? RateLimiter { get; set; }
+
+    /// <summary>
     /// Gets or sets the default rate limiter options.
     /// </summary>
     /// <remarks>
@@ -37,13 +46,4 @@ public class RateLimiterStrategyOptions : ResilienceStrategyOptions
     /// The default value is <see langword="null"/>.
     /// </value>
     public Func<OnRateLimiterRejectedArguments, ValueTask>? OnRejected { get; set; }
-
-    /// <summary>
-    ///  Gets or sets a rate limiter delegate that produces <see cref="RateLimitLease"/>.
-    /// </summary>
-    /// <value>
-    /// The default value is <see langword="null"/>. If this property is <see langword="null"/>, then the strategy
-    /// will use a <see cref="ConcurrencyLimiter"/> created using <see cref="DefaultRateLimiterOptions"/>.
-    /// </value>
-    public Func<RateLimiterArguments, ValueTask<RateLimitLease>>? RateLimiter { get; set; }
 }

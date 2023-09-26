@@ -1,0 +1,7 @@
+{
+    "$schema": "https://raw.githubusercontent.com/SimonCropp/MarkdownSnippets/main/schema.json",
+    "ExcludeDirectories": [ "test", "artifacts", "bench", "eng" ],
+    "ExcludeSnippetDirectories": [ "src/Polly", "src/Polly.Core", "src/Polly.RateLimiting", "src/Polly.Testing", "src/Polly.Extensions", "artifacts", "test" ],
+    "OmitSnippetLinks": true,
+    "Convention": "InPlaceOverwrite"
+  }

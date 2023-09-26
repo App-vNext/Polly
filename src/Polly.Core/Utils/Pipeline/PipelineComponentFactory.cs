@@ -24,6 +24,8 @@ internal static class PipelineComponentFactory
         return new ComponentWithDisposeCallbacks(component, callbacks.ToList());
     }
 
+    public static PipelineComponent WithExecutionTracking(PipelineComponent component, TimeProvider timeProvider) => new ExecutionTrackingComponent(component, timeProvider);
+
     public static PipelineComponent CreateComposite(
         IReadOnlyList<PipelineComponent> components,
         ResilienceStrategyTelemetry telemetry,
@@ -31,6 +33,5 @@ internal static class PipelineComponentFactory
 
     public static PipelineComponent CreateReloadable(
         ReloadableComponent.Entry initial,
-        Func<ReloadableComponent.Entry> factory,
-        ResilienceStrategyTelemetry telemetry) => new ReloadableComponent(initial, factory, telemetry);
+        Func<ReloadableComponent.Entry> factory) => new ReloadableComponent(initial, factory);
 }

@@ -13,7 +13,7 @@ public class ResilienceStrategyTelemetryTests
         _source = new ResilienceTelemetrySource(
             "builder",
             "instance",
-            "strategy-name");
+            "strategy_name");
 
         _sut = TestUtilities.CreateResilienceTelemetry(args => _args.Add(args));
     }
@@ -35,7 +35,7 @@ public class ResilienceStrategyTelemetryTests
         args.Event.EventName.Should().Be("dummy-event");
         args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
         args.Outcome.Should().BeNull();
-        args.Source.StrategyName.Should().Be("strategy-name");
+        args.Source.StrategyName.Should().Be("strategy_name");
         args.Arguments.Should().BeOfType<TestArguments>();
         args.Outcome.Should().BeNull();
         args.Context.Should().NotBeNull();
@@ -44,7 +44,7 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void ResiliencePipelineTelemetry_NoDiagnosticSource_Ok()
     {
-        var source = new ResilienceTelemetrySource("builder", "instance", "strategy-name");
+        var source = new ResilienceTelemetrySource("builder", "instance", "strategy_name");
         var sut = new ResilienceStrategyTelemetry(source, null);
         var context = ResilienceContextPool.Shared.Get();
 
@@ -62,7 +62,7 @@ public class ResilienceStrategyTelemetryTests
         var args = _args.Single();
         args.Event.EventName.Should().Be("dummy-event");
         args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
-        args.Source.StrategyName.Should().Be("strategy-name");
+        args.Source.StrategyName.Should().Be("strategy_name");
         args.Arguments.Should().BeOfType<TestArguments>();
         args.Outcome.Should().NotBeNull();
         args.Outcome!.Value.Result.Should().Be(99);

@@ -33,10 +33,6 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
     internal PipelineComponent CreateComponent()
     {
         var builder = CreateBuilder();
-        var telemetry = new ResilienceStrategyTelemetry(
-            new ResilienceTelemetrySource(_builderName, _instanceName, null),
-            builder.Listener);
-
         var component = builder.ComponentFactory();
 
         if (builder.ReloadTokens.Count == 0)
@@ -45,13 +41,12 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
         }
 
         return PipelineComponentFactory.CreateReloadable(
-            new ReloadableComponent.Entry(component, builder.ReloadTokens),
+            new ReloadableComponent.Entry(component, builder.ReloadTokens, builder.Telemetry),
             () =>
             {
                 var builder = CreateBuilder();
-                return new ReloadableComponent.Entry(builder.ComponentFactory(), builder.ReloadTokens);
-            },
-            telemetry);
+                return new ReloadableComponent.Entry(builder.ComponentFactory(), builder.ReloadTokens, builder.Telemetry);
+            });
     }
 
     private Builder CreateBuilder()
@@ -62,13 +57,23 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
         builder.InstanceName = _instanceName;
         _configure(builder, context);
 
-        return new(
-            () => PipelineComponentFactory.WithDisposableCallbacks(
-                    builder.BuildPipelineComponent(),
-                    context.DisposeCallbacks),
-            context.ReloadTokens,
+        var timeProvider = builder.TimeProvider;
+        var telemetry = new ResilienceStrategyTelemetry(
+            new ResilienceTelemetrySource(builder.Name, builder.InstanceName, null),
             builder.TelemetryListener);
+
+        return new(
+            () =>
+            {
+                var innerComponent = PipelineComponentFactory.WithDisposableCallbacks(builder.BuildPipelineComponent(), context.DisposeCallbacks);
+                return PipelineComponentFactory.WithExecutionTracking(innerComponent, timeProvider);
+            },
+            context.ReloadTokens,
+            telemetry);
     }
 
-    private record Builder(Func<PipelineComponent> ComponentFactory, List<CancellationToken> ReloadTokens, TelemetryListener? Listener);
+    private record Builder(
+        Func<PipelineComponent> ComponentFactory,
+        List<CancellationToken> ReloadTokens,
+        ResilienceStrategyTelemetry Telemetry);
 }

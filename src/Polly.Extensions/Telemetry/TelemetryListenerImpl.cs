@@ -21,18 +21,18 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
         _listeners = options.TelemetryListeners.ToList();
 
         Counter = Meter.CreateCounter<int>(
-            "resilience-events",
+            "resilience.polly.strategy.events",
             description: "Tracks the number of resilience events that occurred in resilience strategies.");
 
         AttemptDuration = Meter.CreateHistogram<double>(
-            "execution-attempt-duration",
+            "resilience.polly.strategy.attempt.duration",
             unit: "ms",
             description: "Tracks the duration of execution attempts.");
 
         ExecutionDuration = Meter.CreateHistogram<double>(
-            "pipeline-execution-duration",
+            "resilience.polly.pipeline.duration",
             unit: "ms",
-            description: "The execution duration and execution results of resilience pipelines.");
+            description: "The execution duration of resilience pipelines.");
     }
 
     public Counter<int> Counter { get; }
@@ -98,7 +98,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
         if (context.TelemetryEvent.Outcome?.Exception is Exception e)
         {
-            context.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, e.GetType().FullName));
+            context.Tags.Add(new(ResilienceTelemetryTags.ExceptionType, e.GetType().FullName));
         }
     }
 

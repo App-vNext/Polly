@@ -1,5 +1,6 @@
 using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Polly.DependencyInjection;
@@ -269,6 +270,55 @@ public class PollyServiceCollectionExtensionTests
         provider.GetRequiredService<ResiliencePipelineRegistry<string>>().Should().NotBeNull();
         provider.GetRequiredService<ResiliencePipelineProvider<string>>().Should().NotBeNull();
         provider.GetRequiredService<IOptions<ResiliencePipelineRegistryOptions<string>>>().Value.InstanceNameFormatter.Should().Be(formatter);
+    }
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void AddResiliencePipeline_CustomInstanceName_EnsureReported(bool usingBuilder)
+    {
+        // arrange
+        using var loggerFactory = new FakeLoggerFactory();
+
+        var context = ResilienceContextPool.Shared.Get("my-operation_key");
+        var services = new ServiceCollection();
+        var listener = new FakeTelemetryListener();
+        var registry = services
+            .AddResiliencePipeline("my-pipeline", ConfigureBuilder)
+            .Configure<TelemetryOptions>(options => options.TelemetryListeners.Add(listener))
+            .AddSingleton((ILoggerFactory)loggerFactory)
+            .BuildServiceProvider()
+            .GetRequiredService<ResiliencePipelineRegistry<string>>();
+
+        var pipeline = usingBuilder ?
+            registry.GetPipeline("my-pipeline") :
+            registry.GetOrAddPipeline("my-pipeline", ConfigureBuilder);
+
+        // act
+        pipeline.Execute(_ => { }, context);
+
+        // assert
+        foreach (var ev in listener.Events)
+        {
+            ev.Source.PipelineInstanceName.Should().Be("my-instance");
+            ev.Source.PipelineName.Should().Be("my-pipeline");
+        }
+
+        var record = loggerFactory.FakeLogger.GetRecords(new EventId(0, "ResilienceEvent")).First();
+
+        record.Message.Should().Contain("my-pipeline/my-instance");
+
+        static void ConfigureBuilder(ResiliencePipelineBuilder builder)
+        {
+            builder.Name.Should().Be("my-pipeline");
+            builder.InstanceName = "my-instance";
+            builder.AddRetry(new()
+            {
+                ShouldHandle = _ => PredicateResult.True(),
+                MaxRetryAttempts = 3,
+                Delay = TimeSpan.Zero
+            });
+        }
     }
 
     private void AddResiliencePipeline(string key, Action<StrategyBuilderContext>? onBuilding = null)

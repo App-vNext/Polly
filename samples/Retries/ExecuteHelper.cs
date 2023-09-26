@@ -2,7 +2,7 @@
 
 namespace Retries;
 
-internal class ExecuteHelper
+internal sealed class ExecuteHelper
 {
     public bool Fail { get; set; } = true;
 

@@ -2,6 +2,7 @@ using FluentAssertions.Execution;
 using Microsoft.Extensions.Time.Testing;
 using Polly.Retry;
 using Polly.Telemetry;
+using Polly.Testing;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -190,6 +191,15 @@ public class RetryResilienceStrategyTests
         generatedValues.Should().Be(3);
     }
 
+    [Fact]
+    public void IsLastAttempt_Ok()
+    {
+        var sut = (RetryResilienceStrategy<object>)CreateSut().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
+
+        sut.IsLastAttempt(int.MaxValue, out var increment).Should().BeFalse();
+        increment.Should().BeFalse();
+    }
+
     private sealed class ThrowingFakeTimeProvider : FakeTimeProvider
     {
         public override DateTimeOffset GetUtcNow() => throw new AssertionFailedException("TimeProvider should not be used.");
@@ -231,6 +241,30 @@ public class RetryResilienceStrategyTests
         delays[0].Should().Be(TimeSpan.FromSeconds(2));
         delays[1].Should().Be(TimeSpan.FromSeconds(4));
         delays[2].Should().Be(TimeSpan.FromSeconds(6));
+    }
+
+    [Fact]
+    public async void MaxDelay_EnsureRespected()
+    {
+        var delays = new List<TimeSpan>();
+        _options.OnRetry = args =>
+        {
+            delays.Add(args.RetryDelay);
+            return default;
+        };
+
+        _options.ShouldHandle = args => PredicateResult.True();
+        _options.MaxRetryAttempts = 3;
+        _options.BackoffType = DelayBackoffType.Linear;
+        _options.MaxDelay = TimeSpan.FromMilliseconds(123);
+
+        var sut = CreateSut();
+
+        await ExecuteAndAdvance(sut);
+
+        delays[0].Should().Be(TimeSpan.FromMilliseconds(123));
+        delays[1].Should().Be(TimeSpan.FromMilliseconds(123));
+        delays[2].Should().Be(TimeSpan.FromMilliseconds(123));
     }
 
     [Fact]

@@ -24,7 +24,7 @@ public class ScheduledTaskExecutorTests
     }
 
     [Fact]
-    public async Task ScheduleTask_OperationCancelledException_EnsureExecuted()
+    public async Task ScheduleTask_OperationCanceledException_EnsureExecuted()
     {
         using var scheduler = new ScheduledTaskExecutor();
         scheduler.ScheduleTask(
@@ -123,11 +123,11 @@ public class ScheduledTaskExecutorTests
             ResilienceContextPool.Shared.Get(),
             out var task);
 
-        ready.WaitOne(TimeSpan.FromSeconds(2)).Should().BeTrue();
+        ready.WaitOne(TimeSpan.FromSeconds(10)).Should().BeTrue();
         scheduler.Dispose();
         disposed.Set();
 
-        scheduler.ProcessingTask.Wait(TimeSpan.FromSeconds(2)).Should().BeTrue();
+        scheduler.ProcessingTask.Wait(TimeSpan.FromSeconds(10)).Should().BeTrue();
     }
 
     [Fact]

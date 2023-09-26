@@ -326,27 +326,27 @@ The RequiredProperty field is required.
             context =>
             {
                 context.Telemetry.TelemetrySource.PipelineName.Should().Be("builder-name");
-                context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name");
+                context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy_name");
                 context.Telemetry.Should().NotBeNull();
                 context.TimeProvider.Should().Be(builder.TimeProvider);
                 verified1 = true;
 
                 return new TestResilienceStrategy();
             },
-            new TestResilienceStrategyOptions { Name = "strategy-name" });
+            new TestResilienceStrategyOptions { Name = "strategy_name" });
 
         builder.AddStrategy(
             context =>
             {
                 context.Telemetry.TelemetrySource.PipelineName.Should().Be("builder-name");
-                context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name-2");
+                context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy_name-2");
                 context.Telemetry.Should().NotBeNull();
                 context.TimeProvider.Should().Be(builder.TimeProvider);
                 verified2 = true;
 
                 return new TestResilienceStrategy();
             },
-            new TestResilienceStrategyOptions { Name = "strategy-name-2" });
+            new TestResilienceStrategyOptions { Name = "strategy_name-2" });
 
         // act
         builder.Build();
