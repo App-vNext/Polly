@@ -12,7 +12,7 @@ public static class ResultReportingResilienceStrategyBuilderExtensions
     // Extensions should return the builder to support a fluent API.
     public static ResiliencePipelineBuilder<TResult> AddResultReporting<TResult>(this ResiliencePipelineBuilder<TResult> builder, ResultReportingStrategyOptions<TResult> options)
     {
-        // Incorporate the strategy using the AddStrategy method. This method receives a factory delegate
+        // Incorporate the strategy using the AddStrategy() method. This method receives a factory delegate
         // and automatically checks the options.
         return builder.AddStrategy(
             context =>
