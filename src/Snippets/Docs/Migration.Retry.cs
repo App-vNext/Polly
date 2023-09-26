@@ -82,7 +82,7 @@ internal static partial class Migration
         new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
         {
             // PredicateBuilder is used to simplify the initialization of predicates.
-            // Its API should be familiar to v7 way of configuring what exceptions to handle.
+            // Its API should be familiar to the v7 way of configuring what exceptions to handle.
             ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
             MaxRetryAttempts = 1,
             // To disable waiting between retries, set the Delay property to TimeSpan.Zero.
@@ -177,7 +177,7 @@ internal static partial class Migration
         })
         .Build();
 
-        // The same as above, but using the switch expressions for max performance.
+        // The same as above, but using the switch expressions for best performance.
         new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyOptions<HttpResponseMessage>
         {
             // Determine what results to retry using switch expressions.

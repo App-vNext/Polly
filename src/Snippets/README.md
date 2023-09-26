@@ -19,7 +19,7 @@ public static void MySnippet()
 {
     #region my-snippet
 
-    // your code here
+    // Your code here
 
     #endregion
 }

@@ -1,20 +1,20 @@
 # Migration guide from v7 to v8
 
-Welcome to the migration guide for Polly's v8 version. The v8 version of Polly brings major new enhancements and supports all the same scenarios as previous versions. In the following sections, we'll detail the differences between the v7 and v8 APIs and provide steps on how to transition smoothly.
+Welcome to the migration guide for Polly's v8 release. Version 8 of Polly brings major new enhancements and supports all of the same scenarios as previous versions. In the following sections, we'll detail the differences between the v7 and v8 APIs, and provide steps on how to transition smoothly.
 
 > [!NOTE]
-> The v7 API is still available and fully supported even when using the v8 version by referencing [Polly](https://www.nuget.org/packages/Polly) package.
+> The v7 API is still available and fully supported even when using the v8 version by referencing the [Polly](https://www.nuget.org/packages/Polly) package.
 
 ## Major differences
 
 - **The term *Policy* is now replaced with *Strategy***: In previous versions, Polly used the term *policy* for retries, timeouts, etc. In v8, these are referred to as *resilience strategies*.
-- **Introduction of Resilience Pipelines**: The [resilience pipeline](pipelines/index.md) combines one or more resilience strategies. This is the foundational API for Polly v8, similar to the **Policy Wrap** in previous versions but integrated into the core API.
+- **Introduction of Resilience Pipelines**: A [resilience pipeline](pipelines/index.md) combines one or more resilience strategies. This is the foundational API for Polly v8, similar to the **Policy Wrap** in previous versions but integrated into the core API.
 - **Unified sync and async flows**: Interfaces such as `IAsyncPolicy`, `IAsyncPolicy<T>`, `ISyncPolicy`, `ISyncPolicy<T>`, and `IPolicy` are now unified under `ResiliencePipeline` and `ResiliencePipeline<T>`. The resilience pipeline supports both synchronous and asynchronous execution flows.
 - **Native async support**: Polly v8 was designed with asynchronous support from the start.
 - **No static APIs**: Unlike previous versions, v8 doesn't use static APIs. This improves testability and extensibility while maintaining ease of use.
 - **Options-based configuration**: Configuring individual resilience strategies is now options-based, offering more flexibility and improving maintainability and extensibility.
 - **Built-in telemetry**: Polly v8 now has built-in telemetry support.
-- **Improved performance and low-allocation APIs**: Polly v8 boasts significant performance enhancements and provides zero-allocation APIs for advanced use cases.
+- **Improved performance and low-allocation APIs**: Polly v8 brings significant performance enhancements and provides zero-allocation APIs for advanced use cases.
 
 > [!NOTE]
 > Please read the comments in the code carefully for additional context and explanations.
@@ -32,7 +32,7 @@ In earlier versions, Polly exposed various interfaces to execute user code:
 - `ISyncPolicy`
 - `ISyncPolicy<T>`
 
-These interfaces were created and used as:
+These interfaces were created and used as shown below:
 
 <!-- snippet: migration-policies-v7 -->
 ```cs
@@ -40,7 +40,7 @@ These interfaces were created and used as:
 ISyncPolicy syncPolicy = Policy.Handle<Exception>().WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 syncPolicy.Execute(() =>
 {
-    // your code here
+    // Your code here
 });
 
 // Create and use the IAsyncPolicy
@@ -48,7 +48,7 @@ IAsyncPolicy asyncPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(3, _ => 
 await asyncPolicy.ExecuteAsync(
     async cancellationToken =>
     {
-        // your code here
+        // Your code here
     },
     cancellationToken);
 
@@ -59,7 +59,7 @@ ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy
 
 syncPolicyT.Execute(() =>
 {
-    // your code here
+    // Your code here
     return GetResponse();
 });
 
@@ -70,7 +70,7 @@ IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy
 await asyncPolicyT.ExecuteAsync(
     async cancellationToken =>
     {
-        // your code here
+        // Your code here
         return await GetResponseAsync(cancellationToken);
     },
     cancellationToken);
@@ -95,18 +95,18 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
         MaxRetryAttempts = 3,
         BackoffType = DelayBackoffType.Constant
     })
-    .Build(); // After all necessary strategies are added, call build to create the pipeline.
+    .Build(); // After all necessary strategies are added, call Build() to create the pipeline.
 
 // Synchronous execution
 pipeline.Execute(() =>
 {
-    // your code here
+    // Your code here
 });
 
 // Asynchronous execution is also supported with the same pipeline instance
 await pipeline.ExecuteAsync(static async cancellationToken =>
 {
-    // your code here
+    // Your code here
 },
 cancellationToken);
 
@@ -114,7 +114,7 @@ cancellationToken);
 //
 // Building of generic resilience pipeline is very similar to non-generic one.
 // Notice the use of generic RetryStrategyOptions<HttpResponseMessage> to configure the strategy
-// As opposed to providing the arguments into the method.
+// as opposed to providing the arguments into the method.
 ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
     {
@@ -130,23 +130,23 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 // Synchronous execution
 pipelineT.Execute(() =>
 {
-    // your code here
+    // Your code here
     return GetResponse();
 });
 
 // Asynchronous execution
 await pipelineT.ExecuteAsync(static async cancellationToken =>
 {
-    // your code here
+    // Your code here
     return await GetResponseAsync(cancellationToken);
 },
 cancellationToken);
 ```
 <!-- endSnippet -->
 
-## Migrating policy wrap
+## Migrating Policy Wrap
 
-### Policy wrap in v7
+### Policy Wrap in v7
 
 Policy wrap is used to combine multiple policies into one as shown in the v7 example below:
 
@@ -156,20 +156,20 @@ IAsyncPolicy retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(3, _ => 
 
 IAsyncPolicy timeoutPolicy = Policy.TimeoutAsync(TimeSpan.FromSeconds(3));
 
-// Wrap the policies. Tne policies are executed in the following order:
+// Wrap the policies. The policies are executed in the following order (i.e. Last-In-First-Out):
 // 1. Retry
 // 2. Timeout
 IAsyncPolicy wrappedPolicy = Policy.WrapAsync(timeoutPolicy, retryPolicy);
 ```
 <!-- endSnippet -->
 
-### Policy wrap in v8
+### Policy Wrap in v8
 
-In v8, there's no need to use policy wrap explicitly. Instead, policy wrapping is smoothly integrated into `ResiliencePipelineBuilder`, as shown in the example below:
+In v8, there's no need to use policy wrap explicitly. Instead, policy wrapping is integrated into `ResiliencePipelineBuilder`, as shown in the example below:
 
 <!-- snippet: migration-policy-wrap-v8 -->
 ```cs
-// The "PolicyWrap" is integrated directly. Strategies are executed in the same order as they were added:
+// The "PolicyWrap" is integrated directly. Strategies are executed in the same order as they were added (i.e. First-In-First-Out):
 // 1. Retry
 // 2. Timeout
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
@@ -186,9 +186,9 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 
 > [!IMPORTANT]
-> In v7, the policy wrap ordering is different; the policy added first was executed last. In v8, the execution order matches the order in which they were added.
+> In v7, the policy wrap ordering is different; the policy added first was executed last (FILO). In v8, the execution order matches the order in which they were added (FIFO).
 
-## Migrating retry policy
+## Migrating Retry Policies
 
 This section describes how to migrate the v7 retry policy to a resilience strategy in v8.
 
@@ -231,7 +231,7 @@ In v8 the retry strategy is configured as:
 new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 {
     // PredicateBuilder is used to simplify the initialization of predicates.
-    // Its API should be familiar to v7 way of configuring what exceptions to handle.
+    // Its API should be familiar to the v7 way of configuring what exceptions to handle.
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
     MaxRetryAttempts = 1,
     // To disable waiting between retries, set the Delay property to TimeSpan.Zero.
@@ -274,7 +274,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
-### Retry and wait in v7
+### Retry and Wait in v7
 
 <!-- snippet: migration-retry-wait-v7 -->
 ```cs
@@ -303,7 +303,7 @@ Policy
 ```
 <!-- endSnippet -->
 
-### Retry and wait in v8
+### Retry and Wait in v8
 
 <!-- snippet: migration-retry-wait-v8 -->
 ```cs
@@ -344,7 +344,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
-### Retry results in v7
+### Retry Results in v7
 
 <!-- snippet: migration-retry-reactive-v7 -->
 ```cs
@@ -356,7 +356,7 @@ Policy
 ```
 <!-- endSnippet -->
 
-### Retry results in v8
+### Retry Results in v8
 
 <!-- snippet: migration-retry-reactive-v8 -->
 ```cs
@@ -371,7 +371,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 })
 .Build();
 
-// The same as above, but using the switch expressions for max performance.
+// The same as above, but using the switch expressions for best performance.
 new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyOptions<HttpResponseMessage>
 {
     // Determine what results to retry using switch expressions.
@@ -390,11 +390,11 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 
 It's important to remember that the configuration in v8 is options based, i.e. `RetryStrategyOptions` are used.
 
-## Migrating rate limit policy
+## Migrating Rate Limit Policies
 
 The rate limit policy is now replaced by the [rate limiter strategy](strategies/rate-limiter.md) which uses the [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) package. Polly does not implement its own rate limiter anymore.
 
-### Rate limit in v7
+### Rate Limit in v7
 
 <!-- snippet: migration-rate-limit-v7 -->
 ```cs
@@ -420,7 +420,7 @@ IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy.RateLimitAsync<HttpRespo
 ```
 <!-- endSnippet -->
 
-### Rate limit in v8
+### Rate Limit in v8
 
 <!-- snippet: migration-rate-limit-v8 -->
 ```cs
@@ -449,7 +449,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-## Migrating bulkhead policy
+## Migrating Bulkhead Policies
 
 The bulkhead policy is now replaced by the [rate limiter strategy](strategies/rate-limiter.md) which uses the [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) package. The new counterpart to bulkhead is `ConcurrencyLimiter`.
 
@@ -492,7 +492,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-## Migrating timeout policy
+## Migrating Timeout Policies
 
 > [!NOTE]
 > In v8, the timeout resilience strategy does not support pessimistic timeouts because they can cause thread-pool starvation and non-cancellable background tasks. To address this, you can use [this workaround](https://github.com/davidfowl/AspNetCoreDiagnosticScenarios/blob/master/AsyncGuidance.md#cancelling-uncancellable-operations) to make the action cancellable.
@@ -533,9 +533,9 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-## Migrating other policies
+## Migrating Other Policies
 
-Migrating is a process similar to the one described in previous sections. Keep in mind:
+Migrating is a process similar to the ones described in the previous sections. Keep in mind that:
 
 - Strategy configurations (or policies in v7) are now in options. Property names should match the v7 APIs and scenarios.
 - Use `ResiliencePipelineBuilder` or `ResiliencePipelineBuilder<T>` and their respective extensions to add specific strategies.
@@ -545,10 +545,10 @@ Migrating is a process similar to the one described in previous sections. Keep i
 
 `Polly.Context` has been succeeded by `ResilienceContext`. Here are the main changes:
 
-- `ResilienceContext` is pooled for enhanced performance and isn't directly creatable. Instead, use the `ResilienceContextPool` to get an instance.
+- `ResilienceContext` is pooled for enhanced performance and isn't directly creatable. Instead, use the `ResilienceContextPool` class to get an instance.
 - Directly attaching custom data is supported by `Context`, whereas `ResilienceContext` employs the `ResilienceContext.Properties` property.
 - Both `PolicyKey` and `PolicyWrapKey` are no longer a part of `ResilienceContext`. They've been relocated to `ResiliencePipelineBuilder` and are now used for [telemetry](advanced/telemetry.md#metrics).
-- The `CorrelationId` property has been removed. For similar functionality, you can either use `System.Diagnostics.Activity.Current.Id` or attach your custom id using `ResilienceContext.Properties`.
+- The `CorrelationId` property has been removed. For similar functionality, you can either use `System.Diagnostics.Activity.Current.Id` or attach your custom Id using `ResilienceContext.Properties`.
 - Additionally, `ResilienceContext` introduces the `CancellationToken` property.
 
 ### `Context` in v7
@@ -594,14 +594,14 @@ ResilienceContextPool.Shared.Return(context);
 ```
 <!-- endSnippet -->
 
-For more details, refer to the [Resilience context](advanced/resilience-context.md) documentation.
+For more details, refer to the [Resilience Context](advanced/resilience-context.md) documentation.
 
-## Migrating no-op policy
+## Migrating No-Op Policies
 
 - For `Policy.NoOp` or `Policy.NoOpAsync`, switch to `ResiliencePipeline.Empty`.
 - For `Policy.NoOp<T>` or `Policy.NoOpAsync<T>`, switch to `ResiliencePipeline<T>.Empty`.
 
-## Migrating policy registry
+## Migrating Policy Registries
 
 In v7, the following registry APIs are exposed:
 
@@ -618,7 +618,7 @@ In v8, these have been replaced by:
 The main updates in the new registry include:
 
 - It's append-only, which means removal of items is not supported to avoid race conditions.
-- It's thread-safe and supports features like dynamic reloads and resource disposal.
+- It's thread-safe and supports features like dynamic reloading and resource disposal.
 - It allows dynamic creation and caching of resilience pipelines (previously known as policies in v7) using pre-registered delegates.
 - Type safety is enhanced, eliminating the need for casting between policy types.
 
@@ -644,7 +644,7 @@ registry.Add("my-key", Policy.Timeout(TimeSpan.FromSeconds(10)));
 registry.AddOrUpdate(
     "my-key",
     Policy.Timeout(TimeSpan.FromSeconds(10)),
-    (key, old) => Policy.Timeout(TimeSpan.FromSeconds(10)));
+    (key, previous) => Policy.Timeout(TimeSpan.FromSeconds(10)));
 ```
 <!-- endSnippet -->
 
@@ -669,9 +669,9 @@ registry.GetOrAddPipeline("my-key", builder => builder.AddTimeout(TimeSpan.FromS
 ```
 <!-- endSnippet -->
 
-## Interoperability between policies and resilience pipelines
+## Interoperability Between Policies and Resilience Pipelines
 
-In certain scenarios, you might not want to migrate your code to v8. Instead, you may prefer to use strategies from v8 and apply them to v7 APIs. Polly provides a set of extensions to support easy conversion from v8 to v7 APIs, as shown in the example below:
+In certain scenarios, you might not want to migrate your code to the v8 API. Instead, you may prefer to use strategies from v8 and apply them to v7 APIs. Polly provides a set of extension methods to support easy conversion from v8 to v7 APIs, as shown in the example below:
 
 <!-- snippet: migration-interoperability -->
 ```cs
