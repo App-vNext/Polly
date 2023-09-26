@@ -105,6 +105,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 | `UseJitter`        | False                                                                      | Allows adding jitter to retry delays.                                                    |
 | `DelayGenerator`   | `null`                                                                     | Used for generating custom delays for retries.                                           |
 | `OnRetry`          | `null`                                                                     | Action executed when retry occurs.                                                       |
+| `MaxDelay`         | `null`                                                                     | Caps the calculated retry delay to a specified maximum duration.                         |
 
 ## Patterns and anti-patterns
 
@@ -481,3 +482,38 @@ var retry = new ResiliencePipelineBuilder()
 **Reasoning**:
 
 As previously mentioned, always use the designated area to define retry conditions. Reframe your original exit conditions to specify when a retry should be initiated.
+
+### Limiting the maximum delay
+
+In some cases, you might want to set a limit on the calculated delay. This is beneficial when multiple retries are anticipated, and you wish to prevent excessive wait times between these retries.
+
+Consider the following example of a long-running background job:
+
+<!-- snippet: retry-pattern-max-delay -->
+```cs
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        Delay = TimeSpan.FromSeconds(2),
+        MaxRetryAttempts = int.MaxValue,
+
+        // Initially we want to retry with exponential backoff, but after certain amount of retries we want to cap the delay to 15 minutes
+        MaxDelay = TimeSpan.FromMinutes(15),
+        UseJitter = true
+    })
+    .Build();
+
+// Background processing
+while (!cancellationToken.IsCancellationRequested)
+{
+    await pipeline.ExecuteAsync(async token =>
+    {
+        // We can afford waiting for successful retry here in case of long-term service outage because this is background job
+        await SynchronizeDataAsync(token);
+    },
+    cancellationToken);
+
+    await Task.Delay(TimeSpan.FromMinutes(30)); // the sync runs every 30 minutes
+}
+```
+<!-- endSnippet -->
