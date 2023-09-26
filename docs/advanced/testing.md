@@ -67,13 +67,13 @@ ResiliencePipelineDescriptor descriptor = pipeline.GetPipelineDescriptor();
 
 Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
 
-### 1 - Recreating the policies inside unit tests
+### 1 - Recreating the strategies inside unit tests
 
-Imagine that you have a class that receives a `ResiliencePipeline<T>` as a consturtor parameter for testability.
+Imagine that you have a class that receives a `ResiliencePipeline<T>` as a constructor's parameter for testability.
 
 ❌ DON'T
 
-Recreate the strategey inside the unit test:
+Recreate the strategy inside the unit test:
 
 <!-- snippet: testing-anti-pattern-1 -->
 ```cs
@@ -102,35 +102,74 @@ await sut.RetrieveData();
 
 Use `Empty` or mock `ExecuteAsync`:
 
-- If you want to test your to-be-decorated code like there is no strategy applied
+- If you want to test your to-be-decorated code like there is no strategy applied:
 
 <!-- snippet: testing-pattern-1-1 -->
 ```cs
+// Arrange
 var timeoutMock = ResiliencePipeline<HttpResponseMessage>.Empty;
+var mockDownstream = Substitute.For<IDownstream>();
+// setup the to-be-decorated method in a way that suits for your test case
+
+// Act
+var sut = new SUT(mockDownstream, timeoutMock);
+await sut.RetrieveData();
 ```
 <!-- endSnippet -->
 
-- If you want to verify that your code handles success cases as expected
+- If you want to verify that your code handles success cases as expected:
 
 <!-- snippet: testing-pattern-1-2 -->
 ```cs
+// Arrange
+var mockDownstream = Substitute.For<IDownstream>();
+
 var timeoutMock = Substitute.For<MockableResilienceStrategy>();
 timeoutMock.ExecuteAsync(Arg.Any<Func<CancellationToken, ValueTask<HttpResponseMessage>>>(), Arg.Any<CancellationToken>())
         .Returns(new HttpResponseMessage(HttpStatusCode.Accepted));
+
+var optionsMock = Substitute.For<ResilienceStrategyOptions>();
+
+var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
+    .AddStrategy(_ => timeoutMock, optionsMock)
+    .Build();
+
+// Act
+var sut = new SUT(mockDownstream, pipeline);
+await sut.RetrieveData();
 ```
 <!-- endSnippet -->
 
-- If you want to verify that your code handles failure cases as expected
+- If you want to verify that your code handles failure cases as expected:
 
 <!-- snippet: testing-pattern-1-3 -->
 ```cs
+// Arrange
+var mockDownstream = Substitute.For<IDownstream>();
+
 var timeoutMock = Substitute.For<MockableResilienceStrategy>();
 timeoutMock.ExecuteAsync(Arg.Any<Func<CancellationToken, ValueTask<HttpResponseMessage>>>(), Arg.Any<CancellationToken>())
         .ThrowsAsync(new TimeoutRejectedException());
+
+var optionsMock = Substitute.For<ResilienceStrategyOptions>();
+
+var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
+    .AddStrategy(_ => timeoutMock, optionsMock)
+    .Build();
+
+// Act
+var sut = new SUT(mockDownstream, pipeline);
+await sut.RetrieveData();
 ```
 <!-- endSnippet -->
 
 **Reasoning**:
 
-- The `MockableResilienceStrategy` is a derived class from `ResilienceStrategy` which exposes an `ExecuteAsync`
-  - BUT this can't be used as `ResiliencePipeline`
+- Polly currently does not support direct mocking of `ResiliencePipeline`.
+  - As a workaround you can derive from the `ResilienceStrategy` class.
+  - You can expose an `ExecuteAsync` method with the same signature as you it inside the system-under-test.
+  - Then you add that strategy to a pipeline.
+- This approach allows you to define the expected behaviour for your resilience pipeline which meets your test case's needs.
+
+> [!NOTE]
+> The above presented solution is a workaround and later Polly might add support for this use case as well in the `Polly.Testing` package.

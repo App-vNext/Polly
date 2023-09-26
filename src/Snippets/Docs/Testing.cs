@@ -109,41 +109,70 @@ internal static class Testing
         #endregion
     }
 
-    public static void Pattern_11()
+    public static async Task Pattern_11()
     {
         #region testing-pattern-1-1
+        // Arrange
         var timeoutMock = ResiliencePipeline<HttpResponseMessage>.Empty;
+        var mockDownstream = Substitute.For<IDownstream>();
+        // setup the to-be-decorated method in a way that suits for your test case
+
+        // Act
+        var sut = new SUT(mockDownstream, timeoutMock);
+        await sut.RetrieveData();
         #endregion
     }
 
-    public static void Pattern_12()
+    public static async Task Pattern_12()
     {
         #region testing-pattern-1-2
+        // Arrange
+        var mockDownstream = Substitute.For<IDownstream>();
+
         var timeoutMock = Substitute.For<MockableResilienceStrategy>();
         timeoutMock.ExecuteAsync(Arg.Any<Func<CancellationToken, ValueTask<HttpResponseMessage>>>(), Arg.Any<CancellationToken>())
                 .Returns(new HttpResponseMessage(HttpStatusCode.Accepted));
+
+        var optionsMock = Substitute.For<ResilienceStrategyOptions>();
+
+        var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
+            .AddStrategy(_ => timeoutMock, optionsMock)
+            .Build();
+
+        // Act
+        var sut = new SUT(mockDownstream, pipeline);
+        await sut.RetrieveData();
         #endregion
     }
 
-    public static void Pattern_13()
+    public static async Task Pattern_13()
     {
         #region testing-pattern-1-3
+        // Arrange
+        var mockDownstream = Substitute.For<IDownstream>();
+
         var timeoutMock = Substitute.For<MockableResilienceStrategy>();
         timeoutMock.ExecuteAsync(Arg.Any<Func<CancellationToken, ValueTask<HttpResponseMessage>>>(), Arg.Any<CancellationToken>())
                 .ThrowsAsync(new TimeoutRejectedException());
+
+        var optionsMock = Substitute.For<ResilienceStrategyOptions>();
+
+        var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
+            .AddStrategy(_ => timeoutMock, optionsMock)
+            .Build();
+
+        // Act
+        var sut = new SUT(mockDownstream, pipeline);
+        await sut.RetrieveData();
         #endregion
     }
 
     public abstract class MockableResilienceStrategy : ResilienceStrategy
     {
         public virtual async ValueTask<TResult?> ExecuteAsync<TResult>(Func<CancellationToken, ValueTask<TResult>> callback, CancellationToken token)
-        {
-            return default;
-        }
+            => default;
 
         protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
-        {
-            return default;
-        }
+            => default;
     }
 }
