@@ -148,9 +148,9 @@ internal sealed class TaskExecution<T>
 
         _telemetry.Report(new(ResilienceEventSeverity.Warning, HedgingConstants.OnHedgingEventName), Context, args);
 
-        if (_handler.OnHedging is not null)
+        if (_handler.OnHedging is { } onHedging)
         {
-            await _handler.OnHedging(args).ConfigureAwait(Context.ContinueOnCapturedContext);
+            await onHedging(args).ConfigureAwait(Context.ContinueOnCapturedContext);
         }
     }
 
