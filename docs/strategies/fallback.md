@@ -54,7 +54,7 @@ new ResiliencePipelineBuilder<UserAvatar>()
         OnFallback = args =>
         {
             // Add extra logic to be executed when the fallback is triggered, such as logging.
-            return default; // returns an empty ValueTask
+            return default; // Returns an empty ValueTask
         }
     });
 ```
@@ -70,13 +70,13 @@ new ResiliencePipelineBuilder<UserAvatar>()
 
 ## Patterns and anti-patterns
 
-Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
+Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and ones to avoid.
 
 ### 1 - Using fallback to replace thrown exception
 
 ❌ DON'T
 
-Throw custom exceptions from the `OnFallback`:
+Throw custom exceptions from the `OnFallback` delegate:
 
 <!-- snippet: fallback-anti-pattern-1 -->
 ```cs
@@ -102,9 +102,9 @@ Use `ExecuteOutcomeAsync` and then evaluate the `Exception`:
 <!-- snippet: fallback-pattern-1 -->
 ```cs
 var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, "state");
-if (outcome.Exception is HttpRequestException hre)
+if (outcome.Exception is HttpRequestException httpEx)
 {
-    throw new CustomNetworkException("Replace thrown exception", hre);
+    throw new CustomNetworkException("Replace thrown exception", httpEx);
 }
 ```
 <!-- endSnippet -->
@@ -125,9 +125,9 @@ public static async ValueTask<HttpResponseMessage> Action()
             return Outcome.FromResult(result);
         }, context, "state");
 
-    if (outcome.Exception is HttpRequestException hre)
+    if (outcome.Exception is HttpRequestException httpEx)
     {
-        throw new CustomNetworkException("Replace thrown exception", hre);
+        throw new CustomNetworkException("Replace thrown exception", httpEx);
     }
 
     ResilienceContextPool.Shared.Return(context);
@@ -185,7 +185,7 @@ return result;
 
 **Reasoning**:
 
-A retry strategy by default executes the same operation up to `n` times, where `n` equals the initial attempt plus `MaxRetryAttempts`. In this case, that means **2** times. Here, the fallback is introduced as a side effect rather than a replacement.
+A retry strategy by default executes the same operation up to `N` times, where `N` equals the initial attempt plus `MaxRetryAttempts`. In this case, that means **2** times. Here, the fallback is introduced as a side effect rather than a replacement.
 
 ✅ DO
 
@@ -213,7 +213,7 @@ return await fallback.ExecuteAsync(CallPrimary, CancellationToken.None);
 
 ### 3 - Nesting `ExecuteAsync` calls
 
-Combining multiple strategies can be achieved in various ways. However, deeply nesting `ExecuteAsync` calls can lead to what's commonly referred to as `Execute` hell.
+Combining multiple strategies can be achieved in various ways. However, deeply nesting `ExecuteAsync` calls can lead to what's commonly referred to as _`Execute` hell_.
 
 > [!NOTE]
 > While this isn't strictly tied to the Fallback mechanism, it's frequently observed when Fallback is the outermost layer.
@@ -238,7 +238,7 @@ return result;
 
 **Reasoning**:
 
-This is akin to JavaScript's callback hell or the pyramid of doom. It's easy to mistakenly reference the wrong `CancellationToken` parameter.
+This is akin to JavaScript's [callback hell](http://callbackhell.com/) or _[the pyramid of doom](https://en.wikipedia.org/wiki/Pyramid_of_doom_(programming))_. It's easy to mistakenly reference the wrong `CancellationToken` parameter.
 
 ✅ DO
 
@@ -257,4 +257,4 @@ return await pipeline.ExecuteAsync(CallExternalSystem, CancellationToken.None);
 
 **Reasoning**:
 
-In this approach, we leverage the escalation mechanism provided by Polly rather than creating our own through nesting. `CancellationToken`s are automatically propagated between the strategies for you.
+In this approach, we leverage the escalation mechanism provided by Polly rather than creating our own through nesting. `CancellationToken` values are automatically propagated between the strategies for you.
