@@ -7,7 +7,7 @@
 > :rotating_light::rotating_light: **Polly v8 feature-complete!** :rotating_light::rotating_light:
 > - Polly v8 Beta 2 is now available on [NuGet.org](https://www.nuget.org/packages/Polly/8.0.0-beta.2).
 > - The Beta 2 version is considered feature-complete and the public API surface is stable.
-> - Explore the [v8 documentation](https://www.pollydocs.org/).
+> - Explore the [v8 documentation][polly-docs].
 
 # Polly
 
@@ -22,7 +22,11 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 **Keep up to date with new feature announcements, tips & tricks, and other news through [www.thepollyproject.org](https://www.thepollyproject.org)**
 
-[![Build status](https://github.com/App-vNext/Polly/workflows/build/badge.svg?branch=main&event=push)](https://github.com/App-vNext/Polly/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush) [![Code coverage](https://codecov.io/gh/App-vNext/Polly/branch/main/graph/badge.svg)](https://codecov.io/gh/App-vNext/Polly) [![Slack Status](http://www.pollytalk.org/badge.svg)](http://www.pollytalk.org)
+[![Build status](https://github.com/App-vNext/Polly/workflows/build/badge.svg?branch=main&event=push)](https://github.com/App-vNext/Polly/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush) [![Code coverage](https://codecov.io/gh/App-vNext/Polly/branch/main/graph/badge.svg)](https://codecov.io/gh/App-vNext/Polly)
+
+<!--
+[![Slack Status](http://www.pollytalk.org/badge.svg)](http://www.pollytalk.org)
+-->
 
 ![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)
 
@@ -44,7 +48,7 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 ## Documentation
 
-Read the official documentation at <https://www.pollydocs.org/>
+Read the official documentation at [pollydocs.org][polly-docs].
 
 ## Get Started
 
@@ -1063,4 +1067,6 @@ Licensed under the terms of the [New BSD License](http://opensource.org/licenses
 
 ## Resources
 
-Visit the [documentation](<https://www.pollydocs.org/>) to explore more Polly-related resources.
+Visit the [documentation][polly-docs] to explore more Polly-related resources.
+
+[polly-docs]: https://www.pollydocs.org/

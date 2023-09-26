@@ -11,9 +11,6 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 ![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)
 
-> [!NOTE]
-> This README aims to give a quick overview of all Polly features - including enough to get you started with any resilience strategy.  For deeper detail on any resilience strategy, and many other aspects of Polly, be sure also to check out the [Polly documentation](docs/README.md).
-
 > [!IMPORTANT]
 > This documentation describes the new Polly v8 API. If you are using the v7 API, please refer to the [previous version](https://github.com/App-vNext/Polly/tree/7.2.4) of the documentation.
 
@@ -26,6 +23,10 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 | Polly.Extensions | [![NuGet](https://buildstats.info/nuget/Polly.Extensions?includePreReleases=true)](https://www.nuget.org/packages/Polly.Extensions/ "Download Polly.Extensions from NuGet.org") |
 | Polly.RateLimiting | [![NuGet](https://buildstats.info/nuget/Polly.RateLimiting?includePreReleases=true)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") |
 | Polly.Testing | [![NuGet](https://buildstats.info/nuget/Polly.Testing?includePreReleases=true)](https://www.nuget.org/packages/Polly.Testing/ "Download Polly.Testing from NuGet.org") |
+
+## Documentation
+
+This README aims to give a quick overview of some Polly features - including enough to get you started with any resilience strategy. For deeper detail on any resilience strategy, and many other aspects of Polly, be sure also to check out the [documentation][polly-docs].
 
 ## Quick start
 
@@ -423,7 +424,7 @@ Rate limiter strategy throws `RateLimiterRejectedException` if execution is reje
 
 ## Next steps
 
-To learn more about Polly, visit the <https://www.pollydocs.org/>.
+To learn more about Polly, visit the [pollydocs.org][polly-docs].
 
 ## Samples
 
@@ -434,3 +435,5 @@ To learn more about Polly, visit the <https://www.pollydocs.org/>.
 ## License
 
 Licensed under the terms of the [New BSD License](http://opensource.org/licenses/BSD-3-Clause)
+
+[polly-docs]: https://www.pollydocs.org/
