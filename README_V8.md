@@ -30,7 +30,7 @@ This README aims to give a quick overview of some Polly features - including eno
 
 ## Quick start
 
-To use Polly, you must provide a callback and execute it using [**resilience pipeline**](docs/resilience-pipelines.md). A resilience pipeline is a combination of one or more [**resilience strategies**](docs/resilience-strategies.md) such as retry, timeout, and rate limiter. Polly uses **builders** to integrate these strategies into a pipeline.
+To use Polly, you must provide a callback and execute it using [**resilience pipeline**](https://www.pollydocs.org/pipelines). A resilience pipeline is a combination of one or more [**resilience strategies**](https://www.pollydocs.org/strategies) such as retry, timeout, and rate limiter. Polly uses **builders** to integrate these strategies into a pipeline.
 
 To get started, first add the [Polly.Core](https://www.nuget.org/packages/Polly.Core/) package to your project by running the following command:
 
@@ -103,14 +103,14 @@ Polly categorizes resilience strategies into two main groups:
 
 | Strategy | Reactive | Premise | AKA | How does the strategy mitigate?|
 | ------------- | --- | ------------- |:-------------: |------------- |
-|**Retry** <br/>(strategy family)<br/><sub>([quickstart](#retry)&nbsp;;&nbsp;[deep](docs/strategies/retry.md))</sub> |Yes|Many faults are transient and may self-correct after a short delay.| *Maybe it's just a blip* |  Allows configuring automatic retries. |
-|**Circuit-breaker**<br/>(strategy family)<br/><sub>([quickstart](#circuit-breaker)&nbsp;;&nbsp;[deep](docs/strategies/circuit-breaker.md))</sub>|Yes|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | *Stop doing it if it hurts* <br/><br/>*Give that system a break* | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. |
-|**Timeout**<br/><sub>([quickstart](#timeout)&nbsp;;&nbsp;[deep](docs/strategies/timeout.md))</sub>|No|Beyond a certain wait, a success result is unlikely.| *Don't wait forever*  |Guarantees the caller won't have to wait beyond the timeout. |
-|**Rate Limiter**<br/><sub>([quickstart](#rate-limiter)&nbsp;;&nbsp;[deep](docs/strategies/rate-limiter.md))</sub>|No|Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?*  |Constrains executions to not exceed a certain rate. |
-|**Fallback**<br/><sub>([quickstart](#fallback)&nbsp;;&nbsp;[deep](docs/strategies/fallback.md))</sub>|Yes|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
-|**Hedging**<br/><sub>([quickstart](#hedging)&nbsp;;&nbsp;[deep](docs/strategies/hedging.md))</sub>|Yes|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
+|**Retry** <br/>(strategy family)<br/><sub>([quickstart](#retry)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/retry))</sub> |Yes|Many faults are transient and may self-correct after a short delay.| *Maybe it's just a blip* |  Allows configuring automatic retries. |
+|**Circuit-breaker**<br/>(strategy family)<br/><sub>([quickstart](#circuit-breaker)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/circuit-breaker))</sub>|Yes|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | *Stop doing it if it hurts* <br/><br/>*Give that system a break* | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. |
+|**Timeout**<br/><sub>([quickstart](#timeout)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/timeout))</sub>|No|Beyond a certain wait, a success result is unlikely.| *Don't wait forever*  |Guarantees the caller won't have to wait beyond the timeout. |
+|**Rate Limiter**<br/><sub>([quickstart](#rate-limiter)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/rate-limiter))</sub>|No|Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?*  |Constrains executions to not exceed a certain rate. |
+|**Fallback**<br/><sub>([quickstart](#fallback)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/fallback))</sub>|Yes|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
+|**Hedging**<br/><sub>([quickstart](#hedging)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/hedging))</sub>|Yes|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
 
-Visit [resilience strategies](docs/resilience-strategies.md) docs to explore how to configure individual resilience strategies in more detail.
+Visit [resilience strategies](https://www.pollydocs.org/strategies) docs to explore how to configure individual resilience strategies in more detail.
 
 ### Retry
 
@@ -193,7 +193,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
-If all retries fail, a retry strategy rethrows the final exception back to the calling code.  For more details visit the [retry strategy documentation](docs/strategies/retry.md).
+If all retries fail, a retry strategy rethrows the final exception back to the calling code. For more details, visit the [retry strategy](https://www.pollydocs.org/strategies/retry) documentation.
 
 ### Circuit Breaker
 
@@ -254,7 +254,7 @@ await manualControl.CloseAsync();
 ```
 <!-- endSnippet -->
 
-For more details, refer to the [Circuit-Breaker documentation](docs/strategies/circuit-breaker.md).
+For more details, visit the [circuit breaker strategy](https://www.pollydocs.org/strategies/circuit-breaker) documentation.
 
 ### Fallback
 
@@ -305,7 +305,7 @@ new ResiliencePipelineBuilder<UserAvatar>()
 ```
 <!-- endSnippet -->
 
-For more details, refer to the [Fallback documentation](docs/strategies/fallback.md).
+For more details, visit the [fallback strategy](https://www.pollydocs.org/strategies/fallback) documentation.
 
 ### Hedging
 
@@ -349,7 +349,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
 ```
 <!-- endSnippet -->
 
-If all hedged attempts fail, the hedging strategy will either re-throw the last exception or return the final failed result to the caller. For more information, refer to the [hedging strategy documentation](docs/strategies/hedging.md).
+If all hedged attempts fail, the hedging strategy will either re-throw the last exception or return the final failed result to the caller. For more details, visit the [hedging strategy](https://www.pollydocs.org/strategies/hedging) documentation.
 
 ### Timeout
 
@@ -395,7 +395,7 @@ new ResiliencePipelineBuilder()
 ```
 <!-- endSnippet -->
 
-Timeout strategies throw `TimeoutRejectedException` when a timeout occurs. For more details see [Timeout strategy documentation](docs/strategies/timeout.md).
+Timeout strategies throw `TimeoutRejectedException` when a timeout occurs. For more details, visit the [timeout strategy](https://www.pollydocs.org/strategies/timeout) documentation.
 
 ### Rate Limiter
 
@@ -420,7 +420,7 @@ new ResiliencePipelineBuilder()
 ```
 <!-- endSnippet -->
 
-Rate limiter strategy throws `RateLimiterRejectedException` if execution is rejected. For more details see [Rate Limiter strategy documentation](docs/strategies/rate-limiter.md).
+Rate limiter strategy throws `RateLimiterRejectedException` if execution is rejected. For more details, visit the [rate limiter strategy](https://www.pollydocs.org/strategies/rate-limiter) documentation.
 
 ## Next steps
 
