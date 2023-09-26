@@ -270,6 +270,50 @@ ResiliencePipeline instanceA = pipelineProvider.GetPipeline(new MyPipelineKey(&q
 ResiliencePipeline instanceB = pipelineProvider.GetPipeline(new MyPipelineKey(&quot;my-pipeline&quot;, &quot;instance-B&quot;));
 </code></pre>
 <!-- endSnippet -->
+<h2 id="patterns-and-anti-patterns">Patterns and anti-patterns</h2>
+<p>Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.</p>
+<h3 id="1---accessing-the-iservicecollection-instead-of-iserviceprovider">1 - Accessing the <code>IServiceCollection</code> instead of <code>IServiceProvider</code></h3>
+<p>❌ DON'T</p>
+<p>Capture <code>IServiceCollection</code> inside <code>AddResiliencePipeline</code>:</p>
+<!-- snippet: di-anti-pattern-1 -->
+<pre><code class="lang-cs">var services = new ServiceCollection();
+services.AddResiliencePipeline(&quot;myFavoriteStrategy&quot;, builder =&gt;
+{
+    builder.AddRetry(new()
+    {
+        OnRetry = args =&gt;
+        {
+            var serviceProvider = services.BuildServiceProvider();
+            var logger = serviceProvider.GetService&lt;ILogger&gt;();
+            // ...
+            return default;
+        }
+    });
+});
+</code></pre>
+<!-- endSnippet -->
+<p><strong>Reasoning</strong>:</p>
+<p>This approach builds a new <code>ServiceProvider</code> before each retry attempt <em>unnecessarily</em>.</p>
+<p>✅ DO</p>
+<p>Use another overload of <code>AddResiliencePipeline</code> which allows access to <code>IServiceProvider</code>:</p>
+<!-- snippet: di-pattern-1 -->
+<pre><code class="lang-cs">var services = new ServiceCollection();
+services.AddResiliencePipeline(&quot;myFavoriteStrategy&quot;, static (builder, context) =&gt;
+{
+    builder.AddRetry(new()
+    {
+        OnRetry = args =&gt;
+        {
+            var logger = context.ServiceProvider.GetService&lt;ILogger&gt;();
+            // ...
+            return default;
+        }
+    });
+});
+</code></pre>
+<!-- endSnippet -->
+<p><strong>Reasoning</strong>:</p>
+<p>This approach uses the already built <code>ServiceProvider</code> and uses the same instance before every retry attempts.</p>
 </article>
 
         <div class="contribution d-print-none">

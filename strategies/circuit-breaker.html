@@ -236,8 +236,8 @@ await manualControl.CloseAsync();
 <li><a href="https://msdn.microsoft.com/en-us/library/dn589784.aspx">Circuit Breaker Pattern by Microsoft</a></li>
 <li><a href="https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker">Original Circuit Breaking Article</a></li>
 </ul>
-<h2 id="patterns-and-anti-patterns">Patterns and Anti-patterns</h2>
-<p>Throughout the years many people have used Polly in so many different ways. Some reoccuring patterns are suboptimal. So, this section shows the donts and dos.</p>
+<h2 id="patterns-and-anti-patterns">Patterns and anti-patterns</h2>
+<p>Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.</p>
 <h3 id="1---using-different-sleep-duration-between-retry-attempts-based-on-circuit-breaker-state">1 - Using different sleep duration between retry attempts based on Circuit Breaker state</h3>
 <p>Imagine that we have an inner Circuit Breaker and an outer Retry strategies.
 We would like to define the retry in a way that the sleep duration calculation is taking into account the Circuit Breaker's state.</p>
