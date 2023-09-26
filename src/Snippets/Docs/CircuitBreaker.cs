@@ -200,9 +200,9 @@ internal static class CircuitBreaker
         // Defined in a common place
         var uriToCbMappings = new Dictionary<Uri, ResiliencePipeline>
         {
-            { new Uri("https://downstream1.com"), GetCircuitBreaker() },
+            [new Uri("https://downstream1.com")] = GetCircuitBreaker(),
             // ...
-            { new Uri("https://downstreamN.com"), GetCircuitBreaker() }
+            [new Uri("https://downstreamN.com")] = GetCircuitBreaker()
         };
 
         // Used in the downstream 1 client

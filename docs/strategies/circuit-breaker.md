@@ -100,7 +100,6 @@ await manualControl.CloseAsync();
 - [Circuit Breaker Pattern by Microsoft](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
 - [Original Circuit Breaking Article](https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker)
 
-
 ## Patterns and anti-patterns
 
 Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
@@ -108,11 +107,12 @@ Over the years, many developers have used Polly in various ways. Some of these r
 ### 1 - Using different sleep duration between retry attempts based on Circuit Breaker state
 
 Imagine that we have an inner Circuit Breaker and an outer Retry strategies.
+
 We would like to define the retry in a way that the sleep duration calculation is taking into account the Circuit Breaker's state.
 
 ❌ DON'T
 
-Use closure to branch based on circuit breaker state:
+Use a closure to branch based on circuit breaker state:
 
 <!-- snippet: circuit-breaker-anti-pattern-1 -->
 ```cs
@@ -151,7 +151,7 @@ var retry = new ResiliencePipelineBuilder()
 
 - By default, each strategy is independent and has no any reference to other strategies.
 - We use the (`stateProvider`) to access the Circuit Breaker's state. However, this approach is not optimal as the retry strategy's `DelayGenerator` varies based on state.
-- This solution is delicate because the break duration and the sleep duration aren't linked:
+- This solution is delicate because the break duration and the sleep duration aren't linked.
 - If a future code maintainer modifies the `circuitBreaker`'s `BreakDuration`, they might overlook adjusting the sleep duration.
 
 ✅ DO
@@ -198,15 +198,15 @@ var retry = new ResiliencePipelineBuilder()
 **Reasoning**:
 
 - Both strategies are less coupled in this approach since they rely on the context and the `sleepDurationKey` components.
-- The Circuit Breaker shares the `BreakDuration` through the context when it breaks.
-When it transitions back to Closed, the sharring is revoked.
-- The Retry strategy fetches the sleep duration dyanmically whithout knowing any specific knowledge about the Circuit Breaker.
+- The Circuit Breaker shares the `BreakDuration` through the context when it breaks. When it transitions back to Closed, the sharring is revoked.
+- The Retry strategy fetches the sleep duration dynamically without knowing any specific knowledge about the Circuit Breaker.
 - If adjustments are needed for the `BreakDuration`, they can be made in one place.
 
 ### 2 - Using different duration for breaks
 
-In case of Retry you can specify dynamically the sleep duration via the `DelayGenerator`.
-In case of Circuit Breaker the `BreakDuration` is considered constant (can't be changed between breaks).
+In the case of Retry you can specify dynamically the sleep duration via the `DelayGenerator`.
+
+In the case of Circuit Breaker the `BreakDuration` is considered constant (can't be changed between breaks).
 
 ❌ DON'T
 
@@ -243,8 +243,8 @@ var circuitBreaker = new ResiliencePipelineBuilder()
 
 **Reasoning**:
 
-- The minimum break duration value is half second. This implies that each sleep lasts for `sleepDurationProvider.Current` plus an additional half second.
-- One might think that setting the `BreakDuration` to `sleepDurationProvider.Current` would addres this, but it doesn't. This is because the `BreakDuration` is established only once and  isn't reassessed during each break.
+- The minimum break duration value is half a second. This implies that each sleep lasts for `sleepDurationProvider.Current` plus an additional half a second.
+- One might think that setting the `BreakDuration` to `sleepDurationProvider.Current` would address this, but it doesn't. This is because the `BreakDuration` is established only once and isn't re-assessed during each break.
 
 <!-- snippet: circuit-breaker-anti-pattern-2-ext -->
 ```cs
@@ -275,16 +275,16 @@ You want to decorate all downstream calls with the service-aware Circuit Breaker
 
 ❌ DON'T
 
-Use a collection of Circuit Breakers and explicitly call `ExecuteAsync`:
+Use a collection of Circuit Breakers and explicitly call `ExecuteAsync()`:
 
 <!-- snippet: circuit-breaker-anti-pattern-3 -->
 ```cs
 // Defined in a common place
 var uriToCbMappings = new Dictionary<Uri, ResiliencePipeline>
 {
-    { new Uri("https://downstream1.com"), GetCircuitBreaker() },
+    [new Uri("https://downstream1.com")] = GetCircuitBreaker(),
     // ...
-    { new Uri("https://downstreamN.com"), GetCircuitBreaker() }
+    [new Uri("https://downstreamN.com")] = GetCircuitBreaker()
 };
 
 // Used in the downstream 1 client
@@ -295,7 +295,7 @@ await uriToCbMappings[downstream1Uri].ExecuteAsync(CallXYZOnDownstream1, Cancell
 
 **Reasoning**:
 
-- Whenever you use an `HttpClient`, you must have a reference to the  `uriToCbMappings`.
+- Whenever you use an `HttpClient`, you must have a reference to the `uriToCbMappings` dictionary.
 - It's your responsibility to decorate each network call with the corresponding circuit breaker.
 
 ✅ DO
@@ -325,9 +325,9 @@ public Downstream1Client(
 **Reasoning**:
 
 - The `HttpClient` integrates with Circuit Breaker during startup.
-- There's no need to call `ExecuteAsync` directly. The `DelegatingHandler` handles it automatically.
+- There's no need to call `ExecuteAsync()` directly. The `DelegatingHandler` handles it automatically.
 
 > [!NOTE]
 > The above sample code used the `AsAsyncPolicy<HttpResponseMessage>()` method to convert the `ResiliencePipeline<HttpResponseMessage>` to `IAsyncPolicy<HttpResponseMessage>`.
-> It is required because the `AddPolicyHandler` anticipates an `IAsyncPolicy<HttpResponse>` parameter.
-> Please be aware that, later an `AddResilienceHandler` will be introduced in the `Microsoft.Extensions.Http.Resilience` package which is the successor of the `Microsoft.Extensions.Http.Polly`.
+> It is required because the `AddPolicyHandler()` method anticipates an `IAsyncPolicy<HttpResponse>` parameter.
+> Please be aware that, later an `AddResilienceHandler()` will be introduced in the `Microsoft.Extensions.Http.Resilience` package which is the successor of the `Microsoft.Extensions.Http.Polly`.

@@ -6,7 +6,7 @@ The `Polly.RateLimiting` package adopts the [.NET Rate Limiting](https://devblog
 - It exposes the `AddConcurrencyLimiter` convenience extension methods for `ResiliencePipelineBuilder`.
 - It exposes the `RateLimiterRejectedException` class to notify the caller that the operation was rate limited.
 
-See <https://www.pollydocs.org/strategies/rate-limiter> for more details.
+See [the documentation](https://www.pollydocs.org/strategies/rate-limiter) for more details.
 
 ## Usage
 
@@ -30,4 +30,3 @@ new ResiliencePipelineBuilder()
     }));
 ```
 <!-- endSnippet -->
-
