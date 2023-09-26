@@ -82,12 +82,12 @@ var timeout = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddTimeout(TimeSpan.FromSeconds(1))
     .Build();
 
-var mockDownstream = Substitute.For<IDownstream>();
-mockDownstream.CallDownstream(Arg.Any<CancellationToken>())
-.Returns((_) => { Thread.Sleep(5_000); return new HttpResponseMessage(); }, null);
+var downstreamMock = Substitute.For<IDownstream>();
+downstreamMock.CallDownstreamAsync(Arg.Any<CancellationToken>())
+        .Returns((_) => { Thread.Sleep(5_000); return new HttpResponseMessage(); }, null);
 
 // Act
-var sut = new SUT(mockDownstream, timeout);
+var sut = new SUT(downstreamMock, timeout);
 await sut.RetrieveData();
 ```
 <!-- endSnippet -->
@@ -108,11 +108,11 @@ Use `Empty` or mock `ExecuteAsync`:
 ```cs
 // Arrange
 var timeoutMock = ResiliencePipeline<HttpResponseMessage>.Empty;
-var mockDownstream = Substitute.For<IDownstream>();
+var downstreamMock = Substitute.For<IDownstream>();
 // setup the to-be-decorated method in a way that suits for your test case
 
 // Act
-var sut = new SUT(mockDownstream, timeoutMock);
+var sut = new SUT(downstreamMock, timeoutMock);
 await sut.RetrieveData();
 ```
 <!-- endSnippet -->
@@ -122,7 +122,7 @@ await sut.RetrieveData();
 <!-- snippet: testing-pattern-1-2 -->
 ```cs
 // Arrange
-var mockDownstream = Substitute.For<IDownstream>();
+var downstreamMock = Substitute.For<IDownstream>();
 
 var timeoutMock = Substitute.For<MockableResilienceStrategy>();
 timeoutMock.ExecuteAsync(Arg.Any<Func<CancellationToken, ValueTask<HttpResponseMessage>>>(), Arg.Any<CancellationToken>())
@@ -135,7 +135,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .Build();
 
 // Act
-var sut = new SUT(mockDownstream, pipeline);
+var sut = new SUT(downstreamMock, pipeline);
 await sut.RetrieveData();
 ```
 <!-- endSnippet -->
@@ -145,7 +145,7 @@ await sut.RetrieveData();
 <!-- snippet: testing-pattern-1-3 -->
 ```cs
 // Arrange
-var mockDownstream = Substitute.For<IDownstream>();
+var downstreamMock = Substitute.For<IDownstream>();
 
 var timeoutMock = Substitute.For<MockableResilienceStrategy>();
 timeoutMock.ExecuteAsync(Arg.Any<Func<CancellationToken, ValueTask<HttpResponseMessage>>>(), Arg.Any<CancellationToken>())
@@ -158,7 +158,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .Build();
 
 // Act
-var sut = new SUT(mockDownstream, pipeline);
+var sut = new SUT(downstreamMock, pipeline);
 await sut.RetrieveData();
 ```
 <!-- endSnippet -->
