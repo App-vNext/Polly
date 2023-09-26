@@ -194,7 +194,7 @@ public static class PollyServiceCollectionExtensions
     {
         Guard.NotNull(services);
 
-        // check marker to ensure the APIs bellow are called only once for each TKey type
+        // Check marker to ensure the APIs below are called only once for each TKey type
         // this prevents polluting the service collection with unnecessary Configure calls
         if (services.Contains(RegistryMarker<TKey>.ServiceDescriptor))
         {

@@ -6,7 +6,7 @@ Various code-snippets used in the Polly documentation. Run the following command
 dotnet mdsnippets
 ```
 
-Visit <https://github.com/SimonCropp/MarkdownSnippets> for more details.
+Visit [SimonCropp/MarkdownSnippets][MarkdownSnippets] for more details.
 
 ## How to use snippets in Polly documentation
 
@@ -25,6 +25,8 @@ public static void MySnippet()
 }
 ```
 
-In your markdown documentation, refer to your code snippet by adding `<!-- snippet: my-snippet -->` and `<!-- endSnippet -->` comments to your markdown file.
+In your Markdown documentation, refer to your code snippet by adding `<!-- snippet: my-snippet -->` and `<!-- endSnippet -->` comments to your Markdown file.
 
-To conclude, run the `dotnet mdsnippets` command from the root directory to refresh snippets throughout all markdown files.
+When you're finished editing, run the `dotnet mdsnippets` command from the root directory of the repository to refresh all the snippets throughout all the Markdown files.
+
+[MarkdownSnippets]: https://github.com/SimonCropp/MarkdownSnippets

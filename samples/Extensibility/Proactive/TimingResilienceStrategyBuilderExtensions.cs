@@ -20,7 +20,7 @@ public static class TimingResilienceStrategyBuilderExtensions
             context =>
             {
                 // The "context" provides various properties for the strategy's use.
-                // In this case, we simply use the "Telemetry" and pass it to the strategy.
+                // In this case, we simply use the "Telemetry" property and pass it to the strategy.
                 // The Threshold and ThresholdExceeded values are sourced from the options.
                 var strategy = new TimingResilienceStrategy(
                     options.Threshold!.Value,
