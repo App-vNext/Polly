@@ -522,6 +522,41 @@ ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipeline
     .Build();
 </code></pre>
 <!-- endSnippet -->
+<h2 id="migrating-timeout-policy">Migrating timeout policy</h2>
+<div class="NOTE">
+<h5>Note</h5>
+<p>In v8, the timeout resilience strategy does not support pessimistic timeouts because they can cause thread-pool starvation and non-cancellable background tasks. To address this, you can use <a href="https://github.com/davidfowl/AspNetCoreDiagnosticScenarios/blob/master/AsyncGuidance.md#cancelling-uncancellable-operations">this workaround</a> to make the action cancellable.</p>
+</div>
+<h3 id="timeout-in-v7">Timeout in v7</h3>
+<!-- snippet: migration-timeout-v7 -->
+<pre><code class="lang-cs">// Create sync timeout
+ISyncPolicy syncPolicy = Policy.Timeout(TimeSpan.FromSeconds(10));
+
+// Create async timeout
+IAsyncPolicy asyncPolicy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10));
+
+// Create generic sync timeout
+ISyncPolicy&lt;HttpResponseMessage&gt; syncPolicyT = Policy.Timeout&lt;HttpResponseMessage&gt;(TimeSpan.FromSeconds(10));
+
+// Create generic async timeout
+IAsyncPolicy&lt;HttpResponseMessage&gt; asyncPolicyT = Policy.TimeoutAsync&lt;HttpResponseMessage&gt;(TimeSpan.FromSeconds(10));
+</code></pre>
+<!-- endSnippet -->
+<h3 id="timeout-in-v8">Timeout in v8</h3>
+<!-- snippet: migration-timeout-v8 -->
+<pre><code class="lang-cs">// Create pipeline with timeout. Because ResiliencePipeline supports both sync and async
+// callbacks, there is no need to define it twice.
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddTimeout(TimeSpan.FromSeconds(10))
+    .Build();
+
+// Create a generic pipeline with timeout. Because ResiliencePipeline&lt;T&gt; supports both sync and async
+// callbacks, there is no need to define it twice.
+ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
+    .AddTimeout(TimeSpan.FromSeconds(10))
+    .Build();
+</code></pre>
+<!-- endSnippet -->
 <h2 id="migrating-other-policies">Migrating other policies</h2>
 <p>Migrating is a process similar to the one described in previous sections. Keep in mind:</p>
 <ul>

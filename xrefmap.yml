@@ -1531,15 +1531,15 @@ references:
   fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult)
   nameWithType: OnHedgingArguments<TResult>
   nameWithType.vb: OnHedgingArguments(Of TResult)
-- uid: Polly.Hedging.OnHedgingArguments`1.#ctor(Polly.ResilienceContext,System.Nullable{Polly.Outcome{`0}},System.Int32,System.TimeSpan)
-  name: OnHedgingArguments(ResilienceContext, Outcome<TResult>?, int, TimeSpan)
-  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1__ctor_Polly_ResilienceContext_System_Nullable_Polly_Outcome__0___System_Int32_System_TimeSpan_
-  commentId: M:Polly.Hedging.OnHedgingArguments`1.#ctor(Polly.ResilienceContext,System.Nullable{Polly.Outcome{`0}},System.Int32,System.TimeSpan)
-  name.vb: New(ResilienceContext, Outcome(Of TResult)?, Integer, TimeSpan)
-  fullName: Polly.Hedging.OnHedgingArguments<TResult>.OnHedgingArguments(Polly.ResilienceContext, Polly.Outcome<TResult>?, int, System.TimeSpan)
-  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).New(Polly.ResilienceContext, Polly.Outcome(Of TResult)?, Integer, System.TimeSpan)
-  nameWithType: OnHedgingArguments<TResult>.OnHedgingArguments(ResilienceContext, Outcome<TResult>?, int, TimeSpan)
-  nameWithType.vb: OnHedgingArguments(Of TResult).New(ResilienceContext, Outcome(Of TResult)?, Integer, TimeSpan)
+- uid: Polly.Hedging.OnHedgingArguments`1.#ctor(Polly.ResilienceContext,Polly.ResilienceContext,System.Int32)
+  name: OnHedgingArguments(ResilienceContext, ResilienceContext, int)
+  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1__ctor_Polly_ResilienceContext_Polly_ResilienceContext_System_Int32_
+  commentId: M:Polly.Hedging.OnHedgingArguments`1.#ctor(Polly.ResilienceContext,Polly.ResilienceContext,System.Int32)
+  name.vb: New(ResilienceContext, ResilienceContext, Integer)
+  fullName: Polly.Hedging.OnHedgingArguments<TResult>.OnHedgingArguments(Polly.ResilienceContext, Polly.ResilienceContext, int)
+  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).New(Polly.ResilienceContext, Polly.ResilienceContext, Integer)
+  nameWithType: OnHedgingArguments<TResult>.OnHedgingArguments(ResilienceContext, ResilienceContext, int)
+  nameWithType.vb: OnHedgingArguments(Of TResult).New(ResilienceContext, ResilienceContext, Integer)
 - uid: Polly.Hedging.OnHedgingArguments`1.#ctor*
   name: OnHedgingArguments
   href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1__ctor_
@@ -1550,6 +1550,23 @@ references:
   fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).New
   nameWithType: OnHedgingArguments<TResult>.OnHedgingArguments
   nameWithType.vb: OnHedgingArguments(Of TResult).New
+- uid: Polly.Hedging.OnHedgingArguments`1.ActionContext
+  name: ActionContext
+  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_ActionContext
+  commentId: P:Polly.Hedging.OnHedgingArguments`1.ActionContext
+  fullName: Polly.Hedging.OnHedgingArguments<TResult>.ActionContext
+  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).ActionContext
+  nameWithType: OnHedgingArguments<TResult>.ActionContext
+  nameWithType.vb: OnHedgingArguments(Of TResult).ActionContext
+- uid: Polly.Hedging.OnHedgingArguments`1.ActionContext*
+  name: ActionContext
+  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_ActionContext_
+  commentId: Overload:Polly.Hedging.OnHedgingArguments`1.ActionContext
+  isSpec: "True"
+  fullName: Polly.Hedging.OnHedgingArguments<TResult>.ActionContext
+  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).ActionContext
+  nameWithType: OnHedgingArguments<TResult>.ActionContext
+  nameWithType.vb: OnHedgingArguments(Of TResult).ActionContext
 - uid: Polly.Hedging.OnHedgingArguments`1.AttemptNumber
   name: AttemptNumber
   href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_AttemptNumber
@@ -1567,57 +1584,23 @@ references:
   fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).AttemptNumber
   nameWithType: OnHedgingArguments<TResult>.AttemptNumber
   nameWithType.vb: OnHedgingArguments(Of TResult).AttemptNumber
-- uid: Polly.Hedging.OnHedgingArguments`1.Context
-  name: Context
-  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_Context
-  commentId: P:Polly.Hedging.OnHedgingArguments`1.Context
-  fullName: Polly.Hedging.OnHedgingArguments<TResult>.Context
-  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).Context
-  nameWithType: OnHedgingArguments<TResult>.Context
-  nameWithType.vb: OnHedgingArguments(Of TResult).Context
-- uid: Polly.Hedging.OnHedgingArguments`1.Context*
-  name: Context
-  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_Context_
-  commentId: Overload:Polly.Hedging.OnHedgingArguments`1.Context
+- uid: Polly.Hedging.OnHedgingArguments`1.PrimaryContext
+  name: PrimaryContext
+  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_PrimaryContext
+  commentId: P:Polly.Hedging.OnHedgingArguments`1.PrimaryContext
+  fullName: Polly.Hedging.OnHedgingArguments<TResult>.PrimaryContext
+  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).PrimaryContext
+  nameWithType: OnHedgingArguments<TResult>.PrimaryContext
+  nameWithType.vb: OnHedgingArguments(Of TResult).PrimaryContext
+- uid: Polly.Hedging.OnHedgingArguments`1.PrimaryContext*
+  name: PrimaryContext
+  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_PrimaryContext_
+  commentId: Overload:Polly.Hedging.OnHedgingArguments`1.PrimaryContext
   isSpec: "True"
-  fullName: Polly.Hedging.OnHedgingArguments<TResult>.Context
-  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).Context
-  nameWithType: OnHedgingArguments<TResult>.Context
-  nameWithType.vb: OnHedgingArguments(Of TResult).Context
-- uid: Polly.Hedging.OnHedgingArguments`1.Duration
-  name: Duration
-  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_Duration
-  commentId: P:Polly.Hedging.OnHedgingArguments`1.Duration
-  fullName: Polly.Hedging.OnHedgingArguments<TResult>.Duration
-  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).Duration
-  nameWithType: OnHedgingArguments<TResult>.Duration
-  nameWithType.vb: OnHedgingArguments(Of TResult).Duration
-- uid: Polly.Hedging.OnHedgingArguments`1.Duration*
-  name: Duration
-  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_Duration_
-  commentId: Overload:Polly.Hedging.OnHedgingArguments`1.Duration
-  isSpec: "True"
-  fullName: Polly.Hedging.OnHedgingArguments<TResult>.Duration
-  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).Duration
-  nameWithType: OnHedgingArguments<TResult>.Duration
-  nameWithType.vb: OnHedgingArguments(Of TResult).Duration
-- uid: Polly.Hedging.OnHedgingArguments`1.Outcome
-  name: Outcome
-  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_Outcome
-  commentId: P:Polly.Hedging.OnHedgingArguments`1.Outcome
-  fullName: Polly.Hedging.OnHedgingArguments<TResult>.Outcome
-  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).Outcome
-  nameWithType: OnHedgingArguments<TResult>.Outcome
-  nameWithType.vb: OnHedgingArguments(Of TResult).Outcome
-- uid: Polly.Hedging.OnHedgingArguments`1.Outcome*
-  name: Outcome
-  href: api/Polly.Hedging.OnHedgingArguments-1.html#Polly_Hedging_OnHedgingArguments_1_Outcome_
-  commentId: Overload:Polly.Hedging.OnHedgingArguments`1.Outcome
-  isSpec: "True"
-  fullName: Polly.Hedging.OnHedgingArguments<TResult>.Outcome
-  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).Outcome
-  nameWithType: OnHedgingArguments<TResult>.Outcome
-  nameWithType.vb: OnHedgingArguments(Of TResult).Outcome
+  fullName: Polly.Hedging.OnHedgingArguments<TResult>.PrimaryContext
+  fullName.vb: Polly.Hedging.OnHedgingArguments(Of TResult).PrimaryContext
+  nameWithType: OnHedgingArguments<TResult>.PrimaryContext
+  nameWithType.vb: OnHedgingArguments(Of TResult).PrimaryContext
 - uid: Polly.HedgingResiliencePipelineBuilderExtensions
   name: HedgingResiliencePipelineBuilderExtensions
   href: api/Polly.HedgingResiliencePipelineBuilderExtensions.html
