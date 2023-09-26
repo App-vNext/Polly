@@ -20,7 +20,7 @@ public readonly struct HedgingActionGeneratorArguments<TResult>
     /// Initializes a new instance of the <see cref="HedgingActionGeneratorArguments{TResult}"/> struct.
     /// </summary>
     /// <param name="primaryContext">The primary context received by the hedging strategy.</param>
-    /// <param name="actionContext">The action context. cloned from the primary context.</param>
+    /// <param name="actionContext">The action context cloned from the primary context.</param>
     /// <param name="attemptNumber">The zero-based hedging attempt number.</param>
     /// <param name="callback">The callback passed to the hedging strategy.</param>
     public HedgingActionGeneratorArguments(
