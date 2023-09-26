@@ -497,7 +497,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
         Delay = TimeSpan.FromSeconds(2),
         MaxRetryAttempts = int.MaxValue,
 
-        // Initially we want to retry with exponential backoff, but after certain amount of retries we want to cap the delay to 15 minutes
+        // Initially, we aim for an exponential backoff, but after a certain number of retries, we set a maximum delay of 15 minutes.
         MaxDelay = TimeSpan.FromMinutes(15),
         UseJitter = true
     })
@@ -508,12 +508,12 @@ while (!cancellationToken.IsCancellationRequested)
 {
     await pipeline.ExecuteAsync(async token =>
     {
-        // We can afford waiting for successful retry here in case of long-term service outage because this is background job
+        // In the event of a prolonged service outage, we can afford to wait for a successful retry since this is a background task.
         await SynchronizeDataAsync(token);
     },
     cancellationToken);
 
-    await Task.Delay(TimeSpan.FromMinutes(30)); // the sync runs every 30 minutes
+    await Task.Delay(TimeSpan.FromMinutes(30)); // The sync runs every 30 minutes.
 }
 ```
 <!-- endSnippet -->
