@@ -18,8 +18,8 @@ Regardless of whether the strategy is reactive or proactive, every new resilienc
 The strategy options contain properties of following types:
 
 - **Common types**: Such as `int`, `bool`, `TimeSpan`, etc.
-- **Delegates**: For example when strategy need to raise an event, or generate a value. In general, the delegates should by asynchronous.
-- **Arguments**: Used by the delegates to pass the information to consumers.
+- **Delegates**: For example when a strategy needs to raise an event, or generate a value. In general, the delegates should by asynchronous.
+- **Arguments**: Used by the delegates to pass the information to their consumers.
 
 ## Delegates
 
@@ -45,10 +45,10 @@ Recommended signatures for these delegates are:
 - `Func<Args<TResult>, ValueTask<TValue>>` (Reactive)
 - `Func<Args, ValueTask<TValue>>` (Proactive)
 
-These delegates accept either `Args` or `Args<TResult>` arguments, which encapsulate event information. Note that all these delegates are asynchronous and return a `ValueTask`. Learn more about [arguments](#arguments) in the sections bellow.
+These delegates accept either `Args` or `Args<TResult>` arguments, which encapsulate event information. Note that all these delegates are asynchronous and return a `ValueTask`. Learn more about [arguments](#arguments) in the sections below.
 
 > [!NOTE]
-> When setting up delegates, consider using the `ResilienceContext.ContinueOnCapturedContext` property if your user code interacts with a synchronization context (as in asynchronous UI applications like Windows Forms or WPF).
+> When setting up delegates, consider using the `ResilienceContext.ContinueOnCapturedContext` property if your user code interacts with a synchronization context (such as in asynchronous UI applications like Windows Forms or WPF).
 
 ### How to use delegates
 
@@ -87,7 +87,7 @@ new ResiliencePipelineBuilder<string>()
 
 ## Arguments
 
-Arguments are used by individual delegate types to flow information to the consumer. Arguments should always have an `Arguments` suffix and include a `Context` property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change.  For proactive strategies, the arguments structure might resemble:
+Arguments are used by individual delegate types to flow information to the consumer. Arguments should always have an `Arguments` suffix and include a `Context` property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change.  For proactive strategies, the arguments structure might resemble the following:
 
 <!-- snippet: ext-proactive-args -->
 ```cs
@@ -114,7 +114,7 @@ public readonly struct ThresholdExceededArguments
 
 ## Implementing a resilience strategy
 
-To understand the details of implementing a strategy, use the links below:
+To find out more details about implementing a strategy, follow the links below:
 
 - [Proactive strategy](proactive-strategy.md): Explains how to implement a proactive resilience strategy.
 - [Reactive strategy](reactive-strategy.md): Explains how to implement a reactive resilience strategy.

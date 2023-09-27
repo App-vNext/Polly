@@ -37,7 +37,7 @@ await resiliencePipeline.ExecuteAsync(
     cancellationToken);
 
 // This approach uses a static lambda, avoiding allocations.
-// The "userId" is stored as state, and the lambda reads it.
+// The "userId" is stored as state, and the lambda consumes it.
 await resiliencePipeline.ExecuteAsync(
     static (state, cancellationToken) => GetMemberAsync(state, cancellationToken),
     userId,
@@ -62,7 +62,7 @@ new ResiliencePipelineBuilder()
     })
     .Build();
 
-// For optimal performance, it's recommended to use switch expressions over PredicateBuilder.
+// For optimal performance, it's recommended to use switch expressions instead of PredicateBuilder.
 new ResiliencePipelineBuilder()
     .AddRetry(new()
     {
@@ -147,7 +147,7 @@ public class MyApi
 
     public async Task UpdateData(CancellationToken cancellationToken)
     {
-        // Get or create and cache the pipeline for subsequent use.
+        // Get or create the pipeline, and then cache it for subsequent use.
         // Choose a sufficiently unique key to prevent collisions.
         var pipeline = _registry.GetOrAddPipeline("my-app.my-api", builder =>
         {

@@ -299,7 +299,7 @@ new ResiliencePipelineBuilder<UserAvatar>()
         OnFallback = args =>
         {
             // Add extra logic to be executed when the fallback is triggered, such as logging.
-            return default; // returns an empty ValueTask
+            return default; // Returns an empty ValueTask
         }
     });
 ```

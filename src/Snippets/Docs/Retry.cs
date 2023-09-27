@@ -182,7 +182,8 @@ internal static class Retry
             typeof(RateLimitRejectedException),
         }.ToImmutableArray();
 
-        ImmutableArray<Type> retryableExceptions = networkExceptions.Union(strategyExceptions)
+        ImmutableArray<Type> retryableExceptions = networkExceptions
+            .Union(strategyExceptions)
             .ToImmutableArray();
 
         var retry = new ResiliencePipelineBuilder()
@@ -262,12 +263,12 @@ internal static class Retry
 
     public static void AntiPattern_4()
     {
-        HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, "");
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "");
         static bool IsRetryable(Uri? uri) => true;
         #region retry-anti-pattern-4
 
         var retry =
-            IsRetryable(req.RequestUri)
+            IsRetryable(request.RequestUri)
                 ? new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new()).Build()
                 : ResiliencePipeline<HttpResponseMessage>.Empty;
 
@@ -276,14 +277,14 @@ internal static class Retry
 
     public static void Pattern_4()
     {
-        HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, "");
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "");
         static bool IsRetryable(Uri? uri) => true;
         #region retry-pattern-4
 
         var retry = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddRetry(new()
             {
-                ShouldHandle = _ => ValueTask.FromResult(IsRetryable(req.RequestUri))
+                ShouldHandle = _ => ValueTask.FromResult(IsRetryable(request.RequestUri))
             })
             .Build();
 

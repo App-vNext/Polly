@@ -58,4 +58,4 @@ The `ResiliencePipeline` class unifies the four different policies that were ava
 
 ## Resources
 
-Visit <https://pollydocs.org> to learn more about Polly.
+Visit [pollydocs.org](https://pollydocs.org) to learn more about Polly.
