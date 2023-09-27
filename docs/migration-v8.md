@@ -596,6 +596,112 @@ ResilienceContextPool.Shared.Return(context);
 
 For more details, refer to the [Resilience Context](advanced/resilience-context.md) documentation.
 
+## Migrating safe execution
+
+In v7, the `ExecuteAndCapture{Async}` methods are considered the safe counterpart of the `Execute{Async}`.
+
+The former does not throw an exception in case of failure rather than wrap the outcome in a result object.
+
+In v8, the `ExecuteOutcomeAsync` method should be used to execute the to-be-decorated method in a safe way.
+
+### `ExecuteAndCapture{Async}` in V7
+
+<!-- snippet: migration-execute-v7 -->
+```cs
+// Synchronous execution
+ISyncPolicy<int> syncPolicy = Policy.Timeout<int>(TimeSpan.FromSeconds(1));
+PolicyResult<int> policyResult = syncPolicy.ExecuteAndCapture(Method);
+
+// Asynchronous execution
+IAsyncPolicy<int> asyncPolicy = Policy.TimeoutAsync<int>(TimeSpan.FromSeconds(1));
+PolicyResult<int> asyncPolicyResult = await asyncPolicy.ExecuteAndCaptureAsync(MethodAsync, CancellationToken.None);
+
+// Assess policy result
+if (policyResult.Outcome == OutcomeType.Successful)
+{
+    int result = policyResult.Result;
+
+    // Process result
+}
+else
+{
+    Exception exception = policyResult.FinalException;
+    FaultType failtType = policyResult.FaultType!.Value;
+    ExceptionType exceptionType = policyResult.ExceptionType!.Value;
+
+    // Process failure
+}
+
+// Access context
+IAsyncPolicy<int> asyncPolicyWithContext = Policy.TimeoutAsync<int>(TimeSpan.FromSeconds(10),
+    onTimeoutAsync: (ctx, ts, task) =>
+    {
+        ctx["context_key"] = "context_value";
+        return Task.CompletedTask;
+    });
+
+asyncPolicyResult = await asyncPolicyWithContext.ExecuteAndCaptureAsync((ctx, token) => MethodAsync(token), new Context(), CancellationToken.None);
+string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault("context_key") as string;
+```
+<!-- endSnippet -->
+
+### `ExecuteOutcomeAsync` in V8
+
+<!-- snippet: migration-execute-v8 -->
+```cs
+ResiliencePipeline<int> pipeline = new ResiliencePipelineBuilder<int>()
+    .AddTimeout(TimeSpan.FromSeconds(1))
+    .Build();
+
+// Synchronous execution
+// Polly v8 does not provide an API to synchronously execute and capture the outcome of a pipeline
+
+// Asynchronous execution
+var context = ResilienceContextPool.Shared.Get();
+Outcome<int> pipelineResult = await pipeline.ExecuteOutcomeAsync(
+    static async (ctx, state) => Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, "state");
+ResilienceContextPool.Shared.Return(context);
+
+// Assess policy result
+if (pipelineResult.Exception is null)
+{
+    int result = pipelineResult.Result;
+
+    // Process result
+}
+else
+{
+    Exception exception = pipelineResult.Exception;
+
+    // Process failure
+
+    // If needed you can rethrow the exception
+    pipelineResult.ThrowIfException();
+}
+
+// Access context
+ResiliencePropertyKey<string> contextKey = new("context_key");
+ResiliencePipeline<int> pipelineWithContext = new ResiliencePipelineBuilder<int>()
+    .AddTimeout(new TimeoutStrategyOptions
+    {
+        Timeout = TimeSpan.FromSeconds(1),
+        OnTimeout = args =>
+        {
+            args.Context.Properties.Set(contextKey, "context_value");
+            return default;
+        }
+    })
+    .Build();
+
+context = ResilienceContextPool.Shared.Get();
+pipelineResult = await pipelineWithContext.ExecuteOutcomeAsync(
+    static async (ctx, state) => Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, "state");
+
+context.Properties.TryGetValue(contextKey, out var ctxValue);
+ResilienceContextPool.Shared.Return(context);
+```
+<!-- endSnippet -->
+
 ## Migrating no-op policies
 
 - For `Policy.NoOp` or `Policy.NoOpAsync`, switch to `ResiliencePipeline.Empty`.
