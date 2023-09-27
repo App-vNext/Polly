@@ -1,8 +1,5 @@
 # General
 
-> [!NOTE]
-> This is documentation for the upcoming Polly v8 release.
-
 ## Supported targets
 
 Polly targets .NET Standard 2.0+ ([coverage](https://docs.microsoft.com/dotnet/standard/net-standard#net-implementation-support): .NET Core 2.0+, .NET Core 3.0, .NET 6.0+ and later Mono, Xamarin and UWP targets). The NuGet package also includes direct targets for .NET Framework 4.6.1 and 4.7.2.
