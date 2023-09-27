@@ -105,9 +105,9 @@ internal static class Fallback
         #region fallback-pattern-1
 
         var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, "state");
-        if (outcome.Exception is HttpRequestException httpEx)
+        if (outcome.Exception is HttpRequestException requestException)
         {
-            throw new CustomNetworkException("Replace thrown exception", httpEx);
+            throw new CustomNetworkException("Replace thrown exception", requestException);
         }
         #endregion
 
@@ -125,9 +125,9 @@ internal static class Fallback
                 return Outcome.FromResult(result);
             }, context, "state");
 
-        if (outcome.Exception is HttpRequestException httpEx)
+        if (outcome.Exception is HttpRequestException requestException)
         {
-            throw new CustomNetworkException("Replace thrown exception", httpEx);
+            throw new CustomNetworkException("Replace thrown exception", requestException);
         }
 
         ResilienceContextPool.Shared.Return(context);
