@@ -13,4 +13,4 @@ Polly is a .NET resilience and transient-fault-handling library that allows deve
 
 ## Documentation and Samples
 
-Documentation, and samples, for using Polly can be found in the repository's [README](https://github.com/App-vNext/Polly#readme) and [wiki](https://github.com/App-vNext/Polly/wiki).
+Documentation, and samples, for using Polly can be found in the repository's [README](https://github.com/App-vNext/Polly#readme) and [documentation](https://www.pollydocs.org/).
