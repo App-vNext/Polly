@@ -1,12 +1,12 @@
 # Testing
 
-This document explains how to test Polly’s resilience pipelines. You should not test how the resilience pipelines operate internally, but rather test your own settings or custom delegates.
+This document explains how to test Polly's resilience pipelines. You should not test how the resilience pipelines operate internally, but rather test your own settings or custom delegates.
 
 To make the testing process simpler, Polly offers the [`Polly.Testing`](https://www.nuget.org/packages/Polly.Testing/) package. This package has a range of APIs designed to help you test the setup and combination of resilience pipelines in your user code.
 
 ## Usage
 
-Begin by adding the `Polly.Testing` package to your test project:
+Begin by adding the [`Polly.Testing`](https://www.nuget.org/packages/Polly.Testing) package to your test project:
 
 ```sh
 dotnet add package Polly.Testing

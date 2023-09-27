@@ -85,7 +85,7 @@ public readonly struct ThresholdExceededArguments
 ```
 <!-- endSnippet -->
 
-Arguments should always have an `Arguments` suffix and include a `Context` property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change. The `ThresholdExceededArguments` provides details about the actual execution time and threshold, allowing listeners to respond to this event or supply a custom callback for such situations.
+Arguments should always have an `Arguments` suffix and include a `Context` property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change. The `ThresholdExceededArguments` provides details about the actual execution time and threshold, allowing consumers to respond to this event or supply a custom callback for such situations.
 
 ## Options
 
@@ -125,7 +125,7 @@ So far, we've covered:
 - The public `TimingStrategyOptions` and its associated arguments.
 - The proactive strategy implementation named `TimingResilienceStrategy`.
 
-The final step is to integrate these components by adding new extensions for both `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>`. Since both builders inherit from the same base class, we can introduce a single extension for `ResiliencePipelineBuilderBase` to serve both.
+The final step is to integrate these components with each other by adding new extensions for both `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>`. Since both builders inherit from the same base class, we can introduce a single extension for `ResiliencePipelineBuilderBase` to serve both.
 
 <!-- snippet: ext-proactive-extensions -->
 ```cs
@@ -143,7 +143,7 @@ public static class TimingResilienceStrategyBuilderExtensions
             context =>
             {
                 // The "context" provides various properties for the strategy's use.
-                // In this case, we simply use the "Telemetry" and pass it to the strategy.
+                // In this case, we simply use the "Telemetry" property and pass it to the strategy.
                 // The Threshold and ThresholdExceeded values are sourced from the options.
                 var strategy = new TimingResilienceStrategy(
                     options.Threshold!.Value,
@@ -180,7 +180,7 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Resources
 
-For further understanding of proactive resilience strategies, consider exploring these resources:
+For further information on proactive resilience strategies, consider exploring these resources:
 
 - [Timing strategy sample](https://github.com/App-vNext/Polly/tree/main/samples/Extensibility/Proactive): A practical example from this guide.
 - [Timeout resilience strategy](https://github.com/App-vNext/Polly/tree/main/src/Polly.Core/Timeout): Discover the built-in timeout resilience strategy implementation.

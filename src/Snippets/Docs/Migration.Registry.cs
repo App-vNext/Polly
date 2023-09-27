@@ -24,7 +24,7 @@ internal static partial class Migration
         registry.AddOrUpdate(
             "my-key",
             Policy.Timeout(TimeSpan.FromSeconds(10)),
-            (key, old) => Policy.Timeout(TimeSpan.FromSeconds(10)));
+            (key, previous) => Policy.Timeout(TimeSpan.FromSeconds(10)));
 
         #endregion
     }

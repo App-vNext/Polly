@@ -4,7 +4,7 @@ Starting with version 8, Polly provides features that make the integration of Po
 
 ## Usage
 
-To use the DI functionality, add the `Polly.Extensions` package to your project:
+To use the DI functionality, add the [`Polly.Extensions`](https://www.nuget.org/packages/Polly.Extensions) package to your project:
 
 ```sh
 dotnet add package Polly.Extensions
@@ -234,7 +234,7 @@ Over the years, many developers have used Polly in various ways. Some of these r
 
 ❌ DON'T
 
-Capture `IServiceCollection` inside `AddResiliencePipeline`:
+Capture `IServiceCollection` inside `AddResiliencePipeline()`:
 
 <!-- snippet: di-anti-pattern-1 -->
 ```cs
@@ -261,7 +261,7 @@ This approach builds a new `ServiceProvider` before each retry attempt _unnecess
 
 ✅ DO
 
-Use another overload of `AddResiliencePipeline` which allows access to `IServiceProvider`:
+Use another overload of `AddResiliencePipeline()` which allows access to `IServiceProvider`:
 
 <!-- snippet: di-pattern-1 -->
 ```cs

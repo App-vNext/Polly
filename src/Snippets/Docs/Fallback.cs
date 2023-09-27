@@ -50,7 +50,7 @@ internal static class Fallback
                 OnFallback = args =>
                 {
                     // Add extra logic to be executed when the fallback is triggered, such as logging.
-                    return default; // returns an empty ValueTask
+                    return default; // Returns an empty ValueTask
                 }
             });
 
@@ -105,9 +105,9 @@ internal static class Fallback
         #region fallback-pattern-1
 
         var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, "state");
-        if (outcome.Exception is HttpRequestException hre)
+        if (outcome.Exception is HttpRequestException httpEx)
         {
-            throw new CustomNetworkException("Replace thrown exception", hre);
+            throw new CustomNetworkException("Replace thrown exception", httpEx);
         }
         #endregion
 

@@ -10,7 +10,7 @@ internal static partial class Migration
 
         IAsyncPolicy timeoutPolicy = Policy.TimeoutAsync(TimeSpan.FromSeconds(3));
 
-        // Wrap the policies. Tne policies are executed in the following order:
+        // Wrap the policies. The policies are executed in the following order (i.e. Last-In-First-Out):
         // 1. Retry
         // 2. Timeout
         IAsyncPolicy wrappedPolicy = Policy.WrapAsync(timeoutPolicy, retryPolicy);
@@ -22,7 +22,7 @@ internal static partial class Migration
     {
         #region migration-policy-wrap-v8
 
-        // The "PolicyWrap" is integrated directly. Strategies are executed in the same order as they were added:
+        // The "PolicyWrap" is integrated directly. Strategies are executed in the same order as they were added (i.e. First-In-First-Out):
         // 1. Retry
         // 2. Timeout
         ResiliencePipeline pipeline = new ResiliencePipelineBuilder()

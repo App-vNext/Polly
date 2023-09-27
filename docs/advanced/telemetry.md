@@ -99,7 +99,7 @@ builder.AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
-These values are subsequently reflected in the following metering instruments exposed by the Polly:
+These values are subsequently reflected in the following metering instruments exposed by Polly:
 
 ### Instrument: `resilience.polly.strategy.events`
 

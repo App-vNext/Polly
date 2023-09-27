@@ -51,7 +51,7 @@ internal sealed class ResultReportingResilienceStrategy<T> : ResilienceStrategy<
 ```
 <!-- endSnippet -->
 
-Reactive strategies use the `ShouldHandle` predicate to decide whether to handle the outcome of a user callback. The convention is to name the predicate's arguments using the `<StrategyName>PredicateArguments` pattern and return a `ValueTask<bool>`. Here, we use `ResultReportingPredicateArguments<TResult>`:
+Reactive strategies use the `ShouldHandle` predicate to decide whether to handle the outcome of a user callback. The convention is to name the predicate's arguments using the `{StrategyName}PredicateArguments` pattern and return a `ValueTask<bool>`. Here, we use `ResultReportingPredicateArguments<TResult>`:
 
 <!-- snippet: ext-reactive-predicate-args -->
 ```cs
@@ -101,7 +101,7 @@ Using arguments in callbacks supports a more maintainable and extensible API.
 
 In the previous section, we implemented the `ResultReportingResilienceStrategy<T>`. Now, we need to integrate it with Polly and its public API.
 
-Define the public `ResultReportingStrategyOptions<TResult>` to configure our strategy:
+Define the public `ResultReportingStrategyOptions<TResult>` class to configure our strategy:
 
 <!-- snippet: ext-reactive-options -->
 ```cs
@@ -123,7 +123,7 @@ public class ResultReportingStrategyOptions<TResult> : ResilienceStrategyOptions
     // This illustrates an event delegate. Note that the arguments struct carries the same name as the delegate but with an "Arguments" suffix.
     // The event follows the async convention and must be set by the user.
     //
-    // The [Required] enforces the consumer to specify this property, used when some properties do not have sensible defaults and are required.
+    // The [Required] attribute enforces the consumer to specify this property, used when some properties do not have sensible defaults and are required.
     [Required]
     public Func<OnReportResultArguments<TResult>, ValueTask>? OnReportResult { get; set; }
 }
@@ -142,7 +142,7 @@ public class ResultReportingStrategyOptions : ResultReportingStrategyOptions<obj
 ```
 <!-- endSnippet -->
 
-Using options as a public contract helps us ensure flexibility with consumers. By adopting this method, you can effortlessly introduce new members without inducing breaking changes and maintain consistent validation.
+Using options as a public contract helps us ensure flexibility with consumers. By adopting this method, you can introduce new members with ease without introducing breaking changes and maintain consistent validation.
 
 ## Extensions
 
@@ -161,13 +161,13 @@ public static class ResultReportingResilienceStrategyBuilderExtensions
     // Extensions should return the builder to support a fluent API.
     public static ResiliencePipelineBuilder<TResult> AddResultReporting<TResult>(this ResiliencePipelineBuilder<TResult> builder, ResultReportingStrategyOptions<TResult> options)
     {
-        // Incorporate the strategy using the AddStrategy method. This method receives a factory delegate
+        // Incorporate the strategy using the AddStrategy() method. This method receives a factory delegate
         // and automatically checks the options.
         return builder.AddStrategy(
             context =>
             {
                 // The "context" offers various properties for the strategy to use.
-                // Here, we simply use the "Telemetry" and hand it over to the strategy.
+                // Here, we simply use the "Telemetry" property and hand it over to the strategy.
                 // The ShouldHandle and OnReportResult values come from the options.
                 var strategy = new ResultReportingResilienceStrategy<TResult>(
                     options.ShouldHandle,
@@ -243,7 +243,7 @@ new ResiliencePipelineBuilder()
 
 ## Resources
 
-For further understanding of reactive resilience strategies, consider exploring these resources:
+For further information about reactive resilience strategies, consider exploring these resources:
 
 - [Result reporting strategy sample](https://github.com/App-vNext/Polly/tree/main/samples/Extensibility/Reactive): A practical example from this guide.
 - [Retry resilience strategy](https://github.com/App-vNext/Polly/tree/main/src/Polly.Core/Retry): Discover the built-in retry resilience strategy implementation.
