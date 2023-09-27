@@ -269,7 +269,8 @@ ImmutableArray&lt;Type&gt; strategyExceptions = new[]
     typeof(RateLimitRejectedException),
 }.ToImmutableArray();
 
-ImmutableArray&lt;Type&gt; retryableExceptions = networkExceptions.Union(strategyExceptions)
+ImmutableArray&lt;Type&gt; retryableExceptions = networkExceptions
+    .Union(strategyExceptions)
     .ToImmutableArray();
 
 var retry = new ResiliencePipelineBuilder()
@@ -282,7 +283,7 @@ var retry = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<p>Grouping exceptions simplifies the configuration and improves reusability. For example, <code>networkExceptions</code> can be reused in various strategies such as retry, circuit breaker, and more.</p>
+<p>Grouping exceptions simplifies the configuration and improves reusability. For example, the <code>networkExceptions</code> array can be reused in various strategies such as retry, circuit breaker, and more.</p>
 <h3 id="2---using-retry-for-periodic-execution">2 - Using retry for periodic execution</h3>
 <p>❌ DON'T</p>
 <p>Use a retry strategy to run indefinitely at a specified interval:</p>
@@ -299,7 +300,7 @@ var retry = new ResiliencePipelineBuilder()
 <p><strong>Reasoning</strong>:</p>
 <p>The waiting period can be either blocking or non-blocking, based on the defined strategy/pipeline. Even when used non-blockingly, it unnecessarily consumes memory that can't be reclaimed by the garbage collector.</p>
 <p>✅ DO</p>
-<p>Use a suitable tool to schedule recurring tasks, such as <em>Quartz.Net</em>, <em>Hangfire</em>, or others.</p>
+<p>Use a suitable tool to schedule recurring tasks, such as <a href="https://www.quartz-scheduler.net/"><em>Quartz.Net</em></a>, <a href="https://www.hangfire.io/"><em>Hangfire</em></a>, or others.</p>
 <p><strong>Reasoning</strong>:</p>
 <ul>
 <li>Polly was not designed to support this scenario; its primary purpose is to help manage <strong>brief</strong> transient failures.</li>
@@ -333,7 +334,7 @@ var retry = new ResiliencePipelineBuilder()
 <li>Testing becomes more challenging.</li>
 </ul>
 <p>✅ DO</p>
-<p>Use two distinct retry strategy options and link them:</p>
+<p>Use two distinct retry strategy options and combine them:</p>
 <!-- snippet: retry-pattern-3 -->
 <pre><code class="lang-cs">var slowRetries = new RetryStrategyOptions
 {
@@ -368,7 +369,7 @@ var retry = new ResiliencePipelineBuilder()
 <p>Use <code>ResiliencePipeline.Empty</code> and the <code>?:</code> operator:</p>
 <!-- snippet: retry-anti-pattern-4 -->
 <pre><code class="lang-cs">var retry =
-    IsRetryable(req.RequestUri)
+    IsRetryable(request.RequestUri)
         ? new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(new()).Build()
         : ResiliencePipeline&lt;HttpResponseMessage&gt;.Empty;
 </code></pre>
@@ -381,7 +382,7 @@ var retry = new ResiliencePipelineBuilder()
 <pre><code class="lang-cs">var retry = new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     .AddRetry(new()
     {
-        ShouldHandle = _ =&gt; ValueTask.FromResult(IsRetryable(req.RequestUri))
+        ShouldHandle = _ =&gt; ValueTask.FromResult(IsRetryable(request.RequestUri))
     })
     .Build();
 </code></pre>
@@ -431,9 +432,9 @@ await retry.ExecuteAsync(ct =&gt;
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<p>If <code>DoSomething</code> and <code>BeforeEachAttempt</code> are interdependent, group them or craft a simple wrapper to invoke them in the correct sequence.</p>
+<p>If <code>DoSomething</code> and <code>BeforeEachAttempt</code> are interdependent, group them or declare a simple wrapper to invoke them in the correct sequence.</p>
 <h3 id="6---having-a-single-strategy-for-multiple-failures">6 - Having a single strategy for multiple failures</h3>
-<p>Suppose we have an <code>HttpClient</code> that issues a request and then we try to parse a large JSON.</p>
+<p>Suppose we have an <code>HttpClient</code> that issues a request and then we try to parse a large JSON response.</p>
 <p>❌ DON'T</p>
 <p>Use a single strategy for everything:</p>
 <!-- snippet: retry-anti-pattern-6 -->

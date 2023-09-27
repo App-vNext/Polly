@@ -101,8 +101,8 @@
 <p>The strategy options contain properties of following types:</p>
 <ul>
 <li><strong>Common types</strong>: Such as <code>int</code>, <code>bool</code>, <code>TimeSpan</code>, etc.</li>
-<li><strong>Delegates</strong>: For example when strategy need to raise an event, or generate a value. In general, the delegates should by asynchronous.</li>
-<li><strong>Arguments</strong>: Used by the delegates to pass the information to consumers.</li>
+<li><strong>Delegates</strong>: For example when a strategy needs to raise an event, or generate a value. In general, the delegates should by asynchronous.</li>
+<li><strong>Arguments</strong>: Used by the delegates to pass the information to their consumers.</li>
 </ul>
 <h2 id="delegates">Delegates</h2>
 <p>Individual resilience strategies make use of several delegate types:</p>
@@ -126,10 +126,10 @@
 <li><code>Func&lt;Args&lt;TResult&gt;, ValueTask&lt;TValue&gt;&gt;</code> (Reactive)</li>
 <li><code>Func&lt;Args, ValueTask&lt;TValue&gt;&gt;</code> (Proactive)</li>
 </ul>
-<p>These delegates accept either <code>Args</code> or <code>Args&lt;TResult&gt;</code> arguments, which encapsulate event information. Note that all these delegates are asynchronous and return a <code>ValueTask</code>. Learn more about <a href="#arguments">arguments</a> in the sections bellow.</p>
+<p>These delegates accept either <code>Args</code> or <code>Args&lt;TResult&gt;</code> arguments, which encapsulate event information. Note that all these delegates are asynchronous and return a <code>ValueTask</code>. Learn more about <a href="#arguments">arguments</a> in the sections below.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p>When setting up delegates, consider using the <code>ResilienceContext.ContinueOnCapturedContext</code> property if your user code interacts with a synchronization context (as in asynchronous UI applications like Windows Forms or WPF).</p>
+<p>When setting up delegates, consider using the <code>ResilienceContext.ContinueOnCapturedContext</code> property if your user code interacts with a synchronization context (such as in asynchronous UI applications like Windows Forms or WPF).</p>
 </div>
 <h3 id="how-to-use-delegates">How to use delegates</h3>
 <p>Below are some examples illustrating the usage of these delegates:</p>
@@ -163,7 +163,7 @@ new ResiliencePipelineBuilder&lt;string&gt;()
 </code></pre>
 <!-- endSnippet -->
 <h2 id="arguments">Arguments</h2>
-<p>Arguments are used by individual delegate types to flow information to the consumer. Arguments should always have an <code>Arguments</code> suffix and include a <code>Context</code> property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change.  For proactive strategies, the arguments structure might resemble:</p>
+<p>Arguments are used by individual delegate types to flow information to the consumer. Arguments should always have an <code>Arguments</code> suffix and include a <code>Context</code> property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change.  For proactive strategies, the arguments structure might resemble the following:</p>
 <!-- snippet: ext-proactive-args -->
 <pre><code class="lang-cs">// Structs for arguments encapsulate details about specific events within the resilience strategy.
 // Relevant properties to the event can be exposed. In this event, the actual execution time and the exceeded threshold are included.
@@ -186,7 +186,7 @@ public readonly struct ThresholdExceededArguments
 </code></pre>
 <!-- endSnippet -->
 <h2 id="implementing-a-resilience-strategy">Implementing a resilience strategy</h2>
-<p>To understand the details of implementing a strategy, use the links below:</p>
+<p>To find out more details about implementing a strategy, follow the links below:</p>
 <ul>
 <li><a href="proactive-strategy.html">Proactive strategy</a>: Explains how to implement a proactive resilience strategy.</li>
 <li><a href="reactive-strategy.html">Reactive strategy</a>: Explains how to implement a reactive resilience strategy.</li>

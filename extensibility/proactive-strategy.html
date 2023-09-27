@@ -162,7 +162,7 @@ public readonly struct ThresholdExceededArguments
 }
 </code></pre>
 <!-- endSnippet -->
-<p>Arguments should always have an <code>Arguments</code> suffix and include a <code>Context</code> property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change. The <code>ThresholdExceededArguments</code> provides details about the actual execution time and threshold, allowing listeners to respond to this event or supply a custom callback for such situations.</p>
+<p>Arguments should always have an <code>Arguments</code> suffix and include a <code>Context</code> property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change. The <code>ThresholdExceededArguments</code> provides details about the actual execution time and threshold, allowing consumers to respond to this event or supply a custom callback for such situations.</p>
 <h2 id="options">Options</h2>
 <p>In the previous section, we implemented the <code>TimingResilienceStrategy</code>. Now, it's time to integrate it with Polly and its public API.</p>
 <p>Let's define the public <code>TimingStrategyOptions</code> to configure our strategy:</p>
@@ -194,7 +194,7 @@ public readonly struct ThresholdExceededArguments
 <li>The public <code>TimingStrategyOptions</code> and its associated arguments.</li>
 <li>The proactive strategy implementation named <code>TimingResilienceStrategy</code>.</li>
 </ul>
-<p>The final step is to integrate these components by adding new extensions for both <code>ResiliencePipelineBuilder</code> and <code>ResiliencePipelineBuilder&lt;T&gt;</code>. Since both builders inherit from the same base class, we can introduce a single extension for <code>ResiliencePipelineBuilderBase</code> to serve both.</p>
+<p>The final step is to integrate these components with each other by adding new extensions for both <code>ResiliencePipelineBuilder</code> and <code>ResiliencePipelineBuilder&lt;T&gt;</code>. Since both builders inherit from the same base class, we can introduce a single extension for <code>ResiliencePipelineBuilderBase</code> to serve both.</p>
 <!-- snippet: ext-proactive-extensions -->
 <pre><code class="lang-cs">public static class TimingResilienceStrategyBuilderExtensions
 {
@@ -210,7 +210,7 @@ public readonly struct ThresholdExceededArguments
             context =&gt;
             {
                 // The &quot;context&quot; provides various properties for the strategy's use.
-                // In this case, we simply use the &quot;Telemetry&quot; and pass it to the strategy.
+                // In this case, we simply use the &quot;Telemetry&quot; property and pass it to the strategy.
                 // The Threshold and ThresholdExceeded values are sourced from the options.
                 var strategy = new TimingResilienceStrategy(
                     options.Threshold!.Value,
@@ -242,7 +242,7 @@ var pipeline = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <h2 id="resources">Resources</h2>
-<p>For further understanding of proactive resilience strategies, consider exploring these resources:</p>
+<p>For further information on proactive resilience strategies, consider exploring these resources:</p>
 <ul>
 <li><a href="https://github.com/App-vNext/Polly/tree/main/samples/Extensibility/Proactive">Timing strategy sample</a>: A practical example from this guide.</li>
 <li><a href="https://github.com/App-vNext/Polly/tree/main/src/Polly.Core/Timeout">Timeout resilience strategy</a>: Discover the built-in timeout resilience strategy implementation.</li>
