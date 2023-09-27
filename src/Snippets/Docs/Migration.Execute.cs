@@ -21,6 +21,7 @@ internal static partial class Migration
         if (policyResult.Outcome == OutcomeType.Successful)
         {
             int result = policyResult.Result;
+
             // Process result
         }
         else
@@ -28,6 +29,7 @@ internal static partial class Migration
             Exception exception = policyResult.FinalException;
             FaultType failtType = policyResult.FaultType!.Value;
             ExceptionType exceptionType = policyResult.ExceptionType!.Value;
+
             // Process failure
         }
 
@@ -64,14 +66,16 @@ internal static partial class Migration
         if (pipelineResult.Exception is null)
         {
             int result = pipelineResult.Result;
+
             // Process result
         }
         else
         {
             Exception exception = pipelineResult.Exception;
+
             // Process failure
 
-            // If needed then you can rethrow the exception
+            // If needed you can rethrow the exception
             pipelineResult.ThrowIfException();
         }
 

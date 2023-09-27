@@ -598,13 +598,13 @@ For more details, refer to the [Resilience context](advanced/resilience-context.
 
 ## Migrating safe execution
 
-In v7, the `ExecuteAndCapture(Async)` methods are considered the safe counterpart of the `Execute(Async)`.
+In v7, the `ExecuteAndCapture{Async}` methods are considered the safe counterpart of the `Execute{Async}`.
 
-The former does not throw exception in case of failure rather than wraps the outcome into a result object.
+The former does not throw an exception in case of failure rather than wrap the outcome in a result object.
 
-In v8, the `ExecuteOutcomeAsync` should be used to execute the to-be-decorated method in a safe way.
+In v8, the `ExecuteOutcomeAsync` method should be used to execute the to-be-decorated method in a safe way.
 
-### `ExecuteAndCapture(Async)` in V7
+### `ExecuteAndCapture{Async}` in V7
 
 <!-- snippet: migration-execute-v7 -->
 ```cs
@@ -620,6 +620,7 @@ PolicyResult<int> asyncPolicyResult = await asyncPolicy.ExecuteAndCaptureAsync(M
 if (policyResult.Outcome == OutcomeType.Successful)
 {
     int result = policyResult.Result;
+
     // Process result
 }
 else
@@ -627,6 +628,7 @@ else
     Exception exception = policyResult.FinalException;
     FaultType failtType = policyResult.FaultType!.Value;
     ExceptionType exceptionType = policyResult.ExceptionType!.Value;
+
     // Process failure
 }
 
@@ -664,14 +666,16 @@ ResilienceContextPool.Shared.Return(context);
 if (pipelineResult.Exception is null)
 {
     int result = pipelineResult.Result;
+
     // Process result
 }
 else
 {
     Exception exception = pipelineResult.Exception;
+
     // Process failure
 
-    // If needed then you can rethrow the exception
+    // If needed you can rethrow the exception
     pipelineResult.ThrowIfException();
 }
 
