@@ -19,7 +19,7 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
 #endif
 
     /// <summary>
-    /// Creates an instance of <see cref="LockFreeTokenBucketRateLimiter"/>
+    /// Initializes a new instance of the <see cref="LockFreeTokenBucketRateLimiter"/> class.
     /// </summary>
     /// <param name="onePer">How often one execution is permitted.</param>
     /// <param name="bucketCapacity">The capacity of the token bucket.
