@@ -191,9 +191,9 @@ new ResiliencePipelineBuilder&lt;UserAvatar&gt;()
 <p>Use <code>ExecuteOutcomeAsync</code> and then evaluate the <code>Exception</code>:</p>
 <!-- snippet: fallback-pattern-1 -->
 <pre><code class="lang-cs">var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, &quot;state&quot;);
-if (outcome.Exception is HttpRequestException httpEx)
+if (outcome.Exception is HttpRequestException requestException)
 {
-    throw new CustomNetworkException(&quot;Replace thrown exception&quot;, httpEx);
+    throw new CustomNetworkException(&quot;Replace thrown exception&quot;, requestException);
 }
 </code></pre>
 <!-- endSnippet -->
@@ -210,9 +210,9 @@ if (outcome.Exception is HttpRequestException httpEx)
             return Outcome.FromResult(result);
         }, context, &quot;state&quot;);
 
-    if (outcome.Exception is HttpRequestException httpEx)
+    if (outcome.Exception is HttpRequestException requestException)
     {
-        throw new CustomNetworkException(&quot;Replace thrown exception&quot;, httpEx);
+        throw new CustomNetworkException(&quot;Replace thrown exception&quot;, requestException);
     }
 
     ResilienceContextPool.Shared.Return(context);
