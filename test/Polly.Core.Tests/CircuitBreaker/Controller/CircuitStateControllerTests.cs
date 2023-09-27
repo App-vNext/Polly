@@ -312,7 +312,7 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
         var shouldBreak = true;
         await TransitionToState(controller, CircuitState.HalfOpen);
-        var utcNow = DateTime.MaxValue - _options.BreakDuration;
+        var utcNow = DateTimeOffset.MaxValue - _options.BreakDuration;
         if (overflow)
         {
             utcNow += TimeSpan.FromMilliseconds(10);
