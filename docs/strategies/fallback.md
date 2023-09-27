@@ -102,9 +102,9 @@ Use `ExecuteOutcomeAsync` and then evaluate the `Exception`:
 <!-- snippet: fallback-pattern-1 -->
 ```cs
 var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, "state");
-if (outcome.Exception is HttpRequestException httpEx)
+if (outcome.Exception is HttpRequestException requestException)
 {
-    throw new CustomNetworkException("Replace thrown exception", httpEx);
+    throw new CustomNetworkException("Replace thrown exception", requestException);
 }
 ```
 <!-- endSnippet -->
@@ -125,9 +125,9 @@ public static async ValueTask<HttpResponseMessage> Action()
             return Outcome.FromResult(result);
         }, context, "state");
 
-    if (outcome.Exception is HttpRequestException httpEx)
+    if (outcome.Exception is HttpRequestException requestException)
     {
-        throw new CustomNetworkException("Replace thrown exception", httpEx);
+        throw new CustomNetworkException("Replace thrown exception", requestException);
     }
 
     ResilienceContextPool.Shared.Return(context);
