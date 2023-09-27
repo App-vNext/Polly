@@ -1,3 +1,43 @@
+## 8.0.0
+
+* Updates for beta.2 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1580
+* Updates docs structure to prepare for Github Pages by [@adamnova](https://github.com/adamnova) in https://github.com/App-vNext/Polly/pull/1581
+* Re-run the benchmarks by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1586
+* Update README.md by [@joelhulen](https://github.com/joelhulen) in https://github.com/App-vNext/Polly/pull/1595
+* Adds gh-pages support by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1593
+* Don't publish docs on PRs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1596
+* Fix some XML docs inaccuracies by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1592
+* Try fix gh-pages domain reset by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1597
+* Migration guide from v7 to v8 by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1598
+* Simmy v8 by [@vany0114](https://github.com/vany0114) in https://github.com/App-vNext/Polly/pull/1459
+* [Docs] Introduce Performance article by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1600
+* Hide Simmy API for initial v8 release by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1601
+* Add docs on how to use snippets by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1604
+* [Docs] General extensibility and implementation of proactive strategies by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1602
+* Align the telemetry tags with official guidelines by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1583
+* Add antipatterns to retry strategy by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1603
+* [Docs] Reactive strategies extensibility by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1606
+* Add antipatterns to fallback strategy by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1607
+* Avoid capturing where possible. by [@IEvangelist](https://github.com/IEvangelist) in https://github.com/App-vNext/Polly/pull/1609
+* Fix urls within readme extensions project by [@wahid-moh](https://github.com/wahid-moh) in https://github.com/App-vNext/Polly/pull/1616
+* [Docs] Testing by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1608
+* [Docs] Add antipatterns to circuit breaker documentation page by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1621
+* [Docs] Performance docs improvements by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1618
+* [Docs] Polish the docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1619
+* Introduce `RetryStrategyOptions.MaxDelay` property by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1620
+* Use SHA256 for ChecksumAlgorithm and fix Binskim warning by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1623
+* [Docs] Add an antipattern to the DI documentation page by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1624
+* Harden gh-pages workflow by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1628
+* Fix typos by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1627
+* Update README by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1626
+* [Docs] Timeout policy migration by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1622
+* Fix the behavior of `OnHedging` event by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1625
+* Fix typo by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1629
+* [Docs] Update some README links to point to pollydocs.org by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1634
+* [Docs] Document Retry's `MaxDelay` property by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1631
+* Bump actionlint by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1637
+* Documentation updates by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1630
+
 ## 8.0.0-beta.2
 
 * Updates for beta.1 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1531
