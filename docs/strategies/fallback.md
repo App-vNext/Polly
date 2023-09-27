@@ -125,9 +125,9 @@ public static async ValueTask<HttpResponseMessage> Action()
             return Outcome.FromResult(result);
         }, context, "state");
 
-    if (outcome.Exception is HttpRequestException httpEx)
+    if (outcome.Exception is HttpRequestException hre)
     {
-        throw new CustomNetworkException("Replace thrown exception", httpEx);
+        throw new CustomNetworkException("Replace thrown exception", hre);
     }
 
     ResilienceContextPool.Shared.Return(context);
