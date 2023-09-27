@@ -424,7 +424,7 @@ Rate limiter strategy throws `RateLimiterRejectedException` if execution is reje
 
 ## Next steps
 
-To learn more about Polly, visit the [pollydocs.org][polly-docs].
+To learn more about Polly, visit [pollydocs.org][polly-docs].
 
 ## Samples
 
