@@ -144,9 +144,9 @@ cancellationToken);
 ```
 <!-- endSnippet -->
 
-## Migrating Policy Wrap
+## Migrating policy wrap
 
-### Policy Wrap in v7
+### Policy wrap in v7
 
 Policy wrap is used to combine multiple policies into one as shown in the v7 example below:
 
@@ -163,7 +163,7 @@ IAsyncPolicy wrappedPolicy = Policy.WrapAsync(timeoutPolicy, retryPolicy);
 ```
 <!-- endSnippet -->
 
-### Policy Wrap in v8
+### Policy wrap in v8
 
 In v8, there's no need to use policy wrap explicitly. Instead, policy wrapping is integrated into `ResiliencePipelineBuilder`, as shown in the example below:
 
@@ -188,7 +188,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 > [!IMPORTANT]
 > In v7, the policy wrap ordering is different; the policy added first was executed last (FILO). In v8, the execution order matches the order in which they were added (FIFO).
 
-## Migrating Retry Policies
+## Migrating retry policies
 
 This section describes how to migrate the v7 retry policy to a resilience strategy in v8.
 
@@ -274,7 +274,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
-### Retry and Wait in v7
+### Retry and wait in v7
 
 <!-- snippet: migration-retry-wait-v7 -->
 ```cs
@@ -303,7 +303,7 @@ Policy
 ```
 <!-- endSnippet -->
 
-### Retry and Wait in v8
+### Retry and wait in v8
 
 <!-- snippet: migration-retry-wait-v8 -->
 ```cs
@@ -344,7 +344,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
-### Retry Results in v7
+### Retry results in v7
 
 <!-- snippet: migration-retry-reactive-v7 -->
 ```cs
@@ -356,7 +356,7 @@ Policy
 ```
 <!-- endSnippet -->
 
-### Retry Results in v8
+### Retry results in v8
 
 <!-- snippet: migration-retry-reactive-v8 -->
 ```cs
@@ -390,11 +390,11 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 
 It's important to remember that the configuration in v8 is options based, i.e. `RetryStrategyOptions` are used.
 
-## Migrating Rate Limit Policies
+## Migrating rate limit policies
 
 The rate limit policy is now replaced by the [rate limiter strategy](strategies/rate-limiter.md) which uses the [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) package. Polly does not implement its own rate limiter anymore.
 
-### Rate Limit in v7
+### Rate limit in v7
 
 <!-- snippet: migration-rate-limit-v7 -->
 ```cs
@@ -420,7 +420,7 @@ IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy.RateLimitAsync<HttpRespo
 ```
 <!-- endSnippet -->
 
-### Rate Limit in v8
+### Rate limit in v8
 
 <!-- snippet: migration-rate-limit-v8 -->
 ```cs
@@ -449,7 +449,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-## Migrating Bulkhead Policies
+## Migrating bulkhead policies
 
 The bulkhead policy is now replaced by the [rate limiter strategy](strategies/rate-limiter.md) which uses the [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) package. The new counterpart to bulkhead is `ConcurrencyLimiter`.
 
@@ -492,7 +492,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-## Migrating Timeout Policies
+## Migrating timeout policies
 
 > [!NOTE]
 > In v8, the timeout resilience strategy does not support pessimistic timeouts because they can cause thread-pool starvation and non-cancellable background tasks. To address this, you can use [this workaround](https://github.com/davidfowl/AspNetCoreDiagnosticScenarios/blob/master/AsyncGuidance.md#cancelling-uncancellable-operations) to make the action cancellable.
@@ -533,7 +533,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-## Migrating Other Policies
+## Migrating other policies
 
 Migrating is a process similar to the ones described in the previous sections. Keep in mind that:
 
@@ -596,12 +596,12 @@ ResilienceContextPool.Shared.Return(context);
 
 For more details, refer to the [Resilience Context](advanced/resilience-context.md) documentation.
 
-## Migrating No-Op Policies
+## Migrating no-op policies
 
 - For `Policy.NoOp` or `Policy.NoOpAsync`, switch to `ResiliencePipeline.Empty`.
 - For `Policy.NoOp<T>` or `Policy.NoOpAsync<T>`, switch to `ResiliencePipeline<T>.Empty`.
 
-## Migrating Policy Registries
+## Migrating policy registries
 
 In v7, the following registry APIs are exposed:
 
@@ -669,7 +669,7 @@ registry.GetOrAddPipeline("my-key", builder => builder.AddTimeout(TimeSpan.FromS
 ```
 <!-- endSnippet -->
 
-## Interoperability Between Policies and Resilience Pipelines
+## Interoperability between policies and resilience pipelines
 
 In certain scenarios, you might not want to migrate your code to the v8 API. Instead, you may prefer to use strategies from v8 and apply them to v7 APIs. Polly provides a set of extension methods to support easy conversion from v8 to v7 APIs, as shown in the example below:
 
