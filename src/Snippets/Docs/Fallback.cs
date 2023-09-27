@@ -125,9 +125,9 @@ internal static class Fallback
                 return Outcome.FromResult(result);
             }, context, "state");
 
-        if (outcome.Exception is HttpRequestException hre)
+        if (outcome.Exception is HttpRequestException httpEx)
         {
-            throw new CustomNetworkException("Replace thrown exception", hre);
+            throw new CustomNetworkException("Replace thrown exception", httpEx);
         }
 
         ResilienceContextPool.Shared.Return(context);
