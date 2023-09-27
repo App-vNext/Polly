@@ -36,45 +36,33 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
     {
         int hedgingCount = 0;
 
-        var strategy = _builder
-            .AddHedging(new()
-            {
-                MaxHedgedAttempts = 4,
-                Delay = TimeSpan.FromMilliseconds(20),
-                ShouldHandle = args => args.Outcome.Result switch
-                {
-                    "error" => PredicateResult.True(),
-                    _ => PredicateResult.False()
-                },
-                ActionGenerator = args =>
-                {
-                    return async () =>
-                    {
-                        await Task.Delay(25, args.ActionContext.CancellationToken);
-
-                        if (args.AttemptNumber == 3)
-                        {
-                            return Outcome.FromResult("success");
-                        }
-
-                        return Outcome.FromResult("error");
-                    };
-                },
-                OnHedging = args =>
-                {
-                    hedgingCount++;
-                    return default;
-                }
-            })
-            .Build();
-
-        var result = await strategy.ExecuteAsync(async token =>
+        var strategy = _builder.AddHedging(new()
         {
-            await Task.Delay(25, token);
-            return "error";
-        });
+            MaxHedgedAttempts = 4,
+            Delay = System.Threading.Timeout.InfiniteTimeSpan,
+            ShouldHandle = args => args.Outcome.Result switch
+            {
+                "error" => PredicateResult.True(),
+                _ => PredicateResult.False()
+            },
+            ActionGenerator = args =>
+            {
+                return () => args.AttemptNumber switch
+                {
+                    3 => Outcome.FromResultAsValueTask("success"),
+                    _ => Outcome.FromResultAsValueTask("error")
+                };
+            },
+            OnHedging = args =>
+            {
+                Interlocked.Increment(ref hedgingCount);
+                return default;
+            }
+        })
+        .Build();
 
+        var result = await strategy.ExecuteAsync(token => new ValueTask<string>("error"));
         result.Should().Be("success");
-        hedgingCount.Should().Be(4);
+        hedgingCount.Should().Be(3);
     }
 }
