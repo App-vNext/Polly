@@ -2,6 +2,7 @@ using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Polly.Telemetry;
 using Polly.Timeout;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.Timeout;
 
@@ -130,7 +131,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         ResilienceContextPool.Shared.Get(),
         "state");
         outcome.Exception.Should().BeOfType<TimeoutRejectedException>();
-        outcome.Exception!.StackTrace.Should().Contain("Execute_Timeout_EnsureStackTrace");
+        outcome.Exception!.StackTrace.Should().Contain(nameof(StrategyHelper));
     }
 
     [Fact]
