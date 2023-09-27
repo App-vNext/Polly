@@ -37,6 +37,13 @@
 * [Docs] Document Retry's `MaxDelay` property by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1631
 * Bump actionlint by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1637
 * Documentation updates by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1630
+* [Docs] Add safe execution section to the migration guide by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1638
+* Add OSSF scorecard badge by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1642
+* Bump xunit.runner.console by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1643
+* Update CHANGELOG for 8.0.0 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1645
+* Update docs source by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1641
+* Stabilize `AddHedging_IntegrationTest` test by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1644
+* Release v8 docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1599
 
 ## 8.0.0-beta.2
 
