@@ -611,6 +611,102 @@ ResilienceContextPool.Shared.Return(context);
 </code></pre>
 <!-- endSnippet -->
 <p>For more details, refer to the <a href="advanced/resilience-context.html">Resilience Context</a> documentation.</p>
+<h2 id="migrating-safe-execution">Migrating safe execution</h2>
+<p>In v7, the <code>ExecuteAndCapture{Async}</code> methods are considered the safe counterpart of the <code>Execute{Async}</code>.</p>
+<p>The former does not throw an exception in case of failure rather than wrap the outcome in a result object.</p>
+<p>In v8, the <code>ExecuteOutcomeAsync</code> method should be used to execute the to-be-decorated method in a safe way.</p>
+<h3 id="executeandcaptureasync-in-v7"><code>ExecuteAndCapture{Async}</code> in V7</h3>
+<!-- snippet: migration-execute-v7 -->
+<pre><code class="lang-cs">// Synchronous execution
+ISyncPolicy&lt;int&gt; syncPolicy = Policy.Timeout&lt;int&gt;(TimeSpan.FromSeconds(1));
+PolicyResult&lt;int&gt; policyResult = syncPolicy.ExecuteAndCapture(Method);
+
+// Asynchronous execution
+IAsyncPolicy&lt;int&gt; asyncPolicy = Policy.TimeoutAsync&lt;int&gt;(TimeSpan.FromSeconds(1));
+PolicyResult&lt;int&gt; asyncPolicyResult = await asyncPolicy.ExecuteAndCaptureAsync(MethodAsync, CancellationToken.None);
+
+// Assess policy result
+if (policyResult.Outcome == OutcomeType.Successful)
+{
+    int result = policyResult.Result;
+
+    // Process result
+}
+else
+{
+    Exception exception = policyResult.FinalException;
+    FaultType failtType = policyResult.FaultType!.Value;
+    ExceptionType exceptionType = policyResult.ExceptionType!.Value;
+
+    // Process failure
+}
+
+// Access context
+IAsyncPolicy&lt;int&gt; asyncPolicyWithContext = Policy.TimeoutAsync&lt;int&gt;(TimeSpan.FromSeconds(10),
+    onTimeoutAsync: (ctx, ts, task) =&gt;
+    {
+        ctx[&quot;context_key&quot;] = &quot;context_value&quot;;
+        return Task.CompletedTask;
+    });
+
+asyncPolicyResult = await asyncPolicyWithContext.ExecuteAndCaptureAsync((ctx, token) =&gt; MethodAsync(token), new Context(), CancellationToken.None);
+string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault(&quot;context_key&quot;) as string;
+</code></pre>
+<!-- endSnippet -->
+<h3 id="executeoutcomeasync-in-v8"><code>ExecuteOutcomeAsync</code> in V8</h3>
+<!-- snippet: migration-execute-v8 -->
+<pre><code class="lang-cs">ResiliencePipeline&lt;int&gt; pipeline = new ResiliencePipelineBuilder&lt;int&gt;()
+    .AddTimeout(TimeSpan.FromSeconds(1))
+    .Build();
+
+// Synchronous execution
+// Polly v8 does not provide an API to synchronously execute and capture the outcome of a pipeline
+
+// Asynchronous execution
+var context = ResilienceContextPool.Shared.Get();
+Outcome&lt;int&gt; pipelineResult = await pipeline.ExecuteOutcomeAsync(
+    static async (ctx, state) =&gt; Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, &quot;state&quot;);
+ResilienceContextPool.Shared.Return(context);
+
+// Assess policy result
+if (pipelineResult.Exception is null)
+{
+    int result = pipelineResult.Result;
+
+    // Process result
+}
+else
+{
+    Exception exception = pipelineResult.Exception;
+
+    // Process failure
+
+    // If needed you can rethrow the exception
+    pipelineResult.ThrowIfException();
+}
+
+// Access context
+ResiliencePropertyKey&lt;string&gt; contextKey = new(&quot;context_key&quot;);
+ResiliencePipeline&lt;int&gt; pipelineWithContext = new ResiliencePipelineBuilder&lt;int&gt;()
+    .AddTimeout(new TimeoutStrategyOptions
+    {
+        Timeout = TimeSpan.FromSeconds(1),
+        OnTimeout = args =&gt;
+        {
+            args.Context.Properties.Set(contextKey, &quot;context_value&quot;);
+            return default;
+        }
+    })
+    .Build();
+
+context = ResilienceContextPool.Shared.Get();
+pipelineResult = await pipelineWithContext.ExecuteOutcomeAsync(
+    static async (ctx, state) =&gt; Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, &quot;state&quot;);
+
+context.Properties.TryGetValue(contextKey, out var ctxValue);
+ResilienceContextPool.Shared.Return(context);
+</code></pre>
+<!-- endSnippet -->
 <h2 id="migrating-no-op-policies">Migrating no-op policies</h2>
 <ul>
 <li>For <code>Policy.NoOp</code> or <code>Policy.NoOpAsync</code>, switch to <code>ResiliencePipeline.Empty</code>.</li>
