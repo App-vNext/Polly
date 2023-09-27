@@ -241,7 +241,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
     private static bool IsDateTimeOverflow(DateTimeOffset utcNow, TimeSpan breakDuration)
     {
-        TimeSpan maxDifference = DateTime.MaxValue - utcNow;
+        TimeSpan maxDifference = DateTimeOffset.MaxValue - utcNow;
 
         // stryker disable once equality : no means to test this
         return breakDuration > maxDifference;
