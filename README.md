@@ -18,11 +18,11 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 | **Package** | **Latest Version** |
 |:--|:--|
-| Polly | [![NuGet](https://buildstats.info/nuget/Polly?includePreReleases=true)](https://www.nuget.org/packages/Polly/ "Download Polly from NuGet.org") |
-| Polly.Core | [![NuGet](https://buildstats.info/nuget/Polly.Core?includePreReleases=true)](https://www.nuget.org/packages/Polly.Core/ "Download Polly.Core from NuGet.org") |
-| Polly.Extensions | [![NuGet](https://buildstats.info/nuget/Polly.Extensions?includePreReleases=true)](https://www.nuget.org/packages/Polly.Extensions/ "Download Polly.Extensions from NuGet.org") |
-| Polly.RateLimiting | [![NuGet](https://buildstats.info/nuget/Polly.RateLimiting?includePreReleases=true)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") |
-| Polly.Testing | [![NuGet](https://buildstats.info/nuget/Polly.Testing?includePreReleases=true)](https://www.nuget.org/packages/Polly.Testing/ "Download Polly.Testing from NuGet.org") |
+| Polly | [![NuGet](https://buildstats.info/nuget/Polly)](https://www.nuget.org/packages/Polly/ "Download Polly from NuGet.org") |
+| Polly.Core | [![NuGet](https://buildstats.info/nuget/Polly.Core)](https://www.nuget.org/packages/Polly.Core/ "Download Polly.Core from NuGet.org") |
+| Polly.Extensions | [![NuGet](https://buildstats.info/nuget/Polly.Extensionse)](https://www.nuget.org/packages/Polly.Extensions/ "Download Polly.Extensions from NuGet.org") |
+| Polly.RateLimiting | [![NuGet](https://buildstats.info/nuget/Polly.RateLimiting)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") |
+| Polly.Testing | [![NuGet](https://buildstats.info/nuget/Polly.Testing)](https://www.nuget.org/packages/Polly.Testing/ "Download Polly.Testing from NuGet.org") |
 
 ## Documentation
 
