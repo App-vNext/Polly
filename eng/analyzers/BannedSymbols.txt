@@ -1,0 +1,5 @@
+P:System.DateTime.Now; Use TimeProvider.GetLocalNow().DateTime instead.
+P:System.DateTime.Today; Use TimeProvider.GetLocalNow().DateTime.Date instead.
+P:System.DateTimeOffset.Now; Use TimeProvider.GetLocalNow() instead.
+P:System.DateTimeOffset.Today; Use TimeProvider.GetLocalNow().Date instead.
+M:System.DateTimeOffset.op_Implicit(System.DateTime); Do not implicitly cast DateTime to DateTimeOffset.
