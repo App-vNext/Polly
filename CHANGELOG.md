@@ -44,6 +44,7 @@
 * Update docs source by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1641
 * Stabilize `AddHedging_IntegrationTest` test by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1644
 * Release v8 docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1599
+* Add banned API analyzers and fix time zone issue by [@martincostello](https://github.com/martincostello) and [@IEvangelist](https://github.com/IEvangelist) in https://github.com/App-vNext/Polly/pull/1651
 
 ## 8.0.0-beta.2
 
