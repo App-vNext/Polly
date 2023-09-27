@@ -5,7 +5,7 @@ namespace Snippets.Docs;
 internal static partial class Migration
 {
     private static int Method() => 3;
-    private static Task<int> MethodAsync() => Task.FromResult(3);
+    private static Task<int> MethodAsync(CancellationToken token) => Task.FromResult(3);
     public static async Task SafeExecute_V7()
     {
         #region migration-execute-v7
@@ -15,20 +15,20 @@ internal static partial class Migration
 
         // Asynchronous execution
         IAsyncPolicy<int> asyncPolicy = Policy.TimeoutAsync<int>(TimeSpan.FromSeconds(1));
-        PolicyResult<int> asyncPolicyResult = await asyncPolicy.ExecuteAndCaptureAsync(MethodAsync);
+        PolicyResult<int> asyncPolicyResult = await asyncPolicy.ExecuteAndCaptureAsync(MethodAsync, CancellationToken.None);
 
         // Assess policy result
         if (policyResult.Outcome == OutcomeType.Successful)
         {
-            var result = policyResult.Result;
-            // process result
+            int result = policyResult.Result;
+            // Process result
         }
         else
         {
-            var exception = policyResult.FinalException;
+            Exception exception = policyResult.FinalException;
             FaultType failtType = policyResult.FaultType!.Value;
             ExceptionType exceptionType = policyResult.ExceptionType!.Value;
-            // process failure
+            // Process failure
         }
 
         // Access context
@@ -39,8 +39,8 @@ internal static partial class Migration
                 return Task.CompletedTask;
             });
 
-        asyncPolicyResult = await asyncPolicyWithContext.ExecuteAndCaptureAsync((ctx) => MethodAsync(), new Context());
-        var ctxValue = asyncPolicyResult.Context.GetValueOrDefault("context_key");
+        asyncPolicyResult = await asyncPolicyWithContext.ExecuteAndCaptureAsync((ctx, token) => MethodAsync(token), new Context(), CancellationToken.None);
+        string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault("context_key") as string;
         #endregion
     }
 
@@ -57,21 +57,21 @@ internal static partial class Migration
         // Asynchronous execution
         var context = ResilienceContextPool.Shared.Get();
         Outcome<int> pipelineResult = await pipeline.ExecuteOutcomeAsync(
-            static async (ctx, state) => Outcome.FromResult(await MethodAsync()), context, "state");
+            static async (ctx, state) => Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, "state");
         ResilienceContextPool.Shared.Return(context);
 
         // Assess policy result
         if (pipelineResult.Exception is null)
         {
-            var result = pipelineResult.Result;
-            // process result
+            int result = pipelineResult.Result;
+            // Process result
         }
         else
         {
-            var exception = pipelineResult.Exception;
-            // process failure
+            Exception exception = pipelineResult.Exception;
+            // Process failure
 
-            // if needed you can rethrow the exception
+            // If needed then you can rethrow the exception
             pipelineResult.ThrowIfException();
         }
 
@@ -91,7 +91,7 @@ internal static partial class Migration
 
         context = ResilienceContextPool.Shared.Get();
         pipelineResult = await pipelineWithContext.ExecuteOutcomeAsync(
-            static async (ctx, state) => Outcome.FromResult(await MethodAsync()), context, "state");
+            static async (ctx, state) => Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, "state");
 
         context.Properties.TryGetValue(contextKey, out var ctxValue);
         ResilienceContextPool.Shared.Return(context);

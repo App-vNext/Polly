@@ -614,20 +614,20 @@ PolicyResult<int> policyResult = syncPolicy.ExecuteAndCapture(Method);
 
 // Asynchronous execution
 IAsyncPolicy<int> asyncPolicy = Policy.TimeoutAsync<int>(TimeSpan.FromSeconds(1));
-PolicyResult<int> asyncPolicyResult = await asyncPolicy.ExecuteAndCaptureAsync(MethodAsync);
+PolicyResult<int> asyncPolicyResult = await asyncPolicy.ExecuteAndCaptureAsync(MethodAsync, CancellationToken.None);
 
 // Assess policy result
 if (policyResult.Outcome == OutcomeType.Successful)
 {
-    var result = policyResult.Result;
-    // process result
+    int result = policyResult.Result;
+    // Process result
 }
 else
 {
-    var exception = policyResult.FinalException;
+    Exception exception = policyResult.FinalException;
     FaultType failtType = policyResult.FaultType!.Value;
     ExceptionType exceptionType = policyResult.ExceptionType!.Value;
-    // process failure
+    // Process failure
 }
 
 // Access context
@@ -638,8 +638,8 @@ IAsyncPolicy<int> asyncPolicyWithContext = Policy.TimeoutAsync<int>(TimeSpan.Fro
         return Task.CompletedTask;
     });
 
-asyncPolicyResult = await asyncPolicyWithContext.ExecuteAndCaptureAsync((ctx) => MethodAsync(), new Context());
-var ctxValue = asyncPolicyResult.Context.GetValueOrDefault("context_key");
+asyncPolicyResult = await asyncPolicyWithContext.ExecuteAndCaptureAsync((ctx, token) => MethodAsync(token), new Context(), CancellationToken.None);
+string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault("context_key") as string;
 ```
 <!-- endSnippet -->
 
@@ -657,21 +657,21 @@ ResiliencePipeline<int> pipeline = new ResiliencePipelineBuilder<int>()
 // Asynchronous execution
 var context = ResilienceContextPool.Shared.Get();
 Outcome<int> pipelineResult = await pipeline.ExecuteOutcomeAsync(
-    static async (ctx, state) => Outcome.FromResult(await MethodAsync()), context, "state");
+    static async (ctx, state) => Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, "state");
 ResilienceContextPool.Shared.Return(context);
 
 // Assess policy result
 if (pipelineResult.Exception is null)
 {
-    var result = pipelineResult.Result;
-    // process result
+    int result = pipelineResult.Result;
+    // Process result
 }
 else
 {
-    var exception = pipelineResult.Exception;
-    // process failure
+    Exception exception = pipelineResult.Exception;
+    // Process failure
 
-    // if needed you can rethrow the exception
+    // If needed then you can rethrow the exception
     pipelineResult.ThrowIfException();
 }
 
@@ -691,7 +691,7 @@ ResiliencePipeline<int> pipelineWithContext = new ResiliencePipelineBuilder<int>
 
 context = ResilienceContextPool.Shared.Get();
 pipelineResult = await pipelineWithContext.ExecuteOutcomeAsync(
-    static async (ctx, state) => Outcome.FromResult(await MethodAsync()), context, "state");
+    static async (ctx, state) => Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, "state");
 
 context.Properties.TryGetValue(contextKey, out var ctxValue);
 ResilienceContextPool.Shared.Return(context);
