@@ -65,4 +65,35 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
         result.Should().Be("success");
         hedgingCount.Should().Be(3);
     }
+
+    [Fact]
+    public async Task AddHedging_IntegrationTestWithRealDelay()
+    {
+        var strategy = _builder.AddHedging(new()
+        {
+            MaxHedgedAttempts = 4,
+            ShouldHandle = args => args.Outcome.Result switch
+            {
+                "error" => PredicateResult.True(),
+                _ => PredicateResult.False()
+            },
+            ActionGenerator = args =>
+            {
+                return async () =>
+                {
+                    await Task.Delay(20);
+
+                    return args.AttemptNumber switch
+                    {
+                        3 => Outcome.FromResult("success"),
+                        _ => Outcome.FromResult("error")
+                    };
+                };
+            }
+        })
+        .Build();
+
+        var result = await strategy.ExecuteAsync(token => new ValueTask<string>("error"));
+        result.Should().Be("success");
+    }
 }
