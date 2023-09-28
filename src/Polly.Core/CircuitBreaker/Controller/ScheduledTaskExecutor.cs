@@ -17,10 +17,14 @@ internal sealed class ScheduledTaskExecutor : IDisposable
 
     public void ScheduleTask(Func<Task> taskFactory, ResilienceContext context, out Task task)
     {
+#if NET8_0_OR_GREATER
+        ObjectDisposedException.ThrowIf(_disposed, this);
+#else
         if (_disposed)
         {
             throw new ObjectDisposedException(nameof(ScheduledTaskExecutor));
         }
+#endif
 
         var source = new TaskCompletionSource<object>();
         task = source.Task;

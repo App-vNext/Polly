@@ -52,7 +52,7 @@ internal sealed class ReloadableComponent : PipelineComponent
             return;
         }
 
-        _tokenSource = CancellationTokenSource.CreateLinkedTokenSource(_reloadTokens.ToArray());
+        _tokenSource = CancellationTokenSource.CreateLinkedTokenSource([.. _reloadTokens]);
         _registration = _tokenSource.Token.Register(() =>
         {
             var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
@@ -65,7 +65,7 @@ internal sealed class ReloadableComponent : PipelineComponent
             }
             catch (Exception e)
             {
-                _reloadTokens = new List<CancellationToken>();
+                _reloadTokens = [];
                 _telemetry.Report(new(ResilienceEventSeverity.Error, ReloadFailedEvent), context, Outcome.FromException(e), new ReloadFailedArguments(e));
                 ResilienceContextPool.Shared.Return(context);
             }
@@ -105,7 +105,9 @@ internal sealed class ReloadableComponent : PipelineComponent
 
     internal record DisposedFailedArguments(Exception Exception);
 
+#pragma warning disable S2094 // Classes should not be empty
     internal record OnReloadArguments();
+#pragma warning restore S2094 // Classes should not be empty
 
     internal record Entry(PipelineComponent Component, List<CancellationToken> ReloadTokens, ResilienceStrategyTelemetry Telemetry);
 }

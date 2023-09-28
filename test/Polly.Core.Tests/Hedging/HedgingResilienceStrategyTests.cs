@@ -155,7 +155,11 @@ public class HedgingResilienceStrategyTests : IDisposable
         var result = await strategy.ExecuteAsync(_primaryTasks.SlowTask);
 
         result.Should().NotBeNull();
+#if NET8_0_OR_GREATER
+        _timeProvider.TimerEntries.Should().HaveCount(8);
+#else
         _timeProvider.TimerEntries.Should().HaveCount(5);
+#endif
         result.Should().Be("Oranges");
     }
 
@@ -591,7 +595,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     {
         // arrange
         using var cts = new CancellationTokenSource();
-        List<Task> backgroundTasks = new List<Task>();
+        List<Task> backgroundTasks = [];
         ConfigureHedging(BackgroundWork);
         var strategy = Create();
 

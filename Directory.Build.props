@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <!-- Disabled until RC2 due to https://github.com/dotnet/extensions/issues/4409 -->
+    <NoWarn>$(NoWarn);NU1603</NoWarn>
+  </PropertyGroup>
+</Project>

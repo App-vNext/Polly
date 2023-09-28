@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6.0;netstandard2.0;net472;net462</TargetFrameworks>
+    <TargetFrameworks>net8.0;net6.0;netstandard2.0;net472;net462</TargetFrameworks>
     <AssemblyTitle>Polly.RateLimiting</AssemblyTitle>
     <RootNamespace>Polly.RateLimiting</RootNamespace>
     <Nullable>enable</Nullable>
@@ -8,10 +8,12 @@
     <ProjectType>Library</ProjectType>
     <MutationScore>100</MutationScore>
     <LegacySupport>true</LegacySupport>
-    <IsTrimmable>true</IsTrimmable>
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
+  </PropertyGroup>
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
     <EnableAotAnalyzer>true</EnableAotAnalyzer>
+    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
   <ItemGroup>

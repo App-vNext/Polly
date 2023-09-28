@@ -2,6 +2,9 @@ using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Polly.Telemetry;
 using Polly.Timeout;
+#if !NET8_0_OR_GREATER
+using Polly.Utils;
+#endif
 
 namespace Polly.Core.Tests.Timeout;
 
@@ -16,16 +19,16 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
     public TimeoutResilienceStrategyTests()
     {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_args.Add);
         _options = new TimeoutStrategyOptions();
         _cancellationSource = new CancellationTokenSource();
     }
 
-    public static TheoryData<TimeSpan> Execute_NoTimeout_Data() => new()
+    public static TheoryData<Func<TimeSpan>> Execute_NoTimeout_Data() => new()
     {
-        TimeSpan.Zero,
-        TimeSpan.FromMilliseconds(-1),
-        System.Threading.Timeout.InfiniteTimeSpan,
+        () => TimeSpan.Zero,
+        () => TimeSpan.FromMilliseconds(-1),
+        () => System.Threading.Timeout.InfiniteTimeSpan,
     };
 
     public void Dispose() => _cancellationSource.Dispose();
@@ -81,10 +84,10 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
     [MemberData(nameof(Execute_NoTimeout_Data))]
     [Theory]
-    public void Execute_NoTimeout(TimeSpan timeout)
+    public void Execute_NoTimeout(Func<TimeSpan> timeout)
     {
         var called = false;
-        SetTimeout(timeout);
+        SetTimeout(timeout());
         var sut = CreateSut();
         sut.Execute(_ => { });
 
@@ -131,7 +134,12 @@ public class TimeoutResilienceStrategyTests : IDisposable
         ResilienceContextPool.Shared.Get(),
         "state");
         outcome.Exception.Should().BeOfType<TimeoutRejectedException>();
-        outcome.Exception!.StackTrace.Should().Contain("Execute_Timeout_EnsureStackTrace");
+
+#if NET8_0_OR_GREATER
+        outcome.Exception!.StackTrace.Should().Contain(nameof(Execute_Timeout_EnsureStackTrace));
+#else
+        outcome.Exception!.StackTrace.Should().Contain(nameof(StrategyHelper));
+#endif
     }
 
     [Fact]

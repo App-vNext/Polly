@@ -43,3 +43,7 @@ dotnet_naming_symbols.static_fields.required_modifiers = static
 dotnet_naming_symbols.static_fields.applicable_accessibilities = private, internal, private_protected
 dotnet_naming_style.static_prefix_style.required_prefix = 
 dotnet_naming_style.static_prefix_style.capitalization = pascal_case
+
+# Visual Studio Spell Checker
+spelling_exclusion_path = .\exclusion.dic
+spelling_languages = en-us

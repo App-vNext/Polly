@@ -18,7 +18,7 @@
       "block",
       "statement"
     ],
-    "target-framework": "net7.0",
+    "target-framework": "net8.0",
     "thresholds": {
       "high": 100,
       "low": 100

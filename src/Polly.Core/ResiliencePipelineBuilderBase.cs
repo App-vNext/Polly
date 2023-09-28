@@ -15,7 +15,9 @@ namespace Polly;
 /// The resulting instance of <see cref="ResiliencePipeline"/> executes the strategies in the same order they were added to the builder.
 /// The order of the strategies is important.
 /// </remarks>
+#pragma warning disable S1694 // An abstract class should have both abstract and concrete methods
 public abstract class ResiliencePipelineBuilderBase
+#pragma warning restore S1694 // An abstract class should have both abstract and concrete methods
 {
     private readonly List<Entry> _entries = new();
     private bool _used;
@@ -57,14 +59,12 @@ public abstract class ResiliencePipelineBuilderBase
     /// <summary>
     /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
     /// </summary>
-    /// <remarks>
-    /// This property is internal until we switch to official System.TimeProvider.
-    /// </remarks>
     /// <value>
     /// The default value is <see cref="TimeProvider.System"/>.
     /// </value>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     [Required]
-    internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
+    public TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 
     /// <summary>
     /// Gets or sets the <see cref="TelemetryListener"/> that is used by Polly to report resilience events.

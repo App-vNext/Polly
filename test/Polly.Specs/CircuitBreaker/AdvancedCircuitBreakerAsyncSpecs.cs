@@ -2358,7 +2358,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_call_onbreak_with_a_state_of_half_open()
     {
-        List<CircuitState> transitionedStates = new List<CircuitState>();
+        List<CircuitState> transitionedStates = [];
 
         Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => { transitionedStates.Add(state); };
         Action<Context> onReset = _ => { };
