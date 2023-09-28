@@ -42,7 +42,7 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     /// for statistics to be considered significant and the circuit-breaker to come into action.
     /// </summary>
     /// <value>
-    /// The default value is 0.1 (i.e. 10%). The value must be 2 or greater.
+    /// The default value 100. The value must be 2 or greater.
     /// </value>
     [Range(CircuitBreakerConstants.MinimumValidThroughput, int.MaxValue)]
     public int MinimumThroughput { get; set; } = CircuitBreakerConstants.DefaultMinimumThroughput;
