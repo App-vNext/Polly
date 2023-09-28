@@ -1,1 +1,11 @@
-﻿
+﻿#nullable enable
+Polly.Testing.ResiliencePipelineDescriptor
+Polly.Testing.ResiliencePipelineDescriptor.FirstStrategy.get -> Polly.Testing.ResilienceStrategyDescriptor!
+Polly.Testing.ResiliencePipelineDescriptor.IsReloadable.get -> bool
+Polly.Testing.ResiliencePipelineDescriptor.Strategies.get -> System.Collections.Generic.IReadOnlyList<Polly.Testing.ResilienceStrategyDescriptor!>!
+Polly.Testing.ResiliencePipelineExtensions
+Polly.Testing.ResilienceStrategyDescriptor
+Polly.Testing.ResilienceStrategyDescriptor.Options.get -> Polly.ResilienceStrategyOptions?
+Polly.Testing.ResilienceStrategyDescriptor.StrategyInstance.get -> object!
+static Polly.Testing.ResiliencePipelineExtensions.GetPipelineDescriptor(this Polly.ResiliencePipeline! pipeline) -> Polly.Testing.ResiliencePipelineDescriptor!
+static Polly.Testing.ResiliencePipelineExtensions.GetPipelineDescriptor<TResult>(this Polly.ResiliencePipeline<TResult>! pipeline) -> Polly.Testing.ResiliencePipelineDescriptor!

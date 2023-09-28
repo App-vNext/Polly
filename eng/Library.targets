@@ -14,11 +14,8 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet package validation">
-    <EnablePackageValidation>true</EnablePackageValidation>
-    <!--
-    TODO Enable when v8 has shipped to NuGet.org
+    <EnablePackageValidation Condition="'$(EnablePackageValidation)' == ''">true</EnablePackageValidation>
     <PackageValidationBaselineVersion Condition="'$(PackageValidationBaselineVersion)' == ''">8.0.0</PackageValidationBaselineVersion>
-    -->
   </PropertyGroup>
 
   <PropertyGroup Label="SourceLink">
