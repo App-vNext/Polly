@@ -60,7 +60,8 @@
     "fileMetadataFiles": [],
     "template": [
       "default",
-      "modern"
+      "modern",
+      "template"
     ],
     "postProcessors": [],
     "keepFileLink": false,
