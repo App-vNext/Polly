@@ -1,16 +1,14 @@
 ---
-name: Request
+name: Feature Request
 about: Suggest a feature request or improvement
-
 ---
 
-**Is your feature request related to a specific problem? Or an existing feature? Please describe.**
+# Feature Request
 
+## Is your feature request related to a specific problem? Or an existing feature?
 
-**Describe your proposed or preferred solution**:
+## Describe your proposed or preferred solution
 
+## Describe any alternative options you've considered
 
-**Describe any alternative options you've considered**:
-
-
-**Any additional info?**
+## Any additional info?

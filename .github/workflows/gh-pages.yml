@@ -22,6 +22,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
+    - name: Lint Markdown files
+      uses: DavidAnson/markdownlint-cli2-action@ed4dec634fd2ef689c7061d5647371d8248064f1 # v13.0.0
+      with:
+        config: '.markdownlint.json'
+        globs: |
+          **/*.md
+          !CHANGELOG.md
+          !**/BenchmarkDotNet.Artifacts/**/*.md
+
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
 

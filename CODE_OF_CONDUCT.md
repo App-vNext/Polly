@@ -1,1 +1,7 @@
-Polly is part of the [.NET Foundation](https://dotnetfoundation.org/), and we ask our contributors to abide by their [Code of Conduct](https://www.dotnetfoundation.org/code-of-conduct).
+# Code of Conduct
+
+Polly is part of the [.NET Foundation][dnf], and we ask our contributors to abide
+by their [Code of Conduct][dnf-coc].
+
+[dnf]: https://dotnetfoundation.org/
+[dnf-coc]: https://www.dotnetfoundation.org/code-of-conduct
