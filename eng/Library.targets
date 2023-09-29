@@ -57,23 +57,6 @@
     </ItemGroup>
   </Target>
 
-  <ItemGroup Label="MinVer">
-    <PackageReference Include="MinVer" PrivateAssets="All" />
-  </ItemGroup>
-
-  <PropertyGroup Label="MinVer">
-    <MinVerMinimumMajorMinor>8.0</MinVerMinimumMajorMinor>
-  </PropertyGroup>
-
-  <Target Name="CustomizeVersions" AfterTargets="MinVer" Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <PropertyGroup>
-      <FileVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$(GITHUB_RUN_NUMBER)</FileVersion>
-    </PropertyGroup>
-    <PropertyGroup Condition="$(GITHUB_REF.StartsWith(`refs/pull/`))">
-      <PackageVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)-pr.$(GITHUB_REF_NAME.Replace(`/merge`, ``)).$(GITHUB_RUN_NUMBER)</PackageVersion>
-    </PropertyGroup>
-  </Target>
-
   <ItemGroup Condition="$(UsePublicApiAnalyzers) != 'false'">
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
       <PrivateAssets>all</PrivateAssets>

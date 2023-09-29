@@ -1,6 +1,6 @@
 # Getting started
 
-To use Polly, you must provide a callback and execute it using [**resilience pipeline**](pipelines/index.md). A resilience pipeline is a combination of one or more [**resilience strategies**](strategies/index.md) such as retry, timeout, and rate limiter. Polly uses **builders** to integrate these strategies into a pipeline.
+To use Polly, you must provide a callback and execute it using a [**resilience pipeline**](pipelines/index.md). A resilience pipeline is a combination of one or more [**resilience strategies**](strategies/index.md) such as retry, timeout, and rate limiter. Polly uses **builders** to integrate these strategies into a pipeline.
 
 To get started, first add the [Polly.Core](https://www.nuget.org/packages/Polly.Core/) package to your project by running the following command:
 

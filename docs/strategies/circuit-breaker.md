@@ -14,9 +14,6 @@
 ---
 
 > [!NOTE]
-> Version 8 documentation for this strategy has not yet been migrated. For more information on circuit breaker concepts and behavior, refer to the [older documentation](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
-
-> [!NOTE]
 > Be aware that the Circuit Breaker strategy [rethrows all exceptions](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#exception-handling), including those that are handled. A Circuit Breaker's role is to monitor faults and break the circuit when a certain threshold is reached; it does not manage retries. Combine the Circuit Breaker with a Retry strategy if needed.
 
 ## Usage

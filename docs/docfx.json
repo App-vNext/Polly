@@ -29,8 +29,11 @@
   ],
   "build": {
     "globalMetadata": {
+      "_appName": "Polly",
+      "_appTitle": "Polly",
       "_appLogoPath": "icon.png",
-      "_appFaviconPath": "icon.png"
+      "_appFaviconPath": "icon.png",
+      "_lang": "en"
     },
     "content": [
       {
