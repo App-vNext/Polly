@@ -85,12 +85,18 @@
         <article data-uid="">
 <h1 id="dependency-injection">Dependency injection</h1>
 
-<p>Starting with version 8, Polly provides features that make the integration of Polly with the .NET <a href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection"><code>IServiceCollection</code></a> Dependency Injection (DI) container more streamlined. This is a thin layer atop the <a href="../pipelines/resilience-pipeline-registry.html">resilience pipeline registry</a> which manages resilience pipelines.</p>
+<p>Starting with version 8, Polly provides features that make the integration of Polly
+with the .NET <a href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection"><code>IServiceCollection</code></a>
+Dependency Injection (DI) container more streamlined. This is a thin layer atop the
+<a href="../pipelines/resilience-pipeline-registry.html">resilience pipeline registry</a> which
+manages resilience pipelines.</p>
 <h2 id="usage">Usage</h2>
-<p>To use the DI functionality, add the <a href="https://www.nuget.org/packages/Polly.Extensions"><code>Polly.Extensions</code></a> package to your project:</p>
+<p>To use the DI functionality, add the <a href="https://www.nuget.org/packages/Polly.Extensions"><code>Polly.Extensions</code></a>
+package to your project:</p>
 <pre><code class="lang-sh">dotnet add package Polly.Extensions
 </code></pre>
-<p>Afterwards, you can use the <code>AddResiliencePipeline(...)</code> extension method to set up your pipeline:</p>
+<p>Afterwards, you can use the <code>AddResiliencePipeline(...)</code> extension method to set
+up your pipeline:</p>
 <!-- snippet: add-resilience-pipeline -->
 <pre><code class="lang-cs">var services = new ServiceCollection();
 
@@ -121,7 +127,8 @@ await pipeline.ExecuteAsync(
     static async cancellation =&gt; await Task.Delay(100, cancellation));
 </code></pre>
 <!-- endSnippet -->
-<p>The <code>AddResiliencePipeline</code> extension method also registers the following services into the DI:</p>
+<p>The <code>AddResiliencePipeline</code> extension method also registers the following services
+into the DI container:</p>
 <ul>
 <li><code>ResiliencePipelineRegistry&lt;string&gt;</code>: Allows adding and retrieving resilience pipelines.</li>
 <li><code>ResiliencePipelineProvider&lt;string&gt;</code>: Allows retrieving resilience pipelines.</li>
@@ -129,11 +136,14 @@ await pipeline.ExecuteAsync(
 </ul>
 <div class="NOTE">
 <h5>Note</h5>
-<p>The generic `string`` is inferred since the pipeline was defined using the &quot;my-key&quot; value.</p>
+<p>The generic `string`` is inferred since the pipeline was defined using the
+&quot;my-key&quot; value.</p>
 </div>
-<p>If you only need the registry without defining a pipeline, use the <code>AddResiliencePipelineRegistry(...)</code> method.</p>
+<p>If you only need the registry without defining a pipeline, use the
+<code>AddResiliencePipelineRegistry(...)</code> method.</p>
 <h3 id="generic-resilience-pipelines">Generic resilience pipelines</h3>
-<p>You can also define generic resilience pipelines (<code>ResiliencePipeline&lt;T&gt;</code>), as demonstrated below:</p>
+<p>You can also define generic resilience pipelines (<code>ResiliencePipeline&lt;T&gt;</code>), as
+demonstrated below:</p>
 <!-- snippet: add-resilience-pipeline-generic -->
 <pre><code class="lang-cs">var services = new ServiceCollection();
 
@@ -164,7 +174,9 @@ await pipeline.ExecuteAsync(
 </code></pre>
 <!-- endSnippet -->
 <h2 id="dynamic-reloads">Dynamic reloads</h2>
-<p>Dynamic reloading is a feature of the pipeline registry that is also surfaced when using the <code>AddResiliencePipeline(...)</code> extension method. Use an overload that provides access to <code>AddResiliencePipelineContext</code>:</p>
+<p>Dynamic reloading is a feature of the pipeline registry that is also surfaced when
+using the <code>AddResiliencePipeline(...)</code> extension method. Use an overload that provides
+access to <code>AddResiliencePipelineContext</code>:</p>
 <!-- snippet: di-dynamic-reloads -->
 <pre><code class="lang-cs">services
     .Configure&lt;RetryStrategyOptions&gt;(&quot;my-retry-options&quot;, configurationSection) // Configure the options
@@ -191,9 +203,12 @@ await pipeline.ExecuteAsync(
 <li>The callback re-executes.</li>
 <li>The previous pipeline is discarded.</li>
 </ul>
-<p>If an error occurs during reloading, the old pipeline remains, and dynamic reloading stops.</p>
+<p>If an error occurs during reloading, the old pipeline remains, and dynamic
+reloading stops.</p>
 <h2 id="resource-disposal">Resource disposal</h2>
-<p>Like dynamic reloading, the pipeline registry's resource disposal feature lets you register callbacks. These callbacks run when the pipeline is discarded, reloaded, or the registry is disposed at application shutdown.</p>
+<p>Like dynamic reloading, the pipeline registry's resource disposal feature lets
+you register callbacks. These callbacks run when the pipeline is discarded, reloaded,
+or the registry is disposed at application shutdown.</p>
 <p>See the example below:</p>
 <!-- snippet: di-resource-disposal -->
 <pre><code class="lang-cs">services.AddResiliencePipeline(&quot;my-pipeline&quot;, (builder, context) =&gt;
@@ -209,9 +224,12 @@ await pipeline.ExecuteAsync(
 });
 </code></pre>
 <!-- endSnippet -->
-<p>This feature ensures that resources are properly disposed when a pipeline reloads, discarding the old version.</p>
+<p>This feature ensures that resources are properly disposed when a pipeline
+reloads, discarding the old version.</p>
 <h2 id="complex-pipeline-keys">Complex pipeline keys</h2>
-<p>The <code>AddResiliencePipeline(...)</code> method supports complex pipeline keys. This capability allows you to define the structure of your pipeline and dynamically resolve and cache multiple instances of the pipeline with different keys.</p>
+<p>The <code>AddResiliencePipeline(...)</code> method supports complex pipeline keys. This
+capability allows you to define the structure of your pipeline and dynamically
+resolve and cache multiple instances of the pipeline with different keys.</p>
 <p>Start by defining your complex key:</p>
 <!-- snippet: di-registry-complex-key -->
 <pre><code class="lang-cs">public record struct MyPipelineKey(string PipelineName, string InstanceName)
@@ -229,7 +247,10 @@ await pipeline.ExecuteAsync(
 });
 </code></pre>
 <!-- endSnippet -->
-<p>The &quot;my-pipeline&quot; pipeline is now registered. Note that the <code>InstanceName</code> is an empty string. While we're registering the builder action for a specific pipeline, the <code>InstanceName</code> parameter isn't used during the pipeline's registration. Some further modifications are required for this to function.</p>
+<p>The &quot;my-pipeline&quot; pipeline is now registered. Note that the <code>InstanceName</code> is an
+empty string. While we're registering the builder action for a specific pipeline,
+the <code>InstanceName</code> parameter isn't used during the pipeline's registration. Some
+further modifications are required for this to function.</p>
 <p>Introduce the <code>PipelineNameComparer</code>:</p>
 <!-- snippet: di-complex-key-comparer -->
 <pre><code class="lang-cs">public sealed class PipelineNameComparer : IEqualityComparer&lt;MyPipelineKey&gt;
@@ -255,11 +276,16 @@ await pipeline.ExecuteAsync(
 <!-- endSnippet -->
 <p>Let's summarize our actions:</p>
 <ul>
-<li>We assigned the <code>PipelineNameComparer</code> instance to the <code>BuilderComparer</code> property. This action changes the default registry behavior, ensuring that only the <code>PipelineName</code> is used to find the associated builder.</li>
-<li>We used the <code>InstanceNameFormatter</code> delegate to represent the <code>MyPipelineKey</code> as an instance name for telemetry purposes, keeping the instance name as it is.</li>
-<li>Likewise, the <code>BuilderNameFormatter</code> delegate represents the <code>MyPipelineKey</code> as a builder name in telemetry.</li>
+<li>We assigned the <code>PipelineNameComparer</code> instance to the <code>BuilderComparer</code> property.
+This action changes the default registry behavior, ensuring that only the
+<code>PipelineName</code> is used to find the associated builder.</li>
+<li>We used the <code>InstanceNameFormatter</code> delegate to represent the <code>MyPipelineKey</code>
+as an instance name for telemetry purposes, keeping the instance name as it is.</li>
+<li>Likewise, the <code>BuilderNameFormatter</code> delegate represents the <code>MyPipelineKey</code> as
+a builder name in telemetry.</li>
 </ul>
-<p>Finally, use the <code>ResiliencePipelineProvider&lt;MyPipelineKey&gt;</code> to dynamically create and cache multiple instances of the same pipeline:</p>
+<p>Finally, use the <code>ResiliencePipelineProvider&lt;MyPipelineKey&gt;</code> to dynamically create
+and cache multiple instances of the same pipeline:</p>
 <!-- snippet: di-registry-multiple-instances -->
 <pre><code class="lang-cs">ResiliencePipelineProvider&lt;MyPipelineKey&gt; pipelineProvider = serviceProvider.GetRequiredService&lt;ResiliencePipelineProvider&lt;MyPipelineKey&gt;&gt;();
 
@@ -271,7 +297,9 @@ ResiliencePipeline instanceB = pipelineProvider.GetPipeline(new MyPipelineKey(&q
 </code></pre>
 <!-- endSnippet -->
 <h2 id="patterns-and-anti-patterns">Patterns and anti-patterns</h2>
-<p>Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.</p>
+<p>Over the years, many developers have used Polly in various ways. Some of these
+recurring patterns may not be ideal. This section highlights the recommended practices
+and those to avoid.</p>
 <h3 id="1---accessing-the-iservicecollection-instead-of-iserviceprovider">1 - Accessing the <code>IServiceCollection</code> instead of <code>IServiceProvider</code></h3>
 <p>❌ DON'T</p>
 <p>Capture <code>IServiceCollection</code> inside <code>AddResiliencePipeline()</code>:</p>
@@ -313,7 +341,8 @@ services.AddResiliencePipeline(&quot;myFavoriteStrategy&quot;, static (builder, 
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<p>This approach uses the already built <code>ServiceProvider</code> and uses the same instance before every retry attempts.</p>
+<p>This approach uses the already built <code>ServiceProvider</code> and uses the same instance
+before every retry attempts.</p>
 </article>
 
         <div class="contribution d-print-none">
