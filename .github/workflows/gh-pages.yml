@@ -25,7 +25,6 @@ jobs:
     - name: Lint Markdown files
       uses: DavidAnson/markdownlint-cli2-action@ed4dec634fd2ef689c7061d5647371d8248064f1 # v13.0.0
       with:
-        config: .markdownlint.json
         globs: |
           **/*.md
           !CHANGELOG.md
