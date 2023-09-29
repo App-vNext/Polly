@@ -1,16 +1,22 @@
 # Dependency injection
 
-Starting with version 8, Polly provides features that make the integration of Polly with the .NET [`IServiceCollection`](https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection) Dependency Injection (DI) container more streamlined. This is a thin layer atop the [resilience pipeline registry](../pipelines/resilience-pipeline-registry.md) which manages resilience pipelines.
+Starting with version 8, Polly provides features that make the integration of Polly
+with the .NET [`IServiceCollection`](https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection)
+Dependency Injection (DI) container more streamlined. This is a thin layer atop the
+[resilience pipeline registry](../pipelines/resilience-pipeline-registry.md) which
+manages resilience pipelines.
 
 ## Usage
 
-To use the DI functionality, add the [`Polly.Extensions`](https://www.nuget.org/packages/Polly.Extensions) package to your project:
+To use the DI functionality, add the [`Polly.Extensions`](https://www.nuget.org/packages/Polly.Extensions)
+package to your project:
 
 ```sh
 dotnet add package Polly.Extensions
 ```
 
-Afterwards, you can use the `AddResiliencePipeline(...)` extension method to set up your pipeline:
+Afterwards, you can use the `AddResiliencePipeline(...)` extension method to set
+up your pipeline:
 
 <!-- snippet: add-resilience-pipeline -->
 ```cs
@@ -44,20 +50,24 @@ await pipeline.ExecuteAsync(
 ```
 <!-- endSnippet -->
 
-The `AddResiliencePipeline` extension method also registers the following services into the DI:
+The `AddResiliencePipeline` extension method also registers the following services
+into the DI container:
 
 - `ResiliencePipelineRegistry<string>`: Allows adding and retrieving resilience pipelines.
 - `ResiliencePipelineProvider<string>`: Allows retrieving resilience pipelines.
 - `IOptions<ResiliencePipelineRegistryOptions<string>>`: Options for `ResiliencePipelineRegistry<string>`.
 
 > [!NOTE]
-> The generic `string`` is inferred since the pipeline was defined using the "my-key" value.
+> The generic `string`` is inferred since the pipeline was defined using the
+> "my-key" value.
 
-If you only need the registry without defining a pipeline, use the `AddResiliencePipelineRegistry(...)` method.
+If you only need the registry without defining a pipeline, use the
+`AddResiliencePipelineRegistry(...)` method.
 
 ### Generic resilience pipelines
 
-You can also define generic resilience pipelines (`ResiliencePipeline<T>`), as demonstrated below:
+You can also define generic resilience pipelines (`ResiliencePipeline<T>`), as
+demonstrated below:
 
 <!-- snippet: add-resilience-pipeline-generic -->
 ```cs
@@ -92,7 +102,9 @@ await pipeline.ExecuteAsync(
 
 ## Dynamic reloads
 
-Dynamic reloading is a feature of the pipeline registry that is also surfaced when using the `AddResiliencePipeline(...)` extension method. Use an overload that provides access to `AddResiliencePipelineContext`:
+Dynamic reloading is a feature of the pipeline registry that is also surfaced when
+using the `AddResiliencePipeline(...)` extension method. Use an overload that provides
+access to `AddResiliencePipelineContext`:
 
 <!-- snippet: di-dynamic-reloads -->
 ```cs
@@ -121,11 +133,14 @@ During a reload:
 - The callback re-executes.
 - The previous pipeline is discarded.
 
-If an error occurs during reloading, the old pipeline remains, and dynamic reloading stops.
+If an error occurs during reloading, the old pipeline remains, and dynamic
+reloading stops.
 
 ## Resource disposal
 
-Like dynamic reloading, the pipeline registry's resource disposal feature lets you register callbacks. These callbacks run when the pipeline is discarded, reloaded, or the registry is disposed at application shutdown.
+Like dynamic reloading, the pipeline registry's resource disposal feature lets
+you register callbacks. These callbacks run when the pipeline is discarded, reloaded,
+or the registry is disposed at application shutdown.
 
 See the example below:
 
@@ -145,11 +160,14 @@ services.AddResiliencePipeline("my-pipeline", (builder, context) =>
 ```
 <!-- endSnippet -->
 
-This feature ensures that resources are properly disposed when a pipeline reloads, discarding the old version.
+This feature ensures that resources are properly disposed when a pipeline
+reloads, discarding the old version.
 
 ## Complex pipeline keys
 
-The `AddResiliencePipeline(...)` method supports complex pipeline keys. This capability allows you to define the structure of your pipeline and dynamically resolve and cache multiple instances of the pipeline with different keys.
+The `AddResiliencePipeline(...)` method supports complex pipeline keys. This
+capability allows you to define the structure of your pipeline and dynamically
+resolve and cache multiple instances of the pipeline with different keys.
 
 Start by defining your complex key:
 
@@ -174,7 +192,10 @@ services.AddResiliencePipeline(new MyPipelineKey("my-pipeline", string.Empty), b
 ```
 <!-- endSnippet -->
 
-The "my-pipeline" pipeline is now registered. Note that the `InstanceName` is an empty string. While we're registering the builder action for a specific pipeline, the `InstanceName` parameter isn't used during the pipeline's registration. Some further modifications are required for this to function.
+The "my-pipeline" pipeline is now registered. Note that the `InstanceName` is an
+empty string. While we're registering the builder action for a specific pipeline,
+the `InstanceName` parameter isn't used during the pipeline's registration. Some
+further modifications are required for this to function.
 
 Introduce the `PipelineNameComparer`:
 
@@ -207,11 +228,16 @@ services
 
 Let's summarize our actions:
 
-- We assigned the `PipelineNameComparer` instance to the `BuilderComparer` property. This action changes the default registry behavior, ensuring that only the `PipelineName` is used to find the associated builder.
-- We used the `InstanceNameFormatter` delegate to represent the `MyPipelineKey` as an instance name for telemetry purposes, keeping the instance name as it is.
-- Likewise, the `BuilderNameFormatter` delegate represents the `MyPipelineKey` as a builder name in telemetry.
+- We assigned the `PipelineNameComparer` instance to the `BuilderComparer` property.
+  This action changes the default registry behavior, ensuring that only the
+  `PipelineName` is used to find the associated builder.
+- We used the `InstanceNameFormatter` delegate to represent the `MyPipelineKey`
+  as an instance name for telemetry purposes, keeping the instance name as it is.
+- Likewise, the `BuilderNameFormatter` delegate represents the `MyPipelineKey` as
+  a builder name in telemetry.
 
-Finally, use the `ResiliencePipelineProvider<MyPipelineKey>` to dynamically create and cache multiple instances of the same pipeline:
+Finally, use the `ResiliencePipelineProvider<MyPipelineKey>` to dynamically create
+and cache multiple instances of the same pipeline:
 
 <!-- snippet: di-registry-multiple-instances -->
 ```cs
@@ -225,10 +251,11 @@ ResiliencePipeline instanceB = pipelineProvider.GetPipeline(new MyPipelineKey("m
 ```
 <!-- endSnippet -->
 
-
 ## Patterns and anti-patterns
 
-Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
+Over the years, many developers have used Polly in various ways. Some of these
+recurring patterns may not be ideal. This section highlights the recommended practices
+and those to avoid.
 
 ### 1 - Accessing the `IServiceCollection` instead of `IServiceProvider`
 
@@ -283,4 +310,5 @@ services.AddResiliencePipeline("myFavoriteStrategy", static (builder, context) =
 
 **Reasoning**:
 
-This approach uses the already built `ServiceProvider` and uses the same instance before every retry attempts.
+This approach uses the already built `ServiceProvider` and uses the same instance
+before every retry attempts.
