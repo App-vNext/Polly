@@ -1,3 +1,5 @@
+# CHANGELOG
+
 ## 8.0.0
 
 * Updates for beta.2 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1580
