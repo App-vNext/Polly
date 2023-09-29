@@ -10,9 +10,6 @@
 
 ---
 
-> [!NOTE]
-> Version 8 documentation for this strategy has not yet been migrated. For more information on timeout concepts and behavior, refer to the [older documentation](https://github.com/App-vNext/Polly/wiki/Timeout).
-
 ## Usage
 
 <!-- snippet: timeout -->

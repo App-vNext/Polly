@@ -8,9 +8,6 @@
 
 ---
 
-> [!NOTE]
-> Version 8 documentation for this strategy has not yet been migrated. For more information on fallback concepts and behavior, refer to the [older documentation](https://github.com/App-vNext/Polly/wiki/Fallback).
-
 ## Usage
 
 <!-- snippet: fallback -->

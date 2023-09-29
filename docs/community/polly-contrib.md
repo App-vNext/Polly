@@ -2,7 +2,7 @@
 
 Polly now has a [Polly-Contrib](https://github.com/Polly-Contrib) to allow the community to contribute policies or other enhancements around Polly with a low burden of ceremony.
 
-Have a contrib you'd like to publish under Polly-Contrib? Contact us with  an issue here or on [Polly's slack](http://pollytalk.slack.com), and we can set up a CI-ready Polly.Contrib repo to which you have full rights, to help you manage and deliver your awesomeness to the community!
+Have a contrib you'd like to publish under Polly-Contrib? Contact us with  an issue here or on [Polly's Slack](http://pollytalk.slack.com), and we can set up a CI-ready Polly.Contrib repo to which you have full rights, to help you manage and deliver your awesomeness to the community!
 
 We also provide:
 

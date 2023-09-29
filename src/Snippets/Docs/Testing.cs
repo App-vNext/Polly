@@ -1,4 +1,7 @@
-﻿using Polly.Retry;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
+using Polly.Registry;
+using Polly.Retry;
 using Polly.Testing;
 using Polly.Timeout;
 using Xunit;
@@ -58,4 +61,66 @@ internal static class Testing
 
         #endregion
     }
+
+    public static void PipelineProviderProviderMocking()
+    {
+        #region testing-resilience-pipeline-provider-mocking
+
+        ResiliencePipelineProvider<string> pipelineProvider = Substitute.For<ResiliencePipelineProvider<string>>();
+
+        // Mock the pipeline provider to return an empty pipeline for testing
+        pipelineProvider
+            .GetPipeline("my-pipeline")
+            .Returns(ResiliencePipeline.Empty);
+
+        // Use the mocked pipeline provider in your code
+        var api = new MyApi(pipelineProvider);
+
+        // You can now test the api
+
+        #endregion
+    }
 }
+
+#region testing-resilience-pipeline-provider-usage
+
+// Represents an arbitrary API that needs resilience support
+public class MyApi
+{
+    private readonly ResiliencePipeline _pipeline;
+
+    // The value of pipelineProvider is injected via dependency injection
+    public MyApi(ResiliencePipelineProvider<string> pipelineProvider)
+    {
+        _pipeline = pipelineProvider.GetPipeline("my-pipeline");
+    }
+
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
+    {
+        await _pipeline.ExecuteAsync(
+            static async token =>
+            {
+                // Add your code here
+            },
+            cancellationToken);
+    }
+}
+
+// Extensions to incorporate MyApi into dependency injection
+public static class MyApiExtensions
+{
+    public static IServiceCollection AddMyApi(this IServiceCollection services)
+    {
+        return services
+            .AddResiliencePipeline("my-pipeline", builder =>
+            {
+                builder.AddRetry(new RetryStrategyOptions
+                {
+                    MaxRetryAttempts = 4
+                });
+            })
+            .AddSingleton<MyApi>();
+    }
+}
+
+#endregion
