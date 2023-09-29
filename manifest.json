@@ -1014,6 +1014,36 @@
       "version": ""
     },
     {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Snippets.Docs.MyApi.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Snippets.Docs.MyApi.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Snippets.Docs.MyApiExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Snippets.Docs.MyApiExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Snippets.Docs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Snippets.Docs.html"
+        }
+      },
+      "version": ""
+    },
+    {
       "type": "Conceptual",
       "source_relative_path": "api/index.md",
       "output": {

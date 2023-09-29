@@ -135,6 +135,70 @@ ResiliencePipelineDescriptor descriptor = pipeline.GetPipelineDescriptor();
 // ...
 </code></pre>
 <!-- endSnippet -->
+<h2 id="mocking-resiliencepipelineprovidertkey">Mocking <code>ResiliencePipelineProvider&lt;TKey&gt;</code></h2>
+<p>Consider the following code that might resemble a part of your project:</p>
+<!-- snippet: testing-resilience-pipeline-provider-usage -->
+<pre><code class="lang-cs">// Represents an arbitrary API that needs resilience support
+public class MyApi
+{
+    private readonly ResiliencePipeline _pipeline;
+
+    // The value of pipelineProvider is injected via dependency injection
+    public MyApi(ResiliencePipelineProvider&lt;string&gt; pipelineProvider)
+    {
+        _pipeline = pipelineProvider.GetPipeline(&quot;my-pipeline&quot;);
+    }
+
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
+    {
+        await _pipeline.ExecuteAsync(
+            static async token =&gt;
+            {
+                // Add your code here
+            },
+            cancellationToken);
+    }
+}
+
+// Extensions to incorporate MyApi into dependency injection
+public static class MyApiExtensions
+{
+    public static IServiceCollection AddMyApi(this IServiceCollection services)
+    {
+        return services
+            .AddResiliencePipeline(&quot;my-pipeline&quot;, builder =&gt;
+            {
+                builder.AddRetry(new RetryStrategyOptions
+                {
+                    MaxRetryAttempts = 4
+                });
+            })
+            .AddSingleton&lt;MyApi&gt;();
+    }
+}
+</code></pre>
+<!-- endSnippet -->
+<p>In the example above:</p>
+<ul>
+<li>The <code>MyApi</code> class is introduced, representing part of your application that requires resilience support.</li>
+<li>The <code>AddMyApi</code> extension method is also defined, which integrates <code>MyApi</code> into dependency injection (DI) and sets up the resilience pipeline it uses.</li>
+</ul>
+<p>For unit tests, if you want to assess the behavior of <code>ExecuteAsync</code>, it might not be practical to rely on the entire pipeline, especially since it could slow down tests during failure scenario evaluations. Instead, it's recommended to mock the <code>ResiliencePipelineProvider&lt;string&gt;</code> and return an empty pipeline:</p>
+<!-- snippet: testing-resilience-pipeline-provider-mocking -->
+<pre><code class="lang-cs">ResiliencePipelineProvider&lt;string&gt; pipelineProvider = Substitute.For&lt;ResiliencePipelineProvider&lt;string&gt;&gt;();
+
+// Mock the pipeline provider to return an empty pipeline for testing
+pipelineProvider
+    .GetPipeline(&quot;my-pipeline&quot;)
+    .Returns(ResiliencePipeline.Empty);
+
+// Use the mocked pipeline provider in your code
+var api = new MyApi(pipelineProvider);
+
+// You can now test the api
+</code></pre>
+<!-- endSnippet -->
+<p>This example leverages the <a href="https://github.com/nsubstitute/NSubstitute"><code>NSubstitute</code></a> library to mock the pipeline provider.</p>
 </article>
 
         <div class="contribution d-print-none">

@@ -5109,3 +5109,66 @@ references:
   fullName.vb: Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout(Of TBuilder)(TBuilder, System.TimeSpan)
   nameWithType: TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(TBuilder, TimeSpan)
   nameWithType.vb: TimeoutResiliencePipelineBuilderExtensions.AddTimeout(Of TBuilder)(TBuilder, TimeSpan)
+- uid: Snippets.Docs
+  name: Snippets.Docs
+  href: api/Snippets.Docs.html
+  commentId: N:Snippets.Docs
+  fullName: Snippets.Docs
+  nameWithType: Snippets.Docs
+- uid: Snippets.Docs.MyApi
+  name: MyApi
+  href: api/Snippets.Docs.MyApi.html
+  commentId: T:Snippets.Docs.MyApi
+  fullName: Snippets.Docs.MyApi
+  nameWithType: MyApi
+- uid: Snippets.Docs.MyApi.#ctor(Polly.Registry.ResiliencePipelineProvider{System.String})
+  name: MyApi(ResiliencePipelineProvider<string>)
+  href: api/Snippets.Docs.MyApi.html#Snippets_Docs_MyApi__ctor_Polly_Registry_ResiliencePipelineProvider_System_String__
+  commentId: M:Snippets.Docs.MyApi.#ctor(Polly.Registry.ResiliencePipelineProvider{System.String})
+  name.vb: New(ResiliencePipelineProvider(Of String))
+  fullName: Snippets.Docs.MyApi.MyApi(Polly.Registry.ResiliencePipelineProvider<string>)
+  fullName.vb: Snippets.Docs.MyApi.New(Polly.Registry.ResiliencePipelineProvider(Of String))
+  nameWithType: MyApi.MyApi(ResiliencePipelineProvider<string>)
+  nameWithType.vb: MyApi.New(ResiliencePipelineProvider(Of String))
+- uid: Snippets.Docs.MyApi.#ctor*
+  name: MyApi
+  href: api/Snippets.Docs.MyApi.html#Snippets_Docs_MyApi__ctor_
+  commentId: Overload:Snippets.Docs.MyApi.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Snippets.Docs.MyApi.MyApi
+  fullName.vb: Snippets.Docs.MyApi.New
+  nameWithType: MyApi.MyApi
+  nameWithType.vb: MyApi.New
+- uid: Snippets.Docs.MyApi.ExecuteAsync(System.Threading.CancellationToken)
+  name: ExecuteAsync(CancellationToken)
+  href: api/Snippets.Docs.MyApi.html#Snippets_Docs_MyApi_ExecuteAsync_System_Threading_CancellationToken_
+  commentId: M:Snippets.Docs.MyApi.ExecuteAsync(System.Threading.CancellationToken)
+  fullName: Snippets.Docs.MyApi.ExecuteAsync(System.Threading.CancellationToken)
+  nameWithType: MyApi.ExecuteAsync(CancellationToken)
+- uid: Snippets.Docs.MyApi.ExecuteAsync*
+  name: ExecuteAsync
+  href: api/Snippets.Docs.MyApi.html#Snippets_Docs_MyApi_ExecuteAsync_
+  commentId: Overload:Snippets.Docs.MyApi.ExecuteAsync
+  isSpec: "True"
+  fullName: Snippets.Docs.MyApi.ExecuteAsync
+  nameWithType: MyApi.ExecuteAsync
+- uid: Snippets.Docs.MyApiExtensions
+  name: MyApiExtensions
+  href: api/Snippets.Docs.MyApiExtensions.html
+  commentId: T:Snippets.Docs.MyApiExtensions
+  fullName: Snippets.Docs.MyApiExtensions
+  nameWithType: MyApiExtensions
+- uid: Snippets.Docs.MyApiExtensions.AddMyApi(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  name: AddMyApi(IServiceCollection)
+  href: api/Snippets.Docs.MyApiExtensions.html#Snippets_Docs_MyApiExtensions_AddMyApi_Microsoft_Extensions_DependencyInjection_IServiceCollection_
+  commentId: M:Snippets.Docs.MyApiExtensions.AddMyApi(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  fullName: Snippets.Docs.MyApiExtensions.AddMyApi(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  nameWithType: MyApiExtensions.AddMyApi(IServiceCollection)
+- uid: Snippets.Docs.MyApiExtensions.AddMyApi*
+  name: AddMyApi
+  href: api/Snippets.Docs.MyApiExtensions.html#Snippets_Docs_MyApiExtensions_AddMyApi_
+  commentId: Overload:Snippets.Docs.MyApiExtensions.AddMyApi
+  isSpec: "True"
+  fullName: Snippets.Docs.MyApiExtensions.AddMyApi
+  nameWithType: MyApiExtensions.AddMyApi
