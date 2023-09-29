@@ -17,4 +17,5 @@ matrix:
     #      - pre
   sources:
     - '**/*.md'
+    - '!**/BenchmarkDotNet.Artifacts/**/*.md'
   default_encoding: utf-8
