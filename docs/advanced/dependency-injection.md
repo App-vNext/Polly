@@ -58,7 +58,7 @@ into the DI container:
 - `IOptions<ResiliencePipelineRegistryOptions<string>>`: Options for `ResiliencePipelineRegistry<string>`.
 
 > [!NOTE]
-> The generic `string`` is inferred since the pipeline was defined using the
+> The generic `string` is inferred since the pipeline was defined using the
 > "my-key" value.
 
 If you only need the registry without defining a pipeline, use the
