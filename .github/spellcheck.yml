@@ -10,11 +10,6 @@ matrix:
   pipeline:
     - pyspelling.filters.url:
     - pyspelling.filters.markdown:
-    #- pyspelling.filters.html:
-    #    comments: false
-    #    ignores:
-    #      - code
-    #      - pre
   sources:
     - '**/*.md'
     - '!**/BenchmarkDotNet.Artifacts/**/*.md'
