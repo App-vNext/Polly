@@ -16,6 +16,8 @@ matrix:
           - code
           - pre
   sources:
-    - '**/*.md'
-    - '!**/BenchmarkDotNet.Artifacts/**/*.md'
+    - '*.md'
+    - '.github/**/*.md'
+    - 'docs/**/*.md'
+    - '**/README.md'
   default_encoding: utf-8
