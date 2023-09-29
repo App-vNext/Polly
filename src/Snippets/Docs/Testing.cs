@@ -90,7 +90,7 @@ public class MyApi
 {
     private readonly ResiliencePipeline _pipeline;
 
-    // The pipelineProvider is injected via dependency injection
+    // The value of pipelineProvider is injected via dependency injection
     public MyApi(ResiliencePipelineProvider<string> pipelineProvider)
     {
         _pipeline = pipelineProvider.GetPipeline("my-pipeline");
@@ -112,17 +112,15 @@ public static class MyApiExtensions
 {
     public static IServiceCollection AddMyApi(this IServiceCollection services)
     {
-        services.AddResiliencePipeline("my-pipeline", builder =>
-        {
-            builder.AddRetry(new RetryStrategyOptions
+        return services
+            .AddResiliencePipeline("my-pipeline", builder =>
             {
-                MaxRetryAttempts = 4
-            });
-        });
-
-        services.TryAddSingleton<MyApi>();
-
-        return services;
+                builder.AddRetry(new RetryStrategyOptions
+                {
+                    MaxRetryAttempts = 4
+                });
+            })
+            .AddSingleton<MyApi>();
     }
 }
 

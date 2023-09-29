@@ -73,7 +73,7 @@ public class MyApi
 {
     private readonly ResiliencePipeline _pipeline;
 
-    // The pipelineProvider is injected via dependency injection
+    // The value of pipelineProvider is injected via dependency injection
     public MyApi(ResiliencePipelineProvider<string> pipelineProvider)
     {
         _pipeline = pipelineProvider.GetPipeline("my-pipeline");
@@ -95,17 +95,15 @@ public static class MyApiExtensions
 {
     public static IServiceCollection AddMyApi(this IServiceCollection services)
     {
-        services.AddResiliencePipeline("my-pipeline", builder =>
-        {
-            builder.AddRetry(new RetryStrategyOptions
+        return services
+            .AddResiliencePipeline("my-pipeline", builder =>
             {
-                MaxRetryAttempts = 4
-            });
-        });
-
-        services.TryAddSingleton<MyApi>();
-
-        return services;
+                builder.AddRetry(new RetryStrategyOptions
+                {
+                    MaxRetryAttempts = 4
+                });
+            })
+            .AddSingleton<MyApi>();
     }
 }
 ```
@@ -113,10 +111,10 @@ public static class MyApiExtensions
 
 In the example above:
 
-- The `MyApi` class is introduced, representing a logic section that requires resilience support.
-- The `AddMyApi` extension method is also defined, which integrates `MyApi` into the dependency injection (DI) and sets up the resilience pipeline it uses.
+- The `MyApi` class is introduced, representing part of your application that requires resilience support.
+- The `AddMyApi` extension method is also defined, which integrates `MyApi` into dependency injection (DI) and sets up the resilience pipeline it uses.
 
-For unit tests, if you want to assess the behavior of `ExecuteAsync`, it might not be practical to rely on the entire pipeline, especially since it could decelerate tests during failure scenario evaluations. Instead, it's recommended to mock the `ResiliencePipelineProvider<string>` and return an empty pipeline:
+For unit tests, if you want to assess the behavior of `ExecuteAsync`, it might not be practical to rely on the entire pipeline, especially since it could slow down tests during failure scenario evaluations. Instead, it's recommended to mock the `ResiliencePipelineProvider<string>` and return an empty pipeline:
 
 <!-- snippet: testing-resilience-pipeline-provider-mocking -->
 ```cs
@@ -134,4 +132,4 @@ var api = new MyApi(pipelineProvider);
 ```
 <!-- endSnippet -->
 
-This example leverages the [`NSubstitute`](https://github.com/nsubstitute/NSubstitute) library for the mocking process.
+This example leverages the [`NSubstitute`](https://github.com/nsubstitute/NSubstitute) library to mock the pipeline provider.
