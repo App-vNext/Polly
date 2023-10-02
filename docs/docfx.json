@@ -33,6 +33,7 @@
       "_appTitle": "Polly",
       "_appLogoPath": "icon.png",
       "_appFaviconPath": "icon.png",
+      "_enableSearch": true,
       "_lang": "en"
     },
     "content": [
