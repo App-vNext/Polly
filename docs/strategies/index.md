@@ -52,7 +52,7 @@ Setting up the predicate can be accomplished in the following ways:
 - **Manually setting the predicate**: Directly configure the predicate. The advised approach involves using [switch expressions](https://learn.microsoft.com/dotnet/csharp/language-reference/operators/switch-expression) for maximum flexibility, and also allows the incorporation of asynchronous predicates.
 - **Employing `PredicateBuilder`**: The `PredicateBuilder` provides a more straightforward method to configure the predicates, akin to predicate setups in earlier Polly versions.
 
-The examples below illustrate both methods:
+The examples below illustrate these:
 
 ### Predicates
 
@@ -84,7 +84,7 @@ Notes from the preceding example:
 
 ### Asynchronous predicates
 
-You can also use asynchronous delegates for more advanced scenarios, such as retrying based on the response body.
+You can also use asynchronous delegates for more advanced scenarios, such as retrying based on the response body:
 
 <!-- snippet: should-handle-manual-async -->
 ```cs
@@ -111,6 +111,8 @@ var options = new RetryStrategyOptions<HttpResponseMessage>
 
 ### Predicate builder
 
+<xref:Polly.PredicateBuilder>, or <xref:Polly.PredicateBuilder`1>, is a utility class aimed at simplifying the configuration of predicates:
+
 <!-- snippet: should-handle-predicate-builder -->
 ```cs
 // Use PredicateBuilder<HttpResponseMessage> to simplify the setup of the ShouldHandle predicate.
@@ -124,12 +126,10 @@ var options = new RetryStrategyOptions<HttpResponseMessage>
 ```
 <!-- endSnippet -->
 
-- <xref:Polly.PredicateBuilder>, or <xref:Polly.PredicateBuilder`1>, is a utility API aimed at simplifying the configuration of predicates.
-
 The preceding sample:
 
 - Uses `HandleResult` to register predicate that determines whether the result should be handled or not.
 - Uses `Handle` to handle multiple exceptions types.
 
 > [!NOTE]
-> Compared to configuring the predicate manually, the approach using `PredicateBuilder` is slightly slower because each method call on this type registers a new predicate that needs to be invoked when evaluating the outcome of the execution.
+> When using `PredicateBuilder` instead of manually configuring the predicate, there is a minor performance impact. Each method call on `PredicateBuilder` registers a new predicate, which must be invoked when evaluating the outcome.
