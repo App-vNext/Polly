@@ -141,7 +141,7 @@ Tags:
 
 |Name|Description|
 |---| ---|
-|`event.name`| The name of the emitted event.|
+|`event.name`| The name of the emitted event. Currently, the event name is always `ExecutionAttempt`. |
 |`event.severity`| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
 |`pipeline.name`| The name of the pipeline corresponding to the resilience pipeline.|
 |`pipeline.instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
