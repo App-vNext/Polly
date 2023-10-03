@@ -42,6 +42,34 @@ internal static class ResilienceStrategies
         #endregion
     }
 
+    public static void ShouldHandleManualAsync()
+    {
+        #region should-handle-manual-async
+
+        var options = new RetryStrategyOptions<HttpResponseMessage>
+        {
+            ShouldHandle = async args =>
+            {
+                if (args.Outcome.Exception is not null)
+                {
+                    return args.Outcome.Exception switch
+                    {
+                        HttpRequestException => true,
+                        TimeoutRejectedException => true,
+                        _ => false
+                    };
+                }
+
+                // Determine whether to retry asynchronously or not based on the result.
+                return await ShouldRetryAsync(args.Outcome.Result!, args.Context.CancellationToken);
+            }
+        };
+
+        #endregion
+    }
+
+    private static Task<bool> ShouldRetryAsync(HttpResponseMessage response, CancellationToken cancellationToken) => Task.FromResult(true);
+
     public static void ShouldHandlePredicateBuilder()
     {
         #region should-handle-predicate-builder

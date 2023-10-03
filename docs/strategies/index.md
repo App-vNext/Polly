@@ -54,7 +54,7 @@ Setting up the predicate can be accomplished in the following ways:
 
 The examples below illustrate both methods:
 
-### Fault handling using switch expressions
+### Fault handling: Predicates
 
 <!-- snippet: should-handle-manual -->
 ```cs
@@ -77,11 +77,39 @@ var options = new RetryStrategyOptions<HttpResponseMessage>
 
 Notes from the preceding example:
 
+- Switch expressions are used to determine whether to retry on not.
 - `PredicateResult.True()` is a shorthand for `new ValueTask<bool>(true)`.
 - `ShouldHandle` predicates are asynchronous and use the type `Func<Args<TResult>, ValueTask<bool>>`. The `Args<TResult>` acts as a placeholder, and each strategy defines its own arguments.
 - Multiple exceptions can be handled using switch expressions.
 
-### Fault handling using `PredicateBuilder`
+### Fault handling: Asynchronous predicates
+
+You can also use asynchronous delegates for more advanced scenarios, such as retrying based on the response body.
+
+<!-- snippet: should-handle-manual-async -->
+```cs
+var options = new RetryStrategyOptions<HttpResponseMessage>
+{
+    ShouldHandle = async args =>
+    {
+        if (args.Outcome.Exception is not null)
+        {
+            return args.Outcome.Exception switch
+            {
+                HttpRequestException => true,
+                TimeoutRejectedException => true,
+                _ => false
+            };
+        }
+
+        // Determine whether to retry asynchronously or not based on the result.
+        return await ShouldRetryAsync(args.Outcome.Result!, args.Context.CancellationToken);
+    }
+};
+```
+<!-- endSnippet -->
+
+### Fault handling: `PredicateBuilder`
 
 <!-- snippet: should-handle-predicate-builder -->
 ```cs
