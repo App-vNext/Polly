@@ -104,6 +104,7 @@ These values are subsequently reflected in the following metering instruments ex
 ### Instrument: `resilience.polly.strategy.events`
 
 - Type: *Counter*
+- Numerical type of measurement: *int*
 - Description: Emitted upon the occurrence of a resilience event.
 
 Tags:
@@ -122,6 +123,7 @@ Tags:
 
 - Type: *Histogram*
 - Unit: *milliseconds*
+- Numerical type of measurement: *double*
 - Description: Tracks the duration of execution attempts, produced by `Retry` and `Hedging` resilience strategies.
 
 Tags:
