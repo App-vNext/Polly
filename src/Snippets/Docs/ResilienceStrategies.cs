@@ -33,6 +33,7 @@ internal static class ResilienceStrategies
                 // For instance, the retry strategy exposes the number of attempts made.
                 _ when args.AttemptNumber > 3 => PredicateResult.False(),
                 { Exception: HttpRequestException } => PredicateResult.True(),
+                { Exception: TimeoutRejectedException } => PredicateResult.True(), // You can handle multiple exceptions
                 { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
                 _ => PredicateResult.False()
             }
@@ -50,7 +51,8 @@ internal static class ResilienceStrategies
         {
             ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
                 .HandleResult(response => !response.IsSuccessStatusCode) // Handle results
-                .Handle<HttpRequestException>() // Or handle exceptions, chaining is supported
+                .Handle<HttpRequestException>() // Or handle exception
+                .Handle<TimeoutRejectedException>() // Chaining is supported
         };
 
         #endregion

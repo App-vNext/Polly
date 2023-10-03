@@ -67,6 +67,7 @@ var options = new RetryStrategyOptions<HttpResponseMessage>
         // For instance, the retry strategy exposes the number of attempts made.
         _ when args.AttemptNumber > 3 => PredicateResult.False(),
         { Exception: HttpRequestException } => PredicateResult.True(),
+        { Exception: TimeoutRejectedException } => PredicateResult.True(), // You can handle multiple exceptions
         { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
         _ => PredicateResult.False()
     }
@@ -74,12 +75,13 @@ var options = new RetryStrategyOptions<HttpResponseMessage>
 ```
 <!-- endSnippet -->
 
+Notes from the preceding example:
+
 - `PredicateResult.True()` is a shorthand for `new ValueTask<bool>(true)`.
-- All `ShouldHandle` predicates are asynchronous and use the type `Func<Args<TResult>, ValueTask<bool>>`. The `Args<TResult>` acts as a placeholder, and each strategy defines its own arguments.
+- `ShouldHandle` predicates are asynchronous and use the type `Func<Args<TResult>, ValueTask<bool>>`. The `Args<TResult>` acts as a placeholder, and each strategy defines its own arguments.
+- Multiple exceptions can be handled using switch expressions.
 
 ### Fault handling using `PredicateBuilder`
-
-<xref:Polly.PredicateBuilder>, or <xref:Polly.PredicateBuilder`1>, is a utility API aimed at simplifying the configuration of predicates.
 
 <!-- snippet: should-handle-predicate-builder -->
 ```cs
@@ -88,7 +90,18 @@ var options = new RetryStrategyOptions<HttpResponseMessage>
 {
     ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
         .HandleResult(response => !response.IsSuccessStatusCode) // Handle results
-        .Handle<HttpRequestException>() // Or handle exceptions, chaining is supported
+        .Handle<HttpRequestException>() // Or handle exception
+        .Handle<TimeoutRejectedException>() // Chaining is supported
 };
 ```
 <!-- endSnippet -->
+
+- <xref:Polly.PredicateBuilder>, or <xref:Polly.PredicateBuilder`1>, is a utility API aimed at simplifying the configuration of predicates.
+
+The preceding sample:
+
+- Uses `HandleResult` to register predicate that determines whether the result should be handled or not.
+- Uses `Handle` to handle multiple exceptions types.
+
+> [!NOTE]
+> Compared to configuring the predicate manually, the approach using `PredicateBuilder` is slightly slower because each method call on this type registers a new predicate that needs to be invoked when evaluating the outcome of the execution.
