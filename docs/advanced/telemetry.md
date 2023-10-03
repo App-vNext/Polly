@@ -119,6 +119,19 @@ Tags:
 |`operation.key`| The operation key associated with the call site. |
 |`exception.type`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 
+#### Event names
+
+The `event.name` tag is reported by individual resilience strategies. The built-in strategies report the following events:
+
+- `OnRetry`
+- `OnFallback`
+- `OnHedging`
+- `OnTimeout`
+- `OnCircuitClosed`
+- `OnCircuitOpened`
+- `OnCircuitHalfOpened`
+- `OnRateLimiterRejected`
+
 ### Instrument: `resilience.polly.strategy.attempt.duration`
 
 - Type: *Histogram*
@@ -130,7 +143,7 @@ Tags:
 
 |Name|Description|
 |---| ---|
-|`event.name`| The name of the emitted event.|
+|`event.name`| The name of the emitted event. Currently, the event name is always `ExecutionAttempt`. |
 |`event.severity`| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
 |`pipeline.name`| The name of the pipeline corresponding to the resilience pipeline.|
 |`pipeline.instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
