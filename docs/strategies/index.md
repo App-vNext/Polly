@@ -43,7 +43,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 > [!NOTE]
 > The configuration options are automatically validated by Polly and come with sensible defaults. Therefore, you don't have to specify all the properties unless needed.
 
-## Fault handling using predicates
+## Fault handling
 
 Each reactive strategy provides access to the `ShouldHandle` predicate property. This property offers a mechanism to decide whether the resilience strategy should manage the fault or result returned after execution.
 
@@ -54,7 +54,7 @@ Setting up the predicate can be accomplished in the following ways:
 
 The examples below illustrate both methods:
 
-### Configure predicates manually
+### Fault handling using switch expressions
 
 <!-- snippet: should-handle-manual -->
 ```cs
@@ -77,7 +77,7 @@ var options = new RetryStrategyOptions<HttpResponseMessage>
 - `PredicateResult.True()` is a shorthand for `new ValueTask<bool>(true)`.
 - All `ShouldHandle` predicates are asynchronous and use the type `Func<Args<TResult>, ValueTask<bool>>`. The `Args<TResult>` acts as a placeholder, and each strategy defines its own arguments.
 
-### Configure predicates using `PredicateBuilder`
+### Fault handling using `PredicateBuilder`
 
 <xref:Polly.PredicateBuilder>, or <xref:Polly.PredicateBuilder`1>, is a utility API aimed at simplifying the configuration of predicates.
 
