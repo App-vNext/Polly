@@ -144,6 +144,7 @@ Tags:
 
 - Type: *Histogram*
 - Unit: *milliseconds*
+- Numerical type of measurement: *double*
 - Description: Measures the duration of resilience pipelines.
 
 Tags:
