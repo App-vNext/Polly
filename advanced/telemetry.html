@@ -173,6 +173,7 @@ builder.AddRetry(new RetryStrategyOptions
 <h3 id="instrument-resiliencepollystrategyevents">Instrument: <code>resilience.polly.strategy.events</code></h3>
 <ul>
 <li>Type: <em>Counter</em></li>
+<li>Numerical type of measurement: <em>int</em></li>
 <li>Description: Emitted upon the occurrence of a resilience event.</li>
 </ul>
 <p>Tags:</p>
@@ -218,6 +219,7 @@ builder.AddRetry(new RetryStrategyOptions
 <ul>
 <li>Type: <em>Histogram</em></li>
 <li>Unit: <em>milliseconds</em></li>
+<li>Numerical type of measurement: <em>double</em></li>
 <li>Description: Tracks the duration of execution attempts, produced by <code>Retry</code> and <code>Hedging</code> resilience strategies.</li>
 </ul>
 <p>Tags:</p>
@@ -271,6 +273,7 @@ builder.AddRetry(new RetryStrategyOptions
 <ul>
 <li>Type: <em>Histogram</em></li>
 <li>Unit: <em>milliseconds</em></li>
+<li>Numerical type of measurement: <em>double</em></li>
 <li>Description: Measures the duration of resilience pipelines.</li>
 </ul>
 <p>Tags:</p>
