@@ -43,39 +43,52 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 > [!NOTE]
 > The configuration options are automatically validated by Polly and come with sensible defaults. Therefore, you don't have to specify all the properties unless needed.
 
-## Fault-handling in reactive strategies
+## Fault handling using predicates
 
-Each reactive strategy exposes the `ShouldHandle` predicate property. This property represents a predicate to determine whether the fault or the result returned after executing the resilience strategy should be managed or not.
+Each reactive strategy provides access to the `ShouldHandle` predicate property. This property offers a mechanism to decide whether the resilience strategy should manage the fault or result returned after execution.
 
-This is demonstrated below:
+Setting up the predicate can be accomplished in the following ways:
 
-<!-- snippet: should-handle -->
+- **Manually setting the predicate**: Directly configure the predicate. The advised approach involves using [switch expressions](https://learn.microsoft.com/dotnet/csharp/language-reference/operators/switch-expression) for maximum flexibility, and also allows the incorporation of asynchronous predicates.
+- **Employing `PredicateBuilder`**: The `PredicateBuilder` provides a more straightforward method to configure the predicates, akin to predicate setups in earlier Polly versions.
+
+The examples below illustrate both methods:
+
+### Configure predicates manually
+
+<!-- snippet: should-handle-manual -->
 ```cs
-// Create an instance of options for a retry strategy. In this example,
-// we use RetryStrategyOptions. You could also use other options like
-// CircuitBreakerStrategyOptions or FallbackStrategyOptions.
-var options = new RetryStrategyOptions<HttpResponseMessage>();
-
-// PredicateBuilder can simplify the setup of the ShouldHandle predicate.
-options.ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-    .HandleResult(response => !response.IsSuccessStatusCode)
-    .Handle<HttpRequestException>();
-
-// For greater flexibility, you can directly use the ShouldHandle delegate with switch expressions.
-options.ShouldHandle = args => args.Outcome switch
+var options = new RetryStrategyOptions<HttpResponseMessage>
 {
-    // Strategies may offer additional context for result handling.
-    // For instance, the retry strategy exposes the number of attempts made.
-    _ when args.AttemptNumber > 3 => PredicateResult.False(),
-    { Exception: HttpRequestException } => PredicateResult.True(),
-    { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
-    _ => PredicateResult.False()
+    // For greater flexibility, you can directly use the ShouldHandle delegate with switch expressions.
+    ShouldHandle = args => args.Outcome switch
+    {
+        // Strategies may offer rich arguments for result handling.
+        // For instance, the retry strategy exposes the number of attempts made.
+        _ when args.AttemptNumber > 3 => PredicateResult.False(),
+        { Exception: HttpRequestException } => PredicateResult.True(),
+        { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
+        _ => PredicateResult.False()
+    }
 };
 ```
 <!-- endSnippet -->
 
-Some additional notes from the preceding example:
+- `PredicateResult.True()` is a shorthand for `new ValueTask<bool>(true)`.
+- All `ShouldHandle` predicates are asynchronous and use the type `Func<Args<TResult>, ValueTask<bool>>`. The `Args<TResult>` acts as a placeholder, and each strategy defines its own arguments.
 
-- `PredicateBuilder` is a utility API designed to make configuring predicates easier.
-- `PredicateResult.True()` is shorthand for `new ValueTask<bool>(true)`.
-- All `ShouldHandle` predicates are asynchronous and have the type `Func<Args<TResult>, ValueTask<bool>>`. The `Args<TResult>` serves as a placeholder, and each strategy defines its own arguments.
+### Configure predicates using `PredicateBuilder`
+
+<xref:Polly.PredicateBuilder>, or <xref:Polly.PredicateBuilder`1>, is a utility API aimed at simplifying the configuration of predicates.
+
+<!-- snippet: should-handle-predicate-builder -->
+```cs
+// Use PredicateBuilder<HttpResponseMessage> to simplify the setup of the ShouldHandle predicate.
+var options = new RetryStrategyOptions<HttpResponseMessage>
+{
+    ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+        .HandleResult(response => !response.IsSuccessStatusCode) // Handle results
+        .Handle<HttpRequestException>() // Or handle exceptions, chaining is supported
+};
+```
+<!-- endSnippet -->
