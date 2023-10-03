@@ -215,6 +215,18 @@ builder.AddRetry(new RetryStrategyOptions
 </tr>
 </tbody>
 </table>
+<h4 id="event-names">Event names</h4>
+<p>The <code>event.name</code> tag is reported by individual resilience strategies. The built-in strategies report the following events:</p>
+<ul>
+<li><code>OnRetry</code></li>
+<li><code>OnFallback</code></li>
+<li><code>OnHedging</code></li>
+<li><code>OnTimeout</code></li>
+<li><code>OnCircuitClosed</code></li>
+<li><code>OnCircuitOpened</code></li>
+<li><code>OnCircuitHalfOpened</code></li>
+<li><code>OnRateLimiterRejected</code></li>
+</ul>
 <h3 id="instrument-resiliencepollystrategyattemptduration">Instrument: <code>resilience.polly.strategy.attempt.duration</code></h3>
 <ul>
 <li>Type: <em>Histogram</em></li>
@@ -233,7 +245,7 @@ builder.AddRetry(new RetryStrategyOptions
 <tbody>
 <tr>
 <td><code>event.name</code></td>
-<td>The name of the emitted event.</td>
+<td>The name of the emitted event. Currently, the event name is always <code>ExecutionAttempt</code>.</td>
 </tr>
 <tr>
 <td><code>event.severity</code></td>
