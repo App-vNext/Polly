@@ -50,7 +50,7 @@ internal static class ResilienceStrategies
         {
             ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
                 .HandleResult(response => !response.IsSuccessStatusCode) // Handle results
-                .Handle<HttpRequestException>() // Or handle exceptions, chaining is supported 
+                .Handle<HttpRequestException>() // Or handle exceptions, chaining is supported
         };
 
         #endregion
