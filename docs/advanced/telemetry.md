@@ -120,7 +120,7 @@ Tags:
 
 #### Event names
 
-The `event.name` is reported by individual resilience strategy. The built-in strategies report the following events:
+The `event.name` tag is reported by individual resilience strategies. The built-in strategies report the following events:
 
 - `OnRetry`
 - `OnFallback`
