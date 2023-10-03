@@ -423,7 +423,7 @@ IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy.RateLimitAsync<HttpRespo
 ### Rate limit in v8
 
 > [!NOTE]
-> In v8, you have to add the `Polly.RateLimiting` package to your application otherwise you won't see the `AddRateLimiter` extension.
+> In v8, you have to add the [`Polly.RateLimiting`](https://www.nuget.org/packages/Polly.RateLimiting) package to your application otherwise you won't see the `AddRateLimiter` extension.
 
 <!-- snippet: migration-rate-limit-v8 -->
 ```cs
@@ -480,7 +480,7 @@ IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy.BulkheadAsync<HttpRespon
 ### Bulkhead in v8
 
 > [!NOTE]
-> In v8, you have to add the `Polly.RateLimiting` package to your application otherwise you won't see the `AddConcurrencyLimiter` extension.
+> In v8, you have to add the [`Polly.RateLimiting`](https://www.nuget.org/packages/Polly.RateLimiting) package to your application otherwise you won't see the `AddConcurrencyLimiter` extension.
 
 <!-- snippet: migration-bulkhead-v8 -->
 ```cs
@@ -786,7 +786,7 @@ registry.GetOrAddPipeline("my-key", builder => builder.AddTimeout(TimeSpan.FromS
 In certain scenarios, you might not want to migrate your code to the v8 API. Instead, you may prefer to use strategies from v8 and apply them to v7 APIs. Polly provides a set of extension methods to support easy conversion from v8 to v7 APIs, as shown in the example below:
 
 > [!NOTE]
-> In v8, you have to add the `Polly.RateLimiting` package to your application otherwise you won't see the `AddRateLimiter` extension.
+> In v8, you have to add the [`Polly.RateLimiting`](https://www.nuget.org/packages/Polly.RateLimiting) package to your application otherwise you won't see the `AddRateLimiter` extension.
 
 <!-- snippet: migration-interoperability -->
 ```cs
