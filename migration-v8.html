@@ -465,6 +465,10 @@ IAsyncPolicy&lt;HttpResponseMessage&gt; asyncPolicyT = Policy.RateLimitAsync&lt;
 </code></pre>
 <!-- endSnippet -->
 <h3 id="rate-limit-in-v8">Rate limit in v8</h3>
+<div class="NOTE">
+<h5>Note</h5>
+<p>In v8, you have to add the <a href="https://www.nuget.org/packages/Polly.RateLimiting"><code>Polly.RateLimiting</code></a> package to your application otherwise you won't see the <code>AddRateLimiter</code> extension.</p>
+</div>
 <!-- snippet: migration-rate-limit-v8 -->
 <pre><code class="lang-cs">// The equivalent to Polly v7's RateLimit is the SlidingWindowRateLimiter.
 //
@@ -512,6 +516,10 @@ IAsyncPolicy&lt;HttpResponseMessage&gt; asyncPolicyT = Policy.BulkheadAsync&lt;H
 </code></pre>
 <!-- endSnippet -->
 <h3 id="bulkhead-in-v8">Bulkhead in v8</h3>
+<div class="NOTE">
+<h5>Note</h5>
+<p>In v8, you have to add the <a href="https://www.nuget.org/packages/Polly.RateLimiting"><code>Polly.RateLimiting</code></a> package to your application otherwise you won't see the <code>AddConcurrencyLimiter</code> extension.</p>
+</div>
 <!-- snippet: migration-bulkhead-v8 -->
 <pre><code class="lang-cs">// Create pipeline with concurrency limiter. Because ResiliencePipeline supports both sync and async
 // callbacks, there is no need to define it twice.
@@ -778,6 +786,10 @@ registry.GetOrAddPipeline(&quot;my-key&quot;, builder =&gt; builder.AddTimeout(T
 <!-- endSnippet -->
 <h2 id="interoperability-between-policies-and-resilience-pipelines">Interoperability between policies and resilience pipelines</h2>
 <p>In certain scenarios, you might not want to migrate your code to the v8 API. Instead, you may prefer to use strategies from v8 and apply them to v7 APIs. Polly provides a set of extension methods to support easy conversion from v8 to v7 APIs, as shown in the example below:</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>In v8, you have to add the <a href="https://www.nuget.org/packages/Polly.RateLimiting"><code>Polly.RateLimiting</code></a> package to your application otherwise you won't see the <code>AddRateLimiter</code> extension.</p>
+</div>
 <!-- snippet: migration-interoperability -->
 <pre><code class="lang-cs">// First, create a resilience pipeline.
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
