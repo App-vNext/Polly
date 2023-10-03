@@ -118,6 +118,19 @@ Tags:
 |`operation.key`| The operation key associated with the call site. |
 |`exception.type`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 
+#### Event names
+
+The `event.name` is reported by individual resilience strategy. The built-in strategies report the following events:
+
+- `OnRetry`
+- `OnFallback`
+- `OnHedging`
+- `OnTimeout`
+- `OnCircuitClosed`
+- `OnCircuitOpened`
+- `OnCircuitHalfOpened`
+- `OnRateLimiterRejected`
+
 ### Instrument: `resilience.polly.strategy.attempt.duration`
 
 - Type: *Histogram*
