@@ -54,7 +54,7 @@ Setting up the predicate can be accomplished in the following ways:
 
 The examples below illustrate both methods:
 
-### Fault handling: Predicates
+### Predicates
 
 <!-- snippet: should-handle-manual -->
 ```cs
@@ -82,7 +82,7 @@ Notes from the preceding example:
 - `ShouldHandle` predicates are asynchronous and use the type `Func<Args<TResult>, ValueTask<bool>>`. The `Args<TResult>` acts as a placeholder, and each strategy defines its own arguments.
 - Multiple exceptions can be handled using switch expressions.
 
-### Fault handling: Asynchronous predicates
+### Asynchronous predicates
 
 You can also use asynchronous delegates for more advanced scenarios, such as retrying based on the response body.
 
@@ -109,7 +109,7 @@ var options = new RetryStrategyOptions<HttpResponseMessage>
 ```
 <!-- endSnippet -->
 
-### Fault handling: `PredicateBuilder`
+### Predicate builder
 
 <!-- snippet: should-handle-predicate-builder -->
 ```cs
