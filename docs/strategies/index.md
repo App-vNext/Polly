@@ -43,39 +43,93 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 > [!NOTE]
 > The configuration options are automatically validated by Polly and come with sensible defaults. Therefore, you don't have to specify all the properties unless needed.
 
-## Fault-handling in reactive strategies
+## Fault handling
 
-Each reactive strategy exposes the `ShouldHandle` predicate property. This property represents a predicate to determine whether the fault or the result returned after executing the resilience strategy should be managed or not.
+Each reactive strategy provides access to the `ShouldHandle` predicate property. This property offers a mechanism to decide whether the resilience strategy should manage the fault or result returned after execution.
 
-This is demonstrated below:
+Setting up the predicate can be accomplished in the following ways:
 
-<!-- snippet: should-handle -->
+- **Manually setting the predicate**: Directly configure the predicate. The advised approach involves using [switch expressions](https://learn.microsoft.com/dotnet/csharp/language-reference/operators/switch-expression) for maximum flexibility, and also allows the incorporation of asynchronous predicates.
+- **Employing `PredicateBuilder`**: The `PredicateBuilder` class provides a more straight-forward method to configure the predicates, akin to predicate setups in earlier Polly versions.
+
+The examples below illustrate these:
+
+### Predicates
+
+<!-- snippet: should-handle-manual -->
 ```cs
-// Create an instance of options for a retry strategy. In this example,
-// we use RetryStrategyOptions. You could also use other options like
-// CircuitBreakerStrategyOptions or FallbackStrategyOptions.
-var options = new RetryStrategyOptions<HttpResponseMessage>();
-
-// PredicateBuilder can simplify the setup of the ShouldHandle predicate.
-options.ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-    .HandleResult(response => !response.IsSuccessStatusCode)
-    .Handle<HttpRequestException>();
-
-// For greater flexibility, you can directly use the ShouldHandle delegate with switch expressions.
-options.ShouldHandle = args => args.Outcome switch
+var options = new RetryStrategyOptions<HttpResponseMessage>
 {
-    // Strategies may offer additional context for result handling.
-    // For instance, the retry strategy exposes the number of attempts made.
-    _ when args.AttemptNumber > 3 => PredicateResult.False(),
-    { Exception: HttpRequestException } => PredicateResult.True(),
-    { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
-    _ => PredicateResult.False()
+    // For greater flexibility, you can directly use the ShouldHandle delegate with switch expressions.
+    ShouldHandle = args => args.Outcome switch
+    {
+        // Strategies may offer rich arguments for result handling.
+        // For instance, the retry strategy exposes the number of attempts made.
+        _ when args.AttemptNumber > 3 => PredicateResult.False(),
+        { Exception: HttpRequestException } => PredicateResult.True(),
+        { Exception: TimeoutRejectedException } => PredicateResult.True(), // You can handle multiple exceptions
+        { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
+        _ => PredicateResult.False()
+    }
 };
 ```
 <!-- endSnippet -->
 
-Some additional notes from the preceding example:
+Notes from the preceding example:
 
-- `PredicateBuilder` is a utility API designed to make configuring predicates easier.
-- `PredicateResult.True()` is shorthand for `new ValueTask<bool>(true)`.
-- All `ShouldHandle` predicates are asynchronous and have the type `Func<Args<TResult>, ValueTask<bool>>`. The `Args<TResult>` serves as a placeholder, and each strategy defines its own arguments.
+- Switch expressions are used to determine whether to retry on not.
+- `PredicateResult.True()` is a shorthand for `new ValueTask<bool>(true)`.
+- `ShouldHandle` predicates are asynchronous and use the type `Func<Args<TResult>, ValueTask<bool>>`. The `Args<TResult>` acts as a placeholder, and each strategy defines its own arguments.
+- Multiple exceptions can be handled using switch expressions.
+
+### Asynchronous predicates
+
+You can also use asynchronous delegates for more advanced scenarios, such as retrying based on the response body:
+
+<!-- snippet: should-handle-manual-async -->
+```cs
+var options = new RetryStrategyOptions<HttpResponseMessage>
+{
+    ShouldHandle = async args =>
+    {
+        if (args.Outcome.Exception is not null)
+        {
+            return args.Outcome.Exception switch
+            {
+                HttpRequestException => true,
+                TimeoutRejectedException => true,
+                _ => false
+            };
+        }
+
+        // Determine whether to retry asynchronously or not based on the result.
+        return await ShouldRetryAsync(args.Outcome.Result!, args.Context.CancellationToken);
+    }
+};
+```
+<!-- endSnippet -->
+
+### Predicate builder
+
+<xref:Polly.PredicateBuilder>, or <xref:Polly.PredicateBuilder`1>, is a utility class aimed at simplifying the configuration of predicates:
+
+<!-- snippet: should-handle-predicate-builder -->
+```cs
+// Use PredicateBuilder<HttpResponseMessage> to simplify the setup of the ShouldHandle predicate.
+var options = new RetryStrategyOptions<HttpResponseMessage>
+{
+    ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+        .HandleResult(response => !response.IsSuccessStatusCode) // Handle results
+        .Handle<HttpRequestException>() // Or handle exception
+        .Handle<TimeoutRejectedException>() // Chaining is supported
+};
+```
+<!-- endSnippet -->
+
+The preceding sample:
+
+- Uses `HandleResult` to register a predicate that determines whether the result should be handled or not.
+- Uses `Handle` to handle multiple exceptions types.
+
+> [!NOTE]
+> When using `PredicateBuilder` instead of manually configuring the predicate, there is a minor performance impact. Each method call on `PredicateBuilder` registers a new predicate, which must be invoked when evaluating the outcome.

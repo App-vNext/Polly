@@ -20,29 +20,67 @@ internal static class ResilienceStrategies
         #endregion
     }
 
-    public static void ShouldHandle()
+    public static void ShouldHandleManual()
     {
-        #region should-handle
+        #region should-handle-manual
 
-        // Create an instance of options for a retry strategy. In this example,
-        // we use RetryStrategyOptions. You could also use other options like
-        // CircuitBreakerStrategyOptions or FallbackStrategyOptions.
-        var options = new RetryStrategyOptions<HttpResponseMessage>();
-
-        // PredicateBuilder can simplify the setup of the ShouldHandle predicate.
-        options.ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-            .HandleResult(response => !response.IsSuccessStatusCode)
-            .Handle<HttpRequestException>();
-
-        // For greater flexibility, you can directly use the ShouldHandle delegate with switch expressions.
-        options.ShouldHandle = args => args.Outcome switch
+        var options = new RetryStrategyOptions<HttpResponseMessage>
         {
-            // Strategies may offer additional context for result handling.
-            // For instance, the retry strategy exposes the number of attempts made.
-            _ when args.AttemptNumber > 3 => PredicateResult.False(),
-            { Exception: HttpRequestException } => PredicateResult.True(),
-            { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
-            _ => PredicateResult.False()
+            // For greater flexibility, you can directly use the ShouldHandle delegate with switch expressions.
+            ShouldHandle = args => args.Outcome switch
+            {
+                // Strategies may offer rich arguments for result handling.
+                // For instance, the retry strategy exposes the number of attempts made.
+                _ when args.AttemptNumber > 3 => PredicateResult.False(),
+                { Exception: HttpRequestException } => PredicateResult.True(),
+                { Exception: TimeoutRejectedException } => PredicateResult.True(), // You can handle multiple exceptions
+                { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
+                _ => PredicateResult.False()
+            }
+        };
+
+        #endregion
+    }
+
+    public static void ShouldHandleManualAsync()
+    {
+        #region should-handle-manual-async
+
+        var options = new RetryStrategyOptions<HttpResponseMessage>
+        {
+            ShouldHandle = async args =>
+            {
+                if (args.Outcome.Exception is not null)
+                {
+                    return args.Outcome.Exception switch
+                    {
+                        HttpRequestException => true,
+                        TimeoutRejectedException => true,
+                        _ => false
+                    };
+                }
+
+                // Determine whether to retry asynchronously or not based on the result.
+                return await ShouldRetryAsync(args.Outcome.Result!, args.Context.CancellationToken);
+            }
+        };
+
+        #endregion
+    }
+
+    private static Task<bool> ShouldRetryAsync(HttpResponseMessage response, CancellationToken cancellationToken) => Task.FromResult(true);
+
+    public static void ShouldHandlePredicateBuilder()
+    {
+        #region should-handle-predicate-builder
+
+        // Use PredicateBuilder<HttpResponseMessage> to simplify the setup of the ShouldHandle predicate.
+        var options = new RetryStrategyOptions<HttpResponseMessage>
+        {
+            ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+                .HandleResult(response => !response.IsSuccessStatusCode) // Handle results
+                .Handle<HttpRequestException>() // Or handle exception
+                .Handle<TimeoutRejectedException>() // Chaining is supported
         };
 
         #endregion

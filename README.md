@@ -26,7 +26,7 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 ## Documentation
 
-This README aims to give a quick overview of some Polly features - including enough to get you started with any resilience strategy. For deeper detail on any resilience strategy, and many other aspects of Polly, be sure also to check out the [documentation][polly-docs].
+This README aims to give a quick overview of some Polly features - including enough to get you started with any resilience strategy. For deeper detail on any resilience strategy, and many other aspects of Polly, be sure also to check out [pollydocs.org][polly-docs].
 
 ## Quick start
 

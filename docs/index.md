@@ -21,7 +21,7 @@ You can learn more about each strategy and how to use them [resilience strategie
 
 ## How to get started with Polly?
 
-Polly is easy to install and use. You can follow the [getting started](getting-started.md) guide to add Polly to your project and use it for your requests.
+Polly is easy to install and use. You can follow the [getting started](getting-started.md) guide to add and start using Polly in your projects.
 
 ## Where to find more information?
 
