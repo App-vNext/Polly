@@ -6,10 +6,10 @@ internal static class AsyncRetryEngine
     internal static async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
-        CancellationToken cancellationToken,
         ExceptionPredicates shouldRetryExceptionPredicates,
         ResultPredicates<TResult> shouldRetryResultPredicates,
         Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync,
+        CancellationToken cancellationToken,
         int permittedRetryCount = Int32.MaxValue,
         IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,
         Func<int, DelegateResult<TResult>, Context, TimeSpan>? sleepDurationProvider = null,

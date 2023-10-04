@@ -6,13 +6,13 @@ internal sealed class ResiliencePipelineAsyncPolicy<TResult> : AsyncPolicy<TResu
 
     public ResiliencePipelineAsyncPolicy(ResiliencePipeline<TResult> strategy) => _pipeline = strategy;
 
-    protected override async Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    protected override async Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, bool continueOnCapturedContext, CancellationToken cancellationToken)
     {
         var resilienceContext = ResilienceContextFactory.Create(
             context,
-            cancellationToken,
             continueOnCapturedContext,
-            out var oldProperties);
+            out var oldProperties,
+            cancellationToken);
 
         try
         {

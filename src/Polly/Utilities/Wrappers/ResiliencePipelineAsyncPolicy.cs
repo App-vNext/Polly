@@ -9,14 +9,14 @@ internal sealed class ResiliencePipelineAsyncPolicy : AsyncPolicy
     protected override async Task ImplementationAsync(
         Func<Context, CancellationToken, Task> action,
         Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken)
     {
         var resilienceContext = ResilienceContextFactory.Create(
             context,
-            cancellationToken,
             continueOnCapturedContext,
-            out var oldProperties);
+            out var oldProperties,
+            cancellationToken);
 
         try
         {
@@ -37,14 +37,14 @@ internal sealed class ResiliencePipelineAsyncPolicy : AsyncPolicy
     protected override async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken)
     {
         var resilienceContext = ResilienceContextFactory.Create(
             context,
-            cancellationToken,
             continueOnCapturedContext,
-            out var oldProperties);
+            out var oldProperties,
+            cancellationToken);
 
         try
         {

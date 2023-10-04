@@ -33,9 +33,9 @@ public class AsyncSerializingCacheProvider<TSerialized> : IAsyncCacheProvider
     /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
     /// the key was found in the cache, and whose second element is the value from the cache (null if not found).
     /// </returns>
-    public async Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    public async Task<(bool, object?)> TryGetAsync(string key, bool continueOnCapturedContext, CancellationToken cancellationToken)
     {
-        (bool cacheHit, TSerialized? objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+        (bool cacheHit, TSerialized? objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, continueOnCapturedContext, cancellationToken).ConfigureAwait(continueOnCapturedContext);
         return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : null);
     }
 
@@ -48,14 +48,14 @@ public class AsyncSerializingCacheProvider<TSerialized> : IAsyncCacheProvider
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.</param>
     /// <returns>A <see cref="Task" /> which completes when the value has been cached.</returns>
-    public Task PutAsync(string key, object? value, Ttl ttl, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+    public Task PutAsync(string key, object? value, Ttl ttl, bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         _wrappedCacheProvider.PutAsync(
             key,
             _serializer.Serialize(value),
             ttl,
-            cancellationToken,
-            continueOnCapturedContext
+            continueOnCapturedContext,
+            cancellationToken
         );
 }
 
@@ -92,9 +92,9 @@ public class AsyncSerializingCacheProvider<TResult, TSerialized> : IAsyncCachePr
     /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
     /// the key was found in the cache, and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
-    public async Task<(bool, TResult?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    public async Task<(bool, TResult?)> TryGetAsync(string key, bool continueOnCapturedContext, CancellationToken cancellationToken)
     {
-        (bool cacheHit, TSerialized? objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+        (bool cacheHit, TSerialized? objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, continueOnCapturedContext, cancellationToken).ConfigureAwait(continueOnCapturedContext);
         return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default);
     }
 
@@ -107,13 +107,13 @@ public class AsyncSerializingCacheProvider<TResult, TSerialized> : IAsyncCachePr
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.</param>
     /// <returns>A <see cref="Task" /> which completes when the value has been cached.</returns>
-    public Task PutAsync(string key, TResult? value, Ttl ttl, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+    public Task PutAsync(string key, TResult? value, Ttl ttl, bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         _wrappedCacheProvider.PutAsync(
             key,
             _serializer.Serialize(value),
             ttl,
-            cancellationToken,
-            continueOnCapturedContext
+            continueOnCapturedContext,
+            cancellationToken
         );
 }

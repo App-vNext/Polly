@@ -82,10 +82,10 @@ public class Cache
             _cache.Set(key, value, options);
         }
 
-        public Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
+        public Task<(bool, object?)> TryGetAsync(string key, bool continueOnCapturedContext, CancellationToken cancellationToken) =>
             Task.FromResult(TryGet(key));
 
-        public Task PutAsync(string key, object? value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public Task PutAsync(string key, object? value, Ttl ttl, bool continueOnCapturedContext, CancellationToken cancellationToken)
         {
             Put(key, value, ttl);
             return Task.CompletedTask;

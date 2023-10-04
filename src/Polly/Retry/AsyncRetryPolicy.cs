@@ -27,15 +27,15 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         AsyncRetryEngine.ImplementationAsync(
             action,
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates<TResult>.None,
             (outcome, timespan, retryCount, ctx) => _onRetryAsync(outcome.Exception, timespan, retryCount, ctx),
+            cancellationToken,
             _permittedRetryCount,
             _sleepDurationsEnumerable,
             _sleepDurationProvider != null
@@ -72,15 +72,15 @@ public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TRes
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         AsyncRetryEngine.ImplementationAsync(
             action,
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates,
             _onRetryAsync,
+            cancellationToken,
             _permittedRetryCount,
             _sleepDurationsEnumerable,
             _sleepDurationProvider,

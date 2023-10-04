@@ -9,8 +9,8 @@ internal class AsyncPreExecutePolicy : AsyncPolicy
     internal AsyncPreExecutePolicy(Func<Task> preExecute) =>
         _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
 
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         AsyncPreExecuteEngine.ImplementationAsync(_preExecute, action, context, cancellationToken, continueOnCapturedContext);
 }
 
@@ -24,7 +24,7 @@ internal class AsyncPreExecutePolicy<TResult> : AsyncPolicy<TResult>
     internal AsyncPreExecutePolicy(Func<Task> preExecute) =>
         _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
 
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         AsyncPreExecuteEngine.ImplementationAsync(_preExecute, action, context, cancellationToken, continueOnCapturedContext);
 }

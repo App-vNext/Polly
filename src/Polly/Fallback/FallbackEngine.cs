@@ -7,11 +7,11 @@ internal static class FallbackEngine
     internal static TResult Implementation<TResult>(
         Func<Context, CancellationToken, TResult> action,
         Context context,
-        CancellationToken cancellationToken,
         ExceptionPredicates shouldHandleExceptionPredicates,
         ResultPredicates<TResult> shouldHandleResultPredicates,
         Action<DelegateResult<TResult>, Context> onFallback,
-        Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction)
+        Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction,
+        CancellationToken cancellationToken)
     {
         DelegateResult<TResult> delegateOutcome;
 

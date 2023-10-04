@@ -13,13 +13,13 @@ public abstract partial class AsyncPolicy
     protected virtual Task ImplementationAsync(
         Func<Context, CancellationToken, Task> action,
         Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         ImplementationAsync<EmptyStruct>(async (ctx, token) =>
         {
             await action(ctx, token).ConfigureAwait(continueOnCapturedContext);
             return EmptyStruct.Instance;
-        }, context, cancellationToken, continueOnCapturedContext);
+        }, context, continueOnCapturedContext, cancellationToken);
 
     /// <summary>
     /// Defines the implementation of a policy for async executions returning <typeparamref name="TResult"/>.
@@ -33,7 +33,7 @@ public abstract partial class AsyncPolicy
     protected abstract Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken
     );
 }

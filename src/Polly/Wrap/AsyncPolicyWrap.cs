@@ -30,28 +30,28 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
     protected override Task ImplementationAsync(
         Func<Context, CancellationToken, Task> action,
         Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         AsyncPolicyWrapEngine.ImplementationAsync(
             action,
             context,
-            cancellationToken,
             continueOnCapturedContext,
             _outer,
-            _inner
+            _inner,
+            cancellationToken
         );
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, bool continueOnCapturedContext,
+CancellationToken cancellationToken) =>
         AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
             action,
             context,
-            cancellationToken,
             continueOnCapturedContext,
             _outer,
-            _inner
+            _inner,
+            cancellationToken
         );
 }
 
@@ -99,8 +99,8 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
     }
 
     /// <inheritdoc/>
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
+    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, bool continueOnCapturedContext,
+        CancellationToken cancellationToken)
     {
         if (_outerNonGeneric != null)
         {
@@ -109,10 +109,10 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                 return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
                     action,
                     context,
-                    cancellationToken,
                     continueOnCapturedContext,
                     _outerNonGeneric,
-                    _innerNonGeneric
+                    _innerNonGeneric,
+                    cancellationToken
                 );
             }
             else if (_innerGeneric != null)
@@ -120,10 +120,10 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                 return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
                     action,
                     context,
-                    cancellationToken,
                     continueOnCapturedContext,
                     _outerNonGeneric,
-                    _innerGeneric
+                    _innerGeneric,
+                    cancellationToken
                 );
 
             }
@@ -139,10 +139,10 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                 return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
                     action,
                     context,
-                    cancellationToken,
                     continueOnCapturedContext,
                     _outerGeneric,
-                    _innerNonGeneric
+                    _innerNonGeneric,
+                    cancellationToken
                 );
 
             }
@@ -151,10 +151,10 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                 return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
                     action,
                     context,
-                    cancellationToken,
                     continueOnCapturedContext,
                     _outerGeneric,
-                    _innerGeneric
+                    _innerGeneric,
+                    cancellationToken
                 );
 
             }

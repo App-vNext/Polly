@@ -13,7 +13,7 @@ public abstract partial class AsyncPolicy<TResult>
     protected abstract Task<TResult> ImplementationAsync(
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken
     );
 }

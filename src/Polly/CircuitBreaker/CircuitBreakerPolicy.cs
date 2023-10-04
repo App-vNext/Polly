@@ -44,10 +44,10 @@ public class CircuitBreakerPolicy : Policy, ICircuitBreakerPolicy
         CircuitBreakerEngine.Implementation<EmptyStruct>(
             (ctx, ct) => { result = action(ctx, ct); return EmptyStruct.Instance; },
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates<EmptyStruct>.None,
-            _breakerController);
+            _breakerController,
+            cancellationToken);
         return result;
     }
 }
@@ -100,8 +100,8 @@ public class CircuitBreakerPolicy<TResult> : Policy<TResult>, ICircuitBreakerPol
         CircuitBreakerEngine.Implementation(
             action,
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates,
-            _breakerController);
+            _breakerController,
+            cancellationToken);
 }

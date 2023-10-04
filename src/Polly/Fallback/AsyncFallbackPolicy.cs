@@ -22,8 +22,8 @@ public class AsyncFallbackPolicy : AsyncPolicy, IFallbackPolicy
     protected override Task ImplementationAsync(
         Func<Context, CancellationToken, Task> action,
         Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         AsyncFallbackEngine.ImplementationAsync<EmptyStruct>(
             async (ctx, ct) =>
             {
@@ -31,7 +31,6 @@ public class AsyncFallbackPolicy : AsyncPolicy, IFallbackPolicy
                 return EmptyStruct.Instance;
             },
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates<EmptyStruct>.None,
             (outcome, ctx) => _onFallbackAsync(outcome.Exception, ctx),
@@ -40,11 +39,12 @@ public class AsyncFallbackPolicy : AsyncPolicy, IFallbackPolicy
                 await _fallbackAction(outcome.Exception, ctx, ct).ConfigureAwait(continueOnCapturedContext);
                 return EmptyStruct.Instance;
             },
-            continueOnCapturedContext);
+            continueOnCapturedContext,
+            cancellationToken);
 
     /// <inheritdoc/>
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         throw new InvalidOperationException($"You have executed the generic .Execute<{nameof(TResult)}> method on a non-generic {nameof(FallbackPolicy)}.  A non-generic {nameof(FallbackPolicy)} only defines a fallback action which returns void; it can never return a substitute {nameof(TResult)} value.  To use {nameof(FallbackPolicy)} to provide fallback {nameof(TResult)} values you must define a generic fallback policy {nameof(FallbackPolicy)}<{nameof(TResult)}>.  For example, define the policy as Policy<{nameof(TResult)}>.Handle<Whatever>.Fallback<{nameof(TResult)}>(/* some {nameof(TResult)} value or Func<..., {nameof(TResult)}> */);");
 }
 
@@ -69,15 +69,15 @@ public class AsyncFallbackPolicy<TResult> : AsyncPolicy<TResult>, IFallbackPolic
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         AsyncFallbackEngine.ImplementationAsync(
             action,
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates,
             _onFallbackAsync,
             _fallbackAction,
-            continueOnCapturedContext);
+            continueOnCapturedContext,
+            cancellationToken);
 }

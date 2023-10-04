@@ -7,10 +7,10 @@ internal class CircuitBreakerEngine
     internal static TResult Implementation<TResult>(
         Func<Context, CancellationToken, TResult> action,
         Context context,
-        CancellationToken cancellationToken,
         ExceptionPredicates shouldHandleExceptionPredicates,
         ResultPredicates<TResult> shouldHandleResultPredicates,
-        ICircuitController<TResult> breakerController)
+        ICircuitController<TResult> breakerController,
+        CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 

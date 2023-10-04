@@ -41,28 +41,28 @@ public class AsyncCachePolicy : AsyncPolicy
     protected override Task ImplementationAsync(
         Func<Context, CancellationToken, Task> action,
         Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         // Pass-through/NOOP policy action, for void-returning executions through the cache policy.
         action(context, cancellationToken);
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         AsyncCacheEngine.ImplementationAsync<TResult>(
             _asyncCacheProvider.AsyncFor<TResult>(),
             _ttlStrategy.For<TResult>(),
             _cacheKeyStrategy,
             action,
             context,
-            cancellationToken,
             continueOnCapturedContext,
             _onCacheGet,
             _onCacheMiss,
             _onCachePut,
             _onCacheGetError,
-            _onCachePutError);
+            _onCachePutError,
+            cancellationToken);
 }
 
 /// <summary>
@@ -105,20 +105,20 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
+    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, bool continueOnCapturedContext,
+        CancellationToken cancellationToken) =>
         AsyncCacheEngine.ImplementationAsync<TResult>(
             _asyncCacheProvider,
             _ttlStrategy,
             _cacheKeyStrategy,
             action,
             context,
-            cancellationToken,
             continueOnCapturedContext,
             _onCacheGet,
             _onCacheMiss,
             _onCachePut,
             _onCacheGetError,
-            _onCachePutError);
+            _onCachePutError,
+            cancellationToken);
 }
 

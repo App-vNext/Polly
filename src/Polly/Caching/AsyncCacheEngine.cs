@@ -9,13 +9,13 @@ internal static class AsyncCacheEngine
         Func<Context, string> cacheKeyStrategy,
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
-        CancellationToken cancellationToken,
         bool continueOnCapturedContext,
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
         Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCachePutError,
+        CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -29,7 +29,7 @@ internal static class AsyncCacheEngine
         TResult? valueFromCache;
         try
         {
-            (cacheHit, valueFromCache) = await cacheProvider.TryGetAsync(cacheKey, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            (cacheHit, valueFromCache) = await cacheProvider.TryGetAsync(cacheKey, continueOnCapturedContext, cancellationToken).ConfigureAwait(continueOnCapturedContext);
         }
         catch (Exception ex)
         {
@@ -54,7 +54,7 @@ internal static class AsyncCacheEngine
         {
             try
             {
-                await cacheProvider.PutAsync(cacheKey, result, ttl, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+                await cacheProvider.PutAsync(cacheKey, result, ttl, continueOnCapturedContext, cancellationToken).ConfigureAwait(continueOnCapturedContext);
                 onCachePut(context, cacheKey);
             }
             catch (Exception ex)
