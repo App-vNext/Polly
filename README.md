@@ -434,6 +434,6 @@ To learn more about Polly, visit [pollydocs.org][polly-docs].
 
 ## License
 
-Licensed under the terms of the [New BSD License](http://opensource.org/licenses/BSD-3-Clause)
+Licensed under the terms of the [New BSD License](https://opensource.org/license/bsd-3-clause/)
 
 [polly-docs]: https://www.pollydocs.org/

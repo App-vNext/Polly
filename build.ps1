@@ -21,7 +21,7 @@ Performs a dry run of the build script.
 No tasks will be executed.
 
 .LINK
-http://cakebuild.net
+https://cakebuild.net
 #>
 
 Param(
