@@ -50,7 +50,7 @@ Each reactive strategy provides access to the `ShouldHandle` predicate property.
 Setting up the predicate can be accomplished in the following ways:
 
 - **Manually setting the predicate**: Directly configure the predicate. The advised approach involves using [switch expressions](https://learn.microsoft.com/dotnet/csharp/language-reference/operators/switch-expression) for maximum flexibility, and also allows the incorporation of asynchronous predicates.
-- **Employing `PredicateBuilder`**: The `PredicateBuilder` provides a more straightforward method to configure the predicates, akin to predicate setups in earlier Polly versions.
+- **Employing `PredicateBuilder`**: The `PredicateBuilder` class provides a more straight-forward method to configure the predicates, akin to predicate setups in earlier Polly versions.
 
 The examples below illustrate these:
 
@@ -128,7 +128,7 @@ var options = new RetryStrategyOptions<HttpResponseMessage>
 
 The preceding sample:
 
-- Uses `HandleResult` to register predicate that determines whether the result should be handled or not.
+- Uses `HandleResult` to register a predicate that determines whether the result should be handled or not.
 - Uses `Handle` to handle multiple exceptions types.
 
 > [!NOTE]
