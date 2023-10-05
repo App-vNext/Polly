@@ -18,9 +18,11 @@ matrix:
           - code
           - pre
   sources:
-    - '*.md'
+    - 'CODE_OF_CONDUCT.md'
+    - 'CONTRIBUTING.md'
+    - 'SECURITY.md'
+    - 'package-readme.md'
     - '.github/**/*.md'
     - 'docs/**/*.md'
     - '**/README.md'
-    - '!CHANGELOG.md'
   default_encoding: utf-8
