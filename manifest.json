@@ -1,5 +1,4 @@
 {
-  "homepages": [],
   "source_base_path": "/home/runner/work/Polly/Polly/docs",
   "xrefmap": "xrefmap.yml",
   "files": [
@@ -1298,7 +1297,6 @@
       "version": ""
     }
   ],
-  "version_info": {},
   "groups": [
     {
       "xrefmap": "xrefmap.yml"
