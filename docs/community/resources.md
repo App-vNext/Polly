@@ -7,7 +7,7 @@ This includes Blogs, podcasts, courses, e-books, architecture samples and videos
 - [Adding a circuit breaker to your ASP.NET 6 application with Polly](https://lachlanbarclay.net/2023/01/adding-a-circuit-breaker-to-asp-net-6-application) - by [Lachlan Barclay](https://lachlanbarclay.net/)
 - [Try .NET Samples of Polly, the .NET Resilience Framework](https://github.com/bryanjhogan/trydotnet-polly) - by [Bryan Hogan](https://nodogmablog.bryanhogan.net/)
 - [Create exceptional interactive documentation with Try .NET - The Polly NuGet library did!](https://www.hanselman.com/blog/CreateExceptionalInteractiveDocumentationWithTryNETThePollyNuGetLibraryDid.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/) (writing about the work of Bryan Hogan)
-- [Adding resilience and Transient Fault handling to your .NET Core HttpClient with Polly](https://www.hanselman.com/blog/AddingResilienceAndTransientFaultHandlingToYourNETCoreHttpClientWithPolly.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/)
+- [Adding resilience and Transient Fault handling to your .NET Core `HttpClient` with Polly](https://www.hanselman.com/blog/AddingResilienceAndTransientFaultHandlingToYourNETCoreHttpClientWithPolly.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/)
 - [Reliable Event Processing in Azure Functions](https://hackernoon.com/reliable-event-processing-in-azure-functions-37054dc2d0fc) - by [Jeff Hollan](https://hackernoon.com/@jeffhollan)
 - [Optimally configuring ASP.NET Core `HttpClientFactory`](https://rehansaeed.com/optimally-configuring-asp-net-core-httpclientfactory/) including with Polly policies - by [Muhammad Rehan Saeed](https://twitter.com/RehanSaeedUK/)
 - [Integrating HttpClientFactory with Polly for transient fault handling](https://www.stevejgordon.co.uk/httpclientfactory-using-polly-for-transient-fault-handling) - by [Steve Gordon](https://www.stevejgordon.co.uk/)
@@ -31,7 +31,7 @@ This includes Blogs, podcasts, courses, e-books, architecture samples and videos
 ## Podcasts
 
 - June 2018: [DotNetRocks features Polly](https://www.dotnetrocks.com/?show=1556) as [Carl Franklin](https://twitter.com/carlfranklin) and [Richard Campbell](https://twitter.com/richcampbell) chat with [Dylan Reisenberger](https://twitter.com/softwarereisen) about policy patterns, and the new ASP NET Core 2.1 integration with IHttpClientFactory.
-- April 2017: [Dylan Reisenberger](https://twitter.com/softwarereisen) sits down virtually with [Bryan Hogan](https://twitter.com/bryanjhogan) of [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) for an [Introduction to Polly podcast](http://nodogmapodcast.bryanhogan.net/71-dylan-reisenberger-the-polly-project/).  Why do I need Polly?  History of the Polly project.  What do we mean by resilience and transient faults?  How retry and circuit-breaker help.  Exponential backoff.  Stability patterns.  Bulkhead isolation.  Future directions (as at April 2017).
+- April 2017: [Dylan Reisenberger](https://twitter.com/softwarereisen) sits down virtually with [Bryan Hogan](https://twitter.com/bryanjhogan) of [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) for an [Introduction to Polly podcast](http://nodogmapodcast.bryanhogan.net/71-dylan-reisenberger-the-polly-project/).  Why do I need Polly?  History of the Polly project.  What do we mean by resilience and transient faults?  How retry and circuit-breaker help.  Exponential back-off.  Stability patterns.  Bulkhead isolation.  Future directions (as at April 2017).
 
 ## PluralSight course
 
