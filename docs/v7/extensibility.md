@@ -1,6 +1,6 @@
 # Custom policies
 
-From Polly v7.0 it is possible to [create your own custom policies](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/) outside Polly.  These custom policies can integrate in to all the existing goodness from Polly: the `Policy.Handle<>()` syntax; PolicyWrap; all the execution-dispatch overloads.
+From Polly v7.0 it is possible to [create your own custom policies](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/) outside Polly. These custom policies can integrate in to all the existing goodness from Polly: the `Policy.Handle<>()` syntax; `PolicyWrap`; all the execution-dispatch overloads.
 
 For more info see our blog series:
 

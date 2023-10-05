@@ -2,10 +2,10 @@
 
 - [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
 - [xUnit.net](https://github.com/xunit/xunit) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](https://github.com/xunit/xunit/blob/main/license.txt)
-- [Ian Griffith's TimedLock](http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
-- [Steven van Deursen's ReadOnlyDictionary](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29) (until Polly v5.0.6)
-- [Stephen Cleary's AsyncEx library](https://github.com/StephenCleary/AsyncEx) for AsyncSemaphore (supports BulkheadAsync policy for .NET4.0 only) (until Polly v5.9.0) | [MIT license](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)
-- [@theraot](https://github.com/theraot)'s [ExceptionDispatchInfo implementation for .NET4.0](https://stackoverflow.com/a/31226509/) (supports Timeout policy for .NET4.0 only) (until Polly v5.9.0) including also a contribution by [@migueldeicaza](https://github.com/migueldeicaza) | Licensed under and distributed under [Creative Commons Attribution Share Alike license](https://creativecommons.org/licenses/by-sa/3.0/) per [StackExchange Terms of Service](https://stackexchange.com/legal)
+- [Ian Griffith's `TimedLock`](http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
+- [Steven van Deursen's `ReadOnlyDictionary`](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29) (until Polly v5.0.6)
+- [Stephen Cleary's `AsyncEx` library](https://github.com/StephenCleary/AsyncEx) for `AsyncSemaphore` (supports `BulkheadAsync` policy for .NET 4.0 only) (until Polly v5.9.0) | [MIT license](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)
+- [@theraot](https://github.com/theraot)'s [`ExceptionDispatchInfo` implementation for .NET 4.0](https://stackoverflow.com/a/31226509/) (supports Timeout policy for .NET4.0 only) (until Polly v5.9.0) including also a contribution by [@migueldeicaza](https://github.com/migueldeicaza) | Licensed under and distributed under [Creative Commons Attribution Share Alike license](https://creativecommons.org/licenses/by-sa/3.0/) per [StackExchange Terms of Service](https://stackexchange.com/legal)
 - Build powered by [Cake](https://cakebuild.net/) and [MinVer](https://github.com/adamralph/minver).  Developers powered by [Resharper](https://www.jetbrains.com/resharper/), with thanks to JetBrains for [OSS licensing](https://www.jetbrains.com/support/community/#section=open-source).
 
 ## Acknowledgements
@@ -19,31 +19,31 @@
 - [@ThomasMentzel](https://github.com/ThomasMentzel) - Added ability to capture the results of executing a policy via `ExecuteAndCapture`
 - [@yevhen](https://github.com/yevhen) - Added full control of whether to continue on captured synchronization context or not
 - [@reisenberger](https://github.com/reisenberger) - Added full async cancellation support
-- [@reisenberger](https://github.com/reisenberger) - Added async support for ContextualPolicy
-- [@reisenberger](https://github.com/reisenberger) - Added ContextualPolicy support for circuit-breaker
+- [@reisenberger](https://github.com/reisenberger) - Added async support for `ContextualPolicy`
+- [@reisenberger](https://github.com/reisenberger) - Added `ContextualPolicy` support for circuit-breaker
 - [@reisenberger](https://github.com/reisenberger) - Extended circuit-breaker for public monitoring and control
-- [@reisenberger](https://github.com/reisenberger) - Added ExecuteAndCapture support with arbitrary context data
-- [@kristianhald](https://github.com/kristianhald) and [@reisenberger](https://github.com/reisenberger) - Added AdvancedCircuitBreaker
-- [@reisenberger](https://github.com/reisenberger) - Allowed async onRetry delegates to async retry policies
-- [@Lumirris](https://github.com/Lumirris) - Add new Polly.Net40Async project/package supporting async for .NET40 via Microsoft.Bcl.Async
-- [@SteveCote](https://github.com/SteveCote) - Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.
-- [@reisenberger](https://github.com/reisenberger) - Allowed policies to handle returned results; added strongly-typed policies Policy&lt;TResult&gt;;.
+- [@reisenberger](https://github.com/reisenberger) - Added `ExecuteAndCapture` support with arbitrary context data
+- [@kristianhald](https://github.com/kristianhald) and [@reisenberger](https://github.com/reisenberger) - Added `AdvancedCircuitBreaker`
+- [@reisenberger](https://github.com/reisenberger) - Allowed async `onRetry` delegates to async retry policies
+- [@Lumirris](https://github.com/Lumirris) - Add new `Polly.Net40Async` project/package supporting async for .NET 4.0 via Microsoft.Bcl.Async
+- [@SteveCote](https://github.com/SteveCote) - Added overloads to `WaitAndRetry{Async}` methods that accept an `onRetry` delegate which includes the attempt count.
+- [@reisenberger](https://github.com/reisenberger) - Allowed policies to handle returned results; added strongly-typed policies `Policy&lt;TResult&gt;`.
 - [@christopherbahr](https://github.com/christopherbahr) - Added optimisation for circuit-breaker hot path.
 - [@Finity](https://github.com/Finity) - Fixed circuit-breaker threshold bug.
-- [@reisenberger](https://github.com/reisenberger) - Add some missing ExecuteAndCapture/Async overloads.
-- [@brunolauze](https://github.com/brunolauze) - Add CancellationToken support to synchronous executions (to support TimeoutPolicy).
-- [@reisenberger](https://github.com/reisenberger) - Add PolicyWrap.
+- [@reisenberger](https://github.com/reisenberger) - Add some missing `ExecuteAndCapture{Async}` overloads.
+- [@brunolauze](https://github.com/brunolauze) - Add CancellationToken support to synchronous executions (to support `TimeoutPolicy`).
+- [@reisenberger](https://github.com/reisenberger) - Add `PolicyWrap`.
 - [@reisenberger](https://github.com/reisenberger) - Add Fallback policy.
-- [@reisenberger](https://github.com/reisenberger) - Add PolicyKeys and context to all policy executions, as bedrock for policy events and metrics tracking executions.
+- [@reisenberger](https://github.com/reisenberger) - Add `PolicyKeys` and context to all policy executions, as bedrock for policy events and metrics tracking executions.
 - [@reisenberger](https://github.com/reisenberger),  and contributions from [@brunolauze](https://github.com/brunolauze) -  Add Bulkhead Isolation policy.
 - [@reisenberger](https://github.com/reisenberger) - Add Timeout policy.
-- [@reisenberger](https://github.com/reisenberger) - Fix .NETStandard 1.0 targeting.  Remove PCL259 target.  PCL259 support is provided via .NETStandard1.0 target, going forward.
-- [@reisenberger](https://github.com/reisenberger) - Fix CircuitBreaker HalfOpen state and cases when breakDuration is shorter than typical call timeout.  Thanks to [@vgouw](https://github.com/vgouw) and [@kharos](https://github.com/kharos) for the reports and insightful thinking.
-- [@lakario](https://github.com/lakario) - Tidy CircuitBreaker LastException property.
-- [@lakario](https://github.com/lakario) - Add NoOpPolicy.
-- [@Julien-Mialon](https://github.com/Julien-Mialon) - Fixes, support and examples for .NETStandard compatibility with Xamarin PCL projects
+- [@reisenberger](https://github.com/reisenberger) - Fix .NET Standard 1.0 targeting.  Remove `PCL259` target. `PCL259` support is provided via .NETStandard 1.0 target, going forward.
+- [@reisenberger](https://github.com/reisenberger) - Fix CircuitBreaker `HalfOpen` state and cases when breakDuration is shorter than typical call timeout.  Thanks to [@vgouw](https://github.com/vgouw) and [@kharos](https://github.com/kharos) for the reports and insightful thinking.
+- [@lakario](https://github.com/lakario) - Tidy CircuitBreaker `LastException` property.
+- [@lakario](https://github.com/lakario) - Add `NoOpPolicy`.
+- [@Julien-Mialon](https://github.com/Julien-Mialon) - Fixes, support and examples for .NET Standard compatibility with Xamarin PCL projects
 - [@reisenberger](https://github.com/reisenberger) - Add mutable Context and extra overloads taking Context.  Allows different parts of a policy execution to exchange data via the mutable Context travelling with each execution.
-- [@ankitbko](https://github.com/ankitbko) - Add PolicyRegistry for storing and retrieving policies.
+- [@ankitbko](https://github.com/ankitbko) - Add `PolicyRegistry` for storing and retrieving policies.
 - [@reisenberger](https://github.com/reisenberger) - Add interfaces by policy type and execution type.
 - [@seanfarrow](https://github.com/SeanFarrow) - Add IReadOnlyPolicyRegistry interface.
 - [@kesmy](https://github.com/Kesmy) - Migrate solution to msbuild15, banish project.json and packages.config
@@ -68,13 +68,13 @@
 - [@flin-zap](https://github.com/flin-zap) - Catch missing async continuation control.
 - [@reisenberger](https://github.com/reisenberger) - Clarify separation of sync and async policies.
 - [@reisenberger](https://github.com/reisenberger) - Enable extensibility by custom policies hosted external to Polly.
-- [@seanfarrow](https://github.com/SeanFarrow) - Enable collection initialization syntax for PolicyRegistry.
+- [@seanfarrow](https://github.com/SeanFarrow) - Enable collection initialization syntax for `PolicyRegistry`.
 - [@moerwald](https://github.com/moerwald) - Code clean-ups, usage of more concise C# members.
-- [@cmeeren](https://github.com/cmeeren) - Enable cache policies to cache values of default(TResult).
+- [@cmeeren](https://github.com/cmeeren) - Enable cache policies to cache values of `default(TResult)`.
 - [@aprooks](https://github.com/aprooks) - Build script tweaks for Mac and mono.
 - [@kesmy](https://github.com/Kesmy) - Add Soucelink support, clean up cake build.
 - [@simluk](https://github.com/simluk) - Fix continueOnCaptureContext not being honored in async retry implementation (bug in v7.1.0 only).
 - [@jnyrup](https://github.com/jnyrup) - Upgrade tests to Fluent Assertions v5.9.0
 - [@SimonCropp](https://github.com/SimonCropp) - Add `netcoreapp3.0` target; code clean-ups.
-- [@aerotog](https://github.com/aerotog) and [@reisenberger](https://github.com/reisenberger) - IConcurrentPolicyRegistry methods on PolicyRegistry
+- [@aerotog](https://github.com/aerotog) and [@reisenberger](https://github.com/reisenberger) - `IConcurrentPolicyRegistry` methods on `PolicyRegistry`
 - [@reisenberger](https://github.com/reisenberger) and [@martincostello](https://github.com/martincostello) - Add RateLimit policy.
