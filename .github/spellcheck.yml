@@ -13,6 +13,13 @@ matrix:
         markdown_extensions:
           - markdown.extensions.extra
           - pymdownx.superfences
+    - pyspelling.filters.context:
+      context_visible_first: true
+      escapes: \\[\\`~]
+      delimiters:
+      # Ignore text between inline back ticks
+      - open: '(?P<open>`+)'
+        close: '(?P=open)'
     - pyspelling.filters.html:
         comments: false
         ignores:
