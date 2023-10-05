@@ -17,13 +17,13 @@
 * Add docs on how to use snippets by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1604
 * [Docs] General extensibility and implementation of proactive strategies by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1602
 * Align the telemetry tags with official guidelines by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1583
-* Add antipatterns to retry strategy by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1603
+* Add anti-patterns to retry strategy by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1603
 * [Docs] Reactive strategies extensibility by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1606
-* Add antipatterns to fallback strategy by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1607
+* Add anti-patterns to fallback strategy by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1607
 * Avoid capturing where possible. by [@IEvangelist](https://github.com/IEvangelist) in https://github.com/App-vNext/Polly/pull/1609
 * Fix urls within readme extensions project by [@wahid-moh](https://github.com/wahid-moh) in https://github.com/App-vNext/Polly/pull/1616
 * [Docs] Testing by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1608
-* [Docs] Add antipatterns to circuit breaker documentation page by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1621
+* [Docs] Add anti-patterns to circuit breaker documentation page by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1621
 * [Docs] Performance docs improvements by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1618
 * [Docs] Polish the docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1619
 * Introduce `RetryStrategyOptions.MaxDelay` property by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1620
