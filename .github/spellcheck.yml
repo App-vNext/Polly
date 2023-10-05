@@ -22,4 +22,5 @@ matrix:
     - '.github/**/*.md'
     - 'docs/**/*.md'
     - '**/README.md'
+    - '!CHANGELOG.md'
   default_encoding: utf-8
