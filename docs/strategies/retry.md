@@ -192,7 +192,7 @@ var retry = new ResiliencePipelineBuilder()
 
 **Reasoning**:
 
-The waiting period can be either blocking or non-blocking, based on the defined strategy/pipeline. Even when used non-blockingly, it unnecessarily consumes memory that can't be reclaimed by the garbage collector.
+The waiting period can be either blocking or non-blocking, based on the defined strategy/pipeline. Even when used not used in a blocking manner, it unnecessarily consumes memory that can't be reclaimed by the garbage collector.
 
 ✅ DO
 
@@ -479,7 +479,7 @@ var retry = new ResiliencePipelineBuilder()
 
 **Reasoning**:
 
-As previously mentioned, always use the designated area to define retry conditions. Reframe your original exit conditions to specify when a retry should be initiated.
+As previously mentioned, always use the designated area to define retry conditions. Re-frame your original exit conditions to specify when a retry should be initiated.
 
 ### Limiting the maximum delay
 
