@@ -26,5 +26,5 @@ matrix:
           - code
           - pre
   sources:
-    - '!CHANGELOG.md|!**/BenchmarkDotNet.Artifacts/**/*.md|**/*.md'
+    - '!CHANGELOG.md|!**/BenchmarkDotNet.Artifacts/**/*.md|!docs/community/resources.md|!docs/community/libraries-and-contributions.md|**/*.md'
   default_encoding: utf-8
