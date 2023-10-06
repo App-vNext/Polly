@@ -39,6 +39,9 @@ rabbitmq
 ratelimiting
 ratiosd
 readme
+rebase
+rebased
+rebasing
 resharper
 rethrow
 rethrows

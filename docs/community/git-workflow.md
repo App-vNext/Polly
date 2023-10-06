@@ -20,7 +20,7 @@ For an introduction to Git, check out [GitHub's _Git Guide_](https://github.com/
 
 ## Handling Updates from the default branch
 
-While you're working away in your branch, it's possible that one or more new commits have been added to the repository's default branch. If this happens you shoul
+While you're working away in your branch, it's possible that one or more new commits have been added to the repository's default branch. If this happens you should:
 
 1. [Stash](https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning) any uncommitted changes you need to
 2. `git checkout main`
