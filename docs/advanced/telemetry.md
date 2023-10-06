@@ -82,10 +82,11 @@ Every telemetry event has the following tags:
 - `pipeline.name`: Optional, comes from `ResiliencePipelineBuilder.Name`.
 - `pipeline.instance`: Optional, comes from `ResiliencePipelineBuilder.InstanceName`.
 - `strategy.name`: Optional, comes from `RetryStrategyOptions.Name`.
+- `operation.key`: Optional, comes from `ResilienceContext.OperationKey`.
 
 The sample below demonstrates how to assign these tags:
 
-<!-- snippet: telemetry-coordinates -->
+<!-- snippet: telemetry-tags -->
 ```cs
 var builder = new ResiliencePipelineBuilder();
 builder.Name = "my-name";
@@ -96,8 +97,24 @@ builder.AddRetry(new RetryStrategyOptions
     // The default value is "Retry"
     Name = "my-retry-name"
 });
+
+ResiliencePipeline pipeline = builder.Build();
+
+// Create resilience context with operation key
+ResilienceContext resilienceContext = ResilienceContextPool.Shared.Get("my-operation-key");
+
+// Execute the pipeline with the context
+pipeline.Execute(
+    context =>
+    {
+        // Your code comes here
+    },
+    resilienceContext);
 ```
 <!-- endSnippet -->
+
+> [!NOTE]
+> Beware of using very large or unbounded combinations of tag values being recorded for the tags above. See [best practices](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics-instrumentation#best-practices-3) for more details.
 
 These values are subsequently reflected in the following metering instruments exposed by Polly:
 

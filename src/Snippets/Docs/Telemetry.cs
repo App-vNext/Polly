@@ -9,7 +9,7 @@ internal static class Telemetry
 {
     public static void TelemetryCoordinates()
     {
-        #region telemetry-coordinates
+        #region telemetry-tags
 
         var builder = new ResiliencePipelineBuilder();
         builder.Name = "my-name";
@@ -20,6 +20,19 @@ internal static class Telemetry
             // The default value is "Retry"
             Name = "my-retry-name"
         });
+
+        ResiliencePipeline pipeline = builder.Build();
+
+        // Create resilience context with operation key
+        ResilienceContext resilienceContext = ResilienceContextPool.Shared.Get("my-operation-key");
+
+        // Execute the pipeline with the context
+        pipeline.Execute(
+            context =>
+            {
+                // Your code comes here
+            },
+            resilienceContext);
 
         #endregion
     }
