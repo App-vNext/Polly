@@ -155,9 +155,10 @@ internal class MyMeteringEnricher : MeteringEnricher
 <li><code>pipeline.name</code>: Optional, comes from <code>ResiliencePipelineBuilder.Name</code>.</li>
 <li><code>pipeline.instance</code>: Optional, comes from <code>ResiliencePipelineBuilder.InstanceName</code>.</li>
 <li><code>strategy.name</code>: Optional, comes from <code>RetryStrategyOptions.Name</code>.</li>
+<li><code>operation.key</code>: Optional, comes from <code>ResilienceContext.OperationKey</code>.</li>
 </ul>
 <p>The sample below demonstrates how to assign these tags:</p>
-<!-- snippet: telemetry-coordinates -->
+<!-- snippet: telemetry-tags -->
 <pre><code class="lang-cs">var builder = new ResiliencePipelineBuilder();
 builder.Name = &quot;my-name&quot;;
 builder.Name = &quot;my-instance-name&quot;;
@@ -167,8 +168,25 @@ builder.AddRetry(new RetryStrategyOptions
     // The default value is &quot;Retry&quot;
     Name = &quot;my-retry-name&quot;
 });
+
+ResiliencePipeline pipeline = builder.Build();
+
+// Create resilience context with operation key
+ResilienceContext resilienceContext = ResilienceContextPool.Shared.Get(&quot;my-operation-key&quot;);
+
+// Execute the pipeline with the context
+pipeline.Execute(
+    context =&gt;
+    {
+        // Your code comes here
+    },
+    resilienceContext);
 </code></pre>
 <!-- endSnippet -->
+<div class="NOTE">
+<h5>Note</h5>
+<p>Beware of using very large or unbounded combinations of tag values for the tags above. See <a href="https://learn.microsoft.com/dotnet/core/diagnostics/metrics-instrumentation#best-practices-3">best practices</a> for more details.</p>
+</div>
 <p>These values are subsequently reflected in the following metering instruments exposed by Polly:</p>
 <h3 id="instrument-resiliencepollystrategyevents">Instrument: <code>resilience.polly.strategy.events</code></h3>
 <ul>
