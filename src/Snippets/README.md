@@ -6,7 +6,7 @@ Various code-snippets used in the Polly documentation. Run the following command
 dotnet mdsnippets
 ```
 
-Visit [SimonCropp/MarkdownSnippets][MarkdownSnippets] for more details.
+Visit the [MarkdownSnippets][MarkdownSnippets] GitHub repository for more details.
 
 ## How to use snippets in Polly documentation
 
