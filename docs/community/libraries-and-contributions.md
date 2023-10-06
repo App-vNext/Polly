@@ -37,7 +37,7 @@
 - [@reisenberger](https://github.com/reisenberger) - Add `PolicyKeys` and context to all policy executions, as bedrock for policy events and metrics tracking executions.
 - [@reisenberger](https://github.com/reisenberger),  and contributions from [@brunolauze](https://github.com/brunolauze) -  Add Bulkhead Isolation policy.
 - [@reisenberger](https://github.com/reisenberger) - Add Timeout policy.
-- [@reisenberger](https://github.com/reisenberger) - Fix .NET Standard 1.0 targeting.  Remove `PCL259` target. `PCL259` support is provided via .NETStandard 1.0 target, going forward.
+- [@reisenberger](https://github.com/reisenberger) - Fix .NET Standard 1.0 targeting.  Remove `PCL259` target. `PCL259` support is provided via .NET Standard 1.0 target, going forward.
 - [@reisenberger](https://github.com/reisenberger) - Fix CircuitBreaker `HalfOpen` state and cases when breakDuration is shorter than typical call timeout.  Thanks to [@vgouw](https://github.com/vgouw) and [@kharos](https://github.com/kharos) for the reports and insightful thinking.
 - [@lakario](https://github.com/lakario) - Tidy CircuitBreaker `LastException` property.
 - [@lakario](https://github.com/lakario) - Add `NoOpPolicy`.
@@ -45,35 +45,35 @@
 - [@reisenberger](https://github.com/reisenberger) - Add mutable Context and extra overloads taking Context.  Allows different parts of a policy execution to exchange data via the mutable Context travelling with each execution.
 - [@ankitbko](https://github.com/ankitbko) - Add `PolicyRegistry` for storing and retrieving policies.
 - [@reisenberger](https://github.com/reisenberger) - Add interfaces by policy type and execution type.
-- [@seanfarrow](https://github.com/SeanFarrow) - Add IReadOnlyPolicyRegistry interface.
-- [@kesmy](https://github.com/Kesmy) - Migrate solution to msbuild15, banish project.json and packages.config
-- [@hambudi](https://github.com/hambudi) - Ensure sync TimeoutPolicy with TimeoutStrategy.Pessimistic rethrows delegate exceptions without additional AggregateException.
-- [@jiimaho](https://github.com/jiimaho) and [@Extremo75](https://github.com/ExtRemo75) - Provide public factory methods for PolicyResult, to support testing.
+- [@seanfarrow](https://github.com/SeanFarrow) - Add `IReadOnlyPolicyRegistry` interface.
+- [@kesmy](https://github.com/Kesmy) - Migrate solution to msbuild15, banish `project.json` and `packages.config`
+- [@hambudi](https://github.com/hambudi) - Ensure sync `TimeoutPolicy` with `TimeoutStrategy.Pessimistic` rethrows delegate exceptions without additional `AggregateException`.
+- [@jiimaho](https://github.com/jiimaho) and [@Extremo75](https://github.com/ExtRemo75) - Provide public factory methods for `PolicyResult`, to support testing.
 - [@Extremo75](https://github.com/ExtRemo75) - Allow fallback delegates to take handled fault as input parameter.
-- [@reisenberger](https://github.com/reisenberger) and [@seanfarrow](https://github.com/SeanFarrow) - Add CachePolicy, with interfaces for pluggable cache providers and serializers.
+- [@reisenberger](https://github.com/reisenberger) and [@seanfarrow](https://github.com/SeanFarrow) - Add `CachePolicy`, with interfaces for pluggable cache providers and serializers.
 - Thanks to the awesome devs at [@tretton37](https://github.com/tretton37) who delivered the following as part of a one-day in-company hackathon led by [@reisenberger](https://github.com/reisenberger), sponsored by [@tretton37](https://github.com/tretton37) and convened by [@thecodejunkie](https://github.com/thecodejunkie)
-  - [@matst80](https://github.com/matst80) - Allow WaitAndRetry to take handled fault as an input to the sleepDurationProvider, allowing WaitAndRetry to take account of systems which specify a duration to wait as part of a fault response; eg Azure CosmosDB may specify this in `x-ms-retry-after-ms` headers or in a property to an exception thrown by the Azure CosmosDB SDK.
-  - [@MartinSStewart](https://github.com/martinsstewart) - Add GetPolicies() extension methods to IPolicyWrap.
+  - [@matst80](https://github.com/matst80) - Allow WaitAndRetry to take handled fault as an input to the `sleepDurationProvider`, allowing WaitAndRetry to take account of systems which specify a duration to wait as part of a fault response; e.g. Azure CosmosDB may specify this in `x-ms-retry-after-ms` headers or in a property to an exception thrown by the Azure CosmosDB SDK.
+  - [@MartinSStewart](https://github.com/martinsstewart) - Add `GetPolicies()` extension methods to `IPolicyWrap`.
   - [@jbergens37](https://github.com/jbergens37) - Parallelize test running where possible, to improve overall build speed.
 - [@reisenberger](https://github.com/reisenberger) - Add new `.HandleInner<TException>(...)` syntax for handling inner exceptions natively.
-- [@rjongeneelen](https://github.com/rjongeneelen) and [@reisenberger](https://github.com/reisenberger) - Allow PolicyWrap configuration to configure policies via interfaces.
+- [@rjongeneelen](https://github.com/rjongeneelen) and [@reisenberger](https://github.com/reisenberger) - Allow `PolicyWrap` configuration to configure policies via interfaces.
 - [@reisenberger](https://github.com/reisenberger) - Performance improvements.
-- [@awarrenlove](https://github.com/awarrenlove) - Add ability to calculate cache Ttl based on item to cache.
-- [@erickhouse](https://github.com/erickhouse) - Add a new onBreak overload that provides the prior state on a transition to an open state.
-- [@benagain](https://github.com/benagain) - Bug fix: RelativeTtl in CachePolicy now always returns a ttl relative to time item is cached.
-- [@urig](https://github.com/urig) - Allow TimeoutPolicy to be configured with Timeout.InfiniteTimeSpan.
-- [@reisenberger](https://github.com/reisenberger) - Integration with [IHttpClientFactory](https://github.com/aspnet/HttpClientFactory/) for ASP.NET Core 2.1.
-- [@freakazoid182](https://github.com/Freakazoid182) - WaitAnd/RetryForever overloads where onRetry takes the retry number as a parameter.
-- [@dustyhoppe](https://github.com/dustyhoppe) - Overloads where onTimeout takes thrown exception as a parameter.
+- [@awarrenlove](https://github.com/awarrenlove) - Add ability to calculate cache TTL based on item to cache.
+- [@erickhouse](https://github.com/erickhouse) - Add a new `onBreak` overload that provides the prior state on a transition to an open state.
+- [@benagain](https://github.com/benagain) - Bug fix: `RelativeTtl` in `CachePolicy` now always returns a ttl relative to time item is cached.
+- [@urig](https://github.com/urig) - Allow `TimeoutPolicy` to be configured with `Timeout.InfiniteTimeSpan`.
+- [@reisenberger](https://github.com/reisenberger) - Integration with [`IHttpClientFactory`](https://github.com/aspnet/HttpClientFactory/) for ASP.NET Core 2.1.
+- [@freakazoid182](https://github.com/Freakazoid182) - `WaitAndRetry{Forever}` overloads where `onRetry` takes the retry number as a parameter.
+- [@dustyhoppe](https://github.com/dustyhoppe) - Overloads where `onTimeout` takes thrown exception as a parameter.
 - [@flin-zap](https://github.com/flin-zap) - Catch missing async continuation control.
 - [@reisenberger](https://github.com/reisenberger) - Clarify separation of sync and async policies.
 - [@reisenberger](https://github.com/reisenberger) - Enable extensibility by custom policies hosted external to Polly.
 - [@seanfarrow](https://github.com/SeanFarrow) - Enable collection initialization syntax for `PolicyRegistry`.
 - [@moerwald](https://github.com/moerwald) - Code clean-ups, usage of more concise C# members.
 - [@cmeeren](https://github.com/cmeeren) - Enable cache policies to cache values of `default(TResult)`.
-- [@aprooks](https://github.com/aprooks) - Build script tweaks for Mac and mono.
-- [@kesmy](https://github.com/Kesmy) - Add Soucelink support, clean up cake build.
-- [@simluk](https://github.com/simluk) - Fix continueOnCaptureContext not being honored in async retry implementation (bug in v7.1.0 only).
+- [@aprooks](https://github.com/aprooks) - Build script tweaks for Mac and Mono.
+- [@kesmy](https://github.com/Kesmy) - Add SourceLink support, clean up cake build.
+- [@simluk](https://github.com/simluk) - Fix `continueOnCaptureContext` not being honored in async retry implementation (bug in v7.1.0 only).
 - [@jnyrup](https://github.com/jnyrup) - Upgrade tests to Fluent Assertions v5.9.0
 - [@SimonCropp](https://github.com/SimonCropp) - Add `netcoreapp3.0` target; code clean-ups.
 - [@aerotog](https://github.com/aerotog) and [@reisenberger](https://github.com/reisenberger) - `IConcurrentPolicyRegistry` methods on `PolicyRegistry`
