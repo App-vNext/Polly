@@ -26,11 +26,5 @@ matrix:
           - code
           - pre
   sources:
-    - 'CODE_OF_CONDUCT.md'
-    - 'CONTRIBUTING.md'
-    - 'SECURITY.md'
-    - 'package-readme.md'
-    - '.github/**/*.md'
-    - 'docs/**/*.md'
-    - '**/README.md'
+    - '!CHANGELOG.md|!**/BenchmarkDotNet.Artifacts/**/*.md|**/*.md'
   default_encoding: utf-8
