@@ -114,7 +114,7 @@ pipeline.Execute(
 <!-- endSnippet -->
 
 > [!NOTE]
-> Beware of using very large or unbounded combinations of tag values being recorded for the tags above. See [best practices](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics-instrumentation#best-practices-3) for more details.
+> Beware of using very large or unbounded combinations of tag values being recorded for the tags above. See [best practices](https://learn.microsoft.com/dotnet/core/diagnostics/metrics-instrumentation#best-practices-3) for more details.
 
 These values are subsequently reflected in the following metering instruments exposed by Polly:
 

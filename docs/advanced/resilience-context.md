@@ -104,4 +104,4 @@ finally
 <!-- endSnippet -->
 
 > [!NOTE]
-> The `OperationKey` values are reported in [telemetry](telemetry.md#metrics). Beware of using very large or unbounded combinations for the operation key. See [best practices](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics-instrumentation#best-practices-3) for more details.
+> The `OperationKey` values are reported in [telemetry](telemetry.md#metrics). Beware of using very large or unbounded combinations for the operation key. See [best practices](https://learn.microsoft.com/dotnet/core/diagnostics/metrics-instrumentation#best-practices-3) for more details.
