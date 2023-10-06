@@ -321,7 +321,7 @@ var retry = new ResiliencePipelineBuilder()
 <p><strong>Reasoning</strong>:</p>
 <ul>
 <li>Both strategies are less coupled in this approach since they rely on the context and the <code>sleepDurationKey</code> components.</li>
-<li>The Circuit Breaker shares the <code>BreakDuration</code> through the context when it breaks. When it transitions back to Closed, the sharring is revoked.</li>
+<li>The Circuit Breaker shares the <code>BreakDuration</code> through the context when it breaks. When it transitions back to Closed, the sharing is revoked.</li>
 <li>The Retry strategy fetches the sleep duration dynamically without knowing any specific knowledge about the Circuit Breaker.</li>
 <li>If adjustments are needed for the <code>BreakDuration</code>, they can be made in one place.</li>
 </ul>
@@ -379,7 +379,7 @@ var circuitBreaker = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <p>✅ DO</p>
-<p>The <code>CircuitBreakerStartegyOptions</code> currently do not support defining break durations dynamically. This may be re-evaluted in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.</p>
+<p>The <code>CircuitBreakerStartegyOptions</code> currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.</p>
 <h3 id="3---wrapping-each-endpoint-with-a-circuit-breaker">3 - Wrapping each endpoint with a circuit breaker</h3>
 <p>Imagine that you have to call N number of services via <code>HttpClient</code>s.
 You want to decorate all downstream calls with the service-aware Circuit Breaker.</p>

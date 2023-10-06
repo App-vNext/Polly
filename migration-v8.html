@@ -579,7 +579,7 @@ ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipeline
 <h2 id="migrating-pollycontext">Migrating <code>Polly.Context</code></h2>
 <p><code>Polly.Context</code> has been succeeded by <code>ResilienceContext</code>. Here are the main changes:</p>
 <ul>
-<li><code>ResilienceContext</code> is pooled for enhanced performance and isn't directly creatable. Instead, use the <code>ResilienceContextPool</code> class to get an instance.</li>
+<li><code>ResilienceContext</code> is pooled for enhanced performance and cannot be directly created. Instead, use the <code>ResilienceContextPool</code> class to get an instance.</li>
 <li>Directly attaching custom data is supported by <code>Context</code>, whereas <code>ResilienceContext</code> employs the <code>ResilienceContext.Properties</code> property.</li>
 <li>Both <code>PolicyKey</code> and <code>PolicyWrapKey</code> are no longer a part of <code>ResilienceContext</code>. They've been relocated to <code>ResiliencePipelineBuilder</code> and are now used for <a href="advanced/telemetry.html#metrics">telemetry</a>.</li>
 <li>The <code>CorrelationId</code> property has been removed. For similar functionality, you can either use <code>System.Diagnostics.Activity.Current.Id</code> or attach your custom Id using <code>ResilienceContext.Properties</code>.</li>

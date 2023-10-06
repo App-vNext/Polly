@@ -298,7 +298,7 @@ var retry = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<p>The waiting period can be either blocking or non-blocking, based on the defined strategy/pipeline. Even when used non-blockingly, it unnecessarily consumes memory that can't be reclaimed by the garbage collector.</p>
+<p>The waiting period can be either blocking or non-blocking, based on the defined strategy/pipeline. Even when used not used in a blocking manner, it unnecessarily consumes memory that can't be reclaimed by the garbage collector.</p>
 <p>✅ DO</p>
 <p>Use a suitable tool to schedule recurring tasks, such as <a href="https://www.quartz-scheduler.net/"><em>Quartz.Net</em></a>, <a href="https://www.hangfire.io/"><em>Hangfire</em></a>, or others.</p>
 <p><strong>Reasoning</strong>:</p>
@@ -522,7 +522,7 @@ var retry = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
-<p>As previously mentioned, always use the designated area to define retry conditions. Reframe your original exit conditions to specify when a retry should be initiated.</p>
+<p>As previously mentioned, always use the designated area to define retry conditions. Re-frame your original exit conditions to specify when a retry should be initiated.</p>
 <h3 id="limiting-the-maximum-delay">Limiting the maximum delay</h3>
 <p>In some cases, you might want to set a limit on the calculated delay. This is beneficial when multiple retries are anticipated, and you wish to prevent excessive wait times between these retries.</p>
 <p>Consider the following example of a long-running background job:</p>
