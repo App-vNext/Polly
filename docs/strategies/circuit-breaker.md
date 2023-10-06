@@ -195,7 +195,7 @@ var retry = new ResiliencePipelineBuilder()
 **Reasoning**:
 
 - Both strategies are less coupled in this approach since they rely on the context and the `sleepDurationKey` components.
-- The Circuit Breaker shares the `BreakDuration` through the context when it breaks. When it transitions back to Closed, the sharring is revoked.
+- The Circuit Breaker shares the `BreakDuration` through the context when it breaks. When it transitions back to Closed, the sharing is revoked.
 - The Retry strategy fetches the sleep duration dynamically without knowing any specific knowledge about the Circuit Breaker.
 - If adjustments are needed for the `BreakDuration`, they can be made in one place.
 
@@ -263,7 +263,7 @@ circuitBreaker = new ResiliencePipelineBuilder()
 
 ✅ DO
 
-The `CircuitBreakerStartegyOptions` currently do not support defining break durations dynamically. This may be re-evaluted in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.
+The `CircuitBreakerStartegyOptions` currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.
 
 ### 3 - Wrapping each endpoint with a circuit breaker
 

@@ -31,6 +31,11 @@ jobs:
           !CHANGELOG.md
           !**/BenchmarkDotNet.Artifacts/**/*.md
 
+    - name: Spellcheck
+      uses: rojopolis/spellcheck-github-actions@47363488bf2b5b90cf1ae9b92c11357eee961e10 # v0.34.0
+      with:
+        config_path: .github/spellcheck.yml
+
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
 

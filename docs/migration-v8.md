@@ -551,7 +551,7 @@ Migrating is a process similar to the ones described in the previous sections. K
 
 `Polly.Context` has been succeeded by `ResilienceContext`. Here are the main changes:
 
-- `ResilienceContext` is pooled for enhanced performance and isn't directly creatable. Instead, use the `ResilienceContextPool` class to get an instance.
+- `ResilienceContext` is pooled for enhanced performance and cannot be directly created. Instead, use the `ResilienceContextPool` class to get an instance.
 - Directly attaching custom data is supported by `Context`, whereas `ResilienceContext` employs the `ResilienceContext.Properties` property.
 - Both `PolicyKey` and `PolicyWrapKey` are no longer a part of `ResilienceContext`. They've been relocated to `ResiliencePipelineBuilder` and are now used for [telemetry](advanced/telemetry.md#metrics).
 - The `CorrelationId` property has been removed. For similar functionality, you can either use `System.Diagnostics.Activity.Current.Id` or attach your custom Id using `ResilienceContext.Properties`.

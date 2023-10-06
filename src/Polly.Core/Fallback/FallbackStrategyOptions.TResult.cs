@@ -17,7 +17,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets a predicate that determines whether the fallback should be executed for a given outcome.
     /// </summary>
     /// <value>
-    /// The default value is a predicate that fallbacks on any exception except <see cref="OperationCanceledException"/>. This property is required.
+    /// The default value is a predicate that falls back on any exception except <see cref="OperationCanceledException"/>. This property is required.
     /// </value>
     [Required]
     public Func<FallbackPredicateArguments<TResult>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<FallbackPredicateArguments<TResult>, TResult>.HandleOutcome;

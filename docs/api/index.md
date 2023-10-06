@@ -1,4 +1,3 @@
 # PLACEHOLDER
 
-TODO: Add .NET projects to the *src* folder and run `docfx` to
-generate **REAL** *API Documentation*!
+`docfx` automatically generates this file when GitHub Pages are built.
