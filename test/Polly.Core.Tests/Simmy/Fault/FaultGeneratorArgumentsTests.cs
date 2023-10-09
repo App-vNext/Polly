@@ -1,6 +1,6 @@
-using Polly.Simmy.Outcomes;
+using Polly.Simmy.Fault;
 
-namespace Polly.Core.Tests.Simmy.Outcomes;
+namespace Polly.Core.Tests.Simmy.Fault;
 
 public class FaultGeneratorArgumentsTests
 {

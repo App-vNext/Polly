@@ -1,4 +1,16 @@
-﻿namespace Polly.Simmy.Outcomes;
+﻿/* Unmerged change from project 'Polly.Core (net462)'
+Before:
+namespace Polly.Simmy.Outcomes;
+After:
+using Polly;
+using Polly.Simmy;
+using Polly.Simmy.Fault;
+using Polly.Simmy.Outcomes;
+
+namespace Polly.Simmy.Outcomes;
+*/
+
+namespace Polly.Simmy.Fault;
 
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
