@@ -58,7 +58,7 @@ public class OutcomeChaosStrategyTests
             InjectionRate = 0.6,
             Enabled = false,
             Randomizer = () => 0.5,
-            Outcome = new Outcome<HttpStatusCode>(fakeResult)
+            OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(fakeResult))
         };
 
         var sut = CreateSut(options);
@@ -80,7 +80,7 @@ public class OutcomeChaosStrategyTests
             InjectionRate = 0.6,
             Enabled = true,
             Randomizer = () => 0.5,
-            Outcome = new Outcome<HttpStatusCode>(fakeResult),
+            OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(fakeResult)),
             OnOutcomeInjected = args =>
             {
                 args.Context.Should().NotBeNull();
@@ -117,7 +117,7 @@ public class OutcomeChaosStrategyTests
             InjectionRate = 0.3,
             Enabled = false,
             Randomizer = () => 0.5,
-            Outcome = new Outcome<HttpStatusCode>(fakeResult)
+            OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(fakeResult))
         };
 
         var sut = CreateSut(options);
@@ -135,12 +135,13 @@ public class OutcomeChaosStrategyTests
     public async Task Given_enabled_and_randomly_within_threshold_should_inject_result_even_as_null()
     {
         var userDelegateExecuted = false;
+        Outcome<HttpStatusCode?>? nullOutcome = Outcome.FromResult<HttpStatusCode?>(null);
         var options = new OutcomeStrategyOptions<HttpStatusCode?>
         {
             InjectionRate = 0.6,
             Enabled = true,
             Randomizer = () => 0.5,
-            Outcome = Outcome.FromResult<HttpStatusCode?>(null)
+            OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode?>?>(nullOutcome)
         };
 
         var sut = CreateSut(options);
@@ -169,7 +170,7 @@ public class OutcomeChaosStrategyTests
                 cts.Cancel();
                 return new ValueTask<bool>(true);
             },
-            Outcome = Outcome.FromResult(HttpStatusCode.TooManyRequests)
+            OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(HttpStatusCode.TooManyRequests))
         };
 
         var sut = CreateSut(options);

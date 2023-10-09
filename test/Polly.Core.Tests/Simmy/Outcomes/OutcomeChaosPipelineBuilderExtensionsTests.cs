@@ -16,15 +16,14 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
                 InjectionRate = 0.6,
                 Enabled = true,
                 Randomizer = () => 0.5,
-                Outcome = new(100)
+                OutcomeGenerator = (_) => new ValueTask<Outcome<int>?>(Outcome.FromResult(100))
             });
 
-            AssertResultStrategy(builder, true, 0.6, new(100))
-            .Outcome.Should().Be(new Outcome<int>(100));
+            AssertResultStrategy(builder, true, 0.6, new(100));
         }
     };
 
-    private static OutcomeChaosStrategy<T> AssertResultStrategy<T>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate, Outcome<T> outcome)
+    private static void AssertResultStrategy<T>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate, Outcome<T> outcome)
     {
         var context = ResilienceContextPool.Shared.Get();
         var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<T>>().Subject;
@@ -32,8 +31,6 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
         strategy.OutcomeGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(outcome);
-
-        return strategy;
     }
 
     [MemberData(nameof(ResultStrategy))]

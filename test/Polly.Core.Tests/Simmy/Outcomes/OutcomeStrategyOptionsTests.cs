@@ -14,7 +14,6 @@ public class OutcomeStrategyOptionsTests
         sut.EnabledGenerator.Should().BeNull();
         sut.InjectionRate.Should().Be(MonkeyStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();
-        sut.Outcome.Should().BeNull();
         sut.OnOutcomeInjected.Should().BeNull();
         sut.OutcomeGenerator.Should().BeNull();
     }
