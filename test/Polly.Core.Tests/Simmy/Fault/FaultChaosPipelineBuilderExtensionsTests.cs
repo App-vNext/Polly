@@ -88,7 +88,7 @@ public class FaultChaosPipelineBuilderExtensionsTests
     {
         var builder = new ResiliencePipelineBuilder();
         builder
-            .AddChaosFault(true, 0.5, new InvalidOperationException("Dummy exception"))
+            .AddChaosFault(0.5, new InvalidOperationException("Dummy exception"))
             .Build();
 
         AssertFaultStrategy<InvalidOperationException>(builder, true, 0.5);
@@ -99,7 +99,6 @@ public class FaultChaosPipelineBuilderExtensionsTests
     {
         new ResiliencePipelineBuilder<int>()
             .Invoking(b => b.AddChaosFault(
-                true,
                 1.5,
                 () => new InvalidOperationException()))
             .Should()
@@ -111,7 +110,6 @@ public class FaultChaosPipelineBuilderExtensionsTests
     {
         new ResiliencePipelineBuilder()
             .Invoking(b => b.AddChaosFault(
-                true,
                 1.5,
                 () => new InvalidOperationException()))
             .Should()
@@ -123,7 +121,7 @@ public class FaultChaosPipelineBuilderExtensionsTests
     {
         var builder = new ResiliencePipelineBuilder();
         builder
-            .AddChaosFault(true, 0.5, () => new InvalidOperationException("Dummy exception"))
+            .AddChaosFault(0.5, () => new InvalidOperationException("Dummy exception"))
             .Build();
 
         AssertFaultStrategy<InvalidOperationException>(builder, true, 0.5);
@@ -134,7 +132,7 @@ public class FaultChaosPipelineBuilderExtensionsTests
     {
         var builder = new ResiliencePipelineBuilder<string>();
         builder
-            .AddChaosFault(true, 0.5, new InvalidOperationException("Dummy exception"))
+            .AddChaosFault(0.5, new InvalidOperationException("Dummy exception"))
             .Build();
 
         AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.5);
@@ -144,7 +142,7 @@ public class FaultChaosPipelineBuilderExtensionsTests
     public void AddFault_Generic_Shortcut_Option_Throws()
     {
         new ResiliencePipelineBuilder<int>()
-            .Invoking(b => b.AddChaosFault(true, -1, new InvalidOperationException()))
+            .Invoking(b => b.AddChaosFault(-1, new InvalidOperationException()))
             .Should()
             .Throw<ValidationException>();
     }
@@ -154,7 +152,7 @@ public class FaultChaosPipelineBuilderExtensionsTests
     {
         var builder = new ResiliencePipelineBuilder<string>();
         builder
-            .AddChaosFault(true, 0.5, () => new InvalidOperationException("Dummy exception"))
+            .AddChaosFault(0.5, () => new InvalidOperationException("Dummy exception"))
             .Build();
 
         AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.5);

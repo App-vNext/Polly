@@ -13,7 +13,7 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
         Func<ValueTask> behavior = () => new ValueTask(Task.CompletedTask);
         yield return new object[]
         {
-            (ResiliencePipelineBuilder<int> builder) => { builder.AddChaosBehavior(true, 0.5, behavior); },
+            (ResiliencePipelineBuilder<int> builder) => { builder.AddChaosBehavior(0.5, behavior); },
             (BehaviorChaosStrategy strategy) =>
             {
                 strategy.Behavior!.Invoke(new(context)).Preserve().GetAwaiter().IsCompleted.Should().BeTrue();
@@ -26,7 +26,7 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
     [Fact]
     public void AddBehavior_Shortcut_Option_Ok()
     {
-        var sut = new ResiliencePipelineBuilder().AddChaosBehavior(true, 0.5, () => new ValueTask(Task.CompletedTask)).Build();
+        var sut = new ResiliencePipelineBuilder().AddChaosBehavior(0.5, () => new ValueTask(Task.CompletedTask)).Build();
         sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>();
     }
 
@@ -34,7 +34,7 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
     public void AddBehavior_Shortcut_Option_Throws()
     {
         new ResiliencePipelineBuilder()
-            .Invoking(b => b.AddChaosBehavior(true, -1, () => new ValueTask(Task.CompletedTask)))
+            .Invoking(b => b.AddChaosBehavior(-1, () => new ValueTask(Task.CompletedTask)))
             .Should()
             .Throw<ValidationException>();
     }

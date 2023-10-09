@@ -46,7 +46,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     {
         var builder = new ResiliencePipelineBuilder<int>();
         builder
-            .AddChaosResult(true, 0.5, 120)
+            .AddChaosResult(0.5, 120)
             .Build();
 
         AssertResultStrategy(builder, true, 0.5, new(120));
@@ -57,7 +57,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     {
         var builder = new ResiliencePipelineBuilder<int>();
         builder
-            .AddChaosResult(true, 0.5, () => 120)
+            .AddChaosResult(0.5, () => 120)
             .Build();
 
         AssertResultStrategy(builder, true, 0.5, new(120));
@@ -67,7 +67,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     public void AddResult_Shortcut_Option_Throws()
     {
         new ResiliencePipelineBuilder<int>()
-            .Invoking(b => b.AddChaosResult(true, -1, () => 120))
+            .Invoking(b => b.AddChaosResult(-1, () => 120))
             .Should()
             .Throw<ValidationException>();
     }

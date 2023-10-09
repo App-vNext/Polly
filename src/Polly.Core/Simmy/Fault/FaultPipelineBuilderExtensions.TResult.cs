@@ -13,17 +13,16 @@ internal static partial class FaultPipelineBuilderExtensions
     /// </summary>
     /// <typeparam name="TResult">The type of result the retry strategy handles.</typeparam>
     /// <param name="builder">The builder instance.</param>
-    /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="fault">The exception to inject.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Exception fault)
+    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, double injectionRate, Exception fault)
     {
         Guard.NotNull(builder);
 
         builder.AddFaultCore(new FaultStrategyOptions
         {
-            Enabled = enabled,
+            Enabled = true,
             InjectionRate = injectionRate,
             Fault = fault
         });
@@ -35,18 +34,17 @@ internal static partial class FaultPipelineBuilderExtensions
     /// </summary>
     /// <typeparam name="TResult">The type of result the retry strategy handles.</typeparam>
     /// <param name="builder">The builder instance.</param>
-    /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="faultGenerator">The exception generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(
-        this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Func<Exception?> faultGenerator)
+        this ResiliencePipelineBuilder<TResult> builder, double injectionRate, Func<Exception?> faultGenerator)
     {
         Guard.NotNull(builder);
 
         builder.AddFaultCore(new FaultStrategyOptions
         {
-            Enabled = enabled,
+            Enabled = true,
             InjectionRate = injectionRate,
             FaultGenerator = (_) => new ValueTask<Exception?>(Task.FromResult(faultGenerator()))
         });
