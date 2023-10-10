@@ -147,6 +147,10 @@ ResiliencePipeline pipeline = registry.GetPipeline("A");
 - You should not reuse the cancellation token when the pipeline is reloaded.
 - Pipelines enabled for reloads remain valid and current post-reload. The registry manages this transparently.
 
+### How dynamic reloads work
+
+Dynamic reloading is a concept anchored in the registry, while the `<xref:Polly.ResiliencePipelineBuilder>` remains agnostic of it. The registry employs callbacks to configure the builders, and these callbacks are invoked right before the creation of the pipeline. When dynamic reloading is activated, the registry monitors any changes that could affect the pipeline, seamlessly reloading it as needed. The reloading process involves calling the callback that configures the pipeline; within this callback is also the call to the `AddReloadToken` method. Thus, each reload also enables dynamic reloads for that particular pipeline. As a consumer, you may opt to cease reloading by simply not invoking the `AddReloadToken` method. It's crucial to note that if any error occurs during reloading, the previous pipeline is retained, reloading is halted, and Polly emits a `ReloadFailed` telemetry event.
+
 ## Resource disposal
 
 The registry caches and manages all pipelines and resources linked to them. When you dispose of the registry, all pipelines created by it are also disposed of and can't be used anymore. The following example illustrates this:
@@ -198,6 +202,10 @@ registry.TryAddBuilder("A", (builder, context) =>
 <!-- endSnippet -->
 
 Both `AddReloadToken(...)` and `OnPipelineDisposed(...)` are used to implement the `EnableReloads<TOptions>(...)` extension method that is used by the [Dependency Injection layer](../advanced/dependency-injection.md#dynamic-reloads).
+
+### How resource disposal works
+
+Resource disposal occurs when the registry is disposed of or when the pipeline undergoes changes due to [dynamic reloads](#dynamic-reloads). Upon disposal, all callbacks registered through the `OnPipelineDisposed` method are invoked. However, actual resource disposal is deferred until the pipeline completes all outgoing executions. It's vital to note that dispose callbacks are associated only with a specific instance of the pipeline.
 
 ## Complex registry keys
 
