@@ -344,6 +344,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
 
         try
         {
+            continueOnCapturedContext ??= DefaultContinueOnCapturedContext;
             await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext.Value).ConfigureAwait(continueOnCapturedContext.Value);
             return PolicyResult.Successful(context);
         }
@@ -470,6 +471,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
 
         try
         {
+            continueOnCapturedContext ??= DefaultContinueOnCapturedContext;
             return PolicyResult<TResult>.Successful(
                 await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext.Value).ConfigureAwait(continueOnCapturedContext.Value), context);
         }
