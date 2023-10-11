@@ -1,1 +1,1 @@
-﻿
+﻿static Polly.PolicyBase.DefaultContinueOnCapturedContext -> bool

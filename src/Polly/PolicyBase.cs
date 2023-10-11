@@ -18,7 +18,7 @@ public abstract partial class PolicyBase
     /// <summary>
     /// Defines a value to use for continueOnCaptureContext, when none is supplied.
     /// </summary>
-    internal const bool DefaultContinueOnCapturedContext = false;
+    public static bool DefaultContinueOnCapturedContext = false;
 
     internal static ExceptionType GetExceptionType(ExceptionPredicates exceptionPredicates, Exception exception)
     {
