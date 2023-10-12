@@ -20,7 +20,7 @@ public class BridgePipelineComponentTests
         var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new Strategy<object>(outcome =>
         {
             values.Add(outcome.Result);
-        })), DisposeBehavior.Allow);
+        })), DisposeBehavior.Allow, null);
 
         pipeline.Execute(args => "dummy");
         pipeline.Execute(args => 0);
@@ -41,7 +41,7 @@ public class BridgePipelineComponentTests
         var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new Strategy<string>(outcome =>
         {
             values.Add(outcome.Result);
-        })), DisposeBehavior.Allow);
+        })), DisposeBehavior.Allow, null);
 
         pipeline.Execute(args => "dummy");
 
@@ -52,13 +52,13 @@ public class BridgePipelineComponentTests
     [Fact]
     public void Pipeline_TypeCheck_Ok()
     {
-        var called = false;
+        bool called = false;
 
         var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new Strategy<object>(outcome =>
         {
             outcome.Result.Should().Be(-1);
             called = true;
-        })), DisposeBehavior.Allow);
+        })), DisposeBehavior.Allow, null);
 
         pipeline.Execute(() => -1);
 

@@ -51,14 +51,16 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
             return _pipelines.GetOrAdd(key, k =>
             {
-                var component = new RegistryPipelineComponentBuilder<ResiliencePipelineBuilder<TResult>, TKey>(
+                var componentBuilder = new RegistryPipelineComponentBuilder<ResiliencePipelineBuilder<TResult>, TKey>(
                     _activator,
                     k,
                     _builderNameFormatter(k),
                     _instanceNameFormatter?.Invoke(k),
-                    configure).CreateComponent();
+                    configure);
 
-                return new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject);
+                (var builder, var component) = componentBuilder.CreateComponent();
+
+                return new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject, builder.Pool);
             });
         }
 

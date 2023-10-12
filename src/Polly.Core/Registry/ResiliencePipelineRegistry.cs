@@ -124,14 +124,17 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
         return _pipelines.GetOrAdd(key, k =>
         {
-            var component = new RegistryPipelineComponentBuilder<ResiliencePipelineBuilder, TKey>(
+            var componentBuilder = new RegistryPipelineComponentBuilder<ResiliencePipelineBuilder, TKey>(
                 _activator,
                 k,
                 _builderNameFormatter(k),
                 _instanceNameFormatter?.Invoke(k),
-                configure).CreateComponent();
+                configure)
+            ;
 
-            return new ResiliencePipeline(component, DisposeBehavior.Reject);
+            (var builder, var component) = componentBuilder.CreateComponent();
+
+            return new ResiliencePipeline(component, DisposeBehavior.Reject, builder.Pool);
         });
     }
 
@@ -250,7 +253,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
     private GenericRegistry<TResult> GetGenericRegistry<TResult>()
     {
-        if (_genericRegistry.TryGetValue(typeof(TResult), out var genericRegistry))
+        if (_genericRegistry.TryGetValue(typeof(TResult), out object? genericRegistry))
         {
             return (GenericRegistry<TResult>)genericRegistry;
         }

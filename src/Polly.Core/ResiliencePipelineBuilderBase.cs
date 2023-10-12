@@ -55,6 +55,18 @@ public abstract class ResiliencePipelineBuilderBase
     public string? InstanceName { get; set; }
 
     /// <summary>
+    /// Gets or sets the context pool associated with the builder.
+    /// </summary>
+    /// <remarks>
+    /// A custom pool can be used to configure custom behavior for ResilientContext creation.
+    /// This can include setting a default continueOnCapturedContext parameter or custom operation key resolution.
+    /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/> and the default shared pool will be used.
+    /// </value>
+    public ResilienceContextPool? Pool { get; set; }
+
+    /// <summary>
     /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
     /// </summary>
     /// <remarks>
