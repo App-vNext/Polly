@@ -59,7 +59,7 @@ public abstract class ResiliencePipelineBuilderBase
     /// </summary>
     /// <remarks>
     /// A custom pool can be used to configure custom behavior for ResilientContext creation.
-    /// This can include setting a default continueOnCapturedContext parameter or custom operation key resolution.
+    /// This can include setting a default <c>continueOnCapturedContext</c> parameter or custom operation key resolution.
     /// </remarks>
     /// <value>
     /// If the default value of <see langword="null"/> is used, the default shared pool will be used.
