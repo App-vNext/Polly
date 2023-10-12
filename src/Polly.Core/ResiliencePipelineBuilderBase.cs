@@ -62,7 +62,7 @@ public abstract class ResiliencePipelineBuilderBase
     /// This can include setting a default continueOnCapturedContext parameter or custom operation key resolution.
     /// </remarks>
     /// <value>
-    /// The default value is <see langword="null"/> and the default shared pool will be used.
+    /// If the default value of <see langword="null"/> is used, the default shared pool will be used.
     /// </value>
     public ResilienceContextPool? Pool { get; set; }
 
