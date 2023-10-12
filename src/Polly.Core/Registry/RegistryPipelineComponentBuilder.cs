@@ -51,7 +51,7 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
         return (builder.Builder, component);
     }
 
-    private BuilderOptions CreateBuilder()
+    private Builder CreateBuilder()
     {
         var context = new ConfigureBuilderContext<TKey>(_key, _builderName, _instanceName);
         var builder = _activator();
@@ -75,7 +75,7 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
             builder);
     }
 
-    private record BuilderOptions(
+    private record Builder(
         Func<PipelineComponent> ComponentFactory,
         List<CancellationToken> ReloadTokens,
         ResilienceStrategyTelemetry Telemetry,
