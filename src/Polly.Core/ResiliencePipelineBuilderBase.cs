@@ -55,19 +55,19 @@ public abstract class ResiliencePipelineBuilderBase
     public string? InstanceName { get; set; }
 
     /// <summary>
-    /// Gets or sets the resilience context pool associated with the builder.
+    /// Gets or sets the <see cref="Polly.ResilienceContextPool"/> associated with the builder.
     /// </summary>
     /// <remarks>
-    /// A custom pool can be used to configure custom behavior for ResilientContext creation.
+    /// A custom pool can be used to configure custom behavior for  creation.
     /// This can include setting a default <c>continueOnCapturedContext</c> parameter or custom operation key resolution.
     /// </remarks>
     /// <value>
-    /// If the default value of <see langword="null"/> is used, the default shared pool will be used.
+    /// If the default value of <see langword="null"/> is used, <see cref="ResilienceContextPool.Shared"/> will be used.
     /// </value>
-    public ResilienceContextPool? Pool { get; set; }
+    public ResilienceContextPool? ResilienceContextPool { get; set; }
 
     /// <summary>
-    /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
+    /// Gets or sets a <see cref="System.TimeProvider"/> that is used by strategies that work with time.
     /// </summary>
     /// <remarks>
     /// This property is internal until we switch to official System.TimeProvider.
@@ -79,7 +79,7 @@ public abstract class ResiliencePipelineBuilderBase
     internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 
     /// <summary>
-    /// Gets or sets the <see cref="TelemetryListener"/> that is used by Polly to report resilience events.
+    /// Gets or sets the <see cref="Polly.Telemetry.TelemetryListener"/> that is used by Polly to report resilience events.
     /// </summary>
     /// <remarks>
     /// This property is used by the telemetry infrastructure and should not be used directly by user code.

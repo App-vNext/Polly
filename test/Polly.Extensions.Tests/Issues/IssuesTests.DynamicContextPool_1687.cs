@@ -46,12 +46,12 @@ public partial class IssuesTests
 
         services.AddResiliencePipelineRegistry<string>(options => options.BuilderFactory = () => new ResiliencePipelineBuilder
         {
-            Pool = pool,
+            ResilienceContextPool = pool,
         });
 
         services.AddResiliencePipeline(key, builder =>
         {
-            builder.Pool.Should().Be(pool);
+            builder.ResilienceContextPool.Should().Be(pool);
             builder.AddStrategy(strategy);
         });
 

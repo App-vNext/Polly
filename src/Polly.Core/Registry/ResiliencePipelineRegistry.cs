@@ -134,7 +134,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
             (var builder, var component) = componentBuilder.CreateComponent();
 
-            return new ResiliencePipeline(component, DisposeBehavior.Reject, builder.Pool);
+            return new ResiliencePipeline(component, DisposeBehavior.Reject, builder.ResilienceContextPool);
         });
     }
 

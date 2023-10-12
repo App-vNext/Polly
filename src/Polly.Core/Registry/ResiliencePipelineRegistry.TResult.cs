@@ -60,7 +60,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
                 (var builder, var component) = componentBuilder.CreateComponent();
 
-                return new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject, builder.Pool);
+                return new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject, builder.ResilienceContextPool);
             });
         }
 
