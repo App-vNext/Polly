@@ -7,12 +7,6 @@ public partial class IssuesTests
 {
     private class CustomResilienceContextPool : ResilienceContextPool
     {
-        private CustomResilienceContextPool()
-        {
-        }
-
-        public static CustomResilienceContextPool Instance { get; } = new();
-
         public override ResilienceContext Get(ResilienceContextCreationArguments arguments)
         {
             if (arguments.ContinueOnCapturedContext is null)
@@ -45,17 +39,19 @@ public partial class IssuesTests
     [Fact]
     public async Task DynamicContextPool_1687()
     {
+        var pool = new CustomResilienceContextPool();
         var strategy = new ContextCreationTestStrategy();
         var services = new ServiceCollection();
         string key = "my-key";
 
         services.AddResiliencePipelineRegistry<string>(options => options.BuilderFactory = () => new ResiliencePipelineBuilder
         {
-            Pool = CustomResilienceContextPool.Instance,
+            Pool = pool,
         });
 
         services.AddResiliencePipeline(key, builder =>
         {
+            builder.Pool.Should().Be(pool);
             builder.AddStrategy(strategy);
         });
 

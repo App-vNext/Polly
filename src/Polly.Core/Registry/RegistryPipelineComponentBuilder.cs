@@ -37,7 +37,7 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
 
         if (builder.ReloadTokens.Count == 0)
         {
-            return (builder.Builder, component);
+            return (builder.Instance, component);
         }
 
         component = PipelineComponentFactory.CreateReloadable(
@@ -48,7 +48,7 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
                 return new ReloadableComponent.Entry(builder.ComponentFactory(), builder.ReloadTokens, builder.Telemetry);
             });
 
-        return (builder.Builder, component);
+        return (builder.Instance, component);
     }
 
     private Builder CreateBuilder()
@@ -79,5 +79,5 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
         Func<PipelineComponent> ComponentFactory,
         List<CancellationToken> ReloadTokens,
         ResilienceStrategyTelemetry Telemetry,
-        TBuilder Builder);
+        TBuilder Instance);
 }
