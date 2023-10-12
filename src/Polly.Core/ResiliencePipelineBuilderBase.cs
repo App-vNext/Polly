@@ -55,7 +55,7 @@ public abstract class ResiliencePipelineBuilderBase
     public string? InstanceName { get; set; }
 
     /// <summary>
-    /// Gets or sets the context pool associated with the builder.
+    /// Gets or sets the resilience context pool associated with the builder.
     /// </summary>
     /// <remarks>
     /// A custom pool can be used to configure custom behavior for ResilientContext creation.
