@@ -86,7 +86,7 @@ internal static partial class OutcomePipelineBuilderExtensions
         {
             Enabled = enabled,
             InjectionRate = injectionRate,
-            Outcome = new(result)
+            Outcome = new Outcome<TResult>(result)
         });
         return builder;
     }

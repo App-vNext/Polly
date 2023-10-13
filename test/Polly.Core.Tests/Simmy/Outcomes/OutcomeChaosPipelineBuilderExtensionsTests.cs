@@ -16,7 +16,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
                 InjectionRate = 0.6,
                 Enabled = true,
                 Randomizer = () => 0.5,
-                Outcome = new(100)
+                Outcome = new Outcome<int>(100)
             });
 
             AssertResultStrategy(builder, true, 0.6, new(100))
@@ -28,7 +28,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     {
         builder =>
         {
-            builder.AddChaosFault<string>(new FaultStrategyOptions
+            builder.AddChaosFault(new FaultStrategyOptions
             {
                 InjectionRate = 0.6,
                 Enabled = true,
