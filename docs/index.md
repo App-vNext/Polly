@@ -43,5 +43,6 @@ You can also find many resources and community contributions, such as:
 - [Polly-Contrib](community/polly-contrib.md): Community projects and libraries that extend and enhance Polly's functionality and ecosystem.
 - [Libraries and contributions](community/libraries-and-contributions.md): Dependencies and contributors that make Polly possible and awesome.
 - Microsoft's [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers): Sample project demonstrating a .NET Micro-services architecture and using Polly for resilience.
+- [Git Workflow](community/git-workflow.md): Our suggested Git workflow for contributing to Polly.
 
 You can browse the documentation using the sidebar or visit the [API](api/index.md) section for the reference documentation.
