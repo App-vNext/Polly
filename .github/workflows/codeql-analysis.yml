@@ -41,14 +41,14 @@ jobs:
         restore-keys: ${{ runner.os }}-nuget-
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@ddccb873888234080b77e9bc2d4764d5ccaaccf9 # v2.21.9
+      uses: github/codeql-action/init@d90b8d79de6dc1f58e83a1499aa58d6c93dc28de # v2.22.2
       with:
         languages: ${{ matrix.language }}
 
     - name: Autobuild
-      uses: github/codeql-action/autobuild@ddccb873888234080b77e9bc2d4764d5ccaaccf9 # v2.21.9
+      uses: github/codeql-action/autobuild@d90b8d79de6dc1f58e83a1499aa58d6c93dc28de # v2.22.2
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@ddccb873888234080b77e9bc2d4764d5ccaaccf9 # v2.21.9
+      uses: github/codeql-action/analyze@d90b8d79de6dc1f58e83a1499aa58d6c93dc28de # v2.22.2
       with:
         category: "/language:${{ matrix.language }}"
