@@ -1075,6 +1075,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "community/git-workflow.md",
+      "output": {
+        ".html": {
+          "relative_path": "community/git-workflow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "community/libraries-and-contributions.md",
       "output": {
         ".html": {
