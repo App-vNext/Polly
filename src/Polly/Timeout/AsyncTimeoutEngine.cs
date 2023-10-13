@@ -15,17 +15,28 @@ internal static class AsyncTimeoutEngine
         TimeSpan timeout = timeoutProvider(context);
 
         using var timeoutCancellationTokenSource = new CancellationTokenSource();
-        using var combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token);
+        // Do not use a using here, the exception will exit the scope before we have time to
+        // notify the downstream of the cancellation.
+        var combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token);
 
         Task<TResult> actionTask = null;
         CancellationToken combinedToken = combinedTokenSource.Token;
 
         try
         {
+
+            var actionTaskFn = async () =>
+            {
+                var result = await action(context, combinedToken).ConfigureAwait(continueOnCapturedContext);
+                // dispose of the token source after we've waited on the task to finish.
+                combinedTokenSource.Dispose();
+                return result;
+            };
+
             if (timeoutStrategy == TimeoutStrategy.Optimistic)
             {
                 SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
-                return await action(context, combinedToken).ConfigureAwait(continueOnCapturedContext);
+                return await actionTaskFn().ConfigureAwait(continueOnCapturedContext);
             }
 
             // else: timeoutStrategy == TimeoutStrategy.Pessimistic
@@ -34,7 +45,7 @@ internal static class AsyncTimeoutEngine
 
             SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
 
-            actionTask = action(context, combinedToken);
+            actionTask = actionTaskFn();
 
             return await (await Task.WhenAny(actionTask, timeoutTask).ConfigureAwait(continueOnCapturedContext)).ConfigureAwait(continueOnCapturedContext);
 
