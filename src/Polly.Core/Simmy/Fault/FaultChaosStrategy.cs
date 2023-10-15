@@ -1,6 +1,7 @@
 ﻿using Polly.Telemetry;
 
 namespace Polly.Simmy.Fault;
+
 internal class FaultChaosStrategy<T> : MonkeyStrategy<T>
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
@@ -21,7 +22,7 @@ internal class FaultChaosStrategy<T> : MonkeyStrategy<T>
 
     public Func<OnFaultInjectedArguments, ValueTask>? OnFaultInjected { get; }
 
-    public Func<FaultGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; }
+    public Func<FaultGeneratorArguments, ValueTask<Exception?>> FaultGenerator { get; }
 
     public Exception? Fault { get; }
 
@@ -31,7 +32,7 @@ internal class FaultChaosStrategy<T> : MonkeyStrategy<T>
         {
             if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext))
             {
-                var fault = await FaultGenerator!(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
+                var fault = await FaultGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
                 if (fault is not null)
                 {
                     var args = new OnFaultInjectedArguments(context, fault);

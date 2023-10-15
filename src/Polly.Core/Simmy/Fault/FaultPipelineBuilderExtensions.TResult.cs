@@ -18,9 +18,7 @@ internal static partial class FaultPipelineBuilderExtensions
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, double injectionRate, Exception fault)
     {
-        Guard.NotNull(builder);
-
-        builder.AddFaultCore(new FaultStrategyOptions
+        builder.AddChaosFault(new FaultStrategyOptions
         {
             Enabled = true,
             InjectionRate = injectionRate,
@@ -40,9 +38,7 @@ internal static partial class FaultPipelineBuilderExtensions
     public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(
         this ResiliencePipelineBuilder<TResult> builder, double injectionRate, Func<Exception?> faultGenerator)
     {
-        Guard.NotNull(builder);
-
-        builder.AddFaultCore(new FaultStrategyOptions
+        builder.AddChaosFault(new FaultStrategyOptions
         {
             Enabled = true,
             InjectionRate = injectionRate,
@@ -58,25 +54,21 @@ internal static partial class FaultPipelineBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The fault strategy options.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, FaultStrategyOptions options)
-    {
-        Guard.NotNull(builder);
-        Guard.NotNull(options);
-
-        builder.AddFaultCore<TResult>(options);
-        return builder;
-    }
-
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    private static void AddFaultCore<TResult>(
+    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(
         this ResiliencePipelineBuilder<TResult> builder,
         FaultStrategyOptions options)
     {
+        Guard.NotNull(builder);
+        Guard.NotNull(options);
+
         builder.AddStrategy(
             context => new FaultChaosStrategy<TResult>(options, context.Telemetry),
             options);
+
+        return builder;
     }
 }

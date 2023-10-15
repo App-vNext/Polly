@@ -11,11 +11,6 @@ internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
     public OutcomeChaosStrategy(OutcomeStrategyOptions<T> options, ResilienceStrategyTelemetry telemetry)
         : base(options)
     {
-        if (options.OutcomeGenerator is null)
-        {
-            throw new InvalidOperationException("Either Outcome or OutcomeGenerator is required.");
-        }
-
         _telemetry = telemetry;
         OnOutcomeInjected = options.OnOutcomeInjected;
         OutcomeGenerator = options.OutcomeGenerator;
