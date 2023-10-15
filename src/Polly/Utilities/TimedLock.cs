@@ -3,7 +3,7 @@ namespace Polly.Utilities;
 
 // Adapted from the link below, with slight modifications.
 
-// http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking
+// https://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking
 // Ian Griffiths (original TimedLock author) wrote:
 // Thanks to Eric Gunnerson for recommending this be a struct rather
 // than a class - avoids a heap allocation.

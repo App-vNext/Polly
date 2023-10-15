@@ -66,6 +66,8 @@
     href: community/libraries-and-contributions.md
   - name: Useful resources and links
     href: community/resources.md
+  - name: Git workflow
+    href: community/git-workflow.md
 
 - name: API
   href: api/

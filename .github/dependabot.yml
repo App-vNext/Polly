@@ -9,6 +9,10 @@ updates:
     timezone: "America/New_York"
 - package-ecosystem: nuget
   directory: "/"
+  groups:
+    xunit:
+      patterns:
+        - xunit*
   schedule:
     interval: weekly
     day: thursday

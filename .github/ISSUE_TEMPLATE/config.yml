@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Contact us
+    url: https://pollytalk.slack.com
+    about: You can also contact us on Slack.
+  - name: Documentation
+    url: https://www.pollydocs.org/
+    about: Check out Polly's documentation for hints, tips and samples.
+  - name: Stack Overflow
+    url: https://stackoverflow.com/questions/tagged/polly
+    about: Ask a question about Polly on Stack Overflow.
