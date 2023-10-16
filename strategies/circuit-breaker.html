@@ -236,7 +236,7 @@ await manualControl.CloseAsync();
 <li><a href="https://msdn.microsoft.com/en-us/library/dn589784.aspx">Circuit Breaker Pattern by Microsoft</a></li>
 <li><a href="https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker">Original Circuit Breaking Article</a></li>
 </ul>
-<h2 id="patterns-and-anti-patterns">Patterns and anti-patterns</h2>
+<h2 id="anti-patterns">Anti-patterns</h2>
 <p>Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.</p>
 <h3 id="1---using-different-sleep-duration-between-retry-attempts-based-on-circuit-breaker-state">1 - Using different sleep duration between retry attempts based on Circuit Breaker state</h3>
 <p>Imagine that we have an inner Circuit Breaker and an outer Retry strategies.</p>
@@ -379,7 +379,7 @@ var circuitBreaker = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <p>✅ DO</p>
-<p>The <code>CircuitBreakerStartegyOptions</code> currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.</p>
+<p>The <code>CircuitBreakerStrategyOptions</code> currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.</p>
 <h3 id="3---wrapping-each-endpoint-with-a-circuit-breaker">3 - Wrapping each endpoint with a circuit breaker</h3>
 <p>Imagine that you have to call N number of services via <code>HttpClient</code>s.
 You want to decorate all downstream calls with the service-aware Circuit Breaker.</p>

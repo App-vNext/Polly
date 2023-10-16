@@ -231,7 +231,39 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 </tr>
 </tbody>
 </table>
-<h2 id="patterns-and-anti-patterns">Patterns and anti-patterns</h2>
+<h2 id="patterns">Patterns</h2>
+<h3 id="limiting-the-maximum-delay">Limiting the maximum delay</h3>
+<p>In some cases, you might want to set a limit on the calculated delay. This is beneficial when multiple retries are anticipated, and you wish to prevent excessive wait times between these retries.</p>
+<p>Consider the following example of a long-running background job:</p>
+<!-- snippet: retry-pattern-max-delay -->
+<pre><code class="lang-cs">ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        Delay = TimeSpan.FromSeconds(2),
+        MaxRetryAttempts = int.MaxValue,
+        BackoffType = DelayBackoffType.Exponential,
+
+        // Initially, we aim for an exponential backoff, but after a certain number of retries, we set a maximum delay of 15 minutes.
+        MaxDelay = TimeSpan.FromMinutes(15),
+        UseJitter = true
+    })
+    .Build();
+
+// Background processing
+while (!cancellationToken.IsCancellationRequested)
+{
+    await pipeline.ExecuteAsync(async token =&gt;
+    {
+        // In the event of a prolonged service outage, we can afford to wait for a successful retry since this is a background task.
+        await SynchronizeDataAsync(token);
+    },
+    cancellationToken);
+
+    await Task.Delay(TimeSpan.FromMinutes(30)); // The sync runs every 30 minutes.
+}
+</code></pre>
+<!-- endSnippet -->
+<h2 id="anti-patterns">Anti-patterns</h2>
 <p>Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.</p>
 <h3 id="1---overusing-builder-methods">1 - Overusing builder methods</h3>
 <p>❌ DON'T</p>
@@ -523,36 +555,6 @@ var retry = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
 <p>As previously mentioned, always use the designated area to define retry conditions. Re-frame your original exit conditions to specify when a retry should be initiated.</p>
-<h3 id="limiting-the-maximum-delay">Limiting the maximum delay</h3>
-<p>In some cases, you might want to set a limit on the calculated delay. This is beneficial when multiple retries are anticipated, and you wish to prevent excessive wait times between these retries.</p>
-<p>Consider the following example of a long-running background job:</p>
-<!-- snippet: retry-pattern-max-delay -->
-<pre><code class="lang-cs">ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
-    .AddRetry(new()
-    {
-        Delay = TimeSpan.FromSeconds(2),
-        MaxRetryAttempts = int.MaxValue,
-
-        // Initially, we aim for an exponential backoff, but after a certain number of retries, we set a maximum delay of 15 minutes.
-        MaxDelay = TimeSpan.FromMinutes(15),
-        UseJitter = true
-    })
-    .Build();
-
-// Background processing
-while (!cancellationToken.IsCancellationRequested)
-{
-    await pipeline.ExecuteAsync(async token =&gt;
-    {
-        // In the event of a prolonged service outage, we can afford to wait for a successful retry since this is a background task.
-        await SynchronizeDataAsync(token);
-    },
-    cancellationToken);
-
-    await Task.Delay(TimeSpan.FromMinutes(30)); // The sync runs every 30 minutes.
-}
-</code></pre>
-<!-- endSnippet -->
 </article>
 
         <div class="contribution d-print-none">
