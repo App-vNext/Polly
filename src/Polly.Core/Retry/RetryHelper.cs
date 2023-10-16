@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Polly.Retry;
 
 internal static class RetryHelper
@@ -112,9 +114,10 @@ internal static class RetryHelper
         return TimeSpan.FromTicks((long)Math.Min(formulaIntrinsicValue * RpScalingFactor * targetTicksFirstDelay, maxTimeSpanDouble));
     }
 
+    [SuppressMessage("Style", "IDE0047", Justification = "Parentheses offer less mental gymnastics")]
     private static TimeSpan ApplyJitter(TimeSpan delay, Func<double> randomizer)
     {
-        var offset = delay.TotalMilliseconds * JitterFactor / 2;
+        var offset = (delay.TotalMilliseconds * JitterFactor) / 2;
         var randomDelay = (delay.TotalMilliseconds * JitterFactor * randomizer()) - offset;
         var newDelay = delay.TotalMilliseconds + randomDelay;
 
