@@ -97,7 +97,7 @@ await manualControl.CloseAsync();
 - [Circuit Breaker Pattern by Microsoft](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
 - [Original Circuit Breaking Article](https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker)
 
-## Patterns and anti-patterns
+## Anti-patterns
 
 Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
 
@@ -263,7 +263,7 @@ circuitBreaker = new ResiliencePipelineBuilder()
 
 ✅ DO
 
-The `CircuitBreakerStartegyOptions` currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.
+The `CircuitBreakerStrategyOptions` currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.
 
 ### 3 - Wrapping each endpoint with a circuit breaker
 
