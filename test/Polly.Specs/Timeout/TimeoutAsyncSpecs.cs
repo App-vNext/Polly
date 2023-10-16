@@ -260,18 +260,16 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         SystemClock.Reset();
 
         var policy = Policy.TimeoutAsync(TimeSpan.FromMilliseconds(200), TimeoutStrategy.Pessimistic);
-        var upstreamToken = new CancellationToken();
         bool isCancelled = false;
 
         var act = () => policy.ExecuteAsync(async (combinedToken) =>
         {
             combinedToken.Register(() => isCancelled = true);
-            await SystemClock.SleepAsync(TimeSpan.FromMilliseconds(300), combinedToken);
-        }, upstreamToken);
+            await SystemClock.SleepAsync(TimeSpan.FromMilliseconds(1000), combinedToken);
+        }, CancellationToken.None);
 
         await act.Should().ThrowAsync<TimeoutRejectedException>();
 
-        await SystemClock.SleepAsync(TimeSpan.FromMilliseconds(400), default);
         isCancelled.Should().BeTrue();
     }
 
