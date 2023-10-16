@@ -15,8 +15,6 @@ internal static class AsyncTimeoutEngine
         TimeSpan timeout = timeoutProvider(context);
 
         using var timeoutCancellationTokenSource = new CancellationTokenSource();
-        // Do not use a using here, the exception will exit the scope before we have time to
-        // notify the downstream of the cancellation.
         using var combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token);
 
         Task<TResult> actionTask = null;
@@ -54,7 +52,7 @@ internal static class AsyncTimeoutEngine
         }
         finally
         {
-            // If the timeoutCancellation was canceled & our combined token hasn't been signaled, signal it.
+            // If the timeoutCancellation was canceled & our combined token hasn't been signaled, cancel it.
             // This avoids the exception propagating before the linked token can signal the downstream to cancel.
             if (!combinedTokenSource.IsCancellationRequested && timeoutCancellationTokenSource.IsCancellationRequested)
             {
