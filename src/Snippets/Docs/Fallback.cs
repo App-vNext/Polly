@@ -237,11 +237,15 @@ internal static class Fallback
     {
         #region fallback-after-retries
 
+        // Define a common predicates re-used by both fallback and retries
+        var predicateBuilder = new PredicateBuilder<HttpResponseMessage>()
+            .Handle<HttpRequestException>()
+            .HandleResult(r => r.StatusCode == HttpStatusCode.InternalServerError);
+
         var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddFallback(new()
             {
-                ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-                    .Handle<HttpRequestException>()
+                ShouldHandle = predicateBuilder
                     .HandleResult(r => r.StatusCode == HttpStatusCode.InternalServerError),
                 FallbackAction = args =>
                 {
@@ -249,14 +253,11 @@ internal static class Fallback
                     HttpResponseMessage fallbackResponse = ResolveFallbackResponse(args.Outcome);
 
                     return Outcome.FromResultAsValueTask(fallbackResponse);
-
                 }
             })
             .AddRetry(new()
             {
-                ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-                    .Handle<HttpRequestException>()
-                    .HandleResult(r => r.StatusCode == HttpStatusCode.InternalServerError),
+                ShouldHandle = predicateBuilder,
                 MaxRetryAttempts = 3,
             })
             .Build();

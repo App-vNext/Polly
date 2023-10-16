@@ -119,6 +119,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     {
         Delay = TimeSpan.FromSeconds(2),
         MaxRetryAttempts = int.MaxValue,
+        BackoffType = DelayBackoffType.Exponential,
 
         // Initially, we aim for an exponential backoff, but after a certain number of retries, we set a maximum delay of 15 minutes.
         MaxDelay = TimeSpan.FromMinutes(15),
