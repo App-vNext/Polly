@@ -245,8 +245,7 @@ internal static class Fallback
         var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddFallback(new()
             {
-                ShouldHandle = predicateBuilder
-                    .HandleResult(r => r.StatusCode == HttpStatusCode.InternalServerError),
+                ShouldHandle = predicateBuilder,
                 FallbackAction = args =>
                 {
                     // Try to resolve the fallback response
