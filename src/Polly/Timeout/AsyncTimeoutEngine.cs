@@ -17,26 +17,17 @@ internal static class AsyncTimeoutEngine
         using var timeoutCancellationTokenSource = new CancellationTokenSource();
         // Do not use a using here, the exception will exit the scope before we have time to
         // notify the downstream of the cancellation.
-        var combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token);
+        using var combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token);
 
         Task<TResult> actionTask = null;
         CancellationToken combinedToken = combinedTokenSource.Token;
 
         try
         {
-
-            var actionTaskFn = async () =>
-            {
-                var result = await action(context, combinedToken).ConfigureAwait(continueOnCapturedContext);
-                // dispose of the token source after we've waited on the task to finish.
-                combinedTokenSource.Dispose();
-                return result;
-            };
-
             if (timeoutStrategy == TimeoutStrategy.Optimistic)
             {
                 SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
-                return await actionTaskFn().ConfigureAwait(continueOnCapturedContext);
+                return await action(context, combinedToken).ConfigureAwait(continueOnCapturedContext);
             }
 
             // else: timeoutStrategy == TimeoutStrategy.Pessimistic
@@ -45,10 +36,9 @@ internal static class AsyncTimeoutEngine
 
             SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
 
-            actionTask = actionTaskFn();
+            actionTask = action(context, combinedToken);
 
             return await (await Task.WhenAny(actionTask, timeoutTask).ConfigureAwait(continueOnCapturedContext)).ConfigureAwait(continueOnCapturedContext);
-
         }
         catch (Exception ex)
         {
@@ -62,6 +52,15 @@ internal static class AsyncTimeoutEngine
 
             throw;
         }
+        finally
+        {
+            // If the timeoutCancellation was canceled & our combined token hasn't been signaled, signal it.
+            // This avoids the exception propagating before the linked token can signal the downstream to cancel.
+            if (!combinedTokenSource.IsCancellationRequested && timeoutCancellationTokenSource.IsCancellationRequested)
+            {
+                combinedTokenSource.Cancel();
+            }
+        }
     }
 
     private static Task<TResult> AsTask<TResult>(this CancellationToken cancellationToken)
@@ -71,11 +70,11 @@ internal static class AsyncTimeoutEngine
         // A generalised version of this method would include a hotpath returning a canceled task (rather than setting up a registration) if (cancellationToken.IsCancellationRequested) on entry.  This is omitted, since we only start the timeout countdown in the token _after calling this method.
 
         IDisposable registration = null;
-            registration = cancellationToken.Register(() =>
-            {
-                tcs.TrySetCanceled();
-                registration?.Dispose();
-            }, useSynchronizationContext: false);
+        registration = cancellationToken.Register(() =>
+        {
+            tcs.TrySetCanceled();
+            registration?.Dispose();
+        }, useSynchronizationContext: false);
 
         return tcs.Task;
     }
