@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Polly.Telemetry;
+﻿using Polly.Telemetry;
 
 namespace Polly.Utils.Pipeline;
 

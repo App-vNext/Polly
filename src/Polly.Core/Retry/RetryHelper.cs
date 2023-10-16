@@ -114,7 +114,7 @@ internal static class RetryHelper
 
     private static TimeSpan ApplyJitter(TimeSpan delay, Func<double> randomizer)
     {
-        var offset = (delay.TotalMilliseconds * JitterFactor) / 2;
+        var offset = delay.TotalMilliseconds * JitterFactor / 2;
         var randomDelay = (delay.TotalMilliseconds * JitterFactor * randomizer()) - offset;
         var newDelay = delay.TotalMilliseconds + randomDelay;
 
