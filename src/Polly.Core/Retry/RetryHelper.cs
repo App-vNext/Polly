@@ -121,5 +121,5 @@ internal static class RetryHelper
 
         return TimeSpan.FromMilliseconds(newDelay);
     }
-}
 #pragma warning restore IDE0047 // Remove unnecessary parentheses which offer less mental gymnastics
+}
