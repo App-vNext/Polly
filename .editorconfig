@@ -43,3 +43,7 @@ dotnet_naming_symbols.static_fields.required_modifiers = static
 dotnet_naming_symbols.static_fields.applicable_accessibilities = private, internal, private_protected
 dotnet_naming_style.static_prefix_style.required_prefix = 
 dotnet_naming_style.static_prefix_style.capitalization = pascal_case
+
+# don't have var preferences
+dotnet_diagnostic.IDE0007.severity = none
+dotnet_diagnostic.IDE0008.severity = none

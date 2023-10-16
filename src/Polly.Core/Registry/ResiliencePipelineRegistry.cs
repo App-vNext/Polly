@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using Polly.Utils.Pipeline;
 
 namespace Polly.Registry;
 
