@@ -58,9 +58,9 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
                     _instanceNameFormatter?.Invoke(k),
                     configure);
 
-                (var builder, var component) = componentBuilder.CreateComponent();
+                (var contextPool, var component) = componentBuilder.CreateComponent();
 
-                return new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject, builder.ResilienceContextPool);
+                return new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject, contextPool);
             });
         }
 

@@ -64,7 +64,7 @@ public abstract class ResiliencePipelineBuilderBase
     /// <value>
     /// If the default value of <see langword="null"/> is used, <see cref="ResilienceContextPool.Shared"/> will be used.
     /// </value>
-    public ResilienceContextPool? ResilienceContextPool { get; set; }
+    public ResilienceContextPool? ContextPool { get; set; }
 
     /// <summary>
     /// Gets or sets a <see cref="System.TimeProvider"/> that is used by strategies that work with time.

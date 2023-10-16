@@ -30,14 +30,14 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
         _configure = configure;
     }
 
-    internal (TBuilder builder, PipelineComponent component) CreateComponent()
+    internal (ResilienceContextPool? contextPool, PipelineComponent component) CreateComponent()
     {
         var builder = CreateBuilder();
         var component = builder.ComponentFactory();
 
         if (builder.ReloadTokens.Count == 0)
         {
-            return (builder.Instance, component);
+            return (builder.Instance.ContextPool, component);
         }
 
         component = PipelineComponentFactory.CreateReloadable(
@@ -48,7 +48,7 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
                 return new ReloadableComponent.Entry(builder.ComponentFactory(), builder.ReloadTokens, builder.Telemetry);
             });
 
-        return (builder.Instance, component);
+        return (builder.Instance.ContextPool, component);
     }
 
     private Builder CreateBuilder()

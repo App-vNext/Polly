@@ -17,5 +17,5 @@ public sealed class ResiliencePipelineBuilder : ResiliencePipelineBuilderBase
     /// </summary>
     /// <returns>An instance of <see cref="ResiliencePipeline"/>.</returns>
     /// <exception cref="ValidationException">Thrown when this builder has invalid configuration.</exception>
-    public ResiliencePipeline Build() => new(BuildPipelineComponent(), DisposeBehavior.Allow, ResilienceContextPool);
+    public ResiliencePipeline Build() => new(BuildPipelineComponent(), DisposeBehavior.Allow, ContextPool);
 }
