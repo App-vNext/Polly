@@ -253,7 +253,7 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
     private GenericRegistry<TResult> GetGenericRegistry<TResult>()
     {
-        if (_genericRegistry.TryGetValue(typeof(TResult), out object? genericRegistry))
+        if (_genericRegistry.TryGetValue(typeof(TResult), out var genericRegistry))
         {
             return (GenericRegistry<TResult>)genericRegistry;
         }

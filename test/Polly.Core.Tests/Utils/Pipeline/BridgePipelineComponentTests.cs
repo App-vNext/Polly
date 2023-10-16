@@ -52,7 +52,7 @@ public class BridgePipelineComponentTests
     [Fact]
     public void Pipeline_TypeCheck_Ok()
     {
-        bool called = false;
+        var called = false;
 
         var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new Strategy<object>(outcome =>
         {

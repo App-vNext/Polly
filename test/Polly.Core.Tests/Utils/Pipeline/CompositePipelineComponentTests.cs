@@ -31,7 +31,7 @@ public class CompositePipelineComponentTests
 
         var pipeline = CreateSut(pipelines);
 
-        for (int i = 0; i < pipelines.Length; i++)
+        for (var i = 0; i < pipelines.Length; i++)
         {
             pipeline.Components[i].Should().BeSameAs(pipelines[i]);
         }
@@ -97,7 +97,7 @@ public class CompositePipelineComponentTests
     [Fact]
     public async Task Create_CancelledLater_EnsureNoExecution()
     {
-        bool executed = false;
+        var executed = false;
         using var cancellation = new CancellationTokenSource();
         var strategies = new[]
         {
