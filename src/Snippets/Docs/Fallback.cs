@@ -232,4 +232,40 @@ internal static class Fallback
         return await pipeline.ExecuteAsync(CallExternalSystem, CancellationToken.None);
         #endregion
     }
+
+    public static void FallbackAfterRetries()
+    {
+        #region fallback-after-retries
+
+        // Define a common predicates re-used by both fallback and retries
+        var predicateBuilder = new PredicateBuilder<HttpResponseMessage>()
+            .Handle<HttpRequestException>()
+            .HandleResult(r => r.StatusCode == HttpStatusCode.InternalServerError);
+
+        var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
+            .AddFallback(new()
+            {
+                ShouldHandle = predicateBuilder,
+                FallbackAction = args =>
+                {
+                    // Try to resolve the fallback response
+                    HttpResponseMessage fallbackResponse = ResolveFallbackResponse(args.Outcome);
+
+                    return Outcome.FromResultAsValueTask(fallbackResponse);
+                }
+            })
+            .AddRetry(new()
+            {
+                ShouldHandle = predicateBuilder,
+                MaxRetryAttempts = 3,
+            })
+            .Build();
+
+        // Demonstrative execution that always produces invalid result
+        pipeline.Execute(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+        #endregion
+    }
+
+    private static HttpResponseMessage ResolveFallbackResponse(Outcome<HttpResponseMessage> outcome) => new();
 }
