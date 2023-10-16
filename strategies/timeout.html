@@ -182,6 +182,49 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
 </tr>
 </tbody>
 </table>
+<h2 id="diagrams">Diagrams</h2>
+<h3 id="happy-path-sequence-diagram">Happy path sequence diagram</h3>
+<p><img src="../media/timeout%20strategy%20happy%20path.png" alt="Timeout strategy - happy path"></p>
+<!-- ```mermaid
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant T as Timeout
+    participant DM as DecoratedMethod
+
+    C->>P: Calls ExecuteAsync
+    P->>T: Calls ExecuteCore
+    T->>+DM: Invokes
+    DM->>DM: Performs <br/>long-running <br/>operation
+    DM->>-T: Returns result
+    T->>P: Returns result
+    P->>C: Returns result
+``` -->
+<h3 id="unhappy-path-sequence-diagram">Unhappy path sequence diagram</h3>
+<p><img src="../media/timeout%20strategy%20unhappy%20path.png" alt="Timeout strategy unhappy path"></p>
+<!---
+```mermaid
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant T as Timeout
+    participant DM as DecoratedMethod
+
+    C->>P: Calls ExecuteAsync
+    P->>T: Calls ExecuteCore
+    T->>+DM: Invokes
+    activate T
+    activate DM
+    DM->>DM: Performs <br/>long-running <br/>operation
+    T->T: Times out
+    deactivate T
+    T->>DM: Propagates cancellation
+    deactivate DM
+    T->>P: Throws <br/>TimeoutRejectedException
+    P->>C: Propagates exception
+```
+-->
+<hr>
 </article>
 
         <div class="contribution d-print-none">
