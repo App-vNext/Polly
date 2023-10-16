@@ -55,7 +55,8 @@
     "resource": [
       {
         "files": [
-          "icon.png"
+          "icon.png",
+          "media/*.png"
         ]
       }
     ],
