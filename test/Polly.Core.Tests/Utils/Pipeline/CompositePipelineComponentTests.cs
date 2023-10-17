@@ -86,7 +86,7 @@ public class CompositePipelineComponentTests
             PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()),
         };
 
-        var pipeline = new ResiliencePipeline(CreateSut(strategies, new FakeTimeProvider()), DisposeBehavior.Allow);
+        var pipeline = new ResiliencePipeline(CreateSut(strategies, new FakeTimeProvider()), DisposeBehavior.Allow, null);
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellation.Token;
 
@@ -104,7 +104,7 @@ public class CompositePipelineComponentTests
             PipelineComponentFactory.FromStrategy(new TestResilienceStrategy { Before = (_, _) => { executed = true; cancellation.Cancel(); } }),
             PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()),
         };
-        var pipeline = new ResiliencePipeline(CreateSut(strategies, new FakeTimeProvider()), DisposeBehavior.Allow);
+        var pipeline = new ResiliencePipeline(CreateSut(strategies, new FakeTimeProvider()), DisposeBehavior.Allow, null);
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellation.Token;
 
@@ -118,7 +118,7 @@ public class CompositePipelineComponentTests
     {
         var timeProvider = new FakeTimeProvider();
 
-        var pipeline = new ResiliencePipeline(CreateSut(new[] { Substitute.For<PipelineComponent>() }, timeProvider), DisposeBehavior.Allow);
+        var pipeline = new ResiliencePipeline(CreateSut(new[] { Substitute.For<PipelineComponent>() }, timeProvider), DisposeBehavior.Allow, null);
         pipeline.Execute(() => { timeProvider.Advance(TimeSpan.FromHours(1)); });
 
         _listener.Events.Should().HaveCount(2);

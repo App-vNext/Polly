@@ -32,7 +32,7 @@ public partial class ResiliencePipelineTests
     public async Task DisposeAsync_Reject_Throws()
     {
         var component = Substitute.For<PipelineComponent>();
-        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Reject);
+        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Reject, null);
 
         (await pipeline.Invoking(p => p.DisposeHelper.DisposeAsync().AsTask())
             .Should()
@@ -44,7 +44,7 @@ public partial class ResiliencePipelineTests
     public async Task DisposeAsync_Allowed_Disposed()
     {
         var component = Substitute.For<PipelineComponent>();
-        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Allow);
+        var pipeline = new ResiliencePipeline(component, DisposeBehavior.Allow, null);
         await pipeline.DisposeHelper.DisposeAsync();
         await pipeline.DisposeHelper.DisposeAsync();
 

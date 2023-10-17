@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Time.Testing;
+﻿using Microsoft.Extensions.Time.Testing;
 using Polly.Utils.Pipeline;
 
 namespace Polly.Core.Tests.Utils.Pipeline;
@@ -25,7 +23,7 @@ public class ExecutionTrackingComponentTests
         };
 
         var component = new ExecutionTrackingComponent(inner, _timeProvider);
-        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow).Execute(() => { }));
+        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }));
         executing.WaitOne();
 
         var disposeTask = component.DisposeAsync().AsTask();
@@ -58,7 +56,7 @@ public class ExecutionTrackingComponentTests
         };
 
         await using var component = new ExecutionTrackingComponent(inner, _timeProvider);
-        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow).Execute(() => { }));
+        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }));
         executing.WaitOne();
 
         component.HasPendingExecutions.Should().BeTrue();
@@ -84,7 +82,7 @@ public class ExecutionTrackingComponentTests
         };
 
         var component = new ExecutionTrackingComponent(inner, _timeProvider);
-        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow).Execute(() => { }));
+        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }));
         executing.WaitOne();
 
         var disposeTask = component.DisposeAsync().AsTask();
@@ -115,7 +113,7 @@ public class ExecutionTrackingComponentTests
         };
 
         var component = new ExecutionTrackingComponent(inner, TimeProvider.System);
-        var pipeline = new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow);
+        var pipeline = new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null);
 
         for (int i = 0; i < 10; i++)
         {
