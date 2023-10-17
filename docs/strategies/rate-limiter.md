@@ -88,25 +88,25 @@ sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant RL as RateLimiter
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     C->>P: Calls ExecuteAsync
     P->>RL: Calls ExecuteCore
-    Note over RL,DM: Window start
-    RL->>+DM: Invokes
-    DM->>-RL: Returns result
+    Note over RL,D: Window start
+    RL->>+D: Invokes
+    D->>-RL: Returns result
     RL->>P: Returns result
     P->>C: Returns result
     Note right of C: Several seconds later...
-    Note over RL,DM: Window end
+    Note over RL,D: Window end
     C->>P: Calls ExecuteAsync
     P->>RL: Calls ExecuteCore
-    Note over RL,DM: Window start
-    RL->>+DM: Invokes
-    DM->>-RL: Returns result
+    Note over RL,D: Window start
+    RL->>+D: Invokes
+    D->>-RL: Returns result
     RL->>P: Returns result
     P->>C: Returns result
-    Note over RL,DM: Window end
+    Note over RL,D: Window end
 ```
 
 #### Rate limiter: unhappy path sequence diagram
@@ -117,13 +117,13 @@ sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant RL as RateLimiter
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     C->>P: Calls ExecuteAsync
     P->>RL: Calls ExecuteCore
-    Note over RL,DM: Window start
-    RL->>+DM: Invokes
-    DM->>-RL: Returns result
+    Note over RL,D: Window start
+    RL->>+D: Invokes
+    D->>-RL: Returns result
     RL->>P: Returns result
     P->>C: Returns result
     Note right of C: Few seconds later...
@@ -132,7 +132,7 @@ sequenceDiagram
     RL->>RL: Rejects request
     RL->>P: Throws <br/>RateLimiterRejectedException
     P->>C: Propagates exception
-    Note over RL,DM: Window end
+    Note over RL,D: Window end
 ```
 
 ### Concurrency Limiter
@@ -148,7 +148,7 @@ sequenceDiagram
     actor C2 as Caller2
     participant P as Pipeline
     participant CL as ConcurrencyLimiter
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     par
     C1->>P: Calls ExecuteAsync
@@ -157,15 +157,15 @@ sequenceDiagram
     end
 
     P->>CL: Calls ExecuteCore
-    CL->>+DM: Invokes (C1)
+    CL->>+D: Invokes (C1)
     P->>CL: Calls ExecuteCore
     CL->>CL: Queues request
 
-    DM->>-CL: Returns result (C1)
+    D->>-CL: Returns result (C1)
     CL->>P: Returns result (C1)
-    CL->>+DM: Invokes (C2)
+    CL->>+D: Invokes (C2)
     P->>C1: Returns result
-    DM->>-CL: Returns result (C2)
+    D->>-CL: Returns result (C2)
     CL->>P: Returns result (C2)
     P->>C2: Returns result
 ```
@@ -180,7 +180,7 @@ sequenceDiagram
     actor C3 as Caller3
     participant P as Pipeline
     participant CL as ConcurrencyLimiter
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     par
     C1->>P: Calls ExecuteAsync
@@ -191,7 +191,7 @@ sequenceDiagram
     end
 
     P->>CL: Calls ExecuteCore
-    CL->>+DM: Invokes (C1)
+    CL->>+D: Invokes (C1)
     P->>CL: Calls ExecuteCore
     CL->>CL: Queues request (C2)
     P->>CL: Calls ExecuteCore
@@ -199,11 +199,11 @@ sequenceDiagram
     CL->>P: Throws <br/>RateLimiterRejectedException
     P->>C3: Propagate exception
 
-    DM->>-CL: Returns result (C1)
+    D->>-CL: Returns result (C1)
     CL->>P: Returns result (C1)
-    CL->>+DM: Invokes (C2)
+    CL->>+D: Invokes (C2)
     P->>C1: Returns result
-    DM->>-CL: Returns result (C2)
+    D->>-CL: Returns result (C2)
     CL->>P: Returns result (C2)
     P->>C2: Returns result
 ```

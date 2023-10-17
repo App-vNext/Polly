@@ -88,13 +88,13 @@ sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant T as Timeout
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     C->>P: Calls ExecuteAsync
     P->>T: Calls ExecuteCore
-    T->>+DM: Invokes
-    DM->>DM: Performs <br/>long-running <br/>operation
-    DM->>-T: Returns result
+    T->>+D: Invokes
+    D->>D: Performs <br/>long-running <br/>operation
+    D->>-T: Returns result
     T->>P: Returns result
     P->>C: Returns result
 ```
@@ -107,18 +107,18 @@ sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant T as Timeout
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     C->>P: Calls ExecuteAsync
     P->>T: Calls ExecuteCore
-    T->>+DM: Invokes
+    T->>+D: Invokes
     activate T
-    activate DM
-    DM->>DM: Performs <br/>long-running <br/>operation
+    activate D
+    D->>D: Performs <br/>long-running <br/>operation
     T->T: Times out
     deactivate T
-    T->>DM: Propagates cancellation
-    deactivate DM
+    T->>D: Propagates cancellation
+    deactivate D
     T->>P: Throws <br/>TimeoutRejectedException
     P->>C: Propagates exception
 ```

@@ -75,12 +75,12 @@ sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant F as Fallback
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     C->>P: Calls ExecuteAsync
     P->>F: Calls ExecuteCore
-    F->>+DM: Invokes
-    DM->>-F: Returns result
+    F->>+D: Invokes
+    D->>-F: Returns result
     F->>P: Returns result
     P->>C: Returns result
 ```
@@ -93,12 +93,12 @@ sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant F as Fallback
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     C->>P: Calls ExecuteAsync
     P->>F: Calls ExecuteCore
-    F->>+DM: Invokes
-    DM->>-F: Fails transiently
+    F->>+D: Invokes
+    D->>-F: Fails transiently
     F->>F: Falls back to<br/>substitute result
     F->>P: Returns <br/>substituted result
     P->>C: Returns <br/>substituted result

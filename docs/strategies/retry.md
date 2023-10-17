@@ -116,17 +116,17 @@ sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant R as Retry
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     C->>P: Calls ExecuteAsync
     P->>R: Calls ExecuteCore
-    Note over R,DM: Initial attempt
-    R->>+DM: Invokes
-    DM->>-R: Fails transiently
+    Note over R,D: Initial attempt
+    R->>+D: Invokes
+    D->>-R: Fails transiently
     R->>R: Sleeps
-    Note over R,DM: 1st retry attempt
-    R->>+DM: Invokes
-    DM->>-R: Returns result
+    Note over R,D: 1st retry attempt
+    R->>+D: Invokes
+    D->>-R: Returns result
     R->>P: Returns result
     P->>C: Returns result
 ```
@@ -139,21 +139,21 @@ sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant R as Retry
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     C->>P: Calls ExecuteAsync
     P->>R: Calls ExecuteCore
-    Note over R,DM: Initial attempt
-    R->>+DM: Invokes
-    DM->>-R: Fails transiently
+    Note over R,D: Initial attempt
+    R->>+D: Invokes
+    D->>-R: Fails transiently
     R->>R: Sleeps
-    Note over R,DM: 1st retry attempt
-    R->>+DM: Invokes
-    DM->>-R: Fails transiently
+    Note over R,D: 1st retry attempt
+    R->>+D: Invokes
+    D->>-R: Fails transiently
     R->>R: Sleeps
-    Note over R,DM: 2nd retry attempt
-    R->>+DM: Invokes
-    DM->>-R: Fails transiently
+    Note over R,D: 2nd retry attempt
+    R->>+D: Invokes
+    D->>-R: Fails transiently
     R->>P: Propagates failure
     P->>C: Propagates failure
 ```
