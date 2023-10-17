@@ -52,8 +52,9 @@ internal static class AsyncTimeoutEngine
         }
         finally
         {
-            // If the timeoutCancellation was canceled & our combined token hasn't been signaled, cancel it.
+            // If timeoutCancellationTokenSource was canceled & our combined token hasn't been signaled, cancel it.
             // This avoids the exception propagating before the linked token can signal the downstream to cancel.
+            // See https://github.com/App-vNext/Polly/issues/722.
             if (!combinedTokenSource.IsCancellationRequested && timeoutCancellationTokenSource.IsCancellationRequested)
             {
                 combinedTokenSource.Cancel();
