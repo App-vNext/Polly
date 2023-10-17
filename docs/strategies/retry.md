@@ -122,7 +122,7 @@ sequenceDiagram
     P->>R: Calls ExecuteCore
     Note over R,D: Initial attempt
     R->>+D: Invokes
-    D->>-R: Fails transiently
+    D->>-R: Fails
     R->>R: Sleeps
     Note over R,D: 1st retry attempt
     R->>+D: Invokes
@@ -145,15 +145,15 @@ sequenceDiagram
     P->>R: Calls ExecuteCore
     Note over R,D: Initial attempt
     R->>+D: Invokes
-    D->>-R: Fails transiently
+    D->>-R: Fails
     R->>R: Sleeps
     Note over R,D: 1st retry attempt
     R->>+D: Invokes
-    D->>-R: Fails transiently
+    D->>-R: Fails
     R->>R: Sleeps
     Note over R,D: 2nd retry attempt
     R->>+D: Invokes
-    D->>-R: Fails transiently
+    D->>-R: Fails
     R->>P: Propagates failure
     P->>C: Propagates failure
 ```

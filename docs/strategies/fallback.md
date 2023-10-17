@@ -98,7 +98,7 @@ sequenceDiagram
     C->>P: Calls ExecuteAsync
     P->>F: Calls ExecuteCore
     F->>+D: Invokes
-    D->>-F: Fails transiently
+    D->>-F: Fails
     F->>F: Falls back to<br/>substitute result
     F->>P: Returns <br/>substituted result
     P->>C: Returns <br/>substituted result

@@ -97,7 +97,7 @@ sequenceDiagram
     D->>-RL: Returns result
     RL->>P: Returns result
     P->>C: Returns result
-    Note right of C: Several seconds later...
+    Note over C: Several seconds later...
     Note over RL,D: Window end
     C->>P: Calls ExecuteAsync
     P->>RL: Calls ExecuteCore
@@ -126,7 +126,7 @@ sequenceDiagram
     D->>-RL: Returns result
     RL->>P: Returns result
     P->>C: Returns result
-    Note right of C: Few seconds later...
+    Note over C: Few seconds later...
     C->>P: Calls ExecuteAsync
     P->>RL: Calls ExecuteCore
     RL->>RL: Rejects request
