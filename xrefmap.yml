@@ -3145,6 +3145,19 @@ references:
   commentId: T:Polly.ResiliencePipelineBuilderBase
   fullName: Polly.ResiliencePipelineBuilderBase
   nameWithType: ResiliencePipelineBuilderBase
+- uid: Polly.ResiliencePipelineBuilderBase.ContextPool
+  name: ContextPool
+  href: api/Polly.ResiliencePipelineBuilderBase.html#Polly_ResiliencePipelineBuilderBase_ContextPool
+  commentId: P:Polly.ResiliencePipelineBuilderBase.ContextPool
+  fullName: Polly.ResiliencePipelineBuilderBase.ContextPool
+  nameWithType: ResiliencePipelineBuilderBase.ContextPool
+- uid: Polly.ResiliencePipelineBuilderBase.ContextPool*
+  name: ContextPool
+  href: api/Polly.ResiliencePipelineBuilderBase.html#Polly_ResiliencePipelineBuilderBase_ContextPool_
+  commentId: Overload:Polly.ResiliencePipelineBuilderBase.ContextPool
+  isSpec: "True"
+  fullName: Polly.ResiliencePipelineBuilderBase.ContextPool
+  nameWithType: ResiliencePipelineBuilderBase.ContextPool
 - uid: Polly.ResiliencePipelineBuilderBase.InstanceName
   name: InstanceName
   href: api/Polly.ResiliencePipelineBuilderBase.html#Polly_ResiliencePipelineBuilderBase_InstanceName

@@ -198,6 +198,43 @@ The order of the strategies is important.</p>
 </h2>
 
 
+  <a id="Polly_ResiliencePipelineBuilderBase_ContextPool_" data-uid="Polly.ResiliencePipelineBuilderBase.ContextPool*"></a>
+
+  <h3 id="Polly_ResiliencePipelineBuilderBase_ContextPool" data-uid="Polly.ResiliencePipelineBuilderBase.ContextPool">
+  ContextPool
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineBuilderBase.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the <a class="xref" href="Polly.ResilienceContextPool.html">ResilienceContextPool</a> associated with the builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ResilienceContextPool? ContextPool { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Polly.ResilienceContextPool.html">ResilienceContextPool</a></dt>
+    <dd><p>If the default value of <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> is used, <a class="xref" href="Polly.ResilienceContextPool.html#Polly_ResilienceContextPool_Shared">Shared</a> will be used.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Polly_ResiliencePipelineBuilderBase_ContextPool_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A custom pool can be used to configure custom behavior for  creation.
+This can include setting a default <code>continueOnCapturedContext</code> parameter or custom operation key resolution.</p>
+</div>
+
+
+
+
   <a id="Polly_ResiliencePipelineBuilderBase_InstanceName_" data-uid="Polly.ResiliencePipelineBuilderBase.InstanceName*"></a>
 
   <h3 id="Polly_ResiliencePipelineBuilderBase_InstanceName" data-uid="Polly.ResiliencePipelineBuilderBase.InstanceName">
