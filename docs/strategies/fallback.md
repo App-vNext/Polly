@@ -65,6 +65,45 @@ new ResiliencePipelineBuilder<UserAvatar>()
 | `FallbackAction` | `Null`, **Required**                                                       | Fallback action to be executed.                                                             |
 | `OnFallback`     | `null`                                                                     | Event that is raised when fallback happens.                                                 |
 
+## Diagrams
+
+### Happy path sequence diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant F as Fallback
+    participant DM as DecoratedMethod
+
+    C->>P: Calls ExecuteAsync
+    P->>F: Calls ExecuteCore
+    F->>+DM: Invokes
+    DM->>-F: Returns result
+    F->>P: Returns result
+    P->>C: Returns result
+```
+
+### Unhappy path sequence diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant F as Fallback
+    participant DM as DecoratedMethod
+
+    C->>P: Calls ExecuteAsync
+    P->>F: Calls ExecuteCore
+    F->>+DM: Invokes
+    DM->>-F: Fails transiently
+    F->>F: Falls back to<br/>substitute result
+    F->>P: Returns <br/>substituted result
+    P->>C: Returns <br/>substituted result
+```
+
 ## Patterns
 
 ### Fallback after retries

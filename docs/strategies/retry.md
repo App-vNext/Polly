@@ -104,6 +104,60 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 | `OnRetry`          | `null`                                                                     | Action executed when retry occurs.                                                       |
 | `MaxDelay`         | `null`                                                                     | Caps the calculated retry delay to a specified maximum duration.                         |
 
+## Diagrams
+
+Let's suppose we have a retry strategy with `MaxRetryAttempts`: `2`.
+
+### Happy path sequence diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant R as Retry
+    participant DM as DecoratedMethod
+
+    C->>P: Calls ExecuteAsync
+    P->>R: Calls ExecuteCore
+    Note over R,DM: Initial attempt
+    R->>+DM: Invokes
+    DM->>-R: Fails transiently
+    R->>R: Sleeps
+    Note over R,DM: 1st retry attempt
+    R->>+DM: Invokes
+    DM->>-R: Returns result
+    R->>P: Returns result
+    P->>C: Returns result
+```
+
+### Unhappy path sequence diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant R as Retry
+    participant DM as DecoratedMethod
+
+    C->>P: Calls ExecuteAsync
+    P->>R: Calls ExecuteCore
+    Note over R,DM: Initial attempt
+    R->>+DM: Invokes
+    DM->>-R: Fails transiently
+    R->>R: Sleeps
+    Note over R,DM: 1st retry attempt
+    R->>+DM: Invokes
+    DM->>-R: Fails transiently
+    R->>R: Sleeps
+    Note over R,DM: 2nd retry attempt
+    R->>+DM: Invokes
+    DM->>-R: Fails transiently
+    R->>P: Propagates failure
+    P->>C: Propagates failure
+```
+
 ## Patterns
 
 ### Limiting the maximum delay

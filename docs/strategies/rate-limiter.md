@@ -74,6 +74,140 @@ catch (RateLimiterRejectedException ex)
 | `DefaultRateLimiterOptions` | `PermitLimit` set to 1000 and `QueueLimit` set to 0. | The options for the default concurrency limiter that will be used when `RateLimiter` is `null`. |
 | `OnRejected`                | `null`                                               | Event that is raised when the execution is rejected by the rate limiter.                        |
 
+## Diagrams
+
+### Rate Limiter
+
+Let's suppose we have a rate limiter strategy with `PermitLimit` : `1` and `Window` : `10 seconds`.
+
+### Happy path sequence diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant RL as RateLimiter
+    participant DM as DecoratedMethod
+
+    C->>P: Calls ExecuteAsync
+    P->>RL: Calls ExecuteCore
+    Note over RL,DM: Window start
+    RL->>+DM: Invokes
+    DM->>-RL: Returns result
+    RL->>P: Returns result
+    P->>C: Returns result
+    Note right of C: Several seconds later...
+    Note over RL,DM: Window end
+    C->>P: Calls ExecuteAsync
+    P->>RL: Calls ExecuteCore
+    Note over RL,DM: Window start
+    RL->>+DM: Invokes
+    DM->>-RL: Returns result
+    RL->>P: Returns result
+    P->>C: Returns result
+    Note over RL,DM: Window end
+```
+
+#### Unhappy path sequence diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant RL as RateLimiter
+    participant DM as DecoratedMethod
+
+    C->>P: Calls ExecuteAsync
+    P->>RL: Calls ExecuteCore
+    Note over RL,DM: Window start
+    RL->>+DM: Invokes
+    DM->>-RL: Returns result
+    RL->>P: Returns result
+    P->>C: Returns result
+    Note right of C: Few seconds later...
+    C->>P: Calls ExecuteAsync
+    P->>RL: Calls ExecuteCore
+    RL->>RL: Rejects request
+    RL->>P: Throws <br/>RateLimiterRejectedException
+    P->>C: Propagates exception
+    Note over RL,DM: Window end
+```
+
+### Concurrency Limiter
+
+Let's suppose we have a concurrency limiter strategy with `PermitLimit` : `1` and `QueueLimit` : `1`.
+
+#### Happy path sequence diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C1 as Caller1
+    actor C2 as Caller2
+    participant P as Pipeline
+    participant CL as ConcurrencyLimiter
+    participant DM as DecoratedMethod
+
+    par
+    C1->>P: Calls ExecuteAsync
+    and
+    C2->>P: Calls ExecuteAsync
+    end
+
+    P->>CL: Calls ExecuteCore
+    CL->>+DM: Invokes (C1)
+    P->>CL: Calls ExecuteCore
+    CL->>CL: Queues request
+
+    DM->>-CL: Returns result (C1)
+    CL->>P: Returns result (C1)
+    CL->>+DM: Invokes (C2)
+    P->>C1: Returns result
+    DM->>-CL: Returns result (C2)
+    CL->>P: Returns result (C2)
+    P->>C2: Returns result
+```
+
+#### Unhappy path sequence diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C1 as Caller1
+    actor C2 as Caller2
+    actor C3 as Caller3
+    participant P as Pipeline
+    participant CL as ConcurrencyLimiter
+    participant DM as DecoratedMethod
+
+    par
+    C1->>P: Calls ExecuteAsync
+    and
+    C2->>P: Calls ExecuteAsync
+    and
+    C3->>P: Calls ExecuteAsync
+    end
+
+    P->>CL: Calls ExecuteCore
+    CL->>+DM: Invokes (C1)
+    P->>CL: Calls ExecuteCore
+    CL->>CL: Queues request (C2)
+    P->>CL: Calls ExecuteCore
+    CL->>CL: Rejects request (C3)
+    CL->>P: Throws <br/>RateLimiterRejectedException
+    P->>C3: Propagate exception
+
+    DM->>-CL: Returns result (C1)
+    CL->>P: Returns result (C1)
+    CL->>+DM: Invokes (C2)
+    P->>C1: Returns result
+    DM->>-CL: Returns result (C2)
+    CL->>P: Returns result (C2)
+    P->>C2: Returns result
+```
+
 ## Disposal of rate limiters
 
 The `RateLimiter` is a disposable resource. When you explicitly create a `RateLimiter` instance, it's good practice to dispose of it once it's no longer needed. This is usually not an issue when manually creating resilience pipelines using the `ResiliencePipelineBuilder`. However, when dynamic reloads are enabled, failing to dispose of discarded rate limiters can lead to excessive resource consumption. Fortunately, Polly provides a way to dispose of discarded rate limiters, as demonstrated in the example below:
