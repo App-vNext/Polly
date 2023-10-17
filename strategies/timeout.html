@@ -184,47 +184,42 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
 </table>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="happy-path-sequence-diagram">Happy path sequence diagram</h3>
-<p><img src="../media/timeout%20strategy%20happy%20path.png" alt="Timeout strategy - happy path"></p>
-<!-- ```mermaid
+<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant T as Timeout
     participant DM as DecoratedMethod
 
-    C->>P: Calls ExecuteAsync
-    P->>T: Calls ExecuteCore
-    T->>+DM: Invokes
-    DM->>DM: Performs <br/>long-running <br/>operation
-    DM->>-T: Returns result
-    T->>P: Returns result
-    P->>C: Returns result
-``` -->
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;T: Calls ExecuteCore
+    T-&gt;&gt;+DM: Invokes
+    DM-&gt;&gt;DM: Performs &lt;br/&gt;long-running &lt;br/&gt;operation
+    DM-&gt;&gt;-T: Returns result
+    T-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+</code></pre>
 <h3 id="unhappy-path-sequence-diagram">Unhappy path sequence diagram</h3>
-<p><img src="../media/timeout%20strategy%20unhappy%20path.png" alt="Timeout strategy unhappy path"></p>
-<!---
-```mermaid
+<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant T as Timeout
     participant DM as DecoratedMethod
 
-    C->>P: Calls ExecuteAsync
-    P->>T: Calls ExecuteCore
-    T->>+DM: Invokes
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;T: Calls ExecuteCore
+    T-&gt;&gt;+DM: Invokes
     activate T
     activate DM
-    DM->>DM: Performs <br/>long-running <br/>operation
-    T->T: Times out
+    DM-&gt;&gt;DM: Performs &lt;br/&gt;long-running &lt;br/&gt;operation
+    T-&gt;T: Times out
     deactivate T
-    T->>DM: Propagates cancellation
+    T-&gt;&gt;DM: Propagates cancellation
     deactivate DM
-    T->>P: Throws <br/>TimeoutRejectedException
-    P->>C: Propagates exception
-```
--->
-<hr>
+    T-&gt;&gt;P: Throws &lt;br/&gt;TimeoutRejectedException
+    P-&gt;&gt;C: Propagates exception
+</code></pre>
 </article>
 
         <div class="contribution d-print-none">
