@@ -82,9 +82,8 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
 
 ### Happy path sequence diagram
 
-![Timeout strategy - happy path](../media/timeout%20strategy%20happy%20path.png)
-
-<!-- ```mermaid
+```mermaid
+%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C as Caller
     participant P as Pipeline
@@ -98,14 +97,12 @@ sequenceDiagram
     DM->>-T: Returns result
     T->>P: Returns result
     P->>C: Returns result
-``` -->
+```
 
 ### Unhappy path sequence diagram
 
-![Timeout strategy unhappy path](../media/timeout%20strategy%20unhappy%20path.png)
-
-<!---
 ```mermaid
+%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C as Caller
     participant P as Pipeline
@@ -125,6 +122,3 @@ sequenceDiagram
     T->>P: Throws <br/>TimeoutRejectedException
     P->>C: Propagates exception
 ```
--->
-
----
