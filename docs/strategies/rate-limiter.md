@@ -80,7 +80,7 @@ catch (RateLimiterRejectedException ex)
 
 Let's suppose we have a rate limiter strategy with `PermitLimit` : `1` and `Window` : `10 seconds`.
 
-### Happy path sequence diagram
+### Rate Limiter: happy path sequence diagram
 
 ```mermaid
 %%{init: {'theme':'dark'}}%%
@@ -109,7 +109,7 @@ sequenceDiagram
     Note over RL,DM: Window end
 ```
 
-#### Unhappy path sequence diagram
+#### Rate limiter: unhappy path sequence diagram
 
 ```mermaid
 %%{init: {'theme':'dark'}}%%
@@ -139,7 +139,7 @@ sequenceDiagram
 
 Let's suppose we have a concurrency limiter strategy with `PermitLimit` : `1` and `QueueLimit` : `1`.
 
-#### Happy path sequence diagram
+#### Concurrency limiter: happy path sequence diagram
 
 ```mermaid
 %%{init: {'theme':'dark'}}%%
@@ -170,7 +170,7 @@ sequenceDiagram
     P->>C2: Returns result
 ```
 
-#### Unhappy path sequence diagram
+#### Concurrency Limiter: unhappy path sequence diagram
 
 ```mermaid
 %%{init: {'theme':'dark'}}%%
