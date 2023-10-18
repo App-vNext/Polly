@@ -229,6 +229,189 @@ await manualControl.CloseAsync();
 </tr>
 </tbody>
 </table>
+<h2 id="diagrams">Diagrams</h2>
+<h3 id="state-diagram">State diagram</h3>
+<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
+stateDiagram-v2
+direction LR
+    [*] --&gt; Closed
+    Closed --&gt; Open: Exceeds threshold
+    Open --&gt; HalfOpen: Elapses break duration
+    HalfOpen --&gt; Closed: Passes the probe
+    HalfOpen --&gt; Open: Fails the probe
+</code></pre>
+<p>Whenever someone says <em>the circuit breaks</em> that means the Circuit Breaker transitions from the <code>Closed</code> state to the <code>Open</code> state.</p>
+<h3 id="simple">Simple</h3>
+<p>Let's suppose we have a circuit breaker strategy wit the following configuration:</p>
+<ul>
+<li><code>SamplingDuration</code>: <code>2 seconds</code>;</li>
+<li><code>MinimumThroughput</code>: <code>2</code>;</li>
+<li><code>FailureRatio</code> : <code>0.5</code>.</li>
+</ul>
+<h4 id="simple-happy-path-sequence-diagram">Simple: happy path sequence diagram</h4>
+<p>The circuit will not break because the actual failure ratio (0.33) will be below the threshold (0.5) after the 3rd call.</p>
+<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant CB as CircuitBreaker
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    Note over CB: Closed state
+    Note over CB, D: Sampling start
+    activate CB
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Returns result
+    CB-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Returns result
+    CB-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Fails
+    deactivate CB
+    Note over CB, D: Sampling end
+    CB-&gt;&gt;P: Propagates failure
+    P-&gt;&gt;C: Propagates failure
+</code></pre>
+<h4 id="simple-unhappy-path-sequence-diagram">Simple: unhappy path sequence diagram</h4>
+<p>The circuit will break because the actual failure ratio meets the threshold (0.5) after the 2nd call.</p>
+<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant CB as CircuitBreaker
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    Note over CB: Closed state
+    Note over CB, D: Sampling start
+    activate CB
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Returns result
+    CB-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Fails
+    Note over CB: Moves to Open state
+    CB-&gt;&gt;P: Propagates failure
+    P-&gt;&gt;C: Propagates failure
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    CB-&gt;&gt;CB: Rejects request
+    CB-&gt;&gt;P: Throws &lt;br/&gt;BrokenCircuitException
+    P-&gt;&gt;C: Propagates exception
+    deactivate CB
+    Note over CB, D: Sampling end
+</code></pre>
+<h3 id="complex">Complex</h3>
+<p>Let's suppose we have a circuit breaker strategy with the following configuration:</p>
+<ul>
+<li><code>SamplingDuration</code>: <code>2 seconds</code>;</li>
+<li><code>MinimumThroughput</code>: <code>2</code>;</li>
+<li><code>FailureRatio</code>: <code>0.5</code>;</li>
+<li><code>BreakDuration</code>:<code>1 second</code>.</li>
+</ul>
+<h4 id="complex-happy-path-sequence-diagram">Complex: happy path sequence diagram</h4>
+<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant CB as CircuitBreaker
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    Note over CB: Closed state
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Fails
+    CB-&gt;&gt;P: Propagates failure
+    P-&gt;&gt;C: Propagates failure
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Fails
+    Note over CB: Moves to Open state
+    Note over CB: Break duration start
+    CB-&gt;&gt;P: Propagates failure
+    P-&gt;&gt;C: Propagates failure
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    CB-&gt;&gt;CB: Rejects request
+    CB-&gt;&gt;P: Throws &lt;br/&gt;BrokenCircuitException
+    P-&gt;&gt;C: Propagates exception
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    Note over CB: Break duration end
+    Note over CB: Moves to HalfOpen state
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Returns result
+    Note over CB: Moves to Closed state
+    CB-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+</code></pre>
+<h4 id="complex-unhappy-path-sequence-diagram">Complex: unhappy path sequence diagram</h4>
+<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant CB as CircuitBreaker
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    Note over CB: Closed state
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Fails
+    CB-&gt;&gt;P: Propagates failure
+    P-&gt;&gt;C: Propagates failure
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Fails
+    Note over CB: Moves to Open state
+    Note over CB: Break duration start
+    CB-&gt;&gt;P: Propagates failure
+    P-&gt;&gt;C: Propagates failure
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    CB-&gt;&gt;CB: Rejects request
+    CB-&gt;&gt;P: Throws &lt;br/&gt;BrokenCircuitException
+    P-&gt;&gt;C: Propagates exception
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    Note over CB: Break duration end
+    Note over CB: Moves to HalfOpen state
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Fails
+    Note over CB: Moves to Open state
+    CB-&gt;&gt;P: Propagates failure
+    P-&gt;&gt;C: Propagates failure
+</code></pre>
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href="https://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html">Making the Netflix API More Resilient</a></li>

@@ -284,7 +284,7 @@ sequenceDiagram
     P-&gt;&gt;CL: Calls ExecuteCore
     CL-&gt;&gt;CL: Rejects request (C3)
     CL-&gt;&gt;P: Throws &lt;br/&gt;RateLimiterRejectedException
-    P-&gt;&gt;C3: Propagate exception
+    P-&gt;&gt;C3: Propagates exception
 
     D-&gt;&gt;-CL: Returns result (C1)
     CL-&gt;&gt;P: Returns result (C1)
