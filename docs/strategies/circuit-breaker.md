@@ -187,7 +187,6 @@ sequenceDiagram
     Note over CB, D: Sampling end
 ```
 
-
 ### Complex
 
 Let's suppose we have a circuit breaker strategy with `SamplingDuration`: `2 seconds`, `MinimumThroughput`: `2`, `FailureRatio` : `0.5` and `BreakDuration`:`1 second`.
