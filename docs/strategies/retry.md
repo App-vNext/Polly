@@ -111,7 +111,6 @@ Let's suppose we have a retry strategy with `MaxRetryAttempts`: `2`.
 ### Happy path sequence diagram
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C as Caller
     participant P as Pipeline
@@ -134,7 +133,6 @@ sequenceDiagram
 ### Unhappy path sequence diagram
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C as Caller
     participant P as Pipeline

@@ -83,7 +83,6 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
 ### Happy path sequence diagram
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C as Caller
     participant P as Pipeline
@@ -102,7 +101,6 @@ sequenceDiagram
 ### Unhappy path sequence diagram
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C as Caller
     participant P as Pipeline

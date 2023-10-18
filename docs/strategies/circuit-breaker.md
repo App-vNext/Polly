@@ -95,7 +95,6 @@ await manualControl.CloseAsync();
 ### State diagram
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 stateDiagram-v2
 direction LR
     [*] --> Closed
@@ -120,7 +119,6 @@ Let's suppose we have a circuit breaker strategy wit the following configuration
 The circuit will not break because the actual failure ratio (0.33) will be below the threshold (0.5) after the 3rd call.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     autonumber
     actor C as Caller
@@ -160,7 +158,6 @@ sequenceDiagram
 The circuit will break because the actual failure ratio meets the threshold (0.5) after the 2nd call.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     autonumber
     actor C as Caller
@@ -207,7 +204,6 @@ Let's suppose we have a circuit breaker strategy with the following configuratio
 #### Complex: happy path sequence diagram
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     autonumber
     actor C as Caller
@@ -252,7 +248,6 @@ sequenceDiagram
 #### Complex: unhappy path sequence diagram
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     autonumber
     actor C as Caller
