@@ -169,6 +169,38 @@ new ResiliencePipelineBuilder&lt;UserAvatar&gt;()
 </tr>
 </tbody>
 </table>
+<h2 id="diagrams">Diagrams</h2>
+<h3 id="happy-path-sequence-diagram">Happy path sequence diagram</h3>
+<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant F as Fallback
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;F: Calls ExecuteCore
+    F-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-F: Returns result
+    F-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+</code></pre>
+<h3 id="unhappy-path-sequence-diagram">Unhappy path sequence diagram</h3>
+<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant F as Fallback
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;F: Calls ExecuteCore
+    F-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-F: Fails
+    F-&gt;&gt;F: Falls back to&lt;br/&gt;substitute result
+    F-&gt;&gt;P: Returns &lt;br/&gt;substituted result
+    P-&gt;&gt;C: Returns &lt;br/&gt;substituted result
+</code></pre>
 <h2 id="patterns">Patterns</h2>
 <h3 id="fallback-after-retries">Fallback after retries</h3>
 <p>When designing resilient systems, a common pattern is to use a fallback after multiple failed retry attempts. This approach is especially relevant when a fallback strategy can provide a sensible default value.</p>

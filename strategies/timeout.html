@@ -189,13 +189,13 @@ sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant T as Timeout
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     C-&gt;&gt;P: Calls ExecuteAsync
     P-&gt;&gt;T: Calls ExecuteCore
-    T-&gt;&gt;+DM: Invokes
-    DM-&gt;&gt;DM: Performs &lt;br/&gt;long-running &lt;br/&gt;operation
-    DM-&gt;&gt;-T: Returns result
+    T-&gt;&gt;+D: Invokes
+    D-&gt;&gt;D: Performs &lt;br/&gt;long-running &lt;br/&gt;operation
+    D-&gt;&gt;-T: Returns result
     T-&gt;&gt;P: Returns result
     P-&gt;&gt;C: Returns result
 </code></pre>
@@ -205,18 +205,18 @@ sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant T as Timeout
-    participant DM as DecoratedMethod
+    participant D as DecoratedUserCallback
 
     C-&gt;&gt;P: Calls ExecuteAsync
     P-&gt;&gt;T: Calls ExecuteCore
-    T-&gt;&gt;+DM: Invokes
+    T-&gt;&gt;+D: Invokes
     activate T
-    activate DM
-    DM-&gt;&gt;DM: Performs &lt;br/&gt;long-running &lt;br/&gt;operation
+    activate D
+    D-&gt;&gt;D: Performs &lt;br/&gt;long-running &lt;br/&gt;operation
     T-&gt;T: Times out
     deactivate T
-    T-&gt;&gt;DM: Propagates cancellation
-    deactivate DM
+    T-&gt;&gt;D: Propagates cancellation
+    deactivate D
     T-&gt;&gt;P: Throws &lt;br/&gt;TimeoutRejectedException
     P-&gt;&gt;C: Propagates exception
 </code></pre>

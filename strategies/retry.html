@@ -231,6 +231,52 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 </tr>
 </tbody>
 </table>
+<h2 id="diagrams">Diagrams</h2>
+<p>Let's suppose we have a retry strategy with <code>MaxRetryAttempts</code>: <code>2</code>.</p>
+<h3 id="happy-path-sequence-diagram">Happy path sequence diagram</h3>
+<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant R as Retry
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;R: Calls ExecuteCore
+    Note over R,D: Initial attempt
+    R-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-R: Fails
+    R-&gt;&gt;R: Sleeps
+    Note over R,D: 1st retry attempt
+    R-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-R: Returns result
+    R-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+</code></pre>
+<h3 id="unhappy-path-sequence-diagram">Unhappy path sequence diagram</h3>
+<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant R as Retry
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;R: Calls ExecuteCore
+    Note over R,D: Initial attempt
+    R-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-R: Fails
+    R-&gt;&gt;R: Sleeps
+    Note over R,D: 1st retry attempt
+    R-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-R: Fails
+    R-&gt;&gt;R: Sleeps
+    Note over R,D: 2nd retry attempt
+    R-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-R: Fails
+    R-&gt;&gt;P: Propagates failure
+    P-&gt;&gt;C: Propagates failure
+</code></pre>
 <h2 id="patterns">Patterns</h2>
 <h3 id="limiting-the-maximum-delay">Limiting the maximum delay</h3>
 <p>In some cases, you might want to set a limit on the calculated delay. This is beneficial when multiple retries are anticipated, and you wish to prevent excessive wait times between these retries.</p>
