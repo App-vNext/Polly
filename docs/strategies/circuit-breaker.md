@@ -90,6 +90,210 @@ await manualControl.CloseAsync();
 | `ManualControl`     | `null`                                                                     | Allows for manual control to isolate or close the circuit.                                 |
 | `StateProvider`     | `null`                                                                     | Enables the retrieval of the current state of the circuit.                                 |
 
+## Diagrams
+
+### State diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+stateDiagram-v2
+direction LR
+    [*] --> Closed
+    Closed --> Open: Exceeds threshold
+    Open --> HalfOpen: Elapses break duration
+    HalfOpen --> Closed: Passes the probe
+    HalfOpen --> Open: Fails the probe
+```
+
+Whenever someone says _the circuit breaks_ that means the Circuit Breaker transitions from the `Closed` state to the `Open` state.
+
+### Simple
+
+Let's suppose we have a circuit breaker strategy wit the following configuration:
+
+- `SamplingDuration`: `2 seconds`;
+- `MinimumThroughput`: `2`;
+- `FailureRatio` : `0.5`.
+
+#### Simple: happy path sequence diagram
+
+The circuit will not break because the actual failure ratio (0.33) will be below the threshold (0.5) after the 3rd call.
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant CB as CircuitBreaker
+    participant D as DecoratedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    Note over CB: Closed state
+    Note over CB, D: Sampling start
+    activate CB
+    CB->>+D: Invokes
+    D->>-CB: Returns result
+    CB->>P: Returns result
+    P->>C: Returns result
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    CB->>+D: Invokes
+    D->>-CB: Returns result
+    CB->>P: Returns result
+    P->>C: Returns result
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    CB->>+D: Invokes
+    D->>-CB: Fails
+    deactivate CB
+    Note over CB, D: Sampling end
+    CB->>P: Propagates failure
+    P->>C: Propagates failure
+```
+
+#### Simple: unhappy path sequence diagram
+
+The circuit will break because the actual failure ratio meets the threshold (0.5) after the 2nd call.
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant CB as CircuitBreaker
+    participant D as DecoratedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    Note over CB: Closed state
+    Note over CB, D: Sampling start
+    activate CB
+    CB->>+D: Invokes
+    D->>-CB: Returns result
+    CB->>P: Returns result
+    P->>C: Returns result
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    CB->>+D: Invokes
+    D->>-CB: Fails
+    Note over CB: Moves to Open state
+    CB->>P: Propagates failure
+    P->>C: Propagates failure
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    CB->>CB: Rejects request
+    CB->>P: Throws <br/>BrokenCircuitException
+    P->>C: Propagates exception
+    deactivate CB
+    Note over CB, D: Sampling end
+```
+
+### Complex
+
+Let's suppose we have a circuit breaker strategy with the following configuration:
+
+- `SamplingDuration`: `2 seconds`;
+- `MinimumThroughput`: `2`;
+- `FailureRatio`: `0.5`;
+- `BreakDuration`:`1 second`.
+
+#### Complex: happy path sequence diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant CB as CircuitBreaker
+    participant D as DecoratedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    Note over CB: Closed state
+    CB->>+D: Invokes
+    D->>-CB: Fails
+    CB->>P: Propagates failure
+    P->>C: Propagates failure
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    CB->>+D: Invokes
+    D->>-CB: Fails
+    Note over CB: Moves to Open state
+    Note over CB: Break duration start
+    CB->>P: Propagates failure
+    P->>C: Propagates failure
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    CB->>CB: Rejects request
+    CB->>P: Throws <br/>BrokenCircuitException
+    P->>C: Propagates exception
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    Note over CB: Break duration end
+    Note over CB: Moves to HalfOpen state
+    CB->>+D: Invokes
+    D->>-CB: Returns result
+    Note over CB: Moves to Closed state
+    CB->>P: Returns result
+    P->>C: Returns result
+```
+
+#### Complex: unhappy path sequence diagram
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant CB as CircuitBreaker
+    participant D as DecoratedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    Note over CB: Closed state
+    CB->>+D: Invokes
+    D->>-CB: Fails
+    CB->>P: Propagates failure
+    P->>C: Propagates failure
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    CB->>+D: Invokes
+    D->>-CB: Fails
+    Note over CB: Moves to Open state
+    Note over CB: Break duration start
+    CB->>P: Propagates failure
+    P->>C: Propagates failure
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    CB->>CB: Rejects request
+    CB->>P: Throws <br/>BrokenCircuitException
+    P->>C: Propagates exception
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    Note over CB: Break duration end
+    Note over CB: Moves to HalfOpen state
+    CB->>+D: Invokes
+    D->>-CB: Fails
+    Note over CB: Moves to Open state
+    CB->>P: Propagates failure
+    P->>C: Propagates failure
+```
+
 ## Resources
 
 - [Making the Netflix API More Resilient](https://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
