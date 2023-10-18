@@ -83,7 +83,6 @@ Let's suppose we have a rate limiter strategy with `PermitLimit` : `1` and `Wind
 ### Rate Limiter: happy path sequence diagram
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C as Caller
     participant P as Pipeline
@@ -112,7 +111,6 @@ sequenceDiagram
 #### Rate limiter: unhappy path sequence diagram
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C as Caller
     participant P as Pipeline
@@ -142,7 +140,6 @@ Let's suppose we have a concurrency limiter strategy with `PermitLimit` : `1` an
 #### Concurrency limiter: happy path sequence diagram
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C1 as Caller1
     actor C2 as Caller2
@@ -173,7 +170,6 @@ sequenceDiagram
 #### Concurrency Limiter: unhappy path sequence diagram
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C1 as Caller1
     actor C2 as Caller2
