@@ -110,6 +110,7 @@ Whenever someone says _the circuit breaks_ that means the Circuit Breaker transi
 ### Simple
 
 Let's suppose we have a circuit breaker strategy wit the following configuration:
+
 - `SamplingDuration`: `2 seconds`;
 - `MinimumThroughput`: `2`;
 - `FailureRatio` : `0.5`.
@@ -197,6 +198,7 @@ sequenceDiagram
 ### Complex
 
 Let's suppose we have a circuit breaker strategy with the following configuration:
+
 - `SamplingDuration`: `2 seconds`;
 - `MinimumThroughput`: `2`;
 - `FailureRatio`: `0.5`;
