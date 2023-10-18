@@ -29,11 +29,7 @@
       <meta name="loc:copy" content="Copy">
   </head>
 
-  <script type="module">
-    import options from './../public/main.js'
-    import { init } from './../public/docfx.min.js'
-    init(options)
-  </script>
+  <script type="module" src="./../public/docfx.min.js"></script>
 
   <script>
     const theme = localStorage.getItem('theme') || 'auto'
@@ -348,9 +344,10 @@ Resilience pipeline executed. Source: '{PipelineName}/{PipelineInstance}', Opera
 Execution attempt. Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', Operation Key: '{OperationKey}', Result: '{Result}', Handled: '{Handled}', Attempt: '{Attempt}', Execution Time: '{ExecutionTimeMs}'
 </code></pre>
 <h2 id="emitting-telemetry-events">Emitting telemetry events</h2>
-<p>Each resilience strategy can generate telemetry data through the <a class="xref" href="../api/Polly.Telemetry.ResilienceStrategyTelemetry.html"><code>ResilienceStrategyTelemetry</code></a> API. Polly encapsulates event details as <a class="xref" href="../api/Polly.Telemetry.TelemetryEventArguments-2.html"><code>TelemetryEventArguments</code></a> and emits them via <code>TelemetryListener</code>.</p>
+<p>Each resilience strategy can generate telemetry data through the <a href="xref:Polly.Telemetry.ResilienceStrategyTelemetry"><code>ResilienceStrategyTelemetry</code></a> API. Polly encapsulates event details as <a href="xref:Polly.Telemetry.TelemetryEventArguments%602"><code>TelemetryEventArguments</code></a> and emits them via <code>TelemetryListener</code>.</p>
 <p>To leverage this telemetry data, users should assign a <code>TelemetryListener</code> instance to <code>ResiliencePipelineBuilder.TelemetryListener</code> and then consume the <code>TelemetryEventArguments</code>.</p>
 <p>For common scenarios, it is expected that users would make use of <code>Polly.Extensions</code>. This extension enables telemetry configuration through the <code>ResiliencePipelineBuilder.ConfigureTelemetry(...)</code> method, which processes <code>TelemetryEventArguments</code> to generate logs and metrics.</p>
+
 </article>
 
         <div class="contribution d-print-none">
@@ -358,7 +355,7 @@ Execution attempt. Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', O
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
-        
+
       </div>
 
       <div class="affix">

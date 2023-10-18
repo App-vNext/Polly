@@ -29,11 +29,7 @@
       <meta name="loc:copy" content="Copy">
   </head>
 
-  <script type="module">
-    import options from './../public/main.js'
-    import { init } from './../public/docfx.min.js'
-    init(options)
-  </script>
+  <script type="module" src="./../public/docfx.min.js"></script>
 
   <script>
     const theme = localStorage.getItem('theme') || 'auto'
@@ -229,7 +225,7 @@
 </code></pre>
 <!-- endSnippet -->
 <h3 id="predicate-builder">Predicate builder</h3>
-<p><a class="xref" href="../api/Polly.PredicateBuilder.html">PredicateBuilder</a>, or <a class="xref" href="../api/Polly.PredicateBuilder-1.html">PredicateBuilder&lt;TResult&gt;</a>, is a utility class aimed at simplifying the configuration of predicates:</p>
+<p>&lt;xref:Polly.PredicateBuilder&gt;, or &lt;xref:Polly.PredicateBuilder`1&gt;, is a utility class aimed at simplifying the configuration of predicates:</p>
 <!-- snippet: should-handle-predicate-builder -->
 <pre><code class="lang-cs">// Use PredicateBuilder&lt;HttpResponseMessage&gt; to simplify the setup of the ShouldHandle predicate.
 var options = new RetryStrategyOptions&lt;HttpResponseMessage&gt;
@@ -250,6 +246,7 @@ var options = new RetryStrategyOptions&lt;HttpResponseMessage&gt;
 <h5>Note</h5>
 <p>When using <code>PredicateBuilder</code> instead of manually configuring the predicate, there is a minor performance impact. Each method call on <code>PredicateBuilder</code> registers a new predicate, which must be invoked when evaluating the outcome.</p>
 </div>
+
 </article>
 
         <div class="contribution d-print-none">
@@ -257,7 +254,7 @@ var options = new RetryStrategyOptions&lt;HttpResponseMessage&gt;
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
-        
+
       </div>
 
       <div class="affix">

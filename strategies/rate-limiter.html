@@ -29,11 +29,7 @@
       <meta name="loc:copy" content="Copy">
   </head>
 
-  <script type="module">
-    import options from './../public/main.js'
-    import { init } from './../public/docfx.min.js'
-    init(options)
-  </script>
+  <script type="module" src="./../public/docfx.min.js"></script>
 
   <script>
     const theme = localStorage.getItem('theme') || 'auto'
@@ -91,7 +87,7 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.RateLimiting.RateLimiterStrategyOptions.html"><code>RateLimiterStrategyOptions</code></a></li>
+<li><strong>Options</strong>: <a href="xref:Polly.RateLimiting.RateLimiterStrategyOptions"><code>RateLimiterStrategyOptions</code></a></li>
 <li><strong>Extensions</strong>: <code>AddRateLimiter</code>, <code>AddConcurrencyLimiter</code></li>
 <li><strong>Strategy Type</strong>: Proactive</li>
 <li><strong>Exceptions</strong>:
@@ -181,8 +177,7 @@ catch (RateLimiterRejectedException ex)
 <h3 id="rate-limiter">Rate Limiter</h3>
 <p>Let's suppose we have a rate limiter strategy with <code>PermitLimit</code> : <code>1</code> and <code>Window</code> : <code>10 seconds</code>.</p>
 <h3 id="rate-limiter-happy-path-sequence-diagram">Rate Limiter: happy path sequence diagram</h3>
-<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
-sequenceDiagram
+<pre><code class="lang-mermaid">sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant RL as RateLimiter
@@ -207,8 +202,7 @@ sequenceDiagram
     Note over RL,D: Window end
 </code></pre>
 <h4 id="rate-limiter-unhappy-path-sequence-diagram">Rate limiter: unhappy path sequence diagram</h4>
-<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
-sequenceDiagram
+<pre><code class="lang-mermaid">sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant RL as RateLimiter
@@ -232,8 +226,7 @@ sequenceDiagram
 <h3 id="concurrency-limiter">Concurrency Limiter</h3>
 <p>Let's suppose we have a concurrency limiter strategy with <code>PermitLimit</code> : <code>1</code> and <code>QueueLimit</code> : <code>1</code>.</p>
 <h4 id="concurrency-limiter-happy-path-sequence-diagram">Concurrency limiter: happy path sequence diagram</h4>
-<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
-sequenceDiagram
+<pre><code class="lang-mermaid">sequenceDiagram
     actor C1 as Caller1
     actor C2 as Caller2
     participant P as Pipeline
@@ -260,8 +253,7 @@ sequenceDiagram
     P-&gt;&gt;C2: Returns result
 </code></pre>
 <h4 id="concurrency-limiter-unhappy-path-sequence-diagram">Concurrency Limiter: unhappy path sequence diagram</h4>
-<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
-sequenceDiagram
+<pre><code class="lang-mermaid">sequenceDiagram
     actor C1 as Caller1
     actor C2 as Caller2
     actor C3 as Caller3
@@ -343,6 +335,7 @@ new ResiliencePipelineBuilder()
     });
 </code></pre>
 <!-- endSnippet -->
+
 </article>
 
         <div class="contribution d-print-none">
@@ -350,7 +343,7 @@ new ResiliencePipelineBuilder()
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
-        
+
       </div>
 
       <div class="affix">

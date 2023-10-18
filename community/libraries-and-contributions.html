@@ -29,11 +29,7 @@
       <meta name="loc:copy" content="Copy">
   </head>
 
-  <script type="module">
-    import options from './../public/main.js'
-    import { init } from './../public/docfx.min.js'
-    init(options)
-  </script>
+  <script type="module" src="./../public/docfx.min.js"></script>
 
   <script>
     const theme = localStorage.getItem('theme') || 'auto'
@@ -172,6 +168,7 @@
 <li><a href="https://github.com/aerotog">@aerotog</a> and <a href="https://github.com/reisenberger">@reisenberger</a> - <code>IConcurrentPolicyRegistry</code> methods on <code>PolicyRegistry</code></li>
 <li><a href="https://github.com/reisenberger">@reisenberger</a> and <a href="https://github.com/martincostello">@martincostello</a> - Add RateLimit policy.</li>
 </ul>
+
 </article>
 
         <div class="contribution d-print-none">
@@ -179,7 +176,7 @@
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
-        
+
       </div>
 
       <div class="affix">

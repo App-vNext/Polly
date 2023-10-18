@@ -29,11 +29,7 @@
       <meta name="loc:copy" content="Copy">
   </head>
 
-  <script type="module">
-    import options from './public/main.js'
-    import { init } from './public/docfx.min.js'
-    init(options)
-  </script>
+  <script type="module" src="./public/docfx.min.js"></script>
 
   <script>
     const theme = localStorage.getItem('theme') || 'auto'
@@ -142,6 +138,7 @@ await pipeline.ExecuteAsync(
 <h5>Important</h5>
 <p>While the internal operation of the strategy is thread-safe, this does not automatically make delegates you execute through the strategy thread-safe: if delegates you execute through the strategy are not thread-safe, they remain not thread-safe.</p>
 </div>
+
 </article>
 
         <div class="contribution d-print-none">
@@ -149,7 +146,7 @@ await pipeline.ExecuteAsync(
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
-        
+
       </div>
 
       <div class="affix">

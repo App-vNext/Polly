@@ -29,11 +29,7 @@
       <meta name="loc:copy" content="Copy">
   </head>
 
-  <script type="module">
-    import options from './../public/main.js'
-    import { init } from './../public/docfx.min.js'
-    init(options)
-  </script>
+  <script type="module" src="./../public/docfx.min.js"></script>
 
   <script>
     const theme = localStorage.getItem('theme') || 'auto'
@@ -91,7 +87,7 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Hedging.HedgingStrategyOptions-1.html"><code>HedgingStrategyOptions&lt;T&gt;</code></a></li>
+<li><strong>Options</strong>: <a href="xref:Polly.Hedging.HedgingStrategyOptions%601"><code>HedgingStrategyOptions&lt;T&gt;</code></a></li>
 <li><strong>Extensions</strong>: <code>AddHedging</code></li>
 <li><strong>Strategy Type</strong>: Reactive</li>
 </ul>
@@ -370,6 +366,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     });
 </code></pre>
 <!-- endSnippet -->
+
 </article>
 
         <div class="contribution d-print-none">
@@ -377,7 +374,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
-        
+
       </div>
 
       <div class="affix">

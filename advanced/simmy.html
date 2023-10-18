@@ -29,11 +29,7 @@
       <meta name="loc:copy" content="Copy">
   </head>
 
-  <script type="module">
-    import options from './../public/main.js'
-    import { init } from './../public/docfx.min.js'
-    init(options)
-  </script>
+  <script type="module" src="./../public/docfx.min.js"></script>
 
   <script>
     const theme = localStorage.getItem('theme') || 'auto'
@@ -91,6 +87,7 @@
 
 <p><a href="https://github.com/Polly-Contrib/Simmy">Simmy</a> is a major new companion project adding a chaos-engineering and fault-injection dimension to Polly, through the provision of policies to selectively inject faults or latency.
 Head over to the <a href="https://github.com/Polly-Contrib/Simmy">Simmy</a> repository to find out more.</p>
+
 </article>
 
         <div class="contribution d-print-none">
@@ -98,7 +95,7 @@ Head over to the <a href="https://github.com/Polly-Contrib/Simmy">Simmy</a> repo
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
-        
+
       </div>
 
       <div class="affix">

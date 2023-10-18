@@ -29,11 +29,7 @@
       <meta name="loc:copy" content="Copy">
   </head>
 
-  <script type="module">
-    import options from './../public/main.js'
-    import { init } from './../public/docfx.min.js'
-    init(options)
-  </script>
+  <script type="module" src="./../public/docfx.min.js"></script>
 
   <script>
     const theme = localStorage.getItem('theme') || 'auto'
@@ -93,8 +89,8 @@
 <ul>
 <li><strong>Options</strong>:
 <ul>
-<li><a class="xref" href="../api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions.html"><code>CircuitBreakerStrategyOptions</code></a></li>
-<li><a class="xref" href="../api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions.html"><code>CircuitBreakerStrategyOptions&lt;T&gt;</code></a></li>
+<li><a href="xref:Polly.CircuitBreaker.CircuitBreakerStrategyOptions"><code>CircuitBreakerStrategyOptions</code></a></li>
+<li><a href="xref:Polly.CircuitBreaker.CircuitBreakerStrategyOptions"><code>CircuitBreakerStrategyOptions&lt;T&gt;</code></a></li>
 </ul>
 </li>
 <li><strong>Extensions</strong>: <code>AddCircuitBreaker</code></li>
@@ -231,8 +227,7 @@ await manualControl.CloseAsync();
 </table>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="state-diagram">State diagram</h3>
-<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
-stateDiagram-v2
+<pre><code class="lang-mermaid">stateDiagram-v2
 direction LR
     [*] --&gt; Closed
     Closed --&gt; Open: Exceeds threshold
@@ -250,8 +245,7 @@ direction LR
 </ul>
 <h4 id="simple-happy-path-sequence-diagram">Simple: happy path sequence diagram</h4>
 <p>The circuit will not break because the actual failure ratio (0.33) will be below the threshold (0.5) after the 3rd call.</p>
-<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
-sequenceDiagram
+<pre><code class="lang-mermaid">sequenceDiagram
     autonumber
     actor C as Caller
     participant P as Pipeline
@@ -286,8 +280,7 @@ sequenceDiagram
 </code></pre>
 <h4 id="simple-unhappy-path-sequence-diagram">Simple: unhappy path sequence diagram</h4>
 <p>The circuit will break because the actual failure ratio meets the threshold (0.5) after the 2nd call.</p>
-<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
-sequenceDiagram
+<pre><code class="lang-mermaid">sequenceDiagram
     autonumber
     actor C as Caller
     participant P as Pipeline
@@ -329,8 +322,7 @@ sequenceDiagram
 <li><code>BreakDuration</code>:<code>1 second</code>.</li>
 </ul>
 <h4 id="complex-happy-path-sequence-diagram">Complex: happy path sequence diagram</h4>
-<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
-sequenceDiagram
+<pre><code class="lang-mermaid">sequenceDiagram
     autonumber
     actor C as Caller
     participant P as Pipeline
@@ -371,8 +363,7 @@ sequenceDiagram
     P-&gt;&gt;C: Returns result
 </code></pre>
 <h4 id="complex-unhappy-path-sequence-diagram">Complex: unhappy path sequence diagram</h4>
-<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
-sequenceDiagram
+<pre><code class="lang-mermaid">sequenceDiagram
     autonumber
     actor C as Caller
     participant P as Pipeline
@@ -618,6 +609,7 @@ public Downstream1Client(
 It is required because the <code>AddPolicyHandler()</code> method anticipates an <code>IAsyncPolicy&lt;HttpResponse&gt;</code> parameter.
 Please be aware that, later an <code>AddResilienceHandler()</code> will be introduced in the <code>Microsoft.Extensions.Http.Resilience</code> package which is the successor of the <code>Microsoft.Extensions.Http.Polly</code>.</p>
 </div>
+
 </article>
 
         <div class="contribution d-print-none">
@@ -625,7 +617,7 @@ Please be aware that, later an <code>AddResilienceHandler()</code> will be intro
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
-        
+
       </div>
 
       <div class="affix">

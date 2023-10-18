@@ -29,11 +29,7 @@
       <meta name="loc:copy" content="Copy">
   </head>
 
-  <script type="module">
-    import options from './../public/main.js'
-    import { init } from './../public/docfx.min.js'
-    init(options)
-  </script>
+  <script type="module" src="./../public/docfx.min.js"></script>
 
   <script>
     const theme = localStorage.getItem('theme') || 'auto'
@@ -91,7 +87,7 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Timeout.TimeoutStrategyOptions.html"><code>TimeoutStrategyOptions</code></a></li>
+<li><strong>Options</strong>: <a href="xref:Polly.Timeout.TimeoutStrategyOptions"><code>TimeoutStrategyOptions</code></a></li>
 <li><strong>Extensions</strong>: <code>AddTimeout</code></li>
 <li><strong>Strategy Type</strong>: Proactive</li>
 <li><strong>Exceptions</strong>:
@@ -184,8 +180,7 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
 </table>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="happy-path-sequence-diagram">Happy path sequence diagram</h3>
-<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
-sequenceDiagram
+<pre><code class="lang-mermaid">sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant T as Timeout
@@ -200,8 +195,7 @@ sequenceDiagram
     P-&gt;&gt;C: Returns result
 </code></pre>
 <h3 id="unhappy-path-sequence-diagram">Unhappy path sequence diagram</h3>
-<pre><code class="lang-mermaid">%%{init: {'theme':'dark'}}%%
-sequenceDiagram
+<pre><code class="lang-mermaid">sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant T as Timeout
@@ -220,6 +214,7 @@ sequenceDiagram
     T-&gt;&gt;P: Throws &lt;br/&gt;TimeoutRejectedException
     P-&gt;&gt;C: Propagates exception
 </code></pre>
+
 </article>
 
         <div class="contribution d-print-none">
@@ -227,7 +222,7 @@ sequenceDiagram
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
-        
+
       </div>
 
       <div class="affix">

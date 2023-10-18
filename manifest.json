@@ -51,6 +51,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "advanced/telemetry.md",
       "output": {
@@ -61,6 +64,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "advanced/testing.md",
       "output": {
@@ -71,1004 +77,11 @@
       "version": ""
     },
     {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.BrokenCircuitException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.BrokenCircuitException.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.CircuitBreakerManualControl.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.CircuitBreakerManualControl.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.CircuitBreakerPredicateArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.CircuitBreakerPredicateArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.CircuitBreakerStateProvider.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.CircuitBreakerStateProvider.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.CircuitState.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.CircuitState.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.IsolatedCircuitException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.IsolatedCircuitException.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.OnCircuitClosedArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.OnCircuitClosedArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.OnCircuitHalfOpenedArguments.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.OnCircuitHalfOpenedArguments.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.OnCircuitOpenedArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.OnCircuitOpenedArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreaker.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreaker.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.CircuitBreakerResiliencePipelineBuilderExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.CircuitBreakerResiliencePipelineBuilderExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.DelayBackoffType.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.DelayBackoffType.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.DependencyInjection.AddResiliencePipelineContext-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.DependencyInjection.AddResiliencePipelineContext-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.DependencyInjection.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.DependencyInjection.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ExecutionRejectedException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ExecutionRejectedException.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Fallback.FallbackActionArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Fallback.FallbackActionArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Fallback.FallbackPredicateArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Fallback.FallbackPredicateArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Fallback.FallbackStrategyOptions-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Fallback.FallbackStrategyOptions-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Fallback.OnFallbackArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Fallback.OnFallbackArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Fallback.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Fallback.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.FallbackResiliencePipelineBuilderExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.FallbackResiliencePipelineBuilderExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Hedging.HedgingActionGeneratorArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Hedging.HedgingActionGeneratorArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Hedging.HedgingDelayGeneratorArguments.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Hedging.HedgingDelayGeneratorArguments.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Hedging.HedgingPredicateArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Hedging.HedgingPredicateArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Hedging.HedgingStrategyOptions-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Hedging.HedgingStrategyOptions-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Hedging.OnHedgingArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Hedging.OnHedgingArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Hedging.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Hedging.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.HedgingResiliencePipelineBuilderExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.HedgingResiliencePipelineBuilderExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Outcome-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Outcome-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Outcome.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Outcome.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.PollyServiceCollectionExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.PollyServiceCollectionExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.PredicateBuilder-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.PredicateBuilder-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.PredicateBuilder.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.PredicateBuilder.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.PredicateResult.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.PredicateResult.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.RateLimiterResiliencePipelineBuilderExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.RateLimiterResiliencePipelineBuilderExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.RateLimiting.OnRateLimiterRejectedArguments.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.RateLimiting.OnRateLimiterRejectedArguments.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.RateLimiting.RateLimiterArguments.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.RateLimiting.RateLimiterArguments.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.RateLimiting.RateLimiterRejectedException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.RateLimiting.RateLimiterRejectedException.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.RateLimiting.RateLimiterStrategyOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.RateLimiting.RateLimiterStrategyOptions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.RateLimiting.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.RateLimiting.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Registry.ConfigureBuilderContext-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Registry.ConfigureBuilderContext-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Registry.ConfigureBuilderContextExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Registry.ConfigureBuilderContextExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Registry.ResiliencePipelineProvider-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Registry.ResiliencePipelineProvider-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Registry.ResiliencePipelineRegistry-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Registry.ResiliencePipelineRegistry-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Registry.ResiliencePipelineRegistryOptions-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Registry.ResiliencePipelineRegistryOptions-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Registry.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Registry.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResilienceContext.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResilienceContext.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResilienceContextCreationArguments.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResilienceContextCreationArguments.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResilienceContextPool.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResilienceContextPool.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResiliencePipeline-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResiliencePipeline-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResiliencePipeline.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResiliencePipeline.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResiliencePipelineBuilder-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResiliencePipelineBuilder-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResiliencePipelineBuilder.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResiliencePipelineBuilder.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResiliencePipelineBuilderBase.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResiliencePipelineBuilderBase.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResiliencePipelineBuilderExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResiliencePipelineBuilderExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResilienceProperties.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResilienceProperties.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResiliencePropertyKey-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResiliencePropertyKey-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResilienceStrategy-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResilienceStrategy-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResilienceStrategy.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResilienceStrategy.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.ResilienceStrategyOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.ResilienceStrategyOptions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Retry.OnRetryArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Retry.OnRetryArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Retry.RetryDelayGeneratorArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Retry.RetryDelayGeneratorArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Retry.RetryPredicateArguments-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Retry.RetryPredicateArguments-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Retry.RetryStrategyOptions-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Retry.RetryStrategyOptions-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Retry.RetryStrategyOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Retry.RetryStrategyOptions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Retry.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Retry.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.RetryResiliencePipelineBuilderExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.RetryResiliencePipelineBuilderExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.StrategyBuilderContext.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.StrategyBuilderContext.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.EnrichmentContext-2.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.EnrichmentContext-2.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.ExecutionAttemptArguments.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.ExecutionAttemptArguments.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.MeteringEnricher.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.MeteringEnricher.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.PipelineExecutedArguments.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.PipelineExecutedArguments.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.PipelineExecutingArguments.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.PipelineExecutingArguments.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.ResilienceEvent.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.ResilienceEvent.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.ResilienceEventSeverity.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.ResilienceEventSeverity.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.ResilienceStrategyTelemetry.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.ResilienceStrategyTelemetry.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.ResilienceTelemetrySource.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.ResilienceTelemetrySource.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.TelemetryEventArguments-2.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.TelemetryEventArguments-2.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.TelemetryListener.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.TelemetryListener.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.TelemetryOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.TelemetryOptions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Telemetry.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Telemetry.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.TelemetryResiliencePipelineBuilderExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.TelemetryResiliencePipelineBuilderExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Testing.ResiliencePipelineDescriptor.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Testing.ResiliencePipelineDescriptor.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Testing.ResiliencePipelineExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Testing.ResiliencePipelineExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Testing.ResilienceStrategyDescriptor.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Testing.ResilienceStrategyDescriptor.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Testing.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Testing.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Timeout.OnTimeoutArguments.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Timeout.OnTimeoutArguments.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Timeout.TimeoutGeneratorArguments.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Timeout.TimeoutGeneratorArguments.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Timeout.TimeoutRejectedException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Timeout.TimeoutRejectedException.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Timeout.TimeoutStrategyOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Timeout.TimeoutStrategyOptions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Timeout.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Timeout.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.TimeoutResiliencePipelineBuilderExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.TimeoutResiliencePipelineBuilderExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Snippets.Docs.MyApi.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Snippets.Docs.MyApi.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Snippets.Docs.MyApiExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Snippets.Docs.MyApiExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Snippets.Docs.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Snippets.Docs.html"
-        }
-      },
-      "version": ""
-    },
-    {
       "type": "Conceptual",
       "source_relative_path": "api/index.md",
       "output": {
         ".html": {
           "relative_path": "api/index.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Toc",
-      "source_relative_path": "api/toc.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/toc.html"
-        },
-        ".json": {
-          "relative_path": "api/toc.json"
         }
       },
       "version": ""
@@ -1114,6 +127,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "extensibility/index.md",
       "output": {
@@ -1124,6 +140,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "extensibility/proactive-strategy.md",
       "output": {
@@ -1134,6 +153,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "extensibility/reactive-strategy.md",
       "output": {
@@ -1204,6 +226,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "pipelines/resilience-pipeline-registry.md",
       "output": {
@@ -1214,6 +239,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "strategies/circuit-breaker.md",
       "output": {
@@ -1224,6 +252,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "strategies/fallback.md",
       "output": {
@@ -1234,6 +265,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "strategies/hedging.md",
       "output": {
@@ -1244,6 +278,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "strategies/index.md",
       "output": {
@@ -1254,6 +291,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "strategies/rate-limiter.md",
       "output": {
@@ -1264,6 +304,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "strategies/retry.md",
       "output": {
@@ -1274,6 +317,9 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "UidNotFound"
+      ],
       "type": "Conceptual",
       "source_relative_path": "strategies/timeout.md",
       "output": {

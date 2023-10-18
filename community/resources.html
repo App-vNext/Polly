@@ -29,11 +29,7 @@
       <meta name="loc:copy" content="Copy">
   </head>
 
-  <script type="module">
-    import options from './../public/main.js'
-    import { init } from './../public/docfx.min.js'
-    init(options)
-  </script>
+  <script type="module" src="./../public/docfx.min.js"></script>
 
   <script>
     const theme = localStorage.getItem('theme') || 'auto'
@@ -142,6 +138,7 @@
 <li>Scott Allen discusses Polly during his <a href="https://youtu.be/SFLu6jZWXGs?t=1440">Building for Resiliency and Scale in the Cloud</a> presentation at NDC.</li>
 <li><a href="https://youtu.be/k0Xy-5zE9to?t=12m22s">ASP.NET Community Stand-up April 24, 2018</a>: Damian Edwards, Jon Galloway and Scott Hanselman discuss Scott Hanselman's blog on <a href="https://www.hanselman.com/blog/AddingResilienceAndTransientFaultHandlingToYourNETCoreHttpClientWithPolly.aspx">Polly with <code>IHttpClientFactory</code></a> and the <a href="https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory">Polly team documentation on <code>IHttpClientFactory</code></a>. Interesting background discussion also on feature richness and the importance of good documentation.</li>
 </ul>
+
 </article>
 
         <div class="contribution d-print-none">
@@ -149,7 +146,7 @@
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
-        
+
       </div>
 
       <div class="affix">
