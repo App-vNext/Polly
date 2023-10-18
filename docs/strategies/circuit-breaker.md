@@ -105,11 +105,14 @@ direction LR
     HalfOpen --> Open: Fails the probe
 ```
 
-Whenever someone says _the circuit breaks_ that means CB transitions from `Closed` to `Open` state.
+Whenever someone says _the circuit breaks_ that means the Circuit Breaker transitions from the `Closed` state to the `Open` state.
 
 ### Simple
 
-Let's suppose we have a circuit breaker strategy with `SamplingDuration`: `2 seconds`, `MinimumThroughput`: `2` and `FailureRatio` : `0.5`.
+Let's suppose we have a circuit breaker strategy wit the following configuration:
+- `SamplingDuration`: `2 seconds`;
+- `MinimumThroughput`: `2`;
+- `FailureRatio` : `0.5`.
 
 #### Simple: happy path sequence diagram
 
@@ -128,6 +131,7 @@ sequenceDiagram
     P->>CB: Calls ExecuteCore
     Note over CB: Closed state
     Note over CB, D: Sampling start
+    activate CB
     CB->>+D: Invokes
     D->>-CB: Returns result
     CB->>P: Returns result
@@ -144,6 +148,7 @@ sequenceDiagram
     P->>CB: Calls ExecuteCore
     CB->>+D: Invokes
     D->>-CB: Fails
+    deactivate CB
     Note over CB, D: Sampling end
     CB->>P: Propagates failure
     P->>C: Propagates failure
@@ -151,7 +156,7 @@ sequenceDiagram
 
 #### Simple: unhappy path sequence diagram
 
-The circuit will break because the actual failure ratio meets the threshold after the 2nd call.
+The circuit will break because the actual failure ratio meets the threshold (0.5) after the 2nd call.
 
 ```mermaid
 %%{init: {'theme':'dark'}}%%
@@ -166,6 +171,7 @@ sequenceDiagram
     P->>CB: Calls ExecuteCore
     Note over CB: Closed state
     Note over CB, D: Sampling start
+    activate CB
     CB->>+D: Invokes
     D->>-CB: Returns result
     CB->>P: Returns result
@@ -184,12 +190,17 @@ sequenceDiagram
     CB->>CB: Rejects request
     CB->>P: Throws <br/>BrokenCircuitException
     P->>C: Propagates exception
+    deactivate CB
     Note over CB, D: Sampling end
 ```
 
 ### Complex
 
-Let's suppose we have a circuit breaker strategy with `SamplingDuration`: `2 seconds`, `MinimumThroughput`: `2`, `FailureRatio` : `0.5` and `BreakDuration`:`1 second`.
+Let's suppose we have a circuit breaker strategy with the following configuration:
+- `SamplingDuration`: `2 seconds`;
+- `MinimumThroughput`: `2`;
+- `FailureRatio`: `0.5`;
+- `BreakDuration`:`1 second`.
 
 #### Complex: happy path sequence diagram
 
