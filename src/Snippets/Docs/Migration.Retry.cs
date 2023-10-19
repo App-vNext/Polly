@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Runtime.Versioning;
+using System.Text;
 using Polly.Retry;
 using Snippets.Docs.Utils;
 
@@ -12,6 +13,8 @@ internal static partial class Migration
     public static void Retry_V7()
     {
         #region migration-retry-v7
+
+        System.Convert.ToBase64String(Encoding.UTF8.GetBytes());
 
         // Retry once
         Policy
