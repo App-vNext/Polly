@@ -145,8 +145,8 @@ sequenceDiagram
     deactivate H
 
     deactivate D
-    H->>P: Returns result
-    P->>C: Returns result
+    H->>P: Returns result (R2)
+    P->>C: Returns result (R2)
 ```
 
 ### Fallback mode
@@ -213,7 +213,7 @@ sequenceDiagram
 
     deactivate H
     H->>P: Propagates failure (R1)
-    P->>C: Propagates failure
+    P->>C: Propagates failure (R1)
 ```
 
 ### Parallel mode
@@ -355,11 +355,13 @@ sequenceDiagram
 
     Note over H: Parallel mode
     par
-    H -> DG: Gets delay
+    H->>DG: Gets delay
+    DG->>H: 1 second
     H->>HUC: Invokes (R1)
     activate HUC
     and
-    H -> DG: Gets delay
+    H ->> DG: Gets delay
+    DG ->> H: 2 seconds
     H->>+HUC: Invokes (R2)
     end
 
@@ -370,12 +372,14 @@ sequenceDiagram
 
     Note over H: Fallback mode
 
-    H -> DG: Gets delay
+    H->>DG: Gets delay
+    DG->>H: Infinite
     H->>+HUC: Invokes (R3)
     HUC-->>HUC: Processes R3
     HUC->>-H: Fails (R3)
 
-    H -> DG: Gets delay
+    H->>DG: Gets delay
+    DG->>H: Infinite
     H->>+HUC: Invokes (R4)
     HUC-->>HUC: Processes R4
     HUC->>-H: Returns result (R4)
@@ -403,11 +407,13 @@ sequenceDiagram
 
     Note over H: Parallel mode
     par
-    H -> DG: Gets delay
+    H->>DG: Gets delay
+    DG->>H: 1 second
     H->>HUC: Invokes (R1)
     activate HUC
     and
-    H -> DG: Gets delay
+    H->>DG: Gets delay
+    DG->>H: 2 seconds
     H->>+HUC: Invokes (R2)
     end
 
@@ -418,12 +424,14 @@ sequenceDiagram
 
     Note over H: Fallback mode
 
-    H -> DG: Gets delay
+    H->>DG: Gets delay
+    DG->>H: Infinite
     H->>+HUC: Invokes (R3)
     HUC-->>HUC: Processes R3
     HUC->>-H: Fails (R3)
 
     H -> DG: Gets delay
+    DG->>H: Infinite
     H->>+HUC: Invokes (R4)
     HUC-->>HUC: Processes R4
     HUC->>-H: Fails (R4)
