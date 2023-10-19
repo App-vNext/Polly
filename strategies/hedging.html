@@ -195,6 +195,60 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
 <li>The final result is the result of fastest successful execution.</li>
 <li>If all executions fail, the final result will be the first failure encountered.</li>
 </ul>
+<h4 id="latency-happy-path-sequence-diagram">Latency: happy path sequence diagram</h4>
+<p>The hedging strategy does not trigger because the response arrives faster than the threshold.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant HUC as HedgedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;H: Calls ExecuteCore
+    Note over H: Wait start
+
+    activate H
+    H-&gt;&gt;+HUC: Invokes
+    HUC--&gt;&gt;HUC: Processes request
+    HUC-&gt;&gt;-H: Returns result
+    deactivate H
+
+    Note over H: Wait end
+    H-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+</code></pre>
+<h4 id="latency-unhappy-path-sequence-diagram">Latency: unhappy path sequence diagram</h4>
+<p>The hedging strategy triggers because the response arrives slower than the threshold.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant D as HedgedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;H: Calls ExecuteCore
+    Note over H: Wait start
+
+    activate H
+    activate D
+    H-&gt;&gt;D: Invokes (R1)
+    D--&gt;&gt;D: Processes R1&lt;br/&gt; slowly ...
+    Note over H: Wait end
+
+    H-&gt;&gt;D: Invokes (R2)
+    activate D
+    D--&gt;&gt;D: Processes R2&lt;br/&gt; quickly
+    D-&gt;&gt;H: Returns result (R2)
+    deactivate D
+    H-&gt;&gt;D: Propagates cancellation (R1)
+    deactivate H
+
+    deactivate D
+    H-&gt;&gt;P: Returns result (R2)
+    P-&gt;&gt;C: Returns result (R2)
+</code></pre>
 <h3 id="fallback-mode">Fallback mode</h3>
 <p>In fallback mode, the <code>Delay</code> value should be less than <code>TimeSpan.Zero</code>. This mode allows only a single execution to proceed at a given time.</p>
 <ul>
@@ -203,6 +257,56 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
 <li>The final result will be the first successful execution.</li>
 <li>If all executions fail, the final result will be the first failure encountered.</li>
 </ul>
+<h4 id="fallback-happy-path-sequence-diagram">Fallback: happy path sequence diagram</h4>
+<p>The hedging strategy triggers because the first attempt fails. It succeeds because the retry attempts do not exceed the <code>MaxHedgedAttempts</code>.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant HUC as HedgedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;H: Calls ExecuteCore
+    activate H
+
+    H-&gt;&gt;+HUC: Invokes (R1)
+    HUC--&gt;&gt;HUC: Processes R1
+    HUC-&gt;&gt;-H: Fails (R1)
+
+    H-&gt;&gt;+HUC: Invokes (R2)
+    HUC--&gt;&gt;HUC: Processes R2
+    HUC-&gt;&gt;-H: Returns result (R2)
+
+    deactivate H
+    H-&gt;&gt;P: Returns result (R2)
+    P-&gt;&gt;C: Returns result (R2)
+</code></pre>
+<h4 id="fallback-unhappy-path-sequence-diagram">Fallback: unhappy path sequence diagram</h4>
+<p>The hedging strategy triggers because the first attempt fails. It fails because all retry attempts failed as well.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant HUC as HedgedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;H: Calls ExecuteCore
+    activate H
+
+    H-&gt;&gt;+HUC: Invokes (R1)
+    HUC--&gt;&gt;HUC: Processes R1
+    HUC-&gt;&gt;-H: Fails (R1)
+
+    H-&gt;&gt;+HUC: Invokes (R2)
+    HUC--&gt;&gt;HUC: Processes R2
+    HUC-&gt;&gt;-H: Fails (R2)
+
+    deactivate H
+    H-&gt;&gt;P: Propagates failure (R1)
+    P-&gt;&gt;C: Propagates failure (R1)
+</code></pre>
 <h3 id="parallel-mode">Parallel mode</h3>
 <p>The hedging strategy operates in parallel mode when the <code>Delay</code> property is set to <code>TimeSpan.Zero</code>. In this mode, all executions are initiated simultaneously, and the strategy waits for the fastest completion.</p>
 <div class="IMPORTANT">
@@ -214,6 +318,68 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
 <li>The final result will be the fastest successful execution.</li>
 <li>If all executions fail, the final result will be the first failure encountered.</li>
 </ul>
+<h4 id="parallel-happy-path-sequence-diagram">Parallel: happy path sequence diagram</h4>
+<p>The hedging strategy triggers because the <code>Delay</code> is set to zero. It succeeds because one of the requests succeeds.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant HUC as HedgedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;H: Calls ExecuteCore
+    activate H
+
+    par
+    H-&gt;&gt;HUC: Invokes (R1)
+    activate HUC
+
+    and
+    H-&gt;&gt;+HUC: Invokes (R2)
+
+    end
+
+    HUC--&gt;&gt;HUC: Processes R1&lt;br/&gt; slowly ...
+    HUC--&gt;&gt;HUC: Processes R2&lt;br/&gt; quickly ...
+    HUC-&gt;&gt;-H: Returns result (R2)
+
+    H-&gt;&gt;HUC: Propagates cancellation (R1)
+    deactivate HUC
+
+    deactivate H
+    H-&gt;&gt;P: Returns result (R2)
+    P-&gt;&gt;C: Returns result (R2)
+</code></pre>
+<h4 id="parallel-unhappy-path-sequence-diagram">Parallel: unhappy path sequence diagram</h4>
+<p>The hedging strategy triggers because the <code>Delay</code> is set to zero. It succeeds because one of the requests succeeds.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant HUC as HedgedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;H: Calls ExecuteCore
+    activate H
+
+    par
+    H-&gt;&gt;HUC: Invokes (R1)
+    activate HUC
+
+    and
+    H-&gt;&gt;+HUC: Invokes (R2)
+
+    end
+
+    HUC--&gt;&gt;HUC: Processes R1
+    HUC--&gt;&gt;HUC: Processes R2
+    HUC-&gt;&gt;-H: Fails (R2)
+    HUC-&gt;&gt;-H: Fails (R1)
+
+    deactivate H
+    H-&gt;&gt;P: Propagates failure (R2)
+    P-&gt;&gt;C: Propagates failure (R2)
+</code></pre>
 <h3 id="dynamic-mode">Dynamic mode</h3>
 <p>In dynamic mode, you have the flexibility to control how the hedging strategy behaves during each execution. This control is achieved through the <code>DelayGenerator</code> property.</p>
 <div class="NOTE">
@@ -250,6 +416,102 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
 <li>Initiates a maximum of <code>4</code> executions. This includes initial action and an additional 3 attempts.</li>
 <li>Allows the first two executions to proceed in parallel, while the third and fourth executions follow the fallback mode.</li>
 </ul>
+<h4 id="dynamic-happy-path-sequence-diagram">Dynamic: happy path sequence diagram</h4>
+<p>The hedging strategy triggers and switches between modes due to the usage of <code>DelayGenerator</code>. It succeeds because the last request succeeds.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant DG as DelayGenerator
+    participant HUC as HedgedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;H: Calls ExecuteCore
+    activate H
+
+    Note over H: Parallel mode
+    par
+    H-&gt;&gt;DG: Gets delay
+    DG-&gt;&gt;H: 1 second
+    H-&gt;&gt;HUC: Invokes (R1)
+    activate HUC
+    and
+    H -&gt;&gt; DG: Gets delay
+    DG -&gt;&gt; H: 2 seconds
+    H-&gt;&gt;+HUC: Invokes (R2)
+    end
+
+    HUC--&gt;&gt;HUC: Processes R1
+    HUC--&gt;&gt;HUC: Processes R2
+    HUC-&gt;&gt;-H: Fails (R2)
+    HUC-&gt;&gt;-H: Fails (R1)
+
+    Note over H: Fallback mode
+
+    H-&gt;&gt;DG: Gets delay
+    DG-&gt;&gt;H: Infinite
+    H-&gt;&gt;+HUC: Invokes (R3)
+    HUC--&gt;&gt;HUC: Processes R3
+    HUC-&gt;&gt;-H: Fails (R3)
+
+    H-&gt;&gt;DG: Gets delay
+    DG-&gt;&gt;H: Infinite
+    H-&gt;&gt;+HUC: Invokes (R4)
+    HUC--&gt;&gt;HUC: Processes R4
+    HUC-&gt;&gt;-H: Returns result (R4)
+
+    deactivate H
+    H-&gt;&gt;P: Returns result (R4)
+    P-&gt;&gt;C: Returns result (R4)
+</code></pre>
+<h4 id="dynamic-unhappy-path-sequence-diagram">Dynamic: unhappy path sequence diagram</h4>
+<p>The hedging strategy triggers and switches between modes due to the usage of <code>DelayGenerator</code>. It fails because all requests fail.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant DG as DelayGenerator
+    participant HUC as HedgedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;H: Calls ExecuteCore
+    activate H
+
+    Note over H: Parallel mode
+    par
+    H-&gt;&gt;DG: Gets delay
+    DG-&gt;&gt;H: 1 second
+    H-&gt;&gt;HUC: Invokes (R1)
+    activate HUC
+    and
+    H-&gt;&gt;DG: Gets delay
+    DG-&gt;&gt;H: 2 seconds
+    H-&gt;&gt;+HUC: Invokes (R2)
+    end
+
+    HUC--&gt;&gt;HUC: Processes R1
+    HUC--&gt;&gt;HUC: Processes R2
+    HUC-&gt;&gt;-H: Fails (R2)
+    HUC-&gt;&gt;-H: Fails (R1)
+
+    Note over H: Fallback mode
+
+    H-&gt;&gt;DG: Gets delay
+    DG-&gt;&gt;H: Infinite
+    H-&gt;&gt;+HUC: Invokes (R3)
+    HUC--&gt;&gt;HUC: Processes R3
+    HUC-&gt;&gt;-H: Fails (R3)
+
+    H -&gt; DG: Gets delay
+    DG-&gt;&gt;H: Infinite
+    H-&gt;&gt;+HUC: Invokes (R4)
+    HUC--&gt;&gt;HUC: Processes R4
+    HUC-&gt;&gt;-H: Fails (R4)
+
+    deactivate H
+    H-&gt;&gt;P: Propagates failure (R3)
+    P-&gt;&gt;C: Propagates failure (R3)
+</code></pre>
 <h2 id="action-generator">Action generator</h2>
 <p>The hedging options include an <code>ActionGenerator</code> property, allowing you to customize the actions executed during hedging. By default, the <code>ActionGenerator</code> returns the original callback passed to the strategy. The original callback also includes any logic introduced by subsequent resilience strategies. For more advanced scenarios, the <code>ActionGenerator</code> can be used to return entirely new hedged actions, as demonstrated in the example below:</p>
 <!-- snippet: hedging-action-generator -->
