@@ -27,6 +27,7 @@ This includes Blogs, podcasts, courses, e-books, architecture samples and videos
 - [Passing an `ILogger` to Polly Policies](https://www.stevejgordon.co.uk/passing-an-ilogger-to-polly-policies) - by [Steve Gordon](https://twitter.com/stevejgordon)
 - [Using Polly and Flurl to improve your website](https://jeremylindsayni.wordpress.com/2019/01/01/using-polly-and-flurl-to-improve-your-website/) - by Jeremy Lindsay.
 - [Exploring the Polly.Contrib.WaitAndRetry helpers](https://hyr.mn/Polly-wait-and-retry/) - by [Ben Hyrman](https://twitter.com/hyrmn), who also wrote most of the Polly.Contrib.WaitAndRetry documentation.
+- [Retries - An interactive study of common retry methods](https://encore.dev/blog/retries) - by [Sam Rose](https://twitter.com/samwhoo)
 
 ## Podcasts
 
