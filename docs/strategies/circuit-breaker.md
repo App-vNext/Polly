@@ -203,7 +203,7 @@ Let's suppose we have a circuit breaker strategy with the following configuratio
 
 #### Complex: happy path sequence diagram
 
-The circuit will break and later it will transition into `HalfOpen` state. The probe will succeed so, the circuit breaker will go back to normal (`Closed`) state.
+The circuit will break and later it will transition into the `HalfOpen` state. The probe will then succeed, so the circuit breaker will go back to the normal (`Closed`) state.
 
 ```mermaid
 sequenceDiagram
@@ -249,7 +249,7 @@ sequenceDiagram
 
 #### Complex: unhappy path sequence diagram
 
-The circuit will break and later it will transition into `HalfOpen` state. The probe will fail so, the circuit breaker will become broken again (`Open` state).
+The circuit will break and later it will transition into the `HalfOpen` state. The probe will then fail, so the circuit breaker will become broken again (the `Open` state).
 
 ```mermaid
 sequenceDiagram
