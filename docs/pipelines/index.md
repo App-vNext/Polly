@@ -203,7 +203,7 @@ sequenceDiagram
 Let's create the following pipeline:
 
 - the inner strategy is a retry,
-- the outer is a timeout which overarches all retry attempts.
+- the outer is a timeout which is overarching all retry attempts.
 
 <!-- snippet: resilience-pipeline-diagram-timeout-retry -->
 ```cs
@@ -269,7 +269,7 @@ Let's create the following pipeline:
 
 - the inner most strategy is a timeout (per attempt),
 - the middle one is a retry which is timeout-aware,
-- the outer most is a timeout which overarches all retry attempts.
+- the outer most is a timeout which is overarching all retry attempts.
 
 <!-- snippet: resilience-pipeline-diagram-timeout-retry-timeout -->
 ```cs
