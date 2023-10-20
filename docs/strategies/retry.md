@@ -122,7 +122,7 @@ sequenceDiagram
     Note over R,D: Initial attempt
     R->>+D: Invokes
     D->>-R: Fails
-    R->>R: Sleeps
+    R-->>R: Sleeps
     Note over R,D: 1st retry attempt
     R->>+D: Invokes
     D->>-R: Returns result
@@ -144,11 +144,11 @@ sequenceDiagram
     Note over R,D: Initial attempt
     R->>+D: Invokes
     D->>-R: Fails
-    R->>R: Sleeps
+    R-->>R: Sleeps
     Note over R,D: 1st retry attempt
     R->>+D: Invokes
     D->>-R: Fails
-    R->>R: Sleeps
+    R-->>R: Sleeps
     Note over R,D: 2nd retry attempt
     R->>+D: Invokes
     D->>-R: Fails

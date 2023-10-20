@@ -97,7 +97,9 @@ sequenceDiagram
     P->>F: Calls ExecuteCore
     F->>+D: Invokes
     D->>-F: Fails
-    F->>F: Falls back to<br/>substitute result
+    activate F
+    F-->>F: Falls back to<br/>substitute result
+    deactivate F
     F->>P: Returns <br/>substituted result
     P->>C: Returns <br/>substituted result
 ```

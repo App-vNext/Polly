@@ -185,7 +185,7 @@ sequenceDiagram
 
     C->>P: Calls ExecuteAsync
     P->>CB: Calls ExecuteCore
-    CB->>CB: Rejects request
+    CB-->>CB: Rejects request
     CB->>P: Throws <br/>BrokenCircuitException
     P->>C: Propagates exception
     deactivate CB
@@ -203,6 +203,8 @@ Let's suppose we have a circuit breaker strategy with the following configuratio
 
 #### Complex: happy path sequence diagram
 
+The circuit will break and later it will transition into `HalfOpen` state. The probe will succeed so, the circuit breaker will go back to normal (`Closed`) state.
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -230,7 +232,7 @@ sequenceDiagram
 
     C->>P: Calls ExecuteAsync
     P->>CB: Calls ExecuteCore
-    CB->>CB: Rejects request
+    CB-->>CB: Rejects request
     CB->>P: Throws <br/>BrokenCircuitException
     P->>C: Propagates exception
 
@@ -247,6 +249,8 @@ sequenceDiagram
 
 #### Complex: unhappy path sequence diagram
 
+The circuit will break and later it will transition into `HalfOpen` state. The probe will fail so, the circuit breaker will become broken again (`Open` state).
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -274,7 +278,7 @@ sequenceDiagram
 
     C->>P: Calls ExecuteAsync
     P->>CB: Calls ExecuteCore
-    CB->>CB: Rejects request
+    CB-->>CB: Rejects request
     CB->>P: Throws <br/>BrokenCircuitException
     P->>C: Propagates exception
 
