@@ -321,8 +321,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
         {
             var delay = args.AttemptNumber switch
             {
-                0 => TimeSpan.Zero, // Parallel mode
-                1 => TimeSpan.Zero, // Parallel mode
+                0 or 1 => TimeSpan.Zero, // Parallel mode
                 _ => TimeSpan.FromSeconds(-1) // switch to Fallback mode
             };
 
