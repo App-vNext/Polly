@@ -139,11 +139,13 @@ Use `ExecuteOutcomeAsync(...)` in high-performance scenarios where you wish to a
 
 ### Sequence diagram for a pipeline with retry and timeout
 
+Let's create the following pipeline:
+
+- the inner strategy is a timeout,
+- the outer is a retry which is timeout-aware.
+
 <!-- snippet: resilience-pipeline-diagram-retry-timeout -->
 ```cs
-// Let's create the following pipeline:
-// the inner strategy is a timeout,
-// the outer is a retry which is timeout-aware.
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new() { ShouldHandle = new PredicateBuilder().Handle<TimeoutRejectedException>() }) // outer
     .AddTimeout(TimeSpan.FromSeconds(1)) // inner
@@ -198,11 +200,13 @@ sequenceDiagram
 
 ### Sequence diagram for a pipeline with timeout and retry
 
+Let's create the following pipeline:
+
+- the inner strategy is a retry,
+- the outer is a timeout which overarches all retry attempts.
+
 <!-- snippet: resilience-pipeline-diagram-timeout-retry -->
 ```cs
-// Let's create the following pipeline:
-// the inner strategy is a retry,
-// the outer is a timeout which overarches all retry attempts.
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddTimeout(TimeSpan.FromSeconds(10)) // outer
     .AddRetry(new()) // inner
@@ -261,12 +265,14 @@ sequenceDiagram
 
 ### Sequence diagram for a pipeline with timeout, retry and timeout
 
+Let's create the following pipeline:
+
+- the inner most strategy is a timeout (per attempt),
+- the middle one is a retry which is timeout-aware,
+- the outer most is a timeout which overarches all retry attempts.
+
 <!-- snippet: resilience-pipeline-diagram-timeout-retry-timeout -->
 ```cs
-// Let's create the following pipeline:
-// the inner most strategy is a timeout (per attempt),
-// the middle one is a retry which is timeout-aware,
-// the outer most is a timeout which overarches all retry attempts.
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddTimeout(TimeSpan.FromSeconds(10)) // outer most
     .AddRetry(new() { ShouldHandle = new PredicateBuilder().Handle<TimeoutRejectedException>() })
