@@ -321,9 +321,9 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
         {
             var delay = args.AttemptNumber switch
             {
-                0 => TimeSpan.FromSeconds(1),
-                1 => TimeSpan.FromSeconds(2),
-                _ => TimeSpan.FromSeconds(-1) // switch to Fallback mode from Parallel
+                0 => TimeSpan.Zero, // Parallel mode
+                1 => TimeSpan.Zero, // Parallel mode
+                _ => TimeSpan.FromSeconds(-1) // switch to Fallback mode
             };
 
             return new ValueTask<TimeSpan>(delay);
@@ -356,12 +356,12 @@ sequenceDiagram
     Note over H: Parallel mode
     par
     H->>DG: Gets delay
-    DG->>H: 1 second
+    DG->>H: 0 second
     H->>HUC: Invokes (R1)
     activate HUC
     and
     H ->> DG: Gets delay
-    DG ->> H: 2 seconds
+    DG ->> H: 0 second
     H->>+HUC: Invokes (R2)
     end
 
@@ -408,12 +408,12 @@ sequenceDiagram
     Note over H: Parallel mode
     par
     H->>DG: Gets delay
-    DG->>H: 1 second
+    DG->>H: 0 second
     H->>HUC: Invokes (R1)
     activate HUC
     and
     H->>DG: Gets delay
-    DG->>H: 2 seconds
+    DG->>H: 0 second
     H->>+HUC: Invokes (R2)
     end
 

@@ -64,9 +64,9 @@ internal static class Hedging
                 {
                     var delay = args.AttemptNumber switch
                     {
-                        0 => TimeSpan.FromSeconds(1),
-                        1 => TimeSpan.FromSeconds(2),
-                        _ => TimeSpan.FromSeconds(-1) // switch to Fallback mode from Parallel
+                        0 => TimeSpan.Zero, // Parallel mode
+                        1 => TimeSpan.Zero, // Parallel mode
+                        _ => TimeSpan.FromSeconds(-1) // switch to Fallback mode
                     };
 
                     return new ValueTask<TimeSpan>(delay);
