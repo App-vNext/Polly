@@ -91,15 +91,16 @@ sequenceDiagram
     actor C as Caller
     participant P as Pipeline
     participant F as Fallback
+    participant FA as FallbackAction
     participant D as DecoratedUserCallback
 
     C->>P: Calls ExecuteAsync
     P->>F: Calls ExecuteCore
     F->>+D: Invokes
     D->>-F: Fails
-    activate F
-    F-->>F: Falls back to<br/>substitute result
-    deactivate F
+    F->>+FA: Invokes
+    FA-->>FA: Calculates substitute result
+    FA->>-F: Returns <br/>substituted result
     F->>P: Returns <br/>substituted result
     P->>C: Returns <br/>substituted result
 ```
