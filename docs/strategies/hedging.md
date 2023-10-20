@@ -323,7 +323,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
             {
                 0 => TimeSpan.FromSeconds(1),
                 1 => TimeSpan.FromSeconds(2),
-                _ => TimeSpan.FromSeconds(-1)
+                _ => TimeSpan.FromSeconds(-1) // switch to Fallback mode from Parallel
             };
 
             return new ValueTask<TimeSpan>(delay);
