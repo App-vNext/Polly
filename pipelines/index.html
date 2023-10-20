@@ -206,6 +206,199 @@ else
 </code></pre>
 <!-- endSnippet -->
 <p>Use <code>ExecuteOutcomeAsync(...)</code> in high-performance scenarios where you wish to avoid re-throwing exceptions. Keep in mind that Polly's resilience strategies also make use of the <code>Outcome</code> struct to prevent unnecessary exception throwing.</p>
+<h2 id="diagrams">Diagrams</h2>
+<h3 id="sequence-diagram-for-a-pipeline-with-retry-and-timeout">Sequence diagram for a pipeline with retry and timeout</h3>
+<p>Let's create the following pipeline:</p>
+<ul>
+<li>the inner strategy is a timeout,</li>
+<li>the outer is a retry which is timeout-aware.</li>
+</ul>
+<!-- snippet: resilience-pipeline-diagram-retry-timeout -->
+<pre><code class="lang-cs">ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddRetry(new() { ShouldHandle = new PredicateBuilder().Handle&lt;TimeoutRejectedException&gt;() }) // outer
+    .AddTimeout(TimeSpan.FromSeconds(1)) // inner
+    .Build();
+</code></pre>
+<!-- endSnippet -->
+<p>Let's suppose that the first request takes too long but the second is fast enough.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant R as Retry
+    participant T as Timeout
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;R: Calls ExecuteCore
+    R-&gt;&gt;T: Calls ExecuteCore
+    Note over R, D: Initial attempt
+    Note over T: Wait start
+    activate T
+    T-&gt;&gt;D: Invokes
+    activate D
+    D--&gt;&gt;D: Performs &lt;br/&gt;long-running &lt;br/&gt;operation
+    Note over T: Wait end
+    deactivate T
+    T--&gt;&gt;T: Times out
+    T-&gt;&gt;D: Propagates cancellation
+    deactivate D
+    T-&gt;&gt;R: Throws &lt;br/&gt;TimeoutRejectedException
+    R--&gt;&gt;R: Sleeps
+
+    Note over R, D: First retry attempt
+    R-&gt;&gt;T: Calls ExecuteCore
+    Note over T: Wait start
+    activate T
+    T-&gt;&gt;D: Invokes
+    activate D
+    D--&gt;&gt;D: Performs &lt;br/&gt;long-running &lt;br/&gt;operation
+    D-&gt;&gt;T: Returns result
+    deactivate D
+    deactivate T
+    Note over T: Wait end
+
+    T-&gt;&gt;R: Returns result
+    R-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+</code></pre>
+<h3 id="sequence-diagram-for-a-pipeline-with-timeout-and-retry">Sequence diagram for a pipeline with timeout and retry</h3>
+<p>Let's create the following pipeline:</p>
+<ul>
+<li>the inner strategy is a retry,</li>
+<li>the outer is a timeout which is overarching all retry attempts.</li>
+</ul>
+<!-- snippet: resilience-pipeline-diagram-timeout-retry -->
+<pre><code class="lang-cs">ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddTimeout(TimeSpan.FromSeconds(10)) // outer
+    .AddRetry(new()) // inner
+    .Build();
+</code></pre>
+<!-- endSnippet -->
+<p>Let's suppose that the first and the second requests are failing. The third request is not awaited since the overarching timeout elapsed.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant T as Timeout
+    participant R as Retry
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;T: Calls ExecuteCore
+    Note over T: Wait start
+    activate T
+
+    T-&gt;&gt;R: Calls ExecuteCore
+    Note over R, D: Initial attempt
+    R-&gt;&gt;D: Invokes
+    activate D
+    D--&gt;&gt;D: Performs &lt;br/&gt;operation
+    D-&gt;&gt;R: Fails
+    deactivate D
+
+    R--&gt;&gt;R: Sleeps
+    Note over R, D: First retry attempt
+    R-&gt;&gt;D: Invokes
+    activate D
+    D--&gt;&gt;D: Performs &lt;br/&gt;operation
+    D-&gt;&gt;R: Fails
+    deactivate D
+
+    R--&gt;&gt;R: Sleeps
+    Note over R, D: Second retry attempt
+    R-&gt;&gt;D: Invokes
+    activate D
+    D--&gt;&gt;D: Performs &lt;br/&gt;operation
+
+    deactivate T
+    Note over T: Wait end
+    T--&gt;&gt;T: Times out
+    T-&gt;&gt;R: Propagates cancellation
+    R-&gt;&gt;D: Propagates cancellation
+    deactivate D
+
+    T-&gt;&gt;P: Throws &lt;br/&gt;TimeoutRejectedException
+    P-&gt;&gt;C: Propagates exception
+</code></pre>
+<h3 id="sequence-diagram-for-a-pipeline-with-timeout-retry-and-timeout">Sequence diagram for a pipeline with timeout, retry and timeout</h3>
+<p>Let's create the following pipeline:</p>
+<ul>
+<li>the inner most strategy is a timeout (per attempt),</li>
+<li>the middle one is a retry which is timeout-aware,</li>
+<li>the outer most is a timeout which is overarching all retry attempts.</li>
+</ul>
+<!-- snippet: resilience-pipeline-diagram-timeout-retry-timeout -->
+<pre><code class="lang-cs">ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddTimeout(TimeSpan.FromSeconds(10)) // outer most
+    .AddRetry(new() { ShouldHandle = new PredicateBuilder().Handle&lt;TimeoutRejectedException&gt;() })
+    .AddTimeout(TimeSpan.FromSeconds(1)) // inner most
+    .Build();
+</code></pre>
+<!-- endSnippet -->
+<p>Let's suppose that the first request fails and the second takes too long. The third request is not awaited since the overarching timeout elapsed.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant TO as TimeoutOuter
+    participant R as Retry
+    participant TI as TimeoutInner
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;TO: Calls ExecuteCore
+    Note over TO: Wait start
+    activate TO
+
+    TO-&gt;&gt;R: Calls ExecuteCore
+    Note over R, D: Initial attempt
+    R-&gt;&gt;TI: Calls ExecuteCore
+    Note over TI: Wait start
+    activate TI
+    TI-&gt;&gt;D: Invokes
+    activate D
+    D--&gt;&gt;D: Performs &lt;br/&gt;operation
+    D-&gt;&gt;TI: Fails
+    deactivate D
+    deactivate TI
+    Note over TI: Wait end
+    TI-&gt;&gt;R: Propagate failure
+
+    R--&gt;&gt;R: Sleeps
+    Note over R, D: First retry attempt
+    R-&gt;&gt;TI: Calls ExecuteCore
+    Note over TI: Wait start
+    activate TI
+    TI-&gt;&gt;D: Invokes
+    activate D
+    D--&gt;&gt;D: Performs &lt;br/&gt;operation
+    TI--&gt;&gt;TI: Times-out
+    deactivate TI
+    Note over TI: Wait end
+    TI-&gt;&gt;D: Propagates cancellation
+    deactivate D
+    TI-&gt;&gt;R: Throws &lt;br/&gt;TimeoutRejectedException
+
+    R-&gt;&gt;R: Sleeps
+     Note over R, D: Second retry attempt
+    R-&gt;&gt;TI: Calls ExecuteCore
+    Note over TI: Wait start
+    activate TI
+    TI-&gt;&gt;D: Invokes
+    activate D
+    D--&gt;&gt;D: Performs &lt;br/&gt;operation
+    TO--&gt;&gt;TO: Times-out
+    deactivate TO
+    Note over TO: Wait end
+    TO-&gt;&gt;R: Propagates cancellation
+    R-&gt;&gt;TI: Propagates cancellation
+    TI-&gt;&gt;D: Propagates cancellation
+    deactivate TI
+    deactivate D
+    TO-&gt;&gt;P: Throws &lt;br/&gt;TimeoutRejectedException
+    P-&gt;&gt;C: Propagates exception
+</code></pre>
 
 </article>
 
