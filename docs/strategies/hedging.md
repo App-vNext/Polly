@@ -265,7 +265,7 @@ sequenceDiagram
 
 #### Parallel: unhappy path sequence diagram
 
-The hedging strategy triggers because the `Delay` is set to zero. It succeeds because one of the requests succeeds.
+The hedging strategy triggers because the `Delay` is set to zero. It fails because all requests fail.
 
 ```mermaid
 sequenceDiagram
@@ -321,9 +321,8 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
         {
             var delay = args.AttemptNumber switch
             {
-                0 => TimeSpan.FromSeconds(1),
-                1 => TimeSpan.FromSeconds(2),
-                _ => System.Threading.Timeout.InfiniteTimeSpan
+                0 or 1 => TimeSpan.Zero, // Parallel mode
+                _ => TimeSpan.FromSeconds(-1) // switch to Fallback mode
             };
 
             return new ValueTask<TimeSpan>(delay);
@@ -339,7 +338,7 @@ With this configuration, the hedging strategy:
 
 #### Dynamic: happy path sequence diagram
 
-The hedging strategy triggers and switches between modes due to the usage of `DelayGenerator`. It succeeds because the last request succeeds.
+The hedging strategy triggers and switches between modes due to our `DelayGenerator`. It succeeds because the last request succeeds.
 
 ```mermaid
 sequenceDiagram
@@ -356,12 +355,12 @@ sequenceDiagram
     Note over H: Parallel mode
     par
     H->>DG: Gets delay
-    DG->>H: 1 second
+    DG->>H: 0 second
     H->>HUC: Invokes (R1)
     activate HUC
     and
     H ->> DG: Gets delay
-    DG ->> H: 2 seconds
+    DG ->> H: 0 second
     H->>+HUC: Invokes (R2)
     end
 
@@ -373,13 +372,13 @@ sequenceDiagram
     Note over H: Fallback mode
 
     H->>DG: Gets delay
-    DG->>H: Infinite
+    DG->>H: -1 second
     H->>+HUC: Invokes (R3)
     HUC-->>HUC: Processes R3
     HUC->>-H: Fails (R3)
 
     H->>DG: Gets delay
-    DG->>H: Infinite
+    DG->>H: -1 second
     H->>+HUC: Invokes (R4)
     HUC-->>HUC: Processes R4
     HUC->>-H: Returns result (R4)
@@ -391,7 +390,7 @@ sequenceDiagram
 
 #### Dynamic: unhappy path sequence diagram
 
-The hedging strategy triggers and switches between modes due to the usage of `DelayGenerator`. It fails because all requests fail.
+The hedging strategy triggers and switches between modes due our `DelayGenerator`. It fails because all requests fail.
 
 ```mermaid
 sequenceDiagram
@@ -408,12 +407,12 @@ sequenceDiagram
     Note over H: Parallel mode
     par
     H->>DG: Gets delay
-    DG->>H: 1 second
+    DG->>H: 0 second
     H->>HUC: Invokes (R1)
     activate HUC
     and
     H->>DG: Gets delay
-    DG->>H: 2 seconds
+    DG->>H: 0 second
     H->>+HUC: Invokes (R2)
     end
 
@@ -425,13 +424,13 @@ sequenceDiagram
     Note over H: Fallback mode
 
     H->>DG: Gets delay
-    DG->>H: Infinite
+    DG->>H: -1 second
     H->>+HUC: Invokes (R3)
     HUC-->>HUC: Processes R3
     HUC->>-H: Fails (R3)
 
     H -> DG: Gets delay
-    DG->>H: Infinite
+    DG->>H: -1 second
     H->>+HUC: Invokes (R4)
     HUC-->>HUC: Processes R4
     HUC->>-H: Fails (R4)
@@ -485,6 +484,43 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
     });
 ```
 <!-- endSnippet -->
+
+### Action generator: sequence diagram
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant AG as ActionGenerator
+    participant UC as UserCallback
+    participant HUC as HedgedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>H: Calls ExecuteCore
+
+    activate H
+    H->>+UC: Invokes (R1)
+    UC-->>UC: Processes R1
+    UC->>-H: Fails (R1)
+    H->>+AG: Invokes
+    AG->>-H: Returns factory
+    H-->>H: Invokes factory
+
+    H->>+HUC: Invokes (R2)
+    HUC-->>HUC: Processes R2
+    HUC->>-H: Fails (R2)
+
+    H-->>H: Invokes factory
+    H->>+HUC: Invokes (R3)
+    HUC-->>HUC: Processes R3
+    HUC->>-H: Returns result (R3)
+    deactivate H
+
+    H->>P: Returns result (R3)
+    P->>C: Returns result (R3)
+```
 
 ### Parameterized callbacks and action generator
 

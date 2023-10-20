@@ -92,7 +92,7 @@ sequenceDiagram
     C->>P: Calls ExecuteAsync
     P->>T: Calls ExecuteCore
     T->>+D: Invokes
-    D->>D: Performs <br/>long-running <br/>operation
+    D-->>D: Performs <br/>long-running <br/>operation
     D->>-T: Returns result
     T->>P: Returns result
     P->>C: Returns result
@@ -112,8 +112,8 @@ sequenceDiagram
     T->>+D: Invokes
     activate T
     activate D
-    D->>D: Performs <br/>long-running <br/>operation
-    T->T: Times out
+    D-->>D: Performs <br/>long-running <br/>operation
+    T-->>T: Times out
     deactivate T
     T->>D: Propagates cancellation
     deactivate D

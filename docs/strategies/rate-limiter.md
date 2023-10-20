@@ -84,6 +84,7 @@ Let's suppose we have a rate limiter strategy with `PermitLimit` : `1` and `Wind
 
 ```mermaid
 sequenceDiagram
+    autonumber
     actor C as Caller
     participant P as Pipeline
     participant RL as RateLimiter
@@ -112,6 +113,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+    autonumber
     actor C as Caller
     participant P as Pipeline
     participant RL as RateLimiter
@@ -127,7 +129,7 @@ sequenceDiagram
     Note over C: Few seconds later...
     C->>P: Calls ExecuteAsync
     P->>RL: Calls ExecuteCore
-    RL->>RL: Rejects request
+    RL-->>RL: Rejects request
     RL->>P: Throws <br/>RateLimiterRejectedException
     P->>C: Propagates exception
     Note over RL,D: Window end
@@ -156,7 +158,7 @@ sequenceDiagram
     P->>CL: Calls ExecuteCore
     CL->>+D: Invokes (C1)
     P->>CL: Calls ExecuteCore
-    CL->>CL: Queues request
+    CL-->>CL: Queues request
 
     D->>-CL: Returns result (C1)
     CL->>P: Returns result (C1)
@@ -189,9 +191,9 @@ sequenceDiagram
     P->>CL: Calls ExecuteCore
     CL->>+D: Invokes (C1)
     P->>CL: Calls ExecuteCore
-    CL->>CL: Queues request (C2)
+    CL-->>CL: Queues request (C2)
     P->>CL: Calls ExecuteCore
-    CL->>CL: Rejects request (C3)
+    CL-->>CL: Rejects request (C3)
     CL->>P: Throws <br/>RateLimiterRejectedException
     P->>C3: Propagates exception
 
