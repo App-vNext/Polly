@@ -157,7 +157,7 @@ internal class MyMeteringEnricher : MeteringEnricher
 <!-- snippet: telemetry-tags -->
 <pre><code class="lang-cs">var builder = new ResiliencePipelineBuilder();
 builder.Name = &quot;my-name&quot;;
-builder.Name = &quot;my-instance-name&quot;;
+builder.InstanceName = &quot;my-instance-name&quot;;
 
 builder.AddRetry(new RetryStrategyOptions
 {
