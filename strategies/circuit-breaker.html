@@ -307,7 +307,7 @@ direction LR
 
     C-&gt;&gt;P: Calls ExecuteAsync
     P-&gt;&gt;CB: Calls ExecuteCore
-    CB-&gt;&gt;CB: Rejects request
+    CB--&gt;&gt;CB: Rejects request
     CB-&gt;&gt;P: Throws &lt;br/&gt;BrokenCircuitException
     P-&gt;&gt;C: Propagates exception
     deactivate CB
@@ -322,6 +322,7 @@ direction LR
 <li><code>BreakDuration</code>:<code>1 second</code>.</li>
 </ul>
 <h4 id="complex-happy-path-sequence-diagram">Complex: happy path sequence diagram</h4>
+<p>The circuit will break and later it will transition into the <code>HalfOpen</code> state. The probe will then succeed, so the circuit breaker will go back to the normal (<code>Closed</code>) state.</p>
 <pre><code class="lang-mermaid">sequenceDiagram
     autonumber
     actor C as Caller
@@ -348,7 +349,7 @@ direction LR
 
     C-&gt;&gt;P: Calls ExecuteAsync
     P-&gt;&gt;CB: Calls ExecuteCore
-    CB-&gt;&gt;CB: Rejects request
+    CB--&gt;&gt;CB: Rejects request
     CB-&gt;&gt;P: Throws &lt;br/&gt;BrokenCircuitException
     P-&gt;&gt;C: Propagates exception
 
@@ -363,6 +364,7 @@ direction LR
     P-&gt;&gt;C: Returns result
 </code></pre>
 <h4 id="complex-unhappy-path-sequence-diagram">Complex: unhappy path sequence diagram</h4>
+<p>The circuit will break and later it will transition into the <code>HalfOpen</code> state. The probe will then fail, so the circuit breaker will become broken again (the <code>Open</code> state).</p>
 <pre><code class="lang-mermaid">sequenceDiagram
     autonumber
     actor C as Caller
@@ -389,7 +391,7 @@ direction LR
 
     C-&gt;&gt;P: Calls ExecuteAsync
     P-&gt;&gt;CB: Calls ExecuteCore
-    CB-&gt;&gt;CB: Rejects request
+    CB--&gt;&gt;CB: Rejects request
     CB-&gt;&gt;P: Throws &lt;br/&gt;BrokenCircuitException
     P-&gt;&gt;C: Propagates exception
 

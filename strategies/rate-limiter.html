@@ -178,6 +178,7 @@ catch (RateLimiterRejectedException ex)
 <p>Let's suppose we have a rate limiter strategy with <code>PermitLimit</code> : <code>1</code> and <code>Window</code> : <code>10 seconds</code>.</p>
 <h3 id="rate-limiter-happy-path-sequence-diagram">Rate Limiter: happy path sequence diagram</h3>
 <pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
     actor C as Caller
     participant P as Pipeline
     participant RL as RateLimiter
@@ -203,6 +204,7 @@ catch (RateLimiterRejectedException ex)
 </code></pre>
 <h4 id="rate-limiter-unhappy-path-sequence-diagram">Rate limiter: unhappy path sequence diagram</h4>
 <pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
     actor C as Caller
     participant P as Pipeline
     participant RL as RateLimiter
@@ -218,7 +220,7 @@ catch (RateLimiterRejectedException ex)
     Note over C: Few seconds later...
     C-&gt;&gt;P: Calls ExecuteAsync
     P-&gt;&gt;RL: Calls ExecuteCore
-    RL-&gt;&gt;RL: Rejects request
+    RL--&gt;&gt;RL: Rejects request
     RL-&gt;&gt;P: Throws &lt;br/&gt;RateLimiterRejectedException
     P-&gt;&gt;C: Propagates exception
     Note over RL,D: Window end
@@ -242,7 +244,7 @@ catch (RateLimiterRejectedException ex)
     P-&gt;&gt;CL: Calls ExecuteCore
     CL-&gt;&gt;+D: Invokes (C1)
     P-&gt;&gt;CL: Calls ExecuteCore
-    CL-&gt;&gt;CL: Queues request
+    CL--&gt;&gt;CL: Queues request
 
     D-&gt;&gt;-CL: Returns result (C1)
     CL-&gt;&gt;P: Returns result (C1)
@@ -272,9 +274,9 @@ catch (RateLimiterRejectedException ex)
     P-&gt;&gt;CL: Calls ExecuteCore
     CL-&gt;&gt;+D: Invokes (C1)
     P-&gt;&gt;CL: Calls ExecuteCore
-    CL-&gt;&gt;CL: Queues request (C2)
+    CL--&gt;&gt;CL: Queues request (C2)
     P-&gt;&gt;CL: Calls ExecuteCore
-    CL-&gt;&gt;CL: Rejects request (C3)
+    CL--&gt;&gt;CL: Rejects request (C3)
     CL-&gt;&gt;P: Throws &lt;br/&gt;RateLimiterRejectedException
     P-&gt;&gt;C3: Propagates exception
 

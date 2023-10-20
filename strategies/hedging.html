@@ -351,7 +351,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     P-&gt;&gt;C: Returns result (R2)
 </code></pre>
 <h4 id="parallel-unhappy-path-sequence-diagram">Parallel: unhappy path sequence diagram</h4>
-<p>The hedging strategy triggers because the <code>Delay</code> is set to zero. It succeeds because one of the requests succeeds.</p>
+<p>The hedging strategy triggers because the <code>Delay</code> is set to zero. It fails because all requests fail.</p>
 <pre><code class="lang-mermaid">sequenceDiagram
     actor C as Caller
     participant P as Pipeline
@@ -401,9 +401,8 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
         {
             var delay = args.AttemptNumber switch
             {
-                0 =&gt; TimeSpan.FromSeconds(1),
-                1 =&gt; TimeSpan.FromSeconds(2),
-                _ =&gt; System.Threading.Timeout.InfiniteTimeSpan
+                0 or 1 =&gt; TimeSpan.Zero, // Parallel mode
+                _ =&gt; TimeSpan.FromSeconds(-1) // switch to Fallback mode
             };
 
             return new ValueTask&lt;TimeSpan&gt;(delay);
@@ -417,7 +416,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
 <li>Allows the first two executions to proceed in parallel, while the third and fourth executions follow the fallback mode.</li>
 </ul>
 <h4 id="dynamic-happy-path-sequence-diagram">Dynamic: happy path sequence diagram</h4>
-<p>The hedging strategy triggers and switches between modes due to the usage of <code>DelayGenerator</code>. It succeeds because the last request succeeds.</p>
+<p>The hedging strategy triggers and switches between modes due to our <code>DelayGenerator</code>. It succeeds because the last request succeeds.</p>
 <pre><code class="lang-mermaid">sequenceDiagram
     actor C as Caller
     participant P as Pipeline
@@ -432,12 +431,12 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     Note over H: Parallel mode
     par
     H-&gt;&gt;DG: Gets delay
-    DG-&gt;&gt;H: 1 second
+    DG-&gt;&gt;H: 0 second
     H-&gt;&gt;HUC: Invokes (R1)
     activate HUC
     and
     H -&gt;&gt; DG: Gets delay
-    DG -&gt;&gt; H: 2 seconds
+    DG -&gt;&gt; H: 0 second
     H-&gt;&gt;+HUC: Invokes (R2)
     end
 
@@ -449,13 +448,13 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     Note over H: Fallback mode
 
     H-&gt;&gt;DG: Gets delay
-    DG-&gt;&gt;H: Infinite
+    DG-&gt;&gt;H: -1 second
     H-&gt;&gt;+HUC: Invokes (R3)
     HUC--&gt;&gt;HUC: Processes R3
     HUC-&gt;&gt;-H: Fails (R3)
 
     H-&gt;&gt;DG: Gets delay
-    DG-&gt;&gt;H: Infinite
+    DG-&gt;&gt;H: -1 second
     H-&gt;&gt;+HUC: Invokes (R4)
     HUC--&gt;&gt;HUC: Processes R4
     HUC-&gt;&gt;-H: Returns result (R4)
@@ -465,7 +464,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     P-&gt;&gt;C: Returns result (R4)
 </code></pre>
 <h4 id="dynamic-unhappy-path-sequence-diagram">Dynamic: unhappy path sequence diagram</h4>
-<p>The hedging strategy triggers and switches between modes due to the usage of <code>DelayGenerator</code>. It fails because all requests fail.</p>
+<p>The hedging strategy triggers and switches between modes due our <code>DelayGenerator</code>. It fails because all requests fail.</p>
 <pre><code class="lang-mermaid">sequenceDiagram
     actor C as Caller
     participant P as Pipeline
@@ -480,12 +479,12 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     Note over H: Parallel mode
     par
     H-&gt;&gt;DG: Gets delay
-    DG-&gt;&gt;H: 1 second
+    DG-&gt;&gt;H: 0 second
     H-&gt;&gt;HUC: Invokes (R1)
     activate HUC
     and
     H-&gt;&gt;DG: Gets delay
-    DG-&gt;&gt;H: 2 seconds
+    DG-&gt;&gt;H: 0 second
     H-&gt;&gt;+HUC: Invokes (R2)
     end
 
@@ -497,13 +496,13 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     Note over H: Fallback mode
 
     H-&gt;&gt;DG: Gets delay
-    DG-&gt;&gt;H: Infinite
+    DG-&gt;&gt;H: -1 second
     H-&gt;&gt;+HUC: Invokes (R3)
     HUC--&gt;&gt;HUC: Processes R3
     HUC-&gt;&gt;-H: Fails (R3)
 
     H -&gt; DG: Gets delay
-    DG-&gt;&gt;H: Infinite
+    DG-&gt;&gt;H: -1 second
     H-&gt;&gt;+HUC: Invokes (R4)
     HUC--&gt;&gt;HUC: Processes R4
     HUC-&gt;&gt;-H: Fails (R4)
@@ -553,6 +552,40 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     });
 </code></pre>
 <!-- endSnippet -->
+<h3 id="action-generator-sequence-diagram">Action generator: sequence diagram</h3>
+<pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant AG as ActionGenerator
+    participant UC as UserCallback
+    participant HUC as HedgedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;H: Calls ExecuteCore
+
+    activate H
+    H-&gt;&gt;+UC: Invokes (R1)
+    UC--&gt;&gt;UC: Processes R1
+    UC-&gt;&gt;-H: Fails (R1)
+    H-&gt;&gt;+AG: Invokes
+    AG-&gt;&gt;-H: Returns factory
+    H--&gt;&gt;H: Invokes factory
+
+    H-&gt;&gt;+HUC: Invokes (R2)
+    HUC--&gt;&gt;HUC: Processes R2
+    HUC-&gt;&gt;-H: Fails (R2)
+
+    H--&gt;&gt;H: Invokes factory
+    H-&gt;&gt;+HUC: Invokes (R3)
+    HUC--&gt;&gt;HUC: Processes R3
+    HUC-&gt;&gt;-H: Returns result (R3)
+    deactivate H
+
+    H-&gt;&gt;P: Returns result (R3)
+    P-&gt;&gt;C: Returns result (R3)
+</code></pre>
 <h3 id="parameterized-callbacks-and-action-generator">Parameterized callbacks and action generator</h3>
 <p>When you have control over the callbacks that the resilience pipeline receives, you can parameterize them. This flexibility allows for reusing the callbacks within an action generator.</p>
 <p>A common use case is with <a href="https://learn.microsoft.com/aspnet/web-api/overview/advanced/http-message-handlers"><code>DelegatingHandler</code></a>. Here, you can parameterize the <code>HttpRequestMessage</code>:</p>

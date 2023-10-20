@@ -185,13 +185,16 @@ new ResiliencePipelineBuilder&lt;UserAvatar&gt;()
     actor C as Caller
     participant P as Pipeline
     participant F as Fallback
+    participant FA as FallbackAction
     participant D as DecoratedUserCallback
 
     C-&gt;&gt;P: Calls ExecuteAsync
     P-&gt;&gt;F: Calls ExecuteCore
     F-&gt;&gt;+D: Invokes
     D-&gt;&gt;-F: Fails
-    F-&gt;&gt;F: Falls back to&lt;br/&gt;substitute result
+    F-&gt;&gt;+FA: Invokes
+    FA--&gt;&gt;FA: Calculates substitute result
+    FA-&gt;&gt;-F: Returns &lt;br/&gt;substituted result
     F-&gt;&gt;P: Returns &lt;br/&gt;substituted result
     P-&gt;&gt;C: Returns &lt;br/&gt;substituted result
 </code></pre>

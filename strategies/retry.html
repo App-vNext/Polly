@@ -241,7 +241,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
     Note over R,D: Initial attempt
     R-&gt;&gt;+D: Invokes
     D-&gt;&gt;-R: Fails
-    R-&gt;&gt;R: Sleeps
+    R--&gt;&gt;R: Sleeps
     Note over R,D: 1st retry attempt
     R-&gt;&gt;+D: Invokes
     D-&gt;&gt;-R: Returns result
@@ -260,11 +260,11 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
     Note over R,D: Initial attempt
     R-&gt;&gt;+D: Invokes
     D-&gt;&gt;-R: Fails
-    R-&gt;&gt;R: Sleeps
+    R--&gt;&gt;R: Sleeps
     Note over R,D: 1st retry attempt
     R-&gt;&gt;+D: Invokes
     D-&gt;&gt;-R: Fails
-    R-&gt;&gt;R: Sleeps
+    R--&gt;&gt;R: Sleeps
     Note over R,D: 2nd retry attempt
     R-&gt;&gt;+D: Invokes
     D-&gt;&gt;-R: Fails
