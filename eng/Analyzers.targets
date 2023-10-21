@@ -1,5 +1,5 @@
 <Project>
-  <ItemGroup Label="Analyzers">
+  <ItemGroup Label="Analyzers" Condition=" '$(SKIP_POLLY_ANALYZERS)' == '' ">
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="All" />
     <PackageReference Include="SonarAnalyzer.CSharp" PrivateAssets="All" />
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
@@ -9,7 +9,7 @@
     <EditorConfigFiles Include="$(MsBuildThisFileDirectory)analyzers\$(ProjectType).globalconfig" />
   </ItemGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Condition=" '$(SKIP_POLLY_ANALYZERS)' == '' ">
     <RunAnalyzers>true</RunAnalyzers>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>

@@ -30,23 +30,25 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
         _configure = configure;
     }
 
-    internal PipelineComponent CreateComponent()
+    internal (ResilienceContextPool? contextPool, PipelineComponent component) CreateComponent()
     {
         var builder = CreateBuilder();
         var component = builder.ComponentFactory();
 
         if (builder.ReloadTokens.Count == 0)
         {
-            return component;
+            return (builder.Instance.ContextPool, component);
         }
 
-        return PipelineComponentFactory.CreateReloadable(
+        component = PipelineComponentFactory.CreateReloadable(
             new ReloadableComponent.Entry(component, builder.ReloadTokens, builder.Telemetry),
             () =>
             {
                 var builder = CreateBuilder();
                 return new ReloadableComponent.Entry(builder.ComponentFactory(), builder.ReloadTokens, builder.Telemetry);
             });
+
+        return (builder.Instance.ContextPool, component);
     }
 
     private Builder CreateBuilder()
@@ -69,11 +71,13 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
                 return PipelineComponentFactory.WithExecutionTracking(innerComponent, timeProvider);
             },
             context.ReloadTokens,
-            telemetry);
+            telemetry,
+            builder);
     }
 
     private record Builder(
         Func<PipelineComponent> ComponentFactory,
         List<CancellationToken> ReloadTokens,
-        ResilienceStrategyTelemetry Telemetry);
+        ResilienceStrategyTelemetry Telemetry,
+        TBuilder Instance);
 }

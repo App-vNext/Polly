@@ -1,4 +1,6 @@
-﻿namespace Polly.Specs.Timeout;
+﻿using System;
+
+namespace Polly.Specs.Timeout;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class TimeoutAsyncSpecs : TimeoutSpecsBase
@@ -246,6 +248,29 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
 
         await policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).Should().ThrowAsync<NotImplementedException>();
+    }
+
+    [Fact]
+    public async Task Should_cancel_downstream_token_on_timeout__pessimistic()
+    {
+        // It seems that there's a difference in the mocked clock vs. the real time clock.
+        // This test does not fail when using the mocked timer.
+        // In the TimeoutSpecsBase we actually cancel the combined token. Which hides
+        // the fact that it doesn't actually cancel irl.
+        SystemClock.Reset();
+
+        var policy = Policy.TimeoutAsync(TimeSpan.FromMilliseconds(200), TimeoutStrategy.Pessimistic);
+        bool isCancelled = false;
+
+        var act = () => policy.ExecuteAsync(async (combinedToken) =>
+        {
+            combinedToken.Register(() => isCancelled = true);
+            await SystemClock.SleepAsync(TimeSpan.FromMilliseconds(1000), combinedToken);
+        }, CancellationToken.None);
+
+        await act.Should().ThrowAsync<TimeoutRejectedException>();
+
+        isCancelled.Should().BeTrue();
     }
 
     #endregion

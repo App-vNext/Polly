@@ -9,6 +9,9 @@ on:
     - cron: '0 8 * * MON'
   workflow_dispatch:
 
+env:
+  SKIP_POLLY_ANALYZERS: true
+
 permissions:
   actions: read
   contents: read
@@ -28,7 +31,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
@@ -41,14 +44,14 @@ jobs:
         restore-keys: ${{ runner.os }}-nuget-
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@d90b8d79de6dc1f58e83a1499aa58d6c93dc28de # v2.22.2
+      uses: github/codeql-action/init@0116bc2df50751f9724a2e35ef1f24d22f90e4e1 # v2.22.3
       with:
         languages: ${{ matrix.language }}
 
     - name: Autobuild
-      uses: github/codeql-action/autobuild@d90b8d79de6dc1f58e83a1499aa58d6c93dc28de # v2.22.2
+      uses: github/codeql-action/autobuild@0116bc2df50751f9724a2e35ef1f24d22f90e4e1 # v2.22.3
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@d90b8d79de6dc1f58e83a1499aa58d6c93dc28de # v2.22.2
+      uses: github/codeql-action/analyze@0116bc2df50751f9724a2e35ef1f24d22f90e4e1 # v2.22.3
       with:
         category: "/language:${{ matrix.language }}"

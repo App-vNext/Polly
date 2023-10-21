@@ -104,7 +104,97 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 | `OnRetry`          | `null`                                                                     | Action executed when retry occurs.                                                       |
 | `MaxDelay`         | `null`                                                                     | Caps the calculated retry delay to a specified maximum duration.                         |
 
-## Patterns and anti-patterns
+## Diagrams
+
+Let's suppose we have a retry strategy with `MaxRetryAttempts`: `2`.
+
+### Happy path sequence diagram
+
+```mermaid
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant R as Retry
+    participant D as DecoratedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>R: Calls ExecuteCore
+    Note over R,D: Initial attempt
+    R->>+D: Invokes
+    D->>-R: Fails
+    R-->>R: Sleeps
+    Note over R,D: 1st retry attempt
+    R->>+D: Invokes
+    D->>-R: Returns result
+    R->>P: Returns result
+    P->>C: Returns result
+```
+
+### Unhappy path sequence diagram
+
+```mermaid
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant R as Retry
+    participant D as DecoratedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>R: Calls ExecuteCore
+    Note over R,D: Initial attempt
+    R->>+D: Invokes
+    D->>-R: Fails
+    R-->>R: Sleeps
+    Note over R,D: 1st retry attempt
+    R->>+D: Invokes
+    D->>-R: Fails
+    R-->>R: Sleeps
+    Note over R,D: 2nd retry attempt
+    R->>+D: Invokes
+    D->>-R: Fails
+    R->>P: Propagates failure
+    P->>C: Propagates failure
+```
+
+## Patterns
+
+### Limiting the maximum delay
+
+In some cases, you might want to set a limit on the calculated delay. This is beneficial when multiple retries are anticipated, and you wish to prevent excessive wait times between these retries.
+
+Consider the following example of a long-running background job:
+
+<!-- snippet: retry-pattern-max-delay -->
+```cs
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddRetry(new()
+    {
+        Delay = TimeSpan.FromSeconds(2),
+        MaxRetryAttempts = int.MaxValue,
+        BackoffType = DelayBackoffType.Exponential,
+
+        // Initially, we aim for an exponential backoff, but after a certain number of retries, we set a maximum delay of 15 minutes.
+        MaxDelay = TimeSpan.FromMinutes(15),
+        UseJitter = true
+    })
+    .Build();
+
+// Background processing
+while (!cancellationToken.IsCancellationRequested)
+{
+    await pipeline.ExecuteAsync(async token =>
+    {
+        // In the event of a prolonged service outage, we can afford to wait for a successful retry since this is a background task.
+        await SynchronizeDataAsync(token);
+    },
+    cancellationToken);
+
+    await Task.Delay(TimeSpan.FromMinutes(30)); // The sync runs every 30 minutes.
+}
+```
+<!-- endSnippet -->
+
+## Anti-patterns
 
 Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
 
@@ -480,38 +570,3 @@ var retry = new ResiliencePipelineBuilder()
 **Reasoning**:
 
 As previously mentioned, always use the designated area to define retry conditions. Re-frame your original exit conditions to specify when a retry should be initiated.
-
-### Limiting the maximum delay
-
-In some cases, you might want to set a limit on the calculated delay. This is beneficial when multiple retries are anticipated, and you wish to prevent excessive wait times between these retries.
-
-Consider the following example of a long-running background job:
-
-<!-- snippet: retry-pattern-max-delay -->
-```cs
-ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
-    .AddRetry(new()
-    {
-        Delay = TimeSpan.FromSeconds(2),
-        MaxRetryAttempts = int.MaxValue,
-
-        // Initially, we aim for an exponential backoff, but after a certain number of retries, we set a maximum delay of 15 minutes.
-        MaxDelay = TimeSpan.FromMinutes(15),
-        UseJitter = true
-    })
-    .Build();
-
-// Background processing
-while (!cancellationToken.IsCancellationRequested)
-{
-    await pipeline.ExecuteAsync(async token =>
-    {
-        // In the event of a prolonged service outage, we can afford to wait for a successful retry since this is a background task.
-        await SynchronizeDataAsync(token);
-    },
-    cancellationToken);
-
-    await Task.Delay(TimeSpan.FromMinutes(30)); // The sync runs every 30 minutes.
-}
-```
-<!-- endSnippet -->

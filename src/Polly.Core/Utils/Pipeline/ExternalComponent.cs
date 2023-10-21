@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Polly.Utils.Pipeline;
+﻿namespace Polly.Utils.Pipeline;
 
 [DebuggerDisplay("{Component}")]
 internal class ExternalComponent : PipelineComponent

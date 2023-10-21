@@ -37,7 +37,6 @@ internal static class AsyncTimeoutEngine
             actionTask = action(context, combinedToken);
 
             return await (await Task.WhenAny(actionTask, timeoutTask).ConfigureAwait(continueOnCapturedContext)).ConfigureAwait(continueOnCapturedContext);
-
         }
         catch (Exception ex)
         {
@@ -51,6 +50,16 @@ internal static class AsyncTimeoutEngine
 
             throw;
         }
+        finally
+        {
+            // If timeoutCancellationTokenSource was canceled & our combined token hasn't been signaled, cancel it.
+            // This avoids the exception propagating before the linked token can signal the downstream to cancel.
+            // See https://github.com/App-vNext/Polly/issues/722.
+            if (!combinedTokenSource.IsCancellationRequested && timeoutCancellationTokenSource.IsCancellationRequested)
+            {
+                combinedTokenSource.Cancel();
+            }
+        }
     }
 
     private static Task<TResult> AsTask<TResult>(this CancellationToken cancellationToken)
@@ -60,11 +69,11 @@ internal static class AsyncTimeoutEngine
         // A generalised version of this method would include a hotpath returning a canceled task (rather than setting up a registration) if (cancellationToken.IsCancellationRequested) on entry.  This is omitted, since we only start the timeout countdown in the token _after calling this method.
 
         IDisposable registration = null;
-            registration = cancellationToken.Register(() =>
-            {
-                tcs.TrySetCanceled();
-                registration?.Dispose();
-            }, useSynchronizationContext: false);
+        registration = cancellationToken.Register(() =>
+        {
+            tcs.TrySetCanceled();
+            registration?.Dispose();
+        }, useSynchronizationContext: false);
 
         return tcs.Task;
     }

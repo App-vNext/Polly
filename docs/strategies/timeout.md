@@ -77,3 +77,46 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
 | `Timeout`          | 30 seconds    | The default timeout used by the strategy.    |
 | `TimeoutGenerator` | `null`        | Generates the timeout for a given execution. |
 | `OnTimeout`        | `null`        | Event that is raised when timeout occurs.    |
+
+## Diagrams
+
+### Happy path sequence diagram
+
+```mermaid
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant T as Timeout
+    participant D as DecoratedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>T: Calls ExecuteCore
+    T->>+D: Invokes
+    D-->>D: Performs <br/>long-running <br/>operation
+    D->>-T: Returns result
+    T->>P: Returns result
+    P->>C: Returns result
+```
+
+### Unhappy path sequence diagram
+
+```mermaid
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant T as Timeout
+    participant D as DecoratedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>T: Calls ExecuteCore
+    T->>+D: Invokes
+    activate T
+    activate D
+    D-->>D: Performs <br/>long-running <br/>operation
+    T-->>T: Times out
+    deactivate T
+    T->>D: Propagates cancellation
+    deactivate D
+    T->>P: Throws <br/>TimeoutRejectedException
+    P->>C: Propagates exception
+```

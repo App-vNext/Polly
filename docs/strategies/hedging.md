@@ -87,6 +87,68 @@ When the `Delay` property is set to a value greater than zero, the hedging strat
 - The final result is the result of fastest successful execution.
 - If all executions fail, the final result will be the first failure encountered.
 
+#### Latency: happy path sequence diagram
+
+The hedging strategy does not trigger because the response arrives faster than the threshold.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant HUC as HedgedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>H: Calls ExecuteCore
+    Note over H: Wait start
+
+    activate H
+    H->>+HUC: Invokes
+    HUC-->>HUC: Processes request
+    HUC->>-H: Returns result
+    deactivate H
+
+    Note over H: Wait end
+    H->>P: Returns result
+    P->>C: Returns result
+```
+
+#### Latency: unhappy path sequence diagram
+
+The hedging strategy triggers because the response arrives slower than the threshold.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant D as HedgedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>H: Calls ExecuteCore
+    Note over H: Wait start
+
+    activate H
+    activate D
+    H->>D: Invokes (R1)
+    D-->>D: Processes R1<br/> slowly ...
+    Note over H: Wait end
+
+    H->>D: Invokes (R2)
+    activate D
+    D-->>D: Processes R2<br/> quickly
+    D->>H: Returns result (R2)
+    deactivate D
+    H->>D: Propagates cancellation (R1)
+    deactivate H
+
+    deactivate D
+    H->>P: Returns result (R2)
+    P->>C: Returns result (R2)
+```
+
 ### Fallback mode
 
 In fallback mode, the `Delay` value should be less than `TimeSpan.Zero`. This mode allows only a single execution to proceed at a given time.
@@ -95,6 +157,64 @@ In fallback mode, the `Delay` value should be less than `TimeSpan.Zero`. This mo
 - If the initial execution fails, new one is initiated.
 - The final result will be the first successful execution.
 - If all executions fail, the final result will be the first failure encountered.
+
+#### Fallback: happy path sequence diagram
+
+The hedging strategy triggers because the first attempt fails. It succeeds because the retry attempts do not exceed the `MaxHedgedAttempts`.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant HUC as HedgedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>H: Calls ExecuteCore
+    activate H
+
+    H->>+HUC: Invokes (R1)
+    HUC-->>HUC: Processes R1
+    HUC->>-H: Fails (R1)
+
+    H->>+HUC: Invokes (R2)
+    HUC-->>HUC: Processes R2
+    HUC->>-H: Returns result (R2)
+
+    deactivate H
+    H->>P: Returns result (R2)
+    P->>C: Returns result (R2)
+```
+
+#### Fallback: unhappy path sequence diagram
+
+The hedging strategy triggers because the first attempt fails. It fails because all retry attempts failed as well.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant HUC as HedgedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>H: Calls ExecuteCore
+    activate H
+
+    H->>+HUC: Invokes (R1)
+    HUC-->>HUC: Processes R1
+    HUC->>-H: Fails (R1)
+
+    H->>+HUC: Invokes (R2)
+    HUC-->>HUC: Processes R2
+    HUC->>-H: Fails (R2)
+
+    deactivate H
+    H->>P: Propagates failure (R1)
+    P->>C: Propagates failure (R1)
+```
 
 ### Parallel mode
 
@@ -106,6 +226,76 @@ The hedging strategy operates in parallel mode when the `Delay` property is set 
 - All executions are initiated simultaneously, adhering to the `MaxHedgedAttempts` limit.
 - The final result will be the fastest successful execution.
 - If all executions fail, the final result will be the first failure encountered.
+
+#### Parallel: happy path sequence diagram
+
+The hedging strategy triggers because the `Delay` is set to zero. It succeeds because one of the requests succeeds.
+
+```mermaid
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant HUC as HedgedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>H: Calls ExecuteCore
+    activate H
+
+    par
+    H->>HUC: Invokes (R1)
+    activate HUC
+
+    and
+    H->>+HUC: Invokes (R2)
+
+    end
+
+    HUC-->>HUC: Processes R1<br/> slowly ...
+    HUC-->>HUC: Processes R2<br/> quickly ...
+    HUC->>-H: Returns result (R2)
+
+    H->>HUC: Propagates cancellation (R1)
+    deactivate HUC
+
+    deactivate H
+    H->>P: Returns result (R2)
+    P->>C: Returns result (R2)
+```
+
+#### Parallel: unhappy path sequence diagram
+
+The hedging strategy triggers because the `Delay` is set to zero. It fails because all requests fail.
+
+```mermaid
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant HUC as HedgedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>H: Calls ExecuteCore
+    activate H
+
+    par
+    H->>HUC: Invokes (R1)
+    activate HUC
+
+    and
+    H->>+HUC: Invokes (R2)
+
+    end
+
+    HUC-->>HUC: Processes R1
+    HUC-->>HUC: Processes R2
+    HUC->>-H: Fails (R2)
+    HUC->>-H: Fails (R1)
+
+    deactivate H
+    H->>P: Propagates failure (R2)
+    P->>C: Propagates failure (R2)
+```
 
 ### Dynamic mode
 
@@ -131,9 +321,8 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
         {
             var delay = args.AttemptNumber switch
             {
-                0 => TimeSpan.FromSeconds(1),
-                1 => TimeSpan.FromSeconds(2),
-                _ => System.Threading.Timeout.InfiniteTimeSpan
+                0 or 1 => TimeSpan.Zero, // Parallel mode
+                _ => TimeSpan.FromSeconds(-1) // switch to Fallback mode
             };
 
             return new ValueTask<TimeSpan>(delay);
@@ -146,6 +335,110 @@ With this configuration, the hedging strategy:
 
 - Initiates a maximum of `4` executions. This includes initial action and an additional 3 attempts.
 - Allows the first two executions to proceed in parallel, while the third and fourth executions follow the fallback mode.
+
+#### Dynamic: happy path sequence diagram
+
+The hedging strategy triggers and switches between modes due to our `DelayGenerator`. It succeeds because the last request succeeds.
+
+```mermaid
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant DG as DelayGenerator
+    participant HUC as HedgedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>H: Calls ExecuteCore
+    activate H
+
+    Note over H: Parallel mode
+    par
+    H->>DG: Gets delay
+    DG->>H: 0 second
+    H->>HUC: Invokes (R1)
+    activate HUC
+    and
+    H ->> DG: Gets delay
+    DG ->> H: 0 second
+    H->>+HUC: Invokes (R2)
+    end
+
+    HUC-->>HUC: Processes R1
+    HUC-->>HUC: Processes R2
+    HUC->>-H: Fails (R2)
+    HUC->>-H: Fails (R1)
+
+    Note over H: Fallback mode
+
+    H->>DG: Gets delay
+    DG->>H: -1 second
+    H->>+HUC: Invokes (R3)
+    HUC-->>HUC: Processes R3
+    HUC->>-H: Fails (R3)
+
+    H->>DG: Gets delay
+    DG->>H: -1 second
+    H->>+HUC: Invokes (R4)
+    HUC-->>HUC: Processes R4
+    HUC->>-H: Returns result (R4)
+
+    deactivate H
+    H->>P: Returns result (R4)
+    P->>C: Returns result (R4)
+```
+
+#### Dynamic: unhappy path sequence diagram
+
+The hedging strategy triggers and switches between modes due our `DelayGenerator`. It fails because all requests fail.
+
+```mermaid
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant DG as DelayGenerator
+    participant HUC as HedgedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>H: Calls ExecuteCore
+    activate H
+
+    Note over H: Parallel mode
+    par
+    H->>DG: Gets delay
+    DG->>H: 0 second
+    H->>HUC: Invokes (R1)
+    activate HUC
+    and
+    H->>DG: Gets delay
+    DG->>H: 0 second
+    H->>+HUC: Invokes (R2)
+    end
+
+    HUC-->>HUC: Processes R1
+    HUC-->>HUC: Processes R2
+    HUC->>-H: Fails (R2)
+    HUC->>-H: Fails (R1)
+
+    Note over H: Fallback mode
+
+    H->>DG: Gets delay
+    DG->>H: -1 second
+    H->>+HUC: Invokes (R3)
+    HUC-->>HUC: Processes R3
+    HUC->>-H: Fails (R3)
+
+    H -> DG: Gets delay
+    DG->>H: -1 second
+    H->>+HUC: Invokes (R4)
+    HUC-->>HUC: Processes R4
+    HUC->>-H: Fails (R4)
+
+    deactivate H
+    H->>P: Propagates failure (R3)
+    P->>C: Propagates failure (R3)
+```
 
 ## Action generator
 
@@ -191,6 +484,43 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
     });
 ```
 <!-- endSnippet -->
+
+### Action generator: sequence diagram
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant H as Hedging
+    participant AG as ActionGenerator
+    participant UC as UserCallback
+    participant HUC as HedgedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>H: Calls ExecuteCore
+
+    activate H
+    H->>+UC: Invokes (R1)
+    UC-->>UC: Processes R1
+    UC->>-H: Fails (R1)
+    H->>+AG: Invokes
+    AG->>-H: Returns factory
+    H-->>H: Invokes factory
+
+    H->>+HUC: Invokes (R2)
+    HUC-->>HUC: Processes R2
+    HUC->>-H: Fails (R2)
+
+    H-->>H: Invokes factory
+    H->>+HUC: Invokes (R3)
+    HUC-->>HUC: Processes R3
+    HUC->>-H: Returns result (R3)
+    deactivate H
+
+    H->>P: Returns result (R3)
+    P->>C: Returns result (R3)
+```
 
 ### Parameterized callbacks and action generator
 

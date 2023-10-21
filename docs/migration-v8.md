@@ -186,7 +186,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 
 > [!IMPORTANT]
-> In v7, the policy wrap ordering is different; the policy added first was executed last (FILO). In v8, the execution order matches the order in which they were added (FIFO).
+> In v7, the policy wrap ordering is different; the policy added first was executed last (FILO). In v8, the execution order matches the order in which they were added (FIFO). See [fallback after retries](strategies/fallback.md#fallback-after-retries) for an example on how the strategies are executed.
 
 ## Migrating retry policies
 

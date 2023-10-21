@@ -13,7 +13,7 @@ internal static class Telemetry
 
         var builder = new ResiliencePipelineBuilder();
         builder.Name = "my-name";
-        builder.Name = "my-instance-name";
+        builder.InstanceName = "my-instance-name";
 
         builder.AddRetry(new RetryStrategyOptions
         {

@@ -112,6 +112,7 @@ internal static class RetryHelper
         return TimeSpan.FromTicks((long)Math.Min(formulaIntrinsicValue * RpScalingFactor * targetTicksFirstDelay, maxTimeSpanDouble));
     }
 
+#pragma warning disable IDE0047 // Remove unnecessary parentheses which offer less mental gymnastics
     private static TimeSpan ApplyJitter(TimeSpan delay, Func<double> randomizer)
     {
         var offset = (delay.TotalMilliseconds * JitterFactor) / 2;
@@ -120,4 +121,5 @@ internal static class RetryHelper
 
         return TimeSpan.FromMilliseconds(newDelay);
     }
+#pragma warning restore IDE0047 // Remove unnecessary parentheses which offer less mental gymnastics
 }

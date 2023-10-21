@@ -87,7 +87,7 @@ public partial class ResiliencePipelineTests
                 c.IsSynchronous.Should().BeTrue();
                 c.ResultType.Should().Be(typeof(string));
             },
-        }), DisposeBehavior.Allow);
+        }), DisposeBehavior.Allow, null);
 
         execute(pipeline);
     }

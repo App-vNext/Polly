@@ -14,15 +14,16 @@ public sealed partial class ResiliencePipeline
     /// <summary>
     /// Resilience pipeline that executes the user-provided callback without any additional logic.
     /// </summary>
-    public static readonly ResiliencePipeline Empty = new(PipelineComponent.Empty, DisposeBehavior.Ignore);
+    public static readonly ResiliencePipeline Empty = new(PipelineComponent.Empty, DisposeBehavior.Ignore, null);
 
-    internal ResiliencePipeline(PipelineComponent component, DisposeBehavior disposeBehavior)
+    internal ResiliencePipeline(PipelineComponent component, DisposeBehavior disposeBehavior, ResilienceContextPool? pool)
     {
         Component = component;
         DisposeHelper = new ComponentDisposeHelper(component, disposeBehavior);
+        Pool = pool ?? ResilienceContextPool.Shared;
     }
 
-    internal static ResilienceContextPool Pool => ResilienceContextPool.Shared;
+    internal ResilienceContextPool Pool { get; }
 
     internal PipelineComponent Component { get; }
 
