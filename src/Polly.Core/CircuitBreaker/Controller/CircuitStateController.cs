@@ -16,6 +16,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly CircuitBehavior _behavior;
     private readonly TimeSpan _breakDuration;
+    private readonly Func<int, TimeSpan> _breakDurationGenerator;
     private DateTimeOffset _blockedUntil;
     private CircuitState _circuitState = CircuitState.Closed;
     private Outcome<T>? _lastOutcome;
@@ -39,6 +40,28 @@ internal sealed class CircuitStateController<T> : IDisposable
         _timeProvider = timeProvider;
         _telemetry = telemetry;
     }
+
+    public CircuitStateController(
+        TimeSpan breakDuration,
+        Func<int,TimeSpan> breakDurationGenerator,
+        Func<OnCircuitOpenedArguments<T>, ValueTask>? onOpened,
+        Func<OnCircuitClosedArguments<T>, ValueTask>? onClosed,
+        Func<OnCircuitHalfOpenedArguments, ValueTask>? onHalfOpen,
+        CircuitBehavior behavior,
+        TimeProvider timeProvider,
+        ResilienceStrategyTelemetry telemetry)
+    {
+        
+        _breakDuration = breakDuration;
+        _breakDurationGenerator = breakDurationGenerator;
+        _onOpened = onOpened;
+        _onClosed = onClosed;
+        _onHalfOpen = onHalfOpen;
+        _behavior = behavior;
+        _timeProvider = timeProvider;
+        _telemetry = telemetry;
+    }
+
 
     public CircuitState CircuitState
     {
@@ -314,7 +337,16 @@ internal sealed class CircuitStateController<T> : IDisposable
         scheduledTask = null;
         var utcNow = _timeProvider.GetUtcNow();
 
-        _blockedUntil = IsDateTimeOverflow(utcNow, breakDuration) ? DateTimeOffset.MaxValue : utcNow + breakDuration;
+        if (_breakDurationGenerator is not null && _behavior.FailureCount > 0)
+        {
+            var generatedBreakDuration = _breakDurationGenerator(_behavior.FailureCount);
+            _blockedUntil = IsDateTimeOverflow(utcNow, generatedBreakDuration) ? DateTimeOffset.MaxValue : utcNow + generatedBreakDuration;
+        }
+        else
+        {
+            _blockedUntil = IsDateTimeOverflow(utcNow, breakDuration) ? DateTimeOffset.MaxValue : utcNow + breakDuration;
+        }
+        
 
         var transitionedState = _circuitState;
         _circuitState = CircuitState.Open;
