@@ -7,23 +7,6 @@ namespace Polly.Core.Tests.Simmy.Fault;
 
 public class FaultChaosPipelineBuilderExtensionsTests
 {
-    public static readonly TheoryData<Action<ResiliencePipelineBuilder<string>>> FaultGenericStrategy = new()
-    {
-        builder =>
-        {
-            builder.AddChaosFault<string>(new FaultStrategyOptions
-            {
-                InjectionRate = 0.6,
-                Enabled = true,
-                Randomizer = () => 0.5,
-                Fault = new InvalidOperationException("Dummy exception.")
-            });
-
-            AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.6)
-            .Fault.Should().BeOfType(typeof(InvalidOperationException));
-        }
-    };
-
     public static readonly TheoryData<Action<ResiliencePipelineBuilder>> FaultStrategy = new()
     {
         builder =>
@@ -41,38 +24,28 @@ public class FaultChaosPipelineBuilderExtensionsTests
         }
     };
 
-    private static FaultChaosStrategy<T> AssertFaultStrategy<T, TException>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate)
+    private static void AssertFaultStrategy<T, TException>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate)
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<FaultChaosStrategy<T>>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<FaultChaosStrategy>().Subject;
+
+        strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
+        strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
+        strategy.FaultGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeOfType(typeof(TException));
+    }
+
+    private static FaultChaosStrategy AssertFaultStrategy<TException>(ResiliencePipelineBuilder builder, bool enabled, double injectionRate)
+        where TException : Exception
+    {
+        var context = ResilienceContextPool.Shared.Get();
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<FaultChaosStrategy>().Subject;
 
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
         strategy.FaultGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeOfType(typeof(TException));
 
         return strategy;
-    }
-
-    private static FaultChaosStrategy<object> AssertFaultStrategy<TException>(ResiliencePipelineBuilder builder, bool enabled, double injectionRate)
-        where TException : Exception
-    {
-        var context = ResilienceContextPool.Shared.Get();
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<FaultChaosStrategy<object>>().Subject;
-
-        strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
-        strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
-        strategy.FaultGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeOfType(typeof(TException));
-
-        return strategy;
-    }
-
-    [MemberData(nameof(FaultGenericStrategy))]
-    [Theory]
-    internal void AddFault_Generic_Options_Ok(Action<ResiliencePipelineBuilder<string>> configure)
-    {
-        var builder = new ResiliencePipelineBuilder<string>();
-        builder.Invoking(b => configure(b)).Should().NotThrow();
     }
 
     [MemberData(nameof(FaultStrategy))]

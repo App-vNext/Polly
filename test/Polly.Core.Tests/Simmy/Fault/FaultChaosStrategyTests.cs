@@ -36,7 +36,7 @@ public class FaultChaosStrategyTests
 #pragma warning disable CA1031 // Do not catch general exception types
         try
         {
-            var _ = new FaultChaosStrategy<object>((FaultStrategyOptions)options, _telemetry);
+            var _ = new FaultChaosStrategy((FaultStrategyOptions)options, _telemetry);
         }
         catch (Exception ex)
         {
@@ -62,7 +62,7 @@ public class FaultChaosStrategyTests
             Fault = fault
         };
 
-        var sut = new ResiliencePipelineBuilder().AddChaosFault(options).Build();
+        var sut = CreateSut(options);
         sut.Execute(() => { userDelegateExecuted = true; });
 
         userDelegateExecuted.Should().BeTrue();
@@ -153,7 +153,7 @@ public class FaultChaosStrategyTests
             }
         };
 
-        var sut = CreateSut<int>(options);
+        var sut = CreateSut(options);
         await sut.Invoking(s => s.ExecuteAsync(async _ =>
         {
             userDelegateExecuted = true;
@@ -184,7 +184,7 @@ public class FaultChaosStrategyTests
             Fault = fault
         };
 
-        var sut = CreateSut<int>(options);
+        var sut = CreateSut(options);
         var result = sut.Execute(_ =>
         {
             userDelegateExecuted = true;
@@ -207,7 +207,7 @@ public class FaultChaosStrategyTests
             FaultGenerator = (_) => new ValueTask<Exception?>(Task.FromResult<Exception?>(null))
         };
 
-        var sut = new ResiliencePipelineBuilder().AddChaosFault(options).Build();
+        var sut = CreateSut(options);
         sut.Execute(_ =>
         {
             userDelegateExecuted = true;
@@ -235,7 +235,7 @@ public class FaultChaosStrategyTests
             Fault = fault
         };
 
-        var sut = CreateSut<int>(options);
+        var sut = CreateSut(options);
         await sut.Invoking(s => s.ExecuteAsync(async _ =>
         {
             userDelegateExecuted = true;
@@ -248,8 +248,8 @@ public class FaultChaosStrategyTests
         userDelegateExecuted.Should().BeFalse();
     }
 
-    private ResiliencePipeline<TResult> CreateSut<TResult>(FaultStrategyOptions options) =>
-        new FaultChaosStrategy<TResult>(options, _telemetry).AsPipeline();
+    private ResiliencePipeline CreateSut(FaultStrategyOptions options) =>
+        new FaultChaosStrategy(options, _telemetry).AsPipeline();
 }
 
 /// <summary>

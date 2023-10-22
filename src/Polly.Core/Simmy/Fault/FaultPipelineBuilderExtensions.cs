@@ -6,7 +6,7 @@ namespace Polly.Simmy;
 /// <summary>
 /// Extension methods for adding outcome to a <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
-internal static partial class FaultPipelineBuilderExtensions
+internal static class FaultPipelineBuilderExtensions
 {
     /// <summary>
     /// Adds a fault chaos strategy to the builder.
@@ -15,7 +15,8 @@ internal static partial class FaultPipelineBuilderExtensions
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="fault">The exception to inject.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, double injectionRate, Exception fault)
+    public static TBuilder AddChaosFault<TBuilder>(this TBuilder builder, double injectionRate, Exception fault)
+        where TBuilder : ResiliencePipelineBuilderBase
     {
         builder.AddChaosFault(new FaultStrategyOptions
         {
@@ -33,8 +34,8 @@ internal static partial class FaultPipelineBuilderExtensions
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="faultGenerator">The exception generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder AddChaosFault(
-        this ResiliencePipelineBuilder builder, double injectionRate, Func<Exception?> faultGenerator)
+    public static TBuilder AddChaosFault<TBuilder>(this TBuilder builder, double injectionRate, Func<Exception?> faultGenerator)
+        where TBuilder : ResiliencePipelineBuilderBase
     {
         builder.AddChaosFault(new FaultStrategyOptions
         {
@@ -48,6 +49,7 @@ internal static partial class FaultPipelineBuilderExtensions
     /// <summary>
     /// Adds a fault chaos strategy to the builder.
     /// </summary>
+    /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The fault strategy options.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
@@ -55,15 +57,14 @@ internal static partial class FaultPipelineBuilderExtensions
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, FaultStrategyOptions options)
+    public static TBuilder AddChaosFault<TBuilder>(this TBuilder builder, FaultStrategyOptions options)
+        where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddStrategy(context =>
-            new FaultChaosStrategy<object>(
-                options,
-                context.Telemetry),
+        builder.AddStrategy(
+            context => new FaultChaosStrategy(options, context.Telemetry),
             options);
 
         return builder;

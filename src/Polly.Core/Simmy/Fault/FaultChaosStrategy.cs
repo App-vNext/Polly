@@ -2,7 +2,7 @@
 
 namespace Polly.Simmy.Fault;
 
-internal class FaultChaosStrategy<T> : MonkeyStrategy<T>
+internal class FaultChaosStrategy : MonkeyStrategy
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
 
@@ -26,7 +26,10 @@ internal class FaultChaosStrategy<T> : MonkeyStrategy<T>
 
     public Exception? Fault { get; }
 
-    protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
     {
         try
         {
@@ -43,7 +46,7 @@ internal class FaultChaosStrategy<T> : MonkeyStrategy<T>
                         await OnFaultInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
                     }
 
-                    return new Outcome<T>(fault);
+                    return new Outcome<TResult>(fault);
                 }
             }
 
@@ -51,7 +54,7 @@ internal class FaultChaosStrategy<T> : MonkeyStrategy<T>
         }
         catch (OperationCanceledException e)
         {
-            return new Outcome<T>(e);
+            return new Outcome<TResult>(e);
         }
     }
 }
