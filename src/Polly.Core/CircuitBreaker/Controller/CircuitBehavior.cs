@@ -10,4 +10,5 @@ internal abstract class CircuitBehavior
     public abstract void OnActionFailure(CircuitState currentState, out bool shouldBreak);
 
     public abstract void OnCircuitClosed();
+    public abstract int FailureCount { get; }
 }

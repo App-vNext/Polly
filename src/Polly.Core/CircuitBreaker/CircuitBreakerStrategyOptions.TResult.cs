@@ -70,6 +70,14 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
 #pragma warning restore
 
     /// <summary>
+    /// Gets or sets the function responsible for dynamically generating the break duration based on the health failure count.
+    /// </summary>
+    /// <value>
+    /// A function that takes an integer representing the health failure count and returns a TimeSpan indicating the break duration.
+    /// </value>
+    public Func<int, TimeSpan>? BreakDurationGenerator { get; set; }
+
+    /// <summary>
     /// Gets or sets a predicate that determines whether the outcome should be handled by the circuit breaker.
     /// </summary>
     /// <value>
