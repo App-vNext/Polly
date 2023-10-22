@@ -6,76 +6,73 @@ namespace Polly.Simmy;
 /// <summary>
 /// Extension methods for adding outcome to a <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
-internal static partial class OutcomePipelineBuilderExtensions
+internal static class OutcomePipelineBuilderExtensions
 {
     /// <summary>
-    /// Adds a fault chaos strategy to the builder.
+    /// Adds an outcome chaos strategy to the builder.
     /// </summary>
+    /// <typeparam name="TResult">The type of result the retry strategy handles.</typeparam>
     /// <param name="builder">The builder instance.</param>
-    /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
-    /// <param name="fault">The exception to inject.</param>
+    /// <param name="result">The outcome to inject. For disposable outcomes use either the generator or the options overload.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, bool enabled, double injectionRate, Exception fault)
+    public static ResiliencePipelineBuilder<TResult> AddChaosResult<TResult>(this ResiliencePipelineBuilder<TResult> builder, double injectionRate, TResult result)
     {
         Guard.NotNull(builder);
 
-        builder.AddFaultCore(new FaultStrategyOptions
+        builder.AddChaosResult(new OutcomeStrategyOptions<TResult>
         {
-            Enabled = enabled,
+            Enabled = true,
             InjectionRate = injectionRate,
-            Fault = fault
+            OutcomeGenerator = (_) => new ValueTask<Outcome<TResult>?>(Task.FromResult<Outcome<TResult>?>(Outcome.FromResult(result)))
         });
         return builder;
     }
 
     /// <summary>
-    /// Adds a fault chaos strategy to the builder.
+    /// Adds an outcome chaos strategy to the builder.
     /// </summary>
+    /// <typeparam name="TResult">The type of result the retry strategy handles.</typeparam>
     /// <param name="builder">The builder instance.</param>
-    /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
-    /// <param name="faultGenerator">The exception generator delegate.</param>
+    /// <param name="resultGenerator">The outcome generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder AddChaosFault(
-        this ResiliencePipelineBuilder builder, bool enabled, double injectionRate, Func<Exception?> faultGenerator)
+    public static ResiliencePipelineBuilder<TResult> AddChaosResult<TResult>(
+        this ResiliencePipelineBuilder<TResult> builder, double injectionRate, Func<TResult?> resultGenerator)
     {
         Guard.NotNull(builder);
 
-        builder.AddFaultCore(new FaultStrategyOptions
+        builder.AddChaosResult(new OutcomeStrategyOptions<TResult>
         {
-            Enabled = enabled,
+            Enabled = true,
             InjectionRate = injectionRate,
-            FaultGenerator = (_) => new ValueTask<Exception?>(Task.FromResult(faultGenerator()))
+            OutcomeGenerator = (_) => new ValueTask<Outcome<TResult>?>(Task.FromResult<Outcome<TResult>?>(Outcome.FromResult(resultGenerator())))
         });
         return builder;
     }
 
     /// <summary>
-    /// Adds a fault chaos strategy to the builder.
+    /// Adds an outcome chaos strategy to the builder.
     /// </summary>
+    /// <typeparam name="TResult">The type of result the retry strategy handles.</typeparam>
     /// <param name="builder">The builder instance.</param>
-    /// <param name="options">The fault strategy options.</param>
+    /// <param name="options">The outcome strategy options.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, FaultStrategyOptions options)
-    {
-        Guard.NotNull(builder);
-        Guard.NotNull(options);
-
-        builder.AddFaultCore(options);
-        return builder;
-    }
-
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    private static void AddFaultCore(this ResiliencePipelineBuilder builder, FaultStrategyOptions options)
+    public static ResiliencePipelineBuilder<TResult> AddChaosResult<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(
+        this ResiliencePipelineBuilder<TResult> builder,
+        OutcomeStrategyOptions<TResult> options)
     {
-        builder.AddStrategy(context =>
-            new OutcomeChaosStrategy<object>(
-                options,
-                context.Telemetry),
+        Guard.NotNull(builder);
+        Guard.NotNull(options);
+
+        builder.AddStrategy(
+            context => new OutcomeChaosStrategy<TResult>(options, context.Telemetry),
             options);
+
+        return builder;
     }
 }

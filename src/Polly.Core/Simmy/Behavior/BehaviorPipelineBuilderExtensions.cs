@@ -14,20 +14,19 @@ internal static class BehaviorPipelineBuilderExtensions
     /// </summary>
     /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>
-    /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="behavior">The behavior to be injected.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
-    public static TBuilder AddChaosBehavior<TBuilder>(this TBuilder builder, bool enabled, double injectionRate, Func<ValueTask> behavior)
+    public static TBuilder AddChaosBehavior<TBuilder>(this TBuilder builder, double injectionRate, Func<ValueTask> behavior)
         where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
 
         return builder.AddChaosBehavior(new BehaviorStrategyOptions
         {
-            Enabled = enabled,
+            Enabled = true,
             InjectionRate = injectionRate,
             BehaviorAction = (_) => behavior()
         });

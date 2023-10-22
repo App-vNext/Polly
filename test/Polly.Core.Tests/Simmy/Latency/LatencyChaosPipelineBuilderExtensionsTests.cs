@@ -12,7 +12,7 @@ public class LatencyChaosPipelineBuilderExtensionsTests
         Func<ValueTask> behavior = () => new ValueTask(Task.CompletedTask);
         yield return new object[]
         {
-            (ResiliencePipelineBuilder<int> builder) => { builder.AddChaosLatency(true, 0.5, TimeSpan.FromSeconds(10)); },
+            (ResiliencePipelineBuilder<int> builder) => { builder.AddChaosLatency(0.5, TimeSpan.FromSeconds(10)); },
             (LatencyChaosStrategy strategy) =>
             {
                 strategy.Latency.Should().Be(TimeSpan.FromSeconds(10));
@@ -26,7 +26,7 @@ public class LatencyChaosPipelineBuilderExtensionsTests
     [Fact]
     public void AddLatency_Shortcut_Option_Ok()
     {
-        var sut = new ResiliencePipelineBuilder().AddChaosLatency(true, 0.5, TimeSpan.FromSeconds(10)).Build();
+        var sut = new ResiliencePipelineBuilder().AddChaosLatency(0.5, TimeSpan.FromSeconds(10)).Build();
         sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<LatencyChaosStrategy>();
     }
 
