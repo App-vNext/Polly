@@ -303,6 +303,45 @@ public class CircuitStateControllerTests
         }
     }
 
+    [Fact]
+    public async Task OnActionFailureAsync_EnsureBreakDurationGeneration()
+    {
+        // arrange
+        var result = new TimeSpan(0, 0, 10, 0);
+        using var controller = CreateController(new ()
+        {
+            FailureRatio = 0,
+            MinimumThroughput = 0,
+            SamplingDuration = default,
+            BreakDuration = new TimeSpan(0,0,1,0),
+            BreakDurationGenerator = (failureCount) => result,
+            OnClosed = null,
+            OnOpened = null,
+            OnHalfOpened = null,
+            ManualControl = null,
+            StateProvider = null
+        });
+        
+        await TransitionToState(controller, CircuitState.Closed);
+        var utcNow = DateTimeOffset.MaxValue - result;
+
+        _timeProvider.SetUtcNow(utcNow);
+        _circuitBehavior.FailureCount.Returns(1);
+        _circuitBehavior.When(v => v.OnActionFailure(CircuitState.Closed, out Arg.Any<bool>()))
+            .Do(x =>
+            {
+                x[1] = true;
+            });
+
+        // act
+        await controller.OnActionFailureAsync(Outcome.FromResult(99), ResilienceContextPool.Shared.Get());
+
+        // assert
+        var blockedTill = GetBlockedTill(controller);
+        
+        blockedTill.Should().Be(DateTimeOffset.MaxValue);
+    }
+
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
@@ -463,6 +502,16 @@ public class CircuitStateControllerTests
         _options.OnOpened,
         _options.OnClosed,
         _options.OnHalfOpened,
+        _circuitBehavior,
+        _timeProvider,
+        TestUtilities.CreateResilienceTelemetry(_telemetryListener));
+
+    private CircuitStateController<int> CreateController(CircuitBreakerStrategyOptions<int> options) => new(
+        options.BreakDuration,
+        options.BreakDurationGenerator,
+        options.OnOpened,
+        options.OnClosed,
+        options.OnHalfOpened,
         _circuitBehavior,
         _timeProvider,
         TestUtilities.CreateResilienceTelemetry(_telemetryListener));
