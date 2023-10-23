@@ -1,6 +1,6 @@
 namespace Polly.CircuitBreaker.Health;
 
-internal readonly record struct HealthInfo(int Throughput, double FailureRate,int FailureCount = default(int))
+internal readonly record struct HealthInfo(int Throughput, double FailureRate, int FailureCount = default(int))
 {
     public static HealthInfo Create(int successes, int failures)
     {
@@ -10,6 +10,6 @@ internal readonly record struct HealthInfo(int Throughput, double FailureRate,in
             return new HealthInfo(0, 0, failures);
         }
 
-        return new(total, failures / (double)total,failures);
+        return new(total, failures / (double)total, failures);
     }
 }
