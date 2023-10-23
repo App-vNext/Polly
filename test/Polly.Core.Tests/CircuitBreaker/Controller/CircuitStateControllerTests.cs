@@ -313,7 +313,7 @@ public class CircuitStateControllerTests
             FailureRatio = 0,
             MinimumThroughput = 0,
             SamplingDuration = default,
-            BreakDuration = new TimeSpan(0,0,1,0),
+            BreakDuration = TimeSpan.FromMinutes(1),
             BreakDurationGenerator = (failureCount) => result,
             OnClosed = null,
             OnOpened = null,
@@ -328,10 +328,7 @@ public class CircuitStateControllerTests
         _timeProvider.SetUtcNow(utcNow);
         _circuitBehavior.FailureCount.Returns(1);
         _circuitBehavior.When(v => v.OnActionFailure(CircuitState.Closed, out Arg.Any<bool>()))
-            .Do(x =>
-            {
-                x[1] = true;
-            });
+            .Do(x => x[1] = true);
 
         // act
         await controller.OnActionFailureAsync(Outcome.FromResult(99), ResilienceContextPool.Shared.Get());

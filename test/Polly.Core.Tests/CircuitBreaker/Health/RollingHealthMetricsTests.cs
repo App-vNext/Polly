@@ -65,8 +65,8 @@ public class RollingHealthMetricsTests
         health[0].Should().Be(new HealthInfo(2, 0.5, 1));
         health[1].Should().Be(new HealthInfo(4, 0.5, 2));
         health[3].Should().Be(new HealthInfo(8, 0.25, 2));
-        health[4].Should().Be(new HealthInfo(8, 0.125,1));
-        health[5].Should().Be(new HealthInfo(6, 0.0,0));
+        health[4].Should().Be(new HealthInfo(8, 0.125, 1));
+        health[5].Should().Be(new HealthInfo(6, 0.0, 0));
     }
 
     [Fact]
