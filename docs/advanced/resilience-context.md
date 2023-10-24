@@ -68,6 +68,37 @@ public static class MyResilienceKeys
 > [!NOTE]
 > We recommend defining a static class to hold the resilience property keys used in your project. This approach makes these keys easier to discover and maintain. For simpler scenarios, you can directly use the creation of `ResiliencePropertyKey<string>` since it's a cheap, struct-based API.
 
+### Sequence diagram
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant CP as ResilienceContextPool
+    participant P as Pipeline
+    participant R as Retry
+    participant D as DecoratedUserCallback
+    participant O as OnRetryUserCallback
+
+    C->>CP: Rents a context
+    CP->>C: Gives a context
+    C->>P: Calls ExecuteAsync<br/>with context
+    P->>R: Calls ExecuteCore<br/>with context
+    Note over R,D: Initial attempt
+    R->>+D: Invokes<br/>with context
+    D->>-R: Fails
+    R->>+O: Invokes<br/>with context
+    O->>-R: Returns a ValueTask
+    R-->>R: Sleeps
+    Note over R,D: 1st retry attempt
+    R->>+D: Invokes<br/>with context
+    D->>-R: Returns result
+    R->>P: Returns result
+    P->>C: Returns result
+    C-->>C: Accesses context
+    C->>CP: Returns the context
+```
+
 ## Resilient context pooling
 
 <!-- Overview -->
