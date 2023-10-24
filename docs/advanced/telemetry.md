@@ -186,6 +186,46 @@ Tags:
 |`operation.key`| The operation key associated with the call site. |
 |`exception.type`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 
+### Metering enrichment
+
+Polly API lets you add extra tags to any resilience event created by resilience strategies. To do this, derive from the <xref:Polly.Telemetry.MeteringEnricher> class and add your custom enricher to the <xref:Polly.Telemetry.TelemetryOptions.MeteringEnrichers> list.
+
+The custom enricher:
+
+<!-- snippet: metering-enricher -->
+```cs
+internal class CustomMeteringEnricher : MeteringEnricher
+{
+    public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
+    {
+        // You can read additional details from any resilience event and use it to enrich the telemetry
+        if (context.TelemetryEvent.Arguments is OnRetryArguments<TResult> retryArgs)
+        {
+            // See https://github.com/open-telemetry/semantic-conventions/blob/main/docs/general/metrics.md for more details
+            // on how to name the tags.
+            context.Tags.Add(new("retry.attempt", retryArgs.AttemptNumber));
+        }
+    }
+}
+```
+<!-- endSnippet -->
+
+Registering the custom enricher:
+
+<!-- snippet: metering-enricher-registration -->
+```cs
+var telemetryOptions = new TelemetryOptions();
+
+// Register custom enricher
+telemetryOptions.MeteringEnrichers.Add(new CustomMeteringEnricher());
+
+var builder = new ResiliencePipelineBuilder()
+    .AddRetry(new RetryStrategyOptions())
+    .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
+    .Build();
+```
+<!-- endSnippet -->
+
 ## Logs
 
 Logs are registered under the `Polly` logger name. Here are some examples of the logs:
