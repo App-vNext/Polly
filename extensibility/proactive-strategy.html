@@ -87,7 +87,7 @@
 
 <p>This document guides you in creating a <strong>Timing resilience strategy</strong> that tracks the execution times of callbacks and reports when the execution time exceeds the expected duration. This is a prime example of a proactive strategy because we aren't concerned with the individual results produced by the callbacks. Hence, this strategy can be used across various result types.</p>
 <h2 id="implementation">Implementation</h2>
-<p>Proactive resilience strategies are derived from the <a href="xref:Polly.ResilienceStrategy"><code>ResilienceStrategy</code></a> base class. For this strategy, the implementation is:</p>
+<p>Proactive resilience strategies are derived from the <a class="xref" href="../api/Polly.ResilienceStrategy.html"><code>ResilienceStrategy</code></a> base class. For this strategy, the implementation is:</p>
 <!-- snippet: ext-proactive-strategy -->
 <pre><code class="lang-cs">// Strategies should be internal and not exposed in the library's public API.
 // Configure the strategy through extension methods and options.

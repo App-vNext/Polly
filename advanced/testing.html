@@ -91,7 +91,7 @@
 <p>Begin by adding the <a href="https://www.nuget.org/packages/Polly.Testing"><code>Polly.Testing</code></a> package to your test project:</p>
 <pre><code class="lang-sh">dotnet add package Polly.Testing
 </code></pre>
-<p>Use the <code>GetPipelineDescriptor</code> extension method to get the <a href="xref:Polly.Testing.ResiliencePipelineDescriptor"><code>ResiliencePipelineDescriptor</code></a> which provides details on the pipeline's composition:</p>
+<p>Use the <code>GetPipelineDescriptor</code> extension method to get the <a class="xref" href="../api/Polly.Testing.ResiliencePipelineDescriptor.html"><code>ResiliencePipelineDescriptor</code></a> which provides details on the pipeline's composition:</p>
 <!-- snippet: get-pipeline-descriptor -->
 <pre><code class="lang-cs">// Build your resilience pipeline.
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()

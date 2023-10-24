@@ -330,7 +330,7 @@ pipeline.Execute(
 </tbody>
 </table>
 <h3 id="metering-enrichment">Metering enrichment</h3>
-<p>Polly API lets you add extra tags to any resilience event created by resilience strategies. To do this, derive from the &lt;xref:Polly.Telemetry.MeteringEnricher&gt; class and add your custom enricher to the &lt;xref:Polly.Telemetry.TelemetryOptions.MeteringEnrichers&gt; list.</p>
+<p>Polly API lets you add extra tags to any resilience event created by resilience strategies. To do this, derive from the <a class="xref" href="../api/Polly.Telemetry.MeteringEnricher.html">MeteringEnricher</a> class and add your custom enricher to the <a class="xref" href="../api/Polly.Telemetry.TelemetryOptions.html#Polly_Telemetry_TelemetryOptions_MeteringEnrichers">MeteringEnrichers</a> list.</p>
 <p>The custom enricher:</p>
 <!-- snippet: metering-enricher -->
 <pre><code class="lang-cs">internal sealed class CustomMeteringEnricher : MeteringEnricher
@@ -376,7 +376,7 @@ Resilience pipeline executed. Source: '{PipelineName}/{PipelineInstance}', Opera
 Execution attempt. Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', Operation Key: '{OperationKey}', Result: '{Result}', Handled: '{Handled}', Attempt: '{Attempt}', Execution Time: '{ExecutionTimeMs}'
 </code></pre>
 <h2 id="emitting-telemetry-events">Emitting telemetry events</h2>
-<p>Each resilience strategy can generate telemetry data through the <a href="xref:Polly.Telemetry.ResilienceStrategyTelemetry"><code>ResilienceStrategyTelemetry</code></a> API. Polly encapsulates event details as <a href="xref:Polly.Telemetry.TelemetryEventArguments%602"><code>TelemetryEventArguments</code></a> and emits them via <code>TelemetryListener</code>.</p>
+<p>Each resilience strategy can generate telemetry data through the <a class="xref" href="../api/Polly.Telemetry.ResilienceStrategyTelemetry.html"><code>ResilienceStrategyTelemetry</code></a> API. Polly encapsulates event details as <a class="xref" href="../api/Polly.Telemetry.TelemetryEventArguments-2.html"><code>TelemetryEventArguments</code></a> and emits them via <code>TelemetryListener</code>.</p>
 <p>To leverage this telemetry data, users should assign a <code>TelemetryListener</code> instance to <code>ResiliencePipelineBuilder.TelemetryListener</code> and then consume the <code>TelemetryEventArguments</code>.</p>
 <p>For common scenarios, it is expected that users would make use of <code>Polly.Extensions</code>. This extension enables telemetry configuration through the <code>ResiliencePipelineBuilder.ConfigureTelemetry(...)</code> method, which processes <code>TelemetryEventArguments</code> to generate logs and metrics.</p>
 
