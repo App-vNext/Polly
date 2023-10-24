@@ -119,7 +119,7 @@ internal static class Telemetry
 
     #region metering-enricher
 
-    internal class CustomMeteringEnricher : MeteringEnricher
+    internal sealed class CustomMeteringEnricher : MeteringEnricher
     {
         public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
         {

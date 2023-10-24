@@ -194,7 +194,7 @@ The custom enricher:
 
 <!-- snippet: metering-enricher -->
 ```cs
-internal class CustomMeteringEnricher : MeteringEnricher
+internal sealed class CustomMeteringEnricher : MeteringEnricher
 {
     public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
     {
