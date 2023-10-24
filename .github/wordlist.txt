@@ -64,3 +64,4 @@ uwp
 waitandretry
 wpf
 xunit
+enricher
