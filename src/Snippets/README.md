@@ -32,6 +32,6 @@ When you're finished editing, run the `dotnet mdsnippets` command from the root 
 > [!NOTE]
 > If you refer to a non-existing snippet (due to typo or unsaved changes) then `dotnet mdsnippets` will warn you.
 >
-> _Failed: Missing snippets: markdown-path.md: my-snipet_
+> _Failed: Missing snippets: markdown-path.md: non-existing-snippet_
 
 [MarkdownSnippets]: https://github.com/SimonCropp/MarkdownSnippets
