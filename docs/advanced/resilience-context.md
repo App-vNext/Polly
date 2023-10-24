@@ -88,7 +88,7 @@ sequenceDiagram
     R->>+D: Invokes<br/>with context
     D->>-R: Fails
     R->>+O: Invokes<br/>with context
-    O->>-R: Returns a ValueTask
+    O->>-R: Completes
     R-->>R: Sleeps
     Note over R,D: 1st retry attempt
     R->>+D: Invokes<br/>with context
