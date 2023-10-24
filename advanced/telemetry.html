@@ -329,6 +329,38 @@ pipeline.Execute(
 </tr>
 </tbody>
 </table>
+<h3 id="metering-enrichment">Metering enrichment</h3>
+<p>Polly API lets you add extra tags to any resilience event created by resilience strategies. To do this, derive from the &lt;xref:Polly.Telemetry.MeteringEnricher&gt; class and add your custom enricher to the &lt;xref:Polly.Telemetry.TelemetryOptions.MeteringEnrichers&gt; list.</p>
+<p>The custom enricher:</p>
+<!-- snippet: metering-enricher -->
+<pre><code class="lang-cs">internal sealed class CustomMeteringEnricher : MeteringEnricher
+{
+    public override void Enrich&lt;TResult, TArgs&gt;(in EnrichmentContext&lt;TResult, TArgs&gt; context)
+    {
+        // You can read additional details from any resilience event and use it to enrich the telemetry
+        if (context.TelemetryEvent.Arguments is OnRetryArguments&lt;TResult&gt; retryArgs)
+        {
+            // See https://github.com/open-telemetry/semantic-conventions/blob/main/docs/general/metrics.md for more details
+            // on how to name the tags.
+            context.Tags.Add(new(&quot;retry.attempt&quot;, retryArgs.AttemptNumber));
+        }
+    }
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Registering the custom enricher:</p>
+<!-- snippet: metering-enricher-registration -->
+<pre><code class="lang-cs">var telemetryOptions = new TelemetryOptions();
+
+// Register custom enricher
+telemetryOptions.MeteringEnrichers.Add(new CustomMeteringEnricher());
+
+var builder = new ResiliencePipelineBuilder()
+    .AddRetry(new RetryStrategyOptions())
+    .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
+    .Build();
+</code></pre>
+<!-- endSnippet -->
 <h2 id="logs">Logs</h2>
 <p>Logs are registered under the <code>Polly</code> logger name. Here are some examples of the logs:</p>
 <pre><code class="lang-text">// This log is recorded whenever a resilience event occurs. EventId = 0
