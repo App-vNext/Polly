@@ -146,6 +146,34 @@ ResilienceContextPool.Shared.Return(context);
 <h5>Note</h5>
 <p>We recommend defining a static class to hold the resilience property keys used in your project. This approach makes these keys easier to discover and maintain. For simpler scenarios, you can directly use the creation of <code>ResiliencePropertyKey&lt;string&gt;</code> since it's a cheap, struct-based API.</p>
 </div>
+<h3 id="sequence-diagram">Sequence diagram</h3>
+<pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant CP as ResilienceContextPool
+    participant P as Pipeline
+    participant R as Retry
+    participant D as DecoratedUserCallback
+    participant O as OnRetryUserCallback
+
+    C-&gt;&gt;CP: Rents a context
+    CP-&gt;&gt;C: Gives a context
+    C-&gt;&gt;P: Calls ExecuteAsync&lt;br/&gt;with context
+    P-&gt;&gt;R: Calls ExecuteCore&lt;br/&gt;with context
+    Note over R,D: Initial attempt
+    R-&gt;&gt;+D: Invokes&lt;br/&gt;with context
+    D-&gt;&gt;-R: Fails
+    R-&gt;&gt;+O: Invokes&lt;br/&gt;with context
+    O-&gt;&gt;-R: Completes
+    R--&gt;&gt;R: Sleeps
+    Note over R,D: 1st retry attempt
+    R-&gt;&gt;+D: Invokes&lt;br/&gt;with context
+    D-&gt;&gt;-R: Returns result
+    R-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+    C--&gt;&gt;C: Accesses context
+    C-&gt;&gt;CP: Returns the context
+</code></pre>
 <h2 id="resilient-context-pooling">Resilient context pooling</h2>
 <!-- Overview -->
 <p>The <code>ResilienceContext</code> object is resource-intensive to create, and recreating it for each execution would negatively impact performance. To address this issue, Polly provides a <code>ResilienceContextPool</code>. This pool allows you to obtain and reuse <code>ResilienceContext</code> instances. Once you've finished using a context instance, you can return it to the pool. This action will reset the context to its initial state, making it available for reuse.</p>
