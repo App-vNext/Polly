@@ -157,9 +157,9 @@ IAsyncPolicy retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(3, _ => 
 IAsyncPolicy timeoutPolicy = Policy.TimeoutAsync(TimeSpan.FromSeconds(3));
 
 // Wrap the policies. The policies are executed in the following order (i.e. Last-In-First-Out):
-// 1. Retry
-// 2. Timeout
-IAsyncPolicy wrappedPolicy = Policy.WrapAsync(timeoutPolicy, retryPolicy);
+// 1. Retry << outer
+// 2. Timeout << inner
+IAsyncPolicy wrappedPolicy = Policy.WrapAsync(retryPolicy, timeoutPolicy);
 ```
 <!-- endSnippet -->
 
@@ -170,8 +170,8 @@ In v8, there's no need to use policy wrap explicitly. Instead, policy wrapping i
 <!-- snippet: migration-policy-wrap-v8 -->
 ```cs
 // The "PolicyWrap" is integrated directly. Strategies are executed in the same order as they were added (i.e. First-In-First-Out):
-// 1. Retry
-// 2. Timeout
+// 1. Retry << outer
+// 2. Timeout << outer
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new()
     {
