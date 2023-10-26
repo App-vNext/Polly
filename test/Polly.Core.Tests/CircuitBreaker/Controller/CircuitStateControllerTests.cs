@@ -505,11 +505,12 @@ public class CircuitStateControllerTests
 
     private CircuitStateController<int> CreateController(CircuitBreakerStrategyOptions<int> options) => new(
         options.BreakDuration,
-        options.BreakDurationGenerator,
         options.OnOpened,
         options.OnClosed,
         options.OnHalfOpened,
         _circuitBehavior,
         _timeProvider,
-        TestUtilities.CreateResilienceTelemetry(_telemetryListener));
+        TestUtilities.CreateResilienceTelemetry(_telemetryListener),
+        options.BreakDurationGenerator
+        );
 }

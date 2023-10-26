@@ -11,4 +11,5 @@ internal abstract class CircuitBehavior
 
     public abstract void OnCircuitClosed();
     public abstract int FailureCount { get; }
+    public abstract double FailureRate { get; }
 }
