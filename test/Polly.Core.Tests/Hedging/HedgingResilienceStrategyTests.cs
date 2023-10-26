@@ -557,7 +557,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         // act
         var actual = await Create().ExecuteAsync(Execute, _cts.Token);
-        
+
         // assert
         actual.Should().Be("1st");
     }
