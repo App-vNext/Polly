@@ -84,8 +84,8 @@ When the `Delay` property is set to a value greater than zero, the hedging strat
 - The primary execution is initiated.
 - If the initial execution either fails or takes longer than the `Delay` to complete, a new execution is initiated.
 - If the first two executions fail or exceed the `Delay` (calculated from the last initiated execution), another execution is triggered.
-- The final result is the result of fastest successful execution.
-- If all executions fail, the final result will be the first failure encountered.
+- **Happy path**: The final result is the result of fastest successful execution.
+- **Unhappy path**: If all executions fail, the final result will be the primary execution's failure.
 
 #### Latency: happy path sequence diagram
 
@@ -155,8 +155,8 @@ In fallback mode, the `Delay` value should be less than `TimeSpan.Zero`. This mo
 
 - An execution is initiated, and the strategy waits for its completion.
 - If the initial execution fails, new one is initiated.
-- The final result will be the first successful execution.
-- If all executions fail, the final result will be the first failure encountered.
+- **Happy path**: The final result will be the first successful execution.
+- **Unhappy path**: If all executions fail, the final result will be the primary execution's failure.
 
 #### Fallback: happy path sequence diagram
 
@@ -224,8 +224,8 @@ The hedging strategy operates in parallel mode when the `Delay` property is set 
 > Use this mode only when absolutely necessary, as it consumes the most resources, particularly when the hedging strategy uses remote resources such as remote HTTP services.
 
 - All executions are initiated simultaneously, adhering to the `MaxHedgedAttempts` limit.
-- The final result will be the fastest successful execution.
-- If all executions fail, the final result will be the first failure encountered.
+- **Happy path**: The final result will be the fastest successful execution.
+- **Unhappy path**: If all executions fail, the final result will be the primary execution's failure
 
 #### Parallel: happy path sequence diagram
 
@@ -293,8 +293,8 @@ sequenceDiagram
     HUC->>-H: Fails (R1)
 
     deactivate H
-    H->>P: Propagates failure (R2)
-    P->>C: Propagates failure (R2)
+    H->>P: Propagates failure (R1)
+    P->>C: Propagates failure (R1)
 ```
 
 ### Dynamic mode
