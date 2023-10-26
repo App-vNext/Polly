@@ -37,6 +37,20 @@ new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOpti
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
 });
 
+
+// Adds a circuit breaker with dynamic break duration:
+//
+// Same circuit breaking conditions as above, but with a dynamic break duration based on the failure count.
+// The duration is calculated as: minimum of (20 + 2^failureCount) seconds and capped at 400 seconds.
+new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
+{
+    FailureRatio = 0.5,
+    SamplingDuration = TimeSpan.FromSeconds(10),
+    MinimumThroughput = 8,
+    ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
+    BreakDurationGenerator = (args) => TimeSpan.FromSeconds(Math.Min(20 + Math.Pow(2, args.FailureCount), 400))
+});
+
 // Handle specific failed results for HttpResponseMessage:
 new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage>
@@ -466,7 +480,24 @@ circuitBreaker = new ResiliencePipelineBuilder()
 
 ✅ DO
 
-The `CircuitBreakerStrategyOptions` currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.
+Use the 'BreakDurationGenerator' to dynamically define the break duration:
+```cs
+// Adds a circuit breaker with dynamic break duration:
+//
+// Same circuit breaking conditions as above, but with a dynamic break duration based on the failure count.
+// The duration is calculated as: minimum of (20 + 2^failureCount) seconds and capped at 400 seconds.
+new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
+{
+    FailureRatio = 0.5,
+    SamplingDuration = TimeSpan.FromSeconds(10),
+    MinimumThroughput = 8,
+    ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
+    BreakDurationGenerator = (args) => TimeSpan.FromSeconds(Math.Min(20 + Math.Pow(2, args.FailureCount), 400))
+});
+```
+**Reasoning**:
+
+- Using a BreakDurationGenerator like this, you can dynamically adjust the break duration with each failure.
 
 ### 3 - Wrapping each endpoint with a circuit breaker
 
@@ -521,6 +552,7 @@ public Downstream1Client(
     ...
 }
 ```
+Using a BreakDurationGenerator like this, you can dynamically adjust the break duration with each failure.
 
 **Reasoning**:
 
