@@ -556,7 +556,10 @@ public class HedgingResilienceStrategyTests : IDisposable
         ConfigureHedging(async context => Outcome.FromResult(await Execute(context.CancellationToken)));
 
         // act
-        (await Create().ExecuteAsync(Execute, _cts.Token)).Should().Be("1st");
+        var actual = await Create().ExecuteAsync(Execute, _cts.Token);
+        
+        // assert
+        actual.Should().Be("1st");
     }
 
     [Fact]
