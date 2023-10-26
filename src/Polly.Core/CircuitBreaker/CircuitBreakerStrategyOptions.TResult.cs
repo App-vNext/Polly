@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Polly.CircuitBreaker;
@@ -75,7 +76,7 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <value>
     /// A delegate that takes an integer representing the health failure count and returns a <see cref="TimeSpan"/> indicating the break duration.
     /// </value>
-    public Func<int, TimeSpan>? BreakDurationGenerator { get; set; }
+    public Func<BreakDurationGeneratorArguments, TimeSpan>? BreakDurationGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets a predicate that determines whether the outcome should be handled by the circuit breaker.
