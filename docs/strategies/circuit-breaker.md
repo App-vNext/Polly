@@ -551,7 +551,6 @@ public Downstream1Client(
     ...
 }
 ```
-Using a BreakDurationGenerator like this, you can dynamically adjust the break duration with each failure.
 
 **Reasoning**:
 
