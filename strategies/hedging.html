@@ -192,8 +192,8 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
 <li>The primary execution is initiated.</li>
 <li>If the initial execution either fails or takes longer than the <code>Delay</code> to complete, a new execution is initiated.</li>
 <li>If the first two executions fail or exceed the <code>Delay</code> (calculated from the last initiated execution), another execution is triggered.</li>
-<li>The final result is the result of fastest successful execution.</li>
-<li>If all executions fail, the final result will be the first failure encountered.</li>
+<li><strong>Happy path</strong>: The final result is the result of fastest successful execution.</li>
+<li><strong>Unhappy path</strong>: If all executions fail, the final result will be the primary execution's failure.</li>
 </ul>
 <h4 id="latency-happy-path-sequence-diagram">Latency: happy path sequence diagram</h4>
 <p>The hedging strategy does not trigger because the response arrives faster than the threshold.</p>
@@ -254,8 +254,8 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
 <ul>
 <li>An execution is initiated, and the strategy waits for its completion.</li>
 <li>If the initial execution fails, new one is initiated.</li>
-<li>The final result will be the first successful execution.</li>
-<li>If all executions fail, the final result will be the first failure encountered.</li>
+<li><strong>Happy path</strong>: The final result will be the first successful execution.</li>
+<li><strong>Unhappy path</strong>: If all executions fail, the final result will be the primary execution's failure.</li>
 </ul>
 <h4 id="fallback-happy-path-sequence-diagram">Fallback: happy path sequence diagram</h4>
 <p>The hedging strategy triggers because the first attempt fails. It succeeds because the retry attempts do not exceed the <code>MaxHedgedAttempts</code>.</p>
@@ -315,8 +315,8 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
 </div>
 <ul>
 <li>All executions are initiated simultaneously, adhering to the <code>MaxHedgedAttempts</code> limit.</li>
-<li>The final result will be the fastest successful execution.</li>
-<li>If all executions fail, the final result will be the first failure encountered.</li>
+<li><strong>Happy path</strong>: The final result will be the fastest successful execution.</li>
+<li><strong>Unhappy path</strong>: If all executions fail, the final result will be the primary execution's failure</li>
 </ul>
 <h4 id="parallel-happy-path-sequence-diagram">Parallel: happy path sequence diagram</h4>
 <p>The hedging strategy triggers because the <code>Delay</code> is set to zero. It succeeds because one of the requests succeeds.</p>
@@ -377,8 +377,8 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     HUC-&gt;&gt;-H: Fails (R1)
 
     deactivate H
-    H-&gt;&gt;P: Propagates failure (R2)
-    P-&gt;&gt;C: Propagates failure (R2)
+    H-&gt;&gt;P: Propagates failure (R1)
+    P-&gt;&gt;C: Propagates failure (R1)
 </code></pre>
 <h3 id="dynamic-mode">Dynamic mode</h3>
 <p>In dynamic mode, you have the flexibility to control how the hedging strategy behaves during each execution. This control is achieved through the <code>DelayGenerator</code> property.</p>
