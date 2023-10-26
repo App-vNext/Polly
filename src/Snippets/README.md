@@ -25,8 +25,13 @@ public static void MySnippet()
 }
 ```
 
-In your Markdown documentation, refer to your code snippet by adding `<!-- snippet: my-snippet -->` and `<!-- endSnippet -->` comments to your Markdown file.
+In your Markdown documentation, refer to your code snippet by adding `snippet: my-snippet`.
 
 When you're finished editing, run the `dotnet mdsnippets` command from the root directory of the repository to refresh all the snippets throughout all the Markdown files.
+
+> [!NOTE]
+> If you refer to a non-existing snippet (due to typo or unsaved changes) then `dotnet mdsnippets` will warn you.
+>
+> _Failed: Missing snippets: markdown-path.md: non-existing-snippet_
 
 [MarkdownSnippets]: https://github.com/SimonCropp/MarkdownSnippets

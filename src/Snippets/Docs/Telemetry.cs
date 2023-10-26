@@ -99,4 +99,39 @@ internal static class Telemetry
     }
 
     #endregion
+
+    public static void MeteringEnricherRegistration()
+    {
+        #region metering-enricher-registration
+
+        var telemetryOptions = new TelemetryOptions();
+
+        // Register custom enricher
+        telemetryOptions.MeteringEnrichers.Add(new CustomMeteringEnricher());
+
+        var builder = new ResiliencePipelineBuilder()
+            .AddRetry(new RetryStrategyOptions())
+            .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
+            .Build();
+
+        #endregion
+    }
+
+    #region metering-enricher
+
+    internal sealed class CustomMeteringEnricher : MeteringEnricher
+    {
+        public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
+        {
+            // You can read additional details from any resilience event and use it to enrich the telemetry
+            if (context.TelemetryEvent.Arguments is OnRetryArguments<TResult> retryArgs)
+            {
+                // See https://github.com/open-telemetry/semantic-conventions/blob/main/docs/general/metrics.md for more details
+                // on how to name the tags.
+                context.Tags.Add(new("retry.attempt", retryArgs.AttemptNumber));
+            }
+        }
+    }
+
+    #endregion
 }

@@ -3,7 +3,7 @@
     {
       "src": [
         {
-          "cwd": "../src",
+          "src": "../src",
           "files": [
             "**/**.csproj"
           ],

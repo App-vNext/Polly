@@ -1,4 +1,4 @@
-﻿namespace Polly.Simmy.Outcomes;
+﻿namespace Polly.Simmy.Fault;
 
 #pragma warning disable CS8618 // Required members are not initialized in constructor since this is a DTO, default value is null
 
