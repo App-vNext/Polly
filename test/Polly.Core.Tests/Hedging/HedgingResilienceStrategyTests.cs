@@ -530,6 +530,35 @@ public class HedgingResilienceStrategyTests : IDisposable
             .WithMessage("my-exception");
     }
 
+    [InlineData(-1)] // Fallback mode
+    [InlineData(0)] // Parallel mode
+    [InlineData(1)] // Latency mode
+    [Theory]
+    public async Task ExecuteAsync_AllAttemptsFailAndTheOriginalCallIsTheSlowest_EnsureOriginalCallsResultReturned(int delaySeconds)
+    {
+        // arrange
+        int callCounter = 0;
+        async ValueTask<string> Execute(CancellationToken token)
+        {
+            if (callCounter == 0)
+            {
+                await Task.Delay(200, token);
+                return "1st";
+            }
+
+            return (++callCounter).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        _options.ShouldHandle = new PredicateBuilder<string>().HandleResult(s => s.Length < 5);
+        _options.MaxHedgedAttempts = 2;
+        _options.Delay = TimeSpan.FromSeconds(delaySeconds);
+
+        ConfigureHedging(async context => Outcome.FromResult(await Execute(context.CancellationToken)));
+
+        // act
+        (await Create().ExecuteAsync(Execute, _cts.Token)).Should().Be("1st");
+    }
+
     [Fact]
     public async Task ExecuteAsync_CancellationLinking_Ok()
     {
