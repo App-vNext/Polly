@@ -3,6 +3,7 @@ using Polly.Simmy;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Simmy;
+
 public class MonkeyStrategyOptionsTTests
 {
     [Fact]
@@ -33,7 +34,7 @@ public class MonkeyStrategyOptionsTTests
             .Throw<ValidationException>()
             .WithMessage("""
             Invalid Options
-            
+
             Validation Errors:
             The field InjectionRate must be between 0 and 1.
             """);

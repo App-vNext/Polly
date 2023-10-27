@@ -2,9 +2,6 @@
 
 namespace Polly.Simmy;
 
-#pragma warning disable CA1031 // Do not catch general exception types
-#pragma warning disable S3928 // Custom ArgumentNullException message
-
 /// <summary>
 /// Contains common functionality for chaos strategies which intentionally disrupt executions - which monkey around with calls.
 /// </summary>

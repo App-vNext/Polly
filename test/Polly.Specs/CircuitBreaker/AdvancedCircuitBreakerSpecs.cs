@@ -1599,7 +1599,11 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
         permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
         permitFirstExecutionEnd.Set();
+
+#pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
+#pragma warning restore xUnit1031 // Do not use blocking task operations in test method
+
         if (firstExecution.IsFaulted)
             throw firstExecution!.Exception!;
         if (secondExecution.IsFaulted)
@@ -1707,7 +1711,11 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
         permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
         permitFirstExecutionEnd.Set();
+
+#pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
+#pragma warning restore xUnit1031 // Do not use blocking task operations in test method
+
         if (firstExecution.IsFaulted)
             throw firstExecution!.Exception!;
         if (secondExecution.IsFaulted)
@@ -1717,7 +1725,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
 
         // Assert:
         // - First execution should have been permitted and executed under a HalfOpen state
-        // - Second overlapping execution in halfopen state should have been permitted, one breakDuration later.
+        // - Second overlapping execution in half-open state should have been permitted, one breakDuration later.
         firstDelegateExecutedInHalfOpenState.Should().BeTrue();
         secondDelegateExecutedInHalfOpenState.Should().BeTrue();
         secondDelegateRejectedInHalfOpenState.Should().BeFalse();
@@ -2021,7 +2029,9 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         permitLongRunningExecutionToReturnItsFailure.Set();
 
         // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
+#pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
+#pragma warning restore xUnit1031 // Do not use blocking task operations in test method
         if (longRunningExecution.IsFaulted)
             throw longRunningExecution!.Exception!;
         longRunningExecution.Status.Should().Be(TaskStatus.RanToCompletion);
