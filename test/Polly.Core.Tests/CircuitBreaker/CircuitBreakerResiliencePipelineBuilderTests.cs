@@ -7,6 +7,7 @@ namespace Polly.Core.Tests.CircuitBreaker;
 
 public class CircuitBreakerResiliencePipelineBuilderTests
 {
+#pragma warning disable IDE0028
     public static TheoryData<Action<ResiliencePipelineBuilder>> ConfigureData = new()
     {
         builder => builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions
@@ -22,6 +23,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
             ShouldHandle = _ => PredicateResult.True()
         }),
     };
+#pragma warning restore IDE0028
 
     [MemberData(nameof(ConfigureData))]
     [Theory]

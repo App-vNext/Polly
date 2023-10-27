@@ -5,6 +5,7 @@ namespace Polly.Core.Tests;
 
 public partial class ResiliencePipelineTests
 {
+#pragma warning disable IDE0028
     public static TheoryData<Action<ResiliencePipeline<string>>> ExecuteGenericStrategyData = new()
     {
         strategy =>
@@ -73,8 +74,9 @@ public partial class ResiliencePipelineTests
                     return "res";
                 },
                 context).Should().Be("res");
-        }
+        },
     };
+#pragma warning restore IDE0028
 
     [MemberData(nameof(ExecuteGenericStrategyData))]
     [Theory]

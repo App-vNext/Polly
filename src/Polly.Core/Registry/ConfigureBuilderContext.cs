@@ -29,9 +29,9 @@ public class ConfigureBuilderContext<TKey>
     /// </summary>
     internal string? BuilderInstanceName { get; }
 
-    internal List<CancellationToken> ReloadTokens { get; } = new();
+    internal List<CancellationToken> ReloadTokens { get; } = [];
 
-    internal List<Action> DisposeCallbacks { get; } = new();
+    internal List<Action> DisposeCallbacks { get; } = [];
 
     /// <summary>
     /// Reloads the pipeline when <paramref name="cancellationToken"/> is canceled.

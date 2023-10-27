@@ -1601,7 +1601,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         permitFirstExecutionEnd.Set();
 
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
-        Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
+        Task.WaitAll([firstExecution, secondExecution], testTimeoutToExposeDeadlocks).Should().BeTrue();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
 
         if (firstExecution.IsFaulted)
@@ -1713,7 +1713,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         permitFirstExecutionEnd.Set();
 
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
-        Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
+        Task.WaitAll([firstExecution, secondExecution], testTimeoutToExposeDeadlocks).Should().BeTrue();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
 
         if (firstExecution.IsFaulted)
@@ -2032,8 +2032,12 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
+
         if (longRunningExecution.IsFaulted)
+        {
             throw longRunningExecution!.Exception!;
+        }
+
         longRunningExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
         // onBreak() should still only have been called once.
@@ -2355,7 +2359,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_call_onbreak_with_a_state_of_half_open()
     {
-        List<CircuitState> transitionedStates = new List<CircuitState>();
+        List<CircuitState> transitionedStates = [];
 
         Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => { transitionedStates.Add(state); };
         Action<Context> onReset = _ => { };

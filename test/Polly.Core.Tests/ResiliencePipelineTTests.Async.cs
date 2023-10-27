@@ -3,10 +3,9 @@ using Polly.Utils.Pipeline;
 
 namespace Polly.Core.Tests;
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
 public partial class ResiliencePipelineTests
 {
+#pragma warning disable IDE0028
     public static TheoryData<Func<ResiliencePipeline<string>, ValueTask>> ExecuteAsyncGenericStrategyData = new()
     {
         async strategy =>
@@ -59,8 +58,9 @@ public partial class ResiliencePipelineTests
                     return new ValueTask<string>("res");
                 },
                 context)).Should().Be("res");
-        }
+        },
     };
+#pragma warning restore IDE0028
 
     [MemberData(nameof(ExecuteAsyncGenericStrategyData))]
     [Theory]

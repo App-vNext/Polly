@@ -10,12 +10,12 @@ internal class HedgingActions
     {
         _timeProvider = timeProvider;
 
-        Functions = new()
-        {
+        Functions =
+        [
             GetApples,
             GetOranges,
             GetPears
-        };
+        ];
 
         Generator = args =>
         {

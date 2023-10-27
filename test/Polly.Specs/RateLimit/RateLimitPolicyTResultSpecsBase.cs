@@ -35,7 +35,7 @@ public abstract class RateLimitPolicyTResultSpecsBase : RateLimitPolicySpecsBase
         // (do nothing - time not advanced)
 
         // Act - try another execution.
-        Context contextToPassIn = new Context();
+        Context contextToPassIn = [];
         var resultExpectedBlocked = TryExecuteThroughPolicy(rateLimiter, contextToPassIn, new ResultClassWithRetryAfter(ResultPrimitive.Good));
 
         // Assert - should be blocked - time not advanced.

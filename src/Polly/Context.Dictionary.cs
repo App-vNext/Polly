@@ -11,7 +11,7 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
 
     private Dictionary<string, object> wrappedDictionary;
 
-    private Dictionary<string, object> WrappedDictionary => wrappedDictionary ?? (wrappedDictionary = new Dictionary<string, object>());
+    private Dictionary<string, object> WrappedDictionary => wrappedDictionary ?? (wrappedDictionary = []);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="operationKey" /> and the supplied <paramref name="contextData"/>.

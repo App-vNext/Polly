@@ -9,6 +9,7 @@ namespace Polly.RateLimiting.Tests;
 
 public class RateLimiterResiliencePipelineBuilderExtensionsTests
 {
+#pragma warning disable IDE0028
     public static readonly TheoryData<Action<ResiliencePipelineBuilder>> Data = new()
     {
         builder =>
@@ -41,6 +42,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
             AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper.Should().BeNull());
         }
     };
+#pragma warning restore IDE0028
 
     [MemberData(nameof(Data))]
     [Theory(Skip = "https://github.com/stryker-mutator/stryker-net/issues/2144")]
