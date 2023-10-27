@@ -85,10 +85,6 @@
         <article data-uid="">
 <h1 id="resilience-pipeline-registry">Resilience pipeline registry</h1>
 
-<div class="NOTE">
-<h5>Note</h5>
-<p>This documentation supports the upcoming Polly v8 release.</p>
-</div>
 <p>The <code>ResiliencePipelineRegistry&lt;TKey&gt;</code> is designed to create and cache resilience pipeline instances. The registry also implements the <code>ResiliencePipelineProvider&lt;TKey&gt;</code>, allowing read-only access to pipelines.</p>
 <p>The registry offers these features:</p>
 <ul>
@@ -103,6 +99,10 @@
 </div>
 <h2 id="usage">Usage</h2>
 <p>To register pipeline builders, use the <code>TryAddBuilder(...)</code> method. This method accepts a callback argument that configures an instance of <code>ResiliencePipelineBuilder</code> for the pipeline being defined. The registry supports both generic and non-generic resilience pipelines.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note that you do not have to call the <code>Build</code> method after you have set up your pipeline on the <code>builder</code> parameter of the <code>TryAddBuilder</code>. You can call the <code>Build</code> if you want but it is not necessary.</p>
+</div>
 <p>Here's an example demonstrating these features:</p>
 <!-- snippet: registry-usage -->
 <pre><code class="lang-cs">var registry = new ResiliencePipelineRegistry&lt;string&gt;();
@@ -129,7 +129,7 @@ ResiliencePipeline pipelineA = registry.GetPipeline(&quot;A&quot;);
 ResiliencePipeline&lt;HttpResponseMessage&gt; genericPipelineA = registry.GetPipeline&lt;HttpResponseMessage&gt;(&quot;A&quot;);
 
 // Returns false since pipeline &quot;unknown&quot; isn't registered
-registry.TryGetPipeline(&quot;unknown&quot;, out var pipeline);
+var doesPipelineExist = registry.TryGetPipeline(&quot;unknown&quot;, out var pipeline);
 
 // Throws KeyNotFoundException because pipeline &quot;unknown&quot; isn't registered
 try
@@ -211,8 +211,8 @@ The <code>BuilderName</code> and <code>InstanceName</code> are used in <a href="
     PipelineComparer = StringComparer.OrdinalIgnoreCase,
     BuilderFactory = () =&gt; new ResiliencePipelineBuilder
     {
-        InstanceName = &quot;lets change the defaults&quot;,
-        Name = &quot;lets change the defaults&quot;,
+        InstanceName = &quot;lets change the default of InstanceName&quot;,
+        Name = &quot;lets change the default of Name&quot;,
     },
     BuilderNameFormatter = key =&gt; $&quot;key:{key}&quot;,
     InstanceNameFormatter = key =&gt; $&quot;instance-key:{key}&quot;,
@@ -242,7 +242,7 @@ ResiliencePipeline pipeline = registry.GetPipeline(&quot;A&quot;);
 <!-- endSnippet -->
 <ul>
 <li>If an error occurs during reloading, the cached pipeline remains, and dynamic reloading stops.</li>
-<li>You should not reuse the cancellation token when the pipeline is reloaded.</li>
+<li>You should <strong>not</strong> reuse the cancellation token when the pipeline is reloaded.</li>
 <li>Pipelines enabled for reloads remain valid and current post-reload. The registry manages this transparently.</li>
 </ul>
 <h3 id="how-dynamic-reloads-work">How dynamic reloads work</h3>
