@@ -13,47 +13,44 @@
 <!-- snippet: fallback -->
 ```cs
 // Add a fallback/substitute value if an operation fails.
-new ResiliencePipelineBuilder<UserAvatar>()
-    .AddFallback(new FallbackStrategyOptions<UserAvatar>
-    {
-        ShouldHandle = new PredicateBuilder<UserAvatar>()
-            .Handle<SomeExceptionType>()
-            .HandleResult(r => r is null),
-        FallbackAction = args => Outcome.FromResultAsValueTask(UserAvatar.Blank)
-    });
+new ResiliencePipelineBuilder<UserAvatar>().AddFallback(new FallbackStrategyOptions<UserAvatar>
+{
+    ShouldHandle = new PredicateBuilder<UserAvatar>()
+        .Handle<SomeExceptionType>()
+        .HandleResult(r => r is null),
+    FallbackAction = static args => Outcome.FromResultAsValueTask(UserAvatar.Blank)
+});
 
 // Use a dynamically generated value if an operation fails.
-new ResiliencePipelineBuilder<UserAvatar>()
-    .AddFallback(new FallbackStrategyOptions<UserAvatar>
+new ResiliencePipelineBuilder<UserAvatar>().AddFallback(new()
+{
+    ShouldHandle = new PredicateBuilder<UserAvatar>()
+        .Handle<SomeExceptionType>()
+        .HandleResult(r => r is null),
+    FallbackAction = static args =>
     {
-        ShouldHandle = new PredicateBuilder<UserAvatar>()
-            .Handle<SomeExceptionType>()
-            .HandleResult(r => r is null),
-        FallbackAction = args =>
-        {
-            var avatar = UserAvatar.GetRandomAvatar();
-            return Outcome.FromResultAsValueTask(avatar);
-        }
-    });
+        var avatar = UserAvatar.GetRandomAvatar();
+        return Outcome.FromResultAsValueTask(avatar);
+    }
+});
 
 // Use a default or dynamically generated value, and execute an additional action if the fallback is triggered.
-new ResiliencePipelineBuilder<UserAvatar>()
-    .AddFallback(new FallbackStrategyOptions<UserAvatar>
+new ResiliencePipelineBuilder<UserAvatar>().AddFallback(new()
+{
+    ShouldHandle = new PredicateBuilder<UserAvatar>()
+        .Handle<SomeExceptionType>()
+        .HandleResult(r => r is null),
+    FallbackAction = static args =>
     {
-        ShouldHandle = new PredicateBuilder<UserAvatar>()
-            .Handle<SomeExceptionType>()
-            .HandleResult(r => r is null),
-        FallbackAction = args =>
-        {
-            var avatar = UserAvatar.GetRandomAvatar();
-            return Outcome.FromResultAsValueTask(UserAvatar.Blank);
-        },
-        OnFallback = args =>
-        {
-            // Add extra logic to be executed when the fallback is triggered, such as logging.
-            return default; // Returns an empty ValueTask
-        }
-    });
+        var avatar = UserAvatar.GetRandomAvatar();
+        return Outcome.FromResultAsValueTask(UserAvatar.Blank);
+    },
+    OnFallback = static args =>
+    {
+        // Add extra logic to be executed when the fallback is triggered, such as logging.
+        return default; // Returns an empty ValueTask
+    }
+});
 ```
 <!-- endSnippet -->
 

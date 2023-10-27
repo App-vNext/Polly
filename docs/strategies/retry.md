@@ -19,14 +19,14 @@
 new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions());
 
 // For instant retries with no delay
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+new ResiliencePipelineBuilder().AddRetry(new()
 {
     Delay = TimeSpan.Zero
 });
 
 // For advanced control over the retry behavior, including the number of attempts,
 // delay between retries, and the types of exceptions to handle.
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+new ResiliencePipelineBuilder().AddRetry(new()
 {
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
     BackoffType = DelayBackoffType.Exponential,
@@ -36,10 +36,10 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 });
 
 // To use a custom function to generate the delay for retries
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+new ResiliencePipelineBuilder().AddRetry(new()
 {
     MaxRetryAttempts = 2,
-    DelayGenerator = args =>
+    DelayGenerator = static args =>
     {
         var delay = args.AttemptNumber switch
         {
@@ -55,9 +55,9 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 });
 
 // To extract the delay from the result object
-new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyOptions<HttpResponseMessage>
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new()
 {
-    DelayGenerator = args =>
+    DelayGenerator = static args =>
     {
         if (args.Outcome.Result is HttpResponseMessage responseMessage &&
             TryGetDelay(responseMessage, out TimeSpan delay))
@@ -71,10 +71,10 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 });
 
 // To get notifications when a retry is performed
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+new ResiliencePipelineBuilder().AddRetry(new()
 {
     MaxRetryAttempts = 2,
-    OnRetry = args =>
+    OnRetry = static args =>
     {
         Console.WriteLine("OnRetry, Attempt: {0}", args.AttemptNumber);
 
@@ -84,7 +84,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 });
 
 // To keep retrying indefinitely or until success use int.MaxValue.
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+new ResiliencePipelineBuilder().AddRetry(new()
 {
     MaxRetryAttempts = int.MaxValue,
 });

@@ -16,10 +16,9 @@ internal static class CircuitBreaker
         new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions());
 
         // Add circuit breaker with customized options:
-        //
         // The circuit will break if more than 50% of actions result in handled exceptions,
         // within any 10-second sampling duration, and at least 8 actions are processed.
-        new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
+        new ResiliencePipelineBuilder().AddCircuitBreaker(new()
         {
             FailureRatio = 0.5,
             SamplingDuration = TimeSpan.FromSeconds(10),
@@ -29,20 +28,20 @@ internal static class CircuitBreaker
         });
 
         // Handle specific failed results for HttpResponseMessage:
-        new ResiliencePipelineBuilder<HttpResponseMessage>()
-            .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage>
-            {
-                ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-                    .Handle<SomeExceptionType>()
-                    .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError)
-            });
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(new()
+        {
+            ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+                .Handle<SomeExceptionType>()
+                .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError)
+        });
 
         // Monitor the circuit state, useful for health reporting:
         var stateProvider = new CircuitBreakerStateProvider();
 
-        new ResiliencePipelineBuilder<HttpResponseMessage>()
-            .AddCircuitBreaker(new() { StateProvider = stateProvider })
-            .Build();
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(new()
+        {
+            StateProvider = stateProvider
+        });
 
         /*
         CircuitState.Closed - Normal operation; actions are executed.
@@ -54,9 +53,10 @@ internal static class CircuitBreaker
         // Manually control the Circuit Breaker state:
         var manualControl = new CircuitBreakerManualControl();
 
-        new ResiliencePipelineBuilder()
-            .AddCircuitBreaker(new() { ManualControl = manualControl })
-            .Build();
+        new ResiliencePipelineBuilder().AddCircuitBreaker(new()
+        {
+            ManualControl = manualControl
+        });
 
         // Manually isolate a circuit, e.g., to isolate a downstream service.
         await manualControl.IsolateAsync();

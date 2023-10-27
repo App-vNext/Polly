@@ -129,14 +129,14 @@ Visit [resilience strategies](https://www.pollydocs.org/strategies) docs to expl
 new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions());
 
 // For instant retries with no delay
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+new ResiliencePipelineBuilder().AddRetry(new()
 {
     Delay = TimeSpan.Zero
 });
 
 // For advanced control over the retry behavior, including the number of attempts,
 // delay between retries, and the types of exceptions to handle.
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+new ResiliencePipelineBuilder().AddRetry(new()
 {
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
     BackoffType = DelayBackoffType.Exponential,
@@ -146,10 +146,10 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 });
 
 // To use a custom function to generate the delay for retries
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+new ResiliencePipelineBuilder().AddRetry(new()
 {
     MaxRetryAttempts = 2,
-    DelayGenerator = args =>
+    DelayGenerator = static args =>
     {
         var delay = args.AttemptNumber switch
         {
@@ -165,9 +165,9 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 });
 
 // To extract the delay from the result object
-new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyOptions<HttpResponseMessage>
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new()
 {
-    DelayGenerator = args =>
+    DelayGenerator = static args =>
     {
         if (args.Outcome.Result is HttpResponseMessage responseMessage &&
             TryGetDelay(responseMessage, out TimeSpan delay))
@@ -181,10 +181,10 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 });
 
 // To get notifications when a retry is performed
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+new ResiliencePipelineBuilder().AddRetry(new()
 {
     MaxRetryAttempts = 2,
-    OnRetry = args =>
+    OnRetry = static args =>
     {
         Console.WriteLine("OnRetry, Attempt: {0}", args.AttemptNumber);
 
@@ -194,7 +194,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 });
 
 // To keep retrying indefinitely or until success use int.MaxValue.
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+new ResiliencePipelineBuilder().AddRetry(new()
 {
     MaxRetryAttempts = int.MaxValue,
 });
@@ -214,10 +214,9 @@ For more details, visit the [retry strategy](https://www.pollydocs.org/strategie
 new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions());
 
 // Add circuit breaker with customized options:
-//
 // The circuit will break if more than 50% of actions result in handled exceptions,
 // within any 10-second sampling duration, and at least 8 actions are processed.
-new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
+new ResiliencePipelineBuilder().AddCircuitBreaker(new()
 {
     FailureRatio = 0.5,
     SamplingDuration = TimeSpan.FromSeconds(10),
@@ -227,20 +226,20 @@ new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOpti
 });
 
 // Handle specific failed results for HttpResponseMessage:
-new ResiliencePipelineBuilder<HttpResponseMessage>()
-    .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage>
-    {
-        ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-            .Handle<SomeExceptionType>()
-            .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError)
-    });
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(new()
+{
+    ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+        .Handle<SomeExceptionType>()
+        .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError)
+});
 
 // Monitor the circuit state, useful for health reporting:
 var stateProvider = new CircuitBreakerStateProvider();
 
-new ResiliencePipelineBuilder<HttpResponseMessage>()
-    .AddCircuitBreaker(new() { StateProvider = stateProvider })
-    .Build();
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(new()
+{
+    StateProvider = stateProvider
+});
 
 /*
 CircuitState.Closed - Normal operation; actions are executed.
@@ -252,9 +251,10 @@ CircuitState.Isolated - Circuit is manually held open; actions are blocked.
 // Manually control the Circuit Breaker state:
 var manualControl = new CircuitBreakerManualControl();
 
-new ResiliencePipelineBuilder()
-    .AddCircuitBreaker(new() { ManualControl = manualControl })
-    .Build();
+new ResiliencePipelineBuilder().AddCircuitBreaker(new()
+{
+    ManualControl = manualControl
+});
 
 // Manually isolate a circuit, e.g., to isolate a downstream service.
 await manualControl.IsolateAsync();
@@ -271,47 +271,44 @@ For more details, visit the [circuit breaker strategy](https://www.pollydocs.org
 <!-- snippet: fallback -->
 ```cs
 // Add a fallback/substitute value if an operation fails.
-new ResiliencePipelineBuilder<UserAvatar>()
-    .AddFallback(new FallbackStrategyOptions<UserAvatar>
-    {
-        ShouldHandle = new PredicateBuilder<UserAvatar>()
-            .Handle<SomeExceptionType>()
-            .HandleResult(r => r is null),
-        FallbackAction = args => Outcome.FromResultAsValueTask(UserAvatar.Blank)
-    });
+new ResiliencePipelineBuilder<UserAvatar>().AddFallback(new FallbackStrategyOptions<UserAvatar>
+{
+    ShouldHandle = new PredicateBuilder<UserAvatar>()
+        .Handle<SomeExceptionType>()
+        .HandleResult(r => r is null),
+    FallbackAction = static args => Outcome.FromResultAsValueTask(UserAvatar.Blank)
+});
 
 // Use a dynamically generated value if an operation fails.
-new ResiliencePipelineBuilder<UserAvatar>()
-    .AddFallback(new FallbackStrategyOptions<UserAvatar>
+new ResiliencePipelineBuilder<UserAvatar>().AddFallback(new()
+{
+    ShouldHandle = new PredicateBuilder<UserAvatar>()
+        .Handle<SomeExceptionType>()
+        .HandleResult(r => r is null),
+    FallbackAction = static args =>
     {
-        ShouldHandle = new PredicateBuilder<UserAvatar>()
-            .Handle<SomeExceptionType>()
-            .HandleResult(r => r is null),
-        FallbackAction = args =>
-        {
-            var avatar = UserAvatar.GetRandomAvatar();
-            return Outcome.FromResultAsValueTask(avatar);
-        }
-    });
+        var avatar = UserAvatar.GetRandomAvatar();
+        return Outcome.FromResultAsValueTask(avatar);
+    }
+});
 
 // Use a default or dynamically generated value, and execute an additional action if the fallback is triggered.
-new ResiliencePipelineBuilder<UserAvatar>()
-    .AddFallback(new FallbackStrategyOptions<UserAvatar>
+new ResiliencePipelineBuilder<UserAvatar>().AddFallback(new()
+{
+    ShouldHandle = new PredicateBuilder<UserAvatar>()
+        .Handle<SomeExceptionType>()
+        .HandleResult(r => r is null),
+    FallbackAction = static args =>
     {
-        ShouldHandle = new PredicateBuilder<UserAvatar>()
-            .Handle<SomeExceptionType>()
-            .HandleResult(r => r is null),
-        FallbackAction = args =>
-        {
-            var avatar = UserAvatar.GetRandomAvatar();
-            return Outcome.FromResultAsValueTask(UserAvatar.Blank);
-        },
-        OnFallback = args =>
-        {
-            // Add extra logic to be executed when the fallback is triggered, such as logging.
-            return default; // Returns an empty ValueTask
-        }
-    });
+        var avatar = UserAvatar.GetRandomAvatar();
+        return Outcome.FromResultAsValueTask(UserAvatar.Blank);
+    },
+    OnFallback = static args =>
+    {
+        // Add extra logic to be executed when the fallback is triggered, such as logging.
+        return default; // Returns an empty ValueTask
+    }
+});
 ```
 <!-- endSnippet -->
 
@@ -328,38 +325,38 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
 
 // Add a customized hedging strategy that retries up to 3 times if the execution
 // takes longer than 1 second or if it fails due to an exception or returns an HTTP 500 Internal Server Error.
-new ResiliencePipelineBuilder<HttpResponseMessage>()
-    .AddHedging(new HedgingStrategyOptions<HttpResponseMessage>
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(new()
+{
+    ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+        .Handle<SomeExceptionType>()
+        .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError),
+    MaxHedgedAttempts = 3,
+    Delay = TimeSpan.FromSeconds(1),
+    ActionGenerator = static args =>
     {
-        ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-            .Handle<SomeExceptionType>()
-            .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError),
-        MaxHedgedAttempts = 3,
-        Delay = TimeSpan.FromSeconds(1),
-        ActionGenerator = args =>
-        {
-            Console.WriteLine("Preparing to execute hedged action.");
+        Console.WriteLine("Preparing to execute hedged action.");
 
-            // Return a delegate function to invoke the original action with the action context.
-            // Optionally, you can also create a completely new action to be executed.
-            return () => args.Callback(args.ActionContext);
-        }
-    });
+        // Return a delegate function to invoke the original action with the action context.
+        // Optionally, you can also create a completely new action to be executed.
+        return () => args.Callback(args.ActionContext);
+    }
+});
 
 // Subscribe to hedging events.
-new ResiliencePipelineBuilder<HttpResponseMessage>()
-    .AddHedging(new HedgingStrategyOptions<HttpResponseMessage>
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(new()
+{
+    OnHedging = static args =>
     {
-        OnHedging = args =>
-        {
-            Console.WriteLine($"OnHedging: Attempt number {args.AttemptNumber}");
-            return default;
-        }
-    });
+        Console.WriteLine($"OnHedging: Attempt number {args.AttemptNumber}");
+        return default;
+    }
+});
 ```
 <!-- endSnippet -->
 
-If all hedged attempts fail, the hedging strategy will either re-throw the last exception or return the final failed result to the caller. For more details, visit the [hedging strategy](https://www.pollydocs.org/strategies/hedging) documentation.
+If all hedged attempts fail, the hedging strategy will either re-throw the original exception or return the original failed result to the caller.
+
+For more details, visit the [hedging strategy](https://www.pollydocs.org/strategies/hedging) documentation.
 
 ### Timeout
 
