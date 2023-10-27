@@ -1,8 +1,5 @@
 # Resilience pipeline registry
 
-> [!NOTE]
-> This documentation supports the upcoming Polly v8 release.
-
 The `ResiliencePipelineRegistry<TKey>` is designed to create and cache resilience pipeline instances. The registry also implements the `ResiliencePipelineProvider<TKey>`, allowing read-only access to pipelines.
 
 The registry offers these features:
@@ -18,6 +15,9 @@ The registry offers these features:
 ## Usage
 
 To register pipeline builders, use the `TryAddBuilder(...)` method. This method accepts a callback argument that configures an instance of `ResiliencePipelineBuilder` for the pipeline being defined. The registry supports both generic and non-generic resilience pipelines.
+
+> [!NOTE]
+> Please note that you do not have to call the `Build` method after you have set up your pipeline on the `builder` parameter of the `TryAddBuilder`. You can call the `Build` if you want but it is not necessary.
 
 Here's an example demonstrating these features:
 
@@ -47,7 +47,7 @@ ResiliencePipeline pipelineA = registry.GetPipeline("A");
 ResiliencePipeline<HttpResponseMessage> genericPipelineA = registry.GetPipeline<HttpResponseMessage>("A");
 
 // Returns false since pipeline "unknown" isn't registered
-registry.TryGetPipeline("unknown", out var pipeline);
+var doesPipelineExist = registry.TryGetPipeline("unknown", out var pipeline);
 
 // Throws KeyNotFoundException because pipeline "unknown" isn't registered
 try
@@ -108,8 +108,8 @@ var options = new ResiliencePipelineRegistryOptions<string>
     PipelineComparer = StringComparer.OrdinalIgnoreCase,
     BuilderFactory = () => new ResiliencePipelineBuilder
     {
-        InstanceName = "lets change the defaults",
-        Name = "lets change the defaults",
+        InstanceName = "lets change the default of InstanceName",
+        Name = "lets change the default of Name",
     },
     BuilderNameFormatter = key => $"key:{key}",
     InstanceNameFormatter = key => $"instance-key:{key}",
@@ -144,7 +144,7 @@ ResiliencePipeline pipeline = registry.GetPipeline("A");
 <!-- endSnippet -->
 
 - If an error occurs during reloading, the cached pipeline remains, and dynamic reloading stops.
-- You should not reuse the cancellation token when the pipeline is reloaded.
+- You should **not** reuse the cancellation token when the pipeline is reloaded.
 - Pipelines enabled for reloads remain valid and current post-reload. The registry manages this transparently.
 
 ### How dynamic reloads work
