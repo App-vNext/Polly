@@ -1,14 +1,14 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Polly.Retry;
-
-#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
 
 /// <summary>
 /// Represents the options used to configure a retry strategy.
 /// </summary>
 /// <typeparam name="TResult">The type of result the retry strategy handles.</typeparam>
+[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Addressed with DynamicDependency on ValidationHelper.Validate method")]
 public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
