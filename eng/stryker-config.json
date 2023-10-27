@@ -21,7 +21,7 @@
     "target-framework": "net7.0",
     "thresholds": {
       "high": 100,
-      "low": 99
+      "low": 100
     }
   }
 }
