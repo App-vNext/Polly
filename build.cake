@@ -37,7 +37,7 @@ var nupkgDestDir = System.IO.Path.Combine(artifactsDir, Directory("nuget-package
 
 // Stryker / Mutation Testing
 var strykerConfig = MakeAbsolute(File("./eng/stryker-config.json"));
-var strykerOutput = MakeAbsolute(Directory("StrykerOutput"));
+var strykerOutput = MakeAbsolute(Directory(System.IO.Path.Combine(artifactsDir, Directory("mutation-report"))));
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
