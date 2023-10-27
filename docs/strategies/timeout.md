@@ -14,25 +14,25 @@
 
 <!-- snippet: timeout -->
 ```cs
-// Add timeout using the default options.
-// See https://www.pollydocs.org/strategies/timeout#defaults for defaults.
-new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions());
-
 // To add a timeout with a custom TimeSpan duration
 new ResiliencePipelineBuilder().AddTimeout(TimeSpan.FromSeconds(3));
 
+// Timeout using the default options.
+// See https://www.pollydocs.org/strategies/timeout#defaults for defaults.
+var optionsDefaults = new TimeoutStrategyOptions();
+
 // To add a timeout using a custom timeout generator function
-new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions
+var optionsTimeoutGenerator = new TimeoutStrategyOptions
 {
     TimeoutGenerator = static args =>
     {
         // Note: the timeout generator supports asynchronous operations
         return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(123));
     }
-});
+};
 
 // To add a timeout and listen for timeout events
-new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions
+var optionsOnTimeout = new TimeoutStrategyOptions
 {
     TimeoutGenerator = static args =>
     {
@@ -44,7 +44,10 @@ new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions
         Console.WriteLine($"{args.Context.OperationKey}: Execution timed out after {args.Timeout.TotalSeconds} seconds.");
         return default;
     }
-});
+};
+
+// Add a timeout strategy with a TimeoutStrategyOptions instance to the pipeline
+new ResiliencePipelineBuilder().AddTimeout(optionsDefaults);
 ```
 <!-- endSnippet -->
 

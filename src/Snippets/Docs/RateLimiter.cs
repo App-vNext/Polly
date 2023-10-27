@@ -12,17 +12,21 @@ internal static class RateLimiter
 
         // Add rate limiter with default options.
         // See https://www.pollydocs.org/strategies/rate-limiter#defaults for defaults.
-        new ResiliencePipelineBuilder().AddRateLimiter(new RateLimiterStrategyOptions());
+        new ResiliencePipelineBuilder()
+            .AddRateLimiter(new RateLimiterStrategyOptions());
 
         // Create a rate limiter to allow a maximum of 100 concurrent executions and a queue of 50.
-        new ResiliencePipelineBuilder().AddConcurrencyLimiter(100, 50);
+        new ResiliencePipelineBuilder()
+            .AddConcurrencyLimiter(100, 50);
 
         // Create a rate limiter that allows 100 executions per minute.
-        new ResiliencePipelineBuilder().AddRateLimiter(new SlidingWindowRateLimiter(new()
-        {
-            PermitLimit = 100,
-            Window = TimeSpan.FromMinutes(1)
-        }));
+        new ResiliencePipelineBuilder()
+            .AddRateLimiter(new SlidingWindowRateLimiter(
+                new SlidingWindowRateLimiterOptions
+                {
+                    PermitLimit = 100,
+                    Window = TimeSpan.FromMinutes(1)
+                }));
 
         #endregion
 

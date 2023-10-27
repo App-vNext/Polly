@@ -213,37 +213,38 @@ For more details, visit the [retry strategy](https://www.pollydocs.org/strategie
 
 <!-- snippet: circuit-breaker -->
 ```cs
-// Add circuit breaker with default options.
+// Circuit breaker with default options.
 // See https://www.pollydocs.org/strategies/circuit-breaker#defaults for defaults.
-new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions());
+var optionsDefaults = new CircuitBreakerStrategyOptions();
 
-// Add circuit breaker with customized options:
+// Circuit breaker with customized options:
 // The circuit will break if more than 50% of actions result in handled exceptions,
 // within any 10-second sampling duration, and at least 8 actions are processed.
-new ResiliencePipelineBuilder().AddCircuitBreaker(new()
+var optionsComplex = new CircuitBreakerStrategyOptions
 {
     FailureRatio = 0.5,
     SamplingDuration = TimeSpan.FromSeconds(10),
     MinimumThroughput = 8,
     BreakDuration = TimeSpan.FromSeconds(30),
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
-});
+};
 
 // Handle specific failed results for HttpResponseMessage:
-new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(new()
+var optionsShouldHandle = new CircuitBreakerStrategyOptions<HttpResponseMessage>
 {
     ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
         .Handle<SomeExceptionType>()
         .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError)
-});
+};
 
 // Monitor the circuit state, useful for health reporting:
 var stateProvider = new CircuitBreakerStateProvider();
-
-new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(new()
+var optionsStateProvider = new CircuitBreakerStrategyOptions<HttpResponseMessage>
 {
     StateProvider = stateProvider
-});
+};
+
+var circuitState = stateProvider.CircuitState;
 
 /*
 CircuitState.Closed - Normal operation; actions are executed.
@@ -254,17 +255,20 @@ CircuitState.Isolated - Circuit is manually held open; actions are blocked.
 
 // Manually control the Circuit Breaker state:
 var manualControl = new CircuitBreakerManualControl();
-
-new ResiliencePipelineBuilder().AddCircuitBreaker(new()
+var optionsManualControl = new CircuitBreakerStrategyOptions
 {
     ManualControl = manualControl
-});
+};
 
 // Manually isolate a circuit, e.g., to isolate a downstream service.
 await manualControl.IsolateAsync();
 
 // Manually close the circuit to allow actions to be executed again.
 await manualControl.CloseAsync();
+
+// Add a circuit breaker strategy with a CircuitBreakerStrategyOptions{<TResult>} instance to the pipeline
+new ResiliencePipelineBuilder().AddCircuitBreaker(optionsDefaults);
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(optionsStateProvider);
 ```
 <!-- endSnippet -->
 
@@ -274,17 +278,17 @@ For more details, visit the [circuit breaker strategy](https://www.pollydocs.org
 
 <!-- snippet: fallback -->
 ```cs
-// Add a fallback/substitute value if an operation fails.
-new ResiliencePipelineBuilder<UserAvatar>().AddFallback(new FallbackStrategyOptions<UserAvatar>
+// A fallback/substitute value if an operation fails.
+var optionsSubstitute = new FallbackStrategyOptions<UserAvatar>
 {
     ShouldHandle = new PredicateBuilder<UserAvatar>()
         .Handle<SomeExceptionType>()
         .HandleResult(r => r is null),
     FallbackAction = static args => Outcome.FromResultAsValueTask(UserAvatar.Blank)
-});
+};
 
 // Use a dynamically generated value if an operation fails.
-new ResiliencePipelineBuilder<UserAvatar>().AddFallback(new()
+var optionsFallbackAction = new FallbackStrategyOptions<UserAvatar>
 {
     ShouldHandle = new PredicateBuilder<UserAvatar>()
         .Handle<SomeExceptionType>()
@@ -294,10 +298,10 @@ new ResiliencePipelineBuilder<UserAvatar>().AddFallback(new()
         var avatar = UserAvatar.GetRandomAvatar();
         return Outcome.FromResultAsValueTask(avatar);
     }
-});
+};
 
 // Use a default or dynamically generated value, and execute an additional action if the fallback is triggered.
-new ResiliencePipelineBuilder<UserAvatar>().AddFallback(new()
+var optionsOnFallback = new FallbackStrategyOptions<UserAvatar>
 {
     ShouldHandle = new PredicateBuilder<UserAvatar>()
         .Handle<SomeExceptionType>()
@@ -312,7 +316,10 @@ new ResiliencePipelineBuilder<UserAvatar>().AddFallback(new()
         // Add extra logic to be executed when the fallback is triggered, such as logging.
         return default; // Returns an empty ValueTask
     }
-});
+};
+
+// Add a fallback strategy with a FallbackStrategyOptions<TResult> instance to the pipeline
+new ResiliencePipelineBuilder<UserAvatar>().AddFallback(optionsOnFallback);
 ```
 <!-- endSnippet -->
 
@@ -322,14 +329,13 @@ For more details, visit the [fallback strategy](https://www.pollydocs.org/strate
 
 <!-- snippet: Hedging -->
 ```cs
-// Add hedging with default options.
+// Hedging with default options.
 // See https://www.pollydocs.org/strategies/hedging#defaults for defaults.
-new ResiliencePipelineBuilder<HttpResponseMessage>()
-    .AddHedging(new HedgingStrategyOptions<HttpResponseMessage>());
+var optionsDefaults = new HedgingStrategyOptions<HttpResponseMessage>();
 
-// Add a customized hedging strategy that retries up to 3 times if the execution
+// A customized hedging strategy that retries up to 3 times if the execution
 // takes longer than 1 second or if it fails due to an exception or returns an HTTP 500 Internal Server Error.
-new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(new()
+var optionsComplex = new HedgingStrategyOptions<HttpResponseMessage>
 {
     ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
         .Handle<SomeExceptionType>()
@@ -344,17 +350,20 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(new()
         // Optionally, you can also create a completely new action to be executed.
         return () => args.Callback(args.ActionContext);
     }
-});
+};
 
 // Subscribe to hedging events.
-new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(new()
+var optionsOnHedging = new HedgingStrategyOptions<HttpResponseMessage>
 {
     OnHedging = static args =>
     {
         Console.WriteLine($"OnHedging: Attempt number {args.AttemptNumber}");
         return default;
     }
-});
+};
+
+// Add a hedging strategy with a HedgingStrategyOptions<TResult> instance to the pipeline
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(optionsDefaults);
 ```
 <!-- endSnippet -->
 
@@ -368,25 +377,25 @@ The timeout resilience strategy assumes delegates you execute support [co-operat
 
 <!-- snippet: timeout -->
 ```cs
-// Add timeout using the default options.
-// See https://www.pollydocs.org/strategies/timeout#defaults for defaults.
-new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions());
-
 // To add a timeout with a custom TimeSpan duration
 new ResiliencePipelineBuilder().AddTimeout(TimeSpan.FromSeconds(3));
 
+// Timeout using the default options.
+// See https://www.pollydocs.org/strategies/timeout#defaults for defaults.
+var optionsDefaults = new TimeoutStrategyOptions();
+
 // To add a timeout using a custom timeout generator function
-new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions
+var optionsTimeoutGenerator = new TimeoutStrategyOptions
 {
     TimeoutGenerator = static args =>
     {
         // Note: the timeout generator supports asynchronous operations
         return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(123));
     }
-});
+};
 
 // To add a timeout and listen for timeout events
-new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions
+var optionsOnTimeout = new TimeoutStrategyOptions
 {
     TimeoutGenerator = static args =>
     {
@@ -398,7 +407,10 @@ new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions
         Console.WriteLine($"{args.Context.OperationKey}: Execution timed out after {args.Timeout.TotalSeconds} seconds.");
         return default;
     }
-});
+};
+
+// Add a timeout strategy with a TimeoutStrategyOptions instance to the pipeline
+new ResiliencePipelineBuilder().AddTimeout(optionsDefaults);
 ```
 <!-- endSnippet -->
 
@@ -412,17 +424,21 @@ For more details, visit the [timeout strategy](https://www.pollydocs.org/strateg
 ```cs
 // Add rate limiter with default options.
 // See https://www.pollydocs.org/strategies/rate-limiter#defaults for defaults.
-new ResiliencePipelineBuilder().AddRateLimiter(new RateLimiterStrategyOptions());
+new ResiliencePipelineBuilder()
+    .AddRateLimiter(new RateLimiterStrategyOptions());
 
 // Create a rate limiter to allow a maximum of 100 concurrent executions and a queue of 50.
-new ResiliencePipelineBuilder().AddConcurrencyLimiter(100, 50);
+new ResiliencePipelineBuilder()
+    .AddConcurrencyLimiter(100, 50);
 
 // Create a rate limiter that allows 100 executions per minute.
-new ResiliencePipelineBuilder().AddRateLimiter(new SlidingWindowRateLimiter(new()
-{
-    PermitLimit = 100,
-    Window = TimeSpan.FromMinutes(1)
-}));
+new ResiliencePipelineBuilder()
+    .AddRateLimiter(new SlidingWindowRateLimiter(
+        new SlidingWindowRateLimiterOptions
+        {
+            PermitLimit = 100,
+            Window = TimeSpan.FromMinutes(1)
+        }));
 ```
 <!-- endSnippet -->
 

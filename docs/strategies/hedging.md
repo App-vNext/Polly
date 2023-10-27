@@ -19,14 +19,13 @@ This strategy also supports multiple [concurrency modes](#concurrency-modes) for
 
 <!-- snippet: hedging -->
 ```cs
-// Add hedging with default options.
+// Hedging with default options.
 // See https://www.pollydocs.org/strategies/hedging#defaults for defaults.
-new ResiliencePipelineBuilder<HttpResponseMessage>()
-    .AddHedging(new HedgingStrategyOptions<HttpResponseMessage>());
+var optionsDefaults = new HedgingStrategyOptions<HttpResponseMessage>();
 
-// Add a customized hedging strategy that retries up to 3 times if the execution
+// A customized hedging strategy that retries up to 3 times if the execution
 // takes longer than 1 second or if it fails due to an exception or returns an HTTP 500 Internal Server Error.
-new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(new()
+var optionsComplex = new HedgingStrategyOptions<HttpResponseMessage>
 {
     ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
         .Handle<SomeExceptionType>()
@@ -41,17 +40,20 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(new()
         // Optionally, you can also create a completely new action to be executed.
         return () => args.Callback(args.ActionContext);
     }
-});
+};
 
 // Subscribe to hedging events.
-new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(new()
+var optionsOnHedging = new HedgingStrategyOptions<HttpResponseMessage>
 {
     OnHedging = static args =>
     {
         Console.WriteLine($"OnHedging: Attempt number {args.AttemptNumber}");
         return default;
     }
-});
+};
+
+// Add a hedging strategy with a HedgingStrategyOptions<TResult> instance to the pipeline
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(optionsDefaults);
 ```
 <!-- endSnippet -->
 
