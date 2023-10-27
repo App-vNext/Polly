@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Polly.CircuitBreaker;
 
@@ -48,7 +49,6 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     [Range(CircuitBreakerConstants.MinimumValidThroughput, int.MaxValue)]
     public int MinimumThroughput { get; set; } = CircuitBreakerConstants.DefaultMinimumThroughput;
 
-#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     /// <summary>
     /// Gets or sets the duration of the sampling over which failure ratios are assessed.
     /// </summary>
@@ -56,10 +56,9 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     /// The default value is 30 seconds. Value must be greater than 0.5 seconds.
     /// </value>
     [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Addressed with DynamicDependency on ValidationHelper.Validate method")]
     public TimeSpan SamplingDuration { get; set; } = CircuitBreakerConstants.DefaultSamplingDuration;
-#pragma warning restore IL2026
 
-#pragma warning disable IL2026 // Addressed with DynamicDependency on ValidationHelper.Validate method
     /// <summary>
     /// Gets or sets the duration of break the circuit will stay open before resetting.
     /// </summary>
@@ -67,8 +66,8 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     /// The default value is 5 seconds. Value must be greater than 0.5 seconds.
     /// </value>
     [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Addressed with DynamicDependency on ValidationHelper.Validate method")]
     public TimeSpan BreakDuration { get; set; } = CircuitBreakerConstants.DefaultBreakDuration;
-#pragma warning restore
 
     /// <summary>
     /// Gets or sets an optional delegate to use to dynamically generate the break duration based on the health failure count.

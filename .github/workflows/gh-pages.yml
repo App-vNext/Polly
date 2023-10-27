@@ -42,6 +42,7 @@ jobs:
     - name: Generate documentation
       run: |
         dotnet tool restore
+        dotnet build --configuration Release
         dotnet docfx docs/docfx.json
 
     - name: Deploy

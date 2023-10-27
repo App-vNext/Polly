@@ -2,8 +2,6 @@
 
 namespace Polly.Simmy.Latency;
 
-#pragma warning disable S3928 // Custom ArgumentNullException message
-
 internal sealed class LatencyChaosStrategy : MonkeyStrategy
 {
     private readonly TimeProvider _timeProvider;

@@ -9,6 +9,10 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+# Visual Studio Spell Checker
+spelling_exclusion_path = .\exclusion.dic
+spelling_languages = en-us
+
 [*.{appxmanifest,axml,build,config,csproj,dbml,discomap,dtd,json,jsproj,lsproj,njsproj,nuspec,proj,props,resjson,resw,resx,StyleCop,targets,props,tasks,vbproj,yml,xml,xsd}]
 indent_style = space
 indent_size = 2
@@ -41,7 +45,7 @@ dotnet_naming_rule.static_fields_should_have_prefix.style    = static_prefix_sty
 dotnet_naming_symbols.static_fields.applicable_kinds   = field
 dotnet_naming_symbols.static_fields.required_modifiers = static
 dotnet_naming_symbols.static_fields.applicable_accessibilities = private, internal, private_protected
-dotnet_naming_style.static_prefix_style.required_prefix = 
+dotnet_naming_style.static_prefix_style.required_prefix =
 dotnet_naming_style.static_prefix_style.capitalization = pascal_case
 
 # don't have var preferences

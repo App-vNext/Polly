@@ -9,8 +9,8 @@ var configuration = Argument<string>("configuration", "Release");
 // EXTERNAL NUGET TOOLS
 //////////////////////////////////////////////////////////////////////
 
-#Tool "xunit.runner.console&version=2.5.1"
-#Tool "dotnet-stryker&version=3.10.0"
+#Tool "xunit.runner.console&version=2.5.3"
+#Tool "dotnet-stryker&version=3.11.0"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
@@ -37,7 +37,7 @@ var nupkgDestDir = System.IO.Path.Combine(artifactsDir, Directory("nuget-package
 
 // Stryker / Mutation Testing
 var strykerConfig = MakeAbsolute(File("./eng/stryker-config.json"));
-var strykerOutput = MakeAbsolute(Directory("StrykerOutput"));
+var strykerOutput = MakeAbsolute(Directory(System.IO.Path.Combine(artifactsDir, Directory("mutation-report"))));
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN

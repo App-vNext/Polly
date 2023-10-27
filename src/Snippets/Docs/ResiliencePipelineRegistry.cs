@@ -34,7 +34,7 @@ internal static class ResiliencePipelineRegistry
         ResiliencePipeline<HttpResponseMessage> genericPipelineA = registry.GetPipeline<HttpResponseMessage>("A");
 
         // Returns false since pipeline "unknown" isn't registered
-        registry.TryGetPipeline("unknown", out var pipeline);
+        var doesPipelineExist = registry.TryGetPipeline("unknown", out var pipeline);
 
         // Throws KeyNotFoundException because pipeline "unknown" isn't registered
         try
@@ -82,8 +82,8 @@ internal static class ResiliencePipelineRegistry
             PipelineComparer = StringComparer.OrdinalIgnoreCase,
             BuilderFactory = () => new ResiliencePipelineBuilder
             {
-                InstanceName = "lets change the defaults",
-                Name = "lets change the defaults",
+                InstanceName = "lets change the default of InstanceName",
+                Name = "lets change the default of Name",
             },
             BuilderNameFormatter = key => $"key:{key}",
             InstanceNameFormatter = key => $"instance-key:{key}",

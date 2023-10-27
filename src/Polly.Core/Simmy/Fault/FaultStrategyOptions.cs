@@ -1,7 +1,5 @@
 ﻿namespace Polly.Simmy.Fault;
 
-#pragma warning disable CS8618 // Required members are not initialized in constructor since this is a DTO, default value is null
-
 /// <summary>
 /// Represents the options for the Fault chaos strategy.
 /// </summary>
@@ -13,7 +11,7 @@ internal class FaultStrategyOptions : MonkeyStrategyOptions
     /// <remarks>
     /// Defaults to <see langword="null"/>.
     /// </remarks>
-    public Func<OnFaultInjectedArguments, ValueTask>? OnFaultInjected { get; set; }
+    public Func<OnFaultInjectedArguments, ValueTask>? OnFaultInjected { get; set; } = default!;
 
     /// <summary>
     /// Gets or sets the outcome generator to be injected for a given execution.
@@ -22,7 +20,7 @@ internal class FaultStrategyOptions : MonkeyStrategyOptions
     /// Defaults to <see langword="null"/>. Either <see cref="Fault"/> or this property is required.
     /// When this property is <see langword="null"/> the <see cref="Fault"/> is used.
     /// </remarks>
-    public Func<FaultGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; set; }
+    public Func<FaultGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; set; } = default!;
 
     /// <summary>
     /// Gets or sets the outcome to be injected for a given execution.
