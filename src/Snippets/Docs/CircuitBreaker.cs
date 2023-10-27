@@ -157,61 +157,12 @@ internal static class CircuitBreaker
         #endregion
     }
 
-    public static void AntiPattern_2()
-    {
-        #region circuit-breaker-anti-pattern-2
-        static IEnumerable<TimeSpan> GetSleepDuration()
-        {
-            for (int i = 1; i < 10; i++)
-            {
-                yield return TimeSpan.FromSeconds(i);
-            }
-        }
-
-        var sleepDurationProvider = GetSleepDuration().GetEnumerator();
-        sleepDurationProvider.MoveNext();
-
-        var circuitBreaker = new ResiliencePipelineBuilder()
-            .AddCircuitBreaker(new()
-            {
-                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
-                BreakDuration = TimeSpan.FromSeconds(0.5),
-                OnOpened = async args =>
-                {
-                    await Task.Delay(sleepDurationProvider.Current);
-                    sleepDurationProvider.MoveNext();
-                }
-
-            })
-            .Build();
-
-        #endregion
-
-        #region circuit-breaker-anti-pattern-2-ext
-
-        circuitBreaker = new ResiliencePipelineBuilder()
-            .AddCircuitBreaker(new()
-            {
-                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
-                BreakDuration = sleepDurationProvider.Current,
-                OnOpened = async args =>
-                {
-                    Console.WriteLine($"Break: {sleepDurationProvider.Current}");
-                    sleepDurationProvider.MoveNext();
-                }
-
-            })
-            .Build();
-
-        #endregion
-    }
-
-    public static async ValueTask AntiPattern_3()
+    public static async ValueTask AntiPattern_2()
     {
         static ValueTask CallXYZOnDownstream1(CancellationToken ct) => ValueTask.CompletedTask;
         static ResiliencePipeline GetCircuitBreaker() => ResiliencePipeline.Empty;
 
-        #region circuit-breaker-anti-pattern-3
+        #region circuit-breaker-anti-pattern-2
         // Defined in a common place
         var uriToCbMappings = new Dictionary<Uri, ResiliencePipeline>
         {

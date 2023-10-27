@@ -426,7 +426,7 @@ You want to decorate all downstream calls with the service-aware Circuit Breaker
 
 Use a collection of Circuit Breakers and explicitly call `ExecuteAsync()`:
 
-<!-- snippet: circuit-breaker-anti-pattern-3 -->
+<!-- snippet: circuit-breaker-anti-pattern-2 -->
 ```cs
 // Defined in a common place
 var uriToCbMappings = new Dictionary<Uri, ResiliencePipeline>
