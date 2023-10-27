@@ -49,7 +49,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .Build(); // Builds the resilience pipeline
 
 // Execute the pipeline asynchronously
-await pipeline.ExecuteAsync(static async cancellationToken => { /*Your custom logic here */ }, cancellationToken);
+await pipeline.ExecuteAsync(static async token => { /*Your custom logic goes here */ }, cancellationToken);
 ```
 <!-- endSnippet -->
 
@@ -76,7 +76,7 @@ services.AddResiliencePipeline("my-pipeline", builder =>
 });
 
 // Build the service provider
-IServiceProvider serviceProvider = services.BuildServiceProvider();
+var serviceProvider = services.BuildServiceProvider();
 
 // Retrieve ResiliencePipelineProvider that caches and dynamically creates the resilience pipelines
 var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
@@ -87,7 +87,7 @@ ResiliencePipeline pipeline = pipelineProvider.GetPipeline("my-pipeline");
 // Execute the pipeline
 await pipeline.ExecuteAsync(static async token =>
 {
-    // Your custom logic here
+    // Your custom logic goes here
 });
 ```
 <!-- endSnippet -->
@@ -98,17 +98,25 @@ Polly provides a variety of resilience strategies. Alongside the comprehensive g
 
 Polly categorizes resilience strategies into two main groups:
 
-- **Reactive**: These strategies handle specific exceptions that are thrown, or results that are returned, by the callbacks executed through the strategy.
-- **Proactive**: Unlike reactive strategies, proactive strategies do not focus on handling errors by the callbacks might throw or return. They can make pro-active decisions to cancel or reject the execution of callbacks (e.g., using a rate limiter or a timeout resilience strategy).
+### Reactive
 
-| Strategy | Reactive | Premise | AKA | How does the strategy mitigate?|
-| ------------- | --- | ------------- |:-------------: |------------- |
-|**Retry** <br/>(strategy family)<br/><sub>([quick-start](#retry)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/retry))</sub> |Yes|Many faults are transient and may self-correct after a short delay.| *Maybe it's just a blip* |  Allows configuring automatic retries. |
-|**Circuit-breaker**<br/>(strategy family)<br/><sub>([quick-start](#circuit-breaker)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/circuit-breaker))</sub>|Yes|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | *Stop doing it if it hurts* <br/><br/>*Give that system a break* | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. |
-|**Timeout**<br/><sub>([quick-start](#timeout)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/timeout))</sub>|No|Beyond a certain wait, a success result is unlikely.| *Don't wait forever*  |Guarantees the caller won't have to wait beyond the timeout. |
-|**Rate Limiter**<br/><sub>([quick-start](#rate-limiter)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/rate-limiter))</sub>|No|Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?*  |Constrains executions to not exceed a certain rate. |
-|**Fallback**<br/><sub>([quick-start](#fallback)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/fallback))</sub>|Yes|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
-|**Hedging**<br/><sub>([quick-start](#hedging)&nbsp;;&nbsp;[deep](https://www.pollydocs.org/strategies/hedging))</sub>|Yes|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
+These strategies handle specific exceptions that are thrown, or results that are returned, by the callbacks executed through the strategy.
+
+| Strategy | Premise | AKA | Mitigation |
+| ------------- | ------------- |:-------------: |------------- |
+|[**Retry** family](#retry) |Many faults are transient and may self-correct after a short delay.| *Maybe it's just a blip* |  Allows configuring automatic retries. |
+|[**Circuit-breaker** family](#circuit-breaker)|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | *Stop doing it if it hurts* <br/><br/>*Give that system a break* | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. |
+|[**Fallback**](#fallback)|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
+|[**Hedging**](#hedging)|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
+
+### Proactive
+
+Unlike reactive strategies, proactive strategies do not focus on handling errors by the callbacks might throw or return. They can make pro-active decisions to cancel or reject the execution of callbacks.
+
+| Strategy | Premise | AKA | Prevention |
+|-------------| ------------- |:-------------: |------------- |
+|[**Timeout**](#timeout)|Beyond a certain wait, a success result is unlikely.| *Don't wait forever*  |Guarantees the caller won't have to wait beyond the timeout. |
+|[**Rate Limiter**](#rate-limiter)|Limiting the rate a system handles requests is another way to control load. <br/> <br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?*  |Constrains executions to not exceed a certain rate. |
 
 Visit [resilience strategies](https://www.pollydocs.org/strategies) docs to explore how to configure individual resilience strategies in more detail.
 
@@ -193,7 +201,9 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```
 <!-- endSnippet -->
 
-If all retries fail, a retry strategy rethrows the final exception back to the calling code. For more details, visit the [retry strategy](https://www.pollydocs.org/strategies/retry) documentation.
+If all retries fail, a retry strategy rethrows the final exception back to the calling code.
+
+For more details, visit the [retry strategy](https://www.pollydocs.org/strategies/retry) documentation.
 
 ### Circuit Breaker
 
