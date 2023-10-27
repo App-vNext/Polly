@@ -14,9 +14,9 @@ public class HedgingExecutionContextTests : IDisposable
     private readonly ResiliencePropertyKey<string> _myKey = new("my-key");
     private readonly CancellationTokenSource _cts;
     private readonly HedgingTimeProvider _timeProvider;
-    private readonly List<TaskExecution<DisposableResult>> _createdExecutions = new();
-    private readonly List<TaskExecution<DisposableResult>> _returnedExecutions = new();
-    private readonly List<HedgingExecutionContext<DisposableResult>> _resets = new();
+    private readonly List<TaskExecution<DisposableResult>> _createdExecutions = [];
+    private readonly List<TaskExecution<DisposableResult>> _returnedExecutions = [];
+    private readonly List<HedgingExecutionContext<DisposableResult>> _resets = [];
     private readonly ResilienceContext _resilienceContext;
     private readonly AutoResetEvent _onReset = new(false);
     private int _maxAttempts = 2;

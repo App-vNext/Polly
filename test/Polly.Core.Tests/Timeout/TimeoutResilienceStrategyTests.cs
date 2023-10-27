@@ -12,7 +12,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     private readonly TimeoutStrategyOptions _options;
     private readonly CancellationTokenSource _cancellationSource;
     private readonly TimeSpan _delay = TimeSpan.FromSeconds(12);
-    private readonly List<TelemetryEventArguments<object, object>> _args = new();
+    private readonly List<TelemetryEventArguments<object, object>> _args = [];
 
     public TimeoutResilienceStrategyTests()
     {

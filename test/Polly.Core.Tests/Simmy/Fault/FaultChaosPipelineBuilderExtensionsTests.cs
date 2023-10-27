@@ -7,6 +7,7 @@ namespace Polly.Core.Tests.Simmy.Fault;
 
 public class FaultChaosPipelineBuilderExtensionsTests
 {
+#pragma warning disable IDE0028
     public static readonly TheoryData<Action<ResiliencePipelineBuilder>> FaultStrategy = new()
     {
         builder =>
@@ -21,8 +22,9 @@ public class FaultChaosPipelineBuilderExtensionsTests
 
             AssertFaultStrategy<InvalidOperationException>(builder, true, 0.6)
             .Fault.Should().BeOfType(typeof(InvalidOperationException));
-        }
+        },
     };
+#pragma warning restore IDE0028
 
     private static void AssertFaultStrategy<T, TException>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate)
         where TException : Exception

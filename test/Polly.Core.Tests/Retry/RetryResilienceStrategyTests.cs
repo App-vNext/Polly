@@ -10,7 +10,7 @@ public class RetryResilienceStrategyTests
 {
     private readonly RetryStrategyOptions _options = new();
     private readonly FakeTimeProvider _timeProvider = new();
-    private readonly List<TelemetryEventArguments<object, object>> _args = new();
+    private readonly List<TelemetryEventArguments<object, object>> _args = [];
     private ResilienceStrategyTelemetry _telemetry;
 
     public RetryResilienceStrategyTests()

@@ -6,7 +6,7 @@ namespace Polly;
 /// <typeparam name="TResult">The type of the result.</typeparam>
 public partial class PredicateBuilder<TResult>
 {
-    private readonly List<Predicate<Outcome<TResult>>> _predicates = new();
+    private readonly List<Predicate<Outcome<TResult>>> _predicates = [];
 
     /// <summary>
     /// Adds a predicate for handling exceptions of the specified type.

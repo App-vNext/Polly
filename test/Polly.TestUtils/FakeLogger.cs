@@ -6,7 +6,7 @@ namespace Polly.TestUtils;
 
 public class FakeLogger : ILogger
 {
-    private readonly List<LogRecord> _records = new();
+    private readonly List<LogRecord> _records = [];
 
     public bool Enabled { get; set; } = true;
 

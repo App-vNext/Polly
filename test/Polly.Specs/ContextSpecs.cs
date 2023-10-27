@@ -25,7 +25,7 @@ public class ContextSpecs
     [Fact]
     public void NoArgsCtor_should_assign_no_OperationKey()
     {
-        Context context = new Context();
+        Context context = [];
 
         context.OperationKey.Should().BeNull();
     }

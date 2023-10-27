@@ -10,8 +10,8 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
 {
     public readonly record struct ExecutionInfo<TResult>(TaskExecution<T>? Execution, bool Loaded, Outcome<TResult>? Outcome);
 
-    private readonly List<TaskExecution<T>> _tasks = new();
-    private readonly List<TaskExecution<T>> _executingTasks = new();
+    private readonly List<TaskExecution<T>> _tasks = [];
+    private readonly List<TaskExecution<T>> _executingTasks = [];
     private readonly ObjectPool<TaskExecution<T>> _executionPool;
     private readonly TimeProvider _timeProvider;
     private readonly int _maxAttempts;
