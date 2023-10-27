@@ -41,13 +41,15 @@ new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOpti
 //
 // Same circuit breaking conditions as above, but with a dynamic break duration based on the failure count.
 // The duration is calculated as: minimum of (20 + 2^failureCount) seconds and capped at 400 seconds.
+// The specified BreakDuration = TimeSpan.FromSeconds(30) will not be used due to the dynamic BreakDurationGenerator.
 new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
 {
     FailureRatio = 0.5,
     SamplingDuration = TimeSpan.FromSeconds(10),
     MinimumThroughput = 8,
+    BreakDuration = TimeSpan.FromSeconds(30),
+    BreakDurationGenerator = static args => TimeSpan.FromSeconds(Math.Min(20 + Math.Pow(2, args.FailureCount), 400)),
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
-    BreakDurationGenerator = (args) => TimeSpan.FromSeconds(Math.Min(20 + Math.Pow(2, args.FailureCount), 400))
 });
 
 // Handle specific failed results for HttpResponseMessage:
@@ -415,90 +417,7 @@ var retry = new ResiliencePipelineBuilder()
 - The Retry strategy fetches the sleep duration dynamically without knowing any specific knowledge about the Circuit Breaker.
 - If adjustments are needed for the `BreakDuration`, they can be made in one place.
 
-### 2 - Using different duration for breaks
-
-In the case of Retry you can specify dynamically the sleep duration via the `DelayGenerator`.
-
-In the case of Circuit Breaker the `BreakDuration` is considered constant (can't be changed between breaks).
-
-❌ DON'T
-
-Use `Task.Delay` inside `OnOpened`:
-
-<!-- snippet: circuit-breaker-anti-pattern-2 -->
-```cs
-static IEnumerable<TimeSpan> GetSleepDuration()
-{
-    for (int i = 1; i < 10; i++)
-    {
-        yield return TimeSpan.FromSeconds(i);
-    }
-}
-
-var sleepDurationProvider = GetSleepDuration().GetEnumerator();
-sleepDurationProvider.MoveNext();
-
-var circuitBreaker = new ResiliencePipelineBuilder()
-    .AddCircuitBreaker(new()
-    {
-        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
-        BreakDuration = TimeSpan.FromSeconds(0.5),
-        OnOpened = async args =>
-        {
-            await Task.Delay(sleepDurationProvider.Current);
-            sleepDurationProvider.MoveNext();
-        }
-
-    })
-    .Build();
-```
-<!-- endSnippet -->
-
-**Reasoning**:
-
-- The minimum break duration value is half a second. This implies that each sleep lasts for `sleepDurationProvider.Current` plus an additional half a second.
-- One might think that setting the `BreakDuration` to `sleepDurationProvider.Current` would address this, but it doesn't. This is because the `BreakDuration` is established only once and isn't re-assessed during each break.
-
-<!-- snippet: circuit-breaker-anti-pattern-2-ext -->
-```cs
-circuitBreaker = new ResiliencePipelineBuilder()
-    .AddCircuitBreaker(new()
-    {
-        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
-        BreakDuration = sleepDurationProvider.Current,
-        OnOpened = async args =>
-        {
-            Console.WriteLine($"Break: {sleepDurationProvider.Current}");
-            sleepDurationProvider.MoveNext();
-        }
-
-    })
-    .Build();
-```
-<!-- endSnippet -->
-
-✅ DO
-
-Use the 'BreakDurationGenerator' to dynamically define the break duration:
-```cs
-// Adds a circuit breaker with dynamic break duration:
-//
-// Same circuit breaking conditions as above, but with a dynamic break duration based on the failure count.
-// The duration is calculated as: minimum of (20 + 2^failureCount) seconds and capped at 400 seconds.
-new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
-{
-    FailureRatio = 0.5,
-    SamplingDuration = TimeSpan.FromSeconds(10),
-    MinimumThroughput = 8,
-    ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
-    BreakDurationGenerator = (args) => TimeSpan.FromSeconds(Math.Min(20 + Math.Pow(2, args.FailureCount), 400))
-});
-```
-**Reasoning**:
-
-- Using a BreakDurationGenerator like this, you can dynamically adjust the break duration with each failure.
-
-### 3 - Wrapping each endpoint with a circuit breaker
+### 2 - Wrapping each endpoint with a circuit breaker
 
 Imagine that you have to call N number of services via `HttpClient`s.
 You want to decorate all downstream calls with the service-aware Circuit Breaker.
