@@ -16,16 +16,16 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
     public TimeoutResilienceStrategyTests()
     {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_args.Add);
         _options = new TimeoutStrategyOptions();
         _cancellationSource = new CancellationTokenSource();
     }
 
-    public static TheoryData<TimeSpan> Execute_NoTimeout_Data() => new()
+    public static TheoryData<Func<TimeSpan>> Execute_NoTimeout_Data() => new()
     {
-        TimeSpan.Zero,
-        TimeSpan.FromMilliseconds(-1),
-        System.Threading.Timeout.InfiniteTimeSpan,
+        () => TimeSpan.Zero,
+        () => TimeSpan.FromMilliseconds(-1),
+        () => System.Threading.Timeout.InfiniteTimeSpan,
     };
 
     public void Dispose() => _cancellationSource.Dispose();
@@ -81,10 +81,10 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
     [MemberData(nameof(Execute_NoTimeout_Data))]
     [Theory]
-    public void Execute_NoTimeout(TimeSpan timeout)
+    public void Execute_NoTimeout(Func<TimeSpan> timeout)
     {
         var called = false;
-        SetTimeout(timeout);
+        SetTimeout(timeout());
         var sut = CreateSut();
         sut.Execute(_ => { });
 
