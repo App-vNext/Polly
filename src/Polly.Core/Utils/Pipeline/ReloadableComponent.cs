@@ -105,7 +105,9 @@ internal sealed class ReloadableComponent : PipelineComponent
 
     internal record DisposedFailedArguments(Exception Exception);
 
+#pragma warning disable S2094 // Classes should not be empty
     internal record OnReloadArguments();
+#pragma warning restore S2094 // Classes should not be empty
 
     internal record Entry(PipelineComponent Component, List<CancellationToken> ReloadTokens, ResilienceStrategyTelemetry Telemetry);
 }

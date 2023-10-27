@@ -2,8 +2,6 @@ using Polly.Hedging.Controller;
 
 namespace Polly.Hedging.Utils;
 
-#pragma warning disable CA1031 // Do not catch general exception types
-
 /// <summary>
 /// The context associated with an execution of hedging resilience strategy.
 /// It holds the resources for all executed hedged tasks (primary + secondary) and is responsible for resource disposal.

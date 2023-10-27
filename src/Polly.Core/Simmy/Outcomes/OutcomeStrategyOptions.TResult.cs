@@ -2,8 +2,6 @@
 
 namespace Polly.Simmy.Outcomes;
 
-#pragma warning disable CS8618 // Required members are not initialized in constructor since this is a DTO, default value is null
-
 /// <summary>
 /// Represents the options for the Outcome chaos strategy.
 /// </summary>
@@ -22,5 +20,5 @@ internal class OutcomeStrategyOptions<TResult> : MonkeyStrategyOptions
     /// Gets or sets the outcome generator to be injected for a given execution.
     /// </summary>
     [Required]
-    public Func<OutcomeGeneratorArguments, ValueTask<Outcome<TResult>?>> OutcomeGenerator { get; set; }
+    public Func<OutcomeGeneratorArguments, ValueTask<Outcome<TResult>?>> OutcomeGenerator { get; set; } = default!;
 }
