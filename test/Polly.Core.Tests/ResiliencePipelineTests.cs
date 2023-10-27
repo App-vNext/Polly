@@ -10,6 +10,12 @@ public partial class ResiliencePipelineTests
 {
     public static readonly CancellationToken CancellationToken = new CancellationTokenSource().Token;
 
+    public static TheoryData<ResilienceContextPool?> ResilienceContextPools = new()
+    {
+        null,
+        ResilienceContextPool.Shared,
+    };
+
     [Fact]
     public async Task DisposeAsync_NullPipeline_OK()
     {
@@ -70,6 +76,17 @@ public partial class ResiliencePipelineTests
         }, null!, null!);
 
         new CompositeComponentDebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
+    }
+
+    [Theory]
+    [MemberData(nameof(ResilienceContextPools))]
+    public void Pool_NotNull(ResilienceContextPool? pool)
+    {
+        var component = Substitute.For<PipelineComponent>();
+        var disposeBehavior = DisposeBehavior.Ignore;
+
+        var pipeline = new ResiliencePipeline(component, disposeBehavior, pool);
+        pipeline.Pool.Should().NotBeNull();
     }
 
     public class ExecuteParameters<T> : ExecuteParameters
