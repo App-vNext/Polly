@@ -366,43 +366,41 @@ The timeout resilience strategy assumes delegates you execute support [co-operat
 ```cs
 // Add timeout using the default options.
 // See https://www.pollydocs.org/strategies/timeout#defaults for defaults.
-new ResiliencePipelineBuilder()
-    .AddTimeout(new TimeoutStrategyOptions());
+new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions());
 
 // To add a timeout with a custom TimeSpan duration
-new ResiliencePipelineBuilder()
-    .AddTimeout(TimeSpan.FromSeconds(3));
+new ResiliencePipelineBuilder().AddTimeout(TimeSpan.FromSeconds(3));
 
 // To add a timeout using a custom timeout generator function
-new ResiliencePipelineBuilder()
-    .AddTimeout(new TimeoutStrategyOptions
+new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions
+{
+    TimeoutGenerator = static args =>
     {
-        TimeoutGenerator = args =>
-        {
-            // Note: the timeout generator supports asynchronous operations
-            return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(123));
-        }
-    });
+        // Note: the timeout generator supports asynchronous operations
+        return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(123));
+    }
+});
 
 // To add a timeout and listen for timeout events
-new ResiliencePipelineBuilder()
-    .AddTimeout(new TimeoutStrategyOptions
+new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions
+{
+    TimeoutGenerator = static args =>
     {
-        TimeoutGenerator = args =>
-        {
-            // Note: the timeout generator supports asynchronous operations
-            return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(123));
-        },
-        OnTimeout = args =>
-        {
-            Console.WriteLine($"{args.Context.OperationKey}: Execution timed out after {args.Timeout.TotalSeconds} seconds.");
-            return default;
-        }
-    });
+        // Note: the timeout generator supports asynchronous operations
+        return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(123));
+    },
+    OnTimeout = static args =>
+    {
+        Console.WriteLine($"{args.Context.OperationKey}: Execution timed out after {args.Timeout.TotalSeconds} seconds.");
+        return default;
+    }
+});
 ```
 <!-- endSnippet -->
 
-Timeout strategies throw `TimeoutRejectedException` when a timeout occurs. For more details, visit the [timeout strategy](https://www.pollydocs.org/strategies/timeout) documentation.
+Timeout strategies throw `TimeoutRejectedException` when a timeout occurs.
+
+For more details, visit the [timeout strategy](https://www.pollydocs.org/strategies/timeout) documentation.
 
 ### Rate Limiter
 
@@ -410,24 +408,23 @@ Timeout strategies throw `TimeoutRejectedException` when a timeout occurs. For m
 ```cs
 // Add rate limiter with default options.
 // See https://www.pollydocs.org/strategies/rate-limiter#defaults for defaults.
-new ResiliencePipelineBuilder()
-    .AddRateLimiter(new RateLimiterStrategyOptions());
+new ResiliencePipelineBuilder().AddRateLimiter(new RateLimiterStrategyOptions());
 
 // Create a rate limiter to allow a maximum of 100 concurrent executions and a queue of 50.
-new ResiliencePipelineBuilder()
-    .AddConcurrencyLimiter(100, 50);
+new ResiliencePipelineBuilder().AddConcurrencyLimiter(100, 50);
 
 // Create a rate limiter that allows 100 executions per minute.
-new ResiliencePipelineBuilder()
-    .AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
-    {
-        PermitLimit = 100,
-        Window = TimeSpan.FromMinutes(1)
-    }));
+new ResiliencePipelineBuilder().AddRateLimiter(new SlidingWindowRateLimiter(new()
+{
+    PermitLimit = 100,
+    Window = TimeSpan.FromMinutes(1)
+}));
 ```
 <!-- endSnippet -->
 
-Rate limiter strategy throws `RateLimiterRejectedException` if execution is rejected. For more details, visit the [rate limiter strategy](https://www.pollydocs.org/strategies/rate-limiter) documentation.
+Rate limiter strategy throws `RateLimiterRejectedException` if execution is rejected.
+
+For more details, visit the [rate limiter strategy](https://www.pollydocs.org/strategies/rate-limiter) documentation.
 
 ## Next steps
 
