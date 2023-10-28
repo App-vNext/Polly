@@ -100,41 +100,41 @@
 </div>
 <h2 id="usage">Usage</h2>
 <!-- snippet: hedging -->
-<pre><code class="lang-cs">// Add hedging with default options.
+<pre><code class="lang-cs">// Hedging with default options.
 // See https://www.pollydocs.org/strategies/hedging#defaults for defaults.
-new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
-    .AddHedging(new HedgingStrategyOptions&lt;HttpResponseMessage&gt;());
+var optionsDefaults = new HedgingStrategyOptions&lt;HttpResponseMessage&gt;();
 
-// Add a customized hedging strategy that retries up to 3 times if the execution
+// A customized hedging strategy that retries up to 3 times if the execution
 // takes longer than 1 second or if it fails due to an exception or returns an HTTP 500 Internal Server Error.
-new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
-    .AddHedging(new HedgingStrategyOptions&lt;HttpResponseMessage&gt;
+var optionsComplex = new HedgingStrategyOptions&lt;HttpResponseMessage&gt;
+{
+    ShouldHandle = new PredicateBuilder&lt;HttpResponseMessage&gt;()
+        .Handle&lt;SomeExceptionType&gt;()
+        .HandleResult(response =&gt; response.StatusCode == HttpStatusCode.InternalServerError),
+    MaxHedgedAttempts = 3,
+    Delay = TimeSpan.FromSeconds(1),
+    ActionGenerator = static args =&gt;
     {
-        ShouldHandle = new PredicateBuilder&lt;HttpResponseMessage&gt;()
-            .Handle&lt;SomeExceptionType&gt;()
-            .HandleResult(response =&gt; response.StatusCode == HttpStatusCode.InternalServerError),
-        MaxHedgedAttempts = 3,
-        Delay = TimeSpan.FromSeconds(1),
-        ActionGenerator = args =&gt;
-        {
-            Console.WriteLine(&quot;Preparing to execute hedged action.&quot;);
+        Console.WriteLine(&quot;Preparing to execute hedged action.&quot;);
 
-            // Return a delegate function to invoke the original action with the action context.
-            // Optionally, you can also create a completely new action to be executed.
-            return () =&gt; args.Callback(args.ActionContext);
-        }
-    });
+        // Return a delegate function to invoke the original action with the action context.
+        // Optionally, you can also create a completely new action to be executed.
+        return () =&gt; args.Callback(args.ActionContext);
+    }
+};
 
 // Subscribe to hedging events.
-new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
-    .AddHedging(new HedgingStrategyOptions&lt;HttpResponseMessage&gt;
+var optionsOnHedging = new HedgingStrategyOptions&lt;HttpResponseMessage&gt;
+{
+    OnHedging = static args =&gt;
     {
-        OnHedging = args =&gt;
-        {
-            Console.WriteLine($&quot;OnHedging: Attempt number {args.AttemptNumber}&quot;);
-            return default;
-        }
-    });
+        Console.WriteLine($&quot;OnHedging: Attempt number {args.AttemptNumber}&quot;);
+        return default;
+    }
+};
+
+// Add a hedging strategy with a HedgingStrategyOptions&lt;TResult&gt; instance to the pipeline
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddHedging(optionsDefaults);
 </code></pre>
 <!-- endSnippet -->
 <h2 id="defaults">Defaults</h2>

@@ -99,32 +99,32 @@
 <hr>
 <h2 id="usage">Usage</h2>
 <!-- snippet: Retry -->
-<pre><code class="lang-cs">// Add retry using the default options.
+<pre><code class="lang-cs">// Retry using the default options.
 // See https://www.pollydocs.org/strategies/retry#defaults for defaults.
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions());
+var optionsDefaults = new RetryStrategyOptions();
 
 // For instant retries with no delay
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+var optionsNoDelay = new RetryStrategyOptions
 {
     Delay = TimeSpan.Zero
-});
+};
 
 // For advanced control over the retry behavior, including the number of attempts,
 // delay between retries, and the types of exceptions to handle.
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+var optionsComplex = new RetryStrategyOptions
 {
     ShouldHandle = new PredicateBuilder().Handle&lt;SomeExceptionType&gt;(),
     BackoffType = DelayBackoffType.Exponential,
     UseJitter = true,  // Adds a random factor to the delay
     MaxRetryAttempts = 4,
     Delay = TimeSpan.FromSeconds(3),
-});
+};
 
 // To use a custom function to generate the delay for retries
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+var optionsDelayGenerator = new RetryStrategyOptions
 {
     MaxRetryAttempts = 2,
-    DelayGenerator = args =&gt;
+    DelayGenerator = static args =&gt;
     {
         var delay = args.AttemptNumber switch
         {
@@ -137,12 +137,12 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
         // but the API also supports asynchronous implementations.
         return new ValueTask&lt;TimeSpan?&gt;(delay);
     }
-});
+};
 
 // To extract the delay from the result object
-new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(new RetryStrategyOptions&lt;HttpResponseMessage&gt;
+var optionsExtractDelay = new RetryStrategyOptions&lt;HttpResponseMessage&gt;
 {
-    DelayGenerator = args =&gt;
+    DelayGenerator = static args =&gt;
     {
         if (args.Outcome.Result is HttpResponseMessage responseMessage &amp;&amp;
             TryGetDelay(responseMessage, out TimeSpan delay))
@@ -153,26 +153,30 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(new RetryStr
         // Returning null means the retry strategy will use its internal delay for this attempt.
         return new ValueTask&lt;TimeSpan?&gt;((TimeSpan?)null);
     }
-});
+};
 
 // To get notifications when a retry is performed
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+var optionsOnRetry = new RetryStrategyOptions
 {
     MaxRetryAttempts = 2,
-    OnRetry = args =&gt;
+    OnRetry = static args =&gt;
     {
         Console.WriteLine(&quot;OnRetry, Attempt: {0}&quot;, args.AttemptNumber);
 
         // Event handlers can be asynchronous; here, we return an empty ValueTask.
         return default;
     }
-});
+};
 
 // To keep retrying indefinitely or until success use int.MaxValue.
-new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
+var optionsIndefiniteRetry = new RetryStrategyOptions
 {
     MaxRetryAttempts = int.MaxValue,
-});
+};
+
+// Add a retry strategy with a RetryStrategyOptions{&lt;TResult&gt;} instance to the pipeline
+new ResiliencePipelineBuilder().AddRetry(optionsDefaults);
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(optionsExtractDelay);
 </code></pre>
 <!-- endSnippet -->
 <h2 id="defaults">Defaults</h2>

@@ -94,48 +94,48 @@
 <hr>
 <h2 id="usage">Usage</h2>
 <!-- snippet: fallback -->
-<pre><code class="lang-cs">// Add a fallback/substitute value if an operation fails.
-new ResiliencePipelineBuilder&lt;UserAvatar&gt;()
-    .AddFallback(new FallbackStrategyOptions&lt;UserAvatar&gt;
-    {
-        ShouldHandle = new PredicateBuilder&lt;UserAvatar&gt;()
-            .Handle&lt;SomeExceptionType&gt;()
-            .HandleResult(r =&gt; r is null),
-        FallbackAction = args =&gt; Outcome.FromResultAsValueTask(UserAvatar.Blank)
-    });
+<pre><code class="lang-cs">// A fallback/substitute value if an operation fails.
+var optionsSubstitute = new FallbackStrategyOptions&lt;UserAvatar&gt;
+{
+    ShouldHandle = new PredicateBuilder&lt;UserAvatar&gt;()
+        .Handle&lt;SomeExceptionType&gt;()
+        .HandleResult(r =&gt; r is null),
+    FallbackAction = static args =&gt; Outcome.FromResultAsValueTask(UserAvatar.Blank)
+};
 
 // Use a dynamically generated value if an operation fails.
-new ResiliencePipelineBuilder&lt;UserAvatar&gt;()
-    .AddFallback(new FallbackStrategyOptions&lt;UserAvatar&gt;
+var optionsFallbackAction = new FallbackStrategyOptions&lt;UserAvatar&gt;
+{
+    ShouldHandle = new PredicateBuilder&lt;UserAvatar&gt;()
+        .Handle&lt;SomeExceptionType&gt;()
+        .HandleResult(r =&gt; r is null),
+    FallbackAction = static args =&gt;
     {
-        ShouldHandle = new PredicateBuilder&lt;UserAvatar&gt;()
-            .Handle&lt;SomeExceptionType&gt;()
-            .HandleResult(r =&gt; r is null),
-        FallbackAction = args =&gt;
-        {
-            var avatar = UserAvatar.GetRandomAvatar();
-            return Outcome.FromResultAsValueTask(avatar);
-        }
-    });
+        var avatar = UserAvatar.GetRandomAvatar();
+        return Outcome.FromResultAsValueTask(avatar);
+    }
+};
 
 // Use a default or dynamically generated value, and execute an additional action if the fallback is triggered.
-new ResiliencePipelineBuilder&lt;UserAvatar&gt;()
-    .AddFallback(new FallbackStrategyOptions&lt;UserAvatar&gt;
+var optionsOnFallback = new FallbackStrategyOptions&lt;UserAvatar&gt;
+{
+    ShouldHandle = new PredicateBuilder&lt;UserAvatar&gt;()
+        .Handle&lt;SomeExceptionType&gt;()
+        .HandleResult(r =&gt; r is null),
+    FallbackAction = static args =&gt;
     {
-        ShouldHandle = new PredicateBuilder&lt;UserAvatar&gt;()
-            .Handle&lt;SomeExceptionType&gt;()
-            .HandleResult(r =&gt; r is null),
-        FallbackAction = args =&gt;
-        {
-            var avatar = UserAvatar.GetRandomAvatar();
-            return Outcome.FromResultAsValueTask(UserAvatar.Blank);
-        },
-        OnFallback = args =&gt;
-        {
-            // Add extra logic to be executed when the fallback is triggered, such as logging.
-            return default; // Returns an empty ValueTask
-        }
-    });
+        var avatar = UserAvatar.GetRandomAvatar();
+        return Outcome.FromResultAsValueTask(UserAvatar.Blank);
+    },
+    OnFallback = static args =&gt;
+    {
+        // Add extra logic to be executed when the fallback is triggered, such as logging.
+        return default; // Returns an empty ValueTask
+    }
+};
+
+// Add a fallback strategy with a FallbackStrategyOptions&lt;TResult&gt; instance to the pipeline
+new ResiliencePipelineBuilder&lt;UserAvatar&gt;().AddFallback(optionsOnFallback);
 </code></pre>
 <!-- endSnippet -->
 <h2 id="defaults">Defaults</h2>

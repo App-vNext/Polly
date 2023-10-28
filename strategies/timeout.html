@@ -99,41 +99,40 @@
 <hr>
 <h2 id="usage">Usage</h2>
 <!-- snippet: timeout -->
-<pre><code class="lang-cs">// Add timeout using the default options.
-// See https://www.pollydocs.org/strategies/timeout#defaults for defaults.
-new ResiliencePipelineBuilder()
-    .AddTimeout(new TimeoutStrategyOptions());
+<pre><code class="lang-cs">// To add a timeout with a custom TimeSpan duration
+new ResiliencePipelineBuilder().AddTimeout(TimeSpan.FromSeconds(3));
 
-// To add a timeout with a custom TimeSpan duration
-new ResiliencePipelineBuilder()
-    .AddTimeout(TimeSpan.FromSeconds(3));
+// Timeout using the default options.
+// See https://www.pollydocs.org/strategies/timeout#defaults for defaults.
+var optionsDefaults = new TimeoutStrategyOptions();
 
 // To add a timeout using a custom timeout generator function
-new ResiliencePipelineBuilder()
-    .AddTimeout(new TimeoutStrategyOptions
+var optionsTimeoutGenerator = new TimeoutStrategyOptions
+{
+    TimeoutGenerator = static args =&gt;
     {
-        TimeoutGenerator = args =&gt;
-        {
-            // Note: the timeout generator supports asynchronous operations
-            return new ValueTask&lt;TimeSpan&gt;(TimeSpan.FromSeconds(123));
-        }
-    });
+        // Note: the timeout generator supports asynchronous operations
+        return new ValueTask&lt;TimeSpan&gt;(TimeSpan.FromSeconds(123));
+    }
+};
 
 // To add a timeout and listen for timeout events
-new ResiliencePipelineBuilder()
-    .AddTimeout(new TimeoutStrategyOptions
+var optionsOnTimeout = new TimeoutStrategyOptions
+{
+    TimeoutGenerator = static args =&gt;
     {
-        TimeoutGenerator = args =&gt;
-        {
-            // Note: the timeout generator supports asynchronous operations
-            return new ValueTask&lt;TimeSpan&gt;(TimeSpan.FromSeconds(123));
-        },
-        OnTimeout = args =&gt;
-        {
-            Console.WriteLine($&quot;{args.Context.OperationKey}: Execution timed out after {args.Timeout.TotalSeconds} seconds.&quot;);
-            return default;
-        }
-    });
+        // Note: the timeout generator supports asynchronous operations
+        return new ValueTask&lt;TimeSpan&gt;(TimeSpan.FromSeconds(123));
+    },
+    OnTimeout = static args =&gt;
+    {
+        Console.WriteLine($&quot;{args.Context.OperationKey}: Execution timed out after {args.Timeout.TotalSeconds} seconds.&quot;);
+        return default;
+    }
+};
+
+// Add a timeout strategy with a TimeoutStrategyOptions instance to the pipeline
+new ResiliencePipelineBuilder().AddTimeout(optionsDefaults);
 </code></pre>
 <!-- endSnippet -->
 <p>Example execution:</p>
