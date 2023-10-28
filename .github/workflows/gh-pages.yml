@@ -14,6 +14,10 @@ jobs:
   publish-docs:
     runs-on: ubuntu-latest
 
+    concurrency:
+      group: ${{ github.workflow }}
+      cancel-in-progress: false
+
     permissions:
       contents: write
       pages: write
