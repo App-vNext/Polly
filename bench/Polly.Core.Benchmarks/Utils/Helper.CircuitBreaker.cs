@@ -66,7 +66,7 @@ internal static partial class Helper
 
     private class OutcomeHandlingStrategy : ResilienceStrategy
     {
-        protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+        protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)
