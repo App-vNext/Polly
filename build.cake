@@ -75,9 +75,9 @@ Task("__Clean")
 
     CleanDirectories(cleanDirectories);
 
-    foreach(var path in cleanDirectories) { EnsureDirectoryExists(path); }
+    foreach (var path in cleanDirectories) { EnsureDirectoryExists(path); }
 
-    foreach(var path in solutionPaths)
+    foreach (var path in solutionPaths)
     {
         Information("Cleaning {0}", path);
 
@@ -93,7 +93,7 @@ Task("__Clean")
 Task("__RestoreNuGetPackages")
     .Does(() =>
 {
-    foreach(var solution in solutions)
+    foreach (var solution in solutions)
     {
         Information("Restoring NuGet Packages for {0}", solution);
         DotNetRestore(solution.ToString());
@@ -103,7 +103,7 @@ Task("__RestoreNuGetPackages")
 Task("__BuildSolutions")
     .Does(() =>
 {
-    foreach(var solution in solutions)
+    foreach (var solution in solutions)
     {
         Information("Building {0}", solution);
 
@@ -125,6 +125,23 @@ Task("__BuildSolutions")
     }
 });
 
+Task("__ValidateAot")
+    .Does(() =>
+{
+    var aotProject = MakeAbsolute(File("./test/Polly.AotTest/Polly.AotTest.csproj"));
+    var settings = new DotNetPublishSettings
+    {
+        Configuration = configuration,
+        Verbosity = DotNetVerbosity.Minimal,
+        MSBuildSettings = new DotNetMSBuildSettings
+        {
+            TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error,
+        },
+    };
+
+    DotNetPublish(aotProject.ToString(), settings);
+});
+
 Task("__RunTests")
     .Does(() =>
 {
@@ -137,7 +154,7 @@ Task("__RunTests")
 
     var projects = GetFiles("./test/**/*.csproj");
 
-    foreach(var proj in projects)
+    foreach (var proj in projects)
     {
         DotNetTest(proj.FullPath, new DotNetTestSettings
         {
@@ -252,6 +269,7 @@ Task("Build")
     .IsDependentOn("__RestoreNuGetPackages")
     .IsDependentOn("__ValidateDocs")
     .IsDependentOn("__BuildSolutions")
+    .IsDependentOn("__ValidateAot")
     .IsDependentOn("__RunTests")
     .IsDependentOn("__RunMutationTests")
     .IsDependentOn("__CreateNuGetPackages");
