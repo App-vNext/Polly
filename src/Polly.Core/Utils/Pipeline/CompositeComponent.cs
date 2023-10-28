@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Polly.Telemetry;
+﻿using Polly.Telemetry;
 
 namespace Polly.Utils.Pipeline;
 
@@ -136,40 +135,6 @@ internal sealed class CompositeComponent : PipelineComponent
             ResilienceContext context,
             TState state)
         {
-#if NET6_0_OR_GREATER
-            return RuntimeFeature.IsDynamicCodeSupported ? ExecuteCoreImpl(callback, context, state) : ExecuteCoreAot(callback, context, state);
-#else
-            return ExecuteCoreImpl(callback, context, state);
-#endif
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ValueTask<Outcome<TResult>> ExecuteCoreImpl<TResult, TState>(
-            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-            ResilienceContext context,
-            TState state)
-        {
-            return _component.ExecuteCore(
-                static (context, state) =>
-                {
-                    if (context.CancellationToken.IsCancellationRequested)
-                    {
-                        return Outcome.FromExceptionAsValueTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
-                    }
-
-                    return state.Next!.ExecuteCore(state.callback, context, state.state);
-                },
-                context,
-                (Next, callback, state));
-        }
-
-#if NET6_0_OR_GREATER
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ValueTask<Outcome<TResult>> ExecuteCoreAot<TResult, TState>(
-            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-            ResilienceContext context,
-            TState state)
-        {
             // Custom state object is used to cast the callback and state to prevent infinite
             // generic type recursion warning IL3054 when referenced in a native AoT application.
             // See https://github.com/App-vNext/Polly/issues/1732 for further context.
@@ -202,6 +167,5 @@ internal sealed class CompositeComponent : PipelineComponent
             public object Callback;
             public object State;
         }
-#endif
     }
 }
