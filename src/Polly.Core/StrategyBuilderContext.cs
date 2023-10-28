@@ -21,5 +21,5 @@ public sealed class StrategyBuilderContext
     /// <summary>
     /// Gets the <see cref="TimeProvider"/> used by this strategy.
     /// </summary>
-    internal TimeProvider TimeProvider { get; }
+    public TimeProvider TimeProvider { get; }
 }

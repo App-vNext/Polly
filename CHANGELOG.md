@@ -2,6 +2,10 @@
 
 <!-- markdownlint-disable MD034 -->
 
+## 8.2.0
+
+* Add support for .NET 8 [@martincostello](https://github.com/martincostello) and [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1144
+
 ## 8.1.0
 
 * Only show stable versions in README by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1649

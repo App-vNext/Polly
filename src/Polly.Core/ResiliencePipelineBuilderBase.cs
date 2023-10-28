@@ -68,16 +68,13 @@ public abstract class ResiliencePipelineBuilderBase
     public ResilienceContextPool? ContextPool { get; set; }
 
     /// <summary>
-    /// Gets or sets a <see cref="System.TimeProvider"/> that is used by strategies that work with time.
+    /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
     /// </summary>
-    /// <remarks>
-    /// This property is internal until we switch to official System.TimeProvider.
-    /// </remarks>
     /// <value>
     /// The default value is <see cref="TimeProvider.System"/>.
     /// </value>
     [Required]
-    internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
+    public TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 
     /// <summary>
     /// Gets or sets the <see cref="Polly.Telemetry.TelemetryListener"/> that is used by Polly to report resilience events.
