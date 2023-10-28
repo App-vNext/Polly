@@ -21,11 +21,12 @@ internal static class RateLimiter
 
         // Create a rate limiter that allows 100 executions per minute.
         new ResiliencePipelineBuilder()
-            .AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
-            {
-                PermitLimit = 100,
-                Window = TimeSpan.FromMinutes(1)
-            }));
+            .AddRateLimiter(new SlidingWindowRateLimiter(
+                new SlidingWindowRateLimiterOptions
+                {
+                    PermitLimit = 100,
+                    Window = TimeSpan.FromMinutes(1)
+                }));
 
         #endregion
 

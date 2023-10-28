@@ -20,38 +20,38 @@
 
 <!-- snippet: circuit-breaker -->
 ```cs
-// Add circuit breaker with default options.
+// Circuit breaker with default options.
 // See https://www.pollydocs.org/strategies/circuit-breaker#defaults for defaults.
-new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions());
+var optionsDefaults = new CircuitBreakerStrategyOptions();
 
-// Add circuit breaker with customized options:
-//
+// Circuit breaker with customized options:
 // The circuit will break if more than 50% of actions result in handled exceptions,
 // within any 10-second sampling duration, and at least 8 actions are processed.
-new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
+var optionsComplex = new CircuitBreakerStrategyOptions
 {
     FailureRatio = 0.5,
     SamplingDuration = TimeSpan.FromSeconds(10),
     MinimumThroughput = 8,
     BreakDuration = TimeSpan.FromSeconds(30),
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
-});
+};
 
 // Handle specific failed results for HttpResponseMessage:
-new ResiliencePipelineBuilder<HttpResponseMessage>()
-    .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage>
-    {
-        ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-            .Handle<SomeExceptionType>()
-            .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError)
-    });
+var optionsShouldHandle = new CircuitBreakerStrategyOptions<HttpResponseMessage>
+{
+    ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+        .Handle<SomeExceptionType>()
+        .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError)
+};
 
 // Monitor the circuit state, useful for health reporting:
 var stateProvider = new CircuitBreakerStateProvider();
+var optionsStateProvider = new CircuitBreakerStrategyOptions<HttpResponseMessage>
+{
+    StateProvider = stateProvider
+};
 
-new ResiliencePipelineBuilder<HttpResponseMessage>()
-    .AddCircuitBreaker(new() { StateProvider = stateProvider })
-    .Build();
+var circuitState = stateProvider.CircuitState;
 
 /*
 CircuitState.Closed - Normal operation; actions are executed.
@@ -62,16 +62,20 @@ CircuitState.Isolated - Circuit is manually held open; actions are blocked.
 
 // Manually control the Circuit Breaker state:
 var manualControl = new CircuitBreakerManualControl();
-
-new ResiliencePipelineBuilder()
-    .AddCircuitBreaker(new() { ManualControl = manualControl })
-    .Build();
+var optionsManualControl = new CircuitBreakerStrategyOptions
+{
+    ManualControl = manualControl
+};
 
 // Manually isolate a circuit, e.g., to isolate a downstream service.
 await manualControl.IsolateAsync();
 
 // Manually close the circuit to allow actions to be executed again.
 await manualControl.CloseAsync();
+
+// Add a circuit breaker strategy with a CircuitBreakerStrategyOptions{<TResult>} instance to the pipeline
+new ResiliencePipelineBuilder().AddCircuitBreaker(optionsDefaults);
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(optionsStateProvider);
 ```
 <!-- endSnippet -->
 
