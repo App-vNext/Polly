@@ -511,6 +511,5 @@ public class CircuitStateControllerTests
         _circuitBehavior,
         _timeProvider,
         TestUtilities.CreateResilienceTelemetry(_telemetryListener),
-        options.BreakDurationGenerator
-        );
+        options.BreakDurationGenerator);
 }

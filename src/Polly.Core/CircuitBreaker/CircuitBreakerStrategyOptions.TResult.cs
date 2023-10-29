@@ -70,10 +70,10 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     public TimeSpan BreakDuration { get; set; } = CircuitBreakerConstants.DefaultBreakDuration;
 
     /// <summary>
-    /// Gets or sets an optional delegate to use to dynamically generate the break duration based on the health failure count.
+    /// Gets or sets an optional delegate to use to dynamically generate the break duration.
     /// </summary>
     /// <value>
-    /// A delegate that takes an integer representing the health failure count and returns a <see cref="TimeSpan"/> indicating the break duration.
+    /// The default value is <see langword="null"/>.
     /// </value>
     public Func<BreakDurationGeneratorArguments, TimeSpan>? BreakDurationGenerator { get; set; }
 

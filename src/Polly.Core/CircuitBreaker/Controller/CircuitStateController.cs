@@ -317,7 +317,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         scheduledTask = null;
         var utcNow = _timeProvider.GetUtcNow();
 
-        if (_breakDurationGenerator is not null && _behavior.FailureCount > 0)
+        if (_breakDurationGenerator is not null)
         {
             breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount));
         }
