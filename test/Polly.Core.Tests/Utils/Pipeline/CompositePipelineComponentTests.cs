@@ -140,6 +140,62 @@ public class CompositePipelineComponentTests
         await b.Received(1).DisposeAsync();
     }
 
+    [Fact]
+    public async Task ExecuteComponent_ReturnsCorrectResult()
+    {
+        var component = new CallbackComponent();
+        var next = new CallbackComponent();
+        var context = ResilienceContextPool.Shared.Get();
+        var state = 1;
+
+        var composite = new CompositeComponent.DelegatingComponent(component)
+        {
+            Next = next,
+        };
+
+        var actual = await composite.ExecuteComponent(
+            async static (_, state) => await Outcome.FromResultAsValueTask(state + 1),
+            context,
+            state);
+
+        actual.Should().NotBeNull();
+        actual.Result.Should().Be(2);
+    }
+
+#if NET6_0_OR_GREATER
+    [Fact]
+    public async Task ExecuteComponentAot_ReturnsCorrectResult()
+    {
+        var component = new CallbackComponent();
+        var next = new CallbackComponent();
+        var context = ResilienceContextPool.Shared.Get();
+        var state = 1;
+
+        var composite = new CompositeComponent.DelegatingComponent(component)
+        {
+            Next = next,
+        };
+
+        var actual = await composite.ExecuteComponentAot(
+            async static (_, state) => await Outcome.FromResultAsValueTask(state + 1),
+            context,
+            state);
+
+        actual.Should().NotBeNull();
+        actual.Result.Should().Be(2);
+    }
+#endif
+
+    private sealed class CallbackComponent : PipelineComponent
+    {
+        public override ValueTask DisposeAsync() => default;
+
+        internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state) => callback(context, state);
+    }
+
     private CompositeComponent CreateSut(PipelineComponent[] components, TimeProvider? timeProvider = null)
     {
         return (CompositeComponent)PipelineComponentFactory.CreateComposite(components, _telemetry, timeProvider ?? Substitute.For<TimeProvider>());

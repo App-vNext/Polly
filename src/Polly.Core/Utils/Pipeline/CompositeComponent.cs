@@ -1,4 +1,6 @@
-﻿using Polly.Telemetry;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using Polly.Telemetry;
 
 namespace Polly.Utils.Pipeline;
 
@@ -120,7 +122,7 @@ internal sealed class CompositeComponent : PipelineComponent
     /// <summary>
     /// A component that delegates the execution to the next component in the chain.
     /// </summary>
-    private sealed class DelegatingComponent : PipelineComponent
+    internal sealed class DelegatingComponent : PipelineComponent
     {
         private readonly PipelineComponent _component;
 
@@ -130,7 +132,49 @@ internal sealed class CompositeComponent : PipelineComponent
 
         public override ValueTask DisposeAsync() => default;
 
+        [ExcludeFromCodeCoverage]
         internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state)
+        {
+#if NET6_0_OR_GREATER
+            return RuntimeFeature.IsDynamicCodeSupported ? ExecuteComponent(callback, context, state) : ExecuteComponentAot(callback, context, state);
+#else
+            return ExecuteComponent(callback, context, state);
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ValueTask<Outcome<TResult>> ExecuteNext<TResult, TState>(
+            PipelineComponent next,
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state)
+        {
+            if (context.CancellationToken.IsCancellationRequested)
+            {
+                return Outcome.FromExceptionAsValueTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
+            }
+
+            return next.ExecuteCore(callback, context, state);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal ValueTask<Outcome<TResult>> ExecuteComponent<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state)
+        {
+            return _component.ExecuteCore(
+                static (context, state) => ExecuteNext(state.Next!, state.callback, context, state.state),
+                context,
+                (Next, callback, state));
+        }
+
+#if NET6_0_OR_GREATER
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal ValueTask<Outcome<TResult>> ExecuteComponentAot<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state)
@@ -143,12 +187,7 @@ internal sealed class CompositeComponent : PipelineComponent
                 {
                     var callback = (Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>>)wrapper.Callback;
                     var state = (TState)wrapper.State;
-                    if (context.CancellationToken.IsCancellationRequested)
-                    {
-                        return Outcome.FromExceptionAsValueTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
-                    }
-
-                    return wrapper.Next.ExecuteCore(callback, context, state);
+                    return ExecuteNext(wrapper.Next, callback, context, state);
                 },
                 context,
                 new StateWrapper(Next!, callback, state!));
@@ -167,5 +206,6 @@ internal sealed class CompositeComponent : PipelineComponent
             public object Callback;
             public object State;
         }
+#endif
     }
 }
