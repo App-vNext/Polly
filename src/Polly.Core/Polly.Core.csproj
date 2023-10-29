@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ProjectType>Library</ProjectType>
-    <MutationScore>99</MutationScore>
+    <MutationScore>100</MutationScore>
     <LegacySupport>true</LegacySupport>
     <InjectSharedSources>true</InjectSharedSources>
   </PropertyGroup>
