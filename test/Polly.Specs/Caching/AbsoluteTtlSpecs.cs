@@ -38,7 +38,7 @@ public class AbsoluteTtlSpecs : IDisposable
     [Fact]
     public void Should_return_timespan_reflecting_time_until_expiry()
     {
-        DateTime today = DateTime.Today;
+        DateTime today = DateTime.UtcNow.Date;
         DateTime tomorrow = today.AddDays(1);
 
         AbsoluteTtl ttlStrategy = new AbsoluteTtl(tomorrow);
