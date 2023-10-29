@@ -28,7 +28,7 @@ internal static class CircuitBreaker
             ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
         });
 
-        // Adds a circuit breaker with dynamic break duration:
+        // Adds a circuit breaker with a dynamic break duration:
         //
         // Same circuit breaking conditions as above, but with a dynamic break duration based on the failure count.
         // The duration is calculated as: minimum of (20 + 2^failureCount) seconds and capped at 400 seconds.
