@@ -494,11 +494,11 @@ sequenceDiagram
 
     H-->>H: Deep clones <br/>Primary Context
     H->>+AG: Invokes <br/>with both Contexts
-    AG-->>AG: Modifies Primary Context
+    AG-->>AG: Executes callback <br/>+ Modifies Primary <br/> or Action Context
     AG->>-H: Returns factory
 
     H->>+OH: Invokes <br/>with both Contexts
-    OH-->>OH: Executes callback <br/>+ Modifies Action Context
+    OH-->>OH: Executes callback <br/>+ Modifies Primary <br/> or Action Context
     OH->>-H: Finishes
 
     H-->>H: Invokes factory
