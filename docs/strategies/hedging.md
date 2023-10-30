@@ -454,6 +454,7 @@ Here's the flow:
 - After the strategy has an accepted result from a hedged action, the resilience context from the action is merged back into the primary context.
 - All ongoing hedged actions are cancelled and discarded. The hedging strategy awaits the propagation of cancellation.
 
+
 ### Merging action context into the primary context
 
 After merging, the primary context contains:
@@ -470,6 +471,45 @@ Some insights about the hedging callback behavior in relation to hedging context
 
 > [!NOTE]
 > The hedging strategy ensures that both `ActionGenerator` and `OnHedging` are never executed concurrently. Any modifications to the contexts are thread-safe in these callbacks.
+
+### Sequence diagram about contexts and callbacks
+
+For the sake of conciseness the `Caller` is not depicted on the diagram.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant P as Pipeline
+    participant H as Hedging
+    participant AG as ActionGenerator
+    participant UC as UserCallback
+    participant HUC as HedgedUserCallback
+    participant OH as OnHedging
+
+    P->>H: Calls ExecuteCore <br/>with Primary Context
+    H-->>H: Deep clones <br/>Primary Context
+
+    H->>+UC: Invokes <br/>with Primary Context
+    UC-->>UC: Processes <br/>+ Modifies Context
+    UC->>-H: Fails
+
+    H-->>H: Deep clones <br/>Primary Context
+    H->>+AG: Invokes <br/>with both Contexts
+    AG-->>AG: Modifies Primary Context
+    AG->>-H: Returns factory
+
+    H->>+OH: Invokes <br/>with both Contexts
+    OH-->>OH: Executes callback <br/>+ Modifies Action Context
+    OH->>-H: Finishes
+
+    H-->>H: Invokes factory
+    H->>+HUC: Invokes <br/>with Action Context
+    HUC-->>HUC: Processes <br/>+ Modifies Context
+    HUC->>-H: Fails
+
+    H-->>H: Merges Action Context <br/>onto Primary Context
+    H->>P: Propagates failure <br/>with Primary Context
+```
 
 ## Action generator
 
