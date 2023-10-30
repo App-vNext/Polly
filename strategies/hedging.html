@@ -539,6 +539,41 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddHedging(optionsDef
 <h5>Note</h5>
 <p>The hedging strategy ensures that both <code>ActionGenerator</code> and <code>OnHedging</code> are never executed concurrently. Any modifications to the contexts are thread-safe in these callbacks.</p>
 </div>
+<h3 id="sequence-diagram-about-contexts-and-callbacks">Sequence diagram about contexts and callbacks</h3>
+<p>For the sake of conciseness the <code>Caller</code> is not depicted on the diagram.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
+    participant P as Pipeline
+    participant H as Hedging
+    participant AG as ActionGenerator
+    participant OH as OnHedging
+    participant UC as UserCallback
+    participant HUC as HedgedUserCallback
+
+    P-&gt;&gt;H: Calls ExecuteCore &lt;br/&gt;with Primary Context
+    H--&gt;&gt;H: Deep clones &lt;br/&gt;Primary Context
+
+    H-&gt;&gt;+UC: Invokes &lt;br/&gt;with Action Context
+    UC--&gt;&gt;UC: Processes &lt;br/&gt;+ Modifies Context
+    UC-&gt;&gt;-H: Fails
+
+    H--&gt;&gt;H: Deep clones &lt;br/&gt;Primary Context
+    H-&gt;&gt;+AG: Invokes &lt;br/&gt;with both Contexts
+    AG--&gt;&gt;AG: Executes callback &lt;br/&gt;+ Modifies Primary &lt;br/&gt; and / or Action Context
+    AG-&gt;&gt;-H: Returns factory
+
+    H-&gt;&gt;+OH: Invokes &lt;br/&gt;with both Contexts
+    OH--&gt;&gt;OH: Executes callback &lt;br/&gt;+ Modifies Primary &lt;br/&gt; and / or Action Context
+    OH-&gt;&gt;-H: Finishes
+
+    H--&gt;&gt;H: Invokes factory
+    H-&gt;&gt;+HUC: Invokes &lt;br/&gt;with Action Context
+    HUC--&gt;&gt;HUC: Processes &lt;br/&gt;+ Modifies Context
+    HUC-&gt;&gt;-H: Fails
+
+    H--&gt;&gt;H: Merges Action Context &lt;br/&gt;onto Primary Context
+    H-&gt;&gt;P: Propagates failure &lt;br/&gt;with Primary Context
+</code></pre>
 <h2 id="action-generator">Action generator</h2>
 <p>The hedging options include an <code>ActionGenerator</code> property, allowing you to customize the actions executed during hedging. By default, the <code>ActionGenerator</code> returns the original callback passed to the strategy. The original callback also includes any logic introduced by subsequent resilience strategies. For more advanced scenarios, the <code>ActionGenerator</code> can be used to return entirely new hedged actions, as demonstrated in the example below:</p>
 <!-- snippet: hedging-action-generator -->
