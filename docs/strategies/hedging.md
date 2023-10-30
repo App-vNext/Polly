@@ -440,6 +440,37 @@ sequenceDiagram
     P->>C: Propagates failure (R3)
 ```
 
+## Hedging and resilience context
+
+The hedging strategy supports the concurrent execution and cancellation of multiple hedged actions. To safeguard against concurrency issues when these actions access the same `ResilienceContext`, the hedging strategy ensures that each hedged action has its own unique `ResilienceContext`. The hedging strategy distinguishes between two types of contexts:
+
+- **Primary context**: The original resilience context that the hedging strategy receives.
+- **Action context**: A deep copy of the primary context with a distinct cancellation token for a single hedged action.
+
+Here's the flow:
+
+- The strategy gets the primary context and creates a snapshot for deep cloning.
+- For each hedged action execution, the hedging strategy makes a deep copy of the original context. The deep copy has its own cancellation token designated for that execution. Note that the first execution (primary) uses the original resilience context, albeit with a cloned set of resilience properties.
+- After the strategy has an accepted result from a hedged action, the resilience context from the action is merged back into the primary context.
+- All ongoing hedged actions are cancelled and discarded. The hedging strategy awaits the propagation of cancellation.
+
+### Merging action context into the primary context
+
+After merging, the primary context contains:
+
+- New properties created during the action context's execution.
+- Existing properties updated or soft-deleted (i.e. setting the value to `null`) during execution.
+
+### Hedging callbacks
+
+Some insights about the hedging callback behavior in relation to hedging contexts:
+
+- `ActionGenerator`: This callback provides arguments with `PrimaryContext` and `ActionContext` properties. Use `PrimaryContext` to get values that remain consistent throughout the hedging strategy execution. Use `ActionContext` to save values specific to a single hedged action execution.
+- `OnHedging`: This callback, like the previous one, provides arguments with `PrimaryContext` and `ActionContext` properties and is invoked after `ActionGenerator`. Any changes to both `PrimaryContext` and `ActionContext` are preserved and visible here.
+
+> [!NOTE]
+> The hedging strategy ensures that both `ActionGenerator` and `OnHedging` are never executed concurrently. Any modifications to the contexts are thread-safe in these callbacks.
+
 ## Action generator
 
 The hedging options include an `ActionGenerator` property, allowing you to customize the actions executed during hedging. By default, the `ActionGenerator` returns the original callback passed to the strategy. The original callback also includes any logic introduced by subsequent resilience strategies. For more advanced scenarios, the `ActionGenerator` can be used to return entirely new hedged actions, as demonstrated in the example below:
