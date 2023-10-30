@@ -223,6 +223,7 @@ public class TaskExecutionTests : IDisposable
         var token = default(CancellationToken);
         await InitializePrimaryAsync(execution, result, context => token = context.CancellationToken);
         await execution.ExecutionTaskSafe!;
+        var context = execution.Context;
 
         if (accept)
         {
@@ -235,7 +236,7 @@ public class TaskExecutionTests : IDisposable
         // assert
         execution.IsAccepted.Should().BeFalse();
         execution.IsHandled.Should().BeFalse();
-        execution.Context.Properties.Options.Should().HaveCount(0);
+        context.Properties.Options.Should().HaveCount(0);
         execution.Invoking(e => e.Context).Should().Throw<InvalidOperationException>();
 #if !NETCOREAPP
         token.Invoking(t => t.WaitHandle).Should().Throw<InvalidOperationException>();
@@ -261,7 +262,6 @@ public class TaskExecutionTests : IDisposable
 
     private void AssertContext(ResilienceContext context)
     {
-        context.IsInitialized.Should().BeTrue();
         context.Should().NotBeSameAs(_primaryContext);
         context.Properties.Should().NotBeSameAs(_primaryContext.Properties);
         context.CancellationToken.Should().NotBeSameAs(_primaryContext.CancellationToken);

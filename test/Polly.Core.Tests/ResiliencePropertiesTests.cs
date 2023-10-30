@@ -59,7 +59,7 @@ public class ResiliencePropertiesTests
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public void Replace_Ok(bool isRawDictionary)
+    public void AddOrReplaceProperties_Ok(bool isRawDictionary)
     {
         var key1 = new ResiliencePropertyKey<string>("A");
         var key2 = new ResiliencePropertyKey<string>("B");
@@ -76,7 +76,8 @@ public class ResiliencePropertiesTests
         otherProps.Set(key2, "B");
 
         props.AddOrReplaceProperties(otherProps);
-        props.Options.Should().HaveCount(1);
+        props.Options.Should().HaveCount(2);
+        props.GetValue(key1, "").Should().Be("A");
         props.GetValue(key2, "").Should().Be("B");
     }
 }
