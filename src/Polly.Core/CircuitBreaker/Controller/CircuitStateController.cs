@@ -319,7 +319,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         if (_breakDurationGenerator is not null)
         {
-            breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount));
+            breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount, context));
         }
 
         _blockedUntil = IsDateTimeOverflow(utcNow, breakDuration) ? DateTimeOffset.MaxValue : utcNow + breakDuration;
