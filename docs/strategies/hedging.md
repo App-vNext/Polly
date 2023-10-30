@@ -449,8 +449,7 @@ The hedging strategy supports the concurrent execution and cancellation of multi
 
 Here's the flow:
 
-- The strategy gets the primary context and creates a snapshot for deep cloning.
-- For each hedged action execution, the hedging strategy makes a deep copy of the original context. The deep copy has its own cancellation token designated for that execution. Note that the first execution (primary) uses the original resilience context, albeit with a cloned set of resilience properties.
+- The strategy gets the primary context and preserves it for deep-cloning.
 - After the strategy has an accepted result from a hedged action, the resilience context from the action is merged back into the primary context.
 - All ongoing hedged actions are cancelled and discarded. The hedging strategy awaits the propagation of cancellation.
 
