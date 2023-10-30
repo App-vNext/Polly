@@ -56,19 +56,6 @@ public class ResiliencePropertiesTests
         props.TryGetValue(key2, out var val).Should().Be(false);
     }
 
-    [Fact]
-    public void Clear_Ok()
-    {
-        var key1 = new ResiliencePropertyKey<long>("dummy");
-        var key2 = new ResiliencePropertyKey<string>("dummy");
-
-        var props = new ResilienceProperties();
-        props.Set(key1, 12345);
-        props.Clear();
-
-        props.Options.Should().HaveCount(0);
-    }
-
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
@@ -88,7 +75,7 @@ public class ResiliencePropertiesTests
 
         otherProps.Set(key2, "B");
 
-        props.Replace(otherProps);
+        props.AddOrReplaceProperties(otherProps);
         props.Options.Should().HaveCount(1);
         props.GetValue(key2, "").Should().Be("B");
     }

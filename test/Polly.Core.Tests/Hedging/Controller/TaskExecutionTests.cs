@@ -15,7 +15,7 @@ public class TaskExecutionTests : IDisposable
     private readonly HedgingTimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly List<ExecutionAttemptArguments> _args = new();
-    private ContextSnapshot _snapshot;
+    private ResilienceContext _primaryContext = ResilienceContextPool.Shared.Get();
 
     public TaskExecutionTests()
     {
@@ -47,10 +47,10 @@ public class TaskExecutionTests : IDisposable
     public async Task Initialize_Primary_Ok(string value, bool handled)
     {
         var execution = Create();
-        await execution.InitializeAsync(HedgedTaskType.Primary, _snapshot,
+        await execution.InitializeAsync(HedgedTaskType.Primary, _primaryContext,
             (context, state) =>
             {
-                AssertPrimaryContext(context, execution);
+                AssertContext(context);
                 state.Should().Be("dummy-state");
                 return Outcome.FromResultAsValueTask(new DisposableResult { Name = value });
             },
@@ -60,7 +60,7 @@ public class TaskExecutionTests : IDisposable
         await execution.ExecutionTaskSafe!;
         execution.Outcome.Result!.Name.Should().Be(value);
         execution.IsHandled.Should().Be(handled);
-        AssertPrimaryContext(execution.Context, execution);
+        AssertContext(execution.Context);
 
         _args.Should().HaveCount(1);
         _args[0].Handled.Should().Be(handled);
@@ -71,7 +71,7 @@ public class TaskExecutionTests : IDisposable
     public async Task Initialize_PrimaryCallbackThrows_EnsureExceptionHandled()
     {
         var execution = Create();
-        await execution.InitializeAsync<string>(HedgedTaskType.Primary, _snapshot,
+        await execution.InitializeAsync<string>(HedgedTaskType.Primary, _primaryContext,
             (_, _) => throw new InvalidOperationException(),
             "dummy-state",
             1);
@@ -89,18 +89,18 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args =>
         {
-            AssertSecondaryContext(args.ActionContext, execution);
+            AssertContext(args.ActionContext);
             args.AttemptNumber.Should().Be(4);
             return () => Outcome.FromResultAsValueTask(new DisposableResult { Name = value });
         };
 
-        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
+        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).Should().BeTrue();
 
         await execution.ExecutionTaskSafe!;
 
         execution.Outcome.Result!.Name.Should().Be(value);
         execution.IsHandled.Should().Be(handled);
-        AssertSecondaryContext(execution.Context, execution);
+        AssertContext(execution.Context);
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args => null;
 
-        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeFalse();
+        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).Should().BeFalse();
 
         execution.Invoking(e => e.Context).Should().Throw<InvalidOperationException>();
     }
@@ -146,7 +146,7 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args => throw new FormatException();
 
-        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
+        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).Should().BeTrue();
 
         await execution.ExecutionTaskSafe!;
         execution.Outcome.Exception.Should().BeOfType<FormatException>();
@@ -158,7 +158,7 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args => throw new FormatException();
 
-        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
+        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).Should().BeTrue();
 
         await execution.ExecutionTaskSafe!.Invoking(async t => await t).Should().NotThrowAsync();
     }
@@ -180,7 +180,7 @@ public class TaskExecutionTests : IDisposable
 
         var execution = Create();
 
-        await execution.InitializeAsync(primary ? HedgedTaskType.Primary : HedgedTaskType.Secondary, _snapshot,
+        await execution.InitializeAsync(primary ? HedgedTaskType.Primary : HedgedTaskType.Secondary, _primaryContext,
             async (context, _) =>
             {
                 try
@@ -235,7 +235,7 @@ public class TaskExecutionTests : IDisposable
         // assert
         execution.IsAccepted.Should().BeFalse();
         execution.IsHandled.Should().BeFalse();
-        execution.Properties.Options.Should().HaveCount(0);
+        execution.Context.Properties.Options.Should().HaveCount(0);
         execution.Invoking(e => e.Context).Should().Throw<InvalidOperationException>();
 #if !NETCOREAPP
         token.Invoking(t => t.WaitHandle).Should().Throw<InvalidOperationException>();
@@ -252,34 +252,19 @@ public class TaskExecutionTests : IDisposable
 
     private async Task InitializePrimaryAsync(TaskExecution<DisposableResult> execution, DisposableResult? result = null, Action<ResilienceContext>? onContext = null)
     {
-        await execution.InitializeAsync(HedgedTaskType.Primary, _snapshot, (context, _) =>
+        await execution.InitializeAsync(HedgedTaskType.Primary, _primaryContext, (context, _) =>
         {
             onContext?.Invoke(context);
             return Outcome.FromResultAsValueTask(result ?? new DisposableResult { Name = Handled });
         }, "dummy-state", 1);
     }
 
-    private void AssertPrimaryContext(ResilienceContext context, TaskExecution<DisposableResult> execution)
+    private void AssertContext(ResilienceContext context)
     {
         context.IsInitialized.Should().BeTrue();
-        context.Should().BeSameAs(_snapshot.Context);
-        context.Properties.Should().NotBeSameAs(_snapshot.OriginalProperties);
-        context.Properties.Should().BeSameAs(execution.Properties);
-        context.CancellationToken.Should().NotBeSameAs(_snapshot.OriginalCancellationToken);
-        context.CancellationToken.CanBeCanceled.Should().BeTrue();
-
-        context.Properties.Options.Should().HaveCount(1);
-        context.Properties.TryGetValue(_myKey, out var value).Should().BeTrue();
-        value.Should().Be("dummy-value");
-    }
-
-    private void AssertSecondaryContext(ResilienceContext context, TaskExecution<DisposableResult> execution)
-    {
-        context.IsInitialized.Should().BeTrue();
-        context.Should().NotBeSameAs(_snapshot.Context);
-        context.Properties.Should().NotBeSameAs(_snapshot.OriginalProperties);
-        context.Properties.Should().BeSameAs(execution.Properties);
-        context.CancellationToken.Should().NotBeSameAs(_snapshot.OriginalCancellationToken);
+        context.Should().NotBeSameAs(_primaryContext);
+        context.Properties.Should().NotBeSameAs(_primaryContext.Properties);
+        context.CancellationToken.Should().NotBeSameAs(_primaryContext.CancellationToken);
         context.CancellationToken.CanBeCanceled.Should().BeTrue();
 
         context.Properties.Options.Should().HaveCount(1);
@@ -289,9 +274,8 @@ public class TaskExecutionTests : IDisposable
 
     private void CreateSnapshot(CancellationToken? token = null)
     {
-        _snapshot = new ContextSnapshot(ResilienceContextPool.Shared.Get().Initialize<DisposableResult>(isSynchronous: false), new ResilienceProperties(), token ?? _cts.Token);
-        _snapshot.Context.CancellationToken = _cts.Token;
-        _snapshot.OriginalProperties.Set(_myKey, "dummy-value");
+        _primaryContext = ResilienceContextPool.Shared.Get(token ?? _cts.Token);
+        _primaryContext.Properties.Set(_myKey, "dummy-value");
     }
 
     private Func<HedgingActionGeneratorArguments<DisposableResult>, Func<ValueTask<Outcome<DisposableResult>>>?> Generator { get; set; } = args =>

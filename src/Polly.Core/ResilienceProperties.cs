@@ -58,10 +58,8 @@ public sealed class ResilienceProperties
         Options[key.Key] = value;
     }
 
-    internal void Replace(ResilienceProperties other)
+    internal void AddOrReplaceProperties(ResilienceProperties other)
     {
-        Clear();
-
         // try to avoid enumerator allocation
         if (other.Options is Dictionary<string, object?> otherOptions)
         {
@@ -78,7 +76,5 @@ public sealed class ResilienceProperties
             }
         }
     }
-
-    internal void Clear() => Options.Clear();
 }
 
