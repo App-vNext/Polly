@@ -229,11 +229,9 @@ var optionsComplex = new CircuitBreakerStrategyOptions
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
 };
 
-// Adds a circuit breaker with dynamic break duration:
+// Adds a circuit breaker with a dynamic break duration:
 //
 // Same circuit breaking conditions as above, but with a dynamic break duration based on the failure count.
-// The duration is calculated as: minimum of (20 + 2^failureCount) seconds and capped at 400 seconds.
-// The specified BreakDuration = TimeSpan.FromSeconds(30) will not be used due to the dynamic BreakDurationGenerator.
 new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
 {
     FailureRatio = 0.5,
