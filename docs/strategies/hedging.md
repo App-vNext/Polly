@@ -481,9 +481,9 @@ sequenceDiagram
     participant P as Pipeline
     participant H as Hedging
     participant AG as ActionGenerator
+    participant OH as OnHedging
     participant UC as UserCallback
     participant HUC as HedgedUserCallback
-    participant OH as OnHedging
 
     P->>H: Calls ExecuteCore <br/>with Primary Context
     H-->>H: Deep clones <br/>Primary Context
