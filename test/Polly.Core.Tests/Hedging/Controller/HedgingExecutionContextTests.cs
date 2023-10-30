@@ -54,7 +54,7 @@ public class HedgingExecutionContextTests : IDisposable
         var context = Create();
 
         context.LoadedTasks.Should().Be(0);
-        context.Snapshot.Context.Should().BeNull();
+        context.PrimaryContext.Should().BeNull();
 
         context.Should().NotBeNull();
     }
@@ -67,11 +67,7 @@ public class HedgingExecutionContextTests : IDisposable
 
         context.Initialize(_resilienceContext);
 
-        context.Snapshot.Context.Should().Be(_resilienceContext);
-        context.Snapshot.Context.Properties.Should().NotBeSameAs(props);
-        context.Snapshot.OriginalProperties.Should().BeSameAs(props);
-        context.Snapshot.OriginalCancellationToken.Should().Be(_cts.Token);
-        context.Snapshot.Context.Properties.Options.Should().HaveCount(1);
+        context.PrimaryContext.Should().Be(_resilienceContext);
         context.IsInitialized.Should().BeTrue();
     }
 
@@ -409,7 +405,7 @@ public class HedgingExecutionContextTests : IDisposable
         await context.DisposeAsync();
 
         context.LoadedTasks.Should().Be(0);
-        context.Snapshot.Context.Should().BeNull();
+        context.PrimaryContext!.Should().BeNull();
 
         _onReset.WaitOne(AssertTimeout);
         _resets.Count.Should().Be(1);

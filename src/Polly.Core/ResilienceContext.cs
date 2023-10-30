@@ -61,15 +61,17 @@ public sealed class ResilienceContext
     /// <summary>
     /// Gets the custom properties attached to the context.
     /// </summary>
-    public ResilienceProperties Properties { get; internal set; } = new();
+    public ResilienceProperties Properties { get; } = new();
 
-    internal void InitializeFrom(ResilienceContext context)
+    internal void InitializeFrom(ResilienceContext context, CancellationToken cancellationToken)
     {
         OperationKey = context.OperationKey;
         ResultType = context.ResultType;
         IsSynchronous = context.IsSynchronous;
         CancellationToken = context.CancellationToken;
         ContinueOnCapturedContext = context.ContinueOnCapturedContext;
+        CancellationToken = cancellationToken;
+        Properties.AddOrReplaceProperties(context.Properties);
     }
 
     [ExcludeFromCodeCoverage]

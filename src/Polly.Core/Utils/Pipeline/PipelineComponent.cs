@@ -35,7 +35,7 @@ internal abstract class PipelineComponent : IAsyncDisposable
 
     public abstract ValueTask DisposeAsync();
 
-    private class NullComponent : PipelineComponent
+    private sealed class NullComponent : PipelineComponent
     {
         internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
             => callback(context, state);

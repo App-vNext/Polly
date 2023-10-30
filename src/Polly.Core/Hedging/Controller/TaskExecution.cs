@@ -55,8 +55,6 @@ internal sealed class TaskExecution<T>
 
     public bool IsAccepted { get; private set; }
 
-    public ResilienceProperties Properties { get; } = new();
-
     public ResilienceContext Context => _activeContext ?? throw new InvalidOperationException("TaskExecution is not initialized.");
 
     public HedgedTaskType Type { get; set; }
@@ -89,7 +87,7 @@ internal sealed class TaskExecution<T>
 
     public async ValueTask<bool> InitializeAsync<TState>(
         HedgedTaskType type,
-        ContextSnapshot snapshot,
+        ResilienceContext primaryContext,
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback,
         TState state,
         int attemptNumber)
@@ -98,14 +96,13 @@ internal sealed class TaskExecution<T>
         Type = type;
         _cancellationSource = _cancellationTokenSourcePool.Get(System.Threading.Timeout.InfiniteTimeSpan);
         _startExecutionTimestamp = _timeProvider.GetTimestamp();
-        Properties.Replace(snapshot.OriginalProperties);
+        _activeContext = _cachedContext;
+        _activeContext.InitializeFrom(primaryContext, _cancellationSource!.Token);
 
-        if (snapshot.OriginalCancellationToken.CanBeCanceled)
+        if (primaryContext.CancellationToken.CanBeCanceled)
         {
-            _cancellationRegistration = snapshot.OriginalCancellationToken.Register(o => ((CancellationTokenSource)o!).Cancel(), _cancellationSource);
+            _cancellationRegistration = primaryContext.CancellationToken.Register(o => ((CancellationTokenSource)o!).Cancel(), _cancellationSource);
         }
-
-        PrepareContext(ref snapshot);
 
         if (type == HedgedTaskType.Secondary)
         {
@@ -113,7 +110,7 @@ internal sealed class TaskExecution<T>
 
             try
             {
-                action = _handler.GenerateAction(CreateArguments(primaryCallback, snapshot.Context, state, attemptNumber));
+                action = _handler.GenerateAction(CreateArguments(primaryCallback, primaryContext, state, attemptNumber));
                 if (action == null)
                 {
                     await ResetAsync().ConfigureAwait(false);
@@ -127,7 +124,7 @@ internal sealed class TaskExecution<T>
                 return true;
             }
 
-            await HandleOnHedgingAsync(snapshot.Context, attemptNumber - 1).ConfigureAwait(Context.ContinueOnCapturedContext);
+            await HandleOnHedgingAsync(primaryContext, attemptNumber - 1).ConfigureAwait(Context.ContinueOnCapturedContext);
 
             ExecutionTaskSafe = ExecuteSecondaryActionAsync(action);
         }
@@ -193,7 +190,6 @@ internal sealed class TaskExecution<T>
         IsAccepted = false;
         Outcome = default;
         IsHandled = false;
-        Properties.Clear();
         OnReset = null;
         AttemptNumber = 0;
         _activeContext = null;
@@ -245,23 +241,5 @@ internal sealed class TaskExecution<T>
         Outcome = outcome;
         IsHandled = await _handler.ShouldHandle(args).ConfigureAwait(Context.ContinueOnCapturedContext);
         TelemetryUtil.ReportExecutionAttempt(_telemetry, Context, outcome, AttemptNumber, ExecutionTime, IsHandled);
-    }
-
-    private void PrepareContext(ref ContextSnapshot snapshot)
-    {
-        if (Type == HedgedTaskType.Primary)
-        {
-            // now just replace the properties
-            _activeContext = snapshot.Context;
-        }
-        else
-        {
-            // secondary hedged tasks get their own unique context
-            _activeContext = _cachedContext;
-            _activeContext.InitializeFrom(snapshot.Context);
-        }
-
-        _activeContext.Properties = Properties;
-        _activeContext.CancellationToken = _cancellationSource!.Token;
     }
 }

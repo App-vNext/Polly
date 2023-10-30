@@ -14,6 +14,7 @@
 
   <PropertyGroup Label="NuGet package validation">
     <EnablePackageValidation Condition="'$(EnablePackageValidation)' == ''">true</EnablePackageValidation>
+    <!-- TODO Bump to 8.1.0 once published to NuGet.org -->
     <PackageValidationBaselineVersion Condition="'$(PackageValidationBaselineVersion)' == ''">8.0.0</PackageValidationBaselineVersion>
   </PropertyGroup>
 
@@ -33,7 +34,7 @@
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
     <PackageTags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Rate-limit Fallback Timeout Throttle Parallelization Hedging</PackageTags>
-    <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md for details</PackageReleaseNotes>
+    <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md for details</PackageReleaseNotes>
     <PackageReadmeFile>package-readme.md</PackageReadmeFile>
   </PropertyGroup>
 

@@ -25,9 +25,10 @@ public class ResilienceContextTests
         var context = ResilienceContextPool.Shared.Get("some-key");
         context.Initialize<bool>(synchronous);
         context.ContinueOnCapturedContext = true;
-
+        context.Properties.Set(new ResiliencePropertyKey<string>("A"), "B");
+        using var cancellation = new CancellationTokenSource();
         var other = ResilienceContextPool.Shared.Get();
-        other.InitializeFrom(context);
+        other.InitializeFrom(context, cancellation.Token);
 
         other.ResultType.Should().Be(typeof(bool));
         other.IsVoid.Should().BeFalse();
@@ -35,6 +36,8 @@ public class ResilienceContextTests
         other.IsSynchronous.Should().Be(synchronous);
         other.ContinueOnCapturedContext.Should().BeTrue();
         other.OperationKey.Should().Be("some-key");
+        other.CancellationToken.Should().Be(cancellation.Token);
+        other.Properties.GetValue(new ResiliencePropertyKey<string>("A"), string.Empty).Should().Be("B");
     }
 
     [InlineData(true)]
