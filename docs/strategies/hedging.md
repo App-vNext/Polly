@@ -454,7 +454,6 @@ Here's the flow:
 - After the strategy has an accepted result from a hedged action, the resilience context from the action is merged back into the primary context.
 - All ongoing hedged actions are cancelled and discarded. The hedging strategy awaits the propagation of cancellation.
 
-
 ### Merging action context into the primary context
 
 After merging, the primary context contains:
