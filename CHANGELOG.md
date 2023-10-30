@@ -61,6 +61,7 @@
 * Speed-up page builds by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1753
 * Hedging strategy also deep-copies context for primary execution by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1754
 * [Docs] Add diagram about hedging's context and callbacks by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1751
+* Resolve AOT compilation issues by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1737
 
 ## 8.0.0
 

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <PublishAot>true</PublishAot>
+    <SKIP_POLLY_ANALYZERS>true</SKIP_POLLY_ANALYZERS>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />
+    <ProjectReference Include="..\..\src\Polly.Extensions\Polly.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\Polly.RateLimiting\Polly.RateLimiting.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <TrimmerRootAssembly Include="Polly.Core" />
+    <TrimmerRootAssembly Include="Polly.Extensions" />
+    <TrimmerRootAssembly Include="Polly.RateLimiting" />
+  </ItemGroup>
+</Project>

@@ -116,37 +116,4 @@ internal sealed class CompositeComponent : PipelineComponent
 
         return outcome;
     }
-
-    /// <summary>
-    /// A component that delegates the execution to the next component in the chain.
-    /// </summary>
-    private sealed class DelegatingComponent : PipelineComponent
-    {
-        private readonly PipelineComponent _component;
-
-        public DelegatingComponent(PipelineComponent component) => _component = component;
-
-        public PipelineComponent? Next { get; set; }
-
-        internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-            ResilienceContext context,
-            TState state)
-        {
-            return _component.ExecuteCore(
-                static (context, state) =>
-                {
-                    if (context.CancellationToken.IsCancellationRequested)
-                    {
-                        return Outcome.FromExceptionAsValueTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
-                    }
-
-                    return state.Next!.ExecuteCore(state.callback, context, state.state);
-                },
-                context,
-                (Next, callback, state));
-        }
-
-        public override ValueTask DisposeAsync() => default;
-    }
 }
