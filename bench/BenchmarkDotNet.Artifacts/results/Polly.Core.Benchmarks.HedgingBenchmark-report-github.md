@@ -1,17 +1,17 @@
 ```
 
-BenchmarkDotNet v0.13.7, Windows 11 (10.0.22621.2283/22H2/2022Update/SunValley2) (Hyper-V)
+BenchmarkDotNet v0.13.9+228a464e8be6c580ad9408e98f18813f6407fb5a, Windows 11 (10.0.22621.2428/22H2/2022Update/SunValley2) (Hyper-V)
 Intel Xeon Platinum 8370C CPU 2.80GHz, 1 CPU, 16 logical and 8 physical cores
-.NET SDK 7.0.401
-  [Host] : .NET 7.0.11 (7.0.1123.42427), X64 RyuJIT AVX2
+.NET SDK 7.0.403
+  [Host] : .NET 7.0.13 (7.0.1323.51816), X64 RyuJIT AVX2
 
 Job=MediumRun  Toolchain=InProcessEmitToolchain  IterationCount=15  
 LaunchCount=2  WarmupCount=10  
 
 ```
-|                      Method |     Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
-|---------------------------- |---------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
-|             Hedging_Primary | 1.432 μs | 0.0042 μs | 0.0061 μs |  1.00 |    0.00 |      - |      40 B |        1.00 |
-|           Hedging_Secondary | 2.253 μs | 0.0051 μs | 0.0075 μs |  1.57 |    0.01 | 0.0038 |     184 B |        4.60 |
-|   Hedging_Primary_AsyncWork | 3.903 μs | 0.0260 μs | 0.0381 μs |  2.73 |    0.03 | 0.0610 |    1636 B |       40.90 |
-| Hedging_Secondary_AsyncWork | 4.936 μs | 0.0424 μs | 0.0595 μs |  3.45 |    0.05 | 0.0687 |    1838 B |       45.95 |
+| Method                      | Mean      | Error     | StdDev    | Ratio | RatioSD | Gen0   | Allocated | Alloc Ratio |
+|---------------------------- |----------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
+| Hedging_Primary             |  1.284 μs | 0.0047 μs | 0.0066 μs |  1.00 |    0.00 |      - |      40 B |        1.00 |
+| Hedging_Secondary           |  2.007 μs | 0.0043 μs | 0.0064 μs |  1.56 |    0.01 | 0.0038 |     184 B |        4.60 |
+| Hedging_Primary_AsyncWork   | 33.379 μs | 1.9491 μs | 2.9173 μs | 26.43 |    1.90 | 0.6104 |   15299 B |      382.48 |
+| Hedging_Secondary_AsyncWork | 33.735 μs | 0.2915 μs | 0.4273 μs | 26.28 |    0.43 | 0.6104 |   15431 B |      385.77 |
