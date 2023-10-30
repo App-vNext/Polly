@@ -16,7 +16,6 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
     private readonly TimeProvider _timeProvider;
     private readonly int _maxAttempts;
     private readonly Action<HedgingExecutionContext<T>> _onReset;
-    private readonly ResilienceProperties _replacedProperties = new();
 
     public HedgingExecutionContext(
         ObjectPool<TaskExecution<T>> executionPool,
@@ -30,22 +29,17 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
         _onReset = onReset;
     }
 
-    internal void Initialize(ResilienceContext context)
-    {
-        Snapshot = new ContextSnapshot(context, context.Properties, context.CancellationToken);
-        _replacedProperties.Replace(Snapshot.OriginalProperties);
-        Snapshot.Context.Properties = _replacedProperties;
-    }
+    internal void Initialize(ResilienceContext context) => PrimaryContext = context;
 
     public int LoadedTasks => _tasks.Count;
 
-    public ContextSnapshot Snapshot { get; private set; }
+    public ResilienceContext? PrimaryContext { get; private set; }
 
-    public bool IsInitialized => Snapshot.Context != null;
+    public bool IsInitialized => PrimaryContext != null;
 
     public IReadOnlyList<TaskExecution<T>> Tasks => _tasks;
 
-    private bool ContinueOnCapturedContext => Snapshot.Context.ContinueOnCapturedContext;
+    private bool ContinueOnCapturedContext => PrimaryContext!.ContinueOnCapturedContext;
 
     public async ValueTask<ExecutionInfo<T>> LoadExecutionAsync<TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback,
@@ -65,7 +59,7 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
 
         var execution = _executionPool.Get();
 
-        if (await execution.InitializeAsync(type, Snapshot, primaryCallback, state, LoadedTasks).ConfigureAwait(ContinueOnCapturedContext))
+        if (await execution.InitializeAsync(type, PrimaryContext!, primaryCallback, state, LoadedTasks).ConfigureAwait(ContinueOnCapturedContext))
         {
             // we were able to start a new execution, register it
             _tasks.Add(execution);
@@ -126,7 +120,7 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
             return TryRemoveExecutedTask();
         }
 
-        using var delayTaskCancellation = CancellationTokenSource.CreateLinkedTokenSource(Snapshot.Context.CancellationToken);
+        using var delayTaskCancellation = CancellationTokenSource.CreateLinkedTokenSource(PrimaryContext!.CancellationToken);
 
         var delayTask = _timeProvider.Delay(hedgingDelay, delayTaskCancellation.Token);
         Task<Task> whenAnyHedgedTask = WaitForTaskCompetitionAsync();
@@ -192,10 +186,6 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
 
     private void UpdateOriginalContext()
     {
-        var originalContext = Snapshot.Context;
-        originalContext.CancellationToken = Snapshot.OriginalCancellationToken;
-        originalContext.Properties = Snapshot.OriginalProperties;
-
         if (LoadedTasks == 0)
         {
             return;
@@ -205,17 +195,16 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
 
         if (Tasks.FirstOrDefault(static t => t.IsAccepted) is TaskExecution<T> acceptedExecution)
         {
-            originalContext.Properties.Replace(acceptedExecution.Properties);
+            PrimaryContext!.Properties.AddOrReplaceProperties(acceptedExecution.Context.Properties);
         }
     }
 
     private void Reset()
     {
-        _replacedProperties.Clear();
         _tasks.Clear();
 
         _executingTasks.Clear();
-        Snapshot = default;
+        PrimaryContext = null;
 
         _onReset(this);
     }
