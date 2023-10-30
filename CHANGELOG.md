@@ -1,5 +1,67 @@
 # CHANGELOG
 
+<!-- markdownlint-disable MD034 -->
+
+## 8.1.0
+
+* Only show stable versions in README by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1649
+* Update samples to stable release by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1647
+* v8 Release - commit and validate public API by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1632
+* Fix documentation comment for CB's MinimumThroughput by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1654
+* Docs tweaks by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1655
+* Add Github repo link to the docs navbar by [@adamnova](https://github.com/adamnova) in https://github.com/App-vNext/Polly/pull/1666
+* Add markdownlint by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1664
+* [Docs] Mocking of `ResiliencePipelineProvider` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1662
+* Enable search for docs by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1669
+* [Docs] Add notes to use Polly.RateLimiting package by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1672
+* Docs: Include info about numerical type used in metrics in telemetry.md by [@agehrke](https://github.com/agehrke) in https://github.com/App-vNext/Polly/pull/1673
+* [Docs] Add event names to telemetry by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1674
+* [Docs] Expand fault handling docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1675
+* Add spell checker by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1667
+* [Docs] Improve telemetry docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1681
+* [Docs] Improve registry docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1684
+* [Docs] Fix link to ResiliencePipelineBuilder by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1685
+* Group xunit updates by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1695
+* Use GitHub Issue template forms by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1676
+* [Docs] Fallback after retries by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1698
+* [Docs] Add sequence diagrams to timeout strategy by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1699
+* Turn off var preferences by [@cmeyertons](https://github.com/cmeyertons) in https://github.com/App-vNext/Polly/pull/1700
+* [Docs] Use docfx to dynamically render mermaid diagrams by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1701
+* #1687 - Make ResilienceContextPool settable via DI by [@cmeyertons](https://github.com/cmeyertons) in https://github.com/App-vNext/Polly/pull/1693
+* Update to cancel downstream operation in TimeoutStrategy.Pessimistic by [@lor1mp](https://github.com/lor1mp) in https://github.com/App-vNext/Polly/pull/1697
+* [Docs] Add sequence diagrams to fallback, retry, and rate limiter by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1702
+* [Docs] Add diagrams to circuit breaker by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1704
+* [Docs] Remove theme overwrites from mermaid diagrams by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1705
+* Add link to retries blog by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1707
+* Attempt to fix code-ql issues by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1708
+* [Docs] Add sequence diagrams to hedging by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1706
+* [Docs] Improvements by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1712
+* [Docs] Add diagrams to resilience pipeline by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1714
+* [Docs] Add diagram to action generator hedging by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1713
+* Simmy v8 feedback by [@vany0114](https://github.com/vany0114) in https://github.com/App-vNext/Polly/pull/1682
+* [Docs] Update snippets' readme by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1721
+* [Docs] Update DocFx by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1722
+* [Docs] Add docs for metering enrichment by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1724
+* [Docs] Fix the API generation by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1725
+* [Docs] Add sequence diagram to resilience context by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1726
+* [Docs] Fix hedging documentation about unhappy paths by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1730
+* [Docs] Minor fixes on pipeline registry by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1733
+* .NET 8 preparation by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1734
+* Update NuGet tools by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1739
+* Bump docfx by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1746
+* Resolve IL2091 warnings by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1744
+* Add component benchmark by[@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1743
+* [Docs] Make quick start samples consistent by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1735
+* Prevent concurrent page builds by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1747
+* Fix test by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1748
+* Restore 100% mutations by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1750
+* [Docs] Fix the policywrap sample by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1728
+* [Docs] Hedging context by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1749
+* Run mutation tests on Windows instead of Linux by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1752
+* Speed-up page builds by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1753
+* Hedging strategy also deep-copies context for primary execution by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1754
+* [Docs] Add diagram about hedging's context and callbacks by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1751
+
 ## 8.0.0
 
 * Updates for beta.2 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1580
@@ -233,6 +295,10 @@
 * Bump SonarAnalyzer.CSharp from 9.3.0.71466 to 9.4.0.72892 by [@dependabot](https://github.com/dependabot) in https://github.com/App-vNext/Polly/pull/1343
 * Expose Randomizer property and use it in retry strategy by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1346
 
+<!-- markdownlint-disable MD004 -->
+<!-- markdownlint-disable MD022 -->
+<!-- markdownlint-disable MD032 -->
+
 ## 8.0.0-alpha.2
 
 - Drop redundant validation of resilience strategy options by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1299
@@ -269,17 +335,17 @@
   - [`Polly.RateLimiting`](https://nuget.org/packages/Polly.RateLimiting) - This package provides an integration between Polly and [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting/).
 
 Thanks to:
-  - [@adamnova](https://github.com/adamnova)
-  - [@andrey-noskov](https://github.com/andrey-noskov)
-  - [@joelhulen](https://github.com/joelhulen)
-  - [@juraj-blazek](https://github.com/juraj-blazek)
-  - [@geeknoid](https://github.com/geeknoid)
-  - [@laura-mi](https://github.com/laura-mi)
-  - [@martincostello](https://github.com/martincostello)
-  - [@martintmk](https://github.com/martintmk)
-  - [@SimonCropp](https://github.com/SimonCropp)
-  - [@tekian](https://github.com/tekian)
-  - [@terrajobst](https://github.com/terrajobst)
+- [@adamnova](https://github.com/adamnova)
+- [@andrey-noskov](https://github.com/andrey-noskov)
+- [@joelhulen](https://github.com/joelhulen)
+- [@juraj-blazek](https://github.com/juraj-blazek)
+- [@geeknoid](https://github.com/geeknoid)
+- [@laura-mi](https://github.com/laura-mi)
+- [@martincostello](https://github.com/martincostello)
+- [@martintmk](https://github.com/martintmk)
+- [@SimonCropp](https://github.com/SimonCropp)
+- [@tekian](https://github.com/tekian)
+- [@terrajobst](https://github.com/terrajobst)
 
 ## 7.2.4
 
@@ -326,7 +392,7 @@ Thanks to:
 - Add explicit .NET framework 4.6.2 and 4.7.2 test runs
 
 ## 7.0.3
-- Bug fix for AdvancedCircuitBreakerAsync<TResult> (issue affecting v7.0.1-2 only)
+- Bug fix for AdvancedCircuitBreakerAsync&lt;TResult&gt; (issue affecting v7.0.1-2 only)
 
 ## 7.0.2
 - Bug fix for PolicyRegistry (issue affecting v7.0.1 only)
@@ -399,7 +465,7 @@ Thanks to:
 - Fallback delegates can now take handled fault as input parameter.
 
 ## 5.3.1
-- Make ISyncPolicy<TResult> public
+- Make ISyncPolicy&lt;TResult&gt; public
 - (Upgrade solution to msbuild15)
 
 ## 5.3.0
@@ -482,32 +548,26 @@ Other changes include:
 
 - Add new Polly.Net40Async project/package supporting async for .NET40 via Microsoft.Bcl.Async.  Thanks to [@Lumirris](https://github.com/Lumirris)
 
-
 ## 4.2.1
 
 - Allowed async onRetry delegates to async retry policies.  Thanks to [@reisenberger](https://github.com/reisenberger)
-
 
 ## 4.2.0
 
 - Add AdvancedCircuitBreaker.  Thanks to [@reisenberger](https://github.com/reisenberger) and [@kristianhald](https://github.com/kristianhald)
 
-
 ## 4.1.2
 
 - Fixed an issue with the onReset delegate of the CircuitBreaker.
-
 
 ## 4.1.1
 
 - Add ExecuteAndCapture support with arbitrary context data - Thanks to [@reisenberger](https://github.com/reisenberger)
 
-
 ## 4.1.0
 
 - Add Wait and retry forever policy - Thanks to [@nedstoyanov](https://github.com/nedstoyanov)
 - Remove time-limit on CircuitBreaker state-change delegates - Thanks to [@reisenberger](https://github.com/reisenberger)
-
 
 ## 4.0.0
 
@@ -517,11 +577,9 @@ Other changes include:
 - Add delegates on changes of circuit state
 - Thanks to [@reisenberger](https://github.com/reisenberger)
 
-
 ## 3.0.0
 
 - Add cancellation support for all async Policy execution - Thanks to [@reisenberger](https://github.com/reisenberger)
-
 
 ## 2.2.7
 
