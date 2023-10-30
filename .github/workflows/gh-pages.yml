@@ -46,10 +46,10 @@ jobs:
     - name: Generate documentation
       run: |
         dotnet tool restore
-        dotnet build --configuration Release
+        dotnet build --configuration Release /p:SKIP_POLLY_ANALYZERS=true
         dotnet docfx docs/docfx.json
 
-    - name: Deploy
+    - name: Deploy to GitHub Pages
       if: |
         github.event.repository.fork == false &&
         github.ref_name == github.event.repository.default_branch
