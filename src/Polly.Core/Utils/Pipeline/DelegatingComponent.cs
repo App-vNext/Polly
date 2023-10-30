@@ -77,18 +77,6 @@ internal sealed class DelegatingComponent : PipelineComponent
             new StateWrapper(Next!, callback, state!));
     }
 
-    private struct StateWrapper
-    {
-        public StateWrapper(PipelineComponent next, object callback, object state)
-        {
-            Next = next;
-            Callback = callback;
-            State = state;
-        }
-
-        public PipelineComponent Next;
-        public object Callback;
-        public object State;
-    }
+    private readonly record struct StateWrapper(PipelineComponent Next, object Callback, object State);
 #endif
 }
