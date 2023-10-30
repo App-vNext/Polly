@@ -5,7 +5,6 @@
     <AssemblyTitle>Polly</AssemblyTitle>
     <ProjectType>Library</ProjectType>
     <MutationScore>70</MutationScore>
-    <PackageValidationBaselineVersion>7.2.3</PackageValidationBaselineVersion>
     <IncludePollyUsings>true</IncludePollyUsings>
     <NoWarn>$(NoWarn);IDE0011;SA1501;S103;IDE0055;SA1111;IDE0066;S3872;SA1127;SA1128;SA1402;SA1513;SA1414;S3215;S2955</NoWarn>
     <NoWarn>$(NoWarn);IDE0044;IDE1006;CA1062;S107;CA1068;S4039;SA1121;CA1000;CA1063;SA1113;CA1031;CA1051;CA1200</NoWarn>
