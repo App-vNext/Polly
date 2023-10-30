@@ -488,17 +488,17 @@ sequenceDiagram
     P->>H: Calls ExecuteCore <br/>with Primary Context
     H-->>H: Deep clones <br/>Primary Context
 
-    H->>+UC: Invokes <br/>with Primary Context
+    H->>+UC: Invokes <br/>with Action Context
     UC-->>UC: Processes <br/>+ Modifies Context
     UC->>-H: Fails
 
     H-->>H: Deep clones <br/>Primary Context
     H->>+AG: Invokes <br/>with both Contexts
-    AG-->>AG: Executes callback <br/>+ Modifies Primary <br/> or Action Context
+    AG-->>AG: Executes callback <br/>+ Modifies Primary <br/> and / or Action Context
     AG->>-H: Returns factory
 
     H->>+OH: Invokes <br/>with both Contexts
-    OH-->>OH: Executes callback <br/>+ Modifies Primary <br/> or Action Context
+    OH-->>OH: Executes callback <br/>+ Modifies Primary <br/> and / or Action Context
     OH->>-H: Finishes
 
     H-->>H: Invokes factory
