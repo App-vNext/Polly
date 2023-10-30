@@ -442,10 +442,10 @@ sequenceDiagram
 
 ## Hedging and resilience context
 
-The hedging strategy supports the concurrent execution and cancellation of multiple hedged actions. To safeguard against concurrency issues when these actions access the same `ResilienceContext`, the hedging strategy ensures that each hedged action has its unique `ResilienceContext`. The hedging strategy distinguishes between two types of contexts:
+The hedging strategy supports the concurrent execution and cancellation of multiple hedged actions. To safeguard against concurrency issues when these actions access the same `ResilienceContext`, the hedging strategy ensures that each hedged action has its own unique `ResilienceContext`. The hedging strategy distinguishes between two types of contexts:
 
 - **Primary context**: The original resilience context that the hedging strategy receives.
-- **Action context**: A deep copy of the primary context with distinct cancellation token for a single hedged action.
+- **Action context**: A deep copy of the primary context with a distinct cancellation token for a single hedged action.
 
 Here's the flow:
 
@@ -454,15 +454,12 @@ Here's the flow:
 - After the strategy has an accepted result from a hedged action, the resilience context from the action is merged back into the primary context.
 - All ongoing hedged actions are cancelled and discarded. The hedging strategy awaits the propagation of cancellation.
 
-### Merging action context into primary context
+### Merging action context into the primary context
 
 After merging, the primary context contains:
 
-- New properties saved during the action context's execution.
-- Existing properties updated during execution.
-
-> [!NOTE]
-> If you delete a property from the action context and this property exists in the primary context, the change is ignored, and the primary context retains the original property.
+- New properties created during the action context's execution.
+- Existing properties updated or soft-deleted (i.e. setting the value to `null`) during execution.
 
 ### Hedging callbacks
 
