@@ -32,7 +32,6 @@ jobs:
         config: '.markdownlint.json'
         globs: |
           **/*.md
-          !CHANGELOG.md
           !**/BenchmarkDotNet.Artifacts/**/*.md
 
     - name: Spellcheck
