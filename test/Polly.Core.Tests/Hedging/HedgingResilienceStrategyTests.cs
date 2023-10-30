@@ -356,7 +356,7 @@ public class HedgingResilienceStrategyTests : IDisposable
                 context.CancellationToken.CanBeCanceled.Should().BeTrue();
                 tokenHashCodes.Add(context.CancellationToken.GetHashCode());
                 context.Properties.GetValue(beforeKey, "wrong").Should().Be("before");
-                context.Should().Be(primaryContext);
+                context.Should().NotBe(primaryContext);
                 contexts.Add(context);
                 await _timeProvider.Delay(LongDelay, context.CancellationToken);
                 return "primary";
@@ -406,50 +406,47 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         ConfigureHedging(args =>
         {
-            return async () =>
+            return () =>
             {
                 contexts.Add(args.ActionContext);
                 args.ActionContext.Properties.GetValue(primaryKey, string.Empty).Should().Be("primary");
                 args.ActionContext.Properties.Set(secondaryKey, "secondary");
-                await _timeProvider.Delay(TimeSpan.FromHours(1), args.ActionContext.CancellationToken);
-                return Outcome.FromResult(primaryFails ? Success : Failure);
+                return Outcome.FromResultAsValueTask(primaryFails ? Success : Failure);
             };
         });
         var strategy = Create();
 
         // act
-        var executeTask = strategy.ExecuteAsync(
-            async (context, _) =>
+        await strategy.ExecuteAsync(
+            (context, _) =>
             {
+                context.Should().NotBe(primaryContext);
                 contexts.Add(context);
                 context.Properties.GetValue(primaryKey, string.Empty).Should().Be("primary");
                 context.Properties.Set(primaryKey2, "primary-2");
-                await _timeProvider.Delay(TimeSpan.FromHours(2), context.CancellationToken);
-                return primaryFails ? Failure : Success;
+                return new ValueTask<string>(primaryFails ? Failure : Success);
             },
             primaryContext,
-            "state").AsTask();
+            "state");
 
         // assert
 
-        contexts.Should().HaveCount(2);
-        primaryContext.Properties.Options.Should().HaveCount(2);
         primaryContext.Properties.GetValue(primaryKey, string.Empty).Should().Be("primary");
+        primaryContext.Properties.Options.Should().HaveCount(2);
+        primaryContext.Properties.Should().BeSameAs(storedProps);
 
         if (primaryFails)
         {
-            _timeProvider.Advance(TimeSpan.FromHours(1));
-            await executeTask;
+            contexts.Should().HaveCount(2);
             primaryContext.Properties.GetValue(secondaryKey, string.Empty).Should().Be("secondary");
+            primaryContext.Properties.GetValue(primaryKey2, string.Empty).Should().BeEmpty();
         }
         else
         {
-            _timeProvider.Advance(TimeSpan.FromHours(2));
-            await executeTask;
+            contexts.Should().HaveCount(1);
             primaryContext.Properties.GetValue(primaryKey2, string.Empty).Should().Be("primary-2");
+            primaryContext.Properties.GetValue(secondaryKey, string.Empty).Should().BeEmpty();
         }
-
-        primaryContext.Properties.Should().BeSameAs(storedProps);
     }
 
     [Fact]
