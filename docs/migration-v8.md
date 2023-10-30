@@ -156,10 +156,10 @@ IAsyncPolicy retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(3, _ => 
 
 IAsyncPolicy timeoutPolicy = Policy.TimeoutAsync(TimeSpan.FromSeconds(3));
 
-// Wrap the policies. The policies are executed in the following order (i.e. Last-In-First-Out):
-// 1. Retry
-// 2. Timeout
-IAsyncPolicy wrappedPolicy = Policy.WrapAsync(timeoutPolicy, retryPolicy);
+// Wrap the policies. The policies are executed in the following order:
+// 1. Retry <== outer
+// 2. Timeout <== inner
+IAsyncPolicy wrappedPolicy = Policy.WrapAsync(retryPolicy, timeoutPolicy);
 ```
 <!-- endSnippet -->
 
@@ -169,9 +169,9 @@ In v8, there's no need to use policy wrap explicitly. Instead, policy wrapping i
 
 <!-- snippet: migration-policy-wrap-v8 -->
 ```cs
-// The "PolicyWrap" is integrated directly. Strategies are executed in the same order as they were added (i.e. First-In-First-Out):
-// 1. Retry
-// 2. Timeout
+// The "PolicyWrap" is integrated directly. The strategies are executed in the following order:
+// 1. Retry <== outer
+// 2. Timeout <== outer
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new()
     {
@@ -185,8 +185,8 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
-> In v7, the policy wrap ordering is different; the policy added first was executed last (FILO). In v8, the execution order matches the order in which they were added (FIFO). See [fallback after retries](strategies/fallback.md#fallback-after-retries) for an example on how the strategies are executed.
+> [!NOTE]
+> See [fallback after retries](strategies/fallback.md#fallback-after-retries) for an example on how the strategies are executed.
 
 ## Migrating retry policies
 

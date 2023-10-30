@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ProjectType>Library</ProjectType>
-    <MutationScore>99</MutationScore>
+    <MutationScore>100</MutationScore>
     <LegacySupport>true</LegacySupport>
     <InjectSharedSources>true</InjectSharedSources>
   </PropertyGroup>
@@ -20,9 +20,10 @@
 
   <ItemGroup>
     <Using Include="Polly.Utils" />
-    <InternalsVisibleToTest Include="Polly.Core.Tests" />
-    <InternalsVisibleToTest Include="Polly.Testing" />
-    <InternalsVisibleToTest Include="Polly.TestUtils" />
+    <InternalsVisibleToProject Include="Polly.Core.Benchmarks" />
+    <InternalsVisibleToProject Include="Polly.Core.Tests" />
+    <InternalsVisibleToProject Include="Polly.Testing" />
+    <InternalsVisibleToProject Include="Polly.TestUtils" />
   </ItemGroup>
 
   <ItemGroup>

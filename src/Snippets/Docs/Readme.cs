@@ -19,7 +19,7 @@ internal static class Readme
             .Build(); // Builds the resilience pipeline
 
         // Execute the pipeline asynchronously
-        await pipeline.ExecuteAsync(static async cancellationToken => { /*Your custom logic here */ }, cancellationToken);
+        await pipeline.ExecuteAsync(static async token => { /*Your custom logic goes here */ }, cancellationToken);
 
         #endregion
     }
@@ -39,7 +39,7 @@ internal static class Readme
         });
 
         // Build the service provider
-        IServiceProvider serviceProvider = services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
 
         // Retrieve ResiliencePipelineProvider that caches and dynamically creates the resilience pipelines
         var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
@@ -50,7 +50,7 @@ internal static class Readme
         // Execute the pipeline
         await pipeline.ExecuteAsync(static async token =>
         {
-            // Your custom logic here
+            // Your custom logic goes here
         });
 
         #endregion

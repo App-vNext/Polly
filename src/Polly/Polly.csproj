@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleToTest Include="Polly.Specs" />
+    <InternalsVisibleToProject Include="Polly.Specs" />
   </ItemGroup>
 
   <ItemGroup>
