@@ -255,6 +255,8 @@ Polly.ResiliencePipelineBuilder<TResult>
 Polly.ResiliencePipelineBuilder<TResult>.Build() -> Polly.ResiliencePipeline<TResult>!
 Polly.ResiliencePipelineBuilder<TResult>.ResiliencePipelineBuilder() -> void
 Polly.ResiliencePipelineBuilderBase
+Polly.ResiliencePipelineBuilderBase.ContextPool.get -> Polly.ResilienceContextPool?
+Polly.ResiliencePipelineBuilderBase.ContextPool.set -> void
 Polly.ResiliencePipelineBuilderBase.InstanceName.get -> string?
 Polly.ResiliencePipelineBuilderBase.InstanceName.set -> void
 Polly.ResiliencePipelineBuilderBase.Name.get -> string?
