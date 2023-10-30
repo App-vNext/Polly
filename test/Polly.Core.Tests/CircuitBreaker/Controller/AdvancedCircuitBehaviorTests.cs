@@ -8,20 +8,21 @@ public class AdvancedCircuitBehaviorTests
 {
     private HealthMetrics _metrics = Substitute.For<HealthMetrics>(TimeProvider.System);
 
-    [InlineData(10, 10, 0.0, 0.1, false)]
-    [InlineData(10, 10, 0.1, 0.1, true)]
-    [InlineData(10, 10, 0.2, 0.1, true)]
-    [InlineData(11, 10, 0.2, 0.1, true)]
-    [InlineData(9, 10, 0.1, 0.1, false)]
+    [InlineData(10, 10, 0.0, 0.1, 0, false)]  
+    [InlineData(10, 10, 0.1, 0.1, 1, true)]   
+    [InlineData(10, 10, 0.2, 0.1, 2, true)]   
+    [InlineData(11, 10, 0.2, 0.1, 3, true)]   
+    [InlineData(9, 10, 0.1, 0.1, 4, false)]   
     [Theory]
     public void OnActionFailure_WhenClosed_EnsureCorrectBehavior(
         int throughput,
         int minimumThruput,
         double failureRate,
         double failureThreshold,
+        int failureCount,
         bool expectedShouldBreak)
     {
-        _metrics.GetHealthInfo().Returns(new HealthInfo(throughput, failureRate));
+        _metrics.GetHealthInfo().Returns(new HealthInfo(throughput, failureRate, failureCount));
 
         var behavior = new AdvancedCircuitBehavior(failureThreshold, minimumThruput, _metrics);
 
