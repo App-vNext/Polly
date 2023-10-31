@@ -142,6 +142,16 @@ await pipelineT.ExecuteAsync(static async token =>
 ```
 <!-- endSnippet -->
 
+> [!IMPORTANT]
+>
+> Things to remember:
+>
+> - Use `ResiliencePipelineBuilder{<TResult>}` to build a resiliency pipeline
+> - Use one of the `AddXYZ` builder method to add a new strategy to the pipeline
+> - Use either `Execute` or `ExecuteAsync` depending on the execution context
+>
+> For further information please check out the [Resilience pipelines docs](pipelines/index.md)
+
 ## Migrating policy wrap
 
 ### Policy wrap in v7
@@ -185,6 +195,16 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 
 > [!NOTE]
 > See [fallback after retries](strategies/fallback.md#fallback-after-retries) for an example on how the strategies are executed.
+
+> [!IMPORTANT]
+>
+> Things to remember:
+>
+> - Use `ResiliencePipelineBuilder{<TResult>}` to build a resiliency pipeline
+> - Use multiple `AddXYZ` builder methods to add new strategies to your pipeline
+>
+> For further information please check out the [Resilience pipelines docs](pipelines/index.md)
+
 
 ## Migrating retry policies
 
@@ -386,7 +406,15 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 ```
 <!-- endSnippet -->
 
-It's important to remember that the configuration in v8 is options based, i.e. `RetryStrategyOptions` are used.
+> [!IMPORTANT]
+>
+> Things to remember:
+>
+> - Use `AddRetry` to add a retry strategy to your resiliency pipeline
+> - Use the `RetryStrategyOptions` to customize your retry behavior to meet your requirements
+>
+> For further information please check out the [Retry resilience strategy docs](strategies/retry.md)
+
 
 ## Migrating rate limit policies
 
