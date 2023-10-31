@@ -104,6 +104,8 @@ jobs:
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      with:
+        dotnet-version: 6.0.416
 
     - name: Validate NuGet packages
       shell: pwsh
@@ -143,6 +145,8 @@ jobs:
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      with:
+        dotnet-version: 6.0.416
 
     - name: Install Sign CLI tool
       run: dotnet tool install --tool-path . sign --version 0.9.1-beta.23530.1
@@ -184,7 +188,7 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
       with:
-        dotnet-version: 6.0.414 # Version as of September 28th 2023
+        dotnet-version: 6.0.416
 
     - name: Validate NuGet packages
       shell: pwsh
