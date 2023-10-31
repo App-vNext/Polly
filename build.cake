@@ -225,7 +225,6 @@ Task("__CreateNuGetPackages")
     var dotNetPackSettings = new DotNetPackSettings
     {
         Configuration = configuration,
-        NoBuild = true,
         OutputDirectory = nupkgDestDir,
         MSBuildSettings = new DotNetMSBuildSettings
         {
