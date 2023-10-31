@@ -205,7 +205,6 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 >
 > For further information please check out the [Resilience pipelines docs](pipelines/index.md)
 
-
 ## Migrating retry policies
 
 This section describes how to migrate v7 retry policies to V8 retry strategies.
@@ -414,7 +413,6 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 > - Use the `RetryStrategyOptions` to customize your retry behavior to meet your requirements
 >
 > For further information please check out the [Retry resilience strategy docs](strategies/retry.md)
-
 
 ## Migrating rate limit policies
 
