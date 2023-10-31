@@ -222,7 +222,14 @@ jobs:
         $artifacts = Join-Path $authlintSource "artifacts"
         $authlint = Join-Path $artifacts "authlint.exe"
 
-        dotnet publish $authLintProject --configuration Release --output $artifacts --runtime win-x64 --self-contained false /p:NoWarn=CS8604
+        dotnet publish $authLintProject `
+            --configuration Release `
+            --output $artifacts `
+            --runtime win-x64 `
+            --self-contained false `
+            /p:NoWarn=CS8602 `
+            /p:NoWarn=CS8604 `
+            /p:NoWarn=NU1902
 
         if ($LASTEXITCODE -ne 0) {
           throw "Failed to publish AuthenticodeLint."
