@@ -225,6 +225,7 @@ Task("__CreateNuGetPackages")
     var dotNetPackSettings = new DotNetPackSettings
     {
         Configuration = configuration,
+        NoBuild = true,
         OutputDirectory = nupkgDestDir,
         MSBuildSettings = new DotNetMSBuildSettings
         {
@@ -266,6 +267,7 @@ Task("__ValidateDocs")
 Task("Build")
     .IsDependentOn("__Clean")
     .IsDependentOn("__RestoreNuGetPackages")
+    .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__CreateNuGetPackages");
 
 ///////////////////////////////////////////////////////////////////////////////
