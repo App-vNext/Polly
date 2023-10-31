@@ -27,66 +27,67 @@ This section describes how to migrate from execution policies (i.e. `IAsyncPolic
 
 In earlier versions, Polly exposed various interfaces to execute user code:
 
-- `IAsyncPolicy`
-- `IAsyncPolicy<T>`
 - `ISyncPolicy`
+- `IAsyncPolicy`
 - `ISyncPolicy<T>`
+- `IAsyncPolicy<T>`
 
 These interfaces were created and used as shown below:
 
 <!-- snippet: migration-policies-v7 -->
 ```cs
 // Create and use the ISyncPolicy.
-ISyncPolicy syncPolicy = Policy.Handle<Exception>().WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+ISyncPolicy syncPolicy = Policy
+    .Handle<Exception>()
+    .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+
 syncPolicy.Execute(() =>
 {
-    // Your code here
+    // Your code goes here
 });
 
 // Create and use the IAsyncPolicy
-IAsyncPolicy asyncPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(1));
-await asyncPolicy.ExecuteAsync(
-    async cancellationToken =>
-    {
-        // Your code here
-    },
-    cancellationToken);
+IAsyncPolicy asyncPolicy = Policy
+    .Handle<Exception>()
+    .WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(1));
+await asyncPolicy.ExecuteAsync(async token =>
+{
+    // Your code goes here
+}, cancellationToken);
 
 // Create and use the ISyncPolicy<T>
-ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy
-    .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy<HttpResponseMessage>
+    .HandleResult(result => !result.IsSuccessStatusCode)
     .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 
 syncPolicyT.Execute(() =>
 {
-    // Your code here
+    // Your code goes here
     return GetResponse();
 });
 
 // Create and use the IAsyncPolicy<T>
-IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy
-    .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy<HttpResponseMessage>
+    .HandleResult(result => !result.IsSuccessStatusCode)
     .WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(1));
-await asyncPolicyT.ExecuteAsync(
-    async cancellationToken =>
-    {
-        // Your code here
-        return await GetResponseAsync(cancellationToken);
-    },
-    cancellationToken);
+
+await asyncPolicyT.ExecuteAsync(async token =>
+{
+    // Your code goes here
+    return await GetResponseAsync(token);
+}, cancellationToken);
 ```
 <!-- endSnippet -->
 
 ### Configuring strategies in v8
 
-In Polly v8, the previous code becomes:
+In Polly v8, there are no such interfaces. The previous samples become:
 
 <!-- snippet: migration-policies-v8 -->
 ```cs
 // Create and use the ResiliencePipeline.
 //
-// The ResiliencePipelineBuilder is used to start building the resilience pipeline,
-// instead of the static Policy.HandleException<TException>() call.
+// Use the ResiliencePipelineBuilder to start building the resilience pipeline
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions
     {
@@ -98,23 +99,21 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .Build(); // After all necessary strategies are added, call Build() to create the pipeline.
 
 // Synchronous execution
-pipeline.Execute(() =>
+pipeline.Execute(static () =>
 {
-    // Your code here
+    // Your code goes here
 });
 
 // Asynchronous execution is also supported with the same pipeline instance
-await pipeline.ExecuteAsync(static async cancellationToken =>
+await pipeline.ExecuteAsync(static async token =>
 {
-    // Your code here
-},
-cancellationToken);
+    // Your code goes here
+}, cancellationToken);
 
 // Create and use the ResiliencePipeline<T>.
 //
 // Building of generic resilience pipeline is very similar to non-generic one.
-// Notice the use of generic RetryStrategyOptions<HttpResponseMessage> to configure the strategy
-// as opposed to providing the arguments into the method.
+// Notice the use of generic RetryStrategyOptions<HttpResponseMessage> to configure the strategy.
 ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
     {
@@ -128,19 +127,18 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
     .Build();
 
 // Synchronous execution
-pipelineT.Execute(() =>
+pipelineT.Execute(static () =>
 {
-    // Your code here
+    // Your code goes here
     return GetResponse();
 });
 
 // Asynchronous execution
-await pipelineT.ExecuteAsync(static async cancellationToken =>
+await pipelineT.ExecuteAsync(static async token =>
 {
-    // Your code here
-    return await GetResponseAsync(cancellationToken);
-},
-cancellationToken);
+    // Your code goes here
+    return await GetResponseAsync(token);
+}, cancellationToken);
 ```
 <!-- endSnippet -->
 
@@ -148,7 +146,7 @@ cancellationToken);
 
 ### Policy wrap in v7
 
-Policy wrap is used to combine multiple policies into one as shown in the v7 example below:
+Policy wrap is used to combine multiple policies into one:
 
 <!-- snippet: migration-policy-wrap-v7 -->
 ```cs
@@ -165,7 +163,7 @@ IAsyncPolicy wrappedPolicy = Policy.WrapAsync(retryPolicy, timeoutPolicy);
 
 ### Policy wrap in v8
 
-In v8, there's no need to use policy wrap explicitly. Instead, policy wrapping is integrated into `ResiliencePipelineBuilder`, as shown in the example below:
+In v8, there's no need to use policy wrap explicitly. Instead, policy wrapping is integrated into `ResiliencePipelineBuilder`:
 
 <!-- snippet: migration-policy-wrap-v8 -->
 ```cs
@@ -190,7 +188,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 
 ## Migrating retry policies
 
-This section describes how to migrate the v7 retry policy to a resilience strategy in v8.
+This section describes how to migrate v7 retry policies to V8 retry strategies.
 
 ### Retry in v7
 
@@ -200,13 +198,13 @@ In v7 the retry policy is configured as:
 ```cs
 // Retry once
 Policy
-  .Handle<SomeExceptionType>()
-  .Retry();
+    .Handle<SomeExceptionType>()
+    .Retry();
 
 // Retry multiple times
 Policy
-  .Handle<SomeExceptionType>()
-  .Retry(3);
+    .Handle<SomeExceptionType>()
+    .Retry(3);
 
 // Retry multiple times with callback
 Policy
@@ -215,6 +213,11 @@ Policy
     {
         // Add logic to be executed before each retry, such as logging
     });
+
+// Retry forever
+Policy
+    .Handle<SomeExceptionType>()
+    .RetryForever();
 ```
 <!-- endSnippet -->
 
@@ -278,15 +281,10 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 
 <!-- snippet: migration-retry-wait-v7 -->
 ```cs
-// Retry forever
-Policy
-    .Handle<SomeExceptionType>()
-    .WaitAndRetryForever(_ => TimeSpan.FromSeconds(1));
-
 // Wait and retry multiple times
 Policy
-  .Handle<SomeExceptionType>()
-  .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+    .Handle<SomeExceptionType>()
+    .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 
 // Wait and retry multiple times with callback
 Policy
@@ -350,9 +348,9 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 ```cs
 // Wait and retry with result handling
 Policy
-  .Handle<SomeExceptionType>()
-  .OrResult<HttpResponseMessage>(response => response.StatusCode == HttpStatusCode.InternalServerError)
-  .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+    .Handle<SomeExceptionType>()
+    .OrResult<HttpResponseMessage>(result => result.StatusCode == HttpStatusCode.InternalServerError)
+    .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 ```
 <!-- endSnippet -->
 

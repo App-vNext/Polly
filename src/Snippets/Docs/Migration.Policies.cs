@@ -12,43 +12,45 @@ internal static partial class Migration
         #region migration-policies-v7
 
         // Create and use the ISyncPolicy.
-        ISyncPolicy syncPolicy = Policy.Handle<Exception>().WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+        ISyncPolicy syncPolicy = Policy
+            .Handle<Exception>()
+            .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+
         syncPolicy.Execute(() =>
         {
-            // Your code here
+            // Your code goes here
         });
 
         // Create and use the IAsyncPolicy
-        IAsyncPolicy asyncPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(1));
-        await asyncPolicy.ExecuteAsync(
-            async cancellationToken =>
-            {
-                // Your code here
-            },
-            cancellationToken);
+        IAsyncPolicy asyncPolicy = Policy
+            .Handle<Exception>()
+            .WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(1));
+        await asyncPolicy.ExecuteAsync(async token =>
+        {
+            // Your code goes here
+        }, cancellationToken);
 
         // Create and use the ISyncPolicy<T>
-        ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy
-            .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+        ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy<HttpResponseMessage>
+            .HandleResult(result => !result.IsSuccessStatusCode)
             .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 
         syncPolicyT.Execute(() =>
         {
-            // Your code here
+            // Your code goes here
             return GetResponse();
         });
 
         // Create and use the IAsyncPolicy<T>
-        IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy
-            .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+        IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy<HttpResponseMessage>
+            .HandleResult(result => !result.IsSuccessStatusCode)
             .WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(1));
-        await asyncPolicyT.ExecuteAsync(
-            async cancellationToken =>
-            {
-                // Your code here
-                return await GetResponseAsync(cancellationToken);
-            },
-            cancellationToken);
+
+        await asyncPolicyT.ExecuteAsync(async token =>
+        {
+            // Your code goes here
+            return await GetResponseAsync(token);
+        }, cancellationToken);
 
         #endregion
     }
@@ -61,8 +63,7 @@ internal static partial class Migration
 
         // Create and use the ResiliencePipeline.
         //
-        // The ResiliencePipelineBuilder is used to start building the resilience pipeline,
-        // instead of the static Policy.HandleException<TException>() call.
+        // Use the ResiliencePipelineBuilder to start building the resilience pipeline
         ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
             .AddRetry(new RetryStrategyOptions
             {
@@ -74,23 +75,21 @@ internal static partial class Migration
             .Build(); // After all necessary strategies are added, call Build() to create the pipeline.
 
         // Synchronous execution
-        pipeline.Execute(() =>
+        pipeline.Execute(static () =>
         {
-            // Your code here
+            // Your code goes here
         });
 
         // Asynchronous execution is also supported with the same pipeline instance
-        await pipeline.ExecuteAsync(static async cancellationToken =>
+        await pipeline.ExecuteAsync(static async token =>
         {
-            // Your code here
-        },
-        cancellationToken);
+            // Your code goes here
+        }, cancellationToken);
 
         // Create and use the ResiliencePipeline<T>.
         //
         // Building of generic resilience pipeline is very similar to non-generic one.
-        // Notice the use of generic RetryStrategyOptions<HttpResponseMessage> to configure the strategy
-        // as opposed to providing the arguments into the method.
+        // Notice the use of generic RetryStrategyOptions<HttpResponseMessage> to configure the strategy.
         ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
             {
@@ -104,19 +103,18 @@ internal static partial class Migration
             .Build();
 
         // Synchronous execution
-        pipelineT.Execute(() =>
+        pipelineT.Execute(static () =>
         {
-            // Your code here
+            // Your code goes here
             return GetResponse();
         });
 
         // Asynchronous execution
-        await pipelineT.ExecuteAsync(static async cancellationToken =>
+        await pipelineT.ExecuteAsync(static async token =>
         {
-            // Your code here
-            return await GetResponseAsync(cancellationToken);
-        },
-        cancellationToken);
+            // Your code goes here
+            return await GetResponseAsync(token);
+        }, cancellationToken);
 
         #endregion
     }

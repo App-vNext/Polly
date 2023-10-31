@@ -15,13 +15,13 @@ internal static partial class Migration
 
         // Retry once
         Policy
-          .Handle<SomeExceptionType>()
-          .Retry();
+            .Handle<SomeExceptionType>()
+            .Retry();
 
         // Retry multiple times
         Policy
-          .Handle<SomeExceptionType>()
-          .Retry(3);
+            .Handle<SomeExceptionType>()
+            .Retry(3);
 
         // Retry multiple times with callback
         Policy
@@ -31,19 +31,19 @@ internal static partial class Migration
                 // Add logic to be executed before each retry, such as logging
             });
 
+        // Retry forever
+        Policy
+            .Handle<SomeExceptionType>()
+            .RetryForever();
+
         #endregion
 
         #region migration-retry-wait-v7
 
-        // Retry forever
-        Policy
-            .Handle<SomeExceptionType>()
-            .WaitAndRetryForever(_ => TimeSpan.FromSeconds(1));
-
         // Wait and retry multiple times
         Policy
-          .Handle<SomeExceptionType>()
-          .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+            .Handle<SomeExceptionType>()
+            .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 
         // Wait and retry multiple times with callback
         Policy
@@ -64,9 +64,9 @@ internal static partial class Migration
 
         // Wait and retry with result handling
         Policy
-          .Handle<SomeExceptionType>()
-          .OrResult<HttpResponseMessage>(response => response.StatusCode == HttpStatusCode.InternalServerError)
-          .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+            .Handle<SomeExceptionType>()
+            .OrResult<HttpResponseMessage>(result => result.StatusCode == HttpStatusCode.InternalServerError)
+            .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 
         #endregion
     }
