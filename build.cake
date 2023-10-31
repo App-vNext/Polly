@@ -267,7 +267,6 @@ Task("__ValidateDocs")
 Task("Build")
     .IsDependentOn("__Clean")
     .IsDependentOn("__RestoreNuGetPackages")
-    .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__CreateNuGetPackages");
 
 ///////////////////////////////////////////////////////////////////////////////
