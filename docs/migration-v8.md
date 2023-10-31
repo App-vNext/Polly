@@ -147,10 +147,10 @@ await pipelineT.ExecuteAsync(static async token =>
 > Things to remember:
 >
 > - Use `ResiliencePipelineBuilder{<TResult>}` to build a resiliency pipeline
-> - Use one of the `AddXYZ` builder methods to add a new strategy to the pipeline
+> - Use one of the `Add*` builder methods to add a new strategy to the pipeline
 > - Use either `Execute` or `ExecuteAsync` depending on the execution context
 >
-> For further information please check out the [Resilience pipelines docs](pipelines/index.md)
+> For further information please check out the [Resilience pipelines documentation](pipelines/index.md).
 
 ## Migrating policy wrap
 
@@ -200,9 +200,9 @@ See [fallback after retries](strategies/fallback.md#fallback-after-retries) for 
 > Things to remember:
 >
 > - Use `ResiliencePipelineBuilder{<TResult>}` to build a resiliency pipeline
-> - Use multiple `AddXYZ` builder methods to add new strategies to your pipeline
+> - Use multiple `Add*` builder methods to add new strategies to your pipeline
 >
-> For further information please check out the [Resilience pipelines docs](pipelines/index.md)
+> For further information please check out the [Resilience pipelines documentation](pipelines/index.md).
 
 ## Migrating retry policies
 
@@ -411,7 +411,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 > - Use `AddRetry` to add a retry strategy to your resiliency pipeline
 > - Use the `RetryStrategyOptions` to customize your retry behavior to meet your requirements
 >
-> For further information please check out the [Retry resilience strategy docs](strategies/retry.md)
+> For further information please check out the [Retry resilience strategy documentation](strategies/retry.md).
 
 ## Migrating rate limit policies
 
@@ -480,9 +480,9 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 > Things to remember:
 >
 > - Use `AddRateLimiter` to add a rate limiter strategy to your resiliency pipeline
-> - Use one of the derived classes of [`ReplenishingRateLimiter`](https://learn.microsoft.com/en-us/dotnet/api/system.threading.ratelimiting.replenishingratelimiter) to customize your rate limiter behavior to meet your requirements
+> - Use one of the derived classes of [`ReplenishingRateLimiter`](https://learn.microsoft.com/dotnet/api/system.threading.ratelimiting.replenishingratelimiter) to customize your rate limiter behavior to meet your requirements
 >
-> For further information please check out the [Rate limiter resilience strategy docs](strategies/rate-limiter.md)
+> For further information please check out the [Rate limiter resilience strategy documentation](strategies/rate-limiter.md).
 
 ## Migrating bulkhead policies
 
@@ -545,7 +545,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 > - Use `AddConcurrencyLimiter` to add a concurrency limiter strategy to your resiliency pipeline
 > - Use the `ConcurrencyLimiterOptions` to customize your concurrency limiter behavior to meet your requirements
 >
-> For further information please check out the [Rate limiter resilience strategy docs](strategies/rate-limiter.md)
+> For further information please check out the [Rate limiter resilience strategy documentation](strategies/rate-limiter.md).
 
 ## Migrating timeout policies
 
@@ -595,7 +595,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 > - Use `AddTimeout` to add a timeout strategy to your resiliency pipeline
 > - Use the `TimeoutStrategyOptions` to customize your timeout behavior to meet your requirements
 >
-> For further information please check out the [Timeout resilience strategy docs](strategies/timeout.md)
+> For further information please check out the [Timeout resilience strategy documentation](strategies/timeout.md).
 
 ## Migrating other policies
 
