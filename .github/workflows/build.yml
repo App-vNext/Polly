@@ -165,7 +165,7 @@ jobs:
         --application-name "Polly"
         --publisher-name "App vNext"
         --description "Polly"
-        --description-url "https://github.com/App-vNext/Polly"
+        --description-url "https://github.com/${{ github.repository }}"
         --azure-key-vault-certificate "${{ secrets.SIGN_CLI_CERT_NAME }}"
         --azure-key-vault-client-id "${{ secrets.SIGN_CLI_APPLICATION_ID }}"
         --azure-key-vault-client-secret "${{ secrets.SIGN_CLI_SECRET }}"
