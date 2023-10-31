@@ -9,16 +9,24 @@ internal static partial class Migration
         #region migration-bulkhead-v7
 
         // Create sync bulkhead
-        ISyncPolicy syncPolicy = Policy.Bulkhead(maxParallelization: 100, maxQueuingActions: 50);
+        ISyncPolicy syncPolicy = Policy.Bulkhead(
+            maxParallelization: 100,
+            maxQueuingActions: 50);
 
         // Create async bulkhead
-        IAsyncPolicy asyncPolicy = Policy.BulkheadAsync(maxParallelization: 100, maxQueuingActions: 50);
+        IAsyncPolicy asyncPolicy = Policy.BulkheadAsync(
+            maxParallelization: 100,
+            maxQueuingActions: 50);
 
         // Create generic sync bulkhead
-        ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy.Bulkhead<HttpResponseMessage>(maxParallelization: 100, maxQueuingActions: 50);
+        ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy.Bulkhead<HttpResponseMessage>(
+            maxParallelization: 100,
+            maxQueuingActions: 50);
 
         // Create generic async bulkhead
-        IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy.BulkheadAsync<HttpResponseMessage>(maxParallelization: 100, maxQueuingActions: 50);
+        IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy.BulkheadAsync<HttpResponseMessage>(
+            maxParallelization: 100,
+            maxQueuingActions: 50);
 
         #endregion
     }

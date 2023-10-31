@@ -147,7 +147,7 @@ await pipelineT.ExecuteAsync(static async token =>
 > Things to remember:
 >
 > - Use `ResiliencePipelineBuilder{<TResult>}` to build a resiliency pipeline
-> - Use one of the `AddXYZ` builder method to add a new strategy to the pipeline
+> - Use one of the `AddXYZ` builder methods to add a new strategy to the pipeline
 > - Use either `Execute` or `ExecuteAsync` depending on the execution context
 >
 > For further information please check out the [Resilience pipelines docs](pipelines/index.md)
@@ -478,6 +478,15 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
+> [!IMPORTANT]
+>
+> Things to remember:
+>
+> - Use `AddRateLimiter` to add a rate limiter strategy to your resiliency pipeline
+> - Use one of the derived classes of [`ReplenishingRateLimiter`](https://learn.microsoft.com/en-us/dotnet/api/system.threading.ratelimiting.replenishingratelimiter) to customize your rate limiter behavior to meet your requirements
+>
+> For further information please check out the [Rate limiter resilience strategy docs](strategies/rate-limiter.md)
+
 ## Migrating bulkhead policies
 
 The bulkhead policy is now replaced by the [rate limiter strategy](strategies/rate-limiter.md) which uses the [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) package. The new counterpart to bulkhead is `ConcurrencyLimiter`.
@@ -490,16 +499,24 @@ The bulkhead policy is now replaced by the [rate limiter strategy](strategies/ra
 <!-- snippet: migration-bulkhead-v7 -->
 ```cs
 // Create sync bulkhead
-ISyncPolicy syncPolicy = Policy.Bulkhead(maxParallelization: 100, maxQueuingActions: 50);
+ISyncPolicy syncPolicy = Policy.Bulkhead(
+    maxParallelization: 100,
+    maxQueuingActions: 50);
 
 // Create async bulkhead
-IAsyncPolicy asyncPolicy = Policy.BulkheadAsync(maxParallelization: 100, maxQueuingActions: 50);
+IAsyncPolicy asyncPolicy = Policy.BulkheadAsync(
+    maxParallelization: 100,
+    maxQueuingActions: 50);
 
 // Create generic sync bulkhead
-ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy.Bulkhead<HttpResponseMessage>(maxParallelization: 100, maxQueuingActions: 50);
+ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy.Bulkhead<HttpResponseMessage>(
+    maxParallelization: 100,
+    maxQueuingActions: 50);
 
 // Create generic async bulkhead
-IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy.BulkheadAsync<HttpResponseMessage>(maxParallelization: 100, maxQueuingActions: 50);
+IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy.BulkheadAsync<HttpResponseMessage>(
+    maxParallelization: 100,
+    maxQueuingActions: 50);
 ```
 <!-- endSnippet -->
 
@@ -523,6 +540,15 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
     .Build();
 ```
 <!-- endSnippet -->
+
+> [!IMPORTANT]
+>
+> Things to remember:
+>
+> - Use `AddConcurrencyLimiter` to add a concurrency limiter strategy to your resiliency pipeline
+> - Use the `ConcurrencyLimiterOptions` to customize your concurrency limiter behavior to meet your requirements
+>
+> For further information please check out the [Rate limiter resilience strategy docs](strategies/rate-limiter.md)
 
 ## Migrating timeout policies
 
@@ -564,6 +590,15 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
     .Build();
 ```
 <!-- endSnippet -->
+
+> [!IMPORTANT]
+>
+> Things to remember:
+>
+> - Use `AddTimeout` to add a timeout strategy to your resiliency pipeline
+> - Use the `TimeoutStrategyOptions` to customize your timeout behavior to meet your requirements
+>
+> For further information please check out the [Timeout resilience strategy docs](strategies/timeout.md)
 
 ## Migrating other policies
 
