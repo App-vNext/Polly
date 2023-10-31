@@ -687,8 +687,7 @@ cbPolicy.Reset(); // transitions into Closed state
 ```
 <!-- endSnippet -->
 
-
-### Timeout in v8
+### Circuit breaker in v8
 
 > [!IMPORTANT]
 >
@@ -759,7 +758,6 @@ await manualControl.CloseAsync(); // transitions into Closed state
 > - Use the `CircuitBreakerStrategyOptions{<TResult>}` to customize your circuit breaker behavior to meet your requirements
 >
 > For further information please check out the [Circuit Breaker resilience strategy documentation](strategies/circuit-breaker.md).
-
 
 ## Migrating other policies
 
