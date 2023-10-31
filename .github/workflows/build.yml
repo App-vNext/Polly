@@ -200,6 +200,7 @@ jobs:
         --azure-key-vault-client-secret "${{ secrets.SIGN_CLI_SECRET }}"
         --azure-key-vault-tenant-id "${{ secrets.SIGN_CLI_TENANT_ID }}"
         --azure-key-vault-url "${{ secrets.SIGN_CLI_VAULT_URI }}"
+        --verbosity "${{ runner.debug == '1' && 'Debug' || 'Warning' }}"
 
     - name: Upload signed packages
       uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
