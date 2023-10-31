@@ -211,8 +211,8 @@ jobs:
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
         path: AuthenticodeLint
-        ref: ccfaec53ee5c1b14f029cb8156e0653c530f8b65
-        repository: vcsjones/AuthenticodeLint
+        ref: 000610ad2626ea2553c453521398d4d5125d57b8
+        repository: martincostello/AuthenticodeLint
 
     - name: Validate signatures
       shell: pwsh
