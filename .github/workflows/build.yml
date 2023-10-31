@@ -97,16 +97,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Download packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-      with:
-        name: packages-windows
-
     - name: Checkout code
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+
+    - name: Download packages
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      with:
+        name: packages-windows
 
     - name: Validate NuGet packages
       shell: pwsh
@@ -132,6 +132,15 @@ jobs:
 
     steps:
 
+    - name: Checkout code
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+
+    - name: Install Sign CLI tool
+      run: dotnet tool install --tool-path . sign --version 0.9.1-beta.23530.1
+
     - name: Download unsigned packages
       uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
       with:
@@ -143,15 +152,6 @@ jobs:
       with:
         name: signing-config
         path: signing-config
-
-    - name: Checkout code
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
-
-    - name: Install Sign CLI tool
-      run: dotnet tool install --tool-path . sign --version 0.9.1-beta.23530.1
 
     - name: Sign artifacts
       shell: pwsh
@@ -183,11 +183,6 @@ jobs:
     runs-on: windows-latest
     steps:
 
-    - name: Download packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-      with:
-        name: signed-packages
-
     - name: Checkout code
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
@@ -197,6 +192,11 @@ jobs:
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
       with:
         global-json-file: Polly/global.json
+
+    - name: Download packages
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      with:
+        name: signed-packages
 
     - name: Validate NuGet packages
       shell: pwsh
