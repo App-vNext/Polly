@@ -193,8 +193,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 ```
 <!-- endSnippet -->
 
-> [!NOTE]
-> See [fallback after retries](strategies/fallback.md#fallback-after-retries) for an example on how the strategies are executed.
+See [fallback after retries](strategies/fallback.md#fallback-after-retries) for an example on how the strategies are executed.
 
 > [!IMPORTANT]
 >
