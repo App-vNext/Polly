@@ -103,6 +103,7 @@ internal static partial class Migration
         ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
             .AddCircuitBreaker(new CircuitBreakerStrategyOptions
             {
+                ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
                 FailureRatio = 0.5d,
                 SamplingDuration = TimeSpan.FromSeconds(5),
                 MinimumThroughput = 2,
@@ -115,6 +116,7 @@ internal static partial class Migration
         ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage>
             {
+                ShouldHandle = new PredicateBuilder<HttpResponseMessage>().Handle<SomeExceptionType>(),
                 FailureRatio = 0.5d,
                 SamplingDuration = TimeSpan.FromSeconds(5),
                 MinimumThroughput = 2,
@@ -124,32 +126,26 @@ internal static partial class Migration
 
         // Check circuit state
         CircuitBreakerStateProvider stateProvider = new();
-        ResiliencePipeline<HttpResponseMessage> pipelineState = new ResiliencePipelineBuilder<HttpResponseMessage>()
-            .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage>
-            {
-                FailureRatio = 0.5d,
-                SamplingDuration = TimeSpan.FromSeconds(5),
-                MinimumThroughput = 2,
-                BreakDuration = TimeSpan.FromSeconds(1),
-                StateProvider = stateProvider
-            })
-            .Build();
-
-        bool isOpen = stateProvider.CircuitState == CircuitState.Open || stateProvider.CircuitState == CircuitState.Isolated;
-
         // Manually control state
         CircuitBreakerManualControl manualControl = new();
-        ResiliencePipeline<HttpResponseMessage> pipelineControl = new ResiliencePipelineBuilder<HttpResponseMessage>()
-            .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage>
+
+        ResiliencePipeline pipelineState = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new CircuitBreakerStrategyOptions
             {
+                ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
                 FailureRatio = 0.5d,
                 SamplingDuration = TimeSpan.FromSeconds(5),
                 MinimumThroughput = 2,
                 BreakDuration = TimeSpan.FromSeconds(1),
+                StateProvider = stateProvider,
                 ManualControl = manualControl
             })
             .Build();
 
+        // Check circuit state
+        bool isOpen = stateProvider.CircuitState == CircuitState.Open || stateProvider.CircuitState == CircuitState.Isolated;
+
+        // Manually control state
         await manualControl.IsolateAsync(); // transitions into Isolated state
         await manualControl.CloseAsync(); // transitions into Closed state
 
