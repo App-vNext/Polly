@@ -118,52 +118,53 @@
 <p>These interfaces were created and used as shown below:</p>
 <!-- snippet: migration-policies-v7 -->
 <pre><code class="lang-cs">// Create and use the ISyncPolicy.
-ISyncPolicy syncPolicy = Policy.Handle&lt;Exception&gt;().WaitAndRetry(3, _ =&gt; TimeSpan.FromSeconds(1));
+ISyncPolicy syncPolicy = Policy
+    .Handle&lt;Exception&gt;()
+    .WaitAndRetry(3, _ =&gt; TimeSpan.FromSeconds(1));
+
 syncPolicy.Execute(() =&gt;
 {
-    // Your code here
+    // Your code goes here
 });
 
 // Create and use the IAsyncPolicy
-IAsyncPolicy asyncPolicy = Policy.Handle&lt;Exception&gt;().WaitAndRetryAsync(3, _ =&gt; TimeSpan.FromSeconds(1));
-await asyncPolicy.ExecuteAsync(
-    async cancellationToken =&gt;
-    {
-        // Your code here
-    },
-    cancellationToken);
+IAsyncPolicy asyncPolicy = Policy
+    .Handle&lt;Exception&gt;()
+    .WaitAndRetryAsync(3, _ =&gt; TimeSpan.FromSeconds(1));
+await asyncPolicy.ExecuteAsync(async token =&gt;
+{
+    // Your code goes here
+}, cancellationToken);
 
 // Create and use the ISyncPolicy&lt;T&gt;
-ISyncPolicy&lt;HttpResponseMessage&gt; syncPolicyT = Policy
-    .HandleResult&lt;HttpResponseMessage&gt;(r =&gt; !r.IsSuccessStatusCode)
+ISyncPolicy&lt;HttpResponseMessage&gt; syncPolicyT = Policy&lt;HttpResponseMessage&gt;
+    .HandleResult(result =&gt; !result.IsSuccessStatusCode)
     .WaitAndRetry(3, _ =&gt; TimeSpan.FromSeconds(1));
 
 syncPolicyT.Execute(() =&gt;
 {
-    // Your code here
+    // Your code goes here
     return GetResponse();
 });
 
 // Create and use the IAsyncPolicy&lt;T&gt;
-IAsyncPolicy&lt;HttpResponseMessage&gt; asyncPolicyT = Policy
-    .HandleResult&lt;HttpResponseMessage&gt;(r =&gt; !r.IsSuccessStatusCode)
+IAsyncPolicy&lt;HttpResponseMessage&gt; asyncPolicyT = Policy&lt;HttpResponseMessage&gt;
+    .HandleResult(result =&gt; !result.IsSuccessStatusCode)
     .WaitAndRetryAsync(3, _ =&gt; TimeSpan.FromSeconds(1));
-await asyncPolicyT.ExecuteAsync(
-    async cancellationToken =&gt;
-    {
-        // Your code here
-        return await GetResponseAsync(cancellationToken);
-    },
-    cancellationToken);
+
+await asyncPolicyT.ExecuteAsync(async token =&gt;
+{
+    // Your code goes here
+    return await GetResponseAsync(token);
+}, cancellationToken);
 </code></pre>
 <!-- endSnippet -->
 <h3 id="configuring-strategies-in-v8">Configuring strategies in v8</h3>
-<p>In Polly v8, the previous code becomes:</p>
+<p>In Polly v8, there are no such interfaces. The previous samples become:</p>
 <!-- snippet: migration-policies-v8 -->
 <pre><code class="lang-cs">// Create and use the ResiliencePipeline.
 //
-// The ResiliencePipelineBuilder is used to start building the resilience pipeline,
-// instead of the static Policy.HandleException&lt;TException&gt;() call.
+// Use the ResiliencePipelineBuilder to start building the resilience pipeline
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions
     {
@@ -175,29 +176,27 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .Build(); // After all necessary strategies are added, call Build() to create the pipeline.
 
 // Synchronous execution
-pipeline.Execute(() =&gt;
+pipeline.Execute(static () =&gt;
 {
-    // Your code here
+    // Your code goes here
 });
 
 // Asynchronous execution is also supported with the same pipeline instance
-await pipeline.ExecuteAsync(static async cancellationToken =&gt;
+await pipeline.ExecuteAsync(static async token =&gt;
 {
-    // Your code here
-},
-cancellationToken);
+    // Your code goes here
+}, cancellationToken);
 
 // Create and use the ResiliencePipeline&lt;T&gt;.
 //
 // Building of generic resilience pipeline is very similar to non-generic one.
-// Notice the use of generic RetryStrategyOptions&lt;HttpResponseMessage&gt; to configure the strategy
-// as opposed to providing the arguments into the method.
+// Notice the use of generic RetryStrategyOptions&lt;HttpResponseMessage&gt; to configure the strategy.
 ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     .AddRetry(new RetryStrategyOptions&lt;HttpResponseMessage&gt;
     {
         ShouldHandle = new PredicateBuilder&lt;HttpResponseMessage&gt;()
             .Handle&lt;Exception&gt;()
-            .HandleResult(result =&gt; !result.IsSuccessStatusCode),
+            .HandleResult(static result =&gt; !result.IsSuccessStatusCode),
         Delay = TimeSpan.FromSeconds(1),
         MaxRetryAttempts = 3,
         BackoffType = DelayBackoffType.Constant
@@ -205,24 +204,33 @@ ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipeline
     .Build();
 
 // Synchronous execution
-pipelineT.Execute(() =&gt;
+pipelineT.Execute(static () =&gt;
 {
-    // Your code here
+    // Your code goes here
     return GetResponse();
 });
 
 // Asynchronous execution
-await pipelineT.ExecuteAsync(static async cancellationToken =&gt;
+await pipelineT.ExecuteAsync(static async token =&gt;
 {
-    // Your code here
-    return await GetResponseAsync(cancellationToken);
-},
-cancellationToken);
+    // Your code goes here
+    return await GetResponseAsync(token);
+}, cancellationToken);
 </code></pre>
 <!-- endSnippet -->
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Things to remember:</p>
+<ul>
+<li>Use <code>ResiliencePipelineBuilder{&lt;TResult&gt;}</code> to build a resiliency pipeline</li>
+<li>Use one of the <code>Add*</code> builder methods to add a new strategy to the pipeline</li>
+<li>Use either <code>Execute</code> or <code>ExecuteAsync</code> depending on the execution context</li>
+</ul>
+<p>For further information please check out the <a href="pipelines/index.html">Resilience pipelines documentation</a>.</p>
+</div>
 <h2 id="migrating-policy-wrap">Migrating policy wrap</h2>
 <h3 id="policy-wrap-in-v7">Policy wrap in v7</h3>
-<p>Policy wrap is used to combine multiple policies into one as shown in the v7 example below:</p>
+<p>Policy wrap is used to combine multiple policies into one:</p>
 <!-- snippet: migration-policy-wrap-v7 -->
 <pre><code class="lang-cs">IAsyncPolicy retryPolicy = Policy.Handle&lt;Exception&gt;().WaitAndRetryAsync(3, _ =&gt; TimeSpan.FromSeconds(1));
 
@@ -235,7 +243,7 @@ IAsyncPolicy wrappedPolicy = Policy.WrapAsync(retryPolicy, timeoutPolicy);
 </code></pre>
 <!-- endSnippet -->
 <h3 id="policy-wrap-in-v8">Policy wrap in v8</h3>
-<p>In v8, there's no need to use policy wrap explicitly. Instead, policy wrapping is integrated into <code>ResiliencePipelineBuilder</code>, as shown in the example below:</p>
+<p>In v8, there's no need to use policy wrap explicitly. Instead, policy wrapping is integrated into <code>ResiliencePipelineBuilder</code>:</p>
 <!-- snippet: migration-policy-wrap-v8 -->
 <pre><code class="lang-cs">// The &quot;PolicyWrap&quot; is integrated directly. The strategies are executed in the following order:
 // 1. Retry &lt;== outer
@@ -252,24 +260,30 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .Build();
 </code></pre>
 <!-- endSnippet -->
-<div class="NOTE">
-<h5>Note</h5>
 <p>See <a href="strategies/fallback.html#fallback-after-retries">fallback after retries</a> for an example on how the strategies are executed.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Things to remember:</p>
+<ul>
+<li>Use <code>ResiliencePipelineBuilder{&lt;TResult&gt;}</code> to build a resiliency pipeline</li>
+<li>Use multiple <code>Add*</code> builder methods to add new strategies to your pipeline</li>
+</ul>
+<p>For further information please check out the <a href="pipelines/index.html">Resilience pipelines documentation</a>.</p>
 </div>
 <h2 id="migrating-retry-policies">Migrating retry policies</h2>
-<p>This section describes how to migrate the v7 retry policy to a resilience strategy in v8.</p>
+<p>This section describes how to migrate v7 retry policies to V8 retry strategies.</p>
 <h3 id="retry-in-v7">Retry in v7</h3>
 <p>In v7 the retry policy is configured as:</p>
 <!-- snippet: migration-retry-v7 -->
 <pre><code class="lang-cs">// Retry once
 Policy
-  .Handle&lt;SomeExceptionType&gt;()
-  .Retry();
+    .Handle&lt;SomeExceptionType&gt;()
+    .Retry();
 
 // Retry multiple times
 Policy
-  .Handle&lt;SomeExceptionType&gt;()
-  .Retry(3);
+    .Handle&lt;SomeExceptionType&gt;()
+    .Retry(3);
 
 // Retry multiple times with callback
 Policy
@@ -278,6 +292,11 @@ Policy
     {
         // Add logic to be executed before each retry, such as logging
     });
+
+// Retry forever
+Policy
+    .Handle&lt;SomeExceptionType&gt;()
+    .RetryForever();
 </code></pre>
 <!-- endSnippet -->
 <h3 id="retry-in-v8">Retry in v8</h3>
@@ -313,7 +332,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
     ShouldHandle = new PredicateBuilder().Handle&lt;SomeExceptionType&gt;(),
     MaxRetryAttempts = 3,
     Delay = TimeSpan.Zero,
-    OnRetry = args =&gt;
+    OnRetry = static args =&gt;
     {
         // Add logic to be executed before each retry, such as logging
         return default;
@@ -334,15 +353,10 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 <!-- endSnippet -->
 <h3 id="retry-and-wait-in-v7">Retry and wait in v7</h3>
 <!-- snippet: migration-retry-wait-v7 -->
-<pre><code class="lang-cs">// Retry forever
+<pre><code class="lang-cs">// Wait and retry multiple times
 Policy
     .Handle&lt;SomeExceptionType&gt;()
-    .WaitAndRetryForever(_ =&gt; TimeSpan.FromSeconds(1));
-
-// Wait and retry multiple times
-Policy
-  .Handle&lt;SomeExceptionType&gt;()
-  .WaitAndRetry(3, _ =&gt; TimeSpan.FromSeconds(1));
+    .WaitAndRetry(3, _ =&gt; TimeSpan.FromSeconds(1));
 
 // Wait and retry multiple times with callback
 Policy
@@ -377,7 +391,7 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
     MaxRetryAttempts = 3,
     Delay = TimeSpan.FromSeconds(1),
     BackoffType = DelayBackoffType.Constant,
-    OnRetry = args =&gt;
+    OnRetry = static args =&gt;
     {
         // Add logic to be executed before each retry, such as logging
         return default;
@@ -400,9 +414,9 @@ new ResiliencePipelineBuilder().AddRetry(new RetryStrategyOptions
 <!-- snippet: migration-retry-reactive-v7 -->
 <pre><code class="lang-cs">// Wait and retry with result handling
 Policy
-  .Handle&lt;SomeExceptionType&gt;()
-  .OrResult&lt;HttpResponseMessage&gt;(response =&gt; response.StatusCode == HttpStatusCode.InternalServerError)
-  .WaitAndRetry(3, _ =&gt; TimeSpan.FromSeconds(1));
+    .Handle&lt;SomeExceptionType&gt;()
+    .OrResult&lt;HttpResponseMessage&gt;(result =&gt; result.StatusCode == HttpStatusCode.InternalServerError)
+    .WaitAndRetry(3, _ =&gt; TimeSpan.FromSeconds(1));
 </code></pre>
 <!-- endSnippet -->
 <h3 id="retry-results-in-v8">Retry results in v8</h3>
@@ -413,7 +427,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(new RetryStr
     // PredicateBuilder is a convenience API that can used to configure the ShouldHandle predicate.
     ShouldHandle = new PredicateBuilder&lt;HttpResponseMessage&gt;()
         .Handle&lt;SomeExceptionType&gt;()
-        .HandleResult(result =&gt; result.StatusCode == HttpStatusCode.InternalServerError),
+        .HandleResult(static result =&gt; result.StatusCode == HttpStatusCode.InternalServerError),
     MaxRetryAttempts = 3,
 })
 .Build();
@@ -423,7 +437,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(new RetryStr
 {
     // Determine what results to retry using switch expressions.
     // Note that PredicateResult.True() is just a shortcut for &quot;new ValueTask&lt;bool&gt;(true)&quot;.
-    ShouldHandle = args =&gt; args.Outcome switch
+    ShouldHandle = static args =&gt; args.Outcome switch
     {
         { Exception: SomeExceptionType } =&gt; PredicateResult.True(),
         { Result: { StatusCode: HttpStatusCode.InternalServerError } } =&gt; PredicateResult.True(),
@@ -434,7 +448,15 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(new RetryStr
 .Build();
 </code></pre>
 <!-- endSnippet -->
-<p>It's important to remember that the configuration in v8 is options based, i.e. <code>RetryStrategyOptions</code> are used.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Things to remember:</p>
+<ul>
+<li>Use <code>AddRetry</code> to add a retry strategy to your resiliency pipeline</li>
+<li>Use the <code>RetryStrategyOptions</code> to customize your retry behavior to meet your requirements</li>
+</ul>
+<p>For further information please check out the <a href="strategies/retry.html">Retry resilience strategy documentation</a>.</p>
+</div>
 <h2 id="migrating-rate-limit-policies">Migrating rate limit policies</h2>
 <p>The rate limit policy is now replaced by the <a href="strategies/rate-limiter.html">rate limiter strategy</a> which uses the <a href="https://www.nuget.org/packages/System.Threading.RateLimiting"><code>System.Threading.RateLimiting</code></a> package. Polly does not implement its own rate limiter anymore.</p>
 <h3 id="rate-limit-in-v7">Rate limit in v7</h3>
@@ -490,6 +512,15 @@ ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipeline
     .Build();
 </code></pre>
 <!-- endSnippet -->
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Things to remember:</p>
+<ul>
+<li>Use <code>AddRateLimiter</code> to add a rate limiter strategy to your resiliency pipeline</li>
+<li>Use one of the derived classes of <a href="https://learn.microsoft.com/dotnet/api/system.threading.ratelimiting.replenishingratelimiter"><code>ReplenishingRateLimiter</code></a> to customize your rate limiter behavior to meet your requirements</li>
+</ul>
+<p>For further information please check out the <a href="strategies/rate-limiter.html">Rate limiter resilience strategy documentation</a>.</p>
+</div>
 <h2 id="migrating-bulkhead-policies">Migrating bulkhead policies</h2>
 <p>The bulkhead policy is now replaced by the <a href="strategies/rate-limiter.html">rate limiter strategy</a> which uses the <a href="https://www.nuget.org/packages/System.Threading.RateLimiting"><code>System.Threading.RateLimiting</code></a> package. The new counterpart to bulkhead is <code>ConcurrencyLimiter</code>.</p>
 <div class="NOTE">
@@ -499,16 +530,24 @@ ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipeline
 <h3 id="bulkhead-in-v7">Bulkhead in v7</h3>
 <!-- snippet: migration-bulkhead-v7 -->
 <pre><code class="lang-cs">// Create sync bulkhead
-ISyncPolicy syncPolicy = Policy.Bulkhead(maxParallelization: 100, maxQueuingActions: 50);
+ISyncPolicy syncPolicy = Policy.Bulkhead(
+    maxParallelization: 100,
+    maxQueuingActions: 50);
 
 // Create async bulkhead
-IAsyncPolicy asyncPolicy = Policy.BulkheadAsync(maxParallelization: 100, maxQueuingActions: 50);
+IAsyncPolicy asyncPolicy = Policy.BulkheadAsync(
+    maxParallelization: 100,
+    maxQueuingActions: 50);
 
 // Create generic sync bulkhead
-ISyncPolicy&lt;HttpResponseMessage&gt; syncPolicyT = Policy.Bulkhead&lt;HttpResponseMessage&gt;(maxParallelization: 100, maxQueuingActions: 50);
+ISyncPolicy&lt;HttpResponseMessage&gt; syncPolicyT = Policy.Bulkhead&lt;HttpResponseMessage&gt;(
+    maxParallelization: 100,
+    maxQueuingActions: 50);
 
 // Create generic async bulkhead
-IAsyncPolicy&lt;HttpResponseMessage&gt; asyncPolicyT = Policy.BulkheadAsync&lt;HttpResponseMessage&gt;(maxParallelization: 100, maxQueuingActions: 50);
+IAsyncPolicy&lt;HttpResponseMessage&gt; asyncPolicyT = Policy.BulkheadAsync&lt;HttpResponseMessage&gt;(
+    maxParallelization: 100,
+    maxQueuingActions: 50);
 </code></pre>
 <!-- endSnippet -->
 <h3 id="bulkhead-in-v8">Bulkhead in v8</h3>
@@ -530,6 +569,15 @@ ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipeline
     .Build();
 </code></pre>
 <!-- endSnippet -->
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Things to remember:</p>
+<ul>
+<li>Use <code>AddConcurrencyLimiter</code> to add a concurrency limiter strategy to your resiliency pipeline</li>
+<li>Use the <code>ConcurrencyLimiterOptions</code> to customize your concurrency limiter behavior to meet your requirements</li>
+</ul>
+<p>For further information please check out the <a href="strategies/rate-limiter.html">Rate limiter resilience strategy documentation</a>.</p>
+</div>
 <h2 id="migrating-timeout-policies">Migrating timeout policies</h2>
 <div class="NOTE">
 <h5>Note</h5>
@@ -565,6 +613,15 @@ ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipeline
     .Build();
 </code></pre>
 <!-- endSnippet -->
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Things to remember:</p>
+<ul>
+<li>Use <code>AddTimeout</code> to add a timeout strategy to your resiliency pipeline</li>
+<li>Use the <code>TimeoutStrategyOptions</code> to customize your timeout behavior to meet your requirements</li>
+</ul>
+<p>For further information please check out the <a href="strategies/timeout.html">Timeout resilience strategy documentation</a>.</p>
+</div>
 <h2 id="migrating-other-policies">Migrating other policies</h2>
 <p>Migrating is a process similar to the ones described in the previous sections. Keep in mind that:</p>
 <ul>
