@@ -25,6 +25,9 @@ jobs:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
+    outputs:
+      dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
+
     env:
       RUN_MUTATION_TESTS: 'false'
 
@@ -45,6 +48,7 @@ jobs:
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      id: setup-dotnet
 
     - name: Setup NuGet cache
       uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
@@ -102,15 +106,10 @@ jobs:
       with:
         name: packages-windows
 
-    - name: Checkout code
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      with:
-        path: Polly
-
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
       with:
-        global-json-file: Polly/global.json
+        dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
     - name: Validate NuGet packages
       shell: pwsh
@@ -129,7 +128,7 @@ jobs:
         }
 
   sign:
-    needs: validate-packages
+    needs: [ build, validate-packages ]
     runs-on: windows-latest
     if: |
       github.event.repository.fork == false
@@ -148,15 +147,10 @@ jobs:
         name: signing-config
         path: signing-config
 
-    - name: Checkout code
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      with:
-        path: Polly
-
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
       with:
-        global-json-file: Polly/global.json
+        dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
     - name: Install Sign CLI tool
       run: dotnet tool install --tool-path . sign --version 0.9.1-beta.23530.1
@@ -187,7 +181,7 @@ jobs:
         if-no-files-found: error
 
   validate-signed-packages:
-    needs: sign
+    needs: [ build, sign ]
     runs-on: windows-latest
     steps:
 
@@ -196,15 +190,10 @@ jobs:
       with:
         name: signed-packages
 
-    - name: Checkout code
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      with:
-        path: Polly
-
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
       with:
-        global-json-file: Polly/global.json
+        dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
     - name: Validate NuGet packages
       shell: pwsh
