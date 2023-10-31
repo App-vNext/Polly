@@ -27,10 +27,10 @@ This section describes how to migrate from execution policies (i.e. `IAsyncPolic
 
 In earlier versions, Polly exposed various interfaces to execute user code:
 
-- `ISyncPolicy`
 - `IAsyncPolicy`
-- `ISyncPolicy<T>`
 - `IAsyncPolicy<T>`
+- `ISyncPolicy`
+- `ISyncPolicy<T>`
 
 These interfaces were created and used as shown below:
 
