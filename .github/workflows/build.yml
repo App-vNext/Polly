@@ -211,7 +211,7 @@ jobs:
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
         path: AuthenticodeLint
-        ref: 87e7177bf6ec3f40f3001e3a905a91660922bfca
+        ref: ae44826fdcebaa671b06591ea0b3b47fc946b79c
         repository: martincostello/AuthenticodeLint
         submodules: recursive
 
@@ -229,13 +229,11 @@ jobs:
         $authlint = Join-Path $artifacts "authlint.exe"
 
         dotnet publish $authLintProject `
-            --configuration Release `
-            --output $artifacts `
-            --runtime win-x64 `
-            --self-contained false `
-            /p:NoWarn=CS8602 `
-            /p:NoWarn=CS8604 `
-            /p:NoWarn=NU1902
+          --configuration Release `
+          --output $artifacts `
+          --runtime win-x64 `
+          --self-contained false `
+          /p:NoWarn=NU1902
 
         if ($LASTEXITCODE -ne 0) {
           throw "Failed to publish AuthenticodeLint."
