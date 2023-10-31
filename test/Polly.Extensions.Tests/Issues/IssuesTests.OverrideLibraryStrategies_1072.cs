@@ -10,7 +10,7 @@ public partial class IssuesTests
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public void OverrideLibraryStrategies_898(bool overrideStrategy)
+    public void OverrideLibraryStrategies_1072(bool overrideStrategy)
     {
         // arrange
         var services = new ServiceCollection();
