@@ -597,6 +597,170 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 >
 > For further information please check out the [Timeout resilience strategy documentation](strategies/timeout.md).
 
+## Migrating circuit breaker policies
+
+This section describes how to migrate v7 circuit breaker policies to V8 circuit breaker strategies.
+
+### Circuit breaker in v7
+
+V7's "Standard" Circuit Breaker policy could be defined like bellow:
+
+<!-- snippet: migration-circuit-breaker-v7 -->
+```cs
+// Create sync circuit breaker
+ISyncPolicy syncPolicy = Policy
+    .Handle<SomeExceptionType>()
+    .CircuitBreaker(
+        exceptionsAllowedBeforeBreaking: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create async circuit breaker
+IAsyncPolicy asyncPolicy = Policy
+    .Handle<SomeExceptionType>()
+    .CircuitBreakerAsync(
+        exceptionsAllowedBeforeBreaking: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create generic sync circuit breaker
+ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy<HttpResponseMessage>
+    .Handle<SomeExceptionType>()
+    .CircuitBreaker(
+        handledEventsAllowedBeforeBreaking: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create generic async circuit breaker
+IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy<HttpResponseMessage>
+    .Handle<SomeExceptionType>()
+    .CircuitBreakerAsync(
+        handledEventsAllowedBeforeBreaking: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+```
+<!-- endSnippet -->
+
+V7's Advanced Circuit Breaker policy could be defined like bellow:
+
+<!-- snippet: migration-advanced-circuit-breaker-v7 -->
+```cs
+// Create sync advanced circuit breaker
+ISyncPolicy syncPolicy = Policy
+    .Handle<SomeExceptionType>()
+    .AdvancedCircuitBreaker(
+        failureThreshold: 0.5d,
+        samplingDuration: TimeSpan.FromSeconds(5),
+        minimumThroughput: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create async advanced circuit breaker
+IAsyncPolicy asyncPolicy = Policy
+    .Handle<SomeExceptionType>()
+    .AdvancedCircuitBreakerAsync(
+        failureThreshold: 0.5d,
+        samplingDuration: TimeSpan.FromSeconds(5),
+        minimumThroughput: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create generic sync advanced circuit breaker
+ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy<HttpResponseMessage>
+    .Handle<SomeExceptionType>()
+    .AdvancedCircuitBreaker(
+        failureThreshold: 0.5d,
+        samplingDuration: TimeSpan.FromSeconds(5),
+        minimumThroughput: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create generic async advanced circuit breaker
+IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy<HttpResponseMessage>
+    .Handle<SomeExceptionType>()
+    .AdvancedCircuitBreakerAsync(
+        failureThreshold: 0.5d,
+        samplingDuration: TimeSpan.FromSeconds(5),
+        minimumThroughput: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Check circuit state
+ICircuitBreakerPolicy cbPolicy = (ICircuitBreakerPolicy)asyncPolicy;
+bool isOpen = cbPolicy.CircuitState == CircuitState.Open || cbPolicy.CircuitState == CircuitState.Isolated;
+
+// Manually control state
+cbPolicy.Isolate(); // transitions into Isolated state
+cbPolicy.Reset(); // transitions into Closed state
+```
+<!-- endSnippet -->
+
+
+### Timeout in v8
+
+> [!IMPORTANT]
+>
+> Polly V8 does not support the standard ("classic") circuit breaker with consecutive failure counting.
+>
+> In case of V8 you can define a Circuit Breaker strategy which works like the advanced circuit breaker in V7.
+
+<!-- snippet: migration-circuit-breaker-v8 -->
+```cs
+// Create pipeline with circuit breaker. Because ResiliencePipeline supports both sync and async
+// callbacks, there is no need to define it twice.
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new CircuitBreakerStrategyOptions
+    {
+        ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
+        FailureRatio = 0.5d,
+        SamplingDuration = TimeSpan.FromSeconds(5),
+        MinimumThroughput = 2,
+        BreakDuration = TimeSpan.FromSeconds(1)
+    })
+    .Build();
+
+// Create a generic pipeline with circuit breaker. Because ResiliencePipeline<T> supports both sync and async
+// callbacks, there is no need to define it twice.
+ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
+    .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage>
+    {
+        ShouldHandle = new PredicateBuilder<HttpResponseMessage>().Handle<SomeExceptionType>(),
+        FailureRatio = 0.5d,
+        SamplingDuration = TimeSpan.FromSeconds(5),
+        MinimumThroughput = 2,
+        BreakDuration = TimeSpan.FromSeconds(1)
+    })
+    .Build();
+
+// Check circuit state
+CircuitBreakerStateProvider stateProvider = new();
+// Manually control state
+CircuitBreakerManualControl manualControl = new();
+
+ResiliencePipeline pipelineState = new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new CircuitBreakerStrategyOptions
+    {
+        ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
+        FailureRatio = 0.5d,
+        SamplingDuration = TimeSpan.FromSeconds(5),
+        MinimumThroughput = 2,
+        BreakDuration = TimeSpan.FromSeconds(1),
+        StateProvider = stateProvider,
+        ManualControl = manualControl
+    })
+    .Build();
+
+// Check circuit state
+bool isOpen = stateProvider.CircuitState == CircuitState.Open || stateProvider.CircuitState == CircuitState.Isolated;
+
+// Manually control state
+await manualControl.IsolateAsync(); // transitions into Isolated state
+await manualControl.CloseAsync(); // transitions into Closed state
+```
+<!-- endSnippet -->
+
+> [!IMPORTANT]
+>
+> Things to remember:
+>
+> - Use `AddCircuitBreaker` to add a circuit breaker strategy to your resiliency pipeline
+> - Use the `CircuitBreakerStrategyOptions{<TResult>}` to customize your circuit breaker behavior to meet your requirements
+>
+> For further information please check out the [Circuit Breaker resilience strategy documentation](strategies/circuit-breaker.md).
+
+
 ## Migrating other policies
 
 Migrating is a process similar to the ones described in the previous sections. Keep in mind that:
