@@ -15,13 +15,13 @@ internal static partial class Migration
 
         // Retry once
         Policy
-          .Handle<SomeExceptionType>()
-          .Retry();
+            .Handle<SomeExceptionType>()
+            .Retry();
 
         // Retry multiple times
         Policy
-          .Handle<SomeExceptionType>()
-          .Retry(3);
+            .Handle<SomeExceptionType>()
+            .Retry(3);
 
         // Retry multiple times with callback
         Policy
@@ -31,19 +31,19 @@ internal static partial class Migration
                 // Add logic to be executed before each retry, such as logging
             });
 
+        // Retry forever
+        Policy
+            .Handle<SomeExceptionType>()
+            .RetryForever();
+
         #endregion
 
         #region migration-retry-wait-v7
 
-        // Retry forever
-        Policy
-            .Handle<SomeExceptionType>()
-            .WaitAndRetryForever(_ => TimeSpan.FromSeconds(1));
-
         // Wait and retry multiple times
         Policy
-          .Handle<SomeExceptionType>()
-          .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+            .Handle<SomeExceptionType>()
+            .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 
         // Wait and retry multiple times with callback
         Policy
@@ -64,9 +64,9 @@ internal static partial class Migration
 
         // Wait and retry with result handling
         Policy
-          .Handle<SomeExceptionType>()
-          .OrResult<HttpResponseMessage>(response => response.StatusCode == HttpStatusCode.InternalServerError)
-          .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+            .Handle<SomeExceptionType>()
+            .OrResult<HttpResponseMessage>(result => result.StatusCode == HttpStatusCode.InternalServerError)
+            .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 
         #endregion
     }
@@ -105,7 +105,7 @@ internal static partial class Migration
             ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
             MaxRetryAttempts = 3,
             Delay = TimeSpan.Zero,
-            OnRetry = args =>
+            OnRetry = static args =>
             {
                 // Add logic to be executed before each retry, such as logging
                 return default;
@@ -144,7 +144,7 @@ internal static partial class Migration
             MaxRetryAttempts = 3,
             Delay = TimeSpan.FromSeconds(1),
             BackoffType = DelayBackoffType.Constant,
-            OnRetry = args =>
+            OnRetry = static args =>
             {
                 // Add logic to be executed before each retry, such as logging
                 return default;
@@ -172,7 +172,7 @@ internal static partial class Migration
             // PredicateBuilder is a convenience API that can used to configure the ShouldHandle predicate.
             ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
                 .Handle<SomeExceptionType>()
-                .HandleResult(result => result.StatusCode == HttpStatusCode.InternalServerError),
+                .HandleResult(static result => result.StatusCode == HttpStatusCode.InternalServerError),
             MaxRetryAttempts = 3,
         })
         .Build();
@@ -182,7 +182,7 @@ internal static partial class Migration
         {
             // Determine what results to retry using switch expressions.
             // Note that PredicateResult.True() is just a shortcut for "new ValueTask<bool>(true)".
-            ShouldHandle = args => args.Outcome switch
+            ShouldHandle = static args => args.Outcome switch
             {
                 { Exception: SomeExceptionType } => PredicateResult.True(),
                 { Result: { StatusCode: HttpStatusCode.InternalServerError } } => PredicateResult.True(),
