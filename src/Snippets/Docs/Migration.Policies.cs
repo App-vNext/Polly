@@ -95,7 +95,7 @@ internal static partial class Migration
             {
                 ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
                     .Handle<Exception>()
-                    .HandleResult(result => !result.IsSuccessStatusCode),
+                    .HandleResult(static result => !result.IsSuccessStatusCode),
                 Delay = TimeSpan.FromSeconds(1),
                 MaxRetryAttempts = 3,
                 BackoffType = DelayBackoffType.Constant

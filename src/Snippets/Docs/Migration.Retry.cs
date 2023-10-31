@@ -105,7 +105,7 @@ internal static partial class Migration
             ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
             MaxRetryAttempts = 3,
             Delay = TimeSpan.Zero,
-            OnRetry = args =>
+            OnRetry = static args =>
             {
                 // Add logic to be executed before each retry, such as logging
                 return default;
@@ -144,7 +144,7 @@ internal static partial class Migration
             MaxRetryAttempts = 3,
             Delay = TimeSpan.FromSeconds(1),
             BackoffType = DelayBackoffType.Constant,
-            OnRetry = args =>
+            OnRetry = static args =>
             {
                 // Add logic to be executed before each retry, such as logging
                 return default;
@@ -172,7 +172,7 @@ internal static partial class Migration
             // PredicateBuilder is a convenience API that can used to configure the ShouldHandle predicate.
             ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
                 .Handle<SomeExceptionType>()
-                .HandleResult(result => result.StatusCode == HttpStatusCode.InternalServerError),
+                .HandleResult(static result => result.StatusCode == HttpStatusCode.InternalServerError),
             MaxRetryAttempts = 3,
         })
         .Build();
@@ -182,7 +182,7 @@ internal static partial class Migration
         {
             // Determine what results to retry using switch expressions.
             // Note that PredicateResult.True() is just a shortcut for "new ValueTask<bool>(true)".
-            ShouldHandle = args => args.Outcome switch
+            ShouldHandle = static args => args.Outcome switch
             {
                 { Exception: SomeExceptionType } => PredicateResult.True(),
                 { Result: { StatusCode: HttpStatusCode.InternalServerError } } => PredicateResult.True(),
