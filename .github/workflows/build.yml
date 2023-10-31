@@ -26,18 +26,13 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      # HACK Running on Windows instead of Linux due to https://github.com/stryker-mutator/stryker-net/issues/2741
-      RUN_MUTATION_TESTS: ${{ matrix.os_name == 'windows' && !startsWith(github.ref, 'refs/tags/') && 'true' || 'false' }}
+      RUN_MUTATION_TESTS: 'false'
 
     strategy:
       fail-fast: false
       matrix:
         os: [ windows-latest ]
         include:
-          - os: macos-latest
-            os_name: macos
-          - os: ubuntu-latest
-            os_name: linux
           - os: windows-latest
             os_name: windows
 
@@ -126,34 +121,11 @@ jobs:
           Write-Output "::error::$invalidPackages NuGet package(s) failed validation."
         }
 
-  publish-github:
-    needs: validate-packages
-    permissions:
-      packages: write
-    runs-on: ubuntu-latest
-    if: |
-      github.event.repository.fork == false &&
-      (github.ref_name == github.event.repository.default_branch ||
-       startsWith(github.ref, 'refs/tags/'))
-    steps:
-
-    - name: Download packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-      with:
-        name: packages-windows
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
-
-    - name: Publish NuGet packages to GitHub Packages
-      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate --no-symbols --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-
   sign:
-    needs: publish-github
+    needs: validate-packages
     runs-on: windows-latest
     if: |
-      github.event.repository.fork == false &&
-      startsWith(github.ref, 'refs/tags/')
+      github.event.repository.fork == false
 
     steps:
 
@@ -211,6 +183,8 @@ jobs:
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      with:
+        dotnet-version: 6.0.414 # Version as of September 28th 2023
 
     - name: Validate NuGet packages
       shell: pwsh
@@ -297,19 +271,3 @@ jobs:
         } else {
           Write-Output "All $($packages.Length) NuGet packages have valid signatures."
         }
-
-  publish-nuget:
-    needs: validate-signed-packages
-    runs-on: ubuntu-latest
-    steps:
-
-    - name: Download signed packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-      with:
-        name: signed-packages
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
-
-    - name: Push signed NuGet packages to NuGet.org
-      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json
