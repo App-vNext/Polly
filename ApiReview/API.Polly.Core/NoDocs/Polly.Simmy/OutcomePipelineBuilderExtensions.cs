@@ -8,13 +8,7 @@ namespace Polly.Simmy;
 
 public static class OutcomePipelineBuilderExtensions
 {
-    public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, bool enabled, double injectionRate, Exception fault);
-    public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, bool enabled, double injectionRate, Func<Exception?> faultGenerator);
-    public static ResiliencePipelineBuilder AddChaosFault(this ResiliencePipelineBuilder builder, FaultStrategyOptions options);
-    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Exception fault);
-    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Func<Exception?> faultGenerator);
-    public static ResiliencePipelineBuilder<TResult> AddChaosFault<TResult>(this ResiliencePipelineBuilder<TResult> builder, FaultStrategyOptions options);
-    public static ResiliencePipelineBuilder<TResult> AddChaosResult<TResult>(this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, TResult result);
-    public static ResiliencePipelineBuilder<TResult> AddChaosResult<TResult>(this ResiliencePipelineBuilder<TResult> builder, bool enabled, double injectionRate, Func<TResult?> outcomeGenerator);
-    public static ResiliencePipelineBuilder<TResult> AddChaosResult<TResult>(this ResiliencePipelineBuilder<TResult> builder, OutcomeStrategyOptions<TResult> options);
+    public static ResiliencePipelineBuilder<TResult> AddChaosResult<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(this ResiliencePipelineBuilder<TResult> builder, double injectionRate, TResult result);
+    public static ResiliencePipelineBuilder<TResult> AddChaosResult<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(this ResiliencePipelineBuilder<TResult> builder, double injectionRate, Func<TResult?> resultGenerator);
+    public static ResiliencePipelineBuilder<TResult> AddChaosResult<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(this ResiliencePipelineBuilder<TResult> builder, OutcomeStrategyOptions<TResult> options);
 }

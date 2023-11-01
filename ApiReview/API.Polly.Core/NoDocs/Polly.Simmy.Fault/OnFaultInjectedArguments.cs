@@ -3,7 +3,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Polly.Simmy.Outcomes;
+namespace Polly.Simmy.Fault;
 
 public readonly struct OnFaultInjectedArguments
 {

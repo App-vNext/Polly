@@ -4,7 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace Polly.Simmy.Outcomes;
+namespace Polly.Simmy.Fault;
 
 public class FaultStrategyOptions : MonkeyStrategyOptions
 {
