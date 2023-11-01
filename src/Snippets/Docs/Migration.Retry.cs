@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http;
-using System.Runtime.Versioning;
 using Polly.Retry;
 using Snippets.Docs.Utils;
 
@@ -8,7 +7,6 @@ namespace Snippets.Docs;
 
 internal static partial class Migration
 {
-    [RequiresPreviewFeatures]
     public static void Retry_V7()
     {
         #region migration-retry-v7

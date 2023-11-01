@@ -1,5 +1,4 @@
 using System.Net.Http;
-using System.Runtime.Versioning;
 using Polly.CircuitBreaker;
 using Snippets.Docs.Utils;
 
@@ -7,7 +6,6 @@ namespace Snippets.Docs;
 
 internal static partial class Migration
 {
-    [RequiresPreviewFeatures]
     public static void CircuitBreaker_V7()
     {
         #region migration-circuit-breaker-v7
