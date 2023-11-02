@@ -135,14 +135,12 @@ Ignore the cancellation token provided by the resilience pipeline:
 
 <!-- snippet: timeout-ignore-cancellation-token -->
 ```cs
-var outerToken = CancellationToken.None;
-
 var pipeline = new ResiliencePipelineBuilder()
     .AddTimeout(TimeSpan.FromSeconds(1))
     .Build();
 
 await pipeline.ExecuteAsync(
-    async innerToken => await Task.Delay(3000, outerToken), // The delay call should use innerToken
+    async innerToken => await Task.Delay(TimeSpan.FromSeconds(3), outerToken), // The delay call should use innerToken
     outerToken);
 ```
 <!-- endSnippet -->
@@ -157,18 +155,16 @@ Respect the cancellation token provided by the pipeline:
 
 <!-- snippet: timeout-respect-cancellation-token -->
 ```cs
-var outerToken = CancellationToken.None;
-
 var pipeline = new ResiliencePipelineBuilder()
     .AddTimeout(TimeSpan.FromSeconds(1))
     .Build();
 
 await pipeline.ExecuteAsync(
-    static async innerToken => await Task.Delay(3000, innerToken),
+    static async innerToken => await Task.Delay(TimeSpan.FromSeconds(3), innerToken),
     outerToken);
 ```
 <!-- endSnippet -->
 
 **Reasoning**:
 
-The provided callback respects the `innerToken` provided by the pipeline, and as a result, the callback is correctly cancelled by the timeout strategy after 1 second.
+The provided callback respects the `innerToken` provided by the pipeline, and as a result, the callback is correctly cancelled by the timeout strategy after 1 second plus `TimeoutRejectedException` is thrown.

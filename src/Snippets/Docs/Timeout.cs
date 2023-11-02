@@ -69,16 +69,16 @@ internal static class Timeout
 
     public static async Task IgnoreCancellationToken()
     {
-        #region timeout-ignore-cancellation-token
-
         var outerToken = CancellationToken.None;
+
+        #region timeout-ignore-cancellation-token
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddTimeout(TimeSpan.FromSeconds(1))
             .Build();
 
         await pipeline.ExecuteAsync(
-            async innerToken => await Task.Delay(3000, outerToken), // The delay call should use innerToken
+            async innerToken => await Task.Delay(TimeSpan.FromSeconds(3), outerToken), // The delay call should use innerToken
             outerToken);
 
         #endregion
@@ -86,16 +86,16 @@ internal static class Timeout
 
     public static async Task RespectCancellationToken()
     {
-        #region timeout-respect-cancellation-token
-
         var outerToken = CancellationToken.None;
+
+        #region timeout-respect-cancellation-token
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddTimeout(TimeSpan.FromSeconds(1))
             .Build();
 
         await pipeline.ExecuteAsync(
-            static async innerToken => await Task.Delay(3000, innerToken),
+            static async innerToken => await Task.Delay(TimeSpan.FromSeconds(3), innerToken),
             outerToken);
 
         #endregion
