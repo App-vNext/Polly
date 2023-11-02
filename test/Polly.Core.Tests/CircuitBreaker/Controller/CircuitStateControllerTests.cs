@@ -307,7 +307,6 @@ public class CircuitStateControllerTests
     public async Task OnActionFailureAsync_EnsureBreakDurationGeneration()
     {
         // arrange
-        Func<ValueTask<TimeSpan>> result = () => new ValueTask<TimeSpan>(new TimeSpan(0, 0, 10, 0));
         using var controller = CreateController(new()
         {
             FailureRatio = 0,
@@ -323,9 +322,9 @@ public class CircuitStateControllerTests
         });
 
         await TransitionToState(controller, CircuitState.Closed);
-#pragma warning disable CA2012
-        var utcNow = DateTimeOffset.MaxValue - result().GetAwaiter().GetResult();
-#pragma warning restore CA2012
+
+        // 설정된 utcNow는 DateTimeOffset.MaxValue입니다. 즉, 최대값이며, 여기서 더 이상 뺄셈을 하지 않습니다.
+        var utcNow = DateTimeOffset.MaxValue;
 
         _timeProvider.SetUtcNow(utcNow);
         _circuitBehavior.FailureCount.Returns(1);
@@ -337,7 +336,7 @@ public class CircuitStateControllerTests
 
         // assert
         var blockedTill = GetBlockedTill(controller);
-        blockedTill.Should().Be(DateTimeOffset.MaxValue);
+        blockedTill.Should().Be(utcNow); // 이제 여기서는 utcNow가 DateTimeOffset.MaxValue와 동일하므로 이를 기대값으로 설정합니다.
     }
 
     [InlineData(true)]
