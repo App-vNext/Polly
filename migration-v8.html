@@ -218,8 +218,8 @@ await pipelineT.ExecuteAsync(static async token =&gt;
 }, cancellationToken);
 </code></pre>
 <!-- endSnippet -->
-<div class="IMPORTANT">
-<h5>Important</h5>
+<div class="TIP">
+<h5>Tip</h5>
 <p>Things to remember:</p>
 <ul>
 <li>Use <code>ResiliencePipelineBuilder{&lt;TResult&gt;}</code> to build a resiliency pipeline</li>
@@ -261,8 +261,8 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 </code></pre>
 <!-- endSnippet -->
 <p>See <a href="strategies/fallback.html#fallback-after-retries">fallback after retries</a> for an example on how the strategies are executed.</p>
-<div class="IMPORTANT">
-<h5>Important</h5>
+<div class="TIP">
+<h5>Tip</h5>
 <p>Things to remember:</p>
 <ul>
 <li>Use <code>ResiliencePipelineBuilder{&lt;TResult&gt;}</code> to build a resiliency pipeline</li>
@@ -448,8 +448,8 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(new RetryStr
 .Build();
 </code></pre>
 <!-- endSnippet -->
-<div class="IMPORTANT">
-<h5>Important</h5>
+<div class="TIP">
+<h5>Tip</h5>
 <p>Things to remember:</p>
 <ul>
 <li>Use <code>AddRetry</code> to add a retry strategy to your resiliency pipeline</li>
@@ -512,8 +512,8 @@ ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipeline
     .Build();
 </code></pre>
 <!-- endSnippet -->
-<div class="IMPORTANT">
-<h5>Important</h5>
+<div class="TIP">
+<h5>Tip</h5>
 <p>Things to remember:</p>
 <ul>
 <li>Use <code>AddRateLimiter</code> to add a rate limiter strategy to your resiliency pipeline</li>
@@ -569,8 +569,8 @@ ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipeline
     .Build();
 </code></pre>
 <!-- endSnippet -->
-<div class="IMPORTANT">
-<h5>Important</h5>
+<div class="TIP">
+<h5>Tip</h5>
 <p>Things to remember:</p>
 <ul>
 <li>Use <code>AddConcurrencyLimiter</code> to add a concurrency limiter strategy to your resiliency pipeline</li>
@@ -613,8 +613,8 @@ ResiliencePipeline&lt;HttpResponseMessage&gt; pipelineT = new ResiliencePipeline
     .Build();
 </code></pre>
 <!-- endSnippet -->
-<div class="IMPORTANT">
-<h5>Important</h5>
+<div class="TIP">
+<h5>Tip</h5>
 <p>Things to remember:</p>
 <ul>
 <li>Use <code>AddTimeout</code> to add a timeout strategy to your resiliency pipeline</li>
@@ -704,8 +704,8 @@ cbPolicy.Reset(); // Transitions into the Closed state
 </code></pre>
 <!-- endSnippet -->
 <h3 id="circuit-breaker-in-v8">Circuit breaker in v8</h3>
-<div class="IMPORTANT">
-<h5>Important</h5>
+<div class="TIP">
+<h5>Tip</h5>
 <p>Polly V8 does not support the standard (<em>&quot;classic&quot;</em>) circuit breaker with consecutive failure counting.</p>
 <p>In case of V8 you can define a Circuit Breaker strategy which works like the advanced circuit breaker in V7.</p>
 </div>
@@ -766,11 +766,11 @@ await manualControl.CloseAsync(); // Transitions into the Closed state
 <h5>Note</h5>
 <p>In case of V7 you could do an optimization to reduce the thrown exceptions.</p>
 <p>You could guard the <code>Execute{Async}</code> call with a condition that the circuit is not broken. This technique does <strong>not</strong> work with V8.</p>
-<p>Under the <a href="strategies/circuit-breaker.html#4---reducing-thrown-exceptions">circuit breaker's anti-patterns</a> you can find the suggested way for V8.</p>
+<p>Under the <a href="strategies/circuit-breaker.html#reducing-thrown-exceptions">circuit breaker's anti-patterns</a> you can find the suggested way for V8.</p>
 </div>
 <hr>
-<div class="IMPORTANT">
-<h5>Important</h5>
+<div class="TIP">
+<h5>Tip</h5>
 <p>Things to remember:</p>
 <ul>
 <li>Use <code>AddCircuitBreaker</code> to add a circuit breaker strategy to your resiliency pipeline</li>

@@ -418,12 +418,12 @@ direction LR
 </ul>
 <h2 id="anti-patterns">Anti-patterns</h2>
 <p>Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.</p>
-<h3 id="1---using-different-sleep-duration-between-retry-attempts-based-on-circuit-breaker-state">1 - Using different sleep duration between retry attempts based on Circuit Breaker state</h3>
+<h3 id="using-different-sleep-duration-between-retry-attempts-based-on-circuit-breaker-state">Using different sleep duration between retry attempts based on Circuit Breaker state</h3>
 <p>Imagine that we have an inner Circuit Breaker and an outer Retry strategies.</p>
 <p>We would like to define the retry in a way that the sleep duration calculation is taking into account the Circuit Breaker's state.</p>
 <p>❌ DON'T</p>
 <p>Use a closure to branch based on circuit breaker state:</p>
-<!-- snippet: circuit-breaker-anti-pattern-1 -->
+<!-- snippet: circuit-breaker-anti-pattern-circuit-aware-retry -->
 <pre><code class="lang-cs">var stateProvider = new CircuitBreakerStateProvider();
 var circuitBreaker = new ResiliencePipelineBuilder()
     .AddCircuitBreaker(new()
@@ -463,7 +463,7 @@ var retry = new ResiliencePipelineBuilder()
 </ul>
 <p>✅ DO</p>
 <p>Use <code>Context</code> to pass information between strategies:</p>
-<!-- snippet: circuit-breaker-pattern-1 -->
+<!-- snippet: circuit-breaker-pattern-circuit-aware-retry -->
 <pre><code class="lang-cs">var circuitBreaker = new ResiliencePipelineBuilder()
     .AddCircuitBreaker(new()
     {
@@ -505,12 +505,12 @@ var retry = new ResiliencePipelineBuilder()
 <li>The Retry strategy fetches the sleep duration dynamically without knowing any specific knowledge about the Circuit Breaker.</li>
 <li>If adjustments are needed for the <code>BreakDuration</code>, they can be made in one place.</li>
 </ul>
-<h3 id="2---using-different-duration-for-breaks">2 - Using different duration for breaks</h3>
+<h3 id="using-different-duration-for-breaks">Using different duration for breaks</h3>
 <p>In the case of Retry you can specify dynamically the sleep duration via the <code>DelayGenerator</code>.</p>
 <p>In the case of Circuit Breaker the <code>BreakDuration</code> is considered constant (can't be changed between breaks).</p>
 <p>❌ DON'T</p>
 <p>Use <code>Task.Delay</code> inside <code>OnOpened</code>:</p>
-<!-- snippet: circuit-breaker-anti-pattern-2 -->
+<!-- snippet: circuit-breaker-anti-pattern-sleep-duration-generator -->
 <pre><code class="lang-cs">static IEnumerable&lt;TimeSpan&gt; GetSleepDuration()
 {
     for (int i = 1; i &lt; 10; i++)
@@ -542,7 +542,7 @@ var circuitBreaker = new ResiliencePipelineBuilder()
 <li>The minimum break duration value is half a second. This implies that each sleep lasts for <code>sleepDurationProvider.Current</code> plus an additional half a second.</li>
 <li>One might think that setting the <code>BreakDuration</code> to <code>sleepDurationProvider.Current</code> would address this, but it doesn't. This is because the <code>BreakDuration</code> is established only once and isn't re-assessed during each break.</li>
 </ul>
-<!-- snippet: circuit-breaker-anti-pattern-2-ext -->
+<!-- snippet: circuit-breaker-anti-pattern-sleep-duration-generator-ext -->
 <pre><code class="lang-cs">circuitBreaker = new ResiliencePipelineBuilder()
     .AddCircuitBreaker(new()
     {
@@ -560,12 +560,12 @@ var circuitBreaker = new ResiliencePipelineBuilder()
 <!-- endSnippet -->
 <p>✅ DO</p>
 <p>The <code>CircuitBreakerStrategyOptions</code> currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.</p>
-<h3 id="3---wrapping-each-endpoint-with-a-circuit-breaker">3 - Wrapping each endpoint with a circuit breaker</h3>
+<h3 id="wrapping-each-endpoint-with-a-circuit-breaker">Wrapping each endpoint with a circuit breaker</h3>
 <p>Imagine that you have to call N number of services via <code>HttpClient</code>s.
 You want to decorate all downstream calls with the service-aware Circuit Breaker.</p>
 <p>❌ DON'T</p>
 <p>Use a collection of Circuit Breakers and explicitly call <code>ExecuteAsync()</code>:</p>
-<!-- snippet: circuit-breaker-anti-pattern-3 -->
+<!-- snippet: circuit-breaker-anti-pattern-cb-per-endpoint -->
 <pre><code class="lang-cs">// Defined in a common place
 var uriToCbMappings = new Dictionary&lt;Uri, ResiliencePipeline&gt;
 {
@@ -615,12 +615,12 @@ public Downstream1Client(
 It is required because the <code>AddPolicyHandler()</code> method anticipates an <code>IAsyncPolicy&lt;HttpResponse&gt;</code> parameter.
 Please be aware that, later an <code>AddResilienceHandler()</code> will be introduced in the <code>Microsoft.Extensions.Http.Resilience</code> package which is the successor of the <code>Microsoft.Extensions.Http.Polly</code>.</p>
 </div>
-<h3 id="4---reducing-thrown-exceptions">4 - Reducing thrown exceptions</h3>
+<h3 id="reducing-thrown-exceptions">Reducing thrown exceptions</h3>
 <p>In case of Circuit Breaker when it is either in the <code>Open</code> or <code>Isolated</code> state new requests are rejected immediately.</p>
 <p>That means the strategy will throw either a <code>BrokenCircuitException</code> or an <code>IsolatedCircuitException</code> respectively.</p>
 <p>❌ DON'T</p>
 <p>Use guard expression to call <code>Execute{Async}</code> only if the circuit is not broken:</p>
-<!-- snippet: circuit-breaker-anti-pattern-4 -->
+<!-- snippet: circuit-breaker-anti-pattern-reduce-thrown-exceptions -->
 <pre><code class="lang-cs">var stateProvider = new CircuitBreakerStateProvider();
 var circuitBreaker = new ResiliencePipelineBuilder()
     .AddCircuitBreaker(new()
@@ -652,7 +652,7 @@ if (stateProvider.CircuitState
 </ul>
 <p>✅ DO</p>
 <p>Use <code>ExecuteOutcomeAsync</code> to avoid throwing exception:</p>
-<!-- snippet: circuit-breaker-pattern-4 -->
+<!-- snippet: circuit-breaker-pattern-reduce-thrown-exceptions -->
 <pre><code class="lang-cs">var context = ResilienceContextPool.Shared.Get();
 var circuitBreaker = new ResiliencePipelineBuilder()
     .AddCircuitBreaker(new()
