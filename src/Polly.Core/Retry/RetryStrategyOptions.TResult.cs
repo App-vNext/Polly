@@ -67,7 +67,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <see cref="DelayBackoffType.Constant"/> Represents the constant delay between retries.
     /// </item>
     /// </list>
-    /// This property is ignored when <see cref="DelayGenerator"/> is set.
+    /// This property is ignored when <see cref="DelayGenerator"/> is set and returns a valid <see cref="TimeSpan"/> value.
     /// </remarks>
     /// <value>
     /// The default value is 2 seconds.
