@@ -612,7 +612,6 @@ else
 ```
 <!-- endSnippet -->
 
-
 **Reasoning**:
 
 - The `ExecuteOutcomeAsync` is a low-allocation API which does not throw exception rather captures it inside the `Exception` property of the `Outcome` data structure.
