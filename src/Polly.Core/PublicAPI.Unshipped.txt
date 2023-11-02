@@ -5,3 +5,5 @@ Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArgum
 Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context.get -> Polly.ResilienceContext!
 Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount.get -> int
 Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate.get -> double
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDurationGenerator.get -> System.Func<Polly.CircuitBreaker.BreakDurationGeneratorArguments, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDurationGenerator.set -> void
