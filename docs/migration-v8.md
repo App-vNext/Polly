@@ -691,7 +691,7 @@ cbPolicy.Reset(); // Transitions into the Closed state
 
 > [!IMPORTANT]
 >
-> Polly V8 does not support the standard (_"classic"_) circuit breaker with consecutive failure counting.
+> Polly V8 does not support the standard (*"classic"*) circuit breaker with consecutive failure counting.
 >
 > In case of V8 you can define a Circuit Breaker strategy which works like the advanced circuit breaker in V7.
 
