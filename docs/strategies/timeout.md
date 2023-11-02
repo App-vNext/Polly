@@ -164,7 +164,7 @@ var pipeline = new ResiliencePipelineBuilder()
     .Build();
 
 await pipeline.ExecuteAsync(
-    async innerToken => await Task.Delay(3000, innerToken),
+    static async innerToken => await Task.Delay(3000, innerToken),
     outerToken);
 ```
 <!-- endSnippet -->

@@ -95,7 +95,7 @@ internal static class Timeout
             .Build();
 
         await pipeline.ExecuteAsync(
-            async innerToken => await Task.Delay(3000, innerToken),
+            static async innerToken => await Task.Delay(3000, innerToken),
             outerToken);
 
         #endregion
