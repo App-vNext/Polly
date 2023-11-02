@@ -71,9 +71,9 @@ internal static class CircuitBreaker
         #endregion
     }
 
-    public static void AntiPattern_1()
+    public static void AntiPattern_CircuitAwareRetry()
     {
-        #region circuit-breaker-anti-pattern-1
+        #region circuit-breaker-anti-pattern-circuit-aware-retry
         var stateProvider = new CircuitBreakerStateProvider();
         var circuitBreaker = new ResiliencePipelineBuilder()
             .AddCircuitBreaker(new()
@@ -107,9 +107,9 @@ internal static class CircuitBreaker
     }
 
     private static readonly ResiliencePropertyKey<TimeSpan?> SleepDurationKey = new("sleep_duration");
-    public static void Pattern_1()
+    public static void Pattern_CircuitAwareRetry()
     {
-        #region circuit-breaker-pattern-1
+        #region circuit-breaker-pattern-circuit-aware-retry
         var circuitBreaker = new ResiliencePipelineBuilder()
             .AddCircuitBreaker(new()
             {
@@ -146,9 +146,9 @@ internal static class CircuitBreaker
         #endregion
     }
 
-    public static void AntiPattern_2()
+    public static void AntiPattern_SleepDurationGenerator()
     {
-        #region circuit-breaker-anti-pattern-2
+        #region circuit-breaker-anti-pattern-sleep-duration-generator
         static IEnumerable<TimeSpan> GetSleepDuration()
         {
             for (int i = 1; i < 10; i++)
@@ -176,7 +176,7 @@ internal static class CircuitBreaker
 
         #endregion
 
-        #region circuit-breaker-anti-pattern-2-ext
+        #region circuit-breaker-anti-pattern-sleep-duration-generator-ext
 
         circuitBreaker = new ResiliencePipelineBuilder()
             .AddCircuitBreaker(new()
@@ -195,12 +195,12 @@ internal static class CircuitBreaker
         #endregion
     }
 
-    public static async ValueTask AntiPattern_3()
+    public static async ValueTask AntiPattern_CircuitPerEndpoint()
     {
         static ValueTask CallXYZOnDownstream1(CancellationToken ct) => ValueTask.CompletedTask;
         static ResiliencePipeline GetCircuitBreaker() => ResiliencePipeline.Empty;
 
-        #region circuit-breaker-anti-pattern-3
+        #region circuit-breaker-anti-pattern-cb-per-endpoint
         // Defined in a common place
         var uriToCbMappings = new Dictionary<Uri, ResiliencePipeline>
         {
@@ -215,9 +215,10 @@ internal static class CircuitBreaker
         #endregion
     }
 
-    public static async ValueTask AntiPattern_4()
+    private static ValueTask<HttpResponseMessage> IssueRequest() => ValueTask.FromResult(new HttpResponseMessage());
+    public static async ValueTask AntiPattern_ReduceThrownExceptions()
     {
-        #region circuit-breaker-anti-pattern-4
+        #region circuit-breaker-anti-pattern-reduce-thrown-exceptions
 
         var stateProvider = new CircuitBreakerStateProvider();
         var circuitBreaker = new ResiliencePipelineBuilder()
@@ -244,11 +245,9 @@ internal static class CircuitBreaker
         #endregion
     }
 
-    private static ValueTask<HttpResponseMessage> IssueRequest() => ValueTask.FromResult(new HttpResponseMessage());
-
-    public static async ValueTask Pattern_4()
+    public static async ValueTask Pattern_ReduceThrownExceptions()
     {
-        #region circuit-breaker-pattern-4
+        #region circuit-breaker-pattern-reduce-thrown-exceptions
 
         var context = ResilienceContextPool.Shared.Get();
         var circuitBreaker = new ResiliencePipelineBuilder()
