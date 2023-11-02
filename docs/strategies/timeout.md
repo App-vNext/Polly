@@ -133,7 +133,7 @@ sequenceDiagram
 
 Ignore the cancellation token provided by the resilience pipeline:
 
-<!-- snippet: timeout-ignore-cancellation-token -->
+<!-- snippet: timeout-anti-pattern-cancellation-token -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
     .AddTimeout(TimeSpan.FromSeconds(1))
@@ -153,7 +153,7 @@ The provided callback ignores the `innerToken` passed from the pipeline and inst
 
 Respect the cancellation token provided by the pipeline:
 
-<!-- snippet: timeout-respect-cancellation-token -->
+<!-- snippet: timeout-pattern-cancellation-token -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
     .AddTimeout(TimeSpan.FromSeconds(1))

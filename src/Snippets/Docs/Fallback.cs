@@ -233,9 +233,9 @@ internal static class Fallback
         #endregion
     }
 
-    public static void FallbackAfterRetries()
+    public static void Pattern_FallbackAfterRetries()
     {
-        #region fallback-after-retries
+        #region fallback-pattern-after-retries
 
         // Define a common predicates re-used by both fallback and retries
         var predicateBuilder = new PredicateBuilder<HttpResponseMessage>()

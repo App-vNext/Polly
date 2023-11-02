@@ -111,7 +111,7 @@ sequenceDiagram
 
 When designing resilient systems, a common pattern is to use a fallback after multiple failed retry attempts. This approach is especially relevant when a fallback strategy can provide a sensible default value.
 
-<!-- snippet: fallback-after-retries -->
+<!-- snippet: fallback-pattern-after-retries -->
 ```cs
 // Define a common predicates re-used by both fallback and retries
 var predicateBuilder = new PredicateBuilder<HttpResponseMessage>()

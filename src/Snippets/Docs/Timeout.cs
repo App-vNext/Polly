@@ -67,11 +67,11 @@ internal static class Timeout
         #endregion
     }
 
-    public static async Task IgnoreCancellationToken()
+    public static async Task AntiPattern_CancellationToken()
     {
         var outerToken = CancellationToken.None;
 
-        #region timeout-ignore-cancellation-token
+        #region timeout-anti-pattern-cancellation-token
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddTimeout(TimeSpan.FromSeconds(1))
@@ -84,11 +84,11 @@ internal static class Timeout
         #endregion
     }
 
-    public static async Task RespectCancellationToken()
+    public static async Task Pattern_CancellationToken()
     {
         var outerToken = CancellationToken.None;
 
-        #region timeout-respect-cancellation-token
+        #region timeout-pattern-cancellation-token
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddTimeout(TimeSpan.FromSeconds(1))
