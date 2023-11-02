@@ -1,1 +1,7 @@
 ﻿#nullable enable
+Polly.CircuitBreaker.BreakDurationGeneratorArguments
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments() -> void
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments(double failureRate, int failureCount, Polly.ResilienceContext! context) -> void
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context.get -> Polly.ResilienceContext!
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount.get -> int
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate.get -> double

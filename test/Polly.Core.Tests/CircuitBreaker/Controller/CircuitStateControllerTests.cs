@@ -308,23 +308,24 @@ public class CircuitStateControllerTests
     {
         // arrange
         Func<ValueTask<TimeSpan>> result = () => new ValueTask<TimeSpan>(new TimeSpan(0, 0, 10, 0));
-        
-        using var controller = CreateController(new ()
+        using var controller = CreateController(new()
         {
             FailureRatio = 0,
             MinimumThroughput = 0,
             SamplingDuration = default,
             BreakDuration = TimeSpan.FromMinutes(1),
-            BreakDurationGenerator = (failureCount) => result.Invoke(),
+            BreakDurationGenerator = static args => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(args.FailureCount)),
             OnClosed = null,
             OnOpened = null,
             OnHalfOpened = null,
             ManualControl = null,
             StateProvider = null
         });
-        
+
         await TransitionToState(controller, CircuitState.Closed);
+#pragma warning disable CA2012
         var utcNow = DateTimeOffset.MaxValue - result().GetAwaiter().GetResult();
+#pragma warning restore CA2012
 
         _timeProvider.SetUtcNow(utcNow);
         _circuitBehavior.FailureCount.Returns(1);
@@ -336,7 +337,6 @@ public class CircuitStateControllerTests
 
         // assert
         var blockedTill = GetBlockedTill(controller);
-        
         blockedTill.Should().Be(DateTimeOffset.MaxValue);
     }
 
