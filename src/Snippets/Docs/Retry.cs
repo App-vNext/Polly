@@ -113,7 +113,7 @@ internal static class Retry
         return false;
     }
 
-    public static async Task MaxDelay()
+    public static async Task Pattern_MaxDelay()
     {
         var cancellationToken = CancellationToken.None;
 
@@ -150,9 +150,9 @@ internal static class Retry
         static ValueTask SynchronizeDataAsync(CancellationToken cancellationToken) => default;
     }
 
-    public static void AntiPattern_1()
+    public static void AntiPattern_OverusingBuilder()
     {
-        #region retry-anti-pattern-1
+        #region retry-anti-pattern-overusing-builder
 
         var retry = new ResiliencePipelineBuilder()
             .AddRetry(new()
@@ -170,9 +170,9 @@ internal static class Retry
         #endregion
     }
 
-    public static void Pattern_1()
+    public static void Pattern_OverusingBuilder()
     {
-        #region retry-pattern-1
+        #region retry-pattern-overusing-builder
 
         ImmutableArray<Type> networkExceptions = new[]
         {
@@ -202,9 +202,9 @@ internal static class Retry
         #endregion
     }
 
-    public static void AntiPattern_2()
+    public static void AntiPattern_PeriodicExecution()
     {
-        #region retry-anti-pattern-2
+        #region retry-anti-pattern-periodic-execution
 
         var retry = new ResiliencePipelineBuilder()
             .AddRetry(new()
@@ -217,9 +217,9 @@ internal static class Retry
         #endregion
     }
 
-    public static void AntiPattern_3()
+    public static void AntiPattern_SleepingStrategies()
     {
-        #region retry-anti-pattern-3
+        #region retry-anti-pattern-sleeping-strategies
 
         var retry = new ResiliencePipelineBuilder()
             .AddRetry(new()
@@ -239,9 +239,9 @@ internal static class Retry
         #endregion
     }
 
-    public static void Pattern_3()
+    public static void Pattern_SleepingStrategies()
     {
-        #region retry-pattern-3
+        #region retry-pattern-sleeping-strategies
 
         var slowRetries = new RetryStrategyOptions
         {
@@ -266,11 +266,11 @@ internal static class Retry
         #endregion
     }
 
-    public static void AntiPattern_4()
+    public static void AntiPattern_BranchingByUrl()
     {
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "");
         static bool IsRetryable(Uri? uri) => true;
-        #region retry-anti-pattern-4
+        #region retry-anti-pattern-branching-by-url
 
         var retry =
             IsRetryable(request.RequestUri)
@@ -280,11 +280,11 @@ internal static class Retry
         #endregion
     }
 
-    public static void Pattern_4()
+    public static void Pattern_BranchingByUrl()
     {
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "");
         static bool IsRetryable(Uri? uri) => true;
-        #region retry-pattern-4
+        #region retry-pattern-branching-by-url
 
         var retry = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddRetry(new()
@@ -296,12 +296,12 @@ internal static class Retry
         #endregion
     }
 
-    public static async Task AntiPattern_5()
+    public static async Task AntiPattern_CallingMethodBefore()
     {
         static void BeforeEachAttempt() => Debug.WriteLine("Before attempt");
         static ValueTask DoSomething(CancellationToken ct) => ValueTask.CompletedTask;
 
-        #region retry-anti-pattern-5
+        #region retry-anti-pattern-calling-method-before
         var retry = new ResiliencePipelineBuilder()
             .AddRetry(new()
             {
@@ -319,12 +319,12 @@ internal static class Retry
         #endregion
     }
 
-    public static async Task Pattern_5()
+    public static async Task Pattern_CallingMethodBefore()
     {
         static void BeforeEachAttempt() => Debug.WriteLine("Before attempt");
         static ValueTask DoSomething(CancellationToken ct) => ValueTask.CompletedTask;
 
-        #region retry-pattern-5
+        #region retry-pattern-calling-method-before
 
         var retry = new ResiliencePipelineBuilder()
             .AddRetry(new())
@@ -340,11 +340,11 @@ internal static class Retry
     }
 
     private record struct Foo;
-    public static async Task AntiPattern_6()
+    public static async Task AntiPattern_MultipleFailures()
     {
         var httpClient = new HttpClient();
 
-        #region retry-anti-pattern-6
+        #region retry-anti-pattern-multiple-failures
 
         var builder = new ResiliencePipelineBuilder()
             .AddRetry(new()
@@ -366,11 +366,11 @@ internal static class Retry
         #endregion
     }
 
-    public static async Task Pattern_6()
+    public static async Task Pattern_MultipleFailures()
     {
         var httpClient = new HttpClient();
 
-        #region retry-pattern-6
+        #region retry-pattern-multiple-failures
 
         var retry = new ResiliencePipelineBuilder()
             .AddRetry(new()
@@ -394,9 +394,9 @@ internal static class Retry
         #endregion
     }
 
-    public static void AntiPattern_7()
+    public static void AntiPattern_CancellingRetry()
     {
-        #region retry-anti-pattern-7
+        #region retry-anti-pattern-cancelling-retry
 
         var ctsKey = new ResiliencePropertyKey<CancellationTokenSource>("cts");
         var retry = new ResiliencePipelineBuilder()
@@ -420,9 +420,9 @@ internal static class Retry
         #endregion
     }
 
-    public static void Pattern_7()
+    public static void Pattern_CancellingRetry()
     {
-        #region retry-pattern-7
+        #region retry-pattern-cancelling-retry
 
         var retry = new ResiliencePipelineBuilder()
             .AddRetry(new()
