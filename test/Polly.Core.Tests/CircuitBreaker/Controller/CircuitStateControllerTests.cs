@@ -323,7 +323,6 @@ public class CircuitStateControllerTests
 
         await TransitionToState(controller, CircuitState.Closed);
 
-        // 설정된 utcNow는 DateTimeOffset.MaxValue입니다. 즉, 최대값이며, 여기서 더 이상 뺄셈을 하지 않습니다.
         var utcNow = DateTimeOffset.MaxValue;
 
         _timeProvider.SetUtcNow(utcNow);
@@ -336,7 +335,7 @@ public class CircuitStateControllerTests
 
         // assert
         var blockedTill = GetBlockedTill(controller);
-        blockedTill.Should().Be(utcNow); // 이제 여기서는 utcNow가 DateTimeOffset.MaxValue와 동일하므로 이를 기대값으로 설정합니다.
+        blockedTill.Should().Be(utcNow);
     }
 
     [InlineData(true)]
