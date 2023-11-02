@@ -97,6 +97,11 @@
 </li>
 </ul>
 <hr>
+<p>The timeout resilience strategy cancels the execution if it does not complete within the specified timeout period. If the execution is canceled by the timeout strategy, it throws a <code>TimeoutRejectedException</code>. The timeout strategy operates by wrapping the incoming cancellation token with a new one. Should the original token be canceled, the timeout strategy will transparently honor the original cancellation token without throwing a <code>TimeoutRejectedException</code>.</p>
+<blockquote>
+<p>![IMPORTANT]
+It is crucial that the user's callback respects the cancellation token. If it does not, the callback will continue executing even after a cancellation request, thereby ignoring the cancellation.</p>
+</blockquote>
 <h2 id="usage">Usage</h2>
 <!-- snippet: timeout -->
 <pre><code class="lang-cs">// To add a timeout with a custom TimeSpan duration
@@ -213,6 +218,36 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
     T-&gt;&gt;P: Throws &lt;br/&gt;TimeoutRejectedException
     P-&gt;&gt;C: Propagates exception
 </code></pre>
+<h2 id="anti-patterns">Anti-patterns</h2>
+<h3 id="ignoring-cancellation-token">Ignoring Cancellation Token</h3>
+<p>❌ DON'T</p>
+<p>Ignore the cancellation token provided by the resilience pipeline:</p>
+<!-- snippet: timeout-ignore-cancellation-token -->
+<pre><code class="lang-cs">var pipeline = new ResiliencePipelineBuilder()
+    .AddTimeout(TimeSpan.FromSeconds(1))
+    .Build();
+
+await pipeline.ExecuteAsync(
+    async innerToken =&gt; await Task.Delay(TimeSpan.FromSeconds(3), outerToken), // The delay call should use innerToken
+    outerToken);
+</code></pre>
+<!-- endSnippet -->
+<p><strong>Reasoning</strong>:</p>
+<p>The provided callback ignores the <code>innerToken</code> passed from the pipeline and instead uses the <code>outerToken</code>. For this reason, the cancelled <code>innerToken</code> is ignored, and the callback is not cancelled within 1 second.</p>
+<p>✅ DO</p>
+<p>Respect the cancellation token provided by the pipeline:</p>
+<!-- snippet: timeout-respect-cancellation-token -->
+<pre><code class="lang-cs">var pipeline = new ResiliencePipelineBuilder()
+    .AddTimeout(TimeSpan.FromSeconds(1))
+    .Build();
+
+await pipeline.ExecuteAsync(
+    static async innerToken =&gt; await Task.Delay(TimeSpan.FromSeconds(3), innerToken),
+    outerToken);
+</code></pre>
+<!-- endSnippet -->
+<p><strong>Reasoning</strong>:</p>
+<p>The provided callback respects the <code>innerToken</code> provided by the pipeline, and as a result, the callback is correctly cancelled by the timeout strategy after 1 second plus <code>TimeoutRejectedException</code> is thrown.</p>
 
 </article>
 
