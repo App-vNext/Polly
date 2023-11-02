@@ -16,7 +16,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly CircuitBehavior _behavior;
     private readonly TimeSpan _breakDuration;
-    private readonly Func<BreakDurationGeneratorArguments, TimeSpan>? _breakDurationGenerator;
+    private readonly Func<BreakDurationGeneratorArguments, ValueTask<TimeSpan>>? _breakDurationGenerator;
     private DateTimeOffset _blockedUntil;
     private CircuitState _circuitState = CircuitState.Closed;
     private Outcome<T>? _lastOutcome;
@@ -31,7 +31,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         CircuitBehavior behavior,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry,
-        Func<BreakDurationGeneratorArguments,TimeSpan>? breakDurationGenerator = null)
+        Func<BreakDurationGeneratorArguments,ValueTask<TimeSpan>>? breakDurationGenerator = null)
     {
         _breakDuration = breakDuration;
         _onOpened = onOpened;
@@ -319,7 +319,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         if (_breakDurationGenerator is not null)
         {
-            breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount, context));
+            breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount, context)).GetAwaiter().GetResult();
         }
 
         _blockedUntil = IsDateTimeOverflow(utcNow, breakDuration) ? DateTimeOffset.MaxValue : utcNow + breakDuration;

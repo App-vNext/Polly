@@ -307,14 +307,15 @@ public class CircuitStateControllerTests
     public async Task OnActionFailureAsync_EnsureBreakDurationGeneration()
     {
         // arrange
-        var result = new TimeSpan(0, 0, 10, 0);
+        Func<ValueTask<TimeSpan>> result = () => new ValueTask<TimeSpan>(new TimeSpan(0, 0, 10, 0));
+        
         using var controller = CreateController(new ()
         {
             FailureRatio = 0,
             MinimumThroughput = 0,
             SamplingDuration = default,
             BreakDuration = TimeSpan.FromMinutes(1),
-            BreakDurationGenerator = (failureCount) => result,
+            BreakDurationGenerator = (failureCount) => result.Invoke(),
             OnClosed = null,
             OnOpened = null,
             OnHalfOpened = null,
@@ -323,7 +324,7 @@ public class CircuitStateControllerTests
         });
         
         await TransitionToState(controller, CircuitState.Closed);
-        var utcNow = DateTimeOffset.MaxValue - result;
+        var utcNow = DateTimeOffset.MaxValue - result().GetAwaiter().GetResult();
 
         _timeProvider.SetUtcNow(utcNow);
         _circuitBehavior.FailureCount.Returns(1);

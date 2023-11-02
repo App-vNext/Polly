@@ -32,12 +32,19 @@ internal static class CircuitBreaker
         // Same circuit breaking conditions as above, but with a dynamic break duration based on the failure count.
         new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
         {
+            Name = null,
             FailureRatio = 0.5,
             SamplingDuration = TimeSpan.FromSeconds(10),
             MinimumThroughput = 8,
             BreakDuration = TimeSpan.FromSeconds(30),
-            BreakDurationGenerator = static args => TimeSpan.FromSeconds(Math.Min(20 + Math.Pow(2, args.FailureCount), 400)),
+            BreakDurationGenerator = static args =>
+                ValueTask.FromResult(TimeSpan.FromSeconds(Math.Min(20 + Math.Pow(2, args.FailureCount), 400))),
             ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
+            OnClosed = null,
+            OnOpened = null,
+            OnHalfOpened = null,
+            ManualControl = null,
+            StateProvider = null,
         });
 
         // Handle specific failed results for HttpResponseMessage:
