@@ -273,7 +273,8 @@ internal static class CircuitBreaker
         }
         else
         {
-            // Your code goes here to process the response (outcome.Result)
+            HttpResponseMessage response = outcome.Result!;
+            // Your code goes here to process the response
         }
 
         #endregion
