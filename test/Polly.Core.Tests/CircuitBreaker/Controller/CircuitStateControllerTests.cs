@@ -105,11 +105,16 @@ public class CircuitStateControllerTests
         Assert.Throws<ObjectDisposedException>(() => controller.LastException);
         Assert.Throws<ObjectDisposedException>(() => controller.LastHandledOutcome);
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.CloseCircuitAsync(ResilienceContextPool.Shared.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.IsolateCircuitAsync(ResilienceContextPool.Shared.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionSuccessAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionFailureAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
+        // xunit 2.6.0 has Func<ValueTask> and Func<Task> overloads that cause ambiguity which
+        // is messy to resolve for multiple different TFMs, so force the Task version to be used.
+        static async Task AssertThrowsObjectDisposedExceptionAsync(Func<Task> func)
+            => await Assert.ThrowsAsync<ObjectDisposedException>(func);
+
+        await AssertThrowsObjectDisposedExceptionAsync(async () => await controller.CloseCircuitAsync(ResilienceContextPool.Shared.Get()));
+        await AssertThrowsObjectDisposedExceptionAsync(async () => await controller.IsolateCircuitAsync(ResilienceContextPool.Shared.Get()));
+        await AssertThrowsObjectDisposedExceptionAsync(async () => await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get()));
+        await AssertThrowsObjectDisposedExceptionAsync(async () => await controller.OnActionSuccessAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
+        await AssertThrowsObjectDisposedExceptionAsync(async () => await controller.OnActionFailureAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
     }
 
     [Fact]
@@ -193,7 +198,9 @@ public class CircuitStateControllerTests
         var executeAction2 = Task.Run(() => controller.OnActionFailureAsync(Outcome.FromResult(0), ResilienceContextPool.Shared.Get()));
 
         // assert
+#pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         executeAction.Wait(50).Should().BeFalse();
+#pragma warning restore xUnit1031 // Do not use blocking task operations in test method
         verified.Set();
         await executeAction;
         await executeAction2;
@@ -412,7 +419,9 @@ public class CircuitStateControllerTests
         var source = new TaskCompletionSource<string>();
         var task = CircuitStateController<string>.ExecuteScheduledTaskAsync(source.Task, ResilienceContextPool.Shared.Get().Initialize<string>(isSynchronous: false)).AsTask();
 
+#pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         task.Wait(3).Should().BeFalse();
+#pragma warning restore xUnit1031 // Do not use blocking task operations in test method
         task.IsCompleted.Should().BeFalse();
 
         source.SetResult("ok");
