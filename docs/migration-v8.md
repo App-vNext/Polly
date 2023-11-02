@@ -142,7 +142,7 @@ await pipelineT.ExecuteAsync(static async token =>
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -195,7 +195,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 
 See [fallback after retries](strategies/fallback.md#fallback-after-retries) for an example on how the strategies are executed.
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -404,7 +404,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -475,7 +475,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -538,7 +538,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -588,7 +588,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -758,7 +758,7 @@ await manualControl.CloseAsync(); // transitions into Closed state
 
 ____
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
