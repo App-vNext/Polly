@@ -142,7 +142,7 @@ await pipelineT.ExecuteAsync(static async token =>
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -195,7 +195,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 
 See [fallback after retries](strategies/fallback.md#fallback-after-retries) for an example on how the strategies are executed.
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -404,7 +404,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -475,7 +475,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -538,7 +538,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -588,7 +588,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -689,7 +689,7 @@ cbPolicy.Reset(); // Transitions into the Closed state
 
 ### Circuit breaker in v8
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Polly V8 does not support the standard (*"classic"*) circuit breaker with consecutive failure counting.
 >
@@ -760,7 +760,7 @@ await manualControl.CloseAsync(); // Transitions into the Closed state
 
 ____
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
