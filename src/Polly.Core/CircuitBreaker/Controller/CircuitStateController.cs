@@ -23,6 +23,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     private BrokenCircuitException _breakingException = new();
     private bool _disposed;
 
+#pragma warning disable S107
     public CircuitStateController(
         TimeSpan breakDuration,
         Func<OnCircuitOpenedArguments<T>, ValueTask>? onOpened,
@@ -31,7 +32,8 @@ internal sealed class CircuitStateController<T> : IDisposable
         CircuitBehavior behavior,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry,
-        Func<BreakDurationGeneratorArguments,ValueTask<TimeSpan>>? breakDurationGenerator = null)
+        Func<BreakDurationGeneratorArguments, ValueTask<TimeSpan>>? breakDurationGenerator = null)
+#pragma warning restore S107
     {
         _breakDuration = breakDuration;
         _onOpened = onOpened;
@@ -319,11 +321,15 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         if (_breakDurationGenerator is not null)
         {
+#pragma warning disable CA2012
+#pragma warning disable S1226
             breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount, context)).GetAwaiter().GetResult();
+#pragma warning restore S1226
+#pragma warning restore CA2012
         }
 
         _blockedUntil = IsDateTimeOverflow(utcNow, breakDuration) ? DateTimeOffset.MaxValue : utcNow + breakDuration;
-       
+
         var transitionedState = _circuitState;
         _circuitState = CircuitState.Open;
 
