@@ -109,7 +109,7 @@ public class RollingHealthMetricsTests
 
         _timeProvider.Advance(_samplingDuration + (variance ? TimeSpan.FromMilliseconds(1) : TimeSpan.Zero));
 
-        metrics.GetHealthInfo().Should().Be(new HealthInfo(0, 0,0));
+        metrics.GetHealthInfo().Should().Be(new HealthInfo(0, 0, 0));
     }
 
     private RollingHealthMetrics Create() => new(_samplingDuration, _windows, _timeProvider);
