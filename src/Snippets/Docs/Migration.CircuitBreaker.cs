@@ -86,8 +86,8 @@ internal static partial class Migration
         bool isOpen = cbPolicy.CircuitState == CircuitState.Open || cbPolicy.CircuitState == CircuitState.Isolated;
 
         // Manually control state
-        cbPolicy.Isolate(); // transitions into Isolated state
-        cbPolicy.Reset(); // transitions into Closed state
+        cbPolicy.Isolate(); // Transitions into the Isolated state
+        cbPolicy.Reset(); // Transitions into the Closed state
 
         #endregion
     }
@@ -110,7 +110,7 @@ internal static partial class Migration
             .Build();
 
         // Create a generic pipeline with circuit breaker. Because ResiliencePipeline<T> supports both sync and async
-        // callbacks, there is no need to define it twice.
+        // callbacks, there is also no need to define it twice.
         ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage>
             {
@@ -144,8 +144,8 @@ internal static partial class Migration
         bool isOpen = stateProvider.CircuitState == CircuitState.Open || stateProvider.CircuitState == CircuitState.Isolated;
 
         // Manually control state
-        await manualControl.IsolateAsync(); // transitions into Isolated state
-        await manualControl.CloseAsync(); // transitions into Closed state
+        await manualControl.IsolateAsync(); // Transitions into the Isolated state
+        await manualControl.CloseAsync(); // Transitions into the Closed state
 
         #endregion
     }

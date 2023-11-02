@@ -538,7 +538,7 @@ public Downstream1Client(
 
 ### 4 - Reducing thrown exceptions
 
-In case of Circuit Breaker when it is either in `Open` or in `Isolated` state new requests are rejected immediately.
+In case of Circuit Breaker when it is either in the `Open` or `Isolated` state new requests are rejected immediately.
 
 That means the strategy will throw either a `BrokenCircuitException` or an `IsolatedCircuitException` respectively.
 
@@ -574,9 +574,9 @@ if (stateProvider.CircuitState
 
 **Reasoning**:
 
-- The problem with this approach is that the circuit breaker will never transition into `HalfOpen` state.
+- The problem with this approach is that the circuit breaker will never transition into the `HalfOpen` state.
 - The circuit breaker does not act as an active object. In other words the state transition does not happen automatically in the background.
-- The circuit transition into `HalfOpen` state when the `Execute{Async}` is called and the `BreakDuration` elapsed.
+- The circuit transition into the `HalfOpen` state when the `Execute{Async}` method is called and the `BreakDuration` elapsed.
 
 ✅ DO
 
@@ -615,4 +615,4 @@ else
 **Reasoning**:
 
 - The `ExecuteOutcomeAsync` is a low-allocation API which does not throw exception rather captures it inside the `Exception` property of the `Outcome` data structure.
-- Since your are calling one of the `Execute` methods that's why the circuit breaker can transition into `HalfOpen` state.
+- Since you are calling one of the `Execute` methods, that's why the circuit breaker can transition into the `HalfOpen` state.

@@ -269,11 +269,11 @@ internal static class CircuitBreaker
 
         if (outcome.Exception is BrokenCircuitException)
         {
-            // the execution was stopped by CB
+            // The execution was stopped by the circuit breaker
         }
         else
         {
-            // Your code goes here to process response (outcome.Result)
+            // Your code goes here to process the response (outcome.Result)
         }
 
         #endregion

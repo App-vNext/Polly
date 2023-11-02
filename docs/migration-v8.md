@@ -603,7 +603,7 @@ This section describes how to migrate v7 circuit breaker policies to V8 circuit 
 
 ### Circuit breaker in v7
 
-V7's "Standard" Circuit Breaker policy could be defined like bellow:
+V7's "Standard" Circuit Breaker policy could be defined like below:
 
 <!-- snippet: migration-circuit-breaker-v7 -->
 ```cs
@@ -637,7 +637,7 @@ IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy<HttpResponseMessage>
 ```
 <!-- endSnippet -->
 
-V7's Advanced Circuit Breaker policy could be defined like bellow:
+V7's Advanced Circuit Breaker policy could be defined like below:
 
 <!-- snippet: migration-advanced-circuit-breaker-v7 -->
 ```cs
@@ -691,7 +691,7 @@ cbPolicy.Reset(); // transitions into Closed state
 
 > [!IMPORTANT]
 >
-> Polly V8 does not support the standard ("classic") circuit breaker with consecutive failure counting.
+> Polly V8 does not support the standard (_"classic"_) circuit breaker with consecutive failure counting.
 >
 > In case of V8 you can define a Circuit Breaker strategy which works like the advanced circuit breaker in V7.
 
