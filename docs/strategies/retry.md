@@ -202,13 +202,13 @@ while (!cancellationToken.IsCancellationRequested)
 
 Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
 
-### 1 - Overusing builder methods
+### Overusing builder methods
 
 ❌ DON'T
 
 Overuse `Handle/HandleResult`:
 
-<!-- snippet: retry-anti-pattern-1 -->
+<!-- snippet: retry-anti-pattern-overusing-builder -->
 ```cs
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -233,7 +233,7 @@ Using multiple `Handle/HandleResult` methods is redundant. Instead of specifying
 
 Use collections and simple predicate functions:
 
-<!-- snippet: retry-pattern-1 -->
+<!-- snippet: retry-pattern-overusing-builder -->
 ```cs
 ImmutableArray<Type> networkExceptions = new[]
 {
@@ -266,13 +266,13 @@ var retry = new ResiliencePipelineBuilder()
 
 Grouping exceptions simplifies the configuration and improves reusability. For example, the `networkExceptions` array can be reused in various strategies such as retry, circuit breaker, and more.
 
-### 2 - Using retry for periodic execution
+### Using retry for periodic execution
 
 ❌ DON'T
 
 Use a retry strategy to run indefinitely at a specified interval:
 
-<!-- snippet: retry-anti-pattern-2 -->
+<!-- snippet: retry-anti-pattern-periodic-execution -->
 ```cs
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -297,13 +297,13 @@ Use a suitable tool to schedule recurring tasks, such as [*Quartz.Net*](https://
 - Polly was not designed to support this scenario; its primary purpose is to help manage **brief** transient failures.
 - Specialized job scheduling tools are more memory-efficient and can be set up to withstand machine failures by using persistent storage.
 
-### 3 - Combining multiple sleep duration strategies
+### Combining multiple sleep duration strategies
 
 ❌ DON'T
 
 Mix increasing values with constant ones:
 
-<!-- snippet: retry-anti-pattern-3 -->
+<!-- snippet: retry-anti-pattern-sleeping-strategies -->
 ```cs
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -334,7 +334,7 @@ Using this approach essentially turns the logic into a state machine. Although t
 
 Use two distinct retry strategy options and combine them:
 
-<!-- snippet: retry-pattern-3 -->
+<!-- snippet: retry-pattern-sleeping-strategies -->
 ```cs
 var slowRetries = new RetryStrategyOptions
 {
@@ -364,7 +364,7 @@ var retry = new ResiliencePipelineBuilder()
 - Retry strategies can be arranged in any order (either slower first and then quicker, or the other way around).
 - Different triggers can be defined for the retry strategies, allowing for switches between them based on exceptions or results. The order isn't fixed, so quick and slow retries can alternate.
 
-### 4 - Branching retry logic based on request URL
+### Branching retry logic based on request URL
 
 Suppose you have an `HttpClient` and you want to add a retry only for specific endpoints.
 
@@ -372,7 +372,7 @@ Suppose you have an `HttpClient` and you want to add a retry only for specific e
 
 Use `ResiliencePipeline.Empty` and the `?:` operator:
 
-<!-- snippet: retry-anti-pattern-4 -->
+<!-- snippet: retry-anti-pattern-branching-by-url -->
 ```cs
 var retry =
     IsRetryable(request.RequestUri)
@@ -389,7 +389,7 @@ The triggering conditions and logic are spread across different sections. This d
 
 Use the `ShouldHandle` clause to define the triggering logic:
 
-<!-- snippet: retry-pattern-4 -->
+<!-- snippet: retry-pattern-branching-by-url -->
 ```cs
 var retry = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddRetry(new()
@@ -405,13 +405,13 @@ var retry = new ResiliencePipelineBuilder<HttpResponseMessage>()
 - The conditions for triggering are consolidated in a familiar and easily accessible location.
 - You don't need to specify actions for scenarios when the strategy shouldn't be triggered.
 
-### 5 - Calling a method before/after each retry attempt
+### Calling a method before/after each retry attempt
 
 ❌ DON'T
 
 Call a specific method before `Execute`/`ExecuteAsync`:
 
-<!-- snippet: retry-anti-pattern-5 -->
+<!-- snippet: retry-anti-pattern-calling-method-before -->
 ```cs
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -439,7 +439,7 @@ await retry.ExecuteAsync(DoSomething);
 
 Group the two method calls:
 
-<!-- snippet: retry-pattern-5 -->
+<!-- snippet: retry-pattern-calling-method-before -->
 ```cs
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new())
@@ -457,7 +457,7 @@ await retry.ExecuteAsync(ct =>
 
 If `DoSomething` and `BeforeEachAttempt` are interdependent, group them or declare a simple wrapper to invoke them in the correct sequence.
 
-### 6 - Having a single strategy for multiple failures
+### Having a single strategy for multiple failures
 
 Suppose we have an `HttpClient` that issues a request and then we try to parse a large JSON response.
 
@@ -465,7 +465,7 @@ Suppose we have an `HttpClient` that issues a request and then we try to parse a
 
 Use a single strategy for everything:
 
-<!-- snippet: retry-anti-pattern-6 -->
+<!-- snippet: retry-anti-pattern-multiple-failures -->
 ```cs
 var builder = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -494,7 +494,7 @@ Previously, it was suggested that you should combine `X` and `Y` only if they ar
 
 Define a strategy for each failure domain:
 
-<!-- snippet: retry-pattern-6 -->
+<!-- snippet: retry-pattern-multiple-failures -->
 ```cs
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
@@ -521,7 +521,7 @@ var foo = await timeout.ExecuteAsync((ct) => JsonSerializer.DeserializeAsync<Foo
 
 The failure domain of a network call is different from that of deserialization. Using dedicated strategies makes the application more resilient to various transient failures.
 
-### 7 - Cancelling retry for specific exceptions
+### Cancelling retry for specific exceptions
 
 If you encounter a `TimeoutException`, you may not want to retry the operation.
 
@@ -529,7 +529,7 @@ If you encounter a `TimeoutException`, you may not want to retry the operation.
 
 Embed cancellation logic within `OnRetry`:
 
-<!-- snippet: retry-anti-pattern-7 -->
+<!-- snippet: retry-anti-pattern-cancelling-retry -->
 ```cs
 var ctsKey = new ResiliencePropertyKey<CancellationTokenSource>("cts");
 var retry = new ResiliencePipelineBuilder()
@@ -560,7 +560,7 @@ Conditions for triggering retries should be located in `ShouldHandle`. Bypassing
 
 Set the condition for retry within `ShouldHandle`:
 
-<!-- snippet: retry-pattern-7 -->
+<!-- snippet: retry-pattern-cancelling-retry -->
 ```cs
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()

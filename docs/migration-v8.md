@@ -142,7 +142,7 @@ await pipelineT.ExecuteAsync(static async token =>
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -195,7 +195,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 
 See [fallback after retries](strategies/fallback.md#fallback-after-retries) for an example on how the strategies are executed.
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -404,7 +404,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -475,7 +475,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -538,7 +538,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -588,7 +588,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -689,7 +689,7 @@ cbPolicy.Reset(); // Transitions into the Closed state
 
 ### Circuit breaker in v8
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Polly V8 does not support the standard (*"classic"*) circuit breaker with consecutive failure counting.
 >
@@ -756,11 +756,11 @@ await manualControl.CloseAsync(); // Transitions into the Closed state
 >
 > You could guard the `Execute{Async}` call with a condition that the circuit is not broken. This technique does **not** work with V8.
 >
-> Under the [circuit breaker's anti-patterns](strategies/circuit-breaker.md#4---reducing-thrown-exceptions) you can find the suggested way for V8.
+> Under the [circuit breaker's anti-patterns](strategies/circuit-breaker.md#reducing-thrown-exceptions) you can find the suggested way for V8.
 
 ____
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >

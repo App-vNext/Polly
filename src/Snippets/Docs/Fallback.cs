@@ -81,9 +81,9 @@ internal static class Fallback
         }
     }
 
-    public static void AntiPattern_1()
+    public static void AntiPattern_ReplaceException()
     {
-        #region fallback-anti-pattern-1
+        #region fallback-anti-pattern-replace-exception
 
         var fallback = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddFallback(new()
@@ -99,10 +99,10 @@ internal static class Fallback
 
     private static readonly ResiliencePipeline<HttpResponseMessage> WhateverPipeline = ResiliencePipeline<HttpResponseMessage>.Empty;
     private static ValueTask<Outcome<HttpResponseMessage>> Action(ResilienceContext context, string state) => Outcome.FromResultAsValueTask(new HttpResponseMessage());
-    public static async Task Pattern_1()
+    public static async Task Pattern_ReplaceException()
     {
         var context = ResilienceContextPool.Shared.Get();
-        #region fallback-pattern-1
+        #region fallback-pattern-replace-exception
 
         var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, "state");
         if (outcome.Exception is HttpRequestException requestException)
@@ -114,7 +114,7 @@ internal static class Fallback
         ResilienceContextPool.Shared.Return(context);
     }
 
-    #region fallback-pattern-1-ext
+    #region fallback-pattern-replace-exception-ext
     public static async ValueTask<HttpResponseMessage> Action()
     {
         var context = ResilienceContextPool.Shared.Get();
@@ -143,11 +143,11 @@ internal static class Fallback
 
     private static ValueTask<HttpResponseMessage> CallPrimary(CancellationToken ct) => ValueTask.FromResult(new HttpResponseMessage());
     private static ValueTask<HttpResponseMessage> CallSecondary(CancellationToken ct) => ValueTask.FromResult(new HttpResponseMessage());
-    public static async Task<HttpResponseMessage?> AntiPattern_2()
+    public static async Task<HttpResponseMessage?> AntiPattern_RetryForFallback()
     {
         var fallbackKey = new ResiliencePropertyKey<HttpResponseMessage?>("fallback_result");
 
-        #region fallback-anti-pattern-2
+        #region fallback-anti-pattern-retry-for-fallback
 
         var fallback = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddRetry(new()
@@ -181,9 +181,9 @@ internal static class Fallback
         #endregion
     }
 
-    public static async ValueTask<HttpResponseMessage?> Pattern_2()
+    public static async ValueTask<HttpResponseMessage?> Pattern_RetryForFallback()
     {
-        #region fallback-pattern-2
+        #region fallback-pattern-retry-for-fallback
 
         var fallback = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddFallback(new()
@@ -200,12 +200,12 @@ internal static class Fallback
     }
 
     private static ValueTask<HttpResponseMessage> CallExternalSystem(CancellationToken ct) => ValueTask.FromResult(new HttpResponseMessage());
-    public static async ValueTask<HttpResponseMessage?> AntiPattern_3()
+    public static async ValueTask<HttpResponseMessage?> AntiPattern_NestingExecute()
     {
         var timeout = ResiliencePipeline<HttpResponseMessage>.Empty;
         var fallback = ResiliencePipeline<HttpResponseMessage>.Empty;
 
-        #region fallback-anti-pattern-3
+        #region fallback-anti-pattern-nesting-execute
         var result = await fallback.ExecuteAsync(async (CancellationToken outerCT) =>
         {
             return await timeout.ExecuteAsync(static async (CancellationToken innerCT) =>
@@ -218,12 +218,12 @@ internal static class Fallback
         #endregion
     }
 
-    public static async ValueTask<HttpResponseMessage?> Pattern_3()
+    public static async ValueTask<HttpResponseMessage?> Pattern_NestingExecute()
     {
         var timeout = ResiliencePipeline<HttpResponseMessage>.Empty;
         var fallback = ResiliencePipeline<HttpResponseMessage>.Empty;
 
-        #region fallback-pattern-3
+        #region fallback-pattern-nesting-execute
         var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddPipeline(timeout)
             .AddPipeline(fallback)
@@ -233,9 +233,9 @@ internal static class Fallback
         #endregion
     }
 
-    public static void FallbackAfterRetries()
+    public static void Pattern_FallbackAfterRetries()
     {
-        #region fallback-after-retries
+        #region fallback-pattern-after-retries
 
         // Define a common predicates re-used by both fallback and retries
         var predicateBuilder = new PredicateBuilder<HttpResponseMessage>()

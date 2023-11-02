@@ -308,7 +308,7 @@ sequenceDiagram
 
 Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and those to avoid.
 
-### 1 - Using different sleep duration between retry attempts based on Circuit Breaker state
+### Using different sleep duration between retry attempts based on Circuit Breaker state
 
 Imagine that we have an inner Circuit Breaker and an outer Retry strategies.
 
@@ -318,7 +318,7 @@ We would like to define the retry in a way that the sleep duration calculation i
 
 Use a closure to branch based on circuit breaker state:
 
-<!-- snippet: circuit-breaker-anti-pattern-1 -->
+<!-- snippet: circuit-breaker-anti-pattern-circuit-aware-retry -->
 ```cs
 var stateProvider = new CircuitBreakerStateProvider();
 var circuitBreaker = new ResiliencePipelineBuilder()
@@ -362,7 +362,7 @@ var retry = new ResiliencePipelineBuilder()
 
 Use `Context` to pass information between strategies:
 
-<!-- snippet: circuit-breaker-pattern-1 -->
+<!-- snippet: circuit-breaker-pattern-circuit-aware-retry -->
 ```cs
 var circuitBreaker = new ResiliencePipelineBuilder()
     .AddCircuitBreaker(new()
@@ -406,7 +406,7 @@ var retry = new ResiliencePipelineBuilder()
 - The Retry strategy fetches the sleep duration dynamically without knowing any specific knowledge about the Circuit Breaker.
 - If adjustments are needed for the `BreakDuration`, they can be made in one place.
 
-### 2 - Using different duration for breaks
+### Using different duration for breaks
 
 In the case of Retry you can specify dynamically the sleep duration via the `DelayGenerator`.
 
@@ -416,7 +416,7 @@ In the case of Circuit Breaker the `BreakDuration` is considered constant (can't
 
 Use `Task.Delay` inside `OnOpened`:
 
-<!-- snippet: circuit-breaker-anti-pattern-2 -->
+<!-- snippet: circuit-breaker-anti-pattern-sleep-duration-generator -->
 ```cs
 static IEnumerable<TimeSpan> GetSleepDuration()
 {
@@ -450,7 +450,7 @@ var circuitBreaker = new ResiliencePipelineBuilder()
 - The minimum break duration value is half a second. This implies that each sleep lasts for `sleepDurationProvider.Current` plus an additional half a second.
 - One might think that setting the `BreakDuration` to `sleepDurationProvider.Current` would address this, but it doesn't. This is because the `BreakDuration` is established only once and isn't re-assessed during each break.
 
-<!-- snippet: circuit-breaker-anti-pattern-2-ext -->
+<!-- snippet: circuit-breaker-anti-pattern-sleep-duration-generator-ext -->
 ```cs
 circuitBreaker = new ResiliencePipelineBuilder()
     .AddCircuitBreaker(new()
@@ -472,7 +472,7 @@ circuitBreaker = new ResiliencePipelineBuilder()
 
 The `CircuitBreakerStrategyOptions` currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.
 
-### 3 - Wrapping each endpoint with a circuit breaker
+### Wrapping each endpoint with a circuit breaker
 
 Imagine that you have to call N number of services via `HttpClient`s.
 You want to decorate all downstream calls with the service-aware Circuit Breaker.
@@ -481,7 +481,7 @@ You want to decorate all downstream calls with the service-aware Circuit Breaker
 
 Use a collection of Circuit Breakers and explicitly call `ExecuteAsync()`:
 
-<!-- snippet: circuit-breaker-anti-pattern-3 -->
+<!-- snippet: circuit-breaker-anti-pattern-cb-per-endpoint -->
 ```cs
 // Defined in a common place
 var uriToCbMappings = new Dictionary<Uri, ResiliencePipeline>
@@ -536,7 +536,7 @@ public Downstream1Client(
 > It is required because the `AddPolicyHandler()` method anticipates an `IAsyncPolicy<HttpResponse>` parameter.
 > Please be aware that, later an `AddResilienceHandler()` will be introduced in the `Microsoft.Extensions.Http.Resilience` package which is the successor of the `Microsoft.Extensions.Http.Polly`.
 
-### 4 - Reducing thrown exceptions
+### Reducing thrown exceptions
 
 In case of Circuit Breaker when it is either in the `Open` or `Isolated` state new requests are rejected immediately.
 
@@ -546,7 +546,7 @@ That means the strategy will throw either a `BrokenCircuitException` or an `Isol
 
 Use guard expression to call `Execute{Async}` only if the circuit is not broken:
 
-<!-- snippet: circuit-breaker-anti-pattern-4 -->
+<!-- snippet: circuit-breaker-anti-pattern-reduce-thrown-exceptions -->
 ```cs
 var stateProvider = new CircuitBreakerStateProvider();
 var circuitBreaker = new ResiliencePipelineBuilder()
@@ -582,7 +582,7 @@ if (stateProvider.CircuitState
 
 Use `ExecuteOutcomeAsync` to avoid throwing exception:
 
-<!-- snippet: circuit-breaker-pattern-4 -->
+<!-- snippet: circuit-breaker-pattern-reduce-thrown-exceptions -->
 ```cs
 var context = ResilienceContextPool.Shared.Get();
 var circuitBreaker = new ResiliencePipelineBuilder()
