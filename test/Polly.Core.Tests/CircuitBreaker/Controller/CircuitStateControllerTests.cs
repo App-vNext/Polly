@@ -105,11 +105,17 @@ public class CircuitStateControllerTests
         Assert.Throws<ObjectDisposedException>(() => controller.LastException);
         Assert.Throws<ObjectDisposedException>(() => controller.LastHandledOutcome);
 
-        await Assert.ThrowsAsync<ObjectDisposedException>(() => controller.CloseCircuitAsync(ResilienceContextPool.Shared.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(() => controller.IsolateCircuitAsync(ResilienceContextPool.Shared.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(() => controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(() => controller.OnActionSuccessAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
-        await Assert.ThrowsAsync<ObjectDisposedException>(() => controller.OnActionFailureAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
+        // xunit 2.6.0 has Func<ValueTask> and Func<Task> overloads that cause ambiguity which
+        // is messy to resolve for multiple different TFMs, so force the Task version to be used.
+        static async Task AssertThrowsAsync<T>(Func<Task> func)
+            where T : Exception
+            => await Assert.ThrowsAsync<T>(func);
+
+        await AssertThrowsAsync<ObjectDisposedException>(async () => await controller.CloseCircuitAsync(ResilienceContextPool.Shared.Get()));
+        await AssertThrowsAsync<ObjectDisposedException>(async () => await controller.IsolateCircuitAsync(ResilienceContextPool.Shared.Get()));
+        await AssertThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get()));
+        await AssertThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionSuccessAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
+        await AssertThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionFailureAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
     }
 
     [Fact]
