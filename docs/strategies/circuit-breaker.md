@@ -615,5 +615,5 @@ else
 
 **Reasoning**:
 
-- The `ExecuteOutcomeAsync` is a low-allocation API which does not throw exception rather captures it inside the `Exception` property of the `Outcome` data structure.
+- The `ExecuteOutcomeAsync` is a low-allocation API which does not throw exceptions; rather it captures them inside an `Outcome` data structure.
 - Since you are calling one of the `Execute` methods, that's why the circuit breaker can transition into the `HalfOpen` state.
