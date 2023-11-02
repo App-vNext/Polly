@@ -752,7 +752,9 @@ await manualControl.CloseAsync(); // Transitions into the Closed state
 
 > [!NOTE]
 >
-> On the [V7's wiki page](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken) you can find a tip how to reduce thrown exceptions. The described technique does **not** work with V8.
+> In case of V7 you could do an optimization to reduce the thrown exceptions.
+>
+> You could guard the `Execute{Async}` call with a condition that the circuit is not broken. This technique does **not** work with V8.
 >
 > Under the [circuit breaker's anti-patterns](strategies/circuit-breaker.md#4---reducing-thrown-exceptions) you can find the suggested way for V8.
 
