@@ -756,7 +756,7 @@ await manualControl.CloseAsync(); // Transitions into the Closed state
 >
 > You could guard the `Execute{Async}` call with a condition that the circuit is not broken. This technique does **not** work with V8.
 >
-> Under the [circuit breaker's anti-patterns](strategies/circuit-breaker.md#4---reducing-thrown-exceptions) you can find the suggested way for V8.
+> Under the [circuit breaker's anti-patterns](strategies/circuit-breaker.md#reducing-thrown-exceptions) you can find the suggested way for V8.
 
 ____
 
