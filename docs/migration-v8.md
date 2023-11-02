@@ -750,6 +750,14 @@ await manualControl.CloseAsync(); // transitions into Closed state
 ```
 <!-- endSnippet -->
 
+> [!NOTE]
+>
+> On the [V7's wiki page](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken) you can find a tip how to reduce thrown exceptions. The described technique does **not** work with V8.
+>
+> Under the [circuit breaker's anti-patterns](strategies/circuit-breaker.md#4---reducing-thrown-exceptions) you can find the suggested way for V8.
+
+____
+
 > [!IMPORTANT]
 >
 > Things to remember:
