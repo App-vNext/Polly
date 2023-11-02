@@ -535,3 +535,85 @@ public Downstream1Client(
 > The above sample code used the `AsAsyncPolicy<HttpResponseMessage>()` method to convert the `ResiliencePipeline<HttpResponseMessage>` to `IAsyncPolicy<HttpResponseMessage>`.
 > It is required because the `AddPolicyHandler()` method anticipates an `IAsyncPolicy<HttpResponse>` parameter.
 > Please be aware that, later an `AddResilienceHandler()` will be introduced in the `Microsoft.Extensions.Http.Resilience` package which is the successor of the `Microsoft.Extensions.Http.Polly`.
+
+### 4 - Reducing thrown exceptions
+
+In case of Circuit Breaker when it is either in the `Open` or `Isolated` state new requests are rejected immediately.
+
+That means the strategy will throw either a `BrokenCircuitException` or an `IsolatedCircuitException` respectively.
+
+❌ DON'T
+
+Use guard expression to call `Execute{Async}` only if the circuit is not broken:
+
+<!-- snippet: circuit-breaker-anti-pattern-4 -->
+```cs
+var stateProvider = new CircuitBreakerStateProvider();
+var circuitBreaker = new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new()
+    {
+        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+        BreakDuration = TimeSpan.FromSeconds(0.5),
+        StateProvider = stateProvider
+    })
+    .Build();
+
+if (stateProvider.CircuitState
+    is not CircuitState.Open
+    and not CircuitState.Isolated)
+{
+    var response = await circuitBreaker.ExecuteAsync(static async ct =>
+    {
+        return await IssueRequest();
+    }, CancellationToken.None);
+
+    // Your code goes here to process response
+}
+```
+<!-- endSnippet -->
+
+**Reasoning**:
+
+- The problem with this approach is that the circuit breaker will never transition into the `HalfOpen` state.
+- The circuit breaker does not act as an active object. In other words the state transition does not happen automatically in the background.
+- The circuit transition into the `HalfOpen` state when the `Execute{Async}` method is called and the `BreakDuration` elapsed.
+
+✅ DO
+
+Use `ExecuteOutcomeAsync` to avoid throwing exception:
+
+<!-- snippet: circuit-breaker-pattern-4 -->
+```cs
+var context = ResilienceContextPool.Shared.Get();
+var circuitBreaker = new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new()
+    {
+        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+        BreakDuration = TimeSpan.FromSeconds(0.5),
+    })
+    .Build();
+
+Outcome<HttpResponseMessage> outcome = await circuitBreaker.ExecuteOutcomeAsync(static async (ctx, state) =>
+{
+    var response = await IssueRequest();
+    return Outcome.FromResult(response);
+}, context, "state");
+
+ResilienceContextPool.Shared.Return(context);
+
+if (outcome.Exception is BrokenCircuitException)
+{
+    // The execution was stopped by the circuit breaker
+}
+else
+{
+    HttpResponseMessage response = outcome.Result!;
+    // Your code goes here to process the response
+}
+```
+<!-- endSnippet -->
+
+**Reasoning**:
+
+- The `ExecuteOutcomeAsync` is a low-allocation API which does not throw exceptions; rather it captures them inside an `Outcome` data structure.
+- Since you are calling one of the `Execute` methods, that's why the circuit breaker can transition into the `HalfOpen` state.

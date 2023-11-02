@@ -214,4 +214,69 @@ internal static class CircuitBreaker
         await uriToCbMappings[downstream1Uri].ExecuteAsync(CallXYZOnDownstream1, CancellationToken.None);
         #endregion
     }
+
+    public static async ValueTask AntiPattern_4()
+    {
+        #region circuit-breaker-anti-pattern-4
+
+        var stateProvider = new CircuitBreakerStateProvider();
+        var circuitBreaker = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+                BreakDuration = TimeSpan.FromSeconds(0.5),
+                StateProvider = stateProvider
+            })
+            .Build();
+
+        if (stateProvider.CircuitState
+            is not CircuitState.Open
+            and not CircuitState.Isolated)
+        {
+            var response = await circuitBreaker.ExecuteAsync(static async ct =>
+            {
+                return await IssueRequest();
+            }, CancellationToken.None);
+
+            // Your code goes here to process response
+        }
+
+        #endregion
+    }
+
+    private static ValueTask<HttpResponseMessage> IssueRequest() => ValueTask.FromResult(new HttpResponseMessage());
+
+    public static async ValueTask Pattern_4()
+    {
+        #region circuit-breaker-pattern-4
+
+        var context = ResilienceContextPool.Shared.Get();
+        var circuitBreaker = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+                BreakDuration = TimeSpan.FromSeconds(0.5),
+            })
+            .Build();
+
+        Outcome<HttpResponseMessage> outcome = await circuitBreaker.ExecuteOutcomeAsync(static async (ctx, state) =>
+        {
+            var response = await IssueRequest();
+            return Outcome.FromResult(response);
+        }, context, "state");
+
+        ResilienceContextPool.Shared.Return(context);
+
+        if (outcome.Exception is BrokenCircuitException)
+        {
+            // The execution was stopped by the circuit breaker
+        }
+        else
+        {
+            HttpResponseMessage response = outcome.Result!;
+            // Your code goes here to process the response
+        }
+
+        #endregion
+    }
 }
