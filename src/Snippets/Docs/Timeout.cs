@@ -66,4 +66,38 @@ internal static class Timeout
 
         #endregion
     }
+
+    public static async Task IgnoreCancellationToken()
+    {
+        #region timeout-ignore-cancellation-token
+
+        var outerToken = CancellationToken.None;
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddTimeout(TimeSpan.FromSeconds(1))
+            .Build();
+
+        await pipeline.ExecuteAsync(
+            async innerToken => await Task.Delay(3000, outerToken), // The delay call should use innerToken
+            outerToken);
+
+        #endregion
+    }
+
+    public static async Task RespectCancellationToken()
+    {
+        #region timeout-respect-cancellation-token
+
+        var outerToken = CancellationToken.None;
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddTimeout(TimeSpan.FromSeconds(1))
+            .Build();
+
+        await pipeline.ExecuteAsync(
+            async innerToken => await Task.Delay(3000, innerToken),
+            outerToken);
+
+        #endregion
+    }
 }

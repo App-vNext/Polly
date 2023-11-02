@@ -10,6 +10,11 @@
 
 ---
 
+The timeout resilience strategy cancels the execution if it does not complete within the specified timeout period. If the execution is canceled by the timeout strategy, it throws a `TimeoutRejectedException`. The timeout strategy operates by wrapping the incoming cancellation token with a new one. Should the original token be canceled, the timeout strategy will transparently honor the original cancellation token without throwing a `TimeoutRejectedException`.
+
+> ![IMPORTANT]
+> It is crucial that the user's callback respects the cancellation token. If it does not, the callback will continue executing even after a cancellation request, thereby ignoring the cancellation.
+
 ## Usage
 
 <!-- snippet: timeout -->
@@ -119,3 +124,51 @@ sequenceDiagram
     T->>P: Throws <br/>TimeoutRejectedException
     P->>C: Propagates exception
 ```
+
+## Anti-patterns
+
+### Ignoring Cancellation Token
+
+❌ DON'T
+
+Ignore the cancellation token provided by the resilience pipeline:
+
+<!-- snippet: timeout-ignore-cancellation-token -->
+```cs
+var outerToken = CancellationToken.None;
+
+var pipeline = new ResiliencePipelineBuilder()
+    .AddTimeout(TimeSpan.FromSeconds(1))
+    .Build();
+
+await pipeline.ExecuteAsync(
+    async innerToken => await Task.Delay(3000, outerToken), // The delay call should use innerToken
+    outerToken);
+```
+<!-- endSnippet -->
+
+**Reasoning**:
+
+The provided callback ignores the `innerToken` passed from the pipeline and instead uses the `outerToken`. For this reason, the cancelled `innerToken` is ignored, and the callback is not cancelled within 1 second.
+
+✅ DO
+
+Respect the cancellation token provided by the pipeline:
+
+<!-- snippet: timeout-respect-cancellation-token -->
+```cs
+var outerToken = CancellationToken.None;
+
+var pipeline = new ResiliencePipelineBuilder()
+    .AddTimeout(TimeSpan.FromSeconds(1))
+    .Build();
+
+await pipeline.ExecuteAsync(
+    async innerToken => await Task.Delay(3000, innerToken),
+    outerToken);
+```
+<!-- endSnippet -->
+
+**Reasoning**:
+
+The provided callback respects the `innerToken` provided by the pipeline, and as a result, the callback is correctly cancelled by the timeout strategy after 1 second.
