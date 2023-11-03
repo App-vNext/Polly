@@ -105,16 +105,11 @@ public class CircuitStateControllerTests
         Assert.Throws<ObjectDisposedException>(() => controller.LastException);
         Assert.Throws<ObjectDisposedException>(() => controller.LastHandledOutcome);
 
-        // xunit 2.6.0 has Func<ValueTask> and Func<Task> overloads that cause ambiguity which
-        // is messy to resolve for multiple different TFMs, so force the Task version to be used.
-        static async Task AssertThrowsObjectDisposedExceptionAsync(Func<Task> func)
-            => await Assert.ThrowsAsync<ObjectDisposedException>(func);
-
-        await AssertThrowsObjectDisposedExceptionAsync(async () => await controller.CloseCircuitAsync(ResilienceContextPool.Shared.Get()));
-        await AssertThrowsObjectDisposedExceptionAsync(async () => await controller.IsolateCircuitAsync(ResilienceContextPool.Shared.Get()));
-        await AssertThrowsObjectDisposedExceptionAsync(async () => await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get()));
-        await AssertThrowsObjectDisposedExceptionAsync(async () => await controller.OnActionSuccessAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
-        await AssertThrowsObjectDisposedExceptionAsync(async () => await controller.OnActionFailureAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.CloseCircuitAsync(ResilienceContextPool.Shared.Get()));
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.IsolateCircuitAsync(ResilienceContextPool.Shared.Get()));
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get()));
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionSuccessAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await controller.OnActionFailureAsync(Outcome.FromResult(10), ResilienceContextPool.Shared.Get()));
     }
 
     [Fact]
