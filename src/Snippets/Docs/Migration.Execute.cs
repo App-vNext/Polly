@@ -27,22 +27,23 @@ internal static partial class Migration
         else
         {
             Exception exception = policyResult.FinalException;
-            FaultType failtType = policyResult.FaultType!.Value;
+            FaultType faultType = policyResult.FaultType!.Value;
             ExceptionType exceptionType = policyResult.ExceptionType!.Value;
 
             // Process failure
         }
 
         // Access context
+        const string Key = "context_key";
         IAsyncPolicy<int> asyncPolicyWithContext = Policy.TimeoutAsync<int>(TimeSpan.FromSeconds(10),
             onTimeoutAsync: (ctx, ts, task) =>
             {
-                ctx["context_key"] = "context_value";
+                ctx[Key] = "context_value";
                 return Task.CompletedTask;
             });
 
         asyncPolicyResult = await asyncPolicyWithContext.ExecuteAndCaptureAsync((ctx, token) => MethodAsync(token), new Context(), CancellationToken.None);
-        string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault("context_key") as string;
+        string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault(Key) as string;
         #endregion
     }
 
@@ -54,7 +55,7 @@ internal static partial class Migration
             .Build();
 
         // Synchronous execution
-        // Polly v8 does not provide an API to synchronously execute and capture the outcome of a pipeline
+        // Polly v8 does not support
 
         // Asynchronous execution
         var context = ResilienceContextPool.Shared.Get();

@@ -95,7 +95,7 @@ The constructor for `ResiliencePipelineRegistry<TKey>` accepts a parameter of ty
 | `InstanceNameFormatter` | `null`                                                          | Delegate formatting `TKey` to instance name.                      |
 | `BuilderNameFormatter`  | Function returning the `key.ToString()` value.                  | Delegate formatting `TKey` to builder name.                       |
 
-> [>NOTE]
+> [!NOTE]
 > The `BuilderName` and `InstanceName` are used in [telemetry](../advanced/telemetry.md#metrics).
 
 Usage example:
