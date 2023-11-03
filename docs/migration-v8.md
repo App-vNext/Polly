@@ -1060,7 +1060,7 @@ registry.GetOrAddPipeline(PipelineKey, builder => builder.AddTimeout(TimeSpan.Fr
 > Things to remember:
 >
 > - Use `ResiliencePipelineRegistry<TResult>` to add or get a pipelines to the registry
-> - Prefer the safe methods (for example: `TryGetPipeline{<TResult>}`) over their counterpart (for example: `GetPipeline{<TResult>}`)
+> - Prefer the safer methods (for example: `TryGetPipeline{<TResult>}`) over their counterpart (for example: `GetPipeline{<TResult>}`)
 >
 > For further information please check out the [Resilience pipeline registry documentation](pipelines/resilience-pipeline-registry.md).
 
