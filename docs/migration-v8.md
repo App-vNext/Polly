@@ -913,7 +913,7 @@ string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault(Key) as string;
 >
 > Polly V8 does not provide an API to synchronously execute and capture the outcome of a pipeline.
 >
-> On the other hand it introduced a type-safe `state`: TBD.
+> On the other hand it introduced a type-safe `state`: to-be-defined.
 
 <!-- snippet: migration-execute-v8 -->
 ```cs
@@ -975,7 +975,7 @@ ResilienceContextPool.Shared.Return(context);
 > Things to remember:
 >
 > - Use `ExecuteOutcomeAsync` to execute your callback in a safe way
-> - TBD: when to use context and when to use state
+> - To-Be-Defined: when to use context and when to use state
 
 ## Migrating no-op policies
 
