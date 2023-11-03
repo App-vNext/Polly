@@ -912,8 +912,6 @@ string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault(Key) as string;
 > [!NOTE]
 >
 > Polly V8 does not provide an API to synchronously execute and capture the outcome of a pipeline.
->
-> On the other hand it introduced a type-safe `state`: to-be-defined.
 
 <!-- snippet: migration-execute-v8 -->
 ```cs
@@ -975,7 +973,6 @@ ResilienceContextPool.Shared.Return(context);
 > Things to remember:
 >
 > - Use `ExecuteOutcomeAsync` to execute your callback in a safe way
-> - To-Be-Defined: when to use context and when to use state
 
 ## Migrating no-op policies
 
@@ -1037,7 +1034,7 @@ registry.AddOrUpdate(
 >
 > Polly V8 does not provide an explicit API to directly update a strategy in the registry.
 >
-> On the other hand it does provide a mechanism to reload pipelines.
+> On the other hand it does provide a mechanism to [reload pipelines](pipelines/resilience-pipeline-registry.md#dynamic-reloads).
 
 <!-- snippet: migration-registry-v8 -->
 ```cs
