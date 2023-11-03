@@ -200,10 +200,10 @@ ResiliencePipeline&lt;HttpResponseMessage&gt; genericPipeline = registry.GetOrAd
 </tr>
 </tbody>
 </table>
-<blockquote>
-<p>[&gt;NOTE]
-The <code>BuilderName</code> and <code>InstanceName</code> are used in <a href="../advanced/telemetry.html#metrics">telemetry</a>.</p>
-</blockquote>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The <code>BuilderName</code> and <code>InstanceName</code> are used in <a href="../advanced/telemetry.html#metrics">telemetry</a>.</p>
+</div>
 <p>Usage example:</p>
 <!-- snippet: registry-options -->
 <pre><code class="lang-cs">var options = new ResiliencePipelineRegistryOptions&lt;string&gt;

@@ -454,7 +454,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(new RetryStr
 <p>Things to remember:</p>
 <ul>
 <li>Use <code>AddRetry</code> to add a retry strategy to your resiliency pipeline</li>
-<li>Use the <code>RetryStrategyOptions</code> to customize your retry behavior to meet your requirements</li>
+<li>Use the <code>RetryStrategyOptions{&lt;TResult&gt;}</code> to customize your retry behavior to meet your requirements</li>
 </ul>
 <p>For further information please check out the <a href="strategies/retry.html">Retry resilience strategy documentation</a>.</p>
 </div>
@@ -705,8 +705,8 @@ cbPolicy.Reset(); // Transitions into the Closed state
 </code></pre>
 <!-- endSnippet -->
 <h3 id="circuit-breaker-in-v8">Circuit breaker in v8</h3>
-<div class="TIP">
-<h5>Tip</h5>
+<div class="NOTE">
+<h5>Note</h5>
 <p>Polly V8 does not support the standard (<em>&quot;classic&quot;</em>) circuit breaker with consecutive failure counting.</p>
 <p>In case of V8 you can define a Circuit Breaker strategy which works like the advanced circuit breaker in V7.</p>
 </div>
@@ -779,21 +779,42 @@ await manualControl.CloseAsync(); // Transitions into the Closed state
 </ul>
 <p>For further information please check out the <a href="strategies/circuit-breaker.html">Circuit Breaker resilience strategy documentation</a>.</p>
 </div>
-<h2 id="migrating-other-policies">Migrating other policies</h2>
-<p>Migrating is a process similar to the ones described in the previous sections. Keep in mind that:</p>
-<ul>
-<li>Strategy configurations (or policies in v7) are now in options. Property names should match the v7 APIs and scenarios.</li>
-<li>Use <code>ResiliencePipelineBuilder</code> or <code>ResiliencePipelineBuilder&lt;T&gt;</code> and their respective extensions to add specific strategies.</li>
-<li>For more details on each strategy, refer to the <a href="strategies/index.html">resilience strategies</a> documentation.</li>
-</ul>
 <h2 id="migrating-pollycontext">Migrating <code>Polly.Context</code></h2>
-<p><code>Polly.Context</code> has been succeeded by <code>ResilienceContext</code>. Here are the main changes:</p>
+<p>The successor of the <code>Polly.Context</code> is the <code>ResilienceContext</code>. The major differences:</p>
 <ul>
 <li><code>ResilienceContext</code> is pooled for enhanced performance and cannot be directly created. Instead, use the <code>ResilienceContextPool</code> class to get an instance.</li>
-<li>Directly attaching custom data is supported by <code>Context</code>, whereas <code>ResilienceContext</code> employs the <code>ResilienceContext.Properties</code> property.</li>
-<li>Both <code>PolicyKey</code> and <code>PolicyWrapKey</code> are no longer a part of <code>ResilienceContext</code>. They've been relocated to <code>ResiliencePipelineBuilder</code> and are now used for <a href="advanced/telemetry.html#metrics">telemetry</a>.</li>
-<li>The <code>CorrelationId</code> property has been removed. For similar functionality, you can either use <code>System.Diagnostics.Activity.Current.Id</code> or attach your custom Id using <code>ResilienceContext.Properties</code>.</li>
-<li>Additionally, <code>ResilienceContext</code> introduces the <code>CancellationToken</code> property.</li>
+<li><code>Context</code> allowed directly custom data attachment, whereas <code>ResilienceContext</code> employs the <code>ResilienceContext.Properties</code> for the same purpose.</li>
+<li>In order to set or get a custom data you need to utilize the generic <code>ResiliencePropertyKey</code> structure.</li>
+</ul>
+<h3 id="predefined-keys">Predefined keys</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">In V7</th>
+<th style="text-align: left;">In V8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>OperationKey</code></td>
+<td style="text-align: left;">It can be used in the same way</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>PolicyKey</code></td>
+<td style="text-align: left;">It's been relocated to <code>ResiliencePipelineBuilder</code> and used for <a href="advanced/telemetry.html#metrics">telemetry</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>PolicyWrapKey</code></td>
+<td style="text-align: left;">It's been relocated to <code>ResiliencePipelineBuilder</code> and used for <a href="advanced/telemetry.html#metrics">telemetry</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CorrelationId</code></td>
+<td style="text-align: left;">It's been removed. For similar functionality, you can either use <code>System.Diagnostics.Activity.Current.Id</code> or attach your custom Id using <code>ResilienceContext.Properties</code>.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Additionally, <code>ResilienceContext</code> introduces a new property for <code>CancellationToken</code>.</li>
 </ul>
 <h3 id="context-in-v7"><code>Context</code> in v7</h3>
 <!-- snippet: migration-context-v7 -->
@@ -804,12 +825,19 @@ Context context = new Context();
 context = new Context(&quot;my-operation-key&quot;);
 
 // Attach custom properties
-context[&quot;prop-1&quot;] = &quot;value-1&quot;;
-context[&quot;prop-2&quot;] = 100;
+context[Key1] = &quot;value-1&quot;;
+context[Key2] = 100;
 
 // Retrieve custom properties
-string value1 = (string)context[&quot;prop-1&quot;];
-int value2 = (int)context[&quot;prop-2&quot;];
+string value1 = (string)context[Key1];
+int value2 = (int)context[Key2];
+
+// Bulk attach
+context = new Context(&quot;my-operation-key&quot;, new Dictionary&lt;string, object&gt;
+{
+    { Key1 , &quot;value-1&quot; },
+    { Key2 , 100 }
+});
 </code></pre>
 <!-- endSnippet -->
 <h3 id="resiliencecontext-in-v8"><code>ResilienceContext</code> in v8</h3>
@@ -821,18 +849,36 @@ ResilienceContext context = ResilienceContextPool.Shared.Get();
 context = ResilienceContextPool.Shared.Get(&quot;my-operation-key&quot;);
 
 // Attach custom properties
-context.Properties.Set(new ResiliencePropertyKey&lt;string&gt;(&quot;prop-1&quot;), &quot;value-1&quot;);
-context.Properties.Set(new ResiliencePropertyKey&lt;int&gt;(&quot;prop-2&quot;), 100);
+ResiliencePropertyKey&lt;string&gt; propertyKey1 = new(Key1);
+context.Properties.Set(propertyKey1, &quot;value-1&quot;);
+
+ResiliencePropertyKey&lt;int&gt; propertyKey2 = new(Key2);
+context.Properties.Set(propertyKey2, 100);
+
+// Bulk attach
+context.Properties.SetProperties(new Dictionary&lt;string, object?&gt;
+{
+    { Key1 , &quot;value-1&quot; },
+    { Key2 , 100 }
+}, out var oldProperties);
 
 // Retrieve custom properties
-string value1 = context.Properties.GetValue(new ResiliencePropertyKey&lt;string&gt;(&quot;prop-1&quot;), &quot;default&quot;);
-int value2 = context.Properties.GetValue(new ResiliencePropertyKey&lt;int&gt;(&quot;prop-2&quot;), 0);
+string value1 = context.Properties.GetValue(propertyKey1, &quot;default&quot;);
+int value2 = context.Properties.GetValue(propertyKey2, 0);
 
 // Return the context to the pool
 ResilienceContextPool.Shared.Return(context);
 </code></pre>
 <!-- endSnippet -->
-<p>For more details, refer to the <a href="advanced/resilience-context.html">Resilience Context</a> documentation.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Things to remember:</p>
+<ul>
+<li>Use <code>ResilienceContextPool.Shared</code> to get a context and return it back to the pool</li>
+<li>Use the <code>ResiliencePropertyKey&lt;TValue&gt;</code> to define type-safe keys for your custom data</li>
+</ul>
+<p>For further information please check out the <a href="advanced/resilience-context.html">Resilience Context documentation</a>.</p>
+</div>
 <h2 id="migrating-safe-execution">Migrating safe execution</h2>
 <p>In v7, the <code>ExecuteAndCapture{Async}</code> methods are considered the safe counterpart of the <code>Execute{Async}</code>.</p>
 <p>The former does not throw an exception in case of failure rather than wrap the outcome in a result object.</p>
@@ -857,32 +903,37 @@ if (policyResult.Outcome == OutcomeType.Successful)
 else
 {
     Exception exception = policyResult.FinalException;
-    FaultType failtType = policyResult.FaultType!.Value;
+    FaultType faultType = policyResult.FaultType!.Value;
     ExceptionType exceptionType = policyResult.ExceptionType!.Value;
 
     // Process failure
 }
 
 // Access context
+const string Key = &quot;context_key&quot;;
 IAsyncPolicy&lt;int&gt; asyncPolicyWithContext = Policy.TimeoutAsync&lt;int&gt;(TimeSpan.FromSeconds(10),
     onTimeoutAsync: (ctx, ts, task) =&gt;
     {
-        ctx[&quot;context_key&quot;] = &quot;context_value&quot;;
+        ctx[Key] = &quot;context_value&quot;;
         return Task.CompletedTask;
     });
 
 asyncPolicyResult = await asyncPolicyWithContext.ExecuteAndCaptureAsync((ctx, token) =&gt; MethodAsync(token), new Context(), CancellationToken.None);
-string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault(&quot;context_key&quot;) as string;
+string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault(Key) as string;
 </code></pre>
 <!-- endSnippet -->
 <h3 id="executeoutcomeasync-in-v8"><code>ExecuteOutcomeAsync</code> in V8</h3>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Polly V8 does not provide an API to synchronously execute and capture the outcome of a pipeline.</p>
+</div>
 <!-- snippet: migration-execute-v8 -->
 <pre><code class="lang-cs">ResiliencePipeline&lt;int&gt; pipeline = new ResiliencePipelineBuilder&lt;int&gt;()
     .AddTimeout(TimeSpan.FromSeconds(1))
     .Build();
 
 // Synchronous execution
-// Polly v8 does not provide an API to synchronously execute and capture the outcome of a pipeline
+// Polly v8 does not support
 
 // Asynchronous execution
 var context = ResilienceContextPool.Shared.Get();
@@ -929,73 +980,117 @@ context.Properties.TryGetValue(contextKey, out var ctxValue);
 ResilienceContextPool.Shared.Return(context);
 </code></pre>
 <!-- endSnippet -->
-<h2 id="migrating-no-op-policies">Migrating no-op policies</h2>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Things to remember:</p>
 <ul>
-<li>For <code>Policy.NoOp</code> or <code>Policy.NoOpAsync</code>, switch to <code>ResiliencePipeline.Empty</code>.</li>
-<li>For <code>Policy.NoOp&lt;T&gt;</code> or <code>Policy.NoOpAsync&lt;T&gt;</code>, switch to <code>ResiliencePipeline&lt;T&gt;.Empty</code>.</li>
+<li>Use <code>ExecuteOutcomeAsync</code> to execute your callback in a safe way</li>
 </ul>
+</div>
+<h2 id="migrating-no-op-policies">Migrating no-op policies</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">In V7</th>
+<th style="text-align: left;">In V8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>Policy.NoOp</code></td>
+<td style="text-align: left;"><code>ResiliencePipeline.Empty</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Policy.NoOpAsync</code></td>
+<td style="text-align: left;"><code>ResiliencePipeline.Empty</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Policy.NoOp&lt;TResult&gt;</code></td>
+<td style="text-align: left;"><code>ResiliencePipeline&lt;TResult&gt;.Empty</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Policy.NoOpAsync&lt;TResult&gt;</code></td>
+<td style="text-align: left;"><code>ResiliencePipeline&lt;TResult&gt;.Empty</code></td>
+</tr>
+</tbody>
+</table>
 <h2 id="migrating-policy-registries">Migrating policy registries</h2>
 <p>In v7, the following registry APIs are exposed:</p>
 <ul>
-<li><code>IPolicyRegistry&lt;T&gt;</code></li>
-<li><code>IReadOnlyPolicyRegistry&lt;T&gt;</code></li>
-<li><code>IConcurrentPolicyRegistry&lt;T&gt;</code></li>
-<li><code>PolicyRegistry&lt;T&gt;</code></li>
+<li><code>IConcurrentPolicyRegistry&lt;TKey&gt;</code></li>
+<li><code>IPolicyRegistry&lt;TKey&gt;</code></li>
+<li><code>IReadOnlyPolicyRegistry&lt;TKey&gt;</code></li>
+<li><code>PolicyRegistry&lt;TKey&gt;</code></li>
 </ul>
 <p>In v8, these have been replaced by:</p>
 <ul>
 <li><code>ResiliencePipelineProvider&lt;TKey&gt;</code>: Allows adding and accessing resilience pipelines.</li>
 <li><code>ResiliencePipelineRegistry&lt;TKey&gt;</code>: Read-only access to resilience pipelines.</li>
 </ul>
-<p>The main updates in the new registry include:</p>
+<p>The main updates:</p>
 <ul>
-<li>It's append-only, which means removal of items is not supported to avoid race conditions.</li>
+<li>It's <strong>append-only</strong>, which means removal of items is not supported to avoid race conditions.</li>
 <li>It's thread-safe and supports features like dynamic reloading and resource disposal.</li>
-<li>It allows dynamic creation and caching of resilience pipelines (previously known as policies in v7) using pre-registered delegates.</li>
+<li>It allows dynamic creation and caching of resilience pipelines using pre-registered delegates.</li>
 <li>Type safety is enhanced, eliminating the need for casting between policy types.</li>
 </ul>
-<p>For more details, refer to the <a href="pipelines/resilience-pipeline-registry.html">pipeline registry</a> documentation.</p>
 <h3 id="registry-in-v7">Registry in v7</h3>
 <!-- snippet: migration-registry-v7 -->
 <pre><code class="lang-cs">// Create a registry
 var registry = new PolicyRegistry();
 
+// Add a policy
+registry.Add(PolicyKey, Policy.Timeout(TimeSpan.FromSeconds(10)));
+
 // Try get a policy
-registry.TryGet&lt;IAsyncPolicy&gt;(&quot;my-key&quot;, out IAsyncPolicy? policy);
+registry.TryGet&lt;IAsyncPolicy&gt;(PolicyKey, out IAsyncPolicy? policy);
 
 // Try get a generic policy
-registry.TryGet&lt;IAsyncPolicy&lt;string&gt;&gt;(&quot;my-key&quot;, out IAsyncPolicy&lt;string&gt;? genericPolicy);
-
-// Add a policy
-registry.Add(&quot;my-key&quot;, Policy.Timeout(TimeSpan.FromSeconds(10)));
+registry.TryGet&lt;IAsyncPolicy&lt;string&gt;&gt;(PolicyKey, out IAsyncPolicy&lt;string&gt;? genericPolicy);
 
 // Update a policy
 registry.AddOrUpdate(
-    &quot;my-key&quot;,
+    PolicyKey,
     Policy.Timeout(TimeSpan.FromSeconds(10)),
     (key, previous) =&gt; Policy.Timeout(TimeSpan.FromSeconds(10)));
 </code></pre>
 <!-- endSnippet -->
 <h3 id="registry-in-v8">Registry in v8</h3>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Polly V8 does not provide an explicit API to directly update a strategy in the registry.</p>
+<p>On the other hand it does provide a mechanism to <a href="pipelines/resilience-pipeline-registry.html#dynamic-reloads">reload pipelines</a>.</p>
+</div>
 <!-- snippet: migration-registry-v8 -->
 <pre><code class="lang-cs">// Create a registry
 var registry = new ResiliencePipelineRegistry&lt;string&gt;();
 
+// Add a pipeline using a builder, when the pipeline is retrieved it will be dynamically built and cached
+registry.TryAddBuilder(PipelineKey, (builder, context) =&gt; builder.AddTimeout(TimeSpan.FromSeconds(10)));
+
 // Try get a pipeline
-registry.TryGetPipeline(&quot;my-key&quot;, out ResiliencePipeline? pipeline);
+registry.TryGetPipeline(PipelineKey, out ResiliencePipeline? pipeline);
 
 // Try get a generic pipeline
-registry.TryGetPipeline&lt;string&gt;(&quot;my-key&quot;, out ResiliencePipeline&lt;string&gt;? genericPipeline);
-
-// Add a pipeline using a builder, when &quot;my-key&quot; pipeline is retrieved it will be dynamically built and cached
-registry.TryAddBuilder(&quot;my-key&quot;, (builder, context) =&gt; builder.AddTimeout(TimeSpan.FromSeconds(10)));
+registry.TryGetPipeline&lt;string&gt;(PipelineKey, out ResiliencePipeline&lt;string&gt;? genericPipeline);
 
 // Get or add pipeline
-registry.GetOrAddPipeline(&quot;my-key&quot;, builder =&gt; builder.AddTimeout(TimeSpan.FromSeconds(10)));
+registry.GetOrAddPipeline(PipelineKey, builder =&gt; builder.AddTimeout(TimeSpan.FromSeconds(10)));
 </code></pre>
 <!-- endSnippet -->
+<div class="TIP">
+<h5>Tip</h5>
+<p>Things to remember:</p>
+<ul>
+<li>Use <code>ResiliencePipelineRegistry&lt;TResult&gt;</code> to add or get a pipelines to the registry</li>
+<li>Prefer the safer methods (for example: <code>TryGetPipeline{&lt;TResult&gt;}</code>) over their counterpart (for example: <code>GetPipeline{&lt;TResult&gt;}</code>)</li>
+</ul>
+<p>For further information please check out the <a href="pipelines/resilience-pipeline-registry.html">Resilience pipeline registry documentation</a>.</p>
+</div>
 <h2 id="interoperability-between-policies-and-resilience-pipelines">Interoperability between policies and resilience pipelines</h2>
-<p>In certain scenarios, you might not want to migrate your code to the v8 API. Instead, you may prefer to use strategies from v8 and apply them to v7 APIs. Polly provides a set of extension methods to support easy conversion from v8 to v7 APIs, as shown in the example below:</p>
+<p>In certain scenarios, you might not able to migrate all your code to the v8 API.</p>
+<p>In the name of interoperability you can define V8 strategies use them with your v7 policies.</p>
+<p>V8 provides a set of extension methods to support easy conversion from v8 to v7 APIs, as shown in the example below:</p>
 <div class="NOTE">
 <h5>Note</h5>
 <p>In v8, you have to add the <a href="https://www.nuget.org/packages/Polly.RateLimiting"><code>Polly.RateLimiting</code></a> package to your application otherwise you won't see the <code>AddRateLimiter</code> extension.</p>
