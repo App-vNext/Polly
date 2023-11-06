@@ -142,7 +142,7 @@ await pipelineT.ExecuteAsync(static async token =>
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -195,7 +195,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
 
 See [fallback after retries](strategies/fallback.md#fallback-after-retries) for an example on how the strategies are executed.
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -404,12 +404,12 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
 > - Use `AddRetry` to add a retry strategy to your resiliency pipeline
-> - Use the `RetryStrategyOptions` to customize your retry behavior to meet your requirements
+> - Use the `RetryStrategyOptions{<TResult>}` to customize your retry behavior to meet your requirements
 >
 > For further information please check out the [Retry resilience strategy documentation](strategies/retry.md).
 
@@ -475,7 +475,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -538,7 +538,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -588,7 +588,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 ```
 <!-- endSnippet -->
 
-> [!IMPORTANT]
+> [!TIP]
 >
 > Things to remember:
 >
@@ -597,23 +597,196 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
 >
 > For further information please check out the [Timeout resilience strategy documentation](strategies/timeout.md).
 
-## Migrating other policies
+## Migrating circuit breaker policies
 
-Migrating is a process similar to the ones described in the previous sections. Keep in mind that:
+This section describes how to migrate v7 circuit breaker policies to V8 circuit breaker strategies.
 
-- Strategy configurations (or policies in v7) are now in options. Property names should match the v7 APIs and scenarios.
-- Use `ResiliencePipelineBuilder` or `ResiliencePipelineBuilder<T>` and their respective extensions to add specific strategies.
-- For more details on each strategy, refer to the [resilience strategies](strategies/index.md) documentation.
+### Circuit breaker in v7
+
+V7's "Standard" Circuit Breaker policy could be defined like below:
+
+<!-- snippet: migration-circuit-breaker-v7 -->
+```cs
+// Create sync circuit breaker
+ISyncPolicy syncPolicy = Policy
+    .Handle<SomeExceptionType>()
+    .CircuitBreaker(
+        exceptionsAllowedBeforeBreaking: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create async circuit breaker
+IAsyncPolicy asyncPolicy = Policy
+    .Handle<SomeExceptionType>()
+    .CircuitBreakerAsync(
+        exceptionsAllowedBeforeBreaking: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create generic sync circuit breaker
+ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy<HttpResponseMessage>
+    .Handle<SomeExceptionType>()
+    .CircuitBreaker(
+        handledEventsAllowedBeforeBreaking: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create generic async circuit breaker
+IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy<HttpResponseMessage>
+    .Handle<SomeExceptionType>()
+    .CircuitBreakerAsync(
+        handledEventsAllowedBeforeBreaking: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+```
+<!-- endSnippet -->
+
+V7's Advanced Circuit Breaker policy could be defined like below:
+
+<!-- snippet: migration-advanced-circuit-breaker-v7 -->
+```cs
+// Create sync advanced circuit breaker
+ISyncPolicy syncPolicy = Policy
+    .Handle<SomeExceptionType>()
+    .AdvancedCircuitBreaker(
+        failureThreshold: 0.5d,
+        samplingDuration: TimeSpan.FromSeconds(5),
+        minimumThroughput: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create async advanced circuit breaker
+IAsyncPolicy asyncPolicy = Policy
+    .Handle<SomeExceptionType>()
+    .AdvancedCircuitBreakerAsync(
+        failureThreshold: 0.5d,
+        samplingDuration: TimeSpan.FromSeconds(5),
+        minimumThroughput: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create generic sync advanced circuit breaker
+ISyncPolicy<HttpResponseMessage> syncPolicyT = Policy<HttpResponseMessage>
+    .Handle<SomeExceptionType>()
+    .AdvancedCircuitBreaker(
+        failureThreshold: 0.5d,
+        samplingDuration: TimeSpan.FromSeconds(5),
+        minimumThroughput: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Create generic async advanced circuit breaker
+IAsyncPolicy<HttpResponseMessage> asyncPolicyT = Policy<HttpResponseMessage>
+    .Handle<SomeExceptionType>()
+    .AdvancedCircuitBreakerAsync(
+        failureThreshold: 0.5d,
+        samplingDuration: TimeSpan.FromSeconds(5),
+        minimumThroughput: 2,
+        durationOfBreak: TimeSpan.FromSeconds(1));
+
+// Check circuit state
+ICircuitBreakerPolicy cbPolicy = (ICircuitBreakerPolicy)asyncPolicy;
+bool isOpen = cbPolicy.CircuitState == CircuitState.Open || cbPolicy.CircuitState == CircuitState.Isolated;
+
+// Manually control state
+cbPolicy.Isolate(); // Transitions into the Isolated state
+cbPolicy.Reset(); // Transitions into the Closed state
+```
+<!-- endSnippet -->
+
+### Circuit breaker in v8
+
+> [!NOTE]
+>
+> Polly V8 does not support the standard (*"classic"*) circuit breaker with consecutive failure counting.
+>
+> In case of V8 you can define a Circuit Breaker strategy which works like the advanced circuit breaker in V7.
+
+<!-- snippet: migration-circuit-breaker-v8 -->
+```cs
+// Create pipeline with circuit breaker. Because ResiliencePipeline supports both sync and async
+// callbacks, there is no need to define it twice.
+ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new CircuitBreakerStrategyOptions
+    {
+        ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
+        FailureRatio = 0.5d,
+        SamplingDuration = TimeSpan.FromSeconds(5),
+        MinimumThroughput = 2,
+        BreakDuration = TimeSpan.FromSeconds(1)
+    })
+    .Build();
+
+// Create a generic pipeline with circuit breaker. Because ResiliencePipeline<T> supports both sync and async
+// callbacks, there is also no need to define it twice.
+ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilder<HttpResponseMessage>()
+    .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage>
+    {
+        ShouldHandle = new PredicateBuilder<HttpResponseMessage>().Handle<SomeExceptionType>(),
+        FailureRatio = 0.5d,
+        SamplingDuration = TimeSpan.FromSeconds(5),
+        MinimumThroughput = 2,
+        BreakDuration = TimeSpan.FromSeconds(1)
+    })
+    .Build();
+
+// Check circuit state
+CircuitBreakerStateProvider stateProvider = new();
+// Manually control state
+CircuitBreakerManualControl manualControl = new();
+
+ResiliencePipeline pipelineState = new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new CircuitBreakerStrategyOptions
+    {
+        ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
+        FailureRatio = 0.5d,
+        SamplingDuration = TimeSpan.FromSeconds(5),
+        MinimumThroughput = 2,
+        BreakDuration = TimeSpan.FromSeconds(1),
+        StateProvider = stateProvider,
+        ManualControl = manualControl
+    })
+    .Build();
+
+// Check circuit state
+bool isOpen = stateProvider.CircuitState == CircuitState.Open || stateProvider.CircuitState == CircuitState.Isolated;
+
+// Manually control state
+await manualControl.IsolateAsync(); // Transitions into the Isolated state
+await manualControl.CloseAsync(); // Transitions into the Closed state
+```
+<!-- endSnippet -->
+
+> [!NOTE]
+>
+> In case of V7 you could do an optimization to reduce the thrown exceptions.
+>
+> You could guard the `Execute{Async}` call with a condition that the circuit is not broken. This technique does **not** work with V8.
+>
+> Under the [circuit breaker's anti-patterns](strategies/circuit-breaker.md#reducing-thrown-exceptions) you can find the suggested way for V8.
+
+____
+
+> [!TIP]
+>
+> Things to remember:
+>
+> - Use `AddCircuitBreaker` to add a circuit breaker strategy to your resiliency pipeline
+> - Use the `CircuitBreakerStrategyOptions{<TResult>}` to customize your circuit breaker behavior to meet your requirements
+>
+> For further information please check out the [Circuit Breaker resilience strategy documentation](strategies/circuit-breaker.md).
 
 ## Migrating `Polly.Context`
 
-`Polly.Context` has been succeeded by `ResilienceContext`. Here are the main changes:
+The successor of the `Polly.Context` is the `ResilienceContext`. The major differences:
 
 - `ResilienceContext` is pooled for enhanced performance and cannot be directly created. Instead, use the `ResilienceContextPool` class to get an instance.
-- Directly attaching custom data is supported by `Context`, whereas `ResilienceContext` employs the `ResilienceContext.Properties` property.
-- Both `PolicyKey` and `PolicyWrapKey` are no longer a part of `ResilienceContext`. They've been relocated to `ResiliencePipelineBuilder` and are now used for [telemetry](advanced/telemetry.md#metrics).
-- The `CorrelationId` property has been removed. For similar functionality, you can either use `System.Diagnostics.Activity.Current.Id` or attach your custom Id using `ResilienceContext.Properties`.
-- Additionally, `ResilienceContext` introduces the `CancellationToken` property.
+- `Context` allowed directly custom data attachment, whereas `ResilienceContext` employs the `ResilienceContext.Properties` for the same purpose.
+- In order to set or get a custom data you need to utilize the generic `ResiliencePropertyKey` structure.
+
+### Predefined keys
+
+| In V7 | In V8 |
+| :-- | :-- |
+| `OperationKey` | It can be used in the same way |
+| `PolicyKey` | It's been relocated to `ResiliencePipelineBuilder` and used for [telemetry](advanced/telemetry.md#metrics) |
+| `PolicyWrapKey` | It's been relocated to `ResiliencePipelineBuilder` and used for [telemetry](advanced/telemetry.md#metrics) |
+| `CorrelationId` | It's been removed. For similar functionality, you can either use `System.Diagnostics.Activity.Current.Id` or attach your custom Id using `ResilienceContext.Properties`. |
+
+- Additionally, `ResilienceContext` introduces a new property for `CancellationToken`.
 
 ### `Context` in v7
 
@@ -626,12 +799,19 @@ Context context = new Context();
 context = new Context("my-operation-key");
 
 // Attach custom properties
-context["prop-1"] = "value-1";
-context["prop-2"] = 100;
+context[Key1] = "value-1";
+context[Key2] = 100;
 
 // Retrieve custom properties
-string value1 = (string)context["prop-1"];
-int value2 = (int)context["prop-2"];
+string value1 = (string)context[Key1];
+int value2 = (int)context[Key2];
+
+// Bulk attach
+context = new Context("my-operation-key", new Dictionary<string, object>
+{
+    { Key1 , "value-1" },
+    { Key2 , 100 }
+});
 ```
 <!-- endSnippet -->
 
@@ -646,19 +826,36 @@ ResilienceContext context = ResilienceContextPool.Shared.Get();
 context = ResilienceContextPool.Shared.Get("my-operation-key");
 
 // Attach custom properties
-context.Properties.Set(new ResiliencePropertyKey<string>("prop-1"), "value-1");
-context.Properties.Set(new ResiliencePropertyKey<int>("prop-2"), 100);
+ResiliencePropertyKey<string> propertyKey1 = new(Key1);
+context.Properties.Set(propertyKey1, "value-1");
+
+ResiliencePropertyKey<int> propertyKey2 = new(Key2);
+context.Properties.Set(propertyKey2, 100);
+
+// Bulk attach
+context.Properties.SetProperties(new Dictionary<string, object?>
+{
+    { Key1 , "value-1" },
+    { Key2 , 100 }
+}, out var oldProperties);
 
 // Retrieve custom properties
-string value1 = context.Properties.GetValue(new ResiliencePropertyKey<string>("prop-1"), "default");
-int value2 = context.Properties.GetValue(new ResiliencePropertyKey<int>("prop-2"), 0);
+string value1 = context.Properties.GetValue(propertyKey1, "default");
+int value2 = context.Properties.GetValue(propertyKey2, 0);
 
 // Return the context to the pool
 ResilienceContextPool.Shared.Return(context);
 ```
 <!-- endSnippet -->
 
-For more details, refer to the [Resilience Context](advanced/resilience-context.md) documentation.
+> [!TIP]
+>
+> Things to remember:
+>
+> - Use `ResilienceContextPool.Shared` to get a context and return it back to the pool
+> - Use the `ResiliencePropertyKey<TValue>` to define type-safe keys for your custom data
+>
+> For further information please check out the [Resilience Context documentation](advanced/resilience-context.md).
 
 ## Migrating safe execution
 
@@ -690,26 +887,31 @@ if (policyResult.Outcome == OutcomeType.Successful)
 else
 {
     Exception exception = policyResult.FinalException;
-    FaultType failtType = policyResult.FaultType!.Value;
+    FaultType faultType = policyResult.FaultType!.Value;
     ExceptionType exceptionType = policyResult.ExceptionType!.Value;
 
     // Process failure
 }
 
 // Access context
+const string Key = "context_key";
 IAsyncPolicy<int> asyncPolicyWithContext = Policy.TimeoutAsync<int>(TimeSpan.FromSeconds(10),
     onTimeoutAsync: (ctx, ts, task) =>
     {
-        ctx["context_key"] = "context_value";
+        ctx[Key] = "context_value";
         return Task.CompletedTask;
     });
 
 asyncPolicyResult = await asyncPolicyWithContext.ExecuteAndCaptureAsync((ctx, token) => MethodAsync(token), new Context(), CancellationToken.None);
-string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault("context_key") as string;
+string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault(Key) as string;
 ```
 <!-- endSnippet -->
 
 ### `ExecuteOutcomeAsync` in V8
+
+> [!NOTE]
+>
+> Polly V8 does not provide an API to synchronously execute and capture the outcome of a pipeline.
 
 <!-- snippet: migration-execute-v8 -->
 ```cs
@@ -718,7 +920,7 @@ ResiliencePipeline<int> pipeline = new ResiliencePipelineBuilder<int>()
     .Build();
 
 // Synchronous execution
-// Polly v8 does not provide an API to synchronously execute and capture the outcome of a pipeline
+// Polly v8 does not support
 
 // Asynchronous execution
 var context = ResilienceContextPool.Shared.Get();
@@ -766,33 +968,41 @@ ResilienceContextPool.Shared.Return(context);
 ```
 <!-- endSnippet -->
 
+> [!TIP]
+>
+> Things to remember:
+>
+> - Use `ExecuteOutcomeAsync` to execute your callback in a safe way
+
 ## Migrating no-op policies
 
-- For `Policy.NoOp` or `Policy.NoOpAsync`, switch to `ResiliencePipeline.Empty`.
-- For `Policy.NoOp<T>` or `Policy.NoOpAsync<T>`, switch to `ResiliencePipeline<T>.Empty`.
+| In V7 | In V8 |
+| :-- | :-- |
+| `Policy.NoOp` | `ResiliencePipeline.Empty` |
+| `Policy.NoOpAsync` | `ResiliencePipeline.Empty` |
+| `Policy.NoOp<TResult>` | `ResiliencePipeline<TResult>.Empty` |
+| `Policy.NoOpAsync<TResult>` | `ResiliencePipeline<TResult>.Empty` |
 
 ## Migrating policy registries
 
 In v7, the following registry APIs are exposed:
 
-- `IPolicyRegistry<T>`
-- `IReadOnlyPolicyRegistry<T>`
-- `IConcurrentPolicyRegistry<T>`
-- `PolicyRegistry<T>`
+- `IConcurrentPolicyRegistry<TKey>`
+- `IPolicyRegistry<TKey>`
+- `IReadOnlyPolicyRegistry<TKey>`
+- `PolicyRegistry<TKey>`
 
 In v8, these have been replaced by:
 
 - `ResiliencePipelineProvider<TKey>`: Allows adding and accessing resilience pipelines.
 - `ResiliencePipelineRegistry<TKey>`: Read-only access to resilience pipelines.
 
-The main updates in the new registry include:
+The main updates:
 
-- It's append-only, which means removal of items is not supported to avoid race conditions.
+- It's **append-only**, which means removal of items is not supported to avoid race conditions.
 - It's thread-safe and supports features like dynamic reloading and resource disposal.
-- It allows dynamic creation and caching of resilience pipelines (previously known as policies in v7) using pre-registered delegates.
+- It allows dynamic creation and caching of resilience pipelines using pre-registered delegates.
 - Type safety is enhanced, eliminating the need for casting between policy types.
-
-For more details, refer to the [pipeline registry](pipelines/resilience-pipeline-registry.md) documentation.
 
 ### Registry in v7
 
@@ -801,18 +1011,18 @@ For more details, refer to the [pipeline registry](pipelines/resilience-pipeline
 // Create a registry
 var registry = new PolicyRegistry();
 
+// Add a policy
+registry.Add(PolicyKey, Policy.Timeout(TimeSpan.FromSeconds(10)));
+
 // Try get a policy
-registry.TryGet<IAsyncPolicy>("my-key", out IAsyncPolicy? policy);
+registry.TryGet<IAsyncPolicy>(PolicyKey, out IAsyncPolicy? policy);
 
 // Try get a generic policy
-registry.TryGet<IAsyncPolicy<string>>("my-key", out IAsyncPolicy<string>? genericPolicy);
-
-// Add a policy
-registry.Add("my-key", Policy.Timeout(TimeSpan.FromSeconds(10)));
+registry.TryGet<IAsyncPolicy<string>>(PolicyKey, out IAsyncPolicy<string>? genericPolicy);
 
 // Update a policy
 registry.AddOrUpdate(
-    "my-key",
+    PolicyKey,
     Policy.Timeout(TimeSpan.FromSeconds(10)),
     (key, previous) => Policy.Timeout(TimeSpan.FromSeconds(10)));
 ```
@@ -820,28 +1030,47 @@ registry.AddOrUpdate(
 
 ### Registry in v8
 
+> [!NOTE]
+>
+> Polly V8 does not provide an explicit API to directly update a strategy in the registry.
+>
+> On the other hand it does provide a mechanism to [reload pipelines](pipelines/resilience-pipeline-registry.md#dynamic-reloads).
+
 <!-- snippet: migration-registry-v8 -->
 ```cs
 // Create a registry
 var registry = new ResiliencePipelineRegistry<string>();
 
+// Add a pipeline using a builder, when the pipeline is retrieved it will be dynamically built and cached
+registry.TryAddBuilder(PipelineKey, (builder, context) => builder.AddTimeout(TimeSpan.FromSeconds(10)));
+
 // Try get a pipeline
-registry.TryGetPipeline("my-key", out ResiliencePipeline? pipeline);
+registry.TryGetPipeline(PipelineKey, out ResiliencePipeline? pipeline);
 
 // Try get a generic pipeline
-registry.TryGetPipeline<string>("my-key", out ResiliencePipeline<string>? genericPipeline);
-
-// Add a pipeline using a builder, when "my-key" pipeline is retrieved it will be dynamically built and cached
-registry.TryAddBuilder("my-key", (builder, context) => builder.AddTimeout(TimeSpan.FromSeconds(10)));
+registry.TryGetPipeline<string>(PipelineKey, out ResiliencePipeline<string>? genericPipeline);
 
 // Get or add pipeline
-registry.GetOrAddPipeline("my-key", builder => builder.AddTimeout(TimeSpan.FromSeconds(10)));
+registry.GetOrAddPipeline(PipelineKey, builder => builder.AddTimeout(TimeSpan.FromSeconds(10)));
 ```
 <!-- endSnippet -->
 
+> [!TIP]
+>
+> Things to remember:
+>
+> - Use `ResiliencePipelineRegistry<TResult>` to add or get a pipelines to the registry
+> - Prefer the safer methods (for example: `TryGetPipeline{<TResult>}`) over their counterpart (for example: `GetPipeline{<TResult>}`)
+>
+> For further information please check out the [Resilience pipeline registry documentation](pipelines/resilience-pipeline-registry.md).
+
 ## Interoperability between policies and resilience pipelines
 
-In certain scenarios, you might not want to migrate your code to the v8 API. Instead, you may prefer to use strategies from v8 and apply them to v7 APIs. Polly provides a set of extension methods to support easy conversion from v8 to v7 APIs, as shown in the example below:
+In certain scenarios, you might not able to migrate all your code to the v8 API.
+
+In the name of interoperability you can define V8 strategies use them with your v7 policies.
+
+V8 provides a set of extension methods to support easy conversion from v8 to v7 APIs, as shown in the example below:
 
 > [!NOTE]
 > In v8, you have to add the [`Polly.RateLimiting`](https://www.nuget.org/packages/Polly.RateLimiting) package to your application otherwise you won't see the `AddRateLimiter` extension.

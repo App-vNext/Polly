@@ -193,7 +193,9 @@ public class CircuitStateControllerTests
         var executeAction2 = Task.Run(() => controller.OnActionFailureAsync(Outcome.FromResult(0), ResilienceContextPool.Shared.Get()));
 
         // assert
+#pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         executeAction.Wait(50).Should().BeFalse();
+#pragma warning restore xUnit1031 // Do not use blocking task operations in test method
         verified.Set();
         await executeAction;
         await executeAction2;
@@ -447,7 +449,9 @@ public class CircuitStateControllerTests
         var source = new TaskCompletionSource<string>();
         var task = CircuitStateController<string>.ExecuteScheduledTaskAsync(source.Task, ResilienceContextPool.Shared.Get().Initialize<string>(isSynchronous: false)).AsTask();
 
+#pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         task.Wait(3).Should().BeFalse();
+#pragma warning restore xUnit1031 // Do not use blocking task operations in test method
         task.IsCompleted.Should().BeFalse();
 
         source.SetResult("ok");

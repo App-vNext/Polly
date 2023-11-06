@@ -91,9 +91,9 @@ internal static class CircuitBreaker
         #endregion
     }
 
-    public static void AntiPattern_1()
+    public static void AntiPattern_CircuitAwareRetry()
     {
-        #region circuit-breaker-anti-pattern-1
+        #region circuit-breaker-anti-pattern-circuit-aware-retry
         var stateProvider = new CircuitBreakerStateProvider();
         var circuitBreaker = new ResiliencePipelineBuilder()
             .AddCircuitBreaker(new()
@@ -127,9 +127,9 @@ internal static class CircuitBreaker
     }
 
     private static readonly ResiliencePropertyKey<TimeSpan?> SleepDurationKey = new("sleep_duration");
-    public static void Pattern_1()
+    public static void Pattern_CircuitAwareRetry()
     {
-        #region circuit-breaker-pattern-1
+        #region circuit-breaker-pattern-circuit-aware-retry
         var circuitBreaker = new ResiliencePipelineBuilder()
             .AddCircuitBreaker(new()
             {
@@ -164,25 +164,39 @@ internal static class CircuitBreaker
             .Build();
 
         #endregion
-    }
+    
 
-    public static async ValueTask AntiPattern_2()
+    public static async ValueTask Pattern_ReduceThrownExceptions()
     {
-        static ValueTask CallXYZOnDownstream1(CancellationToken ct) => ValueTask.CompletedTask;
-        static ResiliencePipeline GetCircuitBreaker() => ResiliencePipeline.Empty;
+        #region circuit-breaker-pattern-reduce-thrown-exceptions
 
-        #region circuit-breaker-anti-pattern-2
-        // Defined in a common place
-        var uriToCbMappings = new Dictionary<Uri, ResiliencePipeline>
+        var context = ResilienceContextPool.Shared.Get();
+        var circuitBreaker = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+                BreakDuration = TimeSpan.FromSeconds(0.5),
+            })
+            .Build();
+
+        Outcome<HttpResponseMessage> outcome = await circuitBreaker.ExecuteOutcomeAsync(static async (ctx, state) =>
         {
-            [new Uri("https://downstream1.com")] = GetCircuitBreaker(),
-            // ...
-            [new Uri("https://downstreamN.com")] = GetCircuitBreaker()
-        };
+            var response = await IssueRequest();
+            return Outcome.FromResult(response);
+        }, context, "state");
 
-        // Used in the downstream 1 client
-        var downstream1Uri = new Uri("https://downstream1.com");
-        await uriToCbMappings[downstream1Uri].ExecuteAsync(CallXYZOnDownstream1, CancellationToken.None);
+        ResilienceContextPool.Shared.Return(context);
+
+        if (outcome.Exception is BrokenCircuitException)
+        {
+            // The execution was stopped by the circuit breaker
+        }
+        else
+        {
+            HttpResponseMessage response = outcome.Result!;
+            // Your code goes here to process the response
+        }
+
         #endregion
     }
 }

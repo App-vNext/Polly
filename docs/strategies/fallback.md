@@ -111,7 +111,7 @@ sequenceDiagram
 
 When designing resilient systems, a common pattern is to use a fallback after multiple failed retry attempts. This approach is especially relevant when a fallback strategy can provide a sensible default value.
 
-<!-- snippet: fallback-after-retries -->
+<!-- snippet: fallback-pattern-after-retries -->
 ```cs
 // Define a common predicates re-used by both fallback and retries
 var predicateBuilder = new PredicateBuilder<HttpResponseMessage>()
@@ -156,13 +156,13 @@ Here's a breakdown of the behavior when the callback produces either an `HttpSta
 
 Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and ones to avoid.
 
-### 1 - Using fallback to replace thrown exception
+### Using fallback to replace thrown exception
 
 ❌ DON'T
 
 Throw custom exceptions from the `OnFallback` delegate:
 
-<!-- snippet: fallback-anti-pattern-1 -->
+<!-- snippet: fallback-anti-pattern-replace-exception -->
 ```cs
 var fallback = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddFallback(new()
@@ -183,7 +183,7 @@ Throwing an exception from a user-defined delegate can disrupt the normal contro
 
 Use `ExecuteOutcomeAsync` and then evaluate the `Exception`:
 
-<!-- snippet: fallback-pattern-1 -->
+<!-- snippet: fallback-pattern-replace-exception -->
 ```cs
 var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, "state");
 if (outcome.Exception is HttpRequestException requestException)
@@ -197,7 +197,7 @@ if (outcome.Exception is HttpRequestException requestException)
 
 This method lets you execute the strategy or pipeline smoothly, without unexpected interruptions. If you repeatedly find yourself writing this exception "remapping" logic, consider marking the method you wish to decorate as `private` and expose the "remapping" logic publicly.
 
-<!-- snippet: fallback-pattern-1-ext -->
+<!-- snippet: fallback-pattern-replace-exception-ext -->
 ```cs
 public static async ValueTask<HttpResponseMessage> Action()
 {
@@ -226,7 +226,7 @@ private static ValueTask<HttpResponseMessage> ActionCore()
 ```
 <!-- endSnippet -->
 
-### 2 - Using retry for fallback
+### Using retry for fallback
 
 Suppose you have a primary and a secondary endpoint. If the primary fails, you want to call the secondary.
 
@@ -234,7 +234,7 @@ Suppose you have a primary and a secondary endpoint. If the primary fails, you w
 
 Use retry for fallback:
 
-<!-- snippet: fallback-anti-pattern-2 -->
+<!-- snippet: fallback-anti-pattern-retry-for-fallback -->
 ```cs
 var fallback = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddRetry(new()
@@ -275,7 +275,7 @@ A retry strategy by default executes the same operation up to `N` times, where `
 
 Use fallback to call the secondary:
 
-<!-- snippet: fallback-pattern-2 -->
+<!-- snippet: fallback-pattern-retry-for-fallback -->
 ```cs
 var fallback = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddFallback(new()
@@ -295,7 +295,7 @@ return await fallback.ExecuteAsync(CallPrimary, CancellationToken.None);
 - The target code is executed only once.
 - The fallback value is returned directly, eliminating the need for additional code like `Context` or `ExecuteOutcomeAsync()`.
 
-### 3 - Nesting `ExecuteAsync` calls
+### Nesting `ExecuteAsync` calls
 
 Combining multiple strategies can be achieved in various ways. However, deeply nesting `ExecuteAsync` calls can lead to what's commonly referred to as _`Execute` Hell_.
 
@@ -306,7 +306,7 @@ Combining multiple strategies can be achieved in various ways. However, deeply n
 
 Nest `ExecuteAsync` calls:
 
-<!-- snippet: fallback-anti-pattern-3 -->
+<!-- snippet: fallback-anti-pattern-nesting-execute -->
 ```cs
 var result = await fallback.ExecuteAsync(async (CancellationToken outerCT) =>
 {
@@ -328,7 +328,7 @@ This is akin to JavaScript's [callback hell](http://callbackhell.com/) or _[the 
 
 Use `ResiliencePipelineBuilder` to chain strategies:
 
-<!-- snippet: fallback-pattern-3 -->
+<!-- snippet: fallback-pattern-nesting-execute -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddPipeline(timeout)
