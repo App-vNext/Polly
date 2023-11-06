@@ -229,19 +229,6 @@ var optionsComplex = new CircuitBreakerStrategyOptions
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
 };
 
-// Adds a circuit breaker with a dynamic break duration:
-//
-// Same circuit breaking conditions as above, but with a dynamic break duration based on the failure count.
-new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
-{
-    FailureRatio = 0.5,
-    SamplingDuration = TimeSpan.FromSeconds(10),
-    MinimumThroughput = 8,
-    BreakDuration = TimeSpan.FromSeconds(30),
-    BreakDurationGenerator = static args => TimeSpan.FromSeconds(Math.Min(20 + Math.Pow(2, args.FailureCount), 400)),
-    ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
-});
-
 // Handle specific failed results for HttpResponseMessage:
 var optionsShouldHandle = new CircuitBreakerStrategyOptions<HttpResponseMessage>
 {

@@ -27,26 +27,6 @@ internal static class CircuitBreaker
             ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
         };
 
-        // Adds a circuit breaker with a dynamic break duration:
-        //
-        // Same circuit breaking conditions as above, but with a dynamic break duration based on the failure count.
-        new ResiliencePipelineBuilder().AddCircuitBreaker(new CircuitBreakerStrategyOptions
-        {
-            Name = null,
-            FailureRatio = 0.5,
-            SamplingDuration = TimeSpan.FromSeconds(10),
-            MinimumThroughput = 8,
-            BreakDuration = TimeSpan.FromSeconds(30),
-            BreakDurationGenerator = static args =>
-                ValueTask.FromResult(TimeSpan.FromSeconds(Math.Min(20 + Math.Pow(2, args.FailureCount), 400))),
-            ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>(),
-            OnClosed = null,
-            OnOpened = null,
-            OnHalfOpened = null,
-            ManualControl = null,
-            StateProvider = null,
-        });
-
         // Handle specific failed results for HttpResponseMessage:
         var optionsShouldHandle = new CircuitBreakerStrategyOptions<HttpResponseMessage>
         {
@@ -164,7 +144,106 @@ internal static class CircuitBreaker
             .Build();
 
         #endregion
-    
+    }
+
+    public static void AntiPattern_SleepDurationGenerator()
+    {
+        #region circuit-breaker-anti-pattern-sleep-duration-generator
+        static IEnumerable<TimeSpan> GetSleepDuration()
+        {
+            for (int i = 1; i < 10; i++)
+            {
+                yield return TimeSpan.FromSeconds(i);
+            }
+        }
+
+        var sleepDurationProvider = GetSleepDuration().GetEnumerator();
+        sleepDurationProvider.MoveNext();
+
+        var circuitBreaker = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+                BreakDuration = TimeSpan.FromSeconds(0.5),
+                OnOpened = async args =>
+                {
+                    await Task.Delay(sleepDurationProvider.Current);
+                    sleepDurationProvider.MoveNext();
+                }
+
+            })
+            .Build();
+
+        #endregion
+
+        #region circuit-breaker-anti-pattern-sleep-duration-generator-ext
+
+        circuitBreaker = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+                BreakDuration = sleepDurationProvider.Current,
+                OnOpened = async args =>
+                {
+                    Console.WriteLine($"Break: {sleepDurationProvider.Current}");
+                    sleepDurationProvider.MoveNext();
+                }
+
+            })
+            .Build();
+
+        #endregion
+    }
+
+    public static async ValueTask AntiPattern_CircuitPerEndpoint()
+    {
+        static ValueTask CallXYZOnDownstream1(CancellationToken ct) => ValueTask.CompletedTask;
+        static ResiliencePipeline GetCircuitBreaker() => ResiliencePipeline.Empty;
+
+        #region circuit-breaker-anti-pattern-cb-per-endpoint
+        // Defined in a common place
+        var uriToCbMappings = new Dictionary<Uri, ResiliencePipeline>
+        {
+            [new Uri("https://downstream1.com")] = GetCircuitBreaker(),
+            // ...
+            [new Uri("https://downstreamN.com")] = GetCircuitBreaker()
+        };
+
+        // Used in the downstream 1 client
+        var downstream1Uri = new Uri("https://downstream1.com");
+        await uriToCbMappings[downstream1Uri].ExecuteAsync(CallXYZOnDownstream1, CancellationToken.None);
+        #endregion
+    }
+
+    private static ValueTask<HttpResponseMessage> IssueRequest() => ValueTask.FromResult(new HttpResponseMessage());
+    public static async ValueTask AntiPattern_ReduceThrownExceptions()
+    {
+        #region circuit-breaker-anti-pattern-reduce-thrown-exceptions
+
+        var stateProvider = new CircuitBreakerStateProvider();
+        var circuitBreaker = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new()
+            {
+                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+                BreakDuration = TimeSpan.FromSeconds(0.5),
+                StateProvider = stateProvider
+            })
+            .Build();
+
+        if (stateProvider.CircuitState
+            is not CircuitState.Open
+            and not CircuitState.Isolated)
+        {
+            var response = await circuitBreaker.ExecuteAsync(static async ct =>
+            {
+                return await IssueRequest();
+            }, CancellationToken.None);
+
+            // Your code goes here to process response
+        }
+
+        #endregion
+    }
 
     public static async ValueTask Pattern_ReduceThrownExceptions()
     {
