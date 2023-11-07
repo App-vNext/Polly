@@ -1,6 +1,8 @@
 ﻿using Polly;
 using Polly.CircuitBreaker;
+
 namespace Polly.Core.Tests.CircuitBreaker;
+
 public class BreakDurationGeneratorArgumentsTests
 {
     [Fact]

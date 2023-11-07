@@ -73,7 +73,9 @@ public class AdvancedCircuitBehaviorTests
     [InlineData(11, 0.2, 3)]
     [InlineData(9, 0.1, 4)]
     public void BehaviorProperties_ShouldReflectHealthInfoValues(
-        int throughput, double failureRate, int failureCount)
+        int throughput,
+        double failureRate,
+        int failureCount)
     {
         var anyFailureThreshold = 10;
         var anyMinimumThruput = 100;
@@ -84,7 +86,6 @@ public class AdvancedCircuitBehaviorTests
         behavior.FailureCount.Should().Be(failureCount, "because the FailureCount should match the HealthInfo");
         behavior.FailureRate.Should().Be(failureRate, "because the FailureRate should match the HealthInfo");
     }
-
 
     private AdvancedCircuitBehavior Create()
     {
