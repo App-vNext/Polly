@@ -42,7 +42,6 @@ public class AdvancedCircuitBehaviorTests
         _metrics = Substitute.For<HealthMetrics>(TimeProvider.System);
 
         var sut = Create();
-
         sut.OnActionFailure(state, out var shouldBreak);
 
         shouldBreak.Should().BeFalse();
@@ -66,6 +65,26 @@ public class AdvancedCircuitBehaviorTests
 
         _metrics.Received(1).Reset();
     }
+
+    [Theory]
+    [InlineData(10, 0.0, 0)]
+    [InlineData(10, 0.1, 1)]
+    [InlineData(10, 0.2, 2)]
+    [InlineData(11, 0.2, 3)]
+    [InlineData(9, 0.1, 4)]
+    public void BehaviorProperties_ShouldReflectHealthInfoValues(
+        int throughput, double failureRate, int failureCount)
+    {
+        var anyFailureThreshold = 10;
+        var anyMinimumThruput = 100;
+
+        _metrics.GetHealthInfo().Returns(new HealthInfo(throughput, failureRate, failureCount));
+        var behavior = new AdvancedCircuitBehavior(anyFailureThreshold, anyMinimumThruput, _metrics);
+
+        behavior.FailureCount.Should().Be(failureCount, "because the FailureCount should match the HealthInfo");
+        behavior.FailureRate.Should().Be(failureRate, "because the FailureRate should match the HealthInfo");
+    }
+
 
     private AdvancedCircuitBehavior Create()
     {

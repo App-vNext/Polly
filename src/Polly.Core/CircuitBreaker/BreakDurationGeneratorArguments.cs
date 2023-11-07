@@ -1,5 +1,7 @@
 namespace Polly.CircuitBreaker;
+
 #pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// Represents arguments used to generate a dynamic break duration for a circuit breaker.
 /// </summary>

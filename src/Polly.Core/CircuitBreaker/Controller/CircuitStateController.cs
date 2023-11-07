@@ -322,9 +322,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         if (_breakDurationGenerator is not null)
         {
 #pragma warning disable CA2012
-#pragma warning disable S1226
             breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount, context)).GetAwaiter().GetResult();
-#pragma warning restore S1226
 #pragma warning restore CA2012
         }
 
