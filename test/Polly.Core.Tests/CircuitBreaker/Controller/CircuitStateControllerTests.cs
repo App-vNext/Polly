@@ -305,6 +305,41 @@ public class CircuitStateControllerTests
         }
     }
 
+    [Fact]
+    public async Task OnActionFailureAsync_EnsureBreakDurationGeneration()
+    {
+        // arrange
+        using var controller = CreateController(new()
+        {
+            FailureRatio = 0,
+            MinimumThroughput = 0,
+            SamplingDuration = default,
+            BreakDuration = TimeSpan.FromMinutes(1),
+            BreakDurationGenerator = static args => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(args.FailureCount)),
+            OnClosed = null,
+            OnOpened = null,
+            OnHalfOpened = null,
+            ManualControl = null,
+            StateProvider = null
+        });
+
+        await TransitionToState(controller, CircuitState.Closed);
+
+        var utcNow = DateTimeOffset.MaxValue;
+
+        _timeProvider.SetUtcNow(utcNow);
+        _circuitBehavior.FailureCount.Returns(1);
+        _circuitBehavior.When(v => v.OnActionFailure(CircuitState.Closed, out Arg.Any<bool>()))
+            .Do(x => x[1] = true);
+
+        // act
+        await controller.OnActionFailureAsync(Outcome.FromResult(99), ResilienceContextPool.Shared.Get());
+
+        // assert
+        var blockedTill = GetBlockedTill(controller);
+        blockedTill.Should().Be(utcNow);
+    }
+
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
@@ -470,4 +505,14 @@ public class CircuitStateControllerTests
         _circuitBehavior,
         _timeProvider,
         TestUtilities.CreateResilienceTelemetry(_telemetryListener));
+
+    private CircuitStateController<int> CreateController(CircuitBreakerStrategyOptions<int> options) => new(
+        options.BreakDuration,
+        options.OnOpened,
+        options.OnClosed,
+        options.OnHalfOpened,
+        _circuitBehavior,
+        _timeProvider,
+        TestUtilities.CreateResilienceTelemetry(_telemetryListener),
+        options.BreakDurationGenerator);
 }

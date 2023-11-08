@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -67,6 +68,14 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
     [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Addressed with DynamicDependency on ValidationHelper.Validate method")]
     public TimeSpan BreakDuration { get; set; } = CircuitBreakerConstants.DefaultBreakDuration;
+
+    /// <summary>
+    /// Gets or sets an optional delegate to use to dynamically generate the break duration.
+    /// </summary>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
+    public Func<BreakDurationGeneratorArguments, ValueTask<TimeSpan>>? BreakDurationGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets a predicate that determines whether the outcome should be handled by the circuit breaker.

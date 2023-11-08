@@ -16,12 +16,14 @@ internal sealed class CircuitStateController<T> : IDisposable
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly CircuitBehavior _behavior;
     private readonly TimeSpan _breakDuration;
+    private readonly Func<BreakDurationGeneratorArguments, ValueTask<TimeSpan>>? _breakDurationGenerator;
     private DateTimeOffset _blockedUntil;
     private CircuitState _circuitState = CircuitState.Closed;
     private Outcome<T>? _lastOutcome;
     private BrokenCircuitException _breakingException = new();
     private bool _disposed;
 
+#pragma warning disable S107
     public CircuitStateController(
         TimeSpan breakDuration,
         Func<OnCircuitOpenedArguments<T>, ValueTask>? onOpened,
@@ -29,7 +31,9 @@ internal sealed class CircuitStateController<T> : IDisposable
         Func<OnCircuitHalfOpenedArguments, ValueTask>? onHalfOpen,
         CircuitBehavior behavior,
         TimeProvider timeProvider,
-        ResilienceStrategyTelemetry telemetry)
+        ResilienceStrategyTelemetry telemetry,
+        Func<BreakDurationGeneratorArguments, ValueTask<TimeSpan>>? breakDurationGenerator = null)
+#pragma warning restore S107
     {
         _breakDuration = breakDuration;
         _onOpened = onOpened;
@@ -38,6 +42,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         _behavior = behavior;
         _timeProvider = timeProvider;
         _telemetry = telemetry;
+        _breakDurationGenerator = breakDurationGenerator;
     }
 
     public CircuitState CircuitState
@@ -313,6 +318,15 @@ internal sealed class CircuitStateController<T> : IDisposable
     {
         scheduledTask = null;
         var utcNow = _timeProvider.GetUtcNow();
+
+        if (_breakDurationGenerator is not null)
+        {
+#pragma warning disable CA2012
+#pragma warning disable S1226
+            breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount, context)).GetAwaiter().GetResult();
+#pragma warning restore S1226
+#pragma warning restore CA2012
+        }
 
         _blockedUntil = IsDateTimeOverflow(utcNow, breakDuration) ? DateTimeOffset.MaxValue : utcNow + breakDuration;
 
