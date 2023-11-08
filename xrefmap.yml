@@ -13,6 +13,70 @@ references:
   commentId: N:Polly.CircuitBreaker
   fullName: Polly.CircuitBreaker
   nameWithType: Polly.CircuitBreaker
+- uid: Polly.CircuitBreaker.BreakDurationGeneratorArguments
+  name: BreakDurationGeneratorArguments
+  href: api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.html
+  commentId: T:Polly.CircuitBreaker.BreakDurationGeneratorArguments
+  fullName: Polly.CircuitBreaker.BreakDurationGeneratorArguments
+  nameWithType: BreakDurationGeneratorArguments
+- uid: Polly.CircuitBreaker.BreakDurationGeneratorArguments.#ctor(System.Double,System.Int32,Polly.ResilienceContext)
+  name: BreakDurationGeneratorArguments(double, int, ResilienceContext)
+  href: api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.html#Polly_CircuitBreaker_BreakDurationGeneratorArguments__ctor_System_Double_System_Int32_Polly_ResilienceContext_
+  commentId: M:Polly.CircuitBreaker.BreakDurationGeneratorArguments.#ctor(System.Double,System.Int32,Polly.ResilienceContext)
+  name.vb: New(Double, Integer, ResilienceContext)
+  fullName: Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments(double, int, Polly.ResilienceContext)
+  fullName.vb: Polly.CircuitBreaker.BreakDurationGeneratorArguments.New(Double, Integer, Polly.ResilienceContext)
+  nameWithType: BreakDurationGeneratorArguments.BreakDurationGeneratorArguments(double, int, ResilienceContext)
+  nameWithType.vb: BreakDurationGeneratorArguments.New(Double, Integer, ResilienceContext)
+- uid: Polly.CircuitBreaker.BreakDurationGeneratorArguments.#ctor*
+  name: BreakDurationGeneratorArguments
+  href: api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.html#Polly_CircuitBreaker_BreakDurationGeneratorArguments__ctor_
+  commentId: Overload:Polly.CircuitBreaker.BreakDurationGeneratorArguments.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments
+  fullName.vb: Polly.CircuitBreaker.BreakDurationGeneratorArguments.New
+  nameWithType: BreakDurationGeneratorArguments.BreakDurationGeneratorArguments
+  nameWithType.vb: BreakDurationGeneratorArguments.New
+- uid: Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context
+  name: Context
+  href: api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.html#Polly_CircuitBreaker_BreakDurationGeneratorArguments_Context
+  commentId: P:Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context
+  fullName: Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context
+  nameWithType: BreakDurationGeneratorArguments.Context
+- uid: Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context*
+  name: Context
+  href: api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.html#Polly_CircuitBreaker_BreakDurationGeneratorArguments_Context_
+  commentId: Overload:Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context
+  isSpec: "True"
+  fullName: Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context
+  nameWithType: BreakDurationGeneratorArguments.Context
+- uid: Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount
+  name: FailureCount
+  href: api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.html#Polly_CircuitBreaker_BreakDurationGeneratorArguments_FailureCount
+  commentId: P:Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount
+  fullName: Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount
+  nameWithType: BreakDurationGeneratorArguments.FailureCount
+- uid: Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount*
+  name: FailureCount
+  href: api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.html#Polly_CircuitBreaker_BreakDurationGeneratorArguments_FailureCount_
+  commentId: Overload:Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount
+  isSpec: "True"
+  fullName: Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount
+  nameWithType: BreakDurationGeneratorArguments.FailureCount
+- uid: Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate
+  name: FailureRate
+  href: api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.html#Polly_CircuitBreaker_BreakDurationGeneratorArguments_FailureRate
+  commentId: P:Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate
+  fullName: Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate
+  nameWithType: BreakDurationGeneratorArguments.FailureRate
+- uid: Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate*
+  name: FailureRate
+  href: api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.html#Polly_CircuitBreaker_BreakDurationGeneratorArguments_FailureRate_
+  commentId: Overload:Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate
+  isSpec: "True"
+  fullName: Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate
+  nameWithType: BreakDurationGeneratorArguments.FailureRate
 - uid: Polly.CircuitBreaker.BrokenCircuitException
   name: BrokenCircuitException
   href: api/Polly.CircuitBreaker.BrokenCircuitException.html
@@ -248,6 +312,23 @@ references:
   fullName.vb: Polly.CircuitBreaker.CircuitBreakerStrategyOptions(Of TResult).BreakDuration
   nameWithType: CircuitBreakerStrategyOptions<TResult>.BreakDuration
   nameWithType.vb: CircuitBreakerStrategyOptions(Of TResult).BreakDuration
+- uid: Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.BreakDurationGenerator
+  name: BreakDurationGenerator
+  href: api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.html#Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_BreakDurationGenerator
+  commentId: P:Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.BreakDurationGenerator
+  fullName: Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDurationGenerator
+  fullName.vb: Polly.CircuitBreaker.CircuitBreakerStrategyOptions(Of TResult).BreakDurationGenerator
+  nameWithType: CircuitBreakerStrategyOptions<TResult>.BreakDurationGenerator
+  nameWithType.vb: CircuitBreakerStrategyOptions(Of TResult).BreakDurationGenerator
+- uid: Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.BreakDurationGenerator*
+  name: BreakDurationGenerator
+  href: api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.html#Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_BreakDurationGenerator_
+  commentId: Overload:Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.BreakDurationGenerator
+  isSpec: "True"
+  fullName: Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDurationGenerator
+  fullName.vb: Polly.CircuitBreaker.CircuitBreakerStrategyOptions(Of TResult).BreakDurationGenerator
+  nameWithType: CircuitBreakerStrategyOptions<TResult>.BreakDurationGenerator
+  nameWithType.vb: CircuitBreakerStrategyOptions(Of TResult).BreakDurationGenerator
 - uid: Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.FailureRatio
   name: FailureRatio
   href: api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.html#Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_FailureRatio

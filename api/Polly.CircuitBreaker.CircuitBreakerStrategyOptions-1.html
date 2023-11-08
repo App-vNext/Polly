@@ -91,7 +91,7 @@
 
   <h1 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1" class="text-break">
     Class CircuitBreakerStrategyOptions&lt;TResult&gt;
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -189,7 +189,7 @@ again for another <a class="xref" href="Polly.CircuitBreaker.CircuitBreakerStrat
 
   <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1__ctor" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.#ctor">
   CircuitBreakerStrategyOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.html">CircuitBreakerStrategyOptions&lt;TResult&gt;</a> class.</p>
@@ -220,7 +220,7 @@ again for another <a class="xref" href="Polly.CircuitBreaker.CircuitBreakerStrat
 
   <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_BreakDuration" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.BreakDuration">
   BreakDuration
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the duration of break the circuit will stay open before resetting.</p>
@@ -250,11 +250,44 @@ public TimeSpan BreakDuration { get; set; }</code></pre>
 
 
 
+  <a id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_BreakDurationGenerator_" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.BreakDurationGenerator*"></a>
+
+  <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_BreakDurationGenerator" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.BreakDurationGenerator">
+  BreakDurationGenerator
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets an optional delegate to use to dynamically generate the break duration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Func&lt;BreakDurationGeneratorArguments, ValueTask&lt;TimeSpan&gt;&gt;? BreakDurationGenerator { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.CircuitBreaker.BreakDurationGeneratorArguments.html">BreakDurationGeneratorArguments</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1">ValueTask</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a>&gt;&gt;</dt>
+    <dd><p>The default value is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_FailureRatio_" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.FailureRatio*"></a>
 
   <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_FailureRatio" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.FailureRatio">
   FailureRatio
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the failure-to-success ratio at which the circuit will break.</p>
@@ -291,7 +324,7 @@ public double FailureRatio { get; set; }</code></pre>
 
   <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_ManualControl" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.ManualControl">
   ManualControl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L133"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L142"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the manual control for the circuit breaker.</p>
@@ -324,7 +357,7 @@ public double FailureRatio { get; set; }</code></pre>
 
   <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_MinimumThroughput" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.MinimumThroughput">
   MinimumThroughput
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the minimum throughput: this many actions or more must pass through the circuit in the time-slice,
@@ -359,7 +392,7 @@ public int MinimumThroughput { get; set; }</code></pre>
 
   <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_OnClosed" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.OnClosed">
   OnClosed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the event that is raised when the circuit resets to a <a class="xref" href="Polly.CircuitBreaker.CircuitState.html#Polly_CircuitBreaker_CircuitState_Closed">Closed</a> state.</p>
@@ -402,7 +435,7 @@ maintained to ensure the correct sequence of state transitions.
 
   <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_OnHalfOpened" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.OnHalfOpened">
   OnHalfOpened
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L136"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the event that is raised when when the circuit transitions to an <a class="xref" href="Polly.CircuitBreaker.CircuitState.html#Polly_CircuitBreaker_CircuitState_HalfOpen">HalfOpen</a> state.</p>
@@ -445,7 +478,7 @@ maintained to ensure the correct sequence of state transitions.
 
   <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_OnOpened" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.OnOpened">
   OnOpened
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L120"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the event that is raised when the circuit transitions to an <a class="xref" href="Polly.CircuitBreaker.CircuitState.html#Polly_CircuitBreaker_CircuitState_Open">Open</a> state.</p>
@@ -488,7 +521,7 @@ maintained to ensure the correct sequence of state transitions.
 
   <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_SamplingDuration" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.SamplingDuration">
   SamplingDuration
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the duration of the sampling over which failure ratios are assessed.</p>
@@ -522,7 +555,7 @@ public TimeSpan SamplingDuration { get; set; }</code></pre>
 
   <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_ShouldHandle" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.ShouldHandle">
   ShouldHandle
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a predicate that determines whether the outcome should be handled by the circuit breaker.</p>
@@ -557,7 +590,7 @@ This property is required.</p>
 
   <h3 id="Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_StateProvider" data-uid="Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1.StateProvider">
   StateProvider
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L148"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the state provider for the circuit breaker.</p>
@@ -590,7 +623,7 @@ This property is required.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L24" class="edit-link">Edit this page</a>
+          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/CircuitBreakerStrategyOptions.TResult.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

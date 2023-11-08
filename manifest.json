@@ -72,6 +72,16 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Polly.CircuitBreaker.BrokenCircuitException.yml",
       "output": {
         ".html": {
