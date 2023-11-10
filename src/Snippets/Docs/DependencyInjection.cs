@@ -192,7 +192,8 @@ internal static class DependencyInjection
 
     public static void AntiPattern_1()
     {
-        #region di-anti-pattern-1
+        #region di-not-using-service-provider
+
         var services = new ServiceCollection();
         services.AddResiliencePipeline("myFavoriteStrategy", builder =>
         {
@@ -207,6 +208,7 @@ internal static class DependencyInjection
                 }
             });
         });
+
         #endregion
     }
 

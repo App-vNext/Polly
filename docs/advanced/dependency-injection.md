@@ -262,7 +262,7 @@ recurring patterns may not be ideal. The sections bellow highlights anti-pattern
 
 Capture `IServiceCollection` inside `AddResiliencePipeline()`:
 
-<!-- snippet: di-anti-pattern-1 -->
+<!-- snippet: di-not-using-service-provider -->
 ```cs
 var services = new ServiceCollection();
 services.AddResiliencePipeline("myFavoriteStrategy", builder =>
