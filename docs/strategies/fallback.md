@@ -154,7 +154,8 @@ Here's a breakdown of the behavior when the callback produces either an `HttpSta
 
 ## Anti-patterns
 
-Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and ones to avoid.
+Over the years, many developers have used Polly in various ways. Some of these
+recurring patterns may not be ideal. The sections bellow highlights anti-patterns to avoid.
 
 ### Using fallback to replace thrown exception
 
