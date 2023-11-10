@@ -254,7 +254,7 @@ ResiliencePipeline instanceB = pipelineProvider.GetPipeline(new MyPipelineKey("m
 ## Anti-patterns
 
 Over the years, many developers have used Polly in various ways. Some of these
-recurring patterns may not be ideal. The sections bellow highlights anti-patterns to avoid.
+recurring patterns may not be ideal. The sections below highlight anti-patterns to avoid.
 
 ### Accessing the `IServiceCollection` instead of `IServiceProvider`
 

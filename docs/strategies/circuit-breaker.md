@@ -307,7 +307,7 @@ sequenceDiagram
 ## Anti-patterns
 
 Over the years, many developers have used Polly in various ways. Some of these
-recurring patterns may not be ideal. The sections bellow highlights anti-patterns to avoid.
+recurring patterns may not be ideal. The sections below highlight anti-patterns to avoid.
 
 ### Using different sleep duration between retry attempts based on Circuit Breaker state
 
