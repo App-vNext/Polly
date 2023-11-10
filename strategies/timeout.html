@@ -220,6 +220,8 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
     P-&gt;&gt;C: Propagates exception
 </code></pre>
 <h2 id="anti-patterns">Anti-patterns</h2>
+<p>Over the years, many developers have used Polly in various ways. Some of these
+recurring patterns may not be ideal. The sections below highlight anti-patterns to avoid.</p>
 <h3 id="ignoring-cancellation-token">Ignoring Cancellation Token</h3>
 <p>❌ DON'T</p>
 <p>Ignore the cancellation token provided by the resilience pipeline:</p>

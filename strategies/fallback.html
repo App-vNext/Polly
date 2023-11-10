@@ -243,7 +243,8 @@ pipeline.Execute(() =&gt; new HttpResponseMessage(HttpStatusCode.InternalServerE
 <p>The preceding example also demonstrates how to re-use <code>ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;</code> across multiple strategies.</p>
 </div>
 <h2 id="anti-patterns">Anti-patterns</h2>
-<p>Over the years, many developers have used Polly in various ways. Some of these recurring patterns may not be ideal. This section highlights the recommended practices and ones to avoid.</p>
+<p>Over the years, many developers have used Polly in various ways. Some of these
+recurring patterns may not be ideal. The sections below highlight anti-patterns to avoid.</p>
 <h3 id="using-fallback-to-replace-thrown-exception">Using fallback to replace thrown exception</h3>
 <p>❌ DON'T</p>
 <p>Throw custom exceptions from the <code>OnFallback</code> delegate:</p>
