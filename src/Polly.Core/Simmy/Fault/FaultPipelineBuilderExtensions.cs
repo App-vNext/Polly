@@ -11,6 +11,7 @@ public static class FaultPipelineBuilderExtensions
     /// <summary>
     /// Adds a fault chaos strategy to the builder.
     /// </summary>
+    /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="fault">The exception to inject.</param>
@@ -30,6 +31,7 @@ public static class FaultPipelineBuilderExtensions
     /// <summary>
     /// Adds a fault chaos strategy to the builder.
     /// </summary>
+    /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="faultGenerator">The exception generator delegate.</param>
