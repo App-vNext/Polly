@@ -5,7 +5,7 @@
 /// <summary>
 /// Arguments used by the fault chaos strategy to ge the fault that is going to be injected.
 /// </summary>
-internal readonly struct FaultGeneratorArguments
+public readonly struct FaultGeneratorArguments
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FaultGeneratorArguments"/> struct.

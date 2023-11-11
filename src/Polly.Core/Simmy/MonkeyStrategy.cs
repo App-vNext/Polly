@@ -5,7 +5,7 @@ namespace Polly.Simmy;
 /// <summary>
 /// Contains common functionality for chaos strategies which intentionally disrupt executions - which monkey around with calls.
 /// </summary>
-internal abstract class MonkeyStrategy : ResilienceStrategy
+public abstract class MonkeyStrategy : ResilienceStrategy
 {
     private readonly Func<double> _randomizer;
 

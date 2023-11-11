@@ -5,7 +5,7 @@
 /// <summary>
 /// Arguments used by the latency chaos strategy to notify that a delayed occurred.
 /// </summary>
-internal readonly struct LatencyGeneratorArguments
+public readonly struct LatencyGeneratorArguments
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="LatencyGeneratorArguments"/> struct.

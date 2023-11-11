@@ -6,7 +6,7 @@ namespace Polly.Simmy;
 /// <summary>
 /// Extension methods for adding outcome to a <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
-internal static class FaultPipelineBuilderExtensions
+public static class FaultPipelineBuilderExtensions
 {
     /// <summary>
     /// Adds a fault chaos strategy to the builder.

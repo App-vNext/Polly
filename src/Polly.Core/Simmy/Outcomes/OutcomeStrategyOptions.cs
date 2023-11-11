@@ -1,6 +1,6 @@
 ﻿namespace Polly.Simmy.Outcomes;
 
 /// <inheritdoc/>
-internal class OutcomeStrategyOptions : OutcomeStrategyOptions<object>
+public class OutcomeStrategyOptions : OutcomeStrategyOptions<object>
 {
 }

@@ -10,7 +10,7 @@ namespace Polly.Simmy;
 /// <remarks>
 /// For strategies that handle all result types the generic parameter must be of type <see cref="object"/>.
 /// </remarks>
-internal abstract class MonkeyStrategy<T> : ResilienceStrategy<T>
+public abstract class MonkeyStrategy<T> : ResilienceStrategy<T>
 {
     private readonly Func<double> _randomizer;
 

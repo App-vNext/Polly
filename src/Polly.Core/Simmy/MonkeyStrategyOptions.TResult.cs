@@ -6,7 +6,7 @@ namespace Polly.Simmy;
 /// The options associated with the <see cref="MonkeyStrategy"/>.
 /// </summary>
 /// <typeparam name="TResult">The type of result the monkey strategy handles.</typeparam>
-internal abstract class MonkeyStrategyOptions<TResult> : ResilienceStrategyOptions
+public abstract class MonkeyStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
     /// Gets or sets the injection rate for a given execution, which the value should be between [0, 1] (inclusive).
