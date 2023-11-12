@@ -238,7 +238,7 @@ public static class PollyServiceCollectionExtensions
             .AddOptions<TelemetryOptions>()
             .Configure<IServiceProvider>((options, serviceProvider) =>
             {
-                options.LoggerFactory = serviceProvider.GetService<ILoggerFactory>() ?? NullLoggerFactory.Instance;
+                options.LoggerFactory ??= serviceProvider.GetService<ILoggerFactory>() ?? NullLoggerFactory.Instance;
             });
 
         services.TryAddTransient(serviceProvider =>
