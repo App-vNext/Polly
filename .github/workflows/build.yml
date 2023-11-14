@@ -132,33 +132,8 @@ jobs:
           Write-Output "::error::$invalidPackages NuGet package(s) failed validation."
         }
 
-  publish-github:
-    needs: [ build, validate-packages ]
-    permissions:
-      packages: write
-    runs-on: ubuntu-latest
-    if: false # Temporarily disabled
-    #if: |
-    #  github.event.repository.fork == false &&
-    #  (github.ref_name == github.event.repository.default_branch ||
-    #   startsWith(github.ref, 'refs/tags/'))
-    steps:
-
-    - name: Download packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-      with:
-        name: packages-windows
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
-      with:
-        dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
-
-    - name: Publish NuGet packages to GitHub Packages
-      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate --no-symbols --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-
   sign:
-    needs: [ build, publish-github ]
+    needs: [ build, validate-packages ]
     runs-on: windows-latest
     if: |
       github.event.repository.fork == false &&
