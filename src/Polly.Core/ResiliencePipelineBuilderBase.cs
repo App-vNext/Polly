@@ -68,16 +68,12 @@ public abstract class ResiliencePipelineBuilderBase
     public ResilienceContextPool? ContextPool { get; set; }
 
     /// <summary>
-    /// Gets or sets a <see cref="System.TimeProvider"/> that is used by strategies that work with time.
+    /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
     /// </summary>
-    /// <remarks>
-    /// This property is internal until we switch to official System.TimeProvider.
-    /// </remarks>
     /// <value>
-    /// The default value is <see cref="TimeProvider.System"/>.
+    /// The default value is <see langword="null"/> and unless set, <see cref="TimeProvider.System"/> will be used.
     /// </value>
-    [Required]
-    internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
+    public TimeProvider? TimeProvider { get; set; }
 
     /// <summary>
     /// Gets or sets the <see cref="Polly.Telemetry.TelemetryListener"/> that is used by Polly to report resilience events.
@@ -90,6 +86,8 @@ public abstract class ResiliencePipelineBuilderBase
     /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public TelemetryListener? TelemetryListener { get; set; }
+
+    internal TimeProvider TimeProviderInternal => TimeProvider ?? TimeProvider.System;
 
     /// <summary>
     /// Gets the validator that is used for the validation.
@@ -132,13 +130,13 @@ public abstract class ResiliencePipelineBuilderBase
 
         var source = new ResilienceTelemetrySource(Name, InstanceName, null);
 
-        return PipelineComponentFactory.CreateComposite(components, new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProvider);
+        return PipelineComponentFactory.CreateComposite(components, new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProviderInternal);
     }
 
     private PipelineComponent CreateComponent(Entry entry)
     {
         var source = new ResilienceTelemetrySource(Name, InstanceName, entry.Options.Name);
-        var context = new StrategyBuilderContext(new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProvider);
+        var context = new StrategyBuilderContext(new ResilienceStrategyTelemetry(source, TelemetryListener), TimeProviderInternal);
 
         var strategy = entry.Factory(context);
         strategy.Options = entry.Options;

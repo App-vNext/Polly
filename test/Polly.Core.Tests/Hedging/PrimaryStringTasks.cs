@@ -19,13 +19,22 @@ internal class PrimaryStringTasks
 
     public async ValueTask<string> FastTask(CancellationToken token)
     {
+#if NET8_0_OR_GREATER
+        await Task.Delay(TimeSpan.FromMilliseconds(10), _timeProvider, token);
+#else
         await _timeProvider.Delay(TimeSpan.FromMilliseconds(10), token);
+#endif
         return FastTaskResult;
     }
 
     public async ValueTask<string> SlowTask(CancellationToken token)
     {
+#if NET8_0_OR_GREATER
+        await Task.Delay(TimeSpan.FromDays(1), _timeProvider, token);
+#else
         await _timeProvider.Delay(TimeSpan.FromDays(1), token);
+#endif
+
         return SlowTaskResult;
     }
 }

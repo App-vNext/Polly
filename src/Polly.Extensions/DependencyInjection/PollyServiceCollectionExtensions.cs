@@ -245,6 +245,12 @@ public static class PollyServiceCollectionExtensions
         {
             var builder = new ResiliencePipelineBuilder();
             builder.ConfigureTelemetry(serviceProvider.GetRequiredService<IOptions<TelemetryOptions>>().Value);
+
+            if (serviceProvider.GetService<TimeProvider>() is { } timeProvider)
+            {
+                builder.TimeProvider = timeProvider;
+            }
+
             return builder;
         });
     }
