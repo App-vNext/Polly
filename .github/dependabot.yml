@@ -10,6 +10,9 @@ updates:
 - package-ecosystem: nuget
   directory: "/"
   groups:
+    polly:
+      patterns:
+        - Polly*
     xunit:
       patterns:
         - xunit*
