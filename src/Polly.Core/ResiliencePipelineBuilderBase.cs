@@ -71,7 +71,7 @@ public abstract class ResiliencePipelineBuilderBase
     /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
     /// </summary>
     /// <value>
-    /// The default value is <see langword="null"/> and unless set, the <see cref="TimeProvider.System"/> will be used.
+    /// The default value is <see langword="null"/> and unless set, <see cref="TimeProvider.System"/> will be used.
     /// </value>
     public TimeProvider? TimeProvider { get; set; }
 
