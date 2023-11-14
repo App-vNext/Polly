@@ -12,7 +12,7 @@ public class GenericResiliencePipelineBuilderTests
     public void Ctor_EnsureDefaults()
     {
         _builder.Name.Should().BeNull();
-        _builder.TimeProvider.Should().Be(TimeProvider.System);
+        _builder.TimeProvider.Should().BeNull();
     }
 
     [Fact]

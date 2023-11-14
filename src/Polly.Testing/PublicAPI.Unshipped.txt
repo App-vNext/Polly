@@ -1,3 +1,1 @@
 ﻿#nullable enable
-Polly.TestingResiliencePipelineBuilderExtensions
-static Polly.TestingResiliencePipelineBuilderExtensions.WithTimeProvider<TBuilder>(this TBuilder! builder, System.TimeProvider! timeProvider) -> TBuilder!

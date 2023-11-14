@@ -59,7 +59,7 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
         builder.InstanceName = _instanceName;
         _configure(builder, context);
 
-        var timeProvider = builder.TimeProvider;
+        var timeProvider = builder.TimeProviderInternal;
         var telemetry = new ResilienceStrategyTelemetry(
             new ResilienceTelemetrySource(builder.Name, builder.InstanceName, null),
             builder.TelemetryListener);
