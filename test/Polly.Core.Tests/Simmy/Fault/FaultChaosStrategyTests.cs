@@ -7,7 +7,7 @@ namespace Polly.Core.Tests.Simmy.Fault;
 public class FaultChaosStrategyTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly List<TelemetryEventArguments<object, object>> _args = new();
+    private readonly List<TelemetryEventArguments<object, object>> _args = [];
 
     public FaultChaosStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
 

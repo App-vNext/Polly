@@ -620,7 +620,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     {
         // arrange
         using var cts = new CancellationTokenSource();
-        List<Task> backgroundTasks = new List<Task>();
+        List<Task> backgroundTasks = [];
         ConfigureHedging(BackgroundWork);
         var strategy = Create();
 

@@ -6,7 +6,7 @@ namespace Polly.Core.Tests.Simmy.Outcomes;
 public class OutcomeChaosStrategyTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly List<TelemetryEventArguments<object, object>> _args = new();
+    private readonly List<TelemetryEventArguments<object, object>> _args = [];
 
     public OutcomeChaosStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
 

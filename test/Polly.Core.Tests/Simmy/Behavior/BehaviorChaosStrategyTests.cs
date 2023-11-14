@@ -2,11 +2,12 @@
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Simmy.Behavior;
+
 public class BehaviorChaosStrategyTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly BehaviorStrategyOptions _options;
-    private readonly List<TelemetryEventArguments<object, object>> _args = new();
+    private readonly List<TelemetryEventArguments<object, object>> _args = [];
 
     public BehaviorChaosStrategyTests()
     {

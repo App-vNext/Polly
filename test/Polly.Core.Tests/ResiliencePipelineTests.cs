@@ -4,11 +4,17 @@ using Polly.Utils.Pipeline;
 
 namespace Polly.Core.Tests;
 
-#pragma warning disable S3966 // Objects should not be disposed more than once
-
 public partial class ResiliencePipelineTests
 {
     public static readonly CancellationToken CancellationToken = new CancellationTokenSource().Token;
+
+#pragma warning disable IDE0028
+    public static TheoryData<ResilienceContextPool?> ResilienceContextPools = new()
+    {
+        null,
+        ResilienceContextPool.Shared,
+    };
+#pragma warning restore IDE0028
 
     [Fact]
     public async Task DisposeAsync_NullPipeline_OK()

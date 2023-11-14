@@ -1,5 +1,4 @@
 using System.ComponentModel;
-
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Polly.Telemetry;
@@ -19,7 +18,7 @@ namespace Polly;
 public abstract class ResiliencePipelineBuilderBase
 #pragma warning restore S1694 // An abstract class should have both abstract and concrete methods
 {
-    private readonly List<Entry> _entries = new();
+    private readonly List<Entry> _entries = [];
     private bool _used;
 
     private protected ResiliencePipelineBuilderBase()

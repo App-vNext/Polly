@@ -4,7 +4,7 @@ namespace Polly.Core.Tests.Telemetry;
 
 public class ResilienceStrategyTelemetryTests
 {
-    private readonly List<TelemetryEventArguments<object, object>> _args = new();
+    private readonly List<TelemetryEventArguments<object, object>> _args = [];
     private readonly ResilienceTelemetrySource _source;
     private readonly ResilienceStrategyTelemetry _sut;
 
