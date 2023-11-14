@@ -3265,6 +3265,19 @@ references:
   isSpec: "True"
   fullName: Polly.ResiliencePipelineBuilderBase.Name
   nameWithType: ResiliencePipelineBuilderBase.Name
+- uid: Polly.ResiliencePipelineBuilderBase.TimeProvider
+  name: TimeProvider
+  href: api/Polly.ResiliencePipelineBuilderBase.html#Polly_ResiliencePipelineBuilderBase_TimeProvider
+  commentId: P:Polly.ResiliencePipelineBuilderBase.TimeProvider
+  fullName: Polly.ResiliencePipelineBuilderBase.TimeProvider
+  nameWithType: ResiliencePipelineBuilderBase.TimeProvider
+- uid: Polly.ResiliencePipelineBuilderBase.TimeProvider*
+  name: TimeProvider
+  href: api/Polly.ResiliencePipelineBuilderBase.html#Polly_ResiliencePipelineBuilderBase_TimeProvider_
+  commentId: Overload:Polly.ResiliencePipelineBuilderBase.TimeProvider
+  isSpec: "True"
+  fullName: Polly.ResiliencePipelineBuilderBase.TimeProvider
+  nameWithType: ResiliencePipelineBuilderBase.TimeProvider
 - uid: Polly.ResiliencePipelineBuilderExtensions
   name: ResiliencePipelineBuilderExtensions
   href: api/Polly.ResiliencePipelineBuilderExtensions.html
@@ -4196,6 +4209,19 @@ references:
   isSpec: "True"
   fullName: Polly.StrategyBuilderContext.Telemetry
   nameWithType: StrategyBuilderContext.Telemetry
+- uid: Polly.StrategyBuilderContext.TimeProvider
+  name: TimeProvider
+  href: api/Polly.StrategyBuilderContext.html#Polly_StrategyBuilderContext_TimeProvider
+  commentId: P:Polly.StrategyBuilderContext.TimeProvider
+  fullName: Polly.StrategyBuilderContext.TimeProvider
+  nameWithType: StrategyBuilderContext.TimeProvider
+- uid: Polly.StrategyBuilderContext.TimeProvider*
+  name: TimeProvider
+  href: api/Polly.StrategyBuilderContext.html#Polly_StrategyBuilderContext_TimeProvider_
+  commentId: Overload:Polly.StrategyBuilderContext.TimeProvider
+  isSpec: "True"
+  fullName: Polly.StrategyBuilderContext.TimeProvider
+  nameWithType: StrategyBuilderContext.TimeProvider
 - uid: Polly.Telemetry
   name: Polly.Telemetry
   href: api/Polly.Telemetry.html

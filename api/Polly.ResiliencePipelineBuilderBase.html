@@ -175,6 +175,12 @@
       <a class="xref" href="Polly.ResiliencePipelineBuilderExtensions.html#Polly_ResiliencePipelineBuilderExtensions_AddStrategy__1___0_System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy__Polly_ResilienceStrategyOptions_">ResiliencePipelineBuilderExtensions.AddStrategy&lt;TBuilder&gt;(TBuilder, Func&lt;StrategyBuilderContext, ResilienceStrategy&gt;, ResilienceStrategyOptions)</a>
   </div>
   <div>
+      <a class="xref" href="Polly.TelemetryResiliencePipelineBuilderExtensions.html#Polly_TelemetryResiliencePipelineBuilderExtensions_ConfigureTelemetry__1___0_Microsoft_Extensions_Logging_ILoggerFactory_">TelemetryResiliencePipelineBuilderExtensions.ConfigureTelemetry&lt;TBuilder&gt;(TBuilder, ILoggerFactory)</a>
+  </div>
+  <div>
+      <a class="xref" href="Polly.TelemetryResiliencePipelineBuilderExtensions.html#Polly_TelemetryResiliencePipelineBuilderExtensions_ConfigureTelemetry__1___0_Polly_Telemetry_TelemetryOptions_">TelemetryResiliencePipelineBuilderExtensions.ConfigureTelemetry&lt;TBuilder&gt;(TBuilder, TelemetryOptions)</a>
+  </div>
+  <div>
       <a class="xref" href="Polly.TimeoutResiliencePipelineBuilderExtensions.html#Polly_TimeoutResiliencePipelineBuilderExtensions_AddTimeout__1___0_Polly_Timeout_TimeoutStrategyOptions_">TimeoutResiliencePipelineBuilderExtensions.AddTimeout&lt;TBuilder&gt;(TBuilder, TimeoutStrategyOptions)</a>
   </div>
   <div>
@@ -301,6 +307,39 @@ The instance name can be used to differentiate between multiple builder instance
   <h4 class="section" id="Polly_ResiliencePipelineBuilderBase_Name_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>This property is also included in the telemetry that is produced by the individual resilience strategies.</p>
 </div>
+
+
+
+
+  <a id="Polly_ResiliencePipelineBuilderBase_TimeProvider_" data-uid="Polly.ResiliencePipelineBuilderBase.TimeProvider*"></a>
+
+  <h3 id="Polly_ResiliencePipelineBuilderBase_TimeProvider" data-uid="Polly.ResiliencePipelineBuilderBase.TimeProvider">
+  TimeProvider
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineBuilderBase.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a <a class="xref" href="Polly.ResiliencePipelineBuilderBase.html#Polly_ResiliencePipelineBuilderBase_TimeProvider">TimeProvider</a> that is used by strategies that work with time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeProvider? TimeProvider { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider">TimeProvider</a></dt>
+    <dd><p>The default value is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> and unless set, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider.system">System</a> will be used.</p>
+</dd>
+  </dl>
+
+
+
+
 
 
 
