@@ -14,8 +14,7 @@
 
   <PropertyGroup Label="NuGet package validation">
     <EnablePackageValidation Condition="'$(EnablePackageValidation)' == ''">true</EnablePackageValidation>
-    <!-- TODO Bump to 8.2.0 once published to NuGet.org -->
-    <PackageValidationBaselineVersion Condition="'$(PackageValidationBaselineVersion)' == ''">8.1.0</PackageValidationBaselineVersion>
+    <PackageValidationBaselineVersion Condition="'$(PackageValidationBaselineVersion)' == ''">8.2.0</PackageValidationBaselineVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="SourceLink">

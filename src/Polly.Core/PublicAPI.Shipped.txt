@@ -11,6 +11,12 @@ override Polly.Registry.ResiliencePipelineRegistry<TKey>.TryGetPipeline(TKey key
 override Polly.Registry.ResiliencePipelineRegistry<TKey>.TryGetPipeline<TResult>(TKey key, out Polly.ResiliencePipeline<TResult>? pipeline) -> bool
 override Polly.ResiliencePropertyKey<TValue>.ToString() -> string!
 override Polly.Telemetry.ResilienceEvent.ToString() -> string!
+Polly.CircuitBreaker.BreakDurationGeneratorArguments
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments() -> void
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments(double failureRate, int failureCount, Polly.ResilienceContext! context) -> void
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context.get -> Polly.ResilienceContext!
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount.get -> int
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate.get -> double
 Polly.CircuitBreaker.BrokenCircuitException
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException() -> void
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message) -> void
@@ -33,6 +39,8 @@ Polly.CircuitBreaker.CircuitBreakerStrategyOptions.CircuitBreakerStrategyOptions
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDuration.get -> System.TimeSpan
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDuration.set -> void
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDurationGenerator.get -> System.Func<Polly.CircuitBreaker.BreakDurationGeneratorArguments, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDurationGenerator.set -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.CircuitBreakerStrategyOptions() -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.FailureRatio.get -> double
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.FailureRatio.set -> void
@@ -263,6 +271,8 @@ Polly.ResiliencePipelineBuilderBase.Name.get -> string?
 Polly.ResiliencePipelineBuilderBase.Name.set -> void
 Polly.ResiliencePipelineBuilderBase.TelemetryListener.get -> Polly.Telemetry.TelemetryListener?
 Polly.ResiliencePipelineBuilderBase.TelemetryListener.set -> void
+Polly.ResiliencePipelineBuilderBase.TimeProvider.get -> System.TimeProvider?
+Polly.ResiliencePipelineBuilderBase.TimeProvider.set -> void
 Polly.ResiliencePipelineBuilderExtensions
 Polly.ResilienceProperties
 Polly.ResilienceProperties.GetValue<TValue>(Polly.ResiliencePropertyKey<TValue> key, TValue defaultValue) -> TValue
@@ -326,6 +336,7 @@ Polly.Retry.RetryStrategyOptions<TResult>.UseJitter.set -> void
 Polly.RetryResiliencePipelineBuilderExtensions
 Polly.StrategyBuilderContext
 Polly.StrategyBuilderContext.Telemetry.get -> Polly.Telemetry.ResilienceStrategyTelemetry!
+Polly.StrategyBuilderContext.TimeProvider.get -> System.TimeProvider!
 Polly.Telemetry.ExecutionAttemptArguments
 Polly.Telemetry.ExecutionAttemptArguments.AttemptNumber.get -> int
 Polly.Telemetry.ExecutionAttemptArguments.Duration.get -> System.TimeSpan
