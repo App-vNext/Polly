@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents the options for the Fault chaos strategy.
 /// </summary>
-internal class FaultStrategyOptions : MonkeyStrategyOptions
+public class FaultStrategyOptions : MonkeyStrategyOptions
 {
     /// <summary>
     /// Gets or sets the delegate that's raised when the outcome is injected.

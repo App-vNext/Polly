@@ -5,7 +5,7 @@
 /// <summary>
 /// Arguments used by the fault chaos strategy to notify that an fault was injected.
 /// </summary>
-internal readonly struct OnFaultInjectedArguments
+public readonly struct OnFaultInjectedArguments
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="OnFaultInjectedArguments"/> struct.
