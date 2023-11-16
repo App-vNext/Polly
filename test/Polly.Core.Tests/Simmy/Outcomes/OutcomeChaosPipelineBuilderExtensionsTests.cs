@@ -7,6 +7,7 @@ namespace Polly.Core.Tests.Simmy.Outcomes;
 
 public class OutcomeChaosPipelineBuilderExtensionsTests
 {
+#pragma warning disable IDE0028
     public static readonly TheoryData<Action<ResiliencePipelineBuilder<int>>> ResultStrategy = new()
     {
         builder =>
@@ -20,8 +21,9 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
             });
 
             AssertResultStrategy(builder, true, 0.6, new(100));
-        }
+        },
     };
+#pragma warning restore IDE0028
 
     private static void AssertResultStrategy<T>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate, Outcome<T> outcome)
     {

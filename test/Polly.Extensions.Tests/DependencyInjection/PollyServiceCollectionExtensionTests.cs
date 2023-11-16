@@ -1,8 +1,10 @@
 using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using NSubstitute;
 using Polly.DependencyInjection;
 using Polly.Registry;
 using Polly.Telemetry;
@@ -14,7 +16,7 @@ public class PollyServiceCollectionExtensionTests
     private const string Key = "my-pipeline";
     private ServiceCollection _services;
 
-    public PollyServiceCollectionExtensionTests() => _services = new ServiceCollection();
+    public PollyServiceCollectionExtensionTests() => _services = [];
 
     [Fact]
     public void AddResiliencePipeline_ArgValidation()
@@ -23,7 +25,7 @@ public class PollyServiceCollectionExtensionTests
         Assert.Throws<ArgumentNullException>(() => AddResiliencePipeline(Key));
         Assert.Throws<ArgumentNullException>(() => AddResiliencePipeline<string>(Key));
 
-        _services = new ServiceCollection();
+        _services = [];
         Assert.Throws<ArgumentNullException>(() => _services.AddResiliencePipeline(
             Key,
             (Action<ResiliencePipelineBuilder, AddResiliencePipelineContext<string>>)null!));
@@ -248,6 +250,37 @@ public class PollyServiceCollectionExtensionTests
             .Distinct()
             .Should()
             .HaveCount(30);
+    }
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void AddResiliencePipeline_EnsureTimeProvider(bool timeProviderRegistered)
+    {
+        var timeProvider = Substitute.For<TimeProvider>();
+        var asserted = false;
+
+        if (timeProviderRegistered)
+        {
+            _services.TryAddSingleton(timeProvider);
+        }
+
+        _services.AddResiliencePipeline("dummy", builder =>
+        {
+            if (timeProviderRegistered)
+            {
+                builder.TimeProvider.Should().Be(timeProvider);
+            }
+            else
+            {
+                builder.TimeProvider.Should().BeNull();
+            }
+
+            asserted = true;
+        });
+
+        CreateProvider().GetPipeline("dummy");
+        asserted.Should().BeTrue();
     }
 
     [Fact]

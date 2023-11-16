@@ -14,7 +14,7 @@ public class TaskExecutionTests : IDisposable
     private readonly CancellationTokenSource _cts;
     private readonly HedgingTimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly List<ExecutionAttemptArguments> _args = new();
+    private readonly List<ExecutionAttemptArguments> _args = [];
     private ResilienceContext _primaryContext = ResilienceContextPool.Shared.Get();
 
     public TaskExecutionTests()

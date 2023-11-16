@@ -2,9 +2,12 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
-    <PublishAot>true</PublishAot>
     <SKIP_POLLY_ANALYZERS>true</SKIP_POLLY_ANALYZERS>
+    <SelfContained>true</SelfContained>
     <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition="!$([System.OperatingSystem]::IsMacOS())">
+    <PublishAot>true</PublishAot>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />

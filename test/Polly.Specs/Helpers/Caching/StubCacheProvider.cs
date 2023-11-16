@@ -17,7 +17,7 @@ internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
         public readonly object? Value;
     }
 
-    private readonly Dictionary<string, CacheItem> cachedValues = new();
+    private readonly Dictionary<string, CacheItem> cachedValues = [];
 
     public (bool, object?) TryGet(string key)
     {

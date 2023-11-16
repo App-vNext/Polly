@@ -254,10 +254,14 @@ internal sealed class CircuitStateController<T> : IDisposable
 
     private void EnsureNotDisposed()
     {
+#if NET8_0_OR_GREATER
+        ObjectDisposedException.ThrowIf(_disposed, this);
+#else
         if (_disposed)
         {
             throw new ObjectDisposedException(nameof(CircuitStateController<T>));
         }
+#endif
     }
 
     private void CloseCircuit_NeedsLock(Outcome<T> outcome, bool manual, ResilienceContext context, out Task? scheduledTask)

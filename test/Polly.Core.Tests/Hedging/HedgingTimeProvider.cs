@@ -1,3 +1,5 @@
+using System;
+
 namespace Polly.Core.Tests.Hedging;
 
 internal class HedgingTimeProvider : TimeProvider
@@ -26,7 +28,13 @@ internal class HedgingTimeProvider : TimeProvider
 
     public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
     {
-        var entry = new TimerEntry(dueTime, new TaskCompletionSource<bool>(), _utcNow.Add(dueTime), () => callback(state));
+        var timeStamp = dueTime switch
+        {
+            _ when dueTime == global::System.Threading.Timeout.InfiniteTimeSpan => DateTimeOffset.MaxValue,
+            _ => _utcNow.Add(dueTime)
+        };
+
+        var entry = new TimerEntry(dueTime, new TaskCompletionSource<bool>(), timeStamp, () => callback(state));
         TimerEntries.Enqueue(entry);
 
         Advance(AutoAdvance);

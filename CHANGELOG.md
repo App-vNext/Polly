@@ -2,6 +2,22 @@
 
 <!-- markdownlint-disable MD034 -->
 
+## 8.2.0
+
+* Prepare for 8.2.0 release by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1758
+* [Docs] Add circuit breaker to the migration guide by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1764
+* [Docs] Improve timeout docs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1767
+* [Docs] Minor cleanups by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1768
+* [Docs] Revise migration guide 3/3 by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1775
+* Calculated break duration for Circuit breaker by [@atawLee](https://github.com/atawLee) in https://github.com/App-vNext/Polly/pull/1776
+* Disable GitHub publishing by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1781
+* [Docs] Small cleanup and improvements by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1782
+* Add test that verifies overriding by using `ConfigureTelemetry` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1787
+* Remove GitHub Packages publishing by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1789
+* Allow concurrent PR docs builds by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1795
+* Update to .NET 8 SDK by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1738
+* Add support for .NET 8 by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1144
+
 ## 8.1.0
 
 * Only show stable versions in README by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1649

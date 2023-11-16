@@ -5,10 +5,9 @@ using Polly.Testing;
 
 namespace Polly.Core.Tests.Retry;
 
-#pragma warning disable CA2012 // Use ValueTasks correctly
-
 public class RetryResiliencePipelineBuilderExtensionsTests
 {
+#pragma warning disable IDE0028
     public static readonly TheoryData<Action<ResiliencePipelineBuilder>> OverloadsData = new()
     {
         builder =>
@@ -22,7 +21,7 @@ public class RetryResiliencePipelineBuilderExtensionsTests
             });
 
             AssertStrategy(builder, DelayBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
-        }
+        },
     };
 
     public static readonly TheoryData<Action<ResiliencePipelineBuilder<int>>> OverloadsDataGeneric = new()
@@ -38,8 +37,9 @@ public class RetryResiliencePipelineBuilderExtensionsTests
             });
 
             AssertStrategy(builder, DelayBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
-        }
+        },
     };
+#pragma warning restore IDE0028
 
     [MemberData(nameof(OverloadsData))]
     [Theory]

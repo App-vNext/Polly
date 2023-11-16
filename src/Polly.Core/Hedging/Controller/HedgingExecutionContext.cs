@@ -10,8 +10,8 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
 {
     public readonly record struct ExecutionInfo<TResult>(TaskExecution<T>? Execution, bool Loaded, Outcome<TResult>? Outcome);
 
-    private readonly List<TaskExecution<T>> _tasks = new();
-    private readonly List<TaskExecution<T>> _executingTasks = new();
+    private readonly List<TaskExecution<T>> _tasks = [];
+    private readonly List<TaskExecution<T>> _executingTasks = [];
     private readonly ObjectPool<TaskExecution<T>> _executionPool;
     private readonly TimeProvider _timeProvider;
     private readonly int _maxAttempts;
@@ -122,7 +122,11 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
 
         using var delayTaskCancellation = CancellationTokenSource.CreateLinkedTokenSource(PrimaryContext!.CancellationToken);
 
+#if NET8_0_OR_GREATER
+        var delayTask = Task.Delay(hedgingDelay, _timeProvider, delayTaskCancellation.Token);
+#else
         var delayTask = _timeProvider.Delay(hedgingDelay, delayTaskCancellation.Token);
+#endif
         Task<Task> whenAnyHedgedTask = WaitForTaskCompetitionAsync();
         var completedTask = await Task.WhenAny(whenAnyHedgedTask, delayTask).ConfigureAwait(ContinueOnCapturedContext);
 
@@ -133,7 +137,11 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
 
         // cancel the ongoing delay task
         // Stryker disable once boolean : no means to test this
+#if NET8_0_OR_GREATER
+        await delayTaskCancellation.CancelAsync().ConfigureAwait(ContinueOnCapturedContext);
+#else
         delayTaskCancellation.Cancel(throwOnFirstException: false);
+#endif
 
         await whenAnyHedgedTask.ConfigureAwait(ContinueOnCapturedContext);
 

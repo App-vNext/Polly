@@ -16,7 +16,19 @@ public class ResiliencePipelineBuilderTests
         var builder = new ResiliencePipelineBuilder();
 
         builder.Name.Should().BeNull();
-        builder.TimeProvider.Should().Be(TimeProvider.System);
+        builder.TimeProvider.Should().BeNull();
+    }
+
+    [Fact]
+    public void TimeProviderInternal_Ok()
+    {
+        var builder = new ResiliencePipelineBuilder();
+        builder.TimeProviderInternal.Should().Be(TimeProvider.System);
+
+        var timeProvider = Substitute.For<TimeProvider>();
+        builder.TimeProvider = timeProvider;
+
+        builder.TimeProvider.Should().Be(timeProvider);
     }
 
     [Fact]

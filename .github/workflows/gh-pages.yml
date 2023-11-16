@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     concurrency:
-      group: ${{ github.workflow }}
+      group: ${{ github.event_name == 'pull_request' && github.event.ref || github.workflow }}
       cancel-in-progress: false
 
     permissions:

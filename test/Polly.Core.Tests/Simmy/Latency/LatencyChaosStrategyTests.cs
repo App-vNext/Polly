@@ -11,7 +11,7 @@ public class LatencyChaosStrategyTests : IDisposable
     private readonly LatencyStrategyOptions _options;
     private readonly CancellationTokenSource _cancellationSource;
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
-    private readonly List<TelemetryEventArguments<object, object>> _args = new();
+    private readonly List<TelemetryEventArguments<object, object>> _args = [];
 
     public LatencyChaosStrategyTests()
     {
