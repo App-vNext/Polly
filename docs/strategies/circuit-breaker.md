@@ -36,6 +36,16 @@ var optionsComplex = new CircuitBreakerStrategyOptions
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
 };
 
+// Circuit breaker using BreakDurationGenerator:
+// The break duration is dynamically determined based on the properties of BreakDurationGeneratorArguments.
+var optionsBreakDurationGenerator = new CircuitBreakerStrategyOptions
+{
+    FailureRatio = 0.5,
+    SamplingDuration = TimeSpan.FromSeconds(10),
+    MinimumThroughput = 8,
+    BreakDurationGenerator = static args => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(args.FailureCount)),
+};
+
 // Handle specific failed results for HttpResponseMessage:
 var optionsShouldHandle = new CircuitBreakerStrategyOptions<HttpResponseMessage>
 {
@@ -88,6 +98,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(optionsSt
 | `MinimumThroughput` | 100                                                                        | The minimum number of actions that must occur in the circuit within a specific time slice. |
 | `SamplingDuration`  | 30 seconds                                                                 | The time period over which failure ratios are calculated.                                  |
 | `BreakDuration`     | 5 seconds                                                                  | The time period for which the circuit will remain broken/open before attempting to reset.  |
+| `BreakDurationGenerator`| `null`                                                            | Enables adaptive adjustment of break duration based on the current state of the circuit.  |
 | `OnClosed`          | `null`                                                                     | Event triggered when the circuit transitions to the `Closed` state.                        |
 | `OnOpened`          | `null`                                                                     | Event triggered when the circuit transitions to the `Opened` state.                        |
 | `OnHalfOpened`      | `null`                                                                     | Event triggered when the circuit transitions to the `HalfOpened` state.                    |
@@ -406,72 +417,6 @@ var retry = new ResiliencePipelineBuilder()
 - The Circuit Breaker shares the `BreakDuration` through the context when it breaks. When it transitions back to Closed, the sharing is revoked.
 - The Retry strategy fetches the sleep duration dynamically without knowing any specific knowledge about the Circuit Breaker.
 - If adjustments are needed for the `BreakDuration`, they can be made in one place.
-
-### Using different duration for breaks
-
-In the case of Retry you can specify dynamically the sleep duration via the `DelayGenerator`.
-
-In the case of Circuit Breaker the `BreakDuration` is considered constant (can't be changed between breaks).
-
-❌ DON'T
-
-Use `Task.Delay` inside `OnOpened`:
-
-<!-- snippet: circuit-breaker-anti-pattern-sleep-duration-generator -->
-```cs
-static IEnumerable<TimeSpan> GetSleepDuration()
-{
-    for (int i = 1; i < 10; i++)
-    {
-        yield return TimeSpan.FromSeconds(i);
-    }
-}
-
-var sleepDurationProvider = GetSleepDuration().GetEnumerator();
-sleepDurationProvider.MoveNext();
-
-var circuitBreaker = new ResiliencePipelineBuilder()
-    .AddCircuitBreaker(new()
-    {
-        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
-        BreakDuration = TimeSpan.FromSeconds(0.5),
-        OnOpened = async args =>
-        {
-            await Task.Delay(sleepDurationProvider.Current);
-            sleepDurationProvider.MoveNext();
-        }
-
-    })
-    .Build();
-```
-<!-- endSnippet -->
-
-**Reasoning**:
-
-- The minimum break duration value is half a second. This implies that each sleep lasts for `sleepDurationProvider.Current` plus an additional half a second.
-- One might think that setting the `BreakDuration` to `sleepDurationProvider.Current` would address this, but it doesn't. This is because the `BreakDuration` is established only once and isn't re-assessed during each break.
-
-<!-- snippet: circuit-breaker-anti-pattern-sleep-duration-generator-ext -->
-```cs
-circuitBreaker = new ResiliencePipelineBuilder()
-    .AddCircuitBreaker(new()
-    {
-        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
-        BreakDuration = sleepDurationProvider.Current,
-        OnOpened = async args =>
-        {
-            Console.WriteLine($"Break: {sleepDurationProvider.Current}");
-            sleepDurationProvider.MoveNext();
-        }
-
-    })
-    .Build();
-```
-<!-- endSnippet -->
-
-✅ DO
-
-The `CircuitBreakerStrategyOptions` currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.
 
 ### Wrapping each endpoint with a circuit breaker
 

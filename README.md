@@ -229,6 +229,16 @@ var optionsComplex = new CircuitBreakerStrategyOptions
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
 };
 
+// Circuit breaker using BreakDurationGenerator:
+// The break duration is dynamically determined based on the properties of BreakDurationGeneratorArguments.
+var optionsBreakDurationGenerator = new CircuitBreakerStrategyOptions
+{
+    FailureRatio = 0.5,
+    SamplingDuration = TimeSpan.FromSeconds(10),
+    MinimumThroughput = 8,
+    BreakDurationGenerator = static args => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(args.FailureCount)),
+};
+
 // Handle specific failed results for HttpResponseMessage:
 var optionsShouldHandle = new CircuitBreakerStrategyOptions<HttpResponseMessage>
 {

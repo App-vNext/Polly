@@ -27,6 +27,16 @@ internal static class CircuitBreaker
             ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
         };
 
+        // Circuit breaker using BreakDurationGenerator:
+        // The break duration is dynamically determined based on the properties of BreakDurationGeneratorArguments.
+        var optionsBreakDurationGenerator = new CircuitBreakerStrategyOptions
+        {
+            FailureRatio = 0.5,
+            SamplingDuration = TimeSpan.FromSeconds(10),
+            MinimumThroughput = 8,
+            BreakDurationGenerator = static args => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(args.FailureCount)),
+        };
+
         // Handle specific failed results for HttpResponseMessage:
         var optionsShouldHandle = new CircuitBreakerStrategyOptions<HttpResponseMessage>
         {
@@ -140,55 +150,6 @@ internal static class CircuitBreaker
                     delay ??= TimeSpan.FromSeconds(1);
                     return ValueTask.FromResult(delay);
                 }
-            })
-            .Build();
-
-        #endregion
-    }
-
-    public static void AntiPattern_SleepDurationGenerator()
-    {
-        #region circuit-breaker-anti-pattern-sleep-duration-generator
-        static IEnumerable<TimeSpan> GetSleepDuration()
-        {
-            for (int i = 1; i < 10; i++)
-            {
-                yield return TimeSpan.FromSeconds(i);
-            }
-        }
-
-        var sleepDurationProvider = GetSleepDuration().GetEnumerator();
-        sleepDurationProvider.MoveNext();
-
-        var circuitBreaker = new ResiliencePipelineBuilder()
-            .AddCircuitBreaker(new()
-            {
-                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
-                BreakDuration = TimeSpan.FromSeconds(0.5),
-                OnOpened = async args =>
-                {
-                    await Task.Delay(sleepDurationProvider.Current);
-                    sleepDurationProvider.MoveNext();
-                }
-
-            })
-            .Build();
-
-        #endregion
-
-        #region circuit-breaker-anti-pattern-sleep-duration-generator-ext
-
-        circuitBreaker = new ResiliencePipelineBuilder()
-            .AddCircuitBreaker(new()
-            {
-                ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
-                BreakDuration = sleepDurationProvider.Current,
-                OnOpened = async args =>
-                {
-                    Console.WriteLine($"Break: {sleepDurationProvider.Current}");
-                    sleepDurationProvider.MoveNext();
-                }
-
             })
             .Build();
 
