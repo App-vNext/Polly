@@ -13,7 +13,7 @@ public partial class IssuesTests
     [Fact]
     public void StrategiesPerEndpoint_1365()
     {
-        var events = new List<MeteringEvent>();
+        var events = new List<MeteringEvent>(1024);
         using var listener = TestUtilities.EnablePollyMetering(events);
         var services = new ServiceCollection();
 
