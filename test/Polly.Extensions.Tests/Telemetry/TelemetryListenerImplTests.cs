@@ -12,7 +12,7 @@ public class TelemetryListenerImplTests : IDisposable
 {
     private readonly FakeLogger _logger;
     private readonly ILoggerFactory _loggerFactory;
-    private readonly List<MeteringEvent> _events = [];
+    private readonly List<MeteringEvent> _events = new(1024);
     private Action<TelemetryEventArguments<object, object>>? _onEvent;
 
     public TelemetryListenerImplTests() => _loggerFactory = TestUtilities.CreateLoggerFactory(out _logger);
