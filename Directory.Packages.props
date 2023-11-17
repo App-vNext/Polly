@@ -23,7 +23,6 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="MinVer" Version="4.3.0" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
     <PackageVersion Include="Polly" Version="$(PollyVersion)" />
