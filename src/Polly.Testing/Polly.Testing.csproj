@@ -10,6 +10,11 @@
     <MutationScore>100</MutationScore>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Description>Polly.Testing exposes APIs and utilities that can be used to assert on the composition of Polly.Core resilience pipelines.</Description>
+    <PackageTags>Polly Exception Handling Resilience Transient Fault Policy Testing</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
   </ItemGroup>

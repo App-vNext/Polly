@@ -19,6 +19,11 @@
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Description>Polly.Core is a .NET resilience and transient-fault-handling library that allows developers to express resilience strategies such as Retry, Circuit Breaker, Hedging, Timeout, Chaos and Fallback in a fluent and thread-safe manner.</Description>
+    <PackageTags>Polly Simmy Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Chaos ChaosEngineering Retry Wait Fallback Timeout Parallelization Hedging</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup>
     <Using Include="Polly.Utils" />
     <InternalsVisibleToProject Include="Polly.Core.Benchmarks" />

@@ -16,6 +16,12 @@
     <IsAotCompatible>true</IsAotCompatible>
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>Polly.Extensions adds support for dependency injection and telemetry for the Polly.Core library.</Description>
+    <PackageTags>Polly Exception Handling Resilience Transient Fault Policy DI DependencyInjection IOC InversionOfControl Metrics Observability Telemetry</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\Polly.Core\ResilienceValidationContext.cs" Link="Utils\ResilienceValidationContext.cs" />
     <Compile Include="..\Polly.Core\Utils\Guard.cs" Link="Utils\Guard.cs" />
