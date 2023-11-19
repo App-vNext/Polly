@@ -28,7 +28,6 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
-    <PackageTags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Rate-limit Fallback Timeout Throttle Parallelization Hedging</PackageTags>
     <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md for details</PackageReleaseNotes>
     <PackageReadmeFile>package-readme.md</PackageReadmeFile>
   </PropertyGroup>

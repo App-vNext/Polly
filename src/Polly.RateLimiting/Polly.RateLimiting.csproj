@@ -17,6 +17,11 @@
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Description>Polly.RateLimiting is a .NET resilience and transient-fault-handling library that allows developers to express resilience strategies using a Rate Limiter in a fluent and thread-safe manner.</Description>
+    <PackageTags>Polly Exception Handling Resilience Transient Fault Policy Wait Bulkhead Rate-limit Throttle Hedging</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup>
     <Using Include="Polly.Utils" />
     <Compile Include="..\Polly.Core\Utils\ExceptionUtilities.cs" Link="utils\ExceptionUtilities.cs" />
