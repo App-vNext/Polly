@@ -42,10 +42,10 @@ You can create a `ResiliencePipeline` using the `ResiliencePipelineBuilder` clas
 
 <!-- snippet: quick-start -->
 ```cs
-// Create a instance of builder that exposes various extensions for adding resilience strategies
+// Create an instance of builder that exposes various extensions for adding resilience strategies
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions()) // Add retry using the default options
-    .AddTimeout(TimeSpan.FromSeconds(10)) // Add 10 second timeout
+    .AddTimeout(TimeSpan.FromSeconds(10)) // Add 10 seconds timeout
     .Build(); // Builds the resilience pipeline
 
 // Execute the pipeline asynchronously
@@ -78,10 +78,10 @@ services.AddResiliencePipeline("my-pipeline", builder =>
 // Build the service provider
 var serviceProvider = services.BuildServiceProvider();
 
-// Retrieve ResiliencePipelineProvider that caches and dynamically creates the resilience pipelines
+// Retrieve a ResiliencePipelineProvider that dynamically creates and caches the resilience pipelines
 var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
 
-// Retrieve resilience pipeline using the name it was registered with
+// Retrieve your resilience pipeline using the name it was registered with
 ResiliencePipeline pipeline = pipelineProvider.GetPipeline("my-pipeline");
 
 // Execute the pipeline

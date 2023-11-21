@@ -19,6 +19,16 @@ Welcome to the migration guide for Polly's v8 release. Version 8 of Polly brings
 > [!NOTE]
 > Please read the comments in the code carefully for additional context and explanations.
 
+## Polly or Polly.Core package
+
+When you do your migration process it is recommended to follow these steps:
+
+- Upgrade the `Polly` package version from 7.x to 8.x
+  - Your previous policies should run smoothly without any change
+- Migrate your V7 policies to V8 strategies one-by-one gradually
+  - Test your migrated code in a QA environment before publishing your changes into production
+- After you have migrated all your legacy Polly code then switch to [`Polly.Core`](https://www.nuget.org/packages/Polly.Core)
+
 ## Migrating execution policies
 
 This section describes how to migrate from execution policies (i.e. `IAsyncPolicy`, `ISyncPolicy`) to resilience pipelines (i.e. `ResiliencePipeline`, `ResiliencePipeline<T>`).
