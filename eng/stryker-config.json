@@ -18,7 +18,6 @@
       "block",
       "statement"
     ],
-    "language-version": "Preview",
     "target-framework": "net8.0",
     "thresholds": {
       "high": 100,
