@@ -31,12 +31,12 @@ Extensions for adding resilience strategies to the builders are provided by each
 
 | Strategy | `ResiliencePipelineBuilder` | `ResiliencePipelineBuilder<T>` |
 | ------------- | :-------------: | :-------------: |
-|Circuit Breaker| ✅ | ✅ |
-|Fallback| ❌ | ✅ |
-|Hedging| ❌ | ✅ |
-|Rate Limiter| ✅ | ✅ |
-|Retry| ✅ | ✅ |
-|Timeout| ✅ | ✅ |
+| Circuit Breaker | ✅ | ✅ |
+| Fallback | ❌ | ✅ |
+| Hedging | ❌ | ✅ |
+| Rate Limiter | ✅ | ✅ |
+| Retry | ✅ | ✅ |
+| Timeout | ✅ | ✅ |
 
 Each resilience strategy provides:
 
