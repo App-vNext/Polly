@@ -27,7 +27,7 @@ When you do your migration process it is recommended to follow these steps:
   - Your previous policies should run smoothly without any change
 - Migrate your V7 policies to V8 strategies gradually, such as one at a time
   - Test your migrated code in a QA environment before publishing your changes into production
-- After you have migrated all your legacy Polly code then switch to [`Polly.Core`](https://www.nuget.org/packages/Polly.Core)
+- After you have successfully migrated all your legacy Polly code then change your package reference from `Polly` to [`Polly.Core`](https://www.nuget.org/packages/Polly.Core)
 
 ## Migrating execution policies
 
