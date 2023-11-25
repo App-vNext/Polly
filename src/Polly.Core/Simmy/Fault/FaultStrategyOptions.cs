@@ -14,7 +14,7 @@ public class FaultStrategyOptions : MonkeyStrategyOptions
     public Func<OnFaultInjectedArguments, ValueTask>? OnFaultInjected { get; set; } = default!;
 
     /// <summary>
-    /// Gets or sets the outcome generator to be injected for a given execution.
+    /// Gets or sets the fault generator to be injected for a given execution.
     /// </summary>
     /// <remarks>
     /// Defaults to <see langword="null"/>. Either <see cref="Fault"/> or this property is required.
@@ -23,7 +23,7 @@ public class FaultStrategyOptions : MonkeyStrategyOptions
     public Func<FaultGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; set; } = default!;
 
     /// <summary>
-    /// Gets or sets the outcome to be injected for a given execution.
+    /// Gets or sets the fault to be injected for a given execution.
     /// </summary>
     /// <remarks>
     /// Defaults to <see langword="null"/>. Either <see cref="FaultGenerator"/> or this property is required.

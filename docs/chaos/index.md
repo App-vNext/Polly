@@ -36,5 +36,15 @@ Chaos strategies (or Monkey strategies as we call them) are in essence a [Resili
 ## Usage
 It is usual to place the Monkey Strategy innermost in a Resilience Pipeline. By placing the monkey strategies innermost, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.
 
+## Common options across strategies
+All the strategies' options implement the [`MonkeyStrategyOptions`](xref:Polly.Simmy.MonkeyStrategyOptions) class as it contains the basic configuration for every monkey strategy.
+
+| Property                  | Default Value | Description                                  |
+| ------------------------- | ------------- | -------------------------------------------- |
+| `InjectionRate`           | 0.001 ms      | A decimal between 0 and 1 inclusive. The strategy will inject the chaos, randomly, that proportion of the time, eg: if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls.    |
+| `InjectionRateGenerator`  | `null`        | Generates the injection rate for a given execution, which the value should be between [0, 1] (inclusive). |
+| `Enabled`                 | `false`       | Determines whether the strategy is enabled or not.    |
+| `EnabledGenerator`        | `null`        | the enable generator that indicates whether or not the chaos strategy is enabled for a given execution.     |
+
 [simmy]: https://github.com/Polly-Contrib/Simmy
 
