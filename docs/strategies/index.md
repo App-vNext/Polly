@@ -97,7 +97,7 @@ Notes from the preceding example:
 - Multiple exceptions can be handled using switch expressions.
 
 > [!NOTE]
-> The `args` parameter of the `ShouldHandle` allows readonly access to strategy specific information.
+> The `args` parameter of the `ShouldHandle` allows read-only access to strategy specific information.
 > For example in case of retry you can assess the `AttemptNumber`, as well as the `Outcome` and `Context`.
 
 ### Asynchronous predicates
