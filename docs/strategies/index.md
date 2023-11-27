@@ -96,6 +96,10 @@ Notes from the preceding example:
   - The `Args<TResult>` acts as a placeholder, and each strategy defines its own arguments.
 - Multiple exceptions can be handled using switch expressions.
 
+> [!NOTE]
+> The `args` parameter of the `ShouldHandle` allows readonly access to strategy specific information.
+> For example in case of retry you can assess the `AttemptNumber`, as well as the `Outcome` and `Context`.
+
 ### Asynchronous predicates
 
 You can also use asynchronous delegates for more advanced scenarios, such as retrying based on the response body:
