@@ -92,10 +92,10 @@
 </code></pre>
 <p>You can create a <code>ResiliencePipeline</code> using the <code>ResiliencePipelineBuilder</code> class as shown below:</p>
 <!-- snippet: quick-start -->
-<pre><code class="lang-cs">// Create a instance of builder that exposes various extensions for adding resilience strategies
+<pre><code class="lang-cs">// Create an instance of builder that exposes various extensions for adding resilience strategies
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions()) // Add retry using the default options
-    .AddTimeout(TimeSpan.FromSeconds(10)) // Add 10 second timeout
+    .AddTimeout(TimeSpan.FromSeconds(10)) // Add 10 seconds timeout
     .Build(); // Builds the resilience pipeline
 
 // Execute the pipeline asynchronously
@@ -106,7 +106,7 @@ await pipeline.ExecuteAsync(static async token =&gt; { /* Your custom logic goes
 <p>If you prefer to define resilience pipelines using <a href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection"><code>IServiceCollection</code></a>, you'll need to install the <a href="https://www.nuget.org/packages/Polly.Extensions/">Polly.Extensions</a> package:</p>
 <pre><code class="lang-sh">dotnet add package Polly.Extensions
 </code></pre>
-<p>You can then define your resilience pipeline using the <code>AddResiliencePipeline(...)</code> extension method as shown:</p>
+<p>then you can define your resilience pipeline using the <code>AddResiliencePipeline(...)</code> extension method as shown:</p>
 <!-- snippet: quick-start-di -->
 <pre><code class="lang-cs">var services = new ServiceCollection();
 
@@ -121,10 +121,10 @@ services.AddResiliencePipeline(&quot;my-pipeline&quot;, builder =&gt;
 // Build the service provider
 var serviceProvider = services.BuildServiceProvider();
 
-// Retrieve ResiliencePipelineProvider that caches and dynamically creates the resilience pipelines
+// Retrieve a ResiliencePipelineProvider that dynamically creates and caches the resilience pipelines
 var pipelineProvider = serviceProvider.GetRequiredService&lt;ResiliencePipelineProvider&lt;string&gt;&gt;();
 
-// Retrieve resilience pipeline using the name it was registered with
+// Retrieve your resilience pipeline using the name it was registered with
 ResiliencePipeline pipeline = pipelineProvider.GetPipeline(&quot;my-pipeline&quot;);
 
 // Execute the pipeline
@@ -134,6 +134,10 @@ await pipeline.ExecuteAsync(static async token =&gt;
 });
 </code></pre>
 <!-- endSnippet -->
+<div class="NOTE">
+<h5>Note</h5>
+<p>You don't need to call the <code>Build</code> method on the <code>builder</code> parameter inside the <code>AddResiliencePipeline</code>.</p>
+</div>
 
 </article>
 

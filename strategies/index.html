@@ -93,11 +93,11 @@
 <li><strong>Proactive</strong>: Unlike reactive strategies, proactive strategies do not focus on handling errors by the callbacks might throw or return. They can make proactive decisions to cancel or reject the execution of callbacks (e.g., using a rate limiter or a timeout resilience strategy).</li>
 </ul>
 <h2 id="built-in-strategies">Built-in strategies</h2>
+<h3 id="reactive">Reactive</h3>
 <table>
 <thead>
 <tr>
 <th>Strategy</th>
-<th>Reactive</th>
 <th>Premise</th>
 <th style="text-align: center;">AKA</th>
 <th>How does the strategy mitigate?</th>
@@ -106,50 +106,98 @@
 <tbody>
 <tr>
 <td><a href="retry.html">Retry</a></td>
-<td>Yes</td>
 <td>Many faults are transient and may self-correct after a short delay.</td>
 <td style="text-align: center;"><em>Maybe it's just a blip</em></td>
 <td>Allows configuring automatic retries.</td>
 </tr>
 <tr>
 <td><a href="circuit-breaker.html">Circuit-breaker</a></td>
-<td>Yes</td>
 <td>When a system is seriously struggling, failing fast is better than making users/callers wait.  <br><br>Protecting a faulting system from overload can help it recover.</td>
 <td style="text-align: center;"><em>Stop doing it if it hurts</em> <br><br><em>Give that system a break</em></td>
 <td>Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold.</td>
 </tr>
 <tr>
-<td><a href="timeout.html">Timeout</a></td>
-<td>No</td>
-<td>Beyond a certain wait, a success result is unlikely.</td>
-<td style="text-align: center;"><em>Don't wait forever</em></td>
-<td>Guarantees the caller won't have to wait beyond the timeout.</td>
-</tr>
-<tr>
-<td><a href="rate-limiter.html">Rate Limiter</a></td>
-<td>No</td>
-<td>Limiting the rate a system handles requests is another way to control load. <br><br> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services.</td>
-<td style="text-align: center;"><em>Slow down a bit, will you?</em></td>
-<td>Constrains executions to not exceed a certain rate.</td>
-</tr>
-<tr>
 <td><a href="fallback.html">Fallback</a></td>
-<td>Yes</td>
 <td>Things will still fail - plan what you will do when that happens.</td>
 <td style="text-align: center;"><em>Degrade gracefully</em></td>
 <td>Defines an alternative value to be returned (or action to be executed) on failure.</td>
 </tr>
 <tr>
 <td><a href="hedging.html">Hedging</a></td>
-<td>Yes</td>
 <td>Things can be slow sometimes, plan what you will do when that happens.</td>
 <td style="text-align: center;"><em>Hedge your bets</em></td>
 <td>Executes parallel actions when things are slow and waits for the fastest one.</td>
 </tr>
 </tbody>
 </table>
+<h3 id="proactive">Proactive</h3>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Premise</th>
+<th style="text-align: center;">AKA</th>
+<th>How does the strategy prevent?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="timeout.html">Timeout</a></td>
+<td>Beyond a certain wait, a success result is unlikely.</td>
+<td style="text-align: center;"><em>Don't wait forever</em></td>
+<td>Guarantees the caller won't have to wait beyond the timeout.</td>
+</tr>
+<tr>
+<td><a href="rate-limiter.html">Rate Limiter</a></td>
+<td>Limiting the rate a system handles requests is another way to control load. <br><br> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services.</td>
+<td style="text-align: center;"><em>Slow down a bit, will you?</em></td>
+<td>Constrains executions to not exceed a certain rate.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="usage">Usage</h2>
-<p>Extensions for adding resilience strategies to the builders are provided by each strategy. Depending on the type of strategy, these extensions may be available for both <code>ResiliencePipelineBuilder</code> and <code>ResiliencePipelineBuilder&lt;T&gt;</code> or just one of them. Proactive strategies like timeout or rate limiter are available for both types of builders, while specialized reactive strategies are only available for <code>ResiliencePipelineBuilder&lt;T&gt;</code>. Adding multiple resilience strategies is supported.</p>
+<p>Extensions for adding resilience strategies to the builders are provided by each strategy. Depending on the type of strategy, these extensions may be available for both <code>ResiliencePipelineBuilder</code> and <code>ResiliencePipelineBuilder&lt;T&gt;</code> or just for the latter one. Adding multiple resilience strategies is supported.</p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th style="text-align: center;"><code>ResiliencePipelineBuilder</code></th>
+<th style="text-align: center;"><code>ResiliencePipelineBuilder&lt;T&gt;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Circuit Breaker</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Fallback</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Hedging</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Rate Limiter</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Retry</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Timeout</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table>
 <p>Each resilience strategy provides:</p>
 <ul>
 <li>Extensions for the resilience strategy builders.</li>
@@ -174,7 +222,7 @@
 <p>Setting up the predicate can be accomplished in the following ways:</p>
 <ul>
 <li><strong>Manually setting the predicate</strong>: Directly configure the predicate. The advised approach involves using <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/operators/switch-expression">switch expressions</a> for maximum flexibility, and also allows the incorporation of asynchronous predicates.</li>
-<li><strong>Employing <code>PredicateBuilder</code></strong>: The <code>PredicateBuilder</code> class provides a more straight-forward method to configure the predicates, akin to predicate setups in earlier Polly versions.</li>
+<li><strong>Employing <code>PredicateBuilder</code></strong>: The <code>PredicateBuilder{&lt;TResult&gt;}</code> classes provide a more straight-forward method to configure the predicates, akin to predicate setups in earlier Polly versions.</li>
 </ul>
 <p>The examples below illustrate these:</p>
 <h3 id="predicates">Predicates</h3>
@@ -184,9 +232,6 @@
     // For greater flexibility, you can directly use the ShouldHandle delegate with switch expressions.
     ShouldHandle = args =&gt; args.Outcome switch
     {
-        // Strategies may offer rich arguments for result handling.
-        // For instance, the retry strategy exposes the number of attempts made.
-        _ when args.AttemptNumber &gt; 3 =&gt; PredicateResult.False(),
         { Exception: HttpRequestException } =&gt; PredicateResult.True(),
         { Exception: TimeoutRejectedException } =&gt; PredicateResult.True(), // You can handle multiple exceptions
         { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode =&gt; PredicateResult.True(),
@@ -197,11 +242,20 @@
 <!-- endSnippet -->
 <p>Notes from the preceding example:</p>
 <ul>
-<li>Switch expressions are used to determine whether to retry on not.</li>
+<li>Switch expressions are used to determine whether to retry or not.</li>
 <li><code>PredicateResult.True()</code> is a shorthand for <code>new ValueTask&lt;bool&gt;(true)</code>.</li>
-<li><code>ShouldHandle</code> predicates are asynchronous and use the type <code>Func&lt;Args&lt;TResult&gt;, ValueTask&lt;bool&gt;&gt;</code>. The <code>Args&lt;TResult&gt;</code> acts as a placeholder, and each strategy defines its own arguments.</li>
+<li><code>ShouldHandle</code> predicates are asynchronous and use the type <code>Func&lt;Args&lt;TResult&gt;, ValueTask&lt;bool&gt;&gt;</code>.
+<ul>
+<li>The <code>Args&lt;TResult&gt;</code> acts as a placeholder, and each strategy defines its own arguments.</li>
+</ul>
+</li>
 <li>Multiple exceptions can be handled using switch expressions.</li>
 </ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The <code>args</code> parameter of the <code>ShouldHandle</code> allows read-only access to strategy specific information.
+For example in case of retry you can access the <code>AttemptNumber</code>, as well as the <code>Outcome</code> and <code>Context</code>.</p>
+</div>
 <h3 id="asynchronous-predicates">Asynchronous predicates</h3>
 <p>You can also use asynchronous delegates for more advanced scenarios, such as retrying based on the response body:</p>
 <!-- snippet: should-handle-manual-async -->
