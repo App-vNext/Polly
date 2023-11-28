@@ -98,7 +98,7 @@ Notes from the preceding example:
 
 > [!NOTE]
 > The `args` parameter of the `ShouldHandle` allows read-only access to strategy specific information.
-> For example in case of retry you can assess the `AttemptNumber`, as well as the `Outcome` and `Context`.
+> For example in case of retry you can access the `AttemptNumber`, as well as the `Outcome` and `Context`.
 
 ### Asynchronous predicates
 
