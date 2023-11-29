@@ -505,37 +505,36 @@ await uriToCbMappings[downstream1Uri].ExecuteAsync(CallXYZOnDownstream1, Cancell
 
 ✅ DO
 
-Use named and typed `HttpClient`s:
+Use `` `Microsoft.Extensions.Http.Resilience` package a
+Use named `HttpClient`s and then call `AddResilienceHandler` extension that is included in the [`Microsoft.Extensions.Http.Resilience`](https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience) package.
 
+<!-- snippet: circuit-breaker-pattern-cb-per-endpoint -->
 ```cs
-foreach (string uri in uris)
-{
-    builder.Services
-      .AddHttpClient<IResilientClient, ResilientClient>(uri, client => client.BaseAddress = new Uri(uri))
-      .AddPolicyHandler(GetCircuitBreaker().AsAsyncPolicy<HttpResponseMessage>());
-}
-
-...
-private const string serviceUrl = "https://downstream1.com";
-public Downstream1Client(
-   IHttpClientFactory namedClientFactory,
-   ITypedHttpClientFactory<ResilientClient> typedClientFactory)
-{
-    var namedClient = namedClientFactory.CreateClient(serviceUrl);
-    var namedTypedClient = typedClientFactory.CreateClient(namedClient);
-    ...
-}
+services
+  .AddHttpClient("my-client")
+  .AddResilienceHandler("circuit-breaker", builder =>
+  {
+      builder.AddCircuitBreaker(new());
+  })
+  .SelectPipelineByAuthority(); // This call ensures that circuit breaker is cached by each URL authority
 ```
+<!-- endSnippet -->
+
+And then use it:
+
+<!-- snippet: circuit-breaker-pattern-cb-per-endpoint-usage -->
+```cs
+HttpClient client = httpClientFactory.CreateClient("my-client");
+
+await client.GetAsync(new Uri("https://downstream1.com/some-path"));
+```
+<!-- endSnippet -->
 
 **Reasoning**:
 
-- The `HttpClient` integrates with Circuit Breaker during startup.
+- The `HttpClient` integrates with Circuit Breaker during startup by using the `AddResilienceHandler` extension.
 - There's no need to call `ExecuteAsync()` directly. The `DelegatingHandler` handles it automatically.
-
-> [!NOTE]
-> The above sample code used the `AsAsyncPolicy<HttpResponseMessage>()` method to convert the `ResiliencePipeline<HttpResponseMessage>` to `IAsyncPolicy<HttpResponseMessage>`.
-> It is required because the `AddPolicyHandler()` method anticipates an `IAsyncPolicy<HttpResponse>` parameter.
-> Please be aware that, later an `AddResilienceHandler()` will be introduced in the `Microsoft.Extensions.Http.Resilience` package which is the successor of the `Microsoft.Extensions.Http.Polly`.
+- By using `SelectPipelineByAuthority` extension, the resilience handler caches and assigns resilience pipeline to each authority (scheme + host + port) that is extracted from HTTP request message.
 
 ### Reducing thrown exceptions
 
