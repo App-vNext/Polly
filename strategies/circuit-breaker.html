@@ -587,36 +587,30 @@ await uriToCbMappings[downstream1Uri].ExecuteAsync(CallXYZOnDownstream1, Cancell
 <li>It's your responsibility to decorate each network call with the corresponding circuit breaker.</li>
 </ul>
 <p>✅ DO</p>
-<p>Use named and typed <code>HttpClient</code>s:</p>
-<pre><code class="lang-cs">foreach (string uri in uris)
-{
-    builder.Services
-      .AddHttpClient&lt;IResilientClient, ResilientClient&gt;(uri, client =&gt; client.BaseAddress = new Uri(uri))
-      .AddPolicyHandler(GetCircuitBreaker().AsAsyncPolicy&lt;HttpResponseMessage&gt;());
-}
-
-...
-private const string serviceUrl = &quot;https://downstream1.com&quot;;
-public Downstream1Client(
-   IHttpClientFactory namedClientFactory,
-   ITypedHttpClientFactory&lt;ResilientClient&gt; typedClientFactory)
-{
-    var namedClient = namedClientFactory.CreateClient(serviceUrl);
-    var namedTypedClient = typedClientFactory.CreateClient(namedClient);
-    ...
-}
+<p>Use named <code>HttpClient</code>s and then call <code>AddResilienceHandler</code> extension that is included in the <a href="https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience"><code>Microsoft.Extensions.Http.Resilience</code></a> package.</p>
+<!-- snippet: circuit-breaker-pattern-cb-per-endpoint -->
+<pre><code class="lang-cs">services
+  .AddHttpClient(&quot;my-client&quot;)
+  .AddResilienceHandler(&quot;circuit-breaker&quot;, builder =&gt;
+  {
+      builder.AddCircuitBreaker(new());
+  })
+  .SelectPipelineByAuthority(); // This call ensures that circuit breaker is cached by each URL authority
 </code></pre>
+<!-- endSnippet -->
+<p>And then use it:</p>
+<!-- snippet: circuit-breaker-pattern-cb-per-endpoint-usage -->
+<pre><code class="lang-cs">HttpClient client = httpClientFactory.CreateClient(&quot;my-client&quot;);
+
+await client.GetAsync(new Uri(&quot;https://downstream1.com/some-path&quot;));
+</code></pre>
+<!-- endSnippet -->
 <p><strong>Reasoning</strong>:</p>
 <ul>
-<li>The <code>HttpClient</code> integrates with Circuit Breaker during startup.</li>
+<li>The <code>HttpClient</code> integrates with Circuit Breaker during startup by using the <code>AddResilienceHandler</code> extension.</li>
 <li>There's no need to call <code>ExecuteAsync()</code> directly. The <code>DelegatingHandler</code> handles it automatically.</li>
+<li>By using the <code>SelectPipelineByAuthority</code> extension method, the resilience handler caches and assigns resilience pipeline to each authority (scheme + host + port) that is extracted from HTTP request message.</li>
 </ul>
-<div class="NOTE">
-<h5>Note</h5>
-<p>The above sample code used the <code>AsAsyncPolicy&lt;HttpResponseMessage&gt;()</code> method to convert the <code>ResiliencePipeline&lt;HttpResponseMessage&gt;</code> to <code>IAsyncPolicy&lt;HttpResponseMessage&gt;</code>.
-It is required because the <code>AddPolicyHandler()</code> method anticipates an <code>IAsyncPolicy&lt;HttpResponse&gt;</code> parameter.
-Please be aware that, later an <code>AddResilienceHandler()</code> will be introduced in the <code>Microsoft.Extensions.Http.Resilience</code> package which is the successor of the <code>Microsoft.Extensions.Http.Polly</code>.</p>
-</div>
 <h3 id="reducing-thrown-exceptions">Reducing thrown exceptions</h3>
 <p>In case of Circuit Breaker when it is either in the <code>Open</code> or <code>Isolated</code> state new requests are rejected immediately.</p>
 <p>That means the strategy will throw either a <code>BrokenCircuitException</code> or an <code>IsolatedCircuitException</code> respectively.</p>
