@@ -9,8 +9,8 @@ Cheat sheets provide easy to use code snippets for common scenarios.
 
 | Strategy | Pdf link |
 | ------------- | :-------------: |
-| Timeout | [Download](../media/Timeout-cheat-sheet.pdf) |
-| Fallback | [Download](../media/Fallback-cheat-sheet.pdf) |
+| Timeout | [Download](../media/timeout-cheat-sheet.pdf) |
+| Fallback | [Download](../media/fallback-cheat-sheet.pdf) |
 | Retry | *Coming soon* |
 | Circuit Breaker | *Coming soon* |
 | Hedging | *Coming soon* |
