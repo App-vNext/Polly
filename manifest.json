@@ -1365,6 +1365,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "community/cheat-sheets.md",
+      "output": {
+        ".html": {
+          "relative_path": "community/cheat-sheets.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "community/git-workflow.md",
       "output": {
         ".html": {
@@ -1469,6 +1479,26 @@
       "output": {
         ".html": {
           "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/Fallback-cheat-sheet.pdf",
+      "output": {
+        "resource": {
+          "relative_path": "media/Fallback-cheat-sheet.pdf"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/Timeout-cheat-sheet.pdf",
+      "output": {
+        "resource": {
+          "relative_path": "media/Timeout-cheat-sheet.pdf"
         }
       },
       "version": ""
