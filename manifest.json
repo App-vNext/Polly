@@ -1485,20 +1485,20 @@
     },
     {
       "type": "Resource",
-      "source_relative_path": "media/Fallback-cheat-sheet.pdf",
+      "source_relative_path": "media/cheat-sheet-fallback.pdf",
       "output": {
         "resource": {
-          "relative_path": "media/Fallback-cheat-sheet.pdf"
+          "relative_path": "media/cheat-sheet-fallback.pdf"
         }
       },
       "version": ""
     },
     {
       "type": "Resource",
-      "source_relative_path": "media/Timeout-cheat-sheet.pdf",
+      "source_relative_path": "media/cheat-sheet-timeout.pdf",
       "output": {
         "resource": {
-          "relative_path": "media/Timeout-cheat-sheet.pdf"
+          "relative_path": "media/cheat-sheet-timeout.pdf"
         }
       },
       "version": ""
