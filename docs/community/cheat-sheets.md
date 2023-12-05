@@ -3,7 +3,7 @@
 Cheat sheets provide easy to use code snippets for common scenarios.
 
 > [!NOTE]
-> The bellow cheat sheets are providing quick samples for the V8 API.
+> The below cheat sheets provide quick samples for the V8 API.
 
 ## Download
 
