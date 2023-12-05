@@ -55,6 +55,7 @@
     "resource": [
       {
         "files": [
+          "media/*.pdf",
           "icon.png"
         ]
       }
