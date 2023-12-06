@@ -11,7 +11,7 @@ Cheat sheets provide easy to use code snippets for common scenarios.
 | ------------- | :-------------: |
 | Timeout | [Download](../media/cheat-sheet-timeout.pdf) |
 | Fallback | [Download](../media/cheat-sheet-fallback.pdf) |
-| Retry | *Coming soon* |
-| Circuit Breaker | *Coming soon* |
+| Retry | [Download](../media/cheat-sheet-retry.pdf) |
+| Circuit Breaker | [Download](../media/cheat-sheet-circuit-breaker.pdf) |
 | Hedging | *Coming soon* |
 | Rate Limiter | *Coming soon* |
