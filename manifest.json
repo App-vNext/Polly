@@ -1485,10 +1485,30 @@
     },
     {
       "type": "Resource",
+      "source_relative_path": "media/cheat-sheet-circuit-breaker.pdf",
+      "output": {
+        "resource": {
+          "relative_path": "media/cheat-sheet-circuit-breaker.pdf"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
       "source_relative_path": "media/cheat-sheet-fallback.pdf",
       "output": {
         "resource": {
           "relative_path": "media/cheat-sheet-fallback.pdf"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/cheat-sheet-retry.pdf",
+      "output": {
+        "resource": {
+          "relative_path": "media/cheat-sheet-retry.pdf"
         }
       },
       "version": ""
