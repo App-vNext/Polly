@@ -32,8 +32,9 @@ This includes Blogs, podcasts, courses, e-books, architecture samples and videos
 
 ## Podcasts
 
-- June 2018: [DotNetRocks features Polly](https://www.dotnetrocks.com/?show=1556) as [Carl Franklin](https://twitter.com/carlfranklin) and [Richard Campbell](https://twitter.com/richcampbell) chat with [Dylan Reisenberger](https://twitter.com/softwarereisen) about policy patterns, and the new ASP NET Core 2.1 integration with `IHttpClientFactory`.
+- June 2018: [.NET Rocks features Polly](https://www.dotnetrocks.com/?show=1556) as [Carl Franklin](https://twitter.com/carlfranklin) and [Richard Campbell](https://twitter.com/richcampbell) chat with [Dylan Reisenberger](https://twitter.com/softwarereisen) about policy patterns, and the new ASP NET Core 2.1 integration with `IHttpClientFactory`.
 - April 2017: [Dylan Reisenberger](https://twitter.com/softwarereisen) sits down virtually with [Bryan Hogan](https://twitter.com/bryanjhogan) of [No Dogma Blog](https://nodogmablog.bryanhogan.net/) for an [Introduction to Polly podcast](https://nodogmapodcast.bryanhogan.net/71-dylan-reisenberger-the-polly-project/). Why do I need Polly? History of the Polly project. What do we mean by resilience and transient faults? How retry and circuit-breaker help. Exponential back-off. Stability patterns. Bulkhead isolation. Future directions (as at April 2017).
+- December 2023: [.NET Rocks - _Polly V8 with Joel Hulen and Martin Costello_](https://www.dotnetrocks.com/details/1875) - as [Carl Franklin](https://twitter.com/carlfranklin) and [Richard Campbell](https://twitter.com/richcampbell) chat with [Joel Hulen](https://github.com/joelhulen) and [Martin Costello](https://github.com/martincostello) about the release of [Polly V8](https://github.com/App-vNext/Polly/releases/tag/8.0.0).
 
 ## PluralSight course
 
