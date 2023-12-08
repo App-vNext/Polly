@@ -207,6 +207,27 @@ else
 </code></pre>
 <!-- endSnippet -->
 <p>Use <code>ExecuteOutcomeAsync(...)</code> in high-performance scenarios where you wish to avoid re-throwing exceptions. Keep in mind that Polly's resilience strategies also make use of the <code>Outcome</code> struct to prevent unnecessary exception throwing.</p>
+<h3 id="context-vs-state">Context vs State</h3>
+<p>In the previous example the <code>ExecuteOutcomeAsync</code> was called with <code>&quot;my-state&quot;</code> state object. You might wonder what's the point of the <code>state</code>, or can't we just use the <code>context</code>?</p>
+<p>The <code>state</code> object was introduced to be able to pass a parameter to the user callback without using a <a href="https://stackoverflow.com/a/428624/1064169">closure</a>.</p>
+<ul>
+<li>It allows you to access any object of the <code>ExecuteOutcomeAsync</code>'s caller method without any extra memory allocation</li>
+<li>It also enables you to use static anonymous methods</li>
+</ul>
+<p>So, it is a performance optimization tool. Of course you can pass more complex object than just a simple string like <code>(instance: this, request)</code>.</p>
+<p>While the <code>state</code> object is accessible only inside the user callback, you can use the <code>context</code> in many places.
+For example in case of Retry the <code>context</code> is accessible:</p>
+<ul>
+<li>inside the <code>ShouldHandle</code> delegate;</li>
+<li>inside the <code>OnRetry</code> delegate;</li>
+<li>inside the <code>DelayGenerator</code> delegate;</li>
+<li>through the <code>Outcome</code> property.</li>
+</ul>
+<p>As a rule of thumb:</p>
+<ul>
+<li>Use the <code>state</code> object to pass a parameter to your decorated method;</li>
+<li>Use the <code>context</code> object to exchange information between delegates of an instance of <code>XYZOptions</code> or between invocation attempts (in the case of retry or hedging strategies).</li>
+</ul>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="sequence-diagram-for-a-pipeline-with-retry-and-timeout">Sequence diagram for a pipeline with retry and timeout</h3>
 <p>Let's create the following pipeline:</p>
