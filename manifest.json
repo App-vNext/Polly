@@ -1505,6 +1505,16 @@
     },
     {
       "type": "Resource",
+      "source_relative_path": "media/cheat-sheet-hedging.pdf",
+      "output": {
+        "resource": {
+          "relative_path": "media/cheat-sheet-hedging.pdf"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
       "source_relative_path": "media/cheat-sheet-retry.pdf",
       "output": {
         "resource": {
