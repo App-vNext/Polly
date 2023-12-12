@@ -1515,6 +1515,16 @@
     },
     {
       "type": "Resource",
+      "source_relative_path": "media/cheat-sheet-rate-limiter.pdf",
+      "output": {
+        "resource": {
+          "relative_path": "media/cheat-sheet-rate-limiter.pdf"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
       "source_relative_path": "media/cheat-sheet-retry.pdf",
       "output": {
         "resource": {
