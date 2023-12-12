@@ -309,26 +309,22 @@ public class CircuitStateControllerTests
     public async Task OnActionFailureAsync_EnsureBreakDurationGeneration()
     {
         // arrange
-        using var controller = CreateController(new()
+        _options.BreakDurationGenerator = static args =>
         {
-            FailureRatio = 0,
-            MinimumThroughput = 0,
-            SamplingDuration = default,
-            BreakDuration = TimeSpan.FromMinutes(1),
-            BreakDurationGenerator = static args => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(args.FailureCount)),
-            OnClosed = null,
-            OnOpened = null,
-            OnHalfOpened = null,
-            ManualControl = null,
-            StateProvider = null
-        });
+            args.FailureCount.Should().Be(1);
+            args.FailureRate.Should().Be(0.5);
+            return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(42));
+        };
+
+        using var controller = CreateController();
 
         await TransitionToState(controller, CircuitState.Closed);
 
-        var utcNow = DateTimeOffset.MaxValue;
-
+        var utcNow = new DateTimeOffset(2023, 12, 12, 12, 34, 56, TimeSpan.Zero);
         _timeProvider.SetUtcNow(utcNow);
+
         _circuitBehavior.FailureCount.Returns(1);
+        _circuitBehavior.FailureRate.Returns(0.5);
         _circuitBehavior.When(v => v.OnActionFailure(CircuitState.Closed, out Arg.Any<bool>()))
             .Do(x => x[1] = true);
 
@@ -337,7 +333,7 @@ public class CircuitStateControllerTests
 
         // assert
         var blockedTill = GetBlockedTill(controller);
-        blockedTill.Should().Be(utcNow);
+        blockedTill.Should().Be(utcNow + TimeSpan.FromMinutes(42));
     }
 
     [InlineData(true)]
@@ -504,15 +500,6 @@ public class CircuitStateControllerTests
         _options.OnHalfOpened,
         _circuitBehavior,
         _timeProvider,
-        TestUtilities.CreateResilienceTelemetry(_telemetryListener));
-
-    private CircuitStateController<int> CreateController(CircuitBreakerStrategyOptions<int> options) => new(
-        options.BreakDuration,
-        options.OnOpened,
-        options.OnClosed,
-        options.OnHalfOpened,
-        _circuitBehavior,
-        _timeProvider,
         TestUtilities.CreateResilienceTelemetry(_telemetryListener),
-        options.BreakDurationGenerator);
+        _options.BreakDurationGenerator);
 }
