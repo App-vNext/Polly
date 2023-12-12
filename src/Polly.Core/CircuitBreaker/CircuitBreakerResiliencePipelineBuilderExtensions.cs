@@ -85,7 +85,8 @@ public static class CircuitBreakerResiliencePipelineBuilderExtensions
             options.OnHalfOpened,
             behavior,
             context.TimeProvider,
-            context.Telemetry);
+            context.Telemetry,
+            options.BreakDurationGenerator);
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
         return new CircuitBreakerResilienceStrategy<TResult>(
