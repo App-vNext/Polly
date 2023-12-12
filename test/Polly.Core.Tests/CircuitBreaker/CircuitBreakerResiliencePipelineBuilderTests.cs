@@ -68,12 +68,14 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         int closed = 0;
         int halfOpened = 0;
 
+        var breakDuration = TimeSpan.FromSeconds(1);
+
         var options = new CircuitBreakerStrategyOptions
         {
             FailureRatio = 0.5,
             MinimumThroughput = 10,
             SamplingDuration = TimeSpan.FromSeconds(10),
-            BreakDuration = TimeSpan.FromSeconds(1),
+            BreakDuration = breakDuration,
             ShouldHandle = args => new ValueTask<bool>(args.Outcome.Result is -1),
             OnOpened = _ => { opened++; return default; },
             OnClosed = _ => { closed++; return default; },
@@ -95,7 +97,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
 
         // Circuit Half Opened
-        timeProvider.Advance(options.BreakDuration);
+        timeProvider.Advance(breakDuration);
         strategy.Execute(_ => -1);
         Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
         opened.Should().Be(2);
@@ -103,7 +105,59 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         closed.Should().Be(0);
 
         // Now close it
-        timeProvider.Advance(options.BreakDuration);
+        timeProvider.Advance(breakDuration);
+        strategy.Execute(_ => 0);
+        opened.Should().Be(2);
+        halfOpened.Should().Be(2);
+        closed.Should().Be(1);
+    }
+
+    [Fact]
+    public void AddCircuitBreaker_IntegrationTest_WithBreakDurationGenerator()
+    {
+        int opened = 0;
+        int closed = 0;
+        int halfOpened = 0;
+
+        var breakDuration = TimeSpan.FromSeconds(1);
+
+        var options = new CircuitBreakerStrategyOptions
+        {
+            FailureRatio = 0.5,
+            MinimumThroughput = 10,
+            SamplingDuration = TimeSpan.FromSeconds(10),
+            BreakDuration = TimeSpan.FromSeconds(30), // Intentionally long to check it isn't used
+            BreakDurationGenerator = (_) => new ValueTask<TimeSpan>(breakDuration),
+            ShouldHandle = args => new ValueTask<bool>(args.Outcome.Result is -1),
+            OnOpened = _ => { opened++; return default; },
+            OnClosed = _ => { closed++; return default; },
+            OnHalfOpened = (_) => { halfOpened++; return default; }
+        };
+
+        var timeProvider = new FakeTimeProvider();
+        var strategy = new ResiliencePipelineBuilder { TimeProvider = timeProvider }.AddCircuitBreaker(options).Build();
+
+        for (int i = 0; i < 10; i++)
+        {
+            strategy.Execute(_ => -1);
+        }
+
+        // Circuit opened
+        opened.Should().Be(1);
+        halfOpened.Should().Be(0);
+        closed.Should().Be(0);
+        Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
+
+        // Circuit Half Opened
+        timeProvider.Advance(breakDuration);
+        strategy.Execute(_ => -1);
+        Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
+        opened.Should().Be(2);
+        halfOpened.Should().Be(1);
+        closed.Should().Be(0);
+
+        // Now close it
+        timeProvider.Advance(breakDuration);
         strategy.Execute(_ => 0);
         opened.Should().Be(2);
         halfOpened.Should().Be(2);
