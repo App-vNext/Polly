@@ -115,7 +115,7 @@ The `OnTimeout` user provided delegate is called just before the strategy throws
 
 So, what is the purpose of the `OnTimeout` in case of static timeout settings?
 
-The `OnTimeout` can be useful when you define a resilience pipeline which consists of multiple strategies. Like you have a timeout as the inner and a retry as the outer strategy. If the retry is defined to trigger for `TimeoutRejectedException` that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notified about the fact that a timeout has occurred your have to provide a delegate to the `OnTimeout` property.
+The `OnTimeout` can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner, and a retry as the outer strategy. If the retry is defined to handle for `TimeoutRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that a timeout has occurred, you have to provide a delegate to the `OnTimeout` property.
 
 ## Defaults
 
