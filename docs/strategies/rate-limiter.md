@@ -114,7 +114,7 @@ The `OnRejected` user provided delegate is called just before the strategy throw
 
 So, what is the purpose of the `OnRejected`?
 
-The `OnRejected` can be useful when you define a resilience pipeline which consists of multiple strategies. Like you have a rate limiter as the inner and a retry as the outer strategy. If the retry is defined to trigger for `RateLimiterRejectedException` that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notify about the fact that the rate limit has been exceeded your have to provide a delegate to the `OnRejected` property.
+The `OnRejected` can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner, and a retry as the outer strategy. If the retry is defined to handle `RateLimiterRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notify about the fact that the rate limit has been exceeded, your have to provide a delegate to the `OnRejected` property.
 
 ## Defaults
 
