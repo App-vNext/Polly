@@ -107,14 +107,14 @@ catch (RateLimiterRejectedException)
 ```
 <!-- endSnippet -->
 
-The `OnRejected` user provided delegate is called just before the strategy throws the `RateLimiterRejectedException`. This delegate receives a parameter which allows you to access the `Context` object as well as the `Lease`:
+The `OnRejected` user-provided delegate is called just before the strategy throws the `RateLimiterRejectedException`. This delegate receives a parameter which allows you to access the `Context` object as well as the `Lease`:
 
 - Accessing the `Context` is also possible via a different `Execute{Async}` overload.
-- Accessing the rejected `Lease` can be useful in really special scenarios.
+- Accessing the rejected `Lease` can be useful in certain scenarios.
 
 So, what is the purpose of the `OnRejected`?
 
-The `OnRejected` can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner, and a retry as the outer strategy. If the retry is defined to handle `RateLimiterRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the `OnRejected` property.
+The `OnRejected` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `RateLimiterRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the `OnRejected` property.
 
 ## Defaults
 
