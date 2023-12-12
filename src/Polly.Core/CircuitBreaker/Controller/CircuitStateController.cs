@@ -32,7 +32,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         CircuitBehavior behavior,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry,
-        Func<BreakDurationGeneratorArguments, ValueTask<TimeSpan>>? breakDurationGenerator = null)
+        Func<BreakDurationGeneratorArguments, ValueTask<TimeSpan>>? breakDurationGenerator)
 #pragma warning restore S107
     {
         _breakDuration = breakDuration;
