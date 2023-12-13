@@ -148,6 +148,49 @@ catch (RateLimiterRejectedException ex)
 }
 </code></pre>
 <!-- endSnippet -->
+<h3 id="failure-handling">Failure handling</h3>
+<p>It might not be obvious at the first glance what is the difference between these two techniques:</p>
+<!-- snippet: rate-limiter-handling-failure -->
+<pre><code class="lang-cs">var withOnRejected = new ResiliencePipelineBuilder()
+    .AddRateLimiter(new RateLimiterStrategyOptions
+    {
+        DefaultRateLimiterOptions = new ConcurrencyLimiterOptions
+        {
+            PermitLimit = 10
+        },
+        OnRejected = args =&gt;
+        {
+            Console.WriteLine(&quot;Rate limit has been exceeded&quot;);
+            return default;
+        }
+    }).Build();
+
+var withoutOnRejected = new ResiliencePipelineBuilder()
+    .AddRateLimiter(new RateLimiterStrategyOptions
+    {
+        DefaultRateLimiterOptions = new ConcurrencyLimiterOptions
+        {
+            PermitLimit = 10
+        }
+    }).Build();
+
+try
+{
+    await withoutOnRejected.ExecuteAsync(async ct =&gt; await TextSearchAsync(query, ct), CancellationToken.None);
+}
+catch (RateLimiterRejectedException)
+{
+    Console.WriteLine(&quot;Rate limit has been exceeded&quot;);
+}
+</code></pre>
+<!-- endSnippet -->
+<p>The <code>OnRejected</code> user-provided delegate is called just before the strategy throws the <code>RateLimiterRejectedException</code>. This delegate receives a parameter which allows you to access the <code>Context</code> object as well as the <code>Lease</code>:</p>
+<ul>
+<li>Accessing the <code>Context</code> is also possible via a different <code>Execute{Async}</code> overload.</li>
+<li>Accessing the rejected <code>Lease</code> can be useful in certain scenarios.</li>
+</ul>
+<p>So, what is the purpose of the <code>OnRejected</code>?</p>
+<p>The <code>OnRejected</code> delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle <code>RateLimiterRejectedException</code>, that means the <code>Execute{Async}</code> may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the <code>OnRejected</code> property.</p>
 <h2 id="defaults">Defaults</h2>
 <table>
 <thead>

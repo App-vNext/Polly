@@ -156,6 +156,43 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
       cancellationToken);
 </code></pre>
 <!-- endSnippet -->
+<h3 id="failure-handling">Failure handling</h3>
+<p>It might not be obvious at the first glance what is the difference between these two techniques:</p>
+<!-- snippet: timeout-handling-failure -->
+<pre><code class="lang-cs">var withOnTimeout = new ResiliencePipelineBuilder()
+    .AddTimeout(new TimeoutStrategyOptions
+    {
+        Timeout = TimeSpan.FromSeconds(2),
+        OnTimeout = args =&gt;
+        {
+            Console.WriteLine(&quot;Timeout limit has been exceeded&quot;);
+            return default;
+        }
+    }).Build();
+
+var withoutOnTimeout = new ResiliencePipelineBuilder()
+    .AddTimeout(new TimeoutStrategyOptions
+    {
+        Timeout = TimeSpan.FromSeconds(2)
+    }).Build();
+
+try
+{
+    await withoutOnTimeout.ExecuteAsync(UserDelegate, CancellationToken.None);
+}
+catch (TimeoutRejectedException)
+{
+    Console.WriteLine(&quot;Timeout limit has been exceeded&quot;);
+}
+</code></pre>
+<!-- endSnippet -->
+<p>The <code>OnTimeout</code> user-provided delegate is called just before the strategy throws the <code>TimeoutRejectedException</code>. This delegate receives a parameter which allows you to access the <code>Context</code> object as well as the <code>Timeout</code>:</p>
+<ul>
+<li>Accessing the <code>Context</code> is also possible via a different <code>Execute{Async}</code> overload.</li>
+<li>Accessing the <code>Timeout</code> can be useful if you are using the <code>TimeoutGenerator</code> property rather than the <code>Timeout</code> property.</li>
+</ul>
+<p>So, what is the purpose of the <code>OnTimeout</code> in case of static timeout settings?</p>
+<p>The <code>OnTimeout</code> delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle <code>TimeoutRejectedException</code>, that means the <code>Execute{Async}</code> may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that a timeout has occurred, you have to provide a delegate to the <code>OnTimeout</code> property.</p>
 <h2 id="defaults">Defaults</h2>
 <table>
 <thead>
