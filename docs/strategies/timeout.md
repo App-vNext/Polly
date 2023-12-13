@@ -74,6 +74,49 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
 ```
 <!-- endSnippet -->
 
+### Failure handling
+
+It might not be obvious at the first glance what is the difference between these two techniques:
+
+<!-- snippet: timeout-handling-failure -->
+```cs
+var withOnTimeout = new ResiliencePipelineBuilder()
+    .AddTimeout(new TimeoutStrategyOptions
+    {
+        Timeout = TimeSpan.FromSeconds(2),
+        OnTimeout = args =>
+        {
+            Console.WriteLine("Timeout limit has been exceeded");
+            return default;
+        }
+    }).Build();
+
+var withoutOnTimeout = new ResiliencePipelineBuilder()
+    .AddTimeout(new TimeoutStrategyOptions
+    {
+        Timeout = TimeSpan.FromSeconds(2)
+    }).Build();
+
+try
+{
+    await withoutOnTimeout.ExecuteAsync(UserDelegate, CancellationToken.None);
+}
+catch (TimeoutRejectedException)
+{
+    Console.WriteLine("Timeout limit has been exceeded");
+}
+```
+<!-- endSnippet -->
+
+The `OnTimeout` user-provided delegate is called just before the strategy throws the `TimeoutRejectedException`. This delegate receives a parameter which allows you to access the `Context` object as well as the `Timeout`:
+
+- Accessing the `Context` is also possible via a different `Execute{Async}` overload.
+- Accessing the `Timeout` can be useful if you are using the `TimeoutGenerator` property rather than the `Timeout` property.
+
+So, what is the purpose of the `OnTimeout` in case of static timeout settings?
+
+The `OnTimeout` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `TimeoutRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that a timeout has occurred, you have to provide a delegate to the `OnTimeout` property.
+
 ## Defaults
 
 | Property           | Default Value | Description                                  |
