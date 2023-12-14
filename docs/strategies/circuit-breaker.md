@@ -310,7 +310,7 @@ sequenceDiagram
 
 #### Complex: dynamic break duration sequence diagram
 
-This sequence diagram illustrates the behavior of a circuit breaker using a BreakDurationGenerator. The generator dynamically calculates the break duration based on specific criteria, such as the number of failures
+This sequence diagram illustrates the behavior of a circuit breaker using a `BreakDurationGenerator`. The generator dynamically calculates the break duration based on specific criteria, such as the number of failures:
 
 ```mermaid
 sequenceDiagram
