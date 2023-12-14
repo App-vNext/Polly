@@ -96,6 +96,7 @@ jobs:
 
     - name: Upload signing file list
       uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
+      if: matrix.os_name == 'windows'
       with:
         name: signing-config
         path: eng/signing
