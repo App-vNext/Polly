@@ -29,9 +29,6 @@ internal static class ResilienceStrategies
             // For greater flexibility, you can directly use the ShouldHandle delegate with switch expressions.
             ShouldHandle = args => args.Outcome switch
             {
-                // Strategies may offer rich arguments for result handling.
-                // For instance, the retry strategy exposes the number of attempts made.
-                _ when args.AttemptNumber > 3 => PredicateResult.False(),
                 { Exception: HttpRequestException } => PredicateResult.True(),
                 { Exception: TimeoutRejectedException } => PredicateResult.True(), // You can handle multiple exceptions
                 { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),

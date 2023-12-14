@@ -52,7 +52,9 @@ internal sealed class ReloadableComponent : PipelineComponent
             return;
         }
 
+#pragma warning disable S3878 // Arrays should not be created for params parameters
         _tokenSource = CancellationTokenSource.CreateLinkedTokenSource([.. _reloadTokens]);
+#pragma warning restore S3878 // Arrays should not be created for params parameters
         _registration = _tokenSource.Token.Register(() =>
         {
             var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
@@ -93,20 +95,20 @@ internal sealed class ReloadableComponent : PipelineComponent
         ResilienceContextPool.Shared.Return(context);
     }
 
-#pragma warning disable S2952 // Classes should "Dispose" of members from the classes' own "Dispose" methods
     private void DisposeRegistration()
     {
         _registration.Dispose();
         _tokenSource.Dispose();
     }
-#pragma warning restore S2952 // Classes should "Dispose" of members from the classes' own "Dispose" methods
 
     internal record ReloadFailedArguments(Exception Exception);
 
     internal record DisposedFailedArguments(Exception Exception);
 
 #pragma warning disable S2094 // Classes should not be empty
+#pragma warning disable S3253 // Constructor and destructor declarations should not be redundant
     internal record OnReloadArguments();
+#pragma warning restore S3253 // Constructor and destructor declarations should not be redundant
 #pragma warning restore S2094 // Classes should not be empty
 
     internal record Entry(PipelineComponent Component, List<CancellationToken> ReloadTokens, ResilienceStrategyTelemetry Telemetry);

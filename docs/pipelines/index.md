@@ -135,6 +135,30 @@ else
 
 Use `ExecuteOutcomeAsync(...)` in high-performance scenarios where you wish to avoid re-throwing exceptions. Keep in mind that Polly's resilience strategies also make use of the `Outcome` struct to prevent unnecessary exception throwing.
 
+### Context vs State
+
+In the previous example the `ExecuteOutcomeAsync` was called with `"my-state"` state object. You might wonder what's the point of the `state`, or can't we just use the `context`?
+
+The `state` object was introduced to be able to pass a parameter to the user callback without using a [closure](https://stackoverflow.com/a/428624/1064169).
+
+- It allows you to access any object of the `ExecuteOutcomeAsync`'s caller method without any extra memory allocation
+- It also enables you to use static anonymous methods
+
+So, it is a performance optimization tool. Of course you can pass more complex object than just a simple string like `(instance: this, request)`.
+
+While the `state` object is accessible only inside the user callback, you can use the `context` in many places.
+For example in case of Retry the `context` is accessible:
+
+- inside the `ShouldHandle` delegate;
+- inside the `OnRetry` delegate;
+- inside the `DelayGenerator` delegate;
+- through the `Outcome` property.
+
+As a rule of thumb:
+
+- Use the `state` object to pass a parameter to your decorated method;
+- Use the `context` object to exchange information between delegates of an instance of `XYZOptions` or between invocation attempts (in the case of retry or hedging strategies).
+
 ## Diagrams
 
 ### Sequence diagram for a pipeline with retry and timeout

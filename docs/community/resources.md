@@ -28,11 +28,13 @@ This includes Blogs, podcasts, courses, e-books, architecture samples and videos
 - [Using Polly and Flurl to improve your website](https://jeremylindsayni.wordpress.com/2019/01/01/using-polly-and-flurl-to-improve-your-website/) - by Jeremy Lindsay.
 - [Exploring the Polly.Contrib.WaitAndRetry helpers](https://hyr.mn/Polly-wait-and-retry/) - by [Ben Hyrman](https://twitter.com/hyrmn), who also wrote most of the Polly.Contrib.WaitAndRetry documentation.
 - [Retries - An interactive study of common retry methods](https://encore.dev/blog/retries) - by [Sam Rose](https://twitter.com/samwhoo)
+- [Building resilient cloud services with .NET 8](https://devblogs.microsoft.com/dotnet/building-resilient-cloud-services-with-dotnet-8/) by [Martin Tomka](https://github.com/martintmk)
 
 ## Podcasts
 
-- June 2018: [DotNetRocks features Polly](https://www.dotnetrocks.com/?show=1556) as [Carl Franklin](https://twitter.com/carlfranklin) and [Richard Campbell](https://twitter.com/richcampbell) chat with [Dylan Reisenberger](https://twitter.com/softwarereisen) about policy patterns, and the new ASP NET Core 2.1 integration with `IHttpClientFactory`.
+- June 2018: [.NET Rocks features Polly](https://www.dotnetrocks.com/?show=1556) as [Carl Franklin](https://twitter.com/carlfranklin) and [Richard Campbell](https://twitter.com/richcampbell) chat with [Dylan Reisenberger](https://twitter.com/softwarereisen) about policy patterns, and the new ASP NET Core 2.1 integration with `IHttpClientFactory`.
 - April 2017: [Dylan Reisenberger](https://twitter.com/softwarereisen) sits down virtually with [Bryan Hogan](https://twitter.com/bryanjhogan) of [No Dogma Blog](https://nodogmablog.bryanhogan.net/) for an [Introduction to Polly podcast](https://nodogmapodcast.bryanhogan.net/71-dylan-reisenberger-the-polly-project/). Why do I need Polly? History of the Polly project. What do we mean by resilience and transient faults? How retry and circuit-breaker help. Exponential back-off. Stability patterns. Bulkhead isolation. Future directions (as at April 2017).
+- December 2023: [.NET Rocks - _Polly V8 with Joel Hulen and Martin Costello_](https://www.dotnetrocks.com/details/1875) - as [Carl Franklin](https://twitter.com/carlfranklin) and [Richard Campbell](https://twitter.com/richcampbell) chat with [Joel Hulen](https://github.com/joelhulen) and [Martin Costello](https://github.com/martincostello) about the release of [Polly V8](https://github.com/App-vNext/Polly/releases/tag/8.0.0).
 
 ## PluralSight course
 
@@ -55,3 +57,4 @@ This includes Blogs, podcasts, courses, e-books, architecture samples and videos
 - In the video, [.NET Rocks Live with Jon Skeet and Bill Wagner](https://youtu.be/LCj7h7ZoHA8?t=1617), Bill Wagner discusses Polly.
 - Scott Allen discusses Polly during his [Building for Resiliency and Scale in the Cloud](https://youtu.be/SFLu6jZWXGs?t=1440) presentation at NDC.
 - [ASP.NET Community Stand-up April 24, 2018](https://youtu.be/k0Xy-5zE9to?t=12m22s): Damian Edwards, Jon Galloway and Scott Hanselman discuss Scott Hanselman's blog on [Polly with `IHttpClientFactory`](https://www.hanselman.com/blog/AddingResilienceAndTransientFaultHandlingToYourNETCoreHttpClientWithPolly.aspx) and the [Polly team documentation on `IHttpClientFactory`](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory). Interesting background discussion also on feature richness and the importance of good documentation.
+- [Ensuring Resilience with Polly - Visual Studio Toolbox Live](https://www.youtube.com/live/_cPouhmUO-A?si=07KlpPQFRnPWfym7&t=154) - [Martin Costello](https://github.com/martincostello) shows how you can use Polly, a .NET resilience and transient fault-handling library.

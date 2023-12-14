@@ -2,7 +2,7 @@
 
 Polly is a .NET resilience and transient-fault-handling library that allows developers to express resilience strategies such as Retry, Circuit Breaker, Hedging, Timeout, Rate Limiter and Fallback in a fluent and thread-safe manner.
 
-[<img align="right" src="https://github.com/dotnet/swag/raw/main/logo/dotnetfoundation_v4_small.png" width="100" />](https://www.dotnetfoundation.org/)
+[<img align="right" src="https://github.com/dotnet/swag/raw/main/logo/dotnetfoundation_v4_small.png" width="100" alt="The .NET Foundation logo" />](https://www.dotnetfoundation.org/)
 We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
 
 **Keep up to date with new feature announcements, tips & tricks, and other news through [www.thepollyproject.org](https://www.thepollyproject.org)**
@@ -42,14 +42,14 @@ You can create a `ResiliencePipeline` using the `ResiliencePipelineBuilder` clas
 
 <!-- snippet: quick-start -->
 ```cs
-// Create a instance of builder that exposes various extensions for adding resilience strategies
+// Create an instance of builder that exposes various extensions for adding resilience strategies
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions()) // Add retry using the default options
-    .AddTimeout(TimeSpan.FromSeconds(10)) // Add 10 second timeout
+    .AddTimeout(TimeSpan.FromSeconds(10)) // Add 10 seconds timeout
     .Build(); // Builds the resilience pipeline
 
 // Execute the pipeline asynchronously
-await pipeline.ExecuteAsync(static async token => { /*Your custom logic goes here */ }, cancellationToken);
+await pipeline.ExecuteAsync(static async token => { /* Your custom logic goes here */ }, cancellationToken);
 ```
 <!-- endSnippet -->
 
@@ -78,10 +78,10 @@ services.AddResiliencePipeline("my-pipeline", builder =>
 // Build the service provider
 var serviceProvider = services.BuildServiceProvider();
 
-// Retrieve ResiliencePipelineProvider that caches and dynamically creates the resilience pipelines
+// Retrieve a ResiliencePipelineProvider that dynamically creates and caches the resilience pipelines
 var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
 
-// Retrieve resilience pipeline using the name it was registered with
+// Retrieve your resilience pipeline using the name it was registered with
 ResiliencePipeline pipeline = pipelineProvider.GetPipeline("my-pipeline");
 
 // Execute the pipeline

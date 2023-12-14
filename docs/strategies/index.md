@@ -9,18 +9,34 @@ Polly categorizes resilience strategies into two main groups:
 
 ## Built-in strategies
 
-| Strategy | Reactive | Premise | AKA | How does the strategy mitigate?|
-| ------------- | --- | ------------- |:-------------: |------------- |
-|[Retry](retry.md) |Yes|Many faults are transient and may self-correct after a short delay.| *Maybe it's just a blip* |  Allows configuring automatic retries. |
-|[Circuit-breaker](circuit-breaker.md) |Yes|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | *Stop doing it if it hurts* <br/><br/>*Give that system a break* | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. |
-|[Timeout](timeout.md)|No|Beyond a certain wait, a success result is unlikely.| *Don't wait forever*  |Guarantees the caller won't have to wait beyond the timeout. |
-|[Rate Limiter](rate-limiter.md)|No|Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?*  |Constrains executions to not exceed a certain rate. |
-|[Fallback](fallback.md)|Yes|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
-|[Hedging](hedging.md)|Yes|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
+### Reactive
+
+| Strategy | Premise | AKA | How does the strategy mitigate?|
+| ------------- | ------------- |:-------------: |------------- |
+|[Retry](retry.md) |Many faults are transient and may self-correct after a short delay.| *Maybe it's just a blip* |  Allows configuring automatic retries. |
+|[Circuit-breaker](circuit-breaker.md) |When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | *Stop doing it if it hurts* <br/><br/>*Give that system a break* | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. |
+|[Fallback](fallback.md)|Things will still fail - plan what you will do when that happens.| *Degrade gracefully*  |Defines an alternative value to be returned (or action to be executed) on failure. |
+|[Hedging](hedging.md)|Things can be slow sometimes, plan what you will do when that happens.| *Hedge your bets*  | Executes parallel actions when things are slow and waits for the fastest one.  |
+
+### Proactive
+
+| Strategy | Premise | AKA | How does the strategy prevent?|
+| ------------- | ------------- |:-------------: |------------- |
+|[Timeout](timeout.md)|Beyond a certain wait, a success result is unlikely.| *Don't wait forever*  |Guarantees the caller won't have to wait beyond the timeout. |
+|[Rate Limiter](rate-limiter.md)|Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?*  |Constrains executions to not exceed a certain rate. |
 
 ## Usage
 
-Extensions for adding resilience strategies to the builders are provided by each strategy. Depending on the type of strategy, these extensions may be available for both `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>` or just one of them. Proactive strategies like timeout or rate limiter are available for both types of builders, while specialized reactive strategies are only available for `ResiliencePipelineBuilder<T>`. Adding multiple resilience strategies is supported.
+Extensions for adding resilience strategies to the builders are provided by each strategy. Depending on the type of strategy, these extensions may be available for both `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>` or just for the latter one. Adding multiple resilience strategies is supported.
+
+| Strategy | `ResiliencePipelineBuilder` | `ResiliencePipelineBuilder<T>` |
+| ------------- | :-------------: | :-------------: |
+| Circuit Breaker | ✅ | ✅ |
+| Fallback | ❌ | ✅ |
+| Hedging | ❌ | ✅ |
+| Rate Limiter | ✅ | ✅ |
+| Retry | ✅ | ✅ |
+| Timeout | ✅ | ✅ |
 
 Each resilience strategy provides:
 
@@ -50,7 +66,7 @@ Each reactive strategy provides access to the `ShouldHandle` predicate property.
 Setting up the predicate can be accomplished in the following ways:
 
 - **Manually setting the predicate**: Directly configure the predicate. The advised approach involves using [switch expressions](https://learn.microsoft.com/dotnet/csharp/language-reference/operators/switch-expression) for maximum flexibility, and also allows the incorporation of asynchronous predicates.
-- **Employing `PredicateBuilder`**: The `PredicateBuilder` class provides a more straight-forward method to configure the predicates, akin to predicate setups in earlier Polly versions.
+- **Employing `PredicateBuilder`**: The `PredicateBuilder{<TResult>}` classes provide a more straight-forward method to configure the predicates, akin to predicate setups in earlier Polly versions.
 
 The examples below illustrate these:
 
@@ -63,9 +79,6 @@ var options = new RetryStrategyOptions<HttpResponseMessage>
     // For greater flexibility, you can directly use the ShouldHandle delegate with switch expressions.
     ShouldHandle = args => args.Outcome switch
     {
-        // Strategies may offer rich arguments for result handling.
-        // For instance, the retry strategy exposes the number of attempts made.
-        _ when args.AttemptNumber > 3 => PredicateResult.False(),
         { Exception: HttpRequestException } => PredicateResult.True(),
         { Exception: TimeoutRejectedException } => PredicateResult.True(), // You can handle multiple exceptions
         { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
@@ -77,10 +90,15 @@ var options = new RetryStrategyOptions<HttpResponseMessage>
 
 Notes from the preceding example:
 
-- Switch expressions are used to determine whether to retry on not.
+- Switch expressions are used to determine whether to retry or not.
 - `PredicateResult.True()` is a shorthand for `new ValueTask<bool>(true)`.
-- `ShouldHandle` predicates are asynchronous and use the type `Func<Args<TResult>, ValueTask<bool>>`. The `Args<TResult>` acts as a placeholder, and each strategy defines its own arguments.
+- `ShouldHandle` predicates are asynchronous and use the type `Func<Args<TResult>, ValueTask<bool>>`.
+  - The `Args<TResult>` acts as a placeholder, and each strategy defines its own arguments.
 - Multiple exceptions can be handled using switch expressions.
+
+> [!NOTE]
+> The `args` parameter of the `ShouldHandle` allows read-only access to strategy specific information.
+> For example in case of retry you can access the `AttemptNumber`, as well as the `Outcome` and `Context`.
 
 ### Asynchronous predicates
 
