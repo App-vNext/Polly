@@ -308,6 +308,48 @@ sequenceDiagram
     P->>C: Propagates failure
 ```
 
+#### Complex: dynamic break duration sequence diagram
+
+This sequence diagram illustrates the behavior of a circuit breaker using a BreakDurationGenerator. The generator dynamically calculates the break duration based on specific criteria, such as the number of failures
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant CB as CircuitBreaker
+    participant BDG as BreakDurationGenerator
+    participant D as DecoratedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    Note over CB: Closed state
+    CB->>+D: Invokes
+    D->>-CB: Fails
+    Note over CB: Moves to Open state
+    CB->>+BDG: Calls Generator
+    BDG->>-CB: Returns calculated <br/> duration 
+    Note over CB: Break duration start
+    CB->>P: Propagates failure
+    P->>C: Propagates failure
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    CB-->>CB: Rejects request
+    CB->>P: Throws <br/>BrokenCircuitException
+    P->>C: Propagates exception
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    Note over CB: Break duration end
+    Note over CB: Moves to HalfOpen state
+    CB->>+D: Invokes
+    D->>-CB: Returns result
+    Note over CB: Moves to Closed state
+    CB->>P: Returns result
+    P->>C: Returns result
+```
+
 ## Resources
 
 - [Making the Netflix API More Resilient](https://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
