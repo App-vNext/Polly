@@ -126,6 +126,16 @@ var optionsComplex = new CircuitBreakerStrategyOptions
     ShouldHandle = new PredicateBuilder().Handle&lt;SomeExceptionType&gt;()
 };
 
+// Circuit breaker using BreakDurationGenerator:
+// The break duration is dynamically determined based on the properties of BreakDurationGeneratorArguments.
+var optionsBreakDurationGenerator = new CircuitBreakerStrategyOptions
+{
+    FailureRatio = 0.5,
+    SamplingDuration = TimeSpan.FromSeconds(10),
+    MinimumThroughput = 8,
+    BreakDurationGenerator = static args =&gt; new ValueTask&lt;TimeSpan&gt;(TimeSpan.FromMinutes(args.FailureCount)),
+};
+
 // Handle specific failed results for HttpResponseMessage:
 var optionsShouldHandle = new CircuitBreakerStrategyOptions&lt;HttpResponseMessage&gt;
 {
@@ -202,6 +212,11 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddCircuitBreaker(opt
 <td><code>BreakDuration</code></td>
 <td>5 seconds</td>
 <td>The time period for which the circuit will remain broken/open before attempting to reset.</td>
+</tr>
+<tr>
+<td><code>BreakDurationGenerator</code></td>
+<td><code>null</code></td>
+<td>Enables adaptive adjustment of break duration based on the current state of the circuit.</td>
 </tr>
 <tr>
 <td><code>OnClosed</code></td>
@@ -410,6 +425,44 @@ direction LR
     CB-&gt;&gt;P: Propagates failure
     P-&gt;&gt;C: Propagates failure
 </code></pre>
+<h4 id="complex-dynamic-break-duration-sequence-diagram">Complex: dynamic break duration sequence diagram</h4>
+<p>This sequence diagram illustrates the behavior of a circuit breaker using a <code>BreakDurationGenerator</code>. The generator dynamically calculates the break duration based on specific criteria, such as the number of failures:</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant CB as CircuitBreaker
+    participant BDG as BreakDurationGenerator
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    Note over CB: Closed state
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Fails
+    Note over CB: Moves to Open state
+    CB-&gt;&gt;+BDG: Calls Generator
+    BDG-&gt;&gt;-CB: Returns calculated &lt;br/&gt; duration 
+    Note over CB: Break duration start
+    CB-&gt;&gt;P: Propagates failure
+    P-&gt;&gt;C: Propagates failure
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    CB--&gt;&gt;CB: Rejects request
+    CB-&gt;&gt;P: Throws &lt;br/&gt;BrokenCircuitException
+    P-&gt;&gt;C: Propagates exception
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;CB: Calls ExecuteCore
+    Note over CB: Break duration end
+    Note over CB: Moves to HalfOpen state
+    CB-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-CB: Returns result
+    Note over CB: Moves to Closed state
+    CB-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+</code></pre>
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href="https://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html">Making the Netflix API More Resilient</a></li>
@@ -507,61 +560,6 @@ var retry = new ResiliencePipelineBuilder()
 <li>The Retry strategy fetches the sleep duration dynamically without knowing any specific knowledge about the Circuit Breaker.</li>
 <li>If adjustments are needed for the <code>BreakDuration</code>, they can be made in one place.</li>
 </ul>
-<h3 id="using-different-duration-for-breaks">Using different duration for breaks</h3>
-<p>In the case of Retry you can specify dynamically the sleep duration via the <code>DelayGenerator</code>.</p>
-<p>In the case of Circuit Breaker the <code>BreakDuration</code> is considered constant (can't be changed between breaks).</p>
-<p>❌ DON'T</p>
-<p>Use <code>Task.Delay</code> inside <code>OnOpened</code>:</p>
-<!-- snippet: circuit-breaker-anti-pattern-sleep-duration-generator -->
-<pre><code class="lang-cs">static IEnumerable&lt;TimeSpan&gt; GetSleepDuration()
-{
-    for (int i = 1; i &lt; 10; i++)
-    {
-        yield return TimeSpan.FromSeconds(i);
-    }
-}
-
-var sleepDurationProvider = GetSleepDuration().GetEnumerator();
-sleepDurationProvider.MoveNext();
-
-var circuitBreaker = new ResiliencePipelineBuilder()
-    .AddCircuitBreaker(new()
-    {
-        ShouldHandle = new PredicateBuilder().Handle&lt;HttpRequestException&gt;(),
-        BreakDuration = TimeSpan.FromSeconds(0.5),
-        OnOpened = async args =&gt;
-        {
-            await Task.Delay(sleepDurationProvider.Current);
-            sleepDurationProvider.MoveNext();
-        }
-
-    })
-    .Build();
-</code></pre>
-<!-- endSnippet -->
-<p><strong>Reasoning</strong>:</p>
-<ul>
-<li>The minimum break duration value is half a second. This implies that each sleep lasts for <code>sleepDurationProvider.Current</code> plus an additional half a second.</li>
-<li>One might think that setting the <code>BreakDuration</code> to <code>sleepDurationProvider.Current</code> would address this, but it doesn't. This is because the <code>BreakDuration</code> is established only once and isn't re-assessed during each break.</li>
-</ul>
-<!-- snippet: circuit-breaker-anti-pattern-sleep-duration-generator-ext -->
-<pre><code class="lang-cs">circuitBreaker = new ResiliencePipelineBuilder()
-    .AddCircuitBreaker(new()
-    {
-        ShouldHandle = new PredicateBuilder().Handle&lt;HttpRequestException&gt;(),
-        BreakDuration = sleepDurationProvider.Current,
-        OnOpened = async args =&gt;
-        {
-            Console.WriteLine($&quot;Break: {sleepDurationProvider.Current}&quot;);
-            sleepDurationProvider.MoveNext();
-        }
-
-    })
-    .Build();
-</code></pre>
-<!-- endSnippet -->
-<p>✅ DO</p>
-<p>The <code>CircuitBreakerStrategyOptions</code> currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.</p>
 <h3 id="wrapping-each-endpoint-with-a-circuit-breaker">Wrapping each endpoint with a circuit breaker</h3>
 <p>Imagine that you have to call N number of services via <code>HttpClient</code>s.
 You want to decorate all downstream calls with the service-aware Circuit Breaker.</p>
