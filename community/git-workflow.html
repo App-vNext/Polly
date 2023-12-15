@@ -95,6 +95,15 @@
 <li>Create a new local branch for your changes (<code>git checkout -b my-branch</code>).</li>
 <li>Work on your changes</li>
 <li>Rebase if required (see below)</li>
+<li>Check that the solution builds successfully by running <code>dotnet test</code> from the root of the repository
+<ul>
+<li>There should be no errors or warnings</li>
+<li>All tests should pass</li>
+<li>The code coverage level is maintained</li>
+<li>Bug fixes should include at least one test where practical</li>
+</ul>
+</li>
+<li>If adding new functionality, or checking existing behaviour, check whether there is any documentation that should be added or updated</li>
 <li>Push the branch up to GitHub (<code>git push origin my-branch</code>)</li>
 <li><a href="https://docs.github.com/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request">Create a Pull Request</a> on GitHub - the PR should target (have as base branch) the default branch (i.e. <code>main</code>).</li>
 </ol>
