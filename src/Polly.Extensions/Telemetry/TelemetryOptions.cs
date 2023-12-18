@@ -48,4 +48,36 @@ public class TelemetryOptions
         HttpResponseMessage response => (int)response.StatusCode,
         _ => result,
     };
+
+    /// <summary>
+    /// Gets or sets the resilience event severity provider.
+    /// </summary>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
+    public Func<ResilienceEvent, ResilienceEventSeverity>? ResilienceEventSeverityProvider { get; set; }
+
+    internal static TelemetryOptions Combine(params TelemetryOptions[] options)
+    {
+        var result = new TelemetryOptions
+        {
+            LoggerFactory = options
+                .Select(v => v.LoggerFactory)
+                .FirstOrDefault(v => v is not null)!,
+            ResultFormatter = options
+                .Select(v => v.ResultFormatter)
+                .FirstOrDefault(v => v is not null)!,
+            ResilienceEventSeverityProvider = options
+                .Select(v => v.ResilienceEventSeverityProvider)
+                .FirstOrDefault(v => v is not null),
+        };
+
+        foreach (TelemetryOptions o in options)
+        {
+            ((List<TelemetryListener>)result.TelemetryListeners).AddRange(o.TelemetryListeners);
+            ((List<MeteringEnricher>)result.MeteringEnrichers).AddRange(o.MeteringEnrichers);
+        }
+
+        return result;
+    }
 }

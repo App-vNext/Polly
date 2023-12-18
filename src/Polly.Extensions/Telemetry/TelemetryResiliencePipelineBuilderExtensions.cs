@@ -55,4 +55,28 @@ public static class TelemetryResiliencePipelineBuilderExtensions
 
         return builder;
     }
+
+    /// <summary>
+    /// Enables telemetry for this builder by combining multiple <see cref="TelemetryOptions"/>.
+    /// </summary>
+    /// <typeparam name="TBuilder">The builder type.</typeparam>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="options1">The first resilience telemetry options.</param>
+    /// <param name="options2">The second resilience telemetry options.</param>
+    /// <returns>The builder instance with the telemetry enabled.</returns>
+    /// <remarks>
+    /// By enabling telemetry, the resilience pipeline will log and meter all resilience events.
+    /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the composite strategy.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/>, <paramref name="options1"/> or <paramref name="options2"/> is <see langword="null"/>.</exception>
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TelemetryOptions))]
+    public static TBuilder ConfigureTelemetry<TBuilder>(this TBuilder builder, TelemetryOptions options1, TelemetryOptions options2)
+        where TBuilder : ResiliencePipelineBuilderBase
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(options1);
+        Guard.NotNull(options2);
+
+        return builder.ConfigureTelemetry(TelemetryOptions.Combine(options1, options2));
+    }
 }

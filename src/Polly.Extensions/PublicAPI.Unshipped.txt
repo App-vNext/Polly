@@ -1,1 +1,4 @@
 ﻿#nullable enable
+Polly.Telemetry.TelemetryOptions.ResilienceEventSeverityProvider.get -> System.Func<Polly.Telemetry.ResilienceEvent, Polly.Telemetry.ResilienceEventSeverity>?
+Polly.Telemetry.TelemetryOptions.ResilienceEventSeverityProvider.set -> void
+static Polly.TelemetryResiliencePipelineBuilderExtensions.ConfigureTelemetry<TBuilder>(this TBuilder! builder, Polly.Telemetry.TelemetryOptions! options1, Polly.Telemetry.TelemetryOptions! options2) -> TBuilder!
