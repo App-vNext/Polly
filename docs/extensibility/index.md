@@ -24,7 +24,7 @@ The strategy options contain properties of following types:
 
 ### Component diagram
 
-This diagram depicts how the built-in types interact with the custom built types (with green border)
+This diagram depicts how the built-in types interact with custom built types (which have a green border)
 
 ```mermaid
 flowchart
@@ -45,11 +45,11 @@ flowchart
 
     options -- is passed to AddXYZ  --> builder
     builder -- registers a strategy --> pipeline
-    options -- configures behavior--> strategy
+    options -- configures behavior --> strategy
 
     pipeline -- calls the execution --> strategy
 
-    strategy -- creates for notification --> args
+    strategy -- creates for events --> args
     strategy -- uses for reporting --> telemetry
 
     %% a workaround to add note (currently only sequence diagram supports notes)
