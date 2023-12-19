@@ -24,21 +24,14 @@ The strategy options contain properties of following types:
 
 ### Component diagram
 
-This diagram depicts how the built-in types interact with custom built types (which have a green border)
+This diagram depicts how the built-in types (hexagon shaped) interact with custom built types (rectangle shaped):
 
 ```mermaid
 flowchart
-    options{{XYZStrategyOptions}}
-    style options stroke:#0f0
-
-    builder{{XYZResilienceStrategyBuilderExtensions}}
-    style builder stroke:#0f0
-
-    strategy{{XYZResilienceStrategy}}
-    style strategy stroke:#0f0
-
-    args{{XYZEventArguments}}
-    style args stroke:#0f0
+    options[XYZStrategyOptions]
+    builder[XYZResilienceStrategyBuilderExtensions]
+    strategy[XYZResilienceStrategy]
+    args[XYZEventArguments]
 
     telemetry{{ResilienceStrategyTelemetry}}
     pipeline{{ResiliencePipeline}}
@@ -54,7 +47,7 @@ flowchart
 
     %% a workaround to add note (currently only sequence diagram supports notes)
     %% https://github.com/mermaid-js/mermaid/issues/821
-    args -.- note[The strategy calls<br/>the OnXYZ delegate of<br/> the options with this object.]
+    args -.- note(The strategy calls<br/>the OnXYZ delegate of<br/> the options with this object.)
 ```
 
 ## Delegates
