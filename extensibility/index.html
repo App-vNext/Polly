@@ -95,8 +95,9 @@
 <h2 id="basics-of-extensibility">Basics of extensibility</h2>
 <p>Regardless of whether the strategy is reactive or proactive, every new resilience strategy should include the following components:</p>
 <ul>
-<li>Options detailing the strategy's configuration. These should inherit from <a class="xref" href="../api/Polly.ResilienceStrategyOptions.html"><code>ResilienceStrategyOptions</code></a>.</li>
-<li>Extensions for <code>ResiliencePipelineBuilder</code> or <code>ResiliencePipelineBuilder&lt;T&gt;</code>.</li>
+<li>The strategy itself which should inherit from <a class="xref" href="../api/Polly.ResilienceStrategy.html"><code>ResilienceStrategy</code></a></li>
+<li>Options detailing the strategy's configuration. This should inherit from <a class="xref" href="../api/Polly.ResilienceStrategyOptions.html"><code>ResilienceStrategyOptions</code></a>.</li>
+<li>Extensions for <code>ResiliencePipelineBuilder</code> or <code>ResiliencePipelineBuilder&lt;T&gt;</code> to register the strategy into the pipeline.</li>
 <li>Custom argument types for delegates that contain information about a specific event.</li>
 </ul>
 <p>The strategy options contain properties of following types:</p>
@@ -105,6 +106,30 @@
 <li><strong>Delegates</strong>: For example when a strategy needs to raise an event, or generate a value. In general, the delegates should by asynchronous.</li>
 <li><strong>Arguments</strong>: Used by the delegates to pass the information to their consumers.</li>
 </ul>
+<h3 id="component-diagram">Component diagram</h3>
+<p>This diagram depicts how the built-in types (hexagon shaped) interact with custom built types (rectangle shaped):</p>
+<pre><code class="lang-mermaid">flowchart
+    options[XYZStrategyOptions]
+    builder[XYZResilienceStrategyBuilderExtensions]
+    strategy[XYZResilienceStrategy]
+    args[XYZEventArguments]
+
+    telemetry{{ResilienceStrategyTelemetry}}
+    pipeline{{ResiliencePipeline}}
+
+    options -- is passed to AddXYZ  --&gt; builder
+    builder -- registers a strategy --&gt; pipeline
+    options -- configures behavior --&gt; strategy
+
+    pipeline -- calls the execution --&gt; strategy
+
+    strategy -- creates for events --&gt; args
+    strategy -- uses for reporting --&gt; telemetry
+
+    %% a workaround to add note (currently only sequence diagram supports notes)
+    %% https://github.com/mermaid-js/mermaid/issues/821
+    args -.- note(The strategy calls&lt;br/&gt;the OnXYZ delegate of&lt;br/&gt; the options with this object.)
+</code></pre>
 <h2 id="delegates">Delegates</h2>
 <p>Individual resilience strategies make use of several delegate types:</p>
 <ul>
@@ -168,9 +193,9 @@ new ResiliencePipelineBuilder&lt;string&gt;()
 <!-- snippet: ext-proactive-args -->
 <pre><code class="lang-cs">// Structs for arguments encapsulate details about specific events within the resilience strategy.
 // Relevant properties to the event can be exposed. In this event, the actual execution time and the exceeded threshold are included.
-public readonly struct ThresholdExceededArguments
+public readonly struct OnThresholdExceededArguments
 {
-    public ThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
+    public OnThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
     {
         Context = context;
         Threshold = threshold;
