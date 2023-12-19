@@ -11,7 +11,7 @@ var pipeline = new ResiliencePipelineBuilder()
     .AddTiming(new TimingStrategyOptions
     {
         Threshold = TimeSpan.FromSeconds(1),
-        ThresholdExceeded = args =>
+        OnThresholdExceeded = args =>
         {
             Console.WriteLine("Execution threshold exceeded!");
             return default;

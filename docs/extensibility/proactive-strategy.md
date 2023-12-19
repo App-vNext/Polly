@@ -13,17 +13,17 @@ Proactive resilience strategies are derived from the [`ResilienceStrategy`](xref
 internal sealed class TimingResilienceStrategy : ResilienceStrategy
 {
     private readonly TimeSpan _threshold;
-    private readonly Func<ThresholdExceededArguments, ValueTask>? _thresholdExceeded;
+    private readonly Func<OnThresholdExceededArguments, ValueTask>? _onThresholdExceeded;
     private readonly ResilienceStrategyTelemetry _telemetry;
 
     public TimingResilienceStrategy(
         TimeSpan threshold,
-        Func<ThresholdExceededArguments, ValueTask>? thresholdExceeded,
+        Func<OnThresholdExceededArguments, ValueTask>? onThresholdExceeded,
         ResilienceStrategyTelemetry telemetry)
     {
         _threshold = threshold;
         _telemetry = telemetry;
-        _thresholdExceeded = thresholdExceeded;
+        _onThresholdExceeded = onThresholdExceeded;
     }
 
     protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
@@ -39,7 +39,7 @@ internal sealed class TimingResilienceStrategy : ResilienceStrategy
         if (stopwatch.Elapsed > _threshold)
         {
             // Bundle information about the event into arguments.
-            var args = new ThresholdExceededArguments(context, _threshold, stopwatch.Elapsed);
+            var args = new OnThresholdExceededArguments(context, _threshold, stopwatch.Elapsed);
 
             // Report this as a resilience event if the execution took longer than the threshold.
             _telemetry.Report(
@@ -47,9 +47,9 @@ internal sealed class TimingResilienceStrategy : ResilienceStrategy
                 context,
                 args);
 
-            if (_thresholdExceeded is not null)
+            if (_onThresholdExceeded is not null)
             {
-                await _thresholdExceeded(args).ConfigureAwait(context.ContinueOnCapturedContext);
+                await _onThresholdExceeded(args).ConfigureAwait(context.ContinueOnCapturedContext);
             }
         }
 
@@ -60,15 +60,15 @@ internal sealed class TimingResilienceStrategy : ResilienceStrategy
 ```
 <!-- endSnippet -->
 
-Review the code and comments to understand the implementation. Take note of the `ThresholdExceededArguments` struct:
+Review the code and comments to understand the implementation. Take note of the `OnThresholdExceededArguments` struct:
 
 <!-- snippet: ext-proactive-args -->
 ```cs
 // Structs for arguments encapsulate details about specific events within the resilience strategy.
 // Relevant properties to the event can be exposed. In this event, the actual execution time and the exceeded threshold are included.
-public readonly struct ThresholdExceededArguments
+public readonly struct OnThresholdExceededArguments
 {
-    public ThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
+    public OnThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
     {
         Context = context;
         Threshold = threshold;
@@ -85,7 +85,7 @@ public readonly struct ThresholdExceededArguments
 ```
 <!-- endSnippet -->
 
-Arguments should always have an `Arguments` suffix and include a `Context` property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change. The `ThresholdExceededArguments` provides details about the actual execution time and threshold, allowing consumers to respond to this event or supply a custom callback for such situations.
+Arguments should always have an `Arguments` suffix and include a `Context` property. Using arguments boosts the extensibility and maintainability of the API, as adding new members becomes a non-breaking change. The `OnThresholdExceededArguments` provides details about the actual execution time and threshold, allowing consumers to respond to this event or supply a custom callback for such situations.
 
 ## Options
 
@@ -111,7 +111,7 @@ public class TimingStrategyOptions : ResilienceStrategyOptions
 
     // Provide the delegate to be called when the threshold is surpassed.
     // Ideally, arguments should share the delegate's name, but with an "Arguments" suffix.
-    public Func<ThresholdExceededArguments, ValueTask>? ThresholdExceeded { get; set; }
+    public Func<OnThresholdExceededArguments, ValueTask>? OnThresholdExceeded { get; set; }
 }
 ```
 <!-- endSnippet -->
@@ -144,10 +144,10 @@ public static class TimingResilienceStrategyBuilderExtensions
             {
                 // The "context" provides various properties for the strategy's use.
                 // In this case, we simply use the "Telemetry" property and pass it to the strategy.
-                // The Threshold and ThresholdExceeded values are sourced from the options.
+                // The Threshold and OnThresholdExceeded values are sourced from the options.
                 var strategy = new TimingResilienceStrategy(
                     options.Threshold!.Value,
-                    options.ThresholdExceeded,
+                    options.OnThresholdExceeded,
                     context.Telemetry);
 
                 return strategy;
@@ -168,7 +168,7 @@ var pipeline = new ResiliencePipelineBuilder()
     .AddTiming(new TimingStrategyOptions
     {
         Threshold = TimeSpan.FromSeconds(1),
-        ThresholdExceeded = args =>
+        OnThresholdExceeded = args =>
         {
             Console.WriteLine("Execution threshold exceeded!");
             return default;

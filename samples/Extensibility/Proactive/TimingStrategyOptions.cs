@@ -21,7 +21,7 @@ public class TimingStrategyOptions : ResilienceStrategyOptions
 
     // Provide the delegate to be called when the threshold is surpassed.
     // Ideally, arguments should share the delegate's name, but with an "Arguments" suffix.
-    public Func<ThresholdExceededArguments, ValueTask>? ThresholdExceeded { get; set; }
+    public Func<OnThresholdExceededArguments, ValueTask>? OnThresholdExceeded { get; set; }
 }
 
 #endregion

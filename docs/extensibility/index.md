@@ -11,8 +11,9 @@ This guide will help you create a new illustrative resilience strategy for each 
 
 Regardless of whether the strategy is reactive or proactive, every new resilience strategy should include the following components:
 
-- Options detailing the strategy's configuration. These should inherit from [`ResilienceStrategyOptions`](xref:Polly.ResilienceStrategyOptions).
-- Extensions for `ResiliencePipelineBuilder` or `ResiliencePipelineBuilder<T>`.
+- The strategy itself which should inherit from [`ResilienceStrategy`](xref:Polly.ResilienceStrategy)
+- Options detailing the strategy's configuration. This should inherit from [`ResilienceStrategyOptions`](xref:Polly.ResilienceStrategyOptions).
+- Extensions for `ResiliencePipelineBuilder` or `ResiliencePipelineBuilder<T>` to register the strategy into the pipeline.
 - Custom argument types for delegates that contain information about a specific event.
 
 The strategy options contain properties of following types:
@@ -20,6 +21,34 @@ The strategy options contain properties of following types:
 - **Common types**: Such as `int`, `bool`, `TimeSpan`, etc.
 - **Delegates**: For example when a strategy needs to raise an event, or generate a value. In general, the delegates should by asynchronous.
 - **Arguments**: Used by the delegates to pass the information to their consumers.
+
+### Component diagram
+
+This diagram depicts how the built-in types (hexagon shaped) interact with custom built types (rectangle shaped):
+
+```mermaid
+flowchart
+    options[XYZStrategyOptions]
+    builder[XYZResilienceStrategyBuilderExtensions]
+    strategy[XYZResilienceStrategy]
+    args[XYZEventArguments]
+
+    telemetry{{ResilienceStrategyTelemetry}}
+    pipeline{{ResiliencePipeline}}
+
+    options -- is passed to AddXYZ  --> builder
+    builder -- registers a strategy --> pipeline
+    options -- configures behavior --> strategy
+
+    pipeline -- calls the execution --> strategy
+
+    strategy -- creates for events --> args
+    strategy -- uses for reporting --> telemetry
+
+    %% a workaround to add note (currently only sequence diagram supports notes)
+    %% https://github.com/mermaid-js/mermaid/issues/821
+    args -.- note(The strategy calls<br/>the OnXYZ delegate of<br/> the options with this object.)
+```
 
 ## Delegates
 
@@ -93,9 +122,9 @@ Arguments are used by individual delegate types to flow information to the consu
 ```cs
 // Structs for arguments encapsulate details about specific events within the resilience strategy.
 // Relevant properties to the event can be exposed. In this event, the actual execution time and the exceeded threshold are included.
-public readonly struct ThresholdExceededArguments
+public readonly struct OnThresholdExceededArguments
 {
-    public ThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
+    public OnThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
     {
         Context = context;
         Threshold = threshold;
