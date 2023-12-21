@@ -4,7 +4,7 @@ namespace Extensibility.Reactive;
 
 #region ext-reactive-event-args
 
-public struct OnReportResultArguments<TResult>
+public readonly struct OnReportResultArguments<TResult>
 {
     public OnReportResultArguments(ResilienceContext context, Outcome<TResult> outcome)
     {
