@@ -354,6 +354,70 @@ public class PollyServiceCollectionExtensionTests
         }
     }
 
+    [Fact]
+    public void AddResiliencePipelines_Multiple_Ok()
+    {
+        _services.AddResiliencePipelines<string>(ctx =>
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                ctx.AddResiliencePipeline(i.ToString(CultureInfo.InvariantCulture),
+                    (builder, _) => builder.AddStrategy(new TestStrategy()));
+                ctx.AddResiliencePipeline<string>(i.ToString(CultureInfo.InvariantCulture),
+                    (builder, _) => builder.AddStrategy(new TestStrategy()));
+                ctx.AddResiliencePipeline<int>(i.ToString(CultureInfo.InvariantCulture),
+                    (builder, _) => builder.AddStrategy(new TestStrategy()));
+            }
+        });
+
+        var provider = CreateProvider();
+
+        Enumerable
+            .Range(0, 10)
+            .SelectMany(i =>
+            {
+                var name = i.ToString(CultureInfo.InvariantCulture);
+
+                return new object[]
+                {
+                    provider.GetPipeline(name),
+                    provider.GetPipeline<string>(name),
+                    provider.GetPipeline<int>(name)
+                };
+            })
+            .Distinct()
+            .Should()
+            .HaveCount(30);
+    }
+
+    [Fact]
+    public void AddResiliencePipelines_MultipleRegistries_Ok()
+    {
+        _services.AddResiliencePipelines<string>(ctx =>
+        {
+            ctx.AddResiliencePipeline(Key, (builder, _) => builder.AddStrategy(new TestStrategy()));
+            ctx.AddResiliencePipeline<string>(Key, (builder, _) => builder.AddStrategy(new TestStrategy()));
+            ctx.AddResiliencePipeline<int>(Key, (builder, _) => builder.AddStrategy(new TestStrategy()));
+        });
+
+        _services.AddResiliencePipelines<int>(ctx =>
+        {
+            ctx.AddResiliencePipeline(10, (builder, _) => builder.AddStrategy(new TestStrategy()));
+            ctx.AddResiliencePipeline<string>(10, (builder, _) => builder.AddStrategy(new TestStrategy()));
+            ctx.AddResiliencePipeline<int>(10, (builder, _) => builder.AddStrategy(new TestStrategy()));
+        });
+
+        var serviceProvider = _services.BuildServiceProvider();
+
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<string>(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<int>(Key).Should().NotBeNull();
+
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<string>(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<int>(10).Should().NotBeNull();
+    }
+
     private void AddResiliencePipeline(string key, Action<StrategyBuilderContext>? onBuilding = null)
     {
         _services.AddResiliencePipeline(key, builder =>
