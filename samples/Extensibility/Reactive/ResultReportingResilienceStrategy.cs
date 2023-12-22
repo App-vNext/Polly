@@ -28,15 +28,21 @@ internal sealed class ResultReportingResilienceStrategy<T> : ResilienceStrategy<
         ResilienceContext context,
         TState state)
     {
+        // Execute the given callback and adhere to the ContinueOnCapturedContext property value.
         Outcome<T> outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         // Check if the outcome should be reported using the "ShouldHandle" predicate.
         if (await _shouldHandle(new ResultReportingPredicateArguments<T>(context, outcome)).ConfigureAwait(context.ContinueOnCapturedContext))
         {
+            // Bundle information about the event into arguments.
             var args = new OnReportResultArguments<T>(context, outcome);
 
-            // Report the event with an informational severity level to the telemetry infrastructure.
-            _telemetry.Report(new ResilienceEvent(ResilienceEventSeverity.Information, "ResultReported"), context, outcome, args);
+            // Report this as a resilience event with information severity level to the telemetry infrastructure.
+            _telemetry.Report(
+                new ResilienceEvent(ResilienceEventSeverity.Information, "ResultReported"),
+                context,
+                outcome,
+                args);
 
             // Call the "OnReportResult" callback.
             await _onReportResult(args).ConfigureAwait(context.ContinueOnCapturedContext);
