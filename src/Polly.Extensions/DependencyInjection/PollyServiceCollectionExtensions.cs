@@ -247,6 +247,38 @@ public static class PollyServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Allows deferred configuration of the <see cref="ResiliencePipelineRegistry{TKey}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key used to identify the resilience pipeline.</typeparam>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the resilience pipeline to.</param>
+    /// <param name="configure">An action that allows configuration of resilience pipelines.</param>
+    /// <returns>The updated <see cref="IServiceCollection"/> with the addition configuration added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
+    /// <remarks>
+    /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
+    /// <para>
+    /// This call enables the telemetry for the registered resilience pipeline.
+    /// </para>
+    /// </remarks>
+    public static IServiceCollection ConfigureResiliencePipelineRegistry<TKey>(
+        this IServiceCollection services,
+        Action<ConfigureResiliencePipelineRegistryContext<TKey>> configure)
+        where TKey : notnull
+    {
+        Guard.NotNull(services);
+        Guard.NotNull(configure);
+
+        services
+            .AddOptions<ConfigureResiliencePipelineRegistryOptions<TKey>>()
+            .Configure<IServiceProvider>((options, serviceProvider) =>
+            {
+                configure(new ConfigureResiliencePipelineRegistryContext<TKey>(options, serviceProvider));
+            });
+
+        return services.AddResiliencePipelineRegistry<TKey>();
+    }
+
     private static void AddResiliencePipelineBuilder(this IServiceCollection services)
     {
         services
