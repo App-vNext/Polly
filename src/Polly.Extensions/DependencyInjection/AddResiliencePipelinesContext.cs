@@ -1,10 +1,12 @@
-﻿namespace Polly.DependencyInjection;
+﻿using Polly.Utils;
+
+namespace Polly.DependencyInjection;
 
 /// <summary>
 /// Represents the context for configuring resilience pipelines with the specified key.
 /// </summary>
 /// <typeparam name="TKey">The type of the key used to identify the resilience pipeline.</typeparam>
-public class AddResiliencePipelinesContext<TKey>
+public sealed class AddResiliencePipelinesContext<TKey>
     where TKey : notnull
 {
     private readonly ConfigureResiliencePipelineRegistryOptions<TKey> _options;
@@ -33,9 +35,12 @@ public class AddResiliencePipelinesContext<TKey>
     /// This call enables the telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
-    public void AddResiliencePipeline(TKey key,
+    public void AddResiliencePipeline(
+        TKey key,
         Action<ResiliencePipelineBuilder, AddResiliencePipelineContext<TKey>> configure)
     {
+        Guard.NotNull(configure);
+
         _options.Actions.Add((registry) =>
         {
             // the last added builder with the same key wins, this allows overriding the builders
@@ -58,9 +63,12 @@ public class AddResiliencePipelinesContext<TKey>
     /// This call enables the telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
-    public void AddResiliencePipeline<TResult>(TKey key,
+    public void AddResiliencePipeline<TResult>(
+        TKey key,
         Action<ResiliencePipelineBuilder<TResult>, AddResiliencePipelineContext<TKey>> configure)
     {
+        Guard.NotNull(configure);
+
         _options.Actions.Add((registry) =>
         {
             // the last added builder with the same key wins, this allows overriding the builders

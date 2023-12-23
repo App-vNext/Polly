@@ -135,7 +135,7 @@ public static class PollyServiceCollectionExtensions
     /// Allows deferred addition of one or more resilience pipelines to the service collection.
     /// </summary>
     /// <typeparam name="TKey">The type of the key used to identify the resilience pipelines.</typeparam>
-    /// <param name="services">The <see cref="IServiceCollection"/> to add  resilience pipelines to.</param>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add resilience pipelines to.</param>
     /// <param name="configure">An action that allows configuration of resilience pipelines.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with the addition configuration added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
