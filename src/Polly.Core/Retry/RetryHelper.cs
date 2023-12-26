@@ -31,6 +31,11 @@ internal static class RetryHelper
         }
         catch (OverflowException)
         {
+            if (maxDelay is not null)
+            {
+                return maxDelay.Value;
+            }
+
             return TimeSpan.MaxValue;
         }
     }

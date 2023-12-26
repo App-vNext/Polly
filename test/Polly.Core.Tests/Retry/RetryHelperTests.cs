@@ -179,6 +179,14 @@ public class RetryHelperTests
         RetryHelper.GetRetryDelay(DelayBackoffType.Exponential, false, 1000, TimeSpan.FromDays(1), null, ref state, _randomizer).Should().Be(TimeSpan.MaxValue);
     }
 
+    [Fact]
+    public void GetRetryDelay_OverflowWithMaxDelay_ReturnsMaxDelay()
+    {
+        double state = 0;
+
+        RetryHelper.GetRetryDelay(DelayBackoffType.Exponential, false, 1000, TimeSpan.FromDays(1), TimeSpan.FromDays(2), ref state, _randomizer).Should().Be(TimeSpan.FromDays(2));
+    }
+
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]
