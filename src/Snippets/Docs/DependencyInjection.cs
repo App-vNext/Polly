@@ -85,6 +85,35 @@ internal static class DependencyInjection
         #endregion
     }
 
+    public static async Task DeferredAddition(IServiceCollection services)
+    {
+        #region di-deferred-addition
+
+        services
+            .AddResiliencePipelines<string>((ctx) =>
+            {
+                var config = ctx.ServiceProvider.GetRequiredService<IConfiguration>();
+
+                var configSection = config.GetSection("ResiliencePipelines");
+                if (configSection is not null)
+                {
+                    foreach (var pipelineConfig in configSection.GetChildren())
+                    {
+                        var pipelineName = pipelineConfig.GetValue<string>("Name");
+                        if (!string.IsNullOrEmpty(pipelineName))
+                        {
+                            ctx.AddResiliencePipeline(pipelineName, (builder, context) =>
+                            {
+                                // Load configuration and configure pipeline...
+                            });
+                        }
+                    }
+                }
+            });
+
+        #endregion
+    }
+
     public static async Task DynamicReloads(IServiceCollection services, IConfigurationSection configurationSection)
     {
         #region di-dynamic-reloads

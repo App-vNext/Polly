@@ -100,6 +100,39 @@ await pipeline.ExecuteAsync(
 ```
 <!-- endSnippet -->
 
+## Deferred addition of pipelines
+
+If you want to use a key for a resilience pipeline that may not be available
+immediately you can use the `AddResiliencePipelines()` method to defer adding
+them until just prior to the `ResiliencePipelineProvider<TKey>` is instantiated
+by the DI container, allowing the `IServiceProvider` to be used if required.
+
+<!-- snippet: di-deferred-addition -->
+```cs
+services
+    .AddResiliencePipelines<string>((ctx) =>
+    {
+        var config = ctx.ServiceProvider.GetRequiredService<IConfiguration>();
+
+        var configSection = config.GetSection("ResiliencePipelines");
+        if (configSection is not null)
+        {
+            foreach (var pipelineConfig in configSection.GetChildren())
+            {
+                var pipelineName = pipelineConfig.GetValue<string>("Name");
+                if (!string.IsNullOrEmpty(pipelineName))
+                {
+                    ctx.AddResiliencePipeline(pipelineName, (builder, context) =>
+                    {
+                        // Load configuration and configure pipeline...
+                    });
+                }
+            }
+        }
+    });
+```
+<!-- endSnippet -->
+
 ## Dynamic reloads
 
 Dynamic reloading is a feature of the pipeline registry that is also surfaced when
