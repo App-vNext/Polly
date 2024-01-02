@@ -159,7 +159,7 @@
 
   <h3 id="Polly_PollyServiceCollectionExtensions_AddResiliencePipelineRegistry__1_Microsoft_Extensions_DependencyInjection_IServiceCollection_" data-uid="Polly.PollyServiceCollectionExtensions.AddResiliencePipelineRegistry``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
   AddResiliencePipelineRegistry&lt;TKey&gt;(IServiceCollection)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/PollyServiceCollectionExtensions.cs/#L192"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/PollyServiceCollectionExtensions.cs/#L207"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds <a class="xref" href="Polly.Registry.ResiliencePipelineRegistry-1.html">ResiliencePipelineRegistry&lt;TKey&gt;</a> and <a class="xref" href="Polly.Registry.ResiliencePipelineProvider-1.html">ResiliencePipelineProvider&lt;TKey&gt;</a> to the service collection that allows configuring
@@ -214,7 +214,7 @@ and retrieving resilience pipelines using the <code class="typeparamref">TKey</c
 
   <h3 id="Polly_PollyServiceCollectionExtensions_AddResiliencePipelineRegistry__1_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Action_Polly_Registry_ResiliencePipelineRegistryOptions___0___" data-uid="Polly.PollyServiceCollectionExtensions.AddResiliencePipelineRegistry``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Polly.Registry.ResiliencePipelineRegistryOptions{``0}})">
   AddResiliencePipelineRegistry&lt;TKey&gt;(IServiceCollection, Action&lt;ResiliencePipelineRegistryOptions&lt;TKey&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/PollyServiceCollectionExtensions.cs/#L167"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/PollyServiceCollectionExtensions.cs/#L182"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds <a class="xref" href="Polly.Registry.ResiliencePipelineRegistry-1.html">ResiliencePipelineRegistry&lt;TKey&gt;</a> and <a class="xref" href="Polly.Registry.ResiliencePipelineProvider-1.html">ResiliencePipelineProvider&lt;TKey&gt;</a> to the service collection that allows configuring
@@ -272,7 +272,7 @@ and retrieving resilience pipelines using the <code class="typeparamref">TKey</c
 
   <h3 id="Polly_PollyServiceCollectionExtensions_AddResiliencePipeline__1_Microsoft_Extensions_DependencyInjection_IServiceCollection___0_System_Action_Polly_ResiliencePipelineBuilder_Polly_DependencyInjection_AddResiliencePipelineContext___0___" data-uid="Polly.PollyServiceCollectionExtensions.AddResiliencePipeline``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.Action{Polly.ResiliencePipelineBuilder,Polly.DependencyInjection.AddResiliencePipelineContext{``0}})">
   AddResiliencePipeline&lt;TKey&gt;(IServiceCollection, TKey, Action&lt;ResiliencePipelineBuilder, AddResiliencePipelineContext&lt;TKey&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/PollyServiceCollectionExtensions.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/PollyServiceCollectionExtensions.cs/#L119"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a resilience pipeline to service collection.</p>
@@ -335,7 +335,7 @@ This call enables the telemetry for the registered resilience pipeline.
 
   <h3 id="Polly_PollyServiceCollectionExtensions_AddResiliencePipeline__1_Microsoft_Extensions_DependencyInjection_IServiceCollection___0_System_Action_Polly_ResiliencePipelineBuilder__" data-uid="Polly.PollyServiceCollectionExtensions.AddResiliencePipeline``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.Action{Polly.ResiliencePipelineBuilder})">
   AddResiliencePipeline&lt;TKey&gt;(IServiceCollection, TKey, Action&lt;ResiliencePipelineBuilder&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/PollyServiceCollectionExtensions.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/PollyServiceCollectionExtensions.cs/#L92"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a resilience pipeline to service collection.</p>
@@ -512,6 +512,70 @@ This call enables the telemetry for the registered resilience pipeline.
 
   <h4 class="section" id="Polly_PollyServiceCollectionExtensions_AddResiliencePipeline__2_Microsoft_Extensions_DependencyInjection_IServiceCollection___0_System_Action_Polly_ResiliencePipelineBuilder___1____remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>You can retrieve the registered pipeline by resolving the <a class="xref" href="Polly.Registry.ResiliencePipelineProvider-1.html">ResiliencePipelineProvider&lt;TKey&gt;</a> class from the dependency injection container.</p>
+<p>
+This call enables the telemetry for the registered resilience pipeline.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">services</code> or <code class="paramref">configure</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Polly_PollyServiceCollectionExtensions_AddResiliencePipelines_" data-uid="Polly.PollyServiceCollectionExtensions.AddResiliencePipelines*"></a>
+
+  <h3 id="Polly_PollyServiceCollectionExtensions_AddResiliencePipelines__1_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Action_Polly_DependencyInjection_AddResiliencePipelinesContext___0___" data-uid="Polly.PollyServiceCollectionExtensions.AddResiliencePipelines``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Polly.DependencyInjection.AddResiliencePipelinesContext{``0}})">
+  AddResiliencePipelines&lt;TKey&gt;(IServiceCollection, Action&lt;AddResiliencePipelinesContext&lt;TKey&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/PollyServiceCollectionExtensions.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Allows deferred addition of one or more resilience pipelines to the service collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IServiceCollection AddResiliencePipelines&lt;TKey&gt;(this IServiceCollection services, Action&lt;AddResiliencePipelinesContext&lt;TKey&gt;&gt; configure) where TKey : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>services</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a> to add resilience pipelines to.</p>
+</dd>
+    <dt><code>configure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Polly.DependencyInjection.AddResiliencePipelinesContext-1.html">AddResiliencePipelinesContext</a>&lt;TKey&gt;&gt;</dt>
+    <dd><p>An action that allows configuration of resilience pipelines.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
+    <dd><p>The updated <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a> with the addition configuration added.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>The type of the key used to identify the resilience pipelines.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Polly_PollyServiceCollectionExtensions_AddResiliencePipelines__1_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Action_Polly_DependencyInjection_AddResiliencePipelinesContext___0____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method can be useful if you want to add resilience pipelines as late as possible, e.g.
+to allow other services / configuration to be available before providing the key.</p>
+<p>
+You can retrieve the registered pipeline by resolving the <a class="xref" href="Polly.Registry.ResiliencePipelineProvider-1.html">ResiliencePipelineProvider&lt;TKey&gt;</a> class from the dependency injection container.
+</p>
 <p>
 This call enables the telemetry for the registered resilience pipeline.
 </p>

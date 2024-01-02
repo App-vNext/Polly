@@ -922,6 +922,59 @@ references:
   fullName.vb: Polly.DependencyInjection.AddResiliencePipelineContext(Of TKey).ServiceProvider
   nameWithType: AddResiliencePipelineContext<TKey>.ServiceProvider
   nameWithType.vb: AddResiliencePipelineContext(Of TKey).ServiceProvider
+- uid: Polly.DependencyInjection.AddResiliencePipelinesContext`1
+  name: AddResiliencePipelinesContext<TKey>
+  href: api/Polly.DependencyInjection.AddResiliencePipelinesContext-1.html
+  commentId: T:Polly.DependencyInjection.AddResiliencePipelinesContext`1
+  name.vb: AddResiliencePipelinesContext(Of TKey)
+  fullName: Polly.DependencyInjection.AddResiliencePipelinesContext<TKey>
+  fullName.vb: Polly.DependencyInjection.AddResiliencePipelinesContext(Of TKey)
+  nameWithType: AddResiliencePipelinesContext<TKey>
+  nameWithType.vb: AddResiliencePipelinesContext(Of TKey)
+- uid: Polly.DependencyInjection.AddResiliencePipelinesContext`1.AddResiliencePipeline(`0,System.Action{Polly.ResiliencePipelineBuilder,Polly.DependencyInjection.AddResiliencePipelineContext{`0}})
+  name: AddResiliencePipeline(TKey, Action<ResiliencePipelineBuilder, AddResiliencePipelineContext<TKey>>)
+  href: api/Polly.DependencyInjection.AddResiliencePipelinesContext-1.html#Polly_DependencyInjection_AddResiliencePipelinesContext_1_AddResiliencePipeline__0_System_Action_Polly_ResiliencePipelineBuilder_Polly_DependencyInjection_AddResiliencePipelineContext__0___
+  commentId: M:Polly.DependencyInjection.AddResiliencePipelinesContext`1.AddResiliencePipeline(`0,System.Action{Polly.ResiliencePipelineBuilder,Polly.DependencyInjection.AddResiliencePipelineContext{`0}})
+  name.vb: AddResiliencePipeline(TKey, Action(Of ResiliencePipelineBuilder, AddResiliencePipelineContext(Of TKey)))
+  fullName: Polly.DependencyInjection.AddResiliencePipelinesContext<TKey>.AddResiliencePipeline(TKey, System.Action<Polly.ResiliencePipelineBuilder, Polly.DependencyInjection.AddResiliencePipelineContext<TKey>>)
+  fullName.vb: Polly.DependencyInjection.AddResiliencePipelinesContext(Of TKey).AddResiliencePipeline(TKey, System.Action(Of Polly.ResiliencePipelineBuilder, Polly.DependencyInjection.AddResiliencePipelineContext(Of TKey)))
+  nameWithType: AddResiliencePipelinesContext<TKey>.AddResiliencePipeline(TKey, Action<ResiliencePipelineBuilder, AddResiliencePipelineContext<TKey>>)
+  nameWithType.vb: AddResiliencePipelinesContext(Of TKey).AddResiliencePipeline(TKey, Action(Of ResiliencePipelineBuilder, AddResiliencePipelineContext(Of TKey)))
+- uid: Polly.DependencyInjection.AddResiliencePipelinesContext`1.AddResiliencePipeline*
+  name: AddResiliencePipeline
+  href: api/Polly.DependencyInjection.AddResiliencePipelinesContext-1.html#Polly_DependencyInjection_AddResiliencePipelinesContext_1_AddResiliencePipeline_
+  commentId: Overload:Polly.DependencyInjection.AddResiliencePipelinesContext`1.AddResiliencePipeline
+  isSpec: "True"
+  fullName: Polly.DependencyInjection.AddResiliencePipelinesContext<TKey>.AddResiliencePipeline
+  fullName.vb: Polly.DependencyInjection.AddResiliencePipelinesContext(Of TKey).AddResiliencePipeline
+  nameWithType: AddResiliencePipelinesContext<TKey>.AddResiliencePipeline
+  nameWithType.vb: AddResiliencePipelinesContext(Of TKey).AddResiliencePipeline
+- uid: Polly.DependencyInjection.AddResiliencePipelinesContext`1.AddResiliencePipeline``1(`0,System.Action{Polly.ResiliencePipelineBuilder{``0},Polly.DependencyInjection.AddResiliencePipelineContext{`0}})
+  name: AddResiliencePipeline<TResult>(TKey, Action<ResiliencePipelineBuilder<TResult>, AddResiliencePipelineContext<TKey>>)
+  href: api/Polly.DependencyInjection.AddResiliencePipelinesContext-1.html#Polly_DependencyInjection_AddResiliencePipelinesContext_1_AddResiliencePipeline__1__0_System_Action_Polly_ResiliencePipelineBuilder___0__Polly_DependencyInjection_AddResiliencePipelineContext__0___
+  commentId: M:Polly.DependencyInjection.AddResiliencePipelinesContext`1.AddResiliencePipeline``1(`0,System.Action{Polly.ResiliencePipelineBuilder{``0},Polly.DependencyInjection.AddResiliencePipelineContext{`0}})
+  name.vb: AddResiliencePipeline(Of TResult)(TKey, Action(Of ResiliencePipelineBuilder(Of TResult), AddResiliencePipelineContext(Of TKey)))
+  fullName: Polly.DependencyInjection.AddResiliencePipelinesContext<TKey>.AddResiliencePipeline<TResult>(TKey, System.Action<Polly.ResiliencePipelineBuilder<TResult>, Polly.DependencyInjection.AddResiliencePipelineContext<TKey>>)
+  fullName.vb: Polly.DependencyInjection.AddResiliencePipelinesContext(Of TKey).AddResiliencePipeline(Of TResult)(TKey, System.Action(Of Polly.ResiliencePipelineBuilder(Of TResult), Polly.DependencyInjection.AddResiliencePipelineContext(Of TKey)))
+  nameWithType: AddResiliencePipelinesContext<TKey>.AddResiliencePipeline<TResult>(TKey, Action<ResiliencePipelineBuilder<TResult>, AddResiliencePipelineContext<TKey>>)
+  nameWithType.vb: AddResiliencePipelinesContext(Of TKey).AddResiliencePipeline(Of TResult)(TKey, Action(Of ResiliencePipelineBuilder(Of TResult), AddResiliencePipelineContext(Of TKey)))
+- uid: Polly.DependencyInjection.AddResiliencePipelinesContext`1.ServiceProvider
+  name: ServiceProvider
+  href: api/Polly.DependencyInjection.AddResiliencePipelinesContext-1.html#Polly_DependencyInjection_AddResiliencePipelinesContext_1_ServiceProvider
+  commentId: P:Polly.DependencyInjection.AddResiliencePipelinesContext`1.ServiceProvider
+  fullName: Polly.DependencyInjection.AddResiliencePipelinesContext<TKey>.ServiceProvider
+  fullName.vb: Polly.DependencyInjection.AddResiliencePipelinesContext(Of TKey).ServiceProvider
+  nameWithType: AddResiliencePipelinesContext<TKey>.ServiceProvider
+  nameWithType.vb: AddResiliencePipelinesContext(Of TKey).ServiceProvider
+- uid: Polly.DependencyInjection.AddResiliencePipelinesContext`1.ServiceProvider*
+  name: ServiceProvider
+  href: api/Polly.DependencyInjection.AddResiliencePipelinesContext-1.html#Polly_DependencyInjection_AddResiliencePipelinesContext_1_ServiceProvider_
+  commentId: Overload:Polly.DependencyInjection.AddResiliencePipelinesContext`1.ServiceProvider
+  isSpec: "True"
+  fullName: Polly.DependencyInjection.AddResiliencePipelinesContext<TKey>.ServiceProvider
+  fullName.vb: Polly.DependencyInjection.AddResiliencePipelinesContext(Of TKey).ServiceProvider
+  nameWithType: AddResiliencePipelinesContext<TKey>.ServiceProvider
+  nameWithType.vb: AddResiliencePipelinesContext(Of TKey).ServiceProvider
 - uid: Polly.ExecutionRejectedException
   name: ExecutionRejectedException
   href: api/Polly.ExecutionRejectedException.html
@@ -1925,6 +1978,22 @@ references:
   fullName.vb: Polly.PollyServiceCollectionExtensions.AddResiliencePipeline(Of TKey, TResult)(Microsoft.Extensions.DependencyInjection.IServiceCollection, TKey, System.Action(Of Polly.ResiliencePipelineBuilder(Of TResult)))
   nameWithType: PollyServiceCollectionExtensions.AddResiliencePipeline<TKey, TResult>(IServiceCollection, TKey, Action<ResiliencePipelineBuilder<TResult>>)
   nameWithType.vb: PollyServiceCollectionExtensions.AddResiliencePipeline(Of TKey, TResult)(IServiceCollection, TKey, Action(Of ResiliencePipelineBuilder(Of TResult)))
+- uid: Polly.PollyServiceCollectionExtensions.AddResiliencePipelines*
+  name: AddResiliencePipelines
+  href: api/Polly.PollyServiceCollectionExtensions.html#Polly_PollyServiceCollectionExtensions_AddResiliencePipelines_
+  commentId: Overload:Polly.PollyServiceCollectionExtensions.AddResiliencePipelines
+  isSpec: "True"
+  fullName: Polly.PollyServiceCollectionExtensions.AddResiliencePipelines
+  nameWithType: PollyServiceCollectionExtensions.AddResiliencePipelines
+- uid: Polly.PollyServiceCollectionExtensions.AddResiliencePipelines``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Polly.DependencyInjection.AddResiliencePipelinesContext{``0}})
+  name: AddResiliencePipelines<TKey>(IServiceCollection, Action<AddResiliencePipelinesContext<TKey>>)
+  href: api/Polly.PollyServiceCollectionExtensions.html#Polly_PollyServiceCollectionExtensions_AddResiliencePipelines__1_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Action_Polly_DependencyInjection_AddResiliencePipelinesContext___0___
+  commentId: M:Polly.PollyServiceCollectionExtensions.AddResiliencePipelines``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Polly.DependencyInjection.AddResiliencePipelinesContext{``0}})
+  name.vb: AddResiliencePipelines(Of TKey)(IServiceCollection, Action(Of AddResiliencePipelinesContext(Of TKey)))
+  fullName: Polly.PollyServiceCollectionExtensions.AddResiliencePipelines<TKey>(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Action<Polly.DependencyInjection.AddResiliencePipelinesContext<TKey>>)
+  fullName.vb: Polly.PollyServiceCollectionExtensions.AddResiliencePipelines(Of TKey)(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Action(Of Polly.DependencyInjection.AddResiliencePipelinesContext(Of TKey)))
+  nameWithType: PollyServiceCollectionExtensions.AddResiliencePipelines<TKey>(IServiceCollection, Action<AddResiliencePipelinesContext<TKey>>)
+  nameWithType.vb: PollyServiceCollectionExtensions.AddResiliencePipelines(Of TKey)(IServiceCollection, Action(Of AddResiliencePipelinesContext(Of TKey)))
 - uid: Polly.PredicateBuilder
   name: PredicateBuilder
   href: api/Polly.PredicateBuilder.html

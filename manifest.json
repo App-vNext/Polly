@@ -232,6 +232,16 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Polly.DependencyInjection.AddResiliencePipelinesContext-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.DependencyInjection.AddResiliencePipelinesContext-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Polly.DependencyInjection.yml",
       "output": {
         ".html": {
