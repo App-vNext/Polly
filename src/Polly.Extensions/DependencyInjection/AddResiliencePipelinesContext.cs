@@ -32,7 +32,7 @@ public sealed class AddResiliencePipelinesContext<TKey>
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="Registry.ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
     /// <para>
-    /// This call enables the telemetry for the registered resilience pipeline.
+    /// This call enables telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
     public void AddResiliencePipeline(
@@ -60,7 +60,7 @@ public sealed class AddResiliencePipelinesContext<TKey>
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="Registry.ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
     /// <para>
-    /// This call enables the telemetry for the registered resilience pipeline.
+    /// This call enables telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
     public void AddResiliencePipeline<TResult>(

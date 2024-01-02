@@ -28,7 +28,7 @@ public static class PollyServiceCollectionExtensions
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
     /// <para>
-    /// This call enables the telemetry for the registered resilience pipeline.
+    /// This call enables telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
     public static IServiceCollection AddResiliencePipeline<TKey, TResult>(
@@ -56,7 +56,7 @@ public static class PollyServiceCollectionExtensions
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
     /// <para>
-    /// This call enables the telemetry for the registered resilience pipeline.
+    /// This call enables telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
     public static IServiceCollection AddResiliencePipeline<TKey, TResult>(
@@ -86,7 +86,7 @@ public static class PollyServiceCollectionExtensions
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
     /// <para>
-    /// This call enables the telemetry for the registered resilience pipeline.
+    /// This call enables telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
     public static IServiceCollection AddResiliencePipeline<TKey>(
@@ -113,7 +113,7 @@ public static class PollyServiceCollectionExtensions
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
     /// <para>
-    /// This call enables the telemetry for the registered resilience pipeline.
+    /// This call enables telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
     public static IServiceCollection AddResiliencePipeline<TKey>(
@@ -146,7 +146,7 @@ public static class PollyServiceCollectionExtensions
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
     /// </para>
     /// <para>
-    /// This call enables the telemetry for the registered resilience pipeline.
+    /// This call enables telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
     public static IServiceCollection AddResiliencePipelines<TKey>(
