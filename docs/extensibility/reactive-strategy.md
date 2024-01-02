@@ -174,7 +174,7 @@ public static class ResultReportingResilienceStrategyBuilderExtensions
         return builder.AddStrategy(
             context =>
             {
-                // The "context" offers various properties for the strategy's use.
+                // The "context" provides various properties for the strategy's use.
                 // In this case, we simply use the "Telemetry" property and pass it to the strategy.
                 // The ShouldHandle and OnReportResult values are sourced from the options.
                 var strategy = new ResultReportingResilienceStrategy<TResult>(
