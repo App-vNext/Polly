@@ -125,6 +125,30 @@ public class CircuitStateControllerTests
     }
 
     [Fact]
+    public async Task OnActionPreExecute_CircuitOpened_EnsureExceptionStackTraceDoesNotGrow()
+    {
+        var stacks = new List<string>();
+        var ctxt = ResilienceContextPool.Shared.Get();
+        using var controller = CreateController();
+
+        await OpenCircuit(controller, Outcome.FromResult(99));
+
+        for (int i = 0; i < 100; i++)
+        {
+            try
+            {
+                (await controller.OnActionPreExecuteAsync(ctxt)).Value.ThrowIfException();
+            }
+            catch (BrokenCircuitException e)
+            {
+                stacks.Add(e.StackTrace);
+            }
+        }
+
+        stacks.Distinct().Should().HaveCount(1);
+    }
+
+    [Fact]
     public async Task HalfOpen_EnsureBreakDuration()
     {
         using var controller = CreateController();
