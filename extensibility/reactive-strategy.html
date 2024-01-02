@@ -235,7 +235,7 @@ public class ResultReportingStrategyOptions : ResultReportingStrategyOptions&lt;
         return builder.AddStrategy(
             context =&gt;
             {
-                // The &quot;context&quot; offers various properties for the strategy's use.
+                // The &quot;context&quot; provides various properties for the strategy's use.
                 // In this case, we simply use the &quot;Telemetry&quot; property and pass it to the strategy.
                 // The ShouldHandle and OnReportResult values are sourced from the options.
                 var strategy = new ResultReportingResilienceStrategy&lt;TResult&gt;(
