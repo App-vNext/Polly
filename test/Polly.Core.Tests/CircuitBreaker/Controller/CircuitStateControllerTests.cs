@@ -141,7 +141,7 @@ public class CircuitStateControllerTests
             }
             catch (BrokenCircuitException e)
             {
-                stacks.Add(e.StackTrace);
+                stacks.Add(e.StackTrace!);
             }
         }
 
