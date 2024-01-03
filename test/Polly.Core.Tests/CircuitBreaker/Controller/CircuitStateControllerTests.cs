@@ -124,6 +124,44 @@ public class CircuitStateControllerTests
         GetBlockedTill(controller).Should().Be(_timeProvider.GetUtcNow() + _options.BreakDuration);
     }
 
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task OnActionPreExecute_CircuitOpened_EnsureExceptionStackTraceDoesNotGrow(bool innerException)
+    {
+        var stacks = new List<string>();
+        var context = ResilienceContextPool.Shared.Get();
+        using var controller = CreateController();
+
+        await OpenCircuit(
+            controller,
+            innerException ? Outcome.FromException<int>(new InvalidOperationException()) : Outcome.FromResult(99));
+
+        for (int i = 0; i < 100; i++)
+        {
+            try
+            {
+                (await controller.OnActionPreExecuteAsync(context)).Value.ThrowIfException();
+            }
+            catch (BrokenCircuitException e)
+            {
+                stacks.Add(e.StackTrace!);
+                e.Message.Should().Be("The circuit is now open and is not allowing calls.");
+
+                if (innerException)
+                {
+                    e.InnerException.Should().BeOfType<InvalidOperationException>();
+                }
+                else
+                {
+                    e.InnerException.Should().BeNull();
+                }
+            }
+        }
+
+        stacks.Distinct().Should().HaveCount(1);
+    }
+
     [Fact]
     public async Task HalfOpen_EnsureBreakDuration()
     {
