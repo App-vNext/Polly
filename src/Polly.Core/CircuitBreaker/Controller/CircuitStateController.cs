@@ -20,7 +20,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     private DateTimeOffset _blockedUntil;
     private CircuitState _circuitState = CircuitState.Closed;
     private Outcome<T>? _lastOutcome;
-    private BrokenCircuitException _breakingException = new();
+    private Exception? _breakingException;
     private bool _disposed;
 
 #pragma warning disable S107
@@ -139,8 +139,8 @@ internal sealed class CircuitStateController<T> : IDisposable
 
             exception = _circuitState switch
             {
-                CircuitState.Open => _breakingException,
-                CircuitState.HalfOpen when !isHalfOpen => _breakingException,
+                CircuitState.Open => CreateBrokenCircuitException(),
+                CircuitState.HalfOpen when !isHalfOpen => CreateBrokenCircuitException(),
                 CircuitState.Isolated => new IsolatedCircuitException(),
                 _ => null
             };
@@ -302,16 +302,14 @@ internal sealed class CircuitStateController<T> : IDisposable
     private void SetLastHandledOutcome_NeedsLock(Outcome<T> outcome)
     {
         _lastOutcome = outcome;
-
-        if (outcome.Exception is Exception exception)
-        {
-            _breakingException = new BrokenCircuitException(BrokenCircuitException.DefaultMessage, exception);
-        }
-        else
-        {
-            _breakingException = new BrokenCircuitException(BrokenCircuitException.DefaultMessage);
-        }
+        _breakingException = outcome.Exception;
     }
+
+    private BrokenCircuitException CreateBrokenCircuitException() => _breakingException switch
+    {
+        Exception exception => new BrokenCircuitException(BrokenCircuitException.DefaultMessage, exception),
+        _ => new BrokenCircuitException(BrokenCircuitException.DefaultMessage)
+    };
 
     private void OpenCircuit_NeedsLock(Outcome<T> outcome, bool manual, ResilienceContext context, out Task? scheduledTask)
     {
