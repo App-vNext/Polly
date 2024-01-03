@@ -68,7 +68,7 @@ public static class PollyServiceCollectionExtensions
         Guard.NotNull(services);
         Guard.NotNull(configure);
 
-        services.TryAddKeyedSingleton(
+        services.TryAddKeyedTransient(
             key,
             (serviceProvider, key) =>
             {
@@ -134,7 +134,7 @@ public static class PollyServiceCollectionExtensions
         Guard.NotNull(services);
         Guard.NotNull(configure);
 
-        services.TryAddKeyedSingleton(
+        services.TryAddKeyedTransient(
             key,
             (serviceProvider, key) =>
             {

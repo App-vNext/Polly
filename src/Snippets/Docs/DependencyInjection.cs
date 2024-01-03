@@ -10,6 +10,8 @@ using Polly.Timeout;
 
 namespace Snippets.Docs;
 
+#pragma warning disable IDE0052 // Remove unread private members
+
 internal static class DependencyInjection
 {
     public static async Task AddResiliencePipeline()
@@ -84,6 +86,47 @@ internal static class DependencyInjection
 
         #endregion
     }
+
+    public static async Task KeyedServicesDefine(IServiceCollection services)
+    {
+        #region di-keyed-services-define
+
+        // Define a resilience pipeline
+        services.AddResiliencePipeline<string, HttpResponseMessage>("my-pipeline", builder =>
+        {
+            // Configure the pipeline
+        });
+
+        // Define a generic resilience pipeline
+        services.AddResiliencePipeline("my-pipeline", builder =>
+        {
+            // Configure the pipeline
+        });
+
+        #endregion
+    }
+
+    #region di-keyed-services-use
+
+    public class MyApi
+    {
+        private readonly ResiliencePipeline _pipeline;
+        private readonly ResiliencePipeline<HttpResponseMessage> _genericPipeline;
+
+        public MyApi(
+            [FromKeyedServices("my-pipeline")]
+            ResiliencePipeline pipeline,
+            [FromKeyedServices("my-pipeline")]
+            ResiliencePipeline<HttpResponseMessage> genericPipeline)
+        {
+            // Although the pipelines are registered with the same key, they are distinct instances.
+            // One is generic, the other is not.
+            _pipeline = pipeline;
+            _genericPipeline = genericPipeline;
+        }
+    }
+
+    #endregion
 
     public static async Task DeferredAddition(IServiceCollection services)
     {
