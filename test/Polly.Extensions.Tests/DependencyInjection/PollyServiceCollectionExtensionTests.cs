@@ -197,6 +197,56 @@ public class PollyServiceCollectionExtensionTests
         provider.GetPipeline("my-pipeline").Should().BeSameAs(provider.GetPipeline("my-pipeline"));
     }
 
+    [Fact]
+    public void AddResiliencePipeline_KeyedSingleton_Ok()
+    {
+        AddResiliencePipeline(Key);
+
+        var provider = _services.BuildServiceProvider();
+
+        var pipeline = provider.GetKeyedService<ResiliencePipeline>(Key);
+        provider.GetKeyedService<ResiliencePipeline>(Key).Should().BeSameAs(pipeline);
+
+        pipeline.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void AddResiliencePipeline_GenericKeyedSingleton_Ok()
+    {
+        AddResiliencePipeline<string>(Key);
+
+        var provider = _services.BuildServiceProvider();
+
+        var pipeline = provider.GetKeyedService<ResiliencePipeline<string>>(Key);
+        provider.GetKeyedService<ResiliencePipeline<string>>(Key).Should().BeSameAs(pipeline);
+
+        pipeline.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void AddResiliencePipeline_KeyedSingletonOverride_Ok()
+    {
+        var pipeline = new ResiliencePipelineBuilder().AddTimeout(TimeSpan.FromSeconds(1)).Build();
+        _services.AddKeyedSingleton(Key, pipeline);
+        AddResiliencePipeline(Key);
+
+        var provider = _services.BuildServiceProvider();
+
+        provider.GetKeyedService<ResiliencePipeline>(Key).Should().BeSameAs(pipeline);
+    }
+
+    [Fact]
+    public void AddResiliencePipeline_GenericKeyedSingletonOverride_Ok()
+    {
+        var pipeline = new ResiliencePipelineBuilder<string>().AddTimeout(TimeSpan.FromSeconds(1)).Build();
+        _services.AddKeyedSingleton(Key, pipeline);
+        AddResiliencePipeline(Key);
+
+        var provider = _services.BuildServiceProvider();
+
+        provider.GetKeyedService<ResiliencePipeline<string>>(Key).Should().BeSameAs(pipeline);
+    }
+
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
@@ -445,6 +495,12 @@ public class PollyServiceCollectionExtensionTests
     private ResiliencePipelineProvider<string> CreateProvider()
     {
         return _services.BuildServiceProvider().GetRequiredService<ResiliencePipelineProvider<string>>();
+    }
+
+    private ResiliencePipelineProvider<string> CreateProvider(out IServiceProvider serviceProvider)
+    {
+        serviceProvider = _services.BuildServiceProvider();
+        return serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
     }
 
     private class TestStrategy : ResilienceStrategy
