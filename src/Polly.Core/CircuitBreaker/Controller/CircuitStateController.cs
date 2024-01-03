@@ -302,16 +302,12 @@ internal sealed class CircuitStateController<T> : IDisposable
     private void SetLastHandledOutcome_NeedsLock(Outcome<T> outcome)
     {
         _lastOutcome = outcome;
-
-        if (outcome.Exception is Exception exception)
-        {
-            _breakingException = exception;
-        }
+        _breakingException = outcome.Exception;
     }
 
     private BrokenCircuitException CreateBrokenCircuitException() => _breakingException switch
     {
-        Exception exception => new BrokenCircuitException(exception.Message, exception),
+        Exception exception => new BrokenCircuitException(BrokenCircuitException.DefaultMessage, exception),
         _ => new BrokenCircuitException(BrokenCircuitException.DefaultMessage)
     };
 
