@@ -2,7 +2,7 @@ name: updater-approve
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, release/* ]
 
 permissions:
   contents: read
@@ -10,7 +10,7 @@ permissions:
 jobs:
   review:
     runs-on: ubuntu-latest
-    if: ${{ github.event.repository.fork == false && github.event.pull_request.user.login == 'polly-updater-bot[bot]' }}
+    if: github.event.repository.fork == false && github.event.pull_request.user.login == 'polly-updater-bot[bot]'
 
     env:
       REVIEWER_LOGIN: "polly-reviewer-bot[bot]"
@@ -98,7 +98,7 @@ jobs:
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
     - name: Approve pull request and enable auto-merge
-      if: ${{ steps.check-dependencies.outputs.is-trusted-update == 'true' }}
+      if: steps.check-dependencies.outputs.is-trusted-update == 'true'
       env:
         GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
         PR_URL: ${{ github.event.pull_request.html_url }}
@@ -118,7 +118,7 @@ jobs:
         }
 
     - name: Disable auto-merge and dismiss approvals
-      if: ${{ steps.check-dependencies.outputs.is-trusted-update != 'true' }}
+      if: steps.check-dependencies.outputs.is-trusted-update != 'true'
       env:
         GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
         PR_URL: ${{ github.event.pull_request.html_url }}

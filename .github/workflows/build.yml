@@ -2,10 +2,10 @@ name: build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, release/* ]
     tags: [ '*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, release/* ]
   workflow_dispatch:
 
 env:
