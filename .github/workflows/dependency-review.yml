@@ -2,7 +2,7 @@ name: dependency-review
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, release/* ]
 
 permissions:
   contents: read
@@ -10,7 +10,7 @@ permissions:
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
-    if: ${{ github.event.repository.fork == false }}
+    if: github.event.repository.fork == false
 
     steps:
 

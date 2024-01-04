@@ -8,7 +8,7 @@ permissions:
 jobs:
   review:
     runs-on: ubuntu-latest
-    if: ${{ github.event.repository.fork == false && github.event.pull_request.user.login == 'dependabot[bot]' }}
+    if: github.event.repository.fork == false && github.event.pull_request.user.login == 'dependabot[bot]'
 
     steps:
 
