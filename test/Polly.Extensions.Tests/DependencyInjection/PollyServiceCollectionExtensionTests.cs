@@ -497,12 +497,6 @@ public class PollyServiceCollectionExtensionTests
         return _services.BuildServiceProvider().GetRequiredService<ResiliencePipelineProvider<string>>();
     }
 
-    private ResiliencePipelineProvider<string> CreateProvider(out IServiceProvider serviceProvider)
-    {
-        serviceProvider = _services.BuildServiceProvider();
-        return serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
-    }
-
     private class TestStrategy : ResilienceStrategy
     {
         protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
