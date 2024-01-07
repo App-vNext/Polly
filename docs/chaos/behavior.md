@@ -11,7 +11,7 @@ The behavior chaos strategy is designed to inject custom behaviors into system o
 
 ## Usage
 
-<!-- snippet: Fault -->
+<!-- snippet: Behavior -->
 ```cs
 // Behavior using the default options.
 // See https://www.pollydocs.org/chaos/behavior#defaults for defaults.
@@ -49,7 +49,7 @@ new ResiliencePipelineBuilder().AddChaosBehavior(0.6, RestartRedisVM);
 
 Example execution:
 
-<!-- snippet: timeout-execution -->
+<!-- snippet: behavior-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
     .AddChaosBehavior(new BehaviorStrategyOptions // monkey strategies are usually placed innermost in the pipelines
@@ -74,8 +74,8 @@ var pipeline = new ResiliencePipelineBuilder()
 
 | Property              | Default Value | Description                                  |
 | --------------------- | ------------- | -------------------------------------------- |
-| `OnBehaviorInjected`  | `null`        | Event that is raised when the behavior is injected.   |
-| `BehaviorAction`      | `null`        | Custom behavior to be injected.                       |
+| `OnBehaviorInjected`  | `null`        | Action executed when the behavior is injected.|
+| `BehaviorAction`      | `null`        | Custom behavior to be injected.               |
 
 ## Diagrams
 
@@ -121,4 +121,4 @@ sequenceDiagram
 ```
 
 ## Anti-patterns
-❌ Do not use it to inject delays, use the latency monkey instead as the Latency Chaos Strategy already correctly handles synchronous/asynchronous delay executions, cancellations, etc.
+❌ Do not use it to inject delays, use the latency monkey instead as the [LatencyChaosStrategy](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.

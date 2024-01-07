@@ -67,7 +67,7 @@ new ResiliencePipelineBuilder().AddChaosFault(0.6, new InvalidOperationException
 
 Example execution:
 
-<!-- snippet: timeout-execution -->
+<!-- snippet: fault-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
     .AddChaosFault(new FaultStrategyOptions // monkey strategies are usually placed innermost in the pipelines
@@ -92,7 +92,7 @@ var pipeline = new ResiliencePipelineBuilder()
 
 | Property           | Default Value | Description                                  |
 | ------------------ | ------------- | -------------------------------------------- |
-| `OnFaultInjected`  | `null`        | Event that is raised when the fault is injected.     |
+| `OnFaultInjected`  | `null`        | Action executed when the fault is injected.     |
 | `FaultGenerator`   | `null`        | Generates the fault to inject for a given execution. |
 | `Fault`            | `null`        | The fault to inject.                                 |
 
