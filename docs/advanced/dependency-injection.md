@@ -148,7 +148,7 @@ public class MyApi
 <!-- endSnippet -->
 
 > [!NOTE]
-> The resilience pipelines are registered in the DI container as transient services. This enables the resolution of multiple instances of `ResiliencePipeline` when [complex pipeline keys](#complex-pipeline-keys) are used. Resilience pipeline is retrieved and registered using `ResiliencePipelineProvider` that is responsible for lifetime management of resilience pipelines.
+> The resilience pipelines are registered in the DI container as transient services. This enables the resolution of multiple instances of `ResiliencePipeline` when [complex pipeline keys](#complex-pipeline-keys) are used. The resilience pipeline is retrieved and registered using `ResiliencePipelineProvider` that is responsible for lifetime management of resilience pipelines.
 
 ## Deferred addition of pipelines
 
@@ -184,7 +184,7 @@ services
 <!-- endSnippet -->
 
 > [!NOTE]
-> The `AddResiliencePipelines` method does not support keyed services. To enable the resolution of a resilience pipeline using keyed services, you should use the `AddResiliencePipeline` extension, which adds a single resilience pipeline and registers it into the keyed services.
+> The `AddResiliencePipelines` method does not support keyed services. To enable the resolution of a resilience pipeline using keyed services, you should use the `AddResiliencePipeline` extension method, which adds a single resilience pipeline and registers it into the keyed services.
 
 ## Dynamic reloads
 

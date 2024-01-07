@@ -139,6 +139,7 @@ public static class PollyServiceCollectionExtensions
             (serviceProvider, key) =>
             {
                 var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<TKey>>();
+
                 return pipelineProvider.GetPipeline((TKey)key!);
             });
 
