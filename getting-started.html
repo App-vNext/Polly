@@ -127,6 +127,9 @@ var pipelineProvider = serviceProvider.GetRequiredService&lt;ResiliencePipelineP
 // Retrieve your resilience pipeline using the name it was registered with
 ResiliencePipeline pipeline = pipelineProvider.GetPipeline(&quot;my-pipeline&quot;);
 
+// Alternatively, you can use keyed services to retrieve the resilience pipeline
+pipeline = serviceProvider.GetRequiredKeyedService&lt;ResiliencePipeline&gt;(&quot;my-pipeline&quot;);
+
 // Execute the pipeline
 await pipeline.ExecuteAsync(static async token =&gt;
 {
