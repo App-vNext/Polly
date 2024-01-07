@@ -28,10 +28,10 @@ Chaos strategies (or Monkey strategies as we call them) are in essence a [Resili
 ## Built-in strategies
 |Strategy| Reactive| What does the policy do?|
 | ------------- |------------- |------------- |
-|**[Fault](#Inject-exception)**|No|Injects exceptions in your system.|
+|**[Fault](fault.md)**|No|Injects exceptions in your system.|
 |**[Result](#Inject-result)**|Yes|Substitute results to fake outcomes in your system.|
 |**[Latency](#Inject-latency)**|No|Injects latency into executions before the calls are made.|
-|**[Behavior](#Inject-behavior)**|No|Allows you to inject _any_ extra behaviour, before a call is placed. |
+|**[Behavior](behavior.md)**|No|Allows you to inject _any_ extra behaviour, before a call is placed. |
 
 ## Usage
 It is usual to place the Monkey Strategy innermost in a Resilience Pipeline. By placing the monkey strategies innermost, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.

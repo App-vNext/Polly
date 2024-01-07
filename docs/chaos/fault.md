@@ -109,6 +109,9 @@ sequenceDiagram
 
     C->>P: Calls ExecuteAsync
     P->>F: Calls ExecuteCore
+    activate F
+    F-->>F: Determines Fault Injection
+    deactivate F
     F->>+D: Invokes
     D->>-F: Returns result
     F->>P: Returns result
@@ -126,13 +129,11 @@ sequenceDiagram
 
     C->>P: Calls ExecuteAsync
     P->>F: Calls ExecuteCore
+    activate F
     F-->>F: Determines Fault Injection
+    F-->>F: Inject Fault
+    deactivate F
     Note over D: The user's Callback is not invoked when a fault is injected
     F->>P: Throws injected Fault
     P->>C: Propagates Exception
 ```
-
-## Patterns
-
-
-## Anti-patterns
