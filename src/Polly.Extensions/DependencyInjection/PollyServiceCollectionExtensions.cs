@@ -68,6 +68,15 @@ public static class PollyServiceCollectionExtensions
         Guard.NotNull(services);
         Guard.NotNull(configure);
 
+        services.TryAddKeyedTransient(
+            key,
+            (serviceProvider, key) =>
+            {
+                var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<TKey>>();
+
+                return pipelineProvider.GetPipeline<TResult>((TKey)key!);
+            });
+
         return services.AddResiliencePipelines<TKey>((context) =>
         {
             context.AddResiliencePipeline(key, configure);
@@ -124,6 +133,15 @@ public static class PollyServiceCollectionExtensions
     {
         Guard.NotNull(services);
         Guard.NotNull(configure);
+
+        services.TryAddKeyedTransient(
+            key,
+            (serviceProvider, key) =>
+            {
+                var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<TKey>>();
+
+                return pipelineProvider.GetPipeline((TKey)key!);
+            });
 
         return services.AddResiliencePipelines<TKey>((context) =>
         {
