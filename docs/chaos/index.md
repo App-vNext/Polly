@@ -29,7 +29,7 @@ Chaos strategies (or Monkey strategies as we call them) are in essence a [Resili
 |Strategy| Reactive| What does the policy do?|
 | ------------- |------------- |------------- |
 |**[Fault](fault.md)**|No|Injects exceptions in your system.|
-|**[Result](#Inject-result)**|Yes|Substitute results to fake outcomes in your system.|
+|**[Result](result.md)**|Yes|Substitute results to fake outcomes in your system.|
 |**[Latency](latency.md)**|No|Injects latency into executions before the calls are made.|
 |**[Behavior](behavior.md)**|No|Allows you to inject _any_ extra behaviour, before a call is placed. |
 
