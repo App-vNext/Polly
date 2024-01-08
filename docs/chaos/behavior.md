@@ -122,4 +122,5 @@ sequenceDiagram
 ```
 
 ## Anti-patterns
+
 ❌ Do not use it to inject delays, use the latency monkey instead as the [LatencyChaosStrategy](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.

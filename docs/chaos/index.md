@@ -33,7 +33,7 @@ Chaos strategies (or Monkey strategies as we call them) are in essence a [Resili
 |[Fault](fault.md)|No|Injects exceptions in your system.|
 |[Result](result.md)|Yes|Substitute results to fake outcomes in your system.|
 |[Latency](latency.md)|No|Injects latency into executions before the calls are made.|
-|[Behavior](behavior.md)|No|Allows you to inject _any_ extra behaviour, before a call is placed. |
+|[Behavior](behavior.md)|No|Allows you to inject *any* extra behaviour, before a call is placed.|
 
 ## Usage
 
@@ -51,4 +51,3 @@ All the strategies' options implement the [`MonkeyStrategyOptions`](xref:Polly.S
 | `EnabledGenerator`        | `null`        | the enable generator that indicates whether or not the chaos strategy is enabled for a given execution.     |
 
 [simmy]: https://github.com/Polly-Contrib/Simmy
-
