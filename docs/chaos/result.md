@@ -7,13 +7,14 @@
   - [`OutcomeStrategyOptions<T>`](xref:Polly.Simmy.Behavior.OutcomeStrategyOptions`1)
 - **Extensions**: `AddChaosResult`
 - **Strategy Type**: Reactive
+
 ---
 
 The outcome chaos strategy is designed to inject or substitute fake results into system operations. This allows testing how an application behaves when it receives different types of responses, like successful results, errors, or exceptions.
 
 ## Usage
 
-<!-- snippet: Behavior -->
+<!-- snippet: Result -->
 ```cs
 // Outcome using the default options.
 // See https://www.pollydocs.org/chaos/result#defaults for defaults.

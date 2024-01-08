@@ -5,6 +5,7 @@
 - **Options**: [`BehaviorStrategyOptions`](xref:Polly.Simmy.Behavior.BehaviorStrategyOptions)
 - **Extensions**: `AddChaosBehavior`
 - **Strategy Type**: Proactive
+
 ---
 
 The behavior chaos strategy is designed to inject custom behaviors into system operations right before such an operation is invoked. This strategy is flexible, allowing users to define specific behaviors such as altering the input, simulating resource exhaustion, putting the system in a given state before the actual operation is called, or other operational variations to simulate real-world scenarios.

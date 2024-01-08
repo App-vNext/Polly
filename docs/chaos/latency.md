@@ -5,6 +5,7 @@
 - **Options**: [`LatencyStrategyOptions`](xref:Polly.Simmy.Latency.LatencyStrategyOptions)
 - **Extensions**: `AddChaosLatency`
 - **Strategy Type**: Proactive
+
 ---
 
 The latency chaos strategy is designed to introduce controlled delays into system operations, simulating network latency or slow processing times. This strategy helps in assessing and improving the resilience of applications against increased response times.

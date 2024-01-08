@@ -5,6 +5,7 @@
 - **Options**: [`FaultStrategyOptions`](xref:Polly.Simmy.Fault.FaultStrategyOptions)
 - **Extensions**: `AddChaosFault`
 - **Strategy Type**: Proactive
+
 ---
 
 The fault chaos strategy is designed to introduce faults (exceptions) into the system, simulating real-world scenarios where operations might fail unexpectedly. It is configurable to inject specific types of exceptions or use custom logic to generate faults dynamically.

@@ -4,7 +4,7 @@
 
 <img src="../../logos/Simmy-Logo.png" alt="Simmy"/>
 
-# Motivation
+## Motivation
 
 There are a lot of questions when it comes to chaos-engineering and making sure that a system is actually ready to face the worst possible scenarios:
 
@@ -22,21 +22,25 @@ Using Polly helps me introduce resilience to my project, but I don't want to hav
 * A way to revert easily, to control the blast radius.
 * Production grade, to run this in a production or near-production system with automation.
 
-# Chaos strategies (a.k.a Monkey strategies)
+## Chaos strategies (a.k.a Monkey strategies)
+
 Chaos strategies (or Monkey strategies as we call them) are in essence a [Resilience strategy](../strategies/index.md#built-in-strategies), which means, as well as a *Resilience Strategy* is the minimum unit of resilience for Polly, a *Monkey Strategy* is the minimum unit of chaos for Simmy.
 
-## Built-in strategies
+### Built-in strategies
+
 |Strategy| Reactive| What does the policy do?|
 | ------------- |------------- |------------- |
-|**[Fault](fault.md)**|No|Injects exceptions in your system.|
-|**[Result](result.md)**|Yes|Substitute results to fake outcomes in your system.|
-|**[Latency](latency.md)**|No|Injects latency into executions before the calls are made.|
-|**[Behavior](behavior.md)**|No|Allows you to inject _any_ extra behaviour, before a call is placed. |
+|[Fault](fault.md)|No|Injects exceptions in your system.|
+|[Result](result.md)|Yes|Substitute results to fake outcomes in your system.|
+|[Latency](latency.md)|No|Injects latency into executions before the calls are made.|
+|[Behavior](behavior.md)|No|Allows you to inject _any_ extra behaviour, before a call is placed. |
 
 ## Usage
+
 It is usual to place the Monkey Strategy innermost in a Resilience Pipeline. By placing the monkey strategies innermost, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.
 
 ## Common options across strategies
+
 All the strategies' options implement the [`MonkeyStrategyOptions`](xref:Polly.Simmy.MonkeyStrategyOptions) class as it contains the basic configuration for every monkey strategy.
 
 | Property                  | Default Value | Description                                  |
