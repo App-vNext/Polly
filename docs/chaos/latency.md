@@ -12,7 +12,7 @@ The latency chaos strategy is designed to introduce controlled delays into syste
 
 ## Usage
 
-<!-- snippet: Latency -->
+<!-- snippet: chaos-latency-usage -->
 ```cs
 // Latency using the default options.
 // See https://www.pollydocs.org/chaos/latency#defaults for defaults.
@@ -52,7 +52,7 @@ var optionsOnBehaviorInjected = new LatencyStrategyOptions
     InjectionRate = 0.6,
     OnLatency = static args =>
     {
-        Console.WriteLine("OnLatency, Latency: {0}, Operation: {0}.", args.Latency, args.Context.OperationKey);
+        Console.WriteLine($"OnLatency, Latency: {args.Latency}, Operation: {args.Context.OperationKey}.");
         return default;
     }
 };
@@ -68,7 +68,7 @@ new ResiliencePipelineBuilder().AddChaosLatency(0.6, TimeSpan.FromSeconds(30));
 
 Example execution:
 
-<!-- snippet: latency-execution -->
+<!-- snippet: chaos-latency-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
     .AddChaosLatency(new LatencyStrategyOptions // monkey strategies are usually placed innermost in the pipelines

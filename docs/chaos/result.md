@@ -14,7 +14,7 @@ The outcome chaos strategy is designed to inject or substitute fake results into
 
 ## Usage
 
-<!-- snippet: Result -->
+<!-- snippet: chaos-result-usage -->
 ```cs
 // Outcome using the default options.
 // See https://www.pollydocs.org/chaos/result#defaults for defaults.
@@ -45,7 +45,7 @@ var optionsOnBehaviorInjected = new OutcomeStrategyOptions<HttpStatusCode>
     InjectionRate = 0.6,
     OnOutcomeInjected = static args =>
     {
-        Console.WriteLine("OnBehaviorInjected, Outcome: {0}, Operation: {1}.", args.Outcome.Result, args.Context.OperationKey);
+        Console.WriteLine($"OnBehaviorInjected, Outcome: {args.Outcome.Result}, Operation: {args.Context.OperationKey}.");
         return default;
     }
 };
@@ -61,7 +61,7 @@ new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(0.6, HttpStatusCo
 
 Example execution:
 
-<!-- snippet: behavior-execution -->
+<!-- snippet: chaos-result-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder<HttpStatusCode>()
     .AddChaosResult(new OutcomeStrategyOptions<HttpStatusCode> // monkey strategies are usually placed innermost in the pipelines
