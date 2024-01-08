@@ -26,7 +26,8 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
             null,
             _behavior,
             _timeProvider,
-            _telemetry);
+            _telemetry,
+            null);
     }
 
     [Fact]

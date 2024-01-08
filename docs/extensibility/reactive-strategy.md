@@ -4,7 +4,7 @@ This document describes how to set up a **Result reporting resilience strategy**
 
 ## Implementation
 
-Reactive resilience strategies inherit from the [`ResilienceStrategy<T>`](xref:Polly.ResilienceStrategy`1) base class. The implementation for this specific strategy is as follows:
+Reactive resilience strategies inherit from the [`ResilienceStrategy<T>`](xref:Polly.ResilienceStrategy`1) base class. The implementation for this specific strategy:
 
 <!-- snippet: ext-reactive-strategy -->
 ```cs
@@ -31,15 +31,21 @@ internal sealed class ResultReportingResilienceStrategy<T> : ResilienceStrategy<
         ResilienceContext context,
         TState state)
     {
+        // Execute the given callback and adhere to the ContinueOnCapturedContext property value.
         Outcome<T> outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         // Check if the outcome should be reported using the "ShouldHandle" predicate.
         if (await _shouldHandle(new ResultReportingPredicateArguments<T>(context, outcome)).ConfigureAwait(context.ContinueOnCapturedContext))
         {
+            // Bundle information about the event into arguments.
             var args = new OnReportResultArguments<T>(context, outcome);
 
-            // Report the event with an informational severity level to the telemetry infrastructure.
-            _telemetry.Report(new ResilienceEvent(ResilienceEventSeverity.Information, "ResultReported"), context, outcome, args);
+            // Report this as a resilience event with information severity level to the telemetry infrastructure.
+            _telemetry.Report(
+                new ResilienceEvent(ResilienceEventSeverity.Information, "ResultReported"),
+                context,
+                outcome,
+                args);
 
             // Call the "OnReportResult" callback.
             await _onReportResult(args).ConfigureAwait(context.ContinueOnCapturedContext);
@@ -55,7 +61,7 @@ Reactive strategies use the `ShouldHandle` predicate to decide whether to handle
 
 <!-- snippet: ext-reactive-predicate-args -->
 ```cs
-public struct ResultReportingPredicateArguments<TResult>
+public readonly struct ResultReportingPredicateArguments<TResult>
 {
     public ResultReportingPredicateArguments(ResilienceContext context, Outcome<TResult> outcome)
     {
@@ -72,13 +78,13 @@ public struct ResultReportingPredicateArguments<TResult>
 ```
 <!-- endSnippet -->
 
-Reactive arguments always contain the `Context` and `Outcome` properties.
+Reactive arguments should **always** contain the `Context` and `Outcome` properties.
 
 Additionally, to report the outcome, the strategy uses `OnReportResultArguments<TResult>`:
 
 <!-- snippet: ext-reactive-event-args -->
 ```cs
-public struct OnReportResultArguments<TResult>
+public readonly struct OnReportResultArguments<TResult>
 {
     public OnReportResultArguments(ResilienceContext context, Outcome<TResult> outcome)
     {
@@ -109,7 +115,7 @@ public class ResultReportingStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     public ResultReportingStrategyOptions()
     {
-        // Set a default name for the options to enhance telemetry insights.
+        // Assign a default name to the options for more detailed telemetry insights.
         Name = "ResultReporting";
     }
 
@@ -159,16 +165,18 @@ public static class ResultReportingResilienceStrategyBuilderExtensions
 {
     // Add extensions for the generic builder.
     // Extensions should return the builder to support a fluent API.
-    public static ResiliencePipelineBuilder<TResult> AddResultReporting<TResult>(this ResiliencePipelineBuilder<TResult> builder, ResultReportingStrategyOptions<TResult> options)
+    public static ResiliencePipelineBuilder<TResult> AddResultReporting<TResult>(
+        this ResiliencePipelineBuilder<TResult> builder,
+        ResultReportingStrategyOptions<TResult> options)
     {
-        // Incorporate the strategy using the AddStrategy() method. This method receives a factory delegate
-        // and automatically checks the options.
+        // Add the strategy through the AddStrategy method. This method accepts a factory delegate
+        // and automatically validates the options.
         return builder.AddStrategy(
             context =>
             {
-                // The "context" offers various properties for the strategy to use.
-                // Here, we simply use the "Telemetry" property and hand it over to the strategy.
-                // The ShouldHandle and OnReportResult values come from the options.
+                // The "context" provides various properties for the strategy's use.
+                // In this case, we simply use the "Telemetry" property and pass it to the strategy.
+                // The ShouldHandle and OnReportResult values are sourced from the options.
                 var strategy = new ResultReportingResilienceStrategy<TResult>(
                     options.ShouldHandle,
                     options.OnReportResult!,
@@ -181,7 +189,9 @@ public static class ResultReportingResilienceStrategyBuilderExtensions
 
     // Optionally, if suitable for the strategy, add support for non-generic builders.
     // Observe the use of the non-generic ResultReportingStrategyOptions.
-    public static ResiliencePipelineBuilder AddResultReporting(this ResiliencePipelineBuilder builder, ResultReportingStrategyOptions options)
+    public static ResiliencePipelineBuilder AddResultReporting(
+        this ResiliencePipelineBuilder builder,
+        ResultReportingStrategyOptions options)
     {
         return builder.AddStrategy(
             context =>
@@ -211,7 +221,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
         ShouldHandle = args => args.Outcome switch
         {
             { Exception: { } } => PredicateResult.True(),
-            { Result: { StatusCode: HttpStatusCode.InternalServerError } } => PredicateResult.True(),
+            { Result.StatusCode: HttpStatusCode.InternalServerError } => PredicateResult.True(),
             _ => PredicateResult.False()
         },
         OnReportResult = args =>

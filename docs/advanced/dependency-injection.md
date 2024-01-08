@@ -100,6 +100,92 @@ await pipeline.ExecuteAsync(
 ```
 <!-- endSnippet -->
 
+## Keyed services
+
+.NET 8 introduced support for [keyed services](https://learn.microsoft.com/dotnet/core/extensions/dependency-injection#keyed-services).
+Starting from version 8.3.0, Polly supports the retrieval of `ResiliencePipeline` or `ResiliencePipeline<T>` using keyed services.
+
+To begin, define your resilience pipeline:
+
+<!-- snippet: di-keyed-services-define -->
+```cs
+// Define a resilience pipeline
+services.AddResiliencePipeline<string, HttpResponseMessage>("my-pipeline", builder =>
+{
+    // Configure the pipeline
+});
+
+// Define a generic resilience pipeline
+services.AddResiliencePipeline("my-pipeline", builder =>
+{
+    // Configure the pipeline
+});
+```
+<!-- endSnippet -->
+
+Following the definition above, you can resolve the resilience pipelines using keyed services as shown in the example below:
+
+<!-- snippet: di-keyed-services-use -->
+```cs
+public class MyApi
+{
+    private readonly ResiliencePipeline _pipeline;
+    private readonly ResiliencePipeline<HttpResponseMessage> _genericPipeline;
+
+    public MyApi(
+        [FromKeyedServices("my-pipeline")]
+        ResiliencePipeline pipeline,
+        [FromKeyedServices("my-pipeline")]
+        ResiliencePipeline<HttpResponseMessage> genericPipeline)
+    {
+        // Although the pipelines are registered with the same key, they are distinct instances.
+        // One is generic, the other is not.
+        _pipeline = pipeline;
+        _genericPipeline = genericPipeline;
+    }
+}
+```
+<!-- endSnippet -->
+
+> [!NOTE]
+> The resilience pipelines are registered in the DI container as transient services. This enables the resolution of multiple instances of `ResiliencePipeline` when [complex pipeline keys](#complex-pipeline-keys) are used. The resilience pipeline is retrieved and registered using `ResiliencePipelineProvider` that is responsible for lifetime management of resilience pipelines.
+
+## Deferred addition of pipelines
+
+If you want to use a key for a resilience pipeline that may not be available
+immediately you can use the `AddResiliencePipelines()` method to defer adding
+them until just prior to the `ResiliencePipelineProvider<TKey>` is instantiated
+by the DI container, allowing the `IServiceProvider` to be used if required.
+
+<!-- snippet: di-deferred-addition -->
+```cs
+services
+    .AddResiliencePipelines<string>((ctx) =>
+    {
+        var config = ctx.ServiceProvider.GetRequiredService<IConfiguration>();
+
+        var configSection = config.GetSection("ResiliencePipelines");
+        if (configSection is not null)
+        {
+            foreach (var pipelineConfig in configSection.GetChildren())
+            {
+                var pipelineName = pipelineConfig.GetValue<string>("Name");
+                if (!string.IsNullOrEmpty(pipelineName))
+                {
+                    ctx.AddResiliencePipeline(pipelineName, (builder, context) =>
+                    {
+                        // Load configuration and configure pipeline...
+                    });
+                }
+            }
+        }
+    });
+```
+<!-- endSnippet -->
+
+> [!NOTE]
+> The `AddResiliencePipelines` method does not support keyed services. To enable the resolution of a resilience pipeline using keyed services, you should use the `AddResiliencePipeline` extension method, which adds a single resilience pipeline and registers it into the keyed services.
+
 ## Dynamic reloads
 
 Dynamic reloading is a feature of the pipeline registry that is also surfaced when

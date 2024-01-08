@@ -6,7 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
-    <PackageVersion Include="BenchmarkDotNet" Version="0.13.10" />
+    <PackageVersion Include="BenchmarkDotNet" Version="0.13.11" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="2.3.3" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
@@ -16,6 +16,7 @@
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="$(MicrosoftExtensionsVersion)" />
@@ -32,14 +33,14 @@
     <PackageVersion Include="Polly.Testing" Version="$(PollyVersion)" />
     <PackageVersion Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
     <PackageVersion Include="ReportGenerator" Version="5.2.0" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.12.0.78982" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.15.0.81779" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.507" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="4.5.0" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="System.Threading.RateLimiting" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
-    <PackageVersion Include="xunit" Version="2.6.2" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />
+    <PackageVersion Include="xunit" Version="2.6.4" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.6" />
   </ItemGroup>
 </Project>

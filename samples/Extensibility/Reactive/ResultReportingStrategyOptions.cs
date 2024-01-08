@@ -9,7 +9,7 @@ public class ResultReportingStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     public ResultReportingStrategyOptions()
     {
-        // Set a default name for the options to enhance telemetry insights.
+        // Assign a default name to the options for more detailed telemetry insights.
         Name = "ResultReporting";
     }
 

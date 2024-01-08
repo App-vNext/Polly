@@ -2,9 +2,9 @@ name: code-scan
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, release/* ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, release/* ]
   schedule:
     - cron: '0 8 * * MON'
   workflow_dispatch:
@@ -34,7 +34,7 @@ jobs:
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
 
     - name: Setup NuGet cache
       uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
@@ -44,14 +44,14 @@ jobs:
         restore-keys: ${{ runner.os }}-nuget-
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@407ffafae6a767df3e0230c3df91b6443ae8df75 # v2.22.8
+      uses: github/codeql-action/init@012739e5082ff0c22ca6d6ab32e07c36df03c4a4 # v3.22.12
       with:
         languages: ${{ matrix.language }}
 
     - name: Autobuild
-      uses: github/codeql-action/autobuild@407ffafae6a767df3e0230c3df91b6443ae8df75 # v2.22.8
+      uses: github/codeql-action/autobuild@012739e5082ff0c22ca6d6ab32e07c36df03c4a4 # v3.22.12
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@407ffafae6a767df3e0230c3df91b6443ae8df75 # v2.22.8
+      uses: github/codeql-action/analyze@012739e5082ff0c22ca6d6ab32e07c36df03c4a4 # v3.22.12
       with:
         category: "/language:${{ matrix.language }}"

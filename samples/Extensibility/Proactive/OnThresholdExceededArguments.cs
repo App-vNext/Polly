@@ -6,9 +6,9 @@ namespace Extensibility.Proactive;
 
 // Structs for arguments encapsulate details about specific events within the resilience strategy.
 // Relevant properties to the event can be exposed. In this event, the actual execution time and the exceeded threshold are included.
-public readonly struct ThresholdExceededArguments
+public readonly struct OnThresholdExceededArguments
 {
-    public ThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
+    public OnThresholdExceededArguments(ResilienceContext context, TimeSpan threshold, TimeSpan duration)
     {
         Context = context;
         Threshold = threshold;

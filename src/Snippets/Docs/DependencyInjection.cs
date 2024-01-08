@@ -10,6 +10,8 @@ using Polly.Timeout;
 
 namespace Snippets.Docs;
 
+#pragma warning disable IDE0052 // Remove unread private members
+
 internal static class DependencyInjection
 {
     public static async Task AddResiliencePipeline()
@@ -81,6 +83,76 @@ internal static class DependencyInjection
         await pipeline.ExecuteAsync(
             async cancellation => await client.GetAsync(endpoint, cancellation),
             cancellationToken);
+
+        #endregion
+    }
+
+    public static async Task KeyedServicesDefine(IServiceCollection services)
+    {
+        #region di-keyed-services-define
+
+        // Define a resilience pipeline
+        services.AddResiliencePipeline<string, HttpResponseMessage>("my-pipeline", builder =>
+        {
+            // Configure the pipeline
+        });
+
+        // Define a generic resilience pipeline
+        services.AddResiliencePipeline("my-pipeline", builder =>
+        {
+            // Configure the pipeline
+        });
+
+        #endregion
+    }
+
+    #region di-keyed-services-use
+
+    public class MyApi
+    {
+        private readonly ResiliencePipeline _pipeline;
+        private readonly ResiliencePipeline<HttpResponseMessage> _genericPipeline;
+
+        public MyApi(
+            [FromKeyedServices("my-pipeline")]
+            ResiliencePipeline pipeline,
+            [FromKeyedServices("my-pipeline")]
+            ResiliencePipeline<HttpResponseMessage> genericPipeline)
+        {
+            // Although the pipelines are registered with the same key, they are distinct instances.
+            // One is generic, the other is not.
+            _pipeline = pipeline;
+            _genericPipeline = genericPipeline;
+        }
+    }
+
+    #endregion
+
+    public static async Task DeferredAddition(IServiceCollection services)
+    {
+        #region di-deferred-addition
+
+        services
+            .AddResiliencePipelines<string>((ctx) =>
+            {
+                var config = ctx.ServiceProvider.GetRequiredService<IConfiguration>();
+
+                var configSection = config.GetSection("ResiliencePipelines");
+                if (configSection is not null)
+                {
+                    foreach (var pipelineConfig in configSection.GetChildren())
+                    {
+                        var pipelineName = pipelineConfig.GetValue<string>("Name");
+                        if (!string.IsNullOrEmpty(pipelineName))
+                        {
+                            ctx.AddResiliencePipeline(pipelineName, (builder, context) =>
+                            {
+                                // Load configuration and configure pipeline...
+                            });
+                        }
+                    }
+                }
+            });
 
         #endregion
     }

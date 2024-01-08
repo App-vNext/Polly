@@ -67,6 +67,55 @@ catch (RateLimiterRejectedException ex)
 ```
 <!-- endSnippet -->
 
+### Failure handling
+
+It might not be obvious at the first glance what is the difference between these two techniques:
+
+<!-- snippet: rate-limiter-handling-failure -->
+```cs
+var withOnRejected = new ResiliencePipelineBuilder()
+    .AddRateLimiter(new RateLimiterStrategyOptions
+    {
+        DefaultRateLimiterOptions = new ConcurrencyLimiterOptions
+        {
+            PermitLimit = 10
+        },
+        OnRejected = args =>
+        {
+            Console.WriteLine("Rate limit has been exceeded");
+            return default;
+        }
+    }).Build();
+
+var withoutOnRejected = new ResiliencePipelineBuilder()
+    .AddRateLimiter(new RateLimiterStrategyOptions
+    {
+        DefaultRateLimiterOptions = new ConcurrencyLimiterOptions
+        {
+            PermitLimit = 10
+        }
+    }).Build();
+
+try
+{
+    await withoutOnRejected.ExecuteAsync(async ct => await TextSearchAsync(query, ct), CancellationToken.None);
+}
+catch (RateLimiterRejectedException)
+{
+    Console.WriteLine("Rate limit has been exceeded");
+}
+```
+<!-- endSnippet -->
+
+The `OnRejected` user-provided delegate is called just before the strategy throws the `RateLimiterRejectedException`. This delegate receives a parameter which allows you to access the `Context` object as well as the `Lease`:
+
+- Accessing the `Context` is also possible via a different `Execute{Async}` overload.
+- Accessing the rejected `Lease` can be useful in certain scenarios.
+
+So, what is the purpose of the `OnRejected`?
+
+The `OnRejected` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `RateLimiterRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the `OnRejected` property.
+
 ## Defaults
 
 | Property                    | Default Value                                        | Description                                                                                     |

@@ -4,7 +4,7 @@ namespace Extensibility.Reactive;
 
 #region ext-reactive-predicate-args
 
-public struct ResultReportingPredicateArguments<TResult>
+public readonly struct ResultReportingPredicateArguments<TResult>
 {
     public ResultReportingPredicateArguments(ResilienceContext context, Outcome<TResult> outcome)
     {

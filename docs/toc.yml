@@ -78,6 +78,8 @@
     href: community/resources.md
   - name: Git workflow
     href: community/git-workflow.md
+  - name: Cheat sheets
+    href: community/cheat-sheets.md
 
 - name: API
   href: api/

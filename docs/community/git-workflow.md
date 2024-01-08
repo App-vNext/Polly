@@ -9,8 +9,14 @@ Our recommended process for working with Polly is:
 5. Create a new local branch for your changes (`git checkout -b my-branch`).
 6. Work on your changes
 7. Rebase if required (see below)
-8. Push the branch up to GitHub (`git push origin my-branch`)
-9. [Create a Pull Request][create-a-pr] on GitHub - the PR should target (have as base branch) the default branch (i.e. `main`).
+8. Check that the solution builds successfully by running `dotnet test` from the root of the repository
+    - There should be no errors or warnings
+    - All tests should pass
+    - The code coverage level is maintained
+    - Bug fixes should include at least one test where practical
+9. If adding new functionality, or checking existing behaviour, check whether there is any documentation that should be added or updated
+10. Push the branch up to GitHub (`git push origin my-branch`)
+11. [Create a Pull Request][create-a-pr] on GitHub - the PR should target (have as base branch) the default branch (i.e. `main`).
 
 You should not work on a clone of the default branch, and you should not send a pull request from it - please always work from a branch. The reasons for this are detailed below.
 

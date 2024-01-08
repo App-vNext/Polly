@@ -67,6 +67,38 @@ internal static class Timeout
         #endregion
     }
 
+    public static async Task HandleTimeout()
+    {
+        static ValueTask UserDelegate(CancellationToken ct) => ValueTask.CompletedTask;
+        #region timeout-handling-failure
+        var withOnTimeout = new ResiliencePipelineBuilder()
+            .AddTimeout(new TimeoutStrategyOptions
+            {
+                Timeout = TimeSpan.FromSeconds(2),
+                OnTimeout = args =>
+                {
+                    Console.WriteLine("Timeout limit has been exceeded");
+                    return default;
+                }
+            }).Build();
+
+        var withoutOnTimeout = new ResiliencePipelineBuilder()
+            .AddTimeout(new TimeoutStrategyOptions
+            {
+                Timeout = TimeSpan.FromSeconds(2)
+            }).Build();
+
+        try
+        {
+            await withoutOnTimeout.ExecuteAsync(UserDelegate, CancellationToken.None);
+        }
+        catch (TimeoutRejectedException)
+        {
+            Console.WriteLine("Timeout limit has been exceeded");
+        }
+        #endregion
+    }
+
     public static async Task AntiPattern_CancellationToken()
     {
         var outerToken = CancellationToken.None;

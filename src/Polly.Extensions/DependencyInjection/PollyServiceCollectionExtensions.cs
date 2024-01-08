@@ -28,7 +28,7 @@ public static class PollyServiceCollectionExtensions
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
     /// <para>
-    /// This call enables the telemetry for the registered resilience pipeline.
+    /// This call enables telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
     public static IServiceCollection AddResiliencePipeline<TKey, TResult>(
@@ -56,7 +56,7 @@ public static class PollyServiceCollectionExtensions
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
     /// <para>
-    /// This call enables the telemetry for the registered resilience pipeline.
+    /// This call enables telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
     public static IServiceCollection AddResiliencePipeline<TKey, TResult>(
@@ -68,20 +68,19 @@ public static class PollyServiceCollectionExtensions
         Guard.NotNull(services);
         Guard.NotNull(configure);
 
-        services
-            .AddOptions<ConfigureResiliencePipelineRegistryOptions<TKey>>()
-            .Configure<IServiceProvider>((options, serviceProvider) =>
+        services.TryAddKeyedTransient(
+            key,
+            (serviceProvider, key) =>
             {
-                options.Actions.Add((registry) =>
-                {
-                    registry.TryAddBuilder<TResult>(key, (builder, context) =>
-                    {
-                        configure(builder, new AddResiliencePipelineContext<TKey>(context, serviceProvider));
-                    });
-                });
+                var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<TKey>>();
+
+                return pipelineProvider.GetPipeline<TResult>((TKey)key!);
             });
 
-        return services.AddResiliencePipelineRegistry<TKey>();
+        return services.AddResiliencePipelines<TKey>((context) =>
+        {
+            context.AddResiliencePipeline(key, configure);
+        });
     }
 
     /// <summary>
@@ -96,7 +95,7 @@ public static class PollyServiceCollectionExtensions
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
     /// <para>
-    /// This call enables the telemetry for the registered resilience pipeline.
+    /// This call enables telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
     public static IServiceCollection AddResiliencePipeline<TKey>(
@@ -123,7 +122,7 @@ public static class PollyServiceCollectionExtensions
     /// <remarks>
     /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
     /// <para>
-    /// This call enables the telemetry for the registered resilience pipeline.
+    /// This call enables telemetry for the registered resilience pipeline.
     /// </para>
     /// </remarks>
     public static IServiceCollection AddResiliencePipeline<TKey>(
@@ -135,18 +134,52 @@ public static class PollyServiceCollectionExtensions
         Guard.NotNull(services);
         Guard.NotNull(configure);
 
+        services.TryAddKeyedTransient(
+            key,
+            (serviceProvider, key) =>
+            {
+                var pipelineProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<TKey>>();
+
+                return pipelineProvider.GetPipeline((TKey)key!);
+            });
+
+        return services.AddResiliencePipelines<TKey>((context) =>
+        {
+            context.AddResiliencePipeline(key, configure);
+        });
+    }
+
+    /// <summary>
+    /// Allows deferred addition of one or more resilience pipelines to the service collection.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key used to identify the resilience pipelines.</typeparam>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add resilience pipelines to.</param>
+    /// <param name="configure">An action that allows configuration of resilience pipelines.</param>
+    /// <returns>The updated <see cref="IServiceCollection"/> with the addition configuration added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
+    /// <remarks>
+    /// This method can be useful if you want to add resilience pipelines as late as possible, e.g.
+    /// to allow other services / configuration to be available before providing the key.
+    /// <para>
+    /// You can retrieve the registered pipeline by resolving the <see cref="ResiliencePipelineProvider{TKey}"/> class from the dependency injection container.
+    /// </para>
+    /// <para>
+    /// This call enables telemetry for the registered resilience pipeline.
+    /// </para>
+    /// </remarks>
+    public static IServiceCollection AddResiliencePipelines<TKey>(
+        this IServiceCollection services,
+        Action<AddResiliencePipelinesContext<TKey>> configure)
+        where TKey : notnull
+    {
+        Guard.NotNull(services);
+        Guard.NotNull(configure);
+
         services
             .AddOptions<ConfigureResiliencePipelineRegistryOptions<TKey>>()
             .Configure<IServiceProvider>((options, serviceProvider) =>
             {
-                options.Actions.Add((registry) =>
-                {
-                    // the last added builder with the same key wins, this allows overriding the builders
-                    registry.TryAddBuilder(key, (builder, context) =>
-                    {
-                        configure(builder, new AddResiliencePipelineContext<TKey>(context, serviceProvider));
-                    });
-                });
+                configure(new AddResiliencePipelinesContext<TKey>(options, serviceProvider));
             });
 
         return services.AddResiliencePipelineRegistry<TKey>();

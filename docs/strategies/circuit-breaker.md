@@ -36,6 +36,16 @@ var optionsComplex = new CircuitBreakerStrategyOptions
     ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
 };
 
+// Circuit breaker using BreakDurationGenerator:
+// The break duration is dynamically determined based on the properties of BreakDurationGeneratorArguments.
+var optionsBreakDurationGenerator = new CircuitBreakerStrategyOptions
+{
+    FailureRatio = 0.5,
+    SamplingDuration = TimeSpan.FromSeconds(10),
+    MinimumThroughput = 8,
+    BreakDurationGenerator = static args => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(args.FailureCount)),
+};
+
 // Handle specific failed results for HttpResponseMessage:
 var optionsShouldHandle = new CircuitBreakerStrategyOptions<HttpResponseMessage>
 {
@@ -81,18 +91,19 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(optionsSt
 
 ## Defaults
 
-| Property            | Default Value                                                              | Description                                                                                |
-| ------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `ShouldHandle`      | Predicate that handles all exceptions except `OperationCanceledException`. | Specifies which results and exceptions are managed by the circuit breaker strategy.        |
-| `FailureRatio`      | 0.1                                                                        | The ratio of failures to successes that will cause the circuit to break/open.              |
-| `MinimumThroughput` | 100                                                                        | The minimum number of actions that must occur in the circuit within a specific time slice. |
-| `SamplingDuration`  | 30 seconds                                                                 | The time period over which failure ratios are calculated.                                  |
-| `BreakDuration`     | 5 seconds                                                                  | The time period for which the circuit will remain broken/open before attempting to reset.  |
-| `OnClosed`          | `null`                                                                     | Event triggered when the circuit transitions to the `Closed` state.                        |
-| `OnOpened`          | `null`                                                                     | Event triggered when the circuit transitions to the `Opened` state.                        |
-| `OnHalfOpened`      | `null`                                                                     | Event triggered when the circuit transitions to the `HalfOpened` state.                    |
-| `ManualControl`     | `null`                                                                     | Allows for manual control to isolate or close the circuit.                                 |
-| `StateProvider`     | `null`                                                                     | Enables the retrieval of the current state of the circuit.                                 |
+| Property                 | Default Value                                                              | Description                                                                                |
+| -----------------------  | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `ShouldHandle`           | Predicate that handles all exceptions except `OperationCanceledException`. | Specifies which results and exceptions are managed by the circuit breaker strategy.        |
+| `FailureRatio`           | 0.1                                                                        | The ratio of failures to successes that will cause the circuit to break/open.              |
+| `MinimumThroughput`      | 100                                                                        | The minimum number of actions that must occur in the circuit within a specific time slice. |
+| `SamplingDuration`       | 30 seconds                                                                 | The time period over which failure ratios are calculated.                                  |
+| `BreakDuration`          | 5 seconds                                                                  | The time period for which the circuit will remain broken/open before attempting to reset.  |
+| `BreakDurationGenerator` | `null`                                                                     | Enables adaptive adjustment of break duration based on the current state of the circuit.   |
+| `OnClosed`               | `null`                                                                     | Event triggered when the circuit transitions to the `Closed` state.                        |
+| `OnOpened`               | `null`                                                                     | Event triggered when the circuit transitions to the `Opened` state.                        |
+| `OnHalfOpened`           | `null`                                                                     | Event triggered when the circuit transitions to the `HalfOpened` state.                    |
+| `ManualControl`          | `null`                                                                     | Allows for manual control to isolate or close the circuit.                                 |
+| `StateProvider`          | `null`                                                                     | Enables the retrieval of the current state of the circuit.                                 |
 
 ## Diagrams
 
@@ -297,6 +308,48 @@ sequenceDiagram
     P->>C: Propagates failure
 ```
 
+#### Complex: dynamic break duration sequence diagram
+
+This sequence diagram illustrates the behavior of a circuit breaker using a `BreakDurationGenerator`. The generator dynamically calculates the break duration based on specific criteria, such as the number of failures:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Caller
+    participant P as Pipeline
+    participant CB as CircuitBreaker
+    participant BDG as BreakDurationGenerator
+    participant D as DecoratedUserCallback
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    Note over CB: Closed state
+    CB->>+D: Invokes
+    D->>-CB: Fails
+    Note over CB: Moves to Open state
+    CB->>+BDG: Calls Generator
+    BDG->>-CB: Returns calculated <br/> duration 
+    Note over CB: Break duration start
+    CB->>P: Propagates failure
+    P->>C: Propagates failure
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    CB-->>CB: Rejects request
+    CB->>P: Throws <br/>BrokenCircuitException
+    P->>C: Propagates exception
+
+    C->>P: Calls ExecuteAsync
+    P->>CB: Calls ExecuteCore
+    Note over CB: Break duration end
+    Note over CB: Moves to HalfOpen state
+    CB->>+D: Invokes
+    D->>-CB: Returns result
+    Note over CB: Moves to Closed state
+    CB->>P: Returns result
+    P->>C: Returns result
+```
+
 ## Resources
 
 - [Making the Netflix API More Resilient](https://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
@@ -407,72 +460,6 @@ var retry = new ResiliencePipelineBuilder()
 - The Retry strategy fetches the sleep duration dynamically without knowing any specific knowledge about the Circuit Breaker.
 - If adjustments are needed for the `BreakDuration`, they can be made in one place.
 
-### Using different duration for breaks
-
-In the case of Retry you can specify dynamically the sleep duration via the `DelayGenerator`.
-
-In the case of Circuit Breaker the `BreakDuration` is considered constant (can't be changed between breaks).
-
-❌ DON'T
-
-Use `Task.Delay` inside `OnOpened`:
-
-<!-- snippet: circuit-breaker-anti-pattern-sleep-duration-generator -->
-```cs
-static IEnumerable<TimeSpan> GetSleepDuration()
-{
-    for (int i = 1; i < 10; i++)
-    {
-        yield return TimeSpan.FromSeconds(i);
-    }
-}
-
-var sleepDurationProvider = GetSleepDuration().GetEnumerator();
-sleepDurationProvider.MoveNext();
-
-var circuitBreaker = new ResiliencePipelineBuilder()
-    .AddCircuitBreaker(new()
-    {
-        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
-        BreakDuration = TimeSpan.FromSeconds(0.5),
-        OnOpened = async args =>
-        {
-            await Task.Delay(sleepDurationProvider.Current);
-            sleepDurationProvider.MoveNext();
-        }
-
-    })
-    .Build();
-```
-<!-- endSnippet -->
-
-**Reasoning**:
-
-- The minimum break duration value is half a second. This implies that each sleep lasts for `sleepDurationProvider.Current` plus an additional half a second.
-- One might think that setting the `BreakDuration` to `sleepDurationProvider.Current` would address this, but it doesn't. This is because the `BreakDuration` is established only once and isn't re-assessed during each break.
-
-<!-- snippet: circuit-breaker-anti-pattern-sleep-duration-generator-ext -->
-```cs
-circuitBreaker = new ResiliencePipelineBuilder()
-    .AddCircuitBreaker(new()
-    {
-        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
-        BreakDuration = sleepDurationProvider.Current,
-        OnOpened = async args =>
-        {
-            Console.WriteLine($"Break: {sleepDurationProvider.Current}");
-            sleepDurationProvider.MoveNext();
-        }
-
-    })
-    .Build();
-```
-<!-- endSnippet -->
-
-✅ DO
-
-The `CircuitBreakerStrategyOptions` currently do not support defining break durations dynamically. This may be re-evaluated in the future. For now, refer to the first example for a potential workaround. However, please use it with caution.
-
 ### Wrapping each endpoint with a circuit breaker
 
 Imagine that you have to call N number of services via `HttpClient`s.
@@ -505,37 +492,35 @@ await uriToCbMappings[downstream1Uri].ExecuteAsync(CallXYZOnDownstream1, Cancell
 
 ✅ DO
 
-Use named and typed `HttpClient`s:
+Use named `HttpClient`s and then call `AddResilienceHandler` extension that is included in the [`Microsoft.Extensions.Http.Resilience`](https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience) package.
 
+<!-- snippet: circuit-breaker-pattern-cb-per-endpoint -->
 ```cs
-foreach (string uri in uris)
-{
-    builder.Services
-      .AddHttpClient<IResilientClient, ResilientClient>(uri, client => client.BaseAddress = new Uri(uri))
-      .AddPolicyHandler(GetCircuitBreaker().AsAsyncPolicy<HttpResponseMessage>());
-}
-
-...
-private const string serviceUrl = "https://downstream1.com";
-public Downstream1Client(
-   IHttpClientFactory namedClientFactory,
-   ITypedHttpClientFactory<ResilientClient> typedClientFactory)
-{
-    var namedClient = namedClientFactory.CreateClient(serviceUrl);
-    var namedTypedClient = typedClientFactory.CreateClient(namedClient);
-    ...
-}
+services
+  .AddHttpClient("my-client")
+  .AddResilienceHandler("circuit-breaker", builder =>
+  {
+      builder.AddCircuitBreaker(new());
+  })
+  .SelectPipelineByAuthority(); // This call ensures that circuit breaker is cached by each URL authority
 ```
+<!-- endSnippet -->
+
+And then use it:
+
+<!-- snippet: circuit-breaker-pattern-cb-per-endpoint-usage -->
+```cs
+HttpClient client = httpClientFactory.CreateClient("my-client");
+
+await client.GetAsync(new Uri("https://downstream1.com/some-path"));
+```
+<!-- endSnippet -->
 
 **Reasoning**:
 
-- The `HttpClient` integrates with Circuit Breaker during startup.
+- The `HttpClient` integrates with Circuit Breaker during startup by using the `AddResilienceHandler` extension.
 - There's no need to call `ExecuteAsync()` directly. The `DelegatingHandler` handles it automatically.
-
-> [!NOTE]
-> The above sample code used the `AsAsyncPolicy<HttpResponseMessage>()` method to convert the `ResiliencePipeline<HttpResponseMessage>` to `IAsyncPolicy<HttpResponseMessage>`.
-> It is required because the `AddPolicyHandler()` method anticipates an `IAsyncPolicy<HttpResponse>` parameter.
-> Please be aware that, later an `AddResilienceHandler()` will be introduced in the `Microsoft.Extensions.Http.Resilience` package which is the successor of the `Microsoft.Extensions.Http.Polly`.
+- By using the `SelectPipelineByAuthority` extension method, the resilience handler caches and assigns resilience pipeline to each authority (scheme + host + port) that is extracted from HTTP request message.
 
 ### Reducing thrown exceptions
 

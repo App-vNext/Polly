@@ -2,6 +2,23 @@
 
 <!-- markdownlint-disable MD034 -->
 
+## 8.2.1
+
+* Bump version to 8.2.1 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1798
+* Publish AoT for test on macOS by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1800
+* Remove SourceLink package by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1809
+* Pre-allocate list size in tests by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1810
+* Update tools by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1811
+* Add NuGet package descriptions by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1813
+* Bump dotnet-stryker to 3.12.0 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1822
+* Add a test that demonstrates how to track the states of circuit breaker by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1829
+* Update NuGet packages by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1849
+* Fix BreakDurationGenerator not being used by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1852
+* Fix retry overflow with max delay by [@Chr15P13t](https://github.com/Chr15P13t) in https://github.com/App-vNext/Polly/pull/1868
+* Bump xunit by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1873
+* Fix stack trace growing for opened circuit breaker by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1878
+* Run workflows on release branches by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1879
+
 ## 8.2.0
 
 * Prepare for 8.2.0 release by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1758

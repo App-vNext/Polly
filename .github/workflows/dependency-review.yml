@@ -2,7 +2,7 @@ name: dependency-review
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, release/* ]
 
 permissions:
   contents: read
@@ -10,7 +10,7 @@ permissions:
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
-    if: ${{ github.event.repository.fork == false }}
+    if: github.event.repository.fork == false
 
     steps:
 
@@ -18,4 +18,4 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Review dependencies
-        uses: actions/dependency-review-action@7bbfa034e752445ea40215fff1c3bf9597993d3f # v3.1.3
+        uses: actions/dependency-review-action@c74b580d73376b7750d3d2a50bfb8adc2c937507 # v3.1.5

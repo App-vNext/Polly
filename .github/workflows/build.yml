@@ -2,10 +2,10 @@ name: build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, release/* ]
     tags: [ '*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, release/* ]
   workflow_dispatch:
 
 env:
@@ -52,7 +52,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
       id: setup-dotnet
 
     - name: Setup NuGet cache
@@ -68,7 +68,7 @@ jobs:
 
     - name: Upload Coverage Reports
       if: always()
-      uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+      uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
       with:
         name: coverage-${{ matrix.os_name }}
         path: ./artifacts/coverage-reports
@@ -82,20 +82,21 @@ jobs:
 
     - name: Upload Mutation Report
       if: always() && env.RUN_MUTATION_TESTS == 'true'
-      uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+      uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
       with:
         name: mutation-report
         path: ./artifacts/mutation-report
 
     - name: Publish NuGet packages
-      uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+      uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
       with:
         name: packages-${{ matrix.os_name }}
         path: ./artifacts/package/release
         if-no-files-found: error
 
     - name: Upload signing file list
-      uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+      uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
+      if: matrix.os_name == 'windows'
       with:
         name: signing-config
         path: eng/signing
@@ -107,12 +108,12 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4.1.0
       with:
         name: packages-windows
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -142,19 +143,19 @@ jobs:
     steps:
 
     - name: Download unsigned packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4.1.0
       with:
         name: packages-windows
         path: packages
 
     - name: Download signing configuration
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4.1.0
       with:
         name: signing-config
         path: signing-config
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -180,7 +181,7 @@ jobs:
         --verbosity "${{ runner.debug == '1' && 'Debug' || 'Warning' }}"
 
     - name: Upload signed packages
-      uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+      uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
       with:
         name: signed-packages
         path: packages
@@ -192,12 +193,12 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4.1.0
       with:
         name: signed-packages
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -226,7 +227,7 @@ jobs:
         submodules: recursive
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
       with:
         global-json-file: AuthenticodeLint/global.json
 
@@ -304,12 +305,12 @@ jobs:
     steps:
 
     - name: Download signed packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4.1.0
       with:
         name: signed-packages
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 

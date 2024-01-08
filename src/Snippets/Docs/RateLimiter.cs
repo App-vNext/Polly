@@ -58,6 +58,44 @@ internal static class RateLimiter
         #endregion
     }
 
+    public static async Task HandleRejection()
+    {
+        var query = "dummy";
+        #region rate-limiter-handling-failure
+        var withOnRejected = new ResiliencePipelineBuilder()
+            .AddRateLimiter(new RateLimiterStrategyOptions
+            {
+                DefaultRateLimiterOptions = new ConcurrencyLimiterOptions
+                {
+                    PermitLimit = 10
+                },
+                OnRejected = args =>
+                {
+                    Console.WriteLine("Rate limit has been exceeded");
+                    return default;
+                }
+            }).Build();
+
+        var withoutOnRejected = new ResiliencePipelineBuilder()
+            .AddRateLimiter(new RateLimiterStrategyOptions
+            {
+                DefaultRateLimiterOptions = new ConcurrencyLimiterOptions
+                {
+                    PermitLimit = 10
+                }
+            }).Build();
+
+        try
+        {
+            await withoutOnRejected.ExecuteAsync(async ct => await TextSearchAsync(query, ct), CancellationToken.None);
+        }
+        catch (RateLimiterRejectedException)
+        {
+            Console.WriteLine("Rate limit has been exceeded");
+        }
+        #endregion
+    }
+
     public static async Task Execution()
     {
         var cancellationToken = CancellationToken.None;
