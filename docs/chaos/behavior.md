@@ -12,7 +12,7 @@ The behavior chaos strategy is designed to inject custom behaviors into system o
 
 ## Usage
 
-<!-- snippet: Behavior -->
+<!-- snippet: chaos-behavior-usage -->
 ```cs
 // Behavior using the default options.
 // See https://www.pollydocs.org/chaos/behavior#defaults for defaults.
@@ -50,7 +50,7 @@ new ResiliencePipelineBuilder().AddChaosBehavior(0.6, RestartRedisVM);
 
 Example execution:
 
-<!-- snippet: behavior-execution -->
+<!-- snippet: chaos-behavior-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
     .AddChaosBehavior(new BehaviorStrategyOptions // monkey strategies are usually placed innermost in the pipelines

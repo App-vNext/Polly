@@ -12,7 +12,7 @@ The fault chaos strategy is designed to introduce faults (exceptions) into the s
 
 ## Usage
 
-<!-- snippet: Fault -->
+<!-- snippet: chaos-fault-usage -->
 ```cs
 // Fault using the default options.
 // See https://www.pollydocs.org/chaos/fault#defaults for defaults.
@@ -68,7 +68,7 @@ new ResiliencePipelineBuilder().AddChaosFault(0.6, new InvalidOperationException
 
 Example execution:
 
-<!-- snippet: fault-execution -->
+<!-- snippet: chaos-fault-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
     .AddChaosFault(new FaultStrategyOptions // monkey strategies are usually placed innermost in the pipelines
