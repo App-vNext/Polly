@@ -19,7 +19,7 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// <value>
     /// This value must be greater than 1 second and less than 24 hours. The default value is 30 seconds.
     /// </value>
-    [Range(typeof(TimeSpan), "00:00:01", "1.00:00:00")]
+    [Range(typeof(TimeSpan), "00:00:00.010", "1.00:00:00")]
     [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Addressed with DynamicDependency on ValidationHelper.Validate method")]
     public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(30);
 
