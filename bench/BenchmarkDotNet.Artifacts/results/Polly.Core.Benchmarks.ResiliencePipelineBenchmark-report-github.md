@@ -1,20 +1,20 @@
 ```
 
-BenchmarkDotNet v0.13.7, Windows 11 (10.0.22621.2283/22H2/2022Update/SunValley2) (Hyper-V)
+BenchmarkDotNet v0.13.11, Windows 11 (10.0.22631.2861/23H2/2023Update/SunValley3) (Hyper-V)
 Intel Xeon Platinum 8370C CPU 2.80GHz, 1 CPU, 16 logical and 8 physical cores
-.NET SDK 7.0.401
-  [Host] : .NET 7.0.11 (7.0.1123.42427), X64 RyuJIT AVX2
+.NET SDK 8.0.100
+  [Host] : .NET 8.0.0 (8.0.23.53103), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
 
 Job=MediumRun  Toolchain=InProcessEmitToolchain  IterationCount=15  
 LaunchCount=2  WarmupCount=10  
 
 ```
-|                                         Method |      Mean |    Error |   StdDev | Ratio | RatioSD | Allocated | Alloc Ratio |
+| Method                                         | Mean      | Error    | StdDev   | Ratio | RatioSD | Allocated | Alloc Ratio |
 |----------------------------------------------- |----------:|---------:|---------:|------:|--------:|----------:|------------:|
-|                            ExecuteOutcomeAsync |  77.62 ns | 0.101 ns | 0.141 ns |  1.00 |    0.00 |         - |          NA |
-|         ExecuteAsync_ResilienceContextAndState | 182.77 ns | 0.330 ns | 0.473 ns |  2.35 |    0.01 |         - |          NA |
-|                 ExecuteAsync_CancellationToken | 194.84 ns | 0.935 ns | 1.370 ns |  2.51 |    0.02 |         - |          NA |
-| ExecuteAsync_GenericStrategy_CancellationToken | 186.25 ns | 0.724 ns | 1.039 ns |  2.40 |    0.02 |         - |          NA |
-|              Execute_ResilienceContextAndState |  87.34 ns | 1.062 ns | 1.557 ns |  1.13 |    0.02 |         - |          NA |
-|                      Execute_CancellationToken |  81.51 ns | 0.834 ns | 1.248 ns |  1.05 |    0.02 |         - |          NA |
-|      Execute_GenericStrategy_CancellationToken |  80.56 ns | 0.626 ns | 0.937 ns |  1.04 |    0.01 |         - |          NA |
+| ExecuteOutcomeAsync                            |  44.54 ns | 0.395 ns | 0.579 ns |  1.00 |    0.00 |         - |          NA |
+| ExecuteAsync_ResilienceContextAndState         | 130.02 ns | 0.845 ns | 1.212 ns |  2.92 |    0.04 |         - |          NA |
+| ExecuteAsync_CancellationToken                 | 149.78 ns | 1.103 ns | 1.617 ns |  3.36 |    0.05 |         - |          NA |
+| ExecuteAsync_GenericStrategy_CancellationToken | 146.42 ns | 0.077 ns | 0.115 ns |  3.29 |    0.04 |         - |          NA |
+| Execute_ResilienceContextAndState              |  45.44 ns | 0.524 ns | 0.768 ns |  1.02 |    0.03 |         - |          NA |
+| Execute_CancellationToken                      |  69.38 ns | 1.320 ns | 1.894 ns |  1.56 |    0.05 |         - |          NA |
+| Execute_GenericStrategy_CancellationToken      |  67.92 ns | 0.542 ns | 0.760 ns |  1.53 |    0.02 |         - |          NA |
