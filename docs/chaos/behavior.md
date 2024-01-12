@@ -53,7 +53,7 @@ Example execution:
 <!-- snippet: chaos-behavior-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
-    .AddChaosBehavior(new BehaviorStrategyOptions // monkey strategies are usually placed innermost in the pipelines
+    .AddChaosBehavior(new BehaviorStrategyOptions // Monkey strategies are usually placed innermost in the pipelines
     {
         BehaviorAction = (_) => RestartRedisVM(),
         Enabled = true,
@@ -73,10 +73,10 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Defaults
 
-| Property              | Default Value | Description                                  |
-| --------------------- | ------------- | -------------------------------------------- |
-| `OnBehaviorInjected`  | `null`        | Action executed when the behavior is injected.|
-| `BehaviorAction`      | `null`        | Custom behavior to be injected.               |
+| Property             | Default Value | Description                                    |
+|----------------------|---------------|------------------------------------------------|
+| `OnBehaviorInjected` | `null`        | Action executed when the behavior is injected. |
+| `BehaviorAction`     | `null`        | Custom behavior to be injected.                |
 
 ## Diagrams
 
@@ -123,4 +123,4 @@ sequenceDiagram
 
 ## Anti-patterns
 
-❌ Do not use it to inject delays, use the latency monkey instead as the [`LatencyChaosStrategy`](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.
+❌ Do not use behavior strategies to inject delays, use the latency monkey instead as the [`LatencyChaosStrategy`](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.

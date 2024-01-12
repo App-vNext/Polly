@@ -47,7 +47,7 @@ internal static partial class Chaos
 
         #region chaos-behavior-execution
         var pipeline = new ResiliencePipelineBuilder()
-            .AddChaosBehavior(new BehaviorStrategyOptions // monkey strategies are usually placed innermost in the pipelines
+            .AddChaosBehavior(new BehaviorStrategyOptions // Monkey strategies are usually placed innermost in the pipelines
             {
                 BehaviorAction = (_) => RestartRedisVM(),
                 Enabled = true,
