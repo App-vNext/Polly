@@ -19,7 +19,7 @@ internal static partial class Chaos
         // To use a custom function to generate the behavior to inject.
         var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
         {
-            BehaviorAction = (_) => RestartRedisVM(),
+            BehaviorAction = static args => RestartRedisVM(),
             Enabled = true,
             InjectionRate = 0.6
         };
@@ -27,7 +27,7 @@ internal static partial class Chaos
         // To get notifications when a behavior is injected
         var optionsOnBehaviorInjected = new BehaviorStrategyOptions
         {
-            BehaviorAction = (_) => RestartRedisVM(),
+            BehaviorAction = static args => RestartRedisVM(),
             Enabled = true,
             InjectionRate = 0.6,
             OnBehaviorInjected = static args =>
@@ -49,7 +49,7 @@ internal static partial class Chaos
         var pipeline = new ResiliencePipelineBuilder()
             .AddChaosBehavior(new BehaviorStrategyOptions // Monkey strategies are usually placed innermost in the pipelines
             {
-                BehaviorAction = (_) => RestartRedisVM(),
+                BehaviorAction = static args => RestartRedisVM(),
                 Enabled = true,
                 InjectionRate = 0.6
             })
