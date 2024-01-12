@@ -64,7 +64,7 @@ Example execution:
 <!-- snippet: chaos-result-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder<HttpStatusCode>()
-    .AddChaosResult(new OutcomeStrategyOptions<HttpStatusCode> // monkey strategies are usually placed innermost in the pipelines
+    .AddChaosResult(new OutcomeStrategyOptions<HttpStatusCode> // Monkey strategies are usually placed innermost in the pipelines
     {
         OutcomeGenerator = static args =>
         {
@@ -93,10 +93,10 @@ var pipeline = new ResiliencePipelineBuilder<HttpStatusCode>()
 
 ## Defaults
 
-| Property              | Default Value | Description                                  |
-| --------------------- | ------------- | -------------------------------------------- |
-| `OutcomeGenerator`    | `null`        | Function to generate the outcome for a given execution.|
-| `OnOutcomeInjected`   | `null`        | Action executed when the outcome is injected.          |
+| Property            | Default Value | Description                                             |
+|---------------------|---------------|---------------------------------------------------------|
+| `OutcomeGenerator`  | `null`        | Function to generate the outcome for a given execution. |
+| `OnOutcomeInjected` | `null`        | Action executed when the outcome is injected.           |
 
 ## Diagrams
 

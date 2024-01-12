@@ -54,7 +54,7 @@ internal static partial class Chaos
 
         #region chaos-result-execution
         var pipeline = new ResiliencePipelineBuilder<HttpStatusCode>()
-            .AddChaosResult(new OutcomeStrategyOptions<HttpStatusCode> // monkey strategies are usually placed innermost in the pipelines
+            .AddChaosResult(new OutcomeStrategyOptions<HttpStatusCode> // Monkey strategies are usually placed innermost in the pipelines
             {
                 OutcomeGenerator = static args =>
                 {
