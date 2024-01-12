@@ -18,7 +18,7 @@ The fault chaos strategy is designed to introduce faults (exceptions) into the s
 // See https://www.pollydocs.org/chaos/fault#defaults for defaults.
 var optionsDefault = new FaultStrategyOptions();
 
-// The 60% of calls will be randomly affected.
+// 60% of invocations will be randomly affected.
 var basicOptions = new FaultStrategyOptions
 {
     Fault = new InvalidOperationException("Dummy exception"),
@@ -35,7 +35,7 @@ var optionsWithFaultGenerator = new FaultStrategyOptions
         {
             "DataLayer" => new TimeoutException(),
             "ApplicationLayer" => new InvalidOperationException(),
-            _ => null // when the fault generator returns null the strategy won't inject any fault and it will just invoke the user's callback
+            _ => null // When the fault generator returns null the strategy won't inject any fault and it will just invoke the user's callback
         };
 
         return new ValueTask<Exception?>(exception);
@@ -71,7 +71,7 @@ Example execution:
 <!-- snippet: chaos-fault-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
-    .AddChaosFault(new FaultStrategyOptions // monkey strategies are usually placed innermost in the pipelines
+    .AddChaosFault(new FaultStrategyOptions // Monkey strategies are usually placed innermost in the pipelines
     {
         Fault = new InvalidOperationException("Dummy exception"),
         Enabled = true,
@@ -91,11 +91,11 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Defaults
 
-| Property           | Default Value | Description                                  |
-| ------------------ | ------------- | -------------------------------------------- |
-| `OnFaultInjected`  | `null`        | Action executed when the fault is injected.     |
-| `FaultGenerator`   | `null`        | Generates the fault to inject for a given execution. |
-| `Fault`            | `null`        | The fault to inject.                                 |
+| Property          | Default Value | Description                                          |
+|-------------------|---------------|------------------------------------------------------|
+| `OnFaultInjected` | `null`        | Action executed when the fault is injected.          |
+| `FaultGenerator`  | `null`        | Generates the fault to inject for a given execution. |
+| `Fault`           | `null`        | The fault to inject.                                 |
 
 ## Diagrams
 

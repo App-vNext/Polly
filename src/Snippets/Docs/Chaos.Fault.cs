@@ -14,7 +14,7 @@ internal static partial class Chaos
         // See https://www.pollydocs.org/chaos/fault#defaults for defaults.
         var optionsDefault = new FaultStrategyOptions();
 
-        // The 60% of calls will be randomly affected.
+        // 60% of invocations will be randomly affected.
         var basicOptions = new FaultStrategyOptions
         {
             Fault = new InvalidOperationException("Dummy exception"),
@@ -31,7 +31,7 @@ internal static partial class Chaos
                 {
                     "DataLayer" => new TimeoutException(),
                     "ApplicationLayer" => new InvalidOperationException(),
-                    _ => null // when the fault generator returns null the strategy won't inject any fault and it will just invoke the user's callback
+                    _ => null // When the fault generator returns null the strategy won't inject any fault and it will just invoke the user's callback
                 };
 
                 return new ValueTask<Exception?>(exception);
@@ -63,7 +63,7 @@ internal static partial class Chaos
 
         #region chaos-fault-execution
         var pipeline = new ResiliencePipelineBuilder()
-            .AddChaosFault(new FaultStrategyOptions // monkey strategies are usually placed innermost in the pipelines
+            .AddChaosFault(new FaultStrategyOptions // Monkey strategies are usually placed innermost in the pipelines
             {
                 Fault = new InvalidOperationException("Dummy exception"),
                 Enabled = true,
