@@ -374,6 +374,41 @@ public class CircuitStateControllerTests
         blockedTill.Should().Be(utcNow + TimeSpan.FromMinutes(42));
     }
 
+    [Fact]
+    public async Task BreakDurationGenerator_EnsureHalfOpenAttempts()
+    {
+        // arrange
+        var halfOpenAttempts = new List<int>();
+
+        _options.BreakDurationGenerator = args =>
+        {
+            halfOpenAttempts.Add(args.HalfOpenAttempts);
+            return new ValueTask<TimeSpan>(TimeSpan.Zero);
+        };
+
+        using var controller = CreateController();
+
+        // act
+        await TransitionToState(controller, CircuitState.Closed);
+
+        for (int i = 0; i < 5; i++)
+        {
+            await TransitionToState(controller, CircuitState.Open);
+            await TransitionToState(controller, CircuitState.HalfOpen);
+        }
+
+        await TransitionToState(controller, CircuitState.Closed);
+
+        for (int i = 0; i < 3; i++)
+        {
+            await TransitionToState(controller, CircuitState.Open);
+            await TransitionToState(controller, CircuitState.HalfOpen);
+        }
+
+        // assert
+        halfOpenAttempts.Should().BeEquivalentTo([0, 1, 2, 3, 4, 0, 1, 2]);
+    }
+
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
@@ -502,6 +537,7 @@ public class CircuitStateControllerTests
         switch (state)
         {
             case CircuitState.Closed:
+                await controller.CloseCircuitAsync(ResilienceContextPool.Shared.Get());
                 break;
             case CircuitState.Open:
                 await OpenCircuit(controller);
