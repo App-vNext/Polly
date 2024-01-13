@@ -91,7 +91,7 @@
 
   <h1 id="Polly_CircuitBreaker_BreakDurationGeneratorArguments" data-uid="Polly.CircuitBreaker.BreakDurationGeneratorArguments" class="text-break">
     Struct BreakDurationGeneratorArguments
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L8"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L10"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -147,9 +147,9 @@
 
   <a id="Polly_CircuitBreaker_BreakDurationGeneratorArguments__ctor_" data-uid="Polly.CircuitBreaker.BreakDurationGeneratorArguments.#ctor*"></a>
 
-  <h3 id="Polly_CircuitBreaker_BreakDurationGeneratorArguments__ctor_System_Double_System_Int32_Polly_ResilienceContext_" data-uid="Polly.CircuitBreaker.BreakDurationGeneratorArguments.#ctor(System.Double,System.Int32,Polly.ResilienceContext)">
-  BreakDurationGeneratorArguments(double, int, ResilienceContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Polly_CircuitBreaker_BreakDurationGeneratorArguments__ctor_System_Double_System_Int32_Polly_ResilienceContext_System_Int32_" data-uid="Polly.CircuitBreaker.BreakDurationGeneratorArguments.#ctor(System.Double,System.Int32,Polly.ResilienceContext,System.Int32)">
+  BreakDurationGeneratorArguments(double, int, ResilienceContext, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Polly.CircuitBreaker.BreakDurationGeneratorArguments.html">BreakDurationGeneratorArguments</a> struct.</p>
@@ -157,7 +157,7 @@
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BreakDurationGeneratorArguments(double failureRate, int failureCount, ResilienceContext context)</code></pre>
+    <pre><code class="lang-csharp hljs">public BreakDurationGeneratorArguments(double failureRate, int failureCount, ResilienceContext context, int halfOpenAttempts)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -173,6 +173,9 @@ This count is used to determine if the failure threshold has been reached.</p>
     <dt><code>context</code> <a class="xref" href="Polly.ResilienceContext.html">ResilienceContext</a></dt>
     <dd><p>The resilience context providing additional information
 about the execution state and failures.</p>
+</dd>
+    <dt><code>halfOpenAttempts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of half-open attempts.</p>
 </dd>
   </dl>
 
@@ -195,7 +198,7 @@ about the execution state and failures.</p>
 
   <h3 id="Polly_CircuitBreaker_BreakDurationGeneratorArguments_Context" data-uid="Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context">
   Context
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the context that provides additional information about the resilience operation.</p>
@@ -227,7 +230,7 @@ about the execution state and failures.</p>
 
   <h3 id="Polly_CircuitBreaker_BreakDurationGeneratorArguments_FailureCount" data-uid="Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount">
   FailureCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the count of failures that have occurred.</p>
@@ -259,7 +262,7 @@ about the execution state and failures.</p>
 
   <h3 id="Polly_CircuitBreaker_BreakDurationGeneratorArguments_FailureRate" data-uid="Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate">
   FailureRate
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the failure rate that represents the ratio of failures to total actions.</p>
@@ -287,11 +290,43 @@ about the execution state and failures.</p>
 
 
 
+  <a id="Polly_CircuitBreaker_BreakDurationGeneratorArguments_HalfOpenAttempts_" data-uid="Polly.CircuitBreaker.BreakDurationGeneratorArguments.HalfOpenAttempts*"></a>
+
+  <h3 id="Polly_CircuitBreaker_BreakDurationGeneratorArguments_HalfOpenAttempts" data-uid="Polly.CircuitBreaker.BreakDurationGeneratorArguments.HalfOpenAttempts">
+  HalfOpenAttempts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of half-open attempts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int HalfOpenAttempts { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L8" class="edit-link">Edit this page</a>
+          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/CircuitBreaker/BreakDurationGeneratorArguments.cs/#L10" class="edit-link">Edit this page</a>
         </div>
 
 
