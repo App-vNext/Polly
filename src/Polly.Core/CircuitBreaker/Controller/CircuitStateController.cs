@@ -22,6 +22,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     private Outcome<T>? _lastOutcome;
     private Exception? _breakingException;
     private bool _disposed;
+    private int _halfOpenAttempts;
 
 #pragma warning disable S107
     public CircuitStateController(
@@ -132,6 +133,7 @@ internal sealed class CircuitStateController<T> : IDisposable
             // check if circuit can be half-opened
             if (_circuitState == CircuitState.Open && PermitHalfOpenCircuitTest_NeedsLock())
             {
+                _halfOpenAttempts++;
                 _circuitState = CircuitState.HalfOpen;
                 _telemetry.Report(new(ResilienceEventSeverity.Warning, CircuitBreakerConstants.OnHalfOpenEvent), context, new OnCircuitHalfOpenedArguments(context));
                 isHalfOpen = true;
@@ -270,6 +272,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         _blockedUntil = DateTimeOffset.MinValue;
         _lastOutcome = null;
+        _halfOpenAttempts = 0;
 
         CircuitState priorState = _circuitState;
         _circuitState = CircuitState.Closed;
@@ -325,7 +328,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         {
 #pragma warning disable CA2012
 #pragma warning disable S1226
-            breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount, context)).GetAwaiter().GetResult();
+            breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount, context, _halfOpenAttempts)).GetAwaiter().GetResult();
 #pragma warning restore S1226
 #pragma warning restore CA2012
         }

@@ -1,4 +1,6 @@
 ﻿#nullable enable
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments(double failureRate, int failureCount, Polly.ResilienceContext! context, int halfOpenAttempts) -> void
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.HalfOpenAttempts.get -> int
 Polly.Simmy.Behavior.BehaviorActionArguments
 Polly.Simmy.Behavior.BehaviorActionArguments.BehaviorActionArguments() -> void
 Polly.Simmy.Behavior.BehaviorActionArguments.BehaviorActionArguments(Polly.ResilienceContext! context) -> void
