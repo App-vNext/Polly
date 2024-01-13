@@ -189,7 +189,7 @@ In v8, there's no need to use policy wrap explicitly. Instead, policy wrapping i
 ```cs
 // The "PolicyWrap" is integrated directly. The strategies are executed in the following order:
 // 1. Retry <== outer
-// 2. Timeout <== outer
+// 2. Timeout <== inner
 ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new()
     {
