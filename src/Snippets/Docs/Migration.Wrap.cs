@@ -24,7 +24,7 @@ internal static partial class Migration
 
         // The "PolicyWrap" is integrated directly. The strategies are executed in the following order:
         // 1. Retry <== outer
-        // 2. Timeout <== outer
+        // 2. Timeout <== inner
         ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
             .AddRetry(new()
             {
