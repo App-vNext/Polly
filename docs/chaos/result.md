@@ -93,10 +93,10 @@ var pipeline = new ResiliencePipelineBuilder<HttpStatusCode>()
 
 ## Defaults
 
-| Property              | Default Value | Description                                  |
-| --------------------- | ------------- | -------------------------------------------- |
-| `OutcomeGenerator`    | `null`        | Function to generate the outcome for a given execution.|
-| `OnOutcomeInjected`   | `null`        | Action executed when the outcome is injected.          |
+| Property            | Default Value | Description                                             |
+|---------------------|---------------|---------------------------------------------------------|
+| `OutcomeGenerator`  | `null`        | Function to generate the outcome for a given execution. |
+| `OnOutcomeInjected` | `null`        | Action executed when the outcome is injected.           |
 
 ## Diagrams
 

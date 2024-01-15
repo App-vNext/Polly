@@ -73,10 +73,10 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Defaults
 
-| Property              | Default Value | Description                                  |
-| --------------------- | ------------- | -------------------------------------------- |
-| `OnBehaviorInjected`  | `null`        | Action executed when the behavior is injected.|
-| `BehaviorAction`      | `null`        | Custom behavior to be injected.               |
+| Property             | Default Value | Description                                    |
+|----------------------|---------------|------------------------------------------------|
+| `OnBehaviorInjected` | `null`        | Action executed when the behavior is injected. |
+| `BehaviorAction`     | `null`        | Custom behavior to be injected.                |
 
 ## Diagrams
 

@@ -28,12 +28,12 @@ Chaos strategies (or Monkey strategies as we call them) are in essence a [Resili
 
 ### Built-in strategies
 
-|Strategy| Reactive| What does the policy do?|
-| ------------- |------------- |------------- |
-|[Fault](fault.md)|No|Injects exceptions in your system.|
-|[Result](result.md)|Yes|Substitute results to fake outcomes in your system.|
-|[Latency](latency.md)|No|Injects latency into executions before the calls are made.|
-|[Behavior](behavior.md)|No|Allows you to inject *any* extra behaviour, before a call is placed.|
+| Strategy                | Reactive | What does the policy do?                                             |
+|-------------------------|----------|----------------------------------------------------------------------|
+| [Fault](fault.md)       | No       | Injects exceptions in your system.                                   |
+| [Result](result.md)     | Yes      | Substitute results to fake outcomes in your system.                  |
+| [Latency](latency.md)   | No       | Injects latency into executions before the calls are made.           |
+| [Behavior](behavior.md) | No       | Allows you to inject *any* extra behaviour, before a call is placed. |
 
 ## Usage
 
@@ -43,11 +43,11 @@ It is usual to place the Monkey Strategy innermost in a Resilience Pipeline. By 
 
 All the strategies' options implement the [`MonkeyStrategyOptions`](xref:Polly.Simmy.MonkeyStrategyOptions) class as it contains the basic configuration for every monkey strategy.
 
-| Property                  | Default Value | Description                                  |
-| ------------------------- | ------------- | -------------------------------------------- |
-| `InjectionRate`           | 0.001 ms      | A decimal between 0 and 1 inclusive. The strategy will inject the chaos, randomly, that proportion of the time, e.g.: if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls.    |
-| `InjectionRateGenerator`  | `null`        | Generates the injection rate for a given execution, which the value should be between [0, 1] (inclusive). |
-| `Enabled`                 | `false`       | Determines whether the strategy is enabled or not.    |
-| `EnabledGenerator`        | `null`        | the enable generator that indicates whether or not the chaos strategy is enabled for a given execution.     |
+| Property                 | Default Value | Description                                                                                                                                                                                                                      |
+|--------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `InjectionRate`          | 0.001 ms      | A decimal between 0 and 1 inclusive. The strategy will inject the chaos, randomly, that proportion of the time, e.g.: if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls. |
+| `InjectionRateGenerator` | `null`        | Generates the injection rate for a given execution, which the value should be between [0, 1] (inclusive).                                                                                                                        |
+| `Enabled`                | `false`       | Determines whether the strategy is enabled or not.                                                                                                                                                                               |
+| `EnabledGenerator`       | `null`        | the enable generator that indicates whether or not the chaos strategy is enabled for a given execution.                                                                                                                          |
 
 [simmy]: https://github.com/Polly-Contrib/Simmy

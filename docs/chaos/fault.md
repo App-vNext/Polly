@@ -91,11 +91,11 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Defaults
 
-| Property           | Default Value | Description                                  |
-| ------------------ | ------------- | -------------------------------------------- |
-| `OnFaultInjected`  | `null`        | Action executed when the fault is injected.     |
-| `FaultGenerator`   | `null`        | Generates the fault to inject for a given execution. |
-| `Fault`            | `null`        | The fault to inject.                                 |
+| Property          | Default Value | Description                                          |
+|-------------------|---------------|------------------------------------------------------|
+| `OnFaultInjected` | `null`        | Action executed when the fault is injected.          |
+| `FaultGenerator`  | `null`        | Generates the fault to inject for a given execution. |
+| `Fault`           | `null`        | The fault to inject.                                 |
 
 ## Diagrams
 
