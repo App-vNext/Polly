@@ -59,17 +59,6 @@ public class FaultChaosPipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddFault_Shortcut_Option_Ok()
-    {
-        var builder = new ResiliencePipelineBuilder();
-        builder
-            .AddChaosFault(0.5, new InvalidOperationException("Dummy exception"))
-            .Build();
-
-        AssertFaultStrategy<InvalidOperationException>(builder, true, 0.5);
-    }
-
-    [Fact]
     public void AddFault_Generic_Shortcut_Generator_Option_Throws()
     {
         new ResiliencePipelineBuilder<int>()
@@ -100,26 +89,6 @@ public class FaultChaosPipelineBuilderExtensionsTests
             .Build();
 
         AssertFaultStrategy<InvalidOperationException>(builder, true, 0.5);
-    }
-
-    [Fact]
-    public void AddFault_Generic_Shortcut_Option_Ok()
-    {
-        var builder = new ResiliencePipelineBuilder<string>();
-        builder
-            .AddChaosFault(0.5, new InvalidOperationException("Dummy exception"))
-            .Build();
-
-        AssertFaultStrategy<string, InvalidOperationException>(builder, true, 0.5);
-    }
-
-    [Fact]
-    public void AddFault_Generic_Shortcut_Option_Throws()
-    {
-        new ResiliencePipelineBuilder<int>()
-            .Invoking(b => b.AddChaosFault(-1, new InvalidOperationException()))
-            .Should()
-            .Throw<ValidationException>();
     }
 
     [Fact]

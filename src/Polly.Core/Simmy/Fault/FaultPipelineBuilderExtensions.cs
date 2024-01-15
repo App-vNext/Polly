@@ -14,26 +14,6 @@ public static class FaultPipelineBuilderExtensions
     /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
-    /// <param name="fault">The exception to inject.</param>
-    /// <returns>The builder instance with the retry strategy added.</returns>
-    public static TBuilder AddChaosFault<TBuilder>(this TBuilder builder, double injectionRate, Exception fault)
-        where TBuilder : ResiliencePipelineBuilderBase
-    {
-        builder.AddChaosFault(new FaultStrategyOptions
-        {
-            Enabled = true,
-            InjectionRate = injectionRate,
-            Fault = fault
-        });
-        return builder;
-    }
-
-    /// <summary>
-    /// Adds a fault chaos strategy to the builder.
-    /// </summary>
-    /// <typeparam name="TBuilder">The builder type.</typeparam>
-    /// <param name="builder">The builder instance.</param>
-    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="faultGenerator">The exception generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static TBuilder AddChaosFault<TBuilder>(this TBuilder builder, double injectionRate, Func<Exception?> faultGenerator)
@@ -43,7 +23,7 @@ public static class FaultPipelineBuilderExtensions
         {
             Enabled = true,
             InjectionRate = injectionRate,
-            FaultGenerator = (_) => new ValueTask<Exception?>(Task.FromResult(faultGenerator()))
+            FaultGenerator = (_) => new ValueTask<Exception?>(faultGenerator())
         });
         return builder;
     }

@@ -44,17 +44,6 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddResult_Shortcut_Option_Ok()
-    {
-        var builder = new ResiliencePipelineBuilder<int>();
-        builder
-            .AddChaosResult(0.5, 120)
-            .Build();
-
-        AssertResultStrategy(builder, true, 0.5, new(120));
-    }
-
-    [Fact]
     public void AddResult_Shortcut_Generator_Option_Ok()
     {
         var builder = new ResiliencePipelineBuilder<int>();
