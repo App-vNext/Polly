@@ -12,7 +12,7 @@ The behavior chaos strategy is designed to inject custom behaviors into system o
 
 ## Usage
 
-<!-- snippet: Behavior -->
+<!-- snippet: chaos-behavior-usage -->
 ```cs
 // Behavior using the default options.
 // See https://www.pollydocs.org/chaos/behavior#defaults for defaults.
@@ -21,7 +21,7 @@ var optionsDefault = new BehaviorStrategyOptions();
 // To use a custom function to generate the behavior to inject.
 var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
 {
-    BehaviorAction = (_) => RestartRedisVM(),
+    BehaviorAction = static args => RestartRedisVM(),
     Enabled = true,
     InjectionRate = 0.6
 };
@@ -29,7 +29,7 @@ var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
 // To get notifications when a behavior is injected
 var optionsOnBehaviorInjected = new BehaviorStrategyOptions
 {
-    BehaviorAction = (_) => RestartRedisVM(),
+    BehaviorAction = static args => RestartRedisVM(),
     Enabled = true,
     InjectionRate = 0.6,
     OnBehaviorInjected = static args =>
@@ -50,12 +50,12 @@ new ResiliencePipelineBuilder().AddChaosBehavior(0.6, RestartRedisVM);
 
 Example execution:
 
-<!-- snippet: behavior-execution -->
+<!-- snippet: chaos-behavior-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
-    .AddChaosBehavior(new BehaviorStrategyOptions // monkey strategies are usually placed innermost in the pipelines
+    .AddChaosBehavior(new BehaviorStrategyOptions // Monkey strategies are usually placed innermost in the pipelines
     {
-        BehaviorAction = (_) => RestartRedisVM(),
+        BehaviorAction = static args => RestartRedisVM(),
         Enabled = true,
         InjectionRate = 0.6
     })
