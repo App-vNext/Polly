@@ -4623,15 +4623,6 @@ references:
   fullName.vb: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, Polly.Simmy.Fault.FaultStrategyOptions)
   nameWithType: FaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(TBuilder, FaultStrategyOptions)
   nameWithType.vb: FaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, FaultStrategyOptions)
-- uid: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault``1(``0,System.Double,System.Exception)
-  name: AddChaosFault<TBuilder>(TBuilder, double, Exception)
-  href: api/Polly.Simmy.FaultPipelineBuilderExtensions.html#Polly_Simmy_FaultPipelineBuilderExtensions_AddChaosFault__1___0_System_Double_System_Exception_
-  commentId: M:Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault``1(``0,System.Double,System.Exception)
-  name.vb: AddChaosFault(Of TBuilder)(TBuilder, Double, Exception)
-  fullName: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(TBuilder, double, System.Exception)
-  fullName.vb: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, Double, System.Exception)
-  nameWithType: FaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(TBuilder, double, Exception)
-  nameWithType.vb: FaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, Double, Exception)
 - uid: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault``1(``0,System.Double,System.Func{System.Exception})
   name: AddChaosFault<TBuilder>(TBuilder, double, Func<Exception?>)
   href: api/Polly.Simmy.FaultPipelineBuilderExtensions.html#Polly_Simmy_FaultPipelineBuilderExtensions_AddChaosFault__1___0_System_Double_System_Func_System_Exception__
@@ -5064,15 +5055,6 @@ references:
   fullName.vb: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult(Of TResult)(Polly.ResiliencePipelineBuilder(Of TResult), Double, System.Func(Of TResult))
   nameWithType: OutcomePipelineBuilderExtensions.AddChaosResult<TResult>(ResiliencePipelineBuilder<TResult>, double, Func<TResult?>)
   nameWithType.vb: OutcomePipelineBuilderExtensions.AddChaosResult(Of TResult)(ResiliencePipelineBuilder(Of TResult), Double, Func(Of TResult))
-- uid: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult``1(Polly.ResiliencePipelineBuilder{``0},System.Double,``0)
-  name: AddChaosResult<TResult>(ResiliencePipelineBuilder<TResult>, double, TResult)
-  href: api/Polly.Simmy.OutcomePipelineBuilderExtensions.html#Polly_Simmy_OutcomePipelineBuilderExtensions_AddChaosResult__1_Polly_ResiliencePipelineBuilder___0__System_Double___0_
-  commentId: M:Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult``1(Polly.ResiliencePipelineBuilder{``0},System.Double,``0)
-  name.vb: AddChaosResult(Of TResult)(ResiliencePipelineBuilder(Of TResult), Double, TResult)
-  fullName: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult<TResult>(Polly.ResiliencePipelineBuilder<TResult>, double, TResult)
-  fullName.vb: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult(Of TResult)(Polly.ResiliencePipelineBuilder(Of TResult), Double, TResult)
-  nameWithType: OutcomePipelineBuilderExtensions.AddChaosResult<TResult>(ResiliencePipelineBuilder<TResult>, double, TResult)
-  nameWithType.vb: OutcomePipelineBuilderExtensions.AddChaosResult(Of TResult)(ResiliencePipelineBuilder(Of TResult), Double, TResult)
 - uid: Polly.Simmy.Outcomes
   name: Polly.Simmy.Outcomes
   href: api/Polly.Simmy.Outcomes.html

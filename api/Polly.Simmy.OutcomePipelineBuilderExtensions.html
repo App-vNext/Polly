@@ -159,7 +159,7 @@
 
   <h3 id="Polly_Simmy_OutcomePipelineBuilderExtensions_AddChaosResult__1_Polly_ResiliencePipelineBuilder___0__Polly_Simmy_Outcomes_OutcomeStrategyOptions___0__" data-uid="Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult``1(Polly.ResiliencePipelineBuilder{``0},Polly.Simmy.Outcomes.OutcomeStrategyOptions{``0})">
   AddChaosResult&lt;TResult&gt;(ResiliencePipelineBuilder&lt;TResult&gt;, OutcomeStrategyOptions&lt;TResult&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Outcomes/OutcomePipelineBuilderExtensions.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Outcomes/OutcomePipelineBuilderExtensions.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds an outcome chaos strategy to the builder.</p>
@@ -207,7 +207,7 @@
 
   <h3 id="Polly_Simmy_OutcomePipelineBuilderExtensions_AddChaosResult__1_Polly_ResiliencePipelineBuilder___0__System_Double_System_Func___0__" data-uid="Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult``1(Polly.ResiliencePipelineBuilder{``0},System.Double,System.Func{``0})">
   AddChaosResult&lt;TResult&gt;(ResiliencePipelineBuilder&lt;TResult&gt;, double, Func&lt;TResult?&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Outcomes/OutcomePipelineBuilderExtensions.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Outcomes/OutcomePipelineBuilderExtensions.cs/#L19"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds an outcome chaos strategy to the builder.</p>
@@ -228,57 +228,6 @@
 </dd>
     <dt><code>resultGenerator</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;TResult&gt;</dt>
     <dd><p>The outcome generator delegate.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="Polly.ResiliencePipelineBuilder-1.html">ResiliencePipelineBuilder</a>&lt;TResult&gt;</dt>
-    <dd><p>The builder instance with the retry strategy added.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>TResult</code></dt>
-    <dd><p>The type of result the retry strategy handles.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-  <a id="Polly_Simmy_OutcomePipelineBuilderExtensions_AddChaosResult_" data-uid="Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult*"></a>
-
-  <h3 id="Polly_Simmy_OutcomePipelineBuilderExtensions_AddChaosResult__1_Polly_ResiliencePipelineBuilder___0__System_Double___0_" data-uid="Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult``1(Polly.ResiliencePipelineBuilder{``0},System.Double,``0)">
-  AddChaosResult&lt;TResult&gt;(ResiliencePipelineBuilder&lt;TResult&gt;, double, TResult)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Outcomes/OutcomePipelineBuilderExtensions.cs/#L19"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"><p>Adds an outcome chaos strategy to the builder.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ResiliencePipelineBuilder&lt;TResult&gt; AddChaosResult&lt;TResult&gt;(this ResiliencePipelineBuilder&lt;TResult&gt; builder, double injectionRate, TResult result)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>builder</code> <a class="xref" href="Polly.ResiliencePipelineBuilder-1.html">ResiliencePipelineBuilder</a>&lt;TResult&gt;</dt>
-    <dd><p>The builder instance.</p>
-</dd>
-    <dt><code>injectionRate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
-    <dd><p>The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</p>
-</dd>
-    <dt><code>result</code> <span class="xref">TResult</span></dt>
-    <dd><p>The outcome to inject. For disposable outcomes use either the generator or the options overload.</p>
 </dd>
   </dl>
 
