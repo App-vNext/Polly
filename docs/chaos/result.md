@@ -3,8 +3,8 @@
 ## About
 
 - **Options**:
-  - [`OutcomeStrategyOptions`](xref:Polly.Simmy.Behavior.OutcomeStrategyOptions)
-  - [`OutcomeStrategyOptions<T>`](xref:Polly.Simmy.Behavior.OutcomeStrategyOptions`1)
+  - [`OutcomeStrategyOptions`](xref:Polly.Simmy.Outcomes.OutcomeStrategyOptions)
+  - [`OutcomeStrategyOptions<T>`](xref:Polly.Simmy.Outcomes.OutcomeStrategyOptions`1)
 - **Extensions**: `AddChaosResult`
 - **Strategy Type**: Reactive
 

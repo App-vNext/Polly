@@ -33,7 +33,7 @@ Polly has a rich documentation that covers various topics, such as:
 - [Dependency injection](advanced/dependency-injection.md): How to integrate Polly with dependency injection frameworks and containers.
 - [Performance](advanced/performance.md): Tips on optimizing and getting the best performance from Polly.
 - [Testing](advanced/testing.md): How to test the composition and configuration of resilience pipelines.
-- [Chaos engineering](advanced/simmy.md): How to use Polly to inject faults and test the resilience of your system.
+- [Chaos engineering](chaos/index.md): How to use Polly to inject faults and test the resilience of your system.
 - [Extensibility](extensibility/index.md): How to create and use custom strategies and extensions for Polly.
 
 You can also find many resources and community contributions, such as:
