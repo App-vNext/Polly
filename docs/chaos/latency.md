@@ -94,7 +94,7 @@ var pipeline = new ResiliencePipelineBuilder()
 
 | Property           | Default Value | Description                                            |
 |--------------------|---------------|--------------------------------------------------------|
-| `Latency`          | `30 seconds`  | A timestamp indicating the delay to be injected.       |
+| `Latency`          | `30 seconds`  | A `TimeSpan` indicating the delay to be injected.      |
 | `LatencyGenerator` | `null`        | Generates the latency to inject for a given execution. |
 | `OnLatency`        | `null`        | Action executed when latency is injected.              |
 
@@ -115,7 +115,7 @@ sequenceDiagram
     L->>L: Determines Latency Injection
     deactivate L
     L->>+D: Invokes
-    D-->>-L: Returns result
+    D->>-L: Returns result
     L->>P: Returns result
     P->>C: Returns result
 ```
@@ -136,7 +136,7 @@ sequenceDiagram
     L-->>L: Inject Latency
     deactivate L
     L->>+D: Invokes
-    D-->>-L: Returns result
+    D->>-L: Returns result
     L->>P: Returns result
     P->>C: Returns result
 ```

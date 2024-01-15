@@ -135,7 +135,7 @@ sequenceDiagram
     B-->>B: Determines Outcome Injection
     B-->>B: Inject Outcome
     deactivate B
-    Note over D: The user's Callback is not invoked when a fake result is injected
+    Note over D: The user's Callback is not invoked<br/>when a fake result is injected
     B->>P: Returns result
     P->>C: Returns result
 ```

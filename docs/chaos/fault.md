@@ -134,7 +134,7 @@ sequenceDiagram
     F-->>F: Determines Fault Injection
     F-->>F: Inject Fault
     deactivate F
-    Note over D: The user's Callback is not invoked when a fault is injected
+    Note over D: The user's Callback is not invoked<br/>when a fault is injected
     F->>P: Throws injected Fault
     P->>C: Propagates Exception
 ```
