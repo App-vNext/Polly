@@ -27,7 +27,10 @@ public static class OutcomePipelineBuilderExtensions
         {
             Enabled = true,
             InjectionRate = injectionRate,
-            OutcomeGenerator = (_) => new ValueTask<Outcome<TResult>?>(Task.FromResult<Outcome<TResult>?>(Outcome.FromResult(resultGenerator())))
+            OutcomeGenerator = (_) =>
+            {
+                return new ValueTask<Outcome<TResult>?>(Outcome.FromResult(resultGenerator()));
+            }
         });
         return builder;
     }

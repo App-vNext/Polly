@@ -23,7 +23,7 @@ public static class FaultPipelineBuilderExtensions
         {
             Enabled = true,
             InjectionRate = injectionRate,
-            FaultGenerator = (_) => new ValueTask<Exception?>(Task.FromResult(faultGenerator()))
+            FaultGenerator = (_) => new ValueTask<Exception?>(faultGenerator())
         });
         return builder;
     }
