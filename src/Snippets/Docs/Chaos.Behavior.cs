@@ -21,7 +21,7 @@ internal static partial class Chaos
         {
             BehaviorAction = static args => RestartRedisVM(),
             Enabled = true,
-            InjectionRate = 0.6
+            InjectionRate = 0.05
         };
 
         // To get notifications when a behavior is injected
@@ -29,7 +29,7 @@ internal static partial class Chaos
         {
             BehaviorAction = static args => RestartRedisVM(),
             Enabled = true,
-            InjectionRate = 0.6,
+            InjectionRate = 0.05,
             OnBehaviorInjected = static args =>
             {
                 Console.WriteLine("OnBehaviorInjected, Operation: {0}.", args.Context.OperationKey);
@@ -37,12 +37,12 @@ internal static partial class Chaos
             }
         };
 
-        // Add a behavior strategy with a BehaviorStrategyOptions{<TResult>} instance to the pipeline
+        // Add a behavior strategy with a BehaviorStrategyOptions instance to the pipeline
         new ResiliencePipelineBuilder().AddChaosBehavior(optionsDefault);
         new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosBehavior(optionsWithBehaviorGenerator);
 
         // There are also a handy overload to inject the chaos easily.
-        new ResiliencePipelineBuilder().AddChaosBehavior(0.6, RestartRedisVM);
+        new ResiliencePipelineBuilder().AddChaosBehavior(0.05, RestartRedisVM);
         #endregion
 
         #region chaos-behavior-execution
@@ -51,7 +51,7 @@ internal static partial class Chaos
             {
                 BehaviorAction = static args => RestartRedisVM(),
                 Enabled = true,
-                InjectionRate = 0.6
+                InjectionRate = 0.05
             })
             .AddRetry(new RetryStrategyOptions
             {

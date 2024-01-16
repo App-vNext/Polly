@@ -34,7 +34,7 @@ var optionsWithResultGenerator = new OutcomeStrategyOptions<HttpStatusCode>
         return new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(result));
     },
     Enabled = true,
-    InjectionRate = 0.6
+    InjectionRate = 0.1
 };
 
 // To get notifications when a result is injected
@@ -42,7 +42,7 @@ var optionsOnBehaviorInjected = new OutcomeStrategyOptions<HttpStatusCode>
 {
     OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(HttpStatusCode.TooManyRequests)),
     Enabled = true,
-    InjectionRate = 0.6,
+    InjectionRate = 0.1,
     OnOutcomeInjected = static args =>
     {
         Console.WriteLine($"OnBehaviorInjected, Outcome: {args.Outcome.Result}, Operation: {args.Context.OperationKey}.");
@@ -55,7 +55,7 @@ new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(optionsDefault);
 new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(optionsWithResultGenerator);
 
 // There are also a couple of handy overloads to inject the chaos easily.
-new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(0.6, () => HttpStatusCode.TooManyRequests);
+new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(0.1, () => HttpStatusCode.TooManyRequests);
 ```
 <!-- endSnippet -->
 
@@ -77,7 +77,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpStatusCode>()
             return new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(result));
         },
         Enabled = true,
-        InjectionRate = 0.6
+        InjectionRate = 0.1
     })
     .AddRetry(new RetryStrategyOptions<HttpStatusCode>
     {

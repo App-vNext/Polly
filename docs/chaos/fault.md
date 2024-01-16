@@ -18,12 +18,12 @@ The fault chaos strategy is designed to introduce faults (exceptions) into the s
 // See https://www.pollydocs.org/chaos/fault#defaults for defaults.
 var optionsDefault = new FaultStrategyOptions();
 
-// 60% of invocations will be randomly affected.
+// 10% of invocations will be randomly affected.
 var basicOptions = new FaultStrategyOptions
 {
     Fault = new InvalidOperationException("Dummy exception"),
     Enabled = true,
-    InjectionRate = 0.6
+    InjectionRate = 0.1
 };
 
 // To use a custom function to generate the fault to inject.
@@ -41,7 +41,7 @@ var optionsWithFaultGenerator = new FaultStrategyOptions
         return new ValueTask<Exception?>(exception);
     },
     Enabled = true,
-    InjectionRate = 0.6
+    InjectionRate = 0.1
 };
 
 // To get notifications when a fault is injected
@@ -49,7 +49,7 @@ var optionsOnFaultInjected = new FaultStrategyOptions
 {
     Fault = new InvalidOperationException("Dummy exception"),
     Enabled = true,
-    InjectionRate = 0.6,
+    InjectionRate = 0.1,
     OnFaultInjected = static args =>
     {
         Console.WriteLine("OnFaultInjected, Exception: {0}, Operation: {1}.", args.Fault.Message, args.Context.OperationKey);
@@ -57,12 +57,12 @@ var optionsOnFaultInjected = new FaultStrategyOptions
     }
 };
 
-// Add a fault strategy with a FaultStrategyOptions{<TResult>} instance to the pipeline
+// Add a fault strategy with a FaultStrategyOptions instance to the pipeline
 new ResiliencePipelineBuilder().AddChaosFault(optionsDefault);
 new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosFault(optionsWithFaultGenerator);
 
 // There are also a couple of handy overloads to inject the chaos easily.
-new ResiliencePipelineBuilder().AddChaosFault(0.6, () => new InvalidOperationException("Dummy exception"));
+new ResiliencePipelineBuilder().AddChaosFault(0.1, () => new InvalidOperationException("Dummy exception"));
 ```
 <!-- endSnippet -->
 
@@ -75,7 +75,7 @@ var pipeline = new ResiliencePipelineBuilder()
     {
         Fault = new InvalidOperationException("Dummy exception"),
         Enabled = true,
-        InjectionRate = 0.6
+        InjectionRate = 0.1
     })
     .AddRetry(new RetryStrategyOptions
     {

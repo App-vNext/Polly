@@ -18,12 +18,12 @@ The latency chaos strategy is designed to introduce controlled delays into syste
 // See https://www.pollydocs.org/chaos/latency#defaults for defaults.
 var optionsDefault = new LatencyStrategyOptions();
 
-// 60% of invocations will be randomly affected.
+// 10% of invocations will be randomly affected.
 var basicOptions = new LatencyStrategyOptions
 {
     Latency = TimeSpan.FromSeconds(30),
     Enabled = true,
-    InjectionRate = 0.6
+    InjectionRate = 0.1
 };
 
 // To use a custom function to generate the latency to inject.
@@ -41,7 +41,7 @@ var optionsWithLatencyGenerator = new LatencyStrategyOptions
         return new ValueTask<TimeSpan>(latency);
     },
     Enabled = true,
-    InjectionRate = 0.6
+    InjectionRate = 0.1
 };
 
 // To get notifications when a delay is injected
@@ -49,7 +49,7 @@ var optionsOnBehaviorInjected = new LatencyStrategyOptions
 {
     Latency = TimeSpan.FromSeconds(30),
     Enabled = true,
-    InjectionRate = 0.6,
+    InjectionRate = 0.1,
     OnLatency = static args =>
     {
         Console.WriteLine($"OnLatency, Latency: {args.Latency}, Operation: {args.Context.OperationKey}.");
@@ -57,12 +57,12 @@ var optionsOnBehaviorInjected = new LatencyStrategyOptions
     }
 };
 
-// Add a latency strategy with a LatencyStrategyOptions{<TResult>} instance to the pipeline
+// Add a latency strategy with a LatencyStrategyOptions instance to the pipeline
 new ResiliencePipelineBuilder().AddChaosLatency(optionsDefault);
 new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosLatency(optionsWithLatencyGenerator);
 
 // There are also a handy overload to inject the chaos easily.
-new ResiliencePipelineBuilder().AddChaosLatency(0.6, TimeSpan.FromSeconds(30));
+new ResiliencePipelineBuilder().AddChaosLatency(0.1, TimeSpan.FromSeconds(30));
 ```
 <!-- endSnippet -->
 
@@ -75,7 +75,7 @@ var pipeline = new ResiliencePipelineBuilder()
     {
         Latency = TimeSpan.FromSeconds(10),
         Enabled = true,
-        InjectionRate = 0.6
+        InjectionRate = 0.1
     })
     .AddTimeout(TimeSpan.FromSeconds(5))
     .AddRetry(new RetryStrategyOptions
