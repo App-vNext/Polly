@@ -14,30 +14,6 @@ public static class OutcomePipelineBuilderExtensions
     /// <typeparam name="TResult">The type of result the retry strategy handles.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
-    /// <param name="result">The outcome to inject. For disposable outcomes use either the generator or the options overload.</param>
-    /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResiliencePipelineBuilder<TResult> AddChaosResult<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(
-        this ResiliencePipelineBuilder<TResult> builder,
-        double injectionRate,
-        TResult result)
-    {
-        Guard.NotNull(builder);
-
-        builder.AddChaosResult(new OutcomeStrategyOptions<TResult>
-        {
-            Enabled = true,
-            InjectionRate = injectionRate,
-            OutcomeGenerator = (_) => new ValueTask<Outcome<TResult>?>(Task.FromResult<Outcome<TResult>?>(Outcome.FromResult(result)))
-        });
-        return builder;
-    }
-
-    /// <summary>
-    /// Adds an outcome chaos strategy to the builder.
-    /// </summary>
-    /// <typeparam name="TResult">The type of result the retry strategy handles.</typeparam>
-    /// <param name="builder">The builder instance.</param>
-    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</param>
     /// <param name="resultGenerator">The outcome generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResiliencePipelineBuilder<TResult> AddChaosResult<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(
@@ -51,7 +27,10 @@ public static class OutcomePipelineBuilderExtensions
         {
             Enabled = true,
             InjectionRate = injectionRate,
-            OutcomeGenerator = (_) => new ValueTask<Outcome<TResult>?>(Task.FromResult<Outcome<TResult>?>(Outcome.FromResult(resultGenerator())))
+            OutcomeGenerator = (_) =>
+            {
+                return new ValueTask<Outcome<TResult>?>(Outcome.FromResult(resultGenerator()));
+            }
         });
         return builder;
     }
