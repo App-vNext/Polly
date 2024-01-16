@@ -80,7 +80,7 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Diagrams
 
-### Happy path sequence diagram
+### 🐵 sequence diagram
 
 ```mermaid
 sequenceDiagram
@@ -92,7 +92,7 @@ sequenceDiagram
     C->>P: Calls ExecuteAsync
     P->>B: Calls ExecuteCore
     activate B
-    B-->>B: Determines Behavior Injection
+    B-->>B: Determines Injection<br/>Decision: 🐵
     deactivate B
     B->>+D: Invokes
     D->>-B: Returns result
@@ -100,7 +100,7 @@ sequenceDiagram
     P->>C: Returns result
 ```
 
-### Unhappy path sequence diagram
+### 🙈 sequence diagram
 
 ```mermaid
 sequenceDiagram
@@ -112,8 +112,8 @@ sequenceDiagram
     C->>P: Calls ExecuteAsync
     P->>B: Calls ExecuteCore
     activate B
-    B-->>B: Determines Behavior Injection
-    B-->>B: Inject Behavior
+    B-->>B: Determines Injection<br/>Decision: 🙈
+    B-->>B: Injects Behavior
     deactivate B
     B->>+D: Invokes
     D->>-B: Returns result

@@ -100,7 +100,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpStatusCode>()
 
 ## Diagrams
 
-### Happy path sequence diagram
+### 🐵 sequence diagram
 
 ```mermaid
 sequenceDiagram
@@ -112,7 +112,7 @@ sequenceDiagram
     C->>P: Calls ExecuteAsync
     P->>B: Calls ExecuteCore
     activate B
-    B-->>B: Determines Outcome Injection
+    B-->>B: Determines Injection<br/>Decision: 🐵
     deactivate B
     B->>+D: Invokes
     D->>-B: Returns result
@@ -120,7 +120,7 @@ sequenceDiagram
     P->>C: Returns result
 ```
 
-### Unhappy path sequence diagram
+### 🙈 sequence diagram
 
 ```mermaid
 sequenceDiagram
@@ -132,8 +132,8 @@ sequenceDiagram
     C->>P: Calls ExecuteAsync
     P->>B: Calls ExecuteCore
     activate B
-    B-->>B: Determines Outcome Injection
-    B-->>B: Inject Outcome
+    B-->>B: Determines Injection<br/>Decision: 🙈
+    B-->>B: Injects Outcome
     deactivate B
     Note over D: The user's Callback is not invoked<br/>when a fake result is injected
     B->>P: Returns result

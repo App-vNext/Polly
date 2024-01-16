@@ -99,7 +99,7 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Diagrams
 
-### Happy path sequence diagram
+### 🐵 sequence diagram
 
 ```mermaid
 sequenceDiagram
@@ -111,7 +111,7 @@ sequenceDiagram
     C->>P: Calls ExecuteAsync
     P->>F: Calls ExecuteCore
     activate F
-    F-->>F: Determines Fault Injection
+    F-->>F: Determines Injection<br/>Decision: 🐵
     deactivate F
     F->>+D: Invokes
     D->>-F: Returns result
@@ -119,7 +119,7 @@ sequenceDiagram
     P->>C: Returns result
 ```
 
-### Unhappy path sequence diagram
+### 🙈 sequence diagram
 
 ```mermaid
 sequenceDiagram
@@ -131,8 +131,8 @@ sequenceDiagram
     C->>P: Calls ExecuteAsync
     P->>F: Calls ExecuteCore
     activate F
-    F-->>F: Determines Fault Injection
-    F-->>F: Inject Fault
+    F-->>F: Determines Injection<br/>Decision: 🙈
+    F-->>F: Injects Fault
     deactivate F
     Note over D: The user's Callback is not invoked<br/>when a fault is injected
     F->>P: Throws injected Fault
