@@ -99,7 +99,7 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Diagrams
 
-### 🐵 sequence diagram
+### Normal 🐵 sequence diagram
 
 ```mermaid
 sequenceDiagram
@@ -119,7 +119,7 @@ sequenceDiagram
     P->>C: Returns result
 ```
 
-### 🙈 sequence diagram
+### Chaos 🙈 sequence diagram
 
 ```mermaid
 sequenceDiagram
