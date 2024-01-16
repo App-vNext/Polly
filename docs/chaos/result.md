@@ -55,7 +55,7 @@ new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(optionsDefault);
 new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(optionsWithResultGenerator);
 
 // There are also a couple of handy overloads to inject the chaos easily.
-new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(0.6, HttpStatusCode.TooManyRequests);
+new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(0.6, () => HttpStatusCode.TooManyRequests);
 ```
 <!-- endSnippet -->
 

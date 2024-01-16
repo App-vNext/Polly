@@ -58,7 +58,7 @@ internal static partial class Chaos
         new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosFault(optionsWithFaultGenerator);
 
         // There are also a couple of handy overloads to inject the chaos easily.
-        new ResiliencePipelineBuilder().AddChaosFault(0.6, new InvalidOperationException("Dummy exception"));
+        new ResiliencePipelineBuilder().AddChaosFault(0.6, () => new InvalidOperationException("Dummy exception"));
         #endregion
 
         #region chaos-fault-execution
