@@ -16,13 +16,13 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 ## NuGet Packages
 
-| **Package** | **Latest Version** |
-|:--|:--|
-| Polly | [![NuGet](https://buildstats.info/nuget/Polly)](https://www.nuget.org/packages/Polly/ "Download Polly from NuGet.org") |
-| Polly.Core | [![NuGet](https://buildstats.info/nuget/Polly.Core)](https://www.nuget.org/packages/Polly.Core/ "Download Polly.Core from NuGet.org") |
-| Polly.Extensions | [![NuGet](https://buildstats.info/nuget/Polly.Extensions)](https://www.nuget.org/packages/Polly.Extensions/ "Download Polly.Extensions from NuGet.org") |
-| Polly.RateLimiting | [![NuGet](https://buildstats.info/nuget/Polly.RateLimiting)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") |
-| Polly.Testing | [![NuGet](https://buildstats.info/nuget/Polly.Testing)](https://www.nuget.org/packages/Polly.Testing/ "Download Polly.Testing from NuGet.org") |
+| **Package** | **Latest Version** | **About** |
+|:--|:--|:--|
+| `Polly.Core` | [![NuGet](https://buildstats.info/nuget/Polly.Core)](https://www.nuget.org/packages/Polly.Core/ "Download Polly.Core from NuGet.org") | The core abstractions and [built-in strategies](https://www.pollydocs.org/strategies/index). |
+| `Polly.Extensions` | [![NuGet](https://buildstats.info/nuget/Polly.Extensions)](https://www.nuget.org/packages/Polly.Extensions/ "Download Polly.Extensions from NuGet.org") | [Telemetry](https://www.pollydocs.org/advanced/telemetry) and [dependency injection](https://www.pollydocs.org/advanced/dependency-injection) support. |
+| `Polly.RateLimiting` | [![NuGet](https://buildstats.info/nuget/Polly.RateLimiting)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") | Integration with [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) APIs. |
+| `Polly.Testing` | [![NuGet](https://buildstats.info/nuget/Polly.Testing)](https://www.nuget.org/packages/Polly.Testing/ "Download Polly.Testing from NuGet.org") | [Testing support](https://www.pollydocs.org/advanced/testing) for Polly library. |
+| `Polly` | [![NuGet](https://buildstats.info/nuget/Polly)](https://www.nuget.org/packages/Polly/ "Download Polly from NuGet.org") | This package contains the legacy API exposed by older versions of Polly library. |
 
 ## Documentation
 
