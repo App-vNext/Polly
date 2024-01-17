@@ -1,4 +1,4 @@
-using System.Net;
+using System.Net.Http;
 using Polly.Retry;
 using Polly.Simmy;
 using Polly.Simmy.Fault;
@@ -10,12 +10,8 @@ internal static partial class Chaos
     public static void FaultUsage()
     {
         #region chaos-fault-usage
-        // Fault using the default options.
-        // See https://www.pollydocs.org/chaos/fault#defaults for defaults.
-        var optionsDefault = new FaultStrategyOptions();
-
         // 10% of invocations will be randomly affected.
-        var basicOptions = new FaultStrategyOptions
+        var optionsBasic = new FaultStrategyOptions
         {
             Fault = new InvalidOperationException("Dummy exception"),
             Enabled = true,
@@ -54,8 +50,8 @@ internal static partial class Chaos
         };
 
         // Add a fault strategy with a FaultStrategyOptions instance to the pipeline
-        new ResiliencePipelineBuilder().AddChaosFault(optionsDefault);
-        new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosFault(optionsWithFaultGenerator);
+        new ResiliencePipelineBuilder().AddChaosFault(optionsBasic);
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosFault(optionsWithFaultGenerator);
 
         // There are also a couple of handy overloads to inject the chaos easily.
         new ResiliencePipelineBuilder().AddChaosFault(0.1, () => new InvalidOperationException("Dummy exception"));

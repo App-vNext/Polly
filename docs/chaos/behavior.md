@@ -14,10 +14,6 @@ The behavior chaos strategy is designed to inject custom behaviors into system o
 
 <!-- snippet: chaos-behavior-usage -->
 ```cs
-// Behavior using the default options.
-// See https://www.pollydocs.org/chaos/behavior#defaults for defaults.
-var optionsDefault = new BehaviorStrategyOptions();
-
 // To use a custom function to generate the behavior to inject.
 var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
 {
@@ -40,8 +36,8 @@ var optionsOnBehaviorInjected = new BehaviorStrategyOptions
 };
 
 // Add a behavior strategy with a BehaviorStrategyOptions instance to the pipeline
-new ResiliencePipelineBuilder().AddChaosBehavior(optionsDefault);
-new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosBehavior(optionsWithBehaviorGenerator);
+new ResiliencePipelineBuilder().AddChaosBehavior(optionsWithBehaviorGenerator);
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosBehavior(optionsOnBehaviorInjected);
 
 // There are also a handy overload to inject the chaos easily.
 new ResiliencePipelineBuilder().AddChaosBehavior(0.05, RestartRedisVM);

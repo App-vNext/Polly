@@ -1,4 +1,4 @@
-using System.Net;
+using System.Net.Http;
 using Polly.Retry;
 using Polly.Simmy;
 using Polly.Simmy.Behavior;
@@ -12,10 +12,6 @@ internal static partial class Chaos
         static ValueTask RestartRedisVM() => ValueTask.CompletedTask;
 
         #region chaos-behavior-usage
-        // Behavior using the default options.
-        // See https://www.pollydocs.org/chaos/behavior#defaults for defaults.
-        var optionsDefault = new BehaviorStrategyOptions();
-
         // To use a custom function to generate the behavior to inject.
         var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
         {
@@ -38,8 +34,8 @@ internal static partial class Chaos
         };
 
         // Add a behavior strategy with a BehaviorStrategyOptions instance to the pipeline
-        new ResiliencePipelineBuilder().AddChaosBehavior(optionsDefault);
-        new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosBehavior(optionsWithBehaviorGenerator);
+        new ResiliencePipelineBuilder().AddChaosBehavior(optionsWithBehaviorGenerator);
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosBehavior(optionsOnBehaviorInjected);
 
         // There are also a handy overload to inject the chaos easily.
         new ResiliencePipelineBuilder().AddChaosBehavior(0.05, RestartRedisVM);

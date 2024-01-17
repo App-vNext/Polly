@@ -14,12 +14,8 @@ The fault chaos strategy is designed to introduce faults (exceptions) into the s
 
 <!-- snippet: chaos-fault-usage -->
 ```cs
-// Fault using the default options.
-// See https://www.pollydocs.org/chaos/fault#defaults for defaults.
-var optionsDefault = new FaultStrategyOptions();
-
 // 10% of invocations will be randomly affected.
-var basicOptions = new FaultStrategyOptions
+var optionsBasic = new FaultStrategyOptions
 {
     Fault = new InvalidOperationException("Dummy exception"),
     Enabled = true,
@@ -58,8 +54,8 @@ var optionsOnFaultInjected = new FaultStrategyOptions
 };
 
 // Add a fault strategy with a FaultStrategyOptions instance to the pipeline
-new ResiliencePipelineBuilder().AddChaosFault(optionsDefault);
-new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosFault(optionsWithFaultGenerator);
+new ResiliencePipelineBuilder().AddChaosFault(optionsBasic);
+new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosFault(optionsWithFaultGenerator);
 
 // There are also a couple of handy overloads to inject the chaos easily.
 new ResiliencePipelineBuilder().AddChaosFault(0.1, () => new InvalidOperationException("Dummy exception"));

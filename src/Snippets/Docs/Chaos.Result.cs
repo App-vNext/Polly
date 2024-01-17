@@ -11,10 +11,6 @@ internal static partial class Chaos
     public static void ResultUsage()
     {
         #region chaos-result-usage
-        // Outcome using the default options.
-        // See https://www.pollydocs.org/chaos/result#defaults for defaults.
-        var optionsDefault = new OutcomeStrategyOptions<HttpResponseMessage>();
-
         // To use a custom function to generate the result to inject.
         var optionsWithResultGenerator = new OutcomeStrategyOptions<HttpResponseMessage>
         {
@@ -45,8 +41,8 @@ internal static partial class Chaos
         };
 
         // Add a result strategy with a OutcomeStrategyOptions{<TResult>} instance to the pipeline
-        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosResult(optionsDefault);
         new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosResult(optionsWithResultGenerator);
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosResult(optionsOnBehaviorInjected);
 
         // There are also a couple of handy overloads to inject the chaos easily.
         new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosResult(0.1, () => new HttpResponseMessage(HttpStatusCode.TooManyRequests));
