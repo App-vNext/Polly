@@ -15,7 +15,7 @@ There are a lot of questions when it comes to chaos-engineering and making sure 
 
 Using Polly helps introduce resilience to a project, but we don't want to have to wait for expected or unexpected failures to test it out. A resilience could be wrongly implemented; testing the scenarios is not straightforward; and mocking failure of some dependencies (for example a cloud SaaS or PaaS service) is not always straightforward.
 
-### What is needed, to simulate chaotic scenarios?
+### What is needed to simulate chaotic scenarios?
 
 * A way to simulate failures of dependencies (any service dependency for example).
 * Define when to fail based on some external factors - maybe global configuration or some rule.

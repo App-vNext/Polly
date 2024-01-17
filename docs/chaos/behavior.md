@@ -127,7 +127,7 @@ sequenceDiagram
 
 ❌ DON'T
 
-Use behavior strategies to inject delays
+Use behavior strategies to inject delays.
 
 ✅ DO
 
