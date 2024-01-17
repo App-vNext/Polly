@@ -20,13 +20,7 @@ internal static partial class Chaos
         {
             OutcomeGenerator = static args =>
             {
-                HttpStatusCode statusCode = args.Context.OperationKey switch
-                {
-                    "A" => HttpStatusCode.TooManyRequests,
-                    "B" => HttpStatusCode.NotFound,
-                    _ => HttpStatusCode.OK
-                };
-                var response = new HttpResponseMessage(statusCode);
+                var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
                 return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
             },
             Enabled = true,
@@ -38,7 +32,7 @@ internal static partial class Chaos
         {
             OutcomeGenerator = static args =>
             {
-                var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+                var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
                 return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
             },
             Enabled = true,
@@ -64,7 +58,7 @@ internal static partial class Chaos
             {
                 ShouldHandle = static args => args.Outcome switch
                 {
-                    { Result.StatusCode: HttpStatusCode.TooManyRequests } => PredicateResult.True(),
+                    { Result.StatusCode: HttpStatusCode.InternalServerError } => PredicateResult.True(),
                     _ => PredicateResult.False()
                 },
                 BackoffType = DelayBackoffType.Exponential,
@@ -76,13 +70,7 @@ internal static partial class Chaos
             {
                 OutcomeGenerator = static args =>
                 {
-                    HttpStatusCode statusCode = args.Context.OperationKey switch
-                    {
-                        "A" => HttpStatusCode.TooManyRequests,
-                        "B" => HttpStatusCode.NotFound,
-                        _ => HttpStatusCode.OK
-                    };
-                    var response = new HttpResponseMessage(statusCode);
+                    var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
                     return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
                 },
                 Enabled = true,

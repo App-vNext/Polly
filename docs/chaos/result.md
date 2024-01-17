@@ -25,13 +25,7 @@ var optionsWithResultGenerator = new OutcomeStrategyOptions<HttpResponseMessage>
 {
     OutcomeGenerator = static args =>
     {
-        HttpStatusCode statusCode = args.Context.OperationKey switch
-        {
-            "A" => HttpStatusCode.TooManyRequests,
-            "B" => HttpStatusCode.NotFound,
-            _ => HttpStatusCode.OK
-        };
-        var response = new HttpResponseMessage(statusCode);
+        var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
         return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
     },
     Enabled = true,
@@ -43,7 +37,7 @@ var optionsOnBehaviorInjected = new OutcomeStrategyOptions<HttpResponseMessage>
 {
     OutcomeGenerator = static args =>
     {
-        var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+        var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
         return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
     },
     Enabled = true,
@@ -73,7 +67,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     {
         ShouldHandle = static args => args.Outcome switch
         {
-            { Result.StatusCode: HttpStatusCode.TooManyRequests } => PredicateResult.True(),
+            { Result.StatusCode: HttpStatusCode.InternalServerError } => PredicateResult.True(),
             _ => PredicateResult.False()
         },
         BackoffType = DelayBackoffType.Exponential,
@@ -85,13 +79,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     {
         OutcomeGenerator = static args =>
         {
-            HttpStatusCode statusCode = args.Context.OperationKey switch
-            {
-                "A" => HttpStatusCode.TooManyRequests,
-                "B" => HttpStatusCode.NotFound,
-                _ => HttpStatusCode.OK
-            };
-            var response = new HttpResponseMessage(statusCode);
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
             return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
         },
         Enabled = true,
