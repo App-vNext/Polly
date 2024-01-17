@@ -64,13 +64,6 @@ internal static partial class Chaos
 
         #region chaos-latency-execution
         var pipeline = new ResiliencePipelineBuilder()
-            .AddChaosLatency(new LatencyStrategyOptions // Monkey strategies are usually placed innermost in the pipelines
-            {
-                Latency = TimeSpan.FromSeconds(10),
-                Enabled = true,
-                InjectionRate = 0.1
-            })
-            .AddTimeout(TimeSpan.FromSeconds(5))
             .AddRetry(new RetryStrategyOptions
             {
                 ShouldHandle = new PredicateBuilder().Handle<TimeoutRejectedException>(),
@@ -78,6 +71,13 @@ internal static partial class Chaos
                 UseJitter = true,  // Adds a random factor to the delay
                 MaxRetryAttempts = 4,
                 Delay = TimeSpan.FromSeconds(3),
+            })
+            .AddTimeout(TimeSpan.FromSeconds(5))
+            .AddChaosLatency(new LatencyStrategyOptions // Monkey strategies are usually placed as the last ones in the pipeline
+            {
+                Latency = TimeSpan.FromSeconds(10),
+                Enabled = true,
+                InjectionRate = 0.1
             })
             .Build();
         #endregion

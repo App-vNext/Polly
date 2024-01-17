@@ -71,12 +71,6 @@ Example execution:
 <!-- snippet: chaos-fault-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
-    .AddChaosFault(new FaultStrategyOptions // Monkey strategies are usually placed innermost in the pipelines
-    {
-        Fault = new InvalidOperationException("Dummy exception"),
-        Enabled = true,
-        InjectionRate = 0.1
-    })
     .AddRetry(new RetryStrategyOptions
     {
         ShouldHandle = new PredicateBuilder().Handle<InvalidOperationException>(),
@@ -84,6 +78,12 @@ var pipeline = new ResiliencePipelineBuilder()
         UseJitter = true,  // Adds a random factor to the delay
         MaxRetryAttempts = 4,
         Delay = TimeSpan.FromSeconds(3),
+    })
+    .AddChaosFault(new FaultStrategyOptions // Monkey strategies are usually placed as the last ones in the pipeline
+    {
+        Fault = new InvalidOperationException("Dummy exception"),
+        Enabled = true,
+        InjectionRate = 0.1
     })
     .Build();
 ```

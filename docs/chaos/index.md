@@ -37,7 +37,7 @@ Chaos strategies (or Monkey strategies as we call them) are in essence a [Resili
 
 ## Usage
 
-It is usual to place the monkey strategy innermost in a Resilience Pipeline. By placing the monkey strategies innermost, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.
+It is usual to place the monkey strategy as the last strategy in the resilience pipeline. By placing the monkey strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.
 
 ## Common options across strategies
 

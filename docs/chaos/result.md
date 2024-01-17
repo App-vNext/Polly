@@ -64,7 +64,15 @@ Example execution:
 <!-- snippet: chaos-result-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder<HttpStatusCode>()
-    .AddChaosResult(new OutcomeStrategyOptions<HttpStatusCode> // Monkey strategies are usually placed innermost in the pipelines
+    .AddRetry(new RetryStrategyOptions<HttpStatusCode>
+    {
+        ShouldHandle = static args => new ValueTask<bool>(args.Outcome.Result == HttpStatusCode.TooManyRequests),
+        BackoffType = DelayBackoffType.Exponential,
+        UseJitter = true,
+        MaxRetryAttempts = 4,
+        Delay = TimeSpan.FromSeconds(3),
+    })
+    .AddChaosResult(new OutcomeStrategyOptions<HttpStatusCode> // Monkey strategies are usually placed as the last ones in the pipeline
     {
         OutcomeGenerator = static args =>
         {
@@ -78,14 +86,6 @@ var pipeline = new ResiliencePipelineBuilder<HttpStatusCode>()
         },
         Enabled = true,
         InjectionRate = 0.1
-    })
-    .AddRetry(new RetryStrategyOptions<HttpStatusCode>
-    {
-        ShouldHandle = static args => new ValueTask<bool>(args.Outcome.Result == HttpStatusCode.TooManyRequests),
-        BackoffType = DelayBackoffType.Exponential,
-        UseJitter = true,
-        MaxRetryAttempts = 4,
-        Delay = TimeSpan.FromSeconds(3),
     })
     .Build();
 ```

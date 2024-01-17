@@ -53,12 +53,6 @@ Example execution:
 <!-- snippet: chaos-behavior-execution -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder()
-    .AddChaosBehavior(new BehaviorStrategyOptions // Monkey strategies are usually placed innermost in the pipelines
-    {
-        BehaviorAction = static args => RestartRedisVM(),
-        Enabled = true,
-        InjectionRate = 0.05
-    })
     .AddRetry(new RetryStrategyOptions
     {
         ShouldHandle = new PredicateBuilder().Handle<RedisConnectionException>(),
@@ -66,6 +60,12 @@ var pipeline = new ResiliencePipelineBuilder()
         UseJitter = true,  // Adds a random factor to the delay
         MaxRetryAttempts = 4,
         Delay = TimeSpan.FromSeconds(3),
+    })
+    .AddChaosBehavior(new BehaviorStrategyOptions // Monkey strategies are usually placed as the last ones in the pipeline
+    {
+        BehaviorAction = static args => RestartRedisVM(),
+        Enabled = true,
+        InjectionRate = 0.05
     })
     .Build();
 ```
