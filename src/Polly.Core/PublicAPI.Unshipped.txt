@@ -25,8 +25,6 @@ Polly.Simmy.Fault.FaultGeneratorArguments.Context.get -> Polly.ResilienceContext
 Polly.Simmy.Fault.FaultGeneratorArguments.FaultGeneratorArguments() -> void
 Polly.Simmy.Fault.FaultGeneratorArguments.FaultGeneratorArguments(Polly.ResilienceContext! context) -> void
 Polly.Simmy.Fault.FaultStrategyOptions
-Polly.Simmy.Fault.FaultStrategyOptions.Fault.get -> System.Exception?
-Polly.Simmy.Fault.FaultStrategyOptions.Fault.set -> void
 Polly.Simmy.Fault.FaultStrategyOptions.FaultGenerator.get -> System.Func<Polly.Simmy.Fault.FaultGeneratorArguments, System.Threading.Tasks.ValueTask<System.Exception?>>?
 Polly.Simmy.Fault.FaultStrategyOptions.FaultGenerator.set -> void
 Polly.Simmy.Fault.FaultStrategyOptions.FaultStrategyOptions() -> void
