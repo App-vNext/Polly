@@ -4511,19 +4511,6 @@ references:
   commentId: T:Polly.Simmy.Fault.FaultStrategyOptions
   fullName: Polly.Simmy.Fault.FaultStrategyOptions
   nameWithType: FaultStrategyOptions
-- uid: Polly.Simmy.Fault.FaultStrategyOptions.Fault
-  name: Fault
-  href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions_Fault
-  commentId: P:Polly.Simmy.Fault.FaultStrategyOptions.Fault
-  fullName: Polly.Simmy.Fault.FaultStrategyOptions.Fault
-  nameWithType: FaultStrategyOptions.Fault
-- uid: Polly.Simmy.Fault.FaultStrategyOptions.Fault*
-  name: Fault
-  href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions_Fault_
-  commentId: Overload:Polly.Simmy.Fault.FaultStrategyOptions.Fault
-  isSpec: "True"
-  fullName: Polly.Simmy.Fault.FaultStrategyOptions.Fault
-  nameWithType: FaultStrategyOptions.Fault
 - uid: Polly.Simmy.Fault.FaultStrategyOptions.FaultGenerator
   name: FaultGenerator
   href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions_FaultGenerator
