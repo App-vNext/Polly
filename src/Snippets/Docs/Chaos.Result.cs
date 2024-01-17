@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http;
 using Polly.Retry;
 using Polly.Simmy;
 using Polly.Simmy.Outcomes;
@@ -12,29 +13,34 @@ internal static partial class Chaos
         #region chaos-result-usage
         // Outcome using the default options.
         // See https://www.pollydocs.org/chaos/result#defaults for defaults.
-        var optionsDefault = new OutcomeStrategyOptions<HttpStatusCode>();
+        var optionsDefault = new OutcomeStrategyOptions<HttpResponseMessage>();
 
         // To use a custom function to generate the result to inject.
-        var optionsWithResultGenerator = new OutcomeStrategyOptions<HttpStatusCode>
+        var optionsWithResultGenerator = new OutcomeStrategyOptions<HttpResponseMessage>
         {
             OutcomeGenerator = static args =>
             {
-                HttpStatusCode result = args.Context.OperationKey switch
+                HttpStatusCode statusCode = args.Context.OperationKey switch
                 {
                     "A" => HttpStatusCode.TooManyRequests,
                     "B" => HttpStatusCode.NotFound,
                     _ => HttpStatusCode.OK
                 };
-                return new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(result));
+                var response = new HttpResponseMessage(statusCode);
+                return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
             },
             Enabled = true,
             InjectionRate = 0.1
         };
 
         // To get notifications when a result is injected
-        var optionsOnBehaviorInjected = new OutcomeStrategyOptions<HttpStatusCode>
+        var optionsOnBehaviorInjected = new OutcomeStrategyOptions<HttpResponseMessage>
         {
-            OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(HttpStatusCode.TooManyRequests)),
+            OutcomeGenerator = static args =>
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+                return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
+            },
             Enabled = true,
             InjectionRate = 0.1,
             OnOutcomeInjected = static args =>
@@ -45,34 +51,39 @@ internal static partial class Chaos
         };
 
         // Add a result strategy with a OutcomeStrategyOptions{<TResult>} instance to the pipeline
-        new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(optionsDefault);
-        new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(optionsWithResultGenerator);
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosResult(optionsDefault);
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosResult(optionsWithResultGenerator);
 
         // There are also a couple of handy overloads to inject the chaos easily.
-        new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosResult(0.1, () => HttpStatusCode.TooManyRequests);
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosResult(0.1, () => new HttpResponseMessage(HttpStatusCode.TooManyRequests));
         #endregion
 
         #region chaos-result-execution
-        var pipeline = new ResiliencePipelineBuilder<HttpStatusCode>()
-            .AddRetry(new RetryStrategyOptions<HttpStatusCode>
+        var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
+            .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
             {
-                ShouldHandle = static args => new ValueTask<bool>(args.Outcome.Result == HttpStatusCode.TooManyRequests),
+                ShouldHandle = static args => args.Outcome switch
+                {
+                    { Result.StatusCode: HttpStatusCode.TooManyRequests } => PredicateResult.True(),
+                    _ => PredicateResult.False()
+                },
                 BackoffType = DelayBackoffType.Exponential,
                 UseJitter = true,
                 MaxRetryAttempts = 4,
                 Delay = TimeSpan.FromSeconds(3),
             })
-            .AddChaosResult(new OutcomeStrategyOptions<HttpStatusCode> // Monkey strategies are usually placed as the last ones in the pipeline
+            .AddChaosResult(new OutcomeStrategyOptions<HttpResponseMessage> // Monkey strategies are usually placed as the last ones in the pipeline
             {
                 OutcomeGenerator = static args =>
                 {
-                    HttpStatusCode result = args.Context.OperationKey switch
+                    HttpStatusCode statusCode = args.Context.OperationKey switch
                     {
                         "A" => HttpStatusCode.TooManyRequests,
                         "B" => HttpStatusCode.NotFound,
                         _ => HttpStatusCode.OK
                     };
-                    return new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(result));
+                    var response = new HttpResponseMessage(statusCode);
+                    return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
                 },
                 Enabled = true,
                 InjectionRate = 0.1
