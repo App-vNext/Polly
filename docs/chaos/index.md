@@ -1,12 +1,12 @@
 # Chaos engineering with Simmy
 
-[Simmy][simmy] is a major new companion project adding a chaos-engineering and fault-injection dimension to Polly, through the provision of strategies to selectively inject faults, latency, custom behavior or fake results.
+[Simmy][simmy] is a major new companion project adding a chaos engineering and fault-injection dimension to Polly, through the provision of strategies to selectively inject faults, latency, custom behavior or fake results.
 
 ![Simmy](../media/simmy-logo.png)
 
 ## Motivation
 
-There are a lot of questions when it comes to chaos-engineering and making sure that a system is actually ready to face the worst possible scenarios:
+There are a lot of questions when it comes to chaos engineering and making sure that a system is actually ready to face the worst possible scenarios:
 
 * Is my system resilient enough?
 * Am I handling the right exceptions/scenarios?
