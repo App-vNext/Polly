@@ -17,7 +17,7 @@ The fault chaos strategy is designed to introduce faults (exceptions) into the s
 // 10% of invocations will be randomly affected.
 var optionsBasic = new FaultStrategyOptions
 {
-    Fault = new InvalidOperationException("Dummy exception"),
+    FaultGenerator = static args => new ValueTask<Exception?>(new InvalidOperationException("Dummy exception")),
     Enabled = true,
     InjectionRate = 0.1
 };
@@ -43,7 +43,7 @@ var optionsWithFaultGenerator = new FaultStrategyOptions
 // To get notifications when a fault is injected
 var optionsOnFaultInjected = new FaultStrategyOptions
 {
-    Fault = new InvalidOperationException("Dummy exception"),
+    FaultGenerator = static args => new ValueTask<Exception?>(new InvalidOperationException("Dummy exception")),
     Enabled = true,
     InjectionRate = 0.1,
     OnFaultInjected = static args =>
@@ -77,7 +77,7 @@ var pipeline = new ResiliencePipelineBuilder()
     })
     .AddChaosFault(new FaultStrategyOptions // Monkey strategies are usually placed as the last ones in the pipeline
     {
-        Fault = new InvalidOperationException("Dummy exception"),
+        FaultGenerator = static args => new ValueTask<Exception?>(new InvalidOperationException("Dummy exception")),
         Enabled = true,
         InjectionRate = 0.1
     })
@@ -91,7 +91,6 @@ var pipeline = new ResiliencePipelineBuilder()
 |-------------------|---------------|------------------------------------------------------|
 | `OnFaultInjected` | `null`        | Action executed when the fault is injected.          |
 | `FaultGenerator`  | `null`        | Generates the fault to inject for a given execution. |
-| `Fault`           | `null`        | The fault to inject.                                 |
 
 ## Diagrams
 

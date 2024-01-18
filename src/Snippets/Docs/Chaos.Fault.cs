@@ -13,7 +13,7 @@ internal static partial class Chaos
         // 10% of invocations will be randomly affected.
         var optionsBasic = new FaultStrategyOptions
         {
-            Fault = new InvalidOperationException("Dummy exception"),
+            FaultGenerator = static args => new ValueTask<Exception?>(new InvalidOperationException("Dummy exception")),
             Enabled = true,
             InjectionRate = 0.1
         };
@@ -39,7 +39,7 @@ internal static partial class Chaos
         // To get notifications when a fault is injected
         var optionsOnFaultInjected = new FaultStrategyOptions
         {
-            Fault = new InvalidOperationException("Dummy exception"),
+            FaultGenerator = static args => new ValueTask<Exception?>(new InvalidOperationException("Dummy exception")),
             Enabled = true,
             InjectionRate = 0.1,
             OnFaultInjected = static args =>
@@ -69,7 +69,7 @@ internal static partial class Chaos
             })
             .AddChaosFault(new FaultStrategyOptions // Monkey strategies are usually placed as the last ones in the pipeline
             {
-                Fault = new InvalidOperationException("Dummy exception"),
+                FaultGenerator = static args => new ValueTask<Exception?>(new InvalidOperationException("Dummy exception")),
                 Enabled = true,
                 InjectionRate = 0.1
             })
