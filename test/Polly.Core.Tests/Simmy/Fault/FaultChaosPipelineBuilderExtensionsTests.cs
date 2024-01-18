@@ -17,11 +17,10 @@ public class FaultChaosPipelineBuilderExtensionsTests
                 InjectionRate = 0.6,
                 Enabled = true,
                 Randomizer = () => 0.5,
-                Fault = new InvalidOperationException("Dummy exception.")
+                FaultGenerator = _=> new ValueTask<Exception?>( new InvalidOperationException("Dummy exception."))
             });
 
-            AssertFaultStrategy<InvalidOperationException>(builder, true, 0.6)
-            .Fault.Should().BeOfType(typeof(InvalidOperationException));
+            AssertFaultStrategy<InvalidOperationException>(builder, true, 0.6).FaultGenerator.Should().NotBeNull();
         },
     };
 #pragma warning restore IDE0028

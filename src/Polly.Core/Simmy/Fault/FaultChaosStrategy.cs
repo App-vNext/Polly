@@ -9,22 +9,15 @@ internal class FaultChaosStrategy : MonkeyStrategy
     public FaultChaosStrategy(FaultStrategyOptions options, ResilienceStrategyTelemetry telemetry)
         : base(options)
     {
-        if (options.Fault is null && options.FaultGenerator is null)
-        {
-            throw new InvalidOperationException("Either Fault or FaultGenerator is required.");
-        }
-
         _telemetry = telemetry;
-        Fault = options.Fault;
+
         OnFaultInjected = options.OnFaultInjected;
-        FaultGenerator = options.FaultGenerator is not null ? options.FaultGenerator : (_) => new(options.Fault);
+        FaultGenerator = options.FaultGenerator!;
     }
 
     public Func<OnFaultInjectedArguments, ValueTask>? OnFaultInjected { get; }
 
     public Func<FaultGeneratorArguments, ValueTask<Exception?>> FaultGenerator { get; }
-
-    public Exception? Fault { get; }
 
     protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

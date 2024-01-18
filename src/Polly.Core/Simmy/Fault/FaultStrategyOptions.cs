@@ -1,4 +1,6 @@
-﻿namespace Polly.Simmy.Fault;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Polly.Simmy.Fault;
 
 /// <summary>
 /// Represents the options for the Fault chaos strategy.
@@ -20,14 +22,6 @@ public class FaultStrategyOptions : MonkeyStrategyOptions
     /// Defaults to <see langword="null"/>. Either <see cref="Fault"/> or this property is required.
     /// When this property is <see langword="null"/> the <see cref="Fault"/> is used.
     /// </remarks>
+    [Required]
     public Func<FaultGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; set; } = default!;
-
-    /// <summary>
-    /// Gets or sets the fault to be injected for a given execution.
-    /// </summary>
-    /// <remarks>
-    /// Defaults to <see langword="null"/>. Either <see cref="FaultGenerator"/> or this property is required.
-    /// When this property is <see langword="null"/> the <see cref="FaultGenerator"/> is used.
-    /// </remarks>
-    public Exception? Fault { get; set; }
 }

@@ -59,7 +59,7 @@ public class FaultChaosStrategyTests
             InjectionRate = 0.6,
             Enabled = false,
             Randomizer = () => 0.5,
-            Fault = fault
+            FaultGenerator = _ => new ValueTask<Exception?>(fault)
         };
 
         var sut = CreateSut(options);
@@ -79,7 +79,7 @@ public class FaultChaosStrategyTests
             InjectionRate = 0.6,
             Enabled = false,
             Randomizer = () => 0.5,
-            Fault = fault
+            FaultGenerator = _ => new ValueTask<Exception?>(fault)
         };
 
         var sut = new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosFault(options).Build();
@@ -106,7 +106,7 @@ public class FaultChaosStrategyTests
             InjectionRate = 0.6,
             Enabled = true,
             Randomizer = () => 0.5,
-            Fault = fault,
+            FaultGenerator = _ => new ValueTask<Exception?>(fault),
             OnFaultInjected = args =>
             {
                 args.Context.Should().NotBeNull();
@@ -143,7 +143,7 @@ public class FaultChaosStrategyTests
             InjectionRate = 0.6,
             Enabled = true,
             Randomizer = () => 0.5,
-            Fault = fault,
+            FaultGenerator = _ => new ValueTask<Exception?>(fault),
             OnFaultInjected = args =>
             {
                 args.Context.Should().NotBeNull();
@@ -181,7 +181,7 @@ public class FaultChaosStrategyTests
             InjectionRate = 0.3,
             Enabled = true,
             Randomizer = () => 0.5,
-            Fault = fault
+            FaultGenerator = _ => new ValueTask<Exception?>(fault)
         };
 
         var sut = CreateSut(options);
@@ -232,7 +232,7 @@ public class FaultChaosStrategyTests
                 return new ValueTask<bool>(true);
             },
             Randomizer = () => 0.5,
-            Fault = fault
+            FaultGenerator = _ => new ValueTask<Exception?>(fault)
         };
 
         var sut = CreateSut(options);
