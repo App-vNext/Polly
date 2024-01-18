@@ -1,4 +1,4 @@
-# Fault monkey strategy
+# Fault chaos strategy
 
 ## About
 
@@ -75,7 +75,7 @@ var pipeline = new ResiliencePipelineBuilder()
         MaxRetryAttempts = 4,
         Delay = TimeSpan.FromSeconds(3),
     })
-    .AddChaosFault(new FaultStrategyOptions // Monkey strategies are usually placed as the last ones in the pipeline
+    .AddChaosFault(new FaultStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
         FaultGenerator = static args => new ValueTask<Exception?>(new InvalidOperationException("Dummy exception")),
         Enabled = true,

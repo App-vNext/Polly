@@ -51,7 +51,7 @@ internal static partial class Chaos
                 MaxRetryAttempts = 4,
                 Delay = TimeSpan.FromSeconds(3),
             })
-            .AddChaosBehavior(new BehaviorStrategyOptions // Monkey strategies are usually placed as the last ones in the pipeline
+            .AddChaosBehavior(new BehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
             {
                 BehaviorAction = static args => RestartRedisVM(),
                 Enabled = true,

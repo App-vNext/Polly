@@ -73,7 +73,7 @@ internal static partial class Chaos
                 Delay = TimeSpan.FromSeconds(3),
             })
             .AddTimeout(TimeSpan.FromSeconds(5))
-            .AddChaosLatency(new LatencyStrategyOptions // Monkey strategies are usually placed as the last ones in the pipeline
+            .AddChaosLatency(new LatencyStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
             {
                 Latency = TimeSpan.FromSeconds(10),
                 Enabled = true,

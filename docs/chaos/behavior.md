@@ -1,4 +1,4 @@
-# Behavior monkey strategy
+# Behavior chaos strategy
 
 ## About
 
@@ -57,7 +57,7 @@ var pipeline = new ResiliencePipelineBuilder()
         MaxRetryAttempts = 4,
         Delay = TimeSpan.FromSeconds(3),
     })
-    .AddChaosBehavior(new BehaviorStrategyOptions // Monkey strategies are usually placed as the last ones in the pipeline
+    .AddChaosBehavior(new BehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
         BehaviorAction = static args => RestartRedisVM(),
         Enabled = true,
@@ -127,4 +127,4 @@ Use behavior strategies to inject delays.
 
 ✅ DO
 
-Use the latency monkey instead as the [`LatencyChaosStrategy`](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.
+Use the latency chaos instead as the [`LatencyChaosStrategy`](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.

@@ -62,7 +62,7 @@ internal static partial class Chaos
                 MaxRetryAttempts = 4,
                 Delay = TimeSpan.FromSeconds(3),
             })
-            .AddChaosResult(new OutcomeStrategyOptions<HttpResponseMessage> // Monkey strategies are usually placed as the last ones in the pipeline
+            .AddChaosResult(new OutcomeStrategyOptions<HttpResponseMessage> // Chaos strategies are usually placed as the last ones in the pipeline
             {
                 OutcomeGenerator = static args =>
                 {
