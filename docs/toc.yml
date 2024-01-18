@@ -24,6 +24,13 @@
   - name: Circuit breaker
     href: strategies/circuit-breaker.md
 
+- name: Resilience pipelines
+  href: pipelines/index.md
+  expanded: true
+  items:
+  - name: Resilience pipeline registry
+    href: pipelines/resilience-pipeline-registry.md
+
 - name: Chaos engineering
   href: chaos/index.md
   expanded: true
@@ -36,13 +43,6 @@
     href: chaos/latency.md
   - name: Behavior
     href: chaos/behavior.md
-
-- name: Resilience pipelines
-  href: pipelines/index.md
-  expanded: true
-  items:
-  - name: Resilience pipeline registry
-    href: pipelines/resilience-pipeline-registry.md
 
 - name: Advanced topics
   expanded: true
