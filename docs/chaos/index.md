@@ -48,6 +48,6 @@ All the strategies' options implement the [`MonkeyStrategyOptions`](xref:Polly.S
 | `InjectionRate`          | 0.001 ms      | A decimal between 0 and 1 inclusive. The strategy will inject the chaos, randomly, that proportion of the time, e.g.: if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls. |
 | `InjectionRateGenerator` | `null`        | Generates the injection rate for a given execution, which the value should be between [0, 1] (inclusive).                                                                                                                        |
 | `Enabled`                | `false`       | Determines whether the strategy is enabled or not.                                                                                                                                                                               |
-| `EnabledGenerator`       | `null`        | The generator that indicates whether the chaos strategy is enabled for a given execution.                                                                                                                          |
+| `EnabledGenerator`       | `null`        | The generator that indicates whether the chaos strategy is enabled for a given execution.                                                                                                                                        |
 
 [simmy]: https://github.com/Polly-Contrib/Simmy
