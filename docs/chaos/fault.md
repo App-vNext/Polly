@@ -1,5 +1,8 @@
 # Fault chaos strategy
 
+> [!IMPORTANT]
+> This documentation describes the an upcoming feature of Polly.
+
 ## About
 
 - **Options**: [`FaultStrategyOptions`](xref:Polly.Simmy.Fault.FaultStrategyOptions)

@@ -1,5 +1,8 @@
 # Latency chaos strategy
 
+> [!IMPORTANT]
+> This documentation describes the an upcoming feature of Polly.
+
 ## About
 
 - **Options**: [`LatencyStrategyOptions`](xref:Polly.Simmy.Latency.LatencyStrategyOptions)
