@@ -2,5 +2,5 @@
 
 internal static class FaultConstants
 {
-    public const string OnFaultInjectedEvent = "OnFaultInjectedEvent";
+    public const string OnFaultInjectedEvent = "OnFaultInjected";
 }
