@@ -9,6 +9,11 @@ namespace Polly.Simmy.Outcomes;
 public class OutcomeStrategyOptions<TResult> : MonkeyStrategyOptions
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="OutcomeStrategyOptions{TResult}"/> class.
+    /// </summary>
+    public OutcomeStrategyOptions() => Name = OutcomeConstants.DefaultName;
+
+    /// <summary>
     /// Gets or sets the delegate that's raised when the outcome is injected.
     /// </summary>
     /// <remarks>
