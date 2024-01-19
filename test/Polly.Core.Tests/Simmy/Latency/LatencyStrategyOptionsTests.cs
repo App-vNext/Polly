@@ -16,6 +16,6 @@ public class LatencyStrategyOptionsTests
         sut.InjectionRateGenerator.Should().BeNull();
         sut.Latency.Should().Be(LatencyConstants.DefaultLatency);
         sut.LatencyGenerator.Should().BeNull();
-        sut.OnLatency.Should().BeNull();
+        sut.OnLatencyInjected.Should().BeNull();
     }
 }

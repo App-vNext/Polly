@@ -13,7 +13,7 @@ public class LatencyStrategyOptions : MonkeyStrategyOptions
     /// <remarks>
     /// Defaults to <see langword="null"/>.
     /// </remarks>
-    public Func<OnLatencyArguments, ValueTask>? OnLatency { get; set; }
+    public Func<OnLatencyInjectedArguments, ValueTask>? OnLatencyInjected { get; set; }
 
     /// <summary>
     /// Gets or sets the latency generator that generates the delay for a given execution.

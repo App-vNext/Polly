@@ -45,14 +45,14 @@ var optionsWithLatencyGenerator = new LatencyStrategyOptions
 };
 
 // To get notifications when a delay is injected
-var optionsOnBehaviorInjected = new LatencyStrategyOptions
+var optionsOnLatencyInjected = new LatencyStrategyOptions
 {
     Latency = TimeSpan.FromSeconds(30),
     Enabled = true,
     InjectionRate = 0.1,
-    OnLatency = static args =>
+    OnLatencyInjected = static args =>
     {
-        Console.WriteLine($"OnLatency, Latency: {args.Latency}, Operation: {args.Context.OperationKey}.");
+        Console.WriteLine($"OnLatencyInjected, Latency: {args.Latency}, Operation: {args.Context.OperationKey}.");
         return default;
     }
 };
@@ -92,11 +92,11 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Defaults
 
-| Property           | Default Value | Description                                            |
-|--------------------|---------------|--------------------------------------------------------|
-| `Latency`          | `30 seconds`  | A `TimeSpan` indicating the delay to be injected.      |
-| `LatencyGenerator` | `null`        | Generates the latency to inject for a given execution. |
-| `OnLatency`        | `null`        | Action executed when latency is injected.              |
+| Property            | Default Value | Description                                            |
+|---------------------|---------------|--------------------------------------------------------|
+| `Latency`           | `30 seconds`  | A `TimeSpan` indicating the delay to be injected.      |
+| `LatencyGenerator`  | `null`        | Generates the latency to inject for a given execution. |
+| `OnLatencyInjected` | `null`        | Action executed when latency is injected.              |
 
 ## Diagrams
 

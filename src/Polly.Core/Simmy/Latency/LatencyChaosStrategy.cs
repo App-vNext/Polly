@@ -15,13 +15,13 @@ internal sealed class LatencyChaosStrategy : MonkeyStrategy
     {
         Latency = options.Latency;
         LatencyGenerator = options.LatencyGenerator is not null ? options.LatencyGenerator : (_) => new(options.Latency);
-        OnLatency = options.OnLatency;
+        OnLatencyInjected = options.OnLatencyInjected;
 
         _telemetry = telemetry;
         _timeProvider = timeProvider;
     }
 
-    public Func<OnLatencyArguments, ValueTask>? OnLatency { get; }
+    public Func<OnLatencyInjectedArguments, ValueTask>? OnLatencyInjected { get; }
 
     public Func<LatencyGeneratorArguments, ValueTask<TimeSpan>> LatencyGenerator { get; }
 
@@ -43,14 +43,14 @@ internal sealed class LatencyChaosStrategy : MonkeyStrategy
                     return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
                 }
 
-                var args = new OnLatencyArguments(context, latency);
-                _telemetry.Report(new(ResilienceEventSeverity.Information, LatencyConstants.OnLatencyEvent), context, args);
+                var args = new OnLatencyInjectedArguments(context, latency);
+                _telemetry.Report(new(ResilienceEventSeverity.Information, LatencyConstants.OnLatencyInjectedEvent), context, args);
 
                 await _timeProvider.DelayAsync(latency, context).ConfigureAwait(context.ContinueOnCapturedContext);
 
-                if (OnLatency is not null)
+                if (OnLatencyInjected is not null)
                 {
-                    await OnLatency(args).ConfigureAwait(context.ContinueOnCapturedContext);
+                    await OnLatencyInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
                 }
             }
 

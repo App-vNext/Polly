@@ -42,14 +42,14 @@ internal static partial class Chaos
         };
 
         // To get notifications when a delay is injected
-        var optionsOnBehaviorInjected = new LatencyStrategyOptions
+        var optionsOnLatencyInjected = new LatencyStrategyOptions
         {
             Latency = TimeSpan.FromSeconds(30),
             Enabled = true,
             InjectionRate = 0.1,
-            OnLatency = static args =>
+            OnLatencyInjected = static args =>
             {
-                Console.WriteLine($"OnLatency, Latency: {args.Latency}, Operation: {args.Context.OperationKey}.");
+                Console.WriteLine($"OnLatencyInjected, Latency: {args.Latency}, Operation: {args.Context.OperationKey}.");
                 return default;
             }
         };

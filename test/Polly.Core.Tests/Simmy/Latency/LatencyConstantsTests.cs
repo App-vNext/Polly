@@ -7,7 +7,7 @@ public class LatencyConstantsTests
     [Fact]
     public void EnsureDefaults()
     {
-        LatencyConstants.OnLatencyEvent.Should().Be("OnLatency");
+        LatencyConstants.OnLatencyInjectedEvent.Should().Be("OnLatencyInjected");
         LatencyConstants.DefaultLatency.Should().Be(TimeSpan.FromSeconds(30));
     }
 }
