@@ -1,7 +1,7 @@
 # Latency chaos strategy
 
 > [!IMPORTANT]
-> This documentation describes the an upcoming feature of Polly.
+> This documentation page describes an upcoming feature of Polly.
 
 ## About
 
