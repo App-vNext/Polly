@@ -42,16 +42,6 @@
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "advanced/simmy.md",
-      "output": {
-        ".html": {
-          "relative_path": "advanced/simmy.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
       "source_relative_path": "advanced/telemetry.md",
       "output": {
         ".html": {
@@ -1375,6 +1365,56 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "chaos/behavior.md",
+      "output": {
+        ".html": {
+          "relative_path": "chaos/behavior.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "chaos/fault.md",
+      "output": {
+        ".html": {
+          "relative_path": "chaos/fault.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "chaos/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "chaos/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "chaos/latency.md",
+      "output": {
+        ".html": {
+          "relative_path": "chaos/latency.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "chaos/result.md",
+      "output": {
+        ".html": {
+          "relative_path": "chaos/result.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "community/cheat-sheets.md",
       "output": {
         ".html": {
@@ -1549,6 +1589,16 @@
       "output": {
         "resource": {
           "relative_path": "media/cheat-sheet-timeout.pdf"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/simmy-logo.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/simmy-logo.png"
         }
       },
       "version": ""

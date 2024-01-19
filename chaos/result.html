@@ -1,0 +1,253 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Outcome chaos strategy | Polly </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Outcome chaos strategy | Polly ">
+      
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/main/docs/chaos/result.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="Polly">
+            Polly
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled="" placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="outcome-chaos-strategy">Outcome chaos strategy</h1>
+
+<h2 id="about">About</h2>
+<ul>
+<li><strong>Options</strong>:
+<ul>
+<li><a class="xref" href="../api/Polly.Simmy.Outcomes.OutcomeStrategyOptions.html"><code>OutcomeStrategyOptions</code></a></li>
+<li><a class="xref" href="../api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html"><code>OutcomeStrategyOptions&lt;T&gt;</code></a></li>
+</ul>
+</li>
+<li><strong>Extensions</strong>: <code>AddChaosResult</code></li>
+<li><strong>Strategy Type</strong>: Reactive</li>
+</ul>
+<hr>
+<p>The outcome chaos strategy is designed to inject or substitute fake results into system operations. This allows testing how an application behaves when it receives different types of responses, like successful results, errors, or exceptions.</p>
+<h2 id="usage">Usage</h2>
+<!-- snippet: chaos-result-usage -->
+<pre><code class="lang-cs">// To use a custom function to generate the result to inject.
+var optionsWithResultGenerator = new OutcomeStrategyOptions&lt;HttpResponseMessage&gt;
+{
+    OutcomeGenerator = static args =&gt;
+    {
+        var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+        return new ValueTask&lt;Outcome&lt;HttpResponseMessage&gt;?&gt;(Outcome.FromResult(response));
+    },
+    Enabled = true,
+    InjectionRate = 0.1
+};
+
+// To get notifications when a result is injected
+var optionsOnBehaviorInjected = new OutcomeStrategyOptions&lt;HttpResponseMessage&gt;
+{
+    OutcomeGenerator = static args =&gt;
+    {
+        var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+        return new ValueTask&lt;Outcome&lt;HttpResponseMessage&gt;?&gt;(Outcome.FromResult(response));
+    },
+    Enabled = true,
+    InjectionRate = 0.1,
+    OnOutcomeInjected = static args =&gt;
+    {
+        Console.WriteLine($&quot;OnBehaviorInjected, Outcome: {args.Outcome.Result}, Operation: {args.Context.OperationKey}.&quot;);
+        return default;
+    }
+};
+
+// Add a result strategy with a OutcomeStrategyOptions{&lt;TResult&gt;} instance to the pipeline
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(optionsWithResultGenerator);
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(optionsOnBehaviorInjected);
+
+// There are also a couple of handy overloads to inject the chaos easily.
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(0.1, () =&gt; new HttpResponseMessage(HttpStatusCode.TooManyRequests));
+</code></pre>
+<!-- endSnippet -->
+<p>Example execution:</p>
+<!-- snippet: chaos-result-execution -->
+<pre><code class="lang-cs">var pipeline = new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
+    .AddRetry(new RetryStrategyOptions&lt;HttpResponseMessage&gt;
+    {
+        ShouldHandle = static args =&gt; args.Outcome switch
+        {
+            { Result.StatusCode: HttpStatusCode.InternalServerError } =&gt; PredicateResult.True(),
+            _ =&gt; PredicateResult.False()
+        },
+        BackoffType = DelayBackoffType.Exponential,
+        UseJitter = true,
+        MaxRetryAttempts = 4,
+        Delay = TimeSpan.FromSeconds(3),
+    })
+    .AddChaosResult(new OutcomeStrategyOptions&lt;HttpResponseMessage&gt; // Chaos strategies are usually placed as the last ones in the pipeline
+    {
+        OutcomeGenerator = static args =&gt;
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            return new ValueTask&lt;Outcome&lt;HttpResponseMessage&gt;?&gt;(Outcome.FromResult(response));
+        },
+        Enabled = true,
+        InjectionRate = 0.1
+    })
+    .Build();
+</code></pre>
+<!-- endSnippet -->
+<h2 id="defaults">Defaults</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OutcomeGenerator</code></td>
+<td><code>null</code></td>
+<td>Function to generate the outcome for a given execution.</td>
+</tr>
+<tr>
+<td><code>OnOutcomeInjected</code></td>
+<td><code>null</code></td>
+<td>Action executed when the outcome is injected.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="diagrams">Diagrams</h2>
+<h3 id="normal--sequence-diagram">Normal 🐵 sequence diagram</h3>
+<pre><code class="lang-mermaid">sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant B as Outcome
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;B: Calls ExecuteCore
+    activate B
+    B--&gt;&gt;B: Determines Injection&lt;br/&gt;Decision: 🐵
+    deactivate B
+    B-&gt;&gt;+D: Invokes
+    D-&gt;&gt;-B: Returns result
+    B-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+</code></pre>
+<h3 id="chaos--sequence-diagram">Chaos 🙈 sequence diagram</h3>
+<pre><code class="lang-mermaid">sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant B as Outcome
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+    P-&gt;&gt;B: Calls ExecuteCore
+    activate B
+    B--&gt;&gt;B: Determines Injection&lt;br/&gt;Decision: 🙈
+    B--&gt;&gt;B: Injects Outcome
+    deactivate B
+    Note over D: The user's Callback is not invoked&lt;br/&gt;when a fake result is injected
+    B-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+</code></pre>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/main/docs/chaos/result.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

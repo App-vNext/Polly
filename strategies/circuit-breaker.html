@@ -92,7 +92,7 @@
 <li><strong>Options</strong>:
 <ul>
 <li><a class="xref" href="../api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions.html"><code>CircuitBreakerStrategyOptions</code></a></li>
-<li><a class="xref" href="../api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions.html"><code>CircuitBreakerStrategyOptions&lt;T&gt;</code></a></li>
+<li><a class="xref" href="../api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.html"><code>CircuitBreakerStrategyOptions&lt;T&gt;</code></a></li>
 </ul>
 </li>
 <li><strong>Extensions</strong>: <code>AddCircuitBreaker</code></li>
@@ -443,7 +443,7 @@ direction LR
     D-&gt;&gt;-CB: Fails
     Note over CB: Moves to Open state
     CB-&gt;&gt;+BDG: Calls Generator
-    BDG-&gt;&gt;-CB: Returns calculated &lt;br/&gt; duration 
+    BDG-&gt;&gt;-CB: Returns calculated &lt;br/&gt; duration
     Note over CB: Break duration start
     CB-&gt;&gt;P: Propagates failure
     P-&gt;&gt;C: Propagates failure
