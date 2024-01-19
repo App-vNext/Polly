@@ -8,6 +8,11 @@
 public class LatencyStrategyOptions : MonkeyStrategyOptions
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="LatencyStrategyOptions"/> class.
+    /// </summary>
+    public LatencyStrategyOptions() => Name = LatencyConstants.DefaultName;
+
+    /// <summary>
     /// Gets or sets the delegate that's raised when a delay occurs.
     /// </summary>
     /// <remarks>
