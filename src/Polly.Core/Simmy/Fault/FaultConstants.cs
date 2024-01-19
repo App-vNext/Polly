@@ -2,5 +2,7 @@
 
 internal static class FaultConstants
 {
-    public const string OnFaultInjectedEvent = "OnFaultInjected";
+    public const string DefaultName = "Chaos.Fault";
+
+    public const string OnFaultInjectedEvent = "Chaos.OnFault";
 }

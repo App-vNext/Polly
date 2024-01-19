@@ -8,6 +8,11 @@ namespace Polly.Simmy.Fault;
 public class FaultStrategyOptions : MonkeyStrategyOptions
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="FaultStrategyOptions"/> class.
+    /// </summary>
+    public FaultStrategyOptions() => Name = FaultConstants.DefaultName;
+
+    /// <summary>
     /// Gets or sets the delegate that's raised when the outcome is injected.
     /// </summary>
     /// <remarks>
