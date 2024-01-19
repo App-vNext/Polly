@@ -32,6 +32,7 @@ nuget
 oss
 pcl
 parallelize
+paas
 pluralsight
 pollydocs
 pre
@@ -47,6 +48,7 @@ rethrow
 rethrows
 retryable
 reusability
+saas
 sdk
 serializers
 silverlight
@@ -60,6 +62,7 @@ telemetrylistener
 testability
 timingpolicy
 ui
+unhandled
 uwp
 waitandretry
 wpf

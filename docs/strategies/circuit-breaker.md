@@ -4,7 +4,7 @@
 
 - **Options**:
   - [`CircuitBreakerStrategyOptions`](xref:Polly.CircuitBreaker.CircuitBreakerStrategyOptions)
-  - [`CircuitBreakerStrategyOptions<T>`](xref:Polly.CircuitBreaker.CircuitBreakerStrategyOptions)
+  - [`CircuitBreakerStrategyOptions<T>`](xref:Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1)
 - **Extensions**: `AddCircuitBreaker`
 - **Strategy Type**: Reactive
 - **Exceptions**:
@@ -328,7 +328,7 @@ sequenceDiagram
     D->>-CB: Fails
     Note over CB: Moves to Open state
     CB->>+BDG: Calls Generator
-    BDG->>-CB: Returns calculated <br/> duration 
+    BDG->>-CB: Returns calculated <br/> duration
     Note over CB: Break duration start
     CB->>P: Propagates failure
     P->>C: Propagates failure
