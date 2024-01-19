@@ -19,8 +19,7 @@ public class FaultStrategyOptions : MonkeyStrategyOptions
     /// Gets or sets the fault generator to be injected for a given execution.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="null"/>. Either <see cref="Fault"/> or this property is required.
-    /// When this property is <see langword="null"/> the <see cref="Fault"/> is used.
+    /// Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
     public Func<FaultGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; set; } = default!;
