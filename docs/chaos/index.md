@@ -1,5 +1,8 @@
 # Chaos engineering with Simmy
 
+> [!IMPORTANT]
+> This documentation page describes an upcoming feature of Polly.
+
 [Simmy][simmy] is a major new addition to Polly library, adding a chaos engineering and fault-injection dimension to Polly, through the provision of strategies to selectively inject faults, latency, custom behavior or fake results.
 
 ![Simmy](../media/simmy-logo.png)
