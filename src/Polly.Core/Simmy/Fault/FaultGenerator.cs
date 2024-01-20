@@ -79,6 +79,6 @@ public class FaultGenerator
 
         var generatorDelegate = generator._helper.CreateGenerator();
 
-        return args => new ValueTask<Exception?>(generatorDelegate(args.Context)?.Exception);
+        return args => new ValueTask<Exception?>(generatorDelegate(args.Context)!.Value.Exception);
     }
 }

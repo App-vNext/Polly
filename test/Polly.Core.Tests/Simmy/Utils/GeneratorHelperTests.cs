@@ -41,4 +41,16 @@ public class GeneratorHelperTests
 
         maxWeight.Should().Be(120);
     }
+
+    [Fact]
+    public void Generator_OutsideRange_ReturnsNull()
+    {
+        var context = ResilienceContextPool.Shared.Get();
+        var helper = new GeneratorHelper<int>(_ => 1000);
+
+        helper.AddOutcome(_ => Outcome.FromResult(1), 40);
+
+        var generator = helper.CreateGenerator();
+        generator(context).Should().BeNull();
+    }
 }
