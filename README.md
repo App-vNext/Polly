@@ -459,6 +459,10 @@ Rate limiter strategy throws `RateLimiterRejectedException` if execution is reje
 
 For more details, visit the [rate limiter strategy](https://www.pollydocs.org/strategies/rate-limiter) documentation.
 
+## Chaos engineering
+
+Starting with version `8.3.0`, Polly has integrated [Simmy](https://github.com/Polly-Contrib/Simmy), a chaos engineering library, directly into its core. For more information, please refer to the dedicated [chaos engineering documentation](https://www.pollydocs.org/chaos/).
+
 ## Next steps
 
 To learn more about Polly, visit [pollydocs.org][polly-docs].
