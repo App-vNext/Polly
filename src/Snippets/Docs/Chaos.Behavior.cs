@@ -12,7 +12,7 @@ internal static partial class Chaos
         static ValueTask RestartRedisVM() => ValueTask.CompletedTask;
 
         #region chaos-behavior-usage
-        // To use a custom function to generate the behavior to inject.
+        // To use a custom delegated for injected behavior
         var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
         {
             BehaviorAction = static args => RestartRedisVM(),
@@ -37,7 +37,7 @@ internal static partial class Chaos
         new ResiliencePipelineBuilder().AddChaosBehavior(optionsWithBehaviorGenerator);
         new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosBehavior(optionsOnBehaviorInjected);
 
-        // There are also a handy overload to inject the chaos easily.
+        // There are also a handy overload to inject the chaos easily
         new ResiliencePipelineBuilder().AddChaosBehavior(0.05, RestartRedisVM);
         #endregion
 
