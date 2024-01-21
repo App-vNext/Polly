@@ -12,7 +12,7 @@ namespace Polly.Simmy.Fault;
 /// <remarks>
 /// An instance of this class can be assigned to the <see cref="FaultStrategyOptions.FaultGenerator"/> property.
 /// </remarks>
-public class FaultGenerator
+public sealed class FaultGenerator
 {
     private const int DefaultWeight = 100;
 

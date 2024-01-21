@@ -11,9 +11,9 @@ namespace Polly.Simmy.Outcomes;
 /// </summary>
 /// <typeparam name="TResult">The type of the result.</typeparam>
 /// <remarks>
-/// Instance of this class is assignable to <see cref="OutcomeStrategyOptions{TResult}.OutcomeGenerator"/>.
+/// An instance of this class is assignable to <see cref="OutcomeStrategyOptions{TResult}.OutcomeGenerator"/>.
 /// </remarks>
-public class OutcomeGenerator<TResult>
+public sealed class OutcomeGenerator<TResult>
 {
     private const int DefaultWeight = 100;
     private readonly GeneratorHelper<TResult> _helper;

@@ -1,6 +1,6 @@
 ﻿namespace Polly.Simmy.Utils;
 
-internal class GeneratorHelper<TResult>
+internal sealed class GeneratorHelper<TResult>
 {
     private readonly Func<int, int> _weightGenerator;
 

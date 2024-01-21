@@ -15,5 +15,4 @@ internal sealed class RandomUtil
     public double NextDouble() => _random.Value!.NextDouble();
 
     public int Next(int maxValue) => _random.Value!.Next(maxValue);
-
 }

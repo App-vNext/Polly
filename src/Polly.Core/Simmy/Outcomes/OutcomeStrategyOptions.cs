@@ -9,7 +9,7 @@ namespace Polly.Simmy.Outcomes;
 public class OutcomeStrategyOptions<TResult> : MonkeyStrategyOptions
 {
     /// <summary>
-    /// Gets or sets the delegate that's raised when the outcome is injected.
+    /// Gets or sets the delegate that's invoked when the outcome is injected.
     /// </summary>
     /// <remarks>
     /// Defaults to <see langword="null"/>.
