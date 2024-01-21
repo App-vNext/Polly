@@ -13,4 +13,6 @@ internal sealed class RandomUtil
     public RandomUtil(int? seed) => _random = new ThreadLocal<Random>(() => seed == null ? new Random() : new Random(seed.Value));
 
     public double NextDouble() => _random.Value!.NextDouble();
+
+    public int Next(int maxValue) => _random.Value!.Next(maxValue);
 }
