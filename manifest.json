@@ -832,6 +832,16 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Polly.Simmy.Fault.FaultGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.Simmy.Fault.FaultGenerator.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Polly.Simmy.Fault.FaultGeneratorArguments.yml",
       "output": {
         ".html": {
@@ -1002,6 +1012,16 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Polly.Simmy.Outcomes.OutcomeGenerator-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Polly.Simmy.Outcomes.OutcomeGeneratorArguments.yml",
       "output": {
         ".html": {
@@ -1016,16 +1036,6 @@
       "output": {
         ".html": {
           "relative_path": "api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.Outcomes.OutcomeStrategyOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Simmy.Outcomes.OutcomeStrategyOptions.html"
         }
       },
       "version": ""

@@ -4467,6 +4467,65 @@ references:
   commentId: N:Polly.Simmy.Fault
   fullName: Polly.Simmy.Fault
   nameWithType: Polly.Simmy.Fault
+- uid: Polly.Simmy.Fault.FaultGenerator
+  name: FaultGenerator
+  href: api/Polly.Simmy.Fault.FaultGenerator.html
+  commentId: T:Polly.Simmy.Fault.FaultGenerator
+  fullName: Polly.Simmy.Fault.FaultGenerator
+  nameWithType: FaultGenerator
+- uid: Polly.Simmy.Fault.FaultGenerator.#ctor
+  name: FaultGenerator()
+  href: api/Polly.Simmy.Fault.FaultGenerator.html#Polly_Simmy_Fault_FaultGenerator__ctor
+  commentId: M:Polly.Simmy.Fault.FaultGenerator.#ctor
+  name.vb: New()
+  fullName: Polly.Simmy.Fault.FaultGenerator.FaultGenerator()
+  fullName.vb: Polly.Simmy.Fault.FaultGenerator.New()
+  nameWithType: FaultGenerator.FaultGenerator()
+  nameWithType.vb: FaultGenerator.New()
+- uid: Polly.Simmy.Fault.FaultGenerator.#ctor*
+  name: FaultGenerator
+  href: api/Polly.Simmy.Fault.FaultGenerator.html#Polly_Simmy_Fault_FaultGenerator__ctor_
+  commentId: Overload:Polly.Simmy.Fault.FaultGenerator.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Simmy.Fault.FaultGenerator.FaultGenerator
+  fullName.vb: Polly.Simmy.Fault.FaultGenerator.New
+  nameWithType: FaultGenerator.FaultGenerator
+  nameWithType.vb: FaultGenerator.New
+- uid: Polly.Simmy.Fault.FaultGenerator.AddException(System.Func{Polly.ResilienceContext,System.Exception},System.Int32)
+  name: AddException(Func<ResilienceContext, Exception>, int)
+  href: api/Polly.Simmy.Fault.FaultGenerator.html#Polly_Simmy_Fault_FaultGenerator_AddException_System_Func_Polly_ResilienceContext_System_Exception__System_Int32_
+  commentId: M:Polly.Simmy.Fault.FaultGenerator.AddException(System.Func{Polly.ResilienceContext,System.Exception},System.Int32)
+  name.vb: AddException(Func(Of ResilienceContext, Exception), Integer)
+  fullName: Polly.Simmy.Fault.FaultGenerator.AddException(System.Func<Polly.ResilienceContext, System.Exception>, int)
+  fullName.vb: Polly.Simmy.Fault.FaultGenerator.AddException(System.Func(Of Polly.ResilienceContext, System.Exception), Integer)
+  nameWithType: FaultGenerator.AddException(Func<ResilienceContext, Exception>, int)
+  nameWithType.vb: FaultGenerator.AddException(Func(Of ResilienceContext, Exception), Integer)
+- uid: Polly.Simmy.Fault.FaultGenerator.AddException(System.Func{System.Exception},System.Int32)
+  name: AddException(Func<Exception>, int)
+  href: api/Polly.Simmy.Fault.FaultGenerator.html#Polly_Simmy_Fault_FaultGenerator_AddException_System_Func_System_Exception__System_Int32_
+  commentId: M:Polly.Simmy.Fault.FaultGenerator.AddException(System.Func{System.Exception},System.Int32)
+  name.vb: AddException(Func(Of Exception), Integer)
+  fullName: Polly.Simmy.Fault.FaultGenerator.AddException(System.Func<System.Exception>, int)
+  fullName.vb: Polly.Simmy.Fault.FaultGenerator.AddException(System.Func(Of System.Exception), Integer)
+  nameWithType: FaultGenerator.AddException(Func<Exception>, int)
+  nameWithType.vb: FaultGenerator.AddException(Func(Of Exception), Integer)
+- uid: Polly.Simmy.Fault.FaultGenerator.AddException*
+  name: AddException
+  href: api/Polly.Simmy.Fault.FaultGenerator.html#Polly_Simmy_Fault_FaultGenerator_AddException_
+  commentId: Overload:Polly.Simmy.Fault.FaultGenerator.AddException
+  isSpec: "True"
+  fullName: Polly.Simmy.Fault.FaultGenerator.AddException
+  nameWithType: FaultGenerator.AddException
+- uid: Polly.Simmy.Fault.FaultGenerator.AddException``1(System.Int32)
+  name: AddException<TException>(int)
+  href: api/Polly.Simmy.Fault.FaultGenerator.html#Polly_Simmy_Fault_FaultGenerator_AddException__1_System_Int32_
+  commentId: M:Polly.Simmy.Fault.FaultGenerator.AddException``1(System.Int32)
+  name.vb: AddException(Of TException)(Integer)
+  fullName: Polly.Simmy.Fault.FaultGenerator.AddException<TException>(int)
+  fullName.vb: Polly.Simmy.Fault.FaultGenerator.AddException(Of TException)(Integer)
+  nameWithType: FaultGenerator.AddException<TException>(int)
+  nameWithType.vb: FaultGenerator.AddException(Of TException)(Integer)
 - uid: Polly.Simmy.Fault.FaultGeneratorArguments
   name: FaultGeneratorArguments
   href: api/Polly.Simmy.Fault.FaultGeneratorArguments.html
@@ -5148,12 +5207,97 @@ references:
   isSpec: "True"
   fullName: Polly.Simmy.Outcomes.OutcomeGeneratorArguments.Context
   nameWithType: OutcomeGeneratorArguments.Context
-- uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions
-  name: OutcomeStrategyOptions
-  href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions.html
-  commentId: T:Polly.Simmy.Outcomes.OutcomeStrategyOptions
-  fullName: Polly.Simmy.Outcomes.OutcomeStrategyOptions
-  nameWithType: OutcomeStrategyOptions
+- uid: Polly.Simmy.Outcomes.OutcomeGenerator`1
+  name: OutcomeGenerator<TResult>
+  href: api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html
+  commentId: T:Polly.Simmy.Outcomes.OutcomeGenerator`1
+  name.vb: OutcomeGenerator(Of TResult)
+  fullName: Polly.Simmy.Outcomes.OutcomeGenerator<TResult>
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeGenerator(Of TResult)
+  nameWithType: OutcomeGenerator<TResult>
+  nameWithType.vb: OutcomeGenerator(Of TResult)
+- uid: Polly.Simmy.Outcomes.OutcomeGenerator`1.#ctor
+  name: OutcomeGenerator()
+  href: api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html#Polly_Simmy_Outcomes_OutcomeGenerator_1__ctor
+  commentId: M:Polly.Simmy.Outcomes.OutcomeGenerator`1.#ctor
+  name.vb: New()
+  fullName: Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.OutcomeGenerator()
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeGenerator(Of TResult).New()
+  nameWithType: OutcomeGenerator<TResult>.OutcomeGenerator()
+  nameWithType.vb: OutcomeGenerator(Of TResult).New()
+- uid: Polly.Simmy.Outcomes.OutcomeGenerator`1.#ctor*
+  name: OutcomeGenerator
+  href: api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html#Polly_Simmy_Outcomes_OutcomeGenerator_1__ctor_
+  commentId: Overload:Polly.Simmy.Outcomes.OutcomeGenerator`1.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.OutcomeGenerator
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeGenerator(Of TResult).New
+  nameWithType: OutcomeGenerator<TResult>.OutcomeGenerator
+  nameWithType.vb: OutcomeGenerator(Of TResult).New
+- uid: Polly.Simmy.Outcomes.OutcomeGenerator`1.AddException(System.Func{Polly.ResilienceContext,System.Exception},System.Int32)
+  name: AddException(Func<ResilienceContext, Exception>, int)
+  href: api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html#Polly_Simmy_Outcomes_OutcomeGenerator_1_AddException_System_Func_Polly_ResilienceContext_System_Exception__System_Int32_
+  commentId: M:Polly.Simmy.Outcomes.OutcomeGenerator`1.AddException(System.Func{Polly.ResilienceContext,System.Exception},System.Int32)
+  name.vb: AddException(Func(Of ResilienceContext, Exception), Integer)
+  fullName: Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddException(System.Func<Polly.ResilienceContext, System.Exception>, int)
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeGenerator(Of TResult).AddException(System.Func(Of Polly.ResilienceContext, System.Exception), Integer)
+  nameWithType: OutcomeGenerator<TResult>.AddException(Func<ResilienceContext, Exception>, int)
+  nameWithType.vb: OutcomeGenerator(Of TResult).AddException(Func(Of ResilienceContext, Exception), Integer)
+- uid: Polly.Simmy.Outcomes.OutcomeGenerator`1.AddException(System.Func{System.Exception},System.Int32)
+  name: AddException(Func<Exception>, int)
+  href: api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html#Polly_Simmy_Outcomes_OutcomeGenerator_1_AddException_System_Func_System_Exception__System_Int32_
+  commentId: M:Polly.Simmy.Outcomes.OutcomeGenerator`1.AddException(System.Func{System.Exception},System.Int32)
+  name.vb: AddException(Func(Of Exception), Integer)
+  fullName: Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddException(System.Func<System.Exception>, int)
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeGenerator(Of TResult).AddException(System.Func(Of System.Exception), Integer)
+  nameWithType: OutcomeGenerator<TResult>.AddException(Func<Exception>, int)
+  nameWithType.vb: OutcomeGenerator(Of TResult).AddException(Func(Of Exception), Integer)
+- uid: Polly.Simmy.Outcomes.OutcomeGenerator`1.AddException*
+  name: AddException
+  href: api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html#Polly_Simmy_Outcomes_OutcomeGenerator_1_AddException_
+  commentId: Overload:Polly.Simmy.Outcomes.OutcomeGenerator`1.AddException
+  isSpec: "True"
+  fullName: Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddException
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeGenerator(Of TResult).AddException
+  nameWithType: OutcomeGenerator<TResult>.AddException
+  nameWithType.vb: OutcomeGenerator(Of TResult).AddException
+- uid: Polly.Simmy.Outcomes.OutcomeGenerator`1.AddException``1(System.Int32)
+  name: AddException<TException>(int)
+  href: api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html#Polly_Simmy_Outcomes_OutcomeGenerator_1_AddException__1_System_Int32_
+  commentId: M:Polly.Simmy.Outcomes.OutcomeGenerator`1.AddException``1(System.Int32)
+  name.vb: AddException(Of TException)(Integer)
+  fullName: Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddException<TException>(int)
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeGenerator(Of TResult).AddException(Of TException)(Integer)
+  nameWithType: OutcomeGenerator<TResult>.AddException<TException>(int)
+  nameWithType.vb: OutcomeGenerator(Of TResult).AddException(Of TException)(Integer)
+- uid: Polly.Simmy.Outcomes.OutcomeGenerator`1.AddResult(System.Func{Polly.ResilienceContext,`0},System.Int32)
+  name: AddResult(Func<ResilienceContext, TResult>, int)
+  href: api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html#Polly_Simmy_Outcomes_OutcomeGenerator_1_AddResult_System_Func_Polly_ResilienceContext__0__System_Int32_
+  commentId: M:Polly.Simmy.Outcomes.OutcomeGenerator`1.AddResult(System.Func{Polly.ResilienceContext,`0},System.Int32)
+  name.vb: AddResult(Func(Of ResilienceContext, TResult), Integer)
+  fullName: Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddResult(System.Func<Polly.ResilienceContext, TResult>, int)
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeGenerator(Of TResult).AddResult(System.Func(Of Polly.ResilienceContext, TResult), Integer)
+  nameWithType: OutcomeGenerator<TResult>.AddResult(Func<ResilienceContext, TResult>, int)
+  nameWithType.vb: OutcomeGenerator(Of TResult).AddResult(Func(Of ResilienceContext, TResult), Integer)
+- uid: Polly.Simmy.Outcomes.OutcomeGenerator`1.AddResult(System.Func{`0},System.Int32)
+  name: AddResult(Func<TResult>, int)
+  href: api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html#Polly_Simmy_Outcomes_OutcomeGenerator_1_AddResult_System_Func__0__System_Int32_
+  commentId: M:Polly.Simmy.Outcomes.OutcomeGenerator`1.AddResult(System.Func{`0},System.Int32)
+  name.vb: AddResult(Func(Of TResult), Integer)
+  fullName: Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddResult(System.Func<TResult>, int)
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeGenerator(Of TResult).AddResult(System.Func(Of TResult), Integer)
+  nameWithType: OutcomeGenerator<TResult>.AddResult(Func<TResult>, int)
+  nameWithType.vb: OutcomeGenerator(Of TResult).AddResult(Func(Of TResult), Integer)
+- uid: Polly.Simmy.Outcomes.OutcomeGenerator`1.AddResult*
+  name: AddResult
+  href: api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html#Polly_Simmy_Outcomes_OutcomeGenerator_1_AddResult_
+  commentId: Overload:Polly.Simmy.Outcomes.OutcomeGenerator`1.AddResult
+  isSpec: "True"
+  fullName: Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddResult
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeGenerator(Of TResult).AddResult
+  nameWithType: OutcomeGenerator<TResult>.AddResult
+  nameWithType.vb: OutcomeGenerator(Of TResult).AddResult
 - uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions`1
   name: OutcomeStrategyOptions<TResult>
   href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html
