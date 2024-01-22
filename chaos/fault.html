@@ -101,15 +101,17 @@
 <p>The fault chaos strategy is designed to introduce faults (exceptions) into the system, simulating real-world scenarios where operations might fail unexpectedly. It is configurable to inject specific types of exceptions or use custom logic to generate faults dynamically.</p>
 <h2 id="usage">Usage</h2>
 <!-- snippet: chaos-fault-usage -->
-<pre><code class="lang-cs">// 10% of invocations will be randomly affected.
+<pre><code class="lang-cs">// 10% of invocations will be randomly affected and one of the exceptions will be thrown (equal probability).
 var optionsBasic = new FaultStrategyOptions
 {
-    FaultGenerator = static args =&gt; new ValueTask&lt;Exception?&gt;(new InvalidOperationException(&quot;Dummy exception&quot;)),
+    FaultGenerator = new FaultGenerator()
+        .AddException&lt;InvalidOperationException&gt;() // Uses default constructor
+        .AddException(() =&gt; new TimeoutException(&quot;Chaos timeout injected.&quot;)), // Custom exception generator
     Enabled = true,
     InjectionRate = 0.1
 };
 
-// To use a custom function to generate the fault to inject.
+// To use a custom delegate to generate the fault to be injected
 var optionsWithFaultGenerator = new FaultStrategyOptions
 {
     FaultGenerator = static args =&gt;
@@ -118,7 +120,9 @@ var optionsWithFaultGenerator = new FaultStrategyOptions
         {
             &quot;DataLayer&quot; =&gt; new TimeoutException(),
             &quot;ApplicationLayer&quot; =&gt; new InvalidOperationException(),
-            _ =&gt; null // When the fault generator returns null the strategy won't inject any fault and it will just invoke the user's callback
+            // When the fault generator returns null, the strategy won't inject
+            // any fault and just invokes the user's callback.
+            _ =&gt; null
         };
 
         return new ValueTask&lt;Exception?&gt;(exception);
@@ -130,7 +134,7 @@ var optionsWithFaultGenerator = new FaultStrategyOptions
 // To get notifications when a fault is injected
 var optionsOnFaultInjected = new FaultStrategyOptions
 {
-    FaultGenerator = static args =&gt; new ValueTask&lt;Exception?&gt;(new InvalidOperationException(&quot;Dummy exception&quot;)),
+    FaultGenerator = new FaultGenerator().AddException&lt;InvalidOperationException&gt;(),
     Enabled = true,
     InjectionRate = 0.1,
     OnFaultInjected = static args =&gt;
@@ -144,7 +148,7 @@ var optionsOnFaultInjected = new FaultStrategyOptions
 new ResiliencePipelineBuilder().AddChaosFault(optionsBasic);
 new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosFault(optionsWithFaultGenerator);
 
-// There are also a couple of handy overloads to inject the chaos easily.
+// There are also a couple of handy overloads to inject the chaos easily
 new ResiliencePipelineBuilder().AddChaosFault(0.1, () =&gt; new InvalidOperationException(&quot;Dummy exception&quot;));
 </code></pre>
 <!-- endSnippet -->
@@ -225,6 +229,46 @@ new ResiliencePipelineBuilder().AddChaosFault(0.1, () =&gt; new InvalidOperation
     F-&gt;&gt;P: Throws injected Fault
     P-&gt;&gt;C: Propagates Exception
 </code></pre>
+<h2 id="generating-faults">Generating faults</h2>
+<p>To generate a fault, you need to specify a <code>FaultGenerator</code> delegate. You have the following options as to how you customize this delegate:</p>
+<h3 id="use-faultgenerator-class-to-generate-faults">Use <code>FaultGenerator</code> class to generate faults</h3>
+<p>The <code>FaultGenerator</code> is convenience API that allows you to specify what faults (exceptions) are to be injected. Additionally, it also allows assigning weight to each registered fault.</p>
+<!-- snippet: chaos-fault-generator-class -->
+<pre><code class="lang-cs">new ResiliencePipelineBuilder()
+    .AddChaosFault(new FaultStrategyOptions
+    {
+        // Use FaultGenerator to register exceptions to be injected
+        FaultGenerator = new FaultGenerator()
+            .AddException&lt;InvalidOperationException&gt;() // Uses default constructor
+            .AddException(() =&gt; new TimeoutException(&quot;Chaos timeout injected.&quot;)) // Custom exception generator
+            .AddException(context =&gt; CreateExceptionFromContext(context)) // Access the ResilienceContext
+            .AddException&lt;TimeoutException&gt;(weight: 50), // Assign weight to the exception, default is 100
+    });
+</code></pre>
+<!-- endSnippet -->
+<h3 id="use-delegates-to-generate-faults">Use delegates to generate faults</h3>
+<p>Delegates give you the most flexibility at the expense of slightly more complicated syntax. Delegates also support asynchronous fault generation, if you ever need that possibility.</p>
+<!-- snippet: chaos-fault-generator-delegate -->
+<pre><code class="lang-cs">new ResiliencePipelineBuilder()
+    .AddChaosFault(new FaultStrategyOptions
+    {
+        // The same behavior can be achieved with delegates
+        FaultGenerator = args =&gt;
+        {
+            Exception? exception = Random.Shared.Next(350) switch
+            {
+                &lt; 100 =&gt; new InvalidOperationException(),
+                &lt; 200 =&gt; new TimeoutException(&quot;Chaos timeout injected.&quot;),
+                &lt; 300 =&gt; CreateExceptionFromContext(args.Context),
+                &lt; 350 =&gt; new TimeoutException(),
+                _ =&gt; null
+            };
+
+            return new ValueTask&lt;Exception?&gt;(exception);
+        }
+    });
+</code></pre>
+<!-- endSnippet -->
 
 </article>
 

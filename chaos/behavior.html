@@ -101,7 +101,7 @@
 <p>The behavior chaos strategy is designed to inject custom behaviors into system operations right before such an operation is invoked. This strategy is flexible, allowing users to define specific behaviors such as altering the input, simulating resource exhaustion, putting the system in a given state before the actual operation is called, or other operational variations to simulate real-world scenarios.</p>
 <h2 id="usage">Usage</h2>
 <!-- snippet: chaos-behavior-usage -->
-<pre><code class="lang-cs">// To use a custom function to generate the behavior to inject.
+<pre><code class="lang-cs">// To use a custom delegated for injected behavior
 var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
 {
     BehaviorAction = static args =&gt; RestartRedisVM(),
@@ -126,7 +126,7 @@ var optionsOnBehaviorInjected = new BehaviorStrategyOptions
 new ResiliencePipelineBuilder().AddChaosBehavior(optionsWithBehaviorGenerator);
 new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosBehavior(optionsOnBehaviorInjected);
 
-// There are also a handy overload to inject the chaos easily.
+// There are also a handy overload to inject the chaos easily
 new ResiliencePipelineBuilder().AddChaosBehavior(0.05, RestartRedisVM);
 </code></pre>
 <!-- endSnippet -->

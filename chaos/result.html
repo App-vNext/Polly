@@ -106,14 +106,13 @@
 <p>The outcome chaos strategy is designed to inject or substitute fake results into system operations. This allows testing how an application behaves when it receives different types of responses, like successful results, errors, or exceptions.</p>
 <h2 id="usage">Usage</h2>
 <!-- snippet: chaos-result-usage -->
-<pre><code class="lang-cs">// To use a custom function to generate the result to inject.
+<pre><code class="lang-cs">// To use OutcomeGenerator&lt;T&gt; to register the results and exceptions to be injected (equal probability)
 var optionsWithResultGenerator = new OutcomeStrategyOptions&lt;HttpResponseMessage&gt;
 {
-    OutcomeGenerator = static args =&gt;
-    {
-        var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
-        return new ValueTask&lt;Outcome&lt;HttpResponseMessage&gt;?&gt;(Outcome.FromResult(response));
-    },
+    OutcomeGenerator = new OutcomeGenerator&lt;HttpResponseMessage&gt;()
+        .AddResult(() =&gt; new HttpResponseMessage(HttpStatusCode.TooManyRequests))
+        .AddResult(() =&gt; new HttpResponseMessage(HttpStatusCode.InternalServerError))
+        .AddException(() =&gt; new HttpRequestException(&quot;Chaos request exception.&quot;)),
     Enabled = true,
     InjectionRate = 0.1
 };
@@ -121,11 +120,8 @@ var optionsWithResultGenerator = new OutcomeStrategyOptions&lt;HttpResponseMessa
 // To get notifications when a result is injected
 var optionsOnBehaviorInjected = new OutcomeStrategyOptions&lt;HttpResponseMessage&gt;
 {
-    OutcomeGenerator = static args =&gt;
-    {
-        var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
-        return new ValueTask&lt;Outcome&lt;HttpResponseMessage&gt;?&gt;(Outcome.FromResult(response));
-    },
+    OutcomeGenerator = new OutcomeGenerator&lt;HttpResponseMessage&gt;()
+        .AddResult(() =&gt; new HttpResponseMessage(HttpStatusCode.InternalServerError)),
     Enabled = true,
     InjectionRate = 0.1,
     OnOutcomeInjected = static args =&gt;
@@ -139,7 +135,7 @@ var optionsOnBehaviorInjected = new OutcomeStrategyOptions&lt;HttpResponseMessag
 new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(optionsWithResultGenerator);
 new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(optionsOnBehaviorInjected);
 
-// There are also a couple of handy overloads to inject the chaos easily.
+// There are also a couple of handy overloads to inject the chaos easily
 new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(0.1, () =&gt; new HttpResponseMessage(HttpStatusCode.TooManyRequests));
 </code></pre>
 <!-- endSnippet -->
@@ -228,6 +224,46 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(0.1, (
     B-&gt;&gt;P: Returns result
     P-&gt;&gt;C: Returns result
 </code></pre>
+<h2 id="generating-outcomes">Generating outcomes</h2>
+<p>To generate a faulted outcome (result or exception), you need to specify a <code>OutcomeGenerator</code> delegate. You have the following options as to how you customize this delegate:</p>
+<h3 id="use-outcomegeneratort-class-to-generate-outcomes">Use <code>OutcomeGenerator&lt;T&gt;</code> class to generate outcomes</h3>
+<p>The <code>OutcomeGenerator&lt;T&gt;</code> is a convenience API that allows you to specify what outcomes (results or exceptions) are to be injected. Additionally, it also allows assigning weight to each registered outcome.</p>
+<!-- snippet: chaos-outcome-generator-class -->
+<pre><code class="lang-cs">new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
+    .AddChaosResult(new OutcomeStrategyOptions&lt;HttpResponseMessage&gt;
+    {
+        // Use OutcomeGenerator&lt;T&gt; to register the results and exceptions to be injected
+        OutcomeGenerator = new OutcomeGenerator&lt;HttpResponseMessage&gt;()
+            .AddResult(() =&gt; new HttpResponseMessage(HttpStatusCode.InternalServerError)) // Result generator
+            .AddResult(() =&gt; new HttpResponseMessage(HttpStatusCode.TooManyRequests), weight: 50) // Result generator with weight
+            .AddResult(context =&gt; CreateResultFromContext(context)) // Access the ResilienceContext to create result
+            .AddException&lt;HttpRequestException&gt;(), // You can also register exceptions
+    });
+</code></pre>
+<!-- endSnippet -->
+<h3 id="use-delegates-to-generate-faults">Use delegates to generate faults</h3>
+<p>Delegates give you the most flexibility at the expense of slightly more complicated syntax. Delegates also support asynchronous outcome generation, if you ever need that possibility.</p>
+<!-- snippet: chaos-outcome-generator-delegate -->
+<pre><code class="lang-cs">new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
+    .AddChaosResult(new OutcomeStrategyOptions&lt;HttpResponseMessage&gt;
+    {
+        // The same behavior can be achieved with delegates
+        OutcomeGenerator = args =&gt;
+        {
+            Outcome&lt;HttpResponseMessage&gt;? outcome = Random.Shared.Next(350) switch
+            {
+                &lt; 100 =&gt; Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)),
+                &lt; 150 =&gt; Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.TooManyRequests)),
+                &lt; 250 =&gt; Outcome.FromResult(CreateResultFromContext(args.Context)),
+                &lt; 350 =&gt; Outcome.FromException&lt;HttpResponseMessage&gt;(new TimeoutException()),
+                _ =&gt; null
+            };
+
+            return ValueTask.FromResult(outcome);
+        }
+    });
+</code></pre>
+<!-- endSnippet -->
 
 </article>
 
