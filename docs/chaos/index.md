@@ -38,6 +38,9 @@ builder
 ```
 <!-- endSnippet -->
 
+> [!NOTE]
+> It is usual to place the chaos strategy as the last strategy in the resilience pipeline. By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.
+
 ## Motivation
 
 There are a lot of questions when it comes to chaos engineering and making sure that a system is actually ready to face the worst possible scenarios:
@@ -68,10 +71,6 @@ Chaos strategies (or Monkey strategies as we call them) are in essence a [Resili
 | [Result](result.md)     | Yes      | Substitute results to fake outcomes in your system.                  |
 | [Latency](latency.md)   | No       | Injects latency into executions before the calls are made.           |
 | [Behavior](behavior.md) | No       | Allows you to inject *any* extra behaviour, before a call is placed. |
-
-## Usage
-
-It is usual to place the chaos strategy as the last strategy in the resilience pipeline. By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.
 
 ## Common options across strategies
 
