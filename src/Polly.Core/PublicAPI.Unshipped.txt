@@ -55,13 +55,13 @@ Polly.Simmy.Latency.LatencyStrategyOptions.Latency.set -> void
 Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator.get -> System.Func<Polly.Simmy.Latency.LatencyGeneratorArguments, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
 Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator.set -> void
 Polly.Simmy.Latency.LatencyStrategyOptions.LatencyStrategyOptions() -> void
-Polly.Simmy.Latency.LatencyStrategyOptions.OnLatency.get -> System.Func<Polly.Simmy.Latency.OnLatencyArguments, System.Threading.Tasks.ValueTask>?
-Polly.Simmy.Latency.LatencyStrategyOptions.OnLatency.set -> void
-Polly.Simmy.Latency.OnLatencyArguments
-Polly.Simmy.Latency.OnLatencyArguments.Context.get -> Polly.ResilienceContext!
-Polly.Simmy.Latency.OnLatencyArguments.Latency.get -> System.TimeSpan
-Polly.Simmy.Latency.OnLatencyArguments.OnLatencyArguments() -> void
-Polly.Simmy.Latency.OnLatencyArguments.OnLatencyArguments(Polly.ResilienceContext! context, System.TimeSpan latency) -> void
+Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected.get -> System.Func<Polly.Simmy.Latency.OnLatencyInjectedArguments, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected.set -> void
+Polly.Simmy.Latency.OnLatencyInjectedArguments
+Polly.Simmy.Latency.OnLatencyInjectedArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Latency.OnLatencyInjectedArguments.Latency.get -> System.TimeSpan
+Polly.Simmy.Latency.OnLatencyInjectedArguments.OnLatencyInjectedArguments() -> void
+Polly.Simmy.Latency.OnLatencyInjectedArguments.OnLatencyInjectedArguments(Polly.ResilienceContext! context, System.TimeSpan latency) -> void
 Polly.Simmy.LatencyPipelineBuilderExtensions
 Polly.Simmy.MonkeyStrategy
 Polly.Simmy.MonkeyStrategy.MonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions! options) -> void

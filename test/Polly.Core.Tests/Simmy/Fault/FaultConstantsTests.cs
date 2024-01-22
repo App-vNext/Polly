@@ -7,6 +7,7 @@ public class FaultConstantsTests
     [Fact]
     public void EnsureDefaults()
     {
-        FaultConstants.OnFaultInjectedEvent.Should().Be("OnFaultInjectedEvent");
+        FaultConstants.DefaultName.Should().Be("Chaos.Fault");
+        FaultConstants.OnFaultInjectedEvent.Should().Be("Chaos.OnFault");
     }
 }

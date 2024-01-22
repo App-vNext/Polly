@@ -32,7 +32,7 @@ public class LatencyChaosStrategyTests : IDisposable
         _options.Enabled = true;
         _options.Latency = _delay;
         _options.Randomizer = () => 0.5;
-        _options.OnLatency = args =>
+        _options.OnLatencyInjected = args =>
         {
             args.Context.Should().NotBeNull();
             args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
@@ -51,7 +51,7 @@ public class LatencyChaosStrategyTests : IDisposable
         (after - before).Should().Be(_delay);
 
         _args.Should().HaveCount(1);
-        _args[0].Arguments.Should().BeOfType<OnLatencyArguments>();
+        _args[0].Arguments.Should().BeOfType<OnLatencyInjectedArguments>();
         onLatencyExecuted.Should().BeTrue();
     }
 
@@ -110,7 +110,7 @@ public class LatencyChaosStrategyTests : IDisposable
         _options.Latency = TimeSpan.FromSeconds(latency);
         _options.Randomizer = () => 0.5;
 
-        _options.OnLatency = args =>
+        _options.OnLatencyInjected = args =>
         {
             args.Context.Should().NotBeNull();
             args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();

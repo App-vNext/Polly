@@ -8,6 +8,11 @@ namespace Polly.Simmy.Behavior;
 public class BehaviorStrategyOptions : MonkeyStrategyOptions
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="BehaviorStrategyOptions"/> class.
+    /// </summary>
+    public BehaviorStrategyOptions() => Name = BehaviorConstants.DefaultName;
+
+    /// <summary>
     /// Gets or sets the delegate that's raised when the custom behavior is injected.
     /// </summary>
     /// <remarks>

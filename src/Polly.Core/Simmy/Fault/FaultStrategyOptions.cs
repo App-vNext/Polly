@@ -8,6 +8,11 @@ namespace Polly.Simmy.Fault;
 public class FaultStrategyOptions : MonkeyStrategyOptions
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="FaultStrategyOptions"/> class.
+    /// </summary>
+    public FaultStrategyOptions() => Name = FaultConstants.DefaultName;
+
+    /// <summary>
     /// Gets or sets the delegate that's raised when the outcome is injected.
     /// </summary>
     /// <remarks>
@@ -19,8 +24,7 @@ public class FaultStrategyOptions : MonkeyStrategyOptions
     /// Gets or sets the fault generator to be injected for a given execution.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="null"/>. Either <see cref="Fault"/> or this property is required.
-    /// When this property is <see langword="null"/> the <see cref="Fault"/> is used.
+    /// Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
     public Func<FaultGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; set; } = default!;

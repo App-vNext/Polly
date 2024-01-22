@@ -5,14 +5,14 @@
 /// <summary>
 /// Arguments used by the latency chaos strategy to notify that a delayed occurred.
 /// </summary>
-public readonly struct OnLatencyArguments
+public readonly struct OnLatencyInjectedArguments
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OnLatencyArguments"/> struct.
+    /// Initializes a new instance of the <see cref="OnLatencyInjectedArguments"/> struct.
     /// </summary>
     /// <param name="context">The context associated with the execution of a user-provided callback.</param>
     /// <param name="latency">The latency that was injected.</param>
-    public OnLatencyArguments(ResilienceContext context, TimeSpan latency)
+    public OnLatencyInjectedArguments(ResilienceContext context, TimeSpan latency)
     {
         Context = context;
         Latency = latency;
