@@ -5,7 +5,7 @@ namespace Polly.Simmy;
 /// <summary>
 /// The options associated with the <see cref="ChaosStrategy"/>.
 /// </summary>
-/// <typeparam name="TResult">The type of result the monkey strategy handles.</typeparam>
+/// <typeparam name="TResult">The type of result the chaos strategy handles.</typeparam>
 public abstract class ChaosStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
