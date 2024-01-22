@@ -10,7 +10,7 @@ namespace Polly.Simmy.Fault;
 /// A generator for creating faults (exceptions) using registered delegate functions.
 /// </summary>
 /// <remarks>
-/// An instance of this class can be assigned to the <see cref="FaultStrategyOptions.FaultGenerator"/> property.
+/// An instance of this class can be assigned to the <see cref="ChaosFaultStrategyOptions.FaultGenerator"/> property.
 /// </remarks>
 public sealed class FaultGenerator
 {
@@ -69,7 +69,7 @@ public sealed class FaultGenerator
     }
 
     /// <summary>
-    /// Provides an implicit conversion from <see cref="FaultGenerator"/> to a delegate compatible with <see cref="FaultStrategyOptions.FaultGenerator"/>.
+    /// Provides an implicit conversion from <see cref="FaultGenerator"/> to a delegate compatible with <see cref="ChaosFaultStrategyOptions.FaultGenerator"/>.
     /// </summary>
     /// <param name="generator">The instance of <see cref="FaultGenerator"/>.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]

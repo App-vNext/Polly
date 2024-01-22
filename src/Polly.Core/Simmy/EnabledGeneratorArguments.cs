@@ -3,7 +3,7 @@
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
 /// <summary>
-/// Defines the arguments for the <see cref="MonkeyStrategyOptions{TResult}.EnabledGenerator"/>.
+/// Defines the arguments for the <see cref="ChaosStrategyOptions{TResult}.EnabledGenerator"/>.
 /// </summary>
 public readonly struct EnabledGeneratorArguments
 {

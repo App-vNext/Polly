@@ -13,7 +13,7 @@ internal static partial class Chaos
     {
         #region chaos-fault-usage
         // 10% of invocations will be randomly affected and one of the exceptions will be thrown (equal probability).
-        var optionsBasic = new FaultStrategyOptions
+        var optionsBasic = new ChaosFaultStrategyOptions
         {
             FaultGenerator = new FaultGenerator()
                 .AddException<InvalidOperationException>() // Uses default constructor
@@ -23,7 +23,7 @@ internal static partial class Chaos
         };
 
         // To use a custom delegate to generate the fault to be injected
-        var optionsWithFaultGenerator = new FaultStrategyOptions
+        var optionsWithFaultGenerator = new ChaosFaultStrategyOptions
         {
             FaultGenerator = static args =>
             {
@@ -43,7 +43,7 @@ internal static partial class Chaos
         };
 
         // To get notifications when a fault is injected
-        var optionsOnFaultInjected = new FaultStrategyOptions
+        var optionsOnFaultInjected = new ChaosFaultStrategyOptions
         {
             FaultGenerator = new FaultGenerator().AddException<InvalidOperationException>(),
             Enabled = true,
@@ -55,7 +55,7 @@ internal static partial class Chaos
             }
         };
 
-        // Add a fault strategy with a FaultStrategyOptions instance to the pipeline
+        // Add a fault strategy with a ChaosFaultStrategyOptions instance to the pipeline
         new ResiliencePipelineBuilder().AddChaosFault(optionsBasic);
         new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosFault(optionsWithFaultGenerator);
 
@@ -73,7 +73,7 @@ internal static partial class Chaos
                 MaxRetryAttempts = 4,
                 Delay = TimeSpan.FromSeconds(3),
             })
-            .AddChaosFault(new FaultStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
+            .AddChaosFault(new ChaosFaultStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
             {
                 FaultGenerator = static args => new ValueTask<Exception?>(new InvalidOperationException("Dummy exception")),
                 Enabled = true,
@@ -88,7 +88,7 @@ internal static partial class Chaos
         #region chaos-fault-generator-class
 
         new ResiliencePipelineBuilder()
-            .AddChaosFault(new FaultStrategyOptions
+            .AddChaosFault(new ChaosFaultStrategyOptions
             {
                 // Use FaultGenerator to register exceptions to be injected
                 FaultGenerator = new FaultGenerator()
@@ -106,7 +106,7 @@ internal static partial class Chaos
         #region chaos-fault-generator-delegate
 
         new ResiliencePipelineBuilder()
-            .AddChaosFault(new FaultStrategyOptions
+            .AddChaosFault(new ChaosFaultStrategyOptions
             {
                 // The same behavior can be achieved with delegates
                 FaultGenerator = args =>
