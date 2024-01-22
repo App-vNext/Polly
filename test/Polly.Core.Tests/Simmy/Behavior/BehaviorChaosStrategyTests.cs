@@ -138,6 +138,8 @@ public class BehaviorChaosStrategyTests
     [Fact]
     public async Task Should_not_execute_user_delegate_when_it_was_cancelled_running_the_strategy()
     {
+        bool enabledGeneratorExecuted = false;
+
         using var cts = new CancellationTokenSource();
         _options.InjectionRate = 0.6;
         _options.Randomizer = () => 0.5;
