@@ -14,7 +14,7 @@ public class BehaviorStrategyOptionsTests
         sut.Randomizer.Should().NotBeNull();
         sut.Enabled.Should().BeFalse();
         sut.EnabledGenerator.Should().BeNull();
-        sut.InjectionRate.Should().Be(MonkeyStrategyConstants.DefaultInjectionRate);
+        sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();
         sut.BehaviorAction.Should().BeNull();
         sut.OnBehaviorInjected.Should().BeNull();
@@ -31,7 +31,7 @@ public class BehaviorStrategyOptionsTests
             .Throw<ValidationException>()
             .WithMessage("""
             Invalid Options
-            
+
             Validation Errors:
             The BehaviorAction field is required.
             """);

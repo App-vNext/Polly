@@ -1,6 +1,6 @@
 ﻿namespace Polly.Simmy;
 
-internal static class MonkeyStrategyConstants
+internal static class ChaosStrategyConstants
 {
     public const double MinInjectionThreshold = 0;
 

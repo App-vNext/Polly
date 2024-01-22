@@ -3,18 +3,17 @@ using Polly.Simmy;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Simmy;
-
-public class MonkeyStrategyOptionsTTests
+public class ChaosStrategyOptionsTests
 {
     [Fact]
     public void Ctor_Ok()
     {
-        var sut = new TestChaosStrategyOptions<int>();
+        var sut = new TestChaosStrategyOptions();
 
         sut.Randomizer.Should().NotBeNull();
         sut.Enabled.Should().BeFalse();
         sut.EnabledGenerator.Should().BeNull();
-        sut.InjectionRate.Should().Be(MonkeyStrategyConstants.DefaultInjectionRate);
+        sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();
     }
 
@@ -23,7 +22,7 @@ public class MonkeyStrategyOptionsTTests
     [Theory]
     public void InvalidThreshold(double injectionRate)
     {
-        var sut = new TestChaosStrategyOptions<int>
+        var sut = new TestChaosStrategyOptions
         {
             InjectionRate = injectionRate,
         };

@@ -2,7 +2,7 @@
 
 namespace Polly.Simmy.Fault;
 
-internal class FaultChaosStrategy : MonkeyStrategy
+internal class FaultChaosStrategy : ChaosStrategy
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
 

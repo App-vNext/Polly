@@ -1,6 +1,6 @@
 ﻿namespace Polly.Simmy.Utils;
 
-internal static class MonkeyStrategyHelper
+internal static class ChaosStrategyHelper
 {
     public static async ValueTask<bool> ShouldInjectAsync(
         ResilienceContext context,
@@ -33,15 +33,15 @@ internal static class MonkeyStrategyHelper
     private static double CoerceInjectionThreshold(double injectionThreshold)
     {
         // stryker disable once equality : no means to test this
-        if (injectionThreshold < MonkeyStrategyConstants.MinInjectionThreshold)
+        if (injectionThreshold < ChaosStrategyConstants.MinInjectionThreshold)
         {
-            return MonkeyStrategyConstants.MinInjectionThreshold;
+            return ChaosStrategyConstants.MinInjectionThreshold;
         }
 
         // stryker disable once equality : no means to test this
-        if (injectionThreshold > MonkeyStrategyConstants.MaxInjectionThreshold)
+        if (injectionThreshold > ChaosStrategyConstants.MaxInjectionThreshold)
         {
-            return MonkeyStrategyConstants.MaxInjectionThreshold;
+            return ChaosStrategyConstants.MaxInjectionThreshold;
         }
 
         return injectionThreshold;

@@ -2,18 +2,18 @@
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 
-public class MonkeyStrategyTests
+public class ChaosStrategyTTests
 {
-    private readonly TestChaosStrategyOptions _options;
+    private readonly TestChaosStrategyOptions<int> _options;
 
-    public MonkeyStrategyTests() => _options = new();
+    public ChaosStrategyTTests() => _options = new();
 
     [Fact]
     public void InvalidCtor()
     {
         Action act = () =>
         {
-            var _ = new TestChaosStrategy(null);
+            var _ = new TestChaosStrategy<int>(null);
         };
 
         act.Should().Throw<ArgumentNullException>();
@@ -52,7 +52,7 @@ public class MonkeyStrategyTests
         var sut = CreateSut();
         sut.OnExecute = (_, _) => { wasMonkeyUnleashed = true; return Task.CompletedTask; };
 
-        await sut.AsPipeline().ExecuteAsync((_) => { return default; });
+        await sut.AsPipeline().ExecuteAsync<int>((_) => { return default; });
 
         wasMonkeyUnleashed.Should().Be(shouldBeInjected);
     }
@@ -80,7 +80,7 @@ public class MonkeyStrategyTests
         var sut = CreateSut();
         sut.Before = (_, _) => { cts.Cancel(); };
 
-        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
+        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { return await Task.FromResult(5); }, cts.Token).AsTask())
             .Should()
             .ThrowAsync<OperationCanceledException>();
 
@@ -112,7 +112,7 @@ public class MonkeyStrategyTests
 
         var sut = CreateSut();
 
-        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
+        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { return await Task.FromResult(5); }, cts.Token).AsTask())
             .Should()
             .ThrowAsync<OperationCanceledException>();
 
@@ -144,7 +144,7 @@ public class MonkeyStrategyTests
 
         var sut = CreateSut();
 
-        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
+        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { return await Task.FromResult(5); }, cts.Token).AsTask())
             .Should()
             .ThrowAsync<OperationCanceledException>();
 
@@ -165,10 +165,10 @@ public class MonkeyStrategyTests
         var sut = CreateSut();
         sut.OnExecute = (_, _) => { wasMonkeyUnleashed = true; return Task.CompletedTask; };
 
-        await sut.AsPipeline().ExecuteAsync((_) => { return default; });
+        await sut.AsPipeline().ExecuteAsync<int>((_) => { return default; });
 
         wasMonkeyUnleashed.Should().BeTrue();
     }
 
-    private TestChaosStrategy CreateSut() => new(_options);
+    private TestChaosStrategy<int> CreateSut() => new(_options);
 }

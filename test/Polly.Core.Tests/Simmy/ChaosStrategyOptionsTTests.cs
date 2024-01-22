@@ -3,17 +3,18 @@ using Polly.Simmy;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Simmy;
-public class MonkeyStrategyOptionsTests
+
+public class ChaosStrategyOptionsTTests
 {
     [Fact]
     public void Ctor_Ok()
     {
-        var sut = new TestChaosStrategyOptions();
+        var sut = new TestChaosStrategyOptions<int>();
 
         sut.Randomizer.Should().NotBeNull();
         sut.Enabled.Should().BeFalse();
         sut.EnabledGenerator.Should().BeNull();
-        sut.InjectionRate.Should().Be(MonkeyStrategyConstants.DefaultInjectionRate);
+        sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();
     }
 
@@ -22,7 +23,7 @@ public class MonkeyStrategyOptionsTests
     [Theory]
     public void InvalidThreshold(double injectionRate)
     {
-        var sut = new TestChaosStrategyOptions
+        var sut = new TestChaosStrategyOptions<int>
         {
             InjectionRate = injectionRate,
         };
@@ -33,7 +34,7 @@ public class MonkeyStrategyOptionsTests
             .Throw<ValidationException>()
             .WithMessage("""
             Invalid Options
-            
+
             Validation Errors:
             The field InjectionRate must be between 0 and 1.
             """);

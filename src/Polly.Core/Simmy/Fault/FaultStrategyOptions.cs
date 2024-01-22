@@ -5,7 +5,7 @@ namespace Polly.Simmy.Fault;
 /// <summary>
 /// Represents the options for the Fault chaos strategy.
 /// </summary>
-public class FaultStrategyOptions : MonkeyStrategyOptions
+public class FaultStrategyOptions : ChaosStrategyOptions
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FaultStrategyOptions"/> class.

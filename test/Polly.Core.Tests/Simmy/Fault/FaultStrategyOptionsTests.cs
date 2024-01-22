@@ -14,7 +14,7 @@ public class FaultStrategyOptionsTests
         sut.Randomizer.Should().NotBeNull();
         sut.Enabled.Should().BeFalse();
         sut.EnabledGenerator.Should().BeNull();
-        sut.InjectionRate.Should().Be(MonkeyStrategyConstants.DefaultInjectionRate);
+        sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();
         sut.OnFaultInjected.Should().BeNull();
         sut.FaultGenerator.Should().BeNull();
@@ -33,7 +33,7 @@ public class FaultStrategyOptionsTests
             .Throw<ValidationException>()
             .WithMessage("""
             Invalid Options
-            
+
             Validation Errors:
             The FaultGenerator field is required.
             """);

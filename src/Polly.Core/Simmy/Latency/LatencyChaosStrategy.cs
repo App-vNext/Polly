@@ -2,7 +2,7 @@
 
 namespace Polly.Simmy.Latency;
 
-internal sealed class LatencyChaosStrategy : MonkeyStrategy
+internal sealed class LatencyChaosStrategy : ChaosStrategy
 {
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;

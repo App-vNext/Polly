@@ -6,7 +6,7 @@ namespace Polly.Simmy.Outcomes;
 /// Represents the options for the Outcome chaos strategy.
 /// </summary>
 /// <typeparam name="TResult">The type of the outcome that was injected.</typeparam>
-public class OutcomeStrategyOptions<TResult> : MonkeyStrategyOptions
+public class OutcomeStrategyOptions<TResult> : ChaosStrategyOptions
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="OutcomeStrategyOptions{TResult}"/> class.

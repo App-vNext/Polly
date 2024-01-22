@@ -3,17 +3,22 @@
 namespace Polly.Simmy;
 
 /// <summary>
-/// Contains common functionality for chaos strategies which intentionally disrupt executions - which monkey around with calls.
+/// This base strategy class is used to simplify the implementation of generic (reactive)
+/// strategies by limiting the number of generic types the execute method receives.
 /// </summary>
-public abstract class MonkeyStrategy : ResilienceStrategy
+/// <typeparam name="T">The type of result this strategy handles.</typeparam>
+/// <remarks>
+/// For strategies that handle all result types the generic parameter must be of type <see cref="object"/>.
+/// </remarks>
+public abstract class ChaosStrategy<T> : ResilienceStrategy<T>
 {
     private readonly Func<double> _randomizer;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MonkeyStrategy"/> class.
+    /// Initializes a new instance of the <see cref="ChaosStrategy{T}"/> class.
     /// </summary>
     /// <param name="options">The chaos strategy options.</param>
-    protected MonkeyStrategy(MonkeyStrategyOptions options)
+    protected ChaosStrategy(ChaosStrategyOptions options)
     {
         Guard.NotNull(options);
         Guard.NotNull(options.Randomizer);
@@ -41,7 +46,7 @@ public abstract class MonkeyStrategy : ResilienceStrategy
     /// <remarks>Use this method before injecting any chaos strategy to evaluate whether a given chaos strategy needs to be injected during the execution.</remarks>
     protected async ValueTask<bool> ShouldInjectAsync(ResilienceContext context)
     {
-        return await MonkeyStrategyHelper
+        return await ChaosStrategyHelper
             .ShouldInjectAsync(context, InjectionRateGenerator, EnabledGenerator, _randomizer)
             .ConfigureAwait(false);
     }

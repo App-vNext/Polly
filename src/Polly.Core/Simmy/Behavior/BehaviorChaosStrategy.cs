@@ -2,7 +2,7 @@
 
 namespace Polly.Simmy.Behavior;
 
-internal sealed class BehaviorChaosStrategy : MonkeyStrategy
+internal sealed class BehaviorChaosStrategy : ChaosStrategy
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
 

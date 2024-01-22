@@ -5,7 +5,7 @@ namespace Polly.Simmy.Behavior;
 /// <summary>
 /// Represents the options for the Behavior chaos strategy.
 /// </summary>
-public class BehaviorStrategyOptions : MonkeyStrategyOptions
+public class BehaviorStrategyOptions : ChaosStrategyOptions
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="BehaviorStrategyOptions"/> class.

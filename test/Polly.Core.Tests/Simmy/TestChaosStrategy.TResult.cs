@@ -2,7 +2,7 @@
 
 namespace Polly.Core.Tests.Simmy;
 
-public sealed class TestChaosStrategy<T> : MonkeyStrategy<T>
+public sealed class TestChaosStrategy<T> : ChaosStrategy<T>
 {
     public TestChaosStrategy(TestChaosStrategyOptions<T> options)
         : base(options)

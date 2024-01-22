@@ -12,7 +12,7 @@ public class OutcomeStrategyOptionsTests
         sut.Randomizer.Should().NotBeNull();
         sut.Enabled.Should().BeFalse();
         sut.EnabledGenerator.Should().BeNull();
-        sut.InjectionRate.Should().Be(MonkeyStrategyConstants.DefaultInjectionRate);
+        sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();
         sut.OnOutcomeInjected.Should().BeNull();
         sut.OutcomeGenerator.Should().BeNull();

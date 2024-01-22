@@ -63,26 +63,26 @@ Polly.Simmy.Latency.OnLatencyInjectedArguments.Latency.get -> System.TimeSpan
 Polly.Simmy.Latency.OnLatencyInjectedArguments.OnLatencyInjectedArguments() -> void
 Polly.Simmy.Latency.OnLatencyInjectedArguments.OnLatencyInjectedArguments(Polly.ResilienceContext! context, System.TimeSpan latency) -> void
 Polly.Simmy.LatencyPipelineBuilderExtensions
-Polly.Simmy.MonkeyStrategy
-Polly.Simmy.MonkeyStrategy.MonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions! options) -> void
-Polly.Simmy.MonkeyStrategy.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
-Polly.Simmy.MonkeyStrategy<T>
-Polly.Simmy.MonkeyStrategy<T>.MonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions! options) -> void
-Polly.Simmy.MonkeyStrategy<T>.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
-Polly.Simmy.MonkeyStrategyOptions
-Polly.Simmy.MonkeyStrategyOptions.MonkeyStrategyOptions() -> void
-Polly.Simmy.MonkeyStrategyOptions<TResult>
-Polly.Simmy.MonkeyStrategyOptions<TResult>.Enabled.get -> bool
-Polly.Simmy.MonkeyStrategyOptions<TResult>.Enabled.set -> void
-Polly.Simmy.MonkeyStrategyOptions<TResult>.EnabledGenerator.get -> System.Func<Polly.Simmy.EnabledGeneratorArguments, System.Threading.Tasks.ValueTask<bool>>?
-Polly.Simmy.MonkeyStrategyOptions<TResult>.EnabledGenerator.set -> void
-Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRate.get -> double
-Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRate.set -> void
-Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRateGenerator.get -> System.Func<Polly.Simmy.InjectionRateGeneratorArguments, System.Threading.Tasks.ValueTask<double>>?
-Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRateGenerator.set -> void
-Polly.Simmy.MonkeyStrategyOptions<TResult>.MonkeyStrategyOptions() -> void
-Polly.Simmy.MonkeyStrategyOptions<TResult>.Randomizer.get -> System.Func<double>!
-Polly.Simmy.MonkeyStrategyOptions<TResult>.Randomizer.set -> void
+Polly.Simmy.ChaosStrategy
+Polly.Simmy.ChaosStrategy.ChaosStrategy(Polly.Simmy.ChaosStrategyOptions! options) -> void
+Polly.Simmy.ChaosStrategy.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
+Polly.Simmy.ChaosStrategy<T>
+Polly.Simmy.ChaosStrategy<T>.ChaosStrategy(Polly.Simmy.ChaosStrategyOptions! options) -> void
+Polly.Simmy.ChaosStrategy<T>.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
+Polly.Simmy.ChaosStrategyOptions
+Polly.Simmy.ChaosStrategyOptions.ChaosStrategyOptions() -> void
+Polly.Simmy.ChaosStrategyOptions<TResult>
+Polly.Simmy.ChaosStrategyOptions<TResult>.Enabled.get -> bool
+Polly.Simmy.ChaosStrategyOptions<TResult>.Enabled.set -> void
+Polly.Simmy.ChaosStrategyOptions<TResult>.EnabledGenerator.get -> System.Func<Polly.Simmy.EnabledGeneratorArguments, System.Threading.Tasks.ValueTask<bool>>?
+Polly.Simmy.ChaosStrategyOptions<TResult>.EnabledGenerator.set -> void
+Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRate.get -> double
+Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRate.set -> void
+Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRateGenerator.get -> System.Func<Polly.Simmy.InjectionRateGeneratorArguments, System.Threading.Tasks.ValueTask<double>>?
+Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRateGenerator.set -> void
+Polly.Simmy.ChaosStrategyOptions<TResult>.ChaosStrategyOptions() -> void
+Polly.Simmy.ChaosStrategyOptions<TResult>.Randomizer.get -> System.Func<double>!
+Polly.Simmy.ChaosStrategyOptions<TResult>.Randomizer.set -> void
 Polly.Simmy.OutcomePipelineBuilderExtensions
 Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>
 Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.Context.get -> Polly.ResilienceContext!

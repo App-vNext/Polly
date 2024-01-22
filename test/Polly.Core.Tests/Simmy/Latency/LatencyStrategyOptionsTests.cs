@@ -12,7 +12,7 @@ public class LatencyStrategyOptionsTests
         sut.Randomizer.Should().NotBeNull();
         sut.Enabled.Should().BeFalse();
         sut.EnabledGenerator.Should().BeNull();
-        sut.InjectionRate.Should().Be(MonkeyStrategyConstants.DefaultInjectionRate);
+        sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();
         sut.Latency.Should().Be(LatencyConstants.DefaultLatency);
         sut.LatencyGenerator.Should().BeNull();

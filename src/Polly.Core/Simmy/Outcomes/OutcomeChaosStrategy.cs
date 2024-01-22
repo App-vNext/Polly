@@ -2,7 +2,7 @@
 
 namespace Polly.Simmy.Outcomes;
 
-internal class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
+internal class OutcomeChaosStrategy<T> : ChaosStrategy<T>
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
 

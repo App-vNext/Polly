@@ -5,7 +5,7 @@
 /// <summary>
 /// Represents the options for the Latency chaos strategy.
 /// </summary>
-public class LatencyStrategyOptions : MonkeyStrategyOptions
+public class LatencyStrategyOptions : ChaosStrategyOptions
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="LatencyStrategyOptions"/> class.
