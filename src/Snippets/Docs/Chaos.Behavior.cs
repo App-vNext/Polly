@@ -33,7 +33,7 @@ internal static partial class Chaos
             }
         };
 
-        // Add a behavior strategy with a BehaviorStrategyOptions instance to the pipeline
+        // Add a behavior strategy with a ChaosBehaviorStrategyOptions instance to the pipeline
         new ResiliencePipelineBuilder().AddChaosBehavior(optionsWithBehaviorGenerator);
         new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosBehavior(optionsOnBehaviorInjected);
 

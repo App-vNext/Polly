@@ -5,7 +5,7 @@ using Polly.Testing;
 
 namespace Polly.Core.Tests.Simmy.Behavior;
 
-public class BehaviorChaosPipelineBuilderExtensionsTests
+public class ChaosBehaviorPipelineBuilderExtensionsTests
 {
     public static IEnumerable<object[]> AddBehavior_Ok_Data()
     {
@@ -14,7 +14,7 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
         yield return new object[]
         {
             (ResiliencePipelineBuilder<int> builder) => { builder.AddChaosBehavior(0.5, behavior); },
-            (BehaviorChaosStrategy strategy) =>
+            (ChaosBehaviorStrategy strategy) =>
             {
                 strategy.Behavior!.Invoke(new(context)).Preserve().GetAwaiter().IsCompleted.Should().BeTrue();
                 strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeTrue();
@@ -27,7 +27,7 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
     public void AddBehavior_Shortcut_Option_Ok()
     {
         var sut = new ResiliencePipelineBuilder().AddChaosBehavior(0.5, () => new ValueTask(Task.CompletedTask)).Build();
-        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>();
+        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosBehaviorStrategy>();
     }
 
     [Fact]
@@ -60,17 +60,17 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
             })
             .Build();
 
-        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>();
+        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosBehaviorStrategy>();
     }
 
     [MemberData(nameof(AddBehavior_Ok_Data))]
     [Theory]
-    internal void AddBehavior_Generic_Options_Ok(Action<ResiliencePipelineBuilder<int>> configure, Action<BehaviorChaosStrategy> assert)
+    internal void AddBehavior_Generic_Options_Ok(Action<ResiliencePipelineBuilder<int>> configure, Action<ChaosBehaviorStrategy> assert)
     {
         var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosBehaviorStrategy>().Subject;
         assert(strategy);
     }
 }

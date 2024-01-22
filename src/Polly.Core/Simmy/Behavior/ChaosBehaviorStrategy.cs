@@ -2,11 +2,11 @@
 
 namespace Polly.Simmy.Behavior;
 
-internal sealed class BehaviorChaosStrategy : ChaosStrategy
+internal sealed class ChaosBehaviorStrategy : ChaosStrategy
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
 
-    public BehaviorChaosStrategy(
+    public ChaosBehaviorStrategy(
         ChaosBehaviorStrategyOptions options,
         ResilienceStrategyTelemetry telemetry)
         : base(options)

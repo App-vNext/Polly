@@ -3,7 +3,7 @@ using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Simmy.Behavior;
 
-public class BehaviorChaosStrategyTests
+public class ChaosBehaviorStrategyTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly ChaosBehaviorStrategyOptions _options;
@@ -12,7 +12,7 @@ public class BehaviorChaosStrategyTests
     private bool _userDelegateExecuted;
     private bool _injectedBehaviorExecuted;
 
-    public BehaviorChaosStrategyTests()
+    public ChaosBehaviorStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
         _options = new();
@@ -159,5 +159,5 @@ public class BehaviorChaosStrategyTests
         enabledGeneratorExecuted.Should().BeTrue();
     }
 
-    private ResiliencePipeline CreateSut() => new BehaviorChaosStrategy(_options, _telemetry).AsPipeline();
+    private ResiliencePipeline CreateSut() => new ChaosBehaviorStrategy(_options, _telemetry).AsPipeline();
 }

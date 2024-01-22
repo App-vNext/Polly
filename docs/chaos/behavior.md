@@ -5,7 +5,7 @@
 
 ## About
 
-- **Options**: [`BehaviorStrategyOptions`](xref:Polly.Simmy.Behavior.BehaviorStrategyOptions)
+- **Options**: [`ChaosBehaviorStrategyOptions`](xref:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions)
 - **Extensions**: `AddChaosBehavior`
 - **Strategy Type**: Proactive
 
@@ -38,7 +38,7 @@ var optionsOnBehaviorInjected = new ChaosBehaviorStrategyOptions
     }
 };
 
-// Add a behavior strategy with a BehaviorStrategyOptions instance to the pipeline
+// Add a behavior strategy with a ChaosBehaviorStrategyOptions instance to the pipeline
 new ResiliencePipelineBuilder().AddChaosBehavior(optionsWithBehaviorGenerator);
 new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosBehavior(optionsOnBehaviorInjected);
 

@@ -7,7 +7,7 @@ namespace Polly.Simmy;
 /// <summary>
 /// Extension methods for adding custom behaviors to a <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
-public static class BehaviorPipelineBuilderExtensions
+public static class ChaosBehaviorPipelineBuilderExtensions
 {
     /// <summary>
     /// Adds a behavior chaos strategy to the builder.
@@ -51,6 +51,6 @@ public static class BehaviorPipelineBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        return builder.AddStrategy(context => new BehaviorChaosStrategy(options, context.Telemetry), options);
+        return builder.AddStrategy(context => new ChaosBehaviorStrategy(options, context.Telemetry), options);
     }
 }
