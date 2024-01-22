@@ -8,16 +8,17 @@ public class ChaosBehaviorStrategyTests
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly ChaosBehaviorStrategyOptions _options;
     private readonly List<TelemetryEventArguments<object, object>> _args = [];
-
+    private bool _behaviorActionExecuted;
+    private bool _onBehaviorInjectedExecuted;
     private bool _userDelegateExecuted;
-    private bool _injectedBehaviorExecuted;
 
     public ChaosBehaviorStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
         _options = new();
         _userDelegateExecuted = false;
-        _injectedBehaviorExecuted = false;
+        _behaviorActionExecuted = false;
+        _onBehaviorInjectedExecuted = false;
     }
 
     [Fact]
@@ -26,13 +27,13 @@ public class ChaosBehaviorStrategyTests
         _options.InjectionRate = 0.6;
         _options.Enabled = false;
         _options.Randomizer = () => 0.5;
-        _options.BehaviorAction = (_) => { _injectedBehaviorExecuted = true; return default; };
+        _options.BehaviorAction = (_) => { _behaviorActionExecuted = true; return default; };
 
         var sut = CreateSut();
         sut.Execute(() => { _userDelegateExecuted = true; });
 
         _userDelegateExecuted.Should().BeTrue();
-        _injectedBehaviorExecuted.Should().BeFalse();
+        _behaviorActionExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -41,38 +42,37 @@ public class ChaosBehaviorStrategyTests
         _options.InjectionRate = 0.6;
         _options.Enabled = true;
         _options.Randomizer = () => 0.5;
-        _options.BehaviorAction = (_) => { _injectedBehaviorExecuted = true; return default; };
+        _options.BehaviorAction = (_) => { _behaviorActionExecuted = true; return default; };
 
         var sut = CreateSut();
         await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; });
 
         _userDelegateExecuted.Should().BeTrue();
-        _injectedBehaviorExecuted.Should().BeTrue();
+        _behaviorActionExecuted.Should().BeTrue();
+        _onBehaviorInjectedExecuted.Should().BeFalse();
     }
 
     [Fact]
     public async Task Given_enabled_and_randomly_within_threshold_ensure_on_behavior_injected_called()
     {
-        var called = false;
-
         _options.InjectionRate = 0.6;
         _options.Enabled = true;
         _options.Randomizer = () => 0.5;
-        _options.BehaviorAction = (_) => { _injectedBehaviorExecuted = true; return default; };
+        _options.BehaviorAction = (_) => { _behaviorActionExecuted = true; return default; };
         _options.OnBehaviorInjected = args =>
         {
             args.Context.Should().NotBeNull();
             args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
-            called = true;
+            _onBehaviorInjectedExecuted = true;
             return default;
         };
 
         var sut = CreateSut();
         await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; });
 
-        called.Should().BeTrue();
+        _onBehaviorInjectedExecuted.Should().BeTrue();
         _userDelegateExecuted.Should().BeTrue();
-        _injectedBehaviorExecuted.Should().BeTrue();
+        _behaviorActionExecuted.Should().BeTrue();
         _args.Should().HaveCount(1);
         _args[0].Arguments.Should().BeOfType<OnBehaviorInjectedArguments>();
     }
@@ -83,13 +83,14 @@ public class ChaosBehaviorStrategyTests
         _options.InjectionRate = 0.4;
         _options.Enabled = false;
         _options.Randomizer = () => 0.5;
-        _options.BehaviorAction = (_) => { _injectedBehaviorExecuted = true; return default; };
+        _options.BehaviorAction = (_) => { _behaviorActionExecuted = true; return default; };
 
         var sut = CreateSut();
         await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; });
 
         _userDelegateExecuted.Should().BeTrue();
-        _injectedBehaviorExecuted.Should().BeFalse();
+        _behaviorActionExecuted.Should().BeFalse();
+        _onBehaviorInjectedExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -101,7 +102,7 @@ public class ChaosBehaviorStrategyTests
         _options.BehaviorAction = (_) =>
         {
             _userDelegateExecuted.Should().BeFalse(); // Not yet executed at the time the injected behavior runs.
-            _injectedBehaviorExecuted = true;
+            _behaviorActionExecuted = true;
             return default;
         };
 
@@ -109,7 +110,8 @@ public class ChaosBehaviorStrategyTests
         await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; });
 
         _userDelegateExecuted.Should().BeTrue();
-        _injectedBehaviorExecuted.Should().BeTrue();
+        _behaviorActionExecuted.Should().BeTrue();
+        _onBehaviorInjectedExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -122,7 +124,7 @@ public class ChaosBehaviorStrategyTests
         _options.BehaviorAction = (_) =>
         {
             cts.Cancel();
-            _injectedBehaviorExecuted = true;
+            _behaviorActionExecuted = true;
             return default;
         };
 
@@ -132,7 +134,8 @@ public class ChaosBehaviorStrategyTests
             .ThrowAsync<OperationCanceledException>();
 
         _userDelegateExecuted.Should().BeFalse();
-        _injectedBehaviorExecuted.Should().BeTrue();
+        _behaviorActionExecuted.Should().BeTrue();
+        _onBehaviorInjectedExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -157,6 +160,7 @@ public class ChaosBehaviorStrategyTests
 
         _userDelegateExecuted.Should().BeFalse();
         enabledGeneratorExecuted.Should().BeTrue();
+        _onBehaviorInjectedExecuted.Should().BeFalse();
     }
 
     private ResiliencePipeline CreateSut() => new ChaosBehaviorStrategy(_options, _telemetry).AsPipeline();

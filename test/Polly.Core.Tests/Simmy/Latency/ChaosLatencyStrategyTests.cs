@@ -12,7 +12,7 @@ public class ChaosLatencyStrategyTests : IDisposable
     private readonly CancellationTokenSource _cancellationSource;
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
     private readonly List<TelemetryEventArguments<object, object>> _args = [];
-    private bool _onLatencyExecuted;
+    private bool _onLatencyInjectedExecuted;
     private bool _userDelegateExecuted;
 
     public ChaosLatencyStrategyTests()
@@ -20,7 +20,7 @@ public class ChaosLatencyStrategyTests : IDisposable
         _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
         _options = new ChaosLatencyStrategyOptions();
         _cancellationSource = new CancellationTokenSource();
-        _onLatencyExecuted = false;
+        _onLatencyInjectedExecuted = false;
         _userDelegateExecuted = false;
     }
 
@@ -37,7 +37,7 @@ public class ChaosLatencyStrategyTests : IDisposable
         {
             args.Context.Should().NotBeNull();
             args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
-            _onLatencyExecuted = true;
+            _onLatencyInjectedExecuted = true;
             return default;
         };
 
@@ -48,12 +48,12 @@ public class ChaosLatencyStrategyTests : IDisposable
         await task;
 
         _userDelegateExecuted.Should().BeTrue();
+        _onLatencyInjectedExecuted.Should().BeTrue();
         var after = _timeProvider.GetUtcNow();
         (after - before).Should().Be(_delay);
 
         _args.Should().HaveCount(1);
         _args[0].Arguments.Should().BeOfType<OnLatencyInjectedArguments>();
-        _onLatencyExecuted.Should().BeTrue();
     }
 
     [Fact]
@@ -71,6 +71,7 @@ public class ChaosLatencyStrategyTests : IDisposable
         await task;
 
         _userDelegateExecuted.Should().BeTrue();
+        _onLatencyInjectedExecuted.Should().BeFalse();
         var after = _timeProvider.GetUtcNow();
         (after - before).Seconds.Should().Be(0);
     }
@@ -90,6 +91,7 @@ public class ChaosLatencyStrategyTests : IDisposable
         await task;
 
         _userDelegateExecuted.Should().BeTrue();
+        _onLatencyInjectedExecuted.Should().BeFalse();
         var after = _timeProvider.GetUtcNow();
         (after - before).Seconds.Should().Be(0);
     }
@@ -108,7 +110,7 @@ public class ChaosLatencyStrategyTests : IDisposable
         {
             args.Context.Should().NotBeNull();
             args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
-            _onLatencyExecuted = true;
+            _onLatencyInjectedExecuted = true;
             return default;
         };
 
@@ -119,9 +121,9 @@ public class ChaosLatencyStrategyTests : IDisposable
         await task;
 
         _userDelegateExecuted.Should().BeTrue();
+        _onLatencyInjectedExecuted.Should().BeFalse();
         var after = _timeProvider.GetUtcNow();
         (after - before).Seconds.Should().Be(0);
-        _onLatencyExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -143,6 +145,7 @@ public class ChaosLatencyStrategyTests : IDisposable
             .ThrowAsync<OperationCanceledException>();
 
         _userDelegateExecuted.Should().BeFalse();
+        _onLatencyInjectedExecuted.Should().BeFalse();
     }
 
     private ResiliencePipeline CreateSut() => new ChaosLatencyStrategy(_options, _timeProvider, _telemetry).AsPipeline();

@@ -8,13 +8,13 @@ public class ChaosFaultStrategyTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly List<TelemetryEventArguments<object, object>> _args = [];
-    private bool _onFaultInjected;
+    private bool _onFaultInjectedExecuted;
     private bool _userDelegateExecuted;
 
     public ChaosFaultStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
-        _onFaultInjected = false;
+        _onFaultInjectedExecuted = false;
         _userDelegateExecuted = false;
     }
 
@@ -72,6 +72,7 @@ public class ChaosFaultStrategyTests
         sut.Execute(() => { _userDelegateExecuted = true; });
 
         _userDelegateExecuted.Should().BeTrue();
+        _onFaultInjectedExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -96,6 +97,7 @@ public class ChaosFaultStrategyTests
 
         response.Should().Be(HttpStatusCode.OK);
         _userDelegateExecuted.Should().BeTrue();
+        _onFaultInjectedExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -114,7 +116,7 @@ public class ChaosFaultStrategyTests
             {
                 args.Context.Should().NotBeNull();
                 args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
-                _onFaultInjected = true;
+                _onFaultInjectedExecuted = true;
                 return default;
             }
         };
@@ -130,7 +132,7 @@ public class ChaosFaultStrategyTests
             .WithMessage(exceptionMessage);
 
         _userDelegateExecuted.Should().BeFalse();
-        _onFaultInjected.Should().BeTrue();
+        _onFaultInjectedExecuted.Should().BeTrue();
     }
 
     [Fact]
@@ -149,7 +151,7 @@ public class ChaosFaultStrategyTests
             {
                 args.Context.Should().NotBeNull();
                 args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
-                _onFaultInjected = true;
+                _onFaultInjectedExecuted = true;
                 return default;
             }
         };
@@ -165,10 +167,10 @@ public class ChaosFaultStrategyTests
             .WithMessage(exceptionMessage);
 
         _userDelegateExecuted.Should().BeFalse();
+        _onFaultInjectedExecuted.Should().BeTrue();
         _args.Should().HaveCount(1);
         _args[0].Arguments.Should().BeOfType<OnFaultInjectedArguments>();
         _args[0].Event.EventName.Should().Be(ChaosFaultConstants.OnFaultInjectedEvent);
-        _onFaultInjected.Should().BeTrue();
     }
 
     [Fact]
@@ -193,6 +195,7 @@ public class ChaosFaultStrategyTests
 
         result.Should().Be(200);
         _userDelegateExecuted.Should().BeTrue();
+        _onFaultInjectedExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -213,6 +216,7 @@ public class ChaosFaultStrategyTests
         });
 
         _userDelegateExecuted.Should().BeTrue();
+        _onFaultInjectedExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -244,6 +248,7 @@ public class ChaosFaultStrategyTests
             .ThrowAsync<OperationCanceledException>();
 
         _userDelegateExecuted.Should().BeFalse();
+        _onFaultInjectedExecuted.Should().BeFalse();
     }
 
     private ResiliencePipeline CreateSut(ChaosFaultStrategyOptions options) =>

@@ -7,13 +7,13 @@ public class ChaosOutcomeStrategyTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly List<TelemetryEventArguments<object, object>> _args = [];
-    private bool _onOutcomeInjected;
+    private bool _onOutcomeInjectedExecuted;
     private bool _userDelegateExecuted;
 
     public ChaosOutcomeStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
-        _onOutcomeInjected = false;
+        _onOutcomeInjectedExecuted = false;
         _userDelegateExecuted = false;
     }
 
@@ -72,6 +72,7 @@ public class ChaosOutcomeStrategyTests
 
         response.Should().Be(HttpStatusCode.OK);
         _userDelegateExecuted.Should().BeTrue();
+        _onOutcomeInjectedExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -89,7 +90,7 @@ public class ChaosOutcomeStrategyTests
             {
                 args.Context.Should().NotBeNull();
                 args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
-                _onOutcomeInjected = true;
+                _onOutcomeInjectedExecuted = true;
                 return default;
             }
         };
@@ -103,11 +104,11 @@ public class ChaosOutcomeStrategyTests
 
         response.Should().Be(fakeResult);
         _userDelegateExecuted.Should().BeFalse();
+        _onOutcomeInjectedExecuted.Should().BeTrue();
 
         _args.Should().HaveCount(1);
         _args[0].Arguments.Should().BeOfType<OnOutcomeInjectedArguments<HttpStatusCode>>();
         _args[0].Event.EventName.Should().Be(ChaosOutcomeConstants.OnOutcomeInjectedEvent);
-        _onOutcomeInjected.Should().BeTrue();
     }
 
     [Fact]
@@ -132,6 +133,7 @@ public class ChaosOutcomeStrategyTests
 
         response.Should().Be(HttpStatusCode.OK);
         _userDelegateExecuted.Should().BeTrue();
+        _onOutcomeInjectedExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -155,6 +157,7 @@ public class ChaosOutcomeStrategyTests
 
         response.Should().Be(null);
         _userDelegateExecuted.Should().BeFalse();
+        _onOutcomeInjectedExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -184,6 +187,7 @@ public class ChaosOutcomeStrategyTests
             .ThrowAsync<OperationCanceledException>();
 
         _userDelegateExecuted.Should().BeFalse();
+        _onOutcomeInjectedExecuted.Should().BeFalse();
     }
 
     private ResiliencePipeline<TResult> CreateSut<TResult>(ChaosOutcomeStrategyOptions<TResult> options) =>
