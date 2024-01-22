@@ -130,4 +130,4 @@ Use behavior strategies to inject delays.
 
 ✅ DO
 
-Use the latency chaos instead as the [`LatencyChaosStrategy`](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.
+Use the latency chaos instead as the [`ChaosLatencyStrategy`](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.

@@ -3,18 +3,18 @@ using Polly.Simmy.Latency;
 
 namespace Polly.Core.Tests.Simmy.Latency;
 
-public class LatencyStrategyOptionsTests
+public class ChaosLatencyStrategyOptionsTests
 {
     [Fact]
     public void Ctor_Ok()
     {
-        var sut = new LatencyStrategyOptions();
+        var sut = new ChaosLatencyStrategyOptions();
         sut.Randomizer.Should().NotBeNull();
         sut.Enabled.Should().BeFalse();
         sut.EnabledGenerator.Should().BeNull();
         sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();
-        sut.Latency.Should().Be(LatencyConstants.DefaultLatency);
+        sut.Latency.Should().Be(ChaosLatencyConstants.DefaultLatency);
         sut.LatencyGenerator.Should().BeNull();
         sut.OnLatencyInjected.Should().BeNull();
     }

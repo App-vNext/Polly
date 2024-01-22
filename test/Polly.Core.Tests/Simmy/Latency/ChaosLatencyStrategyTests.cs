@@ -4,20 +4,24 @@ using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Simmy.Latency;
 
-public class LatencyChaosStrategyTests : IDisposable
+public class ChaosLatencyStrategyTests : IDisposable
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly FakeTimeProvider _timeProvider = new();
-    private readonly LatencyStrategyOptions _options;
+    private readonly ChaosLatencyStrategyOptions _options;
     private readonly CancellationTokenSource _cancellationSource;
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
     private readonly List<TelemetryEventArguments<object, object>> _args = [];
+    private bool _onLatencyExecuted;
+    private bool _userDelegateExecuted;
 
-    public LatencyChaosStrategyTests()
+    public ChaosLatencyStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
-        _options = new LatencyStrategyOptions();
+        _options = new ChaosLatencyStrategyOptions();
         _cancellationSource = new CancellationTokenSource();
+        _onLatencyExecuted = false;
+        _userDelegateExecuted = false;
     }
 
     public void Dispose() => _cancellationSource.Dispose();
@@ -25,9 +29,6 @@ public class LatencyChaosStrategyTests : IDisposable
     [Fact]
     public async Task Given_enabled_and_randomly_within_threshold_should_inject_latency()
     {
-        var userDelegateExecuted = false;
-        var onLatencyExecuted = false;
-
         _options.InjectionRate = 0.6;
         _options.Enabled = true;
         _options.Latency = _delay;
@@ -36,30 +37,28 @@ public class LatencyChaosStrategyTests : IDisposable
         {
             args.Context.Should().NotBeNull();
             args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
-            onLatencyExecuted = true;
+            _onLatencyExecuted = true;
             return default;
         };
 
         var before = _timeProvider.GetUtcNow();
         var sut = CreateSut();
-        var task = sut.ExecuteAsync(async _ => { userDelegateExecuted = true; await Task.CompletedTask; });
+        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; });
         _timeProvider.Advance(_delay);
         await task;
 
-        userDelegateExecuted.Should().BeTrue();
+        _userDelegateExecuted.Should().BeTrue();
         var after = _timeProvider.GetUtcNow();
         (after - before).Should().Be(_delay);
 
         _args.Should().HaveCount(1);
         _args[0].Arguments.Should().BeOfType<OnLatencyInjectedArguments>();
-        onLatencyExecuted.Should().BeTrue();
+        _onLatencyExecuted.Should().BeTrue();
     }
 
     [Fact]
     public async Task Given_not_enabled_should_not_inject_latency()
     {
-        var userDelegateExecuted = false;
-
         _options.InjectionRate = 0.6;
         _options.Enabled = false;
         _options.Latency = _delay;
@@ -67,11 +66,11 @@ public class LatencyChaosStrategyTests : IDisposable
 
         var before = _timeProvider.GetUtcNow();
         var sut = CreateSut();
-        var task = sut.ExecuteAsync(async _ => { userDelegateExecuted = true; await Task.CompletedTask; });
+        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; });
         _timeProvider.Advance(_delay);
         await task;
 
-        userDelegateExecuted.Should().BeTrue();
+        _userDelegateExecuted.Should().BeTrue();
         var after = _timeProvider.GetUtcNow();
         (after - before).Seconds.Should().Be(0);
     }
@@ -79,8 +78,6 @@ public class LatencyChaosStrategyTests : IDisposable
     [Fact]
     public async Task Given_enabled_and_randomly_not_within_threshold_should_not_inject_latency()
     {
-        var userDelegateExecuted = false;
-
         _options.InjectionRate = 0.4;
         _options.Enabled = false;
         _options.Latency = _delay;
@@ -88,11 +85,11 @@ public class LatencyChaosStrategyTests : IDisposable
 
         var before = _timeProvider.GetUtcNow();
         var sut = CreateSut();
-        var task = sut.ExecuteAsync(async _ => { userDelegateExecuted = true; await Task.CompletedTask; });
+        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; });
         _timeProvider.Advance(_delay);
         await task;
 
-        userDelegateExecuted.Should().BeTrue();
+        _userDelegateExecuted.Should().BeTrue();
         var after = _timeProvider.GetUtcNow();
         (after - before).Seconds.Should().Be(0);
     }
@@ -102,9 +99,6 @@ public class LatencyChaosStrategyTests : IDisposable
     [Theory]
     public async Task Given_latency_is_negative_should_not_inject_latency(double latency)
     {
-        var onLatencyExecuted = false;
-        var userDelegateExecuted = false;
-
         _options.InjectionRate = 0.6;
         _options.Enabled = true;
         _options.Latency = TimeSpan.FromSeconds(latency);
@@ -114,27 +108,25 @@ public class LatencyChaosStrategyTests : IDisposable
         {
             args.Context.Should().NotBeNull();
             args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
-            onLatencyExecuted = true;
+            _onLatencyExecuted = true;
             return default;
         };
 
         var before = _timeProvider.GetUtcNow();
         var sut = CreateSut();
-        var task = sut.ExecuteAsync(async _ => { userDelegateExecuted = true; await Task.CompletedTask; });
+        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; });
         _timeProvider.Advance(_delay);
         await task;
 
-        userDelegateExecuted.Should().BeTrue();
+        _userDelegateExecuted.Should().BeTrue();
         var after = _timeProvider.GetUtcNow();
         (after - before).Seconds.Should().Be(0);
-        onLatencyExecuted.Should().BeFalse();
+        _onLatencyExecuted.Should().BeFalse();
     }
 
     [Fact]
     public async Task Should_not_execute_user_delegate_when_it_was_cancelled_running_the_strategy()
     {
-        var userDelegateExecuted = false;
-
         using var cts = new CancellationTokenSource();
         _options.InjectionRate = 0.6;
         _options.Enabled = true;
@@ -150,8 +142,8 @@ public class LatencyChaosStrategyTests : IDisposable
             .Should()
             .ThrowAsync<OperationCanceledException>();
 
-        userDelegateExecuted.Should().BeFalse();
+        _userDelegateExecuted.Should().BeFalse();
     }
 
-    private ResiliencePipeline CreateSut() => new LatencyChaosStrategy(_options, _timeProvider, _telemetry).AsPipeline();
+    private ResiliencePipeline CreateSut() => new ChaosLatencyStrategy(_options, _timeProvider, _telemetry).AsPipeline();
 }

@@ -5,12 +5,12 @@
 /// <summary>
 /// Represents the options for the Latency chaos strategy.
 /// </summary>
-public class LatencyStrategyOptions : ChaosStrategyOptions
+public class ChaosLatencyStrategyOptions : ChaosStrategyOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="LatencyStrategyOptions"/> class.
+    /// Initializes a new instance of the <see cref="ChaosLatencyStrategyOptions"/> class.
     /// </summary>
-    public LatencyStrategyOptions() => Name = LatencyConstants.DefaultName;
+    public ChaosLatencyStrategyOptions() => Name = ChaosLatencyConstants.DefaultName;
 
     /// <summary>
     /// Gets or sets the delegate that's raised when a delay occurs.
@@ -35,5 +35,5 @@ public class LatencyStrategyOptions : ChaosStrategyOptions
     /// <remarks>
     /// Defaults to 30 seconds. Either <see cref="LatencyGenerator"/> or this property is required.
     /// </remarks>
-    public TimeSpan Latency { get; set; } = LatencyConstants.DefaultLatency;
+    public TimeSpan Latency { get; set; } = ChaosLatencyConstants.DefaultLatency;
 }

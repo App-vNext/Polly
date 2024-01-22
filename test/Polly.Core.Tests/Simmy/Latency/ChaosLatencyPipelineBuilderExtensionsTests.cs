@@ -4,7 +4,7 @@ using Polly.Testing;
 
 namespace Polly.Core.Tests.Simmy.Latency;
 
-public class LatencyChaosPipelineBuilderExtensionsTests
+public class ChaosLatencyPipelineBuilderExtensionsTests
 {
     public static IEnumerable<object[]> AddLatency_Ok_Data()
     {
@@ -13,7 +13,7 @@ public class LatencyChaosPipelineBuilderExtensionsTests
         yield return new object[]
         {
             (ResiliencePipelineBuilder<int> builder) => { builder.AddChaosLatency(0.5, TimeSpan.FromSeconds(10)); },
-            (LatencyChaosStrategy strategy) =>
+            (ChaosLatencyStrategy strategy) =>
             {
                 strategy.Latency.Should().Be(TimeSpan.FromSeconds(10));
                 strategy.LatencyGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(TimeSpan.FromSeconds(10));
@@ -27,14 +27,14 @@ public class LatencyChaosPipelineBuilderExtensionsTests
     public void AddLatency_Shortcut_Option_Ok()
     {
         var sut = new ResiliencePipelineBuilder().AddChaosLatency(0.5, TimeSpan.FromSeconds(10)).Build();
-        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<LatencyChaosStrategy>();
+        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosLatencyStrategy>();
     }
 
     [Fact]
     public void AddLatency_Options_Ok()
     {
         var sut = new ResiliencePipelineBuilder()
-            .AddChaosLatency(new LatencyStrategyOptions
+            .AddChaosLatency(new ChaosLatencyStrategyOptions
             {
                 Enabled = true,
                 InjectionRate = 1,
@@ -42,17 +42,17 @@ public class LatencyChaosPipelineBuilderExtensionsTests
             })
             .Build();
 
-        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<LatencyChaosStrategy>();
+        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosLatencyStrategy>();
     }
 
     [MemberData(nameof(AddLatency_Ok_Data))]
     [Theory]
-    internal void AddLatency_Generic_Options_Ok(Action<ResiliencePipelineBuilder<int>> configure, Action<LatencyChaosStrategy> assert)
+    internal void AddLatency_Generic_Options_Ok(Action<ResiliencePipelineBuilder<int>> configure, Action<ChaosLatencyStrategy> assert)
     {
         var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<LatencyChaosStrategy>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosLatencyStrategy>().Subject;
         assert(strategy);
     }
 }

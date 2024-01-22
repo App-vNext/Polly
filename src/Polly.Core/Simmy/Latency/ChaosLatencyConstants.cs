@@ -1,6 +1,6 @@
 ﻿namespace Polly.Simmy.Latency;
 
-internal static class LatencyConstants
+internal static class ChaosLatencyConstants
 {
     public const string DefaultName = "Chaos.Latency";
 

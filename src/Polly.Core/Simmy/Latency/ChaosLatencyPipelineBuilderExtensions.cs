@@ -7,7 +7,7 @@ namespace Polly.Simmy;
 /// <summary>
 /// Extension methods for adding latency to a <see cref="ResiliencePipelineBuilderBase"/>.
 /// </summary>
-public static class LatencyPipelineBuilderExtensions
+public static class ChaosLatencyPipelineBuilderExtensions
 {
     /// <summary>
     /// Adds a latency chaos strategy to the builder.
@@ -24,7 +24,7 @@ public static class LatencyPipelineBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        return builder.AddChaosLatency(new LatencyStrategyOptions
+        return builder.AddChaosLatency(new ChaosLatencyStrategyOptions
         {
             Enabled = true,
             InjectionRate = injectionRate,
@@ -45,13 +45,13 @@ public static class LatencyPipelineBuilderExtensions
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    public static TBuilder AddChaosLatency<TBuilder>(this TBuilder builder, LatencyStrategyOptions options)
+    public static TBuilder AddChaosLatency<TBuilder>(this TBuilder builder, ChaosLatencyStrategyOptions options)
         where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        return builder.AddStrategy(context => new LatencyChaosStrategy(options, context.TimeProvider, context.Telemetry), options);
+        return builder.AddStrategy(context => new ChaosLatencyStrategy(options, context.TimeProvider, context.Telemetry), options);
     }
 }
 

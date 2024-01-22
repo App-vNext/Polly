@@ -2,13 +2,13 @@
 
 namespace Polly.Simmy.Latency;
 
-internal sealed class LatencyChaosStrategy : ChaosStrategy
+internal sealed class ChaosLatencyStrategy : ChaosStrategy
 {
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
 
-    public LatencyChaosStrategy(
-        LatencyStrategyOptions options,
+    public ChaosLatencyStrategy(
+        ChaosLatencyStrategyOptions options,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry)
         : base(options)
@@ -44,7 +44,7 @@ internal sealed class LatencyChaosStrategy : ChaosStrategy
                 }
 
                 var args = new OnLatencyInjectedArguments(context, latency);
-                _telemetry.Report(new(ResilienceEventSeverity.Information, LatencyConstants.OnLatencyInjectedEvent), context, args);
+                _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosLatencyConstants.OnLatencyInjectedEvent), context, args);
 
                 await _timeProvider.DelayAsync(latency, context).ConfigureAwait(context.ContinueOnCapturedContext);
 

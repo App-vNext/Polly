@@ -49,20 +49,20 @@ Polly.Simmy.Latency.LatencyGeneratorArguments
 Polly.Simmy.Latency.LatencyGeneratorArguments.Context.get -> Polly.ResilienceContext!
 Polly.Simmy.Latency.LatencyGeneratorArguments.LatencyGeneratorArguments() -> void
 Polly.Simmy.Latency.LatencyGeneratorArguments.LatencyGeneratorArguments(Polly.ResilienceContext! context) -> void
-Polly.Simmy.Latency.LatencyStrategyOptions
-Polly.Simmy.Latency.LatencyStrategyOptions.Latency.get -> System.TimeSpan
-Polly.Simmy.Latency.LatencyStrategyOptions.Latency.set -> void
-Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator.get -> System.Func<Polly.Simmy.Latency.LatencyGeneratorArguments, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
-Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator.set -> void
-Polly.Simmy.Latency.LatencyStrategyOptions.LatencyStrategyOptions() -> void
-Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected.get -> System.Func<Polly.Simmy.Latency.OnLatencyInjectedArguments, System.Threading.Tasks.ValueTask>?
-Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected.set -> void
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.Latency.get -> System.TimeSpan
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.Latency.set -> void
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.LatencyGenerator.get -> System.Func<Polly.Simmy.Latency.LatencyGeneratorArguments, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.LatencyGenerator.set -> void
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.ChaosLatencyStrategyOptions() -> void
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.OnLatencyInjected.get -> System.Func<Polly.Simmy.Latency.OnLatencyInjectedArguments, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.OnLatencyInjected.set -> void
 Polly.Simmy.Latency.OnLatencyInjectedArguments
 Polly.Simmy.Latency.OnLatencyInjectedArguments.Context.get -> Polly.ResilienceContext!
 Polly.Simmy.Latency.OnLatencyInjectedArguments.Latency.get -> System.TimeSpan
 Polly.Simmy.Latency.OnLatencyInjectedArguments.OnLatencyInjectedArguments() -> void
 Polly.Simmy.Latency.OnLatencyInjectedArguments.OnLatencyInjectedArguments(Polly.ResilienceContext! context, System.TimeSpan latency) -> void
-Polly.Simmy.LatencyPipelineBuilderExtensions
+Polly.Simmy.ChaosLatencyPipelineBuilderExtensions
 Polly.Simmy.ChaosStrategy
 Polly.Simmy.ChaosStrategy.ChaosStrategy(Polly.Simmy.ChaosStrategyOptions! options) -> void
 Polly.Simmy.ChaosStrategy.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
@@ -110,9 +110,9 @@ static Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuil
 static Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(this TBuilder! builder, Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions! options) -> TBuilder!
 static Polly.Simmy.Fault.FaultGenerator.implicit operator System.Func<Polly.Simmy.Fault.FaultGeneratorArguments, System.Threading.Tasks.ValueTask<System.Exception?>>!(Polly.Simmy.Fault.FaultGenerator! generator) -> System.Func<Polly.Simmy.Fault.FaultGeneratorArguments, System.Threading.Tasks.ValueTask<System.Exception?>>!
 static Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(this TBuilder! builder, double injectionRate, System.Func<System.Exception?>! faultGenerator) -> TBuilder!
-static Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(this TBuilder! builder, Polly.Simmy.Fault.FaultStrategyOptions! options) -> TBuilder!
-static Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(this TBuilder! builder, double injectionRate, System.TimeSpan latency) -> TBuilder!
-static Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(this TBuilder! builder, Polly.Simmy.Latency.LatencyStrategyOptions! options) -> TBuilder!
+static Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(this TBuilder! builder, Polly.Simmy.Fault.ChaosFaultStrategyOptions! options) -> TBuilder!
+static Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(this TBuilder! builder, double injectionRate, System.TimeSpan latency) -> TBuilder!
+static Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(this TBuilder! builder, Polly.Simmy.Latency.ChaosLatencyStrategyOptions! options) -> TBuilder!
 static Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, double injectionRate, System.Func<TResult?>! resultGenerator) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.implicit operator System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>!(Polly.Simmy.Outcomes.OutcomeGenerator<TResult>! generator) -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>!
