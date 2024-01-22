@@ -135,11 +135,11 @@ sequenceDiagram
 
 ## Generating outcomes
 
-To generate faulted outcome (result or exception), you need to specify `FaultGenerator` delegate. You have the following options to how you customize this delegate:
+To generate a faulted outcome (result or exception), you need to specify a `OutcomeGenerator` delegate. You have the following options as to how you customize this delegate:
 
 ### Use `OutcomeGenerator<T>` class to generate outcomes
 
-The `OutcomeGenerator<T>` is convenience API that allows you to specify what outcomes (results or exceptions) are to be injected. Additionally, it also allows assigning weight to each registered outcome.
+The `OutcomeGenerator<T>` is a convenience API that allows you to specify what outcomes (results or exceptions) are to be injected. Additionally, it also allows assigning weight to each registered outcome.
 
 <!-- snippet: chaos-outcome-generator-class -->
 ```cs

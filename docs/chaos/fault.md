@@ -143,11 +143,11 @@ sequenceDiagram
 
 ## Generating faults
 
-To generate fault, you need to specify `FaultGenerator` delegate. You have the following options to how you customize this delegate:
+To generate a fault, you need to specify a `FaultGenerator` delegate. You have the following options as to how you customize this delegate:
 
 ### Use `FaultGenerator` class to generate faults
 
-The `FaultGenerator` is convenience API that allows you to specify what faults (exceptions) are to be injected. Additionally, it also allows assigning weight to each registered exception.
+The `FaultGenerator` is convenience API that allows you to specify what faults (exceptions) are to be injected. Additionally, it also allows assigning weight to each registered fault.
 
 <!-- snippet: chaos-fault-generator-class -->
 ```cs
