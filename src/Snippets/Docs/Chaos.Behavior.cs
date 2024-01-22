@@ -9,13 +9,13 @@ internal static partial class Chaos
 {
     public static void BehaviorUsage()
     {
-        static ValueTask RestartRedisVM() => ValueTask.CompletedTask;
+        static ValueTask RestartRedisVM(CancellationToken cancellationToken) => ValueTask.CompletedTask;
 
         #region chaos-behavior-usage
         // To use a custom delegated for injected behavior
         var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
         {
-            BehaviorAction = static args => RestartRedisVM(),
+            BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
             Enabled = true,
             InjectionRate = 0.05
         };
@@ -23,7 +23,7 @@ internal static partial class Chaos
         // To get notifications when a behavior is injected
         var optionsOnBehaviorInjected = new BehaviorStrategyOptions
         {
-            BehaviorAction = static args => RestartRedisVM(),
+            BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
             Enabled = true,
             InjectionRate = 0.05,
             OnBehaviorInjected = static args =>
@@ -53,7 +53,7 @@ internal static partial class Chaos
             })
             .AddChaosBehavior(new BehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
             {
-                BehaviorAction = static args => RestartRedisVM(),
+                BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
                 Enabled = true,
                 InjectionRate = 0.05
             })

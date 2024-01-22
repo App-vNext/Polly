@@ -20,7 +20,7 @@ The behavior chaos strategy is designed to inject custom behaviors into system o
 // To use a custom delegated for injected behavior
 var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
 {
-    BehaviorAction = static args => RestartRedisVM(),
+    BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
     Enabled = true,
     InjectionRate = 0.05
 };
@@ -28,7 +28,7 @@ var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
 // To get notifications when a behavior is injected
 var optionsOnBehaviorInjected = new BehaviorStrategyOptions
 {
-    BehaviorAction = static args => RestartRedisVM(),
+    BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
     Enabled = true,
     InjectionRate = 0.05,
     OnBehaviorInjected = static args =>
@@ -62,7 +62,7 @@ var pipeline = new ResiliencePipelineBuilder()
     })
     .AddChaosBehavior(new BehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
-        BehaviorAction = static args => RestartRedisVM(),
+        BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
         Enabled = true,
         InjectionRate = 0.05
     })

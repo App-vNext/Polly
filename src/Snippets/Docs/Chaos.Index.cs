@@ -30,10 +30,10 @@ internal static partial class Chaos
             .AddChaosLatency(InjectionRate, TimeSpan.FromMinutes(1)) // Inject a chaos latency to executions
             .AddChaosFault(InjectionRate, () => new InvalidOperationException("Injected by chaos strategy!")) // Inject a chaos fault to executions
             .AddChaosResult(InjectionRate, () => new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)) // Inject a chaos outcome to executions
-            .AddChaosBehavior(0.001, () => RestartRedisAsync()); // Inject a chaos behavior to executions
+            .AddChaosBehavior(0.001, cancellationToken => RestartRedisAsync(cancellationToken)); // Inject a chaos behavior to executions
 
         #endregion
     }
 
-    private static ValueTask RestartRedisAsync() => ValueTask.CompletedTask;
+    private static ValueTask RestartRedisAsync(CancellationToken cancellationToken) => ValueTask.CompletedTask;
 }

@@ -19,7 +19,7 @@ public static class BehaviorPipelineBuilderExtensions
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
-    public static TBuilder AddChaosBehavior<TBuilder>(this TBuilder builder, double injectionRate, Func<ValueTask> behavior)
+    public static TBuilder AddChaosBehavior<TBuilder>(this TBuilder builder, double injectionRate, Func<CancellationToken, ValueTask> behavior)
         where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
@@ -28,7 +28,7 @@ public static class BehaviorPipelineBuilderExtensions
         {
             Enabled = true,
             InjectionRate = injectionRate,
-            BehaviorAction = (_) => behavior()
+            BehaviorAction = args => behavior(args.Context.CancellationToken)
         });
     }
 

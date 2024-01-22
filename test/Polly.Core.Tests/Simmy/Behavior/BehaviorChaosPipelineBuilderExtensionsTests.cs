@@ -10,7 +10,7 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
     public static IEnumerable<object[]> AddBehavior_Ok_Data()
     {
         var context = ResilienceContextPool.Shared.Get();
-        Func<ValueTask> behavior = () => new ValueTask(Task.CompletedTask);
+        Func<CancellationToken, ValueTask> behavior = _ => default;
         yield return new object[]
         {
             (ResiliencePipelineBuilder<int> builder) => { builder.AddChaosBehavior(0.5, behavior); },
@@ -26,7 +26,7 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
     [Fact]
     public void AddBehavior_Shortcut_Option_Ok()
     {
-        var sut = new ResiliencePipelineBuilder().AddChaosBehavior(0.5, () => new ValueTask(Task.CompletedTask)).Build();
+        var sut = new ResiliencePipelineBuilder().AddChaosBehavior(0.5, _ => default).Build();
         sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<BehaviorChaosStrategy>();
     }
 
@@ -34,7 +34,7 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
     public void AddBehavior_Shortcut_Option_Throws()
     {
         new ResiliencePipelineBuilder()
-            .Invoking(b => b.AddChaosBehavior(-1, () => new ValueTask(Task.CompletedTask)))
+            .Invoking(b => b.AddChaosBehavior(-1, _ => default))
             .Should()
             .Throw<ValidationException>();
     }
@@ -56,7 +56,7 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
             {
                 Enabled = true,
                 InjectionRate = 1,
-                BehaviorAction = (_) => new ValueTask(Task.CompletedTask)
+                BehaviorAction = (_) => default
             })
             .Build();
 
