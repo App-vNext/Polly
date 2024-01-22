@@ -173,6 +173,37 @@
 
 
 
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Polly_Simmy_Latency_LatencyStrategyOptions__ctor_" data-uid="Polly.Simmy.Latency.LatencyStrategyOptions.#ctor*"></a>
+
+  <h3 id="Polly_Simmy_Latency_LatencyStrategyOptions__ctor" data-uid="Polly.Simmy.Latency.LatencyStrategyOptions.#ctor">
+  LatencyStrategyOptions()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Latency/LatencyStrategyOptions.cs/#L13"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Polly.Simmy.Latency.LatencyStrategyOptions.html">LatencyStrategyOptions</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LatencyStrategyOptions()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
   <h2 class="section" id="properties">Properties
 </h2>
 
@@ -181,7 +212,7 @@
 
   <h3 id="Polly_Simmy_Latency_LatencyStrategyOptions_Latency" data-uid="Polly.Simmy.Latency.LatencyStrategyOptions.Latency">
   Latency
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Latency/LatencyStrategyOptions.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Latency/LatencyStrategyOptions.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the delay for a given execution.</p>
@@ -216,7 +247,7 @@
 
   <h3 id="Polly_Simmy_Latency_LatencyStrategyOptions_LatencyGenerator" data-uid="Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator">
   LatencyGenerator
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Latency/LatencyStrategyOptions.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Latency/LatencyStrategyOptions.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the latency generator that generates the delay for a given execution.</p>
@@ -248,11 +279,11 @@ When this property is <a href="https://learn.microsoft.com/dotnet/csharp/languag
 
 
 
-  <a id="Polly_Simmy_Latency_LatencyStrategyOptions_OnLatency_" data-uid="Polly.Simmy.Latency.LatencyStrategyOptions.OnLatency*"></a>
+  <a id="Polly_Simmy_Latency_LatencyStrategyOptions_OnLatencyInjected_" data-uid="Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected*"></a>
 
-  <h3 id="Polly_Simmy_Latency_LatencyStrategyOptions_OnLatency" data-uid="Polly.Simmy.Latency.LatencyStrategyOptions.OnLatency">
-  OnLatency
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Latency/LatencyStrategyOptions.cs/#L16"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Polly_Simmy_Latency_LatencyStrategyOptions_OnLatencyInjected" data-uid="Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected">
+  OnLatencyInjected
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Latency/LatencyStrategyOptions.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the delegate that's raised when a delay occurs.</p>
@@ -260,7 +291,7 @@ When this property is <a href="https://learn.microsoft.com/dotnet/csharp/languag
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Func&lt;OnLatencyArguments, ValueTask&gt;? OnLatency { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public Func&lt;OnLatencyInjectedArguments, ValueTask&gt;? OnLatencyInjected { get; set; }</code></pre>
   </div>
 
 
@@ -269,14 +300,14 @@ When this property is <a href="https://learn.microsoft.com/dotnet/csharp/languag
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.Simmy.Latency.OnLatencyArguments.html">OnLatencyArguments</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.Simmy.Latency.OnLatencyInjectedArguments.html">OnLatencyInjectedArguments</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a>&gt;</dt>
     <dd>Represents the options for the Latency chaos strategy.</dd>
   </dl>
 
 
 
 
-  <h4 class="section" id="Polly_Simmy_Latency_LatencyStrategyOptions_OnLatency_remarks">Remarks</h4>
+  <h4 class="section" id="Polly_Simmy_Latency_LatencyStrategyOptions_OnLatencyInjected_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </div>
 

@@ -922,10 +922,10 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.Latency.OnLatencyArguments.yml",
+      "source_relative_path": "api/Polly.Simmy.Latency.OnLatencyInjectedArguments.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Polly.Simmy.Latency.OnLatencyArguments.html"
+          "relative_path": "api/Polly.Simmy.Latency.OnLatencyInjectedArguments.html"
         }
       },
       "version": ""

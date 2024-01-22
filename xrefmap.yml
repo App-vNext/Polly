@@ -4328,6 +4328,25 @@ references:
   commentId: T:Polly.Simmy.Behavior.BehaviorStrategyOptions
   fullName: Polly.Simmy.Behavior.BehaviorStrategyOptions
   nameWithType: BehaviorStrategyOptions
+- uid: Polly.Simmy.Behavior.BehaviorStrategyOptions.#ctor
+  name: BehaviorStrategyOptions()
+  href: api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html#Polly_Simmy_Behavior_BehaviorStrategyOptions__ctor
+  commentId: M:Polly.Simmy.Behavior.BehaviorStrategyOptions.#ctor
+  name.vb: New()
+  fullName: Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorStrategyOptions()
+  fullName.vb: Polly.Simmy.Behavior.BehaviorStrategyOptions.New()
+  nameWithType: BehaviorStrategyOptions.BehaviorStrategyOptions()
+  nameWithType.vb: BehaviorStrategyOptions.New()
+- uid: Polly.Simmy.Behavior.BehaviorStrategyOptions.#ctor*
+  name: BehaviorStrategyOptions
+  href: api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html#Polly_Simmy_Behavior_BehaviorStrategyOptions__ctor_
+  commentId: Overload:Polly.Simmy.Behavior.BehaviorStrategyOptions.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorStrategyOptions
+  fullName.vb: Polly.Simmy.Behavior.BehaviorStrategyOptions.New
+  nameWithType: BehaviorStrategyOptions.BehaviorStrategyOptions
+  nameWithType.vb: BehaviorStrategyOptions.New
 - uid: Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorAction
   name: BehaviorAction
   href: api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html#Polly_Simmy_Behavior_BehaviorStrategyOptions_BehaviorAction
@@ -4570,6 +4589,25 @@ references:
   commentId: T:Polly.Simmy.Fault.FaultStrategyOptions
   fullName: Polly.Simmy.Fault.FaultStrategyOptions
   nameWithType: FaultStrategyOptions
+- uid: Polly.Simmy.Fault.FaultStrategyOptions.#ctor
+  name: FaultStrategyOptions()
+  href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions__ctor
+  commentId: M:Polly.Simmy.Fault.FaultStrategyOptions.#ctor
+  name.vb: New()
+  fullName: Polly.Simmy.Fault.FaultStrategyOptions.FaultStrategyOptions()
+  fullName.vb: Polly.Simmy.Fault.FaultStrategyOptions.New()
+  nameWithType: FaultStrategyOptions.FaultStrategyOptions()
+  nameWithType.vb: FaultStrategyOptions.New()
+- uid: Polly.Simmy.Fault.FaultStrategyOptions.#ctor*
+  name: FaultStrategyOptions
+  href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions__ctor_
+  commentId: Overload:Polly.Simmy.Fault.FaultStrategyOptions.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Simmy.Fault.FaultStrategyOptions.FaultStrategyOptions
+  fullName.vb: Polly.Simmy.Fault.FaultStrategyOptions.New
+  nameWithType: FaultStrategyOptions.FaultStrategyOptions
+  nameWithType.vb: FaultStrategyOptions.New
 - uid: Polly.Simmy.Fault.FaultStrategyOptions.FaultGenerator
   name: FaultGenerator
   href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions_FaultGenerator
@@ -4766,6 +4804,25 @@ references:
   commentId: T:Polly.Simmy.Latency.LatencyStrategyOptions
   fullName: Polly.Simmy.Latency.LatencyStrategyOptions
   nameWithType: LatencyStrategyOptions
+- uid: Polly.Simmy.Latency.LatencyStrategyOptions.#ctor
+  name: LatencyStrategyOptions()
+  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions__ctor
+  commentId: M:Polly.Simmy.Latency.LatencyStrategyOptions.#ctor
+  name.vb: New()
+  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.LatencyStrategyOptions()
+  fullName.vb: Polly.Simmy.Latency.LatencyStrategyOptions.New()
+  nameWithType: LatencyStrategyOptions.LatencyStrategyOptions()
+  nameWithType.vb: LatencyStrategyOptions.New()
+- uid: Polly.Simmy.Latency.LatencyStrategyOptions.#ctor*
+  name: LatencyStrategyOptions
+  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions__ctor_
+  commentId: Overload:Polly.Simmy.Latency.LatencyStrategyOptions.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.LatencyStrategyOptions
+  fullName.vb: Polly.Simmy.Latency.LatencyStrategyOptions.New
+  nameWithType: LatencyStrategyOptions.LatencyStrategyOptions
+  nameWithType.vb: LatencyStrategyOptions.New
 - uid: Polly.Simmy.Latency.LatencyStrategyOptions.Latency
   name: Latency
   href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions_Latency
@@ -4792,70 +4849,70 @@ references:
   isSpec: "True"
   fullName: Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator
   nameWithType: LatencyStrategyOptions.LatencyGenerator
-- uid: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatency
-  name: OnLatency
-  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions_OnLatency
-  commentId: P:Polly.Simmy.Latency.LatencyStrategyOptions.OnLatency
-  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatency
-  nameWithType: LatencyStrategyOptions.OnLatency
-- uid: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatency*
-  name: OnLatency
-  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions_OnLatency_
-  commentId: Overload:Polly.Simmy.Latency.LatencyStrategyOptions.OnLatency
+- uid: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected
+  name: OnLatencyInjected
+  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions_OnLatencyInjected
+  commentId: P:Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected
+  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected
+  nameWithType: LatencyStrategyOptions.OnLatencyInjected
+- uid: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected*
+  name: OnLatencyInjected
+  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions_OnLatencyInjected_
+  commentId: Overload:Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected
   isSpec: "True"
-  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatency
-  nameWithType: LatencyStrategyOptions.OnLatency
-- uid: Polly.Simmy.Latency.OnLatencyArguments
-  name: OnLatencyArguments
-  href: api/Polly.Simmy.Latency.OnLatencyArguments.html
-  commentId: T:Polly.Simmy.Latency.OnLatencyArguments
-  fullName: Polly.Simmy.Latency.OnLatencyArguments
-  nameWithType: OnLatencyArguments
-- uid: Polly.Simmy.Latency.OnLatencyArguments.#ctor(Polly.ResilienceContext,System.TimeSpan)
-  name: OnLatencyArguments(ResilienceContext, TimeSpan)
-  href: api/Polly.Simmy.Latency.OnLatencyArguments.html#Polly_Simmy_Latency_OnLatencyArguments__ctor_Polly_ResilienceContext_System_TimeSpan_
-  commentId: M:Polly.Simmy.Latency.OnLatencyArguments.#ctor(Polly.ResilienceContext,System.TimeSpan)
+  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected
+  nameWithType: LatencyStrategyOptions.OnLatencyInjected
+- uid: Polly.Simmy.Latency.OnLatencyInjectedArguments
+  name: OnLatencyInjectedArguments
+  href: api/Polly.Simmy.Latency.OnLatencyInjectedArguments.html
+  commentId: T:Polly.Simmy.Latency.OnLatencyInjectedArguments
+  fullName: Polly.Simmy.Latency.OnLatencyInjectedArguments
+  nameWithType: OnLatencyInjectedArguments
+- uid: Polly.Simmy.Latency.OnLatencyInjectedArguments.#ctor(Polly.ResilienceContext,System.TimeSpan)
+  name: OnLatencyInjectedArguments(ResilienceContext, TimeSpan)
+  href: api/Polly.Simmy.Latency.OnLatencyInjectedArguments.html#Polly_Simmy_Latency_OnLatencyInjectedArguments__ctor_Polly_ResilienceContext_System_TimeSpan_
+  commentId: M:Polly.Simmy.Latency.OnLatencyInjectedArguments.#ctor(Polly.ResilienceContext,System.TimeSpan)
   name.vb: New(ResilienceContext, TimeSpan)
-  fullName: Polly.Simmy.Latency.OnLatencyArguments.OnLatencyArguments(Polly.ResilienceContext, System.TimeSpan)
-  fullName.vb: Polly.Simmy.Latency.OnLatencyArguments.New(Polly.ResilienceContext, System.TimeSpan)
-  nameWithType: OnLatencyArguments.OnLatencyArguments(ResilienceContext, TimeSpan)
-  nameWithType.vb: OnLatencyArguments.New(ResilienceContext, TimeSpan)
-- uid: Polly.Simmy.Latency.OnLatencyArguments.#ctor*
-  name: OnLatencyArguments
-  href: api/Polly.Simmy.Latency.OnLatencyArguments.html#Polly_Simmy_Latency_OnLatencyArguments__ctor_
-  commentId: Overload:Polly.Simmy.Latency.OnLatencyArguments.#ctor
+  fullName: Polly.Simmy.Latency.OnLatencyInjectedArguments.OnLatencyInjectedArguments(Polly.ResilienceContext, System.TimeSpan)
+  fullName.vb: Polly.Simmy.Latency.OnLatencyInjectedArguments.New(Polly.ResilienceContext, System.TimeSpan)
+  nameWithType: OnLatencyInjectedArguments.OnLatencyInjectedArguments(ResilienceContext, TimeSpan)
+  nameWithType.vb: OnLatencyInjectedArguments.New(ResilienceContext, TimeSpan)
+- uid: Polly.Simmy.Latency.OnLatencyInjectedArguments.#ctor*
+  name: OnLatencyInjectedArguments
+  href: api/Polly.Simmy.Latency.OnLatencyInjectedArguments.html#Polly_Simmy_Latency_OnLatencyInjectedArguments__ctor_
+  commentId: Overload:Polly.Simmy.Latency.OnLatencyInjectedArguments.#ctor
   isSpec: "True"
   name.vb: New
-  fullName: Polly.Simmy.Latency.OnLatencyArguments.OnLatencyArguments
-  fullName.vb: Polly.Simmy.Latency.OnLatencyArguments.New
-  nameWithType: OnLatencyArguments.OnLatencyArguments
-  nameWithType.vb: OnLatencyArguments.New
-- uid: Polly.Simmy.Latency.OnLatencyArguments.Context
+  fullName: Polly.Simmy.Latency.OnLatencyInjectedArguments.OnLatencyInjectedArguments
+  fullName.vb: Polly.Simmy.Latency.OnLatencyInjectedArguments.New
+  nameWithType: OnLatencyInjectedArguments.OnLatencyInjectedArguments
+  nameWithType.vb: OnLatencyInjectedArguments.New
+- uid: Polly.Simmy.Latency.OnLatencyInjectedArguments.Context
   name: Context
-  href: api/Polly.Simmy.Latency.OnLatencyArguments.html#Polly_Simmy_Latency_OnLatencyArguments_Context
-  commentId: P:Polly.Simmy.Latency.OnLatencyArguments.Context
-  fullName: Polly.Simmy.Latency.OnLatencyArguments.Context
-  nameWithType: OnLatencyArguments.Context
-- uid: Polly.Simmy.Latency.OnLatencyArguments.Context*
+  href: api/Polly.Simmy.Latency.OnLatencyInjectedArguments.html#Polly_Simmy_Latency_OnLatencyInjectedArguments_Context
+  commentId: P:Polly.Simmy.Latency.OnLatencyInjectedArguments.Context
+  fullName: Polly.Simmy.Latency.OnLatencyInjectedArguments.Context
+  nameWithType: OnLatencyInjectedArguments.Context
+- uid: Polly.Simmy.Latency.OnLatencyInjectedArguments.Context*
   name: Context
-  href: api/Polly.Simmy.Latency.OnLatencyArguments.html#Polly_Simmy_Latency_OnLatencyArguments_Context_
-  commentId: Overload:Polly.Simmy.Latency.OnLatencyArguments.Context
+  href: api/Polly.Simmy.Latency.OnLatencyInjectedArguments.html#Polly_Simmy_Latency_OnLatencyInjectedArguments_Context_
+  commentId: Overload:Polly.Simmy.Latency.OnLatencyInjectedArguments.Context
   isSpec: "True"
-  fullName: Polly.Simmy.Latency.OnLatencyArguments.Context
-  nameWithType: OnLatencyArguments.Context
-- uid: Polly.Simmy.Latency.OnLatencyArguments.Latency
+  fullName: Polly.Simmy.Latency.OnLatencyInjectedArguments.Context
+  nameWithType: OnLatencyInjectedArguments.Context
+- uid: Polly.Simmy.Latency.OnLatencyInjectedArguments.Latency
   name: Latency
-  href: api/Polly.Simmy.Latency.OnLatencyArguments.html#Polly_Simmy_Latency_OnLatencyArguments_Latency
-  commentId: P:Polly.Simmy.Latency.OnLatencyArguments.Latency
-  fullName: Polly.Simmy.Latency.OnLatencyArguments.Latency
-  nameWithType: OnLatencyArguments.Latency
-- uid: Polly.Simmy.Latency.OnLatencyArguments.Latency*
+  href: api/Polly.Simmy.Latency.OnLatencyInjectedArguments.html#Polly_Simmy_Latency_OnLatencyInjectedArguments_Latency
+  commentId: P:Polly.Simmy.Latency.OnLatencyInjectedArguments.Latency
+  fullName: Polly.Simmy.Latency.OnLatencyInjectedArguments.Latency
+  nameWithType: OnLatencyInjectedArguments.Latency
+- uid: Polly.Simmy.Latency.OnLatencyInjectedArguments.Latency*
   name: Latency
-  href: api/Polly.Simmy.Latency.OnLatencyArguments.html#Polly_Simmy_Latency_OnLatencyArguments_Latency_
-  commentId: Overload:Polly.Simmy.Latency.OnLatencyArguments.Latency
+  href: api/Polly.Simmy.Latency.OnLatencyInjectedArguments.html#Polly_Simmy_Latency_OnLatencyInjectedArguments_Latency_
+  commentId: Overload:Polly.Simmy.Latency.OnLatencyInjectedArguments.Latency
   isSpec: "True"
-  fullName: Polly.Simmy.Latency.OnLatencyArguments.Latency
-  nameWithType: OnLatencyArguments.Latency
+  fullName: Polly.Simmy.Latency.OnLatencyInjectedArguments.Latency
+  nameWithType: OnLatencyInjectedArguments.Latency
 - uid: Polly.Simmy.LatencyPipelineBuilderExtensions
   name: LatencyPipelineBuilderExtensions
   href: api/Polly.Simmy.LatencyPipelineBuilderExtensions.html
@@ -5307,6 +5364,25 @@ references:
   fullName.vb: Polly.Simmy.Outcomes.OutcomeStrategyOptions(Of TResult)
   nameWithType: OutcomeStrategyOptions<TResult>
   nameWithType.vb: OutcomeStrategyOptions(Of TResult)
+- uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.#ctor
+  name: OutcomeStrategyOptions()
+  href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1__ctor
+  commentId: M:Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.#ctor
+  name.vb: New()
+  fullName: Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OutcomeStrategyOptions()
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeStrategyOptions(Of TResult).New()
+  nameWithType: OutcomeStrategyOptions<TResult>.OutcomeStrategyOptions()
+  nameWithType.vb: OutcomeStrategyOptions(Of TResult).New()
+- uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.#ctor*
+  name: OutcomeStrategyOptions
+  href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1__ctor_
+  commentId: Overload:Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OutcomeStrategyOptions
+  fullName.vb: Polly.Simmy.Outcomes.OutcomeStrategyOptions(Of TResult).New
+  nameWithType: OutcomeStrategyOptions<TResult>.OutcomeStrategyOptions
+  nameWithType.vb: OutcomeStrategyOptions(Of TResult).New
 - uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.OnOutcomeInjected
   name: OnOutcomeInjected
   href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1_OnOutcomeInjected

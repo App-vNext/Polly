@@ -134,14 +134,14 @@ var optionsWithLatencyGenerator = new LatencyStrategyOptions
 };
 
 // To get notifications when a delay is injected
-var optionsOnBehaviorInjected = new LatencyStrategyOptions
+var optionsOnLatencyInjected = new LatencyStrategyOptions
 {
     Latency = TimeSpan.FromSeconds(30),
     Enabled = true,
     InjectionRate = 0.1,
-    OnLatency = static args =&gt;
+    OnLatencyInjected = static args =&gt;
     {
-        Console.WriteLine($&quot;OnLatency, Latency: {args.Latency}, Operation: {args.Context.OperationKey}.&quot;);
+        Console.WriteLine($&quot;OnLatencyInjected, Latency: {args.Latency}, Operation: {args.Context.OperationKey}.&quot;);
         return default;
     }
 };
@@ -196,7 +196,7 @@ new ResiliencePipelineBuilder().AddChaosLatency(0.1, TimeSpan.FromSeconds(30));
 <td>Generates the latency to inject for a given execution.</td>
 </tr>
 <tr>
-<td><code>OnLatency</code></td>
+<td><code>OnLatencyInjected</code></td>
 <td><code>null</code></td>
 <td>Action executed when latency is injected.</td>
 </tr>
