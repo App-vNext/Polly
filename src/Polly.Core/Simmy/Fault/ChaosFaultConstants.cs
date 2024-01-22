@@ -1,6 +1,6 @@
 ﻿namespace Polly.Simmy.Fault;
 
-internal static class FaultConstants
+internal static class ChaosFaultConstants
 {
     public const string DefaultName = "Chaos.Fault";
 

@@ -5,12 +5,12 @@ using Polly.Utils;
 
 namespace Polly.Core.Tests.Simmy.Fault;
 
-public class FaultStrategyOptionsTests
+public class ChaosFaultStrategyOptionsTests
 {
     [Fact]
     public void Ctor_Ok()
     {
-        var sut = new FaultStrategyOptions();
+        var sut = new ChaosFaultStrategyOptions();
         sut.Randomizer.Should().NotBeNull();
         sut.Enabled.Should().BeFalse();
         sut.EnabledGenerator.Should().BeNull();
@@ -23,7 +23,7 @@ public class FaultStrategyOptionsTests
     [Fact]
     public void InvalidOptions()
     {
-        var options = new FaultStrategyOptions
+        var options = new ChaosFaultStrategyOptions
         {
             FaultGenerator = null!,
         };

@@ -5,14 +5,14 @@ using Polly.Testing;
 
 namespace Polly.Core.Tests.Simmy.Fault;
 
-public class FaultChaosPipelineBuilderExtensionsTests
+public class ChaosFaultPipelineBuilderExtensionsTests
 {
 #pragma warning disable IDE0028
     public static readonly TheoryData<Action<ResiliencePipelineBuilder>> FaultStrategy = new()
     {
         builder =>
         {
-            builder.AddChaosFault(new FaultStrategyOptions
+            builder.AddChaosFault(new ChaosFaultStrategyOptions
             {
                 InjectionRate = 0.6,
                 Enabled = true,
@@ -29,18 +29,18 @@ public class FaultChaosPipelineBuilderExtensionsTests
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<FaultChaosStrategy>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosFaultStrategy>().Subject;
 
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
         strategy.FaultGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeOfType(typeof(TException));
     }
 
-    private static FaultChaosStrategy AssertFaultStrategy<TException>(ResiliencePipelineBuilder builder, bool enabled, double injectionRate)
+    private static ChaosFaultStrategy AssertFaultStrategy<TException>(ResiliencePipelineBuilder builder, bool enabled, double injectionRate)
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<FaultChaosStrategy>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosFaultStrategy>().Subject;
 
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);

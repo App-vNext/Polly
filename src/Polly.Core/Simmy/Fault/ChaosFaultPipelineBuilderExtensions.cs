@@ -6,7 +6,7 @@ namespace Polly.Simmy;
 /// <summary>
 /// Extension methods for adding outcome to a <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
-public static class FaultPipelineBuilderExtensions
+public static class ChaosFaultPipelineBuilderExtensions
 {
     /// <summary>
     /// Adds a fault chaos strategy to the builder.
@@ -19,7 +19,7 @@ public static class FaultPipelineBuilderExtensions
     public static TBuilder AddChaosFault<TBuilder>(this TBuilder builder, double injectionRate, Func<Exception?> faultGenerator)
         where TBuilder : ResiliencePipelineBuilderBase
     {
-        builder.AddChaosFault(new FaultStrategyOptions
+        builder.AddChaosFault(new ChaosFaultStrategyOptions
         {
             Enabled = true,
             InjectionRate = injectionRate,
@@ -39,14 +39,14 @@ public static class FaultPipelineBuilderExtensions
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    public static TBuilder AddChaosFault<TBuilder>(this TBuilder builder, FaultStrategyOptions options)
+    public static TBuilder AddChaosFault<TBuilder>(this TBuilder builder, ChaosFaultStrategyOptions options)
         where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
         builder.AddStrategy(
-            context => new FaultChaosStrategy(options, context.Telemetry),
+            context => new ChaosFaultStrategy(options, context.Telemetry),
             options);
 
         return builder;

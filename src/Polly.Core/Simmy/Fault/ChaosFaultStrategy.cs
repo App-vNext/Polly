@@ -2,11 +2,11 @@
 
 namespace Polly.Simmy.Fault;
 
-internal class FaultChaosStrategy : ChaosStrategy
+internal class ChaosFaultStrategy : ChaosStrategy
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
 
-    public FaultChaosStrategy(FaultStrategyOptions options, ResilienceStrategyTelemetry telemetry)
+    public ChaosFaultStrategy(ChaosFaultStrategyOptions options, ResilienceStrategyTelemetry telemetry)
         : base(options)
     {
         _telemetry = telemetry;
@@ -32,7 +32,7 @@ internal class FaultChaosStrategy : ChaosStrategy
                 if (fault is not null)
                 {
                     var args = new OnFaultInjectedArguments(context, fault);
-                    _telemetry.Report(new(ResilienceEventSeverity.Information, FaultConstants.OnFaultInjectedEvent), context, args);
+                    _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosFaultConstants.OnFaultInjectedEvent), context, args);
 
                     if (OnFaultInjected is not null)
                     {

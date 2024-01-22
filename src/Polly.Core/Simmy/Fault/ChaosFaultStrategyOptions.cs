@@ -5,12 +5,12 @@ namespace Polly.Simmy.Fault;
 /// <summary>
 /// Represents the options for the Fault chaos strategy.
 /// </summary>
-public class FaultStrategyOptions : ChaosStrategyOptions
+public class ChaosFaultStrategyOptions : ChaosStrategyOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FaultStrategyOptions"/> class.
+    /// Initializes a new instance of the <see cref="ChaosFaultStrategyOptions"/> class.
     /// </summary>
-    public FaultStrategyOptions() => Name = FaultConstants.DefaultName;
+    public ChaosFaultStrategyOptions() => Name = ChaosFaultConstants.DefaultName;
 
     /// <summary>
     /// Gets or sets the delegate that's raised when the outcome is injected.
