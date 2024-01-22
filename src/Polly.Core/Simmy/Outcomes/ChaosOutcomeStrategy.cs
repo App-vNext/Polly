@@ -2,11 +2,11 @@
 
 namespace Polly.Simmy.Outcomes;
 
-internal class OutcomeChaosStrategy<T> : ChaosStrategy<T>
+internal class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
 
-    public OutcomeChaosStrategy(OutcomeStrategyOptions<T> options, ResilienceStrategyTelemetry telemetry)
+    public ChaosOutcomeStrategy(ChaosOutcomeStrategyOptions<T> options, ResilienceStrategyTelemetry telemetry)
         : base(options)
     {
         _telemetry = telemetry;
@@ -26,7 +26,7 @@ internal class OutcomeChaosStrategy<T> : ChaosStrategy<T>
             {
                 var outcome = await OutcomeGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
                 var args = new OnOutcomeInjectedArguments<T>(context, outcome.Value);
-                _telemetry.Report(new(ResilienceEventSeverity.Information, OutcomeConstants.OnOutcomeInjectedEvent), context, args);
+                _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosOutcomeConstants.OnOutcomeInjectedEvent), context, args);
 
                 if (OnOutcomeInjected is not null)
                 {

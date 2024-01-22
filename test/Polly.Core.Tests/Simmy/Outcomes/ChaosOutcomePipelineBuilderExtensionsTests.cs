@@ -5,14 +5,14 @@ using Polly.Testing;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
 
-public class OutcomeChaosPipelineBuilderExtensionsTests
+public class ChaosOutcomePipelineBuilderExtensionsTests
 {
 #pragma warning disable IDE0028
     public static readonly TheoryData<Action<ResiliencePipelineBuilder<int>>> ResultStrategy = new()
     {
         builder =>
         {
-            builder.AddChaosResult(new OutcomeStrategyOptions<int>
+            builder.AddChaosOutcome(new ChaosOutcomeStrategyOptions<int>
             {
                 InjectionRate = 0.6,
                 Enabled = true,
@@ -28,7 +28,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     private static void AssertResultStrategy<T>(ResiliencePipelineBuilder<T> builder, bool enabled, double injectionRate, Outcome<T> outcome)
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<OutcomeChaosStrategy<T>>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosOutcomeStrategy<T>>().Subject;
 
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
         strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
@@ -48,7 +48,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     {
         var builder = new ResiliencePipelineBuilder<int>();
         builder
-            .AddChaosResult(0.5, () => 120)
+            .AddChaosOutcome(0.5, () => 120)
             .Build();
 
         AssertResultStrategy(builder, true, 0.5, new(120));
@@ -58,7 +58,7 @@ public class OutcomeChaosPipelineBuilderExtensionsTests
     public void AddResult_Shortcut_Option_Throws()
     {
         new ResiliencePipelineBuilder<int>()
-            .Invoking(b => b.AddChaosResult(-1, () => 120))
+            .Invoking(b => b.AddChaosOutcome(-1, () => 120))
             .Should()
             .Throw<ValidationException>();
     }

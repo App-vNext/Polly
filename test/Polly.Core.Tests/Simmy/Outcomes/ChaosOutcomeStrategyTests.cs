@@ -3,12 +3,19 @@ using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
 
-public class OutcomeChaosStrategyTests
+public class ChaosOutcomeStrategyTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly List<TelemetryEventArguments<object, object>> _args = [];
+    private bool _onOutcomeInjected;
+    private bool _userDelegateExecuted;
 
-    public OutcomeChaosStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
+    public ChaosOutcomeStrategyTests()
+    {
+        _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
+        _onOutcomeInjected = false;
+        _userDelegateExecuted = false;
+    }
 
     public static List<object[]> ResultCtorTestCases =>
         new()
@@ -16,7 +23,7 @@ public class OutcomeChaosStrategyTests
                 new object[] { null!, "Value cannot be null. (Parameter 'options')", typeof(ArgumentNullException) },
                 new object[]
                 {
-                    new OutcomeStrategyOptions<int>
+                    new ChaosOutcomeStrategyOptions<int>
                     {
                         InjectionRate = 1,
                         Enabled = true,
@@ -35,7 +42,7 @@ public class OutcomeChaosStrategyTests
 #pragma warning disable CA1031 // Do not catch general exception types
         try
         {
-            var _ = new OutcomeChaosStrategy<int>((OutcomeStrategyOptions<int>)options, _telemetry);
+            var _ = new ChaosOutcomeStrategy<int>((ChaosOutcomeStrategyOptions<int>)options, _telemetry);
         }
         catch (Exception ex)
         {
@@ -50,10 +57,9 @@ public class OutcomeChaosStrategyTests
     [Fact]
     public void Given_not_enabled_should_not_inject_result()
     {
-        var userDelegateExecuted = false;
         var fakeResult = HttpStatusCode.TooManyRequests;
 
-        var options = new OutcomeStrategyOptions<HttpStatusCode>
+        var options = new ChaosOutcomeStrategyOptions<HttpStatusCode>
         {
             InjectionRate = 0.6,
             Enabled = false,
@@ -62,20 +68,18 @@ public class OutcomeChaosStrategyTests
         };
 
         var sut = CreateSut(options);
-        var response = sut.Execute(() => { userDelegateExecuted = true; return HttpStatusCode.OK; });
+        var response = sut.Execute(() => { _userDelegateExecuted = true; return HttpStatusCode.OK; });
 
         response.Should().Be(HttpStatusCode.OK);
-        userDelegateExecuted.Should().BeTrue();
+        _userDelegateExecuted.Should().BeTrue();
     }
 
     [Fact]
     public async Task Given_enabled_and_randomly_within_threshold_should_inject_result()
     {
-        var onResultInjected = false;
-        var userDelegateExecuted = false;
         var fakeResult = HttpStatusCode.TooManyRequests;
 
-        var options = new OutcomeStrategyOptions<HttpStatusCode>
+        var options = new ChaosOutcomeStrategyOptions<HttpStatusCode>
         {
             InjectionRate = 0.6,
             Enabled = true,
@@ -85,7 +89,7 @@ public class OutcomeChaosStrategyTests
             {
                 args.Context.Should().NotBeNull();
                 args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
-                onResultInjected = true;
+                _onOutcomeInjected = true;
                 return default;
             }
         };
@@ -93,26 +97,25 @@ public class OutcomeChaosStrategyTests
         var sut = CreateSut(options);
         var response = await sut.ExecuteAsync(async _ =>
         {
-            userDelegateExecuted = true;
+            _userDelegateExecuted = true;
             return await Task.FromResult(HttpStatusCode.OK);
         });
 
         response.Should().Be(fakeResult);
-        userDelegateExecuted.Should().BeFalse();
+        _userDelegateExecuted.Should().BeFalse();
 
         _args.Should().HaveCount(1);
         _args[0].Arguments.Should().BeOfType<OnOutcomeInjectedArguments<HttpStatusCode>>();
-        _args[0].Event.EventName.Should().Be(OutcomeConstants.OnOutcomeInjectedEvent);
-        onResultInjected.Should().BeTrue();
+        _args[0].Event.EventName.Should().Be(ChaosOutcomeConstants.OnOutcomeInjectedEvent);
+        _onOutcomeInjected.Should().BeTrue();
     }
 
     [Fact]
     public void Given_enabled_and_randomly_not_within_threshold_should_not_inject_result()
     {
-        var userDelegateExecuted = false;
         var fakeResult = HttpStatusCode.TooManyRequests;
 
-        var options = new OutcomeStrategyOptions<HttpStatusCode>
+        var options = new ChaosOutcomeStrategyOptions<HttpStatusCode>
         {
             InjectionRate = 0.3,
             Enabled = false,
@@ -123,20 +126,19 @@ public class OutcomeChaosStrategyTests
         var sut = CreateSut(options);
         var response = sut.Execute(_ =>
         {
-            userDelegateExecuted = true;
+            _userDelegateExecuted = true;
             return HttpStatusCode.OK;
         });
 
         response.Should().Be(HttpStatusCode.OK);
-        userDelegateExecuted.Should().BeTrue();
+        _userDelegateExecuted.Should().BeTrue();
     }
 
     [Fact]
     public async Task Given_enabled_and_randomly_within_threshold_should_inject_result_even_as_null()
     {
-        var userDelegateExecuted = false;
         Outcome<HttpStatusCode?>? nullOutcome = Outcome.FromResult<HttpStatusCode?>(null);
-        var options = new OutcomeStrategyOptions<HttpStatusCode?>
+        var options = new ChaosOutcomeStrategyOptions<HttpStatusCode?>
         {
             InjectionRate = 0.6,
             Enabled = true,
@@ -147,21 +149,19 @@ public class OutcomeChaosStrategyTests
         var sut = CreateSut(options);
         var response = await sut.ExecuteAsync<HttpStatusCode?>(async _ =>
         {
-            userDelegateExecuted = true;
+            _userDelegateExecuted = true;
             return await Task.FromResult(HttpStatusCode.OK);
         });
 
         response.Should().Be(null);
-        userDelegateExecuted.Should().BeFalse();
+        _userDelegateExecuted.Should().BeFalse();
     }
 
     [Fact]
     public async Task Should_not_execute_user_delegate_when_it_was_cancelled_running_the_strategy()
     {
-        var userDelegateExecuted = false;
-
         using var cts = new CancellationTokenSource();
-        var options = new OutcomeStrategyOptions<HttpStatusCode>
+        var options = new ChaosOutcomeStrategyOptions<HttpStatusCode>
         {
             InjectionRate = 0.6,
             Randomizer = () => 0.5,
@@ -176,18 +176,18 @@ public class OutcomeChaosStrategyTests
         var sut = CreateSut(options);
         await sut.Invoking(s => s.ExecuteAsync(async _ =>
         {
-            userDelegateExecuted = true;
+            _userDelegateExecuted = true;
             return await Task.FromResult(HttpStatusCode.OK);
         }, cts.Token)
         .AsTask())
             .Should()
             .ThrowAsync<OperationCanceledException>();
 
-        userDelegateExecuted.Should().BeFalse();
+        _userDelegateExecuted.Should().BeFalse();
     }
 
-    private ResiliencePipeline<TResult> CreateSut<TResult>(OutcomeStrategyOptions<TResult> options) =>
-        new OutcomeChaosStrategy<TResult>(options, _telemetry).AsPipeline();
+    private ResiliencePipeline<TResult> CreateSut<TResult>(ChaosOutcomeStrategyOptions<TResult> options) =>
+        new ChaosOutcomeStrategy<TResult>(options, _telemetry).AsPipeline();
 }
 
 /// <summary>

@@ -1,6 +1,6 @@
 ﻿namespace Polly.Simmy.Outcomes;
 
-internal static class OutcomeConstants
+internal static class ChaosOutcomeConstants
 {
     public const string DefaultName = "Chaos.Outcome";
 

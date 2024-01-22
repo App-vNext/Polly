@@ -3,12 +3,12 @@ using Polly.Simmy.Outcomes;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
 
-public class OutcomeStrategyOptionsTests
+public class ChaosOutcomeStrategyOptionsTests
 {
     [Fact]
     public void Ctor_Ok()
     {
-        var sut = new OutcomeStrategyOptions<int>();
+        var sut = new ChaosOutcomeStrategyOptions<int>();
         sut.Randomizer.Should().NotBeNull();
         sut.Enabled.Should().BeFalse();
         sut.EnabledGenerator.Should().BeNull();

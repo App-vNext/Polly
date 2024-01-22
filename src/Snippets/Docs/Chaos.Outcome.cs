@@ -10,11 +10,11 @@ namespace Snippets.Docs;
 
 internal static partial class Chaos
 {
-    public static void ResultUsage()
+    public static void OutcomeUsage()
     {
-        #region chaos-result-usage
+        #region chaos-outcome-usage
         // To use OutcomeGenerator<T> to register the results and exceptions to be injected (equal probability)
-        var optionsWithResultGenerator = new OutcomeStrategyOptions<HttpResponseMessage>
+        var optionsWithResultGenerator = new ChaosOutcomeStrategyOptions<HttpResponseMessage>
         {
             OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
                 .AddResult(() => new HttpResponseMessage(HttpStatusCode.TooManyRequests))
@@ -25,7 +25,7 @@ internal static partial class Chaos
         };
 
         // To get notifications when a result is injected
-        var optionsOnBehaviorInjected = new OutcomeStrategyOptions<HttpResponseMessage>
+        var optionsOnBehaviorInjected = new ChaosOutcomeStrategyOptions<HttpResponseMessage>
         {
             OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
                 .AddResult(() => new HttpResponseMessage(HttpStatusCode.InternalServerError)),
@@ -38,15 +38,15 @@ internal static partial class Chaos
             }
         };
 
-        // Add a result strategy with a OutcomeStrategyOptions{<TResult>} instance to the pipeline
-        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosResult(optionsWithResultGenerator);
-        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosResult(optionsOnBehaviorInjected);
+        // Add a result strategy with a ChaosOutcomeStrategyOptions{<TResult>} instance to the pipeline
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosOutcome(optionsWithResultGenerator);
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosOutcome(optionsOnBehaviorInjected);
 
         // There are also a couple of handy overloads to inject the chaos easily
-        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosResult(0.1, () => new HttpResponseMessage(HttpStatusCode.TooManyRequests));
+        new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosOutcome(0.1, () => new HttpResponseMessage(HttpStatusCode.TooManyRequests));
         #endregion
 
-        #region chaos-result-execution
+        #region chaos-outcome-execution
         var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
             {
@@ -60,7 +60,7 @@ internal static partial class Chaos
                 MaxRetryAttempts = 4,
                 Delay = TimeSpan.FromSeconds(3),
             })
-            .AddChaosResult(new OutcomeStrategyOptions<HttpResponseMessage> // Chaos strategies are usually placed as the last ones in the pipeline
+            .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage> // Chaos strategies are usually placed as the last ones in the pipeline
             {
                 OutcomeGenerator = static args =>
                 {
@@ -79,7 +79,7 @@ internal static partial class Chaos
         #region chaos-outcome-generator-class
 
         new ResiliencePipelineBuilder<HttpResponseMessage>()
-            .AddChaosResult(new OutcomeStrategyOptions<HttpResponseMessage>
+            .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
             {
                 // Use OutcomeGenerator<T> to register the results and exceptions to be injected
                 OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
@@ -97,7 +97,7 @@ internal static partial class Chaos
         #region chaos-outcome-generator-delegate
 
         new ResiliencePipelineBuilder<HttpResponseMessage>()
-            .AddChaosResult(new OutcomeStrategyOptions<HttpResponseMessage>
+            .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
             {
                 // The same behavior can be achieved with delegates
                 OutcomeGenerator = args =>

@@ -6,12 +6,12 @@ namespace Polly.Simmy.Outcomes;
 /// Represents the options for the Outcome chaos strategy.
 /// </summary>
 /// <typeparam name="TResult">The type of the outcome that was injected.</typeparam>
-public class OutcomeStrategyOptions<TResult> : ChaosStrategyOptions
+public class ChaosOutcomeStrategyOptions<TResult> : ChaosStrategyOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OutcomeStrategyOptions{TResult}"/> class.
+    /// Initializes a new instance of the <see cref="ChaosOutcomeStrategyOptions{TResult}"/> class.
     /// </summary>
-    public OutcomeStrategyOptions() => Name = OutcomeConstants.DefaultName;
+    public ChaosOutcomeStrategyOptions() => Name = ChaosOutcomeConstants.DefaultName;
 
     /// <summary>
     /// Gets or sets the delegate that's invoked when the outcome is injected.
