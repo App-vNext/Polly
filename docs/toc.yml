@@ -47,7 +47,7 @@
 - name: Advanced topics
   expanded: true
   items:
-  - name: Telemetry and monitoring
+  - name: Telemetry
     href: advanced/telemetry.md
   - name: Dependency injection
     href: advanced/dependency-injection.md

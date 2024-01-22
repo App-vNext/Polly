@@ -15,7 +15,7 @@ internal static partial class Chaos
         // See https://www.pollydocs.org/chaos/latency#defaults for defaults.
         var optionsDefault = new LatencyStrategyOptions();
 
-        // 10% of invocations will be randomly affected.
+        // 10% of invocations will be randomly affected
         var basicOptions = new LatencyStrategyOptions
         {
             Latency = TimeSpan.FromSeconds(30),
@@ -23,7 +23,7 @@ internal static partial class Chaos
             InjectionRate = 0.1
         };
 
-        // To use a custom function to generate the latency to inject.
+        // To use a custom function to generate the latency to inject
         var optionsWithLatencyGenerator = new LatencyStrategyOptions
         {
             LatencyGenerator = static args =>
@@ -32,7 +32,9 @@ internal static partial class Chaos
                 {
                     "DataLayer" => TimeSpan.FromMilliseconds(500),
                     "ApplicationLayer" => TimeSpan.FromSeconds(2),
-                    _ => TimeSpan.Zero // When the latency generator returns Zero the strategy won't inject any delay and it will just invoke the user's callback
+                    // When the latency generator returns Zero, the strategy
+                    // won't inject any delay and just invokes the user's callback.
+                    _ => TimeSpan.Zero
                 };
 
                 return new ValueTask<TimeSpan>(latency);
@@ -58,7 +60,7 @@ internal static partial class Chaos
         new ResiliencePipelineBuilder().AddChaosLatency(optionsDefault);
         new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosLatency(optionsWithLatencyGenerator);
 
-        // There are also a handy overload to inject the chaos easily.
+        // There are also a handy overload to inject the chaos easily
         new ResiliencePipelineBuilder().AddChaosLatency(0.1, TimeSpan.FromSeconds(30));
         #endregion
 
