@@ -5,12 +5,12 @@ namespace Polly.Simmy.Behavior;
 /// <summary>
 /// Represents the options for the Behavior chaos strategy.
 /// </summary>
-public class BehaviorStrategyOptions : ChaosStrategyOptions
+public class ChaosBehaviorStrategyOptions : ChaosStrategyOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BehaviorStrategyOptions"/> class.
+    /// Initializes a new instance of the <see cref="ChaosBehaviorStrategyOptions"/> class.
     /// </summary>
-    public BehaviorStrategyOptions() => Name = BehaviorConstants.DefaultName;
+    public ChaosBehaviorStrategyOptions() => Name = ChaosBehaviorConstants.DefaultName;
 
     /// <summary>
     /// Gets or sets the delegate that's raised when the custom behavior is injected.

@@ -5,12 +5,12 @@ using Polly.Utils;
 
 namespace Polly.Core.Tests.Simmy.Behavior;
 
-public class BehaviorStrategyOptionsTests
+public class ChaosBehaviorStrategyOptionsTests
 {
     [Fact]
     public void Ctor_Ok()
     {
-        var sut = new BehaviorStrategyOptions();
+        var sut = new ChaosBehaviorStrategyOptions();
         sut.Randomizer.Should().NotBeNull();
         sut.Enabled.Should().BeFalse();
         sut.EnabledGenerator.Should().BeNull();
@@ -23,7 +23,7 @@ public class BehaviorStrategyOptionsTests
     [Fact]
     public void InvalidOptions()
     {
-        var sut = new BehaviorStrategyOptions();
+        var sut = new ChaosBehaviorStrategyOptions();
 
         sut
             .Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid Options")))

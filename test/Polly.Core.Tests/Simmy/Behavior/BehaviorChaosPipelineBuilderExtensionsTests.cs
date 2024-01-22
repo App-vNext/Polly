@@ -43,7 +43,7 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
     public void AddBehavior_InvalidOptions_Throws()
     {
         new ResiliencePipelineBuilder()
-            .Invoking(b => b.AddChaosBehavior(new BehaviorStrategyOptions()))
+            .Invoking(b => b.AddChaosBehavior(new ChaosBehaviorStrategyOptions()))
             .Should()
             .Throw<ValidationException>();
     }
@@ -52,7 +52,7 @@ public class BehaviorChaosPipelineBuilderExtensionsTests
     public void AddBehavior_Options_Ok()
     {
         var sut = new ResiliencePipelineBuilder()
-            .AddChaosBehavior(new BehaviorStrategyOptions
+            .AddChaosBehavior(new ChaosBehaviorStrategyOptions
             {
                 Enabled = true,
                 InjectionRate = 1,

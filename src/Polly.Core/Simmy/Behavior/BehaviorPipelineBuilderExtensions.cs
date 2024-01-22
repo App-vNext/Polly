@@ -24,7 +24,7 @@ public static class BehaviorPipelineBuilderExtensions
     {
         Guard.NotNull(builder);
 
-        return builder.AddChaosBehavior(new BehaviorStrategyOptions
+        return builder.AddChaosBehavior(new ChaosBehaviorStrategyOptions
         {
             Enabled = true,
             InjectionRate = injectionRate,
@@ -45,7 +45,7 @@ public static class BehaviorPipelineBuilderExtensions
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "All options members preserved.")]
-    public static TBuilder AddChaosBehavior<TBuilder>(this TBuilder builder, BehaviorStrategyOptions options)
+    public static TBuilder AddChaosBehavior<TBuilder>(this TBuilder builder, ChaosBehaviorStrategyOptions options)
         where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);

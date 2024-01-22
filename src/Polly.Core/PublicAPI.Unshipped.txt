@@ -5,12 +5,12 @@ Polly.Simmy.Behavior.BehaviorActionArguments
 Polly.Simmy.Behavior.BehaviorActionArguments.BehaviorActionArguments() -> void
 Polly.Simmy.Behavior.BehaviorActionArguments.BehaviorActionArguments(Polly.ResilienceContext! context) -> void
 Polly.Simmy.Behavior.BehaviorActionArguments.Context.get -> Polly.ResilienceContext!
-Polly.Simmy.Behavior.BehaviorStrategyOptions
-Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorAction.get -> System.Func<Polly.Simmy.Behavior.BehaviorActionArguments, System.Threading.Tasks.ValueTask>?
-Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorAction.set -> void
-Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorStrategyOptions() -> void
-Polly.Simmy.Behavior.BehaviorStrategyOptions.OnBehaviorInjected.get -> System.Func<Polly.Simmy.Behavior.OnBehaviorInjectedArguments, System.Threading.Tasks.ValueTask>?
-Polly.Simmy.Behavior.BehaviorStrategyOptions.OnBehaviorInjected.set -> void
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction.get -> System.Func<Polly.Simmy.Behavior.BehaviorActionArguments, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction.set -> void
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.ChaosBehaviorStrategyOptions() -> void
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected.get -> System.Func<Polly.Simmy.Behavior.OnBehaviorInjectedArguments, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected.set -> void
 Polly.Simmy.Behavior.OnBehaviorInjectedArguments
 Polly.Simmy.Behavior.OnBehaviorInjectedArguments.Context.get -> Polly.ResilienceContext!
 Polly.Simmy.Behavior.OnBehaviorInjectedArguments.OnBehaviorInjectedArguments() -> void

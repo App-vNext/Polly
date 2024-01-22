@@ -7,7 +7,7 @@ internal sealed class BehaviorChaosStrategy : ChaosStrategy
     private readonly ResilienceStrategyTelemetry _telemetry;
 
     public BehaviorChaosStrategy(
-        BehaviorStrategyOptions options,
+        ChaosBehaviorStrategyOptions options,
         ResilienceStrategyTelemetry telemetry)
         : base(options)
     {
@@ -32,7 +32,7 @@ internal sealed class BehaviorChaosStrategy : ChaosStrategy
                 await Behavior(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
 
                 var args = new OnBehaviorInjectedArguments(context);
-                _telemetry.Report(new(ResilienceEventSeverity.Information, BehaviorConstants.OnBehaviorInjectedEvent), context, args);
+                _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosBehaviorConstants.OnBehaviorInjectedEvent), context, args);
 
                 if (OnBehaviorInjected is not null)
                 {

@@ -13,7 +13,7 @@ internal static partial class Chaos
 
         #region chaos-behavior-usage
         // To use a custom delegated for injected behavior
-        var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
+        var optionsWithBehaviorGenerator = new ChaosBehaviorStrategyOptions
         {
             BehaviorAction = static args => RestartRedisVM(),
             Enabled = true,
@@ -21,7 +21,7 @@ internal static partial class Chaos
         };
 
         // To get notifications when a behavior is injected
-        var optionsOnBehaviorInjected = new BehaviorStrategyOptions
+        var optionsOnBehaviorInjected = new ChaosBehaviorStrategyOptions
         {
             BehaviorAction = static args => RestartRedisVM(),
             Enabled = true,
@@ -51,7 +51,7 @@ internal static partial class Chaos
                 MaxRetryAttempts = 4,
                 Delay = TimeSpan.FromSeconds(3),
             })
-            .AddChaosBehavior(new BehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
+            .AddChaosBehavior(new ChaosBehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
             {
                 BehaviorAction = static args => RestartRedisVM(),
                 Enabled = true,

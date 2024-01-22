@@ -1,6 +1,6 @@
 ﻿namespace Polly.Simmy.Behavior;
 
-internal static class BehaviorConstants
+internal static class ChaosBehaviorConstants
 {
     public const string DefaultName = "Chaos.Behavior";
 
