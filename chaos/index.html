@@ -109,8 +109,8 @@
 <li>A way to revert easily, to control the blast radius.</li>
 <li>To be production grade, to run this in a production or near-production system with automation.</li>
 </ul>
-<h2 id="chaos-strategies-aka-monkey-strategies">Chaos strategies (a.k.a Monkey strategies)</h2>
-<p>Chaos strategies (or Monkey strategies as we call them) are in essence a <a href="../strategies/index.html#built-in-strategies">Resilience strategy</a>, which means, as a <em>Resilience Strategy</em> is the minimum unit of resilience for Polly, a <em>Chaos Strategy</em> is the minimum unit of chaos for Simmy.</p>
+<h2 id="chaos-strategies">Chaos strategies</h2>
+<p>Chaos strategies (formerly known as Monkey strategies) are in essence a <a href="../strategies/index.html#built-in-strategies">Resilience strategy</a>, which means, as a <em>Resilience Strategy</em> is the minimum unit of resilience for Polly, a <em>Chaos Strategy</em> is the minimum unit of chaos for Simmy.</p>
 <h3 id="built-in-strategies">Built-in strategies</h3>
 <table>
 <thead>
@@ -127,7 +127,7 @@
 <td>Injects exceptions in your system.</td>
 </tr>
 <tr>
-<td><a href="result.html">Result</a></td>
+<td><a href="result.md">Result</a></td>
 <td>Yes</td>
 <td>Substitute results to fake outcomes in your system.</td>
 </tr>
@@ -146,7 +146,7 @@
 <h2 id="usage">Usage</h2>
 <p>It is usual to place the chaos strategy as the last strategy in the resilience pipeline. By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the <code>ResiliencePipeline</code> - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.</p>
 <h2 id="common-options-across-strategies">Common options across strategies</h2>
-<p>All the strategies' options implement the <a class="xref" href="../api/Polly.Simmy.MonkeyStrategyOptions.html"><code>MonkeyStrategyOptions</code></a> class as it contains the basic configuration for every chaos strategy.</p>
+<p>All the strategies' options implement the <a class="xref" href="../api/Polly.Simmy.ChaosStrategyOptions.html"><code>ChaosStrategyOptions</code></a> class as it contains the basic configuration for every chaos strategy.</p>
 <table>
 <thead>
 <tr>

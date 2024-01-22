@@ -93,7 +93,7 @@
 </div>
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html"><code>BehaviorStrategyOptions</code></a></li>
+<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html"><code>ChaosBehaviorStrategyOptions</code></a></li>
 <li><strong>Extensions</strong>: <code>AddChaosBehavior</code></li>
 <li><strong>Strategy Type</strong>: Proactive</li>
 </ul>
@@ -102,7 +102,7 @@
 <h2 id="usage">Usage</h2>
 <!-- snippet: chaos-behavior-usage -->
 <pre><code class="lang-cs">// To use a custom delegated for injected behavior
-var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
+var optionsWithBehaviorGenerator = new ChaosBehaviorStrategyOptions
 {
     BehaviorAction = static args =&gt; RestartRedisVM(),
     Enabled = true,
@@ -110,7 +110,7 @@ var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
 };
 
 // To get notifications when a behavior is injected
-var optionsOnBehaviorInjected = new BehaviorStrategyOptions
+var optionsOnBehaviorInjected = new ChaosBehaviorStrategyOptions
 {
     BehaviorAction = static args =&gt; RestartRedisVM(),
     Enabled = true,
@@ -122,7 +122,7 @@ var optionsOnBehaviorInjected = new BehaviorStrategyOptions
     }
 };
 
-// Add a behavior strategy with a BehaviorStrategyOptions instance to the pipeline
+// Add a behavior strategy with a ChaosBehaviorStrategyOptions instance to the pipeline
 new ResiliencePipelineBuilder().AddChaosBehavior(optionsWithBehaviorGenerator);
 new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosBehavior(optionsOnBehaviorInjected);
 
@@ -141,7 +141,7 @@ new ResiliencePipelineBuilder().AddChaosBehavior(0.05, RestartRedisVM);
         MaxRetryAttempts = 4,
         Delay = TimeSpan.FromSeconds(3),
     })
-    .AddChaosBehavior(new BehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
+    .AddChaosBehavior(new ChaosBehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
         BehaviorAction = static args =&gt; RestartRedisVM(),
         Enabled = true,
@@ -213,7 +213,7 @@ new ResiliencePipelineBuilder().AddChaosBehavior(0.05, RestartRedisVM);
 <p>❌ DON'T</p>
 <p>Use behavior strategies to inject delays.</p>
 <p>✅ DO</p>
-<p>Use the latency chaos instead as the <a href="latency.html"><code>LatencyChaosStrategy</code></a> already correctly handles synchronous/asynchronous delay executions, cancellations, etc.</p>
+<p>Use the latency chaos instead as the <a href="latency.html"><code>ChaosLatencyStrategy</code></a> already correctly handles synchronous/asynchronous delay executions, cancellations, etc.</p>
 
 </article>
 

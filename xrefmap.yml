@@ -4322,57 +4322,57 @@ references:
   isSpec: "True"
   fullName: Polly.Simmy.Behavior.BehaviorActionArguments.Context
   nameWithType: BehaviorActionArguments.Context
-- uid: Polly.Simmy.Behavior.BehaviorStrategyOptions
-  name: BehaviorStrategyOptions
-  href: api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html
-  commentId: T:Polly.Simmy.Behavior.BehaviorStrategyOptions
-  fullName: Polly.Simmy.Behavior.BehaviorStrategyOptions
-  nameWithType: BehaviorStrategyOptions
-- uid: Polly.Simmy.Behavior.BehaviorStrategyOptions.#ctor
-  name: BehaviorStrategyOptions()
-  href: api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html#Polly_Simmy_Behavior_BehaviorStrategyOptions__ctor
-  commentId: M:Polly.Simmy.Behavior.BehaviorStrategyOptions.#ctor
+- uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions
+  name: ChaosBehaviorStrategyOptions
+  href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html
+  commentId: T:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions
+  fullName: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions
+  nameWithType: ChaosBehaviorStrategyOptions
+- uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.#ctor
+  name: ChaosBehaviorStrategyOptions()
+  href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html#Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions__ctor
+  commentId: M:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.#ctor
   name.vb: New()
-  fullName: Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorStrategyOptions()
-  fullName.vb: Polly.Simmy.Behavior.BehaviorStrategyOptions.New()
-  nameWithType: BehaviorStrategyOptions.BehaviorStrategyOptions()
-  nameWithType.vb: BehaviorStrategyOptions.New()
-- uid: Polly.Simmy.Behavior.BehaviorStrategyOptions.#ctor*
-  name: BehaviorStrategyOptions
-  href: api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html#Polly_Simmy_Behavior_BehaviorStrategyOptions__ctor_
-  commentId: Overload:Polly.Simmy.Behavior.BehaviorStrategyOptions.#ctor
+  fullName: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.ChaosBehaviorStrategyOptions()
+  fullName.vb: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.New()
+  nameWithType: ChaosBehaviorStrategyOptions.ChaosBehaviorStrategyOptions()
+  nameWithType.vb: ChaosBehaviorStrategyOptions.New()
+- uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.#ctor*
+  name: ChaosBehaviorStrategyOptions
+  href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html#Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions__ctor_
+  commentId: Overload:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.#ctor
   isSpec: "True"
   name.vb: New
-  fullName: Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorStrategyOptions
-  fullName.vb: Polly.Simmy.Behavior.BehaviorStrategyOptions.New
-  nameWithType: BehaviorStrategyOptions.BehaviorStrategyOptions
-  nameWithType.vb: BehaviorStrategyOptions.New
-- uid: Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorAction
+  fullName: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.ChaosBehaviorStrategyOptions
+  fullName.vb: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.New
+  nameWithType: ChaosBehaviorStrategyOptions.ChaosBehaviorStrategyOptions
+  nameWithType.vb: ChaosBehaviorStrategyOptions.New
+- uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction
   name: BehaviorAction
-  href: api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html#Polly_Simmy_Behavior_BehaviorStrategyOptions_BehaviorAction
-  commentId: P:Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorAction
-  fullName: Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorAction
-  nameWithType: BehaviorStrategyOptions.BehaviorAction
-- uid: Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorAction*
+  href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html#Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_BehaviorAction
+  commentId: P:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction
+  fullName: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction
+  nameWithType: ChaosBehaviorStrategyOptions.BehaviorAction
+- uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction*
   name: BehaviorAction
-  href: api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html#Polly_Simmy_Behavior_BehaviorStrategyOptions_BehaviorAction_
-  commentId: Overload:Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorAction
+  href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html#Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_BehaviorAction_
+  commentId: Overload:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction
   isSpec: "True"
-  fullName: Polly.Simmy.Behavior.BehaviorStrategyOptions.BehaviorAction
-  nameWithType: BehaviorStrategyOptions.BehaviorAction
-- uid: Polly.Simmy.Behavior.BehaviorStrategyOptions.OnBehaviorInjected
+  fullName: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction
+  nameWithType: ChaosBehaviorStrategyOptions.BehaviorAction
+- uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected
   name: OnBehaviorInjected
-  href: api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html#Polly_Simmy_Behavior_BehaviorStrategyOptions_OnBehaviorInjected
-  commentId: P:Polly.Simmy.Behavior.BehaviorStrategyOptions.OnBehaviorInjected
-  fullName: Polly.Simmy.Behavior.BehaviorStrategyOptions.OnBehaviorInjected
-  nameWithType: BehaviorStrategyOptions.OnBehaviorInjected
-- uid: Polly.Simmy.Behavior.BehaviorStrategyOptions.OnBehaviorInjected*
+  href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html#Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_OnBehaviorInjected
+  commentId: P:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected
+  fullName: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected
+  nameWithType: ChaosBehaviorStrategyOptions.OnBehaviorInjected
+- uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected*
   name: OnBehaviorInjected
-  href: api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html#Polly_Simmy_Behavior_BehaviorStrategyOptions_OnBehaviorInjected_
-  commentId: Overload:Polly.Simmy.Behavior.BehaviorStrategyOptions.OnBehaviorInjected
+  href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html#Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_OnBehaviorInjected_
+  commentId: Overload:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected
   isSpec: "True"
-  fullName: Polly.Simmy.Behavior.BehaviorStrategyOptions.OnBehaviorInjected
-  nameWithType: BehaviorStrategyOptions.OnBehaviorInjected
+  fullName: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected
+  nameWithType: ChaosBehaviorStrategyOptions.OnBehaviorInjected
 - uid: Polly.Simmy.Behavior.OnBehaviorInjectedArguments
   name: OnBehaviorInjectedArguments
   href: api/Polly.Simmy.Behavior.OnBehaviorInjectedArguments.html
@@ -4411,37 +4411,313 @@ references:
   isSpec: "True"
   fullName: Polly.Simmy.Behavior.OnBehaviorInjectedArguments.Context
   nameWithType: OnBehaviorInjectedArguments.Context
-- uid: Polly.Simmy.BehaviorPipelineBuilderExtensions
-  name: BehaviorPipelineBuilderExtensions
-  href: api/Polly.Simmy.BehaviorPipelineBuilderExtensions.html
-  commentId: T:Polly.Simmy.BehaviorPipelineBuilderExtensions
-  fullName: Polly.Simmy.BehaviorPipelineBuilderExtensions
-  nameWithType: BehaviorPipelineBuilderExtensions
-- uid: Polly.Simmy.BehaviorPipelineBuilderExtensions.AddChaosBehavior*
+- uid: Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions
+  name: ChaosBehaviorPipelineBuilderExtensions
+  href: api/Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.html
+  commentId: T:Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions
+  fullName: Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions
+  nameWithType: ChaosBehaviorPipelineBuilderExtensions
+- uid: Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior*
   name: AddChaosBehavior
-  href: api/Polly.Simmy.BehaviorPipelineBuilderExtensions.html#Polly_Simmy_BehaviorPipelineBuilderExtensions_AddChaosBehavior_
-  commentId: Overload:Polly.Simmy.BehaviorPipelineBuilderExtensions.AddChaosBehavior
+  href: api/Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.html#Polly_Simmy_ChaosBehaviorPipelineBuilderExtensions_AddChaosBehavior_
+  commentId: Overload:Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior
   isSpec: "True"
-  fullName: Polly.Simmy.BehaviorPipelineBuilderExtensions.AddChaosBehavior
-  nameWithType: BehaviorPipelineBuilderExtensions.AddChaosBehavior
-- uid: Polly.Simmy.BehaviorPipelineBuilderExtensions.AddChaosBehavior``1(``0,Polly.Simmy.Behavior.BehaviorStrategyOptions)
-  name: AddChaosBehavior<TBuilder>(TBuilder, BehaviorStrategyOptions)
-  href: api/Polly.Simmy.BehaviorPipelineBuilderExtensions.html#Polly_Simmy_BehaviorPipelineBuilderExtensions_AddChaosBehavior__1___0_Polly_Simmy_Behavior_BehaviorStrategyOptions_
-  commentId: M:Polly.Simmy.BehaviorPipelineBuilderExtensions.AddChaosBehavior``1(``0,Polly.Simmy.Behavior.BehaviorStrategyOptions)
-  name.vb: AddChaosBehavior(Of TBuilder)(TBuilder, BehaviorStrategyOptions)
-  fullName: Polly.Simmy.BehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(TBuilder, Polly.Simmy.Behavior.BehaviorStrategyOptions)
-  fullName.vb: Polly.Simmy.BehaviorPipelineBuilderExtensions.AddChaosBehavior(Of TBuilder)(TBuilder, Polly.Simmy.Behavior.BehaviorStrategyOptions)
-  nameWithType: BehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(TBuilder, BehaviorStrategyOptions)
-  nameWithType.vb: BehaviorPipelineBuilderExtensions.AddChaosBehavior(Of TBuilder)(TBuilder, BehaviorStrategyOptions)
-- uid: Polly.Simmy.BehaviorPipelineBuilderExtensions.AddChaosBehavior``1(``0,System.Double,System.Func{System.Threading.Tasks.ValueTask})
+  fullName: Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior
+  nameWithType: ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior
+- uid: Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior``1(``0,Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions)
+  name: AddChaosBehavior<TBuilder>(TBuilder, ChaosBehaviorStrategyOptions)
+  href: api/Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.html#Polly_Simmy_ChaosBehaviorPipelineBuilderExtensions_AddChaosBehavior__1___0_Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_
+  commentId: M:Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior``1(``0,Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions)
+  name.vb: AddChaosBehavior(Of TBuilder)(TBuilder, ChaosBehaviorStrategyOptions)
+  fullName: Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(TBuilder, Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions)
+  fullName.vb: Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior(Of TBuilder)(TBuilder, Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions)
+  nameWithType: ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(TBuilder, ChaosBehaviorStrategyOptions)
+  nameWithType.vb: ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior(Of TBuilder)(TBuilder, ChaosBehaviorStrategyOptions)
+- uid: Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior``1(``0,System.Double,System.Func{System.Threading.Tasks.ValueTask})
   name: AddChaosBehavior<TBuilder>(TBuilder, double, Func<ValueTask>)
-  href: api/Polly.Simmy.BehaviorPipelineBuilderExtensions.html#Polly_Simmy_BehaviorPipelineBuilderExtensions_AddChaosBehavior__1___0_System_Double_System_Func_System_Threading_Tasks_ValueTask__
-  commentId: M:Polly.Simmy.BehaviorPipelineBuilderExtensions.AddChaosBehavior``1(``0,System.Double,System.Func{System.Threading.Tasks.ValueTask})
+  href: api/Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.html#Polly_Simmy_ChaosBehaviorPipelineBuilderExtensions_AddChaosBehavior__1___0_System_Double_System_Func_System_Threading_Tasks_ValueTask__
+  commentId: M:Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior``1(``0,System.Double,System.Func{System.Threading.Tasks.ValueTask})
   name.vb: AddChaosBehavior(Of TBuilder)(TBuilder, Double, Func(Of ValueTask))
-  fullName: Polly.Simmy.BehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(TBuilder, double, System.Func<System.Threading.Tasks.ValueTask>)
-  fullName.vb: Polly.Simmy.BehaviorPipelineBuilderExtensions.AddChaosBehavior(Of TBuilder)(TBuilder, Double, System.Func(Of System.Threading.Tasks.ValueTask))
-  nameWithType: BehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(TBuilder, double, Func<ValueTask>)
-  nameWithType.vb: BehaviorPipelineBuilderExtensions.AddChaosBehavior(Of TBuilder)(TBuilder, Double, Func(Of ValueTask))
+  fullName: Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(TBuilder, double, System.Func<System.Threading.Tasks.ValueTask>)
+  fullName.vb: Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior(Of TBuilder)(TBuilder, Double, System.Func(Of System.Threading.Tasks.ValueTask))
+  nameWithType: ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(TBuilder, double, Func<ValueTask>)
+  nameWithType.vb: ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior(Of TBuilder)(TBuilder, Double, Func(Of ValueTask))
+- uid: Polly.Simmy.ChaosFaultPipelineBuilderExtensions
+  name: ChaosFaultPipelineBuilderExtensions
+  href: api/Polly.Simmy.ChaosFaultPipelineBuilderExtensions.html
+  commentId: T:Polly.Simmy.ChaosFaultPipelineBuilderExtensions
+  fullName: Polly.Simmy.ChaosFaultPipelineBuilderExtensions
+  nameWithType: ChaosFaultPipelineBuilderExtensions
+- uid: Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault*
+  name: AddChaosFault
+  href: api/Polly.Simmy.ChaosFaultPipelineBuilderExtensions.html#Polly_Simmy_ChaosFaultPipelineBuilderExtensions_AddChaosFault_
+  commentId: Overload:Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault
+  isSpec: "True"
+  fullName: Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault
+  nameWithType: ChaosFaultPipelineBuilderExtensions.AddChaosFault
+- uid: Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault``1(``0,Polly.Simmy.Fault.ChaosFaultStrategyOptions)
+  name: AddChaosFault<TBuilder>(TBuilder, ChaosFaultStrategyOptions)
+  href: api/Polly.Simmy.ChaosFaultPipelineBuilderExtensions.html#Polly_Simmy_ChaosFaultPipelineBuilderExtensions_AddChaosFault__1___0_Polly_Simmy_Fault_ChaosFaultStrategyOptions_
+  commentId: M:Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault``1(``0,Polly.Simmy.Fault.ChaosFaultStrategyOptions)
+  name.vb: AddChaosFault(Of TBuilder)(TBuilder, ChaosFaultStrategyOptions)
+  fullName: Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(TBuilder, Polly.Simmy.Fault.ChaosFaultStrategyOptions)
+  fullName.vb: Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, Polly.Simmy.Fault.ChaosFaultStrategyOptions)
+  nameWithType: ChaosFaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(TBuilder, ChaosFaultStrategyOptions)
+  nameWithType.vb: ChaosFaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, ChaosFaultStrategyOptions)
+- uid: Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault``1(``0,System.Double,System.Func{System.Exception})
+  name: AddChaosFault<TBuilder>(TBuilder, double, Func<Exception?>)
+  href: api/Polly.Simmy.ChaosFaultPipelineBuilderExtensions.html#Polly_Simmy_ChaosFaultPipelineBuilderExtensions_AddChaosFault__1___0_System_Double_System_Func_System_Exception__
+  commentId: M:Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault``1(``0,System.Double,System.Func{System.Exception})
+  name.vb: AddChaosFault(Of TBuilder)(TBuilder, Double, Func(Of Exception))
+  fullName: Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(TBuilder, double, System.Func<System.Exception?>)
+  fullName.vb: Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, Double, System.Func(Of System.Exception))
+  nameWithType: ChaosFaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(TBuilder, double, Func<Exception?>)
+  nameWithType.vb: ChaosFaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, Double, Func(Of Exception))
+- uid: Polly.Simmy.ChaosLatencyPipelineBuilderExtensions
+  name: ChaosLatencyPipelineBuilderExtensions
+  href: api/Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.html
+  commentId: T:Polly.Simmy.ChaosLatencyPipelineBuilderExtensions
+  fullName: Polly.Simmy.ChaosLatencyPipelineBuilderExtensions
+  nameWithType: ChaosLatencyPipelineBuilderExtensions
+- uid: Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency*
+  name: AddChaosLatency
+  href: api/Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.html#Polly_Simmy_ChaosLatencyPipelineBuilderExtensions_AddChaosLatency_
+  commentId: Overload:Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency
+  isSpec: "True"
+  fullName: Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency
+  nameWithType: ChaosLatencyPipelineBuilderExtensions.AddChaosLatency
+- uid: Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency``1(``0,Polly.Simmy.Latency.ChaosLatencyStrategyOptions)
+  name: AddChaosLatency<TBuilder>(TBuilder, ChaosLatencyStrategyOptions)
+  href: api/Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.html#Polly_Simmy_ChaosLatencyPipelineBuilderExtensions_AddChaosLatency__1___0_Polly_Simmy_Latency_ChaosLatencyStrategyOptions_
+  commentId: M:Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency``1(``0,Polly.Simmy.Latency.ChaosLatencyStrategyOptions)
+  name.vb: AddChaosLatency(Of TBuilder)(TBuilder, ChaosLatencyStrategyOptions)
+  fullName: Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(TBuilder, Polly.Simmy.Latency.ChaosLatencyStrategyOptions)
+  fullName.vb: Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency(Of TBuilder)(TBuilder, Polly.Simmy.Latency.ChaosLatencyStrategyOptions)
+  nameWithType: ChaosLatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(TBuilder, ChaosLatencyStrategyOptions)
+  nameWithType.vb: ChaosLatencyPipelineBuilderExtensions.AddChaosLatency(Of TBuilder)(TBuilder, ChaosLatencyStrategyOptions)
+- uid: Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency``1(``0,System.Double,System.TimeSpan)
+  name: AddChaosLatency<TBuilder>(TBuilder, double, TimeSpan)
+  href: api/Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.html#Polly_Simmy_ChaosLatencyPipelineBuilderExtensions_AddChaosLatency__1___0_System_Double_System_TimeSpan_
+  commentId: M:Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency``1(``0,System.Double,System.TimeSpan)
+  name.vb: AddChaosLatency(Of TBuilder)(TBuilder, Double, TimeSpan)
+  fullName: Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(TBuilder, double, System.TimeSpan)
+  fullName.vb: Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency(Of TBuilder)(TBuilder, Double, System.TimeSpan)
+  nameWithType: ChaosLatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(TBuilder, double, TimeSpan)
+  nameWithType.vb: ChaosLatencyPipelineBuilderExtensions.AddChaosLatency(Of TBuilder)(TBuilder, Double, TimeSpan)
+- uid: Polly.Simmy.ChaosOutcomePipelineBuilderExtensions
+  name: ChaosOutcomePipelineBuilderExtensions
+  href: api/Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.html
+  commentId: T:Polly.Simmy.ChaosOutcomePipelineBuilderExtensions
+  fullName: Polly.Simmy.ChaosOutcomePipelineBuilderExtensions
+  nameWithType: ChaosOutcomePipelineBuilderExtensions
+- uid: Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome*
+  name: AddChaosOutcome
+  href: api/Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.html#Polly_Simmy_ChaosOutcomePipelineBuilderExtensions_AddChaosOutcome_
+  commentId: Overload:Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome
+  isSpec: "True"
+  fullName: Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome
+  nameWithType: ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome
+- uid: Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome``1(Polly.ResiliencePipelineBuilder{``0},Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions{``0})
+  name: AddChaosOutcome<TResult>(ResiliencePipelineBuilder<TResult>, ChaosOutcomeStrategyOptions<TResult>)
+  href: api/Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.html#Polly_Simmy_ChaosOutcomePipelineBuilderExtensions_AddChaosOutcome__1_Polly_ResiliencePipelineBuilder___0__Polly_Simmy_Outcomes_ChaosOutcomeStrategyOptions___0__
+  commentId: M:Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome``1(Polly.ResiliencePipelineBuilder{``0},Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions{``0})
+  name.vb: AddChaosOutcome(Of TResult)(ResiliencePipelineBuilder(Of TResult), ChaosOutcomeStrategyOptions(Of TResult))
+  fullName: Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome<TResult>(Polly.ResiliencePipelineBuilder<TResult>, Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>)
+  fullName.vb: Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome(Of TResult)(Polly.ResiliencePipelineBuilder(Of TResult), Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions(Of TResult))
+  nameWithType: ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome<TResult>(ResiliencePipelineBuilder<TResult>, ChaosOutcomeStrategyOptions<TResult>)
+  nameWithType.vb: ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome(Of TResult)(ResiliencePipelineBuilder(Of TResult), ChaosOutcomeStrategyOptions(Of TResult))
+- uid: Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome``1(Polly.ResiliencePipelineBuilder{``0},System.Double,System.Func{``0})
+  name: AddChaosOutcome<TResult>(ResiliencePipelineBuilder<TResult>, double, Func<TResult?>)
+  href: api/Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.html#Polly_Simmy_ChaosOutcomePipelineBuilderExtensions_AddChaosOutcome__1_Polly_ResiliencePipelineBuilder___0__System_Double_System_Func___0__
+  commentId: M:Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome``1(Polly.ResiliencePipelineBuilder{``0},System.Double,System.Func{``0})
+  name.vb: AddChaosOutcome(Of TResult)(ResiliencePipelineBuilder(Of TResult), Double, Func(Of TResult))
+  fullName: Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome<TResult>(Polly.ResiliencePipelineBuilder<TResult>, double, System.Func<TResult?>)
+  fullName.vb: Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome(Of TResult)(Polly.ResiliencePipelineBuilder(Of TResult), Double, System.Func(Of TResult))
+  nameWithType: ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome<TResult>(ResiliencePipelineBuilder<TResult>, double, Func<TResult?>)
+  nameWithType.vb: ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome(Of TResult)(ResiliencePipelineBuilder(Of TResult), Double, Func(Of TResult))
+- uid: Polly.Simmy.ChaosStrategy
+  name: ChaosStrategy
+  href: api/Polly.Simmy.ChaosStrategy.html
+  commentId: T:Polly.Simmy.ChaosStrategy
+  fullName: Polly.Simmy.ChaosStrategy
+  nameWithType: ChaosStrategy
+- uid: Polly.Simmy.ChaosStrategy.#ctor(Polly.Simmy.ChaosStrategyOptions)
+  name: ChaosStrategy(ChaosStrategyOptions)
+  href: api/Polly.Simmy.ChaosStrategy.html#Polly_Simmy_ChaosStrategy__ctor_Polly_Simmy_ChaosStrategyOptions_
+  commentId: M:Polly.Simmy.ChaosStrategy.#ctor(Polly.Simmy.ChaosStrategyOptions)
+  name.vb: New(ChaosStrategyOptions)
+  fullName: Polly.Simmy.ChaosStrategy.ChaosStrategy(Polly.Simmy.ChaosStrategyOptions)
+  fullName.vb: Polly.Simmy.ChaosStrategy.New(Polly.Simmy.ChaosStrategyOptions)
+  nameWithType: ChaosStrategy.ChaosStrategy(ChaosStrategyOptions)
+  nameWithType.vb: ChaosStrategy.New(ChaosStrategyOptions)
+- uid: Polly.Simmy.ChaosStrategy.#ctor*
+  name: ChaosStrategy
+  href: api/Polly.Simmy.ChaosStrategy.html#Polly_Simmy_ChaosStrategy__ctor_
+  commentId: Overload:Polly.Simmy.ChaosStrategy.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Simmy.ChaosStrategy.ChaosStrategy
+  fullName.vb: Polly.Simmy.ChaosStrategy.New
+  nameWithType: ChaosStrategy.ChaosStrategy
+  nameWithType.vb: ChaosStrategy.New
+- uid: Polly.Simmy.ChaosStrategy.ShouldInjectAsync(Polly.ResilienceContext)
+  name: ShouldInjectAsync(ResilienceContext)
+  href: api/Polly.Simmy.ChaosStrategy.html#Polly_Simmy_ChaosStrategy_ShouldInjectAsync_Polly_ResilienceContext_
+  commentId: M:Polly.Simmy.ChaosStrategy.ShouldInjectAsync(Polly.ResilienceContext)
+  fullName: Polly.Simmy.ChaosStrategy.ShouldInjectAsync(Polly.ResilienceContext)
+  nameWithType: ChaosStrategy.ShouldInjectAsync(ResilienceContext)
+- uid: Polly.Simmy.ChaosStrategy.ShouldInjectAsync*
+  name: ShouldInjectAsync
+  href: api/Polly.Simmy.ChaosStrategy.html#Polly_Simmy_ChaosStrategy_ShouldInjectAsync_
+  commentId: Overload:Polly.Simmy.ChaosStrategy.ShouldInjectAsync
+  isSpec: "True"
+  fullName: Polly.Simmy.ChaosStrategy.ShouldInjectAsync
+  nameWithType: ChaosStrategy.ShouldInjectAsync
+- uid: Polly.Simmy.ChaosStrategyOptions
+  name: ChaosStrategyOptions
+  href: api/Polly.Simmy.ChaosStrategyOptions.html
+  commentId: T:Polly.Simmy.ChaosStrategyOptions
+  fullName: Polly.Simmy.ChaosStrategyOptions
+  nameWithType: ChaosStrategyOptions
+- uid: Polly.Simmy.ChaosStrategyOptions`1
+  name: ChaosStrategyOptions<TResult>
+  href: api/Polly.Simmy.ChaosStrategyOptions-1.html
+  commentId: T:Polly.Simmy.ChaosStrategyOptions`1
+  name.vb: ChaosStrategyOptions(Of TResult)
+  fullName: Polly.Simmy.ChaosStrategyOptions<TResult>
+  fullName.vb: Polly.Simmy.ChaosStrategyOptions(Of TResult)
+  nameWithType: ChaosStrategyOptions<TResult>
+  nameWithType.vb: ChaosStrategyOptions(Of TResult)
+- uid: Polly.Simmy.ChaosStrategyOptions`1.Enabled
+  name: Enabled
+  href: api/Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_Enabled
+  commentId: P:Polly.Simmy.ChaosStrategyOptions`1.Enabled
+  fullName: Polly.Simmy.ChaosStrategyOptions<TResult>.Enabled
+  fullName.vb: Polly.Simmy.ChaosStrategyOptions(Of TResult).Enabled
+  nameWithType: ChaosStrategyOptions<TResult>.Enabled
+  nameWithType.vb: ChaosStrategyOptions(Of TResult).Enabled
+- uid: Polly.Simmy.ChaosStrategyOptions`1.Enabled*
+  name: Enabled
+  href: api/Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_Enabled_
+  commentId: Overload:Polly.Simmy.ChaosStrategyOptions`1.Enabled
+  isSpec: "True"
+  fullName: Polly.Simmy.ChaosStrategyOptions<TResult>.Enabled
+  fullName.vb: Polly.Simmy.ChaosStrategyOptions(Of TResult).Enabled
+  nameWithType: ChaosStrategyOptions<TResult>.Enabled
+  nameWithType.vb: ChaosStrategyOptions(Of TResult).Enabled
+- uid: Polly.Simmy.ChaosStrategyOptions`1.EnabledGenerator
+  name: EnabledGenerator
+  href: api/Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_EnabledGenerator
+  commentId: P:Polly.Simmy.ChaosStrategyOptions`1.EnabledGenerator
+  fullName: Polly.Simmy.ChaosStrategyOptions<TResult>.EnabledGenerator
+  fullName.vb: Polly.Simmy.ChaosStrategyOptions(Of TResult).EnabledGenerator
+  nameWithType: ChaosStrategyOptions<TResult>.EnabledGenerator
+  nameWithType.vb: ChaosStrategyOptions(Of TResult).EnabledGenerator
+- uid: Polly.Simmy.ChaosStrategyOptions`1.EnabledGenerator*
+  name: EnabledGenerator
+  href: api/Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_EnabledGenerator_
+  commentId: Overload:Polly.Simmy.ChaosStrategyOptions`1.EnabledGenerator
+  isSpec: "True"
+  fullName: Polly.Simmy.ChaosStrategyOptions<TResult>.EnabledGenerator
+  fullName.vb: Polly.Simmy.ChaosStrategyOptions(Of TResult).EnabledGenerator
+  nameWithType: ChaosStrategyOptions<TResult>.EnabledGenerator
+  nameWithType.vb: ChaosStrategyOptions(Of TResult).EnabledGenerator
+- uid: Polly.Simmy.ChaosStrategyOptions`1.InjectionRate
+  name: InjectionRate
+  href: api/Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_InjectionRate
+  commentId: P:Polly.Simmy.ChaosStrategyOptions`1.InjectionRate
+  fullName: Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRate
+  fullName.vb: Polly.Simmy.ChaosStrategyOptions(Of TResult).InjectionRate
+  nameWithType: ChaosStrategyOptions<TResult>.InjectionRate
+  nameWithType.vb: ChaosStrategyOptions(Of TResult).InjectionRate
+- uid: Polly.Simmy.ChaosStrategyOptions`1.InjectionRate*
+  name: InjectionRate
+  href: api/Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_InjectionRate_
+  commentId: Overload:Polly.Simmy.ChaosStrategyOptions`1.InjectionRate
+  isSpec: "True"
+  fullName: Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRate
+  fullName.vb: Polly.Simmy.ChaosStrategyOptions(Of TResult).InjectionRate
+  nameWithType: ChaosStrategyOptions<TResult>.InjectionRate
+  nameWithType.vb: ChaosStrategyOptions(Of TResult).InjectionRate
+- uid: Polly.Simmy.ChaosStrategyOptions`1.InjectionRateGenerator
+  name: InjectionRateGenerator
+  href: api/Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_InjectionRateGenerator
+  commentId: P:Polly.Simmy.ChaosStrategyOptions`1.InjectionRateGenerator
+  fullName: Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRateGenerator
+  fullName.vb: Polly.Simmy.ChaosStrategyOptions(Of TResult).InjectionRateGenerator
+  nameWithType: ChaosStrategyOptions<TResult>.InjectionRateGenerator
+  nameWithType.vb: ChaosStrategyOptions(Of TResult).InjectionRateGenerator
+- uid: Polly.Simmy.ChaosStrategyOptions`1.InjectionRateGenerator*
+  name: InjectionRateGenerator
+  href: api/Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_InjectionRateGenerator_
+  commentId: Overload:Polly.Simmy.ChaosStrategyOptions`1.InjectionRateGenerator
+  isSpec: "True"
+  fullName: Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRateGenerator
+  fullName.vb: Polly.Simmy.ChaosStrategyOptions(Of TResult).InjectionRateGenerator
+  nameWithType: ChaosStrategyOptions<TResult>.InjectionRateGenerator
+  nameWithType.vb: ChaosStrategyOptions(Of TResult).InjectionRateGenerator
+- uid: Polly.Simmy.ChaosStrategyOptions`1.Randomizer
+  name: Randomizer
+  href: api/Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_Randomizer
+  commentId: P:Polly.Simmy.ChaosStrategyOptions`1.Randomizer
+  fullName: Polly.Simmy.ChaosStrategyOptions<TResult>.Randomizer
+  fullName.vb: Polly.Simmy.ChaosStrategyOptions(Of TResult).Randomizer
+  nameWithType: ChaosStrategyOptions<TResult>.Randomizer
+  nameWithType.vb: ChaosStrategyOptions(Of TResult).Randomizer
+- uid: Polly.Simmy.ChaosStrategyOptions`1.Randomizer*
+  name: Randomizer
+  href: api/Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_Randomizer_
+  commentId: Overload:Polly.Simmy.ChaosStrategyOptions`1.Randomizer
+  isSpec: "True"
+  fullName: Polly.Simmy.ChaosStrategyOptions<TResult>.Randomizer
+  fullName.vb: Polly.Simmy.ChaosStrategyOptions(Of TResult).Randomizer
+  nameWithType: ChaosStrategyOptions<TResult>.Randomizer
+  nameWithType.vb: ChaosStrategyOptions(Of TResult).Randomizer
+- uid: Polly.Simmy.ChaosStrategy`1
+  name: ChaosStrategy<T>
+  href: api/Polly.Simmy.ChaosStrategy-1.html
+  commentId: T:Polly.Simmy.ChaosStrategy`1
+  name.vb: ChaosStrategy(Of T)
+  fullName: Polly.Simmy.ChaosStrategy<T>
+  fullName.vb: Polly.Simmy.ChaosStrategy(Of T)
+  nameWithType: ChaosStrategy<T>
+  nameWithType.vb: ChaosStrategy(Of T)
+- uid: Polly.Simmy.ChaosStrategy`1.#ctor(Polly.Simmy.ChaosStrategyOptions)
+  name: ChaosStrategy(ChaosStrategyOptions)
+  href: api/Polly.Simmy.ChaosStrategy-1.html#Polly_Simmy_ChaosStrategy_1__ctor_Polly_Simmy_ChaosStrategyOptions_
+  commentId: M:Polly.Simmy.ChaosStrategy`1.#ctor(Polly.Simmy.ChaosStrategyOptions)
+  name.vb: New(ChaosStrategyOptions)
+  fullName: Polly.Simmy.ChaosStrategy<T>.ChaosStrategy(Polly.Simmy.ChaosStrategyOptions)
+  fullName.vb: Polly.Simmy.ChaosStrategy(Of T).New(Polly.Simmy.ChaosStrategyOptions)
+  nameWithType: ChaosStrategy<T>.ChaosStrategy(ChaosStrategyOptions)
+  nameWithType.vb: ChaosStrategy(Of T).New(ChaosStrategyOptions)
+- uid: Polly.Simmy.ChaosStrategy`1.#ctor*
+  name: ChaosStrategy
+  href: api/Polly.Simmy.ChaosStrategy-1.html#Polly_Simmy_ChaosStrategy_1__ctor_
+  commentId: Overload:Polly.Simmy.ChaosStrategy`1.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Simmy.ChaosStrategy<T>.ChaosStrategy
+  fullName.vb: Polly.Simmy.ChaosStrategy(Of T).New
+  nameWithType: ChaosStrategy<T>.ChaosStrategy
+  nameWithType.vb: ChaosStrategy(Of T).New
+- uid: Polly.Simmy.ChaosStrategy`1.ShouldInjectAsync(Polly.ResilienceContext)
+  name: ShouldInjectAsync(ResilienceContext)
+  href: api/Polly.Simmy.ChaosStrategy-1.html#Polly_Simmy_ChaosStrategy_1_ShouldInjectAsync_Polly_ResilienceContext_
+  commentId: M:Polly.Simmy.ChaosStrategy`1.ShouldInjectAsync(Polly.ResilienceContext)
+  fullName: Polly.Simmy.ChaosStrategy<T>.ShouldInjectAsync(Polly.ResilienceContext)
+  fullName.vb: Polly.Simmy.ChaosStrategy(Of T).ShouldInjectAsync(Polly.ResilienceContext)
+  nameWithType: ChaosStrategy<T>.ShouldInjectAsync(ResilienceContext)
+  nameWithType.vb: ChaosStrategy(Of T).ShouldInjectAsync(ResilienceContext)
+- uid: Polly.Simmy.ChaosStrategy`1.ShouldInjectAsync*
+  name: ShouldInjectAsync
+  href: api/Polly.Simmy.ChaosStrategy-1.html#Polly_Simmy_ChaosStrategy_1_ShouldInjectAsync_
+  commentId: Overload:Polly.Simmy.ChaosStrategy`1.ShouldInjectAsync
+  isSpec: "True"
+  fullName: Polly.Simmy.ChaosStrategy<T>.ShouldInjectAsync
+  fullName.vb: Polly.Simmy.ChaosStrategy(Of T).ShouldInjectAsync
+  nameWithType: ChaosStrategy<T>.ShouldInjectAsync
+  nameWithType.vb: ChaosStrategy(Of T).ShouldInjectAsync
 - uid: Polly.Simmy.EnabledGeneratorArguments
   name: EnabledGeneratorArguments
   href: api/Polly.Simmy.EnabledGeneratorArguments.html
@@ -4486,6 +4762,57 @@ references:
   commentId: N:Polly.Simmy.Fault
   fullName: Polly.Simmy.Fault
   nameWithType: Polly.Simmy.Fault
+- uid: Polly.Simmy.Fault.ChaosFaultStrategyOptions
+  name: ChaosFaultStrategyOptions
+  href: api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html
+  commentId: T:Polly.Simmy.Fault.ChaosFaultStrategyOptions
+  fullName: Polly.Simmy.Fault.ChaosFaultStrategyOptions
+  nameWithType: ChaosFaultStrategyOptions
+- uid: Polly.Simmy.Fault.ChaosFaultStrategyOptions.#ctor
+  name: ChaosFaultStrategyOptions()
+  href: api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html#Polly_Simmy_Fault_ChaosFaultStrategyOptions__ctor
+  commentId: M:Polly.Simmy.Fault.ChaosFaultStrategyOptions.#ctor
+  name.vb: New()
+  fullName: Polly.Simmy.Fault.ChaosFaultStrategyOptions.ChaosFaultStrategyOptions()
+  fullName.vb: Polly.Simmy.Fault.ChaosFaultStrategyOptions.New()
+  nameWithType: ChaosFaultStrategyOptions.ChaosFaultStrategyOptions()
+  nameWithType.vb: ChaosFaultStrategyOptions.New()
+- uid: Polly.Simmy.Fault.ChaosFaultStrategyOptions.#ctor*
+  name: ChaosFaultStrategyOptions
+  href: api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html#Polly_Simmy_Fault_ChaosFaultStrategyOptions__ctor_
+  commentId: Overload:Polly.Simmy.Fault.ChaosFaultStrategyOptions.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Simmy.Fault.ChaosFaultStrategyOptions.ChaosFaultStrategyOptions
+  fullName.vb: Polly.Simmy.Fault.ChaosFaultStrategyOptions.New
+  nameWithType: ChaosFaultStrategyOptions.ChaosFaultStrategyOptions
+  nameWithType.vb: ChaosFaultStrategyOptions.New
+- uid: Polly.Simmy.Fault.ChaosFaultStrategyOptions.FaultGenerator
+  name: FaultGenerator
+  href: api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html#Polly_Simmy_Fault_ChaosFaultStrategyOptions_FaultGenerator
+  commentId: P:Polly.Simmy.Fault.ChaosFaultStrategyOptions.FaultGenerator
+  fullName: Polly.Simmy.Fault.ChaosFaultStrategyOptions.FaultGenerator
+  nameWithType: ChaosFaultStrategyOptions.FaultGenerator
+- uid: Polly.Simmy.Fault.ChaosFaultStrategyOptions.FaultGenerator*
+  name: FaultGenerator
+  href: api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html#Polly_Simmy_Fault_ChaosFaultStrategyOptions_FaultGenerator_
+  commentId: Overload:Polly.Simmy.Fault.ChaosFaultStrategyOptions.FaultGenerator
+  isSpec: "True"
+  fullName: Polly.Simmy.Fault.ChaosFaultStrategyOptions.FaultGenerator
+  nameWithType: ChaosFaultStrategyOptions.FaultGenerator
+- uid: Polly.Simmy.Fault.ChaosFaultStrategyOptions.OnFaultInjected
+  name: OnFaultInjected
+  href: api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html#Polly_Simmy_Fault_ChaosFaultStrategyOptions_OnFaultInjected
+  commentId: P:Polly.Simmy.Fault.ChaosFaultStrategyOptions.OnFaultInjected
+  fullName: Polly.Simmy.Fault.ChaosFaultStrategyOptions.OnFaultInjected
+  nameWithType: ChaosFaultStrategyOptions.OnFaultInjected
+- uid: Polly.Simmy.Fault.ChaosFaultStrategyOptions.OnFaultInjected*
+  name: OnFaultInjected
+  href: api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html#Polly_Simmy_Fault_ChaosFaultStrategyOptions_OnFaultInjected_
+  commentId: Overload:Polly.Simmy.Fault.ChaosFaultStrategyOptions.OnFaultInjected
+  isSpec: "True"
+  fullName: Polly.Simmy.Fault.ChaosFaultStrategyOptions.OnFaultInjected
+  nameWithType: ChaosFaultStrategyOptions.OnFaultInjected
 - uid: Polly.Simmy.Fault.FaultGenerator
   name: FaultGenerator
   href: api/Polly.Simmy.Fault.FaultGenerator.html
@@ -4583,57 +4910,6 @@ references:
   isSpec: "True"
   fullName: Polly.Simmy.Fault.FaultGeneratorArguments.Context
   nameWithType: FaultGeneratorArguments.Context
-- uid: Polly.Simmy.Fault.FaultStrategyOptions
-  name: FaultStrategyOptions
-  href: api/Polly.Simmy.Fault.FaultStrategyOptions.html
-  commentId: T:Polly.Simmy.Fault.FaultStrategyOptions
-  fullName: Polly.Simmy.Fault.FaultStrategyOptions
-  nameWithType: FaultStrategyOptions
-- uid: Polly.Simmy.Fault.FaultStrategyOptions.#ctor
-  name: FaultStrategyOptions()
-  href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions__ctor
-  commentId: M:Polly.Simmy.Fault.FaultStrategyOptions.#ctor
-  name.vb: New()
-  fullName: Polly.Simmy.Fault.FaultStrategyOptions.FaultStrategyOptions()
-  fullName.vb: Polly.Simmy.Fault.FaultStrategyOptions.New()
-  nameWithType: FaultStrategyOptions.FaultStrategyOptions()
-  nameWithType.vb: FaultStrategyOptions.New()
-- uid: Polly.Simmy.Fault.FaultStrategyOptions.#ctor*
-  name: FaultStrategyOptions
-  href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions__ctor_
-  commentId: Overload:Polly.Simmy.Fault.FaultStrategyOptions.#ctor
-  isSpec: "True"
-  name.vb: New
-  fullName: Polly.Simmy.Fault.FaultStrategyOptions.FaultStrategyOptions
-  fullName.vb: Polly.Simmy.Fault.FaultStrategyOptions.New
-  nameWithType: FaultStrategyOptions.FaultStrategyOptions
-  nameWithType.vb: FaultStrategyOptions.New
-- uid: Polly.Simmy.Fault.FaultStrategyOptions.FaultGenerator
-  name: FaultGenerator
-  href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions_FaultGenerator
-  commentId: P:Polly.Simmy.Fault.FaultStrategyOptions.FaultGenerator
-  fullName: Polly.Simmy.Fault.FaultStrategyOptions.FaultGenerator
-  nameWithType: FaultStrategyOptions.FaultGenerator
-- uid: Polly.Simmy.Fault.FaultStrategyOptions.FaultGenerator*
-  name: FaultGenerator
-  href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions_FaultGenerator_
-  commentId: Overload:Polly.Simmy.Fault.FaultStrategyOptions.FaultGenerator
-  isSpec: "True"
-  fullName: Polly.Simmy.Fault.FaultStrategyOptions.FaultGenerator
-  nameWithType: FaultStrategyOptions.FaultGenerator
-- uid: Polly.Simmy.Fault.FaultStrategyOptions.OnFaultInjected
-  name: OnFaultInjected
-  href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions_OnFaultInjected
-  commentId: P:Polly.Simmy.Fault.FaultStrategyOptions.OnFaultInjected
-  fullName: Polly.Simmy.Fault.FaultStrategyOptions.OnFaultInjected
-  nameWithType: FaultStrategyOptions.OnFaultInjected
-- uid: Polly.Simmy.Fault.FaultStrategyOptions.OnFaultInjected*
-  name: OnFaultInjected
-  href: api/Polly.Simmy.Fault.FaultStrategyOptions.html#Polly_Simmy_Fault_FaultStrategyOptions_OnFaultInjected_
-  commentId: Overload:Polly.Simmy.Fault.FaultStrategyOptions.OnFaultInjected
-  isSpec: "True"
-  fullName: Polly.Simmy.Fault.FaultStrategyOptions.OnFaultInjected
-  nameWithType: FaultStrategyOptions.OnFaultInjected
 - uid: Polly.Simmy.Fault.OnFaultInjectedArguments
   name: OnFaultInjectedArguments
   href: api/Polly.Simmy.Fault.OnFaultInjectedArguments.html
@@ -4685,37 +4961,6 @@ references:
   isSpec: "True"
   fullName: Polly.Simmy.Fault.OnFaultInjectedArguments.Fault
   nameWithType: OnFaultInjectedArguments.Fault
-- uid: Polly.Simmy.FaultPipelineBuilderExtensions
-  name: FaultPipelineBuilderExtensions
-  href: api/Polly.Simmy.FaultPipelineBuilderExtensions.html
-  commentId: T:Polly.Simmy.FaultPipelineBuilderExtensions
-  fullName: Polly.Simmy.FaultPipelineBuilderExtensions
-  nameWithType: FaultPipelineBuilderExtensions
-- uid: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault*
-  name: AddChaosFault
-  href: api/Polly.Simmy.FaultPipelineBuilderExtensions.html#Polly_Simmy_FaultPipelineBuilderExtensions_AddChaosFault_
-  commentId: Overload:Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault
-  isSpec: "True"
-  fullName: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault
-  nameWithType: FaultPipelineBuilderExtensions.AddChaosFault
-- uid: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault``1(``0,Polly.Simmy.Fault.FaultStrategyOptions)
-  name: AddChaosFault<TBuilder>(TBuilder, FaultStrategyOptions)
-  href: api/Polly.Simmy.FaultPipelineBuilderExtensions.html#Polly_Simmy_FaultPipelineBuilderExtensions_AddChaosFault__1___0_Polly_Simmy_Fault_FaultStrategyOptions_
-  commentId: M:Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault``1(``0,Polly.Simmy.Fault.FaultStrategyOptions)
-  name.vb: AddChaosFault(Of TBuilder)(TBuilder, FaultStrategyOptions)
-  fullName: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(TBuilder, Polly.Simmy.Fault.FaultStrategyOptions)
-  fullName.vb: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, Polly.Simmy.Fault.FaultStrategyOptions)
-  nameWithType: FaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(TBuilder, FaultStrategyOptions)
-  nameWithType.vb: FaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, FaultStrategyOptions)
-- uid: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault``1(``0,System.Double,System.Func{System.Exception})
-  name: AddChaosFault<TBuilder>(TBuilder, double, Func<Exception?>)
-  href: api/Polly.Simmy.FaultPipelineBuilderExtensions.html#Polly_Simmy_FaultPipelineBuilderExtensions_AddChaosFault__1___0_System_Double_System_Func_System_Exception__
-  commentId: M:Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault``1(``0,System.Double,System.Func{System.Exception})
-  name.vb: AddChaosFault(Of TBuilder)(TBuilder, Double, Func(Of Exception))
-  fullName: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(TBuilder, double, System.Func<System.Exception?>)
-  fullName.vb: Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, Double, System.Func(Of System.Exception))
-  nameWithType: FaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(TBuilder, double, Func<Exception?>)
-  nameWithType.vb: FaultPipelineBuilderExtensions.AddChaosFault(Of TBuilder)(TBuilder, Double, Func(Of Exception))
 - uid: Polly.Simmy.InjectionRateGeneratorArguments
   name: InjectionRateGeneratorArguments
   href: api/Polly.Simmy.InjectionRateGeneratorArguments.html
@@ -4760,6 +5005,70 @@ references:
   commentId: N:Polly.Simmy.Latency
   fullName: Polly.Simmy.Latency
   nameWithType: Polly.Simmy.Latency
+- uid: Polly.Simmy.Latency.ChaosLatencyStrategyOptions
+  name: ChaosLatencyStrategyOptions
+  href: api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html
+  commentId: T:Polly.Simmy.Latency.ChaosLatencyStrategyOptions
+  fullName: Polly.Simmy.Latency.ChaosLatencyStrategyOptions
+  nameWithType: ChaosLatencyStrategyOptions
+- uid: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.#ctor
+  name: ChaosLatencyStrategyOptions()
+  href: api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html#Polly_Simmy_Latency_ChaosLatencyStrategyOptions__ctor
+  commentId: M:Polly.Simmy.Latency.ChaosLatencyStrategyOptions.#ctor
+  name.vb: New()
+  fullName: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.ChaosLatencyStrategyOptions()
+  fullName.vb: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.New()
+  nameWithType: ChaosLatencyStrategyOptions.ChaosLatencyStrategyOptions()
+  nameWithType.vb: ChaosLatencyStrategyOptions.New()
+- uid: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.#ctor*
+  name: ChaosLatencyStrategyOptions
+  href: api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html#Polly_Simmy_Latency_ChaosLatencyStrategyOptions__ctor_
+  commentId: Overload:Polly.Simmy.Latency.ChaosLatencyStrategyOptions.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.ChaosLatencyStrategyOptions
+  fullName.vb: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.New
+  nameWithType: ChaosLatencyStrategyOptions.ChaosLatencyStrategyOptions
+  nameWithType.vb: ChaosLatencyStrategyOptions.New
+- uid: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.Latency
+  name: Latency
+  href: api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html#Polly_Simmy_Latency_ChaosLatencyStrategyOptions_Latency
+  commentId: P:Polly.Simmy.Latency.ChaosLatencyStrategyOptions.Latency
+  fullName: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.Latency
+  nameWithType: ChaosLatencyStrategyOptions.Latency
+- uid: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.Latency*
+  name: Latency
+  href: api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html#Polly_Simmy_Latency_ChaosLatencyStrategyOptions_Latency_
+  commentId: Overload:Polly.Simmy.Latency.ChaosLatencyStrategyOptions.Latency
+  isSpec: "True"
+  fullName: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.Latency
+  nameWithType: ChaosLatencyStrategyOptions.Latency
+- uid: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.LatencyGenerator
+  name: LatencyGenerator
+  href: api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html#Polly_Simmy_Latency_ChaosLatencyStrategyOptions_LatencyGenerator
+  commentId: P:Polly.Simmy.Latency.ChaosLatencyStrategyOptions.LatencyGenerator
+  fullName: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.LatencyGenerator
+  nameWithType: ChaosLatencyStrategyOptions.LatencyGenerator
+- uid: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.LatencyGenerator*
+  name: LatencyGenerator
+  href: api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html#Polly_Simmy_Latency_ChaosLatencyStrategyOptions_LatencyGenerator_
+  commentId: Overload:Polly.Simmy.Latency.ChaosLatencyStrategyOptions.LatencyGenerator
+  isSpec: "True"
+  fullName: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.LatencyGenerator
+  nameWithType: ChaosLatencyStrategyOptions.LatencyGenerator
+- uid: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.OnLatencyInjected
+  name: OnLatencyInjected
+  href: api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html#Polly_Simmy_Latency_ChaosLatencyStrategyOptions_OnLatencyInjected
+  commentId: P:Polly.Simmy.Latency.ChaosLatencyStrategyOptions.OnLatencyInjected
+  fullName: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.OnLatencyInjected
+  nameWithType: ChaosLatencyStrategyOptions.OnLatencyInjected
+- uid: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.OnLatencyInjected*
+  name: OnLatencyInjected
+  href: api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html#Polly_Simmy_Latency_ChaosLatencyStrategyOptions_OnLatencyInjected_
+  commentId: Overload:Polly.Simmy.Latency.ChaosLatencyStrategyOptions.OnLatencyInjected
+  isSpec: "True"
+  fullName: Polly.Simmy.Latency.ChaosLatencyStrategyOptions.OnLatencyInjected
+  nameWithType: ChaosLatencyStrategyOptions.OnLatencyInjected
 - uid: Polly.Simmy.Latency.LatencyGeneratorArguments
   name: LatencyGeneratorArguments
   href: api/Polly.Simmy.Latency.LatencyGeneratorArguments.html
@@ -4798,70 +5107,6 @@ references:
   isSpec: "True"
   fullName: Polly.Simmy.Latency.LatencyGeneratorArguments.Context
   nameWithType: LatencyGeneratorArguments.Context
-- uid: Polly.Simmy.Latency.LatencyStrategyOptions
-  name: LatencyStrategyOptions
-  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html
-  commentId: T:Polly.Simmy.Latency.LatencyStrategyOptions
-  fullName: Polly.Simmy.Latency.LatencyStrategyOptions
-  nameWithType: LatencyStrategyOptions
-- uid: Polly.Simmy.Latency.LatencyStrategyOptions.#ctor
-  name: LatencyStrategyOptions()
-  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions__ctor
-  commentId: M:Polly.Simmy.Latency.LatencyStrategyOptions.#ctor
-  name.vb: New()
-  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.LatencyStrategyOptions()
-  fullName.vb: Polly.Simmy.Latency.LatencyStrategyOptions.New()
-  nameWithType: LatencyStrategyOptions.LatencyStrategyOptions()
-  nameWithType.vb: LatencyStrategyOptions.New()
-- uid: Polly.Simmy.Latency.LatencyStrategyOptions.#ctor*
-  name: LatencyStrategyOptions
-  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions__ctor_
-  commentId: Overload:Polly.Simmy.Latency.LatencyStrategyOptions.#ctor
-  isSpec: "True"
-  name.vb: New
-  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.LatencyStrategyOptions
-  fullName.vb: Polly.Simmy.Latency.LatencyStrategyOptions.New
-  nameWithType: LatencyStrategyOptions.LatencyStrategyOptions
-  nameWithType.vb: LatencyStrategyOptions.New
-- uid: Polly.Simmy.Latency.LatencyStrategyOptions.Latency
-  name: Latency
-  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions_Latency
-  commentId: P:Polly.Simmy.Latency.LatencyStrategyOptions.Latency
-  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.Latency
-  nameWithType: LatencyStrategyOptions.Latency
-- uid: Polly.Simmy.Latency.LatencyStrategyOptions.Latency*
-  name: Latency
-  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions_Latency_
-  commentId: Overload:Polly.Simmy.Latency.LatencyStrategyOptions.Latency
-  isSpec: "True"
-  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.Latency
-  nameWithType: LatencyStrategyOptions.Latency
-- uid: Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator
-  name: LatencyGenerator
-  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions_LatencyGenerator
-  commentId: P:Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator
-  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator
-  nameWithType: LatencyStrategyOptions.LatencyGenerator
-- uid: Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator*
-  name: LatencyGenerator
-  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions_LatencyGenerator_
-  commentId: Overload:Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator
-  isSpec: "True"
-  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.LatencyGenerator
-  nameWithType: LatencyStrategyOptions.LatencyGenerator
-- uid: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected
-  name: OnLatencyInjected
-  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions_OnLatencyInjected
-  commentId: P:Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected
-  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected
-  nameWithType: LatencyStrategyOptions.OnLatencyInjected
-- uid: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected*
-  name: OnLatencyInjected
-  href: api/Polly.Simmy.Latency.LatencyStrategyOptions.html#Polly_Simmy_Latency_LatencyStrategyOptions_OnLatencyInjected_
-  commentId: Overload:Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected
-  isSpec: "True"
-  fullName: Polly.Simmy.Latency.LatencyStrategyOptions.OnLatencyInjected
-  nameWithType: LatencyStrategyOptions.OnLatencyInjected
 - uid: Polly.Simmy.Latency.OnLatencyInjectedArguments
   name: OnLatencyInjectedArguments
   href: api/Polly.Simmy.Latency.OnLatencyInjectedArguments.html
@@ -4913,257 +5158,74 @@ references:
   isSpec: "True"
   fullName: Polly.Simmy.Latency.OnLatencyInjectedArguments.Latency
   nameWithType: OnLatencyInjectedArguments.Latency
-- uid: Polly.Simmy.LatencyPipelineBuilderExtensions
-  name: LatencyPipelineBuilderExtensions
-  href: api/Polly.Simmy.LatencyPipelineBuilderExtensions.html
-  commentId: T:Polly.Simmy.LatencyPipelineBuilderExtensions
-  fullName: Polly.Simmy.LatencyPipelineBuilderExtensions
-  nameWithType: LatencyPipelineBuilderExtensions
-- uid: Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency*
-  name: AddChaosLatency
-  href: api/Polly.Simmy.LatencyPipelineBuilderExtensions.html#Polly_Simmy_LatencyPipelineBuilderExtensions_AddChaosLatency_
-  commentId: Overload:Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency
-  isSpec: "True"
-  fullName: Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency
-  nameWithType: LatencyPipelineBuilderExtensions.AddChaosLatency
-- uid: Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency``1(``0,Polly.Simmy.Latency.LatencyStrategyOptions)
-  name: AddChaosLatency<TBuilder>(TBuilder, LatencyStrategyOptions)
-  href: api/Polly.Simmy.LatencyPipelineBuilderExtensions.html#Polly_Simmy_LatencyPipelineBuilderExtensions_AddChaosLatency__1___0_Polly_Simmy_Latency_LatencyStrategyOptions_
-  commentId: M:Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency``1(``0,Polly.Simmy.Latency.LatencyStrategyOptions)
-  name.vb: AddChaosLatency(Of TBuilder)(TBuilder, LatencyStrategyOptions)
-  fullName: Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(TBuilder, Polly.Simmy.Latency.LatencyStrategyOptions)
-  fullName.vb: Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency(Of TBuilder)(TBuilder, Polly.Simmy.Latency.LatencyStrategyOptions)
-  nameWithType: LatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(TBuilder, LatencyStrategyOptions)
-  nameWithType.vb: LatencyPipelineBuilderExtensions.AddChaosLatency(Of TBuilder)(TBuilder, LatencyStrategyOptions)
-- uid: Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency``1(``0,System.Double,System.TimeSpan)
-  name: AddChaosLatency<TBuilder>(TBuilder, double, TimeSpan)
-  href: api/Polly.Simmy.LatencyPipelineBuilderExtensions.html#Polly_Simmy_LatencyPipelineBuilderExtensions_AddChaosLatency__1___0_System_Double_System_TimeSpan_
-  commentId: M:Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency``1(``0,System.Double,System.TimeSpan)
-  name.vb: AddChaosLatency(Of TBuilder)(TBuilder, Double, TimeSpan)
-  fullName: Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(TBuilder, double, System.TimeSpan)
-  fullName.vb: Polly.Simmy.LatencyPipelineBuilderExtensions.AddChaosLatency(Of TBuilder)(TBuilder, Double, System.TimeSpan)
-  nameWithType: LatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(TBuilder, double, TimeSpan)
-  nameWithType.vb: LatencyPipelineBuilderExtensions.AddChaosLatency(Of TBuilder)(TBuilder, Double, TimeSpan)
-- uid: Polly.Simmy.MonkeyStrategy
-  name: MonkeyStrategy
-  href: api/Polly.Simmy.MonkeyStrategy.html
-  commentId: T:Polly.Simmy.MonkeyStrategy
-  fullName: Polly.Simmy.MonkeyStrategy
-  nameWithType: MonkeyStrategy
-- uid: Polly.Simmy.MonkeyStrategy.#ctor(Polly.Simmy.MonkeyStrategyOptions)
-  name: MonkeyStrategy(MonkeyStrategyOptions)
-  href: api/Polly.Simmy.MonkeyStrategy.html#Polly_Simmy_MonkeyStrategy__ctor_Polly_Simmy_MonkeyStrategyOptions_
-  commentId: M:Polly.Simmy.MonkeyStrategy.#ctor(Polly.Simmy.MonkeyStrategyOptions)
-  name.vb: New(MonkeyStrategyOptions)
-  fullName: Polly.Simmy.MonkeyStrategy.MonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions)
-  fullName.vb: Polly.Simmy.MonkeyStrategy.New(Polly.Simmy.MonkeyStrategyOptions)
-  nameWithType: MonkeyStrategy.MonkeyStrategy(MonkeyStrategyOptions)
-  nameWithType.vb: MonkeyStrategy.New(MonkeyStrategyOptions)
-- uid: Polly.Simmy.MonkeyStrategy.#ctor*
-  name: MonkeyStrategy
-  href: api/Polly.Simmy.MonkeyStrategy.html#Polly_Simmy_MonkeyStrategy__ctor_
-  commentId: Overload:Polly.Simmy.MonkeyStrategy.#ctor
-  isSpec: "True"
-  name.vb: New
-  fullName: Polly.Simmy.MonkeyStrategy.MonkeyStrategy
-  fullName.vb: Polly.Simmy.MonkeyStrategy.New
-  nameWithType: MonkeyStrategy.MonkeyStrategy
-  nameWithType.vb: MonkeyStrategy.New
-- uid: Polly.Simmy.MonkeyStrategy.ShouldInjectAsync(Polly.ResilienceContext)
-  name: ShouldInjectAsync(ResilienceContext)
-  href: api/Polly.Simmy.MonkeyStrategy.html#Polly_Simmy_MonkeyStrategy_ShouldInjectAsync_Polly_ResilienceContext_
-  commentId: M:Polly.Simmy.MonkeyStrategy.ShouldInjectAsync(Polly.ResilienceContext)
-  fullName: Polly.Simmy.MonkeyStrategy.ShouldInjectAsync(Polly.ResilienceContext)
-  nameWithType: MonkeyStrategy.ShouldInjectAsync(ResilienceContext)
-- uid: Polly.Simmy.MonkeyStrategy.ShouldInjectAsync*
-  name: ShouldInjectAsync
-  href: api/Polly.Simmy.MonkeyStrategy.html#Polly_Simmy_MonkeyStrategy_ShouldInjectAsync_
-  commentId: Overload:Polly.Simmy.MonkeyStrategy.ShouldInjectAsync
-  isSpec: "True"
-  fullName: Polly.Simmy.MonkeyStrategy.ShouldInjectAsync
-  nameWithType: MonkeyStrategy.ShouldInjectAsync
-- uid: Polly.Simmy.MonkeyStrategyOptions
-  name: MonkeyStrategyOptions
-  href: api/Polly.Simmy.MonkeyStrategyOptions.html
-  commentId: T:Polly.Simmy.MonkeyStrategyOptions
-  fullName: Polly.Simmy.MonkeyStrategyOptions
-  nameWithType: MonkeyStrategyOptions
-- uid: Polly.Simmy.MonkeyStrategyOptions`1
-  name: MonkeyStrategyOptions<TResult>
-  href: api/Polly.Simmy.MonkeyStrategyOptions-1.html
-  commentId: T:Polly.Simmy.MonkeyStrategyOptions`1
-  name.vb: MonkeyStrategyOptions(Of TResult)
-  fullName: Polly.Simmy.MonkeyStrategyOptions<TResult>
-  fullName.vb: Polly.Simmy.MonkeyStrategyOptions(Of TResult)
-  nameWithType: MonkeyStrategyOptions<TResult>
-  nameWithType.vb: MonkeyStrategyOptions(Of TResult)
-- uid: Polly.Simmy.MonkeyStrategyOptions`1.Enabled
-  name: Enabled
-  href: api/Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_Enabled
-  commentId: P:Polly.Simmy.MonkeyStrategyOptions`1.Enabled
-  fullName: Polly.Simmy.MonkeyStrategyOptions<TResult>.Enabled
-  fullName.vb: Polly.Simmy.MonkeyStrategyOptions(Of TResult).Enabled
-  nameWithType: MonkeyStrategyOptions<TResult>.Enabled
-  nameWithType.vb: MonkeyStrategyOptions(Of TResult).Enabled
-- uid: Polly.Simmy.MonkeyStrategyOptions`1.Enabled*
-  name: Enabled
-  href: api/Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_Enabled_
-  commentId: Overload:Polly.Simmy.MonkeyStrategyOptions`1.Enabled
-  isSpec: "True"
-  fullName: Polly.Simmy.MonkeyStrategyOptions<TResult>.Enabled
-  fullName.vb: Polly.Simmy.MonkeyStrategyOptions(Of TResult).Enabled
-  nameWithType: MonkeyStrategyOptions<TResult>.Enabled
-  nameWithType.vb: MonkeyStrategyOptions(Of TResult).Enabled
-- uid: Polly.Simmy.MonkeyStrategyOptions`1.EnabledGenerator
-  name: EnabledGenerator
-  href: api/Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_EnabledGenerator
-  commentId: P:Polly.Simmy.MonkeyStrategyOptions`1.EnabledGenerator
-  fullName: Polly.Simmy.MonkeyStrategyOptions<TResult>.EnabledGenerator
-  fullName.vb: Polly.Simmy.MonkeyStrategyOptions(Of TResult).EnabledGenerator
-  nameWithType: MonkeyStrategyOptions<TResult>.EnabledGenerator
-  nameWithType.vb: MonkeyStrategyOptions(Of TResult).EnabledGenerator
-- uid: Polly.Simmy.MonkeyStrategyOptions`1.EnabledGenerator*
-  name: EnabledGenerator
-  href: api/Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_EnabledGenerator_
-  commentId: Overload:Polly.Simmy.MonkeyStrategyOptions`1.EnabledGenerator
-  isSpec: "True"
-  fullName: Polly.Simmy.MonkeyStrategyOptions<TResult>.EnabledGenerator
-  fullName.vb: Polly.Simmy.MonkeyStrategyOptions(Of TResult).EnabledGenerator
-  nameWithType: MonkeyStrategyOptions<TResult>.EnabledGenerator
-  nameWithType.vb: MonkeyStrategyOptions(Of TResult).EnabledGenerator
-- uid: Polly.Simmy.MonkeyStrategyOptions`1.InjectionRate
-  name: InjectionRate
-  href: api/Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_InjectionRate
-  commentId: P:Polly.Simmy.MonkeyStrategyOptions`1.InjectionRate
-  fullName: Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRate
-  fullName.vb: Polly.Simmy.MonkeyStrategyOptions(Of TResult).InjectionRate
-  nameWithType: MonkeyStrategyOptions<TResult>.InjectionRate
-  nameWithType.vb: MonkeyStrategyOptions(Of TResult).InjectionRate
-- uid: Polly.Simmy.MonkeyStrategyOptions`1.InjectionRate*
-  name: InjectionRate
-  href: api/Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_InjectionRate_
-  commentId: Overload:Polly.Simmy.MonkeyStrategyOptions`1.InjectionRate
-  isSpec: "True"
-  fullName: Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRate
-  fullName.vb: Polly.Simmy.MonkeyStrategyOptions(Of TResult).InjectionRate
-  nameWithType: MonkeyStrategyOptions<TResult>.InjectionRate
-  nameWithType.vb: MonkeyStrategyOptions(Of TResult).InjectionRate
-- uid: Polly.Simmy.MonkeyStrategyOptions`1.InjectionRateGenerator
-  name: InjectionRateGenerator
-  href: api/Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_InjectionRateGenerator
-  commentId: P:Polly.Simmy.MonkeyStrategyOptions`1.InjectionRateGenerator
-  fullName: Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRateGenerator
-  fullName.vb: Polly.Simmy.MonkeyStrategyOptions(Of TResult).InjectionRateGenerator
-  nameWithType: MonkeyStrategyOptions<TResult>.InjectionRateGenerator
-  nameWithType.vb: MonkeyStrategyOptions(Of TResult).InjectionRateGenerator
-- uid: Polly.Simmy.MonkeyStrategyOptions`1.InjectionRateGenerator*
-  name: InjectionRateGenerator
-  href: api/Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_InjectionRateGenerator_
-  commentId: Overload:Polly.Simmy.MonkeyStrategyOptions`1.InjectionRateGenerator
-  isSpec: "True"
-  fullName: Polly.Simmy.MonkeyStrategyOptions<TResult>.InjectionRateGenerator
-  fullName.vb: Polly.Simmy.MonkeyStrategyOptions(Of TResult).InjectionRateGenerator
-  nameWithType: MonkeyStrategyOptions<TResult>.InjectionRateGenerator
-  nameWithType.vb: MonkeyStrategyOptions(Of TResult).InjectionRateGenerator
-- uid: Polly.Simmy.MonkeyStrategyOptions`1.Randomizer
-  name: Randomizer
-  href: api/Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_Randomizer
-  commentId: P:Polly.Simmy.MonkeyStrategyOptions`1.Randomizer
-  fullName: Polly.Simmy.MonkeyStrategyOptions<TResult>.Randomizer
-  fullName.vb: Polly.Simmy.MonkeyStrategyOptions(Of TResult).Randomizer
-  nameWithType: MonkeyStrategyOptions<TResult>.Randomizer
-  nameWithType.vb: MonkeyStrategyOptions(Of TResult).Randomizer
-- uid: Polly.Simmy.MonkeyStrategyOptions`1.Randomizer*
-  name: Randomizer
-  href: api/Polly.Simmy.MonkeyStrategyOptions-1.html#Polly_Simmy_MonkeyStrategyOptions_1_Randomizer_
-  commentId: Overload:Polly.Simmy.MonkeyStrategyOptions`1.Randomizer
-  isSpec: "True"
-  fullName: Polly.Simmy.MonkeyStrategyOptions<TResult>.Randomizer
-  fullName.vb: Polly.Simmy.MonkeyStrategyOptions(Of TResult).Randomizer
-  nameWithType: MonkeyStrategyOptions<TResult>.Randomizer
-  nameWithType.vb: MonkeyStrategyOptions(Of TResult).Randomizer
-- uid: Polly.Simmy.MonkeyStrategy`1
-  name: MonkeyStrategy<T>
-  href: api/Polly.Simmy.MonkeyStrategy-1.html
-  commentId: T:Polly.Simmy.MonkeyStrategy`1
-  name.vb: MonkeyStrategy(Of T)
-  fullName: Polly.Simmy.MonkeyStrategy<T>
-  fullName.vb: Polly.Simmy.MonkeyStrategy(Of T)
-  nameWithType: MonkeyStrategy<T>
-  nameWithType.vb: MonkeyStrategy(Of T)
-- uid: Polly.Simmy.MonkeyStrategy`1.#ctor(Polly.Simmy.MonkeyStrategyOptions)
-  name: MonkeyStrategy(MonkeyStrategyOptions)
-  href: api/Polly.Simmy.MonkeyStrategy-1.html#Polly_Simmy_MonkeyStrategy_1__ctor_Polly_Simmy_MonkeyStrategyOptions_
-  commentId: M:Polly.Simmy.MonkeyStrategy`1.#ctor(Polly.Simmy.MonkeyStrategyOptions)
-  name.vb: New(MonkeyStrategyOptions)
-  fullName: Polly.Simmy.MonkeyStrategy<T>.MonkeyStrategy(Polly.Simmy.MonkeyStrategyOptions)
-  fullName.vb: Polly.Simmy.MonkeyStrategy(Of T).New(Polly.Simmy.MonkeyStrategyOptions)
-  nameWithType: MonkeyStrategy<T>.MonkeyStrategy(MonkeyStrategyOptions)
-  nameWithType.vb: MonkeyStrategy(Of T).New(MonkeyStrategyOptions)
-- uid: Polly.Simmy.MonkeyStrategy`1.#ctor*
-  name: MonkeyStrategy
-  href: api/Polly.Simmy.MonkeyStrategy-1.html#Polly_Simmy_MonkeyStrategy_1__ctor_
-  commentId: Overload:Polly.Simmy.MonkeyStrategy`1.#ctor
-  isSpec: "True"
-  name.vb: New
-  fullName: Polly.Simmy.MonkeyStrategy<T>.MonkeyStrategy
-  fullName.vb: Polly.Simmy.MonkeyStrategy(Of T).New
-  nameWithType: MonkeyStrategy<T>.MonkeyStrategy
-  nameWithType.vb: MonkeyStrategy(Of T).New
-- uid: Polly.Simmy.MonkeyStrategy`1.ShouldInjectAsync(Polly.ResilienceContext)
-  name: ShouldInjectAsync(ResilienceContext)
-  href: api/Polly.Simmy.MonkeyStrategy-1.html#Polly_Simmy_MonkeyStrategy_1_ShouldInjectAsync_Polly_ResilienceContext_
-  commentId: M:Polly.Simmy.MonkeyStrategy`1.ShouldInjectAsync(Polly.ResilienceContext)
-  fullName: Polly.Simmy.MonkeyStrategy<T>.ShouldInjectAsync(Polly.ResilienceContext)
-  fullName.vb: Polly.Simmy.MonkeyStrategy(Of T).ShouldInjectAsync(Polly.ResilienceContext)
-  nameWithType: MonkeyStrategy<T>.ShouldInjectAsync(ResilienceContext)
-  nameWithType.vb: MonkeyStrategy(Of T).ShouldInjectAsync(ResilienceContext)
-- uid: Polly.Simmy.MonkeyStrategy`1.ShouldInjectAsync*
-  name: ShouldInjectAsync
-  href: api/Polly.Simmy.MonkeyStrategy-1.html#Polly_Simmy_MonkeyStrategy_1_ShouldInjectAsync_
-  commentId: Overload:Polly.Simmy.MonkeyStrategy`1.ShouldInjectAsync
-  isSpec: "True"
-  fullName: Polly.Simmy.MonkeyStrategy<T>.ShouldInjectAsync
-  fullName.vb: Polly.Simmy.MonkeyStrategy(Of T).ShouldInjectAsync
-  nameWithType: MonkeyStrategy<T>.ShouldInjectAsync
-  nameWithType.vb: MonkeyStrategy(Of T).ShouldInjectAsync
-- uid: Polly.Simmy.OutcomePipelineBuilderExtensions
-  name: OutcomePipelineBuilderExtensions
-  href: api/Polly.Simmy.OutcomePipelineBuilderExtensions.html
-  commentId: T:Polly.Simmy.OutcomePipelineBuilderExtensions
-  fullName: Polly.Simmy.OutcomePipelineBuilderExtensions
-  nameWithType: OutcomePipelineBuilderExtensions
-- uid: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult*
-  name: AddChaosResult
-  href: api/Polly.Simmy.OutcomePipelineBuilderExtensions.html#Polly_Simmy_OutcomePipelineBuilderExtensions_AddChaosResult_
-  commentId: Overload:Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult
-  isSpec: "True"
-  fullName: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult
-  nameWithType: OutcomePipelineBuilderExtensions.AddChaosResult
-- uid: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult``1(Polly.ResiliencePipelineBuilder{``0},Polly.Simmy.Outcomes.OutcomeStrategyOptions{``0})
-  name: AddChaosResult<TResult>(ResiliencePipelineBuilder<TResult>, OutcomeStrategyOptions<TResult>)
-  href: api/Polly.Simmy.OutcomePipelineBuilderExtensions.html#Polly_Simmy_OutcomePipelineBuilderExtensions_AddChaosResult__1_Polly_ResiliencePipelineBuilder___0__Polly_Simmy_Outcomes_OutcomeStrategyOptions___0__
-  commentId: M:Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult``1(Polly.ResiliencePipelineBuilder{``0},Polly.Simmy.Outcomes.OutcomeStrategyOptions{``0})
-  name.vb: AddChaosResult(Of TResult)(ResiliencePipelineBuilder(Of TResult), OutcomeStrategyOptions(Of TResult))
-  fullName: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult<TResult>(Polly.ResiliencePipelineBuilder<TResult>, Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>)
-  fullName.vb: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult(Of TResult)(Polly.ResiliencePipelineBuilder(Of TResult), Polly.Simmy.Outcomes.OutcomeStrategyOptions(Of TResult))
-  nameWithType: OutcomePipelineBuilderExtensions.AddChaosResult<TResult>(ResiliencePipelineBuilder<TResult>, OutcomeStrategyOptions<TResult>)
-  nameWithType.vb: OutcomePipelineBuilderExtensions.AddChaosResult(Of TResult)(ResiliencePipelineBuilder(Of TResult), OutcomeStrategyOptions(Of TResult))
-- uid: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult``1(Polly.ResiliencePipelineBuilder{``0},System.Double,System.Func{``0})
-  name: AddChaosResult<TResult>(ResiliencePipelineBuilder<TResult>, double, Func<TResult?>)
-  href: api/Polly.Simmy.OutcomePipelineBuilderExtensions.html#Polly_Simmy_OutcomePipelineBuilderExtensions_AddChaosResult__1_Polly_ResiliencePipelineBuilder___0__System_Double_System_Func___0__
-  commentId: M:Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult``1(Polly.ResiliencePipelineBuilder{``0},System.Double,System.Func{``0})
-  name.vb: AddChaosResult(Of TResult)(ResiliencePipelineBuilder(Of TResult), Double, Func(Of TResult))
-  fullName: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult<TResult>(Polly.ResiliencePipelineBuilder<TResult>, double, System.Func<TResult?>)
-  fullName.vb: Polly.Simmy.OutcomePipelineBuilderExtensions.AddChaosResult(Of TResult)(Polly.ResiliencePipelineBuilder(Of TResult), Double, System.Func(Of TResult))
-  nameWithType: OutcomePipelineBuilderExtensions.AddChaosResult<TResult>(ResiliencePipelineBuilder<TResult>, double, Func<TResult?>)
-  nameWithType.vb: OutcomePipelineBuilderExtensions.AddChaosResult(Of TResult)(ResiliencePipelineBuilder(Of TResult), Double, Func(Of TResult))
 - uid: Polly.Simmy.Outcomes
   name: Polly.Simmy.Outcomes
   href: api/Polly.Simmy.Outcomes.html
   commentId: N:Polly.Simmy.Outcomes
   fullName: Polly.Simmy.Outcomes
   nameWithType: Polly.Simmy.Outcomes
+- uid: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1
+  name: ChaosOutcomeStrategyOptions<TResult>
+  href: api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html
+  commentId: T:Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1
+  name.vb: ChaosOutcomeStrategyOptions(Of TResult)
+  fullName: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>
+  fullName.vb: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions(Of TResult)
+  nameWithType: ChaosOutcomeStrategyOptions<TResult>
+  nameWithType.vb: ChaosOutcomeStrategyOptions(Of TResult)
+- uid: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.#ctor
+  name: ChaosOutcomeStrategyOptions()
+  href: api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_ChaosOutcomeStrategyOptions_1__ctor
+  commentId: M:Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.#ctor
+  name.vb: New()
+  fullName: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.ChaosOutcomeStrategyOptions()
+  fullName.vb: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions(Of TResult).New()
+  nameWithType: ChaosOutcomeStrategyOptions<TResult>.ChaosOutcomeStrategyOptions()
+  nameWithType.vb: ChaosOutcomeStrategyOptions(Of TResult).New()
+- uid: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.#ctor*
+  name: ChaosOutcomeStrategyOptions
+  href: api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_ChaosOutcomeStrategyOptions_1__ctor_
+  commentId: Overload:Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.ChaosOutcomeStrategyOptions
+  fullName.vb: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions(Of TResult).New
+  nameWithType: ChaosOutcomeStrategyOptions<TResult>.ChaosOutcomeStrategyOptions
+  nameWithType.vb: ChaosOutcomeStrategyOptions(Of TResult).New
+- uid: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.OnOutcomeInjected
+  name: OnOutcomeInjected
+  href: api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_ChaosOutcomeStrategyOptions_1_OnOutcomeInjected
+  commentId: P:Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.OnOutcomeInjected
+  fullName: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected
+  fullName.vb: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions(Of TResult).OnOutcomeInjected
+  nameWithType: ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected
+  nameWithType.vb: ChaosOutcomeStrategyOptions(Of TResult).OnOutcomeInjected
+- uid: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.OnOutcomeInjected*
+  name: OnOutcomeInjected
+  href: api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_ChaosOutcomeStrategyOptions_1_OnOutcomeInjected_
+  commentId: Overload:Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.OnOutcomeInjected
+  isSpec: "True"
+  fullName: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected
+  fullName.vb: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions(Of TResult).OnOutcomeInjected
+  nameWithType: ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected
+  nameWithType.vb: ChaosOutcomeStrategyOptions(Of TResult).OnOutcomeInjected
+- uid: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.OutcomeGenerator
+  name: OutcomeGenerator
+  href: api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_ChaosOutcomeStrategyOptions_1_OutcomeGenerator
+  commentId: P:Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.OutcomeGenerator
+  fullName: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator
+  fullName.vb: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions(Of TResult).OutcomeGenerator
+  nameWithType: ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator
+  nameWithType.vb: ChaosOutcomeStrategyOptions(Of TResult).OutcomeGenerator
+- uid: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.OutcomeGenerator*
+  name: OutcomeGenerator
+  href: api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_ChaosOutcomeStrategyOptions_1_OutcomeGenerator_
+  commentId: Overload:Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.OutcomeGenerator
+  isSpec: "True"
+  fullName: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator
+  fullName.vb: Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions(Of TResult).OutcomeGenerator
+  nameWithType: ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator
+  nameWithType.vb: ChaosOutcomeStrategyOptions(Of TResult).OutcomeGenerator
 - uid: Polly.Simmy.Outcomes.OnOutcomeInjectedArguments`1
   name: OnOutcomeInjectedArguments<TResult>
   href: api/Polly.Simmy.Outcomes.OnOutcomeInjectedArguments-1.html
@@ -5355,68 +5417,6 @@ references:
   fullName.vb: Polly.Simmy.Outcomes.OutcomeGenerator(Of TResult).AddResult
   nameWithType: OutcomeGenerator<TResult>.AddResult
   nameWithType.vb: OutcomeGenerator(Of TResult).AddResult
-- uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions`1
-  name: OutcomeStrategyOptions<TResult>
-  href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html
-  commentId: T:Polly.Simmy.Outcomes.OutcomeStrategyOptions`1
-  name.vb: OutcomeStrategyOptions(Of TResult)
-  fullName: Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>
-  fullName.vb: Polly.Simmy.Outcomes.OutcomeStrategyOptions(Of TResult)
-  nameWithType: OutcomeStrategyOptions<TResult>
-  nameWithType.vb: OutcomeStrategyOptions(Of TResult)
-- uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.#ctor
-  name: OutcomeStrategyOptions()
-  href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1__ctor
-  commentId: M:Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.#ctor
-  name.vb: New()
-  fullName: Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OutcomeStrategyOptions()
-  fullName.vb: Polly.Simmy.Outcomes.OutcomeStrategyOptions(Of TResult).New()
-  nameWithType: OutcomeStrategyOptions<TResult>.OutcomeStrategyOptions()
-  nameWithType.vb: OutcomeStrategyOptions(Of TResult).New()
-- uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.#ctor*
-  name: OutcomeStrategyOptions
-  href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1__ctor_
-  commentId: Overload:Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.#ctor
-  isSpec: "True"
-  name.vb: New
-  fullName: Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OutcomeStrategyOptions
-  fullName.vb: Polly.Simmy.Outcomes.OutcomeStrategyOptions(Of TResult).New
-  nameWithType: OutcomeStrategyOptions<TResult>.OutcomeStrategyOptions
-  nameWithType.vb: OutcomeStrategyOptions(Of TResult).New
-- uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.OnOutcomeInjected
-  name: OnOutcomeInjected
-  href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1_OnOutcomeInjected
-  commentId: P:Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.OnOutcomeInjected
-  fullName: Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OnOutcomeInjected
-  fullName.vb: Polly.Simmy.Outcomes.OutcomeStrategyOptions(Of TResult).OnOutcomeInjected
-  nameWithType: OutcomeStrategyOptions<TResult>.OnOutcomeInjected
-  nameWithType.vb: OutcomeStrategyOptions(Of TResult).OnOutcomeInjected
-- uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.OnOutcomeInjected*
-  name: OnOutcomeInjected
-  href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1_OnOutcomeInjected_
-  commentId: Overload:Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.OnOutcomeInjected
-  isSpec: "True"
-  fullName: Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OnOutcomeInjected
-  fullName.vb: Polly.Simmy.Outcomes.OutcomeStrategyOptions(Of TResult).OnOutcomeInjected
-  nameWithType: OutcomeStrategyOptions<TResult>.OnOutcomeInjected
-  nameWithType.vb: OutcomeStrategyOptions(Of TResult).OnOutcomeInjected
-- uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.OutcomeGenerator
-  name: OutcomeGenerator
-  href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1_OutcomeGenerator
-  commentId: P:Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.OutcomeGenerator
-  fullName: Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OutcomeGenerator
-  fullName.vb: Polly.Simmy.Outcomes.OutcomeStrategyOptions(Of TResult).OutcomeGenerator
-  nameWithType: OutcomeStrategyOptions<TResult>.OutcomeGenerator
-  nameWithType.vb: OutcomeStrategyOptions(Of TResult).OutcomeGenerator
-- uid: Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.OutcomeGenerator*
-  name: OutcomeGenerator
-  href: api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html#Polly_Simmy_Outcomes_OutcomeStrategyOptions_1_OutcomeGenerator_
-  commentId: Overload:Polly.Simmy.Outcomes.OutcomeStrategyOptions`1.OutcomeGenerator
-  isSpec: "True"
-  fullName: Polly.Simmy.Outcomes.OutcomeStrategyOptions<TResult>.OutcomeGenerator
-  fullName.vb: Polly.Simmy.Outcomes.OutcomeStrategyOptions(Of TResult).OutcomeGenerator
-  nameWithType: OutcomeStrategyOptions<TResult>.OutcomeGenerator
-  nameWithType.vb: OutcomeStrategyOptions(Of TResult).OutcomeGenerator
 - uid: Polly.StrategyBuilderContext
   name: StrategyBuilderContext
   href: api/Polly.StrategyBuilderContext.html

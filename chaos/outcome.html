@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/main/docs/chaos/result.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/main/docs/chaos/outcome.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -95,19 +95,19 @@
 <ul>
 <li><strong>Options</strong>:
 <ul>
-<li><a href="xref:Polly.Simmy.Outcomes.OutcomeStrategyOptions"><code>OutcomeStrategyOptions</code></a></li>
-<li><a class="xref" href="../api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html"><code>OutcomeStrategyOptions&lt;T&gt;</code></a></li>
+<li><a href="xref:Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions"><code>ChaosOutcomeStrategyOptions</code></a></li>
+<li><a class="xref" href="../api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html"><code>ChaosOutcomeStrategyOptions&lt;T&gt;</code></a></li>
 </ul>
 </li>
-<li><strong>Extensions</strong>: <code>AddChaosResult</code></li>
+<li><strong>Extensions</strong>: <code>AddChaosOutcome</code></li>
 <li><strong>Strategy Type</strong>: Reactive</li>
 </ul>
 <hr>
 <p>The outcome chaos strategy is designed to inject or substitute fake results into system operations. This allows testing how an application behaves when it receives different types of responses, like successful results, errors, or exceptions.</p>
 <h2 id="usage">Usage</h2>
-<!-- snippet: chaos-result-usage -->
+<!-- snippet: chaos-outcome-usage -->
 <pre><code class="lang-cs">// To use OutcomeGenerator&lt;T&gt; to register the results and exceptions to be injected (equal probability)
-var optionsWithResultGenerator = new OutcomeStrategyOptions&lt;HttpResponseMessage&gt;
+var optionsWithResultGenerator = new ChaosOutcomeStrategyOptions&lt;HttpResponseMessage&gt;
 {
     OutcomeGenerator = new OutcomeGenerator&lt;HttpResponseMessage&gt;()
         .AddResult(() =&gt; new HttpResponseMessage(HttpStatusCode.TooManyRequests))
@@ -118,7 +118,7 @@ var optionsWithResultGenerator = new OutcomeStrategyOptions&lt;HttpResponseMessa
 };
 
 // To get notifications when a result is injected
-var optionsOnBehaviorInjected = new OutcomeStrategyOptions&lt;HttpResponseMessage&gt;
+var optionsOnBehaviorInjected = new ChaosOutcomeStrategyOptions&lt;HttpResponseMessage&gt;
 {
     OutcomeGenerator = new OutcomeGenerator&lt;HttpResponseMessage&gt;()
         .AddResult(() =&gt; new HttpResponseMessage(HttpStatusCode.InternalServerError)),
@@ -131,16 +131,16 @@ var optionsOnBehaviorInjected = new OutcomeStrategyOptions&lt;HttpResponseMessag
     }
 };
 
-// Add a result strategy with a OutcomeStrategyOptions{&lt;TResult&gt;} instance to the pipeline
-new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(optionsWithResultGenerator);
-new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(optionsOnBehaviorInjected);
+// Add a result strategy with a ChaosOutcomeStrategyOptions{&lt;TResult&gt;} instance to the pipeline
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosOutcome(optionsWithResultGenerator);
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosOutcome(optionsOnBehaviorInjected);
 
 // There are also a couple of handy overloads to inject the chaos easily
-new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(0.1, () =&gt; new HttpResponseMessage(HttpStatusCode.TooManyRequests));
+new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosOutcome(0.1, () =&gt; new HttpResponseMessage(HttpStatusCode.TooManyRequests));
 </code></pre>
 <!-- endSnippet -->
 <p>Example execution:</p>
-<!-- snippet: chaos-result-execution -->
+<!-- snippet: chaos-outcome-execution -->
 <pre><code class="lang-cs">var pipeline = new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
     .AddRetry(new RetryStrategyOptions&lt;HttpResponseMessage&gt;
     {
@@ -154,7 +154,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(0.1, (
         MaxRetryAttempts = 4,
         Delay = TimeSpan.FromSeconds(3),
     })
-    .AddChaosResult(new OutcomeStrategyOptions&lt;HttpResponseMessage&gt; // Chaos strategies are usually placed as the last ones in the pipeline
+    .AddChaosOutcome(new ChaosOutcomeStrategyOptions&lt;HttpResponseMessage&gt; // Chaos strategies are usually placed as the last ones in the pipeline
     {
         OutcomeGenerator = static args =&gt;
         {
@@ -230,7 +230,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(0.1, (
 <p>The <code>OutcomeGenerator&lt;T&gt;</code> is a convenience API that allows you to specify what outcomes (results or exceptions) are to be injected. Additionally, it also allows assigning weight to each registered outcome.</p>
 <!-- snippet: chaos-outcome-generator-class -->
 <pre><code class="lang-cs">new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
-    .AddChaosResult(new OutcomeStrategyOptions&lt;HttpResponseMessage&gt;
+    .AddChaosOutcome(new ChaosOutcomeStrategyOptions&lt;HttpResponseMessage&gt;
     {
         // Use OutcomeGenerator&lt;T&gt; to register the results and exceptions to be injected
         OutcomeGenerator = new OutcomeGenerator&lt;HttpResponseMessage&gt;()
@@ -245,7 +245,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(0.1, (
 <p>Delegates give you the most flexibility at the expense of slightly more complicated syntax. Delegates also support asynchronous outcome generation, if you ever need that possibility.</p>
 <!-- snippet: chaos-outcome-generator-delegate -->
 <pre><code class="lang-cs">new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;()
-    .AddChaosResult(new OutcomeStrategyOptions&lt;HttpResponseMessage&gt;
+    .AddChaosOutcome(new ChaosOutcomeStrategyOptions&lt;HttpResponseMessage&gt;
     {
         // The same behavior can be achieved with delegates
         OutcomeGenerator = args =&gt;
@@ -268,7 +268,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosResult(0.1, (
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/App-vNext/Polly/blob/main/docs/chaos/result.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/App-vNext/Polly/blob/main/docs/chaos/outcome.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>

@@ -782,10 +782,10 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.Behavior.BehaviorStrategyOptions.yml",
+      "source_relative_path": "api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Polly.Simmy.Behavior.BehaviorStrategyOptions.html"
+          "relative_path": "api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html"
         }
       },
       "version": ""
@@ -812,10 +812,80 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.BehaviorPipelineBuilderExtensions.yml",
+      "source_relative_path": "api/Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Polly.Simmy.BehaviorPipelineBuilderExtensions.html"
+          "relative_path": "api/Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Polly.Simmy.ChaosFaultPipelineBuilderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.Simmy.ChaosFaultPipelineBuilderExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Polly.Simmy.ChaosStrategy-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.Simmy.ChaosStrategy-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Polly.Simmy.ChaosStrategy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.Simmy.ChaosStrategy.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Polly.Simmy.ChaosStrategyOptions-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.Simmy.ChaosStrategyOptions-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Polly.Simmy.ChaosStrategyOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.Simmy.ChaosStrategyOptions.html"
         }
       },
       "version": ""
@@ -826,6 +896,16 @@
       "output": {
         ".html": {
           "relative_path": "api/Polly.Simmy.EnabledGeneratorArguments.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html"
         }
       },
       "version": ""
@@ -852,16 +932,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.Fault.FaultStrategyOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Simmy.Fault.FaultStrategyOptions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Polly.Simmy.Fault.OnFaultInjectedArguments.yml",
       "output": {
         ".html": {
@@ -882,16 +952,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.FaultPipelineBuilderExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Simmy.FaultPipelineBuilderExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Polly.Simmy.InjectionRateGeneratorArguments.yml",
       "output": {
         ".html": {
@@ -902,20 +962,20 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.Latency.LatencyGeneratorArguments.yml",
+      "source_relative_path": "api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Polly.Simmy.Latency.LatencyGeneratorArguments.html"
+          "relative_path": "api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html"
         }
       },
       "version": ""
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.Latency.LatencyStrategyOptions.yml",
+      "source_relative_path": "api/Polly.Simmy.Latency.LatencyGeneratorArguments.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Polly.Simmy.Latency.LatencyStrategyOptions.html"
+          "relative_path": "api/Polly.Simmy.Latency.LatencyGeneratorArguments.html"
         }
       },
       "version": ""
@@ -942,60 +1002,10 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.LatencyPipelineBuilderExtensions.yml",
+      "source_relative_path": "api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Polly.Simmy.LatencyPipelineBuilderExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.MonkeyStrategy-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Simmy.MonkeyStrategy-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.MonkeyStrategy.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Simmy.MonkeyStrategy.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.MonkeyStrategyOptions-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Simmy.MonkeyStrategyOptions-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.MonkeyStrategyOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Simmy.MonkeyStrategyOptions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.OutcomePipelineBuilderExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Simmy.OutcomePipelineBuilderExtensions.html"
+          "relative_path": "api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html"
         }
       },
       "version": ""
@@ -1026,16 +1036,6 @@
       "output": {
         ".html": {
           "relative_path": "api/Polly.Simmy.Outcomes.OutcomeGeneratorArguments.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Simmy.Outcomes.OutcomeStrategyOptions-1.html"
         }
       },
       "version": ""
@@ -1415,10 +1415,10 @@
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "chaos/result.md",
+      "source_relative_path": "chaos/outcome.md",
       "output": {
         ".html": {
-          "relative_path": "chaos/result.html"
+          "relative_path": "chaos/outcome.html"
         }
       },
       "version": ""

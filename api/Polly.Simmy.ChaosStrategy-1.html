@@ -2,13 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-      <title>Class FaultPipelineBuilderExtensions
+      <title>Class ChaosStrategy&lt;T&gt;
  | Polly </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Class FaultPipelineBuilderExtensions
+      <meta name="title" content="Class ChaosStrategy&lt;T&gt;
  | Polly ">
       
-      <meta name="description" content="Extension methods for adding outcome to a .">
+      <meta name="description" content="This base strategy class is used to simplify the implementation of generic (reactive) strategies by limiting the number of generic types the execute method receives.">
       <link rel="icon" href="../icon.png">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -18,7 +18,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/new/main/apiSpec/new?filename=Polly_Simmy_FaultPipelineBuilderExtensions.md&amp;value=---%0Auid%3A%20Polly.Simmy.FaultPipelineBuilderExtensions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/new/main/apiSpec/new?filename=Polly_Simmy_ChaosStrategy_1.md&amp;value=---%0Auid%3A%20Polly.Simmy.ChaosStrategy%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -86,13 +86,13 @@
           <nav id="breadcrumb"></nav>
         </div>
 
-        <article data-uid="Polly.Simmy.FaultPipelineBuilderExtensions">
+        <article data-uid="Polly.Simmy.ChaosStrategy`1">
 
 
 
-  <h1 id="Polly_Simmy_FaultPipelineBuilderExtensions" data-uid="Polly.Simmy.FaultPipelineBuilderExtensions" class="text-break">
-    Class FaultPipelineBuilderExtensions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Fault/FaultPipelineBuilderExtensions.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  <h1 id="Polly_Simmy_ChaosStrategy_1" data-uid="Polly.Simmy.ChaosStrategy`1" class="text-break">
+    Class ChaosStrategy&lt;T&gt;
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/ChaosStrategy.TResult.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -100,22 +100,30 @@
   <dl><dt>Assembly</dt><dd>Polly.Core.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Extension methods for adding outcome to a <a class="xref" href="Polly.ResiliencePipelineBuilder.html">ResiliencePipelineBuilder</a>.</p>
+  <div class="markdown summary"><p>This base strategy class is used to simplify the implementation of generic (reactive)
+strategies by limiting the number of generic types the execute method receives.</p>
 </div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class FaultPipelineBuilderExtensions</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract class ChaosStrategy&lt;T&gt; : ResilienceStrategy&lt;T&gt;</code></pre>
   </div>
 
 
 
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of result this strategy handles.</p>
+</dd>
+  </dl>
 
   <dl class="typelist inheritance">
     <dt>Inheritance</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-      <div><span class="xref">FaultPipelineBuilderExtensions</span></div>
+      <div><a class="xref" href="Polly.ResilienceStrategy-1.html">ResilienceStrategy</a>&lt;T&gt;</div>
+      <div><span class="xref">ChaosStrategy&lt;T&gt;</span></div>
     </dd>
   </dl>
 
@@ -124,6 +132,9 @@
   <dl class="typelist derived">
     <dt>Inherited Members</dt>
     <dd>
+    <div>
+      <a class="xref" href="Polly.ResilienceStrategy-1.html#Polly_ResilienceStrategy_1_ExecuteCore__1_System_Func_Polly_ResilienceContext___0_System_Threading_Tasks_ValueTask_Polly_Outcome__0____Polly_ResilienceContext___0_">ResilienceStrategy&lt;T&gt;.ExecuteCore&lt;TState&gt;(Func&lt;ResilienceContext, TState, ValueTask&lt;Outcome&lt;T&gt;&gt;&gt;, ResilienceContext, TState)</a>
+    </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -150,48 +161,78 @@
 
 
 
+  <h2 id="Polly_Simmy_ChaosStrategy_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>For strategies that handle all result types the generic parameter must be of type <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Polly_Simmy_ChaosStrategy_1__ctor_" data-uid="Polly.Simmy.ChaosStrategy`1.#ctor*"></a>
+
+  <h3 id="Polly_Simmy_ChaosStrategy_1__ctor_Polly_Simmy_ChaosStrategyOptions_" data-uid="Polly.Simmy.ChaosStrategy`1.#ctor(Polly.Simmy.ChaosStrategyOptions)">
+  ChaosStrategy(ChaosStrategyOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/ChaosStrategy.TResult.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Polly.Simmy.ChaosStrategy-1.html">ChaosStrategy&lt;T&gt;</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected ChaosStrategy(ChaosStrategyOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Polly.Simmy.ChaosStrategyOptions.html">ChaosStrategyOptions</a></dt>
+    <dd><p>The chaos strategy options.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
 
 
   <h2 class="section" id="methods">Methods
 </h2>
 
 
-  <a id="Polly_Simmy_FaultPipelineBuilderExtensions_AddChaosFault_" data-uid="Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault*"></a>
+  <a id="Polly_Simmy_ChaosStrategy_1_ShouldInjectAsync_" data-uid="Polly.Simmy.ChaosStrategy`1.ShouldInjectAsync*"></a>
 
-  <h3 id="Polly_Simmy_FaultPipelineBuilderExtensions_AddChaosFault__1___0_Polly_Simmy_Fault_FaultStrategyOptions_" data-uid="Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault``1(``0,Polly.Simmy.Fault.FaultStrategyOptions)">
-  AddChaosFault&lt;TBuilder&gt;(TBuilder, FaultStrategyOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Fault/FaultPipelineBuilderExtensions.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Polly_Simmy_ChaosStrategy_1_ShouldInjectAsync_Polly_ResilienceContext_" data-uid="Polly.Simmy.ChaosStrategy`1.ShouldInjectAsync(Polly.ResilienceContext)">
+  ShouldInjectAsync(ResilienceContext)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/ChaosStrategy.TResult.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Adds a fault chaos strategy to the builder.</p>
+  <div class="markdown level1 summary"><p>Determines whether or not the chaos strategy should be injected based on the injection rate and enabled flag.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static TBuilder AddChaosFault&lt;TBuilder&gt;(this TBuilder builder, FaultStrategyOptions options) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
+    <pre><code class="lang-csharp hljs">protected ValueTask&lt;bool&gt; ShouldInjectAsync(ResilienceContext context)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>builder</code> <span class="xref">TBuilder</span></dt>
-    <dd><p>The builder instance.</p>
-</dd>
-    <dt><code>options</code> <a class="xref" href="Polly.Simmy.Fault.FaultStrategyOptions.html">FaultStrategyOptions</a></dt>
-    <dd><p>The fault strategy options.</p>
+    <dt><code>context</code> <a class="xref" href="Polly.ResilienceContext.html">ResilienceContext</a></dt>
+    <dd><p>The <a class="xref" href="Polly.ResilienceContext.html">ResilienceContext</a> instance.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">TBuilder</span></dt>
-    <dd><p>The builder instance with the retry strategy added.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>TBuilder</code></dt>
-    <dd><p>The builder type.</p>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1">ValueTask</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A boolean value that indicates whether or not the chaos strategy should be injected.</p>
 </dd>
   </dl>
 
@@ -201,56 +242,9 @@
 
 
 
-
-
-
-  <a id="Polly_Simmy_FaultPipelineBuilderExtensions_AddChaosFault_" data-uid="Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault*"></a>
-
-  <h3 id="Polly_Simmy_FaultPipelineBuilderExtensions_AddChaosFault__1___0_System_Double_System_Func_System_Exception__" data-uid="Polly.Simmy.FaultPipelineBuilderExtensions.AddChaosFault``1(``0,System.Double,System.Func{System.Exception})">
-  AddChaosFault&lt;TBuilder&gt;(TBuilder, double, Func&lt;Exception?&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Fault/FaultPipelineBuilderExtensions.cs/#L19"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"><p>Adds a fault chaos strategy to the builder.</p>
+  <h4 class="section" id="Polly_Simmy_ChaosStrategy_1_ShouldInjectAsync_Polly_ResilienceContext__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this method before injecting any chaos strategy to evaluate whether a given chaos strategy needs to be injected during the execution.</p>
 </div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static TBuilder AddChaosFault&lt;TBuilder&gt;(this TBuilder builder, double injectionRate, Func&lt;Exception?&gt; faultGenerator) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>builder</code> <span class="xref">TBuilder</span></dt>
-    <dd><p>The builder instance.</p>
-</dd>
-    <dt><code>injectionRate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
-    <dd><p>The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</p>
-</dd>
-    <dt><code>faultGenerator</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.exception">Exception</a>&gt;</dt>
-    <dd><p>The exception generator delegate.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><span class="xref">TBuilder</span></dt>
-    <dd><p>The builder instance with the retry strategy added.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>TBuilder</code></dt>
-    <dd><p>The builder type.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
 
 
 
@@ -259,7 +253,7 @@
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Fault/FaultPipelineBuilderExtensions.cs/#L9" class="edit-link">Edit this page</a>
+          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/ChaosStrategy.TResult.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -93,7 +93,7 @@
 </div>
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Simmy.Fault.FaultStrategyOptions.html"><code>FaultStrategyOptions</code></a></li>
+<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html"><code>ChaosFaultStrategyOptions</code></a></li>
 <li><strong>Extensions</strong>: <code>AddChaosFault</code></li>
 <li><strong>Strategy Type</strong>: Proactive</li>
 </ul>
@@ -102,7 +102,7 @@
 <h2 id="usage">Usage</h2>
 <!-- snippet: chaos-fault-usage -->
 <pre><code class="lang-cs">// 10% of invocations will be randomly affected and one of the exceptions will be thrown (equal probability).
-var optionsBasic = new FaultStrategyOptions
+var optionsBasic = new ChaosFaultStrategyOptions
 {
     FaultGenerator = new FaultGenerator()
         .AddException&lt;InvalidOperationException&gt;() // Uses default constructor
@@ -112,7 +112,7 @@ var optionsBasic = new FaultStrategyOptions
 };
 
 // To use a custom delegate to generate the fault to be injected
-var optionsWithFaultGenerator = new FaultStrategyOptions
+var optionsWithFaultGenerator = new ChaosFaultStrategyOptions
 {
     FaultGenerator = static args =&gt;
     {
@@ -132,7 +132,7 @@ var optionsWithFaultGenerator = new FaultStrategyOptions
 };
 
 // To get notifications when a fault is injected
-var optionsOnFaultInjected = new FaultStrategyOptions
+var optionsOnFaultInjected = new ChaosFaultStrategyOptions
 {
     FaultGenerator = new FaultGenerator().AddException&lt;InvalidOperationException&gt;(),
     Enabled = true,
@@ -144,7 +144,7 @@ var optionsOnFaultInjected = new FaultStrategyOptions
     }
 };
 
-// Add a fault strategy with a FaultStrategyOptions instance to the pipeline
+// Add a fault strategy with a ChaosFaultStrategyOptions instance to the pipeline
 new ResiliencePipelineBuilder().AddChaosFault(optionsBasic);
 new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosFault(optionsWithFaultGenerator);
 
@@ -163,7 +163,7 @@ new ResiliencePipelineBuilder().AddChaosFault(0.1, () =&gt; new InvalidOperation
         MaxRetryAttempts = 4,
         Delay = TimeSpan.FromSeconds(3),
     })
-    .AddChaosFault(new FaultStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
+    .AddChaosFault(new ChaosFaultStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
         FaultGenerator = static args =&gt; new ValueTask&lt;Exception?&gt;(new InvalidOperationException(&quot;Dummy exception&quot;)),
         Enabled = true,
@@ -235,7 +235,7 @@ new ResiliencePipelineBuilder().AddChaosFault(0.1, () =&gt; new InvalidOperation
 <p>The <code>FaultGenerator</code> is convenience API that allows you to specify what faults (exceptions) are to be injected. Additionally, it also allows assigning weight to each registered fault.</p>
 <!-- snippet: chaos-fault-generator-class -->
 <pre><code class="lang-cs">new ResiliencePipelineBuilder()
-    .AddChaosFault(new FaultStrategyOptions
+    .AddChaosFault(new ChaosFaultStrategyOptions
     {
         // Use FaultGenerator to register exceptions to be injected
         FaultGenerator = new FaultGenerator()
@@ -250,7 +250,7 @@ new ResiliencePipelineBuilder().AddChaosFault(0.1, () =&gt; new InvalidOperation
 <p>Delegates give you the most flexibility at the expense of slightly more complicated syntax. Delegates also support asynchronous fault generation, if you ever need that possibility.</p>
 <!-- snippet: chaos-fault-generator-delegate -->
 <pre><code class="lang-cs">new ResiliencePipelineBuilder()
-    .AddChaosFault(new FaultStrategyOptions
+    .AddChaosFault(new ChaosFaultStrategyOptions
     {
         // The same behavior can be achieved with delegates
         FaultGenerator = args =&gt;

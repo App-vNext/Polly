@@ -93,7 +93,7 @@
 </div>
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Simmy.Latency.LatencyStrategyOptions.html"><code>LatencyStrategyOptions</code></a></li>
+<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html"><code>ChaosLatencyStrategyOptions</code></a></li>
 <li><strong>Extensions</strong>: <code>AddChaosLatency</code></li>
 <li><strong>Strategy Type</strong>: Proactive</li>
 </ul>
@@ -103,10 +103,10 @@
 <!-- snippet: chaos-latency-usage -->
 <pre><code class="lang-cs">// Latency using the default options.
 // See https://www.pollydocs.org/chaos/latency#defaults for defaults.
-var optionsDefault = new LatencyStrategyOptions();
+var optionsDefault = new ChaosLatencyStrategyOptions();
 
 // 10% of invocations will be randomly affected
-var basicOptions = new LatencyStrategyOptions
+var basicOptions = new ChaosLatencyStrategyOptions
 {
     Latency = TimeSpan.FromSeconds(30),
     Enabled = true,
@@ -114,7 +114,7 @@ var basicOptions = new LatencyStrategyOptions
 };
 
 // To use a custom function to generate the latency to inject
-var optionsWithLatencyGenerator = new LatencyStrategyOptions
+var optionsWithLatencyGenerator = new ChaosLatencyStrategyOptions
 {
     LatencyGenerator = static args =&gt;
     {
@@ -134,7 +134,7 @@ var optionsWithLatencyGenerator = new LatencyStrategyOptions
 };
 
 // To get notifications when a delay is injected
-var optionsOnLatencyInjected = new LatencyStrategyOptions
+var optionsOnLatencyInjected = new ChaosLatencyStrategyOptions
 {
     Latency = TimeSpan.FromSeconds(30),
     Enabled = true,
@@ -146,7 +146,7 @@ var optionsOnLatencyInjected = new LatencyStrategyOptions
     }
 };
 
-// Add a latency strategy with a LatencyStrategyOptions instance to the pipeline
+// Add a latency strategy with a ChaosLatencyStrategyOptions instance to the pipeline
 new ResiliencePipelineBuilder().AddChaosLatency(optionsDefault);
 new ResiliencePipelineBuilder&lt;HttpStatusCode&gt;().AddChaosLatency(optionsWithLatencyGenerator);
 
@@ -166,7 +166,7 @@ new ResiliencePipelineBuilder().AddChaosLatency(0.1, TimeSpan.FromSeconds(30));
         Delay = TimeSpan.FromSeconds(3),
     })
     .AddTimeout(TimeSpan.FromSeconds(5))
-    .AddChaosLatency(new LatencyStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
+    .AddChaosLatency(new ChaosLatencyStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
         Latency = TimeSpan.FromSeconds(10),
         Enabled = true,
