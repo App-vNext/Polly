@@ -5,8 +5,17 @@
 public class ChaosStrategyTTests
 {
     private readonly TestChaosStrategyOptions<int> _options;
+    private bool _wasChaosUnleashed;
+    private bool _enableGeneratorExecuted;
+    private bool _injectionRateGeneratorExecuted;
 
-    public ChaosStrategyTTests() => _options = new();
+    public ChaosStrategyTTests()
+    {
+        _options = new();
+        _wasChaosUnleashed = false;
+        _enableGeneratorExecuted = false;
+        _injectionRateGeneratorExecuted = false;
+    }
 
     [Fact]
     public void InvalidCtor()
@@ -17,6 +26,9 @@ public class ChaosStrategyTTests
         };
 
         act.Should().Throw<ArgumentNullException>();
+        _wasChaosUnleashed.Should().BeFalse();
+        _enableGeneratorExecuted.Should().BeFalse();
+        _injectionRateGeneratorExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -33,6 +45,10 @@ public class ChaosStrategyTTests
 
         sut.InjectionRateGenerator.Should().NotBeNull();
         (await sut.InjectionRateGenerator(new(context))).Should().Be(0.5);
+
+        _wasChaosUnleashed.Should().BeFalse();
+        _enableGeneratorExecuted.Should().BeFalse();
+        _injectionRateGeneratorExecuted.Should().BeFalse();
     }
 
     [InlineData(0, false)]
@@ -43,36 +59,32 @@ public class ChaosStrategyTTests
     [Theory]
     public async Task Should_coerce_injection_rate_generator_result_is_not_valid(double injectionRateGeneratorResult, bool shouldBeInjected)
     {
-        var wasMonkeyUnleashed = false;
-
         _options.EnabledGenerator = (_) => new ValueTask<bool>(true);
         _options.InjectionRateGenerator = (_) => new ValueTask<double>(injectionRateGeneratorResult);
         _options.Randomizer = () => 0.5;
 
         var sut = CreateSut();
-        sut.OnExecute = (_, _) => { wasMonkeyUnleashed = true; return Task.CompletedTask; };
+        sut.OnExecute = (_, _) => { _wasChaosUnleashed = true; return Task.CompletedTask; };
 
         await sut.AsPipeline().ExecuteAsync<int>((_) => { return default; });
 
-        wasMonkeyUnleashed.Should().Be(shouldBeInjected);
+        _wasChaosUnleashed.Should().Be(shouldBeInjected);
+        _enableGeneratorExecuted.Should().BeFalse();
+        _injectionRateGeneratorExecuted.Should().BeFalse();
     }
 
     [Fact]
     public async Task Should_not_inject_chaos_when_it_was_cancelled_before_evaluating_strategy()
     {
-        var wasMonkeyUnleashed = false;
-        var enableGeneratorExecuted = false;
-        var injectionRateGeneratorExecuted = false;
-
         _options.Randomizer = () => 0.5;
         _options.EnabledGenerator = (_) =>
         {
-            enableGeneratorExecuted = true;
+            _enableGeneratorExecuted = true;
             return new ValueTask<bool>(true);
         };
         _options.InjectionRateGenerator = (_) =>
         {
-            injectionRateGeneratorExecuted = true;
+            _injectionRateGeneratorExecuted = true;
             return new ValueTask<double>(0.6);
         };
 
@@ -84,29 +96,25 @@ public class ChaosStrategyTTests
             .Should()
             .ThrowAsync<OperationCanceledException>();
 
-        wasMonkeyUnleashed.Should().BeFalse();
-        enableGeneratorExecuted.Should().BeFalse();
-        injectionRateGeneratorExecuted.Should().BeFalse();
+        _wasChaosUnleashed.Should().BeFalse();
+        _enableGeneratorExecuted.Should().BeFalse();
+        _injectionRateGeneratorExecuted.Should().BeFalse();
     }
 
     [Fact]
     public async Task Should_not_inject_chaos_when_it_was_cancelled_on_enable_generator()
     {
-        var wasMonkeyUnleashed = false;
-        var enableGeneratorExecuted = false;
-        var injectionRateGeneratorExecuted = false;
-
         using var cts = new CancellationTokenSource();
         _options.Randomizer = () => 0.5;
         _options.EnabledGenerator = (_) =>
         {
             cts.Cancel();
-            enableGeneratorExecuted = true;
+            _enableGeneratorExecuted = true;
             return new ValueTask<bool>(true);
         };
         _options.InjectionRateGenerator = (_) =>
         {
-            injectionRateGeneratorExecuted = true;
+            _injectionRateGeneratorExecuted = true;
             return new ValueTask<double>(0.6);
         };
 
@@ -116,29 +124,25 @@ public class ChaosStrategyTTests
             .Should()
             .ThrowAsync<OperationCanceledException>();
 
-        wasMonkeyUnleashed.Should().BeFalse();
-        enableGeneratorExecuted.Should().BeTrue();
-        injectionRateGeneratorExecuted.Should().BeFalse();
+        _wasChaosUnleashed.Should().BeFalse();
+        _enableGeneratorExecuted.Should().BeTrue();
+        _injectionRateGeneratorExecuted.Should().BeFalse();
     }
 
     [Fact]
     public async Task Should_not_inject_chaos_when_it_was_cancelled_on_injection_rate_generator()
     {
-        var wasMonkeyUnleashed = false;
-        var enableGeneratorExecuted = false;
-        var injectionRateGeneratorExecuted = false;
-
         using var cts = new CancellationTokenSource();
         _options.Randomizer = () => 0.5;
         _options.EnabledGenerator = (_) =>
         {
-            enableGeneratorExecuted = true;
+            _enableGeneratorExecuted = true;
             return new ValueTask<bool>(true);
         };
         _options.InjectionRateGenerator = (_) =>
         {
             cts.Cancel();
-            injectionRateGeneratorExecuted = true;
+            _injectionRateGeneratorExecuted = true;
             return new ValueTask<double>(0.6);
         };
 
@@ -148,26 +152,26 @@ public class ChaosStrategyTTests
             .Should()
             .ThrowAsync<OperationCanceledException>();
 
-        wasMonkeyUnleashed.Should().BeFalse();
-        enableGeneratorExecuted.Should().BeTrue();
-        injectionRateGeneratorExecuted.Should().BeTrue();
+        _wasChaosUnleashed.Should().BeFalse();
+        _enableGeneratorExecuted.Should().BeTrue();
+        _injectionRateGeneratorExecuted.Should().BeTrue();
     }
 
     [Fact]
     public async Task Should_inject_chaos()
     {
-        var wasMonkeyUnleashed = false;
-
         _options.EnabledGenerator = (_) => new ValueTask<bool>(true);
         _options.InjectionRate = 0.6;
         _options.Randomizer = () => 0.5;
 
         var sut = CreateSut();
-        sut.OnExecute = (_, _) => { wasMonkeyUnleashed = true; return Task.CompletedTask; };
+        sut.OnExecute = (_, _) => { _wasChaosUnleashed = true; return Task.CompletedTask; };
 
         await sut.AsPipeline().ExecuteAsync<int>((_) => { return default; });
 
-        wasMonkeyUnleashed.Should().BeTrue();
+        _wasChaosUnleashed.Should().BeTrue();
+        _enableGeneratorExecuted.Should().BeFalse();
+        _injectionRateGeneratorExecuted.Should().BeFalse();
     }
 
     private TestChaosStrategy<int> CreateSut() => new(_options);
