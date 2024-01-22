@@ -1,4 +1,6 @@
 using System.Net.Http;
+using Polly.CircuitBreaker;
+using Polly.Retry;
 using Polly.Simmy;
 
 namespace Snippets.Docs;
@@ -14,8 +16,8 @@ internal static partial class Chaos
         // First, configure regular resilience strategies
         builder
             .AddConcurrencyLimiter(10, 100)
-            .AddRetry(new())
-            .AddCircuitBreaker(new())
+            .AddRetry(new RetryStrategyOptions<HttpResponseMessage> { /* configure options */ })
+            .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage> { /* configure options */ })
             .AddTimeout(TimeSpan.FromSeconds(5));
 
         // Finally, configure chaos strategies if you want to inject chaos.
