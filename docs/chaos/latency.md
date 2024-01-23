@@ -99,6 +99,9 @@ var pipeline = new ResiliencePipelineBuilder()
 | `LatencyGenerator`  | `null`        | Generates the latency to inject for a given execution. |
 | `OnLatencyInjected` | `null`        | Action executed when latency is injected.              |
 
+> [!NOTE]
+> If both `Latency` and `LatencyGenerator` are specified then `Latency` will be ignored.
+
 ## Diagrams
 
 ### Normal 🐵 sequence diagram

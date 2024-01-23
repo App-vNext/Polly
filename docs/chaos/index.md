@@ -79,4 +79,7 @@ All the strategies' options implement the [`ChaosStrategyOptions`](xref:Polly.Si
 | `Enabled`                | `true`        | Determines whether the strategy is enabled or not.                                                                                                                                                                               |
 | `EnabledGenerator`       | `null`        | The generator that indicates whether the chaos strategy is enabled for a given execution.                                                                                                                                        |
 
+> [!NOTE]
+> If both `Enabled` and `EnabledGenerator` are specified then `Enabled` will be ignored.
+
 [simmy]: https://github.com/Polly-Contrib/Simmy
