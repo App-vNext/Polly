@@ -14,7 +14,6 @@ internal static partial class Chaos
         var optionsWithBehaviorGenerator = new ChaosBehaviorStrategyOptions
         {
             BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
-            Enabled = true,
             InjectionRate = 0.05
         };
 
@@ -22,7 +21,6 @@ internal static partial class Chaos
         var optionsOnBehaviorInjected = new ChaosBehaviorStrategyOptions
         {
             BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
-            Enabled = true,
             InjectionRate = 0.05,
             OnBehaviorInjected = static args =>
             {
@@ -52,7 +50,6 @@ internal static partial class Chaos
             .AddChaosBehavior(new ChaosBehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
             {
                 BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
-                Enabled = true,
                 InjectionRate = 0.05
             })
             .Build();

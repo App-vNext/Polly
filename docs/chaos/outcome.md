@@ -25,7 +25,6 @@ var optionsWithResultGenerator = new ChaosOutcomeStrategyOptions<HttpResponseMes
         .AddResult(() => new HttpResponseMessage(HttpStatusCode.TooManyRequests))
         .AddResult(() => new HttpResponseMessage(HttpStatusCode.InternalServerError))
         .AddException(() => new HttpRequestException("Chaos request exception.")),
-    Enabled = true,
     InjectionRate = 0.1
 };
 
@@ -34,7 +33,6 @@ var optionsOnBehaviorInjected = new ChaosOutcomeStrategyOptions<HttpResponseMess
 {
     OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
         .AddResult(() => new HttpResponseMessage(HttpStatusCode.InternalServerError)),
-    Enabled = true,
     InjectionRate = 0.1,
     OnOutcomeInjected = static args =>
     {
@@ -76,7 +74,6 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
             var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
             return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
         },
-        Enabled = true,
         InjectionRate = 0.1
     })
     .Build();

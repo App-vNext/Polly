@@ -19,7 +19,6 @@ internal static partial class Chaos
         var basicOptions = new ChaosLatencyStrategyOptions
         {
             Latency = TimeSpan.FromSeconds(30),
-            Enabled = true,
             InjectionRate = 0.1
         };
 
@@ -39,7 +38,6 @@ internal static partial class Chaos
 
                 return new ValueTask<TimeSpan>(latency);
             },
-            Enabled = true,
             InjectionRate = 0.1
         };
 
@@ -47,7 +45,6 @@ internal static partial class Chaos
         var optionsOnLatencyInjected = new ChaosLatencyStrategyOptions
         {
             Latency = TimeSpan.FromSeconds(30),
-            Enabled = true,
             InjectionRate = 0.1,
             OnLatencyInjected = static args =>
             {
@@ -78,7 +75,6 @@ internal static partial class Chaos
             .AddChaosLatency(new ChaosLatencyStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
             {
                 Latency = TimeSpan.FromSeconds(10),
-                Enabled = true,
                 InjectionRate = 0.1
             })
             .Build();
