@@ -126,7 +126,7 @@ The `OnTimeout` delegate can be useful when you define a resilience pipeline whi
 | `OnTimeout`        | `null`        | Event that is raised when timeout occurs.    |
 
 > [!NOTE]
-> If both `InjectionRate` and `InjectionRateGenerator` are specified then `InjectionRate` will be ignored.
+> If both `Timeout` and `TimeoutGenerator` are specified then `Timeout` will be ignored.
 
 ## Diagrams
 
