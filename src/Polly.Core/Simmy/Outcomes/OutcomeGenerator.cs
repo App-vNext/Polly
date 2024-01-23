@@ -11,7 +11,7 @@ namespace Polly.Simmy.Outcomes;
 /// </summary>
 /// <typeparam name="TResult">The type of the result.</typeparam>
 /// <remarks>
-/// An instance of this class is assignable to <see cref="OutcomeStrategyOptions{TResult}.OutcomeGenerator"/>.
+/// An instance of this class is assignable to <see cref="ChaosOutcomeStrategyOptions{TResult}.OutcomeGenerator"/>.
 /// </remarks>
 public sealed class OutcomeGenerator<TResult>
 {
@@ -104,7 +104,7 @@ public sealed class OutcomeGenerator<TResult>
     }
 
     /// <summary>
-    /// Implicit conversion to <see cref="OutcomeStrategyOptions{TResult}.OutcomeGenerator"/>.
+    /// Implicit conversion to <see cref="ChaosOutcomeStrategyOptions{TResult}.OutcomeGenerator"/>.
     /// </summary>
     /// <param name="generator">The generator instance.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]

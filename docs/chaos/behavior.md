@@ -5,7 +5,7 @@
 
 ## About
 
-- **Options**: [`BehaviorStrategyOptions`](xref:Polly.Simmy.Behavior.BehaviorStrategyOptions)
+- **Options**: [`ChaosBehaviorStrategyOptions`](xref:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions)
 - **Extensions**: `AddChaosBehavior`
 - **Strategy Type**: Proactive
 
@@ -18,7 +18,7 @@ The behavior chaos strategy is designed to inject custom behaviors into system o
 <!-- snippet: chaos-behavior-usage -->
 ```cs
 // To use a custom delegated for injected behavior
-var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
+var optionsWithBehaviorGenerator = new ChaosBehaviorStrategyOptions
 {
     BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
     Enabled = true,
@@ -26,7 +26,7 @@ var optionsWithBehaviorGenerator = new BehaviorStrategyOptions
 };
 
 // To get notifications when a behavior is injected
-var optionsOnBehaviorInjected = new BehaviorStrategyOptions
+var optionsOnBehaviorInjected = new ChaosBehaviorStrategyOptions
 {
     BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
     Enabled = true,
@@ -38,7 +38,7 @@ var optionsOnBehaviorInjected = new BehaviorStrategyOptions
     }
 };
 
-// Add a behavior strategy with a BehaviorStrategyOptions instance to the pipeline
+// Add a behavior strategy with a ChaosBehaviorStrategyOptions instance to the pipeline
 new ResiliencePipelineBuilder().AddChaosBehavior(optionsWithBehaviorGenerator);
 new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosBehavior(optionsOnBehaviorInjected);
 
@@ -60,7 +60,7 @@ var pipeline = new ResiliencePipelineBuilder()
         MaxRetryAttempts = 4,
         Delay = TimeSpan.FromSeconds(3),
     })
-    .AddChaosBehavior(new BehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
+    .AddChaosBehavior(new ChaosBehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
         BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
         Enabled = true,
@@ -130,4 +130,4 @@ Use behavior strategies to inject delays.
 
 ✅ DO
 
-Use the latency chaos instead as the [`LatencyChaosStrategy`](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.
+Use the latency chaos instead as the [`ChaosLatencyStrategy`](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.

@@ -55,9 +55,9 @@ Using Polly helps introduce resilience to a project, but we don't want to have t
 * A way to revert easily, to control the blast radius.
 * To be production grade, to run this in a production or near-production system with automation.
 
-## Chaos strategies (a.k.a Monkey strategies)
+## Chaos strategies
 
-Chaos strategies (or Monkey strategies as we call them) are in essence a [Resilience strategy](../strategies/index.md#built-in-strategies), which means, as a *Resilience Strategy* is the minimum unit of resilience for Polly, a *Chaos Strategy* is the minimum unit of chaos for Simmy.
+Chaos strategies (formerly known as Monkey strategies) are in essence a [Resilience strategy](../strategies/index.md#built-in-strategies), which means, as a *Resilience Strategy* is the minimum unit of resilience for Polly, a *Chaos Strategy* is the minimum unit of chaos for Simmy.
 
 ### Built-in strategies
 
@@ -70,7 +70,7 @@ Chaos strategies (or Monkey strategies as we call them) are in essence a [Resili
 
 ## Common options across strategies
 
-All the strategies' options implement the [`MonkeyStrategyOptions`](xref:Polly.Simmy.MonkeyStrategyOptions) class as it contains the basic configuration for every chaos strategy.
+All the strategies' options implement the [`ChaosStrategyOptions`](xref:Polly.Simmy.ChaosStrategyOptions) class as it contains the basic configuration for every chaos strategy.
 
 | Property                 | Default Value | Description                                                                                                                                                                                                                      |
 |--------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
