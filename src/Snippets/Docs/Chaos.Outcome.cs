@@ -20,7 +20,6 @@ internal static partial class Chaos
                 .AddResult(() => new HttpResponseMessage(HttpStatusCode.TooManyRequests))
                 .AddResult(() => new HttpResponseMessage(HttpStatusCode.InternalServerError))
                 .AddException(() => new HttpRequestException("Chaos request exception.")),
-            Enabled = true,
             InjectionRate = 0.1
         };
 
@@ -29,7 +28,6 @@ internal static partial class Chaos
         {
             OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
                 .AddResult(() => new HttpResponseMessage(HttpStatusCode.InternalServerError)),
-            Enabled = true,
             InjectionRate = 0.1,
             OnOutcomeInjected = static args =>
             {
@@ -67,7 +65,6 @@ internal static partial class Chaos
                     var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
                     return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
                 },
-                Enabled = true,
                 InjectionRate = 0.1
             })
             .Build();

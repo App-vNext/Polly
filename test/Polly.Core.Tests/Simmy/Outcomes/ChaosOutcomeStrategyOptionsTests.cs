@@ -10,7 +10,7 @@ public class ChaosOutcomeStrategyOptionsTests
     {
         var sut = new ChaosOutcomeStrategyOptions<int>();
         sut.Randomizer.Should().NotBeNull();
-        sut.Enabled.Should().BeFalse();
+        sut.Enabled.Should().BeTrue();
         sut.EnabledGenerator.Should().BeNull();
         sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();

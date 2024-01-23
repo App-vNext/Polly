@@ -30,7 +30,6 @@ public class ChaosLatencyStrategyTests : IDisposable
     public async Task Given_enabled_and_randomly_within_threshold_should_inject_latency()
     {
         _options.InjectionRate = 0.6;
-        _options.Enabled = true;
         _options.Latency = _delay;
         _options.Randomizer = () => 0.5;
         _options.OnLatencyInjected = args =>
@@ -102,7 +101,6 @@ public class ChaosLatencyStrategyTests : IDisposable
     public async Task Given_latency_is_negative_should_not_inject_latency(double latency)
     {
         _options.InjectionRate = 0.6;
-        _options.Enabled = true;
         _options.Latency = TimeSpan.FromSeconds(latency);
         _options.Randomizer = () => 0.5;
 
@@ -131,7 +129,6 @@ public class ChaosLatencyStrategyTests : IDisposable
     {
         using var cts = new CancellationTokenSource();
         _options.InjectionRate = 0.6;
-        _options.Enabled = true;
         _options.Randomizer = () => 0.5;
         _options.LatencyGenerator = (_) =>
         {

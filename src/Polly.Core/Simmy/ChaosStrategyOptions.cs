@@ -30,7 +30,7 @@ public abstract class ChaosStrategyOptions : ResilienceStrategyOptions
     /// </summary>
     /// <remarks>
     /// Defaults to <see langword="null"/>. Either <see cref="Enabled"/> or this property is required.
-    /// When this property is <see langword="null"/> the <see cref="Enabled"/> is used.
+    /// When this property is <see langword="null"/> then the <see cref="Enabled"/> property is used.
     /// </remarks>
     public Func<EnabledGeneratorArguments, ValueTask<bool>>? EnabledGenerator { get; set; }
 
@@ -38,9 +38,9 @@ public abstract class ChaosStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets a value indicating whether or not the chaos strategy is enabled for a given execution.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="false"/>. Either <see cref="EnabledGenerator"/> or this property is required.
+    /// Defaults to <see langword="true"/>. Either <see cref="EnabledGenerator"/> or this property is required.
     /// </remarks>
-    public bool Enabled { get; set; }
+    public bool Enabled { get; set; } = ChaosStrategyConstants.DefaultEnabled;
 
     /// <summary>
     /// Gets or sets the Randomizer generator instance that is used to evaluate the injection rate.

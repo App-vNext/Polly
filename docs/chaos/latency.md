@@ -25,7 +25,6 @@ var optionsDefault = new ChaosLatencyStrategyOptions();
 var basicOptions = new ChaosLatencyStrategyOptions
 {
     Latency = TimeSpan.FromSeconds(30),
-    Enabled = true,
     InjectionRate = 0.1
 };
 
@@ -45,7 +44,6 @@ var optionsWithLatencyGenerator = new ChaosLatencyStrategyOptions
 
         return new ValueTask<TimeSpan>(latency);
     },
-    Enabled = true,
     InjectionRate = 0.1
 };
 
@@ -53,7 +51,6 @@ var optionsWithLatencyGenerator = new ChaosLatencyStrategyOptions
 var optionsOnLatencyInjected = new ChaosLatencyStrategyOptions
 {
     Latency = TimeSpan.FromSeconds(30),
-    Enabled = true,
     InjectionRate = 0.1,
     OnLatencyInjected = static args =>
     {
@@ -88,7 +85,6 @@ var pipeline = new ResiliencePipelineBuilder()
     .AddChaosLatency(new ChaosLatencyStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
         Latency = TimeSpan.FromSeconds(10),
-        Enabled = true,
         InjectionRate = 0.1
     })
     .Build();
@@ -102,6 +98,9 @@ var pipeline = new ResiliencePipelineBuilder()
 | `Latency`           | `30 seconds`  | A `TimeSpan` indicating the delay to be injected.      |
 | `LatencyGenerator`  | `null`        | Generates the latency to inject for a given execution. |
 | `OnLatencyInjected` | `null`        | Action executed when latency is injected.              |
+
+> [!NOTE]
+> If both `Latency` and `LatencyGenerator` are specified then `Latency` will be ignored.
 
 ## Diagrams
 

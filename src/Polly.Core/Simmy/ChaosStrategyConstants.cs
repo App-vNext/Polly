@@ -7,4 +7,6 @@ internal static class ChaosStrategyConstants
     public const double MaxInjectionThreshold = 1;
 
     public const double DefaultInjectionRate = 0.001;
+
+    public const bool DefaultEnabled = true;
 }

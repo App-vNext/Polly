@@ -72,11 +72,19 @@ Chaos strategies (formerly known as Monkey strategies) are in essence a [Resilie
 
 All the strategies' options implement the [`ChaosStrategyOptions`](xref:Polly.Simmy.ChaosStrategyOptions) class as it contains the basic configuration for every chaos strategy.
 
+> [!IMPORTANT]
+> Please bear in mind that with the V8 API the chaos strategies are enabled by default. So, you can opt-out of them one-by-one either via the `Enabled` or via the `EnabledGenerator` property.
+>
+> In previous Simmy versions you had to explicitly call either the `Enabled` or the `EnabledWhen` method to opt-in a chaos policy.
+
 | Property                 | Default Value | Description                                                                                                                                                                                                                      |
 |--------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `InjectionRate`          | 0.001         | A decimal between 0 and 1 inclusive. The strategy will inject the chaos, randomly, that proportion of the time, e.g.: if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls. |
 | `InjectionRateGenerator` | `null`        | Generates the injection rate for a given execution, which the value should be between [0, 1] (inclusive).                                                                                                                        |
-| `Enabled`                | `false`       | Determines whether the strategy is enabled or not.                                                                                                                                                                               |
+| `Enabled`                | `true`        | Determines whether the strategy is enabled or not.                                                                                                                                                                               |
 | `EnabledGenerator`       | `null`        | The generator that indicates whether the chaos strategy is enabled for a given execution.                                                                                                                                        |
+
+> [!NOTE]
+> If both `Enabled` and `EnabledGenerator` are specified then `Enabled` will be ignored.
 
 [simmy]: https://github.com/Polly-Contrib/Simmy

@@ -54,7 +54,6 @@ public class ChaosBehaviorPipelineBuilderExtensionsTests
         var sut = new ResiliencePipelineBuilder()
             .AddChaosBehavior(new ChaosBehaviorStrategyOptions
             {
-                Enabled = true,
                 InjectionRate = 1,
                 BehaviorGenerator = (_) => default
             })

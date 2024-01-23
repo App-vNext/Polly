@@ -23,7 +23,6 @@ var optionsBasic = new ChaosFaultStrategyOptions
     FaultGenerator = new FaultGenerator()
         .AddException<InvalidOperationException>() // Uses default constructor
         .AddException(() => new TimeoutException("Chaos timeout injected.")), // Custom exception generator
-    Enabled = true,
     InjectionRate = 0.1
 };
 
@@ -43,7 +42,6 @@ var optionsWithFaultGenerator = new ChaosFaultStrategyOptions
 
         return new ValueTask<Exception?>(exception);
     },
-    Enabled = true,
     InjectionRate = 0.1
 };
 
@@ -51,7 +49,6 @@ var optionsWithFaultGenerator = new ChaosFaultStrategyOptions
 var optionsOnFaultInjected = new ChaosFaultStrategyOptions
 {
     FaultGenerator = new FaultGenerator().AddException<InvalidOperationException>(),
-    Enabled = true,
     InjectionRate = 0.1,
     OnFaultInjected = static args =>
     {
@@ -85,7 +82,6 @@ var pipeline = new ResiliencePipelineBuilder()
     .AddChaosFault(new ChaosFaultStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
         FaultGenerator = static args => new ValueTask<Exception?>(new InvalidOperationException("Dummy exception")),
-        Enabled = true,
         InjectionRate = 0.1
     })
     .Build();

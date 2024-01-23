@@ -36,7 +36,6 @@ public class ChaosLatencyPipelineBuilderExtensionsTests
         var sut = new ResiliencePipelineBuilder()
             .AddChaosLatency(new ChaosLatencyStrategyOptions
             {
-                Enabled = true,
                 InjectionRate = 1,
                 LatencyGenerator = (_) => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(30))
             })

@@ -27,7 +27,6 @@ public class ChaosFaultStrategyTests
                     new ChaosFaultStrategyOptions
                     {
                         InjectionRate = 1,
-                        Enabled = true,
                     },
                     "Either Fault or FaultGenerator is required.",
                     typeof(InvalidOperationException)
@@ -109,7 +108,6 @@ public class ChaosFaultStrategyTests
         var options = new ChaosFaultStrategyOptions
         {
             InjectionRate = 0.6,
-            Enabled = true,
             Randomizer = () => 0.5,
             FaultGenerator = _ => new ValueTask<Exception?>(fault),
             OnFaultInjected = args =>
@@ -144,7 +142,6 @@ public class ChaosFaultStrategyTests
         var options = new ChaosFaultStrategyOptions
         {
             InjectionRate = 0.6,
-            Enabled = true,
             Randomizer = () => 0.5,
             FaultGenerator = _ => new ValueTask<Exception?>(fault),
             OnFaultInjected = args =>
@@ -181,7 +178,6 @@ public class ChaosFaultStrategyTests
         var options = new ChaosFaultStrategyOptions
         {
             InjectionRate = 0.3,
-            Enabled = true,
             Randomizer = () => 0.5,
             FaultGenerator = _ => new ValueTask<Exception?>(fault)
         };
@@ -204,7 +200,6 @@ public class ChaosFaultStrategyTests
         var options = new ChaosFaultStrategyOptions
         {
             InjectionRate = 0.6,
-            Enabled = true,
             Randomizer = () => 0.5,
             FaultGenerator = (_) => new ValueTask<Exception?>(Task.FromResult<Exception?>(null))
         };

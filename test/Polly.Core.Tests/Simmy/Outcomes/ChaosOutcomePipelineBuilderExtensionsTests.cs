@@ -15,7 +15,6 @@ public class ChaosOutcomePipelineBuilderExtensionsTests
             builder.AddChaosOutcome(new ChaosOutcomeStrategyOptions<int>
             {
                 InjectionRate = 0.6,
-                Enabled = true,
                 Randomizer = () => 0.5,
                 OutcomeGenerator = (_) => new ValueTask<Outcome<int>?>(Outcome.FromResult(100))
             });

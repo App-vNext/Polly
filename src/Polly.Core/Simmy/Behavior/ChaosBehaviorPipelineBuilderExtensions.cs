@@ -26,7 +26,6 @@ public static class ChaosBehaviorPipelineBuilderExtensions
 
         return builder.AddChaosBehavior(new ChaosBehaviorStrategyOptions
         {
-            Enabled = true,
             InjectionRate = injectionRate,
             BehaviorGenerator = args => behavior(args.Context.CancellationToken)
         });

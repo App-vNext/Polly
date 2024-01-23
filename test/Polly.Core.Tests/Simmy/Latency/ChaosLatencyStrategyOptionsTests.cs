@@ -10,7 +10,7 @@ public class ChaosLatencyStrategyOptionsTests
     {
         var sut = new ChaosLatencyStrategyOptions();
         sut.Randomizer.Should().NotBeNull();
-        sut.Enabled.Should().BeFalse();
+        sut.Enabled.Should().BeTrue();
         sut.EnabledGenerator.Should().BeNull();
         sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();

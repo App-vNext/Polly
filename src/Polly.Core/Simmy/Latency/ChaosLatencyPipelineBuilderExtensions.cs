@@ -26,7 +26,6 @@ public static class ChaosLatencyPipelineBuilderExtensions
 
         return builder.AddChaosLatency(new ChaosLatencyStrategyOptions
         {
-            Enabled = true,
             InjectionRate = injectionRate,
             Latency = latency
         });
