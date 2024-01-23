@@ -27,5 +27,5 @@ public class ChaosBehaviorStrategyOptions : ChaosStrategyOptions
     /// Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<BehaviorActionArguments, ValueTask>? BehaviorAction { get; set; }
+    public Func<BehaviorGeneratorArguments, ValueTask>? BehaviorGenerator { get; set; }
 }

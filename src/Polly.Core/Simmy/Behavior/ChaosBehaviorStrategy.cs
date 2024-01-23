@@ -13,12 +13,12 @@ internal sealed class ChaosBehaviorStrategy : ChaosStrategy
     {
         _telemetry = telemetry;
         OnBehaviorInjected = options.OnBehaviorInjected;
-        Behavior = options.BehaviorAction!;
+        Behavior = options.BehaviorGenerator!;
     }
 
     public Func<OnBehaviorInjectedArguments, ValueTask>? OnBehaviorInjected { get; }
 
-    public Func<BehaviorActionArguments, ValueTask> Behavior { get; }
+    public Func<BehaviorGeneratorArguments, ValueTask> Behavior { get; }
 
     protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

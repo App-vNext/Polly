@@ -16,7 +16,7 @@ public class ChaosBehaviorStrategyOptionsTests
         sut.EnabledGenerator.Should().BeNull();
         sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
         sut.InjectionRateGenerator.Should().BeNull();
-        sut.BehaviorAction.Should().BeNull();
+        sut.BehaviorGenerator.Should().BeNull();
         sut.OnBehaviorInjected.Should().BeNull();
     }
 
@@ -33,7 +33,7 @@ public class ChaosBehaviorStrategyOptionsTests
             Invalid Options
 
             Validation Errors:
-            The BehaviorAction field is required.
+            The BehaviorGenerator field is required.
             """);
     }
 }
