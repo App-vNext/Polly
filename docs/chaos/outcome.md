@@ -6,7 +6,6 @@
 ## About
 
 - **Options**:
-  - [`ChaosOutcomeStrategyOptions`](xref:Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions)
   - [`ChaosOutcomeStrategyOptions<T>`](xref:Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1)
 - **Extensions**: `AddChaosOutcome`
 - **Strategy Type**: Reactive

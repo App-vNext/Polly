@@ -16,6 +16,16 @@ Polly.Simmy.Behavior.OnBehaviorInjectedArguments.Context.get -> Polly.Resilience
 Polly.Simmy.Behavior.OnBehaviorInjectedArguments.OnBehaviorInjectedArguments() -> void
 Polly.Simmy.Behavior.OnBehaviorInjectedArguments.OnBehaviorInjectedArguments(Polly.ResilienceContext! context) -> void
 Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions
+Polly.Simmy.ChaosStrategyOptions.Enabled.get -> bool
+Polly.Simmy.ChaosStrategyOptions.Enabled.set -> void
+Polly.Simmy.ChaosStrategyOptions.EnabledGenerator.get -> System.Func<Polly.Simmy.EnabledGeneratorArguments, System.Threading.Tasks.ValueTask<bool>>?
+Polly.Simmy.ChaosStrategyOptions.EnabledGenerator.set -> void
+Polly.Simmy.ChaosStrategyOptions.InjectionRate.get -> double
+Polly.Simmy.ChaosStrategyOptions.InjectionRate.set -> void
+Polly.Simmy.ChaosStrategyOptions.InjectionRateGenerator.get -> System.Func<Polly.Simmy.InjectionRateGeneratorArguments, System.Threading.Tasks.ValueTask<double>>?
+Polly.Simmy.ChaosStrategyOptions.InjectionRateGenerator.set -> void
+Polly.Simmy.ChaosStrategyOptions.Randomizer.get -> System.Func<double>!
+Polly.Simmy.ChaosStrategyOptions.Randomizer.set -> void
 Polly.Simmy.EnabledGeneratorArguments
 Polly.Simmy.EnabledGeneratorArguments.Context.get -> Polly.ResilienceContext!
 Polly.Simmy.EnabledGeneratorArguments.EnabledGeneratorArguments() -> void
@@ -71,18 +81,6 @@ Polly.Simmy.ChaosStrategy<T>.ChaosStrategy(Polly.Simmy.ChaosStrategyOptions! opt
 Polly.Simmy.ChaosStrategy<T>.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
 Polly.Simmy.ChaosStrategyOptions
 Polly.Simmy.ChaosStrategyOptions.ChaosStrategyOptions() -> void
-Polly.Simmy.ChaosStrategyOptions<TResult>
-Polly.Simmy.ChaosStrategyOptions<TResult>.Enabled.get -> bool
-Polly.Simmy.ChaosStrategyOptions<TResult>.Enabled.set -> void
-Polly.Simmy.ChaosStrategyOptions<TResult>.EnabledGenerator.get -> System.Func<Polly.Simmy.EnabledGeneratorArguments, System.Threading.Tasks.ValueTask<bool>>?
-Polly.Simmy.ChaosStrategyOptions<TResult>.EnabledGenerator.set -> void
-Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRate.get -> double
-Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRate.set -> void
-Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRateGenerator.get -> System.Func<Polly.Simmy.InjectionRateGeneratorArguments, System.Threading.Tasks.ValueTask<double>>?
-Polly.Simmy.ChaosStrategyOptions<TResult>.InjectionRateGenerator.set -> void
-Polly.Simmy.ChaosStrategyOptions<TResult>.ChaosStrategyOptions() -> void
-Polly.Simmy.ChaosStrategyOptions<TResult>.Randomizer.get -> System.Func<double>!
-Polly.Simmy.ChaosStrategyOptions<TResult>.Randomizer.set -> void
 Polly.Simmy.ChaosOutcomePipelineBuilderExtensions
 Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>
 Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.Context.get -> Polly.ResilienceContext!
@@ -106,7 +104,7 @@ Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected.set 
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.get -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>!
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.set -> void
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.ChaosOutcomeStrategyOptions() -> void
-static Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(this TBuilder! builder, double injectionRate, System.Func<System.Threading.Tasks.ValueTask>! behavior) -> TBuilder!
+static Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(this TBuilder! builder, double injectionRate, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask>! behavior) -> TBuilder!
 static Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(this TBuilder! builder, Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions! options) -> TBuilder!
 static Polly.Simmy.Fault.FaultGenerator.implicit operator System.Func<Polly.Simmy.Fault.FaultGeneratorArguments, System.Threading.Tasks.ValueTask<System.Exception?>>!(Polly.Simmy.Fault.FaultGenerator! generator) -> System.Func<Polly.Simmy.Fault.FaultGeneratorArguments, System.Threading.Tasks.ValueTask<System.Exception?>>!
 static Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(this TBuilder! builder, double injectionRate, System.Func<System.Exception?>! faultGenerator) -> TBuilder!

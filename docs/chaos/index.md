@@ -7,6 +7,36 @@
 
 ![Simmy](../media/simmy-logo.png)
 
+## Usage
+
+<!-- snippet: chaos-usage -->
+```cs
+var builder = new ResiliencePipelineBuilder<HttpResponseMessage>();
+
+// First, configure regular resilience strategies
+builder
+    .AddConcurrencyLimiter(10, 100)
+    .AddRetry(new RetryStrategyOptions<HttpResponseMessage> { /* configure options */ })
+    .AddCircuitBreaker(new CircuitBreakerStrategyOptions<HttpResponseMessage> { /* configure options */ })
+    .AddTimeout(TimeSpan.FromSeconds(5));
+
+// Finally, configure chaos strategies if you want to inject chaos.
+// These should come after the regular resilience strategies.
+
+// 2% of invocations will be injected with chaos
+const double InjectionRate = 0.02;
+
+builder
+    .AddChaosLatency(InjectionRate, TimeSpan.FromMinutes(1)) // Inject a chaos latency to executions
+    .AddChaosFault(InjectionRate, () => new InvalidOperationException("Injected by chaos strategy!")) // Inject a chaos fault to executions
+    .AddChaosOutcome(InjectionRate, () => new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)) // Inject a chaos outcome to executions
+    .AddChaosBehavior(0.001, cancellationToken => RestartRedisAsync(cancellationToken)); // Inject a chaos behavior to executions
+```
+<!-- endSnippet -->
+
+> [!NOTE]
+> It is usual to place the chaos strategy as the last strategy in the resilience pipeline. By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.
+
 ## Motivation
 
 There are a lot of questions when it comes to chaos engineering and making sure that a system is actually ready to face the worst possible scenarios:
@@ -34,13 +64,9 @@ Chaos strategies (formerly known as Monkey strategies) are in essence a [Resilie
 | Strategy                | Reactive | What does the strategy do?                                           |
 |-------------------------|----------|----------------------------------------------------------------------|
 | [Fault](fault.md)       | No       | Injects exceptions in your system.                                   |
-| [Result](result.md)     | Yes      | Substitute results to fake outcomes in your system.                  |
+| [Outcome](outcome.md)   | Yes      | Injects fake outcomes (results or exceptions) in your system.        |
 | [Latency](latency.md)   | No       | Injects latency into executions before the calls are made.           |
 | [Behavior](behavior.md) | No       | Allows you to inject *any* extra behaviour, before a call is placed. |
-
-## Usage
-
-It is usual to place the chaos strategy as the last strategy in the resilience pipeline. By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.
 
 ## Common options across strategies
 
