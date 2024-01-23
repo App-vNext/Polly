@@ -20,7 +20,7 @@ The behavior chaos strategy is designed to inject custom behaviors into system o
 // To use a custom delegated for injected behavior
 var optionsWithBehaviorGenerator = new ChaosBehaviorStrategyOptions
 {
-    BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
+    BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
     Enabled = true,
     InjectionRate = 0.05
 };
@@ -28,7 +28,7 @@ var optionsWithBehaviorGenerator = new ChaosBehaviorStrategyOptions
 // To get notifications when a behavior is injected
 var optionsOnBehaviorInjected = new ChaosBehaviorStrategyOptions
 {
-    BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
+    BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
     Enabled = true,
     InjectionRate = 0.05,
     OnBehaviorInjected = static args =>
@@ -43,7 +43,7 @@ new ResiliencePipelineBuilder().AddChaosBehavior(optionsWithBehaviorGenerator);
 new ResiliencePipelineBuilder<HttpResponseMessage>().AddChaosBehavior(optionsOnBehaviorInjected);
 
 // There are also a handy overload to inject the chaos easily
-new ResiliencePipelineBuilder().AddChaosBehavior(0.05, RestartRedisVM);
+new ResiliencePipelineBuilder().AddChaosBehavior(0.05, RestartRedisAsync);
 ```
 <!-- endSnippet -->
 
@@ -62,7 +62,7 @@ var pipeline = new ResiliencePipelineBuilder()
     })
     .AddChaosBehavior(new ChaosBehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
-        BehaviorAction = static args => RestartRedisVM(args.Context.CancellationToken),
+        BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
         Enabled = true,
         InjectionRate = 0.05
     })
