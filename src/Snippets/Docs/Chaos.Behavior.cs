@@ -2,6 +2,7 @@ using System.Net.Http;
 using Polly.Retry;
 using Polly.Simmy;
 using Polly.Simmy.Behavior;
+using Polly.Simmy.Latency;
 
 namespace Snippets.Docs;
 
@@ -65,7 +66,10 @@ internal static partial class Chaos
         var pipeline = new ResiliencePipelineBuilder()
             .AddChaosBehavior(new ChaosBehaviorStrategyOptions
             {
-                BehaviorGenerator = static args => Task.Delay(TimeSpan.FromSeconds(7), args.Context.CancellationToken),
+                BehaviorGenerator = static async args =>
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(7), args.Context.CancellationToken);
+                }
             })
             .Build();
 

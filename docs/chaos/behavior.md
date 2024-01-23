@@ -133,7 +133,10 @@ Use behavior strategies to inject delays.
 var pipeline = new ResiliencePipelineBuilder()
     .AddChaosBehavior(new ChaosBehaviorStrategyOptions
     {
-        BehaviorGenerator = static args => Task.Delay(TimeSpan.FromSeconds(7), args.Context.CancellationToken),
+        BehaviorGenerator = static async args =>
+        {
+            await Task.Delay(TimeSpan.FromSeconds(7), args.Context.CancellationToken);
+        }
     })
     .Build();
 ```
