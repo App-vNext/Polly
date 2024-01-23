@@ -93,6 +93,34 @@
 </div>
 <p><a href="https://github.com/Polly-Contrib/Simmy">Simmy</a> is a major new addition to Polly library, adding a chaos engineering and fault-injection dimension to Polly, through the provision of strategies to selectively inject faults, latency, custom behavior or fake results.</p>
 <p><img src="../media/simmy-logo.png" alt="Simmy"></p>
+<h2 id="usage">Usage</h2>
+<!-- snippet: chaos-usage -->
+<pre><code class="lang-cs">var builder = new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;();
+
+// First, configure regular resilience strategies
+builder
+    .AddConcurrencyLimiter(10, 100)
+    .AddRetry(new RetryStrategyOptions&lt;HttpResponseMessage&gt; { /* configure options */ })
+    .AddCircuitBreaker(new CircuitBreakerStrategyOptions&lt;HttpResponseMessage&gt; { /* configure options */ })
+    .AddTimeout(TimeSpan.FromSeconds(5));
+
+// Finally, configure chaos strategies if you want to inject chaos.
+// These should come after the regular resilience strategies.
+
+// 2% of invocations will be injected with chaos
+const double InjectionRate = 0.02;
+
+builder
+    .AddChaosLatency(InjectionRate, TimeSpan.FromMinutes(1)) // Inject a chaos latency to executions
+    .AddChaosFault(InjectionRate, () =&gt; new InvalidOperationException(&quot;Injected by chaos strategy!&quot;)) // Inject a chaos fault to executions
+    .AddChaosOutcome(InjectionRate, () =&gt; new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)) // Inject a chaos outcome to executions
+    .AddChaosBehavior(0.001, cancellationToken =&gt; RestartRedisAsync(cancellationToken)); // Inject a chaos behavior to executions
+</code></pre>
+<!-- endSnippet -->
+<div class="NOTE">
+<h5>Note</h5>
+<p>It is usual to place the chaos strategy as the last strategy in the resilience pipeline. By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the <code>ResiliencePipeline</code> - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.</p>
+</div>
 <h2 id="motivation">Motivation</h2>
 <p>There are a lot of questions when it comes to chaos engineering and making sure that a system is actually ready to face the worst possible scenarios:</p>
 <ul>
@@ -127,9 +155,9 @@
 <td>Injects exceptions in your system.</td>
 </tr>
 <tr>
-<td><a href="result.md">Result</a></td>
+<td><a href="outcome.html">Outcome</a></td>
 <td>Yes</td>
-<td>Substitute results to fake outcomes in your system.</td>
+<td>Injects fake outcomes (results or exceptions) in your system.</td>
 </tr>
 <tr>
 <td><a href="latency.html">Latency</a></td>
@@ -143,8 +171,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="usage">Usage</h2>
-<p>It is usual to place the chaos strategy as the last strategy in the resilience pipeline. By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the <code>ResiliencePipeline</code> - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.</p>
 <h2 id="common-options-across-strategies">Common options across strategies</h2>
 <p>All the strategies' options implement the <a class="xref" href="../api/Polly.Simmy.ChaosStrategyOptions.html"><code>ChaosStrategyOptions</code></a> class as it contains the basic configuration for every chaos strategy.</p>
 <table>

@@ -215,8 +215,8 @@
 
   <a id="Polly_Simmy_ChaosBehaviorPipelineBuilderExtensions_AddChaosBehavior_" data-uid="Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior*"></a>
 
-  <h3 id="Polly_Simmy_ChaosBehaviorPipelineBuilderExtensions_AddChaosBehavior__1___0_System_Double_System_Func_System_Threading_Tasks_ValueTask__" data-uid="Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior``1(``0,System.Double,System.Func{System.Threading.Tasks.ValueTask})">
-  AddChaosBehavior&lt;TBuilder&gt;(TBuilder, double, Func&lt;ValueTask&gt;)
+  <h3 id="Polly_Simmy_ChaosBehaviorPipelineBuilderExtensions_AddChaosBehavior__1___0_System_Double_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask__" data-uid="Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior``1(``0,System.Double,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.ValueTask})">
+  AddChaosBehavior&lt;TBuilder&gt;(TBuilder, double, Func&lt;CancellationToken, ValueTask&gt;)
   <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Behavior/ChaosBehaviorPipelineBuilderExtensions.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -225,7 +225,7 @@
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static TBuilder AddChaosBehavior&lt;TBuilder&gt;(this TBuilder builder, double injectionRate, Func&lt;ValueTask&gt; behavior) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
+    <pre><code class="lang-csharp hljs">public static TBuilder AddChaosBehavior&lt;TBuilder&gt;(this TBuilder builder, double injectionRate, Func&lt;CancellationToken, ValueTask&gt; behavior) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -236,7 +236,7 @@
     <dt><code>injectionRate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
     <dd><p>The injection rate for a given execution, which the value should be between [0, 1] (inclusive).</p>
 </dd>
-    <dt><code>behavior</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a>&gt;</dt>
+    <dt><code>behavior</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a>&gt;</dt>
     <dd><p>The behavior to be injected.</p>
 </dd>
   </dl>

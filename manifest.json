@@ -872,16 +872,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.ChaosStrategyOptions-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Polly.Simmy.ChaosStrategyOptions-1.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Polly.Simmy.ChaosStrategyOptions.yml",
       "output": {
         ".html": {

@@ -105,7 +105,7 @@
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract class ChaosStrategyOptions : ChaosStrategyOptions&lt;object&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract class ChaosStrategyOptions : ResilienceStrategyOptions</code></pre>
   </div>
 
 
@@ -116,7 +116,6 @@
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
       <div><a class="xref" href="Polly.ResilienceStrategyOptions.html">ResilienceStrategyOptions</a></div>
-      <div><a class="xref" href="Polly.Simmy.ChaosStrategyOptions-1.html">ChaosStrategyOptions</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</div>
       <div><span class="xref">ChaosStrategyOptions</span></div>
     </dd>
   </dl>
@@ -135,21 +134,6 @@
   <dl class="typelist derived">
     <dt>Inherited Members</dt>
     <dd>
-    <div>
-      <a class="xref" href="Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_InjectionRate">ChaosStrategyOptions&lt;object&gt;.InjectionRate</a>
-    </div>
-    <div>
-      <a class="xref" href="Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_InjectionRateGenerator">ChaosStrategyOptions&lt;object&gt;.InjectionRateGenerator</a>
-    </div>
-    <div>
-      <a class="xref" href="Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_EnabledGenerator">ChaosStrategyOptions&lt;object&gt;.EnabledGenerator</a>
-    </div>
-    <div>
-      <a class="xref" href="Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_Enabled">ChaosStrategyOptions&lt;object&gt;.Enabled</a>
-    </div>
-    <div>
-      <a class="xref" href="Polly.Simmy.ChaosStrategyOptions-1.html#Polly_Simmy_ChaosStrategyOptions_1_Randomizer">ChaosStrategyOptions&lt;object&gt;.Randomizer</a>
-    </div>
     <div>
       <a class="xref" href="Polly.ResilienceStrategyOptions.html#Polly_ResilienceStrategyOptions_Name">ResilienceStrategyOptions.Name</a>
     </div>
@@ -177,6 +161,189 @@
   </dd></dl>
 
 
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Polly_Simmy_ChaosStrategyOptions_Enabled_" data-uid="Polly.Simmy.ChaosStrategyOptions.Enabled*"></a>
+
+  <h3 id="Polly_Simmy_ChaosStrategyOptions_Enabled" data-uid="Polly.Simmy.ChaosStrategyOptions.Enabled">
+  Enabled
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/ChaosStrategyOptions.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether or not the chaos strategy is enabled for a given execution.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Enabled { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd>The options associated with the .</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Polly_Simmy_ChaosStrategyOptions_Enabled_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. Either <a class="xref" href="Polly.Simmy.ChaosStrategyOptions.html#Polly_Simmy_ChaosStrategyOptions_EnabledGenerator">EnabledGenerator</a> or this property is required.</p>
+</div>
+
+
+
+
+  <a id="Polly_Simmy_ChaosStrategyOptions_EnabledGenerator_" data-uid="Polly.Simmy.ChaosStrategyOptions.EnabledGenerator*"></a>
+
+  <h3 id="Polly_Simmy_ChaosStrategyOptions_EnabledGenerator" data-uid="Polly.Simmy.ChaosStrategyOptions.EnabledGenerator">
+  EnabledGenerator
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/ChaosStrategyOptions.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the enable generator that indicates whether or not the chaos strategy is enabled for a given execution.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Func&lt;EnabledGeneratorArguments, ValueTask&lt;bool&gt;&gt;? EnabledGenerator { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.Simmy.EnabledGeneratorArguments.html">EnabledGeneratorArguments</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1">ValueTask</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd>The options associated with the .</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Polly_Simmy_ChaosStrategyOptions_EnabledGenerator_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>. Either <a class="xref" href="Polly.Simmy.ChaosStrategyOptions.html#Polly_Simmy_ChaosStrategyOptions_Enabled">Enabled</a> or this property is required.
+When this property is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> the <a class="xref" href="Polly.Simmy.ChaosStrategyOptions.html#Polly_Simmy_ChaosStrategyOptions_Enabled">Enabled</a> is used.</p>
+</div>
+
+
+
+
+  <a id="Polly_Simmy_ChaosStrategyOptions_InjectionRate_" data-uid="Polly.Simmy.ChaosStrategyOptions.InjectionRate*"></a>
+
+  <h3 id="Polly_Simmy_ChaosStrategyOptions_InjectionRate" data-uid="Polly.Simmy.ChaosStrategyOptions.InjectionRate">
+  InjectionRate
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/ChaosStrategyOptions.cs/#L16"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the injection rate for a given execution, which the value should be between [0, 1] (inclusive).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Range(0, 1)]
+public double InjectionRate { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd>The options associated with the .</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Polly_Simmy_ChaosStrategyOptions_InjectionRate_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Defaults to 0.001, meaning one in a thousand executions/0.1%. Either <a class="xref" href="Polly.Simmy.ChaosStrategyOptions.html#Polly_Simmy_ChaosStrategyOptions_InjectionRateGenerator">InjectionRateGenerator</a> or this property is required.</p>
+</div>
+
+
+
+
+  <a id="Polly_Simmy_ChaosStrategyOptions_InjectionRateGenerator_" data-uid="Polly.Simmy.ChaosStrategyOptions.InjectionRateGenerator*"></a>
+
+  <h3 id="Polly_Simmy_ChaosStrategyOptions_InjectionRateGenerator" data-uid="Polly.Simmy.ChaosStrategyOptions.InjectionRateGenerator">
+  InjectionRateGenerator
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/ChaosStrategyOptions.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the injection rate generator for a given execution, which the value should be between [0, 1] (inclusive).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Func&lt;InjectionRateGeneratorArguments, ValueTask&lt;double&gt;&gt;? InjectionRateGenerator { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.Simmy.InjectionRateGeneratorArguments.html">InjectionRateGeneratorArguments</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1">ValueTask</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>&gt;&gt;</dt>
+    <dd>The options associated with the .</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Polly_Simmy_ChaosStrategyOptions_InjectionRateGenerator_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>. Either <a class="xref" href="Polly.Simmy.ChaosStrategyOptions.html#Polly_Simmy_ChaosStrategyOptions_InjectionRate">InjectionRate</a> or this property is required.
+When this property is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> the <a class="xref" href="Polly.Simmy.ChaosStrategyOptions.html#Polly_Simmy_ChaosStrategyOptions_InjectionRate">InjectionRate</a> is used.</p>
+</div>
+
+
+
+
+  <a id="Polly_Simmy_ChaosStrategyOptions_Randomizer_" data-uid="Polly.Simmy.ChaosStrategyOptions.Randomizer*"></a>
+
+  <h3 id="Polly_Simmy_ChaosStrategyOptions_Randomizer" data-uid="Polly.Simmy.ChaosStrategyOptions.Randomizer">
+  Randomizer
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/ChaosStrategyOptions.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the Randomizer generator instance that is used to evaluate the injection rate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Required]
+public Func&lt;double&gt; Randomizer { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>&gt;</dt>
+    <dd>The options associated with the .</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Polly_Simmy_ChaosStrategyOptions_Randomizer_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The default randomizer is thread safe and returns values between 0.0 and 1.0.</p>
+</div>
 
 
 
