@@ -128,6 +128,28 @@ sequenceDiagram
 
 Use behavior strategies to inject delays.
 
+<!-- snippet: chaos-behavior-anti-pattern-inject-delay -->
+```cs
+var pipeline = new ResiliencePipelineBuilder()
+    .AddChaosBehavior(new ChaosBehaviorStrategyOptions
+    {
+        BehaviorGenerator = static args => Task.Delay(TimeSpan.FromSeconds(7), args.Context.CancellationToken),
+    })
+    .Build();
+```
+<!-- endSnippet -->
+
 ✅ DO
 
 Use the latency chaos instead as the [`ChaosLatencyStrategy`](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.
+
+<!-- snippet: chaos-behavior-pattern-inject-delay -->
+```cs
+var pipeline = new ResiliencePipelineBuilder()
+    .AddChaosLatency(new ChaosLatencyStrategyOptions
+    {
+        Latency = TimeSpan.FromSeconds(7),
+    })
+    .Build();
+```
+<!-- endSnippet -->

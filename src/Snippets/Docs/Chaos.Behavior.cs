@@ -58,6 +58,31 @@ internal static partial class Chaos
             .Build();
         #endregion
     }
+
+    public static void AntiPattern_InjectDelay()
+    {
+        #region chaos-behavior-anti-pattern-inject-delay
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddChaosBehavior(new ChaosBehaviorStrategyOptions
+            {
+                BehaviorGenerator = static args => Task.Delay(TimeSpan.FromSeconds(7), args.Context.CancellationToken),
+            })
+            .Build();
+
+        #endregion
+    }
+
+    public static void Pattern_InjectDelay()
+    {
+        #region chaos-behavior-pattern-inject-delay
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddChaosLatency(new ChaosLatencyStrategyOptions
+            {
+                Latency = TimeSpan.FromSeconds(7),
+            })
+            .Build();
+        #endregion
+    }
 }
 
 internal class RedisConnectionException : Exception
