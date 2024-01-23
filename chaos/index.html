@@ -173,6 +173,11 @@ builder
 </table>
 <h2 id="common-options-across-strategies">Common options across strategies</h2>
 <p>All the strategies' options implement the <a class="xref" href="../api/Polly.Simmy.ChaosStrategyOptions.html"><code>ChaosStrategyOptions</code></a> class as it contains the basic configuration for every chaos strategy.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Please bear in mind that with the V8 API the chaos strategies are enabled by default. So, you can opt-out of them one-by-one either via the <code>Enabled</code> or via the <code>EnabledGenerator</code> property.</p>
+<p>In previous Simmy versions you had to explicitly call either the <code>Enabled</code> or the <code>EnabledWhen</code> method to opt-in a chaos policy.</p>
+</div>
 <table>
 <thead>
 <tr>
@@ -194,7 +199,7 @@ builder
 </tr>
 <tr>
 <td><code>Enabled</code></td>
-<td><code>false</code></td>
+<td><code>true</code></td>
 <td>Determines whether the strategy is enabled or not.</td>
 </tr>
 <tr>
@@ -204,6 +209,10 @@ builder
 </tr>
 </tbody>
 </table>
+<div class="NOTE">
+<h5>Note</h5>
+<p>If both <code>Enabled</code> and <code>EnabledGenerator</code> are specified then <code>Enabled</code> will be ignored.</p>
+</div>
 
 </article>
 

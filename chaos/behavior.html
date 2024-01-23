@@ -105,7 +105,6 @@
 var optionsWithBehaviorGenerator = new ChaosBehaviorStrategyOptions
 {
     BehaviorGenerator = static args =&gt; RestartRedisAsync(args.Context.CancellationToken),
-    Enabled = true,
     InjectionRate = 0.05
 };
 
@@ -113,7 +112,6 @@ var optionsWithBehaviorGenerator = new ChaosBehaviorStrategyOptions
 var optionsOnBehaviorInjected = new ChaosBehaviorStrategyOptions
 {
     BehaviorGenerator = static args =&gt; RestartRedisAsync(args.Context.CancellationToken),
-    Enabled = true,
     InjectionRate = 0.05,
     OnBehaviorInjected = static args =&gt;
     {
@@ -144,7 +142,6 @@ new ResiliencePipelineBuilder().AddChaosBehavior(0.05, RestartRedisAsync);
     .AddChaosBehavior(new ChaosBehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
         BehaviorGenerator = static args =&gt; RestartRedisAsync(args.Context.CancellationToken),
-        Enabled = true,
         InjectionRate = 0.05
     })
     .Build();
