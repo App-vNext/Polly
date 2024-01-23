@@ -55,7 +55,7 @@ public class ChaosBehaviorPipelineBuilderExtensionsTests
             .AddChaosBehavior(new ChaosBehaviorStrategyOptions
             {
                 InjectionRate = 1,
-                BehaviorAction = (_) => default
+                BehaviorGenerator = (_) => default
             })
             .Build();
 

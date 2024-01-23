@@ -1,13 +1,13 @@
 ﻿#nullable enable
 Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments(double failureRate, int failureCount, Polly.ResilienceContext! context, int halfOpenAttempts) -> void
 Polly.CircuitBreaker.BreakDurationGeneratorArguments.HalfOpenAttempts.get -> int
-Polly.Simmy.Behavior.BehaviorActionArguments
-Polly.Simmy.Behavior.BehaviorActionArguments.BehaviorActionArguments() -> void
-Polly.Simmy.Behavior.BehaviorActionArguments.BehaviorActionArguments(Polly.ResilienceContext! context) -> void
-Polly.Simmy.Behavior.BehaviorActionArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Behavior.BehaviorGeneratorArguments
+Polly.Simmy.Behavior.BehaviorGeneratorArguments.BehaviorGeneratorArguments() -> void
+Polly.Simmy.Behavior.BehaviorGeneratorArguments.BehaviorGeneratorArguments(Polly.ResilienceContext! context) -> void
+Polly.Simmy.Behavior.BehaviorGeneratorArguments.Context.get -> Polly.ResilienceContext!
 Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions
-Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction.get -> System.Func<Polly.Simmy.Behavior.BehaviorActionArguments, System.Threading.Tasks.ValueTask>?
-Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction.set -> void
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorGenerator.get -> System.Func<Polly.Simmy.Behavior.BehaviorGeneratorArguments, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorGenerator.set -> void
 Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.ChaosBehaviorStrategyOptions() -> void
 Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected.get -> System.Func<Polly.Simmy.Behavior.OnBehaviorInjectedArguments, System.Threading.Tasks.ValueTask>?
 Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected.set -> void

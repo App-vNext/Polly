@@ -2,6 +2,7 @@ using System.Net.Http;
 using Polly.Retry;
 using Polly.Simmy;
 using Polly.Simmy.Behavior;
+using Polly.Simmy.Latency;
 
 namespace Snippets.Docs;
 
@@ -13,14 +14,14 @@ internal static partial class Chaos
         // To use a custom delegated for injected behavior
         var optionsWithBehaviorGenerator = new ChaosBehaviorStrategyOptions
         {
-            BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
+            BehaviorGenerator = static args => RestartRedisAsync(args.Context.CancellationToken),
             InjectionRate = 0.05
         };
 
         // To get notifications when a behavior is injected
         var optionsOnBehaviorInjected = new ChaosBehaviorStrategyOptions
         {
-            BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
+            BehaviorGenerator = static args => RestartRedisAsync(args.Context.CancellationToken),
             InjectionRate = 0.05,
             OnBehaviorInjected = static args =>
             {
@@ -49,8 +50,36 @@ internal static partial class Chaos
             })
             .AddChaosBehavior(new ChaosBehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
             {
-                BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
+                BehaviorGenerator = static args => RestartRedisAsync(args.Context.CancellationToken),
                 InjectionRate = 0.05
+            })
+            .Build();
+        #endregion
+    }
+
+    public static void AntiPattern_InjectDelay()
+    {
+        #region chaos-behavior-anti-pattern-inject-delay
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddChaosBehavior(new ChaosBehaviorStrategyOptions
+            {
+                BehaviorGenerator = static async args =>
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(7), args.Context.CancellationToken);
+                }
+            })
+            .Build();
+
+        #endregion
+    }
+
+    public static void Pattern_InjectDelay()
+    {
+        #region chaos-behavior-pattern-inject-delay
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddChaosLatency(new ChaosLatencyStrategyOptions
+            {
+                Latency = TimeSpan.FromSeconds(7),
             })
             .Build();
         #endregion

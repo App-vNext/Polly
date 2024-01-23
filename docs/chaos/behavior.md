@@ -20,14 +20,14 @@ The behavior chaos strategy is designed to inject custom behaviors into system o
 // To use a custom delegated for injected behavior
 var optionsWithBehaviorGenerator = new ChaosBehaviorStrategyOptions
 {
-    BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
+    BehaviorGenerator = static args => RestartRedisAsync(args.Context.CancellationToken),
     InjectionRate = 0.05
 };
 
 // To get notifications when a behavior is injected
 var optionsOnBehaviorInjected = new ChaosBehaviorStrategyOptions
 {
-    BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
+    BehaviorGenerator = static args => RestartRedisAsync(args.Context.CancellationToken),
     InjectionRate = 0.05,
     OnBehaviorInjected = static args =>
     {
@@ -60,7 +60,7 @@ var pipeline = new ResiliencePipelineBuilder()
     })
     .AddChaosBehavior(new ChaosBehaviorStrategyOptions // Chaos strategies are usually placed as the last ones in the pipeline
     {
-        BehaviorAction = static args => RestartRedisAsync(args.Context.CancellationToken),
+        BehaviorGenerator = static args => RestartRedisAsync(args.Context.CancellationToken),
         InjectionRate = 0.05
     })
     .Build();
@@ -72,7 +72,7 @@ var pipeline = new ResiliencePipelineBuilder()
 | Property             | Default Value | Description                                    |
 |----------------------|---------------|------------------------------------------------|
 | `OnBehaviorInjected` | `null`        | Action executed when the behavior is injected. |
-| `BehaviorAction`     | `null`        | Custom behavior to be injected.                |
+| `BehaviorGenerator`  | `null`        | Custom behavior to be injected.                |
 
 ## Diagrams
 
@@ -125,6 +125,31 @@ sequenceDiagram
 
 Use behavior strategies to inject delays.
 
+<!-- snippet: chaos-behavior-anti-pattern-inject-delay -->
+```cs
+var pipeline = new ResiliencePipelineBuilder()
+    .AddChaosBehavior(new ChaosBehaviorStrategyOptions
+    {
+        BehaviorGenerator = static async args =>
+        {
+            await Task.Delay(TimeSpan.FromSeconds(7), args.Context.CancellationToken);
+        }
+    })
+    .Build();
+```
+<!-- endSnippet -->
+
 ✅ DO
 
 Use the latency chaos instead as the [`ChaosLatencyStrategy`](latency.md) already correctly handles synchronous/asynchronous delay executions, cancellations, etc.
+
+<!-- snippet: chaos-behavior-pattern-inject-delay -->
+```cs
+var pipeline = new ResiliencePipelineBuilder()
+    .AddChaosLatency(new ChaosLatencyStrategyOptions
+    {
+        Latency = TimeSpan.FromSeconds(7),
+    })
+    .Build();
+```
+<!-- endSnippet -->
