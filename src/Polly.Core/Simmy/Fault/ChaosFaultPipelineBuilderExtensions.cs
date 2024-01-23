@@ -21,7 +21,6 @@ public static class ChaosFaultPipelineBuilderExtensions
     {
         builder.AddChaosFault(new ChaosFaultStrategyOptions
         {
-            Enabled = true,
             InjectionRate = injectionRate,
             FaultGenerator = (_) => new ValueTask<Exception?>(faultGenerator())
         });

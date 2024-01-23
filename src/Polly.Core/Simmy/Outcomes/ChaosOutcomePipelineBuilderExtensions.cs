@@ -25,7 +25,6 @@ public static class ChaosOutcomePipelineBuilderExtensions
 
         builder.AddChaosOutcome(new ChaosOutcomeStrategyOptions<TResult>
         {
-            Enabled = true,
             InjectionRate = injectionRate,
             OutcomeGenerator = (_) =>
             {
