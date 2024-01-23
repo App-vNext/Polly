@@ -28,7 +28,7 @@ public static class ChaosBehaviorPipelineBuilderExtensions
         {
             Enabled = true,
             InjectionRate = injectionRate,
-            BehaviorAction = args => behavior(args.Context.CancellationToken)
+            BehaviorGenerator = args => behavior(args.Context.CancellationToken)
         });
     }
 
