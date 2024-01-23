@@ -73,7 +73,7 @@ Chaos strategies (formerly known as Monkey strategies) are in essence a [Resilie
 All the strategies' options implement the [`ChaosStrategyOptions`](xref:Polly.Simmy.ChaosStrategyOptions) class as it contains the basic configuration for every chaos strategy.
 
 > [!IMPORTANT]
-> Please bear in mind that with the V8 API the chaos strategies are enabled by default. So, you can opt-out them one-by-one either via the `Enabled` or via the `EnabledGenerator` property.
+> Please bear in mind that with the V8 API the chaos strategies are enabled by default. So, you can opt-out of them one-by-one either via the `Enabled` or via the `EnabledGenerator` property.
 >
 > In previous Simmy versions you had to explicitly call either the `Enabled` or the `EnabledWhen` method to opt-in a chaos policy.
 
