@@ -4284,44 +4284,44 @@ references:
   commentId: N:Polly.Simmy.Behavior
   fullName: Polly.Simmy.Behavior
   nameWithType: Polly.Simmy.Behavior
-- uid: Polly.Simmy.Behavior.BehaviorActionArguments
-  name: BehaviorActionArguments
-  href: api/Polly.Simmy.Behavior.BehaviorActionArguments.html
-  commentId: T:Polly.Simmy.Behavior.BehaviorActionArguments
-  fullName: Polly.Simmy.Behavior.BehaviorActionArguments
-  nameWithType: BehaviorActionArguments
-- uid: Polly.Simmy.Behavior.BehaviorActionArguments.#ctor(Polly.ResilienceContext)
-  name: BehaviorActionArguments(ResilienceContext)
-  href: api/Polly.Simmy.Behavior.BehaviorActionArguments.html#Polly_Simmy_Behavior_BehaviorActionArguments__ctor_Polly_ResilienceContext_
-  commentId: M:Polly.Simmy.Behavior.BehaviorActionArguments.#ctor(Polly.ResilienceContext)
+- uid: Polly.Simmy.Behavior.BehaviorGeneratorArguments
+  name: BehaviorGeneratorArguments
+  href: api/Polly.Simmy.Behavior.BehaviorGeneratorArguments.html
+  commentId: T:Polly.Simmy.Behavior.BehaviorGeneratorArguments
+  fullName: Polly.Simmy.Behavior.BehaviorGeneratorArguments
+  nameWithType: BehaviorGeneratorArguments
+- uid: Polly.Simmy.Behavior.BehaviorGeneratorArguments.#ctor(Polly.ResilienceContext)
+  name: BehaviorGeneratorArguments(ResilienceContext)
+  href: api/Polly.Simmy.Behavior.BehaviorGeneratorArguments.html#Polly_Simmy_Behavior_BehaviorGeneratorArguments__ctor_Polly_ResilienceContext_
+  commentId: M:Polly.Simmy.Behavior.BehaviorGeneratorArguments.#ctor(Polly.ResilienceContext)
   name.vb: New(ResilienceContext)
-  fullName: Polly.Simmy.Behavior.BehaviorActionArguments.BehaviorActionArguments(Polly.ResilienceContext)
-  fullName.vb: Polly.Simmy.Behavior.BehaviorActionArguments.New(Polly.ResilienceContext)
-  nameWithType: BehaviorActionArguments.BehaviorActionArguments(ResilienceContext)
-  nameWithType.vb: BehaviorActionArguments.New(ResilienceContext)
-- uid: Polly.Simmy.Behavior.BehaviorActionArguments.#ctor*
-  name: BehaviorActionArguments
-  href: api/Polly.Simmy.Behavior.BehaviorActionArguments.html#Polly_Simmy_Behavior_BehaviorActionArguments__ctor_
-  commentId: Overload:Polly.Simmy.Behavior.BehaviorActionArguments.#ctor
+  fullName: Polly.Simmy.Behavior.BehaviorGeneratorArguments.BehaviorGeneratorArguments(Polly.ResilienceContext)
+  fullName.vb: Polly.Simmy.Behavior.BehaviorGeneratorArguments.New(Polly.ResilienceContext)
+  nameWithType: BehaviorGeneratorArguments.BehaviorGeneratorArguments(ResilienceContext)
+  nameWithType.vb: BehaviorGeneratorArguments.New(ResilienceContext)
+- uid: Polly.Simmy.Behavior.BehaviorGeneratorArguments.#ctor*
+  name: BehaviorGeneratorArguments
+  href: api/Polly.Simmy.Behavior.BehaviorGeneratorArguments.html#Polly_Simmy_Behavior_BehaviorGeneratorArguments__ctor_
+  commentId: Overload:Polly.Simmy.Behavior.BehaviorGeneratorArguments.#ctor
   isSpec: "True"
   name.vb: New
-  fullName: Polly.Simmy.Behavior.BehaviorActionArguments.BehaviorActionArguments
-  fullName.vb: Polly.Simmy.Behavior.BehaviorActionArguments.New
-  nameWithType: BehaviorActionArguments.BehaviorActionArguments
-  nameWithType.vb: BehaviorActionArguments.New
-- uid: Polly.Simmy.Behavior.BehaviorActionArguments.Context
+  fullName: Polly.Simmy.Behavior.BehaviorGeneratorArguments.BehaviorGeneratorArguments
+  fullName.vb: Polly.Simmy.Behavior.BehaviorGeneratorArguments.New
+  nameWithType: BehaviorGeneratorArguments.BehaviorGeneratorArguments
+  nameWithType.vb: BehaviorGeneratorArguments.New
+- uid: Polly.Simmy.Behavior.BehaviorGeneratorArguments.Context
   name: Context
-  href: api/Polly.Simmy.Behavior.BehaviorActionArguments.html#Polly_Simmy_Behavior_BehaviorActionArguments_Context
-  commentId: P:Polly.Simmy.Behavior.BehaviorActionArguments.Context
-  fullName: Polly.Simmy.Behavior.BehaviorActionArguments.Context
-  nameWithType: BehaviorActionArguments.Context
-- uid: Polly.Simmy.Behavior.BehaviorActionArguments.Context*
+  href: api/Polly.Simmy.Behavior.BehaviorGeneratorArguments.html#Polly_Simmy_Behavior_BehaviorGeneratorArguments_Context
+  commentId: P:Polly.Simmy.Behavior.BehaviorGeneratorArguments.Context
+  fullName: Polly.Simmy.Behavior.BehaviorGeneratorArguments.Context
+  nameWithType: BehaviorGeneratorArguments.Context
+- uid: Polly.Simmy.Behavior.BehaviorGeneratorArguments.Context*
   name: Context
-  href: api/Polly.Simmy.Behavior.BehaviorActionArguments.html#Polly_Simmy_Behavior_BehaviorActionArguments_Context_
-  commentId: Overload:Polly.Simmy.Behavior.BehaviorActionArguments.Context
+  href: api/Polly.Simmy.Behavior.BehaviorGeneratorArguments.html#Polly_Simmy_Behavior_BehaviorGeneratorArguments_Context_
+  commentId: Overload:Polly.Simmy.Behavior.BehaviorGeneratorArguments.Context
   isSpec: "True"
-  fullName: Polly.Simmy.Behavior.BehaviorActionArguments.Context
-  nameWithType: BehaviorActionArguments.Context
+  fullName: Polly.Simmy.Behavior.BehaviorGeneratorArguments.Context
+  nameWithType: BehaviorGeneratorArguments.Context
 - uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions
   name: ChaosBehaviorStrategyOptions
   href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html
@@ -4347,19 +4347,19 @@ references:
   fullName.vb: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.New
   nameWithType: ChaosBehaviorStrategyOptions.ChaosBehaviorStrategyOptions
   nameWithType.vb: ChaosBehaviorStrategyOptions.New
-- uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction
-  name: BehaviorAction
-  href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html#Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_BehaviorAction
-  commentId: P:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction
-  fullName: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction
-  nameWithType: ChaosBehaviorStrategyOptions.BehaviorAction
-- uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction*
-  name: BehaviorAction
-  href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html#Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_BehaviorAction_
-  commentId: Overload:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction
+- uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorGenerator
+  name: BehaviorGenerator
+  href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html#Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_BehaviorGenerator
+  commentId: P:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorGenerator
+  fullName: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorGenerator
+  nameWithType: ChaosBehaviorStrategyOptions.BehaviorGenerator
+- uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorGenerator*
+  name: BehaviorGenerator
+  href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html#Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_BehaviorGenerator_
+  commentId: Overload:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorGenerator
   isSpec: "True"
-  fullName: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorAction
-  nameWithType: ChaosBehaviorStrategyOptions.BehaviorAction
+  fullName: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorGenerator
+  nameWithType: ChaosBehaviorStrategyOptions.BehaviorGenerator
 - uid: Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected
   name: OnBehaviorInjected
   href: api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html#Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_OnBehaviorInjected

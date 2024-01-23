@@ -772,10 +772,10 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Polly.Simmy.Behavior.BehaviorActionArguments.yml",
+      "source_relative_path": "api/Polly.Simmy.Behavior.BehaviorGeneratorArguments.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Polly.Simmy.Behavior.BehaviorActionArguments.html"
+          "relative_path": "api/Polly.Simmy.Behavior.BehaviorGeneratorArguments.html"
         }
       },
       "version": ""
