@@ -26,7 +26,6 @@ public class ChaosOutcomeStrategyTests
                     new ChaosOutcomeStrategyOptions<int>
                     {
                         InjectionRate = 1,
-                        Enabled = true,
                     },
                     "Either Outcome or OutcomeGenerator is required.",
                     typeof(InvalidOperationException)
@@ -83,7 +82,6 @@ public class ChaosOutcomeStrategyTests
         var options = new ChaosOutcomeStrategyOptions<HttpStatusCode>
         {
             InjectionRate = 0.6,
-            Enabled = true,
             Randomizer = () => 0.5,
             OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(fakeResult)),
             OnOutcomeInjected = args =>
@@ -143,7 +141,6 @@ public class ChaosOutcomeStrategyTests
         var options = new ChaosOutcomeStrategyOptions<HttpStatusCode?>
         {
             InjectionRate = 0.6,
-            Enabled = true,
             Randomizer = () => 0.5,
             OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode?>?>(nullOutcome)
         };

@@ -40,7 +40,6 @@ public class ChaosBehaviorStrategyTests
     public async Task Given_enabled_and_randomly_within_threshold_should_inject_behavior()
     {
         _options.InjectionRate = 0.6;
-        _options.Enabled = true;
         _options.Randomizer = () => 0.5;
         _options.BehaviorAction = (_) => { _behaviorActionExecuted = true; return default; };
 
@@ -56,7 +55,6 @@ public class ChaosBehaviorStrategyTests
     public async Task Given_enabled_and_randomly_within_threshold_ensure_on_behavior_injected_called()
     {
         _options.InjectionRate = 0.6;
-        _options.Enabled = true;
         _options.Randomizer = () => 0.5;
         _options.BehaviorAction = (_) => { _behaviorActionExecuted = true; return default; };
         _options.OnBehaviorInjected = args =>
@@ -97,7 +95,6 @@ public class ChaosBehaviorStrategyTests
     public async Task Should_inject_behavior_before_executing_user_delegate()
     {
         _options.InjectionRate = 0.6;
-        _options.Enabled = true;
         _options.Randomizer = () => 0.5;
         _options.BehaviorAction = (_) =>
         {
@@ -119,7 +116,6 @@ public class ChaosBehaviorStrategyTests
     {
         using var cts = new CancellationTokenSource();
         _options.InjectionRate = 0.6;
-        _options.Enabled = true;
         _options.Randomizer = () => 0.5;
         _options.BehaviorAction = (_) =>
         {

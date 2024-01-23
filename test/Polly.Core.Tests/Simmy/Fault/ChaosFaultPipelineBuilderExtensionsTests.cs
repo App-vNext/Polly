@@ -15,7 +15,6 @@ public class ChaosFaultPipelineBuilderExtensionsTests
             builder.AddChaosFault(new ChaosFaultStrategyOptions
             {
                 InjectionRate = 0.6,
-                Enabled = true,
                 Randomizer = () => 0.5,
                 FaultGenerator = _=> new ValueTask<Exception?>( new InvalidOperationException("Dummy exception."))
             });
