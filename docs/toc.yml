@@ -37,8 +37,8 @@
   items:
   - name: Fault
     href: chaos/fault.md
-  - name: Result
-    href: chaos/result.md
+  - name: Outcome
+    href: chaos/outcome.md
   - name: Latency
     href: chaos/latency.md
   - name: Behavior

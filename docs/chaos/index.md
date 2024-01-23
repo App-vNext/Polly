@@ -64,7 +64,7 @@ Chaos strategies (formerly known as Monkey strategies) are in essence a [Resilie
 | Strategy                | Reactive | What does the strategy do?                                           |
 |-------------------------|----------|----------------------------------------------------------------------|
 | [Fault](fault.md)       | No       | Injects exceptions in your system.                                   |
-| [Result](result.md)     | Yes      | Substitute results to fake outcomes in your system.                  |
+| [Outcome](outcome.md)   | Yes      | Injects fake outcomes (results or exceptions) in your system.        |
 | [Latency](latency.md)   | No       | Injects latency into executions before the calls are made.           |
 | [Behavior](behavior.md) | No       | Allows you to inject *any* extra behaviour, before a call is placed. |
 
