@@ -66,7 +66,7 @@ Chaos strategies (formerly known as Monkey strategies) are in essence a [Resilie
 | [Fault](fault.md)       | No       | Injects exceptions in your system.                                   |
 | [Outcome](outcome.md)   | Yes      | Injects fake outcomes (results or exceptions) in your system.        |
 | [Latency](latency.md)   | No       | Injects latency into executions before the calls are made.           |
-| [Behavior](behavior.md) | No       | Allows you to inject *any* extra behaviour, before a call is placed. |
+| [Behavior](behavior.md) | No       | Allows you to inject *any* extra behavior, before a call is placed.  |
 
 ## Common options across strategies
 
@@ -85,6 +85,8 @@ All the strategies' options implement the [`ChaosStrategyOptions`](xref:Polly.Si
 | `EnabledGenerator`       | `null`        | The generator that indicates whether the chaos strategy is enabled for a given execution.                                                                                                                                        |
 
 > [!NOTE]
+> If both `InjectionRate` and `InjectionRateGenerator` are specified then `InjectionRate` will be ignored.
+>
 > If both `Enabled` and `EnabledGenerator` are specified then `Enabled` will be ignored.
 
 [simmy]: https://github.com/Polly-Contrib/Simmy

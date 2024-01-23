@@ -105,6 +105,9 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(optionsSt
 | `ManualControl`          | `null`                                                                     | Allows for manual control to isolate or close the circuit.                                 |
 | `StateProvider`          | `null`                                                                     | Enables the retrieval of the current state of the circuit.                                 |
 
+> [!NOTE]
+> If both `BreakDuration` and `BreakDurationGenerator` are specified then `BreakDuration` will be ignored.
+
 ## Diagrams
 
 ### State diagram
