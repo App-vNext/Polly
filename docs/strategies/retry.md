@@ -114,11 +114,11 @@ If the `ShouldHandle` predicate returns `true` and the next attempt number is no
 
 There are many properties that may contribute to this calculation:
 
-- `Delay`
-- `DelayGenerator`
-- `MaxDelay`
-- `UseJitter`
-- `BackoffType`
+- `BackoffType`: It specifies which calculation algorithm should run.
+- `Delay`: If only this one is specified then it will be used as is. If others are defined as well then this will be used as a _base delay_.
+- `DelayGenerator`: If specified then it will overwrite other properties based calculation. **Except** if it returns a negative `TimeSpan` where the other properties based calculation is used.
+- `MaxDelay`: If specified then it caps the delay if the calculated one is greater than this value. **Except** if `DelayGenerator` is used where no capping is applied.
+- `UseJitter`: If enabled then it adds a random value between between -25% of `Delay` and +25% of `Delay`. **Except** if `BackoffType` is set to `Exponential` where jitter is always used.
 
 > [!IMPORTANT]
 > The summarized description below is an implementation detail. It may change in the future without notice.
@@ -137,7 +137,8 @@ Step 1: Calculating the base delay:
 
 Step 2: Capping the delay if needed:
 
-- If the previously calculated delay is greater than `MaxDelay` then `MaxDelay` will be used.
+- If `MaxDelay` is not set then the previously calculated delay will be used.
+- If `MaxDelay` is set and the previously calculated delay is greater than `MaxDelay` then `MaxDelay` will be used.
 
 Step 3: Using the generator if supplied
 
