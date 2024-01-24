@@ -13,6 +13,7 @@ deserialization
 dotnet
 dotnetrocks
 durations
+enum
 eshoponcontainers
 extensibility
 flurl
