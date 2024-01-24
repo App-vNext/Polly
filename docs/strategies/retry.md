@@ -112,7 +112,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(optionsExtractDela
 
 If the `ShouldHandle` predicate returns `true` and the next attempt number is not greater than `MaxRetryAttempts` then the retry strategy calculates the next delay.
 
-There are many properties that are somehow contribute to this calculation:
+There are many properties that may contribute to this calculation:
 
 - `Delay`
 - `DelayGenerator`
@@ -121,11 +121,9 @@ There are many properties that are somehow contribute to this calculation:
 - `BackoffType`
 
 > [!IMPORTANT]
-> The below described algorithm is an implementation detail. It might change in the future without further notice.
->
-> Also please bear in mind that some details are not mentioned here to keep the algorithm description short and terse.
+> The summarized description below is an implementation detail. It may change in the future without notice.
 
-The `BackoffType` property's data type is a [`DelayBackOffType`](xref:Polly.DelayBackOffType) enum. This controls primarily how the calculation is done.
+The `BackoffType` property's data type is the [`DelayBackOffType`](xref:Polly.DelayBackOffType) enumeration. This primarily controls how the calculation is done.
 
 ### Constant
 
