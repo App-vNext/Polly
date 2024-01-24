@@ -108,6 +108,55 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(optionsExtractDela
 | `OnRetry`          | `null`                                                                     | Action executed when retry occurs.                                                       |
 | `MaxDelay`         | `null`                                                                     | Caps the calculated retry delay to a specified maximum duration.                         |
 
+## Calculation of the next delay
+
+If the `ShouldHandle` predicate returns `true` and the next attempt number is not greater than `MaxRetryAttempts` then the retry strategy calculates the next delay.
+
+There are many properties that are somehow contribute to this calculation:
+
+- `Delay`
+- `DelayGenerator`
+- `MaxDelay`
+- `UseJitter`
+- `BackoffType`
+
+> [!IMPORTANT]
+> The below described algorithm is an implementation detail. It might change in the future without further notice.
+>
+> Also please bear in mind that some details are not mentioned here to keep the algorithm description short and terse.
+
+The `BackoffType` property's data type is a [`DelayBackOffType`](xref:Polly.DelayBackOffType) enum. This controls primarily how the calculation is done.
+
+### Constant
+
+One might think that here we only put into the account the `Delay` property. In reality all above listed properties are used.
+
+Step 1: Calculating the base delay:
+
+- If `UseJitter` is set to `false` and `Delay` is specified then `Delay` will be used.
+- If `UseJitter` is set to `true` and `Delay` is specified then a random value is added to the `Delay`.
+  - The random value is between [-25% of `Delay`, +25% of `Delay`].
+
+Step 2: Capping the delay if needed:
+
+- If the previously calculated delay is greater than `MaxDelay` then `MaxDelay` will be used.
+
+Step 3: Using the generator if supplied
+
+- If the returned `TimeSpan` of the `DelayGenerator` method call is positive then it will be used.
+- If the returned `TimeSpan` of the `DelayGenerator` method call is negative then it will use the step 2's result.
+
+> [!NOTE]
+> The `DelayGenerator`'s returned value is not capped with the `MaxDelay`.
+
+### Linear
+
+### Exponential
+
+> [!TIP]
+> For more details please check out the [`RetryHelper`](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Retry/RetryHelper.cs)
+> and the [`RetryResilienceStrategy`](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Retry/RetryResilienceStrategy.cs) classes.
+
 ## Diagrams
 
 Let's suppose we have a retry strategy with `MaxRetryAttempts`: `2`.
