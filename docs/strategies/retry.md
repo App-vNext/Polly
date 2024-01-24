@@ -150,6 +150,19 @@ Step 3: Using the generator if supplied
 
 ### Linear
 
+This algorithm increases the delays for every attempt in a linear fashion if no jitter is used.
+
+Step 1: Calculating the base delay:
+
+- If `UseJitter` is set to `false` and `Delay` is specified then `Delay` multiplied by the actual attempt number will be used.
+- If `UseJitter` is set to `true` and `Delay` is specified then a random value is added to the `Delay` multiplied by the actual attempt number.
+  - The random value is between -25% of the newly calculated `Delay` and +25% of the newly calculated `Delay`.
+
+> [!NOTE]
+> Because the jitter's offset is based on the newly calculated delay that's why the new delay could be smaller than the previous one.
+
+Step 2 and 3 are the same as for the Constant algorithm.
+
 ### Exponential
 
 > [!TIP]
