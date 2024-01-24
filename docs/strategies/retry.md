@@ -127,13 +127,13 @@ The `BackoffType` property's data type is the [`DelayBackOffType`](xref:Polly.De
 
 ### Constant
 
-One might think that here we only put into the account the `Delay` property. In reality all above listed properties are used.
+Even though the `Constant` name could imply that only the `Delay` property is used, in reality all the above listed properties are used.
 
 Step 1: Calculating the base delay:
 
 - If `UseJitter` is set to `false` and `Delay` is specified then `Delay` will be used.
 - If `UseJitter` is set to `true` and `Delay` is specified then a random value is added to the `Delay`.
-  - The random value is between [-25% of `Delay`, +25% of `Delay`].
+  - The random value is between -25% of `Delay` and +25% of `Delay`.
 
 Step 2: Capping the delay if needed:
 
