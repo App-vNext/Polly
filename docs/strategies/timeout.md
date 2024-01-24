@@ -125,6 +125,9 @@ The `OnTimeout` delegate can be useful when you define a resilience pipeline whi
 | `TimeoutGenerator` | `null`        | Generates the timeout for a given execution. |
 | `OnTimeout`        | `null`        | Event that is raised when timeout occurs.    |
 
+> [!NOTE]
+> If both `Timeout` and `TimeoutGenerator` are specified then `Timeout` will be ignored.
+
 ## Diagrams
 
 ### Happy path sequence diagram

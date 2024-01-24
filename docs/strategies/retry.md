@@ -108,6 +108,110 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(optionsExtractDela
 | `OnRetry`          | `null`                                                                     | Action executed when retry occurs.                                                       |
 | `MaxDelay`         | `null`                                                                     | Caps the calculated retry delay to a specified maximum duration.                         |
 
+## Calculation of the next delay
+
+If the `ShouldHandle` predicate returns `true` and the next attempt number is not greater than `MaxRetryAttempts` then the retry strategy calculates the next delay.
+
+There are many properties that may contribute to this calculation:
+
+- `BackoffType`: Specifies which calculation algorithm should run.
+- `Delay`: If only this property is specified then it will be used as-is. If others are also specified then this will be used as a *base delay*.
+- `DelayGenerator`: If specified, will override other property-based calculations, **except** if it returns `null` or a negative `TimeSpan`, in which case the other property-based calculations are used.
+- `MaxDelay`: If specified, caps the delay if the calculated delay is greater than this value, **except** if `DelayGenerator` is used, where no capping is applied.
+- `UseJitter`: If enabled, then adds a random value between between -25% of `Delay` and +25% of `Delay`, **except** if `BackoffType` is `Exponential`, where a bit more complex jitter calculation is used.
+
+> [!IMPORTANT]
+> The summarized description below is an implementation detail. It may change in the future without notice.
+
+The `BackoffType` property's data type is the [`DelayBackoffType`](xref:Polly.DelayBackoffType) enumeration. This primarily controls how the calculation is done.
+
+### Constant
+
+Even though the `Constant` name could imply that only the `Delay` property is used, in reality all the above listed properties are used.
+
+Step 1: Calculating the base delay:
+
+- If `UseJitter` is set to `false` and `Delay` is specified then `Delay` will be used.
+- If `UseJitter` is set to `true` and `Delay` is specified then a random value is added to the `Delay`.
+  - The random value is between -25% and +25% of `Delay`.
+
+Step 2: Capping the delay if needed:
+
+- If `MaxDelay` is not set then the previously calculated delay will be used.
+- If `MaxDelay` is set and the previously calculated delay is greater than `MaxDelay` then `MaxDelay` will be used.
+
+Step 3: Using the generator if supplied
+
+- If the returned `TimeSpan` of the `DelayGenerator` method call is positive then it will be used.
+- If the returned `TimeSpan` of the `DelayGenerator` method call is negative then it will use the step 2's result.
+- If the `DelayGenerator` method call is `null` then it will use the step 2's result.
+
+> [!NOTE]
+> The `DelayGenerator`'s returned value is not capped with the `MaxDelay`.
+
+#### Constant examples
+
+The delays column contains an example series of five values to depict the patterns.
+
+| Settings | Delays in milliseconds |
+|--|--|
+| `Delay`: `1sec` | [1000,1000,1000,1000,1000] |
+| `Delay`: `1sec`, `UseJitter`: `true` | [986,912,842,972,1007] |
+| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `1100ms` | [1100,978,1100,1041,916] |
+
+### Linear
+
+This algorithm increases the delays for every attempt in a linear fashion if no jitter is used.
+
+Step 1: Calculating the base delay:
+
+- If `UseJitter` is set to `false` and `Delay` is specified then `Delay` multiplied by the actual attempt number will be used.
+- If `UseJitter` is set to `true` and `Delay` is specified then a random value is added to the `Delay` multiplied by the actual attempt number.
+  - The random value is between -25% and +25% of the newly calculated `Delay`.
+
+> [!NOTE]
+> Because the jitter calculation is based on the newly calculated delay, the new delay could be less than the previous value.
+
+Step 2 and 3 are the same as for the Constant algorithm.
+
+#### Linear examples
+
+The delays column contains an example series of five values to depict the patterns.
+
+| Settings | Delays in milliseconds |
+|--|--|
+| `Delay`: `1sec` | [1000,2000,3000,4000,5000] |
+| `Delay`: `1sec`, `UseJitter`: `true` | [1129,2147,2334,4894,4102] |
+| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `4500ms` | [907,2199,2869,4500,4500] |
+
+### Exponential
+
+This algorithm increases the delays for every attempt in an exponential fashion if no jitter is used.
+
+- If `UseJitter` is set to `false` and `Delay` is specified then squaring actual attempt number multiplied by the `Delay` will be used (*`attempt^2 * delay`*).
+- If `UseJitter` is set to `true` and the `Delay` is specified then a `DecorrelatedJitterBackoffV2` formula (based on [Polly.Contrib.WaitAndRetry](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry)) will be used.
+
+> [!NOTE]
+> Because the jitter calculation is based on the newly calculated delay, the new delay could be less than the previous value.
+
+Step 2 and 3 are the same as for the Constant algorithm.
+
+#### Exponential examples
+
+The delays column contains an example series of five values to depict the patterns.
+
+| Settings | Delays in milliseconds |
+|--|--|
+| `Delay`: `1sec` | [1000,2000,4000,8000,16000] |
+| `Delay`: `1sec`, `UseJitter`: `true` | [393,1453,4235,5369,16849] |
+| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `15000ms` | [477,793,2227,5651,15000] |
+
+---
+
+> [!TIP]
+> For more details please check out the [`RetryHelper`](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Retry/RetryHelper.cs)
+> and the [`RetryResilienceStrategy`](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Retry/RetryResilienceStrategy.cs) classes.
+
 ## Diagrams
 
 Let's suppose we have a retry strategy with `MaxRetryAttempts`: `2`.

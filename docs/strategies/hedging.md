@@ -60,18 +60,21 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(optionsDefaults)
 ## Defaults
 
 | Property            | Default Value                                                              | Description                                                                              |
-| ------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+|---------------------|----------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
 | `ShouldHandle`      | Predicate that handles all exceptions except `OperationCanceledException`. | Predicate that determines what results and exceptions are handled by the retry strategy. |
 | `MaxHedgedAttempts` | 1                                                                          | The maximum number of hedged actions to use, in addition to the original action.         |
 | `Delay`             | 2 seconds                                                                  | The maximum waiting time before spawning a new hedged action.                            |
 | `ActionGenerator`   | Returns the original callback that was passed to the hedging strategy.     | Generator that creates hedged actions.                                                   |
-| `DelayGenerator`    | `null`                                                                     | Used for generating custom delays for hedging. If `null` then `Delay` is used.           |
+| `DelayGenerator`    | `null`                                                                     | Used for generating custom delays for hedging.                                           |
 | `OnHedging`         | `null`                                                                     | Event that is raised when a hedging is performed.                                        |
 
 You can use the following special values for `Delay` or in `DelayGenerator`:
 
 - `0 seconds` - the hedging strategy immediately creates a total of `MaxHedgedAttempts` and completes when the fastest acceptable result is available.
 - `-1 millisecond` - this value indicates that the strategy does not create a new hedged task before the previous one completes. This enables scenarios where having multiple concurrent hedged tasks can cause side effects.
+
+> [!NOTE]
+> If both `Delay` and `DelayGenerator` are specified then `Delay` will be ignored.
 
 ## Concurrency modes
 
