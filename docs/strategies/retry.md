@@ -133,7 +133,7 @@ Step 1: Calculating the base delay:
 
 - If `UseJitter` is set to `false` and `Delay` is specified then `Delay` will be used.
 - If `UseJitter` is set to `true` and `Delay` is specified then a random value is added to the `Delay`.
-  - The random value is between -25% of `Delay` and +25% of `Delay`.
+  - The random value is between -25% and +25% of `Delay`.
 
 Step 2: Capping the delay if needed:
 
@@ -156,14 +156,24 @@ Step 1: Calculating the base delay:
 
 - If `UseJitter` is set to `false` and `Delay` is specified then `Delay` multiplied by the actual attempt number will be used.
 - If `UseJitter` is set to `true` and `Delay` is specified then a random value is added to the `Delay` multiplied by the actual attempt number.
-  - The random value is between -25% of the newly calculated `Delay` and +25% of the newly calculated `Delay`.
+  - The random value is between -25% and +25% of the newly calculated `Delay`.
 
 > [!NOTE]
-> Because the jitter calculation is based on the newly calculated delay that's why the new delay could be smaller than the previous one.
+> Because the jitter calculation is based on the newly calculated delay, the new delay could be less than the previous value.
 
 Step 2 and 3 are the same as for the Constant algorithm.
 
 ### Exponential
+
+This algorithm increases the delays for every attempt in an exponential fashion if no jitter is used.
+
+- If `UseJitter` is set to `false` and `Delay` is specified then squaring actual attempt number multiplied by the `Delay` will be used.
+- If `UseJitter` is set to `true` and the `Delay` is specified then a `DecorrelatedJitterBackoffV2` formula (based on the [Polly.Contrib.WaitAndRetry](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry)) will be used.
+
+> [!NOTE]
+> Because the jitter calculation is based on the newly calculated delay, the new delay could be less than the previous value.
+
+Step 2 and 3 are the same as for the Constant algorithm.
 
 > [!TIP]
 > For more details please check out the [`RetryHelper`](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Retry/RetryHelper.cs)
