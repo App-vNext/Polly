@@ -148,6 +148,16 @@ Step 3: Using the generator if supplied
 > [!NOTE]
 > The `DelayGenerator`'s returned value is not capped with the `MaxDelay`.
 
+#### Constant examples
+
+The delays column contains an example series of five values to depict the patterns.
+
+| Settings | Delays in milliseconds |
+|--|--|
+| `Delay`: `1sec` | [1000,1000,1000,1000,1000] |
+| `Delay`: `1sec`, `UseJitter`: `true` | [986,912,842,972,1007] |
+| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `1100ms` | [1100,978,1100,1041,916] |
+
 ### Linear
 
 This algorithm increases the delays for every attempt in a linear fashion if no jitter is used.
@@ -163,6 +173,16 @@ Step 1: Calculating the base delay:
 
 Step 2 and 3 are the same as for the Constant algorithm.
 
+#### Linear examples
+
+The delays column contains an example series of five values to depict the patterns.
+
+| Settings | Delays in milliseconds |
+|--|--|
+| `Delay`: `1sec` | [1000,2000,3000,4000,5000] |
+| `Delay`: `1sec`, `UseJitter`: `true` | [1129,2147,2334,4894,4102] |
+| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `4500ms` | [907,2199,2869,4500,4500] |
+
 ### Exponential
 
 This algorithm increases the delays for every attempt in an exponential fashion if no jitter is used.
@@ -174,6 +194,18 @@ This algorithm increases the delays for every attempt in an exponential fashion 
 > Because the jitter calculation is based on the newly calculated delay, the new delay could be less than the previous value.
 
 Step 2 and 3 are the same as for the Constant algorithm.
+
+#### Exponential examples
+
+The delays column contains an example series of five values to depict the patterns.
+
+| Settings | Delays in milliseconds |
+|--|--|
+| `Delay`: `1sec` | [1000,2000,4000,8000,16000] |
+| `Delay`: `1sec`, `UseJitter`: `true` | [393,1453,4235,5369,16849] |
+| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `15000ms` | [477,793,2227,5651,15000] |
+
+---
 
 > [!TIP]
 > For more details please check out the [`RetryHelper`](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Retry/RetryHelper.cs)
