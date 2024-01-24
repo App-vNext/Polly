@@ -188,7 +188,7 @@ The delays column contains an example series of five values to depict the patter
 This algorithm increases the delays for every attempt in an exponential fashion if no jitter is used.
 
 - If `UseJitter` is set to `false` and `Delay` is specified then squaring actual attempt number multiplied by the `Delay` will be used (*`attempt^2 * delay`*).
-- If `UseJitter` is set to `true` and the `Delay` is specified then a `DecorrelatedJitterBackoffV2` formula (based on the [Polly.Contrib.WaitAndRetry](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry)) will be used.
+- If `UseJitter` is set to `true` and the `Delay` is specified then a `DecorrelatedJitterBackoffV2` formula (based on [Polly.Contrib.WaitAndRetry](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry)) will be used.
 
 > [!NOTE]
 > Because the jitter calculation is based on the newly calculated delay, the new delay could be less than the previous value.
