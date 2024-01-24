@@ -123,7 +123,7 @@ There are many properties that may contribute to this calculation:
 > [!IMPORTANT]
 > The summarized description below is an implementation detail. It may change in the future without notice.
 
-The `BackoffType` property's data type is the [`DelayBackOffType`](xref:Polly.DelayBackOffType) enumeration. This primarily controls how the calculation is done.
+The `BackoffType` property's data type is the [`DelayBackoffType`](xref:Polly.DelayBackoffType) enumeration. This primarily controls how the calculation is done.
 
 ### Constant
 
