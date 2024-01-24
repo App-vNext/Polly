@@ -116,7 +116,7 @@ There are many properties that may contribute to this calculation:
 
 - `BackoffType`: Specifies which calculation algorithm should run.
 - `Delay`: If only this property is specified then it will be used as-is. If others are also specified then this will be used as a *base delay*.
-- `DelayGenerator`: If specified, will override other property-based calculations, **except** if it returns a negative `TimeSpan`, in which case the other property-based calculations are used.
+- `DelayGenerator`: If specified, will override other property-based calculations, **except** if it returns `null` or a negative `TimeSpan`, in which case the other property-based calculations are used.
 - `MaxDelay`: If specified, caps the delay if the calculated delay is greater than this value, **except** if `DelayGenerator` is used, where no capping is applied.
 - `UseJitter`: If enabled, then adds a random value between between -25% of `Delay` and +25% of `Delay`, **except** if `BackoffType` is `Exponential`, where a bit more complex jitter calculation is used.
 
@@ -144,6 +144,7 @@ Step 3: Using the generator if supplied
 
 - If the returned `TimeSpan` of the `DelayGenerator` method call is positive then it will be used.
 - If the returned `TimeSpan` of the `DelayGenerator` method call is negative then it will use the step 2's result.
+- If the `DelayGenerator` method call is `null` then it will use the step 2's result.
 
 > [!NOTE]
 > The `DelayGenerator`'s returned value is not capped with the `MaxDelay`.
