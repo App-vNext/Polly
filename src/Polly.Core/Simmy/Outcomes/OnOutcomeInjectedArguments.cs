@@ -11,7 +11,7 @@ public readonly struct OnOutcomeInjectedArguments<TResult>
     /// <summary>
     /// Initializes a new instance of the <see cref="OnOutcomeInjectedArguments{TResult}"/> struct.
     /// </summary>
-    /// <param name="context">The context associated with the execution of a user-provided callback.</param>
+    /// <param name="context">The resilience context instance.</param>
     /// <param name="outcome">The outcome that was injected.</param>
     public OnOutcomeInjectedArguments(ResilienceContext context, Outcome<TResult> outcome)
     {
@@ -20,12 +20,12 @@ public readonly struct OnOutcomeInjectedArguments<TResult>
     }
 
     /// <summary>
-    /// Gets the context of this event.
+    /// Gets the resilience context instance.
     /// </summary>
     public ResilienceContext Context { get; }
 
     /// <summary>
-    /// Gets the Outcome that was injected.
+    /// Gets the outcome that was injected.
     /// </summary>
     public Outcome<TResult> Outcome { get; }
 }

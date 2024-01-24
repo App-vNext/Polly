@@ -5,7 +5,7 @@ using Polly.Simmy.Latency;
 namespace Polly.Simmy;
 
 /// <summary>
-/// Extension methods for adding latency to a <see cref="ResiliencePipelineBuilderBase"/>.
+/// Extension methods for adding chaos latency strategies to a <see cref="ResiliencePipelineBuilderBase"/>.
 /// </summary>
 public static class ChaosLatencyPipelineBuilderExtensions
 {
