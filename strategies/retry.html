@@ -233,6 +233,152 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(optionsExtra
 </tr>
 </tbody>
 </table>
+<h2 id="calculation-of-the-next-delay">Calculation of the next delay</h2>
+<p>If the <code>ShouldHandle</code> predicate returns <code>true</code> and the next attempt number is not greater than <code>MaxRetryAttempts</code> then the retry strategy calculates the next delay.</p>
+<p>There are many properties that may contribute to this calculation:</p>
+<ul>
+<li><code>BackoffType</code>: Specifies which calculation algorithm should run.</li>
+<li><code>Delay</code>: If only this property is specified then it will be used as-is. If others are also specified then this will be used as a <em>base delay</em>.</li>
+<li><code>DelayGenerator</code>: If specified, will override other property-based calculations, <strong>except</strong> if it returns <code>null</code> or a negative <code>TimeSpan</code>, in which case the other property-based calculations are used.</li>
+<li><code>MaxDelay</code>: If specified, caps the delay if the calculated delay is greater than this value, <strong>except</strong> if <code>DelayGenerator</code> is used, where no capping is applied.</li>
+<li><code>UseJitter</code>: If enabled, then adds a random value between between -25% of <code>Delay</code> and +25% of <code>Delay</code>, <strong>except</strong> if <code>BackoffType</code> is <code>Exponential</code>, where a bit more complex jitter calculation is used.</li>
+</ul>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>The summarized description below is an implementation detail. It may change in the future without notice.</p>
+</div>
+<p>The <code>BackoffType</code> property's data type is the <a class="xref" href="../api/Polly.DelayBackoffType.html"><code>DelayBackoffType</code></a> enumeration. This primarily controls how the calculation is done.</p>
+<h3 id="constant">Constant</h3>
+<p>Even though the <code>Constant</code> name could imply that only the <code>Delay</code> property is used, in reality all the above listed properties are used.</p>
+<p>Step 1: Calculating the base delay:</p>
+<ul>
+<li>If <code>UseJitter</code> is set to <code>false</code> and <code>Delay</code> is specified then <code>Delay</code> will be used.</li>
+<li>If <code>UseJitter</code> is set to <code>true</code> and <code>Delay</code> is specified then a random value is added to the <code>Delay</code>.
+<ul>
+<li>The random value is between -25% and +25% of <code>Delay</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Step 2: Capping the delay if needed:</p>
+<ul>
+<li>If <code>MaxDelay</code> is not set then the previously calculated delay will be used.</li>
+<li>If <code>MaxDelay</code> is set and the previously calculated delay is greater than <code>MaxDelay</code> then <code>MaxDelay</code> will be used.</li>
+</ul>
+<p>Step 3: Using the generator if supplied</p>
+<ul>
+<li>If the returned <code>TimeSpan</code> of the <code>DelayGenerator</code> method call is positive then it will be used.</li>
+<li>If the returned <code>TimeSpan</code> of the <code>DelayGenerator</code> method call is negative then it will use the step 2's result.</li>
+<li>If the <code>DelayGenerator</code> method call is <code>null</code> then it will use the step 2's result.</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The <code>DelayGenerator</code>'s returned value is not capped with the <code>MaxDelay</code>.</p>
+</div>
+<h4 id="constant-examples">Constant examples</h4>
+<p>The delays column contains an example series of five values to depict the patterns.</p>
+<table>
+<thead>
+<tr>
+<th>Settings</th>
+<th>Delays in milliseconds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Delay</code>: <code>1sec</code></td>
+<td>[1000,1000,1000,1000,1000]</td>
+</tr>
+<tr>
+<td><code>Delay</code>: <code>1sec</code>, <code>UseJitter</code>: <code>true</code></td>
+<td>[986,912,842,972,1007]</td>
+</tr>
+<tr>
+<td><code>Delay</code>: <code>1sec</code>, <code>UseJitter</code>: <code>true</code>, <code>MaxDelay</code>: <code>1100ms</code></td>
+<td>[1100,978,1100,1041,916]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="linear">Linear</h3>
+<p>This algorithm increases the delays for every attempt in a linear fashion if no jitter is used.</p>
+<p>Step 1: Calculating the base delay:</p>
+<ul>
+<li>If <code>UseJitter</code> is set to <code>false</code> and <code>Delay</code> is specified then <code>Delay</code> multiplied by the actual attempt number will be used.</li>
+<li>If <code>UseJitter</code> is set to <code>true</code> and <code>Delay</code> is specified then a random value is added to the <code>Delay</code> multiplied by the actual attempt number.
+<ul>
+<li>The random value is between -25% and +25% of the newly calculated <code>Delay</code>.</li>
+</ul>
+</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Because the jitter calculation is based on the newly calculated delay, the new delay could be less than the previous value.</p>
+</div>
+<p>Step 2 and 3 are the same as for the Constant algorithm.</p>
+<h4 id="linear-examples">Linear examples</h4>
+<p>The delays column contains an example series of five values to depict the patterns.</p>
+<table>
+<thead>
+<tr>
+<th>Settings</th>
+<th>Delays in milliseconds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Delay</code>: <code>1sec</code></td>
+<td>[1000,2000,3000,4000,5000]</td>
+</tr>
+<tr>
+<td><code>Delay</code>: <code>1sec</code>, <code>UseJitter</code>: <code>true</code></td>
+<td>[1129,2147,2334,4894,4102]</td>
+</tr>
+<tr>
+<td><code>Delay</code>: <code>1sec</code>, <code>UseJitter</code>: <code>true</code>, <code>MaxDelay</code>: <code>4500ms</code></td>
+<td>[907,2199,2869,4500,4500]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="exponential">Exponential</h3>
+<p>This algorithm increases the delays for every attempt in an exponential fashion if no jitter is used.</p>
+<ul>
+<li>If <code>UseJitter</code> is set to <code>false</code> and <code>Delay</code> is specified then squaring actual attempt number multiplied by the <code>Delay</code> will be used (<em><code>attempt^2 * delay</code></em>).</li>
+<li>If <code>UseJitter</code> is set to <code>true</code> and the <code>Delay</code> is specified then a <code>DecorrelatedJitterBackoffV2</code> formula (based on <a href="https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry">Polly.Contrib.WaitAndRetry</a>) will be used.</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Because the jitter calculation is based on the newly calculated delay, the new delay could be less than the previous value.</p>
+</div>
+<p>Step 2 and 3 are the same as for the Constant algorithm.</p>
+<h4 id="exponential-examples">Exponential examples</h4>
+<p>The delays column contains an example series of five values to depict the patterns.</p>
+<table>
+<thead>
+<tr>
+<th>Settings</th>
+<th>Delays in milliseconds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Delay</code>: <code>1sec</code></td>
+<td>[1000,2000,4000,8000,16000]</td>
+</tr>
+<tr>
+<td><code>Delay</code>: <code>1sec</code>, <code>UseJitter</code>: <code>true</code></td>
+<td>[393,1453,4235,5369,16849]</td>
+</tr>
+<tr>
+<td><code>Delay</code>: <code>1sec</code>, <code>UseJitter</code>: <code>true</code>, <code>MaxDelay</code>: <code>15000ms</code></td>
+<td>[477,793,2227,5651,15000]</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="TIP">
+<h5>Tip</h5>
+<p>For more details please check out the <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Retry/RetryHelper.cs"><code>RetryHelper</code></a>
+and the <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Retry/RetryResilienceStrategy.cs"><code>RetryResilienceStrategy</code></a> classes.</p>
+</div>
 <h2 id="diagrams">Diagrams</h2>
 <p>Let's suppose we have a retry strategy with <code>MaxRetryAttempts</code>: <code>2</code>.</p>
 <h3 id="happy-path-sequence-diagram">Happy path sequence diagram</h3>

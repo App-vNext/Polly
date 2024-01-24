@@ -172,7 +172,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddHedging(optionsDef
 <tr>
 <td><code>DelayGenerator</code></td>
 <td><code>null</code></td>
-<td>Used for generating custom delays for hedging. If <code>null</code> then <code>Delay</code> is used.</td>
+<td>Used for generating custom delays for hedging.</td>
 </tr>
 <tr>
 <td><code>OnHedging</code></td>
@@ -186,6 +186,10 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddHedging(optionsDef
 <li><code>0 seconds</code> - the hedging strategy immediately creates a total of <code>MaxHedgedAttempts</code> and completes when the fastest acceptable result is available.</li>
 <li><code>-1 millisecond</code> - this value indicates that the strategy does not create a new hedged task before the previous one completes. This enables scenarios where having multiple concurrent hedged tasks can cause side effects.</li>
 </ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>If both <code>Delay</code> and <code>DelayGenerator</code> are specified then <code>Delay</code> will be ignored.</p>
+</div>
 <h2 id="concurrency-modes">Concurrency modes</h2>
 <p>In the sections below, explore the different concurrency modes available in the hedging strategy. The behavior is primarily controlled by the <code>Delay</code> property value.</p>
 <h3 id="latency-mode">Latency mode</h3>
