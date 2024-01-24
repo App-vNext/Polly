@@ -159,7 +159,7 @@ Step 1: Calculating the base delay:
   - The random value is between -25% of the newly calculated `Delay` and +25% of the newly calculated `Delay`.
 
 > [!NOTE]
-> Because the jitter's offset is based on the newly calculated delay that's why the new delay could be smaller than the previous one.
+> Because the jitter calculation is based on the newly calculated delay that's why the new delay could be smaller than the previous one.
 
 Step 2 and 3 are the same as for the Constant algorithm.
 
