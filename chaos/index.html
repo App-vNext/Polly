@@ -214,6 +214,104 @@ builder
 <p>If both <code>InjectionRate</code> and <code>InjectionRateGenerator</code> are specified then <code>InjectionRate</code> will be ignored.</p>
 <p>If both <code>Enabled</code> and <code>EnabledGenerator</code> are specified then <code>Enabled</code> will be ignored.</p>
 </div>
+<h2 id="patterns">Patterns</h2>
+<h3 id="inject-chaos-selectively">Inject chaos selectively</h3>
+<p>You aim to dynamically adjust the frequency and timing of chaos injection. For instance, in pre-production and test environments, it's sensible to consistently inject chaos. This proactive approach helps in preparing for potential failures. In production environments, however, you may prefer to limit chaos to certain users and tenants, ensuring that regular users remain unaffected. The chaos API offers the flexibility needed to manage these varying scenarios.</p>
+<p>Additionally, you have the option to dynamically alter the injection rate and simulate extreme scenarios by setting the injection rate to <em>1.0 (100%)</em>. Exercise caution when applying this high rate, restricting it to a subset of tenants and users to avoid rendering the system unusable for regular users.</p>
+<p>The following example illustrates how to configure chaos strategies accordingly:</p>
+<!-- snippet: chaos-selective -->
+<pre><code class="lang-cs">services.AddResiliencePipeline(&quot;chaos-pipeline&quot;, (builder, context) =&gt;
+{
+    var environment = context.ServiceProvider.GetRequiredService&lt;IHostEnvironment&gt;();
+
+    builder.AddChaosFault(new ChaosFaultStrategyOptions
+    {
+        EnabledGenerator = args =&gt;
+        {
+            // Enable chaos in development and staging environments.
+            if (environment.IsDevelopment() || environment.IsStaging())
+            {
+                return ValueTask.FromResult(true);
+            }
+
+            // Enable chaos for specific users or tenants, even in production environments.
+            if (ShouldEnableChaos(args.Context))
+            {
+                return ValueTask.FromResult(true);
+            }
+
+            return ValueTask.FromResult(false);
+        },
+        InjectionRateGenerator = args =&gt;
+        {
+            if (environment.IsStaging())
+            {
+                // 1% chance of failure on staging environments.
+                return ValueTask.FromResult(0.01);
+            }
+
+            if (environment.IsDevelopment())
+            {
+                // 5% chance of failure on development environments.
+                return ValueTask.FromResult(0.05);
+            }
+
+            // The context can carry information to help determine the injection rate.
+            // For instance, in production environments, you might have certain test users or tenants
+            // for whom you wish to inject chaos.
+            if (ResolveInjectionRate(args.Context, out double injectionRate))
+            {
+                return ValueTask.FromResult(injectionRate);
+            }
+
+            // No chaos on production environments.
+            return ValueTask.FromResult(0.0);
+        },
+        FaultGenerator = new FaultGenerator()
+            .AddException&lt;TimeoutException&gt;()
+            .AddException&lt;HttpRequestException&gt;()
+    });
+});
+</code></pre>
+<!-- endSnippet -->
+<p>We suggest encapsulating the chaos decisions and injection rate in a shared class, such as <code>IChaosManager</code>:</p>
+<!-- snippet: chaos-manager -->
+<pre><code class="lang-cs">public interface IChaosManager
+{
+    bool IsChaosEnabled(ResilienceContext context);
+
+    double GetInjectionRate(ResilienceContext context);
+}
+</code></pre>
+<!-- endSnippet -->
+<p>This approach allows you to consistently apply and manage chaos-related settings across various chaos strategies by reusing <code>IChaosManager</code>. By centralizing the logic for enabling chaos and determining injection rates, you can ensure uniformity and ease of maintenance across your application and reuse it across multiple chaos strategies:</p>
+<!-- snippet: chaos-selective-manager -->
+<pre><code class="lang-cs">services.AddResiliencePipeline(&quot;chaos-pipeline&quot;, (builder, context) =&gt;
+{
+    var chaosManager = context.ServiceProvider.GetRequiredService&lt;IChaosManager&gt;();
+
+    builder
+        .AddChaosFault(new ChaosFaultStrategyOptions
+        {
+            EnabledGenerator = args =&gt; ValueTask.FromResult(chaosManager.IsChaosEnabled(args.Context)),
+            InjectionRateGenerator = args =&gt; ValueTask.FromResult(chaosManager.GetInjectionRate(args.Context)),
+            FaultGenerator = new FaultGenerator()
+                .AddException&lt;TimeoutException&gt;()
+                .AddException&lt;HttpRequestException&gt;()
+        })
+        .AddChaosLatency(new ChaosLatencyStrategyOptions
+        {
+            EnabledGenerator = args =&gt; ValueTask.FromResult(chaosManager.IsChaosEnabled(args.Context)),
+            InjectionRateGenerator = args =&gt; ValueTask.FromResult(chaosManager.GetInjectionRate(args.Context)),
+            Latency = TimeSpan.FromSeconds(60)
+        });
+});
+</code></pre>
+<!-- endSnippet -->
+<div class="NOTE">
+<h5>Note</h5>
+<p>An alternative method involves using <a href="https://www.nuget.org/packages/Microsoft.Extensions.AsyncState"><code>Microsoft.Extensions.AsyncState</code></a> for storing information relevant to chaos injection decisions. This can be particularly useful in frameworks like ASP.NET Core. For instance, you could implement a middleware that retrieves user information from <code>HttpContext</code>, assesses the user type, and then stores this data in <code>IAsyncContext&lt;ChaosUser&gt;</code>. Subsequently, <code>IChaosManager</code> can access <code>IAsyncContext&lt;ChaosUser&gt;</code> to retrieve this information. This approach eliminates the need to manually insert such data into <code>ResilienceContext</code> for each call within the resilience pipeline, thereby streamlining the process.</p>
+</div>
 
 </article>
 
