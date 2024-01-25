@@ -98,7 +98,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(optionsExtractDela
 ## Defaults
 
 | Property           | Default Value                                                              | Description                                                                              |
-| ------------------ | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+|--------------------|----------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
 | `ShouldHandle`     | Predicate that handles all exceptions except `OperationCanceledException`. | Predicate that determines what results and exceptions are handled by the retry strategy. |
 | `MaxRetryAttempts` | 3                                                                          | The maximum number of retries to use, in addition to the original call.                  |
 | `Delay`            | 2 seconds                                                                  | The base delay between retries.                                                          |
@@ -116,9 +116,10 @@ There are many properties that may contribute to this calculation:
 
 - `BackoffType`: Specifies which calculation algorithm should run.
 - `Delay`: If only this property is specified then it will be used as-is. If others are also specified then this will be used as a *base delay*.
-- `DelayGenerator`: If specified, will override other property-based calculations, **except** if it returns `null` or a negative `TimeSpan`, in which case the other property-based calculations are used.
+- `DelayGenerator`: If specified, overrides other property-based calculations, **except** if it returns `null` or a negative `TimeSpan`, in which case the other property-based calculations are used.
 - `MaxDelay`: If specified, caps the delay if the calculated delay is greater than this value, **except** if `DelayGenerator` is used, where no capping is applied.
-- `UseJitter`: If enabled, then adds a random value between between -25% of `Delay` and +25% of `Delay`, **except** if `BackoffType` is `Exponential`, where a bit more complex jitter calculation is used.
+- `UseJitter`: If enabled, adds a random value between -25% and +25% of the calculated `Delay`, **except** if `BackoffType` is `Exponential`, where a `DecorrelatedJitterBackoffV2` formula is used for jitter calculation.
+  - That formula is based on [Polly.Contrib.WaitAndRetry](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry).
 
 > [!IMPORTANT]
 > The summarized description below is an implementation detail. It may change in the future without notice.
@@ -127,84 +128,148 @@ The `BackoffType` property's data type is the [`DelayBackoffType`](xref:Polly.De
 
 ### Constant
 
-Even though the `Constant` name could imply that only the `Delay` property is used, in reality all the above listed properties are used.
+```mermaid
+stateDiagram-v2
 
-Step 1: Calculating the base delay:
+    state if_state_step1 <<choice>>
+    state if_state_step2 <<choice>>
+    state if_state_step3 <<choice>>
+    jitter: Should add jitter
+    cap: Should cap delay
+    generator: Should use generator
+    compare: Step1's Delay > MaxDelay
 
-- If `UseJitter` is set to `false` and `Delay` is specified then `Delay` will be used.
-- If `UseJitter` is set to `true` and `Delay` is specified then a random value is added to the `Delay`.
-  - The random value is between -25% and +25% of `Delay`.
+    [*] --> jitter
+    jitter --> cap
+    cap --> generator
+    generator --> [*]
 
-Step 2: Capping the delay if needed:
-
-- If `MaxDelay` is not set then the previously calculated delay will be used.
-- If `MaxDelay` is set and the previously calculated delay is greater than `MaxDelay` then `MaxDelay` will be used.
-
-Step 3: Using the generator if supplied
-
-- If the returned `TimeSpan` of the `DelayGenerator` method call is positive then it will be used.
-- If the returned `TimeSpan` of the `DelayGenerator` method call is negative then it will use the step 2's result.
-- If the `DelayGenerator` method call is `null` then it will use the step 2's result.
-
-> [!NOTE]
-> The `DelayGenerator`'s returned value is not capped with the `MaxDelay`.
+    state jitter {
+        UseJitter --> if_state_step1
+        if_state_step1 --> Delay+Random: true
+        if_state_step1 --> Delay: false
+    }
+    state cap {
+        compare --> if_state_step2
+        if_state_step2 --> MaxDelay: true
+        if_state_step2 --> Step1sDelay: false
+    }
+    state generator {
+        DelayGenerator --> if_state_step3
+        if_state_step3 --> GeneratedDelay: positive
+        if_state_step3 --> Step2sDelay: null or negative
+    }
+```
 
 #### Constant examples
 
 The delays column contains an example series of five values to depict the patterns.
 
-| Settings | Delays in milliseconds |
-|--|--|
-| `Delay`: `1sec` | [1000,1000,1000,1000,1000] |
-| `Delay`: `1sec`, `UseJitter`: `true` | [986,912,842,972,1007] |
-| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `1100ms` | [1100,978,1100,1041,916] |
+| Settings                                                   | Delays in milliseconds           |
+|------------------------------------------------------------|----------------------------------|
+| `Delay`: `1sec`                                            | [ 1000, 1000, 1000, 1000, 1000 ] |
+| `Delay`: `1sec`, `UseJitter`: `true`                       | [ 986, 912, 842, 972, 1007 ]     |
+| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `1100ms` | [ 1100, 978, 1100, 1041, 916 ]   |
 
 ### Linear
 
-This algorithm increases the delays for every attempt in a linear fashion if no jitter is used.
+```mermaid
+stateDiagram-v2
 
-Step 1: Calculating the base delay:
+    state if_state_step1 <<choice>>
+    state if_state_step2 <<choice>>
+    state if_state_step3 <<choice>>
+    calc: Delay * Attempt Number
+    jitter: Should add jitter
+    cap: Should cap delay
+    generaror: Should use generator
+    islarger: Step1's Delay > MaxDelay
 
-- If `UseJitter` is set to `false` and `Delay` is specified then `Delay` multiplied by the actual attempt number will be used.
-- If `UseJitter` is set to `true` and `Delay` is specified then a random value is added to the `Delay` multiplied by the actual attempt number.
-  - The random value is between -25% and +25% of the newly calculated `Delay`.
+    [*] --> jitter
+    jitter --> cap
+    cap --> generaror
+    generaror --> [*]
 
-> [!NOTE]
-> Because the jitter calculation is based on the newly calculated delay, the new delay could be less than the previous value.
-
-Step 2 and 3 are the same as for the Constant algorithm.
+    state jitter {
+        calc --> UseJitter
+        UseJitter --> if_state_step1
+        if_state_step1 --> Delay*AttemptNumber+Random: true
+        if_state_step1 --> Delay*AttemptNumber: false
+    }
+    state cap {
+        islarger --> if_state_step2
+        if_state_step2 --> MaxDelay: true
+        if_state_step2 --> Step1sDelay: false
+    }
+    state generaror {
+        DelayGenerator --> if_state_step3
+        if_state_step3 --> GeneratedDelay: positive
+        if_state_step3 --> Step2sDelay: null or negative
+    }
+```
 
 #### Linear examples
 
 The delays column contains an example series of five values to depict the patterns.
 
-| Settings | Delays in milliseconds |
-|--|--|
-| `Delay`: `1sec` | [1000,2000,3000,4000,5000] |
-| `Delay`: `1sec`, `UseJitter`: `true` | [1129,2147,2334,4894,4102] |
-| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `4500ms` | [907,2199,2869,4500,4500] |
-
-### Exponential
-
-This algorithm increases the delays for every attempt in an exponential fashion if no jitter is used.
-
-- If `UseJitter` is set to `false` and `Delay` is specified then squaring actual attempt number multiplied by the `Delay` will be used (*`attempt^2 * delay`*).
-- If `UseJitter` is set to `true` and the `Delay` is specified then a `DecorrelatedJitterBackoffV2` formula (based on [Polly.Contrib.WaitAndRetry](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry)) will be used.
-
 > [!NOTE]
 > Because the jitter calculation is based on the newly calculated delay, the new delay could be less than the previous value.
 
-Step 2 and 3 are the same as for the Constant algorithm.
+| Settings                                                   | Delays in milliseconds           |
+|------------------------------------------------------------|----------------------------------|
+| `Delay`: `1sec`                                            | [ 1000, 2000, 3000, 4000, 5000 ] |
+| `Delay`: `1sec`, `UseJitter`: `true`                       | [ 1129, 2147, 2334, 4894, 4102 ] |
+| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `4500ms` | [ 907, 2199, 2869, 4500, 4500 ]  |
+
+### Exponential
+
+```mermaid
+stateDiagram-v2
+
+    state if_state_step1 <<choice>>
+    state if_state_step2 <<choice>>
+    state if_state_step3 <<choice>>
+    calc: Delay * Attempt Number ^ 2
+    jitter: Should add jitter
+    cap: Should cap delay
+    generaror: Should use generator
+    islarger: Step1's Delay > MaxDelay
+
+    [*] --> jitter
+    jitter --> cap
+    cap --> generaror
+    generaror --> [*]
+
+    state jitter {
+        calc --> UseJitter
+        UseJitter --> if_state_step1
+        if_state_step1 --> Delay*AttemptNumber^2+Random: true
+        if_state_step1 --> Delay*AttemptNumber^2: false
+    }
+    state cap {
+        islarger --> if_state_step2
+        if_state_step2 --> MaxDelay: true
+        if_state_step2 --> Step1sDelay: false
+    }
+    state generaror {
+        DelayGenerator --> if_state_step3
+        if_state_step3 --> GeneratedDelay: positive
+        if_state_step3 --> Step2sDelay: null or negative
+    }
+```
 
 #### Exponential examples
 
 The delays column contains an example series of five values to depict the patterns.
 
-| Settings | Delays in milliseconds |
-|--|--|
-| `Delay`: `1sec` | [1000,2000,4000,8000,16000] |
-| `Delay`: `1sec`, `UseJitter`: `true` | [393,1453,4235,5369,16849] |
-| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `15000ms` | [477,793,2227,5651,15000] |
+> [!NOTE]
+> Because the jitter calculation is based on the newly calculated delay, the new delay could be less than the previous value.
+
+| Settings                                                    | Delays in milliseconds            |
+|-------------------------------------------------------------|-----------------------------------|
+| `Delay`: `1sec`                                             | [ 1000, 2000, 4000, 8000, 16000 ] |
+| `Delay`: `1sec`, `UseJitter`: `true`                        | [ 393, 1453, 4235, 5369, 16849 ]  |
+| `Delay`: `1sec`, `UseJitter`: `true`, `MaxDelay`: `15000ms` | [ 477, 793, 2227, 5651, 15000 ]   |
 
 ---
 
