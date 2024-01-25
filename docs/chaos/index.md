@@ -95,7 +95,7 @@ All the strategies' options implement the [`ChaosStrategyOptions`](xref:Polly.Si
 
 ### Inject chaos selectively
 
-You aim to dynamically adjust the frequency and timing of chaos injection. For instance, in pre-production and test environments, it's sensible to consistently inject chaos. This proactive approach helps in preparing for potential failures. In production environments, however, you may prefer to limit chaos to certain users and tenants, ensuring that regular users remain unaffected. The Simmy API offers the flexibility needed to manage these varying scenarios.
+You aim to dynamically adjust the frequency and timing of chaos injection. For instance, in pre-production and test environments, it's sensible to consistently inject chaos. This proactive approach helps in preparing for potential failures. In production environments, however, you may prefer to limit chaos to certain users and tenants, ensuring that regular users remain unaffected. The chaos API offers the flexibility needed to manage these varying scenarios.
 
 Additionally, you have the option to dynamically alter the injection rate and simulate extreme scenarios by setting the injection rate to *1.0 (100%)*. Exercise caution when applying this high rate, restricting it to a subset of tenants and users to avoid rendering the system unusable for regular users.
 
