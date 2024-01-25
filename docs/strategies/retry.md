@@ -134,31 +134,34 @@ stateDiagram-v2
     state if_state_step1 <<choice>>
     state if_state_step2 <<choice>>
     state if_state_step3 <<choice>>
-    jitter: Should add jitter
-    cap: Should cap delay
-    generator: Should use generator
-    compare: Step1's Delay > MaxDelay
 
-    [*] --> jitter
-    jitter --> cap
-    cap --> generator
-    generator --> [*]
+    constant: Delay
+    constantWJitter: Delay + Random
+    compare: BaseDelay > MaxDelay
+    setBase: Set BaseDelay
+    setNormalized: Set NormalizedDelay
+    setNext: Set NextDelay
 
-    state jitter {
-        UseJitter --> if_state_step1
-        if_state_step1 --> Delay+Random: true
-        if_state_step1 --> Delay: false
-    }
-    state cap {
-        compare --> if_state_step2
-        if_state_step2 --> MaxDelay: true
-        if_state_step2 --> Step1sDelay: false
-    }
-    state generator {
-        DelayGenerator --> if_state_step3
-        if_state_step3 --> GeneratedDelay: positive
-        if_state_step3 --> Step2sDelay: null or negative
-    }
+    UseJitter --> if_state_step1
+    if_state_step1 --> constantWJitter:true
+    if_state_step1 --> constant: false
+    constantWJitter --> setBase
+    constant --> setBase
+
+    setBase --> compare
+    compare --> if_state_step2
+    if_state_step2 --> MaxDelay: true
+    if_state_step2 --> BaseDelay: false
+    MaxDelay --> setNormalized
+    BaseDelay --> setNormalized
+
+    setNormalized --> DelayGenerator
+    DelayGenerator --> if_state_step3
+    if_state_step3 --> GeneratedDelay: positive
+    if_state_step3 --> NormalizedDelay: null or negative
+    GeneratedDelay --> setNext
+    NormalizedDelay --> setNext
+    setNext --> [*]
 ```
 
 #### Constant examples
@@ -179,33 +182,34 @@ stateDiagram-v2
     state if_state_step1 <<choice>>
     state if_state_step2 <<choice>>
     state if_state_step3 <<choice>>
-    calc: Delay * Attempt Number
-    jitter: Should add jitter
-    cap: Should cap delay
-    generaror: Should use generator
-    islarger: Step1's Delay > MaxDelay
 
-    [*] --> jitter
-    jitter --> cap
-    cap --> generaror
-    generaror --> [*]
+    linear: Delay * AttemptNumber
+    linearWJitter: Delay * AttemptNumber + Random
+    compare: BaseDelay > MaxDelay
+    setBase: Set BaseDelay
+    setNormalized: Set NormalizedDelay
+    setNext: Set NextDelay
 
-    state jitter {
-        calc --> UseJitter
-        UseJitter --> if_state_step1
-        if_state_step1 --> Delay*AttemptNumber+Random: true
-        if_state_step1 --> Delay*AttemptNumber: false
-    }
-    state cap {
-        islarger --> if_state_step2
-        if_state_step2 --> MaxDelay: true
-        if_state_step2 --> Step1sDelay: false
-    }
-    state generaror {
-        DelayGenerator --> if_state_step3
-        if_state_step3 --> GeneratedDelay: positive
-        if_state_step3 --> Step2sDelay: null or negative
-    }
+    UseJitter --> if_state_step1
+    if_state_step1 --> linearWJitter:true
+    if_state_step1 --> linear: false
+    linearWJitter --> setBase
+    linear --> setBase
+
+    setBase --> compare
+    compare --> if_state_step2
+    if_state_step2 --> MaxDelay: true
+    if_state_step2 --> BaseDelay: false
+    MaxDelay --> setNormalized
+    BaseDelay --> setNormalized
+
+    setNormalized --> DelayGenerator
+    DelayGenerator --> if_state_step3
+    if_state_step3 --> GeneratedDelay: positive
+    if_state_step3 --> NormalizedDelay: null or negative
+    GeneratedDelay --> setNext
+    NormalizedDelay --> setNext
+    setNext --> [*]
 ```
 
 #### Linear examples
@@ -229,33 +233,34 @@ stateDiagram-v2
     state if_state_step1 <<choice>>
     state if_state_step2 <<choice>>
     state if_state_step3 <<choice>>
-    calc: Delay * Attempt Number ^ 2
-    jitter: Should add jitter
-    cap: Should cap delay
-    generaror: Should use generator
-    islarger: Step1's Delay > MaxDelay
 
-    [*] --> jitter
-    jitter --> cap
-    cap --> generaror
-    generaror --> [*]
+    exponential: Delay * AttemptNumber ^ 2
+    exponentialWJitter: Decorrelated Jitter Backoff V2
+    compare: BaseDelay > MaxDelay
+    setBase: Set BaseDelay
+    setNormalized: Set NormalizedDelay
+    setNext: Set NextDelay
 
-    state jitter {
-        calc --> UseJitter
-        UseJitter --> if_state_step1
-        if_state_step1 --> Delay*AttemptNumber^2+Random: true
-        if_state_step1 --> Delay*AttemptNumber^2: false
-    }
-    state cap {
-        islarger --> if_state_step2
-        if_state_step2 --> MaxDelay: true
-        if_state_step2 --> Step1sDelay: false
-    }
-    state generaror {
-        DelayGenerator --> if_state_step3
-        if_state_step3 --> GeneratedDelay: positive
-        if_state_step3 --> Step2sDelay: null or negative
-    }
+    UseJitter --> if_state_step1
+    if_state_step1 --> exponentialWJitter:true
+    if_state_step1 --> exponential: false
+    exponentialWJitter --> setBase
+    exponential --> setBase
+
+    setBase --> compare
+    compare --> if_state_step2
+    if_state_step2 --> MaxDelay: true
+    if_state_step2 --> BaseDelay: false
+    MaxDelay --> setNormalized
+    BaseDelay --> setNormalized
+
+    setNormalized --> DelayGenerator
+    DelayGenerator --> if_state_step3
+    if_state_step3 --> GeneratedDelay: positive
+    if_state_step3 --> NormalizedDelay: null or negative
+    GeneratedDelay --> setNext
+    NormalizedDelay --> setNext
+    setNext --> [*]
 ```
 
 #### Exponential examples
