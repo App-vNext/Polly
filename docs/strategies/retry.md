@@ -137,7 +137,7 @@ stateDiagram-v2
 
     constant: Delay
     constantWJitter: Delay + Random
-    compare: BaseDelay > MaxDelay
+    compare: MaxDelay < BaseDelay
     setBase: Set BaseDelay
     setNormalized: Set NormalizedDelay
     setNext: Set NextDelay
@@ -184,8 +184,8 @@ stateDiagram-v2
     state if_state_step3 <<choice>>
 
     linear: Delay * AttemptNumber
-    linearWJitter: Delay * AttemptNumber + Random
-    compare: BaseDelay > MaxDelay
+    linearWJitter: (Delay * AttemptNumber) + Random
+    compare: MaxDelay < BaseDelay
     setBase: Set BaseDelay
     setNormalized: Set NormalizedDelay
     setNext: Set NextDelay
@@ -234,9 +234,9 @@ stateDiagram-v2
     state if_state_step2 <<choice>>
     state if_state_step3 <<choice>>
 
-    exponential: Delay * AttemptNumber ^ 2
+    exponential: Delay * AttemptNumber^2
     exponentialWJitter: Decorrelated Jitter Backoff V2
-    compare: BaseDelay > MaxDelay
+    compare: MaxDelay < BaseDelay
     setBase: Set BaseDelay
     setNormalized: Set NormalizedDelay
     setNext: Set NextDelay
