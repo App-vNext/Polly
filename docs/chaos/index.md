@@ -90,3 +90,110 @@ All the strategies' options implement the [`ChaosStrategyOptions`](xref:Polly.Si
 > If both `Enabled` and `EnabledGenerator` are specified then `Enabled` will be ignored.
 
 [simmy]: https://github.com/Polly-Contrib/Simmy
+
+## Patterns
+
+### Inject chaos selectively
+
+You aim to dynamically adjust the frequency and timing of chaos injection. For instance, in pre-production and test environments, it's sensible to consistently inject chaos. This proactive approach helps in preparing for potential failures. In production environments, however, you may prefer to limit chaos to certain users and tenants, ensuring that regular users remain unaffected. The Simmy API offers the flexibility needed to manage these varying scenarios.
+
+Additionally, you have the option to dynamically alter the injection rate and simulate extreme scenarios by setting the injection rate to *1.0 (100%)*. Exercise caution when applying this high rate, restricting it to a subset of tenants and users to avoid rendering the system unusable for regular users.
+
+The following example illustrates how to configure chaos strategies accordingly:
+
+<!-- snippet: chaos-selective -->
+```cs
+services.AddResiliencePipeline("chaos-pipeline", (builder, context) =>
+{
+    var environment = context.ServiceProvider.GetRequiredService<IHostEnvironment>();
+
+    builder.AddChaosFault(new ChaosFaultStrategyOptions
+    {
+        EnabledGenerator = args =>
+        {
+            // Enable chaos in development and staging environments.
+            if (environment.IsDevelopment() || environment.IsStaging())
+            {
+                return ValueTask.FromResult(true);
+            }
+
+            // Enable chaos for specific users or tenants, even in production environments.
+            if (ShouldEnableChaos(args.Context))
+            {
+                return ValueTask.FromResult(true);
+            }
+
+            return ValueTask.FromResult(false);
+        },
+        InjectionRateGenerator = args =>
+        {
+            if (environment.IsStaging())
+            {
+                // 1% chance of failure on staging environments.
+                return ValueTask.FromResult(0.01);
+            }
+
+            if (environment.IsDevelopment())
+            {
+                // 5% chance of failure on development environments.
+                return ValueTask.FromResult(0.05);
+            }
+
+            // The context can carry information to help determine the injection rate.
+            // For instance, in production environments, you might have certain test users or tenants
+            // for whom you wish to inject chaos.
+            if (ResolveInjectionRate(args.Context, out double injectionRate))
+            {
+                return ValueTask.FromResult(injectionRate);
+            }
+
+            // No chaos on production environments.
+            return ValueTask.FromResult(0.0);
+        },
+        FaultGenerator = new FaultGenerator()
+            .AddException<TimeoutException>()
+            .AddException<HttpRequestException>()
+    });
+});
+```
+<!-- endSnippet -->
+
+We suggest encapsulating the chaos decisions and injection rate in a shared class, such as `IChaosManager`:
+
+<!-- snippet: chaos-manager -->
+```cs
+public interface IChaosManager
+{
+    bool IsChaosEnabled(ResilienceContext context);
+
+    double GetInjectionRate(ResilienceContext context);
+}
+```
+<!-- endSnippet -->
+
+This approach allows you to consistently apply and manage chaos-related settings across various chaos strategies by reusing `IChaosManager`. By centralizing the logic for enabling chaos and determining injection rates, you can ensure uniformity and ease of maintenance across your application and reuse it across multiple chaos strategies:
+
+<!-- snippet: chaos-selective-manager -->
+```cs
+services.AddResiliencePipeline("chaos-pipeline", (builder, context) =>
+{
+    var chaosManager = context.ServiceProvider.GetRequiredService<IChaosManager>();
+
+    builder
+        .AddChaosFault(new ChaosFaultStrategyOptions
+        {
+            EnabledGenerator = args => ValueTask.FromResult(chaosManager.IsChaosEnabled(args.Context)),
+            InjectionRateGenerator = args => ValueTask.FromResult(chaosManager.GetInjectionRate(args.Context)),
+            FaultGenerator = new FaultGenerator()
+                .AddException<TimeoutException>()
+                .AddException<HttpRequestException>()
+        })
+        .AddChaosLatency(new ChaosLatencyStrategyOptions
+        {
+            EnabledGenerator = args => ValueTask.FromResult(chaosManager.IsChaosEnabled(args.Context)),
+            InjectionRateGenerator = args => ValueTask.FromResult(chaosManager.GetInjectionRate(args.Context)),
+            Latency = TimeSpan.FromSeconds(60)
+        });
+});
+```
+<!-- endSnippet -->
