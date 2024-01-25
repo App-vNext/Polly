@@ -197,3 +197,6 @@ services.AddResiliencePipeline("chaos-pipeline", (builder, context) =>
 });
 ```
 <!-- endSnippet -->
+
+> [!NOTE]
+> An alternative method involves using [`Microsoft.Extensions.AsyncState`](https://www.nuget.org/packages/Microsoft.Extensions.AsyncState) for storing information relevant to chaos injection decisions. This can be particularly useful in frameworks like ASP.NET Core. For instance, you could implement a middleware that retrieves user information from `HttpContext`, assesses the user type, and then stores this data in `IAsyncLocal<ChaosUser>`. Subsequently, `IChaosManager` can access `IAsyncLocal<ChaosUser>` to retrieve this information. This approach eliminates the need to manually insert such data into `ResilienceContext` for each call within the resilience pipeline, thereby streamlining the process.
