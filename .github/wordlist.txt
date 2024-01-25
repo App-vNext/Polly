@@ -1,5 +1,6 @@
 alloc
 apis
+ASP.NET
 async
 azurefunctions
 bcl
@@ -13,6 +14,7 @@ deserialization
 dotnet
 dotnetrocks
 durations
+enricher
 eshoponcontainers
 extensibility
 flurl
@@ -23,6 +25,7 @@ jittered
 json
 loggingpolicy
 markdownsnippets
+middleware
 minver
 moq
 namespace
@@ -30,9 +33,9 @@ natively
 ndc
 nuget
 oss
-pcl
-parallelize
 paas
+parallelize
+pcl
 pluralsight
 pollydocs
 pre
@@ -67,4 +70,3 @@ uwp
 waitandretry
 wpf
 xunit
-enricher
