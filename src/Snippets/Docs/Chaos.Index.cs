@@ -2,6 +2,7 @@ using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Polly.CircuitBreaker;
+using Polly.Registry;
 using Polly.Retry;
 using Polly.Simmy;
 using Polly.Simmy.Fault;
@@ -110,17 +111,118 @@ internal static partial class Chaos
             builder
                 .AddChaosFault(new ChaosFaultStrategyOptions
                 {
-                    EnabledGenerator = args => ValueTask.FromResult(chaosManager.IsChaosEnabled(args.Context)),
-                    InjectionRateGenerator = args => ValueTask.FromResult(chaosManager.GetInjectionRate(args.Context)),
+                    EnabledGenerator = args => chaosManager.IsChaosEnabled(args.Context),
+                    InjectionRateGenerator = args => chaosManager.GetInjectionRate(args.Context),
                     FaultGenerator = new FaultGenerator()
                         .AddException<TimeoutException>()
                         .AddException<HttpRequestException>()
                 })
                 .AddChaosLatency(new ChaosLatencyStrategyOptions
                 {
-                    EnabledGenerator = args => ValueTask.FromResult(chaosManager.IsChaosEnabled(args.Context)),
-                    InjectionRateGenerator = args => ValueTask.FromResult(chaosManager.GetInjectionRate(args.Context)),
+                    EnabledGenerator = args => chaosManager.IsChaosEnabled(args.Context),
+                    InjectionRateGenerator = args => chaosManager.GetInjectionRate(args.Context),
                     Latency = TimeSpan.FromSeconds(60)
+                });
+        });
+
+        #endregion
+    }
+
+    public static void CentralPipeline(IServiceCollection services)
+    {
+        #region chaos-central-pipeline
+
+        services.AddResiliencePipeline("chaos-pipeline", (builder, context) =>
+        {
+            var chaosManager = context.ServiceProvider.GetRequiredService<IChaosManager>();
+
+            builder
+                .AddChaosFault(new ChaosFaultStrategyOptions
+                {
+                    FaultGenerator = new FaultGenerator()
+                        .AddException<TimeoutException>()
+                        .AddException<HttpRequestException>()
+                })
+                .AddChaosLatency(new ChaosLatencyStrategyOptions
+                {
+                    Latency = TimeSpan.FromSeconds(60)
+                });
+        });
+
+        #endregion
+    }
+
+    public static void CentralPipelineIntegration(IServiceCollection services)
+    {
+        #region chaos-central-pipeline-integration
+
+        services.AddResiliencePipeline("my-pipeline-1", (builder, context) =>
+        {
+            var pipelineProvider = context.ServiceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
+            var chaosPipeline = pipelineProvider.GetPipeline("chaos-pipeline");
+
+            builder
+                .AddRetry(new RetryStrategyOptions())
+                .AddTimeout(TimeSpan.FromSeconds(5))
+                .AddPipeline(chaosPipeline); // Inject central chaos pipeline
+
+        });
+
+        #endregion
+    }
+
+    #region chaos-extension
+
+    // Options that represent the chaos pipeline
+    public class MyChaosOptions
+    {
+        public ChaosFaultStrategyOptions Fault { get; set; } = new()
+        {
+            FaultGenerator = new FaultGenerator()
+                .AddException<TimeoutException>()
+                .AddException<HttpRequestException>()
+        };
+
+        public ChaosLatencyStrategyOptions Latency { get; set; } = new()
+        {
+            Latency = TimeSpan.FromSeconds(60)
+        };
+    }
+
+    // Extension for easy integration of the chaos pipeline
+    public static void AddMyChaos(this ResiliencePipelineBuilder builder, Action<MyChaosOptions>? configure = null)
+    {
+        var options = new MyChaosOptions();
+        configure?.Invoke(options);
+
+        builder
+            .AddChaosFault(options.Fault)
+            .AddChaosLatency(options.Latency);
+    }
+
+    #endregion
+
+    public static void ExtensionIntegration(IServiceCollection services)
+    {
+        #region chaos-extension-integration
+
+        services.AddResiliencePipeline("my-pipeline-1", (builder, context) =>
+        {
+            builder
+                .AddRetry(new RetryStrategyOptions())
+                .AddTimeout(TimeSpan.FromSeconds(5))
+                .AddMyChaos(); // Use the extension
+        });
+
+        services.AddResiliencePipeline("my-pipeline-2", (builder, context) =>
+        {
+            builder
+                .AddRetry(new RetryStrategyOptions())
+                .AddTimeout(TimeSpan.FromSeconds(5))
+                .AddMyChaos(options =>
+                {
+                    options.Latency.InjectionRate = 0.1; // Override the default injection rate
+                    options.Latency.Latency = TimeSpan.FromSeconds(10); // Override the default latency
                 });
         });
 
@@ -141,9 +243,9 @@ internal static partial class Chaos
 
     public interface IChaosManager
     {
-        bool IsChaosEnabled(ResilienceContext context);
+        ValueTask<bool> IsChaosEnabled(ResilienceContext context);
 
-        double GetInjectionRate(ResilienceContext context);
+        ValueTask<double> GetInjectionRate(ResilienceContext context);
     }
 
     #endregion

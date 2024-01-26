@@ -41,19 +41,19 @@ builder
 
 There are a lot of questions when it comes to chaos engineering and making sure that a system is actually ready to face the worst possible scenarios:
 
-* Is my system resilient enough?
-* Am I handling the right exceptions/scenarios?
-* How will my system behave if X happens?
-* How can I test without waiting for a handled (or even unhandled) exception to happen in my production environment?
+- Is my system resilient enough?
+- Am I handling the right exceptions/scenarios?
+- How will my system behave if X happens?
+- How can I test without waiting for a handled (or even unhandled) exception to happen in my production environment?
 
 Using Polly helps introduce resilience to a project, but we don't want to have to wait for expected or unexpected failures to test it out. A resilience could be wrongly implemented; testing the scenarios is not straightforward; and mocking failure of some dependencies (for example a cloud SaaS or PaaS service) is not always straightforward.
 
 ### What is needed to simulate chaotic scenarios?
 
-* A way to simulate failures of dependencies (any service dependency for example).
-* Define when to fail based on some external factors - maybe global configuration or some rule.
-* A way to revert easily, to control the blast radius.
-* To be production grade, to run this in a production or near-production system with automation.
+- A way to simulate failures of dependencies (any service dependency for example).
+- Define when to fail based on some external factors - maybe global configuration or some rule.
+- A way to revert easily, to control the blast radius.
+- To be production grade, to run this in a production or near-production system with automation.
 
 ## Chaos strategies
 
@@ -164,9 +164,9 @@ We suggest encapsulating the chaos decisions and injection rate in a shared clas
 ```cs
 public interface IChaosManager
 {
-    bool IsChaosEnabled(ResilienceContext context);
+    ValueTask<bool> IsChaosEnabled(ResilienceContext context);
 
-    double GetInjectionRate(ResilienceContext context);
+    ValueTask<double> GetInjectionRate(ResilienceContext context);
 }
 ```
 <!-- endSnippet -->
@@ -182,16 +182,16 @@ services.AddResiliencePipeline("chaos-pipeline", (builder, context) =>
     builder
         .AddChaosFault(new ChaosFaultStrategyOptions
         {
-            EnabledGenerator = args => ValueTask.FromResult(chaosManager.IsChaosEnabled(args.Context)),
-            InjectionRateGenerator = args => ValueTask.FromResult(chaosManager.GetInjectionRate(args.Context)),
+            EnabledGenerator = args => chaosManager.IsChaosEnabled(args.Context),
+            InjectionRateGenerator = args => chaosManager.GetInjectionRate(args.Context),
             FaultGenerator = new FaultGenerator()
                 .AddException<TimeoutException>()
                 .AddException<HttpRequestException>()
         })
         .AddChaosLatency(new ChaosLatencyStrategyOptions
         {
-            EnabledGenerator = args => ValueTask.FromResult(chaosManager.IsChaosEnabled(args.Context)),
-            InjectionRateGenerator = args => ValueTask.FromResult(chaosManager.GetInjectionRate(args.Context)),
+            EnabledGenerator = args => chaosManager.IsChaosEnabled(args.Context),
+            InjectionRateGenerator = args => chaosManager.GetInjectionRate(args.Context),
             Latency = TimeSpan.FromSeconds(60)
         });
 });
@@ -200,3 +200,135 @@ services.AddResiliencePipeline("chaos-pipeline", (builder, context) =>
 
 > [!NOTE]
 > An alternative method involves using [`Microsoft.Extensions.AsyncState`](https://www.nuget.org/packages/Microsoft.Extensions.AsyncState) for storing information relevant to chaos injection decisions. This can be particularly useful in frameworks like ASP.NET Core. For instance, you could implement a middleware that retrieves user information from `HttpContext`, assesses the user type, and then stores this data in `IAsyncContext<ChaosUser>`. Subsequently, `IChaosManager` can access `IAsyncContext<ChaosUser>` to retrieve this information. This approach eliminates the need to manually insert such data into `ResilienceContext` for each call within the resilience pipeline, thereby streamlining the process.
+
+### Integrating chaos pipelines
+
+When integrating chaos pipelines with resilience strategies, consider the following approaches:
+
+- Establish a central resilience pipeline and apply it across various pipelines.
+- Incorporate chaos strategies into each resilience pipeline individually.
+
+Each approach has its own set of advantages and disadvantages.
+
+#### Integrating chaos pipelines with a central pipeline
+
+To integrate chaos pipelines using a central approach, first define a central chaos pipeline that will be reused across various resilience pipelines:
+
+<!-- snippet: chaos-central-pipeline -->
+```cs
+services.AddResiliencePipeline("chaos-pipeline", (builder, context) =>
+{
+    var chaosManager = context.ServiceProvider.GetRequiredService<IChaosManager>();
+
+    builder
+        .AddChaosFault(new ChaosFaultStrategyOptions
+        {
+            FaultGenerator = new FaultGenerator()
+                .AddException<TimeoutException>()
+                .AddException<HttpRequestException>()
+        })
+        .AddChaosLatency(new ChaosLatencyStrategyOptions
+        {
+            Latency = TimeSpan.FromSeconds(60)
+        });
+});
+```
+<!-- endSnippet -->
+
+Next, when defining a pipeline, use `ResiliencePipelineProvider<T>` to integrate the chaos pipeline using the `AddPipeline` extension method:
+
+<!-- snippet: chaos-central-pipeline-integration -->
+```cs
+services.AddResiliencePipeline("my-pipeline-1", (builder, context) =>
+{
+    var pipelineProvider = context.ServiceProvider.GetRequiredService<ResiliencePipelineProvider<string>>();
+    var chaosPipeline = pipelineProvider.GetPipeline("chaos-pipeline");
+
+    builder
+        .AddRetry(new RetryStrategyOptions())
+        .AddTimeout(TimeSpan.FromSeconds(5))
+        .AddPipeline(chaosPipeline); // Inject central chaos pipeline
+
+});
+```
+<!-- endSnippet -->
+
+✅ Central management of the chaos pipeline allows for easy integration into other resilience pipelines.
+
+❌ It's challenging to correlate telemetry between the chaos and resilience pipelines. Telemetry from the chaos pipeline is emitted under `chaos-pipeline`, while the regular resilience pipeline telemetry appears under `my-pipeline-1`.
+
+❌ Fine-tuning the chaos pipeline's behavior to suit specific resilience pipelines is not straightforward. In certain scenarios, you might want to adjust failure rates for a particular pipeline.
+
+#### Integrating chaos pipelines with extensions
+
+In this approach, a helper extension method can be introduced to add a predefined set of chaos strategies to `ResiliencePipelineBuilder<T>`:
+
+<!-- snippet: chaos-extension -->
+```cs
+// Options that represent the chaos pipeline
+public class MyChaosOptions
+{
+    public ChaosFaultStrategyOptions Fault { get; set; } = new()
+    {
+        FaultGenerator = new FaultGenerator()
+            .AddException<TimeoutException>()
+            .AddException<HttpRequestException>()
+    };
+
+    public ChaosLatencyStrategyOptions Latency { get; set; } = new()
+    {
+        Latency = TimeSpan.FromSeconds(60)
+    };
+}
+
+// Extension for easy integration of the chaos pipeline
+public static void AddMyChaos(this ResiliencePipelineBuilder builder, Action<MyChaosOptions>? configure = null)
+{
+    var options = new MyChaosOptions();
+    configure?.Invoke(options);
+
+    builder
+        .AddChaosFault(options.Fault)
+        .AddChaosLatency(options.Latency);
+}
+```
+<!-- endSnippet -->
+
+The example above:
+
+- Defines `MyChaosOptions`, which encapsulates options for the chaos pipeline with sensible defaults.
+- Introduces the `AddMyChaos` extension method for straightforward integration of a custom pipeline into any resilience strategy. It also provides flexibility to modify the pipeline's configuration.
+
+Once the chaos extension is in place, it can be utilized in defining your resilience pipelines:
+
+<!-- snippet: chaos-extension-integration -->
+```cs
+services.AddResiliencePipeline("my-pipeline-1", (builder, context) =>
+{
+    builder
+        .AddRetry(new RetryStrategyOptions())
+        .AddTimeout(TimeSpan.FromSeconds(5))
+        .AddMyChaos(); // Use the extension
+});
+
+services.AddResiliencePipeline("my-pipeline-2", (builder, context) =>
+{
+    builder
+        .AddRetry(new RetryStrategyOptions())
+        .AddTimeout(TimeSpan.FromSeconds(5))
+        .AddMyChaos(options =>
+        {
+            options.Latency.InjectionRate = 0.1; // Override the default injection rate
+            options.Latency.Latency = TimeSpan.FromSeconds(10); // Override the default latency
+        });
+});
+```
+<!-- endSnippet -->
+
+✅ Enables configuration and customization of chaos strategies for each pipeline, while maintaining a centralized logic.
+
+✅ Simplifies telemetry correlation as chaos strategies share the same pipeline name.
+
+❌ Increased maintenance due to additional code, with flexibility coming at the expense of complexity.
+
+❌ Monitoring multiple chaos pipelines may be necessary to understand their behavior.
