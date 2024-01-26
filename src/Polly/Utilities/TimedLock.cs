@@ -12,7 +12,7 @@ namespace Polly.Utilities;
 // Thanks to John Sands for providing the necessary incentive to make
 // me invent a way of using a struct in both release and debug builds
 // without losing the debug leak tracking.
-internal struct TimedLock : IDisposable
+internal readonly struct TimedLock : IDisposable
 {
     // The TimedLock class throws a LockTimeoutException if a lock cannot be obtained within the LockTimeout.  This allows the easier discovery and debugging of deadlocks during Polly development, than if using a pure lock.
     // We do not however ever want to throw a LockTimeoutException in production - hence the forked LockTimeout value below for DEBUG versus RELEASE builds.
