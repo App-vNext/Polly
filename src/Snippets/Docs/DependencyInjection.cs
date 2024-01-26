@@ -225,7 +225,7 @@ internal static class DependencyInjection
     {
         public bool Equals(MyPipelineKey x, MyPipelineKey y) => x.PipelineName == y.PipelineName;
 
-        public int GetHashCode(MyPipelineKey obj) => obj.PipelineName.GetHashCode();
+        public int GetHashCode(MyPipelineKey obj) => obj.PipelineName.GetHashCode(StringComparison.Ordinal);
     }
 
     #endregion
