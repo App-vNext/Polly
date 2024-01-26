@@ -7,8 +7,8 @@ namespace Polly.Fallback;
 /// </summary>
 public class AsyncFallbackPolicy : AsyncPolicy, IFallbackPolicy
 {
-    private Func<Exception, Context, Task> _onFallbackAsync;
-    private Func<Exception, Context, CancellationToken, Task> _fallbackAction;
+    private readonly Func<Exception, Context, Task> _onFallbackAsync;
+    private readonly Func<Exception, Context, CancellationToken, Task> _fallbackAction;
 
     internal AsyncFallbackPolicy(PolicyBuilder policyBuilder, Func<Exception, Context, Task> onFallbackAsync,
         Func<Exception, Context, CancellationToken, Task> fallbackAction)
@@ -54,8 +54,8 @@ public class AsyncFallbackPolicy : AsyncPolicy, IFallbackPolicy
 /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
 public class AsyncFallbackPolicy<TResult> : AsyncPolicy<TResult>, IFallbackPolicy<TResult>
 {
-    private Func<DelegateResult<TResult>, Context, Task> _onFallbackAsync;
-    private Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> _fallbackAction;
+    private readonly Func<DelegateResult<TResult>, Context, Task> _onFallbackAsync;
+    private readonly Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> _fallbackAction;
 
     internal AsyncFallbackPolicy(
         PolicyBuilder<TResult> policyBuilder,

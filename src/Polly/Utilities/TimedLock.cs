@@ -32,7 +32,7 @@ internal struct TimedLock : IDisposable
         if (!Monitor.TryEnter(o, timeout))
         {
 #if DEBUG
-            GC.SuppressFinalize(tl.leakDetector);
+            GC.SuppressFinalize(tl._leakDetector);
 #endif
             throw new LockTimeoutException();
         }
@@ -42,24 +42,24 @@ internal struct TimedLock : IDisposable
 #if DEBUG
     private TimedLock(object o)
     {
-        target = o;
-        leakDetector = new Sentinel();
+        _target = o;
+        _leakDetector = new Sentinel();
     }
 #else
-    private TimedLock(object o) => target = o;
+    private TimedLock(object o) => _target = o;
 #endif
-    private object target;
+    private readonly object _target;
 
     public void Dispose()
     {
-        Monitor.Exit(target);
+        Monitor.Exit(_target);
 
         // It's a bad error if someone forgets to call Dispose,
         // so in Debug builds, we put a finalizer in to detect
         // the error. If Dispose is called, we suppress the
         // finalizer.
 #if DEBUG
-        GC.SuppressFinalize(leakDetector);
+        GC.SuppressFinalize(_leakDetector);
 #endif
     }
 
@@ -78,7 +78,7 @@ internal struct TimedLock : IDisposable
 #endif
         }
     }
-    private Sentinel leakDetector;
+    private readonly Sentinel _leakDetector;
 #endif
 }
 
