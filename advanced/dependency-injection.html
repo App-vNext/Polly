@@ -335,7 +335,7 @@ further modifications are required for this to function.</p>
 {
     public bool Equals(MyPipelineKey x, MyPipelineKey y) =&gt; x.PipelineName == y.PipelineName;
 
-    public int GetHashCode(MyPipelineKey obj) =&gt; (obj.PipelineName, obj.InstanceName).GetHashCode();
+    public int GetHashCode(MyPipelineKey obj) =&gt; obj.PipelineName.GetHashCode();
 }
 </code></pre>
 <!-- endSnippet -->
