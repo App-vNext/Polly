@@ -7,6 +7,9 @@ internal sealed class RollingHealthMetrics : HealthMetrics
     private readonly TimeSpan _windowDuration;
     private readonly Queue<HealthWindow> _windows;
 
+    private int _successes;
+    private int _failures;
+
     private HealthWindow? _currentWindow;
 
     public RollingHealthMetrics(TimeSpan samplingDuration, short numberOfWindows, TimeProvider timeProvider)
@@ -17,12 +20,24 @@ internal sealed class RollingHealthMetrics : HealthMetrics
         _windows = new Queue<HealthWindow>();
     }
 
-    public override void IncrementSuccess() => UpdateCurrentWindow().Successes++;
+    public override void IncrementSuccess()
+    {
+        _successes++;
 
-    public override void IncrementFailure() => UpdateCurrentWindow().Failures++;
+        UpdateCurrentWindow().Successes++;
+    }
+
+    public override void IncrementFailure()
+    {
+        _failures++;
+
+        UpdateCurrentWindow().Failures++;
+    }
 
     public override void Reset()
     {
+        _failures = 0;
+        _successes = 0;
         _currentWindow = null;
         _windows.Clear();
     }
@@ -31,15 +46,7 @@ internal sealed class RollingHealthMetrics : HealthMetrics
     {
         UpdateCurrentWindow();
 
-        var successes = 0;
-        var failures = 0;
-        foreach (var window in _windows)
-        {
-            successes += window.Successes;
-            failures += window.Failures;
-        }
-
-        return HealthInfo.Create(successes, failures);
+        return HealthInfo.Create(_successes, _failures);
     }
 
     private HealthWindow UpdateCurrentWindow()
@@ -56,7 +63,11 @@ internal sealed class RollingHealthMetrics : HealthMetrics
 
         while (now - _windows.Peek().StartedAt >= _samplingDuration)
         {
-            _windows.Dequeue();
+            var window = _windows.Dequeue();
+
+            // Update global counters
+            _successes -= window.Successes;
+            _failures -= window.Failures;
         }
 
         return _currentWindow;

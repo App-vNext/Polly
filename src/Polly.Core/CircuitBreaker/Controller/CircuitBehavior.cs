@@ -1,3 +1,5 @@
+using Polly.CircuitBreaker.Health;
+
 namespace Polly.CircuitBreaker;
 
 /// <summary>
@@ -10,6 +12,6 @@ internal abstract class CircuitBehavior
     public abstract void OnActionFailure(CircuitState currentState, out bool shouldBreak);
 
     public abstract void OnCircuitClosed();
-    public abstract int FailureCount { get; }
-    public abstract double FailureRate { get; }
+
+    public abstract HealthInfo GetHealthInfo();
 }

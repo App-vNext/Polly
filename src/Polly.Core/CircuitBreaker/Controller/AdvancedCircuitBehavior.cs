@@ -44,7 +44,7 @@ internal sealed class AdvancedCircuitBehavior : CircuitBehavior
     }
 
     public override void OnCircuitClosed() => _metrics.Reset();
-    public override int FailureCount => _metrics.GetHealthInfo().FailureCount;
-    public override double FailureRate => _metrics.GetHealthInfo().FailureRate;
+
+    public override HealthInfo GetHealthInfo() => _metrics.GetHealthInfo();
 }
 
