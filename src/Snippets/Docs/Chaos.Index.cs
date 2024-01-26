@@ -229,7 +229,6 @@ internal static partial class Chaos
         #endregion
     }
 
-
     private static bool ResolveInjectionRate(ResilienceContext context, out double injectionRate)
     {
         injectionRate = 0.0;
