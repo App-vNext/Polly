@@ -44,8 +44,8 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
 public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<TResult>
 {
     private readonly TimeoutStrategy _timeoutStrategy;
-    private Func<Context, TimeSpan> _timeoutProvider;
-    private Func<Context, TimeSpan, Task, Exception, Task> _onTimeoutAsync;
+    private readonly Func<Context, TimeSpan> _timeoutProvider;
+    private readonly Func<Context, TimeSpan, Task, Exception, Task> _onTimeoutAsync;
 
     internal AsyncTimeoutPolicy(
         Func<Context, TimeSpan> timeoutProvider,
