@@ -3,7 +3,7 @@
 namespace Polly.Simmy;
 
 /// <summary>
-/// Contains common functionality for chaos strategies which intentionally disrupt executions.
+/// Base class for chaos strategies.
 /// </summary>
 public abstract class ChaosStrategy : ResilienceStrategy
 {

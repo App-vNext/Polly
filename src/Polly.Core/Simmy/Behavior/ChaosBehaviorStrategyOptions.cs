@@ -3,7 +3,7 @@
 namespace Polly.Simmy.Behavior;
 
 /// <summary>
-/// Represents the options for the Behavior chaos strategy.
+/// Represents the options for the behavior chaos strategy.
 /// </summary>
 public class ChaosBehaviorStrategyOptions : ChaosStrategyOptions
 {
@@ -13,19 +13,19 @@ public class ChaosBehaviorStrategyOptions : ChaosStrategyOptions
     public ChaosBehaviorStrategyOptions() => Name = ChaosBehaviorConstants.DefaultName;
 
     /// <summary>
-    /// Gets or sets the delegate that's raised when the custom behavior is injected.
+    /// Gets or sets the delegate that's raised when the behavior is injected.
     /// </summary>
-    /// <remarks>
+    /// <value>
     /// Defaults to <see langword="null"/>.
-    /// </remarks>
+    /// </value>
     public Func<OnBehaviorInjectedArguments, ValueTask>? OnBehaviorInjected { get; set; }
 
     /// <summary>
-    /// Gets or sets the custom behavior that is going to be injected for a given execution.
+    /// Gets or sets the behavior that is going to be injected for a given execution.
     /// </summary>
-    /// <remarks>
-    /// Defaults to <see langword="null"/>.
-    /// </remarks>
+    /// <value>
+    /// Defaults to <see langword="null"/>. This property is required.
+    /// </value>
     [Required]
     public Func<BehaviorGeneratorArguments, ValueTask>? BehaviorGenerator { get; set; }
 }

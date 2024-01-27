@@ -10,11 +10,11 @@ public readonly struct OnBehaviorInjectedArguments
     /// <summary>
     /// Initializes a new instance of the <see cref="OnBehaviorInjectedArguments"/> struct.
     /// </summary>
-    /// <param name="context">The context associated with the execution of a user-provided callback.</param>
+    /// <param name="context">The resilience context instance.</param>
     public OnBehaviorInjectedArguments(ResilienceContext context) => Context = context;
 
     /// <summary>
-    /// Gets the ResilienceContext instance.
+    /// Gets the resilience context instance.
     /// </summary>
     public ResilienceContext Context { get; }
 }

@@ -91,6 +91,15 @@ All the strategies' options implement the [`ChaosStrategyOptions`](xref:Polly.Si
 
 [simmy]: https://github.com/Polly-Contrib/Simmy
 
+## Telemetry
+
+The telemetry of chaos strategies is seamlessly integrated with Polly [telemetry infrastructure](../advanced/telemetry.md). The chaos strategies produce the following events:
+
+- `Chaos.OnFault`
+- `Chaos.OnOutcome`
+- `Chaos.OnLatency`
+- `Chaos.OnBehavior`
+
 ## Patterns
 
 ### Inject chaos selectively

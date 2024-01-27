@@ -5,7 +5,7 @@ using Polly.Simmy.Behavior;
 namespace Polly.Simmy;
 
 /// <summary>
-/// Extension methods for adding custom behaviors to a <see cref="ResiliencePipelineBuilder"/>.
+/// Extension methods for adding chaos behaviors to a <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
 public static class ChaosBehaviorPipelineBuilderExtensions
 {

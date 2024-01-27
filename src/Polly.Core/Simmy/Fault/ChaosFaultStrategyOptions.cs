@@ -3,7 +3,7 @@
 namespace Polly.Simmy.Fault;
 
 /// <summary>
-/// Represents the options for the Fault chaos strategy.
+/// Represents the options for the fault chaos strategy.
 /// </summary>
 public class ChaosFaultStrategyOptions : ChaosStrategyOptions
 {
@@ -13,19 +13,19 @@ public class ChaosFaultStrategyOptions : ChaosStrategyOptions
     public ChaosFaultStrategyOptions() => Name = ChaosFaultConstants.DefaultName;
 
     /// <summary>
-    /// Gets or sets the delegate that's raised when the outcome is injected.
+    /// Gets or sets the delegate that's raised when the fault is injected.
     /// </summary>
-    /// <remarks>
+    /// <value>
     /// Defaults to <see langword="null"/>.
-    /// </remarks>
+    /// </value>
     public Func<OnFaultInjectedArguments, ValueTask>? OnFaultInjected { get; set; } = default!;
 
     /// <summary>
-    /// Gets or sets the fault generator to be injected for a given execution.
+    /// Gets or sets the fault generator to be used for fault injection.
     /// </summary>
-    /// <remarks>
-    /// Defaults to <see langword="null"/>.
-    /// </remarks>
+    /// <value>
+    /// Defaults to <see langword="null"/>. This property is required.
+    /// </value>
     [Required]
     public Func<FaultGeneratorArguments, ValueTask<Exception?>>? FaultGenerator { get; set; } = default!;
 }

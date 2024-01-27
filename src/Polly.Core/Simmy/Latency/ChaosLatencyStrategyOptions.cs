@@ -3,7 +3,7 @@
 #pragma warning disable CS8618 // Required members are not initialized in constructor since this is a DTO, default value is null
 
 /// <summary>
-/// Represents the options for the Latency chaos strategy.
+/// Represents the options for the latency chaos strategy.
 /// </summary>
 public class ChaosLatencyStrategyOptions : ChaosStrategyOptions
 {
@@ -13,27 +13,26 @@ public class ChaosLatencyStrategyOptions : ChaosStrategyOptions
     public ChaosLatencyStrategyOptions() => Name = ChaosLatencyConstants.DefaultName;
 
     /// <summary>
-    /// Gets or sets the delegate that's raised when a delay occurs.
+    /// Gets or sets the delegate that's raised when a latency is injected.
     /// </summary>
-    /// <remarks>
+    /// <value>
     /// Defaults to <see langword="null"/>.
-    /// </remarks>
+    /// </value>
     public Func<OnLatencyInjectedArguments, ValueTask>? OnLatencyInjected { get; set; }
 
     /// <summary>
     /// Gets or sets the latency generator that generates the delay for a given execution.
     /// </summary>
-    /// <remarks>
-    /// Defaults to <see langword="null"/>. Either <see cref="Latency"/> or this property is required.
-    /// When this property is <see langword="null"/> the <see cref="Latency"/> is used.
-    /// </remarks>
+    /// <value>
+    /// Defaults to <see langword="null"/>. When this property is <see langword="null"/> the <see cref="Latency"/> is used.
+    /// </value>
     public Func<LatencyGeneratorArguments, ValueTask<TimeSpan>>? LatencyGenerator { get; set; }
 
     /// <summary>
-    /// Gets or sets the delay for a given execution.
+    /// Gets or sets the latency to be injected for a given execution.
     /// </summary>
-    /// <remarks>
-    /// Defaults to 30 seconds. Either <see cref="LatencyGenerator"/> or this property is required.
-    /// </remarks>
+    /// <value>
+    /// Defaults to <c>30</c> seconds. When <see cref="LatencyGenerator"/> is specified, this property is ignored.
+    /// </value>
     public TimeSpan Latency { get; set; } = ChaosLatencyConstants.DefaultLatency;
 }

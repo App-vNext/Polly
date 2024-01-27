@@ -3,8 +3,7 @@
 namespace Polly.Simmy;
 
 /// <summary>
-/// This base strategy class is used to simplify the implementation of generic (reactive)
-/// strategies by limiting the number of generic types the execute method receives.
+/// Base class for generic (reactive) chaos strategies.
 /// </summary>
 /// <typeparam name="T">The type of result this strategy handles.</typeparam>
 /// <remarks>

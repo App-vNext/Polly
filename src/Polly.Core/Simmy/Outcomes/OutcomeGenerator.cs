@@ -7,7 +7,7 @@ namespace Polly.Simmy.Outcomes;
 #pragma warning disable RS0026 // Do not add multiple public overloads with optional parameters
 
 /// <summary>
-/// Generator that produces faults such as exceptions or results.
+/// Generator that produces outcomes such as exceptions or results.
 /// </summary>
 /// <typeparam name="TResult">The type of the result.</typeparam>
 /// <remarks>
