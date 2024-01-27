@@ -24,11 +24,11 @@ public class PolicyKeySpecs
     [Fact]
     public void PolicyKey_property_should_be_the_fluently_configured_policy_key()
     {
-        const string key = "SomePolicyKey";
+        const string Key = "SomePolicyKey";
 
-        var policy = Policy.Handle<Exception>().Retry().WithPolicyKey(key);
+        var policy = Policy.Handle<Exception>().Retry().WithPolicyKey(Key);
 
-        policy.PolicyKey.Should().Be(key);
+        policy.PolicyKey.Should().Be(Key);
     }
 
     [Fact]
@@ -205,11 +205,11 @@ public class PolicyTResultKeySpecs
     [Fact]
     public void PolicyKey_property_should_be_the_fluently_configured_policy_key()
     {
-        const string key = "SomePolicyKey";
+        const string Key = "SomePolicyKey";
 
-        var policy = Policy.HandleResult(0).Retry().WithPolicyKey(key);
+        var policy = Policy.HandleResult(0).Retry().WithPolicyKey(Key);
 
-        policy.PolicyKey.Should().Be(key);
+        policy.PolicyKey.Should().Be(Key);
     }
 
     [Fact]

@@ -24,11 +24,11 @@ public class PolicyKeyAsyncSpecs
     [Fact]
     public void PolicyKey_property_should_be_the_fluently_configured_policy_key()
     {
-        const string key = "SomePolicyKey";
+        const string Key = "SomePolicyKey";
 
-        var policy = Policy.Handle<Exception>().RetryAsync().WithPolicyKey(key);
+        var policy = Policy.Handle<Exception>().RetryAsync().WithPolicyKey(Key);
 
-        policy.PolicyKey.Should().Be(key);
+        policy.PolicyKey.Should().Be(Key);
     }
 
     [Fact]
@@ -208,11 +208,11 @@ public class PolicyTResultKeyAsyncSpecs
     [Fact]
     public void PolicyKey_property_should_be_the_fluently_configured_policy_key()
     {
-        const string key = "SomePolicyKey";
+        const string Key = "SomePolicyKey";
 
-        var policy = Policy.HandleResult(0).RetryAsync().WithPolicyKey(key);
+        var policy = Policy.HandleResult(0).RetryAsync().WithPolicyKey(Key);
 
-        policy.PolicyKey.Should().Be(key);
+        policy.PolicyKey.Should().Be(Key);
     }
 
     [Fact]

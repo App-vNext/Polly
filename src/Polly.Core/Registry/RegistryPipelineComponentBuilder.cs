@@ -30,7 +30,7 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
         _configure = configure;
     }
 
-    internal (ResilienceContextPool? contextPool, PipelineComponent component) CreateComponent()
+    internal (ResilienceContextPool? ContextPool, PipelineComponent Component) CreateComponent()
     {
         var builder = CreateBuilder();
         var component = builder.ComponentFactory();

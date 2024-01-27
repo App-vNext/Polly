@@ -215,18 +215,18 @@ public class ConcurrentPolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
         _registry.Add(key, existingPolicy);
 
-        const string policyKeyToDecorate = "SomePolicyKey";
+        const string PolicyKeyToDecorate = "SomePolicyKey";
 
         Policy otherPolicyNotExpectingToAdd = Policy.Handle<Exception>().Retry();
 
         var returnedPolicy = _registry.AddOrUpdate(
             key,
             otherPolicyNotExpectingToAdd,
-            (_, _) => existingPolicy.WithPolicyKey(policyKeyToDecorate));
+            (_, _) => existingPolicy.WithPolicyKey(PolicyKeyToDecorate));
 
         returnedPolicy.Should().NotBeSameAs(otherPolicyNotExpectingToAdd);
         returnedPolicy.Should().BeSameAs(existingPolicy);
-        returnedPolicy.PolicyKey.Should().Be(policyKeyToDecorate);
+        returnedPolicy.PolicyKey.Should().Be(PolicyKeyToDecorate);
     }
 
     [Fact]
@@ -236,17 +236,17 @@ public class ConcurrentPolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
         _registry.Add(key, existingPolicy);
 
-        const string policyKeyToDecorate = "SomePolicyKey";
+        const string PolicyKeyToDecorate = "SomePolicyKey";
 
         Policy otherPolicyNotExpectingToAdd = Policy.Handle<Exception>().Retry();
 
         var returnedPolicy = _registry.AddOrUpdate(
             key,
             _ => otherPolicyNotExpectingToAdd,
-            (_, _) => existingPolicy.WithPolicyKey(policyKeyToDecorate));
+            (_, _) => existingPolicy.WithPolicyKey(PolicyKeyToDecorate));
 
         returnedPolicy.Should().NotBeSameAs(otherPolicyNotExpectingToAdd);
         returnedPolicy.Should().BeSameAs(existingPolicy);
-        returnedPolicy.PolicyKey.Should().Be(policyKeyToDecorate);
+        returnedPolicy.PolicyKey.Should().Be(PolicyKeyToDecorate);
     }
 }

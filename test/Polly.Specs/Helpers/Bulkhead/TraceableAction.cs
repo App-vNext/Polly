@@ -10,7 +10,7 @@ public class TraceableAction : IDisposable
     private readonly ITestOutputHelper _testOutputHelper;
 
     private readonly TaskCompletionSource<object?> _tcsProxyForRealWork = new();
-    private readonly CancellationTokenSource CancellationSource = new();
+    private readonly CancellationTokenSource _cancellationSource = new();
     private readonly AutoResetEvent _statusChanged;
 
     private TraceableActionStatus _status;
@@ -41,7 +41,7 @@ public class TraceableAction : IDisposable
 
     public Task ExecuteOnBulkhead(BulkheadPolicy bulkhead) =>
         ExecuteThroughSyncBulkheadOuter(
-            () => bulkhead.Execute(_ => ExecuteThroughSyncBulkheadInner(), CancellationSource.Token));
+            () => bulkhead.Execute(_ => ExecuteThroughSyncBulkheadInner(), _cancellationSource.Token));
 
     public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult?> bulkhead) =>
         ExecuteThroughSyncBulkheadOuter(
@@ -49,7 +49,7 @@ public class TraceableAction : IDisposable
             {
                 ExecuteThroughSyncBulkheadInner();
                 return default;
-            }, CancellationSource.Token));
+            }, _cancellationSource.Token));
 
     // Note re TaskCreationOptions.LongRunning: Testing the parallelization of the bulkhead policy efficiently requires the ability to start large numbers of parallel tasks in a short space of time.  The ThreadPool's algorithm of only injecting extra threads (when necessary) at a rate of two-per-second however makes high-volume tests using the ThreadPool both slow and flaky.  For PCL tests further, ThreadPool.SetMinThreads(...) is not available, to mitigate this.  Using TaskCreationOptions.LongRunning allows us to force tasks to be started near-instantly on non-ThreadPool threads.
     private Task ExecuteThroughSyncBulkheadOuter(Action executeThroughBulkheadInner)
@@ -123,7 +123,7 @@ public class TraceableAction : IDisposable
 
     public Task ExecuteOnBulkheadAsync(AsyncBulkheadPolicy bulkhead) =>
         ExecuteThroughAsyncBulkheadOuter(
-            () => bulkhead.ExecuteAsync(async _ => await ExecuteThroughAsyncBulkheadInner(), CancellationSource.Token));
+            () => bulkhead.ExecuteAsync(async _ => await ExecuteThroughAsyncBulkheadInner(), _cancellationSource.Token));
 
     public Task ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult?> bulkhead) =>
         ExecuteThroughAsyncBulkheadOuter(
@@ -131,7 +131,7 @@ public class TraceableAction : IDisposable
             {
                 await ExecuteThroughAsyncBulkheadInner();
                 return default;
-            }, CancellationSource.Token));
+            }, _cancellationSource.Token));
 
     public Task ExecuteThroughAsyncBulkheadOuter(Func<Task> executeThroughBulkheadInner)
     {
@@ -195,7 +195,7 @@ public class TraceableAction : IDisposable
                 _testOutputHelper.WriteLine(_id + "Cancelling execution.");
 
                 Status = TraceableActionStatus.Canceled;
-                throw new OperationCanceledException(CancellationSource.Token); // Exception rethrown for the purpose of testing exceptions thrown through the BulkheadEngine.
+                throw new OperationCanceledException(_cancellationSource.Token); // Exception rethrown for the purpose of testing exceptions thrown through the BulkheadEngine.
             }
             else if (t.IsFaulted)
             {
@@ -220,16 +220,16 @@ public class TraceableAction : IDisposable
 
     public void Cancel()
     {
-        if (CancellationSource.IsCancellationRequested)
+        if (_cancellationSource.IsCancellationRequested)
         {
             throw new InvalidOperationException(_id + "Action has already been cancelled.");
         }
 
-        CancellationSource.Cancel();
+        _cancellationSource.Cancel();
 
         _tcsProxyForRealWork.SetCanceled();
     }
 
     public void Dispose() =>
-        CancellationSource.Dispose();
+        _cancellationSource.Dispose();
 }

@@ -19,7 +19,6 @@
     "maintainabilityRules": {
     },
     "namingRules": {
-      "tupleElementNameCasing": "camelCase"
     },
     "readabilityRules": {
     }

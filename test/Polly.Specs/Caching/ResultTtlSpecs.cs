@@ -50,14 +50,14 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_return_func_result_using_context()
     {
-        const string specialKey = "specialKey";
+        const string SpecialKey = "specialKey";
 
         TimeSpan ttl = TimeSpan.FromMinutes(1);
-        Func<Context, dynamic?, Ttl> func = (context, result) => context.OperationKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result!.Ttl);
+        Func<Context, dynamic?, Ttl> func = (context, result) => context.OperationKey == SpecialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result!.Ttl);
 
         ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
         ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl }).Timespan.Should().Be(ttl);
-        ttlStrategy.GetTtl(new Context(specialKey), new { Ttl = ttl }).Timespan.Should().Be(TimeSpan.Zero);
+        ttlStrategy.GetTtl(new Context(SpecialKey), new { Ttl = ttl }).Timespan.Should().Be(TimeSpan.Zero);
     }
 }
