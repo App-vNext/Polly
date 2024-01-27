@@ -11,7 +11,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         TimeSpan perTimeSpan,
         int maxBurst);
 
-    protected abstract (bool permitExecution, TimeSpan retryAfter) TryExecuteThroughPolicy(IRateLimitPolicy policy);
+    protected abstract (bool PermitExecution, TimeSpan RetryAfter) TryExecuteThroughPolicy(IRateLimitPolicy policy);
 
     protected void ShouldPermitAnExecution(IRateLimitPolicy policy)
     {
