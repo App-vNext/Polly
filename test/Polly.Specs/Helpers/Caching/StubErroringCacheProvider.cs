@@ -5,7 +5,7 @@ internal class StubErroringCacheProvider : ISyncCacheProvider, IAsyncCacheProvid
     private readonly Exception? _getException;
     private readonly Exception? _putException;
 
-    private readonly StubCacheProvider innerProvider = new();
+    private readonly StubCacheProvider _innerProvider = new();
 
     public StubErroringCacheProvider(Exception? getException, Exception? putException)
     {
@@ -17,14 +17,14 @@ internal class StubErroringCacheProvider : ISyncCacheProvider, IAsyncCacheProvid
     {
         if (_getException != null)
             throw _getException;
-        return innerProvider.TryGet(key);
+        return _innerProvider.TryGet(key);
     }
 
     public void Put(string key, object? value, Ttl ttl)
     {
         if (_putException != null)
             throw _putException;
-        innerProvider.Put(key, value, ttl);
+        _innerProvider.Put(key, value, ttl);
     }
 
     #region Naive async-over-sync implementation

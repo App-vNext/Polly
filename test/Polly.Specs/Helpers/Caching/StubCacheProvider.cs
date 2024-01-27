@@ -17,19 +17,19 @@ internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
         public readonly object? Value;
     }
 
-    private readonly Dictionary<string, CacheItem> cachedValues = [];
+    private readonly Dictionary<string, CacheItem> _cachedValues = [];
 
     public (bool, object?) TryGet(string key)
     {
-        if (cachedValues.ContainsKey(key))
+        if (_cachedValues.ContainsKey(key))
         {
-            if (SystemClock.DateTimeOffsetUtcNow() < cachedValues[key].Expiry)
+            if (SystemClock.DateTimeOffsetUtcNow() < _cachedValues[key].Expiry)
             {
-                return (true, cachedValues[key].Value);
+                return (true, _cachedValues[key].Value);
             }
             else
             {
-                cachedValues.Remove(key);
+                _cachedValues.Remove(key);
             }
         }
 
@@ -37,7 +37,7 @@ internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
     }
 
     public void Put(string key, object? value, Ttl ttl) =>
-        cachedValues[key] = new CacheItem(value, ttl);
+        _cachedValues[key] = new CacheItem(value, ttl);
 
     #region Naive async-over-sync implementation
 
