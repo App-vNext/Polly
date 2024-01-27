@@ -40,7 +40,7 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
     /// <summary>
     /// Returns whether the execution is permitted; if not, returns what <see cref="TimeSpan"/> should be waited before retrying.
     /// </summary>
-    public (bool permitExecution, TimeSpan retryAfter) PermitExecution()
+    public (bool PermitExecution, TimeSpan RetryAfter) PermitExecution()
     {
         while (true)
         {
