@@ -4,7 +4,7 @@
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
     <ProjectType>Library</ProjectType>
     <Nullable>enable</Nullable>
-    <NoWarn>$(NoWarn);SA1600;SA1204;SA1602;CA1062</NoWarn>
+    <NoWarn>$(NoWarn);SA1600;SA1204;CA1062</NoWarn>
     <IsPackable>false</IsPackable>
     <EnablePackageValidation>false</EnablePackageValidation>
     <UsePublicApiAnalyzers>false</UsePublicApiAnalyzers>
