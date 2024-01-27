@@ -8,7 +8,7 @@
       <meta name="title" content="Class ChaosOutcomePipelineBuilderExtensions
  | Polly ">
       
-      <meta name="description" content="Extension methods for adding outcome to a .">
+      <meta name="description" content="Extension methods for adding chaos outcome strategy to a .">
       <link rel="icon" href="../icon.png">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -100,7 +100,7 @@
   <dl><dt>Assembly</dt><dd>Polly.Core.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Extension methods for adding outcome to a <a class="xref" href="Polly.ResiliencePipelineBuilder.html">ResiliencePipelineBuilder</a>.</p>
+  <div class="markdown summary"><p>Extension methods for adding chaos outcome strategy to a <a class="xref" href="Polly.ResiliencePipelineBuilder.html">ResiliencePipelineBuilder</a>.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -177,21 +177,21 @@
     <dd><p>The builder instance.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html">ChaosOutcomeStrategyOptions</a>&lt;TResult&gt;</dt>
-    <dd><p>The outcome strategy options.</p>
+    <dd><p>The strategy options.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="Polly.ResiliencePipelineBuilder-1.html">ResiliencePipelineBuilder</a>&lt;TResult&gt;</dt>
-    <dd><p>The builder instance with the retry strategy added.</p>
+    <dd><p>The same builder instance.</p>
 </dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TResult</code></dt>
-    <dd><p>The type of result the retry strategy handles.</p>
+    <dd><p>The type of result the strategy handles.</p>
 </dd>
   </dl>
 
@@ -235,14 +235,14 @@
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="Polly.ResiliencePipelineBuilder-1.html">ResiliencePipelineBuilder</a>&lt;TResult&gt;</dt>
-    <dd><p>The builder instance with the retry strategy added.</p>
+    <dd><p>The same builder instance.</p>
 </dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TResult</code></dt>
-    <dd><p>The type of result the retry strategy handles.</p>
+    <dd><p>The type of result the strategy handles.</p>
 </dd>
   </dl>
 

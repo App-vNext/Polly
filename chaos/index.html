@@ -214,6 +214,14 @@ builder
 <p>If both <code>InjectionRate</code> and <code>InjectionRateGenerator</code> are specified then <code>InjectionRate</code> will be ignored.</p>
 <p>If both <code>Enabled</code> and <code>EnabledGenerator</code> are specified then <code>Enabled</code> will be ignored.</p>
 </div>
+<h2 id="telemetry">Telemetry</h2>
+<p>The telemetry of chaos strategies is seamlessly integrated with Polly <a href="../advanced/telemetry.html">telemetry infrastructure</a>. The chaos strategies produce the following events:</p>
+<ul>
+<li><code>Chaos.OnFault</code></li>
+<li><code>Chaos.OnOutcome</code></li>
+<li><code>Chaos.OnLatency</code></li>
+<li><code>Chaos.OnBehavior</code></li>
+</ul>
 <h2 id="patterns">Patterns</h2>
 <h3 id="inject-chaos-selectively">Inject chaos selectively</h3>
 <p>You aim to dynamically adjust the frequency and timing of chaos injection. For instance, in pre-production and test environments, it's sensible to consistently inject chaos. This proactive approach helps in preparing for potential failures. In production environments, however, you may prefer to limit chaos to certain users and tenants, ensuring that regular users remain unaffected. The chaos API offers the flexibility needed to manage these varying scenarios.</p>

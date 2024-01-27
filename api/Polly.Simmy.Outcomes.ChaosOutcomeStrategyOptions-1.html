@@ -8,7 +8,7 @@
       <meta name="title" content="Class ChaosOutcomeStrategyOptions&lt;TResult&gt;
  | Polly ">
       
-      <meta name="description" content="Represents the options for the Outcome chaos strategy.">
+      <meta name="description" content="Represents the options for the outcome chaos strategy.">
       <link rel="icon" href="../icon.png">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -100,7 +100,7 @@
   <dl><dt>Assembly</dt><dd>Polly.Core.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Represents the options for the Outcome chaos strategy.</p>
+  <div class="markdown summary"><p>Represents the options for the outcome chaos strategy.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -235,15 +235,13 @@
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.Simmy.Outcomes.OnOutcomeInjectedArguments-1.html">OnOutcomeInjectedArguments</a>&lt;TResult&gt;, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a>&gt;</dt>
-    <dd>Represents the options for the Outcome chaos strategy.</dd>
+    <dd><p>Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
 
 
-  <h4 class="section" id="Polly_Simmy_Outcomes_ChaosOutcomeStrategyOptions_1_OnOutcomeInjected_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
-</div>
 
 
 
@@ -252,10 +250,10 @@
 
   <h3 id="Polly_Simmy_Outcomes_ChaosOutcomeStrategyOptions_1_OutcomeGenerator" data-uid="Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1.OutcomeGenerator">
   OutcomeGenerator
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Outcomes/ChaosOutcomeStrategyOptions.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Outcomes/ChaosOutcomeStrategyOptions.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the outcome generator to be injected for a given execution.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the generator that generates the outcomes to be injected.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -271,7 +269,8 @@ public Func&lt;OutcomeGeneratorArguments, ValueTask&lt;Outcome&lt;TResult&gt;?&g
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.Simmy.Outcomes.OutcomeGeneratorArguments.html">OutcomeGeneratorArguments</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1">ValueTask</a>&lt;<a class="xref" href="Polly.Outcome-1.html">Outcome</a>&lt;TResult&gt;?&gt;&gt;</dt>
-    <dd>Represents the options for the Outcome chaos strategy.</dd>
+    <dd><p>Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>. This property is required.</p>
+</dd>
   </dl>
 
 

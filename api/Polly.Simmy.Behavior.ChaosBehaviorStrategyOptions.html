@@ -8,7 +8,7 @@
       <meta name="title" content="Class ChaosBehaviorStrategyOptions
  | Polly ">
       
-      <meta name="description" content="Represents the options for the Behavior chaos strategy.">
+      <meta name="description" content="Represents the options for the behavior chaos strategy.">
       <link rel="icon" href="../icon.png">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -100,7 +100,7 @@
   <dl><dt>Assembly</dt><dd>Polly.Core.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Represents the options for the Behavior chaos strategy.</p>
+  <div class="markdown summary"><p>Represents the options for the behavior chaos strategy.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -214,7 +214,7 @@
   <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Behavior/ChaosBehaviorStrategyOptions.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the custom behavior that is going to be injected for a given execution.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the behavior that is going to be injected for a given execution.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -230,15 +230,13 @@ public Func&lt;BehaviorGeneratorArguments, ValueTask&gt;? BehaviorGenerator { ge
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.Simmy.Behavior.BehaviorGeneratorArguments.html">BehaviorGeneratorArguments</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a>&gt;</dt>
-    <dd>Represents the options for the Behavior chaos strategy.</dd>
+    <dd><p>Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>. This property is required.</p>
+</dd>
   </dl>
 
 
 
 
-  <h4 class="section" id="Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_BehaviorGenerator_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
-</div>
 
 
 
@@ -250,7 +248,7 @@ public Func&lt;BehaviorGeneratorArguments, ValueTask&gt;? BehaviorGenerator { ge
   <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Simmy/Behavior/ChaosBehaviorStrategyOptions.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the delegate that's raised when the custom behavior is injected.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the delegate that's raised when the behavior is injected.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -265,15 +263,13 @@ public Func&lt;BehaviorGeneratorArguments, ValueTask&gt;? BehaviorGenerator { ge
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.Simmy.Behavior.OnBehaviorInjectedArguments.html">OnBehaviorInjectedArguments</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a>&gt;</dt>
-    <dd>Represents the options for the Behavior chaos strategy.</dd>
+    <dd><p>Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
 
 
-  <h4 class="section" id="Polly_Simmy_Behavior_ChaosBehaviorStrategyOptions_OnBehaviorInjected_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
-</div>
 
 
 
