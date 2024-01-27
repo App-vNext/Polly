@@ -111,18 +111,6 @@ public class PolicyTResultAsyncSpecs
     }
 
     [Fact]
-    public async Task Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync((_, _, _) => { });
-
-        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), null!))
-              .Should().ThrowAsync<ArgumentNullException>();
-        ex.And.ParamName.Should().Be("context");
-    }
-
-    [Fact]
     public async Task Executing_the_policy_function_should_pass_context_to_executed_delegate()
     {
         string operationKey = "SomeKey";

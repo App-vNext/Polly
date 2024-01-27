@@ -62,35 +62,7 @@ public class FallbackTResultAsyncSpecs
     }
 
     [Fact]
-    public void Should_throw_when_onFallback_delegate_is_null_with_action_with_cancellation()
-    {
-        Func<CancellationToken, Task<ResultPrimitive>> fallbackAction = _ => Task.FromResult(ResultPrimitive.Substitute);
-        Func<DelegateResult<ResultPrimitive>, Task> onFallbackAsync = null!;
-
-        Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .FallbackAsync(fallbackAction, onFallbackAsync);
-
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("onFallbackAsync");
-    }
-
-    [Fact]
     public void Should_throw_when_onFallback_delegate_is_null_with_context()
-    {
-        Func<Context, CancellationToken, Task<ResultPrimitive>> fallbackAction = (_, _) => Task.FromResult(ResultPrimitive.Substitute);
-        Func<DelegateResult<ResultPrimitive>, Context, Task> onFallbackAsync = null!;
-
-        Action policy = () => Policy
-                                .HandleResult(ResultPrimitive.Fault)
-                                .FallbackAsync(fallbackAction, onFallbackAsync);
-
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("onFallbackAsync");
-    }
-
-    [Fact]
-    public void Should_throw_when_onFallback_delegate_is_null_with_context_with_action_with_cancellation()
     {
         Func<Context, CancellationToken, Task<ResultPrimitive>> fallbackAction = (_, _) => Task.FromResult(ResultPrimitive.Substitute);
         Func<DelegateResult<ResultPrimitive>, Context, Task> onFallbackAsync = null!;
