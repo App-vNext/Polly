@@ -89,9 +89,9 @@ public class RetryResilienceStrategyTests
         // assert
         result.IsDisposed.Should().BeFalse();
         results.Count.Should().Be(_options.MaxRetryAttempts + 1);
-        results.Last().IsDisposed.Should().BeFalse();
+        results[results.Count - 1].IsDisposed.Should().BeFalse();
 
-        results.Remove(results.Last());
+        results.Remove(results[results.Count - 1]);
         results.Should().AllSatisfy(r => r.IsDisposed.Should().BeTrue());
     }
 

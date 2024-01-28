@@ -74,11 +74,11 @@ public class ReloadableResiliencePipelineTests
             resList[i].Received(1).Dispose();
         }
 
-        resList.Last().Received(0).Dispose();
+        resList[resList.Count - 1].Received(0).Dispose();
 
         // check disposal of service provider
         serviceProvider.Dispose();
-        resList.Last().Received(1).Dispose();
+        resList[resList.Count - 1].Received(1).Dispose();
         pipeline.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
 
         foreach (var ev in fakeListener.Events)

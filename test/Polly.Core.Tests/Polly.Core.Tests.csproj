@@ -5,7 +5,7 @@
     <ProjectType>Test</ProjectType>
     <Nullable>enable</Nullable>
     <Threshold>100</Threshold>
-    <NoWarn>$(NoWarn);SA1600;SA1204;SA1602;S6608</NoWarn>
+    <NoWarn>$(NoWarn);SA1600;SA1204</NoWarn>
     <Include>[Polly.Core]*</Include>
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
   </PropertyGroup>

@@ -52,7 +52,7 @@ public class ObjectPoolTests
         var items2 = GetStoreReturn(pool, count);
 
         // Assert
-        items1.Last().Should().NotBeSameAs(items2.Last());
+        items1[items1.Count - 1].Should().NotBeSameAs(items2[items2.Count - 1]);
     }
 
     [Fact]
