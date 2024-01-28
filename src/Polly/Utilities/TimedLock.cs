@@ -84,7 +84,8 @@ internal readonly struct TimedLock : IDisposable
 
 internal class LockTimeoutException : Exception
 {
-    public LockTimeoutException() : base("Timeout waiting for lock")
+    public LockTimeoutException()
+        : base("Timeout waiting for lock")
     {
     }
 }

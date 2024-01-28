@@ -16,7 +16,8 @@ public class BulkheadRejectedException : ExecutionRejectedException
     /// <summary>
     /// Initializes a new instance of the <see cref="BulkheadRejectedException" /> class.
     /// </summary>
-    public BulkheadRejectedException() : this("The bulkhead semaphore and queue are full and execution was rejected.")
+    public BulkheadRejectedException()
+        : this("The bulkhead semaphore and queue are full and execution was rejected.")
     {
     }
 
@@ -24,7 +25,8 @@ public class BulkheadRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="BulkheadRejectedException"/> class.
     /// </summary>
     /// <param name="message">The message.</param>
-    public BulkheadRejectedException(string message) : base(message)
+    public BulkheadRejectedException(string message)
+        : base(message)
     {
     }
 
@@ -33,7 +35,8 @@ public class BulkheadRejectedException : ExecutionRejectedException
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="innerException">The inner exception.</param>
-    public BulkheadRejectedException(string message, Exception innerException) : base(message, innerException)
+    public BulkheadRejectedException(string message, Exception innerException)
+        : base(message, innerException)
     {
     }
 
@@ -44,7 +47,8 @@ public class BulkheadRejectedException : ExecutionRejectedException
     /// </summary>
     /// <param name="info">The information.</param>
     /// <param name="context">The context.</param>
-    protected BulkheadRejectedException(SerializationInfo info, StreamingContext context) : base(info, context)
+    protected BulkheadRejectedException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
 #endif

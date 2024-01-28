@@ -51,8 +51,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
     /// <exception cref="ArgumentException">A Policy with same <paramref name="key"/> already exists.</exception>
-    public void Add<TPolicy>(string key, TPolicy policy) where TPolicy : IsPolicy =>
-        _registry.Add(key, policy);
+    public void Add<TPolicy>(string key, TPolicy policy)
+        where TPolicy : IsPolicy => _registry.Add(key, policy);
 
     /// <summary>
     /// Adds a policy with the provided key and policy to the registry.
@@ -61,7 +61,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <param name="policy">The policy to store in the registry.</param>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <returns>True if Policy was added. False otherwise.</returns>
-    public bool TryAdd<TPolicy>(string key, TPolicy policy) where TPolicy : IsPolicy
+    public bool TryAdd<TPolicy>(string key, TPolicy policy)
+        where TPolicy : IsPolicy
     {
         var registry = ThrowIfNotConcurrentImplementation();
 
@@ -90,8 +91,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <returns>The policy stored in the registry under the given key.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
     /// <exception cref="KeyNotFoundException">The given key was not present in the registry.</exception>
-    public TPolicy Get<TPolicy>(string key) where TPolicy : IsPolicy =>
-        (TPolicy) _registry[key];
+    public TPolicy Get<TPolicy>(string key)
+        where TPolicy : IsPolicy => (TPolicy) _registry[key];
 
     /// <summary>
     /// Gets the policy stored under the provided key, casting to <typeparamref name="TPolicy"/>.
@@ -104,7 +105,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// </param>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <returns>True if Policy exists for the provided Key. False otherwise.</returns>
-    public bool TryGet<TPolicy>(string key, out TPolicy policy) where TPolicy : IsPolicy
+    public bool TryGet<TPolicy>(string key, out TPolicy policy)
+        where TPolicy : IsPolicy
     {
         bool got = _registry.TryGetValue(key, out IsPolicy value);
         policy = got ? (TPolicy)value : default;
@@ -146,7 +148,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// </param>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <returns>True if the policy is successfully removed. Otherwise false.</returns>
-    public bool TryRemove<TPolicy>(string key, out TPolicy policy) where TPolicy : IsPolicy
+    public bool TryRemove<TPolicy>(string key, out TPolicy policy)
+        where TPolicy : IsPolicy
     {
         var registry = ThrowIfNotConcurrentImplementation();
 
@@ -166,7 +169,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <see langword="true"/> if the value with <paramref name="key"/> was equal to <paramref name="comparisonPolicy"/> and
     /// replaced with <paramref name="newPolicy"/>; otherwise, <see langword="false"/>.
     /// </returns>
-    public bool TryUpdate<TPolicy>(string key, TPolicy newPolicy, TPolicy comparisonPolicy) where TPolicy : IsPolicy
+    public bool TryUpdate<TPolicy>(string key, TPolicy newPolicy, TPolicy comparisonPolicy)
+        where TPolicy : IsPolicy
     {
         var registry = ThrowIfNotConcurrentImplementation();
 
@@ -182,7 +186,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <returns>The policy for the key.  This will be either the existing policy for the key if the
     /// key is already in the registry, or the new policy for the key as returned by policyFactory
     /// if the key was not in the registry.</returns>
-    public TPolicy GetOrAdd<TPolicy>(string key, Func<string, TPolicy> policyFactory) where TPolicy : IsPolicy
+    public TPolicy GetOrAdd<TPolicy>(string key, Func<string, TPolicy> policyFactory)
+        where TPolicy : IsPolicy
     {
         var registry = ThrowIfNotConcurrentImplementation();
 
@@ -197,7 +202,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <param name="policy">the policy to be added, if the key does not already exist</param>
     /// <returns>The policy for the key.  This will be either the existing policy for the key if the
     /// key is already in the registry, or the new policy if the key was not in the registry.</returns>
-    public TPolicy GetOrAdd<TPolicy>(string key, TPolicy policy) where TPolicy : IsPolicy
+    public TPolicy GetOrAdd<TPolicy>(string key, TPolicy policy)
+        where TPolicy : IsPolicy
     {
         var registry = ThrowIfNotConcurrentImplementation();
 
@@ -215,7 +221,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// based on the key's existing value</param>
     /// <returns>The new policy for the key.  This will be either be the result of addPolicyFactory (if the key was
     /// absent) or the result of updatePolicyFactory (if the key was present).</returns>
-    public TPolicy AddOrUpdate<TPolicy>(string key, Func<string, TPolicy> addPolicyFactory, Func<string, TPolicy, TPolicy> updatePolicyFactory) where TPolicy : IsPolicy
+    public TPolicy AddOrUpdate<TPolicy>(string key, Func<string, TPolicy> addPolicyFactory, Func<string, TPolicy, TPolicy> updatePolicyFactory)
+        where TPolicy : IsPolicy
     {
         var registry = ThrowIfNotConcurrentImplementation();
 
@@ -233,7 +240,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// the key's existing value</param>
     /// <returns>The new policy for the key.  This will be either be addPolicy (if the key was
     /// absent) or the result of updatePolicyFactory (if the key was present).</returns>
-    public TPolicy AddOrUpdate<TPolicy>(string key, TPolicy addPolicy, Func<string, TPolicy, TPolicy> updatePolicyFactory) where TPolicy : IsPolicy
+    public TPolicy AddOrUpdate<TPolicy>(string key, TPolicy addPolicy, Func<string, TPolicy, TPolicy> updatePolicyFactory)
+        where TPolicy : IsPolicy
     {
         var registry = ThrowIfNotConcurrentImplementation();
 

@@ -313,7 +313,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
         // ensures that even if there are only two windows, then the invocations are placed in the second.
         // They are still placed within same timeslice.
-        SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
+        SystemClock.UtcNow = () => time.AddSeconds((samplingDuration.Seconds / 2d) + 1);
 
         await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
             .Should().ThrowAsync<DivideByZeroException>();
@@ -404,7 +404,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
         // ensures that even if there are only two windows, then the invocations are placed in the second.
         // They are still placed within same timeslice
-        SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
+        SystemClock.UtcNow = () => time.AddSeconds((samplingDuration.Seconds / 2d) + 1);
 
         var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
             .Should().ThrowAsync<BrokenCircuitException>()
@@ -491,7 +491,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
         // ensures that even if there are only two windows, then the invocations are placed in the second.
         // They are still placed within same timeslice
-        SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
+        SystemClock.UtcNow = () => time.AddSeconds((samplingDuration.Seconds / 2d) + 1);
 
         var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
             .Should().ThrowAsync<BrokenCircuitException>()
@@ -1318,7 +1318,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
         // ensures that even if there are only two windows, then the invocations are placed in the second.
         // They are still placed within same timeslice
-        var anotherWindowDuration = samplingDuration.Seconds / 2d + 1;
+        var anotherWindowDuration = (samplingDuration.Seconds / 2d) + 1;
         SystemClock.UtcNow = () => time.AddSeconds(anotherWindowDuration);
 
         await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())

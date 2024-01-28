@@ -11,7 +11,8 @@ internal class ConsecutiveCountCircuitController<TResult> : CircuitStateControll
         Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak,
         Action<Context> onReset,
         Action onHalfOpen
-        ) : base(durationOfBreak, onBreak, onReset, onHalfOpen) =>
+        )
+        : base(durationOfBreak, onBreak, onReset, onHalfOpen) =>
         _exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
 
     public override void OnCircuitReset(Context context)

@@ -22,7 +22,8 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <returns>The policy stored in the registry under the given key.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
-    TPolicy Get<TPolicy>(TKey key) where TPolicy : IsPolicy;
+    TPolicy Get<TPolicy>(TKey key)
+        where TPolicy : IsPolicy;
 
     /// <summary>
     /// Gets the policy stored under the provided key, casting to <typeparamref name="TPolicy"/>.
@@ -35,7 +36,8 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// </param>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <returns>True if Policy exists for the provided Key. False otherwise.</returns>
-    bool TryGet<TPolicy>(TKey key, out TPolicy policy) where TPolicy : IsPolicy;
+    bool TryGet<TPolicy>(TKey key, out TPolicy policy)
+        where TPolicy : IsPolicy;
 
     /// <summary>
     /// Total number of policies in the registry.

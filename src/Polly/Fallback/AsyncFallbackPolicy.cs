@@ -61,7 +61,8 @@ public class AsyncFallbackPolicy<TResult> : AsyncPolicy<TResult>, IFallbackPolic
         PolicyBuilder<TResult> policyBuilder,
         Func<DelegateResult<TResult>, Context, Task> onFallbackAsync,
         Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> fallbackAction
-        ) : base(policyBuilder)
+        )
+        : base(policyBuilder)
     {
         _onFallbackAsync = onFallbackAsync ?? throw new ArgumentNullException(nameof(onFallbackAsync));
         _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));

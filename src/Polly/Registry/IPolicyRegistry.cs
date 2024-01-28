@@ -14,7 +14,8 @@ public interface IPolicyRegistry<TKey> : IReadOnlyPolicyRegistry<TKey>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
     /// <exception cref="ArgumentException">A Policy with same <paramref name="key"/> already exists.</exception>
-    void Add<TPolicy>(TKey key, TPolicy policy) where TPolicy : IsPolicy;
+    void Add<TPolicy>(TKey key, TPolicy policy)
+        where TPolicy : IsPolicy;
 
     /// <summary>
     /// Gets or sets the <see cref="IsPolicy"/> with the specified key.

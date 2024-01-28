@@ -57,7 +57,8 @@ public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
         PolicyBuilder<TResult> policyBuilder,
         Action<DelegateResult<TResult>, Context> onFallback,
         Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction
-        ) : base(policyBuilder)
+        )
+        : base(policyBuilder)
     {
         _onFallback = onFallback ?? throw new ArgumentNullException(nameof(onFallback));
         _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));

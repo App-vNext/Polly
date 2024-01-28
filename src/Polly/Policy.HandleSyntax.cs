@@ -7,7 +7,9 @@ public partial class Policy
     /// </summary>
     /// <typeparam name="TException">The type of the exception to handle.</typeparam>
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
-    public static PolicyBuilder Handle<TException>() where TException : Exception =>
+    public static PolicyBuilder Handle<TException>()
+        where TException : Exception
+        =>
         new(exception => exception is TException ? exception : null);
 
     /// <summary>
@@ -16,7 +18,9 @@ public partial class Policy
     /// <typeparam name="TException">The type of the exception.</typeparam>
     /// <param name="exceptionPredicate">The exception predicate to filter the type of exception this policy can handle.</param>
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
-    public static PolicyBuilder Handle<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception =>
+    public static PolicyBuilder Handle<TException>(Func<TException, bool> exceptionPredicate)
+        where TException : Exception
+        =>
         new(exception => exception is TException texception && exceptionPredicate(texception) ? exception : null);
 
     /// <summary>
@@ -24,7 +28,9 @@ public partial class Policy
     /// </summary>
     /// <typeparam name="TException">The type of the exception to handle.</typeparam>
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
-    public static PolicyBuilder HandleInner<TException>() where TException : Exception =>
+    public static PolicyBuilder HandleInner<TException>()
+        where TException : Exception
+        =>
         new(PolicyBuilder.HandleInner(ex => ex is TException));
 
     /// <summary>
@@ -32,7 +38,9 @@ public partial class Policy
     /// </summary>
     /// <typeparam name="TException">The type of the exception to handle.</typeparam>
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
-    public static PolicyBuilder HandleInner<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception =>
+    public static PolicyBuilder HandleInner<TException>(Func<TException, bool> exceptionPredicate)
+        where TException : Exception
+        =>
         new(PolicyBuilder.HandleInner(ex => ex is TException texception && exceptionPredicate(texception)));
 
     /// <summary>
@@ -62,7 +70,9 @@ public partial class Policy<TResult>
     /// </summary>
     /// <typeparam name="TException">The type of the exception to handle.</typeparam>
     /// <returns>The PolicyBuilder instance.</returns>
-    public static PolicyBuilder<TResult> Handle<TException>() where TException : Exception =>
+    public static PolicyBuilder<TResult> Handle<TException>()
+        where TException : Exception
+        =>
         new(exception => exception is TException ? exception : null);
 
     /// <summary>
@@ -71,7 +81,9 @@ public partial class Policy<TResult>
     /// <typeparam name="TException">The type of the exception.</typeparam>
     /// <param name="exceptionPredicate">The exception predicate to filter the type of exception this policy can handle.</param>
     /// <returns>The PolicyBuilder instance.</returns>
-    public static PolicyBuilder<TResult> Handle<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception =>
+    public static PolicyBuilder<TResult> Handle<TException>(Func<TException, bool> exceptionPredicate)
+        where TException : Exception
+        =>
         new(exception => exception is TException texception && exceptionPredicate(texception) ? exception : null);
 
     /// <summary>
@@ -79,7 +91,9 @@ public partial class Policy<TResult>
     /// </summary>
     /// <typeparam name="TException">The type of the exception to handle.</typeparam>
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
-    public static PolicyBuilder<TResult> HandleInner<TException>() where TException : Exception =>
+    public static PolicyBuilder<TResult> HandleInner<TException>()
+        where TException : Exception
+        =>
         new(PolicyBuilder.HandleInner(ex => ex is TException));
 
     /// <summary>
@@ -87,7 +101,9 @@ public partial class Policy<TResult>
     /// </summary>
     /// <typeparam name="TException">The type of the exception to handle.</typeparam>
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
-    public static PolicyBuilder<TResult> HandleInner<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception =>
+    public static PolicyBuilder<TResult> HandleInner<TException>(Func<TException, bool> exceptionPredicate)
+        where TException : Exception
+        =>
         new(PolicyBuilder.HandleInner(ex => ex is TException texception && exceptionPredicate(texception)));
 
     /// <summary>
