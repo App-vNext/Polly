@@ -1,7 +1,17 @@
-# Chaos engineering with Simmy
+# Chaos engineering
 
 > [!IMPORTANT]
 > This documentation page describes an upcoming feature of Polly.
+
+**Chaos engineering** is the discipline of experimenting on a system in order to build confidence in the system's capability to withstand turbulent conditions in production.
+
+If you want to learn more about chaos engineering:
+
+- [Chaos engineering on Wikipedia](https://en.wikipedia.org/wiki/Chaos_engineering): Describes the basic concepts, history and tools related to chaos engineering.
+- [Chaos engineering, the history, principles and practices](https://www.gremlin.com/community/tutorials/chaos-engineering-the-history-principles-and-practice/): Excellent article about chaos engineering by [Gremlin](https://www.gremlin.com/chaos-engineering/), a chaos engineering platform.
+- [Understanding chaos engineering and resilience](https://learn.microsoft.com/azure/chaos-studio/chaos-studio-chaos-engineering-overview): Intro to chaos engineering in the context of [Azure Chaos Studio](https://learn.microsoft.com/en-us/azure/chaos-studio/chaos-studio-overview), managed service that uses chaos engineering to help you measure, understand, and improve your cloud application and service resilience.
+
+## Chaos engineering with Simmy
 
 [Simmy][simmy] is a major new addition to Polly library, adding a chaos engineering and fault-injection dimension to Polly, through the provision of strategies to selectively inject faults, latency, custom behavior or fake results.
 
