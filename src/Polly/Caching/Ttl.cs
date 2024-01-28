@@ -21,7 +21,8 @@ public struct Ttl
     /// </summary>
     /// <param name="timeSpan">The timespan for which this cache-item remains valid.
     /// <remarks>Will be considered as not denoting sliding expiration.</remarks></param>
-    public Ttl(TimeSpan timeSpan) : this(timeSpan, false)
+    public Ttl(TimeSpan timeSpan)
+        : this(timeSpan, false)
     {
     }
 

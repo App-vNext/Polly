@@ -18,10 +18,12 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
     /// </summary>
     /// <param name="operationKey">The operation key.</param>
     /// <param name="contextData">The context data.</param>
-    public Context(string operationKey, IDictionary<string, object> contextData) : this(contextData) =>
+    public Context(string operationKey, IDictionary<string, object> contextData)
+        : this(contextData) =>
         OperationKey = operationKey;
 
-    internal Context(IDictionary<string, object> contextData) : this()
+    internal Context(IDictionary<string, object> contextData)
+        : this()
     {
         if (contextData == null) throw new ArgumentNullException(nameof(contextData));
         wrappedDictionary = new Dictionary<string, object>(contextData);

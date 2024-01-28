@@ -75,11 +75,11 @@ public sealed partial class PolicyBuilder<TResult>
         ResultPredicates = new ResultPredicates<TResult>();
     }
 
-    internal PolicyBuilder(Func<TResult, bool> resultPredicate) : this() =>
-        OrResult(resultPredicate);
+    internal PolicyBuilder(Func<TResult, bool> resultPredicate)
+        : this() => OrResult(resultPredicate);
 
-    internal PolicyBuilder(ExceptionPredicate predicate) : this() =>
-        ExceptionPredicates.Add(predicate);
+    internal PolicyBuilder(ExceptionPredicate predicate)
+        : this() => ExceptionPredicates.Add(predicate);
 
     internal PolicyBuilder(ExceptionPredicates exceptionPredicates)
         : this() =>

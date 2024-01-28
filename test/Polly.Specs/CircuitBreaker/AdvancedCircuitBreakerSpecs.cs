@@ -313,7 +313,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
         // ensures that even if there are only two windows, then the invocations are placed in the second.
         // They are still placed within same timeslice.
-        SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
+        SystemClock.UtcNow = () => time.AddSeconds((samplingDuration.Seconds / 2d) + 1);
 
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
@@ -404,7 +404,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
         // ensures that even if there are only two windows, then the invocations are placed in the second.
         // They are still placed within same timeslice
-        SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
+        SystemClock.UtcNow = () => time.AddSeconds((samplingDuration.Seconds / 2d) + 1);
 
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<BrokenCircuitException>()
@@ -491,7 +491,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
         // ensures that even if there are only two windows, then the invocations are placed in the second.
         // They are still placed within same timeslice
-        SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
+        SystemClock.UtcNow = () => time.AddSeconds((samplingDuration.Seconds / 2d) + 1);
 
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<BrokenCircuitException>()
@@ -1318,8 +1318,8 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
         // ensures that even if there are only two windows, then the invocations are placed in the second.
         // They are still placed within same timeslice
-        var anotherwindowDuration = samplingDuration.Seconds / 2d + 1;
-        SystemClock.UtcNow = () => time.AddSeconds(anotherwindowDuration);
+        var anotherWindowDuration = (samplingDuration.Seconds / 2d) + 1;
+        SystemClock.UtcNow = () => time.AddSeconds(anotherWindowDuration);
 
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
@@ -1331,7 +1331,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
 
         // Since the call that opened the circuit occurred in a later window, then the
         // break duration must be simulated as from that call.
-        SystemClock.UtcNow = () => time.Add(durationOfBreak).AddSeconds(anotherwindowDuration);
+        SystemClock.UtcNow = () => time.Add(durationOfBreak).AddSeconds(anotherWindowDuration);
 
         // duration has passed, circuit now half open
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
