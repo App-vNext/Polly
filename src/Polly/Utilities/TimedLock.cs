@@ -78,6 +78,7 @@ internal readonly struct TimedLock : IDisposable
 #endif
         }
     }
+
     private readonly Sentinel _leakDetector;
 #endif
 }

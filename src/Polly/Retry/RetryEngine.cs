@@ -10,7 +10,7 @@ internal static class RetryEngine
         ExceptionPredicates shouldRetryExceptionPredicates,
         ResultPredicates<TResult> shouldRetryResultPredicates,
         Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry,
-        int permittedRetryCount = Int32.MaxValue,
+        int permittedRetryCount = int.MaxValue,
         IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,
         Func<int, DelegateResult<TResult>, Context, TimeSpan>? sleepDurationProvider = null)
     {

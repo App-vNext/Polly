@@ -14,10 +14,9 @@ public class RetryPolicy : Policy, IRetryPolicy
     internal RetryPolicy(
         PolicyBuilder policyBuilder,
         Action<Exception, TimeSpan, int, Context> onRetry,
-        int permittedRetryCount = Int32.MaxValue,
+        int permittedRetryCount = int.MaxValue,
         IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,
-        Func<int, Exception, Context, TimeSpan>? sleepDurationProvider = null
-        )
+        Func<int, Exception, Context, TimeSpan>? sleepDurationProvider = null)
         : base(policyBuilder)
     {
         _permittedRetryCount = permittedRetryCount;
@@ -39,8 +38,7 @@ public class RetryPolicy : Policy, IRetryPolicy
             _sleepDurationsEnumerable,
             _sleepDurationProvider != null
                 ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
-                : (Func<int, DelegateResult<TResult>, Context, TimeSpan>?) null
-        );
+                : (Func<int, DelegateResult<TResult>, Context, TimeSpan>?) null);
 }
 
 /// <summary>
@@ -56,10 +54,9 @@ public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
     internal RetryPolicy(
         PolicyBuilder<TResult> policyBuilder,
         Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry,
-        int permittedRetryCount = Int32.MaxValue,
+        int permittedRetryCount = int.MaxValue,
         IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,
-        Func<int, DelegateResult<TResult>, Context, TimeSpan>? sleepDurationProvider = null
-    )
+        Func<int, DelegateResult<TResult>, Context, TimeSpan>? sleepDurationProvider = null)
         : base(policyBuilder)
     {
         _permittedRetryCount = permittedRetryCount;
@@ -80,6 +77,5 @@ public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
             _onRetry,
             _permittedRetryCount,
             _sleepDurationsEnumerable,
-            _sleepDurationProvider
-        );
+            _sleepDurationProvider);
 }

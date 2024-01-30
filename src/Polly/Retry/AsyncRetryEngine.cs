@@ -10,7 +10,7 @@ internal static class AsyncRetryEngine
         ExceptionPredicates shouldRetryExceptionPredicates,
         ResultPredicates<TResult> shouldRetryResultPredicates,
         Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync,
-        int permittedRetryCount = Int32.MaxValue,
+        int permittedRetryCount = int.MaxValue,
         IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,
         Func<int, DelegateResult<TResult>, Context, TimeSpan>? sleepDurationProvider = null,
         bool continueOnCapturedContext = false)

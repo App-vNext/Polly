@@ -38,8 +38,7 @@ public static class AsyncAdvancedCircuitBreakerSyntax
            failureThreshold, samplingDuration, minimumThroughput,
            durationOfBreak,
            doNothingOnBreak,
-           doNothingOnReset
-           );
+           doNothingOnReset);
     }
 
     /// <summary>
@@ -74,8 +73,7 @@ public static class AsyncAdvancedCircuitBreakerSyntax
             failureThreshold, samplingDuration, minimumThroughput,
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
-            _ => onReset()
-        );
+            _ => onReset());
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
@@ -112,8 +110,7 @@ public static class AsyncAdvancedCircuitBreakerSyntax
             durationOfBreak,
             onBreak,
             onReset,
-            doNothingOnHalfOpen
-            );
+            doNothingOnHalfOpen);
     }
 
     /// <summary>
@@ -150,8 +147,7 @@ public static class AsyncAdvancedCircuitBreakerSyntax
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset(),
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
@@ -188,8 +184,7 @@ public static class AsyncAdvancedCircuitBreakerSyntax
             durationOfBreak,
             (exception, _, timespan, context) => onBreak(exception, timespan, context),
             onReset,
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
@@ -242,9 +237,9 @@ public static class AsyncAdvancedCircuitBreakerSyntax
             (outcome, state, timespan, context) => onBreak(outcome.Exception, state, timespan, context),
             onReset,
             onHalfOpen);
+
         return new AsyncCircuitBreakerPolicy(
             policyBuilder,
-            breakerController
-        );
+            breakerController);
     }
 }

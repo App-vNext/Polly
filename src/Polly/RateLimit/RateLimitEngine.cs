@@ -9,8 +9,7 @@ internal static class RateLimitEngine
         Func<TimeSpan, Context, TResult>? retryAfterFactory,
         Func<Context, CancellationToken, TResult> action,
         Context context,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
         (bool permit, TimeSpan retryAfter) = rateLimiter.PermitExecution();
 

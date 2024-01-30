@@ -373,7 +373,6 @@ public partial class Policy
         return new AsyncTimeoutPolicy<TResult>(
                 timeoutProvider,
                 timeoutStrategy,
-                onTimeoutAsync
-            );
+                onTimeoutAsync);
     }
 }

@@ -37,8 +37,7 @@ public static class AdvancedCircuitBreakerSyntax
             failureThreshold, samplingDuration, minimumThroughput,
             durationOfBreak,
             doNothingOnBreak,
-            doNothingOnReset
-            );
+            doNothingOnReset);
     }
 
     /// <summary>
@@ -72,8 +71,7 @@ public static class AdvancedCircuitBreakerSyntax
             failureThreshold, samplingDuration, minimumThroughput,
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
-            _ => onReset()
-        );
+            _ => onReset());
 
     /// <summary>
     /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
@@ -108,8 +106,7 @@ public static class AdvancedCircuitBreakerSyntax
             durationOfBreak,
             onBreak,
             onReset,
-            doNothingOnHalfOpen
-            );
+            doNothingOnHalfOpen);
     }
 
     /// <summary>
@@ -146,8 +143,7 @@ public static class AdvancedCircuitBreakerSyntax
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset(),
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="Policy" /> that will function like a Circuit Breaker.</para>
@@ -184,8 +180,7 @@ public static class AdvancedCircuitBreakerSyntax
             durationOfBreak,
             (exception, _, timespan, context) => onBreak(exception, timespan, context),
             onReset,
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="Policy" /> that will function like a Circuit Breaker.</para>
@@ -240,7 +235,6 @@ public static class AdvancedCircuitBreakerSyntax
             onHalfOpen);
         return new CircuitBreakerPolicy(
             policyBuilder,
-            breakerController
-            );
+            breakerController);
     }
 }

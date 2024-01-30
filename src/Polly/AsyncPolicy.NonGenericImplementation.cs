@@ -34,6 +34,5 @@ public abstract partial class AsyncPolicy
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext
-    );
+        bool continueOnCapturedContext);
 }

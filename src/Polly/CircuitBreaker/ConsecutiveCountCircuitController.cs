@@ -10,8 +10,7 @@ internal class ConsecutiveCountCircuitController<TResult> : CircuitStateControll
         TimeSpan durationOfBreak,
         Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak,
         Action<Context> onReset,
-        Action onHalfOpen
-        )
+        Action onHalfOpen)
         : base(durationOfBreak, onBreak, onReset, onHalfOpen) =>
         _exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
 
@@ -63,6 +62,7 @@ internal class ConsecutiveCountCircuitController<TResult> : CircuitStateControll
                 {
                     Break_NeedsLock(context);
                 }
+
                 break;
 
             case CircuitState.Open:

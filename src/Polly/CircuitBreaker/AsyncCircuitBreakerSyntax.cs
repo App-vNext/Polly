@@ -32,8 +32,7 @@ public static class AsyncCircuitBreakerSyntax
            exceptionsAllowedBeforeBreaking,
            durationOfBreak,
            doNothingOnBreak,
-           doNothingOnReset
-           );
+           doNothingOnReset);
     }
 
     /// <summary>
@@ -63,8 +62,7 @@ public static class AsyncCircuitBreakerSyntax
             exceptionsAllowedBeforeBreaking,
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
-            _ => onReset()
-        );
+            _ => onReset());
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
@@ -91,13 +89,13 @@ public static class AsyncCircuitBreakerSyntax
     public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
     {
         Action doNothingOnHalfOpen = () => { };
+
         return policyBuilder.CircuitBreakerAsync(
             exceptionsAllowedBeforeBreaking,
             durationOfBreak,
             onBreak,
             onReset,
-            doNothingOnHalfOpen
-            );
+            doNothingOnHalfOpen);
     }
 
     /// <summary>
@@ -129,8 +127,7 @@ public static class AsyncCircuitBreakerSyntax
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset(),
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
@@ -162,8 +159,7 @@ public static class AsyncCircuitBreakerSyntax
             durationOfBreak,
             (exception, _, timespan, context) => onBreak(exception, timespan, context),
             onReset,
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
@@ -204,10 +200,10 @@ public static class AsyncCircuitBreakerSyntax
             (outcome, state, timespan, context) => onBreak(outcome.Exception, state, timespan, context),
             onReset,
             onHalfOpen);
+
         return new AsyncCircuitBreakerPolicy(
             policyBuilder,
-            breakerController
-        );
+            breakerController);
     }
 }
 

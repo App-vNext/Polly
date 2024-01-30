@@ -12,6 +12,5 @@ public abstract partial class Policy<TResult>
     protected abstract TResult Implementation(
         Func<Context, CancellationToken, TResult> action,
         Context context,
-        CancellationToken cancellationToken
-    );
+        CancellationToken cancellationToken);
 }

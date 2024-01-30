@@ -21,8 +21,7 @@ public static class AsyncFallbackSyntax
         Func<Exception, Task> doNothing = _ => TaskHelper.EmptyTask;
         return policyBuilder.FallbackAsync(
             fallbackAction,
-            doNothing
-            );
+            doNothing);
     }
 
     /// <summary>
@@ -41,8 +40,7 @@ public static class AsyncFallbackSyntax
 
         return policyBuilder.FallbackAsync(
             (_, _, ct) => fallbackAction(ct),
-            (outcome, _) => onFallbackAsync(outcome)
-            );
+            (outcome, _) => onFallbackAsync(outcome));
     }
 
     /// <summary>
@@ -96,8 +94,7 @@ public static class AsyncFallbackTResultSyntax
         Func<DelegateResult<TResult>, Task> doNothing = _ => TaskHelper.EmptyTask;
         return policyBuilder.FallbackAsync(
             _ => Task.FromResult(fallbackValue),
-            doNothing
-            );
+            doNothing);
     }
 
     /// <summary>
@@ -114,8 +111,7 @@ public static class AsyncFallbackTResultSyntax
         Func<DelegateResult<TResult>, Task> doNothing = _ => TaskHelper.EmptyTask;
         return policyBuilder.FallbackAsync(
             fallbackAction,
-            doNothing
-            );
+            doNothing);
     }
 
     /// <summary>
@@ -132,8 +128,7 @@ public static class AsyncFallbackTResultSyntax
 
         return policyBuilder.FallbackAsync(
             (_, _, _) => Task.FromResult(fallbackValue),
-            (outcome, _) => onFallbackAsync(outcome)
-            );
+            (outcome, _) => onFallbackAsync(outcome));
     }
 
     /// <summary>
@@ -152,8 +147,7 @@ public static class AsyncFallbackTResultSyntax
 
         return policyBuilder.FallbackAsync(
             (_, _, ct) => fallbackAction(ct),
-            (outcome, _) => onFallbackAsync(outcome)
-            );
+            (outcome, _) => onFallbackAsync(outcome));
     }
 
     /// <summary>
@@ -170,8 +164,7 @@ public static class AsyncFallbackTResultSyntax
 
         return policyBuilder.FallbackAsync(
             (_, _, _) => Task.FromResult(fallbackValue),
-            onFallbackAsync
-            );
+            onFallbackAsync);
     }
 
     /// <summary>

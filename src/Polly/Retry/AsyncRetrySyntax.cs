@@ -36,11 +36,10 @@ public static class AsyncRetrySyntax
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static AsyncRetryPolicy RetryAsync(this PolicyBuilder policyBuilder, Action<Exception, int> onRetry)
     {
-        return policyBuilder.RetryAsync(1,
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, i, _) => onRetry(outcome, i)
+        return policyBuilder.RetryAsync(1,
+            onRetryAsync: async (outcome, i, _) => onRetry(outcome, i));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -67,12 +66,10 @@ public static class AsyncRetrySyntax
     public static AsyncRetryPolicy RetryAsync(this PolicyBuilder policyBuilder, int retryCount, Action<Exception, int> onRetry)
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
-
-        return policyBuilder.RetryAsync(retryCount,
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, i, _) => onRetry(outcome, i)
+        return policyBuilder.RetryAsync(retryCount,
+            onRetryAsync: async (outcome, i, _) => onRetry(outcome, i));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -128,11 +125,10 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return policyBuilder.RetryAsync(retryCount,
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, i, ctx) => onRetry(outcome, i, ctx)
+        return policyBuilder.RetryAsync(retryCount,
+            onRetryAsync: async (outcome, i, ctx) => onRetry(outcome, i, ctx));
 #pragma warning restore 1998
-            );
     }
 
     /// <summary>
@@ -153,8 +149,7 @@ public static class AsyncRetrySyntax
         return new AsyncRetryPolicy(
             policyBuilder,
             (outcome, _, i, ctx) => onRetryAsync(outcome, i, ctx),
-            retryCount
-        );
+            retryCount);
     }
 
     /// <summary>
@@ -181,11 +176,10 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return policyBuilder.RetryForeverAsync(
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (Exception outcome, Context _) => onRetry(outcome)
+        return policyBuilder.RetryForeverAsync(
+            onRetryAsync: async (Exception outcome, Context _) => onRetry(outcome));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -200,11 +194,10 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return policyBuilder.RetryForeverAsync(
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, i, _) => onRetry(outcome, i)
+        return policyBuilder.RetryForeverAsync(
+            onRetryAsync: async (outcome, i, _) => onRetry(outcome, i));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -249,11 +242,10 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return policyBuilder.RetryForeverAsync(
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, ctx) => onRetry(outcome, ctx)
+        return policyBuilder.RetryForeverAsync(
+            onRetryAsync: async (outcome, ctx) => onRetry(outcome, ctx));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -268,11 +260,10 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return policyBuilder.RetryForeverAsync(
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, i, ctx) => onRetry(outcome, i, ctx)
+        return policyBuilder.RetryForeverAsync(
+            onRetryAsync: async (outcome, i, ctx) => onRetry(outcome, i, ctx));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -289,8 +280,7 @@ public static class AsyncRetrySyntax
 
         return new AsyncRetryPolicy(
             policyBuilder,
-            (outcome, _, _, ctx) => onRetryAsync(outcome, ctx)
-        );
+            (outcome, _, _, ctx) => onRetryAsync(outcome, ctx));
     }
 
     /// <summary>
@@ -307,8 +297,7 @@ public static class AsyncRetrySyntax
 
         return new AsyncRetryPolicy(
             policyBuilder,
-            (outcome, _, i, ctx) => onRetryAsync(outcome, i, ctx)
-        );
+            (outcome, _, i, ctx) => onRetryAsync(outcome, i, ctx));
     }
 
     /// <summary>
@@ -348,13 +337,12 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
         return policyBuilder.WaitAndRetryAsync(
             retryCount,
             sleepDurationProvider,
-#pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, span, _, _) => onRetry(outcome, span)
+            onRetryAsync: async (outcome, span, _, _) => onRetry(outcome, span));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -378,13 +366,12 @@ public static class AsyncRetrySyntax
     {
         if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
         return policyBuilder.WaitAndRetryAsync(
             retryCount,
             sleepDurationProvider,
-#pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: (outcome, span, _, _) => onRetryAsync(outcome, span)
+            onRetryAsync: (outcome, span, _, _) => onRetryAsync(outcome, span));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -409,13 +396,12 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
         return policyBuilder.WaitAndRetryAsync(
             retryCount,
             sleepDurationProvider,
-#pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, span, _, ctx) => onRetry(outcome, span, ctx)
+            onRetryAsync: async (outcome, span, _, ctx) => onRetry(outcome, span, ctx));
 #pragma warning restore 1998
-            );
     }
 
     /// <summary>
@@ -443,8 +429,7 @@ public static class AsyncRetrySyntax
         return policyBuilder.WaitAndRetryAsync(
             retryCount,
             sleepDurationProvider,
-            onRetryAsync: (outcome, timespan, _, ctx) => onRetryAsync(outcome, timespan, ctx)
-        );
+            onRetryAsync: (outcome, timespan, _, ctx) => onRetryAsync(outcome, timespan, ctx));
     }
 
     /// <summary>
@@ -468,13 +453,12 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
         return policyBuilder.WaitAndRetryAsync(
             retryCount,
             sleepDurationProvider,
-#pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, timespan, i, ctx) => onRetry(outcome, timespan, i, ctx)
+            onRetryAsync: async (outcome, timespan, i, ctx) => onRetry(outcome, timespan, i, ctx));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -508,8 +492,7 @@ public static class AsyncRetrySyntax
             policyBuilder,
             onRetryAsync,
             retryCount,
-            sleepDurationsEnumerable: sleepDurations
-        );
+            sleepDurationsEnumerable: sleepDurations);
     }
 
     /// <summary>
@@ -534,13 +517,12 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
         return policyBuilder.WaitAndRetryAsync(
             retryCount,
             sleepDurationProvider,
-#pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, span, _, ctx) => onRetry(outcome, span, ctx)
+            onRetryAsync: async (outcome, span, _, ctx) => onRetry(outcome, span, ctx));
 #pragma warning restore 1998
-            );
     }
 
     /// <summary>
@@ -568,8 +550,7 @@ public static class AsyncRetrySyntax
         return policyBuilder.WaitAndRetryAsync(
             retryCount,
             sleepDurationProvider,
-            onRetryAsync: (outcome, timespan, _, ctx) => onRetryAsync(outcome, timespan, ctx)
-        );
+            onRetryAsync: (outcome, timespan, _, ctx) => onRetryAsync(outcome, timespan, ctx));
     }
 
     /// <summary>
@@ -593,13 +574,12 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
         return policyBuilder.WaitAndRetryAsync(
             retryCount,
             sleepDurationProvider,
-#pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, timespan, i, ctx) => onRetry(outcome, timespan, i, ctx)
+            onRetryAsync: async (outcome, timespan, i, ctx) => onRetry(outcome, timespan, i, ctx));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -657,8 +637,7 @@ public static class AsyncRetrySyntax
             policyBuilder,
             onRetryAsync,
             retryCount,
-            sleepDurationProvider: sleepDurationProvider
-        );
+            sleepDurationProvider: sleepDurationProvider);
     }
 
     /// <summary>
@@ -695,12 +674,11 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
         return policyBuilder.WaitAndRetryAsync(
             sleepDurations,
-#pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, timespan, _, _) => onRetry(outcome, timespan)
+            onRetryAsync: async (outcome, timespan, _, _) => onRetry(outcome, timespan));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -724,8 +702,7 @@ public static class AsyncRetrySyntax
 
         return policyBuilder.WaitAndRetryAsync(
             sleepDurations,
-            onRetryAsync: (outcome, timespan, _, _) => onRetryAsync(outcome, timespan)
-        );
+            onRetryAsync: (outcome, timespan, _, _) => onRetryAsync(outcome, timespan));
     }
 
     /// <summary>
@@ -747,12 +724,11 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
         return policyBuilder.WaitAndRetryAsync(
             sleepDurations,
-#pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, timespan, _, ctx) => onRetry(outcome, timespan, ctx)
+            onRetryAsync: async (outcome, timespan, _, ctx) => onRetry(outcome, timespan, ctx));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -776,8 +752,7 @@ public static class AsyncRetrySyntax
 
         return policyBuilder.WaitAndRetryAsync(
             sleepDurations,
-            onRetryAsync: (outcome, timespan, _, ctx) => onRetryAsync(outcome, timespan, ctx)
-        );
+            onRetryAsync: (outcome, timespan, _, ctx) => onRetryAsync(outcome, timespan, ctx));
     }
 
     /// <summary>
@@ -799,12 +774,11 @@ public static class AsyncRetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
         return policyBuilder.WaitAndRetryAsync(
             sleepDurations,
-#pragma warning disable 1998 // async method has no awaits, will run synchronously
-            onRetryAsync: async (outcome, timespan, i, ctx) => onRetry(outcome, timespan, i, ctx)
+            onRetryAsync: async (outcome, timespan, i, ctx) => onRetry(outcome, timespan, i, ctx));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -830,8 +804,7 @@ public static class AsyncRetrySyntax
         return new AsyncRetryPolicy(
             policyBuilder,
             onRetryAsync,
-            sleepDurationsEnumerable: sleepDurations
-        );
+            sleepDurationsEnumerable: sleepDurations);
     }
 
     /// <summary>
@@ -889,8 +862,7 @@ public static class AsyncRetrySyntax
 
         return policyBuilder.WaitAndRetryForeverAsync(
             (retryCount, _) => sleepDurationProvider(retryCount),
-            (exception, timespan, _) => onRetry(exception, timespan)
-        );
+            (exception, timespan, _) => onRetry(exception, timespan));
     }
 
     /// <summary>
@@ -912,8 +884,7 @@ public static class AsyncRetrySyntax
 
         return policyBuilder.WaitAndRetryForeverAsync(
             (retryCount, _) => sleepDurationProvider(retryCount),
-            (exception, i, timespan, _) => onRetry(exception, i, timespan)
-        );
+            (exception, i, timespan, _) => onRetry(exception, i, timespan));
     }
 
     /// <summary>
@@ -935,8 +906,7 @@ public static class AsyncRetrySyntax
 
         return policyBuilder.WaitAndRetryForeverAsync(
          (retryCount, _) => sleepDurationProvider(retryCount),
-         (exception, timespan, _) => onRetryAsync(exception, timespan)
-     );
+         (exception, timespan, _) => onRetryAsync(exception, timespan));
     }
 
     /// <summary>
@@ -958,8 +928,7 @@ public static class AsyncRetrySyntax
 
         return policyBuilder.WaitAndRetryForeverAsync(
             (retryCount, _) => sleepDurationProvider(retryCount),
-            (exception, i, timespan, _) => onRetryAsync(exception, i, timespan)
-        );
+            (exception, i, timespan, _) => onRetryAsync(exception, i, timespan));
     }
 
     /// <summary>
@@ -979,12 +948,11 @@ public static class AsyncRetrySyntax
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
         return policyBuilder.WaitAndRetryForeverAsync(
             sleepDurationProvider,
-#pragma warning disable 1998 // async method has no awaits, will run synchronously
-            async (exception, timespan, ctx) => onRetry(exception, timespan, ctx)
+            async (exception, timespan, ctx) => onRetry(exception, timespan, ctx));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -1004,12 +972,11 @@ public static class AsyncRetrySyntax
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
         return policyBuilder.WaitAndRetryForeverAsync(
             sleepDurationProvider,
-#pragma warning disable 1998 // async method has no awaits, will run synchronously
-            async (exception, i, timespan, ctx) => onRetry(exception, i, timespan, ctx)
+            async (exception, i, timespan, ctx) => onRetry(exception, i, timespan, ctx));
 #pragma warning restore 1998
-        );
     }
 
     /// <summary>
@@ -1029,8 +996,7 @@ public static class AsyncRetrySyntax
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
         return policyBuilder.WaitAndRetryForeverAsync(
             (i, _, ctx) => sleepDurationProvider(i, ctx),
-            onRetryAsync
-        );
+            onRetryAsync);
     }
 
     /// <summary>
@@ -1048,10 +1014,10 @@ public static class AsyncRetrySyntax
     public static AsyncRetryPolicy WaitAndRetryForeverAsync(this PolicyBuilder policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider, Func<Exception, int, TimeSpan, Context, Task> onRetryAsync)
     {
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+
         return policyBuilder.WaitAndRetryForeverAsync(
             (i, _, ctx) => sleepDurationProvider(i, ctx),
-            onRetryAsync
-        );
+            onRetryAsync);
     }
 
     /// <summary>
@@ -1097,8 +1063,7 @@ public static class AsyncRetrySyntax
         return new AsyncRetryPolicy(
             policyBuilder,
             (exception, timespan, i, ctx) => onRetryAsync(exception, i, timespan, ctx),
-            sleepDurationProvider: sleepDurationProvider
-        );
+            sleepDurationProvider: sleepDurationProvider);
     }
 }
 

@@ -143,8 +143,7 @@ public static class RetryTResultSyntax
 
         return new RetryPolicy<TResult>(
             policyBuilder,
-            (outcome, _, _, ctx) => onRetry(outcome, ctx)
-            );
+            (outcome, _, _, ctx) => onRetry(outcome, ctx));
     }
 
     /// <summary>
@@ -161,8 +160,7 @@ public static class RetryTResultSyntax
 
         return new RetryPolicy<TResult>(
             policyBuilder,
-            (outcome, _, i, ctx) => onRetry(outcome, i, ctx)
-        );
+            (outcome, _, i, ctx) => onRetry(outcome, i, ctx));
     }
 
     /// <summary>
@@ -205,8 +203,7 @@ public static class RetryTResultSyntax
         return policyBuilder.WaitAndRetry(
             retryCount,
             sleepDurationProvider,
-            (outcome, span, _, _) => onRetry(outcome, span)
-        );
+            (outcome, span, _, _) => onRetry(outcome, span));
     }
 
     /// <summary>
@@ -233,8 +230,7 @@ public static class RetryTResultSyntax
         return policyBuilder.WaitAndRetry(
             retryCount,
             sleepDurationProvider,
-            (outcome, span, _, ctx) => onRetry(outcome, span, ctx)
-            );
+            (outcome, span, _, ctx) => onRetry(outcome, span, ctx));
     }
 
     /// <summary>
@@ -267,8 +263,7 @@ public static class RetryTResultSyntax
             policyBuilder,
             onRetry,
             retryCount,
-            sleepDurationsEnumerable: sleepDurations
-        );
+            sleepDurationsEnumerable: sleepDurations);
     }
 
     /// <summary>
@@ -311,8 +306,7 @@ public static class RetryTResultSyntax
         return policyBuilder.WaitAndRetry(
             retryCount,
             sleepDurationProvider,
-            (outcome, span, _, ctx) => onRetry(outcome, span, ctx)
-            );
+            (outcome, span, _, ctx) => onRetry(outcome, span, ctx));
     }
 
     /// <summary>
@@ -336,8 +330,7 @@ public static class RetryTResultSyntax
         policyBuilder.WaitAndRetry(
             retryCount,
             (i, _, ctx) => sleepDurationProvider(i, ctx),
-            onRetry
-        );
+            onRetry);
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will wait and retry <paramref name="retryCount"/> times.
@@ -379,8 +372,7 @@ public static class RetryTResultSyntax
         return policyBuilder.WaitAndRetry(
             retryCount,
             sleepDurationProvider,
-            (outcome, span, _, ctx) => onRetry(outcome, span, ctx)
-            );
+            (outcome, span, _, ctx) => onRetry(outcome, span, ctx));
     }
 
     /// <summary>
@@ -410,8 +402,7 @@ public static class RetryTResultSyntax
             policyBuilder,
             onRetry,
             retryCount,
-            sleepDurationProvider: sleepDurationProvider
-        );
+            sleepDurationProvider: sleepDurationProvider);
     }
 
     /// <summary>
@@ -492,8 +483,7 @@ public static class RetryTResultSyntax
         return new RetryPolicy<TResult>(
             policyBuilder,
             onRetry,
-            sleepDurationsEnumerable: sleepDurations
-        );
+            sleepDurationsEnumerable: sleepDurations);
     }
 
     /// <summary>
@@ -551,8 +541,7 @@ public static class RetryTResultSyntax
 
         return policyBuilder.WaitAndRetryForever(
             (retryCount, _) => sleepDurationProvider(retryCount),
-            (exception, timespan, _) => onRetry(exception, timespan)
-        );
+            (exception, timespan, _) => onRetry(exception, timespan));
     }
 
     /// <summary>
@@ -574,8 +563,7 @@ public static class RetryTResultSyntax
 
         return policyBuilder.WaitAndRetryForever(
             (retryCount, _, _) => sleepDurationProvider(retryCount),
-            (outcome, i, timespan, _) => onRetry(outcome, i, timespan)
-        );
+            (outcome, i, timespan, _) => onRetry(outcome, i, timespan));
     }
 
     /// <summary>
@@ -593,10 +581,10 @@ public static class RetryTResultSyntax
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
     {
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+
         return policyBuilder.WaitAndRetryForever(
             (i, _, ctx) => sleepDurationProvider(i, ctx),
-            onRetry
-        );
+            onRetry);
     }
 
     /// <summary>
@@ -614,10 +602,10 @@ public static class RetryTResultSyntax
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, int, TimeSpan, Context> onRetry)
     {
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+
         return policyBuilder.WaitAndRetryForever(
             (i, _, ctx) => sleepDurationProvider(i, ctx),
-            onRetry
-        );
+            onRetry);
     }
 
     /// <summary>
@@ -663,7 +651,6 @@ public static class RetryTResultSyntax
         return new RetryPolicy<TResult>(
             policyBuilder,
             (exception, timespan, i, ctx) => onRetry(exception, i, timespan, ctx),
-            sleepDurationProvider: sleepDurationProvider
-            );
+            sleepDurationProvider: sleepDurationProvider);
     }
 }

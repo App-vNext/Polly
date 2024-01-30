@@ -33,6 +33,7 @@ internal class SingleHealthMetrics : IHealthMetrics
                 StartedAt = now
             };
         }
+
         return _current;
     }
 }
