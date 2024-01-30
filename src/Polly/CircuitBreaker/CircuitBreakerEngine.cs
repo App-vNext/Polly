@@ -45,6 +45,7 @@ internal class CircuitBreakerEngine
             {
                 ExceptionDispatchInfo.Capture(handledException).Throw();
             }
+
             throw;
         }
     }

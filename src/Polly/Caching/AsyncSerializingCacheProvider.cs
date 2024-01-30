@@ -55,8 +55,7 @@ public class AsyncSerializingCacheProvider<TSerialized> : IAsyncCacheProvider
             _serializer.Serialize(value),
             ttl,
             cancellationToken,
-            continueOnCapturedContext
-        );
+            continueOnCapturedContext);
 }
 
 /// <summary>
@@ -114,6 +113,5 @@ public class AsyncSerializingCacheProvider<TResult, TSerialized> : IAsyncCachePr
             _serializer.Serialize(value),
             ttl,
             cancellationToken,
-            continueOnCapturedContext
-        );
+            continueOnCapturedContext);
 }

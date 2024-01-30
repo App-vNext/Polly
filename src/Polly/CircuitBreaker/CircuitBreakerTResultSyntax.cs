@@ -30,12 +30,11 @@ public static class CircuitBreakerTResultSyntax
         Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, _) => { };
         Action doNothingOnReset = () => { };
 
-        return policyBuilder.CircuitBreaker
-            (handledEventsAllowedBeforeBreaking,
+        return policyBuilder.CircuitBreaker(
+            handledEventsAllowedBeforeBreaking,
             durationOfBreak,
             doNothingOnBreak,
-            doNothingOnReset
-            );
+            doNothingOnReset);
     }
 
     /// <summary>
@@ -65,8 +64,7 @@ public static class CircuitBreakerTResultSyntax
             handledEventsAllowedBeforeBreaking,
             durationOfBreak,
             (outcome, timespan, _) => onBreak(outcome, timespan),
-            _ => onReset()
-        );
+            _ => onReset());
 
     /// <summary>
     /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -93,12 +91,12 @@ public static class CircuitBreakerTResultSyntax
     public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
     {
         Action doNothingOnHalfOpen = () => { };
+
         return policyBuilder.CircuitBreaker(handledEventsAllowedBeforeBreaking,
             durationOfBreak,
             onBreak,
             onReset,
-            doNothingOnHalfOpen
-            );
+            doNothingOnHalfOpen);
     }
 
     /// <summary>
@@ -130,8 +128,7 @@ public static class CircuitBreakerTResultSyntax
             durationOfBreak,
             (outcome, timespan, _) => onBreak(outcome, timespan),
             _ => onReset(),
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -163,8 +160,7 @@ public static class CircuitBreakerTResultSyntax
             durationOfBreak,
             (outcome, _, timespan, context) => onBreak(outcome, timespan, context),
             onReset,
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -205,9 +201,9 @@ public static class CircuitBreakerTResultSyntax
             onBreak,
             onReset,
             onHalfOpen);
+
         return new CircuitBreakerPolicy<TResult>(
             policyBuilder,
-            breakerController
-            );
+            breakerController);
     }
 }

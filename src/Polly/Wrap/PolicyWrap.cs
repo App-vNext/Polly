@@ -33,8 +33,7 @@ public partial class PolicyWrap : Policy, IPolicyWrap
             context,
             cancellationToken,
             _outer,
-            _inner
-        );
+            _inner);
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
@@ -44,8 +43,7 @@ public partial class PolicyWrap : Policy, IPolicyWrap
             context,
             cancellationToken,
             _outer,
-            _inner
-        );
+            _inner);
 }
 
 /// <summary>
@@ -103,8 +101,7 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
                     context,
                     cancellationToken,
                     _outerNonGeneric,
-                    _innerNonGeneric
-                );
+                    _innerNonGeneric);
             }
             else if (_innerGeneric != null)
             {
@@ -113,9 +110,7 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
                     context,
                     cancellationToken,
                     _outerNonGeneric,
-                    _innerGeneric
-                );
-
+                    _innerGeneric);
             }
             else
             {
@@ -131,8 +126,7 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
                     context,
                     cancellationToken,
                     _outerGeneric,
-                    _innerNonGeneric
-                );
+                    _innerNonGeneric);
 
             }
             else if (_innerGeneric != null)
@@ -142,9 +136,7 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
                     context,
                     cancellationToken,
                     _outerGeneric,
-                    _innerGeneric
-                );
-
+                    _innerGeneric);
             }
             else
             {

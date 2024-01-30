@@ -37,8 +37,7 @@ public static class AdvancedCircuitBreakerTResultSyntax
             failureThreshold, samplingDuration, minimumThroughput,
             durationOfBreak,
             doNothingOnBreak,
-            doNothingOnReset
-            );
+            doNothingOnReset);
     }
 
     /// <summary>
@@ -72,8 +71,7 @@ public static class AdvancedCircuitBreakerTResultSyntax
             failureThreshold, samplingDuration, minimumThroughput,
             durationOfBreak,
             (outcome, timespan, _) => onBreak(outcome, timespan),
-            _ => onReset()
-        );
+            _ => onReset());
 
     /// <summary>
     /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
@@ -108,8 +106,7 @@ public static class AdvancedCircuitBreakerTResultSyntax
             durationOfBreak,
             onBreak,
             onReset,
-            doNothingOnHalfOpen
-            );
+            doNothingOnHalfOpen);
     }
 
     /// <summary>
@@ -146,8 +143,7 @@ public static class AdvancedCircuitBreakerTResultSyntax
             durationOfBreak,
             (outcome, timespan, _) => onBreak(outcome, timespan),
             _ => onReset(),
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="Policy{TResult}" /> that will function like a Circuit Breaker.</para>
@@ -185,8 +181,7 @@ public static class AdvancedCircuitBreakerTResultSyntax
             durationOfBreak,
             (outcome, _, timespan, context) => onBreak(outcome, timespan, context),
             onReset,
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="Policy{TResult}" /> that will function like a Circuit Breaker.</para>
@@ -240,9 +235,9 @@ public static class AdvancedCircuitBreakerTResultSyntax
             onBreak,
             onReset,
             onHalfOpen);
+
         return new CircuitBreakerPolicy<TResult>(
             policyBuilder,
-            breakerController
-            );
+            breakerController);
     }
 }

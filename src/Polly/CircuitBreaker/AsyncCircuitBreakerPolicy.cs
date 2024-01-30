@@ -9,8 +9,7 @@ public class AsyncCircuitBreakerPolicy : AsyncPolicy, ICircuitBreakerPolicy
 
     internal AsyncCircuitBreakerPolicy(
         PolicyBuilder policyBuilder,
-        ICircuitController<EmptyStruct> breakerController
-        )
+        ICircuitController<EmptyStruct> breakerController)
         : base(policyBuilder) =>
         _breakerController = breakerController;
 
@@ -64,8 +63,7 @@ public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, ICircuit
 
     internal AsyncCircuitBreakerPolicy(
         PolicyBuilder<TResult> policyBuilder,
-        ICircuitController<TResult> breakerController
-        )
+        ICircuitController<TResult> breakerController)
         : base(policyBuilder) =>
         _breakerController = breakerController;
 

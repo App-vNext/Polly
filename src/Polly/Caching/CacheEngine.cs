@@ -36,6 +36,7 @@ internal static class CacheEngine
             valueFromCache = default;
             onCacheGetError?.Invoke(context, cacheKey, ex);
         }
+
         if (cacheHit)
         {
             onCacheGet(context, cacheKey);

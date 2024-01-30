@@ -67,8 +67,7 @@ public partial class Policy
 
         return new PolicyWrap(
             this,
-            innerPolicy
-            );
+            innerPolicy);
     }
 
     /// <summary>
@@ -83,8 +82,7 @@ public partial class Policy
 
         return new PolicyWrap<TResult>(
             this,
-            innerPolicy
-            );
+            innerPolicy);
     }
 }
 
@@ -101,8 +99,7 @@ public partial class Policy<TResult>
 
         return new PolicyWrap<TResult>(
             this,
-            innerPolicy
-            );
+            innerPolicy);
     }
 
     /// <summary>
@@ -116,8 +113,7 @@ public partial class Policy<TResult>
 
         return new PolicyWrap<TResult>(
             this,
-            innerPolicy
-            );
+            innerPolicy);
     }
 }
 

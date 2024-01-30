@@ -117,6 +117,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         {
             return false;
         }
+
         // It's time to permit a / another trial call in the half-open state ...
         // ... but to prevent race conditions/multiple calls, we have to ensure only _one_ thread wins the race to own this next call.
         return Interlocked.CompareExchange(ref _blockedTill, SystemClock.UtcNow().Ticks + _durationOfBreak.Ticks, currentlyBlockedUntil) == currentlyBlockedUntil;

@@ -10,8 +10,7 @@ internal static class AsyncRateLimitEngine
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext
-        )
+        bool continueOnCapturedContext)
     {
         (bool permit, TimeSpan retryAfter) = rateLimiter.PermitExecution();
 

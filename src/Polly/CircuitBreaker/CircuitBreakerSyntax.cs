@@ -30,12 +30,11 @@ public static class CircuitBreakerSyntax
         Action<Exception, TimeSpan> doNothingOnBreak = (_, _) => { };
         Action doNothingOnReset = () => { };
 
-        return policyBuilder.CircuitBreaker
-            (exceptionsAllowedBeforeBreaking,
+        return policyBuilder.CircuitBreaker(
+            exceptionsAllowedBeforeBreaking,
             durationOfBreak,
             doNothingOnBreak,
-            doNothingOnReset
-            );
+            doNothingOnReset);
     }
 
     /// <summary>
@@ -65,8 +64,7 @@ public static class CircuitBreakerSyntax
             exceptionsAllowedBeforeBreaking,
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
-            _ => onReset()
-        );
+            _ => onReset());
 
     /// <summary>
     /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -93,12 +91,12 @@ public static class CircuitBreakerSyntax
     public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
     {
         Action doNothingOnHalfOpen = () => { };
+
         return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking,
             durationOfBreak,
             onBreak,
             onReset,
-            doNothingOnHalfOpen
-            );
+            doNothingOnHalfOpen);
     }
 
     /// <summary>
@@ -130,8 +128,7 @@ public static class CircuitBreakerSyntax
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset(),
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -163,8 +160,7 @@ public static class CircuitBreakerSyntax
             durationOfBreak,
             (exception, _, timespan, context) => onBreak(exception, timespan, context),
             onReset,
-            onHalfOpen
-        );
+            onHalfOpen);
 
     /// <summary>
     /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -205,9 +201,9 @@ public static class CircuitBreakerSyntax
             (outcome, state, timespan, context) => onBreak(outcome.Exception, state, timespan, context),
             onReset,
             onHalfOpen);
+
         return new CircuitBreakerPolicy(
             policyBuilder,
-            breakerController
-            );
+            breakerController);
     }
 }

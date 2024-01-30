@@ -38,8 +38,7 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
             cancellationToken,
             continueOnCapturedContext,
             _outer,
-            _inner
-        );
+            _inner);
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
@@ -51,8 +50,7 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
             cancellationToken,
             continueOnCapturedContext,
             _outer,
-            _inner
-        );
+            _inner);
 }
 
 /// <summary>
@@ -112,8 +110,7 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                     cancellationToken,
                     continueOnCapturedContext,
                     _outerNonGeneric,
-                    _innerNonGeneric
-                );
+                    _innerNonGeneric);
             }
             else if (_innerGeneric != null)
             {
@@ -123,8 +120,7 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                     cancellationToken,
                     continueOnCapturedContext,
                     _outerNonGeneric,
-                    _innerGeneric
-                );
+                    _innerGeneric);
 
             }
             else
@@ -142,8 +138,7 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                     cancellationToken,
                     continueOnCapturedContext,
                     _outerGeneric,
-                    _innerNonGeneric
-                );
+                    _innerNonGeneric);
 
             }
             else if (_innerGeneric != null)
@@ -154,8 +149,7 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                     cancellationToken,
                     continueOnCapturedContext,
                     _outerGeneric,
-                    _innerGeneric
-                );
+                    _innerGeneric);
 
             }
             else

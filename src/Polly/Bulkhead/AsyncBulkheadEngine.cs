@@ -17,6 +17,7 @@ internal static class AsyncBulkheadEngine
             await onBulkheadRejectedAsync(context).ConfigureAwait(continueOnCapturedContext);
             throw new BulkheadRejectedException();
         }
+
         try
         {
             await maxParallelizationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext);

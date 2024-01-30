@@ -13,10 +13,9 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
     internal AsyncRetryPolicy(
         PolicyBuilder policyBuilder,
         Func<Exception, TimeSpan, int, Context, Task> onRetryAsync,
-        int permittedRetryCount = Int32.MaxValue,
+        int permittedRetryCount = int.MaxValue,
         IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
-        Func<int, Exception, Context, TimeSpan> sleepDurationProvider = null
-    )
+        Func<int, Exception, Context, TimeSpan> sleepDurationProvider = null)
         : base(policyBuilder)
     {
         _permittedRetryCount = permittedRetryCount;
@@ -41,8 +40,7 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
             _sleepDurationProvider != null
                 ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
                 : (Func<int, DelegateResult<TResult>, Context, TimeSpan>) null,
-            continueOnCapturedContext
-        );
+            continueOnCapturedContext);
 }
 
 /// <summary>
@@ -58,10 +56,9 @@ public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TRes
     internal AsyncRetryPolicy(
         PolicyBuilder<TResult> policyBuilder,
         Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync,
-        int permittedRetryCount = Int32.MaxValue,
+        int permittedRetryCount = int.MaxValue,
         IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
-        Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null
-    )
+        Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null)
         : base(policyBuilder)
     {
         _permittedRetryCount = permittedRetryCount;
@@ -84,7 +81,6 @@ public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TRes
             _permittedRetryCount,
             _sleepDurationsEnumerable,
             _sleepDurationProvider,
-            continueOnCapturedContext
-        );
+            continueOnCapturedContext);
 }
 

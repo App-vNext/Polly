@@ -12,8 +12,7 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
     internal AsyncTimeoutPolicy(
         Func<Context, TimeSpan> timeoutProvider,
         TimeoutStrategy timeoutStrategy,
-        Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync
-        )
+        Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
         _timeoutProvider = timeoutProvider ?? throw new ArgumentNullException(nameof(timeoutProvider));
         _timeoutStrategy = timeoutStrategy;

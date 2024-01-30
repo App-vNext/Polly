@@ -63,7 +63,6 @@ public partial class Policy
         return new BulkheadPolicy<TResult>(
             maxParallelization,
             maxQueuingActions,
-            onBulkheadRejected
-            );
+            onBulkheadRejected);
     }
 }
