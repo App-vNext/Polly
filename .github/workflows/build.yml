@@ -76,6 +76,8 @@ jobs:
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@f30e4959ba63075080d4f7f90cacc18d9f3fafd7 # v4.0.0
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       with:
         files: ./artifacts/coverage-reports/Polly.Core.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Specs/Cobertura.xml,./artifacts/coverage-reports/Polly.RateLimiting.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Extensions.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Testing.Tests/Cobertura.xml,
         flags: ${{ matrix.os_name }}
