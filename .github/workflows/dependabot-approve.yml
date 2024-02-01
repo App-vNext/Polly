@@ -18,7 +18,7 @@ jobs:
 
       - name: Generate GitHub application token
         id: generate-application-token
-        uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
+        uses: peter-murray/workflow-application-token-action@dc0413987a085fa17d19df9e47d4677cf81ffef3 # v3.0.0
         with:
           application_id: ${{ secrets.POLLY_REVIEWER_BOT_APP_ID }}
           application_private_key: ${{ secrets.POLLY_REVIEWER_BOT_KEY }}
