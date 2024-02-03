@@ -302,5 +302,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         var results = tasks.Select(t => t.Result).ToList();
         results.Count(r => r.PermitExecution).Should().Be(1);
         results.Count(r => !r.PermitExecution).Should().Be(parallelContention - 1);
+
+        gate.Dispose();
     }
 }

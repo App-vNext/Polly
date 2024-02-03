@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
@@ -8,7 +8,7 @@
     <Threshold>75,60,70</Threshold>
     <Include>[Polly]*</Include>
     <IncludePollyUsings>true</IncludePollyUsings>
-    <NoWarn>$(NoWarn);S103;S104;CA2000;IDE0011;SA1600;SA1204;CA2008;CA1806;CA2201;</NoWarn>
+    <NoWarn>$(NoWarn);S103;S104;IDE0011;SA1600;SA1204;CA2008;CA1806;CA2201;</NoWarn>
     <NoWarn>$(NoWarn);S3878;CA1030;S3717;SA1129;S1402;SA1649;SA1402;S4056;CA1031</NoWarn>
     <NoWarn>$(NoWarn);S2184;</NoWarn>
   </PropertyGroup>

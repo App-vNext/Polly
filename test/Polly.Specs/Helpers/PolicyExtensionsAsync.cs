@@ -21,7 +21,8 @@ public static class PolicyExtensionsAsync
             NumberOfTimesToRaiseException = 1
         };
 
-        return policy.RaiseExceptionAndOrCancellationAsync(scenario, new CancellationTokenSource(), () => { }, _ => instance);
+        using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        return policy.RaiseExceptionAndOrCancellationAsync(scenario, cancellationTokenSource, () => { }, _ => instance);
     }
 
     public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, Action<TException, int>? configureException = null)
@@ -46,7 +47,8 @@ public static class PolicyExtensionsAsync
             return exception;
         };
 
-        return policy.RaiseExceptionAndOrCancellationAsync(scenario, new CancellationTokenSource(), () => { }, exceptionFactory);
+        using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        return policy.RaiseExceptionAndOrCancellationAsync(scenario, cancellationTokenSource, () => { }, exceptionFactory);
     }
 
     public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute)

@@ -407,9 +407,6 @@ public class RetryTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -418,8 +415,13 @@ public class RetryTResultSpecs
             AttemptDuringWhichToCancel = null,
         };
 
-        policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good)
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good)
             .Should().Be(ResultPrimitive.Good);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -431,9 +433,6 @@ public class RetryTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -442,12 +441,17 @@ public class RetryTResultSpecs
             AttemptDuringWhichToCancel = null,
         };
 
-        policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                 ResultPrimitive.Fault,
                 ResultPrimitive.Fault,
                 ResultPrimitive.Fault,
                 ResultPrimitive.Good)
                 .Should().Be(ResultPrimitive.Good);
+        }
 
         attemptsInvoked.Should().Be(1 + 3);
     }
@@ -459,9 +463,6 @@ public class RetryTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -470,15 +471,19 @@ public class RetryTResultSpecs
             AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
         };
 
-        cancellationTokenSource.Cancel();
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            cancellationTokenSource.Cancel();
 
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-               ResultPrimitive.Fault,
-               ResultPrimitive.Fault,
-               ResultPrimitive.Fault,
-               ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(0);
     }
@@ -490,9 +495,6 @@ public class RetryTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -502,13 +504,18 @@ public class RetryTResultSpecs
             ActionObservesCancellation = true
         };
 
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                ResultPrimitive.Good,
                ResultPrimitive.Good,
                ResultPrimitive.Good,
                ResultPrimitive.Good))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -520,9 +527,6 @@ public class RetryTResultSpecs
            .HandleResult(ResultPrimitive.Fault)
            .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -532,13 +536,18 @@ public class RetryTResultSpecs
             ActionObservesCancellation = true
         };
 
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Good))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -550,9 +559,6 @@ public class RetryTResultSpecs
           .HandleResult(ResultPrimitive.Fault)
           .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -562,13 +568,18 @@ public class RetryTResultSpecs
             ActionObservesCancellation = false
         };
 
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Good))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -580,9 +591,6 @@ public class RetryTResultSpecs
           .HandleResult(ResultPrimitive.Fault)
           .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -592,13 +600,18 @@ public class RetryTResultSpecs
             ActionObservesCancellation = true
         };
 
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Good))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(2);
     }
@@ -610,9 +623,6 @@ public class RetryTResultSpecs
           .HandleResult(ResultPrimitive.Fault)
           .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -622,13 +632,18 @@ public class RetryTResultSpecs
             ActionObservesCancellation = false
         };
 
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Good))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(2);
     }
@@ -640,9 +655,6 @@ public class RetryTResultSpecs
                    .HandleResult(ResultPrimitive.Fault)
                    .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -652,7 +664,11 @@ public class RetryTResultSpecs
             ActionObservesCancellation = true
         };
 
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
@@ -660,6 +676,7 @@ public class RetryTResultSpecs
                ResultPrimitive.Good))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1 + 3);
     }
@@ -671,9 +688,6 @@ public class RetryTResultSpecs
                    .HandleResult(ResultPrimitive.Fault)
                    .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -683,13 +697,18 @@ public class RetryTResultSpecs
             ActionObservesCancellation = false
         };
 
-        policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Good)
            .Should().Be(ResultPrimitive.Fault);
+        }
 
         attemptsInvoked.Should().Be(1 + 3);
     }
@@ -697,32 +716,34 @@ public class RetryTResultSpecs
     [Fact]
     public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
     {
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
-        RetryPolicy<ResultPrimitive> policy = Policy
-       .HandleResult(ResultPrimitive.Fault)
-       .Retry(3, (_, _) =>
-       {
-           cancellationTokenSource.Cancel();
-       });
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
         Scenario scenario = new Scenario
         {
-            AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see above.
+            AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see below.
             ActionObservesCancellation = false
         };
 
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-               ResultPrimitive.Fault,
-               ResultPrimitive.Fault,
-               ResultPrimitive.Fault,
-               ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            RetryPolicy<ResultPrimitive> policy = Policy
+           .HandleResult(ResultPrimitive.Fault)
+           .Retry(3, (_, _) =>
+           {
+               cancellationTokenSource.Cancel();
+           });
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1);
     }

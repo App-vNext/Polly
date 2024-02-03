@@ -442,23 +442,26 @@ public class CacheSpecs : IDisposable
 
         CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
-        CancellationTokenSource tokenSource = new CancellationTokenSource();
-
         int delegateInvocations = 0;
-        Func<Context, CancellationToken, string> func = (_, _) =>
+
+        using (CancellationTokenSource tokenSource = new CancellationTokenSource())
         {
-            // delegate does not observe cancellation token; test is whether CacheEngine does.
-            delegateInvocations++;
-            return ValueToReturn;
-        };
+            Func<Context, CancellationToken, string> func = (_, _) =>
+            {
+                // delegate does not observe cancellation token; test is whether CacheEngine does.
+                delegateInvocations++;
+                return ValueToReturn;
+            };
 
-        cache.Execute(func, new Context(OperationKey), tokenSource.Token).Should().Be(ValueToReturn);
-        delegateInvocations.Should().Be(1);
+            cache.Execute(func, new Context(OperationKey), tokenSource.Token).Should().Be(ValueToReturn);
+            delegateInvocations.Should().Be(1);
 
-        tokenSource.Cancel();
+            tokenSource.Cancel();
 
-        cache.Invoking(policy => policy.Execute(func, new Context(OperationKey), tokenSource.Token))
-            .Should().Throw<OperationCanceledException>();
+            cache.Invoking(policy => policy.Execute(func, new Context(OperationKey), tokenSource.Token))
+                .Should().Throw<OperationCanceledException>();
+        }
+
         delegateInvocations.Should().Be(1);
     }
 
@@ -471,17 +474,18 @@ public class CacheSpecs : IDisposable
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
         CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
-        CancellationTokenSource tokenSource = new CancellationTokenSource();
-
-        Func<Context, CancellationToken, string> func = (_, ct) =>
+        using (CancellationTokenSource tokenSource = new CancellationTokenSource())
         {
-            tokenSource.Cancel(); // simulate cancellation raised during delegate execution
-            ct.ThrowIfCancellationRequested();
-            return ValueToReturn;
-        };
+            Func<Context, CancellationToken, string> func = (_, ct) =>
+            {
+                tokenSource.Cancel(); // simulate cancellation raised during delegate execution
+                ct.ThrowIfCancellationRequested();
+                return ValueToReturn;
+            };
 
-        cache.Invoking(policy => policy.Execute(func, new Context(OperationKey), tokenSource.Token))
-            .Should().Throw<OperationCanceledException>();
+            cache.Invoking(policy => policy.Execute(func, new Context(OperationKey), tokenSource.Token))
+                .Should().Throw<OperationCanceledException>();
+        }
 
         (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(OperationKey);
         cacheHit.Should().BeFalse();
