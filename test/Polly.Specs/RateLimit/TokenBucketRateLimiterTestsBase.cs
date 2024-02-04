@@ -1,6 +1,6 @@
 ﻿namespace Polly.Specs.RateLimit;
 
-[Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+[Collection(Constants.SystemClockDependentTestCollection)]
 public abstract class TokenBucketRateLimiterTestsBase : RateLimitSpecsBase, IDisposable
 {
     internal abstract IRateLimiter GetRateLimiter(TimeSpan onePer, long bucketCapacity);
@@ -194,7 +194,7 @@ public abstract class TokenBucketRateLimiterTestsBase : RateLimitSpecsBase, IDis
         // Act - release gate.
         gate.Set();
 #pragma warning disable S6603
-        RateLimitSpecsBase.Within(TimeSpan.FromSeconds(10 /* high to allow for slow-running on time-slicing CI servers */), () => tasks.All(t => t.IsCompleted).Should().BeTrue());
+        Within(TimeSpan.FromSeconds(10 /* high to allow for slow-running on time-slicing CI servers */), () => tasks.All(t => t.IsCompleted).Should().BeTrue());
 #pragma warning restore S6603
 
         // Assert - one should have permitted execution, n-1 not.

@@ -1,6 +1,6 @@
 ﻿namespace Polly.Specs.RateLimit;
 
-[Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+[Collection(Constants.SystemClockDependentTestCollection)]
 public class AsyncRateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase, IDisposable
 {
     public void Dispose() =>

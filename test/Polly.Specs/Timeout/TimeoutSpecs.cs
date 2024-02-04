@@ -271,7 +271,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         // Check to see if nested aggregate exceptions are unwrapped correctly
         AggregateException exception = new AggregateException(msg, new NotImplementedException());
 
-        policy.Invoking(p => p.Execute(() => { TimeoutSpecsBase.Helper_ThrowException(exception); }))
+        policy.Invoking(p => p.Execute(() => { Helper_ThrowException(exception); }))
             .Should().Throw<AggregateException>()
             .WithMessage(exception.Message)
             .Where(e => e.InnerException is NotImplementedException)

@@ -66,7 +66,7 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
                 });
             });
 
-            Within(CohesionTimeLimit, () => BulkheadSpecsBase.Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
+            Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
             await bulkhead.Awaiting(b => b.ExecuteAsync(_ => Task.FromResult(1), contextPassedToExecute)).Should().ThrowAsync<BulkheadRejectedException>();
 

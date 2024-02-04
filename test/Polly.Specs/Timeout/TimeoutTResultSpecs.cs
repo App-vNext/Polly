@@ -262,7 +262,7 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
         // Check to see if nested aggregate exceptions are unwrapped correctly
         AggregateException exception = new AggregateException(msg, new NotImplementedException());
 
-        policy.Invoking(p => p.Execute(() => { TimeoutSpecsBase.Helper_ThrowException(exception); return ResultPrimitive.WhateverButTooLate; }))
+        policy.Invoking(p => p.Execute(() => { Helper_ThrowException(exception); return ResultPrimitive.WhateverButTooLate; }))
             .Should().Throw<AggregateException>()
             .WithMessage(exception.Message)
             .Where(e => e.InnerException is NotImplementedException)
@@ -278,7 +278,7 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
         Exception innerException1 = new NotImplementedException();
         Exception innerException2 = new DivideByZeroException();
         AggregateException aggregateException = new AggregateException(msg, innerException1, innerException2);
-        Func<ResultPrimitive> func = () => { TimeoutSpecsBase.Helper_ThrowException(aggregateException); return ResultPrimitive.WhateverButTooLate; };
+        Func<ResultPrimitive> func = () => { Helper_ThrowException(aggregateException); return ResultPrimitive.WhateverButTooLate; };
 
         // Whether executing the delegate directly, or through the policy, exception behavior should be the same.
         func.Should().Throw<AggregateException>()

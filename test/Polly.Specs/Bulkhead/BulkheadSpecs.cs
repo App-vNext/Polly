@@ -1,6 +1,6 @@
 ﻿namespace Polly.Specs.Bulkhead;
 
-[Collection(Helpers.Constants.ParallelThreadDependentTestCollection)]
+[Collection(Constants.ParallelThreadDependentTestCollection)]
 public class BulkheadSpecs : BulkheadSpecsBase
 {
     public BulkheadSpecs(ITestOutputHelper testOutputHelper)
@@ -59,7 +59,7 @@ public class BulkheadSpecs : BulkheadSpecsBase
         Task.Run(() => { bulkhead.Execute(() => { tcs.Task.Wait(); }); });
 
         // Time for the other thread to kick up and take the bulkhead.
-        Within(CohesionTimeLimit, () => BulkheadSpecsBase.Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
+        Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
         bulkhead.Invoking(b => b.Execute(_ => { }, contextPassedToExecute)).Should()
             .Throw<BulkheadRejectedException>();

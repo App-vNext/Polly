@@ -66,7 +66,7 @@ public class BulkheadTResultSpecs : BulkheadSpecsBase
                 });
             });
 
-            Within(CohesionTimeLimit, () => BulkheadSpecsBase.Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
+            Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
             bulkhead.Invoking(b => b.Execute(_ => 1, contextPassedToExecute)).Should().Throw<BulkheadRejectedException>();
 
