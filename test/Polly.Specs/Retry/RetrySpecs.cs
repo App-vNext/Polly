@@ -496,9 +496,6 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -508,8 +505,13 @@ public class RetrySpecs
             AttemptDuringWhichToCancel = null,
         };
 
-        policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
             .Should().NotThrow();
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -521,9 +523,6 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -533,8 +532,13 @@ public class RetrySpecs
             AttemptDuringWhichToCancel = null,
         };
 
-        policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
             .Should().Throw<DivideByZeroException>();
+        }
 
         attemptsInvoked.Should().Be(1 + 3);
     }
@@ -546,9 +550,6 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -558,11 +559,15 @@ public class RetrySpecs
             AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
         };
 
-        cancellationTokenSource.Cancel();
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            cancellationTokenSource.Cancel();
 
-        policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(0);
     }
@@ -574,9 +579,6 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -587,9 +589,14 @@ public class RetrySpecs
             ActionObservesCancellation = true
         };
 
-        policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -601,9 +608,6 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -614,9 +618,14 @@ public class RetrySpecs
             ActionObservesCancellation = true
         };
 
-        policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -628,9 +637,6 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -641,9 +647,14 @@ public class RetrySpecs
             ActionObservesCancellation = false
         };
 
-        policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -655,9 +666,6 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -668,9 +676,14 @@ public class RetrySpecs
             ActionObservesCancellation = true
         };
 
-        policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(2);
     }
@@ -682,9 +695,6 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -695,9 +705,14 @@ public class RetrySpecs
             ActionObservesCancellation = false
         };
 
-        policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(2);
     }
@@ -709,9 +724,6 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -722,9 +734,14 @@ public class RetrySpecs
             ActionObservesCancellation = true
         };
 
-        policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
             .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1 + 3);
     }
@@ -736,9 +753,6 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -749,8 +763,13 @@ public class RetrySpecs
             ActionObservesCancellation = false
         };
 
-        policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
             .Should().Throw<DivideByZeroException>();
+        }
 
         attemptsInvoked.Should().Be(1 + 3);
     }
@@ -758,29 +777,31 @@ public class RetrySpecs
     [Fact]
     public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
     {
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Retry(3, (_, _) =>
-            {
-                cancellationTokenSource.Cancel();
-            });
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
         PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
         {
             NumberOfTimesToRaiseException = 1 + 3,
-            AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see above.
+            AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see below.
             ActionObservesCancellation = false
         };
 
-        policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry(3, (_, _) =>
+                {
+                    cancellationTokenSource.Cancel();
+                });
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -791,9 +812,6 @@ public class RetrySpecs
         var policy = Policy
             .Handle<DivideByZeroException>()
             .Retry(3);
-
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
@@ -806,8 +824,13 @@ public class RetrySpecs
             AttemptDuringWhichToCancel = null,
         };
 
-        policy.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
             .Should().NotThrow();
+        }
 
         result.Should().BeTrue();
 
@@ -821,9 +844,6 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry(3);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -836,8 +856,13 @@ public class RetrySpecs
             ActionObservesCancellation = true
         };
 
-        policy.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            policy.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
             .Should().Throw<OperationCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         result.Should().Be(null);
 

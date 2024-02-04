@@ -434,24 +434,27 @@ public class CacheTResultAsyncSpecs : IDisposable
 
         var cache = Policy.CacheAsync<string>(new StubCacheProvider(), TimeSpan.MaxValue);
 
-        CancellationTokenSource tokenSource = new CancellationTokenSource();
-
         int delegateInvocations = 0;
-        Func<Context, CancellationToken, Task<string>> func = async (_, _) =>
+
+        using (CancellationTokenSource tokenSource = new CancellationTokenSource())
         {
-            // delegate does not observe cancellation token; test is whether CacheEngine does.
-            delegateInvocations++;
-            await TaskHelper.EmptyTask;
-            return ValueToReturn;
-        };
+            Func<Context, CancellationToken, Task<string>> func = async (_, _) =>
+            {
+                // delegate does not observe cancellation token; test is whether CacheEngine does.
+                delegateInvocations++;
+                await TaskHelper.EmptyTask;
+                return ValueToReturn;
+            };
 
-        (await cache.ExecuteAsync(func, new Context(OperationKey), tokenSource.Token)).Should().Be(ValueToReturn);
-        delegateInvocations.Should().Be(1);
+            (await cache.ExecuteAsync(func, new Context(OperationKey), tokenSource.Token)).Should().Be(ValueToReturn);
+            delegateInvocations.Should().Be(1);
 
-        tokenSource.Cancel();
+            tokenSource.Cancel();
 
-        await cache.Awaiting(policy => policy.ExecuteAsync(func, new Context(OperationKey), tokenSource.Token))
-            .Should().ThrowAsync<OperationCanceledException>();
+            await cache.Awaiting(policy => policy.ExecuteAsync(func, new Context(OperationKey), tokenSource.Token))
+                .Should().ThrowAsync<OperationCanceledException>();
+        }
+
         delegateInvocations.Should().Be(1);
     }
 
@@ -464,18 +467,19 @@ public class CacheTResultAsyncSpecs : IDisposable
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync<string>(stubCacheProvider, TimeSpan.MaxValue);
 
-        CancellationTokenSource tokenSource = new CancellationTokenSource();
-
-        Func<Context, CancellationToken, Task<string>> func = async (_, ct) =>
+        using (CancellationTokenSource tokenSource = new CancellationTokenSource())
         {
-            tokenSource.Cancel(); // simulate cancellation raised during delegate execution
-            ct.ThrowIfCancellationRequested();
-            await TaskHelper.EmptyTask;
-            return ValueToReturn;
-        };
+            Func<Context, CancellationToken, Task<string>> func = async (_, ct) =>
+            {
+                tokenSource.Cancel(); // simulate cancellation raised during delegate execution
+                ct.ThrowIfCancellationRequested();
+                await TaskHelper.EmptyTask;
+                return ValueToReturn;
+            };
 
-        await cache.Awaiting(policy => policy.ExecuteAsync(func, new Context(OperationKey), tokenSource.Token))
-            .Should().ThrowAsync<OperationCanceledException>();
+            await cache.Awaiting(policy => policy.ExecuteAsync(func, new Context(OperationKey), tokenSource.Token))
+                .Should().ThrowAsync<OperationCanceledException>();
+        }
 
         (bool cacheHit, object? fromCache) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken.None, false);
         cacheHit.Should().BeFalse();

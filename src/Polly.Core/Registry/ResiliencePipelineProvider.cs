@@ -2,8 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Polly.Registry;
 
-#pragma warning disable CA1716 // Identifiers should not match keywords
-
 /// <summary>
 /// Represents a provider for resilience pipelines that are accessible by <typeparamref name="TKey"/>.
 /// </summary>

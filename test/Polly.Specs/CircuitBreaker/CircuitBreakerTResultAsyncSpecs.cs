@@ -1385,9 +1385,6 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .HandleResult(ResultPrimitive.Fault)
                         .CircuitBreakerAsync(2, durationOfBreak);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -1396,9 +1393,13 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             AttemptDuringWhichToCancel = null,
         };
 
-        (await breaker.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-            ResultPrimitive.Good))
-            .Should().Be(ResultPrimitive.Good);
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            (await breaker.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+                ResultPrimitive.Good))
+                .Should().Be(ResultPrimitive.Good);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -1411,9 +1412,6 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, durationOfBreak);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -1422,14 +1420,18 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
         };
 
-        cancellationTokenSource.Cancel();
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            cancellationTokenSource.Cancel();
 
-        var ex = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-           ResultPrimitive.Fault,
-           ResultPrimitive.Fault,
-           ResultPrimitive.Good))
-        .Should().ThrowAsync<OperationCanceledException>();
-        ex.And.CancellationToken.Should().Be(cancellationToken);
+            var ex = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Good))
+            .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(0);
     }
@@ -1442,9 +1444,6 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, durationOfBreak);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -1454,11 +1453,16 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        var ex = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-               ResultPrimitive.Good,
-               ResultPrimitive.Good))
-            .Should().ThrowAsync<OperationCanceledException>();
-        ex.And.CancellationToken.Should().Be(cancellationToken);
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            var ex = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Good,
+                   ResultPrimitive.Good))
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -1471,9 +1475,6 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .HandleResult(ResultPrimitive.Fault)
                         .CircuitBreakerAsync(2, durationOfBreak);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -1483,11 +1484,16 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        var ex = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-               ResultPrimitive.Fault,
-               ResultPrimitive.Good))
-            .Should().ThrowAsync<OperationCanceledException>();
-        ex.And.CancellationToken.Should().Be(cancellationToken);
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            var ex = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -1500,9 +1506,6 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .HandleResult(ResultPrimitive.Fault)
                         .CircuitBreakerAsync(2, durationOfBreak);
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
@@ -1512,8 +1515,13 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             ActionObservesCancellation = false
         };
 
-        (await breaker.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault))
-                        .Should().Be(ResultPrimitive.Fault);
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            (await breaker.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault))
+                            .Should().Be(ResultPrimitive.Fault);
+        }
 
         attemptsInvoked.Should().Be(1);
     }
@@ -1534,13 +1542,8 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
 
         // Circuit is now broken.
 
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
-
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
-
-        cancellationTokenSource.Cancel();
 
         Scenario scenario = new Scenario
         {
@@ -1548,11 +1551,17 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             ActionObservesCancellation = false
         };
 
-        var ex2 = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-               ResultPrimitive.Fault,
-               ResultPrimitive.Good))
-            .Should().ThrowAsync<OperationCanceledException>();
-        ex2.And.CancellationToken.Should().Be(cancellationToken);
+        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        {
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            cancellationTokenSource.Cancel();
+
+            var ex2 = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex2.And.CancellationToken.Should().Be(cancellationToken);
+        }
 
         attemptsInvoked.Should().Be(0);
     }
@@ -1567,25 +1576,26 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .HandleResult(ResultPrimitive.Fault)
                         .CircuitBreakerAsync(2, durationOfBreak);
 
-        CancellationTokenSource policyCancellationTokenSource = new CancellationTokenSource();
-        CancellationToken policyCancellationToken = policyCancellationTokenSource.Token;
-
-        CancellationTokenSource implicitlyCapturedActionCancellationTokenSource = new CancellationTokenSource();
-        CancellationToken implicitlyCapturedActionCancellationToken = implicitlyCapturedActionCancellationTokenSource.Token;
-
-        implicitlyCapturedActionCancellationTokenSource.Cancel();
-
         int attemptsInvoked = 0;
 
-        var ex = await breaker.Awaiting(x => x.ExecuteAsync(async _ =>
+        using (CancellationTokenSource policyCancellationTokenSource = new CancellationTokenSource())
+        using (CancellationTokenSource implicitlyCapturedActionCancellationTokenSource = new CancellationTokenSource())
         {
-            attemptsInvoked++;
-            await TaskHelper.EmptyTask;
-            implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
-            return ResultPrimitive.Good;
-        }, policyCancellationToken))
-            .Should().ThrowAsync<OperationCanceledException>();
-        ex.And.CancellationToken.Should().Be(implicitlyCapturedActionCancellationToken);
+            CancellationToken policyCancellationToken = policyCancellationTokenSource.Token;
+            CancellationToken implicitlyCapturedActionCancellationToken = implicitlyCapturedActionCancellationTokenSource.Token;
+
+            implicitlyCapturedActionCancellationTokenSource.Cancel();
+
+            var ex = await breaker.Awaiting(x => x.ExecuteAsync(async _ =>
+            {
+                attemptsInvoked++;
+                await TaskHelper.EmptyTask;
+                implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
+                return ResultPrimitive.Good;
+            }, policyCancellationToken))
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(implicitlyCapturedActionCancellationToken);
+        }
 
         attemptsInvoked.Should().Be(1);
     }

@@ -6,8 +6,6 @@ using Polly.Utils.Pipeline;
 
 namespace Polly.Core.Tests.Utils.Pipeline;
 
-#pragma warning disable CA2000 // Dispose objects before losing scope
-
 public class CompositePipelineComponentTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;

@@ -180,7 +180,7 @@ public abstract class TokenBucketRateLimiterTestsBase : RateLimitSpecsBase, IDis
         var rateLimiter = GetRateLimiter(onePer, 1);
 
         // Arrange - parallel tasks all waiting on a manual reset event.
-        ManualResetEventSlim gate = new ManualResetEventSlim();
+        ManualResetEventSlim gate = new();
         Task<(bool PermitExecution, TimeSpan RetryAfter)>[] tasks = new Task<(bool, TimeSpan)>[parallelContention];
         for (int i = 0; i < parallelContention; i++)
         {
@@ -201,5 +201,7 @@ public abstract class TokenBucketRateLimiterTestsBase : RateLimitSpecsBase, IDis
         var results = tasks.Select(t => t.Result).ToList();
         results.Count(r => r.PermitExecution).Should().Be(1);
         results.Count(r => !r.PermitExecution).Should().Be(parallelContention - 1);
+
+        gate.Dispose();
     }
 }
