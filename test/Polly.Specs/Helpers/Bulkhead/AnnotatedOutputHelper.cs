@@ -1,4 +1,6 @@
-﻿namespace Polly.Specs.Helpers.Bulkhead;
+﻿using System.Globalization;
+
+namespace Polly.Specs.Helpers.Bulkhead;
 
 public class AnnotatedOutputHelper : ITestOutputHelper
 {
@@ -36,7 +38,7 @@ public class AnnotatedOutputHelper : ITestOutputHelper
         var toOutput = _items.Select(kvp => kvp.Value).OrderBy(i => i.Position).Reverse();
         foreach (var item in toOutput)
         {
-            _innerOutputHelper.WriteLine(item.TimeStamp.ToString("o") + ": " + item.Format, item.Args);
+            _innerOutputHelper.WriteLine(item.TimeStamp.ToString("o", CultureInfo.InvariantCulture) + ": " + item.Format, item.Args);
         }
 
         _items.Clear();
