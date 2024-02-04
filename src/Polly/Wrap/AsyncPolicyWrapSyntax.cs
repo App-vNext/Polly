@@ -119,6 +119,8 @@ public partial class AsyncPolicy<TResult>
 
 public partial class Policy
 {
+    private const int MinimumPoliciesRequiredForWrap = 2;
+
     /// <summary>
     /// Creates a <see cref="PolicyWrap" /> of the given policies.
     /// </summary>
@@ -128,8 +130,8 @@ public partial class Policy
     public static AsyncPolicyWrap WrapAsync(params IAsyncPolicy[] policies) =>
         policies.Length switch
         {
-            0 or 1 => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
-            2 => new AsyncPolicyWrap((AsyncPolicy)policies[0], policies[1]),
+            < MinimumPoliciesRequiredForWrap => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
+            MinimumPoliciesRequiredForWrap => new AsyncPolicyWrap((AsyncPolicy)policies[0], policies[1]),
             _ => WrapAsync(policies[0], WrapAsync(policies.Skip(1).ToArray())),
         };
 
@@ -143,8 +145,8 @@ public partial class Policy
     public static AsyncPolicyWrap<TResult> WrapAsync<TResult>(params IAsyncPolicy<TResult>[] policies) =>
         policies.Length switch
         {
-            0 or 1 => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
-            2 => new AsyncPolicyWrap<TResult>((AsyncPolicy<TResult>)policies[0], policies[1]),
+            < MinimumPoliciesRequiredForWrap => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
+            MinimumPoliciesRequiredForWrap => new AsyncPolicyWrap<TResult>((AsyncPolicy<TResult>)policies[0], policies[1]),
             _ => WrapAsync(policies[0], WrapAsync(policies.Skip(1).ToArray())),
         };
 }

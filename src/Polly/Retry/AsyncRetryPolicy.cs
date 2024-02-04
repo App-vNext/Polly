@@ -26,9 +26,18 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncRetryEngine.ImplementationAsync(
+
+    protected override Task<TResult> ImplementationAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        var sleepDurationProvider = _sleepDurationProvider != null
+            ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
+            : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null;
+
+        return AsyncRetryEngine.ImplementationAsync(
             action,
             context,
             cancellationToken,
@@ -37,10 +46,9 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
             (outcome, timespan, retryCount, ctx) => _onRetryAsync(outcome.Exception, timespan, retryCount, ctx),
             _permittedRetryCount,
             _sleepDurationsEnumerable,
-            _sleepDurationProvider != null
-                ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
-                : (Func<int, DelegateResult<TResult>, Context, TimeSpan>) null,
+            sleepDurationProvider,
             continueOnCapturedContext);
+    }
 }
 
 /// <summary>
