@@ -55,7 +55,7 @@ public class BulkheadTResultSpecs : BulkheadSpecsBase
 
         using BulkheadPolicy<int> bulkhead = Policy.Bulkhead<int>(1, onRejected);
         TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
-        using (CancellationTokenSource cancellationSource = new CancellationTokenSource())
+        using (var cancellationSource = new CancellationTokenSource())
         {
             Task.Run(() =>
             {
