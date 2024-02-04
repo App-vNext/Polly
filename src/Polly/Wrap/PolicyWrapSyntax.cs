@@ -128,8 +128,8 @@ public partial class Policy
     public static PolicyWrap Wrap(params ISyncPolicy[] policies) =>
         policies.Length switch
         {
-            0 or 1 => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
-            2 => new PolicyWrap((Policy)policies[0], policies[1]),
+            < MinimumPoliciesRequiredForWrap => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
+            MinimumPoliciesRequiredForWrap => new PolicyWrap((Policy)policies[0], policies[1]),
             _ => Wrap(policies[0], Wrap(policies.Skip(1).ToArray())),
         };
 
@@ -143,8 +143,8 @@ public partial class Policy
     public static PolicyWrap<TResult> Wrap<TResult>(params ISyncPolicy<TResult>[] policies) =>
         policies.Length switch
         {
-            0 or 1 => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
-            2 => new PolicyWrap<TResult>((Policy<TResult>)policies[0], policies[1]),
+            < MinimumPoliciesRequiredForWrap => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
+            MinimumPoliciesRequiredForWrap => new PolicyWrap<TResult>((Policy<TResult>)policies[0], policies[1]),
             _ => Wrap(policies[0], Wrap(policies.Skip(1).ToArray())),
         };
 }

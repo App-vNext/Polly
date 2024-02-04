@@ -132,12 +132,21 @@ public class PolicyResult<TResult>
     /// <returns>
     /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
     /// </returns>
-    public static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context) =>
-        new(default, OutcomeType.Failure, exception, exceptionType, default,
-            exceptionType == Polly.ExceptionType.HandledByThisPolicy
-                ? Polly.FaultType.ExceptionHandledByThisPolicy
-                : Polly.FaultType.UnhandledException,
+    public static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context)
+    {
+        var faultType = exceptionType == Polly.ExceptionType.HandledByThisPolicy
+            ? Polly.FaultType.ExceptionHandledByThisPolicy
+            : Polly.FaultType.UnhandledException;
+
+        return new PolicyResult<TResult>(
+            default,
+            OutcomeType.Failure,
+            exception,
+            exceptionType,
+            default,
+            faultType,
             context);
+    }
 
     /// <summary>
     /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy.

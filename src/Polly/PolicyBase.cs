@@ -6,6 +6,11 @@
 public abstract partial class PolicyBase
 {
     /// <summary>
+    /// Defines a value to use for continueOnCaptureContext, when none is supplied.
+    /// </summary>
+    internal const bool DefaultContinueOnCapturedContext = false;
+
+    /// <summary>
     /// Predicates indicating which exceptions the policy handles.
     /// </summary>
     protected internal ExceptionPredicates ExceptionPredicates { get; }
@@ -14,11 +19,6 @@ public abstract partial class PolicyBase
     /// Defines a CancellationToken to use, when none is supplied.
     /// </summary>
     internal readonly CancellationToken DefaultCancellationToken = CancellationToken.None;
-
-    /// <summary>
-    /// Defines a value to use for continueOnCaptureContext, when none is supplied.
-    /// </summary>
-    internal const bool DefaultContinueOnCapturedContext = false;
 
     internal static ExceptionType GetExceptionType(ExceptionPredicates exceptionPredicates, Exception exception)
     {

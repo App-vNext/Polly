@@ -26,9 +26,13 @@ public class RetryPolicy : Policy, IRetryPolicy
     }
 
     /// <inheritdoc/>
-    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        RetryEngine.Implementation(
-            action,
+    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        var sleepDurationProvider = _sleepDurationProvider != null
+            ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
+            : (Func<int, DelegateResult<TResult>, Context, TimeSpan>?)null;
+
+        return RetryEngine.Implementation(action,
             context,
             cancellationToken,
             ExceptionPredicates,
@@ -36,9 +40,8 @@ public class RetryPolicy : Policy, IRetryPolicy
             (outcome, timespan, retryCount, ctx) => _onRetry(outcome.Exception, timespan, retryCount, ctx),
             _permittedRetryCount,
             _sleepDurationsEnumerable,
-            _sleepDurationProvider != null
-                ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
-                : (Func<int, DelegateResult<TResult>, Context, TimeSpan>?) null);
+            sleepDurationProvider);
+    }
 }
 
 /// <summary>
