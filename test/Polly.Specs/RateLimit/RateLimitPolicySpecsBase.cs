@@ -281,7 +281,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         var rateLimiter = GetPolicyViaSyntax(1, onePer);
 
         // Arrange - parallel tasks all waiting on a manual reset event.
-        ManualResetEventSlim gate = new();
+        using var gate = new ManualResetEventSlim();
         Task<(bool PermitExecution, TimeSpan RetryAfter)>[] tasks = new Task<(bool, TimeSpan)>[parallelContention];
         for (int i = 0; i < parallelContention; i++)
         {
@@ -302,7 +302,5 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         var results = tasks.Select(t => t.Result).ToList();
         results.Count(r => r.PermitExecution).Should().Be(1);
         results.Count(r => !r.PermitExecution).Should().Be(parallelContention - 1);
-
-        gate.Dispose();
     }
 }
