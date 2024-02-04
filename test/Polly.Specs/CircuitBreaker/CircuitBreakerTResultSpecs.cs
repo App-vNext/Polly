@@ -1383,7 +1383,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
             AttemptDuringWhichToCancel = null,
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             breaker.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                 ResultPrimitive.Good)
@@ -1409,7 +1409,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
             AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             cancellationTokenSource.Cancel();
@@ -1442,7 +1442,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             breaker.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
@@ -1472,7 +1472,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             breaker.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
@@ -1502,7 +1502,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             breaker.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault)
                             .Should().Be(ResultPrimitive.Fault);
@@ -1535,7 +1535,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             cancellationTokenSource.Cancel();

@@ -1444,7 +1444,7 @@ public class CircuitBreakerSpecs : IDisposable
             AttemptDuringWhichToCancel = null,
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             breaker.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
                 .Should().NotThrow();
@@ -1470,7 +1470,7 @@ public class CircuitBreakerSpecs : IDisposable
             AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             cancellationTokenSource.Cancel();
@@ -1501,7 +1501,7 @@ public class CircuitBreakerSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -1531,7 +1531,7 @@ public class CircuitBreakerSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -1561,7 +1561,7 @@ public class CircuitBreakerSpecs : IDisposable
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             breaker.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
                 .Should().Throw<DivideByZeroException>();
@@ -1597,7 +1597,7 @@ public class CircuitBreakerSpecs : IDisposable
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             cancellationTokenSource.Cancel();
@@ -1661,7 +1661,7 @@ public class CircuitBreakerSpecs : IDisposable
             AttemptDuringWhichToCancel = null,
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -1693,7 +1693,7 @@ public class CircuitBreakerSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             breaker.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))

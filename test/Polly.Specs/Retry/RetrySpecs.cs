@@ -505,7 +505,7 @@ public class RetrySpecs
             AttemptDuringWhichToCancel = null,
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -532,7 +532,7 @@ public class RetrySpecs
             AttemptDuringWhichToCancel = null,
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -559,7 +559,7 @@ public class RetrySpecs
             AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             cancellationTokenSource.Cancel();
@@ -589,7 +589,7 @@ public class RetrySpecs
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -618,7 +618,7 @@ public class RetrySpecs
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -647,7 +647,7 @@ public class RetrySpecs
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -676,7 +676,7 @@ public class RetrySpecs
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -705,7 +705,7 @@ public class RetrySpecs
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -734,7 +734,7 @@ public class RetrySpecs
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -763,7 +763,7 @@ public class RetrySpecs
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -787,7 +787,7 @@ public class RetrySpecs
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -824,7 +824,7 @@ public class RetrySpecs
             AttemptDuringWhichToCancel = null,
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -856,7 +856,7 @@ public class RetrySpecs
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 

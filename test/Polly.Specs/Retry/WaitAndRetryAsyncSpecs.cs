@@ -701,7 +701,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             AttemptDuringWhichToCancel = null,
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -728,7 +728,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             AttemptDuringWhichToCancel = null,
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -755,7 +755,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             cancellationTokenSource.Cancel();
@@ -785,7 +785,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -814,7 +814,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -843,7 +843,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -872,7 +872,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -901,7 +901,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -930,7 +930,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -959,7 +959,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -995,7 +995,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -1027,7 +1027,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             ActionObservesCancellation = false
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -1065,7 +1065,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             AttemptDuringWhichToCancel = null
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -1098,7 +1098,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             ActionObservesCancellation = true
         };
 
-        using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+        using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
