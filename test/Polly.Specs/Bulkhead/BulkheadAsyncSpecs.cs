@@ -1,13 +1,8 @@
 ﻿namespace Polly.Specs.Bulkhead;
 
-[Collection(Helpers.Constants.ParallelThreadDependentTestCollection)]
-public class BulkheadAsyncSpecs : BulkheadSpecsBase
+[Collection(Constants.ParallelThreadDependentTestCollection)]
+public class BulkheadAsyncSpecs(ITestOutputHelper testOutputHelper) : BulkheadSpecsBase(testOutputHelper)
 {
-    public BulkheadAsyncSpecs(ITestOutputHelper testOutputHelper)
-        : base(testOutputHelper)
-    {
-    }
-
     #region Configuration
 
     [Fact]
@@ -59,7 +54,7 @@ public class BulkheadAsyncSpecs : BulkheadSpecsBase
         {
             _ = Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task; }); });
 
-            Within(CohesionTimeLimit, () => BulkheadSpecsBase.Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
+            Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
             await bulkhead.Awaiting(b => b.ExecuteAsync(_ => TaskHelper.EmptyTask, contextPassedToExecute)).Should().ThrowAsync<BulkheadRejectedException>();
 

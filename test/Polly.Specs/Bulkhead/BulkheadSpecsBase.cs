@@ -1,6 +1,6 @@
 ﻿namespace Polly.Specs.Bulkhead;
 
-[Collection(Helpers.Constants.ParallelThreadDependentTestCollection)]
+[Collection(Constants.ParallelThreadDependentTestCollection)]
 public abstract class BulkheadSpecsBase : IDisposable
 {
     #region Time constraints
