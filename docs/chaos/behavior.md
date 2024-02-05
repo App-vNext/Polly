@@ -1,8 +1,5 @@
 # Behavior chaos strategy
 
-> [!IMPORTANT]
-> This documentation page describes an upcoming feature of Polly.
-
 ## About
 
 - **Options**: [`ChaosBehaviorStrategyOptions`](xref:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions)

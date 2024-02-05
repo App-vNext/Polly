@@ -1,8 +1,5 @@
 # Outcome chaos strategy
 
-> [!IMPORTANT]
-> This documentation page describes an upcoming feature of Polly.
-
 ## About
 
 - **Options**:
