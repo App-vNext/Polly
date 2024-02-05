@@ -47,6 +47,20 @@ builder
 > [!NOTE]
 > It is usual to place the chaos strategy as the last strategy in the resilience pipeline. By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.
 
+## Major differences
+
+This section highlights the major differences compared to the [`Polly.Contrib.Simmy`](https://github.com/Polly-Contrib/Simmy) library:
+
+- **From `MonkeyPolicy` to `ChaosStrategy`**: We've updated the terminology from `Monkey` to `Chaos` to better align with the well-recognized principles of *chaos engineering*.
+- **Unified configuration options**: The `InjectOptionsBase` and `InjectOptionsAsyncBase` are now consolidated into `ChaosStrategyOptions`. This change brings Simmy in line with the Polly v8 API, offering built-in support for options-based configuration and seamless integration of synchronous and asynchronous executions.
+- **Chaos strategies enabled by default**: Adding a chaos strategy (previously known as monkey policy) now means it's active right away. This is a departure from earlier versions, where the monkey policy had to be explicitly enabled.
+- **API changes**: The new version of Simmy introduces several API updates. While this list isn't complete, it includes key changes like renaming `Inject` to `AddChaos` and switching from `Result` to `Outcome`. Here are some specific renames:
+  - `InjectException` is now `AddChaosFault`
+  - `InjectResult` is now `AddChaosOutcome`
+  - `InjectBehavior` is now `AddChaosBehavior`
+  - `InjectLatency` is now `AddChaosLatency`
+- **Sync and async unification**: Before, Simmy had various methods to set policies like `InjectLatency`, `InjectLatencyAsync`, `InjectLatency<T>`, and `InjectLatencyAsync<T>`. With the new version based on Polly v8, these methods have been combined into a single `AddChaosLatency` extension that works for both `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>`. These rules are covering all types of chaos strategies (Outcome, Fault, Latency, and Behavior).
+
 ## Motivation
 
 There are a lot of questions when it comes to chaos engineering and making sure that a system is actually ready to face the worst possible scenarios:
