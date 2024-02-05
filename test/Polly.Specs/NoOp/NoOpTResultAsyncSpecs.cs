@@ -22,7 +22,7 @@ public class NoOpTResultAsyncSpecs
         var policy = Policy.NoOpAsync<int?>();
         int? result = null;
 
-        using (CancellationTokenSource cts = new CancellationTokenSource())
+        using (var cts = new CancellationTokenSource())
         {
             cts.Cancel();
 

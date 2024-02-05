@@ -21,7 +21,7 @@ public class NoOpAsyncSpecs
 
         bool executed = false;
 
-        using (CancellationTokenSource cts = new CancellationTokenSource())
+        using (var cts = new CancellationTokenSource())
         {
             cts.Cancel();
 

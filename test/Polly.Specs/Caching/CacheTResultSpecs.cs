@@ -427,7 +427,7 @@ public class CacheTResultSpecs : IDisposable
 
         int delegateInvocations = 0;
 
-        using (CancellationTokenSource tokenSource = new CancellationTokenSource())
+        using (var tokenSource = new CancellationTokenSource())
         {
             Func<Context, CancellationToken, string> func = (_, _) =>
             {
@@ -457,7 +457,7 @@ public class CacheTResultSpecs : IDisposable
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
         CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
 
-        using (CancellationTokenSource tokenSource = new CancellationTokenSource())
+        using (var tokenSource = new CancellationTokenSource())
         {
             Func<Context, CancellationToken, string> func = (_, ct) =>
             {
