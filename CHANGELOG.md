@@ -2,6 +2,44 @@
 
 <!-- markdownlint-disable MD034 -->
 
+## 8.3.0
+
+* Update CHANGELOG for 8.2.1 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1882
+* Add support for keyed services by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1881
+* Run benchmarks on .NET 8 by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1887
+* Decrease the minimum allowed timeout by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1888
+* Fix typo by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1897
+* BreakDurationGeneratorArguments now includes half-open attempts by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1898
+* Do not encourage returning the same instance from chaos strategies by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1899
+* Do not encourage re-throwing the same exception instance by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1900
+* Simmy docs by [@vany0114](https://github.com/vany0114) in https://github.com/App-vNext/Polly/pull/1883
+* Add banner to chaos docs by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1910
+* Introduce `FaultGenerator` and `OutcomeGenerator<T>` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1911
+* Use new chaos APIs to simplify the usage examples by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1912
+* Simmy API review Part 1 by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1909
+* Simmy API review Part 2 - Prefer Chaos over Monkey by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1913
+* Update docs and cleanup some chaos API by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1914
+* Simmy API review Part 4 - Rename BehaviorAction to BehaviorGenerator by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1917
+* Simmy API review Part 3 - Set enabled to true by default by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1916
+* Add clarification about property precedence by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1918
+* Replace textual descriptions of next delay calculation with diagrams by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1922
+* Apply chaos selectively by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1923
+* Got rid of IDE0044 warnings by [@baranyaimate](https://github.com/baranyaimate) in https://github.com/App-vNext/Polly/pull/1928
+* Integrating chaos pipeline by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1927
+* Got rid of IDE0066, IDE0250, IDE0063 warnings by [@baranyaimate](https://github.com/baranyaimate) in https://github.com/App-vNext/Polly/pull/1930
+* Fix PipelineNameComparer example in documentation by [@jwagon](https://github.com/jwagon) in https://github.com/App-vNext/Polly/pull/1931
+* Chaos API review pass by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1934
+* Fix S6608/IDE1006/SA1414/CA1508 warnings in Polly.Specs project by [@baranyaimate](https://github.com/baranyaimate) in https://github.com/App-vNext/Polly/pull/1935
+* Fix SA1602/S6608/S4144 warnings by [@gintsk](https://github.com/gintsk) in https://github.com/App-vNext/Polly/pull/1936
+* Fix SA1113/CA1200/SA1805/SA1629/SA1407/SA1127 warnings by [@baranyaimate](https://github.com/baranyaimate) in https://github.com/App-vNext/Polly/pull/1938
+* Resources about chaos engineering by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1937
+* Fix SA1111/SA1513/SA1121/SA1110 by [@baranyaimate](https://github.com/baranyaimate) in https://github.com/App-vNext/Polly/pull/1939
+* Fix SA1203/S109 by [@baranyaimate](https://github.com/baranyaimate) in https://github.com/App-vNext/Polly/pull/1948
+* Fix CA2000/stalled suppressions by [@gintsk](https://github.com/gintsk) in https://github.com/App-vNext/Polly/pull/1947
+* Tidy-up Polly.Specs by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1950
+* Fix S4056 by [@gintsk](https://github.com/gintsk) in https://github.com/App-vNext/Polly/pull/1952
+* Simmy major differences section by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1951
+
 ## 8.2.1
 
 * Bump version to 8.2.1 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1798
