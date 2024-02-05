@@ -1609,8 +1609,8 @@ public class CircuitBreakerAsyncSpecs : IDisposable
 
         int attemptsInvoked = 0;
 
-        using (CancellationTokenSource policyCancellationTokenSource = new CancellationTokenSource())
-        using (CancellationTokenSource implicitlyCapturedActionCancellationTokenSource = new CancellationTokenSource())
+        using (var policyCancellationTokenSource = new CancellationTokenSource())
+        using (var implicitlyCapturedActionCancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken policyCancellationToken = policyCancellationTokenSource.Token;
             CancellationToken implicitlyCapturedActionCancellationToken = implicitlyCapturedActionCancellationTokenSource.Token;

@@ -370,7 +370,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
 
         bool executed = false;
 
-        using (CancellationTokenSource cts = new CancellationTokenSource())
+        using (var cts = new CancellationTokenSource())
         {
             cts.Cancel();
 
@@ -413,7 +413,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
 
         bool executed = false;
 
-        using (CancellationTokenSource cts = new CancellationTokenSource())
+        using (var cts = new CancellationTokenSource())
         {
             cts.Cancel();
 

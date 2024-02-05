@@ -436,7 +436,7 @@ public class CacheTResultAsyncSpecs : IDisposable
 
         int delegateInvocations = 0;
 
-        using (CancellationTokenSource tokenSource = new CancellationTokenSource())
+        using (var tokenSource = new CancellationTokenSource())
         {
             Func<Context, CancellationToken, Task<string>> func = async (_, _) =>
             {
@@ -467,7 +467,7 @@ public class CacheTResultAsyncSpecs : IDisposable
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync<string>(stubCacheProvider, TimeSpan.MaxValue);
 
-        using (CancellationTokenSource tokenSource = new CancellationTokenSource())
+        using (var tokenSource = new CancellationTokenSource())
         {
             Func<Context, CancellationToken, Task<string>> func = async (_, ct) =>
             {
