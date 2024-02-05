@@ -129,6 +129,22 @@ builder
 <h5>Note</h5>
 <p>It is usual to place the chaos strategy as the last strategy in the resilience pipeline. By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the <code>ResiliencePipeline</code> - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.</p>
 </div>
+<h2 id="major-differences">Major differences</h2>
+<p>This section highlights the major differences compared to the <a href="https://github.com/Polly-Contrib/Simmy"><code>Polly.Contrib.Simmy</code></a> library:</p>
+<ul>
+<li><strong>From <code>MonkeyPolicy</code> to <code>ChaosStrategy</code></strong>: We've updated the terminology from <code>Monkey</code> to <code>Chaos</code> to better align with the well-recognized principles of <em>chaos engineering</em>.</li>
+<li><strong>Unified configuration options</strong>: The <code>InjectOptionsBase</code> and <code>InjectOptionsAsyncBase</code> are now consolidated into <code>ChaosStrategyOptions</code>. This change brings Simmy in line with the Polly v8 API, offering built-in support for options-based configuration and seamless integration of synchronous and asynchronous executions.</li>
+<li><strong>Chaos strategies enabled by default</strong>: Adding a chaos strategy (previously known as monkey policy) now means it's active right away. This is a departure from earlier versions, where the monkey policy had to be explicitly enabled.</li>
+<li><strong>API changes</strong>: The new version of Simmy introduces several API updates. While this list isn't complete, it includes key changes like renaming <code>Inject</code> to <code>AddChaos</code> and switching from <code>Result</code> to <code>Outcome</code>. Here are some specific renames:
+<ul>
+<li><code>InjectException</code> is now <code>AddChaosFault</code></li>
+<li><code>InjectResult</code> is now <code>AddChaosOutcome</code></li>
+<li><code>InjectBehavior</code> is now <code>AddChaosBehavior</code></li>
+<li><code>InjectLatency</code> is now <code>AddChaosLatency</code></li>
+</ul>
+</li>
+<li><strong>Sync and async unification</strong>: Before, Simmy had various methods to set policies like <code>InjectLatency</code>, <code>InjectLatencyAsync</code>, <code>InjectLatency&lt;T&gt;</code>, and <code>InjectLatencyAsync&lt;T&gt;</code>. With the new version based on Polly v8, these methods have been combined into a single <code>AddChaosLatency</code> extension that works for both <code>ResiliencePipelineBuilder</code> and <code>ResiliencePipelineBuilder&lt;T&gt;</code>. These rules are covering all types of chaos strategies (Outcome, Fault, Latency, and Behavior).</li>
+</ul>
 <h2 id="motivation">Motivation</h2>
 <p>There are a lot of questions when it comes to chaos engineering and making sure that a system is actually ready to face the worst possible scenarios:</p>
 <ul>
