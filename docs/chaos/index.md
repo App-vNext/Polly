@@ -1,8 +1,5 @@
 # Chaos engineering
 
-> [!IMPORTANT]
-> This documentation page describes an upcoming feature of Polly.
-
 **Chaos engineering** is the discipline of experimenting on a system in order to build confidence in the system's capability to withstand turbulent conditions in production.
 
 If you want to learn more about chaos engineering:
