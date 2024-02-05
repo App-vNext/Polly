@@ -9,8 +9,9 @@ using Polly.Simmy.Outcomes;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+
 services.TryAddSingleton<IChaosManager, ChaosManager>();
-services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+services.AddHttpContextAccessor();
 
 var httpClientBuilder = services.AddHttpClient<TodosClient>(client => client.BaseAddress = new Uri("https://jsonplaceholder.typicode.com"));
 
