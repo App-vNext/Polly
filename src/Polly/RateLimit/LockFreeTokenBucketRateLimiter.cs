@@ -27,8 +27,10 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
     /// </param>
     public LockFreeTokenBucketRateLimiter(TimeSpan onePer, long bucketCapacity)
     {
-        if (onePer <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(onePer), onePer, $"The {nameof(LockFreeTokenBucketRateLimiter)} must specify a positive TimeSpan for how often an execution is permitted.");
-        if (bucketCapacity <= 0) throw new ArgumentOutOfRangeException(nameof(bucketCapacity), bucketCapacity, $"{nameof(bucketCapacity)} must be greater than or equal to 1.");
+        if (onePer <= TimeSpan.Zero)
+            throw new ArgumentOutOfRangeException(nameof(onePer), onePer, $"The {nameof(LockFreeTokenBucketRateLimiter)} must specify a positive TimeSpan for how often an execution is permitted.");
+        if (bucketCapacity <= 0)
+            throw new ArgumentOutOfRangeException(nameof(bucketCapacity), bucketCapacity, $"{nameof(bucketCapacity)} must be greater than or equal to 1.");
 
         addTokenTickInterval = onePer.Ticks;
         this.bucketCapacity = bucketCapacity;
@@ -66,12 +68,9 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
 
             // Time to add tokens to the bucket!
 
-            // We definitely need to add one token.  In fact, if we haven't hit this bit of code for a while, we might be due to add a bunch of tokens.
-            long tokensMissedAdding =
-                // Passing addNextTokenAtTicks merits one token
-                1 +
-                // And any whole token tick intervals further each merit another.
-                (-ticksTillAddNextToken / addTokenTickInterval);
+            // We definitely need to add one token. In fact, if we haven't hit this bit of code for a while, we might be due to add a bunch of tokens.
+            // Passing addNextTokenAtTicks merits one token and any whole token tick intervals further each merit another.
+            long tokensMissedAdding = 1 + (-ticksTillAddNextToken / addTokenTickInterval);
 
             // We mustn't exceed bucket capacity though.
             long tokensToAdd = Math.Min(bucketCapacity, tokensMissedAdding);
@@ -103,9 +102,9 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
 
                 // We want any thread refilling the bucket to have a chance to do so before we try to grab the next token.
 #if NETSTANDARD2_0
-              Thread.Sleep(0);
+                Thread.Sleep(0);
 #else
-              spinner.SpinOnce();
+                spinner.SpinOnce();
 #endif
             }
         }

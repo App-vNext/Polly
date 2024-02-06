@@ -13,7 +13,8 @@ public partial class PolicyWrap
         priorPolicyWrapKey = executionContext.PolicyWrapKey;
         priorPolicyKey = executionContext.PolicyKey;
 
-        if (executionContext.PolicyWrapKey == null) executionContext.PolicyWrapKey = PolicyKey;
+        if (executionContext.PolicyWrapKey == null)
+            executionContext.PolicyWrapKey = PolicyKey;
 
         base.SetPolicyContext(executionContext, out _, out _);
     }
@@ -32,7 +33,8 @@ public partial class PolicyWrap<TResult>
         priorPolicyWrapKey = executionContext.PolicyWrapKey;
         priorPolicyKey = executionContext.PolicyKey;
 
-        if (executionContext.PolicyWrapKey == null) executionContext.PolicyWrapKey = PolicyKey;
+        if (executionContext.PolicyWrapKey == null)
+            executionContext.PolicyWrapKey = PolicyKey;
 
         base.SetPolicyContext(executionContext, out _, out _);
     }

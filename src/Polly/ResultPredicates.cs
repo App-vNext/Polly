@@ -20,7 +20,8 @@ public class ResultPredicates<TResult>
     /// <param name="result">The <typeparamref name="TResult"/> value to assess against the predicates.</param>
     public bool AnyMatch(TResult result)
     {
-        if (_predicates == null) return false;
+        if (_predicates == null)
+            return false;
 
         return _predicates.Any(predicate => predicate(result));
     }

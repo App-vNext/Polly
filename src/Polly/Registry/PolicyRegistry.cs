@@ -92,7 +92,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
     /// <exception cref="KeyNotFoundException">The given key was not present in the registry.</exception>
     public TPolicy Get<TPolicy>(string key)
-        where TPolicy : IsPolicy => (TPolicy) _registry[key];
+        where TPolicy : IsPolicy => (TPolicy)_registry[key];
 
     /// <summary>
     /// Gets the policy stored under the provided key, casting to <typeparamref name="TPolicy"/>.
@@ -154,7 +154,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
         var registry = ThrowIfNotConcurrentImplementation();
 
         bool got = registry.TryRemove(key, out IsPolicy value);
-        policy = got ? (TPolicy) value : default;
+        policy = got ? (TPolicy)value : default;
         return got;
     }
 
@@ -191,7 +191,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     {
         var registry = ThrowIfNotConcurrentImplementation();
 
-        return (TPolicy) registry.GetOrAdd(key, k => policyFactory(k));
+        return (TPolicy)registry.GetOrAdd(key, k => policyFactory(k));
     }
 
     /// <summary>
@@ -207,7 +207,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     {
         var registry = ThrowIfNotConcurrentImplementation();
 
-        return (TPolicy) registry.GetOrAdd(key, policy);
+        return (TPolicy)registry.GetOrAdd(key, policy);
     }
 
     /// <summary>
@@ -226,7 +226,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     {
         var registry = ThrowIfNotConcurrentImplementation();
 
-        return (TPolicy) registry.AddOrUpdate(key, k => addPolicyFactory(k), (k, e) => updatePolicyFactory(k, (TPolicy)e));
+        return (TPolicy)registry.AddOrUpdate(key, k => addPolicyFactory(k), (k, e) => updatePolicyFactory(k, (TPolicy)e));
     }
 
     /// <summary>

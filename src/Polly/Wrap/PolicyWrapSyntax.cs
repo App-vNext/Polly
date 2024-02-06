@@ -13,7 +13,8 @@ public static class ISyncPolicyPolicyWrapExtensions
     /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
     public static PolicyWrap Wrap(this ISyncPolicy outerPolicy, ISyncPolicy innerPolicy)
     {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        if (outerPolicy == null)
+            throw new ArgumentNullException(nameof(outerPolicy));
         return ((Policy)outerPolicy).Wrap(innerPolicy);
     }
 
@@ -25,7 +26,8 @@ public static class ISyncPolicyPolicyWrapExtensions
     /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
     public static PolicyWrap<TResult> Wrap<TResult>(this ISyncPolicy outerPolicy, ISyncPolicy<TResult> innerPolicy)
     {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        if (outerPolicy == null)
+            throw new ArgumentNullException(nameof(outerPolicy));
         return ((Policy)outerPolicy).Wrap(innerPolicy);
     }
 
@@ -37,7 +39,8 @@ public static class ISyncPolicyPolicyWrapExtensions
     /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
     public static PolicyWrap<TResult> Wrap<TResult>(this ISyncPolicy<TResult> outerPolicy, ISyncPolicy innerPolicy)
     {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        if (outerPolicy == null)
+            throw new ArgumentNullException(nameof(outerPolicy));
         return ((Policy<TResult>)outerPolicy).Wrap(innerPolicy);
     }
 
@@ -49,7 +52,8 @@ public static class ISyncPolicyPolicyWrapExtensions
     /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
     public static PolicyWrap<TResult> Wrap<TResult>(this ISyncPolicy<TResult> outerPolicy, ISyncPolicy<TResult> innerPolicy)
     {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        if (outerPolicy == null)
+            throw new ArgumentNullException(nameof(outerPolicy));
         return ((Policy<TResult>)outerPolicy).Wrap(innerPolicy);
     }
 }
@@ -63,7 +67,8 @@ public partial class Policy
     /// <returns>PolicyWrap.PolicyWrap.</returns>
     public PolicyWrap Wrap(ISyncPolicy innerPolicy)
     {
-        if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
+        if (innerPolicy == null)
+            throw new ArgumentNullException(nameof(innerPolicy));
 
         return new PolicyWrap(
             this,
@@ -78,7 +83,8 @@ public partial class Policy
     /// <returns>PolicyWrap.PolicyWrap.</returns>
     public PolicyWrap<TResult> Wrap<TResult>(ISyncPolicy<TResult> innerPolicy)
     {
-        if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
+        if (innerPolicy == null)
+            throw new ArgumentNullException(nameof(innerPolicy));
 
         return new PolicyWrap<TResult>(
             this,
@@ -95,7 +101,8 @@ public partial class Policy<TResult>
     /// <returns>PolicyWrap.PolicyWrap.</returns>
     public PolicyWrap<TResult> Wrap(ISyncPolicy innerPolicy)
     {
-        if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
+        if (innerPolicy == null)
+            throw new ArgumentNullException(nameof(innerPolicy));
 
         return new PolicyWrap<TResult>(
             this,
@@ -109,7 +116,8 @@ public partial class Policy<TResult>
     /// <returns>PolicyWrap.PolicyWrap.</returns>
     public PolicyWrap<TResult> Wrap(ISyncPolicy<TResult> innerPolicy)
     {
-        if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
+        if (innerPolicy == null)
+            throw new ArgumentNullException(nameof(innerPolicy));
 
         return new PolicyWrap<TResult>(
             this,

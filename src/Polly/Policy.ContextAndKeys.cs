@@ -9,7 +9,8 @@ public abstract partial class Policy
     /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
     public Policy WithPolicyKey(string policyKey)
     {
-        if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        if (policyKeyInternal != null)
+            throw PolicyKeyMustBeImmutableException(nameof(policyKey));
 
         policyKeyInternal = policyKey;
         return this;
@@ -22,7 +23,8 @@ public abstract partial class Policy
     /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
     ISyncPolicy ISyncPolicy.WithPolicyKey(string policyKey)
     {
-        if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        if (policyKeyInternal != null)
+            throw PolicyKeyMustBeImmutableException(nameof(policyKey));
 
         policyKeyInternal = policyKey;
         return this;
@@ -38,7 +40,8 @@ public abstract partial class Policy<TResult>
     /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy{TResult}"/> instance.</param>
     public Policy<TResult> WithPolicyKey(string policyKey)
     {
-        if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        if (policyKeyInternal != null)
+            throw PolicyKeyMustBeImmutableException(nameof(policyKey));
 
         policyKeyInternal = policyKey;
         return this;
@@ -51,7 +54,8 @@ public abstract partial class Policy<TResult>
     /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy{TResult}"/> instance.</param>
     ISyncPolicy<TResult> ISyncPolicy<TResult>.WithPolicyKey(string policyKey)
     {
-        if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        if (policyKeyInternal != null)
+            throw PolicyKeyMustBeImmutableException(nameof(policyKey));
 
         policyKeyInternal = policyKey;
         return this;

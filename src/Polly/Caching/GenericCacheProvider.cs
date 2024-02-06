@@ -15,7 +15,7 @@ internal class GenericCacheProvider<TCacheFormat> : ISyncCacheProvider<TCacheFor
     (bool, TCacheFormat?) ISyncCacheProvider<TCacheFormat>.TryGet(string key)
     {
         (bool cacheHit, object? result) = _wrappedCacheProvider.TryGet(key);
-        return (cacheHit, (TCacheFormat?) (result ?? default(TCacheFormat)));
+        return (cacheHit, (TCacheFormat?)(result ?? default(TCacheFormat)));
     }
 
     void ISyncCacheProvider<TCacheFormat>.Put(string key, TCacheFormat? value, Ttl ttl) =>

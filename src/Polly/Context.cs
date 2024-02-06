@@ -49,7 +49,8 @@ public partial class Context
     {
         get
         {
-            if (!_correlationId.HasValue) { _correlationId = Guid.NewGuid(); }
+            _correlationId ??= Guid.NewGuid();
+
             return _correlationId.Value;
         }
     }

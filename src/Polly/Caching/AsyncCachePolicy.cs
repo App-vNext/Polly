@@ -42,9 +42,7 @@ public class AsyncCachePolicy : AsyncPolicy
         Func<Context, CancellationToken, Task> action,
         Context context,
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        // Pass-through/NOOP policy action, for void-returning executions through the cache policy.
-        action(context, cancellationToken);
+        bool continueOnCapturedContext) => action(context, cancellationToken); // Pass-through/NOOP policy action, for void-returning executions through the cache policy.
 
     /// <inheritdoc/>
     [DebuggerStepThrough]

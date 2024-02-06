@@ -27,7 +27,8 @@ public class ContextualTtl : ITtlStrategy
     /// <returns>TimeSpan.</returns>
     public Ttl GetTtl(Context context, object? result)
     {
-        if (!context.ContainsKey(TimeSpanKey)) return _noTtl;
+        if (!context.ContainsKey(TimeSpanKey))
+            return _noTtl;
 
         bool sliding = false;
 

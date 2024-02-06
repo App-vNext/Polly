@@ -25,11 +25,12 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
     internal Context(IDictionary<string, object> contextData)
         : this()
     {
-        if (contextData == null) throw new ArgumentNullException(nameof(contextData));
+        if (contextData == null)
+            throw new ArgumentNullException(nameof(contextData));
         wrappedDictionary = new Dictionary<string, object>(contextData);
     }
 
-#region IDictionary<string,object> implementation
+    #region IDictionary<string,object> implementation
 
     /// <inheritdoc cref="IDictionary{TKey,Value}"/>
     public ICollection<string> Keys => WrappedDictionary.Keys;
@@ -41,7 +42,7 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
     public int Count => WrappedDictionary.Count;
 
     /// <inheritdoc cref="IDictionary{TKey,Value}"/>
-    bool ICollection<KeyValuePair<string, object>>.IsReadOnly => ((IDictionary<string, object>) WrappedDictionary).IsReadOnly;
+    bool ICollection<KeyValuePair<string, object>>.IsReadOnly => ((IDictionary<string, object>)WrappedDictionary).IsReadOnly;
 
     /// <inheritdoc cref="IDictionary{TKey,Value}"/>
     public object this[string key]
@@ -68,7 +69,7 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
 
     /// <inheritdoc cref="IDictionary{TKey,Value}"/>
     void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item) =>
-        ((IDictionary<string, object>) WrappedDictionary).Add(item);
+        ((IDictionary<string, object>)WrappedDictionary).Add(item);
 
     /// <inheritdoc cref="IDictionary{TKey,Value}"/>
     public void Clear() =>
@@ -76,15 +77,15 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
 
     /// <inheritdoc cref="IDictionary{TKey,Value}"/>
     bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item) =>
-        ((IDictionary<string, object>) WrappedDictionary).Contains(item);
+        ((IDictionary<string, object>)WrappedDictionary).Contains(item);
 
     /// <inheritdoc cref="IDictionary{TKey,Value}"/>
     void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex) =>
-        ((IDictionary<string, object>) WrappedDictionary).CopyTo(array, arrayIndex);
+        ((IDictionary<string, object>)WrappedDictionary).CopyTo(array, arrayIndex);
 
     /// <inheritdoc cref="IDictionary{TKey,Value}"/>
     bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item) =>
-        ((IDictionary<string, object>) WrappedDictionary).Remove(item);
+        ((IDictionary<string, object>)WrappedDictionary).Remove(item);
 
     /// <inheritdoc cref="IDictionary{TKey,Value}"/>
     public IEnumerator<KeyValuePair<string, object>> GetEnumerator() =>
@@ -96,56 +97,56 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
 
     /// <inheritdoc cref="IDictionary"/>
     public void Add(object key, object value) =>
-        ((IDictionary) WrappedDictionary).Add(key, value);
+        ((IDictionary)WrappedDictionary).Add(key, value);
 
     /// <inheritdoc cref="IDictionary"/>
     public bool Contains(object key) =>
-        ((IDictionary) WrappedDictionary).Contains(key);
+        ((IDictionary)WrappedDictionary).Contains(key);
 
     /// <inheritdoc cref="IDictionary"/>
     IDictionaryEnumerator IDictionary.GetEnumerator() =>
-        ((IDictionary) WrappedDictionary).GetEnumerator();
+        ((IDictionary)WrappedDictionary).GetEnumerator();
 
     /// <inheritdoc cref="IDictionary"/>
     public void Remove(object key) =>
-        ((IDictionary) WrappedDictionary).Remove(key);
+        ((IDictionary)WrappedDictionary).Remove(key);
 
     /// <inheritdoc cref="IDictionary"/>
     public void CopyTo(Array array, int index) =>
-        ((IDictionary) WrappedDictionary).CopyTo(array, index);
+        ((IDictionary)WrappedDictionary).CopyTo(array, index);
 
     #endregion
 
     #region IReadOnlyDictionary<string, object> implementation
-    IEnumerable<string> IReadOnlyDictionary<string, object>.Keys => ((IReadOnlyDictionary<string, object>) WrappedDictionary).Keys;
+    IEnumerable<string> IReadOnlyDictionary<string, object>.Keys => ((IReadOnlyDictionary<string, object>)WrappedDictionary).Keys;
 
-    IEnumerable<object> IReadOnlyDictionary<string, object>.Values => ((IReadOnlyDictionary<string, object>) WrappedDictionary).Values;
+    IEnumerable<object> IReadOnlyDictionary<string, object>.Values => ((IReadOnlyDictionary<string, object>)WrappedDictionary).Values;
 
     #endregion
 
     #region IDictionary implementation
 
     /// <inheritdoc cref="IDictionary"/>
-    bool IDictionary.IsFixedSize => ((IDictionary) WrappedDictionary).IsFixedSize;
+    bool IDictionary.IsFixedSize => ((IDictionary)WrappedDictionary).IsFixedSize;
 
     /// <inheritdoc cref="IDictionary"/>
-    bool IDictionary.IsReadOnly => ((IDictionary) WrappedDictionary).IsReadOnly;
+    bool IDictionary.IsReadOnly => ((IDictionary)WrappedDictionary).IsReadOnly;
 
-    ICollection IDictionary.Keys => ((IDictionary) WrappedDictionary).Keys;
+    ICollection IDictionary.Keys => ((IDictionary)WrappedDictionary).Keys;
 
-    ICollection IDictionary.Values => ((IDictionary) WrappedDictionary).Values;
-
-    /// <inheritdoc cref="IDictionary"/>
-    bool ICollection.IsSynchronized => ((IDictionary) WrappedDictionary).IsSynchronized;
+    ICollection IDictionary.Values => ((IDictionary)WrappedDictionary).Values;
 
     /// <inheritdoc cref="IDictionary"/>
-    object ICollection.SyncRoot => ((IDictionary) WrappedDictionary).SyncRoot;
+    bool ICollection.IsSynchronized => ((IDictionary)WrappedDictionary).IsSynchronized;
+
+    /// <inheritdoc cref="IDictionary"/>
+    object ICollection.SyncRoot => ((IDictionary)WrappedDictionary).SyncRoot;
 
     /// <inheritdoc cref="IDictionary"/>
     object IDictionary.this[object key]
     {
-        get => ((IDictionary) WrappedDictionary)[key];
-        set => ((IDictionary) WrappedDictionary)[key] = value;
+        get => ((IDictionary)WrappedDictionary)[key];
+        set => ((IDictionary)WrappedDictionary)[key] = value;
     }
 
     #endregion

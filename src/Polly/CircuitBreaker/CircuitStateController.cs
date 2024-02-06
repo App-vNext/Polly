@@ -148,7 +148,11 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
             case CircuitState.Closed:
                 break;
             case CircuitState.HalfOpen:
-                if (!PermitHalfOpenCircuitTest()) { throw GetBreakingException(); }
+                if (!PermitHalfOpenCircuitTest())
+                {
+                    throw GetBreakingException();
+                }
+
                 break;
             case CircuitState.Open:
                 throw GetBreakingException();

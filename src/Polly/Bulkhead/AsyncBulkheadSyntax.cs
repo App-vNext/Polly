@@ -59,9 +59,12 @@ public partial class Policy
         int maxQueuingActions,
         Func<Context, Task> onBulkheadRejectedAsync)
     {
-        if (maxParallelization <= 0) throw new ArgumentOutOfRangeException(nameof(maxParallelization), "Value must be greater than zero.");
-        if (maxQueuingActions < 0) throw new ArgumentOutOfRangeException(nameof(maxQueuingActions), "Value must be greater than or equal to zero.");
-        if (onBulkheadRejectedAsync == null) throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
+        if (maxParallelization <= 0)
+            throw new ArgumentOutOfRangeException(nameof(maxParallelization), "Value must be greater than zero.");
+        if (maxQueuingActions < 0)
+            throw new ArgumentOutOfRangeException(nameof(maxQueuingActions), "Value must be greater than or equal to zero.");
+        if (onBulkheadRejectedAsync == null)
+            throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
 
         return new AsyncBulkheadPolicy(
             maxParallelization,

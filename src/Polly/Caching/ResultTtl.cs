@@ -15,7 +15,8 @@ public class ResultTtl<TResult> : ITtlStrategy<TResult>
     /// <param name="ttlFunc">The function to calculate the TTL for which cache items should be considered valid.</param>
     public ResultTtl(Func<TResult?, Ttl> ttlFunc)
     {
-        if (ttlFunc == null) throw new ArgumentNullException(nameof(ttlFunc));
+        if (ttlFunc == null)
+            throw new ArgumentNullException(nameof(ttlFunc));
         _ttlFunc = (_, result) => ttlFunc(result);
     }
 
