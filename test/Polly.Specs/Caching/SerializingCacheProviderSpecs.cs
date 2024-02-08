@@ -13,7 +13,7 @@ public class SerializingCacheProviderSpecs
 
         Action configure = () =>
         {
-            SerializingCacheProvider<StubSerialized> serializingCacheProvider = new SerializingCacheProvider<StubSerialized>(null!, stubObjectSerializer);
+            _ = new SerializingCacheProvider<StubSerialized>(null!, stubObjectSerializer);
         };
 
         configure.Should().Throw<ArgumentNullException>()
@@ -25,7 +25,7 @@ public class SerializingCacheProviderSpecs
     {
         Action configure = () =>
         {
-            SerializingCacheProvider<object> serializingCacheProvider = new SerializingCacheProvider<object>(new StubCacheProvider().For<object>(), null!);
+            _ = new SerializingCacheProvider<object>(new StubCacheProvider().For<object>(), null!);
         };
 
         configure.Should().Throw<ArgumentNullException>()
@@ -229,7 +229,7 @@ public class SerializingCacheProviderSpecs
 
         Action configure = () =>
         {
-            var serializingCacheProvider = new SerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(null!, stubTResultSerializer);
+            _ = new SerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(null!, stubTResultSerializer);
         };
 
         configure.Should().Throw<ArgumentNullException>()
@@ -241,7 +241,7 @@ public class SerializingCacheProviderSpecs
     {
         Action configure = () =>
         {
-            var serializingCacheProvider = new SerializingCacheProvider<object, object>(new StubCacheProvider().For<object>(), null!);
+            _ = new SerializingCacheProvider<object, object>(new StubCacheProvider().For<object>(), null!);
         };
 
         configure.Should().Throw<ArgumentNullException>()

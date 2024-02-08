@@ -5,7 +5,10 @@ public class RelativeTtlSpecs
     [Fact]
     public void Should_throw_when_timespan_is_less_than_zero()
     {
-        Action configure = () => new RelativeTtl(TimeSpan.FromMilliseconds(-1));
+        Action configure = () =>
+        {
+            _ = new RelativeTtl(TimeSpan.FromMilliseconds(-1));
+        };
 
         configure.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("ttl");
     }
@@ -13,7 +16,10 @@ public class RelativeTtlSpecs
     [Fact]
     public void Should_not_throw_when_timespan_is_zero()
     {
-        Action configure = () => new RelativeTtl(TimeSpan.Zero);
+        Action configure = () =>
+        {
+            _ = new RelativeTtl(TimeSpan.Zero);
+        };
 
         configure.Should().NotThrow();
     }
@@ -21,7 +27,10 @@ public class RelativeTtlSpecs
     [Fact]
     public void Should_allow_timespan_max_value()
     {
-        Action configure = () => new RelativeTtl(TimeSpan.MaxValue);
+        Action configure = () =>
+        {
+            _ = new RelativeTtl(TimeSpan.MaxValue);
+        };
 
         configure.Should().NotThrow();
     }

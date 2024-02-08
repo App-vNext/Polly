@@ -7,7 +7,7 @@ public class SlidingTtlSpecs
     {
         Action configure = () =>
         {
-            SlidingTtl ttl = new SlidingTtl(TimeSpan.FromMilliseconds(-1));
+            _ = new SlidingTtl(TimeSpan.FromMilliseconds(-1));
         };
 
         configure.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("slidingTtl");
@@ -18,7 +18,7 @@ public class SlidingTtlSpecs
     {
         Action configure = () =>
         {
-            SlidingTtl ttl = new SlidingTtl(TimeSpan.Zero);
+            _ = new SlidingTtl(TimeSpan.Zero);
         };
 
         configure.Should().NotThrow();
@@ -29,7 +29,7 @@ public class SlidingTtlSpecs
     {
         Action configure = () =>
         {
-            SlidingTtl ttl = new SlidingTtl(TimeSpan.MaxValue);
+            _ = new SlidingTtl(TimeSpan.MaxValue);
         };
 
         configure.Should().NotThrow();
