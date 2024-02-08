@@ -5,7 +5,10 @@ public class SlidingTtlSpecs
     [Fact]
     public void Should_throw_when_timespan_is_less_than_zero()
     {
-        Action configure = () => new SlidingTtl(TimeSpan.FromMilliseconds(-1));
+        Action configure = () =>
+        {
+            SlidingTtl ttl = new SlidingTtl(TimeSpan.FromMilliseconds(-1));
+        };
 
         configure.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("slidingTtl");
     }
@@ -13,7 +16,10 @@ public class SlidingTtlSpecs
     [Fact]
     public void Should_not_throw_when_timespan_is_zero()
     {
-        Action configure = () => new SlidingTtl(TimeSpan.Zero);
+        Action configure = () =>
+        {
+            SlidingTtl ttl = new SlidingTtl(TimeSpan.Zero);
+        };
 
         configure.Should().NotThrow();
     }
@@ -21,7 +27,10 @@ public class SlidingTtlSpecs
     [Fact]
     public void Should_allow_timespan_max_value()
     {
-        Action configure = () => new SlidingTtl(TimeSpan.MaxValue);
+        Action configure = () =>
+        {
+            SlidingTtl ttl = new SlidingTtl(TimeSpan.MaxValue);
+        };
 
         configure.Should().NotThrow();
     }
