@@ -6,7 +6,7 @@ public class AbsoluteTtlSpecs : IDisposable
     [Fact]
     public void Should_be_able_to_configure_for_near_future_time()
     {
-        Action configure = () => new AbsoluteTtl(DateTimeOffset.UtcNow.Date.AddDays(1));
+        Action configure = () => _ = new AbsoluteTtl(DateTimeOffset.UtcNow.Date.AddDays(1));
 
         configure.Should().NotThrow();
     }
@@ -14,7 +14,7 @@ public class AbsoluteTtlSpecs : IDisposable
     [Fact]
     public void Should_be_able_to_configure_for_far_future()
     {
-        Action configure = () => new AbsoluteTtl(DateTimeOffset.MaxValue);
+        Action configure = () => _ = new AbsoluteTtl(DateTimeOffset.MaxValue);
 
         configure.Should().NotThrow();
     }
@@ -22,7 +22,7 @@ public class AbsoluteTtlSpecs : IDisposable
     [Fact]
     public void Should_be_able_to_configure_for_past()
     {
-        Action configure = () => new AbsoluteTtl(DateTimeOffset.MinValue);
+        Action configure = () => _ = new AbsoluteTtl(DateTimeOffset.MinValue);
 
         configure.Should().NotThrow();
     }

@@ -11,7 +11,7 @@ public class AsyncSerializingCacheProviderSpecs
             serialize: o => new StubSerialized(o),
             deserialize: s => s?.Original ?? default);
 
-        Action configure = () => new AsyncSerializingCacheProvider<StubSerialized>(null!, stubObjectSerializer);
+        Action configure = () => _ = new AsyncSerializingCacheProvider<StubSerialized>(null!, stubObjectSerializer);
 
         configure.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("wrappedCacheProvider");
@@ -20,7 +20,7 @@ public class AsyncSerializingCacheProviderSpecs
     [Fact]
     public void Single_generic_constructor_should_throw_on_no_serializer()
     {
-        Action configure = () => new AsyncSerializingCacheProvider<object>(new StubCacheProvider().AsyncFor<object>(), null!);
+        Action configure = () => _ = new AsyncSerializingCacheProvider<object>(new StubCacheProvider().AsyncFor<object>(), null!);
 
         configure.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("serializer");
@@ -221,7 +221,7 @@ public class AsyncSerializingCacheProviderSpecs
             serialize: o => new StubSerialized<ResultPrimitive>(o),
             deserialize: s => s?.Original ?? default);
 
-        Action configure = () => new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(null!, stubTResultSerializer);
+        Action configure = () => _ = new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(null!, stubTResultSerializer);
 
         configure.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("wrappedCacheProvider");
@@ -230,7 +230,7 @@ public class AsyncSerializingCacheProviderSpecs
     [Fact]
     public void Double_generic_constructor_should_throw_on_no_serializer()
     {
-        Action configure = () => new AsyncSerializingCacheProvider<object, object>(new StubCacheProvider().AsyncFor<object>(), null!);
+        Action configure = () => _ = new AsyncSerializingCacheProvider<object, object>(new StubCacheProvider().AsyncFor<object>(), null!);
 
         configure.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("serializer");
