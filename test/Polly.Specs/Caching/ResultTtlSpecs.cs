@@ -5,10 +5,7 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_throw_when_func_is_null()
     {
-        Action configure = () =>
-        {
-            _ = new ResultTtl<object>((Func<object?, Ttl>)null!);
-        };
+        Action configure = () => _ = new ResultTtl<object>((Func<object?, Ttl>)null!);
 
         configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
     }
@@ -16,10 +13,7 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_throw_when_func_is_null_using_context()
     {
-        Action configure = () =>
-        {
-            _ = new ResultTtl<object>((Func<Context, object?, Ttl>)null!);
-        };
+        Action configure = () => _ = new ResultTtl<object>((Func<Context, object?, Ttl>)null!);
 
         configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
     }
@@ -27,10 +21,7 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_not_throw_when_func_is_set()
     {
-        Action configure = () =>
-        {
-            _ = new ResultTtl<object>(_ => new Ttl());
-        };
+        Action configure = () => _ = new ResultTtl<object>(_ => new Ttl());
 
         configure.Should().NotThrow();
     }
@@ -38,10 +29,7 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_not_throw_when_func_is_set_using_context()
     {
-        Action configure = () =>
-        {
-            _ = new ResultTtl<object>((_, _) => new Ttl());
-        };
+        Action configure = () => _ = new ResultTtl<object>((_, _) => new Ttl());
 
         configure.Should().NotThrow();
     }
