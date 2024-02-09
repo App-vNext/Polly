@@ -66,7 +66,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
-            .WaitAndRetryForever(_ => new TimeSpan());
+            .WaitAndRetryForever(_ => default);
 
         policy.Invoking(x => x.RaiseException<DivideByZeroException>(3))
               .Should().NotThrow();
@@ -78,7 +78,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
         var policy = Policy
             .Handle<DivideByZeroException>()
             .Or<ArgumentException>()
-            .WaitAndRetryForever(_ => new TimeSpan());
+            .WaitAndRetryForever(_ => default);
 
         policy.Invoking(x => x.RaiseException<ArgumentException>(3))
               .Should().NotThrow();
