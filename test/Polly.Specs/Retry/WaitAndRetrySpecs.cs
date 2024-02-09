@@ -551,7 +551,7 @@ public class WaitAndRetrySpecs : IDisposable
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
-                                  .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
+                                  .WaitAndRetry(-1, _ => default, onRetry);
 
         policy.Should().Throw<ArgumentOutOfRangeException>().And
               .ParamName.Should().Be("retryCount");
@@ -564,7 +564,7 @@ public class WaitAndRetrySpecs : IDisposable
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
-                                  .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
+                                  .WaitAndRetry(-1, _ => default, onRetry);
 
         policy.Should().Throw<ArgumentOutOfRangeException>().And
               .ParamName.Should().Be("retryCount");
@@ -577,7 +577,7 @@ public class WaitAndRetrySpecs : IDisposable
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
-                                  .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
+                                  .WaitAndRetry(-1, _ => default, onRetry);
 
         policy.Should().Throw<ArgumentOutOfRangeException>().And
               .ParamName.Should().Be("retryCount");
@@ -629,7 +629,7 @@ public class WaitAndRetrySpecs : IDisposable
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
-                                  .WaitAndRetry(1, _ => new TimeSpan(), nullOnRetry);
+                                  .WaitAndRetry(1, _ => default, nullOnRetry);
 
         policy.Should().Throw<ArgumentNullException>().And
               .ParamName.Should().Be("onRetry");
@@ -642,7 +642,7 @@ public class WaitAndRetrySpecs : IDisposable
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
-                                  .WaitAndRetry(1, _ => new TimeSpan(), nullOnRetry);
+                                  .WaitAndRetry(1, _ => default, nullOnRetry);
 
         policy.Should().Throw<ArgumentNullException>().And
               .ParamName.Should().Be("onRetry");
@@ -655,7 +655,7 @@ public class WaitAndRetrySpecs : IDisposable
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
-                                  .WaitAndRetry(1, _ => new TimeSpan(), nullOnRetry);
+                                  .WaitAndRetry(1, _ => default, nullOnRetry);
 
         policy.Should().Throw<ArgumentNullException>().And
               .ParamName.Should().Be("onRetry");

@@ -21,7 +21,7 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_not_throw_when_func_is_set()
     {
-        Action configure = () => _ = new ResultTtl<object>(_ => new Ttl());
+        Action configure = () => _ = new ResultTtl<object>(_ => default);
 
         configure.Should().NotThrow();
     }
@@ -29,7 +29,7 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_not_throw_when_func_is_set_using_context()
     {
-        Action configure = () => _ = new ResultTtl<object>((_, _) => new Ttl());
+        Action configure = () => _ = new ResultTtl<object>((_, _) => default);
 
         configure.Should().NotThrow();
     }

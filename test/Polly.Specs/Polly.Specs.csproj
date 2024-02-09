@@ -9,7 +9,7 @@
     <Include>[Polly]*</Include>
     <IncludePollyUsings>true</IncludePollyUsings>
     <NoWarn>$(NoWarn);S103;S104;IDE0011;SA1600;SA1204;CA2008;CA2201;</NoWarn>
-    <NoWarn>$(NoWarn);S3878;CA1030;S3717;SA1129;S1402;SA1649;SA1402;CA1031</NoWarn>
+    <NoWarn>$(NoWarn);S3878;CA1030;S3717;S1402;SA1649;SA1402;CA1031</NoWarn>
     <NoWarn>$(NoWarn);S2184;</NoWarn>
   </PropertyGroup>
 
