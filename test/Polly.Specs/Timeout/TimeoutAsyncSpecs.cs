@@ -247,7 +247,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     {
         var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
 
-        await policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).Should().ThrowAsync<NotImplementedException>();
+        await policy.Awaiting(p => p.ExecuteAsync(() => throw new NotSupportedException())).Should().ThrowAsync<NotSupportedException>();
     }
 
     [Fact]
@@ -340,7 +340,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     {
         var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
 
-        await policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).Should().ThrowAsync<NotImplementedException>();
+        await policy.Awaiting(p => p.ExecuteAsync(() => throw new NotSupportedException())).Should().ThrowAsync<NotSupportedException>();
     }
 
     #endregion

@@ -250,7 +250,7 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     {
         var policy = Policy.Timeout<ResultPrimitive>(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
 
-        policy.Invoking(p => p.Execute(() => throw new NotImplementedException())).Should().Throw<NotImplementedException>();
+        policy.Invoking(p => p.Execute(() => throw new NotSupportedException())).Should().Throw<NotSupportedException>();
     }
 
     [Fact]
@@ -402,7 +402,7 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     {
         var policy = Policy.Timeout<ResultPrimitive>(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
 
-        policy.Invoking(p => p.Execute(() => throw new NotImplementedException())).Should().Throw<NotImplementedException>();
+        policy.Invoking(p => p.Execute(() => throw new NotSupportedException())).Should().Throw<NotSupportedException>();
     }
 
     #endregion
