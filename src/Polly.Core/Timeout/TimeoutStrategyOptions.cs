@@ -17,7 +17,7 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets the default timeout.
     /// </summary>
     /// <value>
-    /// This value must be greater than 1 second and less than 24 hours. The default value is 30 seconds.
+    /// This value must be greater than 10 milliseconds and less than 24 hours. The default value is 30 seconds.
     /// </value>
     [Range(typeof(TimeSpan), "00:00:00.010", "1.00:00:00")]
     [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Addressed with DynamicDependency on ValidationHelper.Validate method")]
