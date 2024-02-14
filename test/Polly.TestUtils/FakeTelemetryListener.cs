@@ -11,7 +11,7 @@ public sealed class FakeTelemetryListener : TelemetryListener
 
     public FakeTelemetryListener() => _callback = _ => { };
 
-    public IList<TelemetryEventArguments<object, object>> Events { get; } = new List<TelemetryEventArguments<object, object>>();
+    public IList<TelemetryEventArguments<object, object>> Events { get; } = [];
 
     public IEnumerable<T> GetArgs<T>() => Events.Select(e => e.Arguments).OfType<T>();
 

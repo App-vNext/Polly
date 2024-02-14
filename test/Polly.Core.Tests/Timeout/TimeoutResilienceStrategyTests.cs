@@ -22,12 +22,14 @@ public class TimeoutResilienceStrategyTests : IDisposable
         _cancellationSource = new CancellationTokenSource();
     }
 
+#pragma warning disable IDE0028 // Simplify collection initialization
     public static TheoryData<Func<TimeSpan>> Execute_NoTimeout_Data() => new()
     {
         () => TimeSpan.Zero,
         () => TimeSpan.FromMilliseconds(-1),
         () => System.Threading.Timeout.InfiniteTimeSpan,
     };
+#pragma warning restore IDE0028 // Simplify collection initialization
 
     public void Dispose() => _cancellationSource.Dispose();
 
