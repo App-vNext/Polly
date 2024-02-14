@@ -55,10 +55,8 @@ internal class HedgingActions
         return Outcome.FromResult("Oranges");
     }
 
-    public static Func<HedgingActionGeneratorArguments<string>, Func<ValueTask<Outcome<string>>>?> GetGenerator(Func<ResilienceContext, ValueTask<Outcome<string>>> task)
-    {
-        return args => () => task(args.ActionContext);
-    }
+    public static Func<HedgingActionGeneratorArguments<string>, Func<ValueTask<Outcome<string>>>?> GetGenerator(Func<ResilienceContext, ValueTask<Outcome<string>>> task) =>
+        args => () => task(args.ActionContext);
 
     public int MaxHedgedTasks => Functions.Count + 1;
 }

@@ -119,10 +119,7 @@ public class ReloadableResiliencePipelineTests
 
     private class ReloadableConfiguration : ConfigurationProvider, IConfigurationSource
     {
-        public IConfigurationProvider Build(IConfigurationBuilder builder)
-        {
-            return this;
-        }
+        public IConfigurationProvider Build(IConfigurationBuilder builder) => this;
 
         public void Reload(Dictionary<string, string?> data)
         {

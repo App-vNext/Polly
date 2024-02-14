@@ -251,14 +251,12 @@ public class TaskExecutionTests : IDisposable
         }
     }
 
-    private async Task InitializePrimaryAsync(TaskExecution<DisposableResult> execution, DisposableResult? result = null, Action<ResilienceContext>? onContext = null)
-    {
+    private async Task InitializePrimaryAsync(TaskExecution<DisposableResult> execution, DisposableResult? result = null, Action<ResilienceContext>? onContext = null) =>
         await execution.InitializeAsync(HedgedTaskType.Primary, _primaryContext, (context, _) =>
         {
             onContext?.Invoke(context);
             return Outcome.FromResultAsValueTask(result ?? new DisposableResult { Name = Handled });
         }, "dummy-state", 1);
-    }
 
     private void AssertContext(ResilienceContext context)
     {

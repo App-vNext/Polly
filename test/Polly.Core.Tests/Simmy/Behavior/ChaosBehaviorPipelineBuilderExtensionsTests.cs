@@ -31,22 +31,18 @@ public class ChaosBehaviorPipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddBehavior_Shortcut_Option_Throws()
-    {
+    public void AddBehavior_Shortcut_Option_Throws() =>
         new ResiliencePipelineBuilder()
             .Invoking(b => b.AddChaosBehavior(-1, _ => default))
             .Should()
             .Throw<ValidationException>();
-    }
 
     [Fact]
-    public void AddBehavior_InvalidOptions_Throws()
-    {
+    public void AddBehavior_InvalidOptions_Throws() =>
         new ResiliencePipelineBuilder()
             .Invoking(b => b.AddChaosBehavior(new ChaosBehaviorStrategyOptions()))
             .Should()
             .Throw<ValidationException>();
-    }
 
     [Fact]
     public void AddBehavior_Options_Ok()

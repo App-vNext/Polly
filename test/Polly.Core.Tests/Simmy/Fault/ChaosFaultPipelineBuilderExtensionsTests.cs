@@ -57,26 +57,22 @@ public class ChaosFaultPipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddFault_Generic_Shortcut_Generator_Option_Throws()
-    {
+    public void AddFault_Generic_Shortcut_Generator_Option_Throws() =>
         new ResiliencePipelineBuilder<int>()
             .Invoking(b => b.AddChaosFault(
                 1.5,
                 () => new InvalidOperationException()))
             .Should()
             .Throw<ValidationException>();
-    }
 
     [Fact]
-    public void AddFault_Shortcut_Generator_Option_Throws()
-    {
+    public void AddFault_Shortcut_Generator_Option_Throws() =>
         new ResiliencePipelineBuilder()
             .Invoking(b => b.AddChaosFault(
                 1.5,
                 () => new InvalidOperationException()))
             .Should()
             .Throw<ValidationException>();
-    }
 
     [Fact]
     public void AddFault_Shortcut_Generator_Option_Ok()

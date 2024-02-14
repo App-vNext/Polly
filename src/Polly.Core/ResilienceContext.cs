@@ -76,10 +76,7 @@ public sealed class ResilienceContext
 
     [ExcludeFromCodeCoverage]
     [Conditional("DEBUG")]
-    internal void AssertInitialized()
-    {
-        Debug.Assert(IsInitialized, "The resilience context is not initialized.");
-    }
+    internal void AssertInitialized() => Debug.Assert(IsInitialized, "The resilience context is not initialized.");
 
     internal ResilienceContext Initialize<TResult>(bool isSynchronous)
     {

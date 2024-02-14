@@ -20,14 +20,12 @@ internal sealed class DelegatingComponent : PipelineComponent
     internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
-        TState state)
-    {
+        TState state) =>
 #if NET6_0_OR_GREATER
-        return RuntimeFeature.IsDynamicCodeSupported ? ExecuteComponent(callback, context, state) : ExecuteComponentAot(callback, context, state);
+        RuntimeFeature.IsDynamicCodeSupported ? ExecuteComponent(callback, context, state) : ExecuteComponentAot(callback, context, state);
 #else
-        return ExecuteComponent(callback, context, state);
+        ExecuteComponent(callback, context, state);
 #endif
-    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ValueTask<Outcome<TResult>> ExecuteNext<TResult, TState>(
@@ -49,24 +47,21 @@ internal sealed class DelegatingComponent : PipelineComponent
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)
-    {
-        return _component.ExecuteCore(
-            static (context, state) => ExecuteNext(state.Next!, state.callback, context, state.state),
-            context,
-            (Next, callback, state));
-    }
+        => _component.ExecuteCore(
+                static (context, state) => ExecuteNext(state.Next!, state.callback, context, state.state),
+                context,
+                (Next, callback, state));
 
 #if NET6_0_OR_GREATER
+    // Custom state object is used to cast the callback and state to prevent infinite
+    // generic type recursion warning IL3054 when referenced in a native AoT application.
+    // See https://github.com/App-vNext/Polly/issues/1732 for further context.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal ValueTask<Outcome<TResult>> ExecuteComponentAot<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
-        TState state)
-    {
-        // Custom state object is used to cast the callback and state to prevent infinite
-        // generic type recursion warning IL3054 when referenced in a native AoT application.
-        // See https://github.com/App-vNext/Polly/issues/1732 for further context.
-        return _component.ExecuteCore(
+        TState state) =>
+        _component.ExecuteCore(
             static (context, wrapper) =>
             {
                 var callback = (Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>>)wrapper.Callback;
@@ -75,7 +70,6 @@ internal sealed class DelegatingComponent : PipelineComponent
             },
             context,
             new StateWrapper(Next!, callback, state!));
-    }
 
     private readonly record struct StateWrapper(PipelineComponent Next, object Callback, object State);
 #endif

@@ -3,22 +3,16 @@ namespace Polly.Core.Tests;
 public class ResilienceContextPoolTests
 {
     [Fact]
-    public void Shared_NotNull()
-    {
+    public void Shared_NotNull() =>
         ResilienceContextPool.Shared.Should().NotBeNull();
-    }
 
     [Fact]
-    public void Shared_SameInstance()
-    {
+    public void Shared_SameInstance() =>
         ResilienceContextPool.Shared.Should().BeSameAs(ResilienceContextPool.Shared);
-    }
 
     [Fact]
-    public void Get_EnsureNotNull()
-    {
+    public void Get_EnsureNotNull() =>
         ResilienceContextPool.Shared.Get().Should().NotBeNull();
-    }
 
     [Fact]
     public void Get_EnsureDefaults()
@@ -82,8 +76,7 @@ public class ResilienceContextPoolTests
     }
 
     [Fact]
-    public async Task Get_EnsurePooled()
-    {
+    public async Task Get_EnsurePooled() =>
         await TestUtilities.AssertWithTimeoutAsync(() =>
         {
             var context = ResilienceContextPool.Shared.Get();
@@ -92,17 +85,13 @@ public class ResilienceContextPoolTests
 
             ResilienceContextPool.Shared.Get().Should().BeSameAs(context);
         });
-    }
 
     [Fact]
-    public void Return_Null_Throws()
-    {
+    public void Return_Null_Throws() =>
         Assert.Throws<ArgumentNullException>(() => ResilienceContextPool.Shared.Return(null!));
-    }
 
     [Fact]
-    public async Task Return_EnsureDefaults()
-    {
+    public async Task Return_EnsureDefaults() =>
         await TestUtilities.AssertWithTimeoutAsync(() =>
         {
             using var cts = new CancellationTokenSource();
@@ -115,7 +104,6 @@ public class ResilienceContextPoolTests
 
             AssertDefaults(context);
         });
-    }
 
     private static void AssertDefaults(ResilienceContext context)
     {

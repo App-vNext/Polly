@@ -5,8 +5,6 @@ namespace Polly.Core.Tests.Timeout;
 public class TimeoutConstantsTests
 {
     [Fact]
-    public void EnsureDefaultValues()
-    {
+    public void EnsureDefaultValues() =>
         TimeoutConstants.OnTimeoutEvent.Should().Be("OnTimeout");
-    }
 }

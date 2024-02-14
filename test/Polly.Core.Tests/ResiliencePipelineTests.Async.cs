@@ -4,10 +4,8 @@ namespace Polly.Core.Tests;
 
 public partial class ResiliencePipelineTests
 {
-    public static IEnumerable<object[]> ExecuteAsync_EnsureCorrectBehavior_Data()
-    {
-        return ConvertExecuteParameters(ExecuteAsync_EnsureCorrectBehavior_ExecuteParameters);
-    }
+    public static IEnumerable<object[]> ExecuteAsync_EnsureCorrectBehavior_Data() =>
+        ConvertExecuteParameters(ExecuteAsync_EnsureCorrectBehavior_ExecuteParameters);
 
     private static IEnumerable<ExecuteParameters> ExecuteAsync_EnsureCorrectBehavior_ExecuteParameters()
     {

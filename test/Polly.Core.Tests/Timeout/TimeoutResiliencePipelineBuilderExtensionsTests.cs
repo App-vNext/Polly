@@ -47,13 +47,11 @@ public class TimeoutResiliencePipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddTimeout_InvalidOptions_Throws()
-    {
+    public void AddTimeout_InvalidOptions_Throws() =>
         new ResiliencePipelineBuilder()
             .Invoking(b => b.AddTimeout(new TimeoutStrategyOptions { Timeout = TimeSpan.Zero }))
             .Should()
             .Throw<ValidationException>();
-    }
 
     private static TimeSpan GetTimeout(TimeoutResilienceStrategy strategy)
     {

@@ -254,17 +254,18 @@ internal sealed class CircuitStateController<T> : IDisposable
         return breakDuration > maxDifference;
     }
 
+#if NET8_0_OR_GREATER
+    private void EnsureNotDisposed()
+        => ObjectDisposedException.ThrowIf(_disposed, this);
+#else
     private void EnsureNotDisposed()
     {
-#if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(_disposed, this);
-#else
         if (_disposed)
         {
             throw new ObjectDisposedException(nameof(CircuitStateController<T>));
         }
-#endif
     }
+#endif
 
     private void CloseCircuit_NeedsLock(Outcome<T> outcome, bool manual, ResilienceContext context, out Task? scheduledTask)
     {
@@ -315,9 +316,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     };
 
     private void OpenCircuit_NeedsLock(Outcome<T> outcome, bool manual, ResilienceContext context, out Task? scheduledTask)
-    {
-        OpenCircuitFor_NeedsLock(outcome, _breakDuration, manual, context, out scheduledTask);
-    }
+        => OpenCircuitFor_NeedsLock(outcome, _breakDuration, manual, context, out scheduledTask);
 
     private void OpenCircuitFor_NeedsLock(Outcome<T> outcome, TimeSpan breakDuration, bool manual, ResilienceContext context, out Task? scheduledTask)
     {

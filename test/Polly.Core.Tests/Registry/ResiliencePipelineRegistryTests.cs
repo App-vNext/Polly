@@ -27,18 +27,14 @@ public class ResiliencePipelineRegistryTests
     };
 
     [Fact]
-    public void Ctor_Default_Ok()
-    {
+    public void Ctor_Default_Ok() =>
         this.Invoking(_ => new ResiliencePipelineRegistry<string>()).Should().NotThrow();
-    }
 
     [Fact]
-    public void Ctor_InvalidOptions_Throws()
-    {
+    public void Ctor_InvalidOptions_Throws() =>
         this.Invoking(_ => new ResiliencePipelineRegistry<string>(new ResiliencePipelineRegistryOptions<string> { BuilderFactory = null! }))
             .Should()
             .Throw<ArgumentNullException>();
-    }
 
     [Fact]
     public void GetPipeline_BuilderMultiInstance_EnsureMultipleInstances()

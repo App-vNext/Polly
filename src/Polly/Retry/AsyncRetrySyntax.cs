@@ -34,13 +34,11 @@ public static class AsyncRetrySyntax
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">onRetry</exception>
-    public static AsyncRetryPolicy RetryAsync(this PolicyBuilder policyBuilder, Action<Exception, int> onRetry)
-    {
+    public static AsyncRetryPolicy RetryAsync(this PolicyBuilder policyBuilder, Action<Exception, int> onRetry) =>
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
-        return policyBuilder.RetryAsync(1,
+        policyBuilder.RetryAsync(1,
             onRetryAsync: async (outcome, i, _) => onRetry(outcome, i));
 #pragma warning restore 1998
-    }
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy" /> that will retry once

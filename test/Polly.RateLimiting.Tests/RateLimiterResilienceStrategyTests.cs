@@ -12,10 +12,8 @@ public class RateLimiterResilienceStrategyTests
     private Func<OnRateLimiterRejectedArguments, ValueTask>? _event;
 
     [Fact]
-    public void Ctor_Ok()
-    {
+    public void Ctor_Ok() =>
         Create().Should().NotBeNull();
-    }
 
     [Fact]
     public async Task Execute_HappyPath()

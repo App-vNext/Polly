@@ -53,10 +53,7 @@ public sealed class ResilienceProperties
     /// <param name="key">Strongly typed key to get the value of the property.</param>
     /// <param name="value">Returns the value of the property.</param>
     /// <typeparam name="TValue">The type of property value as defined by <paramref name="key"/> parameter.</typeparam>
-    public void Set<TValue>(ResiliencePropertyKey<TValue> key, TValue value)
-    {
-        Options[key.Key] = value;
-    }
+    public void Set<TValue>(ResiliencePropertyKey<TValue> key, TValue value) => Options[key.Key] = value;
 
     internal void AddOrReplaceProperties(ResilienceProperties other)
     {

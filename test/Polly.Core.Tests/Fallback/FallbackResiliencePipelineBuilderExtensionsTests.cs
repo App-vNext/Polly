@@ -31,11 +31,9 @@ public class FallbackResiliencePipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddFallbackT_InvalidOptions_Throws()
-    {
+    public void AddFallbackT_InvalidOptions_Throws() =>
         new ResiliencePipelineBuilder<double>()
             .Invoking(b => b.AddFallback(new FallbackStrategyOptions<double>()))
             .Should()
             .Throw<ValidationException>();
-    }
 }
