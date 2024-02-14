@@ -16,7 +16,7 @@ public class TelemetryOptions
     /// <value>
     /// The default value is an empty collection.
     /// </value>
-    public ICollection<TelemetryListener> TelemetryListeners { get; } = new List<TelemetryListener>();
+    public ICollection<TelemetryListener> TelemetryListeners { get; } = [];
 
     /// <summary>
     /// Gets or sets the logger factory.
@@ -33,7 +33,7 @@ public class TelemetryOptions
     /// <value>
     /// The default value is an empty collection.
     /// </value>
-    public ICollection<MeteringEnricher> MeteringEnrichers { get; } = new List<MeteringEnricher>();
+    public ICollection<MeteringEnricher> MeteringEnrichers { get; } = [];
 
     /// <summary>
     /// Gets or sets the result formatter.

@@ -35,7 +35,7 @@ internal sealed class TagsList
     /// <summary>
     /// Gets the tags associated with the resilience event.
     /// </summary>
-    public IList<KeyValuePair<string, object?>> Tags { get; } = new List<KeyValuePair<string, object?>>();
+    public IList<KeyValuePair<string, object?>> Tags { get; } = [];
 
     internal ReadOnlySpan<KeyValuePair<string, object?>> TagsSpan
     {
