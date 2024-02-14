@@ -23,16 +23,12 @@ public class ResiliencePipelineBenchmark
     }
 
     [Benchmark]
-    public async ValueTask ExecuteAsync_CancellationToken()
-    {
+    public async ValueTask ExecuteAsync_CancellationToken() =>
         await ResiliencePipeline.Empty.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
-    }
 
     [Benchmark]
-    public async ValueTask ExecuteAsync_GenericStrategy_CancellationToken()
-    {
+    public async ValueTask ExecuteAsync_GenericStrategy_CancellationToken() =>
         await ResiliencePipeline<string>.Empty.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
-    }
 
     [Benchmark]
     public void Execute_ResilienceContextAndState()
@@ -43,23 +39,16 @@ public class ResiliencePipelineBenchmark
     }
 
     [Benchmark]
-    public void Execute_CancellationToken()
-    {
+    public void Execute_CancellationToken() =>
         ResiliencePipeline.Empty.Execute(_ => "dummy", CancellationToken.None);
-    }
 
     [Benchmark]
-    public void Execute_GenericStrategy_CancellationToken()
-    {
+    public void Execute_GenericStrategy_CancellationToken() =>
         ResiliencePipeline<string>.Empty.Execute(_ => "dummy", CancellationToken.None);
-    }
 
     public class NonGenericStrategy
     {
         [MethodImpl(MethodImplOptions.NoOptimization)]
-        public virtual ValueTask<T> ExecuteAsync<T>(Func<ValueTask<T>> callback)
-        {
-            return callback();
-        }
+        public virtual ValueTask<T> ExecuteAsync<T>(Func<ValueTask<T>> callback) => callback();
     }
 }

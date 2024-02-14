@@ -21,8 +21,7 @@ public class StrategyHelperTests
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public async Task ExecuteCallbackSafeAsync_CallbackThrows_EnsureExceptionWrapped(bool isAsync)
-    {
+    public async Task ExecuteCallbackSafeAsync_CallbackThrows_EnsureExceptionWrapped(bool isAsync) =>
         await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
             var outcome = await StrategyHelper.ExecuteCallbackSafeAsync<string, string>(
@@ -40,5 +39,4 @@ public class StrategyHelperTests
 
             outcome.Exception.Should().BeOfType<InvalidOperationException>();
         });
-    }
 }

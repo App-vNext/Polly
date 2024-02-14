@@ -31,10 +31,8 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     }
 
     [Fact]
-    public void Ctor_Ok()
-    {
+    public void Ctor_Ok() =>
         this.Invoking(_ => Create()).Should().NotThrow();
-    }
 
     [Fact]
     public void Ctor_StateProvider_EnsureAttached()

@@ -6,8 +6,7 @@ namespace Polly.Extensions.Tests.Telemetry;
 public class TagsListTests
 {
     [Fact]
-    public async Task Pooling_OK()
-    {
+    public async Task Pooling_OK() =>
         await TestUtilities.AssertWithTimeoutAsync(() =>
         {
             var context = TagsList.Get();
@@ -16,5 +15,4 @@ public class TagsListTests
 
             TagsList.Get().Should().BeSameAs(context);
         });
-    }
 }

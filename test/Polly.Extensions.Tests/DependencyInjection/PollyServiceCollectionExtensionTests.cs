@@ -468,8 +468,7 @@ public class PollyServiceCollectionExtensionTests
         serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<int>(10).Should().NotBeNull();
     }
 
-    private void AddResiliencePipeline(string key, Action<StrategyBuilderContext>? onBuilding = null)
-    {
+    private void AddResiliencePipeline(string key, Action<StrategyBuilderContext>? onBuilding = null) =>
         _services.AddResiliencePipeline(key, builder =>
         {
             builder.AddStrategy(context =>
@@ -478,10 +477,8 @@ public class PollyServiceCollectionExtensionTests
                 return new TestStrategy();
             }, new TestResilienceStrategyOptions());
         });
-    }
 
-    private void AddResiliencePipeline<TResult>(string key, Action<StrategyBuilderContext>? onBuilding = null)
-    {
+    private void AddResiliencePipeline<TResult>(string key, Action<StrategyBuilderContext>? onBuilding = null) =>
         _services.AddResiliencePipeline<string, TResult>(key, builder =>
         {
             builder.AddStrategy(context =>
@@ -490,12 +487,9 @@ public class PollyServiceCollectionExtensionTests
                 return new TestStrategy();
             }, new TestResilienceStrategyOptions());
         });
-    }
 
-    private ResiliencePipelineProvider<string> CreateProvider()
-    {
-        return _services.BuildServiceProvider().GetRequiredService<ResiliencePipelineProvider<string>>();
-    }
+    private ResiliencePipelineProvider<string> CreateProvider() =>
+        _services.BuildServiceProvider().GetRequiredService<ResiliencePipelineProvider<string>>();
 
     private class TestStrategy : ResilienceStrategy
     {

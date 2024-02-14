@@ -492,8 +492,7 @@ public class TelemetryListenerImplTests : IDisposable
         string? instanceName = "my-instance",
         ResilienceContext? context = null,
         TArgs arg = default!,
-        ResilienceEventSeverity severity = ResilienceEventSeverity.Warning)
-    {
+        ResilienceEventSeverity severity = ResilienceEventSeverity.Warning) =>
         telemetry.Write(
             new TelemetryEventArguments<object, TArgs>(
                 new ResilienceTelemetrySource("my-pipeline", instanceName, "my-strategy"),
@@ -501,7 +500,6 @@ public class TelemetryListenerImplTests : IDisposable
                 context ?? ResilienceContextPool.Shared.Get("op-key"),
                 arg!,
                 outcome));
-    }
 
     private class CallbackEnricher : MeteringEnricher
     {
@@ -509,9 +507,7 @@ public class TelemetryListenerImplTests : IDisposable
 
         public CallbackEnricher(Action<EnrichmentContext<object, object>> callback) => _callback = callback;
 
-        public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
-        {
+        public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context) =>
             _callback(new EnrichmentContext<object, object>(context.TelemetryEvent.AsObjectArguments(), context.Tags));
-        }
     }
 }

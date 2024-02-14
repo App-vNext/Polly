@@ -42,7 +42,5 @@ public class CircuitBreakerOpenedBenchmark
 
     [Benchmark(Baseline = true)]
     public async ValueTask ExecuteAsync_Outcome_V8()
-    {
-        await _reactivePipeline!.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
-    }
+        => await _reactivePipeline!.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
 }

@@ -424,9 +424,8 @@ public class HedgingExecutionContextTests : IDisposable
     private async Task<HedgingExecutionContext<DisposableResult>.ExecutionInfo<DisposableResult>> LoadExecutionAsync(
         HedgingExecutionContext<DisposableResult> context,
         TimeSpan? primaryDelay = null,
-        bool error = false)
-    {
-        return await context.LoadExecutionAsync(
+        bool error = false) =>
+        await context.LoadExecutionAsync(
             async (c, _) =>
             {
                 if (primaryDelay != null)
@@ -442,10 +441,8 @@ public class HedgingExecutionContextTests : IDisposable
                 return Outcome.FromResult(new DisposableResult { Name = "primary" });
             },
             "state");
-    }
 
-    private void ConfigureSecondaryTasks(params TimeSpan[] delays)
-    {
+    private void ConfigureSecondaryTasks(params TimeSpan[] delays) =>
         Generator = args =>
         {
             var attempt = args.AttemptNumber - 1;
@@ -462,7 +459,6 @@ public class HedgingExecutionContextTests : IDisposable
                 return Outcome.FromResult(new DisposableResult(delays[attempt].ToString()));
             };
         };
-    }
 
     private Func<HedgingActionGeneratorArguments<DisposableResult>, Func<ValueTask<Outcome<DisposableResult>>>?> Generator { get; set; } = args =>
     {

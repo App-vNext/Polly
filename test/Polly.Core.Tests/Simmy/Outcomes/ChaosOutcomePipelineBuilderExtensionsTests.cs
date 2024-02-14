@@ -54,11 +54,9 @@ public class ChaosOutcomePipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddResult_Shortcut_Option_Throws()
-    {
+    public void AddResult_Shortcut_Option_Throws() =>
         new ResiliencePipelineBuilder<int>()
             .Invoking(b => b.AddChaosOutcome(-1, () => 120))
             .Should()
             .Throw<ValidationException>();
-    }
 }

@@ -15,9 +15,7 @@ public class BrokenCircuitExceptionTests
 
 #if !NETCOREAPP
     [Fact]
-    public void BinarySerialization_Ok()
-    {
+    public void BinarySerialization_Ok() =>
         BinarySerializationUtil.SerializeAndDeserializeException(new BrokenCircuitException()).Should().NotBeNull();
-    }
 #endif
 }

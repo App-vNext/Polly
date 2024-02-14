@@ -12,25 +12,23 @@ public class ChaosOutcomeStrategyTests
 
     public ChaosOutcomeStrategyTests()
     {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(arg => _args.Add(arg));
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_args.Add);
         _onOutcomeInjectedExecuted = false;
         _userDelegateExecuted = false;
     }
 
     public static List<object[]> ResultCtorTestCases =>
-        new()
-        {
-                new object[] { null!, "Value cannot be null. (Parameter 'options')", typeof(ArgumentNullException) },
-                new object[]
+        [
+            [null!, "Value cannot be null. (Parameter 'options')", typeof(ArgumentNullException)],
+            [
+                new ChaosOutcomeStrategyOptions<int>
                 {
-                    new ChaosOutcomeStrategyOptions<int>
-                    {
-                        InjectionRate = 1,
-                    },
-                    "Either Outcome or OutcomeGenerator is required.",
-                    typeof(InvalidOperationException)
+                    InjectionRate = 1,
                 },
-        };
+                "Either Outcome or OutcomeGenerator is required.",
+                typeof(InvalidOperationException)
+            ],
+        ];
 
     [Theory]
     [MemberData(nameof(ResultCtorTestCases))]
@@ -196,14 +194,13 @@ public class ChaosOutcomeStrategyTests
 /// </summary>
 public enum HttpStatusCode
 {
-    // Summary:
-    //     Equivalent to HTTP status 200. System.Net.HttpStatusCode.OK indicates that the
-    //     request succeeded and that the requested information is in the response. This
-    //     is the most common status code to receive.
+    /// <summary>
+    /// HTTP 200.
+    /// </summary>
     OK = 200,
 
-    // Summary:
-    //     Equivalent to HTTP status 429. System.Net.HttpStatusCode.TooManyRequests indicates
-    //     that the user has sent too many requests in a given amount of time.
+    /// <summary>
+    /// HTTP 429.
+    /// </summary>
     TooManyRequests = 429,
 }

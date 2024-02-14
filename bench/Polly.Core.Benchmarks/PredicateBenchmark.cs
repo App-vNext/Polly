@@ -31,14 +31,10 @@ public class PredicateBenchmark
     };
 
     [Benchmark(Baseline = true)]
-    public ValueTask<bool> Predicate_SwitchExpression()
-    {
-        return _delegate.ShouldHandle(_args);
-    }
+    public ValueTask<bool> Predicate_SwitchExpression() =>
+        _delegate.ShouldHandle(_args);
 
     [Benchmark]
-    public ValueTask<bool> Predicate_PredicateBuilder()
-    {
-        return _builder.ShouldHandle(_args);
-    }
+    public ValueTask<bool> Predicate_PredicateBuilder() =>
+        _builder.ShouldHandle(_args);
 }

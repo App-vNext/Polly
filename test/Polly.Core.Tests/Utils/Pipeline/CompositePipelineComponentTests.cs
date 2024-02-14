@@ -138,8 +138,6 @@ public class CompositePipelineComponentTests
         await b.Received(1).DisposeAsync();
     }
 
-    private CompositeComponent CreateSut(PipelineComponent[] components, TimeProvider? timeProvider = null)
-    {
-        return (CompositeComponent)PipelineComponentFactory.CreateComposite(components, _telemetry, timeProvider ?? Substitute.For<TimeProvider>());
-    }
+    private CompositeComponent CreateSut(PipelineComponent[] components, TimeProvider? timeProvider = null) =>
+        (CompositeComponent)PipelineComponentFactory.CreateComposite(components, _telemetry, timeProvider ?? Substitute.For<TimeProvider>());
 }

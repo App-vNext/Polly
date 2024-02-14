@@ -8,10 +8,8 @@ public class DisposeHelperTests
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public void Dispose_Object_Ok(bool synchronous)
-    {
+    public void Dispose_Object_Ok(bool synchronous) =>
         DisposeHelper.TryDisposeSafeAsync(new object(), synchronous).AsTask().IsCompleted.Should().BeTrue();
-    }
 
     [InlineData(true)]
     [InlineData(false)]

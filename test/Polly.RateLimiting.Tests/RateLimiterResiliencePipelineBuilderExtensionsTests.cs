@@ -56,8 +56,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddConcurrencyLimiter_InvalidOptions_Throws()
-    {
+    public void AddConcurrencyLimiter_InvalidOptions_Throws() =>
         Assert.Throws<ArgumentException>(() =>
         {
             return new ResiliencePipelineBuilder().AddConcurrencyLimiter(new ConcurrencyLimiterOptions
@@ -67,7 +66,6 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
             })
             .Build();
         });
-    }
 
     [Fact]
     public void AddRateLimiter_AllExtensions_Ok()
@@ -105,8 +103,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddRateLimiter_InvalidOptions_Throws()
-    {
+    public void AddRateLimiter_InvalidOptions_Throws() =>
         new ResiliencePipelineBuilder().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! }))
             .Should()
             .Throw<ValidationException>()
@@ -116,11 +113,9 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
             Validation Errors:
             The DefaultRateLimiterOptions field is required.
             """);
-    }
 
     [Fact]
-    public void AddGenericRateLimiter_InvalidOptions_Throws()
-    {
+    public void AddGenericRateLimiter_InvalidOptions_Throws() =>
         new ResiliencePipelineBuilder<int>().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! }))
             .Should()
             .Throw<ValidationException>()
@@ -130,7 +125,6 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
             Validation Errors:
             The DefaultRateLimiterOptions field is required.
             """);
-    }
 
     [Fact]
     public void AddRateLimiter_Options_Ok()

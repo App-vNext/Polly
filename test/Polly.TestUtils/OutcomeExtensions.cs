@@ -7,9 +7,7 @@ public static class OutcomeExtensions
     public static ValueTask<bool> ResultPredicateAsync<TResult>(this Outcome<object> outcome, Predicate<TResult> predicate) => new(outcome.ResultPredicate(predicate));
 
     public static bool ResultPredicate<TResult>(this Outcome<object> outcome, TResult result)
-    {
-        return outcome.ResultPredicate<TResult>(r => EqualityComparer<TResult>.Default.Equals(r, result));
-    }
+        => outcome.ResultPredicate<TResult>(r => EqualityComparer<TResult>.Default.Equals(r, result));
 
     public static bool ResultPredicate<TResult>(this Outcome<object> outcome, Predicate<TResult> predicate)
     {

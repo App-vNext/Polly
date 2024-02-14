@@ -15,9 +15,7 @@ public class IsolatedCircuitExceptionTests
 
 #if !NETCOREAPP
     [Fact]
-    public void BinarySerialization_Ok()
-    {
+    public void BinarySerialization_Ok() =>
         BinarySerializationUtil.SerializeAndDeserializeException(new IsolatedCircuitException("dummy")).Should().NotBeNull();
-    }
 #endif
 }

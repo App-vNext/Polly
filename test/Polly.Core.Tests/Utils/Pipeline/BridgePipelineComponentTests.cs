@@ -7,10 +7,8 @@ namespace Polly.Core.Tests.Utils.Pipeline;
 public class BridgePipelineComponentTests
 {
     [Fact]
-    public void Ctor_Ok()
-    {
+    public void Ctor_Ok() =>
         new Strategy<string>(args => { }).Should().NotBeNull();
-    }
 
     [Fact]
     public void Execute_NonGeneric_Ok()
@@ -91,10 +89,8 @@ public class BridgePipelineComponentTests
     }
 #pragma warning restore S1944 // Invalid casts should be avoided
 
-    private static async Task Dispose(PipelineComponent component)
-    {
+    private static async Task Dispose(PipelineComponent component) =>
         await component.DisposeAsync();
-    }
 
     private class Strategy<T> : ResilienceStrategy<T>
     {

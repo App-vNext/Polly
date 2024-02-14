@@ -29,8 +29,7 @@ public class TelemetryResiliencePipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void ConfigureTelemetry_InvalidOptions_Throws()
-    {
+    public void ConfigureTelemetry_InvalidOptions_Throws() =>
         _builder
             .Invoking(b => b.ConfigureTelemetry(new TelemetryOptions
             {
@@ -43,5 +42,4 @@ public class TelemetryResiliencePipelineBuilderExtensionsTests
             Validation Errors:
             The LoggerFactory field is required.
             """);
-    }
 }

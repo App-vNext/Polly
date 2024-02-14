@@ -16,10 +16,8 @@ public class GenericResiliencePipelineBuilderTests
     }
 
     [Fact]
-    public void CopyCtor_Ok()
-    {
+    public void CopyCtor_Ok() =>
         new ResiliencePipelineBuilder<string>(new ResiliencePipelineBuilder()).Should().NotBeNull();
-    }
 
     [Fact]
     public void Properties_GetSet_Ok()

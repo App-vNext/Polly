@@ -16,8 +16,6 @@ public class RandomUtilTests
     }
 
     [Fact]
-    public void Instance_Ok()
-    {
+    public void Instance_Ok() =>
         RandomUtil.Instance.Should().NotBeNull();
-    }
 }

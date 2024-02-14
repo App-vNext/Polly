@@ -7,14 +7,12 @@ public class ResiliencePipelineProviderBenchmark
     private ResiliencePipelineProvider<string>? _provider;
 
     [GlobalSetup]
-    public void Setup()
-    {
+    public void Setup() =>
         _provider = new ServiceCollection()
             .AddResiliencePipeline("dummy", builder => builder.AddTimeout(new TimeoutStrategyOptions()))
             .AddResiliencePipeline<string, string>("dummy", builder => builder.AddTimeout(new TimeoutStrategyOptions()))
             .BuildServiceProvider()
             .GetRequiredService<ResiliencePipelineProvider<string>>();
-    }
 
     [Benchmark]
     public void GetPipeline_Ok() => _provider!.GetPipeline("dummy");

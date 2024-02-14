@@ -6,25 +6,21 @@ namespace Polly.Core.Tests.Registry;
 public class ResiliencePipelineProviderTests
 {
     [Fact]
-    public void Get_DoesNotExist_Throws()
-    {
+    public void Get_DoesNotExist_Throws() =>
         new Provider()
             .Invoking(o => o.GetPipeline("not-exists"))
             .Should()
             .Throw<KeyNotFoundException>()
             .WithMessage("Unable to find a resilience pipeline associated with the key 'not-exists'. Please ensure that either the resilience pipeline or the builder is registered.");
-    }
 
     [Fact]
-    public void Get_GenericDoesNotExist_Throws()
-    {
+    public void Get_GenericDoesNotExist_Throws() =>
         new Provider()
             .Invoking(o => o.GetPipeline<string>("not-exists"))
             .Should()
             .Throw<KeyNotFoundException>()
             .WithMessage("Unable to find a generic resilience pipeline of 'String' associated with the key 'not-exists'. " +
             "Please ensure that either the generic resilience pipeline or the generic builder is registered.");
-    }
 
     [Fact]
     public void Get_Exist_Ok()

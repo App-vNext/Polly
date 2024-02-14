@@ -12,8 +12,6 @@ public class ResiliencePropertyKeyTests
     }
 
     [Fact]
-    public void Ctor_Null_Throws()
-    {
+    public void Ctor_Null_Throws() =>
         Assert.Throws<ArgumentNullException>(() => new ResiliencePropertyKey<int>(null!));
-    }
 }

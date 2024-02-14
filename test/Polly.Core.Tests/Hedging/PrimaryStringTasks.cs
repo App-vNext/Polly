@@ -12,10 +12,8 @@ internal class PrimaryStringTasks
 
     public PrimaryStringTasks(TimeProvider timeProvider) => _timeProvider = timeProvider;
 
-    public static ValueTask<string> InstantTask()
-    {
-        return new ValueTask<string>(InstantTaskResult);
-    }
+    public static ValueTask<string> InstantTask() =>
+        new(InstantTaskResult);
 
     public async ValueTask<string> FastTask(CancellationToken token)
     {

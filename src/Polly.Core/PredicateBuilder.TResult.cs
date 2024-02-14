@@ -14,10 +14,7 @@ public partial class PredicateBuilder<TResult>
     /// <typeparam name="TException">The type of the exception to handle.</typeparam>
     /// <returns>The same instance of the <see cref="PredicateBuilder{TResult}"/> for chaining.</returns>
     public PredicateBuilder<TResult> Handle<TException>()
-        where TException : Exception
-    {
-        return Handle<TException>(static _ => true);
-    }
+        where TException : Exception => Handle<TException>(static _ => true);
 
     /// <summary>
     /// Adds a predicate for handling exceptions of the specified type.
@@ -40,10 +37,7 @@ public partial class PredicateBuilder<TResult>
     /// <typeparam name="TException">The type of the inner exception to handle.</typeparam>
     /// <returns>The same instance of the <see cref="PredicateBuilder{TResult}"/> for chaining.</returns>
     public PredicateBuilder<TResult> HandleInner<TException>()
-        where TException : Exception
-    {
-        return HandleInner<TException>(static _ => true);
-    }
+        where TException : Exception => HandleInner<TException>(static _ => true);
 
     /// <summary>
     /// Adds a predicate for handling inner exceptions of the specified type.
@@ -107,20 +101,18 @@ public partial class PredicateBuilder<TResult>
     }
 
     private static Predicate<Outcome<TResult>> CreatePredicate(Predicate<Outcome<TResult>>[] predicates)
-    {
-        return outcome =>
-        {
-            foreach (var predicate in predicates)
-            {
-                if (predicate(outcome))
-                {
-                    return true;
-                }
-            }
+        => outcome =>
+           {
+               foreach (var predicate in predicates)
+               {
+                   if (predicate(outcome))
+                   {
+                       return true;
+                   }
+               }
 
-            return false;
-        };
-    }
+               return false;
+           };
 
     private PredicateBuilder<TResult> Add(Predicate<Outcome<TResult>> predicate)
     {

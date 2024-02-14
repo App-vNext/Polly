@@ -87,8 +87,6 @@ public class AdvancedCircuitBehaviorTests
         behavior.FailureRate.Should().Be(failureRate, "because the FailureRate should match the HealthInfo");
     }
 
-    private AdvancedCircuitBehavior Create()
-    {
-        return new(CircuitBreakerConstants.DefaultFailureRatio, CircuitBreakerConstants.DefaultMinimumThroughput, _metrics);
-    }
+    private AdvancedCircuitBehavior Create() =>
+        new(CircuitBreakerConstants.DefaultFailureRatio, CircuitBreakerConstants.DefaultMinimumThroughput, _metrics);
 }

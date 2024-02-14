@@ -23,13 +23,11 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddHedgingT_InvalidOptions_Throws()
-    {
+    public void AddHedgingT_InvalidOptions_Throws() =>
         _builder
             .Invoking(b => b.AddHedging(new HedgingStrategyOptions<string> { ShouldHandle = null! }))
             .Should()
             .Throw<ValidationException>();
-    }
 
     [Fact]
     public async Task AddHedging_IntegrationTest()

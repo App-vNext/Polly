@@ -9,14 +9,12 @@ public class HealthMetricsTests
     [InlineData(200, typeof(RollingHealthMetrics))]
     [InlineData(201, typeof(RollingHealthMetrics))]
     [Theory]
-    public void Create_Ok(int samplingDurationMs, Type expectedType)
-    {
+    public void Create_Ok(int samplingDurationMs, Type expectedType) =>
         HealthMetrics.Create(
             TimeSpan.FromMilliseconds(samplingDurationMs),
             TimeProvider.System)
             .Should()
             .BeOfType(expectedType);
-    }
 
     [Fact]
     public void HealthInfo_WithZeroTotal_ShouldSetValuesCorrectly()

@@ -21,10 +21,8 @@ public class ObjectPoolTests
     }
 
     [Fact]
-    public void MaxCapacity_Ok()
-    {
+    public void MaxCapacity_Ok() =>
         ObjectPool<object>.MaxCapacity.Should().Be((Environment.ProcessorCount * 2) - 1);
-    }
 
     [Fact]
     public void MaxCapacity_Respected()

@@ -930,27 +930,19 @@ public class HedgingResilienceStrategyTests : IDisposable
         _events.Select(v => v.Event.EventName).Distinct().Should().HaveCount(2);
     }
 
-    private void ConfigureHedging()
-    {
+    private void ConfigureHedging() =>
         ConfigureHedging(_ => false, _actions.Generator);
-    }
 
-    private void ConfigureHedging(Func<ResilienceContext, ValueTask<Outcome<string>>> background)
-    {
+    private void ConfigureHedging(Func<ResilienceContext, ValueTask<Outcome<string>>> background) =>
         ConfigureHedging(args => () => background(args.ActionContext));
-    }
 
-    private void ConfigureHedging(Func<HedgingActionGeneratorArguments<string>, Func<ValueTask<Outcome<string>>>?> generator)
-    {
+    private void ConfigureHedging(Func<HedgingActionGeneratorArguments<string>, Func<ValueTask<Outcome<string>>>?> generator) =>
         ConfigureHedging(res => res.Result == Failure, generator);
-    }
 
     private void ConfigureHedging(
         Func<Outcome<string>, bool> shouldHandle,
-        Func<HedgingActionGeneratorArguments<string>, Func<ValueTask<Outcome<string>>>?> generator)
-    {
+        Func<HedgingActionGeneratorArguments<string>, Func<ValueTask<Outcome<string>>>?> generator) =>
         _handler = HedgingHelper.CreateHandler(shouldHandle, generator, _options.OnHedging);
-    }
 
     private void ConfigureHedging(TimeSpan delay) => ConfigureHedging(args => async () =>
     {

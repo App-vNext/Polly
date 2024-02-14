@@ -6,9 +6,8 @@ internal static partial class Helper
 {
     public const string Failure = "failure";
 
-    public static ResiliencePipeline<string> CreateHedging()
-    {
-        return CreateStrategy(builder =>
+    public static ResiliencePipeline<string> CreateHedging() =>
+        CreateStrategy(builder =>
         {
             builder.AddHedging(new HedgingStrategyOptions<string>
             {
@@ -16,5 +15,4 @@ internal static partial class Helper
                 ActionGenerator = args => () => Outcome.FromResultAsValueTask("hedged response"),
             });
         });
-    }
 }
