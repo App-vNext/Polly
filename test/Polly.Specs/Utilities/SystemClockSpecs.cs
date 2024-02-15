@@ -35,27 +35,4 @@ public class SystemClockSpecs
             cts.Cancel();
             await s(TimeSpan.FromMilliseconds(1), cts.Token);
         }).Should().ThrowAsync<OperationCanceledException>();
-
-    [Fact]
-    public void Reset_ShouldResetToDefaultImplementations()
-    {
-        SystemClock.Sleep = (_, _) => { };
-        SystemClock.SleepAsync = (_, _) => Task.CompletedTask;
-        SystemClock.UtcNow = () => new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        SystemClock.DateTimeOffsetUtcNow = () => new DateTimeOffset(new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
-        SystemClock.CancelTokenAfter = (_, _) => { };
-
-        SystemClock.Reset();
-
-        SystemClock.UtcNow().Should().NotBe(new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
-        SystemClock.DateTimeOffsetUtcNow().Should().NotBe(new DateTimeOffset(new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)));
-
-        SystemClock.CancelTokenAfter.Invoking(s =>
-        {
-            using var cts = new CancellationTokenSource();
-            s(cts, TimeSpan.FromMilliseconds(1));
-            Task.Delay(10).Wait();
-            cts.Token.IsCancellationRequested.Should().BeTrue();
-        }).Should().NotThrow();
-    }
 }

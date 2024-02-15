@@ -215,7 +215,14 @@ public static class AsyncAdvancedCircuitBreakerSyntax
     /// <exception cref="ArgumentNullException">onBreak</exception>
     /// <exception cref="ArgumentNullException">onReset</exception>
     /// <exception cref="ArgumentNullException">onHalfOpen</exception>
-    public static AsyncCircuitBreakerPolicy AdvancedCircuitBreakerAsync(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+    public static AsyncCircuitBreakerPolicy AdvancedCircuitBreakerAsync(
+        this PolicyBuilder policyBuilder,
+        double failureThreshold,
+        TimeSpan samplingDuration,
+        int minimumThroughput,
+        TimeSpan durationOfBreak,
+        Action<Exception, CircuitState, TimeSpan, Context> onBreak,
+        Action<Context> onReset, Action onHalfOpen)
     {
         var resolutionOfCircuit = TimeSpan.FromTicks(AdvancedCircuitController<EmptyStruct>.ResolutionOfCircuitTimer);
 

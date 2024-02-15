@@ -2484,6 +2484,160 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         passedBreakTimespan.Should().Be(TimeSpan.MaxValue);
     }
 
+    [Fact]
+    public void Should_throw_when_failureThreshold_is_less_or_equals_than_zero()
+    {
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Context> onReset = _ => { };
+
+        var time = 1.January(2000);
+        SystemClock.UtcNow = () => time;
+
+        Action action = () => Policy
+            .Handle<DivideByZeroException>()
+            .AdvancedCircuitBreakerAsync(
+                failureThreshold: 0,
+                samplingDuration: TimeSpan.FromSeconds(10),
+                minimumThroughput: 4,
+                durationOfBreak: TimeSpan.FromMinutes(1),
+                onBreak: onBreak,
+                onReset: onReset);
+
+        action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("failureThreshold");
+    }
+
+    [Fact]
+    public void Should_throw_when_failureThreshold_is_more_than_one()
+    {
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Context> onReset = _ => { };
+
+        var time = 1.January(2000);
+        SystemClock.UtcNow = () => time;
+
+        Action action = () => Policy
+            .Handle<DivideByZeroException>()
+            .AdvancedCircuitBreakerAsync(
+                failureThreshold: 1.5,
+                samplingDuration: TimeSpan.FromSeconds(10),
+                minimumThroughput: 4,
+                durationOfBreak: TimeSpan.FromMinutes(1),
+                onBreak: onBreak,
+                onReset: onReset);
+
+        action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("failureThreshold");
+    }
+
+    [Fact]
+    public void Should_throw_when_samplingDuration_is_less_than_resolutionOfCircuit()
+    {
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Context> onReset = _ => { };
+
+        var time = 1.January(2000);
+        SystemClock.UtcNow = () => time;
+
+        Action action = () => Policy
+            .Handle<DivideByZeroException>()
+            .AdvancedCircuitBreakerAsync(
+                failureThreshold: 0.5,
+                samplingDuration: TimeSpan.FromMilliseconds(10),
+                minimumThroughput: 4,
+                durationOfBreak: TimeSpan.FromMinutes(1),
+                onBreak: onBreak,
+                onReset: onReset);
+
+        action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("samplingDuration");
+    }
+
+    [Fact]
+    public void Should_throw_when_minimumThroughput_is_less_or_equals_than_one()
+    {
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Context> onReset = _ => { };
+
+        var time = 1.January(2000);
+        SystemClock.UtcNow = () => time;
+
+        Action action = () => Policy
+            .Handle<DivideByZeroException>()
+            .AdvancedCircuitBreakerAsync(
+                failureThreshold: 0.5,
+                samplingDuration: TimeSpan.FromSeconds(10),
+                minimumThroughput: 0,
+                durationOfBreak: TimeSpan.FromMinutes(1),
+                onBreak: onBreak,
+                onReset: onReset);
+
+        action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("minimumThroughput");
+    }
+
+    [Fact]
+    public void Should_throw_when_durationOfBreak_is_negative_timespan()
+    {
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Context> onReset = _ => { };
+
+        var time = 1.January(2000);
+        SystemClock.UtcNow = () => time;
+
+        Action action = () => Policy
+            .Handle<DivideByZeroException>()
+            .AdvancedCircuitBreakerAsync(
+                failureThreshold: 0.5,
+                samplingDuration: TimeSpan.FromSeconds(10),
+                minimumThroughput: 4,
+                durationOfBreak: TimeSpan.FromMinutes(-1),
+                onBreak: onBreak,
+                onReset: onReset);
+
+        action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("durationOfBreak");
+    }
+
+    [Fact]
+    public void Should_throw_when_onReset_is_null()
+    {
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+
+        var time = 1.January(2000);
+        SystemClock.UtcNow = () => time;
+
+        Action action = () => Policy
+            .Handle<DivideByZeroException>()
+            .AdvancedCircuitBreakerAsync(
+                failureThreshold: 0.5,
+                samplingDuration: TimeSpan.FromSeconds(10),
+                minimumThroughput: 4,
+                durationOfBreak: TimeSpan.FromMinutes(1),
+                onBreak: onBreak,
+                onReset: null);
+
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("onReset");
+    }
+
+    [Fact]
+    public void Should_throw_when_onHalfOpen_is_null()
+    {
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Context> onReset = _ => { };
+
+        var time = 1.January(2000);
+        SystemClock.UtcNow = () => time;
+
+        Action action = () => Policy
+            .Handle<DivideByZeroException>()
+            .AdvancedCircuitBreakerAsync(
+                failureThreshold: 0.5,
+                samplingDuration: TimeSpan.FromSeconds(10),
+                minimumThroughput: 4,
+                durationOfBreak: TimeSpan.FromMinutes(1),
+                onBreak: onBreak,
+                onReset: onReset,
+                onHalfOpen: null);
+
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("onHalfOpen");
+    }
+
     #endregion
 
     #region Tests that supplied context is passed to stage-change delegates

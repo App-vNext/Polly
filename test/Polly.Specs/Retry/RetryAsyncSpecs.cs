@@ -156,6 +156,26 @@ public class RetryAsyncSpecs
     }
 
     [Fact]
+    public void Should_throw_when_onRetry_is_null()
+    {
+        Action action = () => Policy
+            .Handle<DivideByZeroException>()
+            .RetryAsync(3, (Action<Exception, int>)null!);
+
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onRetryAsync_is_null()
+    {
+        Action action = () => Policy
+            .Handle<DivideByZeroException>()
+            .RetryAsync(3, (Func<Exception, int, Task>)null!);
+
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("onRetryAsync");
+    }
+
+    [Fact]
     public async Task Should_call_onretry_on_each_retry_with_the_current_retry_count()
     {
         var expectedRetryCounts = new[] { 1, 2, 3 };
