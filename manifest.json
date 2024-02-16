@@ -1555,6 +1555,16 @@
     },
     {
       "type": "Resource",
+      "source_relative_path": "media/cheat-sheet-fault.pdf",
+      "output": {
+        "resource": {
+          "relative_path": "media/cheat-sheet-fault.pdf"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
       "source_relative_path": "media/cheat-sheet-hedging.pdf",
       "output": {
         "resource": {
