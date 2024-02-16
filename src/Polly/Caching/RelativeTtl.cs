@@ -14,7 +14,8 @@ public class RelativeTtl : ITtlStrategy
     /// <param name="ttl">The timespan for which to consider the cache item valid.</param>
     public RelativeTtl(TimeSpan ttl)
     {
-        if (ttl < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(ttl), "The ttl for items to cache must be greater than zero.");
+        if (ttl < TimeSpan.Zero)
+            throw new ArgumentOutOfRangeException(nameof(ttl), "The ttl for items to cache must be greater than zero.");
 
         this.ttl = ttl;
     }

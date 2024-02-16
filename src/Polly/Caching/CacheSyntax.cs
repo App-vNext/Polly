@@ -64,9 +64,12 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
     public static CachePolicy Cache(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
-        if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
-        if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
-        if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
+        if (cacheProvider == null)
+            throw new ArgumentNullException(nameof(cacheProvider));
+        if (ttlStrategy == null)
+            throw new ArgumentNullException(nameof(ttlStrategy));
+        if (cacheKeyStrategy == null)
+            throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
         Action<Context, string> emptyDelegate = (_, _) => { };
 
@@ -105,9 +108,12 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
     public static CachePolicy Cache(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
-        if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
-        if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
-        if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
+        if (cacheProvider == null)
+            throw new ArgumentNullException(nameof(cacheProvider));
+        if (ttlStrategy == null)
+            throw new ArgumentNullException(nameof(ttlStrategy));
+        if (cacheKeyStrategy == null)
+            throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
         Action<Context, string> emptyDelegate = (_, _) => { };
 
@@ -308,13 +314,19 @@ public partial class Policy
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError)
     {
-        if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
-        if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
-        if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
+        if (cacheProvider == null)
+            throw new ArgumentNullException(nameof(cacheProvider));
+        if (ttlStrategy == null)
+            throw new ArgumentNullException(nameof(ttlStrategy));
+        if (cacheKeyStrategy == null)
+            throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
-        if (onCacheGet == null) throw new ArgumentNullException(nameof(onCacheGet));
-        if (onCacheMiss == null) throw new ArgumentNullException(nameof(onCacheMiss));
-        if (onCachePut == null) throw new ArgumentNullException(nameof(onCachePut));
+        if (onCacheGet == null)
+            throw new ArgumentNullException(nameof(onCacheGet));
+        if (onCacheMiss == null)
+            throw new ArgumentNullException(nameof(onCacheMiss));
+        if (onCachePut == null)
+            throw new ArgumentNullException(nameof(onCachePut));
 
         return new CachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
     }

@@ -68,12 +68,12 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
     /// <summary>
     /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
     /// </summary>
-    public IsPolicy Outer => (IsPolicy) _outerGeneric ?? _outerNonGeneric;
+    public IsPolicy Outer => (IsPolicy)_outerGeneric ?? _outerNonGeneric;
 
     /// <summary>
     /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
     /// </summary>
-    public IsPolicy Inner => (IsPolicy) _innerGeneric ?? _innerNonGeneric;
+    public IsPolicy Inner => (IsPolicy)_innerGeneric ?? _innerNonGeneric;
 
     internal AsyncPolicyWrap(AsyncPolicy outer, IAsyncPolicy<TResult> inner)
         : base(outer.ExceptionPredicates, ResultPredicates<TResult>.None)

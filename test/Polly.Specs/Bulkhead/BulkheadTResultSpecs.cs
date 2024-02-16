@@ -11,7 +11,17 @@ public class BulkheadTResultSpecs : BulkheadSpecsBase
     #region Configuration
 
     [Fact]
-    public void Should_throw_when_maxparallelization_less_or_equal_to_zero()
+    public void Should_throw_when_maxParallelization_less_or_equal_to_zero_and_no_maxQueuingActions()
+    {
+        Action policy = () => Policy
+            .Bulkhead<int>(0);
+
+        policy.Should().Throw<ArgumentOutOfRangeException>().And
+            .ParamName.Should().Be("maxParallelization");
+    }
+
+    [Fact]
+    public void Should_throw_when_maxParallelization_less_or_equal_to_zero()
     {
         Action policy = () => Policy
             .Bulkhead<int>(0, 1);

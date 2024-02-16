@@ -64,7 +64,10 @@ internal static class AsyncRetryEngine
                     outcome = new DelegateResult<TResult>(handledException);
                 }
 
-                if (tryCount < int.MaxValue) { tryCount++; }
+                if (tryCount < int.MaxValue)
+                {
+                    tryCount++;
+                }
 
                 TimeSpan waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
 

@@ -44,6 +44,18 @@ public class PolicyKeyAsyncSpecs
     }
 
     [Fact]
+    public void Should_not_be_able_to_configure_the_policy_key_explicitly_more_than_once_via_interface()
+    {
+        IAsyncPolicy policyAsInterface = Policy.Handle<Exception>().RetryAsync();
+
+        Action configure = () => policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
+
+        configure.Should().NotThrow();
+
+        configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
+    }
+
+    [Fact]
     public void PolicyKey_property_should_be_non_null_or_empty_if_not_explicitly_configured()
     {
         var policy = Policy.Handle<Exception>().RetryAsync();
@@ -221,6 +233,17 @@ public class PolicyTResultKeyAsyncSpecs
         var policy = Policy.HandleResult(0).RetryAsync();
 
         Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
+
+        configure.Should().NotThrow();
+
+        configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
+    }
+
+    [Fact]
+    public void Should_not_be_able_to_configure_the_policy_key_explicitly_more_than_once_via_interface()
+    {
+        IAsyncPolicy<int> policyAsInterface = Policy.HandleResult(0).RetryAsync();
+        Action configure = () => policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
 
         configure.Should().NotThrow();
 

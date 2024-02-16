@@ -93,7 +93,8 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     [DebuggerStepThrough]
     public async Task ExecuteAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
-        if (context == null) throw new ArgumentNullException(nameof(context));
+        if (context == null)
+            throw new ArgumentNullException(nameof(context));
 
         SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
 
@@ -213,7 +214,8 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     [DebuggerStepThrough]
     public async Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
-        if (context == null) throw new ArgumentNullException(nameof(context));
+        if (context == null)
+            throw new ArgumentNullException(nameof(context));
 
         SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
 
@@ -329,7 +331,8 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     [DebuggerStepThrough]
     public async Task<PolicyResult> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
-        if (context == null) throw new ArgumentNullException(nameof(context));
+        if (context == null)
+            throw new ArgumentNullException(nameof(context));
 
         try
         {
@@ -453,7 +456,8 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     [DebuggerStepThrough]
     public async Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
-        if (context == null) throw new ArgumentNullException(nameof(context));
+        if (context == null)
+            throw new ArgumentNullException(nameof(context));
 
         try
         {

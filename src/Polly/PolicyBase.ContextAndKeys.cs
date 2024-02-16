@@ -12,7 +12,7 @@ public abstract partial class PolicyBase
     /// </summary>
     public string PolicyKey => policyKeyInternal ?? (policyKeyInternal = GetType().Name + "-" + KeyHelper.GuidPart());
 
-    internal static ArgumentException PolicyKeyMustBeImmutableException(string policyKeyParamName) => new ("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.", policyKeyParamName);
+    internal static ArgumentException PolicyKeyMustBeImmutableException(string policyKeyParamName) => new("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.", policyKeyParamName);
 
     /// <summary>
     /// Restores the supplied keys to the execution <see cref="Context"/>.
