@@ -34,6 +34,68 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     }
 
     [Fact]
+    public void Should_throw_when_onretry_exception_timespan_context_is_null_with_sleep_durations()
+    {
+        Action policy = () => Policy
+                                  .Handle<DivideByZeroException>()
+                                  .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>(), default(Action<Exception, TimeSpan, Context>));
+
+        policy.Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_exception_timespan_int_context_is_null_with_sleep_duration_provider_int_timespan()
+    {
+        Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
+
+        Action policy = () => Policy
+                                  .Handle<DivideByZeroException>()
+                                  .WaitAndRetryAsync(3, provider, default(Action<Exception, TimeSpan, int, Context>));
+
+        policy.Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_exception_timespan_int_context_is_null_with_sleep_durations()
+    {
+        Action policy = () => Policy
+                                  .Handle<DivideByZeroException>()
+                                  .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>(), default(Action<Exception, TimeSpan, int, Context>));
+
+        policy.Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_exception_timespan_context_is_null_with_sleep_duration_provider()
+    {
+        Func<int, Context, TimeSpan> provider = (_, _) => 1.Seconds();
+
+        Action policy = () => Policy
+                                  .Handle<DivideByZeroException>()
+                                  .WaitAndRetryAsync(3, provider, default(Action<Exception, TimeSpan, Context>));
+
+        policy.Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_exception_timespan_int_context_is_null_with_sleep_duration_provider()
+    {
+        Func<int, Context, TimeSpan> provider = (_, _) => 1.Seconds();
+
+        Action policy = () => Policy
+                                  .Handle<DivideByZeroException>()
+                                  .WaitAndRetryAsync(3, provider, default(Action<Exception, TimeSpan, int, Context>));
+
+        policy.Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("onRetry");
+    }
+
+
+    [Fact]
     public async Task Should_not_throw_when_specified_exception_thrown_same_number_of_times_as_there_are_sleep_durations()
     {
         var policy = Policy

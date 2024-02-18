@@ -34,6 +34,78 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
     }
 
     [Fact]
+    public void Should_throw_when_sleep_duration_provider_int_timespan_is_null()
+    {
+        Action policy = () => Policy
+                                .Handle<Exception>()
+                                .WaitAndRetryForeverAsync(default(Func<int, TimeSpan>));
+
+        policy.Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("sleepDurationProvider");
+    }
+
+    [Fact]
+    public void Should_throw_when_sleep_duration_provider_int_timespan_is_null_with_onretry()
+    {
+        Action<Exception, int, TimeSpan> onRetry = (_, _, _) => { };
+
+        Action policy = () => Policy
+                                .Handle<Exception>()
+                                .WaitAndRetryForeverAsync(default, onRetry);
+
+        policy.Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("sleepDurationProvider");
+    }
+
+    [Fact]
+    public void Should_throw_when_sleep_duration_provider_int_context_timespan_is_null()
+    {
+        Action policy = () => Policy
+                               .Handle<Exception>()
+                               .WaitAndRetryForeverAsync(default(Func<int, Context, TimeSpan>));
+
+        policy.Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("sleepDurationProvider");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_exception_int_timespan_is_null_with_sleep_duration_provider()
+    {
+        Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
+
+        Action policy = () => Policy
+                                .Handle<Exception>()
+                                .WaitAndRetryForeverAsync(provider, default(Action<Exception, int, TimeSpan>));
+
+        policy.Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_sleep_duration_provider_int_context_timespan_is_null_with_retry()
+    {
+        Action policy = () => Policy
+                               .Handle<Exception>()
+                               .WaitAndRetryForeverAsync(default(Func<int, Context, TimeSpan>), default(Action<Exception, int, TimeSpan, Context>));
+
+        policy.Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("sleepDurationProvider");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_exception_int_timespan_context_is_null_with_sleep_duration_provider()
+    {
+        Func<int, Context, TimeSpan> provider = (_, _) => 1.Seconds();
+
+        Action policy = () => Policy
+                                .Handle<Exception>()
+                                .WaitAndRetryForeverAsync(provider, default(Action<Exception, int, TimeSpan, Context>));
+
+        policy.Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("onRetry");
+    }
+
+    [Fact]
     public void Should_throw_when_onretry_action_is_null_without_context()
     {
         Action<Exception, TimeSpan> nullOnRetry = null!;
