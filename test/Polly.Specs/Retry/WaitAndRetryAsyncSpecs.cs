@@ -94,7 +94,6 @@ public class WaitAndRetryAsyncSpecs : IDisposable
               .ParamName.Should().Be("onRetry");
     }
 
-
     [Fact]
     public async Task Should_not_throw_when_specified_exception_thrown_same_number_of_times_as_there_are_sleep_durations()
     {
