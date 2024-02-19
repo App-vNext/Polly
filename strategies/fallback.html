@@ -346,7 +346,7 @@ return result;
     {
         ShouldHandle = new PredicateBuilder&lt;HttpResponseMessage&gt;()
             .HandleResult(res =&gt; res.StatusCode == HttpStatusCode.RequestTimeout),
-        OnFallback = async args =&gt; await CallSecondary(args.Context.CancellationToken)
+        FallbackAction = async args =&gt; Outcome.FromResult(await CallSecondary(args.Context.CancellationToken))
     })
     .Build();
 
