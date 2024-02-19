@@ -256,11 +256,19 @@ catch (TimeoutRejectedException)
     D--&gt;&gt;D: Performs &lt;br/&gt;long-running &lt;br/&gt;operation
     T--&gt;&gt;T: Times out
     deactivate T
+
     T-&gt;&gt;D: Propagates cancellation
+    D--&gt;&gt;D: Cancellation of callback
+    D-&gt;&gt;T: Cancellation finished
     deactivate D
+
     T-&gt;&gt;P: Throws &lt;br/&gt;TimeoutRejectedException
     P-&gt;&gt;C: Propagates exception
 </code></pre>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Notice that the timeout waits until the callback is cancelled before throwing <code>TimeoutRejectedException</code>. Therefore it's important for the callbacks to respect the cancellation token passed to the execution. If the cancellation token is not correctly respected, the timeout is unnecessarily delayed.</p>
+</div>
 <h2 id="anti-patterns">Anti-patterns</h2>
 <p>Over the years, many developers have used Polly in various ways. Some of these
 recurring patterns may not be ideal. The sections below highlight anti-patterns to avoid.</p>

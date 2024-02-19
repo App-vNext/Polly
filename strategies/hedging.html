@@ -248,13 +248,23 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddHedging(optionsDef
     D--&gt;&gt;D: Processes R2&lt;br/&gt; quickly
     D-&gt;&gt;H: Returns result (R2)
     deactivate D
+    deactivate D
+
     H-&gt;&gt;D: Propagates cancellation (R1)
+    activate D
+    D--&gt;&gt;D: Cancellation of pending actions (R1)
+    deactivate D
+    D-&gt;&gt;H: Cancellation finished (R1)
+
     deactivate H
 
-    deactivate D
     H-&gt;&gt;P: Returns result (R2)
     P-&gt;&gt;C: Returns result (R2)
 </code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Notice that the hedging waits until all additional pending actions are cancelled before returning the accepted result. Therefore it's important for the hedged actions to respect the cancellation token passed to the execution. If the cancellation token is not correctly respected, the hedging is unnecessarily delayed.</p>
+</div>
 <h3 id="fallback-mode">Fallback mode</h3>
 <p>In fallback mode, the <code>Delay</code> value should be less than <code>TimeSpan.Zero</code>. This mode allows only a single execution to proceed at a given time.</p>
 <ul>
@@ -349,13 +359,22 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddHedging(optionsDef
     HUC--&gt;&gt;HUC: Processes R2&lt;br/&gt; quickly ...
     HUC-&gt;&gt;-H: Returns result (R2)
 
-    H-&gt;&gt;HUC: Propagates cancellation (R1)
     deactivate HUC
+
+    H-&gt;&gt;HUC: Propagates cancellation (R1)
+    activate HUC
+    HUC--&gt;&gt;HUC: Cancellation of pending actions (R1)
+    deactivate HUC
+    HUC-&gt;&gt;H: Cancellation finished (R1)
 
     deactivate H
     H-&gt;&gt;P: Returns result (R2)
     P-&gt;&gt;C: Returns result (R2)
 </code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Notice that the hedging waits until all additional pending actions are cancelled before returning the accepted result. Therefore it's important for the hedged actions to respect the cancellation token passed to the execution. If the cancellation token is not correctly respected, the hedging is unnecessarily delayed.</p>
+</div>
 <h4 id="parallel-unhappy-path-sequence-diagram">Parallel: unhappy path sequence diagram</h4>
 <p>The hedging strategy triggers because the <code>Delay</code> is set to zero. It fails because all requests fail.</p>
 <pre><code class="lang-mermaid">sequenceDiagram
