@@ -283,7 +283,7 @@ var fallback = new ResiliencePipelineBuilder<HttpResponseMessage>()
     {
         ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
             .HandleResult(res => res.StatusCode == HttpStatusCode.RequestTimeout),
-        OnFallback = async args => await CallSecondary(args.Context.CancellationToken)
+        FallbackAction = async args => Outcome.FromResult(await CallSecondary(args.Context.CancellationToken))
     })
     .Build();
 

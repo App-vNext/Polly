@@ -141,8 +141,8 @@ internal static class Fallback
     }
     #endregion
 
-    private static ValueTask<HttpResponseMessage> CallPrimary(CancellationToken ct) => ValueTask.FromResult(new HttpResponseMessage());
-    private static ValueTask<HttpResponseMessage> CallSecondary(CancellationToken ct) => ValueTask.FromResult(new HttpResponseMessage());
+    private static ValueTask<HttpResponseMessage> CallPrimary(CancellationToken ct) => ValueTask.FromResult(new HttpResponseMessage(HttpStatusCode.RequestTimeout));
+    private static ValueTask<HttpResponseMessage> CallSecondary(CancellationToken ct) => ValueTask.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
     public static async Task<HttpResponseMessage?> AntiPattern_RetryForFallback()
     {
         var fallbackKey = new ResiliencePropertyKey<HttpResponseMessage?>("fallback_result");
@@ -190,7 +190,7 @@ internal static class Fallback
             {
                 ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
                     .HandleResult(res => res.StatusCode == HttpStatusCode.RequestTimeout),
-                OnFallback = async args => await CallSecondary(args.Context.CancellationToken)
+                FallbackAction = async args => Outcome.FromResult(await CallSecondary(args.Context.CancellationToken))
             })
             .Build();
 
