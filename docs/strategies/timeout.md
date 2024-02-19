@@ -175,8 +175,8 @@ sequenceDiagram
     P->>C: Propagates exception
 ```
 
-> [!NOTE]
-> Notice that the timeout waits until the callback  is cancelled before throwing `TimeoutRejectedException`. Therefore it's important for the callbacks to respect the cancellation token passed to the execution. If the cancellation token is not correctly respected, the timeout is unnecessarily delayed.
+> [!IMPORTANT]
+> Notice that the timeout waits until the callback is cancelled before throwing `TimeoutRejectedException`. Therefore it's important for the callbacks to respect the cancellation token passed to the execution. If the cancellation token is not correctly respected, the timeout is unnecessarily delayed.
 
 ## Anti-patterns
 
