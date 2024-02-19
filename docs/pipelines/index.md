@@ -201,6 +201,8 @@ sequenceDiagram
     deactivate T
     T-->>T: Times out
     T->>D: Propagates cancellation
+    D-->>D: Cancellation of callback
+    D->>T: Cancellation finished
     deactivate D
     T->>R: Throws <br/>TimeoutRejectedException
     R-->>R: Sleeps
@@ -281,6 +283,8 @@ sequenceDiagram
     T-->>T: Times out
     T->>R: Propagates cancellation
     R->>D: Propagates cancellation
+    D-->>D: Cancellation of callback
+    D->>T: Cancellation finished
     deactivate D
 
     T->>P: Throws <br/>TimeoutRejectedException
@@ -348,6 +352,8 @@ sequenceDiagram
     deactivate TI
     Note over TI: Wait end
     TI->>D: Propagates cancellation
+    D-->>D: Cancellation of callback
+    D->>TI: Cancellation finished
     deactivate D
     TI->>R: Throws <br/>TimeoutRejectedException
 
@@ -365,6 +371,8 @@ sequenceDiagram
     TO->>R: Propagates cancellation
     R->>TI: Propagates cancellation
     TI->>D: Propagates cancellation
+    D-->>D: Cancellation of callback
+    D->>TO: Cancellation finished
     deactivate TI
     deactivate D
     TO->>P: Throws <br/>TimeoutRejectedException

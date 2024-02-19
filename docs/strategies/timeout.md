@@ -165,11 +165,18 @@ sequenceDiagram
     D-->>D: Performs <br/>long-running <br/>operation
     T-->>T: Times out
     deactivate T
+
     T->>D: Propagates cancellation
+    D-->>D: Cancellation of callback
+    D->>T: Cancellation finished
     deactivate D
+
     T->>P: Throws <br/>TimeoutRejectedException
     P->>C: Propagates exception
 ```
+
+> [!IMPORTANT]
+> Notice that the timeout waits until the callback is cancelled before throwing `TimeoutRejectedException`. Therefore it's important for the callbacks to respect the cancellation token passed to the execution. If the cancellation token is not correctly respected, the timeout is unnecessarily delayed.
 
 ## Anti-patterns
 
