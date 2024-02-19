@@ -97,6 +97,44 @@ public class RetryForeverAsyncSpecs
     }
 
     [Fact]
+    public void Should_throw_when_onretry_exception_is_null()
+    {
+        var policyBuilder = Policy.Handle<Exception>();
+        Assert.Throws<ArgumentNullException>("onRetry", () => policyBuilder.RetryForeverAsync(default(Action<Exception>)));
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_exception_int_is_null()
+    {
+        var policyBuilder = Policy.Handle<Exception>();
+        Assert.Throws<ArgumentNullException>("onRetry", () => policyBuilder.RetryForeverAsync(default(Action<Exception, int>)));
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_exception_context_is_null()
+    {
+        var policyBuilder = Policy.Handle<Exception>();
+        Assert.Throws<ArgumentNullException>("onRetry", () => policyBuilder.RetryForeverAsync(default(Action<Exception, Context>)));
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_exception_int_context_is_null()
+    {
+        var policyBuilder = Policy.Handle<Exception>();
+        Assert.Throws<ArgumentNullException>("onRetry", () => policyBuilder.RetryForeverAsync(default(Action<Exception, int, Context>)));
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_exception_timespan_context_is_null()
+    {
+        var policyBuilder = Policy.Handle<Exception>();
+        Assert.Throws<ArgumentNullException>("onRetry", () => policyBuilder.WaitAndRetryAsync(
+            retryCount: 3,
+            sleepDurationProvider: _ => TimeSpan.FromSeconds(1),
+            onRetry: default(Action<Exception, TimeSpan, Context>)));
+    }
+
+    [Fact]
     public async Task Should_call_onretry_on_each_retry_with_the_current_exception()
     {
         var expectedExceptions = new[] { "Exception #1", "Exception #2", "Exception #3" };

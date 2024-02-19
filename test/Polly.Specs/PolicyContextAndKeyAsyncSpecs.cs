@@ -103,6 +103,13 @@ public class PolicyKeyAsyncSpecs
         configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
     }
 
+    [Fact]
+    public void Should_throw_when_onretry_is_null()
+    {
+        var policyBuilder = Policy.Handle<Exception>();
+        Assert.Throws<ArgumentNullException>("onRetry", () => policyBuilder.RetryAsync(3, default(Action<Exception, int, Context>)));
+    }
+
     #endregion
 
     #region PolicyKey and execution Context tests
