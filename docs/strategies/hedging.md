@@ -144,13 +144,22 @@ sequenceDiagram
     D-->>D: Processes R2<br/> quickly
     D->>H: Returns result (R2)
     deactivate D
+    deactivate D
+
     H->>D: Propagates cancellation (R1)
+    activate D
+    D-->>D: Cancellation of pending actions (R1)
+    deactivate D
+    D->>H: Cancellation finished (R1)
+
     deactivate H
 
-    deactivate D
     H->>P: Returns result (R2)
     P->>C: Returns result (R2)
 ```
+
+> [!NOTE]
+> Notice that the hedging waits until all additional pending actions are cancelled before returning the accepted result. Therefore it's important for the hedged actions to respect the cancellation token passed to the execution. If the cancellation token is not correctly respected, the hedging is unnecessarily delayed.
 
 ### Fallback mode
 
@@ -258,13 +267,21 @@ sequenceDiagram
     HUC-->>HUC: Processes R2<br/> quickly ...
     HUC->>-H: Returns result (R2)
 
-    H->>HUC: Propagates cancellation (R1)
     deactivate HUC
+
+    H->>HUC: Propagates cancellation (R1)
+    activate HUC
+    HUC-->>HUC: Cancellation of pending actions (R1)
+    deactivate HUC
+    HUC->>H: Cancellation finished (R1)
 
     deactivate H
     H->>P: Returns result (R2)
     P->>C: Returns result (R2)
 ```
+
+> [!NOTE]
+> Notice that the hedging waits until all additional pending actions are cancelled before returning the accepted result. Therefore it's important for the hedged actions to respect the cancellation token passed to the execution. If the cancellation token is not correctly respected, the hedging is unnecessarily delayed.
 
 #### Parallel: unhappy path sequence diagram
 
