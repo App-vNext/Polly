@@ -11,12 +11,12 @@ internal class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
     {
         _telemetry = telemetry;
         OnOutcomeInjected = options.OnOutcomeInjected;
-        OutcomeGenerator = options.OutcomeGenerator;
+        OutcomeGenerator = options.OutcomeGenerator!;
     }
 
     public Func<OnOutcomeInjectedArguments<T>, ValueTask>? OnOutcomeInjected { get; }
 
-    public Func<OutcomeGeneratorArguments, ValueTask<Outcome<T>?>> OutcomeGenerator { get; }
+    public Func<OutcomeGeneratorArguments, ValueTask<Outcome<T>>> OutcomeGenerator { get; }
 
     protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
@@ -25,7 +25,7 @@ internal class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
             if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext))
             {
                 var outcome = await OutcomeGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
-                var args = new OnOutcomeInjectedArguments<T>(context, outcome.Value);
+                var args = new OnOutcomeInjectedArguments<T>(context, outcome);
                 _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosOutcomeConstants.OnOutcomeInjectedEvent), context, args);
 
                 if (OnOutcomeInjected is not null)
@@ -33,7 +33,7 @@ internal class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
                     await OnOutcomeInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
                 }
 
-                return new Outcome<T>(outcome.Value.Result);
+                return new Outcome<T>(outcome.Result);
             }
 
             return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);

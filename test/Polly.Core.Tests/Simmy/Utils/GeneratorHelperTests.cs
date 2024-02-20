@@ -32,12 +32,12 @@ public class GeneratorHelperTests
         var generator = helper.CreateGenerator();
 
         weight = 0;
-        generator(context)!.Value.Result.Should().Be(1);
+        generator(context).Result.Should().Be(1);
         weight = 39;
-        generator(context)!.Value.Result.Should().Be(1);
+        generator(context).Result.Should().Be(1);
 
         weight = 40;
-        generator(context)!.Value.Result.Should().Be(2);
+        generator(context).Result.Should().Be(2);
 
         maxWeight.Should().Be(120);
     }

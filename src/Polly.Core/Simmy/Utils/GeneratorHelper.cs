@@ -19,11 +19,11 @@ internal sealed class GeneratorHelper<TResult>
         _weights.Add(weight);
     }
 
-    internal Func<ResilienceContext, Outcome<TResult>?> CreateGenerator()
+    internal Func<ResilienceContext, Outcome<TResult>> CreateGenerator()
     {
         if (_factories.Count == 0)
         {
-            return _ => null;
+            throw new InvalidOperationException("No outcome generators have been added.");
         }
 
         var totalWeight = _totalWeight;
@@ -45,7 +45,8 @@ internal sealed class GeneratorHelper<TResult>
                 }
             }
 
-            return null;
+            // Should never reach here!
+            return default;
         };
     }
 }

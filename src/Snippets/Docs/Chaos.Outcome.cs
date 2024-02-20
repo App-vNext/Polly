@@ -63,7 +63,7 @@ internal static partial class Chaos
                 OutcomeGenerator = static args =>
                 {
                     var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
-                    return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
+                    return Outcome.FromResultAsValueTask(response);
                 },
                 InjectionRate = 0.1
             })
@@ -99,13 +99,12 @@ internal static partial class Chaos
                 // The same behavior can be achieved with delegates
                 OutcomeGenerator = args =>
                 {
-                    Outcome<HttpResponseMessage>? outcome = Random.Shared.Next(350) switch
+                    Outcome<HttpResponseMessage> outcome = Random.Shared.Next(350) switch
                     {
                         < 100 => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)),
                         < 150 => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.TooManyRequests)),
                         < 250 => Outcome.FromResult(CreateResultFromContext(args.Context)),
-                        < 350 => Outcome.FromException<HttpResponseMessage>(new TimeoutException()),
-                        _ => null
+                        _ => Outcome.FromException<HttpResponseMessage>(new TimeoutException())
                     };
 
                     return ValueTask.FromResult(outcome);

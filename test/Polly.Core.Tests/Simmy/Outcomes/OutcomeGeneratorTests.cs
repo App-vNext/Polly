@@ -12,7 +12,7 @@ public class OutcomeGeneratorTests
 
         generator.AddException<InvalidOperationException>();
 
-        Generate(generator)!.Value.Exception.Should().BeOfType<InvalidOperationException>();
+        Generate(generator).Exception.Should().BeOfType<InvalidOperationException>();
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class OutcomeGeneratorTests
 
         generator.AddException(() => new InvalidOperationException());
 
-        Generate(generator)!.Value.Exception.Should().BeOfType<InvalidOperationException>();
+        Generate(generator).Exception.Should().BeOfType<InvalidOperationException>();
     }
 
     [Fact]
@@ -37,7 +37,7 @@ public class OutcomeGeneratorTests
             return new InvalidOperationException();
         });
 
-        Generate(generator)!.Value.Exception.Should().BeOfType<InvalidOperationException>();
+        Generate(generator).Exception.Should().BeOfType<InvalidOperationException>();
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class OutcomeGeneratorTests
             return "dummy";
         });
 
-        Generate(generator)!.Value.Result.Should().Be("dummy");
+        Generate(generator).Result.Should().Be("dummy");
     }
 
     [Fact]
@@ -65,12 +65,12 @@ public class OutcomeGeneratorTests
             return "dummy";
         });
 
-        Generate(generator)!.Value.Result.Should().Be("dummy");
+        Generate(generator).Result.Should().Be("dummy");
     }
 
-    private static Outcome<string>? Generate(OutcomeGenerator<string> generator)
+    private static Outcome<string> Generate(OutcomeGenerator<string> generator)
     {
-        Func<OutcomeGeneratorArguments, ValueTask<Outcome<string>?>> func = generator;
+        Func<OutcomeGeneratorArguments, ValueTask<Outcome<string>>> func = generator;
 
         return func(new OutcomeGeneratorArguments(ResilienceContextPool.Shared.Get())).AsTask().Result;
     }

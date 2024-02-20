@@ -28,7 +28,7 @@ public static class ChaosOutcomePipelineBuilderExtensions
             InjectionRate = injectionRate,
             OutcomeGenerator = (_) =>
             {
-                return new ValueTask<Outcome<TResult>?>(Outcome.FromResult(resultGenerator()));
+                return new ValueTask<Outcome<TResult>>(Outcome.FromResult(resultGenerator()));
             }
         });
         return builder;
