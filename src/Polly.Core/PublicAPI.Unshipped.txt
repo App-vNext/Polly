@@ -101,7 +101,7 @@ Polly.Simmy.Outcomes.OutcomeGeneratorArguments.OutcomeGeneratorArguments(Polly.R
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected.get -> System.Func<Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>, System.Threading.Tasks.ValueTask>?
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected.set -> void
-Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.get -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>!
+Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.get -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>?
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.set -> void
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.ChaosOutcomeStrategyOptions() -> void
 static Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(this TBuilder! builder, double injectionRate, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask>! behavior) -> TBuilder!
@@ -113,4 +113,4 @@ static Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency<TBuilde
 static Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(this TBuilder! builder, Polly.Simmy.Latency.ChaosLatencyStrategyOptions! options) -> TBuilder!
 static Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, double injectionRate, System.Func<TResult?>! resultGenerator) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
-static Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.implicit operator System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>!(Polly.Simmy.Outcomes.OutcomeGenerator<TResult>! generator) -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>!
+static Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.implicit operator System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>!(Polly.Simmy.Outcomes.OutcomeGenerator<TResult>! generator) -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>!

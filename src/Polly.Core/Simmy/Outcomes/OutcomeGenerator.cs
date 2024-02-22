@@ -108,13 +108,13 @@ public sealed class OutcomeGenerator<TResult>
     /// </summary>
     /// <param name="generator">The generator instance.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static implicit operator Func<OutcomeGeneratorArguments, ValueTask<Outcome<TResult>?>>(OutcomeGenerator<TResult> generator)
+    public static implicit operator Func<OutcomeGeneratorArguments, ValueTask<Outcome<TResult>>>(OutcomeGenerator<TResult> generator)
     {
         Guard.NotNull(generator);
 
         var generatorDelegate = generator._helper.CreateGenerator();
 
-        return args => new ValueTask<Outcome<TResult>?>(generatorDelegate(args.Context));
+        return args => new ValueTask<Outcome<TResult>>(generatorDelegate(args.Context));
     }
 }
 

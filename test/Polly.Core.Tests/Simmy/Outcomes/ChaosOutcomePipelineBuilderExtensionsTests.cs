@@ -16,7 +16,7 @@ public class ChaosOutcomePipelineBuilderExtensionsTests
             {
                 InjectionRate = 0.6,
                 Randomizer = () => 0.5,
-                OutcomeGenerator = (_) => new ValueTask<Outcome<int>?>(Outcome.FromResult(100))
+                OutcomeGenerator = (_) => Outcome.FromResultAsValueTask(100)
             });
 
             AssertResultStrategy(builder, true, 0.6, new(100));

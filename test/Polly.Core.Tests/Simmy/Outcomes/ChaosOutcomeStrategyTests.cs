@@ -61,7 +61,7 @@ public class ChaosOutcomeStrategyTests
             InjectionRate = 0.6,
             Enabled = false,
             Randomizer = () => 0.5,
-            OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(fakeResult))
+            OutcomeGenerator = (_) => Outcome.FromResultAsValueTask(fakeResult)
         };
 
         var sut = CreateSut(options);
@@ -81,7 +81,7 @@ public class ChaosOutcomeStrategyTests
         {
             InjectionRate = 0.6,
             Randomizer = () => 0.5,
-            OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(fakeResult)),
+            OutcomeGenerator = (_) => Outcome.FromResultAsValueTask(fakeResult),
             OnOutcomeInjected = args =>
             {
                 args.Context.Should().NotBeNull();
@@ -117,7 +117,7 @@ public class ChaosOutcomeStrategyTests
             InjectionRate = 0.3,
             Enabled = false,
             Randomizer = () => 0.5,
-            OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(fakeResult))
+            OutcomeGenerator = (_) => Outcome.FromResultAsValueTask(fakeResult)
         };
 
         var sut = CreateSut(options);
@@ -129,29 +129,6 @@ public class ChaosOutcomeStrategyTests
 
         response.Should().Be(HttpStatusCode.OK);
         _userDelegateExecuted.Should().BeTrue();
-        _onOutcomeInjectedExecuted.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task Given_enabled_and_randomly_within_threshold_should_inject_result_even_as_null()
-    {
-        Outcome<HttpStatusCode?>? nullOutcome = Outcome.FromResult<HttpStatusCode?>(null);
-        var options = new ChaosOutcomeStrategyOptions<HttpStatusCode?>
-        {
-            InjectionRate = 0.6,
-            Randomizer = () => 0.5,
-            OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode?>?>(nullOutcome)
-        };
-
-        var sut = CreateSut(options);
-        var response = await sut.ExecuteAsync<HttpStatusCode?>(async _ =>
-        {
-            _userDelegateExecuted = true;
-            return await Task.FromResult(HttpStatusCode.OK);
-        });
-
-        response.Should().Be(null);
-        _userDelegateExecuted.Should().BeFalse();
         _onOutcomeInjectedExecuted.Should().BeFalse();
     }
 
@@ -168,7 +145,7 @@ public class ChaosOutcomeStrategyTests
                 cts.Cancel();
                 return new ValueTask<bool>(true);
             },
-            OutcomeGenerator = (_) => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(HttpStatusCode.TooManyRequests))
+            OutcomeGenerator = (_) => Outcome.FromResultAsValueTask(HttpStatusCode.TooManyRequests)
         };
 
         var sut = CreateSut(options);
