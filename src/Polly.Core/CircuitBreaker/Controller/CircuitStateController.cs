@@ -163,7 +163,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         return null;
     }
 
-    public ValueTask OnActionSuccessAsync(Outcome<T> outcome, ResilienceContext context)
+    public ValueTask OnUnhandledOutcomeAsync(Outcome<T> outcome, ResilienceContext context)
     {
         EnsureNotDisposed();
 
@@ -189,7 +189,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         return ExecuteScheduledTaskAsync(task, context);
     }
 
-    public ValueTask OnActionFailureAsync(Outcome<T> outcome, ResilienceContext context)
+    public ValueTask OnHandledOutcomeAsync(Outcome<T> outcome, ResilienceContext context)
     {
         EnsureNotDisposed();
 

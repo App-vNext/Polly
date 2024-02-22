@@ -39,11 +39,11 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T
         var args = new CircuitBreakerPredicateArguments<T>(context, outcome);
         if (await _handler(args).ConfigureAwait(context.ContinueOnCapturedContext))
         {
-            await _controller.OnActionFailureAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
+            await _controller.OnHandledOutcomeAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         else if (outcome.Exception is null)
         {
-            await _controller.OnActionSuccessAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
+            await _controller.OnUnhandledOutcomeAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
         return outcome;
