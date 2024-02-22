@@ -41,7 +41,7 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T
         {
             await _controller.OnHandledOutcomeAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
         }
-        else if (outcome.Exception is null)
+        else
         {
             await _controller.OnUnhandledOutcomeAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
         }
