@@ -18,6 +18,7 @@ Cheat sheets provide easy to use code snippets for common scenarios.
 
 ## Chaos strategies
 
-| Strategy |                    PDF                     |
-| -------- | :----------------------------------------: |
-| Fault    | [Download](../media/cheat-sheet-fault.pdf) |
+| Strategy |                     PDF                      |
+| -------- | :------------------------------------------: |
+| Fault    |  [Download](../media/cheat-sheet-fault.pdf)  |
+| Outcome  | [Download](../media/cheat-sheet-outcome.pdf) |
