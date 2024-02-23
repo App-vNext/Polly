@@ -14,9 +14,11 @@ override Polly.Telemetry.ResilienceEvent.ToString() -> string!
 Polly.CircuitBreaker.BreakDurationGeneratorArguments
 Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments() -> void
 Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments(double failureRate, int failureCount, Polly.ResilienceContext! context) -> void
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments(double failureRate, int failureCount, Polly.ResilienceContext! context, int halfOpenAttempts) -> void
 Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context.get -> Polly.ResilienceContext!
 Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount.get -> int
 Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate.get -> double
+Polly.CircuitBreaker.BreakDurationGeneratorArguments.HalfOpenAttempts.get -> int
 Polly.CircuitBreaker.BrokenCircuitException
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException() -> void
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message) -> void
@@ -334,6 +336,109 @@ Polly.Retry.RetryStrategyOptions<TResult>.ShouldHandle.set -> void
 Polly.Retry.RetryStrategyOptions<TResult>.UseJitter.get -> bool
 Polly.Retry.RetryStrategyOptions<TResult>.UseJitter.set -> void
 Polly.RetryResiliencePipelineBuilderExtensions
+Polly.Simmy.Behavior.BehaviorGeneratorArguments
+Polly.Simmy.Behavior.BehaviorGeneratorArguments.BehaviorGeneratorArguments() -> void
+Polly.Simmy.Behavior.BehaviorGeneratorArguments.BehaviorGeneratorArguments(Polly.ResilienceContext! context) -> void
+Polly.Simmy.Behavior.BehaviorGeneratorArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorGenerator.get -> System.Func<Polly.Simmy.Behavior.BehaviorGeneratorArguments, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.BehaviorGenerator.set -> void
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.ChaosBehaviorStrategyOptions() -> void
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected.get -> System.Func<Polly.Simmy.Behavior.OnBehaviorInjectedArguments, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.OnBehaviorInjected.set -> void
+Polly.Simmy.Behavior.OnBehaviorInjectedArguments
+Polly.Simmy.Behavior.OnBehaviorInjectedArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Behavior.OnBehaviorInjectedArguments.OnBehaviorInjectedArguments() -> void
+Polly.Simmy.Behavior.OnBehaviorInjectedArguments.OnBehaviorInjectedArguments(Polly.ResilienceContext! context) -> void
+Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions
+Polly.Simmy.ChaosFaultPipelineBuilderExtensions
+Polly.Simmy.ChaosLatencyPipelineBuilderExtensions
+Polly.Simmy.ChaosOutcomePipelineBuilderExtensions
+Polly.Simmy.ChaosStrategy
+Polly.Simmy.ChaosStrategy.ChaosStrategy(Polly.Simmy.ChaosStrategyOptions! options) -> void
+Polly.Simmy.ChaosStrategy.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
+Polly.Simmy.ChaosStrategy<T>
+Polly.Simmy.ChaosStrategy<T>.ChaosStrategy(Polly.Simmy.ChaosStrategyOptions! options) -> void
+Polly.Simmy.ChaosStrategy<T>.ShouldInjectAsync(Polly.ResilienceContext! context) -> System.Threading.Tasks.ValueTask<bool>
+Polly.Simmy.ChaosStrategyOptions
+Polly.Simmy.ChaosStrategyOptions.ChaosStrategyOptions() -> void
+Polly.Simmy.ChaosStrategyOptions.Enabled.get -> bool
+Polly.Simmy.ChaosStrategyOptions.Enabled.set -> void
+Polly.Simmy.ChaosStrategyOptions.EnabledGenerator.get -> System.Func<Polly.Simmy.EnabledGeneratorArguments, System.Threading.Tasks.ValueTask<bool>>?
+Polly.Simmy.ChaosStrategyOptions.EnabledGenerator.set -> void
+Polly.Simmy.ChaosStrategyOptions.InjectionRate.get -> double
+Polly.Simmy.ChaosStrategyOptions.InjectionRate.set -> void
+Polly.Simmy.ChaosStrategyOptions.InjectionRateGenerator.get -> System.Func<Polly.Simmy.InjectionRateGeneratorArguments, System.Threading.Tasks.ValueTask<double>>?
+Polly.Simmy.ChaosStrategyOptions.InjectionRateGenerator.set -> void
+Polly.Simmy.ChaosStrategyOptions.Randomizer.get -> System.Func<double>!
+Polly.Simmy.ChaosStrategyOptions.Randomizer.set -> void
+Polly.Simmy.EnabledGeneratorArguments
+Polly.Simmy.EnabledGeneratorArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.EnabledGeneratorArguments.EnabledGeneratorArguments() -> void
+Polly.Simmy.EnabledGeneratorArguments.EnabledGeneratorArguments(Polly.ResilienceContext! context) -> void
+Polly.Simmy.Fault.ChaosFaultStrategyOptions
+Polly.Simmy.Fault.ChaosFaultStrategyOptions.ChaosFaultStrategyOptions() -> void
+Polly.Simmy.Fault.ChaosFaultStrategyOptions.FaultGenerator.get -> System.Func<Polly.Simmy.Fault.FaultGeneratorArguments, System.Threading.Tasks.ValueTask<System.Exception?>>?
+Polly.Simmy.Fault.ChaosFaultStrategyOptions.FaultGenerator.set -> void
+Polly.Simmy.Fault.ChaosFaultStrategyOptions.OnFaultInjected.get -> System.Func<Polly.Simmy.Fault.OnFaultInjectedArguments, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Fault.ChaosFaultStrategyOptions.OnFaultInjected.set -> void
+Polly.Simmy.Fault.FaultGenerator
+Polly.Simmy.Fault.FaultGenerator.AddException(System.Func<Polly.ResilienceContext!, System.Exception!>! generator, int weight = 100) -> Polly.Simmy.Fault.FaultGenerator!
+Polly.Simmy.Fault.FaultGenerator.AddException(System.Func<System.Exception!>! generator, int weight = 100) -> Polly.Simmy.Fault.FaultGenerator!
+Polly.Simmy.Fault.FaultGenerator.AddException<TException>(int weight = 100) -> Polly.Simmy.Fault.FaultGenerator!
+Polly.Simmy.Fault.FaultGenerator.FaultGenerator() -> void
+Polly.Simmy.Fault.FaultGeneratorArguments
+Polly.Simmy.Fault.FaultGeneratorArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Fault.FaultGeneratorArguments.FaultGeneratorArguments() -> void
+Polly.Simmy.Fault.FaultGeneratorArguments.FaultGeneratorArguments(Polly.ResilienceContext! context) -> void
+Polly.Simmy.Fault.OnFaultInjectedArguments
+Polly.Simmy.Fault.OnFaultInjectedArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Fault.OnFaultInjectedArguments.Fault.get -> System.Exception!
+Polly.Simmy.Fault.OnFaultInjectedArguments.OnFaultInjectedArguments() -> void
+Polly.Simmy.Fault.OnFaultInjectedArguments.OnFaultInjectedArguments(Polly.ResilienceContext! context, System.Exception! fault) -> void
+Polly.Simmy.InjectionRateGeneratorArguments
+Polly.Simmy.InjectionRateGeneratorArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.InjectionRateGeneratorArguments.InjectionRateGeneratorArguments() -> void
+Polly.Simmy.InjectionRateGeneratorArguments.InjectionRateGeneratorArguments(Polly.ResilienceContext! context) -> void
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.ChaosLatencyStrategyOptions() -> void
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.Latency.get -> System.TimeSpan
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.Latency.set -> void
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.LatencyGenerator.get -> System.Func<Polly.Simmy.Latency.LatencyGeneratorArguments, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.LatencyGenerator.set -> void
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.OnLatencyInjected.get -> System.Func<Polly.Simmy.Latency.OnLatencyInjectedArguments, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Latency.ChaosLatencyStrategyOptions.OnLatencyInjected.set -> void
+Polly.Simmy.Latency.LatencyGeneratorArguments
+Polly.Simmy.Latency.LatencyGeneratorArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Latency.LatencyGeneratorArguments.LatencyGeneratorArguments() -> void
+Polly.Simmy.Latency.LatencyGeneratorArguments.LatencyGeneratorArguments(Polly.ResilienceContext! context) -> void
+Polly.Simmy.Latency.OnLatencyInjectedArguments
+Polly.Simmy.Latency.OnLatencyInjectedArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Latency.OnLatencyInjectedArguments.Latency.get -> System.TimeSpan
+Polly.Simmy.Latency.OnLatencyInjectedArguments.OnLatencyInjectedArguments() -> void
+Polly.Simmy.Latency.OnLatencyInjectedArguments.OnLatencyInjectedArguments(Polly.ResilienceContext! context, System.TimeSpan latency) -> void
+Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>
+Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.ChaosOutcomeStrategyOptions() -> void
+Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected.get -> System.Func<Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>, System.Threading.Tasks.ValueTask>?
+Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected.set -> void
+Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.get -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>!
+Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.set -> void
+Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>
+Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.OnOutcomeInjectedArguments() -> void
+Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.OnOutcomeInjectedArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome) -> void
+Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.Outcome.get -> Polly.Outcome<TResult>
+Polly.Simmy.Outcomes.OutcomeGenerator<TResult>
+Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddException(System.Func<Polly.ResilienceContext!, System.Exception!>! generator, int weight = 100) -> Polly.Simmy.Outcomes.OutcomeGenerator<TResult>!
+Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddException(System.Func<System.Exception!>! generator, int weight = 100) -> Polly.Simmy.Outcomes.OutcomeGenerator<TResult>!
+Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddException<TException>(int weight = 100) -> Polly.Simmy.Outcomes.OutcomeGenerator<TResult>!
+Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddResult(System.Func<Polly.ResilienceContext!, TResult>! generator, int weight = 100) -> Polly.Simmy.Outcomes.OutcomeGenerator<TResult>!
+Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.AddResult(System.Func<TResult>! generator, int weight = 100) -> Polly.Simmy.Outcomes.OutcomeGenerator<TResult>!
+Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.OutcomeGenerator() -> void
+Polly.Simmy.Outcomes.OutcomeGeneratorArguments
+Polly.Simmy.Outcomes.OutcomeGeneratorArguments.Context.get -> Polly.ResilienceContext!
+Polly.Simmy.Outcomes.OutcomeGeneratorArguments.OutcomeGeneratorArguments() -> void
+Polly.Simmy.Outcomes.OutcomeGeneratorArguments.OutcomeGeneratorArguments(Polly.ResilienceContext! context) -> void
 Polly.StrategyBuilderContext
 Polly.StrategyBuilderContext.Telemetry.get -> Polly.Telemetry.ResilienceStrategyTelemetry!
 Polly.StrategyBuilderContext.TimeProvider.get -> System.TimeProvider!
@@ -428,6 +533,16 @@ static Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TBuilder>(this TBui
 static Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy<TResult>!>! factory, Polly.ResilienceStrategyOptions! options) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry(this Polly.ResiliencePipelineBuilder! builder, Polly.Retry.RetryStrategyOptions! options) -> Polly.ResiliencePipelineBuilder!
 static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Retry.RetryStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(this TBuilder! builder, double injectionRate, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask>! behavior) -> TBuilder!
+static Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.AddChaosBehavior<TBuilder>(this TBuilder! builder, Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions! options) -> TBuilder!
+static Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(this TBuilder! builder, double injectionRate, System.Func<System.Exception?>! faultGenerator) -> TBuilder!
+static Polly.Simmy.ChaosFaultPipelineBuilderExtensions.AddChaosFault<TBuilder>(this TBuilder! builder, Polly.Simmy.Fault.ChaosFaultStrategyOptions! options) -> TBuilder!
+static Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(this TBuilder! builder, double injectionRate, System.TimeSpan latency) -> TBuilder!
+static Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.AddChaosLatency<TBuilder>(this TBuilder! builder, Polly.Simmy.Latency.ChaosLatencyStrategyOptions! options) -> TBuilder!
+static Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, double injectionRate, System.Func<TResult?>! resultGenerator) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.AddChaosOutcome<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.Simmy.Fault.FaultGenerator.implicit operator System.Func<Polly.Simmy.Fault.FaultGeneratorArguments, System.Threading.Tasks.ValueTask<System.Exception?>>!(Polly.Simmy.Fault.FaultGenerator! generator) -> System.Func<Polly.Simmy.Fault.FaultGeneratorArguments, System.Threading.Tasks.ValueTask<System.Exception?>>!
+static Polly.Simmy.Outcomes.OutcomeGenerator<TResult>.implicit operator System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>!(Polly.Simmy.Outcomes.OutcomeGenerator<TResult>! generator) -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>!
 static Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, Polly.Timeout.TimeoutStrategyOptions! options) -> TBuilder!
 static Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, System.TimeSpan timeout) -> TBuilder!
 static readonly Polly.ResiliencePipeline.Empty -> Polly.ResiliencePipeline!
