@@ -39,4 +39,27 @@ public class StrategyHelperTests
 
             outcome.Exception.Should().BeOfType<InvalidOperationException>();
         });
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task ExecuteCallbackSafeAsync_AsyncCallback_CompletedOk(bool isAsync) =>
+        await TestUtilities.AssertWithTimeoutAsync(async () =>
+        {
+            var outcomeTask = StrategyHelper.ExecuteCallbackSafeAsync<string, string>(
+                async (_, _) =>
+                {
+                    if (isAsync)
+                    {
+                        await Task.Delay(15);
+                    }
+
+                    return Outcome.FromResult("success");
+                },
+                ResilienceContextPool.Shared.Get(),
+                "dummy");
+
+            outcomeTask.IsCompleted.Should().Be(!isAsync);
+            (await outcomeTask).Result.Should().Be("success");
+        });
 }

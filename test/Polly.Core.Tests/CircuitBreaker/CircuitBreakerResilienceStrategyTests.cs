@@ -105,16 +105,14 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     }
 
     [Fact]
-    public void Execute_UnhandledException_NoCalls()
+    public void Execute_UnhandledException_OnActionSuccess()
     {
         _options.ShouldHandle = args => new ValueTask<bool>(args.Outcome.Exception is InvalidOperationException);
         var strategy = Create();
 
         strategy.Invoking(s => s.Execute<int>(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
 
-        _behavior.DidNotReceiveWithAnyArgs().OnActionFailure(default, out Arg.Any<bool>());
-        _behavior.DidNotReceiveWithAnyArgs().OnActionSuccess(default);
-        _behavior.DidNotReceiveWithAnyArgs().OnCircuitClosed();
+        _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
     }
 
     public void Dispose() => _controller.Dispose();
