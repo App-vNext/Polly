@@ -181,11 +181,14 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
 
 Use outcome strategies to inject faults in advanced scenarios which you need to inject outcomes using delegates. This is an opinionated anti-pattern since you can consider an exception as a result/outcome, however, there might be undesired implications when doing so, one of them is the telemetry events, which might end up affecting your metrics as the `ChaosOutcomeStrategy` reports both result and exceptions in the same way, and this could pose a problem for instrumentation purposes since it's clearer looking for fault injected events to be 100% sure where/when exceptions were injected, rather than have them mixed in the same "bag".
 
+Also, you end up losing control of how/when to inject outcomes vs faults since this way does not allow you to control separately when to inject a fault vs an outcome.
+
 <!-- snippet: chaos-outcome-anti-pattern-inject-fault -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
     {
+        InjectionRate = 0.5, // same injection rate for both fault and outcome
         OutcomeGenerator = args =>
         {
             Outcome<HttpResponseMessage>? outcome = Random.Shared.Next(350) switch
@@ -220,7 +223,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
 
 ✅ DO
 
-The previous approach is tempting since it looks more succinct, but use the fault chaos instead as the [`ChaosFaultStrategy`](fault.md) correctly tracks telemetry events effectively as faults not just as any other outcome.
+The previous approach is tempting since it looks more succinct, but use the fault chaos instead as the [`ChaosFaultStrategy`](fault.md) correctly tracks telemetry events effectively as faults not just as any other outcome, also by separating them you can control the injection rate and enable/disable them separately which gives you more control when it comes to injecting chaos dynamically and in a controlled manner.
 
 <!-- snippet: chaos-outcome-pattern-inject-fault -->
 ```cs
@@ -228,6 +231,7 @@ var randomThreshold = Random.Shared.Next(350);
 var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddChaosFault(new ChaosFaultStrategyOptions
     {
+        InjectionRate = 0.1, // different injection rate for faults
         FaultGenerator = args =>
         {
             Exception? exception = randomThreshold switch
@@ -246,6 +250,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     })
     .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
     {
+        InjectionRate = 0.5, // different injection rate for outcomes
         OutcomeGenerator = args =>
         {
             Outcome<HttpResponseMessage>? outcome = randomThreshold switch

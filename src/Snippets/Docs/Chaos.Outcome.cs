@@ -120,6 +120,7 @@ internal static partial class Chaos
         var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
             {
+                InjectionRate = 0.5, // same injection rate for both fault and outcome
                 OutcomeGenerator = args =>
                 {
                     Outcome<HttpResponseMessage>? outcome = Random.Shared.Next(350) switch
@@ -160,6 +161,7 @@ internal static partial class Chaos
         var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddChaosFault(new ChaosFaultStrategyOptions
             {
+                InjectionRate = 0.1, // different injection rate for faults
                 FaultGenerator = args =>
                 {
                     Exception? exception = randomThreshold switch
@@ -178,6 +180,7 @@ internal static partial class Chaos
             })
             .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
             {
+                InjectionRate = 0.5, // different injection rate for outcomes
                 OutcomeGenerator = args =>
                 {
                     Outcome<HttpResponseMessage>? outcome = randomThreshold switch
