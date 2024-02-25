@@ -35,6 +35,9 @@ public sealed class OutcomeGenerator<TResult>
     /// <param name="generator">The delegate that generates the exception.</param>
     /// <param name="weight">The weight assigned to this generator. Defaults to <c>100</c>.</param>
     /// <returns>The current instance of <see cref="OutcomeGenerator{TResult}"/>.</returns>
+#pragma warning disable S1133 // Deprecated code should be removed
+    [Obsolete("This method is deprecated and will be removed in the next version. Use Chaos fault strategy instead.")]
+#pragma warning restore S1133 // Deprecated code should be removed
     public OutcomeGenerator<TResult> AddException(Func<Exception> generator, int weight = DefaultWeight)
     {
         Guard.NotNull(generator);
@@ -50,6 +53,9 @@ public sealed class OutcomeGenerator<TResult>
     /// <param name="generator">The delegate that generates the exception, accepting a <see cref="ResilienceContext"/>.</param>
     /// <param name="weight">The weight assigned to this generator. Defaults to <c>100</c>.</param>
     /// <returns>The current instance of <see cref="OutcomeGenerator{TResult}"/>.</returns>
+#pragma warning disable S1133 // Deprecated code should be removed
+    [Obsolete("This method is deprecated and will be removed in the next version. Use Chaos fault strategy instead.")]
+#pragma warning restore S1133 // Deprecated code should be removed
     public OutcomeGenerator<TResult> AddException(Func<ResilienceContext, Exception> generator, int weight = DefaultWeight)
     {
         Guard.NotNull(generator);
@@ -65,6 +71,9 @@ public sealed class OutcomeGenerator<TResult>
     /// <typeparam name="TException">The type of the exception to generate.</typeparam>
     /// <param name="weight">The weight assigned to this generator. Defaults to <c>100</c>.</param>
     /// <returns>The current instance of <see cref="OutcomeGenerator{TResult}"/>.</returns>
+#pragma warning disable S1133 // Deprecated code should be removed
+    [Obsolete("This method is deprecated and will be removed in the next version. Use Chaos fault strategy instead.")]
+#pragma warning restore S1133 // Deprecated code should be removed
     public OutcomeGenerator<TResult> AddException<TException>(int weight = DefaultWeight)
         where TException : Exception, new()
     {
