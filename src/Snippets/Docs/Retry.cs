@@ -402,17 +402,15 @@ internal static class Retry
         var retry = new ResiliencePipelineBuilder()
             .AddRetry(new()
             {
-                OnRetry = args =>
+                OnRetry = async args =>
                 {
                     if (args.Outcome.Exception is TimeoutException)
                     {
                         if (args.Context.Properties.TryGetValue(ctsKey, out var cts))
                         {
-                            cts.Cancel();
+                            await cts.CancelAsync();
                         }
                     }
-
-                    return ValueTask.CompletedTask;
                 }
             })
             .Build();
