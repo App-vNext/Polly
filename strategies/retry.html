@@ -781,17 +781,15 @@ var foo = await timeout.ExecuteAsync((ct) =&gt; JsonSerializer.DeserializeAsync&
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
     {
-        OnRetry = args =&gt;
+        OnRetry = async args =&gt;
         {
             if (args.Outcome.Exception is TimeoutException)
             {
                 if (args.Context.Properties.TryGetValue(ctsKey, out var cts))
                 {
-                    cts.Cancel();
+                    await cts.CancelAsync();
                 }
             }
-
-            return ValueTask.CompletedTask;
         }
     })
     .Build();
