@@ -381,7 +381,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(optionsExtra
     state if_state_step2 &lt;&lt;choice&gt;&gt;
     state if_state_step3 &lt;&lt;choice&gt;&gt;
 
-    exponential: Delay * AttemptNumber^2
+    exponential: Delay * 2^AttemptNumber
     exponentialWJitter: Decorrelated Jitter Backoff V2
     compare: MaxDelay &lt; BaseDelay
     setBase: Set BaseDelay
