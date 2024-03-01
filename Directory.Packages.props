@@ -5,6 +5,10 @@
     <MicrosoftExtensionsVersion>8.0.0</MicrosoftExtensionsVersion>
     <MicrosoftExtensionsTimeProviderVersion>8.6.0</MicrosoftExtensionsTimeProviderVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0'))">
+    <MicrosoftExtensionsVersion>9.0.0-preview.1.24080.9</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsTimeProviderVersion>9.0.0-preview.1.24108.1</MicrosoftExtensionsTimeProviderVersion>
+  </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="coverlet.msbuild" Version="6.0.2" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.13.12" />
