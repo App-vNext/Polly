@@ -5,7 +5,7 @@
     <PublishAot>true</PublishAot>
     <SKIP_POLLY_ANALYZERS>true</SKIP_POLLY_ANALYZERS>
     <SelfContained>true</SelfContained>
-    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />
