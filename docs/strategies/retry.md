@@ -234,7 +234,7 @@ stateDiagram-v2
     state if_state_step2 <<choice>>
     state if_state_step3 <<choice>>
 
-    exponential: Delay * AttemptNumber^2
+    exponential: Delay * 2^AttemptNumber
     exponentialWJitter: Decorrelated Jitter Backoff V2
     compare: MaxDelay < BaseDelay
     setBase: Set BaseDelay
