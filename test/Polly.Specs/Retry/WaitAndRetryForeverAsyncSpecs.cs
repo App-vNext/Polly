@@ -86,7 +86,7 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
     {
         Action policy = () => Policy
                                .Handle<Exception>()
-                               .WaitAndRetryForeverAsync(default(Func<int, Context, TimeSpan>), default(Action<Exception, int, TimeSpan, Context>));
+                               .WaitAndRetryForeverAsync(default, default(Action<Exception, int, TimeSpan, Context>));
 
         policy.Should().Throw<ArgumentNullException>().And
               .ParamName.Should().Be("sleepDurationProvider");

@@ -65,13 +65,13 @@ Teardown(_ =>
 Task("__Clean")
     .Does(() =>
 {
-    CleanDirectories(new[]
-    {
+    CleanDirectories(
+    [
         testResultsDir,
         nupkgDestDir,
         artifactsDir,
         strykerOutput
-  	});
+    ]);
 
     foreach (var path in solutionPaths)
     {
@@ -114,8 +114,8 @@ Task("__BuildSolutions")
             },
         };
 
-        dotNetBuildSettings.MSBuildSettings.Properties["ContinuousIntegrationBuild"] = new[] { Environment.GetEnvironmentVariable("CI") ?? "false" };
-        dotNetBuildSettings.MSBuildSettings.Properties["Deterministic"] = new[] { "true" };
+        dotNetBuildSettings.MSBuildSettings.Properties["ContinuousIntegrationBuild"] = [Environment.GetEnvironmentVariable("CI") ?? "false"];
+        dotNetBuildSettings.MSBuildSettings.Properties["Deterministic"] = ["true"];
 
         DotNetBuild(solution.ToString(), dotNetBuildSettings);
     }
@@ -145,7 +145,7 @@ Task("__RunTests")
 
     if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
     {
-        loggers = new[] { "GitHubActions;report-warnings=false" };
+        loggers = ["GitHubActions;report-warnings=false"];
     }
 
     var projects = GetFiles("./test/**/*.csproj");
@@ -157,8 +157,6 @@ Task("__RunTests")
             Configuration = configuration,
             Loggers = loggers,
             NoBuild = true,
-            // Commented, because it causes random crashes on Windows
-            // ArgumentCustomization = args => args.Append($"--blame-hang-timeout 10s")
         });
     }
 });
@@ -229,14 +227,14 @@ Task("__CreateNuGetPackages")
         },
     };
 
-    var packages = new[]
-    {
+    string[] packages =
+    [
         System.IO.Path.Combine(srcDir, "Polly.Core", "Polly.Core.csproj"),
         System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"),
         System.IO.Path.Combine(srcDir, "Polly.RateLimiting", "Polly.RateLimiting.csproj"),
         System.IO.Path.Combine(srcDir, "Polly.Extensions", "Polly.Extensions.csproj"),
         System.IO.Path.Combine(srcDir, "Polly.Testing", "Polly.Testing.csproj"),
-    };
+    ];
 
     Information("Building NuGet packages");
 
