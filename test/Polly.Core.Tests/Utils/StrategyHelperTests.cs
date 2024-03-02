@@ -18,7 +18,7 @@ public class StrategyHelperTests
         outcome.Exception.Should().BeOfType<OperationCanceledException>();
     }
 
-    [InlineData(true)]
+    [InlineData(true, Skip = "Causes test process to abort in Release mode for net9.0.")]
     [InlineData(false)]
     [Theory]
     public async Task ExecuteCallbackSafeAsync_CallbackThrows_EnsureExceptionWrapped(bool isAsync) =>
