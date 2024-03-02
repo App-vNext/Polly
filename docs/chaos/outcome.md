@@ -9,18 +9,19 @@
 
 ---
 
-The outcome chaos strategy is designed to inject or substitute fake results into system operations. This allows testing how an application behaves when it receives different types of responses, like successful or error results.
+The outcome chaos strategy is designed to inject or substitute fake results into system operations. This allows testing how an application behaves when it receives different types of responses, like successful results, errors, or exceptions.
 
 ## Usage
 
 <!-- snippet: chaos-outcome-usage -->
 ```cs
-// To use OutcomeGenerator<T> to register the results to be injected (equal probability)
+// To use OutcomeGenerator<T> to register the results and exceptions to be injected (equal probability)
 var optionsWithResultGenerator = new ChaosOutcomeStrategyOptions<HttpResponseMessage>
 {
     OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
         .AddResult(() => new HttpResponseMessage(HttpStatusCode.TooManyRequests))
         .AddResult(() => new HttpResponseMessage(HttpStatusCode.InternalServerError))
+        .AddException(() => new HttpRequestException("Chaos request exception.")),
     InjectionRate = 0.1
 };
 
@@ -138,11 +139,12 @@ The `OutcomeGenerator<T>` is a convenience API that allows you to specify what o
 new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
     {
-        // Use OutcomeGenerator<T> to register the results to be injected
+        // Use OutcomeGenerator<T> to register the results and exceptions to be injected
         OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
             .AddResult(() => new HttpResponseMessage(HttpStatusCode.InternalServerError)) // Result generator
             .AddResult(() => new HttpResponseMessage(HttpStatusCode.TooManyRequests), weight: 50) // Result generator with weight
             .AddResult(context => CreateResultFromContext(context)) // Access the ResilienceContext to create result
+            .AddException<HttpRequestException>(), // You can also register exceptions
     });
 ```
 <!-- endSnippet -->
@@ -183,20 +185,20 @@ Use outcome strategies to inject faults in advanced scenarios which you need to 
 
 Also, you end up losing control of how/when to inject outcomes vs faults since this way does not allow you to control separately when to inject a fault vs an outcome.
 
-<!-- snippet: chaos-outcome-anti-pattern-inject-fault -->
+<!-- snippet: chaos-outcome-anti-pattern-generator-inject-fault -->
 ```cs
 var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
     {
         InjectionRate = 0.5, // same injection rate for both fault and outcome
         OutcomeGenerator = args =>
-        {
+        {   
             Outcome<HttpResponseMessage>? outcome = Random.Shared.Next(350) switch
             {
                 < 100 => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)),
                 < 150 => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.TooManyRequests)),
                 < 250 => Outcome.FromResult(CreateResultFromContext(args.Context)),
-                < 350 => Outcome.FromException<HttpResponseMessage>(new HttpRequestException("Chaos request exception.")),
+                < 350 => Outcome.FromException<HttpResponseMessage>(new HttpRequestException("Chaos request exception.")), // ⚠️ Avoid this ⚠️ 
                 _ => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.OK))
             };
 
@@ -232,6 +234,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddChaosFault(new ChaosFaultStrategyOptions
     {
         InjectionRate = 0.1, // different injection rate for faults
+        EnabledGenerator = args => ValueTask.FromResult(ShouldEnableFaults(args.Context)), // different settings might apply to inject faults
         FaultGenerator = args =>
         {
             Exception? exception = randomThreshold switch
@@ -251,6 +254,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
     {
         InjectionRate = 0.5, // different injection rate for outcomes
+        EnabledGenerator = args => ValueTask.FromResult(ShouldEnableOutcome(args.Context)), // different settings might apply to inject outcomes
         OutcomeGenerator = args =>
         {
             Outcome<HttpResponseMessage>? outcome = randomThreshold switch
@@ -272,3 +276,36 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .Build();
 ```
 <!-- endSnippet -->
+
+❌ DON'T
+
+Use outcome strategies to inject only faults, use the [`ChaosFaultStrategy`](fault.md) instead.
+
+<!-- snippet: chaos-outcome-anti-pattern-only-inject-fault -->
+```cs
+new ResiliencePipelineBuilder<HttpResponseMessage>()
+    .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
+    {
+        OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
+            .AddException<HttpRequestException>(), // ⚠️ Avoid this ⚠️ 
+    });
+```
+<!-- endSnippet -->
+
+✅ DO
+
+Use fault strategies to properly inject the exception.
+
+<!-- snippet: chaos-outcome-pattern-only-inject-fault -->
+```cs
+new ResiliencePipelineBuilder<HttpResponseMessage>()
+    .AddChaosFault(new ChaosFaultStrategyOptions
+    {
+        FaultGenerator = new FaultGenerator()
+            .AddException<HttpRequestException>(),
+    });
+```
+<!-- endSnippet -->
+
+> [!NOTE]
+> Even though the outcome strategy is flexible enough to allow you to inject outcomes as well as exceptions without the need to chain a fault strategy in the pipeline, use your judgment when doing so because of the caveats and side effects explained before around the telemetry and injection control.

@@ -20,6 +20,7 @@ internal static partial class Chaos
             OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
                 .AddResult(() => new HttpResponseMessage(HttpStatusCode.TooManyRequests))
                 .AddResult(() => new HttpResponseMessage(HttpStatusCode.InternalServerError))
+                .AddException(() => new HttpRequestException("Chaos request exception.")),
             InjectionRate = 0.1
         };
 
@@ -83,6 +84,7 @@ internal static partial class Chaos
                     .AddResult(() => new HttpResponseMessage(HttpStatusCode.InternalServerError)) // Result generator
                     .AddResult(() => new HttpResponseMessage(HttpStatusCode.TooManyRequests), weight: 50) // Result generator with weight
                     .AddResult(context => CreateResultFromContext(context)) // Access the ResilienceContext to create result
+                    .AddException<HttpRequestException>(), // You can also register exceptions
             });
 
         #endregion
@@ -114,9 +116,9 @@ internal static partial class Chaos
         #endregion
     }
 
-    public static void AntiPattern_InjectFault()
+    public static void AntiPattern_GeneratorDelegateInjectFault()
     {
-        #region chaos-outcome-anti-pattern-inject-fault
+        #region chaos-outcome-anti-pattern-generator-inject-fault
         var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
             {
@@ -154,14 +156,15 @@ internal static partial class Chaos
         #endregion
     }
 
-    public static void Pattern_InjectFault()
+    public static void Pattern_GeneratorDelegateInjectFaultAndOutcome()
     {
-        #region chaos-outcome-pattern-inject-fault
+        #region chaos-outcome-pattern-generator-inject-fault
         var randomThreshold = Random.Shared.Next(350);
         var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddChaosFault(new ChaosFaultStrategyOptions
             {
                 InjectionRate = 0.1, // different injection rate for faults
+                EnabledGenerator = args => ValueTask.FromResult(ShouldEnableFaults(args.Context)), // different settings might apply to inject faults
                 FaultGenerator = args =>
                 {
                     Exception? exception = randomThreshold switch
@@ -181,6 +184,7 @@ internal static partial class Chaos
             .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
             {
                 InjectionRate = 0.5, // different injection rate for outcomes
+                EnabledGenerator = args => ValueTask.FromResult(ShouldEnableOutcome(args.Context)), // different settings might apply to inject outcomes
                 OutcomeGenerator = args =>
                 {
                     Outcome<HttpResponseMessage>? outcome = randomThreshold switch
@@ -202,6 +206,38 @@ internal static partial class Chaos
             .Build();
         #endregion
     }
+
+    public static void AntiPattern_OnlyInjectFault()
+    {
+        #region chaos-outcome-anti-pattern-only-inject-fault
+
+        new ResiliencePipelineBuilder<HttpResponseMessage>()
+            .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
+            {
+                OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
+                    .AddException<HttpRequestException>(),
+            });
+
+        #endregion
+    }
+
+    public static void Pattern_OnlyInjectFault()
+    {
+        #region chaos-outcome-pattern-only-inject-fault
+
+        new ResiliencePipelineBuilder<HttpResponseMessage>()
+            .AddChaosFault(new ChaosFaultStrategyOptions
+            {
+                FaultGenerator = new FaultGenerator()
+                    .AddException<HttpRequestException>(),
+            });
+
+        #endregion
+    }
+
+    private static bool ShouldEnableFaults(ResilienceContext context) => true;
+
+    private static bool ShouldEnableOutcome(ResilienceContext context) => true;
 
     private static HttpResponseMessage CreateResultFromContext(ResilienceContext context) => new(HttpStatusCode.TooManyRequests);
 }
