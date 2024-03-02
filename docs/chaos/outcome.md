@@ -227,7 +227,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
 
 The previous approach is tempting since it looks more succinct, but use the fault chaos instead as the [`ChaosFaultStrategy`](fault.md) correctly tracks telemetry events effectively as faults not just as any other outcome, also by separating them you can control the injection rate and enable/disable them separately which gives you more control when it comes to injecting chaos dynamically and in a controlled manner.
 
-<!-- snippet: chaos-outcome-pattern-inject-fault -->
+<!-- snippet: chaos-outcome-pattern-generator-inject-fault -->
 ```cs
 var randomThreshold = Random.Shared.Next(350);
 var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
