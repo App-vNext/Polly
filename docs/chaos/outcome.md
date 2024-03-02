@@ -132,7 +132,7 @@ To generate a faulted outcome (result or exception), you need to specify a `Outc
 
 ### Use `OutcomeGenerator<T>` class to generate outcomes
 
-The `OutcomeGenerator<T>` is a convenience API that allows you to specify what outcomes are to be injected. Additionally, it also allows assigning weight to each registered outcome.
+The `OutcomeGenerator<T>` is a convenience API that allows you to specify what outcomes (results or exceptions) are to be injected. Additionally, it also allows assigning weight to each registered outcome.
 
 <!-- snippet: chaos-outcome-generator-class -->
 ```cs
