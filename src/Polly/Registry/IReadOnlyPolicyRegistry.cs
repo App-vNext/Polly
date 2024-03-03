@@ -21,7 +21,7 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// </summary>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <returns>The policy stored in the registry under the given key.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     TPolicy Get<TPolicy>(TKey key)
         where TPolicy : IsPolicy;
 

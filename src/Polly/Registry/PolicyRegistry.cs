@@ -49,7 +49,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <param name="key">The key for the policy.</param>
     /// <param name="policy">The policy to store in the registry.</param>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">A Policy with same <paramref name="key"/> already exists.</exception>
     public void Add<TPolicy>(string key, TPolicy policy)
         where TPolicy : IsPolicy => _registry.Add(key, policy);
@@ -89,7 +89,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <param name="key">The key of the policy to get.</param>
     /// <returns>The policy stored in the registry under the given key.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="KeyNotFoundException">The given key was not present in the registry.</exception>
     public TPolicy Get<TPolicy>(string key)
         where TPolicy : IsPolicy => (TPolicy)_registry[key];
@@ -124,7 +124,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// </summary>
     /// <param name="key">The key to locate in the registry.</param>
     /// <returns>True if <paramref name="key"/> exists otherwise false.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool ContainsKey(string key) =>
         _registry.ContainsKey(key);
 
@@ -133,7 +133,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// </summary>
     /// <param name="key">The <paramref name="key"/> of the policy to remove.</param>
     /// <returns>True if the policy is successfully removed. Otherwise false.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool Remove(string key) =>
         _registry.Remove(key);
 
