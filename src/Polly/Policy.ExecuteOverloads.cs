@@ -33,8 +33,8 @@ public abstract partial class Policy : ISyncPolicy
     /// <summary>
     /// Executes the specified action within the policy.
     /// </summary>
-    /// <param name="action"></param>
-    /// <param name="cancellationToken"></param>
+    /// <param name="action">The action to perform.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     [DebuggerStepThrough]
     public void Execute(Action<CancellationToken> action, CancellationToken cancellationToken) =>
         Execute((_, ct) => action(ct), [], cancellationToken);
