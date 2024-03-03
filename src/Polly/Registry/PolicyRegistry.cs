@@ -49,7 +49,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <param name="key">The key for the policy.</param>
     /// <param name="policy">The policy to store in the registry.</param>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">A Policy with same <paramref name="key"/> already exists.</exception>
     public void Add<TPolicy>(string key, TPolicy policy)
         where TPolicy : IsPolicy => _registry.Add(key, policy);
