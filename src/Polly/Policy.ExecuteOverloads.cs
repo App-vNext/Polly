@@ -31,7 +31,7 @@ public abstract partial class Policy : ISyncPolicy
         Execute((ctx, _) => action(ctx), context, DefaultCancellationToken);
 
     /// <summary>
-    /// Executes the specified action within the policy
+    /// Executes the specified action within the policy.
     /// </summary>
     /// <param name="action"></param>
     /// <param name="cancellationToken"></param>
@@ -93,9 +93,7 @@ public abstract partial class Policy : ISyncPolicy
     /// <param name="action">The action to perform.</param>
     /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
-    /// <returns>
-    /// The value returned by the action
-    /// </returns>
+    /// <returns>The value returned by the action.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
     [DebuggerStepThrough]
     public TResult Execute<TResult>(Func<Context, TResult> action, IDictionary<string, object> contextData) =>
@@ -108,9 +106,7 @@ public abstract partial class Policy : ISyncPolicy
     /// <param name="action">The action to perform.</param>
     /// <param name="context">Context data that is passed to the exception policy.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
-    /// <returns>
-    /// The value returned by the action
-    /// </returns>
+    /// <returns>The value returned by the action.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
     [DebuggerStepThrough]
     public TResult Execute<TResult>(Func<Context, TResult> action, Context context) =>
@@ -173,7 +169,7 @@ public abstract partial class Policy : ISyncPolicy
     #region ExecuteAndCapture overloads
 
     /// <summary>
-    /// Executes the specified action within the policy and returns the captured result
+    /// Executes the specified action within the policy and returns the captured result.
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <returns>The captured result.</returns>
@@ -203,7 +199,7 @@ public abstract partial class Policy : ISyncPolicy
         ExecuteAndCapture((ctx, _) => action(ctx), context, DefaultCancellationToken);
 
     /// <summary>
-    /// Executes the specified action within the policy and returns the captured result
+    /// Executes the specified action within the policy and returns the captured result.
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
@@ -225,7 +221,7 @@ public abstract partial class Policy : ISyncPolicy
         ExecuteAndCapture(action, new Context(contextData), cancellationToken);
 
     /// <summary>
-    /// Executes the specified action within the policy and returns the captured result
+    /// Executes the specified action within the policy and returns the captured result.
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <param name="context">Context data that is passed to the exception policy.</param>
@@ -251,7 +247,7 @@ public abstract partial class Policy : ISyncPolicy
     #region Overloads method-generic in TResult
 
     /// <summary>
-    /// Executes the specified action within the policy and returns the captured result
+    /// Executes the specified action within the policy and returns the captured result.
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <returns>The captured result.</returns>
@@ -282,7 +278,7 @@ public abstract partial class Policy : ISyncPolicy
         ExecuteAndCapture((ctx, _) => action(ctx), context, DefaultCancellationToken);
 
     /// <summary>
-    /// Executes the specified action within the policy and returns the captured result
+    /// Executes the specified action within the policy and returns the captured result.
     /// </summary>
     /// <typeparam name="TResult">The type of the t result.</typeparam>
     /// <param name="action">The action to perform.</param>

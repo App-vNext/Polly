@@ -331,7 +331,7 @@ public static class AsyncRetryTResultSyntax
     ///     Builds an <see cref="AsyncRetryPolicy{TResult}" /> that will wait and retry <paramref name="retryCount" /> times
     ///     calling <paramref name="onRetry" /> on each retry with the handled exception or result and the current sleep duration.
     ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
-    ///     the current retry number (1 for first retry, 2 for second etc)
+    ///     the current retry number (1 for first retry, 2 for second etc).
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="retryCount">The retry count.</param>

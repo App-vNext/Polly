@@ -775,7 +775,7 @@ public static class AsyncRetrySyntax
     /// <summary>
     /// Builds an <see cref="AsyncRetryPolicy"/> that will wait and retry indefinitely until the action succeeds.
     ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
-    ///     the current retry number (1 for first retry, 2 for second etc)
+    ///     the current retry number (1 for first retry, 2 for second etc).
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
@@ -814,7 +814,7 @@ public static class AsyncRetrySyntax
     /// Builds an <see cref="AsyncRetryPolicy"/> that will wait and retry indefinitely
     /// calling <paramref name="onRetry"/> on each retry with the raised exception.
     ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
-    ///     the current retry number (1 for first retry, 2 for second etc)
+    ///     the current retry number (1 for first retry, 2 for second etc).
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
@@ -838,7 +838,7 @@ public static class AsyncRetrySyntax
     /// Builds an <see cref="AsyncRetryPolicy"/> that will wait and retry indefinitely
     /// calling <paramref name="onRetry"/> on each retry with the raised exception and retry count.
     ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
-    ///     the current retry number (1 for first retry, 2 for second etc)
+    ///     the current retry number (1 for first retry, 2 for second etc).
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
@@ -862,7 +862,7 @@ public static class AsyncRetrySyntax
     /// Builds an <see cref="AsyncRetryPolicy"/> that will wait and retry indefinitely
     /// calling <paramref name="onRetryAsync"/> on each retry with the raised exception.
     ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
-    ///     the current retry number (1 for first retry, 2 for second etc)
+    ///     the current retry number (1 for first retry, 2 for second etc).
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
@@ -886,7 +886,7 @@ public static class AsyncRetrySyntax
     /// Builds an <see cref="AsyncRetryPolicy"/> that will wait and retry indefinitely
     /// calling <paramref name="onRetryAsync"/> on each retry with the raised exception and retry count.
     ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
-    ///     the current retry number (1 for first retry, 2 for second etc)
+    ///     the current retry number (1 for first retry, 2 for second etc).
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>

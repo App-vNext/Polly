@@ -471,7 +471,7 @@ public static class RetryTResultSyntax
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will wait and retry indefinitely until the action succeeds.
     ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
-    ///     the current retry number (1 for first retry, 2 for second etc)
+    ///     the current retry number (1 for first retry, 2 for second etc).
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
@@ -490,7 +490,7 @@ public static class RetryTResultSyntax
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will wait and retry indefinitely until the action succeeds.
     ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
-    ///     the current retry number (1 for first retry, 2 for second etc) and execution context
+    ///     the current retry number (1 for first retry, 2 for second etc) and execution context.
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
@@ -510,7 +510,7 @@ public static class RetryTResultSyntax
     /// Builds a <see cref="Policy{TResult}"/> that will wait and retry indefinitely until the action succeeds,
     /// calling <paramref name="onRetry"/> on each retry with the handled exception or result.
     ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
-    ///     the current retry number (1 for first retry, 2 for second etc)
+    ///     the current retry number (1 for first retry, 2 for second etc).
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
@@ -534,7 +534,7 @@ public static class RetryTResultSyntax
     /// Builds a <see cref="Policy{TResult}"/> that will wait and retry indefinitely until the action succeeds,
     /// calling <paramref name="onRetry"/> on each retry with the handled exception or result and retry count.
     ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
-    ///     the current retry number (1 for first retry, 2 for second etc)
+    ///     the current retry number (1 for first retry, 2 for second etc).
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>

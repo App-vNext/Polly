@@ -1,7 +1,7 @@
 ﻿namespace Polly;
 
 /// <summary>
-/// An interface defining all executions available on a non-generic, asynchronous policy
+/// An interface defining all executions available on a non-generic, asynchronous policy.
 /// </summary>
 public interface IAsyncPolicy : IsPolicy
 {
