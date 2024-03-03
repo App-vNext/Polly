@@ -2,7 +2,7 @@
 namespace Polly;
 
 /// <summary>
-/// Transient fault handling policies that can be applied to delegates returning results of type <typeparamref name="TResult"/>
+/// Transient fault handling policies that can be applied to delegates returning results of type <typeparamref name="TResult"/>.
 /// </summary>
 public abstract partial class Policy<TResult> : PolicyBase<TResult>
 {

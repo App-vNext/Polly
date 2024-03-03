@@ -1,7 +1,7 @@
 ﻿namespace Polly;
 
 /// <summary>
-/// A marker interface identifying Polly policies of all types, and containing properties common to all policies
+/// A marker interface identifying Polly policies of all types, and containing properties common to all policies.
 /// </summary>
 public interface IsPolicy
 {

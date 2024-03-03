@@ -1,18 +1,18 @@
 ﻿namespace Polly;
 
 /// <summary>
-/// The captured outcome of executing an individual Func&lt;TResult&gt;
+/// The captured outcome of executing an individual Func&lt;TResult&gt;.
 /// </summary>
 public class DelegateResult<TResult>
 {
     /// <summary>
-    /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which returned <paramref name="result"/>
+    /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which returned <paramref name="result"/>.
     /// </summary>
     /// <param name="result">The result.</param>
     public DelegateResult(TResult result) => Result = result;
 
     /// <summary>
-    /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which threw <paramref name="exception"/>
+    /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which threw <paramref name="exception"/>.
     /// </summary>
     /// <param name="exception">The exception.</param>
     public DelegateResult(Exception exception) =>

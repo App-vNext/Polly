@@ -409,7 +409,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// </summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="action">The action to perform.</param>
-    /// <param name="context">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+    /// <param name="context">Context data that is passed to the exception policy.</param>
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
     /// <returns>The captured result.</returns>
     [DebuggerStepThrough]

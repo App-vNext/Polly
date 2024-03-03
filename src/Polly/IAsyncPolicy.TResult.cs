@@ -140,7 +140,7 @@ public interface IAsyncPolicy<TResult> : IsPolicy
     ///     Executes the specified asynchronous action within the policy and returns the result.
     /// </summary>
     /// <param name="action">The action to perform.</param>
-    /// <param name="context">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+    /// <param name="context">Context data that is passed to the exception policy.</param>
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
     /// <returns>The captured result.</returns>
     Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken);

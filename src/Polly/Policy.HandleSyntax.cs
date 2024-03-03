@@ -37,6 +37,7 @@ public partial class Policy
     /// Specifies the type of exception that this policy can handle, with additional filters on this exception type, if found as an InnerException of a regular <see cref="Exception"/>, or at any level of nesting within an <see cref="AggregateException"/>.
     /// </summary>
     /// <typeparam name="TException">The type of the exception to handle.</typeparam>
+    /// <param name="exceptionPredicate">The exception predicate to filter the type of exception this policy can handle.</param>
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
     public static PolicyBuilder HandleInner<TException>(Func<TException, bool> exceptionPredicate)
         where TException : Exception
@@ -100,6 +101,7 @@ public partial class Policy<TResult>
     /// Specifies the type of exception that this policy can handle, with additional filters on this exception type, if found as an InnerException of a regular <see cref="Exception"/>, or at any level of nesting within an <see cref="AggregateException"/>.
     /// </summary>
     /// <typeparam name="TException">The type of the exception to handle.</typeparam>
+    /// <param name="exceptionPredicate">The exception predicate to filter the type of exception this policy can handle.</param>
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
     public static PolicyBuilder<TResult> HandleInner<TException>(Func<TException, bool> exceptionPredicate)
         where TException : Exception
