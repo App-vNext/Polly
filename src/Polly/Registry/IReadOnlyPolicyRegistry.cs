@@ -49,6 +49,6 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// </summary>
     /// <param name="key">The Key to locate in the registry</param>
     /// <returns>True if <paramref name="key"/> exists otherwise false</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     bool ContainsKey(TKey key);
 }
