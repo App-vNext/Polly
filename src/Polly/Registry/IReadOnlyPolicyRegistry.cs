@@ -19,6 +19,7 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// <summary>
     /// Gets the policy stored under the provided key, casting to <typeparamref name="TPolicy"/>.
     /// </summary>
+    /// <param name="key">The key of the policy to get.</param>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <returns>The policy stored in the registry under the given key.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
@@ -47,8 +48,8 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// <summary>
     /// Determines whether the specified <paramref name="key"/> exists.
     /// </summary>
-    /// <param name="key">The Key to locate in the registry</param>
-    /// <returns>True if <paramref name="key"/> exists otherwise false</returns>
+    /// <param name="key">The Key to locate in the registry.</param>
+    /// <returns>True if <paramref name="key"/> exists otherwise false.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     bool ContainsKey(TKey key);
 }
