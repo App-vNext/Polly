@@ -23,8 +23,8 @@ public static class CircuitBreakerTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
     /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak)
     {
         Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, _) => { };
@@ -57,8 +57,8 @@ public static class CircuitBreakerTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
     /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset) =>
         policyBuilder.CircuitBreaker(
             handledEventsAllowedBeforeBreaking,
@@ -86,8 +86,8 @@ public static class CircuitBreakerTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
     /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
     {
         Action doNothingOnHalfOpen = () => { };
@@ -120,8 +120,8 @@ public static class CircuitBreakerTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
     /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset, Action onHalfOpen) =>
         policyBuilder.CircuitBreaker(
             handledEventsAllowedBeforeBreaking,
@@ -151,9 +151,9 @@ public static class CircuitBreakerTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
     /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
-    /// <exception cref="ArgumentNullException">onHalfOpen</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onHalfOpen"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) =>
         policyBuilder.CircuitBreaker(
             handledEventsAllowedBeforeBreaking,
@@ -183,9 +183,9 @@ public static class CircuitBreakerTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
     /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
-    /// <exception cref="ArgumentNullException">onHalfOpen</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onHalfOpen"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
     {
         if (handledEventsAllowedBeforeBreaking <= 0)

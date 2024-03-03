@@ -33,7 +33,7 @@ public static class RetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> Retry<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int> onRetry) =>
         policyBuilder.Retry(1, onRetry);
 
@@ -46,7 +46,7 @@ public static class RetryTResultSyntax
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> Retry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Action<DelegateResult<TResult>, int> onRetry)
     {
         if (retryCount < 0)
@@ -64,7 +64,7 @@ public static class RetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> Retry<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int, Context> onRetry) =>
         policyBuilder.Retry(1, onRetry);
 
@@ -77,7 +77,7 @@ public static class RetryTResultSyntax
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> Retry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Action<DelegateResult<TResult>, int, Context> onRetry)
     {
         if (retryCount < 0)
@@ -110,7 +110,7 @@ public static class RetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> RetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>> onRetry)
     {
         if (onRetry == null)
@@ -126,7 +126,7 @@ public static class RetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> RetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int> onRetry)
     {
         if (onRetry == null)
@@ -142,7 +142,7 @@ public static class RetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> RetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, Context> onRetry)
     {
         if (onRetry == null)
@@ -160,7 +160,7 @@ public static class RetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> RetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int, Context> onRetry)
     {
         if (onRetry == null)
@@ -516,7 +516,7 @@ public static class RetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">sleepDurationProvider</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, TimeSpan> sleepDurationProvider)
     {
         if (sleepDurationProvider == null)
@@ -535,7 +535,7 @@ public static class RetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">sleepDurationProvider</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider)
     {
         if (sleepDurationProvider == null)
@@ -556,8 +556,8 @@ public static class RetryTResultSyntax
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">sleepDurationProvider</exception>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan> onRetry)
     {
         if (sleepDurationProvider == null)
@@ -580,8 +580,8 @@ public static class RetryTResultSyntax
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">sleepDurationProvider</exception>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, int, TimeSpan> onRetry)
     {
         if (sleepDurationProvider == null)
@@ -604,8 +604,8 @@ public static class RetryTResultSyntax
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">sleepDurationProvider</exception>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
     {
         if (sleepDurationProvider == null)
@@ -626,8 +626,8 @@ public static class RetryTResultSyntax
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">sleepDurationProvider</exception>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, int, TimeSpan, Context> onRetry)
     {
         if (sleepDurationProvider == null)
@@ -648,8 +648,8 @@ public static class RetryTResultSyntax
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">sleepDurationProvider</exception>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
     {
         if (sleepDurationProvider == null)
@@ -673,8 +673,8 @@ public static class RetryTResultSyntax
     /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">sleepDurationProvider</exception>
-    /// <exception cref="ArgumentNullException">onRetry</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, int, TimeSpan, Context> onRetry)
     {
         if (sleepDurationProvider == null)

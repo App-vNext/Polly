@@ -64,8 +64,8 @@ public static class AdvancedCircuitBreakerTResultSyntax
     /// <exception cref="ArgumentOutOfRangeException">samplingDuration;Value must be equal to or greater than the minimum resolution of the CircuitBreaker timer</exception>
     /// <exception cref="ArgumentOutOfRangeException">minimumThroughput;Value must be greater than one</exception>
     /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset) =>
         policyBuilder.AdvancedCircuitBreaker(
             failureThreshold, samplingDuration, minimumThroughput,
@@ -97,8 +97,8 @@ public static class AdvancedCircuitBreakerTResultSyntax
     /// <exception cref="ArgumentOutOfRangeException">samplingDuration;Value must be equal to or greater than the minimum resolution of the CircuitBreaker timer</exception>
     /// <exception cref="ArgumentOutOfRangeException">minimumThroughput;Value must be greater than one</exception>
     /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
     {
         Action doNothingOnHalfOpen = () => { };
@@ -134,9 +134,9 @@ public static class AdvancedCircuitBreakerTResultSyntax
     /// <exception cref="ArgumentOutOfRangeException">samplingDuration;Value must be equal to or greater than the minimum resolution of the CircuitBreaker timer</exception>
     /// <exception cref="ArgumentOutOfRangeException">minimumThroughput;Value must be greater than one</exception>
     /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
-    /// <exception cref="ArgumentNullException">onHalfOpen</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onHalfOpen"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset, Action onHalfOpen) =>
         policyBuilder.AdvancedCircuitBreaker(
             failureThreshold, samplingDuration, minimumThroughput,
@@ -171,9 +171,9 @@ public static class AdvancedCircuitBreakerTResultSyntax
     /// <exception cref="ArgumentOutOfRangeException">samplingDuration;Value must be equal to or greater than the minimum resolution of the CircuitBreaker timer</exception>
     /// <exception cref="ArgumentOutOfRangeException">minimumThroughput;Value must be greater than one</exception>
     /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
-    /// <exception cref="ArgumentNullException">onHalfOpen</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onHalfOpen"/> is <see langword="null"/>.</exception>
     /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
     public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) =>
         policyBuilder.AdvancedCircuitBreaker(
@@ -209,9 +209,9 @@ public static class AdvancedCircuitBreakerTResultSyntax
     /// <exception cref="ArgumentOutOfRangeException">samplingDuration;Value must be equal to or greater than the minimum resolution of the CircuitBreaker timer</exception>
     /// <exception cref="ArgumentOutOfRangeException">minimumThroughput;Value must be greater than one</exception>
     /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
-    /// <exception cref="ArgumentNullException">onHalfOpen</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onHalfOpen"/> is <see langword="null"/>.</exception>
     /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
     public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(
         this PolicyBuilder<TResult> policyBuilder,

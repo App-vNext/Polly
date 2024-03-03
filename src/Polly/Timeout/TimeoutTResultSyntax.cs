@@ -41,7 +41,7 @@ public partial class Policy
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds, Action<Context, TimeSpan, Task> onTimeout)
     {
         TimeoutValidator.ValidateSecondsTimeout(seconds);
@@ -56,7 +56,7 @@ public partial class Policy
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds, Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
         if (seconds <= 0)
@@ -75,7 +75,7 @@ public partial class Policy
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
     {
         TimeoutValidator.ValidateSecondsTimeout(seconds);
@@ -93,7 +93,7 @@ public partial class Policy
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
         if (seconds <= 0)
@@ -140,7 +140,7 @@ public partial class Policy
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, Action<Context, TimeSpan, Task> onTimeout)
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -155,7 +155,7 @@ public partial class Policy
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -172,7 +172,7 @@ public partial class Policy
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -189,7 +189,7 @@ public partial class Policy
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -200,7 +200,7 @@ public partial class Policy
     /// Builds a <see cref="Policy{TResult}"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
     /// </summary>
     /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider)
     {
@@ -218,7 +218,7 @@ public partial class Policy
     /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
     /// <param name="timeoutStrategy">The timeout strategy.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
     {
         if (timeoutProvider == null)
@@ -235,8 +235,8 @@ public partial class Policy
     /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task{TResult}"/> capturing the abandoned, timed-out action.
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout)
     {
         if (timeoutProvider == null)
@@ -252,8 +252,8 @@ public partial class Policy
     /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task{TResult}"/> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
         if (timeoutProvider == null)
@@ -271,8 +271,8 @@ public partial class Policy
     /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task{TResult}" /> capturing the abandoned, timed-out action.
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
     {
         if (timeoutProvider == null)
@@ -290,8 +290,8 @@ public partial class Policy
     /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task{TResult}" /> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
         if (timeoutProvider == null)
@@ -304,7 +304,7 @@ public partial class Policy
     /// Builds a <see cref="Policy{TResult}"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
     /// </summary>
     /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider)
     {
@@ -319,7 +319,7 @@ public partial class Policy
     /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
     /// <param name="timeoutStrategy">The timeout strategy.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
     {
         Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
@@ -333,8 +333,8 @@ public partial class Policy
     /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task{TResult}"/> capturing the abandoned, timed-out action.
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout) =>
         Timeout<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
 
@@ -345,8 +345,8 @@ public partial class Policy
     /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task{TResult}"/> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout) =>
         Timeout<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
 
@@ -359,8 +359,8 @@ public partial class Policy
     /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task{TResult}" /> capturing the abandoned, timed-out action.
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
     {
         if (onTimeout == null)
@@ -378,8 +378,8 @@ public partial class Policy
     /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task{TResult}" /> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-    /// <exception cref="ArgumentNullException">onTimeout</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(
         Func<Context, TimeSpan> timeoutProvider,
         TimeoutStrategy timeoutStrategy,

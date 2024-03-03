@@ -23,7 +23,7 @@ public partial class Policy
     /// <param name="maxParallelization">The maximum number of concurrent actions that may be executing through the policy.</param>
     /// <param name="onBulkheadRejected">An action to call, if the bulkhead rejects execution due to oversubscription.</param>
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBulkheadRejected</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBulkheadRejected"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static BulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, Action<Context> onBulkheadRejected) =>
         Bulkhead<TResult>(maxParallelization, 0, onBulkheadRejected);
@@ -53,7 +53,7 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
-    /// <exception cref="ArgumentNullException">onBulkheadRejected</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBulkheadRejected"/> is <see langword="null"/>.</exception>
     public static BulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, int maxQueuingActions, Action<Context> onBulkheadRejected)
     {
         if (maxParallelization <= 0)
