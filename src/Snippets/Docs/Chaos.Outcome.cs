@@ -123,7 +123,7 @@ internal static partial class Chaos
             .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
             {
                 InjectionRate = 0.5, // same injection rate for both fault and outcome
-                OutcomeGenerator = args =>
+                OutcomeGenerator = static args =>
                 {
                     Outcome<HttpResponseMessage>? outcome = Random.Shared.Next(350) switch
                     {
@@ -163,8 +163,8 @@ internal static partial class Chaos
         var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddChaosFault(new ChaosFaultStrategyOptions
             {
-                InjectionRate = 0.1, // different injection rate for faults
-                EnabledGenerator = args => ValueTask.FromResult(ShouldEnableFaults(args.Context)), // different settings might apply to inject faults
+                InjectionRate = 0.1, // Different injection rate for faults
+                EnabledGenerator = static args => ValueTask.FromResult(ShouldEnableFaults(args.Context)), // Different settings might apply to inject faults
                 FaultGenerator = args =>
                 {
                     Exception? exception = randomThreshold switch
@@ -183,8 +183,8 @@ internal static partial class Chaos
             })
             .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
             {
-                InjectionRate = 0.5, // different injection rate for outcomes
-                EnabledGenerator = args => ValueTask.FromResult(ShouldEnableOutcome(args.Context)), // different settings might apply to inject outcomes
+                InjectionRate = 0.5, // Different injection rate for outcomes
+                EnabledGenerator = static args => ValueTask.FromResult(ShouldEnableOutcome(args.Context)), // Different settings might apply to inject outcomes
                 OutcomeGenerator = args =>
                 {
                     Outcome<HttpResponseMessage>? outcome = randomThreshold switch
