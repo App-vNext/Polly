@@ -11,7 +11,7 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// <remarks>To retrieve a policy directly as a particular Policy type or Policy interface (avoiding a cast), use the <see cref="Get{TPolicy}"/> method.</remarks>
     /// </summary>
     /// <param name="key">The key of the value to get or set.</param>
-    /// <exception cref="T:System.ArgumentNullException"><paramref name="key" /> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="KeyNotFoundException">The given key was not present in the dictionary.</exception>
     /// <returns>The value associated with the specified key.</returns>
     IsPolicy this[TKey key] { get; }

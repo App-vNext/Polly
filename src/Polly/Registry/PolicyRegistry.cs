@@ -74,7 +74,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <remarks>To retrieve a policy directly as a particular Policy type or Policy interface (avoiding a cast), use the <see cref="Get{TPolicy}"/> method.</remarks>
     /// </summary>
     /// <param name="key">The key of the policy to get or set.</param>
-    /// <exception cref="T:System.ArgumentNullException"><paramref name="key" /> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="KeyNotFoundException">The given key was not present in the registry.</exception>
     /// <returns>The policy associated with the specified key.</returns>
     public IsPolicy this[string key]
