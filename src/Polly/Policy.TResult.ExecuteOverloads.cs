@@ -18,7 +18,6 @@ public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
     /// <returns>The value returned by the action.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
     [DebuggerStepThrough]
@@ -30,9 +29,8 @@ public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <param name="context">Context data that is passed to the exception policy.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
     /// <returns>The value returned by the action.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
     [DebuggerStepThrough]
     public TResult Execute(Func<Context, TResult> action, Context context) =>
         Execute((ctx, _) => action(ctx), context, DefaultCancellationToken);
@@ -102,8 +100,8 @@ public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
     /// <returns>The captured result.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
     [DebuggerStepThrough]
     public PolicyResult<TResult> ExecuteAndCapture(Func<Context, TResult> action, IDictionary<string, object> contextData) =>
         ExecuteAndCapture((ctx, _) => action(ctx), new Context(contextData), DefaultCancellationToken);
@@ -113,8 +111,8 @@ public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <param name="context">Context data that is passed to the exception policy.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
     /// <returns>The captured result.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
     [DebuggerStepThrough]
     public PolicyResult<TResult> ExecuteAndCapture(Func<Context, TResult> action, Context context) =>
         ExecuteAndCapture((ctx, _) => action(ctx), context, DefaultCancellationToken);
