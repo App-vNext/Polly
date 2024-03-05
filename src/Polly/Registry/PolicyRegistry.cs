@@ -21,7 +21,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PolicyRegistry"/> class, with <see cref="IDictionary{string, IsPolicy}"/> dictionary.
+    /// Initializes a new instance of the <see cref="PolicyRegistry"/> class.
     /// <remarks>This internal constructor exists solely to facilitate testing of the GetEnumerator() methods, which allow us to support collection initialisation syntax.</remarks>
     /// </summary>
     /// <param name="registry">a dictionary containing keys and policies used for testing.</param>
