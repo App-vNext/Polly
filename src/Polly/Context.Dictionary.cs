@@ -118,8 +118,11 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
     #endregion
 
     #region IReadOnlyDictionary<string, object> implementation
+
+    /// <inheritdoc/>
     IEnumerable<string> IReadOnlyDictionary<string, object>.Keys => ((IReadOnlyDictionary<string, object>)WrappedDictionary).Keys;
 
+    /// <inheritdoc/>
     IEnumerable<object> IReadOnlyDictionary<string, object>.Values => ((IReadOnlyDictionary<string, object>)WrappedDictionary).Values;
 
     #endregion
@@ -132,8 +135,10 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
     /// <inheritdoc cref="IDictionary"/>
     bool IDictionary.IsReadOnly => ((IDictionary)WrappedDictionary).IsReadOnly;
 
+    /// <inheritdoc/>
     ICollection IDictionary.Keys => ((IDictionary)WrappedDictionary).Keys;
 
+    /// <inheritdoc/>
     ICollection IDictionary.Values => ((IDictionary)WrappedDictionary).Values;
 
     /// <inheritdoc cref="IDictionary"/>
