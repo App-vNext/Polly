@@ -67,6 +67,7 @@ public sealed partial class PolicyBuilder
 /// <summary>
 /// Builder class that holds the list of current execution predicates filtering TResult result values.
 /// </summary>
+/// <typeparam name="TResult">The type of the result value that the execution predicates are filtering.</typeparam>
 public sealed partial class PolicyBuilder<TResult>
 {
     private PolicyBuilder()
