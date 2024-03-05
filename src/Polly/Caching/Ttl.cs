@@ -17,7 +17,7 @@ public struct Ttl
     public bool SlidingExpiration;
 
     /// <summary>
-    /// Creates a new <see cref="Ttl"/> struct.
+    /// Initializes a new instance of the <see cref="Ttl"/> struct.
     /// </summary>
     /// <param name="timeSpan">The timespan for which this cache-item remains valid.
     /// <remarks>Will be considered as not denoting sliding expiration.</remarks></param>
@@ -27,9 +27,9 @@ public struct Ttl
     }
 
     /// <summary>
-    /// Creates a new <see cref="Ttl"/> struct.
+    /// Initializes a new instance of the <see cref="Ttl"/> struct.
     /// </summary>
-    /// <param name="timeSpan">The timespan for which this cache-item remains valid</param>
+    /// <param name="timeSpan">The timespan for which this cache-item remains valid.</param>
     /// <param name="slidingExpiration">Whether this <see cref="Ttl"/> should be considered as sliding expiration.</param>
     public Ttl(TimeSpan timeSpan, bool slidingExpiration)
     {

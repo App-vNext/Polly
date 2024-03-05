@@ -46,7 +46,7 @@ public static class AsyncRetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="onRetryAsync">The action to call asynchronously on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetryAsync"/> is <see langword="null"/>.</exception>
     public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, int, Task> onRetryAsync) =>
         policyBuilder.RetryAsync(1, onRetryAsync: (outcome, i, _) => onRetryAsync(outcome, i));
 
@@ -107,7 +107,7 @@ public static class AsyncRetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="onRetryAsync">The action to call asynchronously on each retry.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetry"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onRetryAsync"/> is <see langword="null"/>.</exception>
     public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, int, Context, Task> onRetryAsync) =>
         policyBuilder.RetryAsync(1, onRetryAsync);
 

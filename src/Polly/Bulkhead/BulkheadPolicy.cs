@@ -58,7 +58,6 @@ public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
     private readonly int _maxQueueingActions;
     private readonly Action<Context> _onBulkheadRejected;
 
-    /// <inheritdoc/>
     internal BulkheadPolicy(
         int maxParallelization,
         int maxQueueingActions,

@@ -3,7 +3,7 @@
 namespace Polly.RateLimit;
 
 /// <summary>
-/// Defines methods to be provided by a rate-limiter used in a Polly <see cref="IRateLimitPolicy"/>
+/// Defines methods to be provided by a rate-limiter used in a Polly <see cref="IRateLimitPolicy"/>.
 /// </summary>
 internal interface IRateLimiter
 {

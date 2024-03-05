@@ -36,7 +36,6 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBulkheadRejectedAsync"/> is <see langword="null"/>.</exception>
     public static AsyncBulkheadPolicy<TResult> BulkheadAsync<TResult>(int maxParallelization, int maxQueuingActions)
     {
         Func<Context, Task> doNothingAsync = _ => TaskHelper.EmptyTask;

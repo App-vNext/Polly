@@ -9,12 +9,12 @@ public partial class PolicyWrap : Policy, IPolicyWrap
     private readonly ISyncPolicy _inner;
 
     /// <summary>
-    /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+    /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>.
     /// </summary>
     public IsPolicy Outer => _outer;
 
     /// <summary>
-    /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+    /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>.
     /// </summary>
     public IsPolicy Inner => _inner;
 
@@ -59,12 +59,12 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
     private readonly ISyncPolicy<TResult> _innerGeneric;
 
     /// <summary>
-    /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
+    /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>.
     /// </summary>
     public IsPolicy Outer => (IsPolicy)_outerGeneric ?? _outerNonGeneric;
 
     /// <summary>
-    /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
+    /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>.
     /// </summary>
     public IsPolicy Inner => (IsPolicy)_innerGeneric ?? _innerNonGeneric;
 

@@ -4,10 +4,11 @@ namespace Polly;
 /// <summary>
 /// Transient fault handling policies that can be applied to delegates returning results of type <typeparamref name="TResult"/>.
 /// </summary>
+/// <typeparam name="TResult">The type of return value of the delegate that the policy will be applied to.</typeparam>
 public abstract partial class Policy<TResult> : PolicyBase<TResult>
 {
     /// <summary>
-    /// Constructs a new instance of a derived <see cref="Policy{TResult}"/> type with the passed <paramref name="exceptionPredicates"/> and <paramref name="resultPredicates"/>.
+    /// Initializes a new instance of the <see cref="Policy{TResult}"/> class.
     /// </summary>
     /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle.</param>
     /// <param name="resultPredicates">Predicates indicating which results the policy should handle.</param>
@@ -17,7 +18,7 @@ public abstract partial class Policy<TResult> : PolicyBase<TResult>
     }
 
     /// <summary>
-    /// Constructs a new instance of a derived <see cref="Policy{TResult}"/> type with the passed <paramref name="policyBuilder"/>.
+    /// Initializes a new instance of the <see cref="Policy{TResult}"/> class.
     /// </summary>
     /// <param name="policyBuilder">A <see cref="PolicyBuilder{TResult}"/> indicating which exceptions and results the policy should handle.</param>
     protected Policy(PolicyBuilder<TResult>? policyBuilder = null)
