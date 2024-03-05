@@ -52,10 +52,10 @@ public sealed partial class PolicyBuilder
         base.GetHashCode();
 
     /// <summary>
-    /// Gets the <see cref="T:System.Type" /> of the current instance.
+    /// Gets the <see cref="System.Type" /> of the current instance.
     /// </summary>
     /// <returns>
-    /// The <see cref="T:System.Type" /> instance that represents the exact runtime type of the current instance.
+    /// The <see cref="System.Type" /> instance that represents the exact runtime type of the current instance.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public new Type GetType() =>
@@ -130,10 +130,10 @@ public sealed partial class PolicyBuilder<TResult>
         base.GetHashCode();
 
     /// <summary>
-    /// Gets the <see cref="T:System.Type" /> of the current instance.
+    /// Gets the <see cref="System.Type" /> of the current instance.
     /// </summary>
     /// <returns>
-    /// The <see cref="T:System.Type" /> instance that represents the exact runtime type of the current instance.
+    /// The <see cref="System.Type" /> instance that represents the exact runtime type of the current instance.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public new Type GetType() =>

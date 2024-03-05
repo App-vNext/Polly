@@ -6,7 +6,7 @@
 public interface IsPolicy
 {
     /// <summary>
-    /// A key intended to be unique to each policy instance, which is passed with executions as the <see cref="M:Context.PolicyKey"/> property.
+    /// A key intended to be unique to each policy instance, which is passed with executions as the <see cref="Context.PolicyKey"/> property.
     /// </summary>
     string PolicyKey { get; }
 }

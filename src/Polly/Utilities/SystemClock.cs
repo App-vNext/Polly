@@ -18,7 +18,7 @@ public static class SystemClock
 
     /// <summary>
     /// Allows the setting of a custom async Sleep implementation for testing.
-    /// By default this will be a call to <see cref="M:Task.Delay"/> taking a <see cref="CancellationToken"/>.
+    /// By default this will be a call to <see cref="Task.Delay(TimeSpan)"/> taking a <see cref="CancellationToken"/>.
     /// </summary>
     public static Func<TimeSpan, CancellationToken, Task> SleepAsync = Task.Delay;
 

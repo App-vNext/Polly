@@ -2,7 +2,7 @@
 namespace Polly.Caching;
 
 /// <summary>
-/// The default cache key strategy for <see cref="CachePolicy"/>.  Returns the property <see cref="M:Context.OperationKey"/>.
+/// The default cache key strategy for <see cref="CachePolicy"/>.  Returns the property <see cref="Context.OperationKey"/>.
 /// </summary>
 public class DefaultCacheKeyStrategy : ICacheKeyStrategy
 {
