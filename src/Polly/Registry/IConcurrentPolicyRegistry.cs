@@ -37,7 +37,7 @@ public interface IConcurrentPolicyRegistry<TKey> : IPolicyRegistry<TKey>
     /// <param name="key">The key whose value is compared with comparisonPolicy, and possibly replaced.</param>
     /// <param name="newPolicy">The policy that replaces the value for the specified <paramref name="key"/>, if the comparison results in equality.</param>
     /// <param name="comparisonPolicy">The policy that is compared to the existing policy at the specified key.</param>
-    /// <returns></returns>
+    /// <returns>True if the policy is successfully updated. Otherwise false.</returns>
     bool TryUpdate<TPolicy>(TKey key, TPolicy newPolicy, TPolicy comparisonPolicy)
         where TPolicy : IsPolicy;
 
