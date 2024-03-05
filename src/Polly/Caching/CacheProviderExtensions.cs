@@ -7,7 +7,7 @@ namespace Polly.Caching;
 public static class CacheProviderExtensions
 {
     /// <summary>
-    /// Provides a strongly <typeparamref name="TCacheFormat"/>-typed version of the supplied <see cref="ISyncCacheProvider"/>
+    /// Provides a strongly <typeparamref name="TCacheFormat"/>-typed version of the supplied <see cref="ISyncCacheProvider"/>.
     /// </summary>
     /// <typeparam name="TCacheFormat">The type the returned <see cref="ISyncCacheProvider{TResult}"/> will handle.</typeparam>
     /// <param name="nonGenericCacheProvider">The non-generic cache provider to wrap.</param>
@@ -16,7 +16,7 @@ public static class CacheProviderExtensions
         new GenericCacheProvider<TCacheFormat>(nonGenericCacheProvider);
 
     /// <summary>
-    /// Provides a strongly <typeparamref name="TCacheFormat"/>-typed version of the supplied <see cref="IAsyncCacheProvider"/>
+    /// Provides a strongly <typeparamref name="TCacheFormat"/>-typed version of the supplied <see cref="IAsyncCacheProvider"/>.
     /// </summary>
     /// <typeparam name="TCacheFormat">The type the returned <see cref="IAsyncCacheProvider{TResult}"/> will handle.</typeparam>
     /// <param name="nonGenericCacheProvider">The non-generic cache provider to wrap.</param>

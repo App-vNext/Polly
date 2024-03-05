@@ -48,7 +48,7 @@ public partial class Policy
 
     /// <summary>
     /// Builds a RateLimit <see cref="Policy{TResult}"/> that will rate-limit executions to <paramref name="numberOfExecutions"/> per the timespan given,
-    /// with a maximum burst size of <paramref name="maxBurst"/>
+    /// with a maximum burst size of <paramref name="maxBurst"/>.
     /// </summary>
     /// <typeparam name="TResult">The type of return values this policy will handle.</typeparam>
     /// <param name="numberOfExecutions">The number of executions (call it N) permitted per timespan.</param>

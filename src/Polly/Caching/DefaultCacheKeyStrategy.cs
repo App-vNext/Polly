@@ -10,7 +10,7 @@ public class DefaultCacheKeyStrategy : ICacheKeyStrategy
     /// Gets the cache key from the given execution context.
     /// </summary>
     /// <param name="context">The execution context.</param>
-    /// <returns>The cache key</returns>
+    /// <returns>The cache key.</returns>
     public string GetCacheKey(Context context) =>
         context.OperationKey;
 

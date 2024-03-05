@@ -29,7 +29,7 @@ public struct Ttl
     /// <summary>
     /// Initializes a new instance of the <see cref="Ttl"/> struct.
     /// </summary>
-    /// <param name="timeSpan">The timespan for which this cache-item remains valid</param>
+    /// <param name="timeSpan">The timespan for which this cache-item remains valid.</param>
     /// <param name="slidingExpiration">Whether this <see cref="Ttl"/> should be considered as sliding expiration.</param>
     public Ttl(TimeSpan timeSpan, bool slidingExpiration)
     {
