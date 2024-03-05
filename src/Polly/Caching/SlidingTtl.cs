@@ -9,7 +9,7 @@ public class SlidingTtl : ITtlStrategy
     private readonly Ttl ttl;
 
     /// <summary>
-    /// Constructs a new instance of the <see cref="SlidingTtl"/> ttl strategy.
+    /// Initializes a new instance of the <see cref="SlidingTtl"/> class.
     /// </summary>
     /// <param name="slidingTtl">The sliding timespan for which cache items should be considered valid.</param>
     public SlidingTtl(TimeSpan slidingTtl)

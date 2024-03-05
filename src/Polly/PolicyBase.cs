@@ -30,14 +30,14 @@ public abstract partial class PolicyBase
     }
 
     /// <summary>
-    /// Constructs a new instance of a derived type of <see cref="PolicyBase"/> with the passed <paramref name="exceptionPredicates"/>.
+    /// Initializes a new instance of the <see cref="PolicyBase"/> class.
     /// </summary>
     /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
     internal PolicyBase(ExceptionPredicates exceptionPredicates) =>
         ExceptionPredicates = exceptionPredicates ?? ExceptionPredicates.None;
 
     /// <summary>
-    /// Constructs a new instance of a derived type of <see cref="PolicyBase"/> with the passed <paramref name="policyBuilder"/>.
+    /// Initializes a new instance of the <see cref="PolicyBase"/> class.
     /// </summary>
     /// <param name="policyBuilder">A <see cref="PolicyBuilder"/> indicating which exceptions the policy should handle.</param>
     protected PolicyBase(PolicyBuilder policyBuilder)
@@ -57,7 +57,7 @@ public abstract class PolicyBase<TResult> : PolicyBase
     protected internal ResultPredicates<TResult> ResultPredicates { get; }
 
     /// <summary>
-    /// Constructs a new instance of a derived type of <see cref="PolicyBase{TResult}"/>.
+    /// Initializes a new instance of the <see cref="PolicyBase{TResult}"/> class.
     /// </summary>
     /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
     /// <param name="resultPredicates">Predicates indicating which results the policy should handle. </param>
@@ -68,7 +68,7 @@ public abstract class PolicyBase<TResult> : PolicyBase
         ResultPredicates = resultPredicates ?? ResultPredicates<TResult>.None;
 
     /// <summary>
-    /// Constructs a new instance of a derived type of <see cref="PolicyBase{TResult}"/> with the passed <paramref name="policyBuilder"/>.
+    /// Initializes a new instance of the <see cref="PolicyBase{TResult}"/> class.
     /// </summary>
     /// <param name="policyBuilder">A <see cref="PolicyBuilder"/> indicating which exceptions the policy should handle.</param>
     protected PolicyBase(PolicyBuilder<TResult> policyBuilder)

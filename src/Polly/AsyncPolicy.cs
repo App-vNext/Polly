@@ -7,7 +7,7 @@ namespace Polly;
 public abstract partial class AsyncPolicy
 {
     /// <summary>
-    /// Constructs a new instance of a derived <see cref="AsyncPolicy"/> type with the passed <paramref name="exceptionPredicates"/>.
+    /// Initializes a new instance of the <see cref="AsyncPolicy"/> class.
     /// </summary>
     /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
     internal AsyncPolicy(ExceptionPredicates exceptionPredicates)
@@ -16,7 +16,7 @@ public abstract partial class AsyncPolicy
     }
 
     /// <summary>
-    /// Constructs a new instance of a derived <see cref="AsyncPolicy"/> type with the passed <paramref name="policyBuilder"/>.
+    /// Initializes a new instance of the <see cref="AsyncPolicy"/> class.
     /// </summary>
     /// <param name="policyBuilder">A <see cref="PolicyBuilder"/> specifying which exceptions the policy should handle. </param>
     protected AsyncPolicy(PolicyBuilder? policyBuilder = null)

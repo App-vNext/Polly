@@ -10,7 +10,7 @@ public class ResultTtl<TResult> : ITtlStrategy<TResult>
     private readonly Func<Context, TResult?, Ttl> _ttlFunc;
 
     /// <summary>
-    /// Constructs a new instance of the <see cref="ResultTtl{TResult}"/> ttl strategy, with a func calculating <see cref="Ttl"/> based on the <typeparamref name="TResult"/> value to cache.
+    /// Initializes a new instance of the <see cref="ResultTtl{TResult}"/> class, with a func calculating <see cref="Ttl"/> based on the <typeparamref name="TResult"/> value to cache.
     /// </summary>
     /// <param name="ttlFunc">The function to calculate the TTL for which cache items should be considered valid.</param>
     public ResultTtl(Func<TResult?, Ttl> ttlFunc)
@@ -21,7 +21,7 @@ public class ResultTtl<TResult> : ITtlStrategy<TResult>
     }
 
     /// <summary>
-    /// Constructs a new instance of the <see cref="ResultTtl{TResult}"/> ttl strategy, with a func calculating <see cref="Ttl"/> based on the execution <see cref="Context"/> and <typeparamref name="TResult"/> value to cache.
+    /// Initializes a new instance of the <see cref="ResultTtl{TResult}"/> class, with a func calculating <see cref="Ttl"/> based on the execution <see cref="Context"/> and <typeparamref name="TResult"/> value to cache.
     /// </summary>
     /// <param name="ttlFunc">The function to calculate the TTL for which cache items should be considered valid.</param>
     public ResultTtl(Func<Context, TResult?, Ttl> ttlFunc) =>

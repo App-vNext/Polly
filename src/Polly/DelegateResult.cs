@@ -6,13 +6,13 @@
 public class DelegateResult<TResult>
 {
     /// <summary>
-    /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which returned <paramref name="result"/>.
+    /// Initializes a new instance of the <see cref="DelegateResult{TResult}"/> class representing an execution which returned <paramref name="result"/>.
     /// </summary>
     /// <param name="result">The result.</param>
     public DelegateResult(TResult result) => Result = result;
 
     /// <summary>
-    /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which threw <paramref name="exception"/>.
+    /// Initializes a new instance of the <see cref="DelegateResult{TResult}"/> class representing an execution which threw <paramref name="exception"/>.
     /// </summary>
     /// <param name="exception">The exception.</param>
     public DelegateResult(Exception exception) =>

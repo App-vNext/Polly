@@ -11,7 +11,7 @@ public class AsyncSerializingCacheProvider<TSerialized> : IAsyncCacheProvider
     private readonly ICacheItemSerializer<object, TSerialized> _serializer;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsyncSerializingCacheProvider{TResult, TSerialized}"/> class.
+    /// Initializes a new instance of the <see cref="AsyncSerializingCacheProvider{TSerialized}"/> class.
     /// </summary>
     /// <param name="wrappedCacheProvider">The wrapped cache provider.</param>
     /// <param name="serializer">The serializer.</param>
