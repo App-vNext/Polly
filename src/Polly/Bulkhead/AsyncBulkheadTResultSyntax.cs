@@ -22,7 +22,7 @@ public partial class Policy
     /// <param name="maxParallelization">The maximum number of concurrent actions that may be executing through the policy.</param>
     /// <param name="onBulkheadRejectedAsync">An action to call asynchronously, if the bulkhead rejects execution due to oversubscription.</param>
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBulkheadRejectedAsync</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBulkheadRejectedAsync"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncBulkheadPolicy<TResult> BulkheadAsync<TResult>(int maxParallelization, Func<Context, Task> onBulkheadRejectedAsync) =>
         BulkheadAsync<TResult>(maxParallelization, 0, onBulkheadRejectedAsync);
@@ -36,7 +36,7 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
-    /// <exception cref="ArgumentNullException">onBulkheadRejectedAsync</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBulkheadRejectedAsync"/> is <see langword="null"/>.</exception>
     public static AsyncBulkheadPolicy<TResult> BulkheadAsync<TResult>(int maxParallelization, int maxQueuingActions)
     {
         Func<Context, Task> doNothingAsync = _ => TaskHelper.EmptyTask;
@@ -53,7 +53,7 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
-    /// <exception cref="ArgumentNullException">onBulkheadRejectedAsync</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBulkheadRejectedAsync"/> is <see langword="null"/>.</exception>
     public static AsyncBulkheadPolicy<TResult> BulkheadAsync<TResult>(int maxParallelization, int maxQueuingActions, Func<Context, Task> onBulkheadRejectedAsync)
     {
         if (maxParallelization <= 0)

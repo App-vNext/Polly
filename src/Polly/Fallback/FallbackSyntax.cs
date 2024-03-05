@@ -12,7 +12,7 @@ public static class FallbackSyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action fallbackAction)
     {
@@ -28,7 +28,7 @@ public static class FallbackSyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<CancellationToken> fallbackAction)
     {
@@ -45,8 +45,8 @@ public static class FallbackSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action fallbackAction, Action<Exception> onFallback)
     {
@@ -64,8 +64,8 @@ public static class FallbackSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<CancellationToken> fallbackAction, Action<Exception> onFallback)
     {
@@ -83,8 +83,8 @@ public static class FallbackSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Context> fallbackAction, Action<Exception, Context> onFallback)
     {
@@ -102,8 +102,8 @@ public static class FallbackSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Context, CancellationToken> fallbackAction, Action<Exception, Context> onFallback)
     {
@@ -121,8 +121,8 @@ public static class FallbackSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Exception, Context, CancellationToken> fallbackAction, Action<Exception, Context> onFallback)
     {
@@ -160,7 +160,7 @@ public static class FallbackTResultSyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<TResult> fallbackAction)
     {
@@ -176,7 +176,7 @@ public static class FallbackTResultSyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, TResult> fallbackAction)
     {
@@ -193,7 +193,7 @@ public static class FallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Action<DelegateResult<TResult>> onFallback)
     {
@@ -209,8 +209,8 @@ public static class FallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<TResult> fallbackAction, Action<DelegateResult<TResult>> onFallback)
     {
@@ -228,8 +228,8 @@ public static class FallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>> onFallback)
     {
@@ -247,7 +247,7 @@ public static class FallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Action<DelegateResult<TResult>, Context> onFallback)
     {
@@ -263,8 +263,8 @@ public static class FallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
     {
@@ -282,8 +282,8 @@ public static class FallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
     {
@@ -301,8 +301,8 @@ public static class FallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallback</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallback"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
     {

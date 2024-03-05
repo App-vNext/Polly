@@ -12,7 +12,7 @@ public static class AsyncFallbackSyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy FallbackAsync(this PolicyBuilder policyBuilder, Func<CancellationToken, Task> fallbackAction)
     {
@@ -31,8 +31,8 @@ public static class AsyncFallbackSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallbackAsync</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallbackAsync"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy FallbackAsync(this PolicyBuilder policyBuilder, Func<CancellationToken, Task> fallbackAction, Func<Exception, Task> onFallbackAsync)
     {
@@ -52,8 +52,8 @@ public static class AsyncFallbackSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallbackAsync</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallbackAsync"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy FallbackAsync(this PolicyBuilder policyBuilder, Func<Context, CancellationToken, Task> fallbackAction, Func<Exception, Context, Task> onFallbackAsync)
     {
@@ -71,8 +71,8 @@ public static class AsyncFallbackSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallbackAsync</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallbackAsync"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy FallbackAsync(this PolicyBuilder policyBuilder, Func<Exception, Context, CancellationToken, Task> fallbackAction, Func<Exception, Context, Task> onFallbackAsync)
     {
@@ -109,7 +109,7 @@ public static class AsyncFallbackTResultSyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, Task<TResult>> fallbackAction)
     {
@@ -128,7 +128,7 @@ public static class AsyncFallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">onFallbackAsync</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallbackAsync"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Func<DelegateResult<TResult>, Task> onFallbackAsync)
     {
@@ -146,8 +146,8 @@ public static class AsyncFallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallbackAsync</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallbackAsync"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, Task<TResult>> fallbackAction, Func<DelegateResult<TResult>, Task> onFallbackAsync)
     {
@@ -167,7 +167,7 @@ public static class AsyncFallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">onFallbackAsync</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallbackAsync"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Func<DelegateResult<TResult>, Context, Task> onFallbackAsync)
     {
@@ -185,8 +185,8 @@ public static class AsyncFallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallbackAsync</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallbackAsync"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, CancellationToken, Task<TResult>> fallbackAction, Func<DelegateResult<TResult>, Context, Task> onFallbackAsync)
     {
@@ -204,8 +204,8 @@ public static class AsyncFallbackTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
-    /// <exception cref="ArgumentNullException">fallbackAction</exception>
-    /// <exception cref="ArgumentNullException">onFallbackAsync</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onFallbackAsync"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> fallbackAction, Func<DelegateResult<TResult>, Context, Task> onFallbackAsync)
     {

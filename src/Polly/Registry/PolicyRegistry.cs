@@ -49,7 +49,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <param name="key">The key for the policy.</param>
     /// <param name="policy">The policy to store in the registry.</param>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">A Policy with same <paramref name="key"/> already exists.</exception>
     public void Add<TPolicy>(string key, TPolicy policy)
         where TPolicy : IsPolicy => _registry.Add(key, policy);
@@ -74,7 +74,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <remarks>To retrieve a policy directly as a particular Policy type or Policy interface (avoiding a cast), use the <see cref="Get{TPolicy}"/> method.</remarks>
     /// </summary>
     /// <param name="key">The key of the policy to get or set.</param>
-    /// <exception cref="T:System.ArgumentNullException"><paramref name="key" /> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="KeyNotFoundException">The given key was not present in the registry.</exception>
     /// <returns>The policy associated with the specified key.</returns>
     public IsPolicy this[string key]
@@ -89,7 +89,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <param name="key">The key of the policy to get.</param>
     /// <returns>The policy stored in the registry under the given key.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="KeyNotFoundException">The given key was not present in the registry.</exception>
     public TPolicy Get<TPolicy>(string key)
         where TPolicy : IsPolicy => (TPolicy)_registry[key];
@@ -124,7 +124,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// </summary>
     /// <param name="key">The key to locate in the registry.</param>
     /// <returns>True if <paramref name="key"/> exists otherwise false.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool ContainsKey(string key) =>
         _registry.ContainsKey(key);
 
@@ -133,7 +133,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// </summary>
     /// <param name="key">The <paramref name="key"/> of the policy to remove.</param>
     /// <returns>True if the policy is successfully removed. Otherwise false.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool Remove(string key) =>
         _registry.Remove(key);
 
@@ -182,7 +182,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// if the key does not already exist.
     /// </summary>
     /// <param name="key">The key of the policy to add.</param>
-    /// <param name="policyFactory">The function used to generate a policy for the key</param>
+    /// <param name="policyFactory">The function used to generate a policy for the key.</param>
     /// <returns>The policy for the key.  This will be either the existing policy for the key if the
     /// key is already in the registry, or the new policy for the key as returned by policyFactory
     /// if the key was not in the registry.</returns>
@@ -199,7 +199,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// if the key does not already exist.
     /// </summary>
     /// <param name="key">The key of the policy to add.</param>
-    /// <param name="policy">the policy to be added, if the key does not already exist</param>
+    /// <param name="policy">the policy to be added, if the key does not already exist.</param>
     /// <returns>The policy for the key.  This will be either the existing policy for the key if the
     /// key is already in the registry, or the new policy if the key was not in the registry.</returns>
     public TPolicy GetOrAdd<TPolicy>(string key, TPolicy policy)
@@ -215,10 +215,10 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// exist, or updates a key/policy pair in the registry if the key
     /// already exists.
     /// </summary>
-    /// <param name="key">The key to be added or whose policy should be updated</param>
-    /// <param name="addPolicyFactory">The function used to generate a policy for an absent key</param>
+    /// <param name="key">The key to be added or whose policy should be updated.</param>
+    /// <param name="addPolicyFactory">The function used to generate a policy for an absent key.</param>
     /// <param name="updatePolicyFactory">The function used to generate a new policy for an existing key
-    /// based on the key's existing value</param>
+    /// based on the key's existing value.</param>
     /// <returns>The new policy for the key.  This will be either be the result of addPolicyFactory (if the key was
     /// absent) or the result of updatePolicyFactory (if the key was present).</returns>
     public TPolicy AddOrUpdate<TPolicy>(string key, Func<string, TPolicy> addPolicyFactory, Func<string, TPolicy, TPolicy> updatePolicyFactory)
@@ -234,10 +234,10 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// exist, or updates a key/policy pair in the registry if the key
     /// already exists.
     /// </summary>
-    /// <param name="key">The key to be added or whose policy should be updated</param>
-    /// <param name="addPolicy">The policy to be added for an absent key</param>
+    /// <param name="key">The key to be added or whose policy should be updated.</param>
+    /// <param name="addPolicy">The policy to be added for an absent key.</param>
     /// <param name="updatePolicyFactory">The function used to generate a new policy for an existing key based on
-    /// the key's existing value</param>
+    /// the key's existing value.</param>
     /// <returns>The new policy for the key.  This will be either be addPolicy (if the key was
     /// absent) or the result of updatePolicyFactory (if the key was present).</returns>
     public TPolicy AddOrUpdate<TPolicy>(string key, TPolicy addPolicy, Func<string, TPolicy, TPolicy> updatePolicyFactory)

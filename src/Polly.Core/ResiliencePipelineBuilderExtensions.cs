@@ -16,7 +16,7 @@ public static class ResiliencePipelineBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="pipeline">The pipeline instance.</param>
     /// <returns>The same builder instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pipeline"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pipeline"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a pipeline. The builder cannot be modified after it has been used.</exception>
     [UnconditionalSuppressMessage(
         "Trimming",
@@ -39,7 +39,7 @@ public static class ResiliencePipelineBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="pipeline">The pipeline instance.</param>
     /// <returns>The same builder instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pipeline"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pipeline"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
     [UnconditionalSuppressMessage(
         "Trimming",

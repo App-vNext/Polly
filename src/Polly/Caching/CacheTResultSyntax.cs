@@ -13,7 +13,7 @@ public partial class Policy
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider cacheProvider, TimeSpan ttl, Action<Context, string, Exception>? onCacheError = null)
     {
         if (cacheProvider == null)
@@ -32,8 +32,8 @@ public partial class Policy
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
         if (cacheProvider == null)
@@ -53,8 +53,8 @@ public partial class Policy
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
         if (cacheProvider == null)
@@ -74,9 +74,9 @@ public partial class Policy
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
         if (cacheProvider == null)
@@ -96,8 +96,8 @@ public partial class Policy
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider cacheProvider, TimeSpan ttl, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
         if (cacheProvider == null)
@@ -117,9 +117,9 @@ public partial class Policy
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
         if (cacheProvider == null)
@@ -142,10 +142,10 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider cacheProvider,
         TimeSpan ttl,
@@ -175,11 +175,11 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider cacheProvider,
         ITtlStrategy ttlStrategy,
@@ -210,11 +210,11 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider cacheProvider,
         TimeSpan ttl,
@@ -246,12 +246,12 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider cacheProvider,
         ITtlStrategy ttlStrategy,
@@ -283,11 +283,11 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider cacheProvider,
         TimeSpan ttl,
@@ -319,12 +319,12 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider cacheProvider,
         ITtlStrategy ttlStrategy,
@@ -351,7 +351,7 @@ public partial class Policy
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, Action<Context, string, Exception>? onCacheError = null) =>
         Cache<TResult>(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
 
@@ -365,8 +365,8 @@ public partial class Policy
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, Action<Context, string, Exception>? onCacheError = null) =>
         Cache<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
 
@@ -380,8 +380,8 @@ public partial class Policy
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, Action<Context, string, Exception>? onCacheError = null) =>
         Cache<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
 
@@ -396,8 +396,8 @@ public partial class Policy
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null) =>
         Cache<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheError);
 
@@ -412,9 +412,9 @@ public partial class Policy
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
         Action<Context, string> emptyDelegate = (_, _) => { };
@@ -434,9 +434,9 @@ public partial class Policy
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
         Action<Context, string> emptyDelegate = (_, _) => { };
@@ -456,8 +456,8 @@ public partial class Policy
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null) =>
         Cache<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
 
@@ -472,9 +472,9 @@ public partial class Policy
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
         Action<Context, string> emptyDelegate = (_, _) => { };
@@ -494,9 +494,9 @@ public partial class Policy
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
         Action<Context, string> emptyDelegate = (_, _) => { };
@@ -519,10 +519,10 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider<TResult> cacheProvider,
         TimeSpan ttl,
@@ -548,11 +548,11 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider<TResult> cacheProvider,
         ITtlStrategy ttlStrategy,
@@ -577,11 +577,11 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider<TResult> cacheProvider,
         ITtlStrategy<TResult> ttlStrategy,
@@ -607,11 +607,11 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider<TResult> cacheProvider,
         TimeSpan ttl,
@@ -639,12 +639,12 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider<TResult> cacheProvider,
         ITtlStrategy ttlStrategy,
@@ -671,12 +671,12 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider<TResult> cacheProvider,
         ITtlStrategy<TResult> ttlStrategy,
@@ -703,11 +703,11 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider<TResult> cacheProvider,
         TimeSpan ttl,
@@ -735,12 +735,12 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider<TResult> cacheProvider,
         ITtlStrategy ttlStrategy,
@@ -768,12 +768,12 @@ public partial class Policy
     /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
     /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
-    /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    /// <exception cref="ArgumentNullException">onCacheGet</exception>
-    /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-    /// <exception cref="ArgumentNullException">onCachePut</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheGet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCacheMiss"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onCachePut"/> is <see langword="null"/>.</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider<TResult> cacheProvider,
         ITtlStrategy<TResult> ttlStrategy,

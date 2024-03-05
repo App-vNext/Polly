@@ -11,7 +11,7 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// <remarks>To retrieve a policy directly as a particular Policy type or Policy interface (avoiding a cast), use the <see cref="Get{TPolicy}"/> method.</remarks>
     /// </summary>
     /// <param name="key">The key of the value to get or set.</param>
-    /// <exception cref="T:System.ArgumentNullException"><paramref name="key" /> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="KeyNotFoundException">The given key was not present in the dictionary.</exception>
     /// <returns>The value associated with the specified key.</returns>
     IsPolicy this[TKey key] { get; }
@@ -19,9 +19,10 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// <summary>
     /// Gets the policy stored under the provided key, casting to <typeparamref name="TPolicy"/>.
     /// </summary>
+    /// <param name="key">The key of the policy to get.</param>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <returns>The policy stored in the registry under the given key.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     TPolicy Get<TPolicy>(TKey key)
         where TPolicy : IsPolicy;
 
@@ -47,8 +48,8 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// <summary>
     /// Determines whether the specified <paramref name="key"/> exists.
     /// </summary>
-    /// <param name="key">The Key to locate in the registry</param>
-    /// <returns>True if <paramref name="key"/> exists otherwise false</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null</exception>
+    /// <param name="key">The Key to locate in the registry.</param>
+    /// <returns>True if <paramref name="key"/> exists otherwise false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     bool ContainsKey(TKey key);
 }
