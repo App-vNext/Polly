@@ -109,7 +109,7 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
+      uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
       with:
         name: packages-windows
 
@@ -144,13 +144,13 @@ jobs:
     steps:
 
     - name: Download unsigned packages
-      uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
+      uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
       with:
         name: packages-windows
         path: packages
 
     - name: Download signing configuration
-      uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
+      uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
       with:
         name: signing-config
         path: signing-config
@@ -194,7 +194,7 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
+      uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
       with:
         name: signed-packages
 
@@ -306,7 +306,7 @@ jobs:
     steps:
 
     - name: Download signed packages
-      uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
+      uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
       with:
         name: signed-packages
 
