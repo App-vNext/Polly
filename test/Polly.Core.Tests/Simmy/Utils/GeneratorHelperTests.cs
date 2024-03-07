@@ -6,11 +6,14 @@ namespace Polly.Core.Tests.Simmy.Utils;
 public class GeneratorHelperTests
 {
     [Fact]
-    public void CreateGenerator_NoGenerators_Ok()
+    public void CreateGenerator_NoGenerators_ThrowsInvalidOperationException()
     {
         var helper = new GeneratorHelper<int>(_ => 10);
 
-        helper.CreateGenerator()(ResilienceContextPool.Shared.Get()).Should().BeNull();
+        Action act = () => helper.CreateGenerator();
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("No outcome generators have been added.");
     }
 
     [Fact]
@@ -43,7 +46,7 @@ public class GeneratorHelperTests
     }
 
     [Fact]
-    public void Generator_OutsideRange_ReturnsNull()
+    public void Generator_OutsideRange_ReturnsOutcomeWithDefault()
     {
         var context = ResilienceContextPool.Shared.Get();
         var helper = new GeneratorHelper<int>(_ => 1000);
@@ -51,6 +54,6 @@ public class GeneratorHelperTests
         helper.AddOutcome(_ => Outcome.FromResult(1), 40);
 
         var generator = helper.CreateGenerator();
-        generator(context).Should().BeNull();
+        generator(context).Should().Be(Outcome.FromResult(default(int)));
     }
 }
