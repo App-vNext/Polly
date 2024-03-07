@@ -12,7 +12,7 @@ public partial class IssuesTests
     /// Additionally, it also shows how to disable rate limiting for admin users.
     /// </summary>
     [Fact]
-    public async void PartitionedRateLimiter_EnsureUserLimited_1365()
+    public async Task PartitionedRateLimiter_EnsureUserLimited_1365()
     {
         // arrange
         var userKey = new ResiliencePropertyKey<string>("user");
