@@ -697,7 +697,7 @@
   "community/cheat-sheets.html": {
     "href": "community/cheat-sheets.html",
     "title": "Cheat Sheets | Polly",
-    "keywords": "Cheat Sheets Cheat sheets provide easy to use code snippets for common scenarios. Note The below cheat sheets provide quick samples for the V8 API. Core strategies Strategy PDF Circuit Breaker Download Fallback Download Hedging Download Rate Limiter Download Retry Download Timeout Download Chaos strategies Strategy PDF Fault Download"
+    "keywords": "Cheat Sheets Cheat sheets provide easy to use code snippets for common scenarios. Note The below cheat sheets provide quick samples for the V8 API. Core strategies Strategy PDF Circuit Breaker Download Fallback Download Hedging Download Rate Limiter Download Retry Download Timeout Download Chaos strategies Strategy PDF Fault Download Outcome Download"
   },
   "community/git-workflow.html": {
     "href": "community/git-workflow.html",
