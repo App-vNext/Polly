@@ -1,7 +1,7 @@
 ﻿namespace Polly;
 
 /// <summary>
-/// Contains extensions methods on <see cref="IAsyncPolicy"/>
+/// Contains extensions methods on <see cref="IAsyncPolicy"/>.
 /// </summary>
 public static class IAsyncPolicyExtensions
 {

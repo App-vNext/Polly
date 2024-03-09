@@ -2,6 +2,28 @@
 
 <!-- markdownlint-disable MD034 -->
 
+## 8.3.1
+
+* Add example for chaos engineering by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1956
+* Fix CA1806 by [@gintsk](https://github.com/gintsk) in https://github.com/App-vNext/Polly/pull/1963
+* Fix SA1129 by [@gintsk](https://github.com/gintsk) in https://github.com/App-vNext/Polly/pull/1964
+* Fix S3717 by [@gintsk](https://github.com/gintsk) in https://github.com/App-vNext/Polly/pull/1965
+* Add link to chaos engineering blog post by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1966
+* Fix SA1501/IDE0055 by [@baranyaimate](https://github.com/baranyaimate) in https://github.com/App-vNext/Polly/pull/1957
+* [Docs] Add cheat sheet for fault chaos by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1972
+* Improve unit test coverage in `Polly.Specs` by [@gintsk](https://github.com/gintsk) in https://github.com/App-vNext/Polly/pull/1974
+* [Docs] Fix antipattern sample code by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1976
+* [Docs] Improve diagrams for hedging cancellation by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1975
+* Add short description to each package by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1977
+* Update NuGet tools by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1992
+* Move simmy from unshipped to shipped by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1993
+* Fix issue #1979: an unhandled exception in half open state must transition to closed and not prevent leaving half open state forever by [@DominicUllmann](https://github.com/DominicUllmann) in https://github.com/App-vNext/Polly/pull/1991
+* Update samples to .NET 8 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2004
+* [Docs] Fix calculation of exponential delay in flow chart by [@janher](https://github.com/janher) in https://github.com/App-vNext/Polly/pull/2005
+* Use collection expressions in Cake script by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2006
+* Xml comments cleanup and improvement by [@gintsk](https://github.com/gintsk) in https://github.com/App-vNext/Polly/pull/2007
+* Xml documentation cleanup by [@gintsk](https://github.com/gintsk) in https://github.com/App-vNext/Polly/pull/2008
+
 ## 8.3.0
 
 * Update CHANGELOG for 8.2.1 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1882

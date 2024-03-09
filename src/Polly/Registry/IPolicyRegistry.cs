@@ -12,7 +12,7 @@ public interface IPolicyRegistry<TKey> : IReadOnlyPolicyRegistry<TKey>
     /// <param name="key">The key for the policy.</param>
     /// <param name="policy">The policy to store in the registry.</param>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">A Policy with same <paramref name="key"/> already exists.</exception>
     void Add<TPolicy>(TKey key, TPolicy policy)
         where TPolicy : IsPolicy;
@@ -22,7 +22,7 @@ public interface IPolicyRegistry<TKey> : IReadOnlyPolicyRegistry<TKey>
     /// <remarks>To retrieve a policy directly as a particular Policy type or Policy interface (avoiding a cast), use the <see cref="IReadOnlyPolicyRegistry{TKey}.Get{TPolicy}"/> method.</remarks>
     /// </summary>
     /// <param name="key">The key of the value to get or set.</param>
-    /// <exception cref="T:System.ArgumentNullException"><paramref name="key" /> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="KeyNotFoundException">The given key was not present in the dictionary.</exception>
     /// <returns>The value associated with the specified key.</returns>
     new IsPolicy this[TKey key] { get; set; }
@@ -32,7 +32,7 @@ public interface IPolicyRegistry<TKey> : IReadOnlyPolicyRegistry<TKey>
     /// </summary>
     /// <param name="key">The key of the policy to remove.</param>
     /// <returns>True if the policy is successfully removed. Otherwise false.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     bool Remove(TKey key);
 
     /// <summary>

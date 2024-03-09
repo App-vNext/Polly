@@ -21,10 +21,8 @@ public static class CircuitBreakerSyntax
     /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions that are allowed before opening the circuit.</param>
     /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
     /// <returns>The policy instance.</returns>
-    /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
+    /// <remarks>(see "Release It!" by Michael T. Nygard fi).</remarks>
     /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
     public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
     {
         Action<Exception, TimeSpan> doNothingOnBreak = (_, _) => { };
@@ -55,10 +53,10 @@ public static class CircuitBreakerSyntax
     /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
     /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
     /// <returns>The policy instance.</returns>
-    /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
+    /// <remarks>(see "Release It!" by Michael T. Nygard fi).</remarks>
     /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset) =>
         policyBuilder.CircuitBreaker(
             exceptionsAllowedBeforeBreaking,
@@ -84,10 +82,10 @@ public static class CircuitBreakerSyntax
     /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
     /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
     /// <returns>The policy instance.</returns>
-    /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
+    /// <remarks>(see "Release It!" by Michael T. Nygard fi).</remarks>
     /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
     {
         Action doNothingOnHalfOpen = () => { };
@@ -118,10 +116,10 @@ public static class CircuitBreakerSyntax
     /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
     /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
     /// <returns>The policy instance.</returns>
-    /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
+    /// <remarks>(see "Release It!" by Michael T. Nygard fi).</remarks>
     /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset, Action onHalfOpen) =>
         policyBuilder.CircuitBreaker(
             exceptionsAllowedBeforeBreaking,
@@ -149,11 +147,11 @@ public static class CircuitBreakerSyntax
     /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
     /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
     /// <returns>The policy instance.</returns>
-    /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
+    /// <remarks>(see "Release It!" by Michael T. Nygard fi).</remarks>
     /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
-    /// <exception cref="ArgumentNullException">onHalfOpen</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onHalfOpen"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) =>
         policyBuilder.CircuitBreaker(
             exceptionsAllowedBeforeBreaking,
@@ -181,11 +179,11 @@ public static class CircuitBreakerSyntax
     /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
     /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
     /// <returns>The policy instance.</returns>
-    /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
+    /// <remarks>(see "Release It!" by Michael T. Nygard fi).</remarks>
     /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">onBreak</exception>
-    /// <exception cref="ArgumentNullException">onReset</exception>
-    /// <exception cref="ArgumentNullException">onHalfOpen</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onHalfOpen"/> is <see langword="null"/>.</exception>
     public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
     {
         if (exceptionsAllowedBeforeBreaking <= 0)

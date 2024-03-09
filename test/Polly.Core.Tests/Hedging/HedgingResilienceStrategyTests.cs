@@ -199,7 +199,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     }
 
     [Fact]
-    public async void ExecuteAsync_EnsureHedgedTasksCancelled_Ok()
+    public async Task ExecuteAsync_EnsureHedgedTasksCancelled_Ok()
     {
         // arrange
         _testOutput.WriteLine("ExecuteAsync_EnsureHedgedTasksCancelled_Ok executing...");
@@ -658,7 +658,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     }
 
     [Fact]
-    public async void ExecuteAsync_ZeroHedgingDelay_EnsureAllTasksSpawnedAtOnce()
+    public async Task ExecuteAsync_ZeroHedgingDelay_EnsureAllTasksSpawnedAtOnce()
     {
         // arrange
         int executions = 0;

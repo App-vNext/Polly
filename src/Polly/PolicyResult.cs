@@ -1,7 +1,7 @@
 ﻿namespace Polly;
 
 /// <summary>
-/// The captured result of executing a policy
+/// The captured result of executing a policy.
 /// </summary>
 public class PolicyResult
 {
@@ -14,17 +14,17 @@ public class PolicyResult
     }
 
     /// <summary>
-    ///   The outcome of executing the policy
+    ///   The outcome of executing the policy.
     /// </summary>
     public OutcomeType Outcome { get; }
 
     /// <summary>
-    ///  The final exception captured. Will be null if policy executed successfully
+    ///  The final exception captured. Will be null if policy executed successfully.
     /// </summary>
     public Exception FinalException { get; }
 
     /// <summary>
-    ///  The exception type of the final exception captured. Will be null if policy executed successfully
+    ///  The exception type of the final exception captured. Will be null if policy executed successfully.
     /// </summary>
     public ExceptionType? ExceptionType { get; }
 
@@ -36,7 +36,7 @@ public class PolicyResult
     /// <summary>
     /// Builds a <see cref="PolicyResult" /> representing a successful execution through the policy.
     /// </summary>
-    /// <param name="context">The policy execution context</param>
+    /// <param name="context">The policy execution context.</param>
     /// <returns>
     /// A <see cref="PolicyResult" /> representing a successful execution through the policy.
     /// </returns>
@@ -44,11 +44,11 @@ public class PolicyResult
         new(OutcomeType.Successful, null, null, context);
 
     /// <summary>
-    /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy. />
+    /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy.
     /// </summary>
-    /// <param name="exception">The exception</param>
-    /// <param name="exceptionType">The exception type</param>
-    /// <param name="context">The policy execution context</param>
+    /// <param name="exception">The exception.</param>
+    /// <param name="exceptionType">The exception type.</param>
+    /// <param name="context">The policy execution context.</param>
     /// <returns>
     /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
     /// </returns>
@@ -57,7 +57,7 @@ public class PolicyResult
 }
 
 /// <summary>
-/// The captured result of executing a policy
+/// The captured result of executing a policy.
 /// </summary>
 public class PolicyResult<TResult>
 {
@@ -78,7 +78,7 @@ public class PolicyResult<TResult>
     }
 
     /// <summary>
-    ///   The outcome of executing the policy
+    ///   The outcome of executing the policy.
     /// </summary>
     public OutcomeType Outcome { get; }
 
@@ -88,12 +88,12 @@ public class PolicyResult<TResult>
     public Exception FinalException { get; }
 
     /// <summary>
-    ///  The exception type of the final exception captured. Will be null if policy executed successfully
+    ///  The exception type of the final exception captured. Will be null if policy executed successfully.
     /// </summary>
     public ExceptionType? ExceptionType { get; }
 
     /// <summary>
-    /// The result of executing the policy. Will be default(TResult) if the policy failed
+    /// The result of executing the policy. Will be default(TResult) if the policy failed.
     /// </summary>
     public TResult Result { get; }
 
@@ -103,7 +103,7 @@ public class PolicyResult<TResult>
     public TResult FinalHandledResult { get; }
 
     /// <summary>
-    ///  The fault type of the final fault captured. Will be null if policy executed successfully
+    ///  The fault type of the final fault captured. Will be null if policy executed successfully.
     /// </summary>
     public FaultType? FaultType { get; }
 
@@ -115,8 +115,8 @@ public class PolicyResult<TResult>
     /// <summary>
     /// Builds a <see cref="PolicyResult" /> representing a successful execution through the policy.
     /// </summary>
-    /// <param name="result">The result returned by execution through the policy</param>
-    /// <param name="context">The policy execution context</param>
+    /// <param name="result">The result returned by execution through the policy.</param>
+    /// <param name="context">The policy execution context.</param>
     /// <returns>
     /// A <see cref="PolicyResult" /> representing a successful execution through the policy.
     /// </returns>
@@ -126,9 +126,9 @@ public class PolicyResult<TResult>
     /// <summary>
     /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy.
     /// </summary>
-    /// <param name="exception">The exception</param>
-    /// <param name="exceptionType">The exception type</param>
-    /// <param name="context">The policy execution context</param>
+    /// <param name="exception">The exception.</param>
+    /// <param name="exceptionType">The exception type.</param>
+    /// <param name="context">The policy execution context.</param>
     /// <returns>
     /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
     /// </returns>
@@ -151,8 +151,8 @@ public class PolicyResult<TResult>
     /// <summary>
     /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy.
     /// </summary>
-    /// <param name="handledResult">The result returned by execution through the policy, which was treated as a handled failure</param>
-    /// <param name="context">The policy execution context</param>
+    /// <param name="handledResult">The result returned by execution through the policy, which was treated as a handled failure.</param>
+    /// <param name="context">The policy execution context.</param>
     /// <returns>
     /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
     /// </returns>
@@ -161,54 +161,54 @@ public class PolicyResult<TResult>
 }
 
 /// <summary>
-/// Represents the outcome of executing a policy
+/// Represents the outcome of executing a policy.
 /// </summary>
 public enum OutcomeType
 {
     /// <summary>
-    /// Indicates that the policy ultimately executed successfully
+    /// Indicates that the policy ultimately executed successfully.
     /// </summary>
     Successful,
 
     /// <summary>
-    /// Indicates that the policy ultimately failed
+    /// Indicates that the policy ultimately failed.
     /// </summary>
     Failure
 }
 
 /// <summary>
-/// Represents the type of exception resulting from a failed policy
+/// Represents the type of exception resulting from a failed policy.
 /// </summary>
 public enum ExceptionType
 {
     /// <summary>
-    /// An exception type that has been defined to be handled by this policy
+    /// An exception type that has been defined to be handled by this policy.
     /// </summary>
     HandledByThisPolicy,
 
     /// <summary>
-    /// An exception type that has been not been defined to be handled by this policy
+    /// An exception type that has been not been defined to be handled by this policy.
     /// </summary>
     Unhandled
 }
 
 /// <summary>
-/// Represents the type of outcome from a failed policy
+/// Represents the type of outcome from a failed policy.
 /// </summary>
 public enum FaultType
 {
     /// <summary>
-    /// An exception type that has been defined to be handled by this policy
+    /// An exception type that has been defined to be handled by this policy.
     /// </summary>
     ExceptionHandledByThisPolicy,
 
     /// <summary>
-    /// An exception type that has been not been defined to be handled by this policy
+    /// An exception type that has been not been defined to be handled by this policy.
     /// </summary>
     UnhandledException,
 
     /// <summary>
-    /// A result value that has been defined to be handled by this policy
+    /// A result value that has been defined to be handled by this policy.
     /// </summary>
     ResultHandledByThisPolicy
 }

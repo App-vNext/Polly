@@ -12,7 +12,7 @@ public abstract class NonSlidingTtl : ITtlStrategy
     protected readonly DateTimeOffset absoluteExpirationTime;
 
     /// <summary>
-    /// Constructs a new instance of the <see cref="NonSlidingTtl"/> strategy.
+    /// Initializes a new instance of the <see cref="NonSlidingTtl"/> class.
     /// </summary>
     /// <param name="absoluteExpirationTime">The absolute expiration time for cache items, represented by this strategy.</param>
     protected NonSlidingTtl(DateTimeOffset absoluteExpirationTime) =>

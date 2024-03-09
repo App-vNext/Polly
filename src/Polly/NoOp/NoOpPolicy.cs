@@ -18,7 +18,7 @@ public class NoOpPolicy : Policy, INoOpPolicy
 }
 
 /// <summary>
-/// A no op policy that can be applied to delegates returning a value of type <typeparamref name="TResult" />
+/// A no op policy that can be applied to delegates returning a value of type <typeparamref name="TResult" />.
 /// </summary>
 /// <typeparam name="TResult">The type of return values this policy will handle.</typeparam>
 public class NoOpPolicy<TResult> : Policy<TResult>, INoOpPolicy<TResult>

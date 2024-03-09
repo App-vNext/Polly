@@ -1,7 +1,7 @@
 ﻿namespace Polly;
 
 /// <summary>
-/// Contains extensions methods on <see cref="ISyncPolicy"/>
+/// Contains extensions methods on <see cref="ISyncPolicy"/>.
 /// </summary>
 public static class ISyncPolicyExtensions
 {

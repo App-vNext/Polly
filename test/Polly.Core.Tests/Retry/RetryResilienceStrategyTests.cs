@@ -209,7 +209,7 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
-    public async void OnRetry_EnsureCorrectArguments()
+    public async Task OnRetry_EnsureCorrectArguments()
     {
         var attempts = new List<int>();
         var delays = new List<TimeSpan>();
@@ -244,7 +244,7 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
-    public async void MaxDelay_EnsureRespected()
+    public async Task MaxDelay_EnsureRespected()
     {
         var delays = new List<TimeSpan>();
         _options.OnRetry = args =>

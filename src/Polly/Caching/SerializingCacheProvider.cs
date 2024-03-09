@@ -11,12 +11,12 @@ public class SerializingCacheProvider<TSerialized> : ISyncCacheProvider
     private readonly ICacheItemSerializer<object, TSerialized> _serializer;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SerializingCacheProvider{TResult, TSerialized}" /> class.
+    /// Initializes a new instance of the <see cref="SerializingCacheProvider{TSerialized}"/> class.
     /// </summary>
     /// <param name="wrappedCacheProvider">The wrapped cache provider.</param>
     /// <param name="serializer">The serializer.</param>
-    /// <exception cref="ArgumentNullException">wrappedCacheProvider </exception>
-    /// <exception cref="ArgumentNullException">serializer </exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="wrappedCacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="serializer"/> is <see langword="null"/>.</exception>
     public SerializingCacheProvider(ISyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
     {
         _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));
@@ -62,8 +62,8 @@ public class SerializingCacheProvider<TResult, TSerialized> : ISyncCacheProvider
     /// </summary>
     /// <param name="wrappedCacheProvider">The wrapped cache provider.</param>
     /// <param name="serializer">The serializer.</param>
-    /// <exception cref="ArgumentNullException">wrappedCacheProvider </exception>
-    /// <exception cref="ArgumentNullException">serializer </exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="wrappedCacheProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="serializer"/> is <see langword="null"/>.</exception>
     public SerializingCacheProvider(ISyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
     {
         _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));

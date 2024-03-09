@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0;netstandard2.0;net472;net462</TargetFrameworks>
     <AssemblyTitle>Polly</AssemblyTitle>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ProjectType>Library</ProjectType>
     <MutationScore>70</MutationScore>
     <IncludePollyUsings>true</IncludePollyUsings>

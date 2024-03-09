@@ -12,13 +12,13 @@ public interface ICacheItemSerializer<TResult, TSerialized>
     /// Serializes the specified object.
     /// </summary>
     /// <param name="objectToSerialize">The object to serialize.</param>
-    /// <returns>The serialized object</returns>
+    /// <returns>The serialized object.</returns>
     TSerialized? Serialize(TResult? objectToSerialize);
 
     /// <summary>
     /// Deserializes the specified object.
     /// </summary>
     /// <param name="objectToDeserialize">The object to deserialize.</param>
-    /// <returns>The deserialized object</returns>
+    /// <returns>The deserialized object.</returns>
     TResult? Deserialize(TSerialized? objectToDeserialize);
 }
