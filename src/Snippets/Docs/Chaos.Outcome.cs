@@ -11,6 +11,8 @@ namespace Snippets.Docs;
 
 internal static partial class Chaos
 {
+    private static readonly int RandomThreshold = Random.Shared.Next(350);
+
     public static void OutcomeUsage()
     {
         #region chaos-outcome-usage
@@ -64,7 +66,7 @@ internal static partial class Chaos
                 OutcomeGenerator = static args =>
                 {
                     var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
-                    return new ValueTask<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
+                    return ValueTask.FromResult<Outcome<HttpResponseMessage>?>(Outcome.FromResult(response));
                 },
                 InjectionRate = 0.1
             })
@@ -83,7 +85,7 @@ internal static partial class Chaos
                 OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
                     .AddResult(() => new HttpResponseMessage(HttpStatusCode.InternalServerError)) // Result generator
                     .AddResult(() => new HttpResponseMessage(HttpStatusCode.TooManyRequests), weight: 50) // Result generator with weight
-                    .AddResult(context => CreateResultFromContext(context)) // Access the ResilienceContext to create result
+                    .AddResult(context => new HttpResponseMessage(CreateResultFromContext(context))) // Access the ResilienceContext to create result
                     .AddException<HttpRequestException>(), // You can also register exceptions
             });
 
@@ -104,7 +106,7 @@ internal static partial class Chaos
                     {
                         < 100 => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)),
                         < 150 => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.TooManyRequests)),
-                        < 250 => Outcome.FromResult(CreateResultFromContext(args.Context)),
+                        < 250 => Outcome.FromResult(new HttpResponseMessage(CreateResultFromContext(args.Context))),
                         < 350 => Outcome.FromException<HttpResponseMessage>(new TimeoutException()),
                         _ => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.OK))
                     };
@@ -129,8 +131,8 @@ internal static partial class Chaos
                     {
                         < 100 => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)),
                         < 150 => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.TooManyRequests)),
-                        < 250 => Outcome.FromResult(CreateResultFromContext(args.Context)),
-                        < 350 => Outcome.FromException<HttpResponseMessage>(new HttpRequestException("Chaos request exception.")),
+                        < 250 => Outcome.FromResult(new HttpResponseMessage(CreateResultFromContext(args.Context))),
+                        < 350 => Outcome.FromException<HttpResponseMessage>(new HttpRequestException("Chaos request exception.")), // ⚠️ Avoid this ⚠️
                         _ => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.OK))
                     };
 
@@ -159,21 +161,20 @@ internal static partial class Chaos
     public static void Pattern_GeneratorDelegateInjectFaultAndOutcome()
     {
         #region chaos-outcome-pattern-generator-inject-fault
-        var randomThreshold = Random.Shared.Next(350);
         var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
             .AddChaosFault(new ChaosFaultStrategyOptions
             {
                 InjectionRate = 0.1, // Different injection rate for faults
-                EnabledGenerator = static args => ValueTask.FromResult(ShouldEnableFaults(args.Context)), // Different settings might apply to inject faults
-                FaultGenerator = args =>
+                EnabledGenerator = static args => ShouldEnableFaults(args.Context), // Different settings might apply to inject faults
+                FaultGenerator = static args =>
                 {
-                    Exception? exception = randomThreshold switch
+                    Exception? exception = RandomThreshold switch
                     {
                         >= 250 and < 350 => new HttpRequestException("Chaos request exception."),
                         _ => null
                     };
 
-                    return new ValueTask<Exception?>(exception);
+                    return ValueTask.FromResult(exception);
                 },
                 OnFaultInjected = static args =>
                 {
@@ -184,18 +185,18 @@ internal static partial class Chaos
             .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
             {
                 InjectionRate = 0.5, // Different injection rate for outcomes
-                EnabledGenerator = static args => ValueTask.FromResult(ShouldEnableOutcome(args.Context)), // Different settings might apply to inject outcomes
-                OutcomeGenerator = args =>
+                EnabledGenerator = static args => ShouldEnableOutcome(args.Context), // Different settings might apply to inject outcomes
+                OutcomeGenerator = static args =>
                 {
-                    Outcome<HttpResponseMessage>? outcome = randomThreshold switch
+                    HttpStatusCode statusCode = RandomThreshold switch
                     {
-                        < 100 => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)),
-                        < 150 => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.TooManyRequests)),
-                        < 250 => Outcome.FromResult(CreateResultFromContext(args.Context)),
-                        _ => Outcome.FromResult(new HttpResponseMessage(HttpStatusCode.OK))
+                        < 100 => HttpStatusCode.InternalServerError,
+                        < 150 => HttpStatusCode.TooManyRequests,
+                        < 250 => CreateResultFromContext(args.Context),
+                        _ => HttpStatusCode.OK
                     };
 
-                    return ValueTask.FromResult(outcome);
+                    return ValueTask.FromResult<Outcome<HttpResponseMessage>?>(Outcome.FromResult(new HttpResponseMessage(statusCode)));
                 },
                 OnOutcomeInjected = static args =>
                 {
@@ -215,7 +216,7 @@ internal static partial class Chaos
             .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
             {
                 OutcomeGenerator = new OutcomeGenerator<HttpResponseMessage>()
-                    .AddException<HttpRequestException>(),
+                    .AddException<HttpRequestException>(),  // ⚠️ Avoid this ⚠️
             });
 
         #endregion
@@ -235,9 +236,9 @@ internal static partial class Chaos
         #endregion
     }
 
-    private static bool ShouldEnableFaults(ResilienceContext context) => true;
+    private static ValueTask<bool> ShouldEnableFaults(ResilienceContext context) => ValueTask.FromResult(true);
 
-    private static bool ShouldEnableOutcome(ResilienceContext context) => true;
+    private static ValueTask<bool> ShouldEnableOutcome(ResilienceContext context) => ValueTask.FromResult(true);
 
-    private static HttpResponseMessage CreateResultFromContext(ResilienceContext context) => new(HttpStatusCode.TooManyRequests);
+    private static HttpStatusCode CreateResultFromContext(ResilienceContext context) => HttpStatusCode.TooManyRequests;
 }
