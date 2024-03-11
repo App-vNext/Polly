@@ -159,7 +159,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>()
     .AddChaosOutcome(new ChaosOutcomeStrategyOptions<HttpResponseMessage>
     {
         // The same behavior can be achieved with delegates
-        OutcomeGenerator = args =>
+        OutcomeGenerator = static args =>
         {
             Outcome<HttpResponseMessage>? outcome = Random.Shared.Next(350) switch
             {
