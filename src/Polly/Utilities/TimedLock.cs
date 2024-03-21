@@ -68,15 +68,15 @@ internal readonly struct TimedLock : IDisposable
     // in order to detect when the object is not freed.)
     private class Sentinel
     {
+#if NETSTANDARD2_0
         ~Sentinel()
         {
             // If this finalizer runs, someone somewhere failed to
             // call Dispose, which means we've failed to leave
             // a monitor!
-#if NETSTANDARD2_0
             System.Diagnostics.Debug.Fail("Undisposed lock");
-#endif
         }
+#endif
     }
 
     private readonly Sentinel _leakDetector;
