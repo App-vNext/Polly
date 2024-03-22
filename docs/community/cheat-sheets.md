@@ -22,3 +22,4 @@ Cheat sheets provide easy to use code snippets for common scenarios.
 | -------- | :------------------------------------------: |
 | Fault    |  [Download](../media/cheat-sheet-fault.pdf)  |
 | Outcome  | [Download](../media/cheat-sheet-outcome.pdf) |
+| Latency  | [Download](../media/cheat-sheet-latency.pdf) |
