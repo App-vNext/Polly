@@ -8,7 +8,7 @@ Cheat sheets provide easy to use code snippets for common scenarios.
 ## Core strategies
 
 | Strategy        |                         PDF                          |
-| --------------- | :--------------------------------------------------: |
+|-----------------|:----------------------------------------------------:|
 | Circuit Breaker | [Download](../media/cheat-sheet-circuit-breaker.pdf) |
 | Fallback        |    [Download](../media/cheat-sheet-fallback.pdf)     |
 | Hedging         |     [Download](../media/cheat-sheet-hedging.pdf)     |
@@ -18,8 +18,9 @@ Cheat sheets provide easy to use code snippets for common scenarios.
 
 ## Chaos strategies
 
-| Strategy |                     PDF                      |
-| -------- | :------------------------------------------: |
-| Fault    |  [Download](../media/cheat-sheet-fault.pdf)  |
-| Outcome  | [Download](../media/cheat-sheet-outcome.pdf) |
-| Latency  | [Download](../media/cheat-sheet-latency.pdf) |
+| Strategy |                      PDF                      |
+|----------|:---------------------------------------------:|
+| Fault    |  [Download](../media/cheat-sheet-fault.pdf)   |
+| Outcome  | [Download](../media/cheat-sheet-outcome.pdf)  |
+| Latency  | [Download](../media/cheat-sheet-latency.pdf)  |
+| Behavior | [Download](../media/cheat-sheet-behavior.pdf) |
