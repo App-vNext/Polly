@@ -1535,6 +1535,16 @@
     },
     {
       "type": "Resource",
+      "source_relative_path": "media/cheat-sheet-behavior.pdf",
+      "output": {
+        "resource": {
+          "relative_path": "media/cheat-sheet-behavior.pdf"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
       "source_relative_path": "media/cheat-sheet-circuit-breaker.pdf",
       "output": {
         "resource": {
