@@ -15,7 +15,7 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
     private long addNextTokenAtTicks;
 
 #if !NETSTANDARD2_0
-    private SpinWait spinner = default;
+    private static SpinWait spinner => default;
 #endif
 
     /// <summary>
