@@ -340,7 +340,7 @@ For more details, visit the [fallback strategy](https://www.pollydocs.org/strate
 
 ### Hedging
 
-<!-- snippet: Hedging -->
+<!-- snippet: hedging -->
 ```cs
 // Hedging with default options.
 // See https://www.pollydocs.org/strategies/hedging#defaults for defaults.

@@ -12,7 +12,7 @@
 
 ## Usage
 
-<!-- snippet: Retry -->
+<!-- snippet: retry -->
 ```cs
 // Retry using the default options.
 // See https://www.pollydocs.org/strategies/retry#defaults for defaults.
