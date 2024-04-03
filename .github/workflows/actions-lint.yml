@@ -31,6 +31,6 @@ jobs:
       run: echo "::add-matcher::.github/actionlint-matcher.json"
 
     - name: Lint workflows
-      uses: docker://rhysd/actionlint@sha256:2eb91a78b5a19140be099c7b4262d298c2567f2a9f27e10ed2a4323c5bcface8 # v1.6.26
+      uses: docker://rhysd/actionlint@sha256:daa1edae4a6366f320b68abb60b74fb59a458c17b61938d3c62709d92b231558 # v1.6.27
       with:
         args: -color
