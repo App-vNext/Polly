@@ -1,49 +1,50 @@
-﻿open System
+﻿open FSharp.Control
+open System
 open System.Threading
 open System.Threading.Tasks
 open Polly
 
-let getBestFilmAsync(token: CancellationToken) =
+let getBestFilmAsync token =
     task {
-        do! Task.Delay(1000, token) |> Async.AwaitTask
+        do! Task.Delay(1000, token)
         return "https://www.imdb.com/title/tt0080684/"
     }
 
-let demo() =
-    async {
+let demo () =
+    task {
         // The ResiliencePipelineBuilder creates a ResiliencePipeline
         // that can be executed synchronously or asynchronously
         // and for both void and result-returning user-callbacks.
-        let pipeline = ResiliencePipelineBuilder().AddTimeout(TimeSpan.FromSeconds(5)).Build()
+        let pipeline =
+            ResiliencePipelineBuilder().AddTimeout(TimeSpan.FromSeconds(5)).Build()
 
         // Synchronously
-        pipeline.Execute(Action(fun () -> Console.WriteLine("Hello, world!")))
+        pipeline.Execute(fun () -> printfn "Hello, world!")
 
         // Asynchronously
-        // Note that the function is wrapped in a ValueTask for Polly to use as F# cannot
-        // await ValueTask directly, and AsTask() is used to convert the ValueTask returned by
-        // ExecuteAsync() to a Task so it can be awaited.
-        do! pipeline.ExecuteAsync(Func<CancellationToken, ValueTask>(fun token -> new ValueTask(task {
-            Console.WriteLine("Hello, world! Waiting for 1 second...")
-            do! Task.Delay(1000, token) |> Async.AwaitTask
-        })),
-        CancellationToken.None).AsTask() |> Async.AwaitTask
+        // Note that Polly expects a ValueTask to be returned, so the function is piped into a ValueTask constructor.
+        do!
+            pipeline.ExecuteAsync(
+                fun token ->
+                    task {
+                        printfn "Hello, world! Waiting for 1 second..."
+                        do! Task.Delay(1000, token)
+                    } |> ValueTask
+                , CancellationToken.None
+            )
 
         // Synchronously with result
-        let someResult = pipeline.Execute(Func<CancellationToken, string>(fun token -> "some-result"))
+        let someResult = pipeline.Execute(fun token -> "some-result")
 
         // Asynchronously with result
-        // Note that the function is wrapped in a ValueTask<string> for Polly to use as F# cannot
-        // await ValueTask directly, and AsTask() is used to convert the ValueTask<string> returned by
-        // ExecuteAsync() to a Task<string> so it can be awaited.
-        let! bestFilm = pipeline.ExecuteAsync(
-            Func<CancellationToken, ValueTask<string>>(fun token -> new ValueTask<string>(getBestFilmAsync(token))),
-            CancellationToken.None).AsTask() |> Async.AwaitTask
+        // Note that Polly expects a ValueTask to be returned, so the function is piped into a ValueTask constructor.
+        let! bestFilm =
+            pipeline.ExecuteAsync((fun token -> getBestFilmAsync(token) |> ValueTask<string>), CancellationToken.None)
 
-        Console.WriteLine("Link to the best film: {0}", bestFilm)
+        printfn $"Link to the best film: {bestFilm}"
     }
 
 [<EntryPoint>]
 let main _ =
-    demo() |> Async.RunSynchronously
+    demo().Wait()
     0
