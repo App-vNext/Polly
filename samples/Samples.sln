@@ -24,6 +24,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyInjection", "Depe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chaos", "Chaos\Chaos.csproj", "{A296E17C-B95F-4B15-8B0D-9D6CC0929A1D}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Intro.VisualBasic", "Intro.VisualBasic\Intro.VisualBasic.vbproj", "{10F1C68E-DBF8-43DE-8A72-3EB4491ECD9C}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Intro.FSharp", "Intro.FSharp\Intro.FSharp.fsproj", "{2C0F3F7F-63ED-472B-80B7-905618B07714}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +58,14 @@ Global
 		{A296E17C-B95F-4B15-8B0D-9D6CC0929A1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A296E17C-B95F-4B15-8B0D-9D6CC0929A1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A296E17C-B95F-4B15-8B0D-9D6CC0929A1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10F1C68E-DBF8-43DE-8A72-3EB4491ECD9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10F1C68E-DBF8-43DE-8A72-3EB4491ECD9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10F1C68E-DBF8-43DE-8A72-3EB4491ECD9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10F1C68E-DBF8-43DE-8A72-3EB4491ECD9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C0F3F7F-63ED-472B-80B7-905618B07714}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C0F3F7F-63ED-472B-80B7-905618B07714}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C0F3F7F-63ED-472B-80B7-905618B07714}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C0F3F7F-63ED-472B-80B7-905618B07714}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
