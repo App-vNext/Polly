@@ -44,6 +44,9 @@
   - name: Behavior
     href: chaos/behavior.md
 
+- name: Use with F# and Visual Basic
+  href: use-with-fsharp-and-visual-basic.md
+
 - name: Advanced topics
   expanded: true
   items:

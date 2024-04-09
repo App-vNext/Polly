@@ -1,7 +1,7 @@
 Imports System.Threading
 Imports Polly
 
-Module Progam
+Module Program
     Sub Main()
         Demo().Wait()
     End Sub

@@ -23,6 +23,10 @@ await pipeline.ExecuteAsync(static async token => { /* Your custom logic goes he
 ```
 <!-- endSnippet -->
 
+> [!NOTE]
+> Asynchronous methods in the Polly API return `ValueTask` or `ValueTask<T>` instead of `Task` or `Task<T>`.
+> If you are using Polly in Visual Basic or F#, please read [Use with F# and Visual Basic](use-with-fsharp-and-visual-basic.md) for more information.
+
 ## Dependency injection
 
 If you prefer to define resilience pipelines using [`IServiceCollection`](https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection), you'll need to install the [Polly.Extensions](https://www.nuget.org/packages/Polly.Extensions/) package:
