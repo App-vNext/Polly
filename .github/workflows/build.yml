@@ -75,7 +75,7 @@ jobs:
         if-no-files-found: ignore
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@7afa10ed9b269c561c2336fd862446844e0cbf71 # v4.2.0
+      uses: codecov/codecov-action@84508663e988701840491b86de86b666e8a86bed # v4.3.0
       with:
         files: ./artifacts/coverage-reports/Polly.Core.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Specs/Cobertura.xml,./artifacts/coverage-reports/Polly.RateLimiting.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Extensions.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Testing.Tests/Cobertura.xml,
         flags: ${{ matrix.os_name }}
