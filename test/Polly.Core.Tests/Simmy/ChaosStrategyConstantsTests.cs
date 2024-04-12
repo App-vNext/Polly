@@ -1,5 +1,7 @@
 using Polly.Simmy;
 
+namespace Polly.Core.Tests;
+
 public class ChaosStrategyConstantsTests
 {
     [Fact]
