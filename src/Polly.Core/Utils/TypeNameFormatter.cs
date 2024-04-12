@@ -17,6 +17,12 @@ internal static class TypeNameFormatter
             return type.Name;
         }
 
-        return $"{type.Name.Substring(0, type.Name.Length - GenericSuffixLength)}<{Format(args[0])}>";
+#if NET6_0_OR_GREATER
+        var nameNoAirity = type.Name[..(type.Name.Length - GenericSuffixLength)];
+#else
+        var nameNoAirity = type.Name.Substring(0, type.Name.Length - GenericSuffixLength);
+#endif
+
+        return $"{nameNoAirity}<{Format(args[0])}>";
     }
 }
