@@ -100,16 +100,16 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(optionsExtractDela
 
 ## Defaults
 
-| Property           | Default Value                                       | Description                                                                                               |
-|--------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| `ShouldHandle`     | Any exceptions other than `OperationCanceledException`. | Defines a predicate to determine what results and/or exceptions are handled by the retry strategy.     |
-| `MaxRetryAttempts` | 3                                                   | The maximum number of retry attempts to use, in addition to the original call.                            |
-| `BackoffType`      | Constant                                            | The back-off algorithm type to generate the delay(s) between retry attempts.                              |
-| `Delay`            | 2 seconds                                           | The *base* delay between retry attempts. See the next section for more details.                           |
-| `MaxDelay`         | `null`                                              | If provided then the strategy caps the calculated retry delay to this value.                              |
-| `UseJitter`        | False                                               | If set to `true`, a jitter (random value) is added to retry delays. See the next section for more details. |
-| `DelayGenerator`   | `null`                                              | This method allows you to **dynamically** calculate the retry delay based on runtime accessible values.   |
-| `OnRetry`          | `null`                                              | If provided then it will be invoked before the strategy delays the next attempt.                          |
+| Property           | Default Value                                           | Description                                                                                                                                                 |
+|--------------------|---------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ShouldHandle`     | Any exceptions other than `OperationCanceledException`. | Defines a predicate to determine what results and/or exceptions are handled by the retry strategy.                                                          |
+| `MaxRetryAttempts` | 3                                                       | The maximum number of retry attempts to use, in addition to the original call.                                                                              |
+| `BackoffType`      | Constant                                                | The back-off algorithm type to generate the delay(s) between retry attempts.                                                                                |
+| `Delay`            | 2 seconds                                               | The *base* delay between retry attempts. See the next section for more details.                                                                             |
+| `MaxDelay`         | `null`                                                  | If provided then the strategy caps the calculated retry delay to this value.                                                                                |
+| `UseJitter`        | False                                                   | If set to `true`, a jitter (random value) is added to retry delays. See the next section for more details.                                                  |
+| `DelayGenerator`   | `null`                                                  | This delegate allows you to **dynamically** calculate the retry delay by utilizing information that is only available at runtime (like the attempt number). |
+| `OnRetry`          | `null`                                                  | If provided then it will be invoked before the strategy delays the next attempt.                                                                            |
 
 ## Calculation of the next delay
 
