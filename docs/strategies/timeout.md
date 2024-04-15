@@ -2,15 +2,16 @@
 
 ## About
 
-- **Options**: [`TimeoutStrategyOptions`](xref:Polly.Timeout.TimeoutStrategyOptions)
-- **Extensions**: `AddTimeout`
-- **Strategy Type**: Proactive
-- **Exceptions**:
+- **Option(s)**:
+  - [`TimeoutStrategyOptions`](xref:Polly.Timeout.TimeoutStrategyOptions)
+- **Extension(s)**:
+  - `AddTimeout`
+- **Exception(s)**:
   - `TimeoutRejectedException`: Thrown when a delegate executed through a timeout strategy does not complete before the timeout.
 
 ---
 
-The timeout resilience strategy cancels the execution if it does not complete within the specified timeout period. If the execution is canceled by the timeout strategy, it throws a `TimeoutRejectedException`. The timeout strategy operates by wrapping the incoming cancellation token with a new one. Should the original token be canceled, the timeout strategy will transparently honor the original cancellation token without throwing a `TimeoutRejectedException`.
+The timeout **proactive** resilience strategy cancels the execution if it does not complete within the specified timeout period. If the execution is canceled by the timeout strategy, it throws a `TimeoutRejectedException`. The timeout strategy operates by wrapping the incoming cancellation token with a new one. Should the original token be canceled, the timeout strategy will transparently honor the original cancellation token without throwing a `TimeoutRejectedException`.
 
 > [!IMPORTANT]
 > It is crucial that the user's callback respects the cancellation token. If it does not, the callback will continue executing even after a cancellation request, thereby ignoring the cancellation.
@@ -108,6 +109,19 @@ catch (TimeoutRejectedException)
 ```
 <!-- endSnippet -->
 
+## Defaults
+
+| Property           | Default Value | Description                                                                                                |
+|--------------------|---------------|------------------------------------------------------------------------------------------------------------|
+| `Timeout`          | 30 seconds    | It defines a **static** period within the delegate should complete otherwise it will be cancelled.         |
+| `TimeoutGenerator` | `null`        | This method allows you to **dynamically** calculate the timeout period based on runtime accessible values. |
+| `OnTimeout`        | `null`        | If provided then it will be invoked after the timeout occurred.                                            |
+
+> [!NOTE]
+> If both `Timeout` and `TimeoutGenerator` are specified then `Timeout` will be ignored.
+
+### OnTimeout versus catching TimeoutRejectedException
+
 The `OnTimeout` user-provided delegate is called just before the strategy throws the `TimeoutRejectedException`. This delegate receives a parameter which allows you to access the `Context` object as well as the `Timeout`:
 
 - Accessing the `Context` is also possible via a different `Execute{Async}` overload.
@@ -116,17 +130,6 @@ The `OnTimeout` user-provided delegate is called just before the strategy throws
 So, what is the purpose of the `OnTimeout` in case of static timeout settings?
 
 The `OnTimeout` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `TimeoutRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that a timeout has occurred, you have to provide a delegate to the `OnTimeout` property.
-
-## Defaults
-
-| Property           | Default Value | Description                                  |
-| ------------------ | ------------- | -------------------------------------------- |
-| `Timeout`          | 30 seconds    | The default timeout used by the strategy.    |
-| `TimeoutGenerator` | `null`        | Generates the timeout for a given execution. |
-| `OnTimeout`        | `null`        | Event that is raised when timeout occurs.    |
-
-> [!NOTE]
-> If both `Timeout` and `TimeoutGenerator` are specified then `Timeout` will be ignored.
 
 ## Diagrams
 

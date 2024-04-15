@@ -2,13 +2,16 @@
 
 ## About
 
-- **Options**:
+- **Option(s)**:
   - [`RetryStrategyOptions`](xref:Polly.Retry.RetryStrategyOptions)
   - [`RetryStrategyOptions<T>`](xref:Polly.Retry.RetryStrategyOptions`1)
-- **Extensions**: `AddRetry`
-- **Strategy Type**: Reactive
+- **Extension(s)**:
+  - `AddRetry`
+- **Exception(s)**: -
 
 ---
+
+The retry **reactive** resilience strategy re-executes the same callback method if its execution fails. Failure can be an `Exception` or a result object indicating unsuccessful processing. Between the retry attempts the retry strategy waits a specified amount of time. You have a fine-grained control how to calculate the next delay. The retry strategy stops re-performing the same callback when it either runs out of the maximum allowed retry attempts or an unhandled exception is thrown / unhandled result object is returned.
 
 ## Usage
 
@@ -97,16 +100,16 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(optionsExtractDela
 
 ## Defaults
 
-| Property           | Default Value                                                              | Description                                                                              |
-|--------------------|----------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| `ShouldHandle`     | Predicate that handles all exceptions except `OperationCanceledException`. | Predicate that determines what results and exceptions are handled by the retry strategy. |
-| `MaxRetryAttempts` | 3                                                                          | The maximum number of retries to use, in addition to the original call.                  |
-| `Delay`            | 2 seconds                                                                  | The base delay between retries.                                                          |
-| `BackoffType`      | Constant                                                                   | The type of the back-off used to generate the retry delay.                               |
-| `UseJitter`        | False                                                                      | Allows adding jitter to retry delays.                                                    |
-| `DelayGenerator`   | `null`                                                                     | Used for generating custom delays for retries.                                           |
-| `OnRetry`          | `null`                                                                     | Action executed when retry occurs.                                                       |
-| `MaxDelay`         | `null`                                                                     | Caps the calculated retry delay to a specified maximum duration.                         |
+| Property           | Default Value                                       | Description                                                                                               |
+|--------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| `ShouldHandle`     | Any exceptions except `OperationCanceledException`. | It defines a predicate to determine what results and/or exceptions are handled by the retry strategy.     |
+| `MaxRetryAttempts` | 3                                                   | The maximum number of retry attempts to use, in addition to the original call.                            |
+| `BackoffType`      | Constant                                            | The back-off algorithm type to generate the delay(s) between retry attempts.                              |
+| `Delay`            | 2 seconds                                           | The *base* delay between retry attempts. See the next section for more details.                           |
+| `MaxDelay`         | `null`                                              | If provided then the strategy caps the calculated retry delay to this value.                              |
+| `UseJitter`        | False                                               | If set to `true` a jitter (random value) is added to retry delays. See the next section for more details. |
+| `DelayGenerator`   | `null`                                              | This method allows you to **dynamically** calculate the retry delay based on runtime accessible values.   |
+| `OnRetry`          | `null`                                              | If provided then it will be invoked before the strategy delays the next attempt.                          |
 
 ## Calculation of the next delay
 
