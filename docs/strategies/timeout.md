@@ -120,7 +120,7 @@ catch (TimeoutRejectedException)
 > [!NOTE]
 > If both `Timeout` and `TimeoutGenerator` are specified then `Timeout` will be ignored.
 
-### OnTimeout versus catching TimeoutRejectedException
+### `OnTimeout` versus catching `TimeoutRejectedException`
 
 The `OnTimeout` user-provided delegate is called just before the strategy throws the `TimeoutRejectedException`. This delegate receives a parameter which allows you to access the `Context` object as well as the `Timeout`:
 
