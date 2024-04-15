@@ -113,8 +113,8 @@ catch (TimeoutRejectedException)
 
 | Property           | Default Value | Description                                                                                                |
 |--------------------|---------------|------------------------------------------------------------------------------------------------------------|
-| `Timeout`          | 30 seconds    | It defines a **static** period within the delegate should complete otherwise it will be cancelled.         |
-| `TimeoutGenerator` | `null`        | This method allows you to **dynamically** calculate the timeout period based on runtime accessible values. |
+| `Timeout`          | 30 seconds    | Defines a **static** period within which the delegate should complete, otherwise it will be cancelled.         |
+| `TimeoutGenerator` | `null`        | This delegate allows you to **dynamically** calculate the timeout period based on runtime accessible values. |
 | `OnTimeout`        | `null`        | If provided then it will be invoked after the timeout occurred.                                            |
 
 > [!NOTE]
