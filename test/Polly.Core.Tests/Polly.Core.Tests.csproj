@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.TimeProvider" VersionOverride="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
     <PackageReference Include="Polly.Contrib.WaitAndRetry" />
   </ItemGroup>
