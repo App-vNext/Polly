@@ -473,7 +473,7 @@ To learn more about Polly, visit [pollydocs.org][polly-docs].
 - [Polly-Samples](https://github.com/App-vNext/Polly-Samples): Contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
 - Microsoft's [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers): Sample project demonstrating a .NET Micro-services architecture and using Polly for resilience.
 
-### Sponsors
+## Sponsors
 
 Thanks to the [.NET on AWS Open Source Software Fund](https://github.com/aws/dotnet-foss) for sponsoring the ongoing development of Polly.
 
