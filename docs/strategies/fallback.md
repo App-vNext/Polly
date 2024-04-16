@@ -305,7 +305,7 @@ return await fallback.ExecuteAsync(CallPrimary, CancellationToken.None);
 
 ### Nesting `ExecuteAsync` calls
 
-Combining multiple strategies can be achieved in various ways. However, deeply nesting `ExecuteAsync` calls can lead to what's commonly referred to as _`Execute` Hell_.
+Combining multiple strategies can be achieved in various ways. However, deeply nesting `ExecuteAsync` calls can lead to what's commonly referred to as *`Execute` Hell*.
 
 > [!NOTE]
 > While this isn't strictly tied to the Fallback mechanism, it's frequently observed when Fallback is the outermost layer.
@@ -330,7 +330,7 @@ return result;
 
 **Reasoning**:
 
-This is akin to JavaScript's [callback hell](http://callbackhell.com/) or _[the pyramid of doom](https://en.wikipedia.org/wiki/Pyramid_of_doom_(programming))_. It's easy to mistakenly reference the wrong `CancellationToken` parameter.
+This is akin to JavaScript's [callback hell](http://callbackhell.com/) or *[the pyramid of doom](https://en.wikipedia.org/wiki/Pyramid_of_doom_(programming))*. It's easy to mistakenly reference the wrong `CancellationToken` parameter.
 
 ✅ DO
 
