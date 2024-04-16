@@ -2,11 +2,18 @@
 
 ## About
 
-- **Options**: [`FallbackStrategyOptions<T>`](xref:Polly.Fallback.FallbackStrategyOptions`1)
-- **Extensions**: `AddFallback`
-- **Strategy Type**: Reactive
+- **Option(s)**:
+  - [`FallbackStrategyOptions<T>`](xref:Polly.Fallback.FallbackStrategyOptions`1)
+- **Extension(s)**:
+  - `AddFallback`
+- **Exception(s)**: -
 
 ---
+
+The fallback **reactive** resilience strategy provides a substitute if the execution of the callback fails. Failure can be either an `Exception` or a result object indicating unsuccessful processing. Typically this strategy is used as a last resort, meaning that if all other strategies failed to overcome the transient failure you could still provide a fallback value to the caller.
+
+> [!NOTE]
+> In this document the *fallback*, *substitute*, and *surrogate* terms are used interchangeably.
 
 ## Usage
 
@@ -59,11 +66,12 @@ new ResiliencePipelineBuilder<UserAvatar>().AddFallback(optionsOnFallback);
 
 ## Defaults
 
-| Property         | Default Value                                                              | Description                                                                                 |
-| ---------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `ShouldHandle`   | Predicate that handles all exceptions except `OperationCanceledException`. | Predicate that determines what results and exceptions are handled by the fallback strategy. |
-| `FallbackAction` | `Null`, **Required**                                                       | Fallback action to be executed.                                                             |
-| `OnFallback`     | `null`                                                                     | Event that is raised when fallback happens.                                                 |
+| Property       | Default Value                                           | Description                                                                                           |
+|----------------|---------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| `ShouldHandle` | Any exceptions other than `OperationCanceledException`. | Defines a predicate to determine what results and/or exceptions are handled by the fallback strategy. |
+
+| `FallbackAction` | `Null`, **Required**                                                       | This delegate allows you to **dynamically** calculate the surrogate value by utilizing information that is only available at runtime (like the outcome).                                                             |
+| `OnFallback`     | `null`                                                                     | If provided then it will be invoked before the strategy calculates the fallback value.                                                 |
 
 ## Diagrams
 

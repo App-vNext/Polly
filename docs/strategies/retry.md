@@ -11,7 +11,7 @@
 
 ---
 
-The retry **reactive** resilience strategy re-executes the same callback method if its execution fails. Failure can be an `Exception` or a result object indicating unsuccessful processing. Between the retry attempts the retry strategy waits a specified amount of time. You have fine-grained control over how to calculate the next delay. The retry strategy stops invoking the same callback when it reaches the maximum allowed number of retry attempts or an unhandled exception is thrown / result object indicating a failure is returned.
+The retry **reactive** resilience strategy re-executes the same callback method if its execution fails. Failure can be either an `Exception` or a result object indicating unsuccessful processing. Between the retry attempts the retry strategy waits a specified amount of time. You have fine-grained control over how to calculate the next delay. The retry strategy stops invoking the same callback when it reaches the maximum allowed number of retry attempts or an unhandled exception is thrown / result object indicating a failure is returned.
 
 ## Usage
 
