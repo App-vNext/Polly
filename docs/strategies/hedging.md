@@ -2,15 +2,17 @@
 
 ## About
 
-- **Options**: [`HedgingStrategyOptions<T>`](xref:Polly.Hedging.HedgingStrategyOptions`1)
-- **Extensions**: `AddHedging`
-- **Strategy Type**: Reactive
+- **Option(s)**:
+  - [`HedgingStrategyOptions<T>`](xref:Polly.Hedging.HedgingStrategyOptions`1)
+- **Extension(s)**:
+  - `AddHedging`
+- **Exception(s)**: -
 
 ---
 
-The hedging strategy enables the re-execution of a user-defined callback if the previous execution takes too long. This approach gives you the option to either run the original callback again or specify a new callback for subsequent hedged attempts. Implementing a hedging strategy can boost the overall responsiveness of the system. However, it's essential to note that this improvement comes at the cost of increased resource utilization. If low latency is not a critical requirement, you may find the [retry strategy](retry.md) is more appropriate.
+The hedging **reactive** strategy enables the re-execution of the callback if the previous execution takes too long. This approach gives you the option to either run the original callback again or specify a new callback for subsequent *hedged* attempts. Implementing a hedging strategy can boost the overall responsiveness of the system. However, it's essential to note that this improvement comes at the cost of increased resource utilization. If low latency is not a critical requirement, you may find the [retry strategy](retry.md) more appropriate.
 
-This strategy also supports multiple [concurrency modes](#concurrency-modes) for added flexibility.
+This strategy also supports multiple [concurrency modes](#concurrency-modes) to flexibly tailor the behavior for your own needs.
 
 > [!NOTE]
 > Please do not start any background work when executing actions using the hedging strategy. This strategy can spawn multiple parallel tasks, and as a result multiple background tasks can be started.
@@ -59,14 +61,14 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddHedging(optionsDefaults)
 
 ## Defaults
 
-| Property            | Default Value                                                              | Description                                                                              |
-|---------------------|----------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| `ShouldHandle`      | Predicate that handles all exceptions except `OperationCanceledException`. | Predicate that determines what results and exceptions are handled by the retry strategy. |
-| `MaxHedgedAttempts` | 1                                                                          | The maximum number of hedged actions to use, in addition to the original action.         |
-| `Delay`             | 2 seconds                                                                  | The maximum waiting time before spawning a new hedged action.                            |
-| `ActionGenerator`   | Returns the original callback that was passed to the hedging strategy.     | Generator that creates hedged actions.                                                   |
-| `DelayGenerator`    | `null`                                                                     | Used for generating custom delays for hedging.                                           |
-| `OnHedging`         | `null`                                                                     | Event that is raised when a hedging is performed.                                        |
+| Property            | Default Value                                                      | Description                                                                                                                                                    |
+|---------------------|--------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ShouldHandle`      | Any exceptions other than `OperationCanceledException`.            | Defines a predicate to determine what results and/or exceptions are handled by the hedging strategy.                                                           |
+| `MaxHedgedAttempts` | 1                                                                  | The maximum number of hedged actions to use, in addition to the original action.                                                                               |
+| `Delay`             | 2 seconds                                                          | The maximum waiting time before spawning a new hedged action.                                                                                                  |
+| `ActionGenerator`   | It returns the original callback that was passed to this strategy. | This delegate allows you to **dynamically** calculate the hedged action by utilizing information that is only available at runtime (like the attempt number).  |
+| `DelayGenerator`    | `null`                                                             | This optional delegate allows you to **dynamically** calculate the delay by utilizing information that is only available at runtime (like the attempt number). |
+| `OnHedging`         | `null`                                                             | If provided then it will be invoked before the strategy performs the hedged action.                                                                            |
 
 You can use the following special values for `Delay` or in `DelayGenerator`:
 
