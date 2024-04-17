@@ -2,16 +2,20 @@
 
 ## About
 
-- **Options**: [`RateLimiterStrategyOptions`](xref:Polly.RateLimiting.RateLimiterStrategyOptions)
-- **Extensions**: `AddRateLimiter`, `AddConcurrencyLimiter`
-- **Strategy Type**: Proactive
+- **Option(s)**:
+  - [`RateLimiterStrategyOptions`](xref:Polly.RateLimiting.RateLimiterStrategyOptions)
+- **Extension(s)**:
+  - `AddRateLimiter`,
+  - `AddConcurrencyLimiter`
 - **Exceptions**:
   - `RateLimiterRejectedException`: Thrown when a rate limiter rejects an execution.
-- **Package**: [Polly.RateLimiting](https://www.nuget.org/packages/Polly.RateLimiting)
+
+> [!IMPORTANT]
+> The rate limiter strategy resides inside the [Polly.RateLimiting](https://www.nuget.org/packages/Polly.RateLimiting) package, not like the others ([Polly.Core](https://www.nuget.org/packages/Polly.Core)).
 
 ---
 
-The rate limiter resilience strategy controls the number of operations that can pass through it. This strategy is a thin layer over the API provided by the [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) package.
+The rate limiter **proactive** resilience strategy controls the number of operations that can pass through it. This strategy is a thin layer over the API provided by the [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) package. This strategy can be used in two flavors: control inbound load via rate limiter, control outbound load via concurrency limiter.
 
 Further reading:
 
@@ -107,6 +111,16 @@ catch (RateLimiterRejectedException)
 ```
 <!-- endSnippet -->
 
+## Defaults
+
+| Property                    | Default Value                                        | Description                                                                                                 |
+|-----------------------------|------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| `RateLimiter`               | `null`                                               | **Dynamically** creates a `RateLimitLease` for executions.                                                  |
+| `DefaultRateLimiterOptions` | `PermitLimit` set to 1000 and `QueueLimit` set to 0. | If `RateLimiter` is not provided then this options object will be used for the default concurrency limiter. |
+| `OnRejected`                | `null`                                               | If provided then it will be invoked after the limiter rejected an execution.                                |
+
+### `OnRejected` versus catching `RateLimiterRejectedException`
+
 The `OnRejected` user-provided delegate is called just before the strategy throws the `RateLimiterRejectedException`. This delegate receives a parameter which allows you to access the `Context` object as well as the `Lease`:
 
 - Accessing the `Context` is also possible via a different `Execute{Async}` overload.
@@ -116,13 +130,9 @@ So, what is the purpose of the `OnRejected`?
 
 The `OnRejected` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `RateLimiterRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the `OnRejected` property.
 
-## Defaults
-
-| Property                    | Default Value                                        | Description                                                                                     |
-| --------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `RateLimiter`               | `null`                                               | Generator that creates a `RateLimitLease` for executions.                                       |
-| `DefaultRateLimiterOptions` | `PermitLimit` set to 1000 and `QueueLimit` set to 0. | The options for the default concurrency limiter that will be used when `RateLimiter` is `null`. |
-| `OnRejected`                | `null`                                               | Event that is raised when the execution is rejected by the rate limiter.                        |
+> [!IMPORTANT]
+> The [`RateLimiterRejectedException`](xref:Polly.RateLimiting.RateLimiterRejectedException) has a property called `RetryAfter`. If this optional `TimeSpan` is provided then that means your requests are throttled and you should retry them no sooner than it indicates.
+> Please note that this information is not available inside the `OnRejected`.
 
 ## Diagrams
 
