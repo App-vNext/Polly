@@ -66,11 +66,11 @@ new ResiliencePipelineBuilder<UserAvatar>().AddFallback(optionsOnFallback);
 
 ## Defaults
 
-| Property       | Default Value                                           | Description                                                                                           |
-|----------------|---------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
-| `ShouldHandle` | Any exceptions other than `OperationCanceledException`. | Defines a predicate to determine what results and/or exceptions are handled by the fallback strategy. |
-| `FallbackAction` | `Null`, **Required**                                                       | This delegate allows you to **dynamically** calculate the surrogate value by utilizing information that is only available at runtime (like the outcome).                                                             |
-| `OnFallback`     | `null`                                                                     | If provided then it will be invoked before the strategy calculates the fallback value.                                                 |
+| Property         | Default Value                                           | Description                                                                                                                                              |
+|------------------|---------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ShouldHandle`   | Any exceptions other than `OperationCanceledException`. | Defines a predicate to determine what results and/or exceptions are handled by the fallback strategy.                                                    |
+| `FallbackAction` | `Null`, **Required**                                    | This delegate allows you to **dynamically** calculate the surrogate value by utilizing information that is only available at runtime (like the outcome). |
+| `OnFallback`     | `null`                                                  | If provided then it will be invoked before the strategy calculates the fallback value.                                                                   |
 
 ## Diagrams
 
