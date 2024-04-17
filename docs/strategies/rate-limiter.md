@@ -11,11 +11,11 @@
   - `RateLimiterRejectedException`: Thrown when a rate limiter rejects an execution.
 
 > [!IMPORTANT]
-> The rate limiter strategy resides inside the [Polly.RateLimiting](https://www.nuget.org/packages/Polly.RateLimiting) package, not like the others ([Polly.Core](https://www.nuget.org/packages/Polly.Core)).
+> The rate limiter strategy resides inside the [Polly.RateLimiting](https://www.nuget.org/packages/Polly.RateLimiting) package, not in ([Polly.Core](https://www.nuget.org/packages/Polly.Core)) like other strategies.
 
 ---
 
-The rate limiter **proactive** resilience strategy controls the number of operations that can pass through it. This strategy is a thin layer over the API provided by the [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) package. This strategy can be used in two flavors: control inbound load via rate limiter, control outbound load via concurrency limiter.
+The rate limiter **proactive** resilience strategy controls the number of operations that can pass through it. This strategy is a thin layer over the API provided by the [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) package. This strategy can be used in two flavors: to control inbound load via a rate limiter and to control outbound load via a concurrency limiter.
 
 Further reading:
 
@@ -131,8 +131,8 @@ So, what is the purpose of the `OnRejected`?
 The `OnRejected` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `RateLimiterRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the `OnRejected` property.
 
 > [!IMPORTANT]
-> The [`RateLimiterRejectedException`](xref:Polly.RateLimiting.RateLimiterRejectedException) has a property called `RetryAfter`. If this optional `TimeSpan` is provided then that means your requests are throttled and you should retry them no sooner than it indicates.
-> Please note that this information is not available inside the `OnRejected`.
+> The [`RateLimiterRejectedException`](xref:Polly.RateLimiting.RateLimiterRejectedException) has a `RetryAfter` property. If this optional `TimeSpan` is provided then this indicates that your requests are throttled and you should retry them no sooner than the value given.
+> Please note that this information is not available inside the `OnRejected` callback.
 
 ## Diagrams
 
