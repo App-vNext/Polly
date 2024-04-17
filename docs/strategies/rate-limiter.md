@@ -7,7 +7,7 @@
 - **Extension(s)**:
   - `AddRateLimiter`,
   - `AddConcurrencyLimiter`
-- **Exceptions**:
+- **Exception(s)**:
   - `RateLimiterRejectedException`: Thrown when a rate limiter rejects an execution.
 
 > [!NOTE]

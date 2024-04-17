@@ -2,16 +2,19 @@
 
 ## About
 
-- **Options**:
+- **Option(s)**:
   - [`CircuitBreakerStrategyOptions`](xref:Polly.CircuitBreaker.CircuitBreakerStrategyOptions)
   - [`CircuitBreakerStrategyOptions<T>`](xref:Polly.CircuitBreaker.CircuitBreakerStrategyOptions`1)
-- **Extensions**: `AddCircuitBreaker`
+- **Extension(s)**:
+  - `AddCircuitBreaker`
 - **Strategy Type**: Reactive
-- **Exceptions**:
+- **Exception(s)**:
   - `BrokenCircuitException`: Thrown when a circuit is broken and the action could not be executed.
   - `IsolatedCircuitException`: Thrown when a circuit is isolated (held open) by manual override.
 
 ---
+
+The circuit breaker **reactive** resilience strategy shortcuts the execution if the underlying resource is detected as unhealthy. The detection process is done via sampling. If the sampled executions' failure-success ratio exceeds a predefined threshold then circuit breaker will prevent any new executions by throwing a `BrokenCircuitException`. After a preset duration the circuit breaker performs a probe, because the assumption is that this period was enough for the resource to self-heal. Depending on the outcome of the probe the circuit will either allow new executions or still block them.
 
 > [!NOTE]
 > Be aware that the Circuit Breaker strategy [rethrows all exceptions](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#exception-handling), including those that are handled. A Circuit Breaker's role is to monitor faults and break the circuit when a certain threshold is reached; it does not manage retries. Combine the Circuit Breaker with a Retry strategy if needed.
@@ -91,22 +94,28 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(optionsSt
 
 ## Defaults
 
-| Property                 | Default Value                                                              | Description                                                                                |
-| -----------------------  | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `ShouldHandle`           | Predicate that handles all exceptions except `OperationCanceledException`. | Specifies which results and exceptions are managed by the circuit breaker strategy.        |
-| `FailureRatio`           | 0.1                                                                        | The ratio of failures to successes that will cause the circuit to break/open.              |
-| `MinimumThroughput`      | 100                                                                        | The minimum number of actions that must occur in the circuit within a specific time slice. |
-| `SamplingDuration`       | 30 seconds                                                                 | The time period over which failure ratios are calculated.                                  |
-| `BreakDuration`          | 5 seconds                                                                  | The time period for which the circuit will remain broken/open before attempting to reset.  |
-| `BreakDurationGenerator` | `null`                                                                     | Enables adaptive adjustment of break duration based on the current state of the circuit.   |
-| `OnClosed`               | `null`                                                                     | Event triggered when the circuit transitions to the `Closed` state.                        |
-| `OnOpened`               | `null`                                                                     | Event triggered when the circuit transitions to the `Opened` state.                        |
-| `OnHalfOpened`           | `null`                                                                     | Event triggered when the circuit transitions to the `HalfOpened` state.                    |
-| `ManualControl`          | `null`                                                                     | Allows for manual control to isolate or close the circuit.                                 |
-| `StateProvider`          | `null`                                                                     | Enables the retrieval of the current state of the circuit.                                 |
+| Property                 | Default Value                                           | Description                                                                                                                                               |
+|--------------------------|---------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ShouldHandle`           | Any exceptions other than `OperationCanceledException`. | Defines a predicate to determine what results and/or exceptions are handled by the circuit breaker strategy.                                              |
+| `FailureRatio`           | 0.1                                                     | The failure-success ratio that will cause the circuit to break/open. `0.1` means 10% failed of all sampled executions.                                    |
+| `MinimumThroughput`      | 100                                                     | The minimum number of actions that must occur within the specified sampling duration.                                                                     |
+| `SamplingDuration`       | 30 seconds                                              | The time period over which the failure-success ratio is calculated.                                                                                       |
+| `BreakDuration`          | 5 seconds                                               | Defines a **static** time period for which the circuit will remain broken/open before attempting to reset.                                                |
+| `BreakDurationGenerator` | `null`                                                  | This delegate allows you to **dynamically** calculate the break duration by utilizing information that is only available at runtime (like failure count). |
+| `ManualControl`          | `null`                                                  | If provided then the circuit's state can be manual controlled via a `CircuitBreakerManualControl` object.                                                 |
+| `StateProvider`          | `null`                                                  | If provided then the circuit's current state can be retrieved via a `CircuitBreakerStateProvider` object.                                                 |
+| `OnClosed`               | `null`                                                  | If provided then it will be invoked after the circuit transitioned either to the `Closed` or to the `Isolated` state.                                     |
+| `OnOpened`               | `null`                                                  | If provided then it will be invoked after the circuit transitioned to the `Opened` state.                                                                 |
+| `OnHalfOpened`           | `null`                                                  | If provided then it will be invoked after the circuit transitioned to the `HalfOpened` state.                                                             |
 
 > [!NOTE]
 > If both `BreakDuration` and `BreakDurationGenerator` are specified then `BreakDuration` will be ignored.
+
+---
+
+> [!IMPORTANT]
+> If the `MinimumThroughput` is not reached during the `SamplingDuration` then the `FailureRatio` is ignored.
+> In other words, the circuit will not break even if all of the executions failed but their quantity is bellow the minimum throughput.
 
 ## Diagrams
 
