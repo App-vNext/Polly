@@ -10,7 +10,7 @@
 - **Exceptions**:
   - `RateLimiterRejectedException`: Thrown when a rate limiter rejects an execution.
 
-> [!IMPORTANT]
+> [!NOTE]
 > The rate limiter strategy resides inside the [Polly.RateLimiting](https://www.nuget.org/packages/Polly.RateLimiting) package, not in ([Polly.Core](https://www.nuget.org/packages/Polly.Core)) like other strategies.
 
 ---
