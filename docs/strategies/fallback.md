@@ -72,6 +72,37 @@ new ResiliencePipelineBuilder<UserAvatar>().AddFallback(optionsOnFallback);
 | `FallbackAction` | `Null`, **Required**                                    | This delegate allows you to **dynamically** calculate the surrogate value by utilizing information that is only available at runtime (like the outcome). |
 | `OnFallback`     | `null`                                                  | If provided then it will be invoked before the strategy calculates the fallback value.                                                                   |
 
+## Telemetry
+
+The fallback strategy reports the following telemetry events:
+
+| Event Name   | Event Severity | When?                                                    |
+|--------------|----------------|----------------------------------------------------------|
+| `OnFallback` | `Warning`      | Just before the strategy calls the `OnFallback` delegate |
+
+Here are some sample events:
+
+```none
+Resilience event occurred. EventName: 'OnFallback', Source: 'MyApplication/MyTestPipeline/MyFallbackStrategy', Operation Key: 'MyFallbackGuardedOperation', Result: '-1'
+
+Resilience event occurred. EventName: 'OnFallback', Source: '(null)/(null)/Fallback', Operation Key: '', Result: 'Exception of type 'CustomException' was thrown.'
+    CustomException: Exception of type 'CustomException' was thrown.
+        at Program.<>c.<Main>b__0_3(ResilienceContext ctx)
+        ...
+        at Polly.ResiliencePipeline.<>c__8`1.<<ExecuteAsync>b__8_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.AsyncT.cs:line 95
+```
+
+> [!NOTE]
+> Please note that the `OnFallback` telemetry event will be reported either if the fallback strategy provides a surrogate value or the original callback throws an exception.
+>
+> If an exception was thrown then the telemetry event will be reported regardless the exception was handled or unhandled from the fallback strategy perspective.
+>
+> So, **only if** the callback returns an acceptable result there will be no telemetry emitted.
+>
+> Also remember that the `Result` will be **always populated** for the `OnFallback` telemetry event.
+
+For further information please check out the [telemetry page](../advanced/telemetry.html).
+
 ## Diagrams
 
 ### Happy path sequence diagram

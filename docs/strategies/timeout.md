@@ -151,7 +151,7 @@ Resilience event occurred. EventName: 'OnTimeout', Source: 'MyApplication/MyTest
 >
 > So, if the callback either finishes on time or throws an exception then there will be no telemetry emitted.
 >
-> Also remember that the `Result` will be **always** empty for the `OnTimeout` telemetry event.
+> Also remember that the `Result` will be **always empty** for the `OnTimeout` telemetry event.
 
 For further information please check out the [telemetry page](../advanced/telemetry.html).
 
