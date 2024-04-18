@@ -1,6 +1,7 @@
 alloc
 apis
 ASP.NET
+astask
 async
 azurefunctions
 bcl
@@ -18,7 +19,9 @@ enricher
 eshoponcontainers
 extensibility
 flurl
+fs
 hangfire
+interop
 jetbrains
 jitter
 jittered
@@ -67,6 +70,7 @@ timingpolicy
 ui
 unhandled
 uwp
+valuetask
 waitandretry
 wpf
 xunit
