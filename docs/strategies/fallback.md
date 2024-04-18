@@ -93,11 +93,9 @@ Resilience event occurred. EventName: 'OnFallback', Source: '(null)/(null)/Fallb
 ```
 
 > [!NOTE]
-> Please note that the `OnFallback` telemetry event will be reported either if the fallback strategy provides a surrogate value or the original callback throws an exception.
+> Please note that the `OnFallback` telemetry event will be reported **only if** the fallback strategy provides a surrogate value.
 >
-> If an exception was thrown then the telemetry event will be reported regardless the exception was handled or unhandled from the fallback strategy perspective.
->
-> So, **only if** the callback returns an acceptable result there will be no telemetry emitted.
+> So, if the callback either returns an acceptable result or throws an unhandled exception then there will be no telemetry emitted.
 >
 > Also remember that the `Result` will be **always populated** for the `OnFallback` telemetry event.
 
