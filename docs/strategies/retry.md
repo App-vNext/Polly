@@ -166,7 +166,7 @@ Execution attempt. Source: 'MyApplication/MyTestPipeline/MyRetryStrategy', Opera
 >
 > On the other hand the `Execution attempt` event will be **always** reported regardless whether the strategy has to perform any retries.
 >
-> Also remember that the `Attempt: '0'` means the original attempt.
+> Also remember that `Attempt: '0'` relates to the original execution attempt.
 
 For further information please check out the [telemetry page](../advanced/telemetry.html).
 
