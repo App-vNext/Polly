@@ -333,8 +333,6 @@ internal sealed class CircuitStateController<T> : IDisposable
         }
 
         _blockedUntil = IsDateTimeOverflow(utcNow, breakDuration) ? DateTimeOffset.MaxValue : utcNow + breakDuration;
-
-        var transitionedState = _circuitState;
         _circuitState = CircuitState.Open;
 
         var args = new OnCircuitOpenedArguments<T>(context, outcome, breakDuration, manual);
