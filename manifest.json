@@ -1758,6 +1758,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "use-with-fsharp-and-visual-basic.md",
+      "output": {
+        ".html": {
+          "relative_path": "use-with-fsharp-and-visual-basic.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "v7/extensibility.md",
       "output": {
         ".html": {
