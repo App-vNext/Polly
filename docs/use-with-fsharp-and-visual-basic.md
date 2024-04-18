@@ -51,18 +51,15 @@ let demo () =
         // Asynchronously
         // Note that Polly expects a ValueTask to be returned, so the function uses the valueTask builder
         // from IcedTasks to make it easier to use ValueTask. See https://github.com/TheAngryByrd/IcedTasks.
-        do!
-            valueTask {
-                do! pipeline.ExecuteAsync(
-                    fun token ->
-                        valueTask {
-                            printfn "Hello, world! Waiting for 2 seconds..."
-                            do! Task.Delay(1000, token)
-                            printfn "Wait complete."
-                        }
-                    , token
-                )
-            }
+        do! pipeline.ExecuteAsync(
+            fun token ->
+                valueTask {
+                    printfn "Hello, world! Waiting for 2 seconds..."
+                    do! Task.Delay(1000, token)
+                    printfn "Wait complete."
+                }
+            , token
+        )
 
         // Synchronously with result
         let someResult = pipeline.Execute(fun token -> "some-result")
@@ -70,14 +67,14 @@ let demo () =
         // Asynchronously with result
         // Note that Polly expects a ValueTask<T> to be returned, so the function uses the valueTask builder
         // from IcedTasks to make it easier to use ValueTask<T>. See https://github.com/TheAngryByrd/IcedTasks.
-        let! bestFilm =
-            valueTask {
-                let! url = pipeline.ExecuteAsync((fun token -> valueTask {
+        let! bestFilm = pipeline.ExecuteAsync(
+            fun token ->
+                valueTask {
                     let! url = getBestFilmAsync(token)
                     return url
-                }), token)
-                return url
-            }
+                }
+            , token
+        )
 
         printfn $"Link to the best film: {bestFilm}"
     }
