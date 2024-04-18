@@ -131,6 +131,30 @@ So, what is the purpose of the `OnTimeout` in case of static timeout settings?
 
 The `OnTimeout` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `TimeoutRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that a timeout has occurred, you have to provide a delegate to the `OnTimeout` property.
 
+## Telemetry
+
+The timeout strategy reports the following telemetry events:
+
+| Event Name  | Event Severity | When?                                                   |
+|-------------|----------------|---------------------------------------------------------|
+| `OnTimeout` | `Error`        | Just before the strategy calls the `OnTimeout` delegate |
+
+Here are some sample events:
+
+```none
+Resilience event occurred. EventName: 'OnTimeout', Source: '(null)/(null)/Timeout', Operation Key: '', Result: ''
+Resilience event occurred. EventName: 'OnTimeout', Source: 'MyApplication/MyTestPipeline/MyTimeoutStrategy', Operation Key: 'MyTimeoutGuardedOperation', Result: ''
+```
+
+> [!NOTE]
+> Please note that the `OnTimeout` telemetry event will be reported **only if** the timeout strategy cancels the provided callback execution.
+>
+> So, if the callback either finishes on time or throws an exception then there will be no telemetry log.
+>
+> Also remember that the `Result` will be **always** empty for the `OnTimeout` telemetry event.
+
+For further information please check out the [telemetry page](../advanced/telemetry.html).
+
 ## Diagrams
 
 ### Happy path sequence diagram
