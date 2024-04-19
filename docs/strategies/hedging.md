@@ -115,7 +115,6 @@ Execution attempt. Source: 'MyApplication/MyTestPipeline/Hedging', Operation Key
 
 For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
 
-
 ## Concurrency modes
 
 In the sections below, explore the different concurrency modes available in the hedging strategy. The behavior is primarily controlled by the `Delay` property value.
