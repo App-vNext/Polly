@@ -117,6 +117,39 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(optionsSt
 > If the `MinimumThroughput` is not reached during the `SamplingDuration` then the `FailureRatio` is ignored.
 > In other words, the circuit will not break even if all of the executions failed when their quantity is below the minimum throughput.
 
+## Telemetry
+
+The circuit breaker strategy reports the following telemetry events:
+
+| Event Name            | Event Severity | When?                                                      |
+|-----------------------|----------------|------------------------------------------------------------|
+| `OnCircuitClosed`     | `Error`        | Just before the strategy calls the `OnClosed` delegate     |
+| `OnCircuitOpened`     | `Error`        | Just before the strategy calls the `OnOpened` delegate     |
+| `OnCircuitHalfOpened` | `Error`        | Just before the strategy calls the `OnHalfOpened` delegate |
+
+Here are some sample events:
+
+```none
+Resilience event occurred. EventName: 'OnCircuitOpened', Source: 'MyApplication/MyTestPipeline/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: 'Exception of type 'CustomException' was thrown.'
+    CustomException: Exception of type 'CustomException' was thrown.
+        at Program.<>c.<<Main>b__0_1>d.MoveNext()
+        ...
+        at Polly.ResiliencePipeline.<>c__8`1.<<ExecuteAsync>b__8_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.AsyncT.cs:line 95
+
+Resilience event occurred. EventName: 'OnCircuitHalfOpened', Source: 'MyApplication/MyTestPipeline/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: ''
+
+Resilience event occurred. EventName: 'OnCircuitClosed', Source: 'MyApplication/MyTestPipeline/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: '42'
+```
+
+> [!NOTE]
+> Please note that the `OnCircuitXYZ` telemetry events will be reported **only if** the circuit breaker strategy transitions from one state into another.
+>
+> Remember in case of `ManualControl` the `OnCircuitHalfOpened` telemetry event will not be emitted.
+>
+> Also the `Result` will be **always empty** for the `OnCircuitHalfOpened` telemetry event.
+
+For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
+
 ## Diagrams
 
 ### State diagram
