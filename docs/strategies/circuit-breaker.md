@@ -123,9 +123,9 @@ The circuit breaker strategy reports the following telemetry events:
 
 | Event Name            | Event Severity | When?                                                      |
 |-----------------------|----------------|------------------------------------------------------------|
-| `OnCircuitClosed`     | `Error`        | Just before the strategy calls the `OnClosed` delegate     |
+| `OnCircuitClosed`     | `Information`  | Just before the strategy calls the `OnClosed` delegate     |
 | `OnCircuitOpened`     | `Error`        | Just before the strategy calls the `OnOpened` delegate     |
-| `OnCircuitHalfOpened` | `Error`        | Just before the strategy calls the `OnHalfOpened` delegate |
+| `OnCircuitHalfOpened` | `Warning`      | Just before the strategy calls the `OnHalfOpened` delegate |
 
 Here are some sample events:
 
