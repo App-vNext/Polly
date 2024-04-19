@@ -153,7 +153,7 @@ Resilience event occurred. EventName: 'OnTimeout', Source: 'MyApplication/MyTest
 >
 > Also remember that the `Result` will be **always empty** for the `OnTimeout` telemetry event.
 
-For further information please check out the [telemetry page](../advanced/telemetry.html).
+For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
 
 ## Diagrams
 

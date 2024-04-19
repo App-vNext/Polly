@@ -168,7 +168,7 @@ Execution attempt. Source: 'MyApplication/MyTestPipeline/MyRetryStrategy', Opera
 >
 > Also remember that `Attempt: '0'` relates to the original execution attempt.
 
-For further information please check out the [telemetry page](../advanced/telemetry.html).
+For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
 
 ## Calculation of the next delay
 

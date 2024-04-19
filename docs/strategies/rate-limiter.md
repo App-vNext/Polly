@@ -134,6 +134,28 @@ The `OnRejected` delegate can be useful when you define a resilience pipeline wh
 > The [`RateLimiterRejectedException`](xref:Polly.RateLimiting.RateLimiterRejectedException) has a `RetryAfter` property. If this optional `TimeSpan` is provided then this indicates that your requests are throttled and you should retry them no sooner than the value given.
 > Please note that this information is not available inside the `OnRejected` callback.
 
+## Telemetry
+
+The rate limiter strategy reports the following telemetry events:
+
+| Event Name              | Event Severity | When?                                                    |
+|-------------------------|----------------|----------------------------------------------------------|
+| `OnRateLimiterRejected` | `Error`        | Just before the strategy calls the `OnRejected` delegate |
+
+Here are some sample events:
+
+```none
+Resilience event occurred. EventName: 'OnRateLimiterRejected', Source: '(null)/(null)/RateLimiter', Operation Key: '', Result: ''
+Resilience event occurred. EventName: 'OnRateLimiterRejected', Source: 'MyApplication/MyTestPipeline/MyRateLimiterStrategy', Operation Key: 'MyRateLimitedOperation', Result: ''
+```
+
+> [!NOTE]
+> Please note that the `OnRateLimiterRejected` telemetry event will be reported **only if** the rate limiter strategy rejects the provided callback execution.
+>
+> Also remember that the `Result` will be **always empty** for the `OnRateLimiterRejected` telemetry event.
+
+For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
+
 ## Diagrams
 
 ### Rate Limiter
