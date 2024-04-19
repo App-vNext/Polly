@@ -78,6 +78,44 @@ You can use the following special values for `Delay` or in `DelayGenerator`:
 > [!NOTE]
 > If both `Delay` and `DelayGenerator` are specified then `Delay` will be ignored.
 
+## Telemetry
+
+The hedging strategy reports the following telemetry events:
+
+| Event Name          | Event Severity            | When?                                                                |
+|---------------------|---------------------------|----------------------------------------------------------------------|
+| `Execution Attempt` | `Information` / `Warning` | Just after the original/hedged action completes with success/failure |
+| `OnHedging`         | `Warning`                 | Just before the strategy calls the `OnHedging` delegate              |
+
+Here are some sample events:
+
+The reported `Execution Attempt` telemetry events' severity depends on the action's outcome:
+
+- If it succeeded then the severity is `Information`
+- It it failed then the severity is `Warning`
+
+```none
+Resilience event occurred. EventName: 'OnHedging', Source: 'MyApplication/MyTestPipeline/Hedging', Operation Key: 'MyHedgingOperation', Result: ''
+
+Execution attempt. Source: 'MyApplication/MyTestPipeline/Hedging', Operation Key: 'MyHedgingOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: '1505.3839'
+
+Execution attempt. Source: 'MyApplication/MyTestPipeline/Hedging', Operation Key: 'MyHedgingOperation', Result: 'Exception of type 'CustomException' was thrown.', Handled: 'True', Attempt: '1', Execution Time: '1525.2899'
+    CustomException: Exception of type 'CustomException' was thrown.
+        at Program.<>c.<<Main>b__0_2>d.MoveNext()
+        ...
+        at Polly.ResiliencePipeline.<>c__8`1.<<ExecuteAsync>b__8_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.AsyncT.cs:line 95
+```
+
+> [!NOTE]
+> Please note that the `OnHedging` telemetry event will be reported **only if** the hedging strategy performs any hedged actions.
+>
+> On the other hand the `Execution attempt` event will be **always** reported regardless whether the strategy has to perform hedging.
+>
+> Also remember that `Attempt: '0'` relates to the original execution attempt.
+
+For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
+
+
 ## Concurrency modes
 
 In the sections below, explore the different concurrency modes available in the hedging strategy. The behavior is primarily controlled by the `Delay` property value.
