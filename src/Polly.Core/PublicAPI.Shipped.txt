@@ -421,7 +421,6 @@ Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.ChaosOutcomeStrategyOptions() -> void
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected.get -> System.Func<Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>, System.Threading.Tasks.ValueTask>?
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected.set -> void
-Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.get -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>!
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.set -> void
 Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>
 Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.Context.get -> Polly.ResilienceContext!

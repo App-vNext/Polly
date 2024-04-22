@@ -28,5 +28,5 @@ public class ChaosOutcomeStrategyOptions<TResult> : ChaosStrategyOptions
     /// Defaults to <see langword="null"/>. This property is required.
     /// </value>
     [Required]
-    public Func<OutcomeGeneratorArguments, ValueTask<Outcome<TResult>?>> OutcomeGenerator { get; set; } = default!;
+    public Func<OutcomeGeneratorArguments, ValueTask<Outcome<TResult>?>>? OutcomeGenerator { get; set; }
 }
