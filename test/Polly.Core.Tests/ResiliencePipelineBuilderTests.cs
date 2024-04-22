@@ -120,7 +120,7 @@ public class ResiliencePipelineBuilderTests
         var builder = new ResiliencePipelineBuilder();
         var strategy = new TestResilienceStrategy();
 
-        builder.AddStrategy(strategy);
+        builder.AddStrategy(_ => strategy);
 
         builder
             .Build()
