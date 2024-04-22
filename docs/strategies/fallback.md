@@ -83,7 +83,7 @@ The fallback strategy reports the following telemetry events:
 Here are some sample events:
 
 ```none
-Resilience event occurred. EventName: 'OnFallback', Source: 'MyApplication/MyTestPipeline/MyFallbackStrategy', Operation Key: 'MyFallbackGuardedOperation', Result: '-1'
+Resilience event occurred. EventName: 'OnFallback', Source: 'MyPipeline/MyPipelineInstance/MyFallbackStrategy', Operation Key: 'MyFallbackGuardedOperation', Result: '-1'
 
 Resilience event occurred. EventName: 'OnFallback', Source: '(null)/(null)/Fallback', Operation Key: '', Result: 'Exception of type 'CustomException' was thrown.'
     CustomException: Exception of type 'CustomException' was thrown.

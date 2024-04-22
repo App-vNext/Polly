@@ -115,10 +115,10 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(optionsExtractDela
 
 The retry strategy reports the following telemetry events:
 
-| Event Name          | Event Severity            | When?                                                 |
-|---------------------|---------------------------|-------------------------------------------------------|
+| Event Name         | Event Severity            | When?                                                 |
+|--------------------|---------------------------|-------------------------------------------------------|
 | `ExecutionAttempt` | `Information` / `Warning` | Just before the strategy calculates the next delay    |
-| `OnRetry`           | `Warning`                 | Just before the strategy calls the `OnRetry` delegate |
+| `OnRetry`          | `Warning`                 | Just before the strategy calls the `OnRetry` delegate |
 
 Here are some sample events:
 
@@ -127,9 +127,9 @@ Here are some sample events:
 If the retry strategy does not perform any retries then the reported telemetry events' severity will be `Information`:
 
 ```none
-Execution attempt. Source: 'MyApplication/MyTestPipeline/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: '110.952'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: '110.952'
 
-Execution attempt. Source: 'MyApplication/MyTestPipeline/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'False', Attempt: '0', Execution Time: '5.2194'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'False', Attempt: '0', Execution Time: '5.2194'
     System.Exception: Failed
         at Program.<>c.<Main>b__0_1(ResilienceContext ctx)
         ...
@@ -141,20 +141,20 @@ Execution attempt. Source: 'MyApplication/MyTestPipeline/MyRetryStrategy', Opera
 If the retry strategy performs some retries then the reported telemetry events' severity will be `Warning`:
 
 ```none
-Execution attempt. Source: 'MyApplication/MyTestPipeline/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '0', Execution Time: '5.0397'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '0', Execution Time: '5.0397'
       System.Exception: Failed
          at Program.<>c.<Main>b__0_1(ResilienceContext ctx)
          ...
          at Polly.ResiliencePipeline.<>c.<<ExecuteAsync>b__1_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
 
-Resilience event occurred. EventName: 'OnRetry', Source: 'MyApplication/MyTestPipeline/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed'
+Resilience event occurred. EventName: 'OnRetry', Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed'
     System.Exception: Failed
         at Program.<>c.<Main>b__0_1(ResilienceContext ctx)
         ...
         at Polly.ResiliencePipeline.<>c.<<ExecuteAsync>b__1_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
 
 
-Execution attempt. Source: 'MyApplication/MyTestPipeline/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '1', Execution Time: '0.1159'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '1', Execution Time: '0.1159'
       System.Exception: Failed
          at Program.<>c.<Main>b__0_1(ResilienceContext ctx)
          ...

@@ -82,10 +82,10 @@ You can use the following special values for `Delay` or in `DelayGenerator`:
 
 The hedging strategy reports the following telemetry events:
 
-| Event Name          | Event Severity            | When?                                                                |
-|---------------------|---------------------------|----------------------------------------------------------------------|
+| Event Name         | Event Severity            | When?                                                                |
+|--------------------|---------------------------|----------------------------------------------------------------------|
 | `ExecutionAttempt` | `Information` / `Warning` | Just after the original/hedged action completes with success/failure |
-| `OnHedging`         | `Warning`                 | Just before the strategy calls the `OnHedging` delegate              |
+| `OnHedging`        | `Warning`                 | Just before the strategy calls the `OnHedging` delegate              |
 
 Here are some sample events:
 
@@ -95,11 +95,11 @@ The reported `Execution Attempt` telemetry events' severity depends on the actio
 - It it failed then the severity is `Warning`
 
 ```none
-Resilience event occurred. EventName: 'OnHedging', Source: 'MyApplication/MyTestPipeline/Hedging', Operation Key: 'MyHedgingOperation', Result: ''
+Resilience event occurred. EventName: 'OnHedging', Source: 'MyPipeline/MyPipelineInstance/Hedging', Operation Key: 'MyHedgingOperation', Result: ''
 
-Execution attempt. Source: 'MyApplication/MyTestPipeline/Hedging', Operation Key: 'MyHedgingOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: '1505.3839'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/Hedging', Operation Key: 'MyHedgingOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: '1505.3839'
 
-Execution attempt. Source: 'MyApplication/MyTestPipeline/Hedging', Operation Key: 'MyHedgingOperation', Result: 'Exception of type 'CustomException' was thrown.', Handled: 'True', Attempt: '1', Execution Time: '1525.2899'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/Hedging', Operation Key: 'MyHedgingOperation', Result: 'Exception of type 'CustomException' was thrown.', Handled: 'True', Attempt: '1', Execution Time: '1525.2899'
     CustomException: Exception of type 'CustomException' was thrown.
         at Program.<>c.<<Main>b__0_2>d.MoveNext()
         ...

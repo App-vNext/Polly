@@ -143,7 +143,7 @@ Here are some sample events:
 
 ```none
 Resilience event occurred. EventName: 'OnTimeout', Source: '(null)/(null)/Timeout', Operation Key: '', Result: ''
-Resilience event occurred. EventName: 'OnTimeout', Source: 'MyApplication/MyTestPipeline/MyTimeoutStrategy', Operation Key: 'MyTimeoutGuardedOperation', Result: ''
+Resilience event occurred. EventName: 'OnTimeout', Source: 'MyPipeline/MyPipelineInstance/MyTimeoutStrategy', Operation Key: 'MyTimeoutGuardedOperation', Result: ''
 ```
 
 > [!NOTE]

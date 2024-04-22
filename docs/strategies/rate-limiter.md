@@ -146,7 +146,7 @@ Here are some sample events:
 
 ```none
 Resilience event occurred. EventName: 'OnRateLimiterRejected', Source: '(null)/(null)/RateLimiter', Operation Key: '', Result: ''
-Resilience event occurred. EventName: 'OnRateLimiterRejected', Source: 'MyApplication/MyTestPipeline/MyRateLimiterStrategy', Operation Key: 'MyRateLimitedOperation', Result: ''
+Resilience event occurred. EventName: 'OnRateLimiterRejected', Source: 'MyPipeline/MyPipelineInstance/MyRateLimiterStrategy', Operation Key: 'MyRateLimitedOperation', Result: ''
 ```
 
 > [!NOTE]

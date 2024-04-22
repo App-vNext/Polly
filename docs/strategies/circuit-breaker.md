@@ -130,15 +130,15 @@ The circuit breaker strategy reports the following telemetry events:
 Here are some sample events:
 
 ```none
-Resilience event occurred. EventName: 'OnCircuitOpened', Source: 'MyApplication/MyTestPipeline/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: 'Exception of type 'CustomException' was thrown.'
+Resilience event occurred. EventName: 'OnCircuitOpened', Source: 'MyPipeline/MyPipelineInstance/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: 'Exception of type 'CustomException' was thrown.'
     CustomException: Exception of type 'CustomException' was thrown.
         at Program.<>c.<<Main>b__0_1>d.MoveNext()
         ...
         at Polly.ResiliencePipeline.<>c__8`1.<<ExecuteAsync>b__8_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.AsyncT.cs:line 95
 
-Resilience event occurred. EventName: 'OnCircuitHalfOpened', Source: 'MyApplication/MyTestPipeline/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: ''
+Resilience event occurred. EventName: 'OnCircuitHalfOpened', Source: 'MyPipeline/MyPipelineInstance/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: ''
 
-Resilience event occurred. EventName: 'OnCircuitClosed', Source: 'MyApplication/MyTestPipeline/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: '42'
+Resilience event occurred. EventName: 'OnCircuitClosed', Source: 'MyPipeline/MyPipelineInstance/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: '42'
 ```
 
 > [!NOTE]
