@@ -115,6 +115,36 @@ public class ResiliencePipelineBuilderTests
     }
 
     [Fact]
+    public void AddStrategy_ExplicitProactiveInstance_Ok()
+    {
+        var builder = new ResiliencePipelineBuilder();
+        var strategy = new TestResilienceStrategy();
+
+        builder.AddStrategy(strategy);
+
+        builder
+            .Build()
+            .GetPipelineDescriptor()
+            .FirstStrategy.StrategyInstance.Should()
+            .BeSameAs(strategy);
+    }
+
+    [Fact]
+    public void AddStrategy_ExplicitReactiveInstance_Ok()
+    {
+        var builder = new ResiliencePipelineBuilder();
+        var strategy = Substitute.For<ResilienceStrategy<object>>();
+
+        builder.AddStrategy(_ => strategy);
+
+        builder
+            .Build()
+            .GetPipelineDescriptor()
+            .FirstStrategy.StrategyInstance.Should()
+            .BeSameAs(strategy);
+    }
+
+    [Fact]
     public void Validator_Ok()
     {
         var builder = new ResiliencePipelineBuilder();

@@ -66,7 +66,10 @@ public static class ResiliencePipelineBuilderExtensions
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a pipeline. The builder cannot be modified after it has been used.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> is invalid.</exception>
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
-    public static TBuilder AddStrategy<TBuilder>(this TBuilder builder, Func<StrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
+    public static TBuilder AddStrategy<TBuilder>(
+        this TBuilder builder,
+        Func<StrategyBuilderContext, ResilienceStrategy> factory,
+        ResilienceStrategyOptions options)
         where TBuilder : ResiliencePipelineBuilderBase
     {
         Guard.NotNull(builder);
@@ -89,7 +92,8 @@ public static class ResiliencePipelineBuilderExtensions
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> is invalid.</exception>
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
     public static ResiliencePipelineBuilder AddStrategy(
-        this ResiliencePipelineBuilder builder, Func<StrategyBuilderContext, ResilienceStrategy<object>> factory,
+        this ResiliencePipelineBuilder builder,
+        Func<StrategyBuilderContext, ResilienceStrategy<object>> factory,
         ResilienceStrategyOptions options)
     {
         Guard.NotNull(builder);
@@ -113,7 +117,8 @@ public static class ResiliencePipelineBuilderExtensions
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> is invalid.</exception>
     [RequiresUnreferencedCode(Constants.OptionsValidation)]
     public static ResiliencePipelineBuilder<TResult> AddStrategy<TResult>(
-        this ResiliencePipelineBuilder<TResult> builder, Func<StrategyBuilderContext, ResilienceStrategy<TResult>> factory,
+        this ResiliencePipelineBuilder<TResult> builder,
+        Func<StrategyBuilderContext, ResilienceStrategy<TResult>> factory,
         ResilienceStrategyOptions options)
     {
         Guard.NotNull(builder);
@@ -122,6 +127,78 @@ public static class ResiliencePipelineBuilderExtensions
 
         builder.AddPipelineComponent(context => PipelineComponentFactory.FromStrategy(factory(context)), options);
         return builder;
+    }
+
+    /// <summary>
+    /// Adds a reactive resilience strategy to the builder.
+    /// </summary>
+    /// <typeparam name="TBuilder">The builder type.</typeparam>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="factory">The strategy factory.</param>
+    /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a pipeline. The builder cannot be modified after it has been used.</exception>
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(EmptyOptions))]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved for the empty options.")]
+    public static TBuilder AddStrategy<TBuilder>(
+        this TBuilder builder,
+        Func<StrategyBuilderContext, ResilienceStrategy> factory)
+        where TBuilder : ResiliencePipelineBuilderBase
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(factory);
+
+        return builder.AddStrategy(factory, EmptyOptions.Instance);
+    }
+
+    /// <summary>
+    /// Adds a proactive resilience strategy to the builder.
+    /// </summary>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="factory">The strategy instance.</param>
+    /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a pipeline. The builder cannot be modified after it has been used.</exception>
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(EmptyOptions))]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved for the empty options.")]
+    public static ResiliencePipelineBuilder AddStrategy(
+        this ResiliencePipelineBuilder builder,
+        Func<StrategyBuilderContext, ResilienceStrategy<object>> factory)
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(factory);
+
+        return builder.AddStrategy(factory, EmptyOptions.Instance);
+    }
+
+    /// <summary>
+    /// Adds a reactive resilience strategy to the builder.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="factory">The strategy instance.</param>
+    /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a pipeline. The builder cannot be modified after it has been used.</exception>
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(EmptyOptions))]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "All options members preserved for the empty options.")]
+    public static ResiliencePipelineBuilder<TResult> AddStrategy<TResult>(
+        this ResiliencePipelineBuilder<TResult> builder,
+        Func<StrategyBuilderContext, ResilienceStrategy<TResult>> factory)
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(factory);
+
+        return builder.AddStrategy(factory, EmptyOptions.Instance);
     }
 
     internal sealed class EmptyOptions : ResilienceStrategyOptions
