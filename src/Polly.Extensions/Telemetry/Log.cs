@@ -66,7 +66,7 @@ internal static partial class Log
                 "Result: '{Result}', " +
                 "Handled: '{Handled}', " +
                 "Attempt: '{Attempt}', " +
-                "Execution Time: '{ExecutionTimeMs}'",
+                "Execution Time: {ExecutionTime}ms",
         EventName = "ExecutionAttempt",
         SkipEnabledCheck = true)]
     public static partial void ExecutionAttempt(
@@ -79,6 +79,6 @@ internal static partial class Log
         object? result,
         bool handled,
         int attempt,
-        double executionTimeMs,
+        double executionTime,
         Exception? exception);
 }
