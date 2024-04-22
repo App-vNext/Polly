@@ -89,16 +89,21 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>:
+<li><strong>Option(s)</strong>:
 <ul>
 <li><a class="xref" href="../api/Polly.Retry.RetryStrategyOptions.html"><code>RetryStrategyOptions</code></a></li>
 <li><a class="xref" href="../api/Polly.Retry.RetryStrategyOptions-1.html"><code>RetryStrategyOptions&lt;T&gt;</code></a></li>
 </ul>
 </li>
-<li><strong>Extensions</strong>: <code>AddRetry</code></li>
-<li><strong>Strategy Type</strong>: Reactive</li>
+<li><strong>Extension(s)</strong>:
+<ul>
+<li><code>AddRetry</code></li>
+</ul>
+</li>
+<li><strong>Exception(s)</strong>: -</li>
 </ul>
 <hr>
+<p>The retry <strong>reactive</strong> resilience strategy re-executes the same callback method if its execution fails. Failure can be either an <code>Exception</code> or a result object indicating unsuccessful processing. Between the retry attempts the retry strategy waits a specified amount of time. You have fine-grained control over how to calculate the next delay. The retry strategy stops invoking the same callback when it reaches the maximum allowed number of retry attempts or an unhandled exception is thrown / result object indicating a failure is returned.</p>
 <h2 id="usage">Usage</h2>
 <!-- snippet: retry -->
 <pre><code class="lang-cs">// Retry using the default options.
@@ -193,46 +198,108 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(optionsExtra
 <tbody>
 <tr>
 <td><code>ShouldHandle</code></td>
-<td>Predicate that handles all exceptions except <code>OperationCanceledException</code>.</td>
-<td>Predicate that determines what results and exceptions are handled by the retry strategy.</td>
+<td>Any exceptions other than <code>OperationCanceledException</code>.</td>
+<td>Defines a predicate to determine what results and/or exceptions are handled by the retry strategy.</td>
 </tr>
 <tr>
 <td><code>MaxRetryAttempts</code></td>
 <td>3</td>
-<td>The maximum number of retries to use, in addition to the original call.</td>
-</tr>
-<tr>
-<td><code>Delay</code></td>
-<td>2 seconds</td>
-<td>The base delay between retries.</td>
+<td>The maximum number of retry attempts to use, in addition to the original call.</td>
 </tr>
 <tr>
 <td><code>BackoffType</code></td>
 <td>Constant</td>
-<td>The type of the back-off used to generate the retry delay.</td>
+<td>The back-off algorithm type to generate the delay(s) between retry attempts.</td>
 </tr>
 <tr>
-<td><code>UseJitter</code></td>
-<td>False</td>
-<td>Allows adding jitter to retry delays.</td>
-</tr>
-<tr>
-<td><code>DelayGenerator</code></td>
-<td><code>null</code></td>
-<td>Used for generating custom delays for retries.</td>
-</tr>
-<tr>
-<td><code>OnRetry</code></td>
-<td><code>null</code></td>
-<td>Action executed when retry occurs.</td>
+<td><code>Delay</code></td>
+<td>2 seconds</td>
+<td>The <em>base</em> delay between retry attempts. See the next section for more details.</td>
 </tr>
 <tr>
 <td><code>MaxDelay</code></td>
 <td><code>null</code></td>
-<td>Caps the calculated retry delay to a specified maximum duration.</td>
+<td>If provided then the strategy caps the calculated retry delay to this value.</td>
+</tr>
+<tr>
+<td><code>UseJitter</code></td>
+<td>False</td>
+<td>If set to <code>true</code>, a jitter (random value) is added to retry delays. See the next section for more details.</td>
+</tr>
+<tr>
+<td><code>DelayGenerator</code></td>
+<td><code>null</code></td>
+<td>This optional delegate allows you to <strong>dynamically</strong> calculate the retry delay by utilizing information that is only available at runtime (like the attempt number).</td>
+</tr>
+<tr>
+<td><code>OnRetry</code></td>
+<td><code>null</code></td>
+<td>If provided then it will be invoked before the strategy delays the next attempt.</td>
 </tr>
 </tbody>
 </table>
+<h2 id="telemetry">Telemetry</h2>
+<p>The retry strategy reports the following telemetry events:</p>
+<table>
+<thead>
+<tr>
+<th>Event Name</th>
+<th>Event Severity</th>
+<th>When?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ExecutionAttempt</code></td>
+<td><code>Information</code> / <code>Warning</code></td>
+<td>Just before the strategy calculates the next delay</td>
+</tr>
+<tr>
+<td><code>OnRetry</code></td>
+<td><code>Warning</code></td>
+<td>Just before the strategy calls the <code>OnRetry</code> delegate</td>
+</tr>
+</tbody>
+</table>
+<p>Here are some sample events:</p>
+<h3 id="unhandled-case">Unhandled case</h3>
+<p>If the retry strategy does not perform any retries then the reported telemetry events' severity will be <code>Information</code>:</p>
+<pre><code class="lang-none">Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: '110.952'
+
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'False', Attempt: '0', Execution Time: '5.2194'
+    System.Exception: Failed
+        at Program.&lt;&gt;c.&lt;Main&gt;b__0_1(ResilienceContext ctx)
+        ...
+        at Polly.ResiliencePipeline.&lt;&gt;c.&lt;&lt;ExecuteAsync&gt;b__1_0&gt;d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
+</code></pre>
+<h3 id="handled-case">Handled case</h3>
+<p>If the retry strategy performs some retries then the reported telemetry events' severity will be <code>Warning</code>:</p>
+<pre><code class="lang-none">Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '0', Execution Time: '5.0397'
+      System.Exception: Failed
+         at Program.&lt;&gt;c.&lt;Main&gt;b__0_1(ResilienceContext ctx)
+         ...
+         at Polly.ResiliencePipeline.&lt;&gt;c.&lt;&lt;ExecuteAsync&gt;b__1_0&gt;d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
+
+Resilience event occurred. EventName: 'OnRetry', Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed'
+    System.Exception: Failed
+        at Program.&lt;&gt;c.&lt;Main&gt;b__0_1(ResilienceContext ctx)
+        ...
+        at Polly.ResiliencePipeline.&lt;&gt;c.&lt;&lt;ExecuteAsync&gt;b__1_0&gt;d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
+
+
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '1', Execution Time: '0.1159'
+      System.Exception: Failed
+         at Program.&lt;&gt;c.&lt;Main&gt;b__0_1(ResilienceContext ctx)
+         ...
+         at Polly.ResiliencePipeline.&lt;&gt;c.&lt;&lt;ExecuteAsync&gt;b__1_0&gt;d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note that the <code>OnRetry</code> telemetry event will be reported <strong>only if</strong> the retry strategy performs any retry attempts.</p>
+<p>On the other hand the <code>Execution attempt</code> event will be <strong>always</strong> reported regardless whether the strategy has to perform any retries.</p>
+<p>Also remember that <code>Attempt: '0'</code> relates to the original execution attempt.</p>
+</div>
+<p>For further information please check out the <a href="https://www.pollydocs.org/advanced/telemetry">telemetry page</a>.</p>
 <h2 id="calculation-of-the-next-delay">Calculation of the next delay</h2>
 <p>If the <code>ShouldHandle</code> predicate returns <code>true</code> and the next attempt number is not greater than <code>MaxRetryAttempts</code> then the retry strategy calculates the next delay.</p>
 <p>There are many properties that may contribute to this calculation:</p>

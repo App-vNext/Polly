@@ -89,13 +89,21 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Hedging.HedgingStrategyOptions-1.html"><code>HedgingStrategyOptions&lt;T&gt;</code></a></li>
-<li><strong>Extensions</strong>: <code>AddHedging</code></li>
-<li><strong>Strategy Type</strong>: Reactive</li>
+<li><strong>Option(s)</strong>:
+<ul>
+<li><a class="xref" href="../api/Polly.Hedging.HedgingStrategyOptions-1.html"><code>HedgingStrategyOptions&lt;T&gt;</code></a></li>
+</ul>
+</li>
+<li><strong>Extension(s)</strong>:
+<ul>
+<li><code>AddHedging</code></li>
+</ul>
+</li>
+<li><strong>Exception(s)</strong>: -</li>
 </ul>
 <hr>
-<p>The hedging strategy enables the re-execution of a user-defined callback if the previous execution takes too long. This approach gives you the option to either run the original callback again or specify a new callback for subsequent hedged attempts. Implementing a hedging strategy can boost the overall responsiveness of the system. However, it's essential to note that this improvement comes at the cost of increased resource utilization. If low latency is not a critical requirement, you may find the <a href="retry.html">retry strategy</a> is more appropriate.</p>
-<p>This strategy also supports multiple <a href="#concurrency-modes">concurrency modes</a> for added flexibility.</p>
+<p>The hedging <strong>reactive</strong> strategy enables the re-execution of the callback if the previous execution takes too long. This approach gives you the option to either run the original callback again or specify a new callback for subsequent <em>hedged</em> attempts. Implementing a hedging strategy can boost the overall responsiveness of the system. However, it's essential to note that this improvement comes at the cost of increased resource utilization. If low latency is not a critical requirement, you may find the <a href="retry.html">retry strategy</a> more appropriate.</p>
+<p>This strategy also supports multiple <a href="#concurrency-modes">concurrency modes</a> to flexibly tailor the behavior for your own needs.</p>
 <div class="NOTE">
 <h5>Note</h5>
 <p>Please do not start any background work when executing actions using the hedging strategy. This strategy can spawn multiple parallel tasks, and as a result multiple background tasks can be started.</p>
@@ -151,8 +159,8 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddHedging(optionsDef
 <tbody>
 <tr>
 <td><code>ShouldHandle</code></td>
-<td>Predicate that handles all exceptions except <code>OperationCanceledException</code>.</td>
-<td>Predicate that determines what results and exceptions are handled by the retry strategy.</td>
+<td>Any exceptions other than <code>OperationCanceledException</code>.</td>
+<td>Defines a predicate to determine what results and/or exceptions are handled by the hedging strategy.</td>
 </tr>
 <tr>
 <td><code>MaxHedgedAttempts</code></td>
@@ -166,18 +174,18 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddHedging(optionsDef
 </tr>
 <tr>
 <td><code>ActionGenerator</code></td>
-<td>Returns the original callback that was passed to the hedging strategy.</td>
-<td>Generator that creates hedged actions.</td>
+<td>It returns the original callback that was passed to this strategy.</td>
+<td>This delegate allows you to <strong>dynamically</strong> calculate the hedged action by utilizing information that is only available at runtime (like the attempt number).</td>
 </tr>
 <tr>
 <td><code>DelayGenerator</code></td>
 <td><code>null</code></td>
-<td>Used for generating custom delays for hedging.</td>
+<td>This optional delegate allows you to <strong>dynamically</strong> calculate the delay by utilizing information that is only available at runtime (like the attempt number).</td>
 </tr>
 <tr>
 <td><code>OnHedging</code></td>
 <td><code>null</code></td>
-<td>Event that is raised when a hedging is performed.</td>
+<td>If provided then it will be invoked before the strategy performs the hedged action.</td>
 </tr>
 </tbody>
 </table>
@@ -190,6 +198,52 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddHedging(optionsDef
 <h5>Note</h5>
 <p>If both <code>Delay</code> and <code>DelayGenerator</code> are specified then <code>Delay</code> will be ignored.</p>
 </div>
+<h2 id="telemetry">Telemetry</h2>
+<p>The hedging strategy reports the following telemetry events:</p>
+<table>
+<thead>
+<tr>
+<th>Event Name</th>
+<th>Event Severity</th>
+<th>When?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ExecutionAttempt</code></td>
+<td><code>Information</code> / <code>Warning</code></td>
+<td>Just after the original/hedged action completes with success/failure</td>
+</tr>
+<tr>
+<td><code>OnHedging</code></td>
+<td><code>Warning</code></td>
+<td>Just before the strategy calls the <code>OnHedging</code> delegate</td>
+</tr>
+</tbody>
+</table>
+<p>Here are some sample events:</p>
+<p>The reported <code>Execution Attempt</code> telemetry events' severity depends on the action's outcome:</p>
+<ul>
+<li>If it succeeded then the severity is <code>Information</code></li>
+<li>It it failed then the severity is <code>Warning</code></li>
+</ul>
+<pre><code class="lang-none">Resilience event occurred. EventName: 'OnHedging', Source: 'MyPipeline/MyPipelineInstance/Hedging', Operation Key: 'MyHedgingOperation', Result: ''
+
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/Hedging', Operation Key: 'MyHedgingOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: '1505.3839'
+
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/Hedging', Operation Key: 'MyHedgingOperation', Result: 'Exception of type 'CustomException' was thrown.', Handled: 'True', Attempt: '1', Execution Time: '1525.2899'
+    CustomException: Exception of type 'CustomException' was thrown.
+        at Program.&lt;&gt;c.&lt;&lt;Main&gt;b__0_2&gt;d.MoveNext()
+        ...
+        at Polly.ResiliencePipeline.&lt;&gt;c__8`1.&lt;&lt;ExecuteAsync&gt;b__8_0&gt;d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.AsyncT.cs:line 95
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note that the <code>OnHedging</code> telemetry event will be reported <strong>only if</strong> the hedging strategy performs any hedged actions.</p>
+<p>On the other hand the <code>Execution attempt</code> event will be <strong>always</strong> reported regardless whether the strategy has to perform hedging.</p>
+<p>Also remember that <code>Attempt: '0'</code> relates to the original execution attempt.</p>
+</div>
+<p>For further information please check out the <a href="https://www.pollydocs.org/advanced/telemetry">telemetry page</a>.</p>
 <h2 id="concurrency-modes">Concurrency modes</h2>
 <p>In the sections below, explore the different concurrency modes available in the hedging strategy. The behavior is primarily controlled by the <code>Delay</code> property value.</p>
 <h3 id="latency-mode">Latency mode</h3>

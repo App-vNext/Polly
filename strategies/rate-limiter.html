@@ -89,18 +89,29 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.RateLimiting.RateLimiterStrategyOptions.html"><code>RateLimiterStrategyOptions</code></a></li>
-<li><strong>Extensions</strong>: <code>AddRateLimiter</code>, <code>AddConcurrencyLimiter</code></li>
-<li><strong>Strategy Type</strong>: Proactive</li>
-<li><strong>Exceptions</strong>:
+<li><strong>Option(s)</strong>:
+<ul>
+<li><a class="xref" href="../api/Polly.RateLimiting.RateLimiterStrategyOptions.html"><code>RateLimiterStrategyOptions</code></a></li>
+</ul>
+</li>
+<li><strong>Extension(s)</strong>:
+<ul>
+<li><code>AddRateLimiter</code>,</li>
+<li><code>AddConcurrencyLimiter</code></li>
+</ul>
+</li>
+<li><strong>Exception(s)</strong>:
 <ul>
 <li><code>RateLimiterRejectedException</code>: Thrown when a rate limiter rejects an execution.</li>
 </ul>
 </li>
-<li><strong>Package</strong>: <a href="https://www.nuget.org/packages/Polly.RateLimiting">Polly.RateLimiting</a></li>
 </ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The rate limiter strategy resides inside the <a href="https://www.nuget.org/packages/Polly.RateLimiting">Polly.RateLimiting</a> package, not in (<a href="https://www.nuget.org/packages/Polly.Core">Polly.Core</a>) like other strategies.</p>
+</div>
 <hr>
-<p>The rate limiter resilience strategy controls the number of operations that can pass through it. This strategy is a thin layer over the API provided by the <a href="https://www.nuget.org/packages/System.Threading.RateLimiting"><code>System.Threading.RateLimiting</code></a> package.</p>
+<p>The rate limiter <strong>proactive</strong> resilience strategy controls the number of operations that can pass through it. This strategy is a thin layer over the API provided by the <a href="https://www.nuget.org/packages/System.Threading.RateLimiting"><code>System.Threading.RateLimiting</code></a> package. This strategy can be used in two flavors: to control inbound load via a rate limiter and to control outbound load via a concurrency limiter.</p>
 <p>Further reading:</p>
 <ul>
 <li><a href="https://devblogs.microsoft.com/dotnet/announcing-rate-limiting-for-dotnet/">Announcing rate limiting for .NET</a></li>
@@ -185,13 +196,6 @@ catch (RateLimiterRejectedException)
 }
 </code></pre>
 <!-- endSnippet -->
-<p>The <code>OnRejected</code> user-provided delegate is called just before the strategy throws the <code>RateLimiterRejectedException</code>. This delegate receives a parameter which allows you to access the <code>Context</code> object as well as the <code>Lease</code>:</p>
-<ul>
-<li>Accessing the <code>Context</code> is also possible via a different <code>Execute{Async}</code> overload.</li>
-<li>Accessing the rejected <code>Lease</code> can be useful in certain scenarios.</li>
-</ul>
-<p>So, what is the purpose of the <code>OnRejected</code>?</p>
-<p>The <code>OnRejected</code> delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle <code>RateLimiterRejectedException</code>, that means the <code>Execute{Async}</code> may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the <code>OnRejected</code> property.</p>
 <h2 id="defaults">Defaults</h2>
 <table>
 <thead>
@@ -205,20 +209,61 @@ catch (RateLimiterRejectedException)
 <tr>
 <td><code>RateLimiter</code></td>
 <td><code>null</code></td>
-<td>Generator that creates a <code>RateLimitLease</code> for executions.</td>
+<td><strong>Dynamically</strong> creates a <code>RateLimitLease</code> for executions.</td>
 </tr>
 <tr>
 <td><code>DefaultRateLimiterOptions</code></td>
 <td><code>PermitLimit</code> set to 1000 and <code>QueueLimit</code> set to 0.</td>
-<td>The options for the default concurrency limiter that will be used when <code>RateLimiter</code> is <code>null</code>.</td>
+<td>If <code>RateLimiter</code> is not provided then this options object will be used for the default concurrency limiter.</td>
 </tr>
 <tr>
 <td><code>OnRejected</code></td>
 <td><code>null</code></td>
-<td>Event that is raised when the execution is rejected by the rate limiter.</td>
+<td>If provided then it will be invoked after the limiter rejected an execution.</td>
 </tr>
 </tbody>
 </table>
+<h3 id="onrejected-versus-catching-ratelimiterrejectedexception"><code>OnRejected</code> versus catching <code>RateLimiterRejectedException</code></h3>
+<p>The <code>OnRejected</code> user-provided delegate is called just before the strategy throws the <code>RateLimiterRejectedException</code>. This delegate receives a parameter which allows you to access the <code>Context</code> object as well as the <code>Lease</code>:</p>
+<ul>
+<li>Accessing the <code>Context</code> is also possible via a different <code>Execute{Async}</code> overload.</li>
+<li>Accessing the rejected <code>Lease</code> can be useful in certain scenarios.</li>
+</ul>
+<p>So, what is the purpose of the <code>OnRejected</code>?</p>
+<p>The <code>OnRejected</code> delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle <code>RateLimiterRejectedException</code>, that means the <code>Execute{Async}</code> may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the <code>OnRejected</code> property.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>The <a class="xref" href="../api/Polly.RateLimiting.RateLimiterRejectedException.html"><code>RateLimiterRejectedException</code></a> has a <code>RetryAfter</code> property. If this optional <code>TimeSpan</code> is provided then this indicates that your requests are throttled and you should retry them no sooner than the value given.
+Please note that this information is not available inside the <code>OnRejected</code> callback.</p>
+</div>
+<h2 id="telemetry">Telemetry</h2>
+<p>The rate limiter strategy reports the following telemetry events:</p>
+<table>
+<thead>
+<tr>
+<th>Event Name</th>
+<th>Event Severity</th>
+<th>When?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OnRateLimiterRejected</code></td>
+<td><code>Error</code></td>
+<td>Just before the strategy calls the <code>OnRejected</code> delegate</td>
+</tr>
+</tbody>
+</table>
+<p>Here are some sample events:</p>
+<pre><code class="lang-none">Resilience event occurred. EventName: 'OnRateLimiterRejected', Source: '(null)/(null)/RateLimiter', Operation Key: '', Result: ''
+Resilience event occurred. EventName: 'OnRateLimiterRejected', Source: 'MyPipeline/MyPipelineInstance/MyRateLimiterStrategy', Operation Key: 'MyRateLimitedOperation', Result: ''
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note that the <code>OnRateLimiterRejected</code> telemetry event will be reported <strong>only if</strong> the rate limiter strategy rejects the provided callback execution.</p>
+<p>Also remember that the <code>Result</code> will be <strong>always empty</strong> for the <code>OnRateLimiterRejected</code> telemetry event.</p>
+</div>
+<p>For further information please check out the <a href="https://www.pollydocs.org/advanced/telemetry">telemetry page</a>.</p>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="rate-limiter">Rate Limiter</h3>
 <p>Let's suppose we have a rate limiter strategy with <code>PermitLimit</code> : <code>1</code> and <code>Window</code> : <code>10 seconds</code>.</p>

@@ -89,15 +89,19 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>:
+<li><strong>Option(s)</strong>:
 <ul>
 <li><a class="xref" href="../api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions.html"><code>CircuitBreakerStrategyOptions</code></a></li>
 <li><a class="xref" href="../api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.html"><code>CircuitBreakerStrategyOptions&lt;T&gt;</code></a></li>
 </ul>
 </li>
-<li><strong>Extensions</strong>: <code>AddCircuitBreaker</code></li>
+<li><strong>Extension(s)</strong>:
+<ul>
+<li><code>AddCircuitBreaker</code></li>
+</ul>
+</li>
 <li><strong>Strategy Type</strong>: Reactive</li>
-<li><strong>Exceptions</strong>:
+<li><strong>Exception(s)</strong>:
 <ul>
 <li><code>BrokenCircuitException</code>: Thrown when a circuit is broken and the action could not be executed.</li>
 <li><code>IsolatedCircuitException</code>: Thrown when a circuit is isolated (held open) by manual override.</li>
@@ -105,6 +109,7 @@
 </li>
 </ul>
 <hr>
+<p>The circuit breaker <strong>reactive</strong> resilience strategy shortcuts the execution if the underlying resource is detected as unhealthy. The detection process is done via sampling. If the sampled executions' failure-success ratio exceeds a predefined threshold then a circuit breaker will prevent any new executions by throwing a <code>BrokenCircuitException</code>. After a preset duration the circuit breaker performs a probe, because the assumption is that this period was enough for the resource to self-heal. Depending on the outcome of the probe, the circuit will either allow new executions or continue to block them.</p>
 <div class="NOTE">
 <h5>Note</h5>
 <p>Be aware that the Circuit Breaker strategy <a href="https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#exception-handling">rethrows all exceptions</a>, including those that are handled. A Circuit Breaker's role is to monitor faults and break the circuit when a certain threshold is reached; it does not manage retries. Combine the Circuit Breaker with a Retry strategy if needed.</p>
@@ -191,58 +196,58 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddCircuitBreaker(opt
 <tbody>
 <tr>
 <td><code>ShouldHandle</code></td>
-<td>Predicate that handles all exceptions except <code>OperationCanceledException</code>.</td>
-<td>Specifies which results and exceptions are managed by the circuit breaker strategy.</td>
+<td>Any exceptions other than <code>OperationCanceledException</code>.</td>
+<td>Defines a predicate to determine what results and/or exceptions are handled by the circuit breaker strategy.</td>
 </tr>
 <tr>
 <td><code>FailureRatio</code></td>
 <td>0.1</td>
-<td>The ratio of failures to successes that will cause the circuit to break/open.</td>
+<td>The failure-success ratio that will cause the circuit to break/open. <code>0.1</code> means 10% failed of all sampled executions.</td>
 </tr>
 <tr>
 <td><code>MinimumThroughput</code></td>
 <td>100</td>
-<td>The minimum number of actions that must occur in the circuit within a specific time slice.</td>
+<td>The minimum number of executions that must occur within the specified sampling duration.</td>
 </tr>
 <tr>
 <td><code>SamplingDuration</code></td>
 <td>30 seconds</td>
-<td>The time period over which failure ratios are calculated.</td>
+<td>The time period over which the failure-success ratio is calculated.</td>
 </tr>
 <tr>
 <td><code>BreakDuration</code></td>
 <td>5 seconds</td>
-<td>The time period for which the circuit will remain broken/open before attempting to reset.</td>
+<td>Defines a <strong>static</strong> time period for which the circuit will remain broken/open before attempting to reset.</td>
 </tr>
 <tr>
 <td><code>BreakDurationGenerator</code></td>
 <td><code>null</code></td>
-<td>Enables adaptive adjustment of break duration based on the current state of the circuit.</td>
-</tr>
-<tr>
-<td><code>OnClosed</code></td>
-<td><code>null</code></td>
-<td>Event triggered when the circuit transitions to the <code>Closed</code> state.</td>
-</tr>
-<tr>
-<td><code>OnOpened</code></td>
-<td><code>null</code></td>
-<td>Event triggered when the circuit transitions to the <code>Opened</code> state.</td>
-</tr>
-<tr>
-<td><code>OnHalfOpened</code></td>
-<td><code>null</code></td>
-<td>Event triggered when the circuit transitions to the <code>HalfOpened</code> state.</td>
+<td>This delegate allows you to <strong>dynamically</strong> calculate the break duration by utilizing information that is only available at runtime (like failure count).</td>
 </tr>
 <tr>
 <td><code>ManualControl</code></td>
 <td><code>null</code></td>
-<td>Allows for manual control to isolate or close the circuit.</td>
+<td>If provided then the circuit's state can be manually controlled via a <code>CircuitBreakerManualControl</code> object.</td>
 </tr>
 <tr>
 <td><code>StateProvider</code></td>
 <td><code>null</code></td>
-<td>Enables the retrieval of the current state of the circuit.</td>
+<td>If provided then the circuit's current state can be retrieved via a <code>CircuitBreakerStateProvider</code> object.</td>
+</tr>
+<tr>
+<td><code>OnClosed</code></td>
+<td><code>null</code></td>
+<td>If provided then it will be invoked after the circuit transitions to either the <code>Closed</code> or <code>Isolated</code> states.</td>
+</tr>
+<tr>
+<td><code>OnOpened</code></td>
+<td><code>null</code></td>
+<td>If provided then it will be invoked after the circuit transitions to the <code>Opened</code> state.</td>
+</tr>
+<tr>
+<td><code>OnHalfOpened</code></td>
+<td><code>null</code></td>
+<td>If provided then it will be invoked after the circuit transitions to the <code>HalfOpened</code> state.</td>
 </tr>
 </tbody>
 </table>
@@ -250,6 +255,58 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddCircuitBreaker(opt
 <h5>Note</h5>
 <p>If both <code>BreakDuration</code> and <code>BreakDurationGenerator</code> are specified then <code>BreakDuration</code> will be ignored.</p>
 </div>
+<hr>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>If the <code>MinimumThroughput</code> is not reached during the <code>SamplingDuration</code> then the <code>FailureRatio</code> is ignored.
+In other words, the circuit will not break even if all of the executions failed when their quantity is below the minimum throughput.</p>
+</div>
+<h2 id="telemetry">Telemetry</h2>
+<p>The circuit breaker strategy reports the following telemetry events:</p>
+<table>
+<thead>
+<tr>
+<th>Event Name</th>
+<th>Event Severity</th>
+<th>When?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OnCircuitClosed</code></td>
+<td><code>Information</code></td>
+<td>Just before the strategy calls the <code>OnClosed</code> delegate</td>
+</tr>
+<tr>
+<td><code>OnCircuitOpened</code></td>
+<td><code>Error</code></td>
+<td>Just before the strategy calls the <code>OnOpened</code> delegate</td>
+</tr>
+<tr>
+<td><code>OnCircuitHalfOpened</code></td>
+<td><code>Warning</code></td>
+<td>Just before the strategy calls the <code>OnHalfOpened</code> delegate</td>
+</tr>
+</tbody>
+</table>
+<p>Here are some sample events:</p>
+<pre><code class="lang-none">Resilience event occurred. EventName: 'OnCircuitOpened', Source: 'MyPipeline/MyPipelineInstance/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: 'Exception of type 'CustomException' was thrown.'
+    CustomException: Exception of type 'CustomException' was thrown.
+        at Program.&lt;&gt;c.&lt;&lt;Main&gt;b__0_1&gt;d.MoveNext()
+        ...
+        at Polly.ResiliencePipeline.&lt;&gt;c__8`1.&lt;&lt;ExecuteAsync&gt;b__8_0&gt;d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.AsyncT.cs:line 95
+
+Resilience event occurred. EventName: 'OnCircuitHalfOpened', Source: 'MyPipeline/MyPipelineInstance/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: ''
+
+Resilience event occurred. EventName: 'OnCircuitClosed', Source: 'MyPipeline/MyPipelineInstance/MyCircuitBreakerStrategy', Operation Key: 'MyCircuitedOperation', Result: '42'
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note that the <code>OnCircuitXYZ</code> telemetry events will be reported <strong>only if</strong> the circuit breaker strategy transitions from one state into another.</p>
+<p>Remember in case of <code>ManualControl</code> the <code>OnCircuitHalfOpened</code> telemetry event will not be emitted.</p>
+<p>Also the <code>Result</code> will be <strong>always empty</strong> for the <code>OnCircuitHalfOpened</code> telemetry event.</p>
+</div>
+<p>For further information please check out the <a href="https://www.pollydocs.org/advanced/telemetry">telemetry page</a>.</p>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="state-diagram">State diagram</h3>
 <pre><code class="lang-mermaid">stateDiagram-v2

@@ -89,11 +89,24 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Fallback.FallbackStrategyOptions-1.html"><code>FallbackStrategyOptions&lt;T&gt;</code></a></li>
-<li><strong>Extensions</strong>: <code>AddFallback</code></li>
-<li><strong>Strategy Type</strong>: Reactive</li>
+<li><strong>Option(s)</strong>:
+<ul>
+<li><a class="xref" href="../api/Polly.Fallback.FallbackStrategyOptions-1.html"><code>FallbackStrategyOptions&lt;T&gt;</code></a></li>
+</ul>
+</li>
+<li><strong>Extension(s)</strong>:
+<ul>
+<li><code>AddFallback</code></li>
+</ul>
+</li>
+<li><strong>Exception(s)</strong>: -</li>
 </ul>
 <hr>
+<p>The fallback <strong>reactive</strong> resilience strategy provides a substitute if the execution of the callback fails. Failure can be either an <code>Exception</code> or a result object indicating unsuccessful processing. Typically this strategy is used as a last resort, meaning that if all other strategies failed to overcome the transient failure you could still provide a fallback value to the caller.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>In this document the <em>fallback</em>, <em>substitute</em>, and <em>surrogate</em> terms are used interchangeably.</p>
+</div>
 <h2 id="usage">Usage</h2>
 <!-- snippet: fallback -->
 <pre><code class="lang-cs">// A fallback/substitute value if an operation fails.
@@ -152,21 +165,55 @@ new ResiliencePipelineBuilder&lt;UserAvatar&gt;().AddFallback(optionsOnFallback)
 <tbody>
 <tr>
 <td><code>ShouldHandle</code></td>
-<td>Predicate that handles all exceptions except <code>OperationCanceledException</code>.</td>
-<td>Predicate that determines what results and exceptions are handled by the fallback strategy.</td>
+<td>Any exceptions other than <code>OperationCanceledException</code>.</td>
+<td>Defines a predicate to determine what results and/or exceptions are handled by the fallback strategy.</td>
 </tr>
 <tr>
 <td><code>FallbackAction</code></td>
 <td><code>Null</code>, <strong>Required</strong></td>
-<td>Fallback action to be executed.</td>
+<td>This delegate allows you to <strong>dynamically</strong> calculate the surrogate value by utilizing information that is only available at runtime (like the outcome).</td>
 </tr>
 <tr>
 <td><code>OnFallback</code></td>
 <td><code>null</code></td>
-<td>Event that is raised when fallback happens.</td>
+<td>If provided then it will be invoked before the strategy calculates the fallback value.</td>
 </tr>
 </tbody>
 </table>
+<h2 id="telemetry">Telemetry</h2>
+<p>The fallback strategy reports the following telemetry events:</p>
+<table>
+<thead>
+<tr>
+<th>Event Name</th>
+<th>Event Severity</th>
+<th>When?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OnFallback</code></td>
+<td><code>Warning</code></td>
+<td>Just before the strategy calls the <code>OnFallback</code> delegate</td>
+</tr>
+</tbody>
+</table>
+<p>Here are some sample events:</p>
+<pre><code class="lang-none">Resilience event occurred. EventName: 'OnFallback', Source: 'MyPipeline/MyPipelineInstance/MyFallbackStrategy', Operation Key: 'MyFallbackGuardedOperation', Result: '-1'
+
+Resilience event occurred. EventName: 'OnFallback', Source: '(null)/(null)/Fallback', Operation Key: '', Result: 'Exception of type 'CustomException' was thrown.'
+    CustomException: Exception of type 'CustomException' was thrown.
+        at Program.&lt;&gt;c.&lt;Main&gt;b__0_3(ResilienceContext ctx)
+        ...
+        at Polly.ResiliencePipeline.&lt;&gt;c__8`1.&lt;&lt;ExecuteAsync&gt;b__8_0&gt;d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.AsyncT.cs:line 95
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note that the <code>OnFallback</code> telemetry event will be reported <strong>only if</strong> the fallback strategy provides a surrogate value.</p>
+<p>So, if the callback either returns an acceptable result or throws an unhandled exception then there will be no telemetry emitted.</p>
+<p>Also remember that the <code>Result</code> will be <strong>always populated</strong> for the <code>OnFallback</code> telemetry event.</p>
+</div>
+<p>For further information please check out the <a href="https://www.pollydocs.org/advanced/telemetry">telemetry page</a>.</p>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="happy-path-sequence-diagram">Happy path sequence diagram</h3>
 <pre><code class="lang-mermaid">sequenceDiagram

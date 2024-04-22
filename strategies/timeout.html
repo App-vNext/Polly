@@ -89,17 +89,24 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Timeout.TimeoutStrategyOptions.html"><code>TimeoutStrategyOptions</code></a></li>
-<li><strong>Extensions</strong>: <code>AddTimeout</code></li>
-<li><strong>Strategy Type</strong>: Proactive</li>
-<li><strong>Exceptions</strong>:
+<li><strong>Option(s)</strong>:
+<ul>
+<li><a class="xref" href="../api/Polly.Timeout.TimeoutStrategyOptions.html"><code>TimeoutStrategyOptions</code></a></li>
+</ul>
+</li>
+<li><strong>Extension(s)</strong>:
+<ul>
+<li><code>AddTimeout</code></li>
+</ul>
+</li>
+<li><strong>Exception(s)</strong>:
 <ul>
 <li><code>TimeoutRejectedException</code>: Thrown when a delegate executed through a timeout strategy does not complete before the timeout.</li>
 </ul>
 </li>
 </ul>
 <hr>
-<p>The timeout resilience strategy cancels the execution if it does not complete within the specified timeout period. If the execution is canceled by the timeout strategy, it throws a <code>TimeoutRejectedException</code>. The timeout strategy operates by wrapping the incoming cancellation token with a new one. Should the original token be canceled, the timeout strategy will transparently honor the original cancellation token without throwing a <code>TimeoutRejectedException</code>.</p>
+<p>The timeout <strong>proactive</strong> resilience strategy cancels the execution if it does not complete within the specified timeout period. If the execution is canceled by the timeout strategy, it throws a <code>TimeoutRejectedException</code>. The timeout strategy operates by wrapping the incoming cancellation token with a new one. Should the original token be canceled, the timeout strategy will transparently honor the original cancellation token without throwing a <code>TimeoutRejectedException</code>.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
 <p>It is crucial that the user's callback respects the cancellation token. If it does not, the callback will continue executing even after a cancellation request, thereby ignoring the cancellation.</p>
@@ -187,13 +194,6 @@ catch (TimeoutRejectedException)
 }
 </code></pre>
 <!-- endSnippet -->
-<p>The <code>OnTimeout</code> user-provided delegate is called just before the strategy throws the <code>TimeoutRejectedException</code>. This delegate receives a parameter which allows you to access the <code>Context</code> object as well as the <code>Timeout</code>:</p>
-<ul>
-<li>Accessing the <code>Context</code> is also possible via a different <code>Execute{Async}</code> overload.</li>
-<li>Accessing the <code>Timeout</code> can be useful if you are using the <code>TimeoutGenerator</code> property rather than the <code>Timeout</code> property.</li>
-</ul>
-<p>So, what is the purpose of the <code>OnTimeout</code> in case of static timeout settings?</p>
-<p>The <code>OnTimeout</code> delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle <code>TimeoutRejectedException</code>, that means the <code>Execute{Async}</code> may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that a timeout has occurred, you have to provide a delegate to the <code>OnTimeout</code> property.</p>
 <h2 id="defaults">Defaults</h2>
 <table>
 <thead>
@@ -207,17 +207,17 @@ catch (TimeoutRejectedException)
 <tr>
 <td><code>Timeout</code></td>
 <td>30 seconds</td>
-<td>The default timeout used by the strategy.</td>
+<td>Defines a <strong>static</strong> period within which the delegate should complete, otherwise it will be cancelled.</td>
 </tr>
 <tr>
 <td><code>TimeoutGenerator</code></td>
 <td><code>null</code></td>
-<td>Generates the timeout for a given execution.</td>
+<td>This delegate allows you to <strong>dynamically</strong> calculate the timeout period by utilizing information that is only available at runtime.</td>
 </tr>
 <tr>
 <td><code>OnTimeout</code></td>
 <td><code>null</code></td>
-<td>Event that is raised when timeout occurs.</td>
+<td>If provided then it will be invoked after the timeout occurred.</td>
 </tr>
 </tbody>
 </table>
@@ -225,6 +225,43 @@ catch (TimeoutRejectedException)
 <h5>Note</h5>
 <p>If both <code>Timeout</code> and <code>TimeoutGenerator</code> are specified then <code>Timeout</code> will be ignored.</p>
 </div>
+<h3 id="ontimeout-versus-catching-timeoutrejectedexception"><code>OnTimeout</code> versus catching <code>TimeoutRejectedException</code></h3>
+<p>The <code>OnTimeout</code> user-provided delegate is called just before the strategy throws the <code>TimeoutRejectedException</code>. This delegate receives a parameter which allows you to access the <code>Context</code> object as well as the <code>Timeout</code>:</p>
+<ul>
+<li>Accessing the <code>Context</code> is also possible via a different <code>Execute{Async}</code> overload.</li>
+<li>Accessing the <code>Timeout</code> can be useful if you are using the <code>TimeoutGenerator</code> property rather than the <code>Timeout</code> property.</li>
+</ul>
+<p>So, what is the purpose of the <code>OnTimeout</code> in case of static timeout settings?</p>
+<p>The <code>OnTimeout</code> delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle <code>TimeoutRejectedException</code>, that means the <code>Execute{Async}</code> may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that a timeout has occurred, you have to provide a delegate to the <code>OnTimeout</code> property.</p>
+<h2 id="telemetry">Telemetry</h2>
+<p>The timeout strategy reports the following telemetry events:</p>
+<table>
+<thead>
+<tr>
+<th>Event Name</th>
+<th>Event Severity</th>
+<th>When?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OnTimeout</code></td>
+<td><code>Error</code></td>
+<td>Just before the strategy calls the <code>OnTimeout</code> delegate</td>
+</tr>
+</tbody>
+</table>
+<p>Here are some sample events:</p>
+<pre><code class="lang-none">Resilience event occurred. EventName: 'OnTimeout', Source: '(null)/(null)/Timeout', Operation Key: '', Result: ''
+Resilience event occurred. EventName: 'OnTimeout', Source: 'MyPipeline/MyPipelineInstance/MyTimeoutStrategy', Operation Key: 'MyTimeoutGuardedOperation', Result: ''
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note that the <code>OnTimeout</code> telemetry event will be reported <strong>only if</strong> the timeout strategy cancels the provided callback execution.</p>
+<p>So, if the callback either finishes on time or throws an exception then there will be no telemetry emitted.</p>
+<p>Also remember that the <code>Result</code> will be <strong>always empty</strong> for the <code>OnTimeout</code> telemetry event.</p>
+</div>
+<p>For further information please check out the <a href="https://www.pollydocs.org/advanced/telemetry">telemetry page</a>.</p>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="happy-path-sequence-diagram">Happy path sequence diagram</h3>
 <pre><code class="lang-mermaid">sequenceDiagram
