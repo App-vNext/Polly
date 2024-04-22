@@ -13,7 +13,7 @@ internal static partial class Log
     internal const string SourceWithoutStrategy = "Source: '{PipelineName}/{PipelineInstance}'";
     internal const string OperationKey = "Operation Key: '{OperationKey}'";
     internal const string Result = "Result: '{Result}'";
-    internal const string ExecutionTime = "Execution Time: {ExecutionTime}ms";
+    internal const string ExecutionTime = "Execution Time: {ExecutionTimeMs}ms";
 
     [LoggerMessage(
         EventId = 0,
@@ -62,7 +62,7 @@ internal static partial class Log
         string pipelineInstance,
         string? operationKey,
         object? result,
-        double executionTime,
+        double executionTimeMs,
         Exception? exception);
 
     [LoggerMessage(
@@ -86,6 +86,6 @@ internal static partial class Log
         object? result,
         bool handled,
         int attempt,
-        double executionTime,
+        double executionTimeMs,
         Exception? exception);
 }
