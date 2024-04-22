@@ -60,7 +60,7 @@ public static class ResiliencePipelineBuilderExtensions
     /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="factory">The factory that creates a resilience strategy.</param>
-    /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
+    /// <param name="options">The options associated with the strategy.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/>, <paramref name="factory"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a pipeline. The builder cannot be modified after it has been used.</exception>
@@ -85,7 +85,7 @@ public static class ResiliencePipelineBuilderExtensions
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     /// <param name="factory">The factory that creates a resilience strategy.</param>
-    /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
+    /// <param name="options">The options associated with the strategy.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/>, <paramref name="factory"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a pipeline. The builder cannot be modified after it has been used.</exception>
@@ -110,7 +110,7 @@ public static class ResiliencePipelineBuilderExtensions
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="factory">The factory that creates a resilience strategy.</param>
-    /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
+    /// <param name="options">The options associated with the strategy.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/>, <paramref name="factory"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a pipeline. The builder cannot be modified after it has been used.</exception>
