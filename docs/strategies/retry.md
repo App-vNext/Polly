@@ -2,13 +2,16 @@
 
 ## About
 
-- **Options**:
+- **Option(s)**:
   - [`RetryStrategyOptions`](xref:Polly.Retry.RetryStrategyOptions)
   - [`RetryStrategyOptions<T>`](xref:Polly.Retry.RetryStrategyOptions`1)
-- **Extensions**: `AddRetry`
-- **Strategy Type**: Reactive
+- **Extension(s)**:
+  - `AddRetry`
+- **Exception(s)**: -
 
 ---
+
+The retry **reactive** resilience strategy re-executes the same callback method if its execution fails. Failure can be either an `Exception` or a result object indicating unsuccessful processing. Between the retry attempts the retry strategy waits a specified amount of time. You have fine-grained control over how to calculate the next delay. The retry strategy stops invoking the same callback when it reaches the maximum allowed number of retry attempts or an unhandled exception is thrown / result object indicating a failure is returned.
 
 ## Usage
 
@@ -97,16 +100,75 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(optionsExtractDela
 
 ## Defaults
 
-| Property           | Default Value                                                              | Description                                                                              |
-|--------------------|----------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| `ShouldHandle`     | Predicate that handles all exceptions except `OperationCanceledException`. | Predicate that determines what results and exceptions are handled by the retry strategy. |
-| `MaxRetryAttempts` | 3                                                                          | The maximum number of retries to use, in addition to the original call.                  |
-| `Delay`            | 2 seconds                                                                  | The base delay between retries.                                                          |
-| `BackoffType`      | Constant                                                                   | The type of the back-off used to generate the retry delay.                               |
-| `UseJitter`        | False                                                                      | Allows adding jitter to retry delays.                                                    |
-| `DelayGenerator`   | `null`                                                                     | Used for generating custom delays for retries.                                           |
-| `OnRetry`          | `null`                                                                     | Action executed when retry occurs.                                                       |
-| `MaxDelay`         | `null`                                                                     | Caps the calculated retry delay to a specified maximum duration.                         |
+| Property           | Default Value                                           | Description                                                                                                                                                          |
+|--------------------|---------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ShouldHandle`     | Any exceptions other than `OperationCanceledException`. | Defines a predicate to determine what results and/or exceptions are handled by the retry strategy.                                                                   |
+| `MaxRetryAttempts` | 3                                                       | The maximum number of retry attempts to use, in addition to the original call.                                                                                       |
+| `BackoffType`      | Constant                                                | The back-off algorithm type to generate the delay(s) between retry attempts.                                                                                         |
+| `Delay`            | 2 seconds                                               | The *base* delay between retry attempts. See the next section for more details.                                                                                      |
+| `MaxDelay`         | `null`                                                  | If provided then the strategy caps the calculated retry delay to this value.                                                                                         |
+| `UseJitter`        | False                                                   | If set to `true`, a jitter (random value) is added to retry delays. See the next section for more details.                                                           |
+| `DelayGenerator`   | `null`                                                  | This optional delegate allows you to **dynamically** calculate the retry delay by utilizing information that is only available at runtime (like the attempt number). |
+| `OnRetry`          | `null`                                                  | If provided then it will be invoked before the strategy delays the next attempt.                                                                                     |
+
+## Telemetry
+
+The retry strategy reports the following telemetry events:
+
+| Event Name         | Event Severity            | When?                                                 |
+|--------------------|---------------------------|-------------------------------------------------------|
+| `ExecutionAttempt` | `Information` / `Warning` | Just before the strategy calculates the next delay    |
+| `OnRetry`          | `Warning`                 | Just before the strategy calls the `OnRetry` delegate |
+
+Here are some sample events:
+
+### Unhandled case
+
+If the retry strategy does not perform any retries then the reported telemetry events' severity will be `Information`:
+
+```none
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: '110.952'
+
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'False', Attempt: '0', Execution Time: '5.2194'
+    System.Exception: Failed
+        at Program.<>c.<Main>b__0_1(ResilienceContext ctx)
+        ...
+        at Polly.ResiliencePipeline.<>c.<<ExecuteAsync>b__1_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
+```
+
+### Handled case
+
+If the retry strategy performs some retries then the reported telemetry events' severity will be `Warning`:
+
+```none
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '0', Execution Time: '5.0397'
+      System.Exception: Failed
+         at Program.<>c.<Main>b__0_1(ResilienceContext ctx)
+         ...
+         at Polly.ResiliencePipeline.<>c.<<ExecuteAsync>b__1_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
+
+Resilience event occurred. EventName: 'OnRetry', Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed'
+    System.Exception: Failed
+        at Program.<>c.<Main>b__0_1(ResilienceContext ctx)
+        ...
+        at Polly.ResiliencePipeline.<>c.<<ExecuteAsync>b__1_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
+
+
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '1', Execution Time: '0.1159'
+      System.Exception: Failed
+         at Program.<>c.<Main>b__0_1(ResilienceContext ctx)
+         ...
+         at Polly.ResiliencePipeline.<>c.<<ExecuteAsync>b__1_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
+```
+
+> [!NOTE]
+> Please note that the `OnRetry` telemetry event will be reported **only if** the retry strategy performs any retry attempts.
+>
+> On the other hand the `Execution attempt` event will be **always** reported regardless whether the strategy has to perform any retries.
+>
+> Also remember that `Attempt: '0'` relates to the original execution attempt.
+
+For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
 
 ## Calculation of the next delay
 

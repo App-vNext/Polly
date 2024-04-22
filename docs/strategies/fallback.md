@@ -2,11 +2,18 @@
 
 ## About
 
-- **Options**: [`FallbackStrategyOptions<T>`](xref:Polly.Fallback.FallbackStrategyOptions`1)
-- **Extensions**: `AddFallback`
-- **Strategy Type**: Reactive
+- **Option(s)**:
+  - [`FallbackStrategyOptions<T>`](xref:Polly.Fallback.FallbackStrategyOptions`1)
+- **Extension(s)**:
+  - `AddFallback`
+- **Exception(s)**: -
 
 ---
+
+The fallback **reactive** resilience strategy provides a substitute if the execution of the callback fails. Failure can be either an `Exception` or a result object indicating unsuccessful processing. Typically this strategy is used as a last resort, meaning that if all other strategies failed to overcome the transient failure you could still provide a fallback value to the caller.
+
+> [!NOTE]
+> In this document the *fallback*, *substitute*, and *surrogate* terms are used interchangeably.
 
 ## Usage
 
@@ -59,11 +66,40 @@ new ResiliencePipelineBuilder<UserAvatar>().AddFallback(optionsOnFallback);
 
 ## Defaults
 
-| Property         | Default Value                                                              | Description                                                                                 |
-| ---------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `ShouldHandle`   | Predicate that handles all exceptions except `OperationCanceledException`. | Predicate that determines what results and exceptions are handled by the fallback strategy. |
-| `FallbackAction` | `Null`, **Required**                                                       | Fallback action to be executed.                                                             |
-| `OnFallback`     | `null`                                                                     | Event that is raised when fallback happens.                                                 |
+| Property         | Default Value                                           | Description                                                                                                                                              |
+|------------------|---------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ShouldHandle`   | Any exceptions other than `OperationCanceledException`. | Defines a predicate to determine what results and/or exceptions are handled by the fallback strategy.                                                    |
+| `FallbackAction` | `Null`, **Required**                                    | This delegate allows you to **dynamically** calculate the surrogate value by utilizing information that is only available at runtime (like the outcome). |
+| `OnFallback`     | `null`                                                  | If provided then it will be invoked before the strategy calculates the fallback value.                                                                   |
+
+## Telemetry
+
+The fallback strategy reports the following telemetry events:
+
+| Event Name   | Event Severity | When?                                                    |
+|--------------|----------------|----------------------------------------------------------|
+| `OnFallback` | `Warning`      | Just before the strategy calls the `OnFallback` delegate |
+
+Here are some sample events:
+
+```none
+Resilience event occurred. EventName: 'OnFallback', Source: 'MyPipeline/MyPipelineInstance/MyFallbackStrategy', Operation Key: 'MyFallbackGuardedOperation', Result: '-1'
+
+Resilience event occurred. EventName: 'OnFallback', Source: '(null)/(null)/Fallback', Operation Key: '', Result: 'Exception of type 'CustomException' was thrown.'
+    CustomException: Exception of type 'CustomException' was thrown.
+        at Program.<>c.<Main>b__0_3(ResilienceContext ctx)
+        ...
+        at Polly.ResiliencePipeline.<>c__8`1.<<ExecuteAsync>b__8_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.AsyncT.cs:line 95
+```
+
+> [!NOTE]
+> Please note that the `OnFallback` telemetry event will be reported **only if** the fallback strategy provides a surrogate value.
+>
+> So, if the callback either returns an acceptable result or throws an unhandled exception then there will be no telemetry emitted.
+>
+> Also remember that the `Result` will be **always populated** for the `OnFallback` telemetry event.
+
+For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
 
 ## Diagrams
 
@@ -298,7 +334,7 @@ return await fallback.ExecuteAsync(CallPrimary, CancellationToken.None);
 
 ### Nesting `ExecuteAsync` calls
 
-Combining multiple strategies can be achieved in various ways. However, deeply nesting `ExecuteAsync` calls can lead to what's commonly referred to as _`Execute` Hell_.
+Combining multiple strategies can be achieved in various ways. However, deeply nesting `ExecuteAsync` calls can lead to what's commonly referred to as *`Execute` Hell*.
 
 > [!NOTE]
 > While this isn't strictly tied to the Fallback mechanism, it's frequently observed when Fallback is the outermost layer.
@@ -323,7 +359,7 @@ return result;
 
 **Reasoning**:
 
-This is akin to JavaScript's [callback hell](http://callbackhell.com/) or _[the pyramid of doom](https://en.wikipedia.org/wiki/Pyramid_of_doom_(programming))_. It's easy to mistakenly reference the wrong `CancellationToken` parameter.
+This is akin to JavaScript's [callback hell](http://callbackhell.com/) or *[the pyramid of doom](https://en.wikipedia.org/wiki/Pyramid_of_doom_(programming))*. It's easy to mistakenly reference the wrong `CancellationToken` parameter.
 
 ✅ DO
 
