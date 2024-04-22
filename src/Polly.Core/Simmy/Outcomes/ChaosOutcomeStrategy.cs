@@ -13,7 +13,7 @@ internal class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
     {
         _telemetry = telemetry;
         _onOutcomeInjected = options.OnOutcomeInjected;
-        _outcomeGenerator = options.OutcomeGenerator;
+        _outcomeGenerator = options.OutcomeGenerator!;
     }
 
     protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
