@@ -148,12 +148,12 @@ internal class MyMeteringEnricher : MeteringEnricher
 <!-- endSnippet -->
 <h2 id="metrics">Metrics</h2>
 <p>The metrics are emitted under the <code>Polly</code> meter name. The subsequent sections provide insights into the metrics produced by Polly. Please note that any custom enriched tags are not depicted in the following tables.</p>
-<p>Every telemetry event has the following tags:</p>
+<p>Every telemetry event has the following optional tags:</p>
 <ul>
-<li><code>pipeline.name</code>: Optional, comes from <code>ResiliencePipelineBuilder.Name</code>.</li>
-<li><code>pipeline.instance</code>: Optional, comes from <code>ResiliencePipelineBuilder.InstanceName</code>.</li>
-<li><code>strategy.name</code>: Optional, comes from <code>RetryStrategyOptions.Name</code>.</li>
-<li><code>operation.key</code>: Optional, comes from <code>ResilienceContext.OperationKey</code>.</li>
+<li><code>pipeline.name</code>: comes from <code>ResiliencePipelineBuilder.Name</code>.</li>
+<li><code>pipeline.instance</code>: comes from <code>ResiliencePipelineBuilder.InstanceName</code>.</li>
+<li><code>strategy.name</code>: comes from <code>RetryStrategyOptions.Name</code>.</li>
+<li><code>operation.key</code>: comes from <code>ResilienceContext.OperationKey</code>.</li>
 </ul>
 <p>The sample below demonstrates how to assign these tags:</p>
 <!-- snippet: telemetry-tags -->
@@ -375,7 +375,7 @@ Resilience pipeline executing. Source: '{PipelineName}/{PipelineInstance}', Oper
 Resilience pipeline executed. Source: '{PipelineName}/{PipelineInstance}', Operation Key: '{OperationKey}', Result: '{Result}', Execution Health: '{ExecutionHealth}', Execution Time: {ExecutionTime}ms
 
 // This log is recorded upon the completion of every execution attempt. EventId = 3
-Execution attempt. Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', Operation Key: '{OperationKey}', Result: '{Result}', Handled: '{Handled}', Attempt: '{Attempt}', Execution Time: '{ExecutionTimeMs}'
+Execution attempt. Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', Operation Key: '{OperationKey}', Result: '{Result}', Handled: '{Handled}', Attempt: '{Attempt}', Execution Time: '{ExecutionTime}ms'
 </code></pre>
 <h2 id="emitting-telemetry-events">Emitting telemetry events</h2>
 <p>Each resilience strategy can generate telemetry data through the <a class="xref" href="../api/Polly.Telemetry.ResilienceStrategyTelemetry.html"><code>ResilienceStrategyTelemetry</code></a> API. Polly encapsulates event details as <a class="xref" href="../api/Polly.Telemetry.TelemetryEventArguments-2.html"><code>TelemetryEventArguments</code></a> and emits them via <code>TelemetryListener</code>.</p>

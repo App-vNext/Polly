@@ -264,9 +264,9 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(optionsExtra
 <p>Here are some sample events:</p>
 <h3 id="unhandled-case">Unhandled case</h3>
 <p>If the retry strategy does not perform any retries then the reported telemetry events' severity will be <code>Information</code>:</p>
-<pre><code class="lang-none">Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: '110.952'
+<pre><code class="lang-none">Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: 110.952ms
 
-Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'False', Attempt: '0', Execution Time: '5.2194'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'False', Attempt: '0', Execution Time: 5.2194ms
     System.Exception: Failed
         at Program.&lt;&gt;c.&lt;Main&gt;b__0_1(ResilienceContext ctx)
         ...
@@ -274,7 +274,7 @@ Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Oper
 </code></pre>
 <h3 id="handled-case">Handled case</h3>
 <p>If the retry strategy performs some retries then the reported telemetry events' severity will be <code>Warning</code>:</p>
-<pre><code class="lang-none">Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '0', Execution Time: '5.0397'
+<pre><code class="lang-none">Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '0', Execution Time: 5.0397ms
       System.Exception: Failed
          at Program.&lt;&gt;c.&lt;Main&gt;b__0_1(ResilienceContext ctx)
          ...
@@ -287,7 +287,7 @@ Resilience event occurred. EventName: 'OnRetry', Source: 'MyPipeline/MyPipelineI
         at Polly.ResiliencePipeline.&lt;&gt;c.&lt;&lt;ExecuteAsync&gt;b__1_0&gt;d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
 
 
-Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '1', Execution Time: '0.1159'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '1', Execution Time: 0.1159ms
       System.Exception: Failed
          at Program.&lt;&gt;c.&lt;Main&gt;b__0_1(ResilienceContext ctx)
          ...
