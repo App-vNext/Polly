@@ -77,12 +77,12 @@ var serviceCollection = new ServiceCollection()
 
 The metrics are emitted under the `Polly` meter name. The subsequent sections provide insights into the metrics produced by Polly. Please note that any custom enriched tags are not depicted in the following tables.
 
-Every telemetry event has the following tags:
+Every telemetry event has the following optional tags:
 
-- `pipeline.name`: Optional, comes from `ResiliencePipelineBuilder.Name`.
-- `pipeline.instance`: Optional, comes from `ResiliencePipelineBuilder.InstanceName`.
-- `strategy.name`: Optional, comes from `RetryStrategyOptions.Name`.
-- `operation.key`: Optional, comes from `ResilienceContext.OperationKey`.
+- `pipeline.name`: comes from `ResiliencePipelineBuilder.Name`.
+- `pipeline.instance`: comes from `ResiliencePipelineBuilder.InstanceName`.
+- `strategy.name`: comes from `RetryStrategyOptions.Name`.
+- `operation.key`: comes from `ResilienceContext.OperationKey`.
 
 The sample below demonstrates how to assign these tags:
 
@@ -126,15 +126,15 @@ These values are subsequently reflected in the following metering instruments ex
 
 Tags:
 
-|Name|Description|
-|---| ---|
-|`event.name`| The name of the emitted event.|
-|`event.severity`| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
-|`pipeline.name`| The name of the pipeline corresponding to the resilience pipeline.|
-|`pipeline.instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
-|`strategy.name`| The name of the strategy generating this event.|
-|`operation.key`| The operation key associated with the call site. |
-|`exception.type`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
+| Name                | Description                                                                                           |
+|---------------------|-------------------------------------------------------------------------------------------------------|
+| `event.name`        | The name of the emitted event.                                                                        |
+| `event.severity`    | The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).                   |
+| `pipeline.name`     | The name of the pipeline corresponding to the resilience pipeline.                                    |
+| `pipeline.instance` | The instance name of the pipeline corresponding to the resilience pipeline.                           |
+| `strategy.name`     | The name of the strategy generating this event.                                                       |
+| `operation.key`     | The operation key associated with the call site.                                                      |
+| `exception.type`    | The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 
 #### Event names
 
@@ -158,17 +158,17 @@ The `event.name` tag is reported by individual resilience strategies. The built-
 
 Tags:
 
-|Name|Description|
-|---| ---|
-|`event.name`| The name of the emitted event. Currently, the event name is always `ExecutionAttempt`. |
-|`event.severity`| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
-|`pipeline.name`| The name of the pipeline corresponding to the resilience pipeline.|
-|`pipeline.instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
-|`strategy.name`| The name of the strategy generating this event.|
-|`operation.key`| The operation key associated with the call site. |
-|`exception.type`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
-|`attempt.number`| The execution attempt number, starting at 0 (0, 1, 2, etc.). |
-|`attempt.handled`| Indicates if the execution outcome was handled. A handled outcome indicates execution failure and the need for retry (`true`, `false`). |
+| Name                | Description                                                                                                                             |
+|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| `event.name`        | The name of the emitted event. Currently, the event name is always `ExecutionAttempt`.                                                  |
+| `event.severity`    | The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).                                                     |
+| `pipeline.name`     | The name of the pipeline corresponding to the resilience pipeline.                                                                      |
+| `pipeline.instance` | The instance name of the pipeline corresponding to the resilience pipeline.                                                             |
+| `strategy.name`     | The name of the strategy generating this event.                                                                                         |
+| `operation.key`     | The operation key associated with the call site.                                                                                        |
+| `exception.type`    | The full name of the exception assigned to the execution result (`System.InvalidOperationException`).                                   |
+| `attempt.number`    | The execution attempt number, starting at 0 (0, 1, 2, etc.).                                                                            |
+| `attempt.handled`   | Indicates if the execution outcome was handled. A handled outcome indicates execution failure and the need for retry (`true`, `false`). |
 
 ### Instrument: `resilience.polly.pipeline.duration`
 
@@ -179,12 +179,12 @@ Tags:
 
 Tags:
 
-|Name|Description|
-|---| ---|
-|`pipeline.name`| The name of the pipeline corresponding to the resilience pipeline.|
-|`pipeline.instance`| The instance name of the pipeline corresponding to the resilience pipeline.|
-|`operation.key`| The operation key associated with the call site. |
-|`exception.type`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
+| Name                | Description                                                                                           |
+|---------------------|-------------------------------------------------------------------------------------------------------|
+| `pipeline.name`     | The name of the pipeline corresponding to the resilience pipeline.                                    |
+| `pipeline.instance` | The instance name of the pipeline corresponding to the resilience pipeline.                           |
+| `operation.key`     | The operation key associated with the call site.                                                      |
+| `exception.type`    | The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 
 ### Metering enrichment
 
