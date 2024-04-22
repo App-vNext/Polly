@@ -84,7 +84,7 @@ The hedging strategy reports the following telemetry events:
 
 | Event Name          | Event Severity            | When?                                                                |
 |---------------------|---------------------------|----------------------------------------------------------------------|
-| `Execution Attempt` | `Information` / `Warning` | Just after the original/hedged action completes with success/failure |
+| `ExecutionAttempt` | `Information` / `Warning` | Just after the original/hedged action completes with success/failure |
 | `OnHedging`         | `Warning`                 | Just before the strategy calls the `OnHedging` delegate              |
 
 Here are some sample events:

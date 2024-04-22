@@ -117,7 +117,7 @@ The retry strategy reports the following telemetry events:
 
 | Event Name          | Event Severity            | When?                                                 |
 |---------------------|---------------------------|-------------------------------------------------------|
-| `Execution Attempt` | `Information` / `Warning` | Just before the strategy calculates the next delay    |
+| `ExecutionAttempt` | `Information` / `Warning` | Just before the strategy calculates the next delay    |
 | `OnRetry`           | `Warning`                 | Just before the strategy calls the `OnRetry` delegate |
 
 Here are some sample events:
