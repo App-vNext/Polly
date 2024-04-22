@@ -269,9 +269,60 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
 
   <a id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy_" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy*"></a>
 
+  <h3 id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy_Polly_ResiliencePipelineBuilder_System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy_System_Object___" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy(Polly.ResiliencePipelineBuilder,System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy{System.Object}})">
+  AddStrategy(ResiliencePipelineBuilder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;object&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineBuilderExtensions.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a proactive resilience strategy to the builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResiliencePipelineBuilder AddStrategy(this ResiliencePipelineBuilder builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;object&gt;&gt; factory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="Polly.ResiliencePipelineBuilder.html">ResiliencePipelineBuilder</a></dt>
+    <dd><p>The builder instance.</p>
+</dd>
+    <dt><code>factory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.StrategyBuilderContext.html">StrategyBuilderContext</a>, <a class="xref" href="Polly.ResilienceStrategy-1.html">ResilienceStrategy</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;&gt;</dt>
+    <dd><p>The strategy instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Polly.ResiliencePipelineBuilder.html">ResiliencePipelineBuilder</a></dt>
+    <dd><p>The same builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">builder</code> or <code class="paramref">factory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this builder was already used to create a pipeline. The builder cannot be modified after it has been used.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy_" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy*"></a>
+
   <h3 id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy_Polly_ResiliencePipelineBuilder_System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy_System_Object___Polly_ResilienceStrategyOptions_" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy(Polly.ResiliencePipelineBuilder,System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy{System.Object}},Polly.ResilienceStrategyOptions)">
   AddStrategy(ResiliencePipelineBuilder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;object&gt;&gt;, ResilienceStrategyOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineBuilderExtensions.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineBuilderExtensions.cs/#L93"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a reactive strategy to the builder.</p>
@@ -291,7 +342,7 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
     <dd><p>The factory that creates a resilience strategy.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="Polly.ResilienceStrategyOptions.html">ResilienceStrategyOptions</a></dt>
-    <dd><p>The options associated with the strategy. If none are provided the default instance of <a class="xref" href="Polly.ResilienceStrategyOptions.html">ResilienceStrategyOptions</a> is created.</p>
+    <dd><p>The options associated with the strategy.</p>
 </dd>
   </dl>
 
@@ -326,9 +377,66 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
 
   <a id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy_" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy*"></a>
 
+  <h3 id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy__1_Polly_ResiliencePipelineBuilder___0__System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy___0___" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy``1(Polly.ResiliencePipelineBuilder{``0},System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy{``0}})">
+  AddStrategy&lt;TResult&gt;(ResiliencePipelineBuilder&lt;TResult&gt;, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineBuilderExtensions.cs/#L189"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a reactive resilience strategy to the builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResiliencePipelineBuilder&lt;TResult&gt; AddStrategy&lt;TResult&gt;(this ResiliencePipelineBuilder&lt;TResult&gt; builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;TResult&gt;&gt; factory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <a class="xref" href="Polly.ResiliencePipelineBuilder-1.html">ResiliencePipelineBuilder</a>&lt;TResult&gt;</dt>
+    <dd><p>The builder instance.</p>
+</dd>
+    <dt><code>factory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.StrategyBuilderContext.html">StrategyBuilderContext</a>, <a class="xref" href="Polly.ResilienceStrategy-1.html">ResilienceStrategy</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The strategy instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Polly.ResiliencePipelineBuilder-1.html">ResiliencePipelineBuilder</a>&lt;TResult&gt;</dt>
+    <dd><p>The same builder instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The result type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">builder</code> or <code class="paramref">factory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this builder was already used to create a pipeline. The builder cannot be modified after it has been used.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy_" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy*"></a>
+
   <h3 id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy__1_Polly_ResiliencePipelineBuilder___0__System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy___0___Polly_ResilienceStrategyOptions_" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy``1(Polly.ResiliencePipelineBuilder{``0},System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy{``0}},Polly.ResilienceStrategyOptions)">
   AddStrategy&lt;TResult&gt;(ResiliencePipelineBuilder&lt;TResult&gt;, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;TResult&gt;&gt;, ResilienceStrategyOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineBuilderExtensions.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineBuilderExtensions.cs/#L118"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a reactive strategy to the builder.</p>
@@ -348,7 +456,7 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
     <dd><p>The factory that creates a resilience strategy.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="Polly.ResilienceStrategyOptions.html">ResilienceStrategyOptions</a></dt>
-    <dd><p>The options associated with the strategy. If none are provided the default instance of <a class="xref" href="Polly.ResilienceStrategyOptions.html">ResilienceStrategyOptions</a> is created.</p>
+    <dd><p>The options associated with the strategy.</p>
 </dd>
   </dl>
 
@@ -389,6 +497,63 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
 
   <a id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy_" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy*"></a>
 
+  <h3 id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy__1___0_System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy__" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy``1(``0,System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy})">
+  AddStrategy&lt;TBuilder&gt;(TBuilder, Func&lt;StrategyBuilderContext, ResilienceStrategy&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineBuilderExtensions.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a reactive resilience strategy to the builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TBuilder AddStrategy&lt;TBuilder&gt;(this TBuilder builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&gt; factory) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>builder</code> <span class="xref">TBuilder</span></dt>
+    <dd><p>The builder instance.</p>
+</dd>
+    <dt><code>factory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Polly.StrategyBuilderContext.html">StrategyBuilderContext</a>, <a class="xref" href="Polly.ResilienceStrategy.html">ResilienceStrategy</a>&gt;</dt>
+    <dd><p>The strategy factory.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TBuilder</span></dt>
+    <dd><p>The same builder instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TBuilder</code></dt>
+    <dd><p>The builder type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">builder</code> or <code class="paramref">factory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this builder was already used to create a pipeline. The builder cannot be modified after it has been used.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy_" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy*"></a>
+
   <h3 id="Polly_ResiliencePipelineBuilderExtensions_AddStrategy__1___0_System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy__Polly_ResilienceStrategyOptions_" data-uid="Polly.ResiliencePipelineBuilderExtensions.AddStrategy``1(``0,System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy},Polly.ResilienceStrategyOptions)">
   AddStrategy&lt;TBuilder&gt;(TBuilder, Func&lt;StrategyBuilderContext, ResilienceStrategy&gt;, ResilienceStrategyOptions)
   <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineBuilderExtensions.cs/#L68"><i class="bi bi-code-slash"></i></a>
@@ -411,7 +576,7 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
     <dd><p>The factory that creates a resilience strategy.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="Polly.ResilienceStrategyOptions.html">ResilienceStrategyOptions</a></dt>
-    <dd><p>The options associated with the strategy. If none are provided the default instance of <a class="xref" href="Polly.ResilienceStrategyOptions.html">ResilienceStrategyOptions</a> is created.</p>
+    <dd><p>The options associated with the strategy.</p>
 </dd>
   </dl>
 

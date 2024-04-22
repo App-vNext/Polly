@@ -3391,6 +3391,15 @@ references:
   fullName.vb: Polly.ResiliencePipelineBuilderExtensions.AddPipeline(Of TBuilder)(TBuilder, Polly.ResiliencePipeline)
   nameWithType: ResiliencePipelineBuilderExtensions.AddPipeline<TBuilder>(TBuilder, ResiliencePipeline)
   nameWithType.vb: ResiliencePipelineBuilderExtensions.AddPipeline(Of TBuilder)(TBuilder, ResiliencePipeline)
+- uid: Polly.ResiliencePipelineBuilderExtensions.AddStrategy(Polly.ResiliencePipelineBuilder,System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy{System.Object}})
+  name: AddStrategy(ResiliencePipelineBuilder, Func<StrategyBuilderContext, ResilienceStrategy<object>>)
+  href: api/Polly.ResiliencePipelineBuilderExtensions.html#Polly_ResiliencePipelineBuilderExtensions_AddStrategy_Polly_ResiliencePipelineBuilder_System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy_System_Object___
+  commentId: M:Polly.ResiliencePipelineBuilderExtensions.AddStrategy(Polly.ResiliencePipelineBuilder,System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy{System.Object}})
+  name.vb: AddStrategy(ResiliencePipelineBuilder, Func(Of StrategyBuilderContext, ResilienceStrategy(Of Object)))
+  fullName: Polly.ResiliencePipelineBuilderExtensions.AddStrategy(Polly.ResiliencePipelineBuilder, System.Func<Polly.StrategyBuilderContext, Polly.ResilienceStrategy<object>>)
+  fullName.vb: Polly.ResiliencePipelineBuilderExtensions.AddStrategy(Polly.ResiliencePipelineBuilder, System.Func(Of Polly.StrategyBuilderContext, Polly.ResilienceStrategy(Of Object)))
+  nameWithType: ResiliencePipelineBuilderExtensions.AddStrategy(ResiliencePipelineBuilder, Func<StrategyBuilderContext, ResilienceStrategy<object>>)
+  nameWithType.vb: ResiliencePipelineBuilderExtensions.AddStrategy(ResiliencePipelineBuilder, Func(Of StrategyBuilderContext, ResilienceStrategy(Of Object)))
 - uid: Polly.ResiliencePipelineBuilderExtensions.AddStrategy(Polly.ResiliencePipelineBuilder,System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy{System.Object}},Polly.ResilienceStrategyOptions)
   name: AddStrategy(ResiliencePipelineBuilder, Func<StrategyBuilderContext, ResilienceStrategy<object>>, ResilienceStrategyOptions)
   href: api/Polly.ResiliencePipelineBuilderExtensions.html#Polly_ResiliencePipelineBuilderExtensions_AddStrategy_Polly_ResiliencePipelineBuilder_System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy_System_Object___Polly_ResilienceStrategyOptions_
@@ -3407,6 +3416,15 @@ references:
   isSpec: "True"
   fullName: Polly.ResiliencePipelineBuilderExtensions.AddStrategy
   nameWithType: ResiliencePipelineBuilderExtensions.AddStrategy
+- uid: Polly.ResiliencePipelineBuilderExtensions.AddStrategy``1(Polly.ResiliencePipelineBuilder{``0},System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy{``0}})
+  name: AddStrategy<TResult>(ResiliencePipelineBuilder<TResult>, Func<StrategyBuilderContext, ResilienceStrategy<TResult>>)
+  href: api/Polly.ResiliencePipelineBuilderExtensions.html#Polly_ResiliencePipelineBuilderExtensions_AddStrategy__1_Polly_ResiliencePipelineBuilder___0__System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy___0___
+  commentId: M:Polly.ResiliencePipelineBuilderExtensions.AddStrategy``1(Polly.ResiliencePipelineBuilder{``0},System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy{``0}})
+  name.vb: AddStrategy(Of TResult)(ResiliencePipelineBuilder(Of TResult), Func(Of StrategyBuilderContext, ResilienceStrategy(Of TResult)))
+  fullName: Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TResult>(Polly.ResiliencePipelineBuilder<TResult>, System.Func<Polly.StrategyBuilderContext, Polly.ResilienceStrategy<TResult>>)
+  fullName.vb: Polly.ResiliencePipelineBuilderExtensions.AddStrategy(Of TResult)(Polly.ResiliencePipelineBuilder(Of TResult), System.Func(Of Polly.StrategyBuilderContext, Polly.ResilienceStrategy(Of TResult)))
+  nameWithType: ResiliencePipelineBuilderExtensions.AddStrategy<TResult>(ResiliencePipelineBuilder<TResult>, Func<StrategyBuilderContext, ResilienceStrategy<TResult>>)
+  nameWithType.vb: ResiliencePipelineBuilderExtensions.AddStrategy(Of TResult)(ResiliencePipelineBuilder(Of TResult), Func(Of StrategyBuilderContext, ResilienceStrategy(Of TResult)))
 - uid: Polly.ResiliencePipelineBuilderExtensions.AddStrategy``1(Polly.ResiliencePipelineBuilder{``0},System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy{``0}},Polly.ResilienceStrategyOptions)
   name: AddStrategy<TResult>(ResiliencePipelineBuilder<TResult>, Func<StrategyBuilderContext, ResilienceStrategy<TResult>>, ResilienceStrategyOptions)
   href: api/Polly.ResiliencePipelineBuilderExtensions.html#Polly_ResiliencePipelineBuilderExtensions_AddStrategy__1_Polly_ResiliencePipelineBuilder___0__System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy___0___Polly_ResilienceStrategyOptions_
@@ -3416,6 +3434,15 @@ references:
   fullName.vb: Polly.ResiliencePipelineBuilderExtensions.AddStrategy(Of TResult)(Polly.ResiliencePipelineBuilder(Of TResult), System.Func(Of Polly.StrategyBuilderContext, Polly.ResilienceStrategy(Of TResult)), Polly.ResilienceStrategyOptions)
   nameWithType: ResiliencePipelineBuilderExtensions.AddStrategy<TResult>(ResiliencePipelineBuilder<TResult>, Func<StrategyBuilderContext, ResilienceStrategy<TResult>>, ResilienceStrategyOptions)
   nameWithType.vb: ResiliencePipelineBuilderExtensions.AddStrategy(Of TResult)(ResiliencePipelineBuilder(Of TResult), Func(Of StrategyBuilderContext, ResilienceStrategy(Of TResult)), ResilienceStrategyOptions)
+- uid: Polly.ResiliencePipelineBuilderExtensions.AddStrategy``1(``0,System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy})
+  name: AddStrategy<TBuilder>(TBuilder, Func<StrategyBuilderContext, ResilienceStrategy>)
+  href: api/Polly.ResiliencePipelineBuilderExtensions.html#Polly_ResiliencePipelineBuilderExtensions_AddStrategy__1___0_System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy__
+  commentId: M:Polly.ResiliencePipelineBuilderExtensions.AddStrategy``1(``0,System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy})
+  name.vb: AddStrategy(Of TBuilder)(TBuilder, Func(Of StrategyBuilderContext, ResilienceStrategy))
+  fullName: Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TBuilder>(TBuilder, System.Func<Polly.StrategyBuilderContext, Polly.ResilienceStrategy>)
+  fullName.vb: Polly.ResiliencePipelineBuilderExtensions.AddStrategy(Of TBuilder)(TBuilder, System.Func(Of Polly.StrategyBuilderContext, Polly.ResilienceStrategy))
+  nameWithType: ResiliencePipelineBuilderExtensions.AddStrategy<TBuilder>(TBuilder, Func<StrategyBuilderContext, ResilienceStrategy>)
+  nameWithType.vb: ResiliencePipelineBuilderExtensions.AddStrategy(Of TBuilder)(TBuilder, Func(Of StrategyBuilderContext, ResilienceStrategy))
 - uid: Polly.ResiliencePipelineBuilderExtensions.AddStrategy``1(``0,System.Func{Polly.StrategyBuilderContext,Polly.ResilienceStrategy},Polly.ResilienceStrategyOptions)
   name: AddStrategy<TBuilder>(TBuilder, Func<StrategyBuilderContext, ResilienceStrategy>, ResilienceStrategyOptions)
   href: api/Polly.ResiliencePipelineBuilderExtensions.html#Polly_ResiliencePipelineBuilderExtensions_AddStrategy__1___0_System_Func_Polly_StrategyBuilderContext_Polly_ResilienceStrategy__Polly_ResilienceStrategyOptions_
