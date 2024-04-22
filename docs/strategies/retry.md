@@ -127,9 +127,9 @@ Here are some sample events:
 If the retry strategy does not perform any retries then the reported telemetry events' severity will be `Information`:
 
 ```none
-Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: '110.952'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: '1', Handled: 'False', Attempt: '0', Execution Time: 110.952ms
 
-Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'False', Attempt: '0', Execution Time: '5.2194'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'False', Attempt: '0', Execution Time: 5.2194ms
     System.Exception: Failed
         at Program.<>c.<Main>b__0_1(ResilienceContext ctx)
         ...
@@ -141,7 +141,7 @@ Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Oper
 If the retry strategy performs some retries then the reported telemetry events' severity will be `Warning`:
 
 ```none
-Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '0', Execution Time: '5.0397'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '0', Execution Time: 5.0397ms
       System.Exception: Failed
          at Program.<>c.<Main>b__0_1(ResilienceContext ctx)
          ...
@@ -154,7 +154,7 @@ Resilience event occurred. EventName: 'OnRetry', Source: 'MyPipeline/MyPipelineI
         at Polly.ResiliencePipeline.<>c.<<ExecuteAsync>b__1_0>d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
 
 
-Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '1', Execution Time: '0.1159'
+Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '1', Execution Time: 0.1159ms
       System.Exception: Failed
          at Program.<>c.<Main>b__0_1(ResilienceContext ctx)
          ...

@@ -128,7 +128,7 @@ public class TelemetryListenerImplTests : IDisposable
         var messages = _logger.GetRecords(new EventId(3, "ExecutionAttempt")).ToList();
         messages.Should().HaveCount(1);
 
-        messages[0].Message.Should().Be("Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.', Handled: 'True', Attempt: '4', Execution Time: '123'");
+        messages[0].Message.Should().Be("Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.', Handled: 'True', Attempt: '4', Execution Time: 123ms");
     }
 
     [InlineData(true, true)]
@@ -148,11 +148,11 @@ public class TelemetryListenerImplTests : IDisposable
         if (noOutcome)
         {
             string resultString = string.Empty;
-            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
+            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: 123ms");
         }
         else
         {
-            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: '200', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
+            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: '200', Handled: '{handled}', Attempt: '4', Execution Time: 123ms");
         }
 
         messages[0].LogLevel.Should().Be(LogLevel.Warning);

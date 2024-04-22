@@ -8,13 +8,20 @@ namespace Polly.Telemetry;
 [ExcludeFromCodeCoverage]
 internal static partial class Log
 {
+    internal const string Separator = ", ";
+    internal const string SourceWithStrategy = "Source: '{PipelineName}/{PipelineInstance}/{StrategyName}'";
+    internal const string SourceWithoutStrategy = "Source: '{PipelineName}/{PipelineInstance}'";
+    internal const string OperationKey = "Operation Key: '{OperationKey}'";
+    internal const string Result = "Result: '{Result}'";
+    internal const string ExecutionTime = "Execution Time: {ExecutionTimeMs}ms";
+
     [LoggerMessage(
         EventId = 0,
         Message = "Resilience event occurred. " +
                 "EventName: '{EventName}', " +
-                "Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', " +
-                "Operation Key: '{OperationKey}', " +
-                "Result: '{Result}'",
+                SourceWithStrategy + Separator +
+                OperationKey + Separator +
+                Result,
         EventName = "ResilienceEvent")]
     public static partial void ResilienceEvent(
         this ILogger logger,
@@ -31,8 +38,8 @@ internal static partial class Log
         1,
         LogLevel.Debug,
         "Resilience pipeline executing. " +
-        "Source: '{PipelineName}/{PipelineInstance}', " +
-        "Operation Key: '{OperationKey}'",
+        SourceWithoutStrategy + Separator +
+        OperationKey,
         EventName = "StrategyExecuting")]
     public static partial void PipelineExecuting(
         this ILogger logger,
@@ -43,10 +50,10 @@ internal static partial class Log
     [LoggerMessage(
         EventId = 2,
         Message = "Resilience pipeline executed. " +
-            "Source: '{PipelineName}/{PipelineInstance}', " +
-            "Operation Key: '{OperationKey}', " +
-            "Result: '{Result}', " +
-            "Execution Time: {ExecutionTime}ms",
+            SourceWithoutStrategy + Separator +
+            OperationKey + Separator +
+            Result + Separator +
+            ExecutionTime,
         EventName = "StrategyExecuted")]
     public static partial void PipelineExecuted(
         this ILogger logger,
@@ -55,18 +62,18 @@ internal static partial class Log
         string pipelineInstance,
         string? operationKey,
         object? result,
-        double executionTime,
+        double executionTimeMs,
         Exception? exception);
 
     [LoggerMessage(
         EventId = 3,
         Message = "Execution attempt. " +
-                "Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', " +
-                "Operation Key: '{OperationKey}', " +
-                "Result: '{Result}', " +
+                SourceWithStrategy + Separator +
+                OperationKey + Separator +
+                Result + Separator +
                 "Handled: '{Handled}', " +
                 "Attempt: '{Attempt}', " +
-                "Execution Time: '{ExecutionTimeMs}'",
+                ExecutionTime,
         EventName = "ExecutionAttempt",
         SkipEnabledCheck = true)]
     public static partial void ExecutionAttempt(
