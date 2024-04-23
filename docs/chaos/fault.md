@@ -2,13 +2,15 @@
 
 ## About
 
-- **Options**: [`ChaosFaultStrategyOptions`](xref:Polly.Simmy.Fault.ChaosFaultStrategyOptions)
-- **Extensions**: `AddChaosFault`
-- **Strategy Type**: Proactive
+- **Option(s)**:
+  - [`ChaosFaultStrategyOptions`](xref:Polly.Simmy.Fault.ChaosFaultStrategyOptions)
+- **Extensions**:
+  - `AddChaosFault`
+- **Exception(s)**: -
 
 ---
 
-The fault chaos strategy is designed to introduce faults (exceptions) into the system, simulating real-world scenarios where operations might fail unexpectedly. It is configurable to inject specific types of exceptions or use custom logic to generate faults dynamically.
+The fault **proactive** chaos strategy is designed to introduce faults (exceptions) into the system, simulating real-world scenarios where operations might fail unexpectedly. It is configurable to inject specific types of exceptions or use custom logic to generate faults dynamically.
 
 ## Usage
 
@@ -91,6 +93,31 @@ var pipeline = new ResiliencePipelineBuilder()
 |-------------------|---------------|------------------------------------------------------|
 | `OnFaultInjected` | `null`        | Action executed when the fault is injected.          |
 | `FaultGenerator`  | `null`        | Generates the fault to inject for a given execution. |
+
+## Telemetry
+
+The fault chaos strategy reports the following telemetry events:
+
+| Event Name      | Event Severity | When?                                                         |
+|-----------------|----------------|---------------------------------------------------------------|
+| `Chaos.OnFault` | `Information`  | Just before the strategy calls the `OnFaultInjected` delegate |
+
+Here are some sample events:
+
+```none
+Resilience event occurred. EventName: 'Chaos.OnFault', Source: '(null)/(null)/Chaos.Fault', Operation Key: '', Result: ''
+
+Resilience event occurred. EventName: 'Chaos.OnFault', Source: 'MyPipeline/MyPipelineInstance/MyChaosFaultStrategy', Operation Key: 'MyFaultInjectedOperation', Result: ''
+```
+
+> [!NOTE]
+> Please note that the `Chaos.OnFault` telemetry event will be reported **only if** the fault chaos strategy injects an exception which is wrapped into a `ValueTask`.
+>
+> So, if the fault is either not injected or injected and throws an exception then there will be no telemetry emitted.
+>
+> Also remember that the `Result` will be **always empty** for the `Chaos.OnFault` telemetry event.
+
+For further information please check out the [telemetry page](../advanced/telemetry.md).
 
 ## Diagrams
 

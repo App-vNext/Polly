@@ -92,7 +92,7 @@ Resilience event occurred. EventName: 'Chaos.OnBehavior', Source: 'MyPipeline/My
 > [!NOTE]
 > Please note that the `Chaos.OnBehavior` telemetry event will be reported **only if** the behavior chaos strategy injects a custom behavior which does not throw exception.
 >
-> So, if the behavior is not injected or it is injected and throws an exception then there will be no telemetry emitted.
+> So, if the behavior is either not injected or injected and throws an exception then there will be no telemetry emitted.
 >
 > Also remember that the `Result` will be **always empty** for the `Chaos.OnBehavior` telemetry event.
 
