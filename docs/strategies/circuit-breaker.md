@@ -148,7 +148,7 @@ Resilience event occurred. EventName: 'OnCircuitClosed', Source: 'MyPipeline/MyP
 >
 > Also the `Result` will be **always empty** for the `OnCircuitHalfOpened` telemetry event.
 
-For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
+For further information please check out the [telemetry page](../advanced/telemetry.md).
 
 ## Diagrams
 

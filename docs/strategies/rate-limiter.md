@@ -154,7 +154,7 @@ Resilience event occurred. EventName: 'OnRateLimiterRejected', Source: 'MyPipeli
 >
 > Also remember that the `Result` will be **always empty** for the `OnRateLimiterRejected` telemetry event.
 
-For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
+For further information please check out the [telemetry page](../advanced/telemetry.md).
 
 ## Diagrams
 
