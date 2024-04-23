@@ -2,13 +2,15 @@
 
 ## About
 
-- **Options**: [`ChaosBehaviorStrategyOptions`](xref:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions)
-- **Extensions**: `AddChaosBehavior`
-- **Strategy Type**: Proactive
+- **Option(s)**:
+  - [`ChaosBehaviorStrategyOptions`](xref:Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions)
+- **Extension(s)**:
+  - `AddChaosBehavior`
+- **Exception(s)**: -
 
 ---
 
-The behavior chaos strategy is designed to inject custom behaviors into system operations right before such an operation is invoked. This strategy is flexible, allowing users to define specific behaviors such as altering the input, simulating resource exhaustion, putting the system in a given state before the actual operation is called, or other operational variations to simulate real-world scenarios.
+The behavior **proactive** chaos strategy is designed to inject custom behaviors into system operations right before such an operation is invoked. This strategy is flexible, allowing users to define specific behaviors such as altering the input, simulating resource exhaustion, putting the system in a given state before the actual operation is called, or other operational variations to simulate real-world scenarios.
 
 ## Usage
 
@@ -70,6 +72,31 @@ var pipeline = new ResiliencePipelineBuilder()
 |----------------------|---------------|------------------------------------------------|
 | `OnBehaviorInjected` | `null`        | Action executed when the behavior is injected. |
 | `BehaviorGenerator`  | `null`        | Custom behavior to be injected.                |
+
+## Telemetry
+
+The behavior chaos strategy reports the following telemetry events:
+
+| Event Name         | Event Severity | When?                                                            |
+|--------------------|----------------|------------------------------------------------------------------|
+| `Chaos.OnBehavior` | `Information`  | Just before the strategy calls the `OnBehaviorInjected` delegate |
+
+Here are some sample events:
+
+```none
+Resilience event occurred. EventName: 'Chaos.OnBehavior', Source: '(null)/(null)/Chaos.Behavior', Operation Key: '', Result: ''
+
+Resilience event occurred. EventName: 'Chaos.OnBehavior', Source: 'MyPipeline/MyPipelineInstance/MyChaosBehaviorStrategy', Operation Key: 'MyBehaviorInjectedOperation', Result: ''
+```
+
+> [!NOTE]
+> Please note that the `Chaos.OnBehavior` telemetry event will be reported **only if** the behavior chaos strategy injects a custom behavior which does not throw exception.
+>
+> So, if the behavior is not injected or it is injected and throws an exception then there will be no telemetry emitted.
+>
+> Also remember that the `Result` will be **always empty** for the `Chaos.OnBehavior` telemetry event.
+
+For further information please check out the [telemetry page](../advanced/telemetry.md).
 
 ## Diagrams
 
