@@ -120,12 +120,10 @@ All the strategies' options implement the [`ChaosStrategyOptions`](xref:Polly.Si
 
 The telemetry of chaos strategies is seamlessly integrated with Polly [telemetry infrastructure](../advanced/telemetry.md). The chaos strategies produce the following information events:
 
-| Event              | Details                       |
-|--------------------|-------------------------------|
-| `Chaos.OnFault`    | [Link](fault.md#telemetry)    |
-| `Chaos.OnOutcome`  | [Link](outcome.md#telemetry)  |
-| `Chaos.OnLatency`  | [Link](latency.md#telemetry)  |
-| `Chaos.OnBehavior` | [Link](behavior.md#telemetry) |
+- [`Chaos.OnFault`](fault.md#telemetry)
+- [`Chaos.OnOutcome`](outcome.md#telemetry)
+- [`Chaos.OnLatency`](latency.md#telemetry)
+- [`Chaos.OnBehavior`](behavior.md#telemetry)
 
 ## Patterns
 

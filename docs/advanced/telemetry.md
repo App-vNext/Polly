@@ -140,20 +140,18 @@ Tags:
 
 The `event.name` tag is reported by individual resilience strategies. The built-in strategies report the following events:
 
-| Event                   | Details                                            |
-|-------------------------|----------------------------------------------------|
-| `OnRetry`               | [Link](../strategies/retry.md#telemetry)           |
-| `OnFallback`            | [Link](../strategies/fallback.md#telemetry)        |
-| `OnHedging`             | [Link](../strategies/hedging.md#telemetry)         |
-| `OnTimeout`             | [Link](../strategies/timeout.md#telemetry)         |
-| `OnCircuitClosed`       | [Link](../strategies/circuit-breaker.md#telemetry) |
-| `OnCircuitOpened`       | [Link](../strategies/circuit-breaker.md#telemetry) |
-| `OnCircuitHalfOpened`   | [Link](../strategies/circuit-breaker.md#telemetry) |
-| `OnRateLimiterRejected` | [Link](../strategies/rate-limiter.md#telemetry)    |
-| `Chaos.OnFault`         | [Link](../chaos/fault.md#telemetry)                |
-| `Chaos.OnOutcome`       | [Link](../chaos/outcome.md#telemetry)              |
-| `Chaos.OnLatency`       | [Link](../chaos/latency.md#telemetry)              |
-| `Chaos.OnBehavior`      | [Link](../chaos/behavior.md#telemetry)             |
+- [`OnRetry`](../strategies/retry.md#telemetry)
+- [`OnFallback`](../strategies/fallback.md#telemetry)
+- [`OnHedging`](../strategies/hedging.md#telemetry)
+- [`OnTimeout`](../strategies/timeout.md#telemetry)
+- [`OnCircuitClosed`](../strategies/circuit-breaker.md#telemetry
+- [`OnCircuitOpened`](../strategies/circuit-breaker.md#telemetry)
+- [`OnCircuitHalfOpened`](../strategies/circuit-breaker.md#telemetry)
+- [`OnRateLimiterRejected`](../strategies/rate-limiter.md#telemetry)
+- [`Chaos.OnFault`](../chaos/fault.md#telemetry)
+- [`Chaos.OnOutcome`](../chaos/outcome.md#telemetry)
+- [`Chaos.OnLatency`](../chaos/latency.md#telemetry)
+- [`Chaos.OnBehavior`](../chaos/behavior.md#telemetry)
 
 ### Instrument: `resilience.polly.strategy.attempt.duration`
 
