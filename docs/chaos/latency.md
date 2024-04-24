@@ -94,7 +94,7 @@ var pipeline = new ResiliencePipelineBuilder()
 
 | Property            | Default Value | Description                                                                                                          |
 |---------------------|---------------|----------------------------------------------------------------------------------------------------------------------|
-| `Latency`           | 30 seconds    | Defines a **static** delay to be injected.                                                                           |
+| `Latency`           | 30 seconds    | Defines a **fixed** delay to be injected.                                                                            |
 | `LatencyGenerator`  | `null`        | This delegate allows you to **dynamically** inject delay by utilizing information that is only available at runtime. |
 | `OnLatencyInjected` | `null`        | If provided then it will be invoked after the latency injection occurred.                                            |
 
@@ -104,7 +104,7 @@ var pipeline = new ResiliencePipelineBuilder()
 ---
 
 > [!IMPORTANT]
-> Please note that if the calculated latency is negative (regardless if it's static or dynamic) then it will not be injected.
+> Please note that if the calculated latency is negative (regardless if it's fixed or dynamic) then it will not be injected.
 
 ## Telemetry
 
