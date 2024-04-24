@@ -144,7 +144,7 @@ The `event.name` tag is reported by individual resilience strategies. The built-
 - [`OnFallback`](../strategies/fallback.md#telemetry)
 - [`OnHedging`](../strategies/hedging.md#telemetry)
 - [`OnTimeout`](../strategies/timeout.md#telemetry)
-- [`OnCircuitClosed`](../strategies/circuit-breaker.md#telemetry
+- [`OnCircuitClosed`](../strategies/circuit-breaker.md#telemetry)
 - [`OnCircuitOpened`](../strategies/circuit-breaker.md#telemetry)
 - [`OnCircuitHalfOpened`](../strategies/circuit-breaker.md#telemetry)
 - [`OnRateLimiterRejected`](../strategies/rate-limiter.md#telemetry)
