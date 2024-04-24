@@ -134,4 +134,36 @@ internal static class Telemetry
     }
 
     #endregion
+
+    public static void SeverityOverrides()
+    {
+        var services = new ServiceCollection();
+
+        #region telemetry-severity-override
+
+        services.AddResiliencePipeline("my-strategy", (builder, context) =>
+        {
+            // Create a new instance of telemetry options by using copy-constructor of the global ones.
+            // This ensures that common configuration is preserved.
+            var telemetryOptions = new TelemetryOptions(context.GetOptions<TelemetryOptions>());
+
+            telemetryOptions.SeverityProvider = ev =>
+            {
+                if (ev.EventName == "OnRetry")
+                {
+                    // Decrease the severity of particular event.
+                    return ResilienceEventSeverity.Debug;
+                }
+
+                return ev.Severity;
+            };
+
+            builder.AddTimeout(TimeSpan.FromSeconds(1));
+
+            // Override the telemetry configuration for this pipeline.
+            builder.ConfigureTelemetry(telemetryOptions);
+        });
+
+        #endregion
+    }
 }

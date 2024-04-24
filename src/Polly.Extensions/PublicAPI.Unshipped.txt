@@ -1,4 +1,7 @@
 ﻿#nullable enable
+Polly.Telemetry.TelemetryOptions.SeverityProvider.get -> System.Func<Polly.Telemetry.ResilienceEvent, Polly.Telemetry.ResilienceEventSeverity>?
+Polly.Telemetry.TelemetryOptions.SeverityProvider.set -> void
+Polly.Telemetry.TelemetryOptions.TelemetryOptions(Polly.Telemetry.TelemetryOptions! other) -> void
 static Polly.PollyServiceCollectionExtensions.AddResiliencePipelines<TKey>(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<Polly.DependencyInjection.AddResiliencePipelinesContext<TKey>!>! configure) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 Polly.DependencyInjection.AddResiliencePipelinesContext<TKey>
 Polly.DependencyInjection.AddResiliencePipelinesContext<TKey>.AddResiliencePipeline(TKey key, System.Action<Polly.ResiliencePipelineBuilder!, Polly.DependencyInjection.AddResiliencePipelineContext<TKey>!>! configure) -> void
