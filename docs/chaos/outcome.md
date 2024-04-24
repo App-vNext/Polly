@@ -113,7 +113,6 @@ Resilience event occurred. EventName: 'Chaos.OnOutcome', Source: 'MyPipeline/MyP
 
 For further information please check out the [telemetry page](../advanced/telemetry.md).
 
-
 ## Diagrams
 
 ### Normal 🐵 sequence diagram
