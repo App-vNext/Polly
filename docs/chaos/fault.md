@@ -91,7 +91,7 @@ var pipeline = new ResiliencePipelineBuilder()
 
 | Property          | Default Value | Description                                                                                                            |
 |-------------------|---------------|------------------------------------------------------------------------------------------------------------------------|
-| `FaultGenerator`  | `null`        | This **mandatory** delegate allows you to inject exception by utilizing information that is only available at runtime. |
+| `FaultGenerator`  | `null`        | This required delegate allows you to inject exception by utilizing information that is only available at runtime. |
 | `OnFaultInjected` | `null`        | If provided then it will be invoked after the fault injection occurred.                                                |
 
 ## Telemetry

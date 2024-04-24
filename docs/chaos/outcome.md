@@ -82,7 +82,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
 
 | Property            | Default Value | Description                                                                                                                 |
 |---------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------|
-| `OutcomeGenerator`  | `null`        | This **mandatory** delegate allows you to inject custom outcome by utilizing information that is only available at runtime. |
+| `OutcomeGenerator`  | `null`        | This required delegate allows you to inject custom outcome by utilizing information that is only available at runtime. |
 | `OnOutcomeInjected` | `null`        | If provided then it will be invoked after the outcome injection occurred.                                                   |
 
 > [!NOTE]
