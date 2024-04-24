@@ -52,10 +52,14 @@ This section highlights the major differences compared to the [`Polly.Contrib.Si
 - **Unified configuration options**: The `InjectOptionsBase` and `InjectOptionsAsyncBase` are now consolidated into `ChaosStrategyOptions`. This change brings Simmy in line with the Polly v8 API, offering built-in support for options-based configuration and seamless integration of synchronous and asynchronous executions.
 - **Chaos strategies enabled by default**: Adding a chaos strategy (previously known as monkey policy) now means it's active right away. This is a departure from earlier versions, where the monkey policy had to be explicitly enabled.
 - **API changes**: The new version of Simmy introduces several API updates. While this list isn't complete, it includes key changes like renaming `Inject` to `AddChaos` and switching from `Result` to `Outcome`. Here are some specific renames:
-  - `InjectException` is now `AddChaosFault`
-  - `InjectResult` is now `AddChaosOutcome`
-  - `InjectBehavior` is now `AddChaosBehavior`
-  - `InjectLatency` is now `AddChaosLatency`
+
+| From              | To                 |
+|-------------------|--------------------|
+| `InjectException` | `AddChaosFault`    |
+| `InjectResult`    | `AddChaosOutcome`  |
+| `InjectBehavior`  | `AddChaosBehavior` |
+| `InjectLatency`   | `AddChaosLatency`  |
+
 - **Sync and async unification**: Before, Simmy had various methods to set policies like `InjectLatency`, `InjectLatencyAsync`, `InjectLatency<T>`, and `InjectLatencyAsync<T>`. With the new version based on Polly v8, these methods have been combined into a single `AddChaosLatency` extension that works for both `ResiliencePipelineBuilder` and `ResiliencePipelineBuilder<T>`. These rules are covering all types of chaos strategies (Outcome, Fault, Latency, and Behavior).
 
 ## Motivation
@@ -82,12 +86,12 @@ Chaos strategies (formerly known as Monkey strategies) are in essence a [Resilie
 
 ### Built-in strategies
 
-| Strategy                | Reactive | What does the strategy do?                                           |
-|-------------------------|----------|----------------------------------------------------------------------|
-| [Fault](fault.md)       | No       | Injects exceptions in your system.                                   |
-| [Outcome](outcome.md)   | Yes      | Injects fake outcomes (results or exceptions) in your system.        |
-| [Latency](latency.md)   | No       | Injects latency into executions before the calls are made.           |
-| [Behavior](behavior.md) | No       | Allows you to inject *any* extra behavior, before a call is placed.  |
+| Strategy                | Type      | What does the strategy do?                                          |
+|-------------------------|-----------|---------------------------------------------------------------------|
+| [Fault](fault.md)       | Proactive | Injects exceptions in your system.                                  |
+| [Outcome](outcome.md)   | Reactive  | Injects fake outcomes (results or exceptions) in your system.       |
+| [Latency](latency.md)   | Proactive | Injects latency into executions before the calls are made.          |
+| [Behavior](behavior.md) | Proactive | Allows you to inject *any* extra behavior, before a call is placed. |
 
 ## Common options across strategies
 
@@ -114,12 +118,14 @@ All the strategies' options implement the [`ChaosStrategyOptions`](xref:Polly.Si
 
 ## Telemetry
 
-The telemetry of chaos strategies is seamlessly integrated with Polly [telemetry infrastructure](../advanced/telemetry.md). The chaos strategies produce the following events:
+The telemetry of chaos strategies is seamlessly integrated with Polly [telemetry infrastructure](../advanced/telemetry.md). The chaos strategies produce the following information events:
 
-- `Chaos.OnFault`
-- `Chaos.OnOutcome`
-- `Chaos.OnLatency`
-- `Chaos.OnBehavior`
+| Event              | Details                       |
+|--------------------|-------------------------------|
+| `Chaos.OnFault`    | [Link](fault.md#telemetry)    |
+| `Chaos.OnOutcome`  | [Link](outcome.md#telemetry)  |
+| `Chaos.OnLatency`  | [Link](latency.md#telemetry)  |
+| `Chaos.OnBehavior` | [Link](behavior.md#telemetry) |
 
 ## Patterns
 
