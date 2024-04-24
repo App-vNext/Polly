@@ -86,7 +86,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
 | `OnOutcomeInjected` | `null`        | If provided then it will be invoked after the outcome injection occurred.                                                   |
 
 > [!NOTE]
-> Please note this strategy is a **reactive** chaos strategy, but it does not have a **ShouldHandle** delegate.
+> Please note this strategy is a reactive chaos strategy, but it does not have a `ShouldHandle` delegate.
 
 ## Telemetry
 
