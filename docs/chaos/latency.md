@@ -92,11 +92,11 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Defaults
 
-| Property            | Default Value | Description                                                                                                                 |
-|---------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------|
-| `Latency`           | 30 seconds    | Defines a **static** delay to be injected.                                                                                  |
-| `LatencyGenerator`  | `null`        | This delegate allows you to **dynamically** calculate the delay by utilizing information that is only available at runtime. |
-| `OnLatencyInjected` | `null`        | If provided then it will be invoked after the latency injection occurred.                                                   |
+| Property            | Default Value | Description                                                                                                          |
+|---------------------|---------------|----------------------------------------------------------------------------------------------------------------------|
+| `Latency`           | 30 seconds    | Defines a **static** delay to be injected.                                                                           |
+| `LatencyGenerator`  | `null`        | This delegate allows you to **dynamically** inject delay by utilizing information that is only available at runtime. |
+| `OnLatencyInjected` | `null`        | If provided then it will be invoked after the latency injection occurred.                                            |
 
 > [!NOTE]
 > If both `Latency` and `LatencyGenerator` are specified then `Latency` will be ignored.

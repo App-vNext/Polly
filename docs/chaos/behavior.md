@@ -68,10 +68,10 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Defaults
 
-| Property             | Default Value | Description                                    |
-|----------------------|---------------|------------------------------------------------|
-| `OnBehaviorInjected` | `null`        | Action executed when the behavior is injected. |
-| `BehaviorGenerator`  | `null`        | Custom behavior to be injected.                |
+| Property             | Default Value | Description                                                                                                                  |
+|----------------------|---------------|------------------------------------------------------------------------------------------------------------------------------|
+| `BehaviorGenerator`  | `null`        | This **mandatory** delegate allows you to inject custom behavior by utilizing information that is only available at runtime. |
+| `OnBehaviorInjected` | `null`        | If provided then it will be invoked after the behavior injection occurred.                                                   |
 
 ## Telemetry
 
