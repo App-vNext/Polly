@@ -36,8 +36,13 @@ jobs:
           script: |
             const { repo, owner } = context.repo;
             const draft = true;
-            const version = process.env.VERSION;
-            const tag_name = `v${version}`;
+            let version = process.env.VERSION;
+
+            if (version.startsWith('v')) {
+              version = version.slice(1);
+            }
+
+            const tag_name = version;
             const name = tag_name;
 
             const { data: notes } = await github.rest.repos.generateReleaseNotes({
