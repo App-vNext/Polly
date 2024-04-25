@@ -113,7 +113,7 @@ public static class AsyncCircuitBreakerTResultSyntax
     /// again for another <paramref name="durationOfBreak"/>; if no exception or handled result is encountered, the circuit will reset.
     /// </para>
     /// </summary>
-    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
     /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
