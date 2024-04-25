@@ -16,6 +16,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>
@@ -51,6 +52,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>
@@ -85,6 +87,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>
@@ -124,6 +127,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>
@@ -160,6 +164,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>
@@ -197,6 +202,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>

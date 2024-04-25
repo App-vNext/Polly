@@ -19,6 +19,7 @@ public static class ResiliencePipelineConversionExtensions
     /// <summary>
     /// Converts a <see cref="ResiliencePipeline{TResult}"/> to an <see cref="IAsyncPolicy{TResult}"/>.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="strategy">The strategy instance.</param>
     /// <returns>An instance of <see cref="IAsyncPolicy{TResult}"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is <see langword="null"/>.</exception>
@@ -38,6 +39,7 @@ public static class ResiliencePipelineConversionExtensions
     /// Converts a <see cref="ResiliencePipeline{TResult}"/> to an <see cref="ISyncPolicy{TResult}"/>.
     /// </summary>
     /// <param name="strategy">The strategy instance.</param>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <returns>An instance of <see cref="ISyncPolicy{TResult}"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is <see langword="null"/>.</exception>
     public static ISyncPolicy<TResult> AsSyncPolicy<TResult>(this ResiliencePipeline<TResult> strategy)

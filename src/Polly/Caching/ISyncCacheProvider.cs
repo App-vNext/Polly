@@ -28,6 +28,7 @@ public interface ISyncCacheProvider
 /// <summary>
 /// Defines methods for classes providing synchronous cache functionality for Polly <see cref="CachePolicy{TResult}"/>s.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public interface ISyncCacheProvider<TResult>
 {
     /// <summary>

@@ -48,6 +48,7 @@ public class FallbackPolicy : Policy, IFallbackPolicy
 /// <summary>
 /// A fallback policy that can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
 {
     private readonly Action<DelegateResult<TResult>, Context> _onFallback;

@@ -9,6 +9,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider"/> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider"/> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider"/>, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
@@ -28,6 +29,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider"/> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider"/> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider"/>, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
@@ -48,6 +50,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -69,6 +72,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -91,6 +95,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -112,6 +117,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -134,6 +140,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="onCacheGet">Delegate to call on a cache hit, when value is returned from cache.</param>
@@ -167,6 +174,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="onCacheGet">Delegate to call on a cache hit, when value is returned from cache.</param>
@@ -201,6 +209,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -237,6 +246,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -274,6 +284,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -310,6 +321,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -347,6 +359,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider"/> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider"/> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider"/>, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
@@ -361,6 +374,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider"/> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider"/> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider"/>, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
@@ -376,6 +390,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider"/> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider"/> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider"/>, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
@@ -391,6 +406,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -407,6 +423,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -429,6 +446,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -451,6 +469,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -467,6 +486,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -489,6 +509,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -511,6 +532,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="onCacheGet">Delegate to call on a cache hit, when value is returned from cache.</param>
@@ -540,6 +562,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="onCacheGet">Delegate to call on a cache hit, when value is returned from cache.</param>
@@ -569,6 +592,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="onCacheGet">Delegate to call on a cache hit, when value is returned from cache.</param>
@@ -598,6 +622,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -630,6 +655,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -662,6 +688,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -694,6 +721,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttl">Duration (ttl) for which to cache values.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -726,6 +754,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>
@@ -759,6 +788,7 @@ public partial class Policy
     /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
     /// </para>
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="cacheProvider">The cache provider.</param>
     /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
     /// <param name="cacheKeyStrategy">The cache key strategy.</param>

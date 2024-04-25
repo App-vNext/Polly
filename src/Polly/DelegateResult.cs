@@ -3,6 +3,7 @@
 /// <summary>
 /// The captured outcome of executing an individual Func&lt;TResult&gt;.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public class DelegateResult<TResult>
 {
     /// <summary>

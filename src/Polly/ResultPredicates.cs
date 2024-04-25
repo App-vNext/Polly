@@ -3,6 +3,7 @@
 /// <summary>
 /// A collection of predicates used to define whether a policy handles a given <typeparamref name="TResult"/> value.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public class ResultPredicates<TResult>
 {
     private List<ResultPredicate<TResult>> _predicates;

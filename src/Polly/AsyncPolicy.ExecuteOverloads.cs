@@ -123,6 +123,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="action">The action to perform.</param>
     /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
     /// <returns>The value returned by the action.</returns>
@@ -155,6 +156,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="action">The action to perform.</param>
     /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
@@ -191,6 +193,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="action">The action to perform.</param>
     /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>

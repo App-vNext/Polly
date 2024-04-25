@@ -62,6 +62,7 @@ public class CachePolicy : Policy, ICachePolicy
 /// <summary>
 /// A cache policy that can be applied to the results of delegate executions.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public class CachePolicy<TResult> : Policy<TResult>, ICachePolicy<TResult>
 {
     private readonly Action<Context, string> _onCacheGet;

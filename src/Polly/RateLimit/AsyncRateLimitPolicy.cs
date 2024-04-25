@@ -22,6 +22,7 @@ public class AsyncRateLimitPolicy : AsyncPolicy, IRateLimitPolicy
 /// <summary>
 /// A rate-limit policy that can be applied to asynchronous delegates returning a value of type <typeparamref name="TResult"/>.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public class AsyncRateLimitPolicy<TResult> : AsyncPolicy<TResult>, IRateLimitPolicy<TResult>
 {
     private readonly IRateLimiter _rateLimiter;

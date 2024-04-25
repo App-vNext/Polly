@@ -54,6 +54,7 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
 /// <summary>
 /// A retry policy that can be applied to asynchronous delegates returning a value of type <typeparamref name="TResult"/>.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TResult>
 {
     private readonly Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> _onRetryAsync;

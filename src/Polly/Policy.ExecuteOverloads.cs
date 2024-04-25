@@ -247,6 +247,7 @@ public abstract partial class Policy : ISyncPolicy
     /// <summary>
     /// Executes the specified action within the policy and returns the captured result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="action">The action to perform.</param>
     /// <returns>The captured result.</returns>
     [DebuggerStepThrough]
@@ -256,6 +257,7 @@ public abstract partial class Policy : ISyncPolicy
     /// <summary>
     /// Executes the specified action within the policy and returns the captured result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="action">The action to perform.</param>
     /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
     /// <returns>The captured result.</returns>
@@ -267,6 +269,7 @@ public abstract partial class Policy : ISyncPolicy
     /// <summary>
     /// Executes the specified action within the policy and returns the captured result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="action">The action to perform.</param>
     /// <param name="context">Context data that is passed to the exception policy.</param>
     /// <returns>The captured result.</returns>
@@ -301,6 +304,7 @@ public abstract partial class Policy : ISyncPolicy
     /// <summary>
     /// Executes the specified action within the policy and returns the captured result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="action">The action to perform.</param>
     /// <param name="context">Context data that is passed to the exception policy.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
