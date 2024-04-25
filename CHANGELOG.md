@@ -2,6 +2,8 @@
 
 <!-- markdownlint-disable MD034 -->
 
+<!-- next-release -->
+
 ## 8.3.1
 
 * Add example for chaos engineering by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1956
