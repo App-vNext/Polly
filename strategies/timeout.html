@@ -207,7 +207,7 @@ catch (TimeoutRejectedException)
 <tr>
 <td><code>Timeout</code></td>
 <td>30 seconds</td>
-<td>Defines a <strong>static</strong> period within which the delegate should complete, otherwise it will be cancelled.</td>
+<td>Defines a <strong>fixed</strong> period within which the delegate should complete, otherwise it will be cancelled.</td>
 </tr>
 <tr>
 <td><code>TimeoutGenerator</code></td>
@@ -261,7 +261,7 @@ Resilience event occurred. EventName: 'OnTimeout', Source: 'MyPipeline/MyPipelin
 <p>So, if the callback either finishes on time or throws an exception then there will be no telemetry emitted.</p>
 <p>Also remember that the <code>Result</code> will be <strong>always empty</strong> for the <code>OnTimeout</code> telemetry event.</p>
 </div>
-<p>For further information please check out the <a href="https://www.pollydocs.org/advanced/telemetry">telemetry page</a>.</p>
+<p>For further information please check out the <a href="../advanced/telemetry.html">telemetry page</a>.</p>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="happy-path-sequence-diagram">Happy path sequence diagram</h3>
 <pre><code class="lang-mermaid">sequenceDiagram

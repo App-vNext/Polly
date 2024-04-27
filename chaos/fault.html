@@ -89,12 +89,20 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html"><code>ChaosFaultStrategyOptions</code></a></li>
-<li><strong>Extensions</strong>: <code>AddChaosFault</code></li>
-<li><strong>Strategy Type</strong>: Proactive</li>
+<li><strong>Option(s)</strong>:
+<ul>
+<li><a class="xref" href="../api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html"><code>ChaosFaultStrategyOptions</code></a></li>
+</ul>
+</li>
+<li><strong>Extensions</strong>:
+<ul>
+<li><code>AddChaosFault</code></li>
+</ul>
+</li>
+<li><strong>Exception(s)</strong>: -</li>
 </ul>
 <hr>
-<p>The fault chaos strategy is designed to introduce faults (exceptions) into the system, simulating real-world scenarios where operations might fail unexpectedly. It is configurable to inject specific types of exceptions or use custom logic to generate faults dynamically.</p>
+<p>The fault <strong>proactive</strong> chaos strategy is designed to introduce faults (exceptions) into the system, simulating real-world scenarios where operations might fail unexpectedly. It is configurable to inject specific types of exceptions or use custom logic to generate faults dynamically.</p>
 <h2 id="usage">Usage</h2>
 <!-- snippet: chaos-fault-usage -->
 <pre><code class="lang-cs">// 10% of invocations will be randomly affected and one of the exceptions will be thrown (equal probability).
@@ -175,17 +183,47 @@ new ResiliencePipelineBuilder().AddChaosFault(0.1, () =&gt; new InvalidOperation
 </thead>
 <tbody>
 <tr>
-<td><code>OnFaultInjected</code></td>
-<td><code>null</code></td>
-<td>Action executed when the fault is injected.</td>
-</tr>
-<tr>
 <td><code>FaultGenerator</code></td>
 <td><code>null</code></td>
-<td>Generates the fault to inject for a given execution.</td>
+<td>This required delegate allows you to inject exception by utilizing information that is only available at runtime.</td>
+</tr>
+<tr>
+<td><code>OnFaultInjected</code></td>
+<td><code>null</code></td>
+<td>If provided then it will be invoked after the fault injection occurred.</td>
 </tr>
 </tbody>
 </table>
+<h2 id="telemetry">Telemetry</h2>
+<p>The fault chaos strategy reports the following telemetry events:</p>
+<table>
+<thead>
+<tr>
+<th>Event Name</th>
+<th>Event Severity</th>
+<th>When?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Chaos.OnFault</code></td>
+<td><code>Information</code></td>
+<td>Just before the strategy calls the <code>OnFaultInjected</code> delegate</td>
+</tr>
+</tbody>
+</table>
+<p>Here are some sample events:</p>
+<pre><code class="lang-none">Resilience event occurred. EventName: 'Chaos.OnFault', Source: '(null)/(null)/Chaos.Fault', Operation Key: '', Result: ''
+
+Resilience event occurred. EventName: 'Chaos.OnFault', Source: 'MyPipeline/MyPipelineInstance/MyChaosFaultStrategy', Operation Key: 'MyFaultInjectedOperation', Result: ''
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note that the <code>Chaos.OnFault</code> telemetry event will be reported <strong>only if</strong> the fault chaos strategy injects an exception which is wrapped into a <code>ValueTask</code>.</p>
+<p>So, if the fault is either not injected or injected and throws an exception then there will be no telemetry emitted.</p>
+<p>Also remember that the <code>Result</code> will be <strong>always empty</strong> for the <code>Chaos.OnFault</code> telemetry event.</p>
+</div>
+<p>For further information please check out the <a href="../advanced/telemetry.html">telemetry page</a>.</p>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="normal--sequence-diagram">Normal 🐵 sequence diagram</h3>
 <pre><code class="lang-mermaid">sequenceDiagram

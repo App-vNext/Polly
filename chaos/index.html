@@ -131,14 +131,35 @@ builder
 <li><strong>From <code>MonkeyPolicy</code> to <code>ChaosStrategy</code></strong>: We've updated the terminology from <code>Monkey</code> to <code>Chaos</code> to better align with the well-recognized principles of <em>chaos engineering</em>.</li>
 <li><strong>Unified configuration options</strong>: The <code>InjectOptionsBase</code> and <code>InjectOptionsAsyncBase</code> are now consolidated into <code>ChaosStrategyOptions</code>. This change brings Simmy in line with the Polly v8 API, offering built-in support for options-based configuration and seamless integration of synchronous and asynchronous executions.</li>
 <li><strong>Chaos strategies enabled by default</strong>: Adding a chaos strategy (previously known as monkey policy) now means it's active right away. This is a departure from earlier versions, where the monkey policy had to be explicitly enabled.</li>
-<li><strong>API changes</strong>: The new version of Simmy introduces several API updates. While this list isn't complete, it includes key changes like renaming <code>Inject</code> to <code>AddChaos</code> and switching from <code>Result</code> to <code>Outcome</code>. Here are some specific renames:
-<ul>
-<li><code>InjectException</code> is now <code>AddChaosFault</code></li>
-<li><code>InjectResult</code> is now <code>AddChaosOutcome</code></li>
-<li><code>InjectBehavior</code> is now <code>AddChaosBehavior</code></li>
-<li><code>InjectLatency</code> is now <code>AddChaosLatency</code></li>
+<li><strong>API changes</strong>: The new version of Simmy introduces several API updates. While this list isn't complete, it includes key changes like renaming <code>Inject</code> to <code>AddChaos</code> and switching from <code>Result</code> to <code>Outcome</code>. Here are some specific renames:</li>
 </ul>
-</li>
+<table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>InjectException</code></td>
+<td><code>AddChaosFault</code></td>
+</tr>
+<tr>
+<td><code>InjectResult</code></td>
+<td><code>AddChaosOutcome</code></td>
+</tr>
+<tr>
+<td><code>InjectBehavior</code></td>
+<td><code>AddChaosBehavior</code></td>
+</tr>
+<tr>
+<td><code>InjectLatency</code></td>
+<td><code>AddChaosLatency</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
 <li><strong>Sync and async unification</strong>: Before, Simmy had various methods to set policies like <code>InjectLatency</code>, <code>InjectLatencyAsync</code>, <code>InjectLatency&lt;T&gt;</code>, and <code>InjectLatencyAsync&lt;T&gt;</code>. With the new version based on Polly v8, these methods have been combined into a single <code>AddChaosLatency</code> extension that works for both <code>ResiliencePipelineBuilder</code> and <code>ResiliencePipelineBuilder&lt;T&gt;</code>. These rules are covering all types of chaos strategies (Outcome, Fault, Latency, and Behavior).</li>
 </ul>
 <h2 id="motivation">Motivation</h2>
@@ -164,29 +185,29 @@ builder
 <thead>
 <tr>
 <th>Strategy</th>
-<th>Reactive</th>
+<th>Type</th>
 <th>What does the strategy do?</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><a href="fault.html">Fault</a></td>
-<td>No</td>
+<td>Proactive</td>
 <td>Injects exceptions in your system.</td>
 </tr>
 <tr>
 <td><a href="outcome.html">Outcome</a></td>
-<td>Yes</td>
+<td>Reactive</td>
 <td>Injects fake outcomes (results or exceptions) in your system.</td>
 </tr>
 <tr>
 <td><a href="latency.html">Latency</a></td>
-<td>No</td>
+<td>Proactive</td>
 <td>Injects latency into executions before the calls are made.</td>
 </tr>
 <tr>
 <td><a href="behavior.html">Behavior</a></td>
-<td>No</td>
+<td>Proactive</td>
 <td>Allows you to inject <em>any</em> extra behavior, before a call is placed.</td>
 </tr>
 </tbody>
@@ -235,12 +256,12 @@ builder
 <p>If both <code>Enabled</code> and <code>EnabledGenerator</code> are specified then <code>Enabled</code> will be ignored.</p>
 </div>
 <h2 id="telemetry">Telemetry</h2>
-<p>The telemetry of chaos strategies is seamlessly integrated with Polly <a href="../advanced/telemetry.html">telemetry infrastructure</a>. The chaos strategies produce the following events:</p>
+<p>The telemetry of chaos strategies is seamlessly integrated with Polly <a href="../advanced/telemetry.html">telemetry infrastructure</a>. The chaos strategies produce the following information events:</p>
 <ul>
-<li><code>Chaos.OnFault</code></li>
-<li><code>Chaos.OnOutcome</code></li>
-<li><code>Chaos.OnLatency</code></li>
-<li><code>Chaos.OnBehavior</code></li>
+<li><a href="fault.html#telemetry"><code>Chaos.OnFault</code></a></li>
+<li><a href="outcome.html#telemetry"><code>Chaos.OnOutcome</code></a></li>
+<li><a href="latency.html#telemetry"><code>Chaos.OnLatency</code></a></li>
+<li><a href="behavior.html#telemetry"><code>Chaos.OnBehavior</code></a></li>
 </ul>
 <h2 id="patterns">Patterns</h2>
 <h3 id="inject-chaos-selectively">Inject chaos selectively</h3>

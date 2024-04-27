@@ -89,16 +89,20 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>:
+<li><strong>Option(s)</strong>:
 <ul>
 <li><a class="xref" href="../api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html"><code>ChaosOutcomeStrategyOptions&lt;T&gt;</code></a></li>
 </ul>
 </li>
-<li><strong>Extensions</strong>: <code>AddChaosOutcome</code></li>
-<li><strong>Strategy Type</strong>: Reactive</li>
+<li><strong>Extension(s)</strong>:
+<ul>
+<li><code>AddChaosOutcome</code></li>
+</ul>
+</li>
+<li><strong>Exception(s)</strong>: -</li>
 </ul>
 <hr>
-<p>The outcome chaos strategy is designed to inject or substitute fake results into system operations. This allows testing how an application behaves when it receives different types of responses, like successful results, errors, or exceptions.</p>
+<p>The outcome <strong>reactive</strong> chaos strategy is designed to inject or substitute fake results into system operations. This allows testing how an application behaves when it receives different types of responses, like successful results, errors, or exceptions.</p>
 <h2 id="usage">Usage</h2>
 <!-- snippet: chaos-outcome-usage -->
 <pre><code class="lang-cs">// To use OutcomeGenerator&lt;T&gt; to register the results and exceptions to be injected (equal probability)
@@ -172,15 +176,49 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosOutcome(0.1, 
 <tr>
 <td><code>OutcomeGenerator</code></td>
 <td><code>null</code></td>
-<td>Function to generate the outcome for a given execution.</td>
+<td>This required delegate allows you to inject custom outcome by utilizing information that is only available at runtime.</td>
 </tr>
 <tr>
 <td><code>OnOutcomeInjected</code></td>
 <td><code>null</code></td>
-<td>Action executed when the outcome is injected.</td>
+<td>If provided then it will be invoked after the outcome injection occurred.</td>
 </tr>
 </tbody>
 </table>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note this strategy is a reactive chaos strategy, but it does not have a <code>ShouldHandle</code> delegate.</p>
+</div>
+<h2 id="telemetry">Telemetry</h2>
+<p>The outcome chaos strategy reports the following telemetry events:</p>
+<table>
+<thead>
+<tr>
+<th>Event Name</th>
+<th>Event Severity</th>
+<th>When?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Chaos.OnOutcome</code></td>
+<td><code>Information</code></td>
+<td>Just before the strategy calls the <code>OnOutcomeInjected</code> delegate</td>
+</tr>
+</tbody>
+</table>
+<p>Here are some sample events:</p>
+<pre><code class="lang-none">Resilience event occurred. EventName: 'Chaos.OnOutcome', Source: '(null)/(null)/Chaos.Outcome', Operation Key: '', Result: ''
+
+Resilience event occurred. EventName: 'Chaos.OnOutcome', Source: 'MyPipeline/MyPipelineInstance/MyOutcomeStrategy', Operation Key: 'MyOutcomeInjectedOperation', Result: ''
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note that the <code>Chaos.OnOutcome</code> telemetry event will be reported <strong>only if</strong> the outcome chaos strategy injects an outcome object.</p>
+<p>So, if the outcome is not injected or injected but the generator delegate throws an exception then there will be no telemetry emitted.</p>
+<p>Also remember that the <code>Result</code> will be <strong>always empty</strong> for the <code>Chaos.OnOutcome</code> telemetry event.</p>
+</div>
+<p>For further information please check out the <a href="../advanced/telemetry.html">telemetry page</a>.</p>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="normal--sequence-diagram">Normal 🐵 sequence diagram</h3>
 <pre><code class="lang-mermaid">sequenceDiagram

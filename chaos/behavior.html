@@ -89,12 +89,20 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html"><code>ChaosBehaviorStrategyOptions</code></a></li>
-<li><strong>Extensions</strong>: <code>AddChaosBehavior</code></li>
-<li><strong>Strategy Type</strong>: Proactive</li>
+<li><strong>Option(s)</strong>:
+<ul>
+<li><a class="xref" href="../api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html"><code>ChaosBehaviorStrategyOptions</code></a></li>
+</ul>
+</li>
+<li><strong>Extension(s)</strong>:
+<ul>
+<li><code>AddChaosBehavior</code></li>
+</ul>
+</li>
+<li><strong>Exception(s)</strong>: -</li>
 </ul>
 <hr>
-<p>The behavior chaos strategy is designed to inject custom behaviors into system operations right before such an operation is invoked. This strategy is flexible, allowing users to define specific behaviors such as altering the input, simulating resource exhaustion, putting the system in a given state before the actual operation is called, or other operational variations to simulate real-world scenarios.</p>
+<p>The behavior <strong>proactive</strong> chaos strategy is designed to inject custom behaviors into system operations right before such an operation is invoked. This strategy is flexible, allowing users to define specific behaviors such as altering the input, simulating resource exhaustion, putting the system in a given state before the actual operation is called, or other operational variations to simulate real-world scenarios.</p>
 <h2 id="usage">Usage</h2>
 <!-- snippet: chaos-behavior-usage -->
 <pre><code class="lang-cs">// To use a custom delegated for injected behavior
@@ -154,17 +162,47 @@ new ResiliencePipelineBuilder().AddChaosBehavior(0.05, RestartRedisAsync);
 </thead>
 <tbody>
 <tr>
-<td><code>OnBehaviorInjected</code></td>
-<td><code>null</code></td>
-<td>Action executed when the behavior is injected.</td>
-</tr>
-<tr>
 <td><code>BehaviorGenerator</code></td>
 <td><code>null</code></td>
-<td>Custom behavior to be injected.</td>
+<td>This required delegate allows you to inject custom behavior by utilizing information that is only available at runtime.</td>
+</tr>
+<tr>
+<td><code>OnBehaviorInjected</code></td>
+<td><code>null</code></td>
+<td>If provided then it will be invoked after the behavior injection occurred.</td>
 </tr>
 </tbody>
 </table>
+<h2 id="telemetry">Telemetry</h2>
+<p>The behavior chaos strategy reports the following telemetry events:</p>
+<table>
+<thead>
+<tr>
+<th>Event Name</th>
+<th>Event Severity</th>
+<th>When?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Chaos.OnBehavior</code></td>
+<td><code>Information</code></td>
+<td>Just before the strategy calls the <code>OnBehaviorInjected</code> delegate</td>
+</tr>
+</tbody>
+</table>
+<p>Here are some sample events:</p>
+<pre><code class="lang-none">Resilience event occurred. EventName: 'Chaos.OnBehavior', Source: '(null)/(null)/Chaos.Behavior', Operation Key: '', Result: ''
+
+Resilience event occurred. EventName: 'Chaos.OnBehavior', Source: 'MyPipeline/MyPipelineInstance/MyChaosBehaviorStrategy', Operation Key: 'MyBehaviorInjectedOperation', Result: ''
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note that the <code>Chaos.OnBehavior</code> telemetry event will be reported <strong>only if</strong> the behavior chaos strategy injects a custom behavior which does not throw exception.</p>
+<p>So, if the behavior is either not injected or injected and throws an exception then there will be no telemetry emitted.</p>
+<p>Also remember that the <code>Result</code> will be <strong>always empty</strong> for the <code>Chaos.OnBehavior</code> telemetry event.</p>
+</div>
+<p>For further information please check out the <a href="../advanced/telemetry.html">telemetry page</a>.</p>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="normal--sequence-diagram">Normal 🐵 sequence diagram</h3>
 <pre><code class="lang-mermaid">sequenceDiagram

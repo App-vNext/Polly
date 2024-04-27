@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="telemetry">Telemetry</h1>
 
-<p>Starting with version 8, Polly provides telemetry for all built-in resilience strategies.</p>
+<p>Starting with version 8, Polly provides telemetry for all built-in standard and chaos resilience strategies.</p>
 <h2 id="usage">Usage</h2>
 <p>To enable telemetry in Polly, add the <code>Polly.Extensions</code> package to your project:</p>
 <pre><code class="lang-sh">dotnet add package Polly.Extensions
@@ -234,14 +234,18 @@ pipeline.Execute(
 <h4 id="event-names">Event names</h4>
 <p>The <code>event.name</code> tag is reported by individual resilience strategies. The built-in strategies report the following events:</p>
 <ul>
-<li><code>OnRetry</code></li>
-<li><code>OnFallback</code></li>
-<li><code>OnHedging</code></li>
-<li><code>OnTimeout</code></li>
-<li><code>OnCircuitClosed</code></li>
-<li><code>OnCircuitOpened</code></li>
-<li><code>OnCircuitHalfOpened</code></li>
-<li><code>OnRateLimiterRejected</code></li>
+<li><a href="../strategies/retry.html#telemetry"><code>OnRetry</code></a></li>
+<li><a href="../strategies/fallback.html#telemetry"><code>OnFallback</code></a></li>
+<li><a href="../strategies/hedging.html#telemetry"><code>OnHedging</code></a></li>
+<li><a href="../strategies/timeout.html#telemetry"><code>OnTimeout</code></a></li>
+<li><a href="../strategies/circuit-breaker.html#telemetry"><code>OnCircuitClosed</code></a></li>
+<li><a href="../strategies/circuit-breaker.html#telemetry"><code>OnCircuitOpened</code></a></li>
+<li><a href="../strategies/circuit-breaker.html#telemetry"><code>OnCircuitHalfOpened</code></a></li>
+<li><a href="../strategies/rate-limiter.html#telemetry"><code>OnRateLimiterRejected</code></a></li>
+<li><a href="../chaos/fault.html#telemetry"><code>Chaos.OnFault</code></a></li>
+<li><a href="../chaos/outcome.html#telemetry"><code>Chaos.OnOutcome</code></a></li>
+<li><a href="../chaos/latency.html#telemetry"><code>Chaos.OnLatency</code></a></li>
+<li><a href="../chaos/behavior.html#telemetry"><code>Chaos.OnBehavior</code></a></li>
 </ul>
 <h3 id="instrument-resiliencepollystrategyattemptduration">Instrument: <code>resilience.polly.strategy.attempt.duration</code></h3>
 <ul>

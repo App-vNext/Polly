@@ -89,12 +89,20 @@
 
 <h2 id="about">About</h2>
 <ul>
-<li><strong>Options</strong>: <a class="xref" href="../api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html"><code>ChaosLatencyStrategyOptions</code></a></li>
-<li><strong>Extensions</strong>: <code>AddChaosLatency</code></li>
-<li><strong>Strategy Type</strong>: Proactive</li>
+<li><strong>Option(s)</strong>:
+<ul>
+<li><a class="xref" href="../api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html"><code>ChaosLatencyStrategyOptions</code></a></li>
+</ul>
+</li>
+<li><strong>Extension(s)</strong>:
+<ul>
+<li><code>AddChaosLatency</code></li>
+</ul>
+</li>
+<li><strong>Exception(s)</strong>: -</li>
 </ul>
 <hr>
-<p>The latency chaos strategy is designed to introduce controlled delays into system operations, simulating network latency or slow processing times. This strategy helps in assessing and improving the resilience of applications against increased response times.</p>
+<p>The latency <strong>proactive</strong> chaos strategy is designed to introduce controlled delays into system operations, simulating network latency or slow processing times. This strategy helps in assessing and improving the resilience of applications against increased response times.</p>
 <h2 id="usage">Usage</h2>
 <!-- snippet: chaos-latency-usage -->
 <pre><code class="lang-cs">// Latency using the default options.
@@ -179,18 +187,18 @@ new ResiliencePipelineBuilder().AddChaosLatency(0.1, TimeSpan.FromSeconds(30));
 <tbody>
 <tr>
 <td><code>Latency</code></td>
-<td><code>30 seconds</code></td>
-<td>A <code>TimeSpan</code> indicating the delay to be injected.</td>
+<td>30 seconds</td>
+<td>Defines a <strong>fixed</strong> delay to be injected.</td>
 </tr>
 <tr>
 <td><code>LatencyGenerator</code></td>
 <td><code>null</code></td>
-<td>Generates the latency to inject for a given execution.</td>
+<td>This delegate allows you to <strong>dynamically</strong> inject delay by utilizing information that is only available at runtime.</td>
 </tr>
 <tr>
 <td><code>OnLatencyInjected</code></td>
 <td><code>null</code></td>
-<td>Action executed when latency is injected.</td>
+<td>If provided then it will be invoked after the latency injection occurred.</td>
 </tr>
 </tbody>
 </table>
@@ -198,6 +206,41 @@ new ResiliencePipelineBuilder().AddChaosLatency(0.1, TimeSpan.FromSeconds(30));
 <h5>Note</h5>
 <p>If both <code>Latency</code> and <code>LatencyGenerator</code> are specified then <code>Latency</code> will be ignored.</p>
 </div>
+<hr>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Please note that if the calculated latency is negative (regardless if it's fixed or dynamic) then it will not be injected.</p>
+</div>
+<h2 id="telemetry">Telemetry</h2>
+<p>The latency chaos strategy reports the following telemetry events:</p>
+<table>
+<thead>
+<tr>
+<th>Event Name</th>
+<th>Event Severity</th>
+<th>When?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Chaos.OnLatency</code></td>
+<td><code>Information</code></td>
+<td>Just before the strategy calls the <code>OnLatencyInjected</code> delegate</td>
+</tr>
+</tbody>
+</table>
+<p>Here are some sample events:</p>
+<pre><code class="lang-none">Resilience event occurred. EventName: 'Chaos.OnLatency', Source: '(null)/(null)/Chaos.Latency', Operation Key: '', Result: ''
+
+Resilience event occurred. EventName: 'Chaos.OnLatency', Source: 'MyPipeline/MyPipelineInstance/MyLatencyStrategy', Operation Key: 'MyLatencyInjectedOperation', Result: ''
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Please note that the <code>Chaos.OnLatency</code> telemetry event will be reported <strong>only if</strong> the latency chaos strategy injects a positive delay.</p>
+<p>So, if the latency is not injected then there will be no telemetry emitted. Also if injected but the latency is negative or the <code>LatencyGenerator</code> throws an exception then there will be no telemetry emitted.</p>
+<p>Also remember that the <code>Result</code> will be <strong>always empty</strong> for the <code>Chaos.OnLatency</code> telemetry event.</p>
+</div>
+<p>For further information please check out the <a href="../advanced/telemetry.html">telemetry page</a>.</p>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="normal--sequence-diagram">Normal 🐵 sequence diagram</h3>
 <pre><code class="lang-mermaid">sequenceDiagram

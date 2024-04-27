@@ -217,7 +217,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddCircuitBreaker(opt
 <tr>
 <td><code>BreakDuration</code></td>
 <td>5 seconds</td>
-<td>Defines a <strong>static</strong> time period for which the circuit will remain broken/open before attempting to reset.</td>
+<td>Defines a <strong>fixed</strong> time period for which the circuit will remain broken/open before attempting to reset.</td>
 </tr>
 <tr>
 <td><code>BreakDurationGenerator</code></td>
@@ -306,7 +306,7 @@ Resilience event occurred. EventName: 'OnCircuitClosed', Source: 'MyPipeline/MyP
 <p>Remember in case of <code>ManualControl</code> the <code>OnCircuitHalfOpened</code> telemetry event will not be emitted.</p>
 <p>Also the <code>Result</code> will be <strong>always empty</strong> for the <code>OnCircuitHalfOpened</code> telemetry event.</p>
 </div>
-<p>For further information please check out the <a href="https://www.pollydocs.org/advanced/telemetry">telemetry page</a>.</p>
+<p>For further information please check out the <a href="../advanced/telemetry.html">telemetry page</a>.</p>
 <h2 id="diagrams">Diagrams</h2>
 <h3 id="state-diagram">State diagram</h3>
 <pre><code class="lang-mermaid">stateDiagram-v2

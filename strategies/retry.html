@@ -299,7 +299,7 @@ Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Oper
 <p>On the other hand the <code>Execution attempt</code> event will be <strong>always</strong> reported regardless whether the strategy has to perform any retries.</p>
 <p>Also remember that <code>Attempt: '0'</code> relates to the original execution attempt.</p>
 </div>
-<p>For further information please check out the <a href="https://www.pollydocs.org/advanced/telemetry">telemetry page</a>.</p>
+<p>For further information please check out the <a href="../advanced/telemetry.html">telemetry page</a>.</p>
 <h2 id="calculation-of-the-next-delay">Calculation of the next delay</h2>
 <p>If the <code>ShouldHandle</code> predicate returns <code>true</code> and the next attempt number is not greater than <code>MaxRetryAttempts</code> then the retry strategy calculates the next delay.</p>
 <p>There are many properties that may contribute to this calculation:</p>
