@@ -2,13 +2,15 @@
 
 ## About
 
-- **Options**: [`ChaosLatencyStrategyOptions`](xref:Polly.Simmy.Latency.ChaosLatencyStrategyOptions)
-- **Extensions**: `AddChaosLatency`
-- **Strategy Type**: Proactive
+- **Option(s)**:
+  - [`ChaosLatencyStrategyOptions`](xref:Polly.Simmy.Latency.ChaosLatencyStrategyOptions)
+- **Extension(s)**:
+  - `AddChaosLatency`
+- **Exception(s)**: -
 
 ---
 
-The latency chaos strategy is designed to introduce controlled delays into system operations, simulating network latency or slow processing times. This strategy helps in assessing and improving the resilience of applications against increased response times.
+The latency **proactive** chaos strategy is designed to introduce controlled delays into system operations, simulating network latency or slow processing times. This strategy helps in assessing and improving the resilience of applications against increased response times.
 
 ## Usage
 
@@ -90,14 +92,44 @@ var pipeline = new ResiliencePipelineBuilder()
 
 ## Defaults
 
-| Property            | Default Value | Description                                            |
-|---------------------|---------------|--------------------------------------------------------|
-| `Latency`           | `30 seconds`  | A `TimeSpan` indicating the delay to be injected.      |
-| `LatencyGenerator`  | `null`        | Generates the latency to inject for a given execution. |
-| `OnLatencyInjected` | `null`        | Action executed when latency is injected.              |
+| Property            | Default Value | Description                                                                                                          |
+|---------------------|---------------|----------------------------------------------------------------------------------------------------------------------|
+| `Latency`           | 30 seconds    | Defines a **fixed** delay to be injected.                                                                            |
+| `LatencyGenerator`  | `null`        | This delegate allows you to **dynamically** inject delay by utilizing information that is only available at runtime. |
+| `OnLatencyInjected` | `null`        | If provided then it will be invoked after the latency injection occurred.                                            |
 
 > [!NOTE]
 > If both `Latency` and `LatencyGenerator` are specified then `Latency` will be ignored.
+
+---
+
+> [!IMPORTANT]
+> Please note that if the calculated latency is negative (regardless if it's fixed or dynamic) then it will not be injected.
+
+## Telemetry
+
+The latency chaos strategy reports the following telemetry events:
+
+| Event Name        | Event Severity | When?                                                           |
+|-------------------|----------------|-----------------------------------------------------------------|
+| `Chaos.OnLatency` | `Information`  | Just before the strategy calls the `OnLatencyInjected` delegate |
+
+Here are some sample events:
+
+```none
+Resilience event occurred. EventName: 'Chaos.OnLatency', Source: '(null)/(null)/Chaos.Latency', Operation Key: '', Result: ''
+
+Resilience event occurred. EventName: 'Chaos.OnLatency', Source: 'MyPipeline/MyPipelineInstance/MyLatencyStrategy', Operation Key: 'MyLatencyInjectedOperation', Result: ''
+```
+
+> [!NOTE]
+> Please note that the `Chaos.OnLatency` telemetry event will be reported **only if** the latency chaos strategy injects a positive delay.
+>
+> So, if the latency is not injected then there will be no telemetry emitted. Also if injected but the latency is negative or the `LatencyGenerator` throws an exception then there will be no telemetry emitted.
+>
+> Also remember that the `Result` will be **always empty** for the `Chaos.OnLatency` telemetry event.
+
+For further information please check out the [telemetry page](../advanced/telemetry.md).
 
 ## Diagrams
 

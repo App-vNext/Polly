@@ -113,7 +113,7 @@ Execution attempt. Source: 'MyPipeline/MyPipelineInstance/Hedging', Operation Ke
 >
 > Also remember that `Attempt: '0'` relates to the original execution attempt.
 
-For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
+For further information please check out the [telemetry page](../advanced/telemetry.md).
 
 ## Concurrency modes
 

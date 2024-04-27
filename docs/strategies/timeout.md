@@ -113,7 +113,7 @@ catch (TimeoutRejectedException)
 
 | Property           | Default Value | Description                                                                                                                          |
 |--------------------|---------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| `Timeout`          | 30 seconds    | Defines a **static** period within which the delegate should complete, otherwise it will be cancelled.                               |
+| `Timeout`          | 30 seconds    | Defines a **fixed** period within which the delegate should complete, otherwise it will be cancelled.                                |
 | `TimeoutGenerator` | `null`        | This delegate allows you to **dynamically** calculate the timeout period by utilizing information that is only available at runtime. |
 | `OnTimeout`        | `null`        | If provided then it will be invoked after the timeout occurred.                                                                      |
 
@@ -153,7 +153,7 @@ Resilience event occurred. EventName: 'OnTimeout', Source: 'MyPipeline/MyPipelin
 >
 > Also remember that the `Result` will be **always empty** for the `OnTimeout` telemetry event.
 
-For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
+For further information please check out the [telemetry page](../advanced/telemetry.md).
 
 ## Diagrams
 
