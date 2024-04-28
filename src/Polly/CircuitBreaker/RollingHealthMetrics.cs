@@ -70,7 +70,9 @@ internal class RollingHealthMetrics : IHealthMetrics
         }
 
         while (_windows.Count > 0 && now - _windows.Peek().StartedAt >= _samplingDuration)
+        {
             _windows.Dequeue();
+        }
 
         return _currentWindow;
     }

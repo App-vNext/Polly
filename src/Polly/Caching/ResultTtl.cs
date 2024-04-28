@@ -16,7 +16,10 @@ public class ResultTtl<TResult> : ITtlStrategy<TResult>
     public ResultTtl(Func<TResult?, Ttl> ttlFunc)
     {
         if (ttlFunc == null)
+        {
             throw new ArgumentNullException(nameof(ttlFunc));
+        }
+
         _ttlFunc = (_, result) => ttlFunc(result);
     }
 

@@ -22,7 +22,9 @@ public class ResultPredicates<TResult>
     public bool AnyMatch(TResult result)
     {
         if (_predicates == null)
+        {
             return false;
+        }
 
         return _predicates.Any(predicate => predicate(result));
     }

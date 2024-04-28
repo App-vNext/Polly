@@ -188,16 +188,29 @@ public static class AsyncCircuitBreakerSyntax
     public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
     {
         if (exceptionsAllowedBeforeBreaking <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(exceptionsAllowedBeforeBreaking), "Value must be greater than zero.");
+        }
+
         if (durationOfBreak < TimeSpan.Zero)
+        {
             throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");
+        }
 
         if (onBreak == null)
+        {
             throw new ArgumentNullException(nameof(onBreak));
+        }
+
         if (onReset == null)
+        {
             throw new ArgumentNullException(nameof(onReset));
+        }
+
         if (onHalfOpen == null)
+        {
             throw new ArgumentNullException(nameof(onHalfOpen));
+        }
 
         var breakerController = new ConsecutiveCountCircuitController<EmptyStruct>(
             exceptionsAllowedBeforeBreaking,

@@ -103,7 +103,9 @@ public abstract partial class AsyncPolicy<TResult> : IAsyncPolicy<TResult>
     public async Task<TResult> ExecuteAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
         if (context == null)
+        {
             throw new ArgumentNullException(nameof(context));
+        }
 
         SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
 
@@ -222,7 +224,9 @@ public abstract partial class AsyncPolicy<TResult> : IAsyncPolicy<TResult>
     public async Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
         if (context == null)
+        {
             throw new ArgumentNullException(nameof(context));
+        }
 
         try
         {

@@ -26,7 +26,10 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
         : this()
     {
         if (contextData == null)
+        {
             throw new ArgumentNullException(nameof(contextData));
+        }
+
         wrappedDictionary = new Dictionary<string, object>(contextData);
     }
 
