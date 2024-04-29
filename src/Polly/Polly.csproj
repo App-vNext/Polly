@@ -19,15 +19,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>
-      Polly is a .NET resilience and transient-fault-handling library that allows
-      developers to express resilience and transient fault handling policies such as Retry, Circuit
-      Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.
-    </Description>
-    <PackageTags>
-      Polly Exception Handling Resilience Transient Fault Policy Circuit Breaker
-      CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle
-    </PackageTags>
+    <Description>Polly is a .NET resilience and transient-fault-handling library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
+    <PackageTags>Polly Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
