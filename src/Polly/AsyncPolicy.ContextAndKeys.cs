@@ -10,7 +10,9 @@ public abstract partial class AsyncPolicy
     public AsyncPolicy WithPolicyKey(string policyKey)
     {
         if (policyKeyInternal != null)
+        {
             throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        }
 
         policyKeyInternal = policyKey;
         return this;
@@ -24,7 +26,9 @@ public abstract partial class AsyncPolicy
     IAsyncPolicy IAsyncPolicy.WithPolicyKey(string policyKey)
     {
         if (policyKeyInternal != null)
+        {
             throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        }
 
         policyKeyInternal = policyKey;
         return this;
@@ -41,7 +45,9 @@ public abstract partial class AsyncPolicy<TResult>
     public AsyncPolicy<TResult> WithPolicyKey(string policyKey)
     {
         if (policyKeyInternal != null)
+        {
             throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        }
 
         policyKeyInternal = policyKey;
         return this;
@@ -55,7 +61,9 @@ public abstract partial class AsyncPolicy<TResult>
     IAsyncPolicy<TResult> IAsyncPolicy<TResult>.WithPolicyKey(string policyKey)
     {
         if (policyKeyInternal != null)
+        {
             throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        }
 
         policyKeyInternal = policyKey;
         return this;

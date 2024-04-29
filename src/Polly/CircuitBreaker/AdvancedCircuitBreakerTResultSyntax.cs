@@ -230,22 +230,44 @@ public static class AdvancedCircuitBreakerTResultSyntax
         var resolutionOfCircuit = TimeSpan.FromTicks(AdvancedCircuitController<EmptyStruct>.ResolutionOfCircuitTimer);
 
         if (failureThreshold <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(failureThreshold), "Value must be greater than zero.");
+        }
+
         if (failureThreshold > 1)
+        {
             throw new ArgumentOutOfRangeException(nameof(failureThreshold), "Value must be less than or equal to one.");
+        }
+
         if (samplingDuration < resolutionOfCircuit)
+        {
             throw new ArgumentOutOfRangeException(nameof(samplingDuration), $"Value must be equal to or greater than {resolutionOfCircuit.TotalMilliseconds} milliseconds. This is the minimum resolution of the CircuitBreaker timer.");
+        }
+
         if (minimumThroughput <= 1)
+        {
             throw new ArgumentOutOfRangeException(nameof(minimumThroughput), "Value must be greater than one.");
+        }
+
         if (durationOfBreak < TimeSpan.Zero)
+        {
             throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");
+        }
 
         if (onBreak == null)
+        {
             throw new ArgumentNullException(nameof(onBreak));
+        }
+
         if (onReset == null)
+        {
             throw new ArgumentNullException(nameof(onReset));
+        }
+
         if (onHalfOpen == null)
+        {
             throw new ArgumentNullException(nameof(onHalfOpen));
+        }
 
         var breakerController = new AdvancedCircuitController<TResult>(
             failureThreshold,

@@ -48,7 +48,9 @@ public static class IPolicyWrapExtension
     public static IEnumerable<TPolicy> GetPolicies<TPolicy>(this IPolicyWrap policyWrap, Func<TPolicy, bool> filter)
     {
         if (filter == null)
+        {
             throw new ArgumentNullException(nameof(filter));
+        }
 
         return policyWrap.GetPolicies().OfType<TPolicy>().Where(filter);
     }
@@ -74,7 +76,9 @@ public static class IPolicyWrapExtension
     public static TPolicy GetPolicy<TPolicy>(this IPolicyWrap policyWrap, Func<TPolicy, bool> filter)
     {
         if (filter == null)
+        {
             throw new ArgumentNullException(nameof(filter));
+        }
 
         return policyWrap.GetPolicies().OfType<TPolicy>().SingleOrDefault(filter);
     }

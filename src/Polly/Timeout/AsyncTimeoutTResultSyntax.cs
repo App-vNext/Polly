@@ -63,7 +63,9 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(int seconds, Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
         if (seconds <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(seconds));
+        }
 
         return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeoutAsync);
     }
@@ -100,7 +102,9 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(int seconds, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
         if (seconds <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(seconds));
+        }
 
         return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeoutAsync);
     }
@@ -150,7 +154,9 @@ public partial class Policy
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
         if (onTimeoutAsync == null)
+        {
             throw new ArgumentNullException(nameof(onTimeoutAsync));
+        }
 
         return TimeoutAsync<TResult>(_ => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
     }
@@ -168,9 +174,14 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(TimeSpan timeout, Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
         if (timeout <= TimeSpan.Zero)
+        {
             throw new ArgumentOutOfRangeException(nameof(timeout));
+        }
+
         if (onTimeoutAsync == null)
+        {
             throw new ArgumentNullException(nameof(onTimeoutAsync));
+        }
 
         return TimeoutAsync<TResult>(_ => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
     }
@@ -206,7 +217,9 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
         if (timeout <= TimeSpan.Zero)
+        {
             throw new ArgumentOutOfRangeException(nameof(timeout));
+        }
 
         return TimeoutAsync<TResult>(_ => timeout, timeoutStrategy, onTimeoutAsync);
     }
@@ -221,7 +234,9 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider)
     {
         if (timeoutProvider == null)
+        {
             throw new ArgumentNullException(nameof(timeoutProvider));
+        }
 
         Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
         return TimeoutAsync<TResult>(_ => timeoutProvider(), TimeoutStrategy.Optimistic, doNothingAsync);
@@ -238,7 +253,9 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
     {
         if (timeoutProvider == null)
+        {
             throw new ArgumentNullException(nameof(timeoutProvider));
+        }
 
         Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
         return TimeoutAsync<TResult>(_ => timeoutProvider(), timeoutStrategy, doNothingAsync);
@@ -257,7 +274,9 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
     {
         if (timeoutProvider == null)
+        {
             throw new ArgumentNullException(nameof(timeoutProvider));
+        }
 
         return TimeoutAsync<TResult>(_ => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeoutAsync);
     }
@@ -275,7 +294,9 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider, Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
         if (timeoutProvider == null)
+        {
             throw new ArgumentNullException(nameof(timeoutProvider));
+        }
 
         return TimeoutAsync<TResult>(_ => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeoutAsync);
     }
@@ -294,7 +315,9 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
     {
         if (timeoutProvider == null)
+        {
             throw new ArgumentNullException(nameof(timeoutProvider));
+        }
 
         return TimeoutAsync<TResult>(_ => timeoutProvider(), timeoutStrategy, onTimeoutAsync);
     }
@@ -313,7 +336,9 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
         if (timeoutProvider == null)
+        {
             throw new ArgumentNullException(nameof(timeoutProvider));
+        }
 
         return TimeoutAsync<TResult>(_ => timeoutProvider(), timeoutStrategy, onTimeoutAsync);
     }
@@ -385,7 +410,9 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
     {
         if (onTimeoutAsync == null)
+        {
             throw new ArgumentNullException(nameof(onTimeoutAsync));
+        }
 
         return TimeoutAsync<TResult>(timeoutProvider, timeoutStrategy, (ctx, timeout, task, _) => onTimeoutAsync(ctx, timeout, task));
     }
@@ -404,9 +431,14 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
         if (timeoutProvider == null)
+        {
             throw new ArgumentNullException(nameof(timeoutProvider));
+        }
+
         if (onTimeoutAsync == null)
+        {
             throw new ArgumentNullException(nameof(onTimeoutAsync));
+        }
 
         return new AsyncTimeoutPolicy<TResult>(
                 timeoutProvider,

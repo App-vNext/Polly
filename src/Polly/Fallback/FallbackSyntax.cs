@@ -17,7 +17,9 @@ public static class FallbackSyntax
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action fallbackAction)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
 
         Action<Exception> doNothing = _ => { };
         return policyBuilder.Fallback(fallbackAction, doNothing);
@@ -33,7 +35,9 @@ public static class FallbackSyntax
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<CancellationToken> fallbackAction)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
 
         Action<Exception> doNothing = _ => { };
         return policyBuilder.Fallback(fallbackAction, doNothing);
@@ -51,9 +55,14 @@ public static class FallbackSyntax
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action fallbackAction, Action<Exception> onFallback)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
+
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return policyBuilder.Fallback((_, _, _) => fallbackAction(), (exception, _) => onFallback(exception));
     }
@@ -70,9 +79,14 @@ public static class FallbackSyntax
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<CancellationToken> fallbackAction, Action<Exception> onFallback)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
+
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return policyBuilder.Fallback((_, _, ct) => fallbackAction(ct), (exception, _) => onFallback(exception));
     }
@@ -89,9 +103,14 @@ public static class FallbackSyntax
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Context> fallbackAction, Action<Exception, Context> onFallback)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
+
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return policyBuilder.Fallback((_, ctx, _) => fallbackAction(ctx), onFallback);
     }
@@ -108,9 +127,14 @@ public static class FallbackSyntax
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Context, CancellationToken> fallbackAction, Action<Exception, Context> onFallback)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
+
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return policyBuilder.Fallback((_, ctx, ct) => fallbackAction(ctx, ct), onFallback);
     }
@@ -127,9 +151,14 @@ public static class FallbackSyntax
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Exception, Context, CancellationToken> fallbackAction, Action<Exception, Context> onFallback)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
+
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return new FallbackPolicy(
                 policyBuilder,
@@ -167,7 +196,9 @@ public static class FallbackTResultSyntax
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<TResult> fallbackAction)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
 
         Action<DelegateResult<TResult>> doNothing = _ => { };
         return policyBuilder.Fallback(fallbackAction, doNothing);
@@ -184,7 +215,9 @@ public static class FallbackTResultSyntax
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, TResult> fallbackAction)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
 
         Action<DelegateResult<TResult>> doNothing = _ => { };
         return policyBuilder.Fallback(fallbackAction, doNothing);
@@ -202,7 +235,9 @@ public static class FallbackTResultSyntax
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Action<DelegateResult<TResult>> onFallback)
     {
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return policyBuilder.Fallback((_, _, _) => fallbackValue, (outcome, _) => onFallback(outcome));
     }
@@ -220,9 +255,14 @@ public static class FallbackTResultSyntax
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<TResult> fallbackAction, Action<DelegateResult<TResult>> onFallback)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
+
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return policyBuilder.Fallback((_, _, _) => fallbackAction(), (outcome, _) => onFallback(outcome));
     }
@@ -240,9 +280,14 @@ public static class FallbackTResultSyntax
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>> onFallback)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
+
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return policyBuilder.Fallback((_, _, ct) => fallbackAction(ct), (outcome, _) => onFallback(outcome));
     }
@@ -259,7 +304,9 @@ public static class FallbackTResultSyntax
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Action<DelegateResult<TResult>, Context> onFallback)
     {
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return policyBuilder.Fallback((_, _, _) => fallbackValue, onFallback);
     }
@@ -277,9 +324,14 @@ public static class FallbackTResultSyntax
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
+
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return policyBuilder.Fallback((_, ctx, _) => fallbackAction(ctx), onFallback);
     }
@@ -297,9 +349,14 @@ public static class FallbackTResultSyntax
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
+
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return policyBuilder.Fallback((_, ctx, ct) => fallbackAction(ctx, ct), onFallback);
     }
@@ -317,9 +374,14 @@ public static class FallbackTResultSyntax
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
     {
         if (fallbackAction == null)
+        {
             throw new ArgumentNullException(nameof(fallbackAction));
+        }
+
         if (onFallback == null)
+        {
             throw new ArgumentNullException(nameof(onFallback));
+        }
 
         return new FallbackPolicy<TResult>(
             policyBuilder,

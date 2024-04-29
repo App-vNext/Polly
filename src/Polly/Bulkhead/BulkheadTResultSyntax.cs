@@ -61,11 +61,19 @@ public partial class Policy
     public static BulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, int maxQueuingActions, Action<Context> onBulkheadRejected)
     {
         if (maxParallelization <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(maxParallelization), "Value must be greater than zero.");
+        }
+
         if (maxQueuingActions < 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(maxQueuingActions), "Value must be greater than or equal to zero.");
+        }
+
         if (onBulkheadRejected == null)
+        {
             throw new ArgumentNullException(nameof(onBulkheadRejected));
+        }
 
         return new BulkheadPolicy<TResult>(
             maxParallelization,
