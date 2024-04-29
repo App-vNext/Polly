@@ -78,7 +78,7 @@ public partial class Policy
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">seconds;Value must not be null.</exception>
+    /// <exception cref="ArgumentNullException">onTimeoutAsync;Value must not be null.</exception>
     public static AsyncTimeoutPolicy TimeoutAsync(int seconds, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
     {
         TimeoutValidator.ValidateSecondsTimeout(seconds);
@@ -95,7 +95,7 @@ public partial class Policy
     /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentNullException">seconds;Value must not be null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeoutAsync"/> is <see langword="null"/>.</exception>
     public static AsyncTimeoutPolicy TimeoutAsync(int seconds, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
         if (seconds <= 0)
