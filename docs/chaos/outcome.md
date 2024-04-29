@@ -2,14 +2,15 @@
 
 ## About
 
-- **Options**:
+- **Option(s)**:
   - [`ChaosOutcomeStrategyOptions<T>`](xref:Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions`1)
-- **Extensions**: `AddChaosOutcome`
-- **Strategy Type**: Reactive
+- **Extension(s)**:
+  - `AddChaosOutcome`
+- **Exception(s)**: -
 
 ---
 
-The outcome chaos strategy is designed to inject or substitute fake results into system operations. This allows testing how an application behaves when it receives different types of responses, like successful results, errors, or exceptions.
+The outcome **reactive** chaos strategy is designed to inject or substitute fake results into system operations. This allows testing how an application behaves when it receives different types of responses, like successful results, errors, or exceptions.
 
 ## Usage
 
@@ -79,10 +80,38 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
 
 ## Defaults
 
-| Property            | Default Value | Description                                             |
-|---------------------|---------------|---------------------------------------------------------|
-| `OutcomeGenerator`  | `null`        | Function to generate the outcome for a given execution. |
-| `OnOutcomeInjected` | `null`        | Action executed when the outcome is injected.           |
+| Property            | Default Value | Description                                                                                                                 |
+|---------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------|
+| `OutcomeGenerator`  | `null`        | This required delegate allows you to inject custom outcome by utilizing information that is only available at runtime. |
+| `OnOutcomeInjected` | `null`        | If provided then it will be invoked after the outcome injection occurred.                                                   |
+
+> [!NOTE]
+> Please note this strategy is a reactive chaos strategy, but it does not have a `ShouldHandle` delegate.
+
+## Telemetry
+
+The outcome chaos strategy reports the following telemetry events:
+
+| Event Name        | Event Severity | When?                                                           |
+|-------------------|----------------|-----------------------------------------------------------------|
+| `Chaos.OnOutcome` | `Information`  | Just before the strategy calls the `OnOutcomeInjected` delegate |
+
+Here are some sample events:
+
+```none
+Resilience event occurred. EventName: 'Chaos.OnOutcome', Source: '(null)/(null)/Chaos.Outcome', Operation Key: '', Result: ''
+
+Resilience event occurred. EventName: 'Chaos.OnOutcome', Source: 'MyPipeline/MyPipelineInstance/MyOutcomeStrategy', Operation Key: 'MyOutcomeInjectedOperation', Result: ''
+```
+
+> [!NOTE]
+> Please note that the `Chaos.OnOutcome` telemetry event will be reported **only if** the outcome chaos strategy injects an outcome object.
+>
+> So, if the outcome is not injected or injected but the generator delegate throws an exception then there will be no telemetry emitted.
+>
+> Also remember that the `Result` will be **always empty** for the `Chaos.OnOutcome` telemetry event.
+
+For further information please check out the [telemetry page](../advanced/telemetry.md).
 
 ## Diagrams
 
