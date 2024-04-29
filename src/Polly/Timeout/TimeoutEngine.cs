@@ -38,7 +38,13 @@ internal static class TimeoutEngine
                 combinedToken);           // cancellation token here only allows Task.Run() to not begin the passed delegate at all, if cancellation occurs prior to invoking the delegate.
             try
             {
-                actionTask.Wait(timeoutCancellationTokenSource.Token); // cancellation token here cancels the Wait() and causes it to throw, but does not cancel actionTask.  We use only timeoutCancellationTokenSource.Token here, not combinedToken.  If we allowed the user's cancellation token to cancel the Wait(), in this pessimistic scenario where the user delegate may not observe that cancellation, that would create a no-longer-observed task.  That task could in turn later fault before completing, risking an UnobservedTaskException.
+                /*
+                 * Cancellation token here cancels the Wait() and causes it to throw, but does not cancel actionTask.
+                 * We use only timeoutCancellationTokenSource.Token here, not combinedToken.
+                 * If we allowed the user's cancellation token to cancel the Wait(), in this pessimistic scenario where the user delegate may not observe that cancellation, that would create a no-longer-observed task.
+                 * That task could in turn later fault before completing, risking an UnobservedTaskException.
+                 */
+                actionTask.Wait(timeoutCancellationTokenSource.Token);
             }
             catch (AggregateException ex) when (ex.InnerExceptions.Count == 1) // Issue #270.  Unwrap extra AggregateException caused by the way pessimistic timeout policy for synchronous executions is necessarily constructed.
             {
