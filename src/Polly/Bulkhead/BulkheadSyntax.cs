@@ -52,7 +52,7 @@ public partial class Policy
     /// <param name="onBulkheadRejected">An action to call, if the bulkhead rejects execution due to oversubscription.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than or equal to zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBulkheadRejected"/> is <see langword="null"/>.</exception>
     public static BulkheadPolicy Bulkhead(int maxParallelization, int maxQueuingActions, Action<Context> onBulkheadRejected)
     {

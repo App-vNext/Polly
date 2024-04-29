@@ -24,7 +24,6 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBulkheadRejectedAsync"/> is <see langword="null"/>.</exception>
-    /// <returns>The policy instance.</returns>
     public static AsyncBulkheadPolicy BulkheadAsync(int maxParallelization, Func<Context, Task> onBulkheadRejectedAsync) =>
         BulkheadAsync(maxParallelization, 0, onBulkheadRejectedAsync);
 
