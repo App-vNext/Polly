@@ -68,7 +68,9 @@ public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
     public TResult Execute(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
     {
         if (context == null)
+        {
             throw new ArgumentNullException(nameof(context));
+        }
 
         SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
 
@@ -150,7 +152,9 @@ public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
     public PolicyResult<TResult> ExecuteAndCapture(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
     {
         if (context == null)
+        {
             throw new ArgumentNullException(nameof(context));
+        }
 
         try
         {

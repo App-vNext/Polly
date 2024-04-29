@@ -5,7 +5,9 @@ internal static class TimeoutValidator
     internal static void ValidateSecondsTimeout(int seconds)
     {
         if (seconds <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(seconds));
+        }
     }
 
     internal static void ValidateTimeSpanTimeout(TimeSpan timeout)

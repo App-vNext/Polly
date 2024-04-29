@@ -13,7 +13,9 @@ public static class SystemClock
     public static Action<TimeSpan, CancellationToken> Sleep = (timeSpan, cancellationToken) =>
     {
         if (cancellationToken.WaitHandle.WaitOne(timeSpan))
+        {
             cancellationToken.ThrowIfCancellationRequested();
+        }
     };
 
     /// <summary>
@@ -49,7 +51,9 @@ public static class SystemClock
         Sleep = (timeSpan, cancellationToken) =>
         {
             if (cancellationToken.WaitHandle.WaitOne(timeSpan))
+            {
                 cancellationToken.ThrowIfCancellationRequested();
+            }
         };
 
         SleepAsync = Task.Delay;

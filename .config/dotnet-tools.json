@@ -8,16 +8,28 @@
         "dotnet-cake"
       ]
     },
+    "docfx": {
+      "version": "2.75.3",
+      "commands": [
+        "docfx"
+      ]
+    },
+    "dotnet-validate": {
+      "version": "0.0.1-preview.304",
+      "commands": [
+        "dotnet-validate"
+      ]
+    },
     "markdownsnippets.tool": {
       "version": "27.0.2",
       "commands": [
         "mdsnippets"
       ]
     },
-    "docfx": {
-      "version": "2.75.3",
+    "sign": {
+      "version": "0.9.1-beta.23530.1",
       "commands": [
-        "docfx"
+        "sign"
       ]
     }
   }

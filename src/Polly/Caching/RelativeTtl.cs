@@ -15,7 +15,9 @@ public class RelativeTtl : ITtlStrategy
     public RelativeTtl(TimeSpan ttl)
     {
         if (ttl < TimeSpan.Zero)
+        {
             throw new ArgumentOutOfRangeException(nameof(ttl), "The ttl for items to cache must be greater than zero.");
+        }
 
         this.ttl = ttl;
     }

@@ -10,7 +10,9 @@ public abstract partial class Policy
     public Policy WithPolicyKey(string policyKey)
     {
         if (policyKeyInternal != null)
+        {
             throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        }
 
         policyKeyInternal = policyKey;
         return this;
@@ -24,7 +26,9 @@ public abstract partial class Policy
     ISyncPolicy ISyncPolicy.WithPolicyKey(string policyKey)
     {
         if (policyKeyInternal != null)
+        {
             throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        }
 
         policyKeyInternal = policyKey;
         return this;
@@ -41,7 +45,9 @@ public abstract partial class Policy<TResult>
     public Policy<TResult> WithPolicyKey(string policyKey)
     {
         if (policyKeyInternal != null)
+        {
             throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        }
 
         policyKeyInternal = policyKey;
         return this;
@@ -55,7 +61,9 @@ public abstract partial class Policy<TResult>
     ISyncPolicy<TResult> ISyncPolicy<TResult>.WithPolicyKey(string policyKey)
     {
         if (policyKeyInternal != null)
+        {
             throw PolicyKeyMustBeImmutableException(nameof(policyKey));
+        }
 
         policyKeyInternal = policyKey;
         return this;
