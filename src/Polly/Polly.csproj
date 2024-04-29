@@ -14,18 +14,20 @@
     <NoWarn>$(NoWarn);S3971;CA1724;CA1716;SA1108;CA1710;S4049;S3246</NoWarn>
     <NoWarn>$(NoWarn);CA1805</NoWarn>
 
-    <!--Pulic
-    API Analyzers: We do not need to fix these as it would break compatibility with released Polly
-    versions-->
+    <!--Public API Analyzers: We do not need to fix these as it would break compatibility with released Polly versions-->
     <NoWarn>$(NoWarn);RS0037;</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Polly is a .NET resilience and transient-fault-handling library that allows
+    <Description>
+      Polly is a .NET resilience and transient-fault-handling library that allows
       developers to express resilience and transient fault handling policies such as Retry, Circuit
-      Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
-    <PackageTags>Polly Exception Handling Resilience Transient Fault Policy Circuit Breaker
-      CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle</PackageTags>
+      Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.
+    </Description>
+    <PackageTags>
+      Polly Exception Handling Resilience Transient Fault Policy Circuit Breaker
+      CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle
+    </PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
