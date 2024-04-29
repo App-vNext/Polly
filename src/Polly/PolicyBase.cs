@@ -49,6 +49,7 @@ public abstract partial class PolicyBase
 /// <summary>
 /// Implements elements common to sync and async generic policies.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public abstract class PolicyBase<TResult> : PolicyBase
 {
     /// <summary>

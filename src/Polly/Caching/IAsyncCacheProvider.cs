@@ -33,6 +33,7 @@ public interface IAsyncCacheProvider
 /// <summary>
 /// Defines methods for classes providing asynchronous cache functionality for Polly <see cref="CachePolicy{TResult}"/>s.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public interface IAsyncCacheProvider<TResult>
 {
     /// <summary>

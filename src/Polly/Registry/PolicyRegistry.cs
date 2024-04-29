@@ -181,6 +181,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// Adds a policy with the provided key and policy to the registry
     /// if the key does not already exist.
     /// </summary>
+    /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <param name="key">The key of the policy to add.</param>
     /// <param name="policyFactory">The function used to generate a policy for the key.</param>
     /// <returns>The policy for the key.  This will be either the existing policy for the key if the
@@ -198,6 +199,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// Adds a key/policy pair to the registry
     /// if the key does not already exist.
     /// </summary>
+    /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <param name="key">The key of the policy to add.</param>
     /// <param name="policy">the policy to be added, if the key does not already exist.</param>
     /// <returns>The policy for the key.  This will be either the existing policy for the key if the
@@ -215,6 +217,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// exist, or updates a key/policy pair in the registry if the key
     /// already exists.
     /// </summary>
+    /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <param name="key">The key to be added or whose policy should be updated.</param>
     /// <param name="addPolicyFactory">The function used to generate a policy for an absent key.</param>
     /// <param name="updatePolicyFactory">The function used to generate a new policy for an existing key
@@ -234,6 +237,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// exist, or updates a key/policy pair in the registry if the key
     /// already exists.
     /// </summary>
+    /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <param name="key">The key to be added or whose policy should be updated.</param>
     /// <param name="addPolicy">The policy to be added for an absent key.</param>
     /// <param name="updatePolicyFactory">The function used to generate a new policy for an existing key based on

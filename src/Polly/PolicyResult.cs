@@ -59,6 +59,7 @@ public class PolicyResult
 /// <summary>
 /// The captured result of executing a policy.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public class PolicyResult<TResult>
 {
     internal PolicyResult(TResult result, OutcomeType outcome, Exception finalException, ExceptionType? exceptionType, Context context)

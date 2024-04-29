@@ -21,6 +21,7 @@ public class RateLimitPolicy : Policy, IRateLimitPolicy
 /// <summary>
 /// A rate-limit policy that can be applied to synchronous delegates returning a value of type <typeparamref name="TResult"/>.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public class RateLimitPolicy<TResult> : Policy<TResult>, IRateLimitPolicy<TResult>
 {
     private readonly IRateLimiter _rateLimiter;

@@ -178,7 +178,7 @@ public static class RetrySyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="retryCount">The retry count.</param>
-    /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+    /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <returns>The policy instance.</returns>
     public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider)
     {
@@ -195,7 +195,7 @@ public static class RetrySyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="retryCount">The retry count.</param>
-    /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+    /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
@@ -219,7 +219,7 @@ public static class RetrySyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="retryCount">The retry count.</param>
-    /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+    /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
@@ -243,7 +243,7 @@ public static class RetrySyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="retryCount">The retry count.</param>
-    /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+    /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
@@ -274,7 +274,7 @@ public static class RetrySyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="retryCount">The retry count.</param>
-    /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+    /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <returns>The policy instance.</returns>
     public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, Context, TimeSpan> sleepDurationProvider)
     {
@@ -291,7 +291,7 @@ public static class RetrySyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="retryCount">The retry count.</param>
-    /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+    /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
@@ -315,7 +315,7 @@ public static class RetrySyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="retryCount">The retry count.</param>
-    /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+    /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
@@ -338,7 +338,7 @@ public static class RetrySyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="retryCount">The retry count.</param>
-    /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+    /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
@@ -438,7 +438,7 @@ public static class RetrySyntax
     ///     the current retry number (1 for first retry, 2 for second etc).
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
-    /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+    /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
     public static RetryPolicy WaitAndRetryForever(this PolicyBuilder policyBuilder, Func<int, TimeSpan> sleepDurationProvider)
@@ -457,7 +457,7 @@ public static class RetrySyntax
     ///     the current retry number (1 for first retry, 2 for second etc) and execution context.
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
-    /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+    /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
     public static RetryPolicy WaitAndRetryForever(this PolicyBuilder policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider)

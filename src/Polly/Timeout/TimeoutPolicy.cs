@@ -34,6 +34,7 @@ public class TimeoutPolicy : Policy, ITimeoutPolicy
 /// <summary>
 /// A timeout policy which can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public class TimeoutPolicy<TResult> : Policy<TResult>, ITimeoutPolicy<TResult>
 {
     private readonly TimeoutStrategy _timeoutStrategy;

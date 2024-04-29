@@ -51,6 +51,7 @@ public class BulkheadPolicy : Policy, IBulkheadPolicy
 /// <summary>
 /// A bulkhead-isolation policy which can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
 {
     private readonly SemaphoreSlim _maxParallelizationSemaphore;

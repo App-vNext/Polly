@@ -21,6 +21,7 @@ public class AsyncNoOpPolicy : AsyncPolicy, INoOpPolicy
 /// <summary>
 /// A noop policy that can be applied to asynchronous delegates returning a value of type <typeparamref name="TResult"/>.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public class AsyncNoOpPolicy<TResult> : AsyncPolicy<TResult>, INoOpPolicy<TResult>
 {
     internal AsyncNoOpPolicy()

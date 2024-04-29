@@ -21,6 +21,7 @@ public static class IAsyncPolicyPolicyWrapExtensions
     /// <summary>
     /// Wraps the specified outer policy round the inner policy.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="outerPolicy">The outer policy.</param>
     /// <param name="innerPolicy">The inner policy.</param>
     /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
@@ -34,6 +35,7 @@ public static class IAsyncPolicyPolicyWrapExtensions
     /// <summary>
     /// Wraps the specified outer policy round the inner policy.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="outerPolicy">The outer policy.</param>
     /// <param name="innerPolicy">The inner policy.</param>
     /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
@@ -47,6 +49,7 @@ public static class IAsyncPolicyPolicyWrapExtensions
     /// <summary>
     /// Wraps the specified outer policy round the inner policy.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="outerPolicy">The outer policy.</param>
     /// <param name="innerPolicy">The inner policy.</param>
     /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>

@@ -146,6 +146,7 @@ public static class FallbackTResultSyntax
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, returns <paramref name="fallbackValue"/> instead.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <returns>The policy instance.</returns>
@@ -158,6 +159,7 @@ public static class FallbackTResultSyntax
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, calls <paramref name="fallbackAction"/> and returns its result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
@@ -174,6 +176,7 @@ public static class FallbackTResultSyntax
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, calls <paramref name="fallbackAction"/> and returns its result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
@@ -190,6 +193,7 @@ public static class FallbackTResultSyntax
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result; then returns <paramref name="fallbackValue"/>.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
@@ -206,6 +210,7 @@ public static class FallbackTResultSyntax
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result; then calls <paramref name="fallbackAction"/> and returns its result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
@@ -225,6 +230,7 @@ public static class FallbackTResultSyntax
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result; then calls <paramref name="fallbackAction"/> and returns its result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
@@ -244,6 +250,7 @@ public static class FallbackTResultSyntax
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then returns <paramref name="fallbackValue"/>.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
@@ -260,6 +267,7 @@ public static class FallbackTResultSyntax
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
@@ -279,6 +287,7 @@ public static class FallbackTResultSyntax
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
@@ -298,6 +307,7 @@ public static class FallbackTResultSyntax
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback action.</param>
     /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>

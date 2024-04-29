@@ -93,6 +93,7 @@ public static class AsyncFallbackTResultSyntax
     /// <summary>
     /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, returns <paramref name="fallbackValue"/>.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <returns>The policy instance.</returns>
@@ -107,6 +108,7 @@ public static class AsyncFallbackTResultSyntax
     /// <summary>
     /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, asynchronously calls <paramref name="fallbackAction"/> and returns its result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
@@ -125,6 +127,7 @@ public static class AsyncFallbackTResultSyntax
     /// <summary>
     /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result; then returns <paramref name="fallbackValue"/>.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
@@ -143,6 +146,7 @@ public static class AsyncFallbackTResultSyntax
     /// <summary>
     /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result; then asynchronously calls <paramref name="fallbackAction"/> and returns its result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
@@ -164,6 +168,7 @@ public static class AsyncFallbackTResultSyntax
     /// <summary>
     /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result and the execution context; then returns <paramref name="fallbackValue"/>.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
@@ -182,6 +187,7 @@ public static class AsyncFallbackTResultSyntax
     /// <summary>
     /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result and the execution context; then asynchronously calls <paramref name="fallbackAction"/> and returns its result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>
@@ -201,6 +207,7 @@ public static class AsyncFallbackTResultSyntax
     /// <summary>
     /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result and the execution context; then asynchronously calls <paramref name="fallbackAction"/> and returns its result.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <param name="fallbackAction">The fallback delegate.</param>
     /// <param name="onFallbackAsync">The action to call asynchronously before invoking the fallback delegate.</param>

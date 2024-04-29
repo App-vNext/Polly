@@ -11,6 +11,7 @@ public interface ITtlStrategy : ITtlStrategy<object>
 /// <summary>
 /// Defines a strategy for providing time-to-live durations for cacheable results.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public interface ITtlStrategy<TResult>
 {
     /// <summary>

@@ -20,6 +20,7 @@ public interface IBulkheadPolicy : IsPolicy, IDisposable
 /// <summary>
 /// Defines properties and methods common to all bulkhead policies generic-typed for executions returning results of type <typeparamref name="TResult"/>.
 /// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 public interface IBulkheadPolicy<TResult> : IBulkheadPolicy
 {
 }
