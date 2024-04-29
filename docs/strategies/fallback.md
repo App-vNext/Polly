@@ -99,7 +99,7 @@ Resilience event occurred. EventName: 'OnFallback', Source: '(null)/(null)/Fallb
 >
 > Also remember that the `Result` will be **always populated** for the `OnFallback` telemetry event.
 
-For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
+For further information please check out the [telemetry page](../advanced/telemetry.md).
 
 ## Diagrams
 

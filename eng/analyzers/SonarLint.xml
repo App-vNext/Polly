@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AnalysisInput>
+  <Rules>
+    <Rule>
+      <Key>S103</Key>
+      <Parameters>
+        <Parameter>
+          <Key>maximumLineLength</Key>
+          <Value>500</Value>
+        </Parameter>
+      </Parameters>
+    </Rule>
+  </Rules>
+</AnalysisInput>

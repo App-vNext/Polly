@@ -1,6 +1,6 @@
 # Telemetry
 
-Starting with version 8, Polly provides telemetry for all built-in resilience strategies.
+Starting with version 8, Polly provides telemetry for all built-in standard and chaos resilience strategies.
 
 ## Usage
 
@@ -140,14 +140,18 @@ Tags:
 
 The `event.name` tag is reported by individual resilience strategies. The built-in strategies report the following events:
 
-- `OnRetry`
-- `OnFallback`
-- `OnHedging`
-- `OnTimeout`
-- `OnCircuitClosed`
-- `OnCircuitOpened`
-- `OnCircuitHalfOpened`
-- `OnRateLimiterRejected`
+- [`OnRetry`](../strategies/retry.md#telemetry)
+- [`OnFallback`](../strategies/fallback.md#telemetry)
+- [`OnHedging`](../strategies/hedging.md#telemetry)
+- [`OnTimeout`](../strategies/timeout.md#telemetry)
+- [`OnCircuitClosed`](../strategies/circuit-breaker.md#telemetry)
+- [`OnCircuitOpened`](../strategies/circuit-breaker.md#telemetry)
+- [`OnCircuitHalfOpened`](../strategies/circuit-breaker.md#telemetry)
+- [`OnRateLimiterRejected`](../strategies/rate-limiter.md#telemetry)
+- [`Chaos.OnFault`](../chaos/fault.md#telemetry)
+- [`Chaos.OnOutcome`](../chaos/outcome.md#telemetry)
+- [`Chaos.OnLatency`](../chaos/latency.md#telemetry)
+- [`Chaos.OnBehavior`](../chaos/behavior.md#telemetry)
 
 ### Instrument: `resilience.polly.strategy.attempt.duration`
 
