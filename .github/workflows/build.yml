@@ -24,6 +24,7 @@ jobs:
   build:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
 
     env:
       # HACK Running on Windows instead of Linux due to https://github.com/stryker-mutator/stryker-net/issues/2741
