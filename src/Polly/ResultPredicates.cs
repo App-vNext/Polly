@@ -26,7 +26,7 @@ public class ResultPredicates<TResult>
             return false;
         }
 
-        return _predicates.Any(predicate => predicate(result));
+        return _predicates.Exists(predicate => predicate(result));
     }
 
     /// <summary>

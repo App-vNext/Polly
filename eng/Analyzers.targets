@@ -4,6 +4,7 @@
     <PackageReference Include="SonarAnalyzer.CSharp" PrivateAssets="All" />
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)analyzers\BannedSymbols.txt" Condition=" '$(IsTestProject)' != 'true' " Visible="false" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)analyzers\SonarLint.xml" Visible="False" />
     <AdditionalFiles Include="$(MsBuildThisFileDirectory)analyzers\Stylecop.json" Visible="false" />
     <EditorConfigFiles Include="$(MsBuildThisFileDirectory)analyzers\Stylecop.globalconfig" />
     <EditorConfigFiles Include="$(MsBuildThisFileDirectory)analyzers\$(ProjectType).globalconfig" />
