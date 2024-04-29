@@ -157,6 +157,7 @@ Task("__RunTests")
             Configuration = configuration,
             Loggers = loggers,
             NoBuild = true,
+            ToolTimeout = System.TimeSpan.FromMinutes(10),
         });
     }
 });
