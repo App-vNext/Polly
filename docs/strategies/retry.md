@@ -168,7 +168,7 @@ Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Oper
 >
 > Also remember that `Attempt: '0'` relates to the original execution attempt.
 
-For further information please check out the [telemetry page](https://www.pollydocs.org/advanced/telemetry).
+For further information please check out the [telemetry page](../advanced/telemetry.md).
 
 ## Calculation of the next delay
 
