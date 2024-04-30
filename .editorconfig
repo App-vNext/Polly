@@ -23,6 +23,7 @@ tab_width = 2
 
 # Put any C# specific settings here
 dotnet_code_quality.CA1062.null_check_validation_methods = NotNull
+dotnet_code_quality.CA1000.api_surface = private, internal
 
 # S2094 // Classes should not be empty
 dotnet_diagnostic.S2094.severity = suggestion
