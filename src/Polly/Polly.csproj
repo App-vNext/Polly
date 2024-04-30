@@ -7,7 +7,7 @@
     <ProjectType>Library</ProjectType>
     <MutationScore>70</MutationScore>
     <IncludePollyUsings>true</IncludePollyUsings>
-    <NoWarn>$(NoWarn);S3872;SA1402;SA1414;S3215</NoWarn>
+    <NoWarn>$(NoWarn);S3872;SA1414;S3215</NoWarn>
     <NoWarn>$(NoWarn);IDE1006;CA1062;CA1068;S4039;CA1063;CA1031;CA1051</NoWarn>
     <NoWarn>$(NoWarn);CA2211;S2223;CA1032;CA1815;CA1816;S4457;SA1615;CA1033</NoWarn>
     <NoWarn>$(NoWarn);CA1010;S3442;CA1064;SA1623;SA1118</NoWarn>
