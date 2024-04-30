@@ -33,7 +33,7 @@ public abstract partial class PolicyBase
     /// Initializes a new instance of the <see cref="PolicyBase"/> class.
     /// </summary>
     /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
-    internal PolicyBase(ExceptionPredicates exceptionPredicates) =>
+    private protected PolicyBase(ExceptionPredicates exceptionPredicates) =>
         ExceptionPredicates = exceptionPredicates ?? ExceptionPredicates.None;
 
     /// <summary>
@@ -62,7 +62,7 @@ public abstract class PolicyBase<TResult> : PolicyBase
     /// </summary>
     /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
     /// <param name="resultPredicates">Predicates indicating which results the policy should handle. </param>
-    internal PolicyBase(
+    private protected PolicyBase(
         ExceptionPredicates exceptionPredicates,
         ResultPredicates<TResult> resultPredicates)
     : base(exceptionPredicates) =>
