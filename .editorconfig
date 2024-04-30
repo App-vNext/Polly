@@ -27,6 +27,9 @@ dotnet_code_quality.CA1062.null_check_validation_methods = NotNull
 # S2094 // Classes should not be empty
 dotnet_diagnostic.S2094.severity = suggestion
 
+# S4023 // Interfaces should not be empty
+dotnet_diagnostic.S4023.severity = suggestion
+
 # Prefer method-like constructs to have a block body
 csharp_style_expression_bodied_methods = true:error
 csharp_style_expression_bodied_constructors = true:error
