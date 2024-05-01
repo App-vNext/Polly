@@ -60,6 +60,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snippets", "src\Snippets\Sn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.AotTest", "test\Polly.AotTest\Polly.AotTest.csproj", "{84091007-CFA5-4852-AC41-0171DF039C4E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "analyzers", "analyzers", "{4CB0EFF4-D867-4FA4-809D-C19F2F2A7C71}"
+	ProjectSection(SolutionItems) = preProject
+		eng\analyzers\BannedSymbols.txt = eng\analyzers\BannedSymbols.txt
+		eng\analyzers\Benchmark.globalconfig = eng\analyzers\Benchmark.globalconfig
+		eng\analyzers\Library.globalconfig = eng\analyzers\Library.globalconfig
+		eng\analyzers\SonarLint.xml = eng\analyzers\SonarLint.xml
+		eng\analyzers\Stylecop.globalconfig = eng\analyzers\Stylecop.globalconfig
+		eng\analyzers\Stylecop.json = eng\analyzers\Stylecop.json
+		eng\analyzers\Test.globalconfig = eng\analyzers\Test.globalconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +158,7 @@ Global
 		{D333B5CE-982D-4C11-BDAF-4217AA02306E} = {A6CC41B9-E0B9-44F8-916B-3E4A78DA3BFB}
 		{D812B941-79B0-4E1E-BB70-4FAE345B5234} = {B7BF406B-B06F-4025-83E6-7219C53196A6}
 		{84091007-CFA5-4852-AC41-0171DF039C4E} = {A6CC41B9-E0B9-44F8-916B-3E4A78DA3BFB}
+		{4CB0EFF4-D867-4FA4-809D-C19F2F2A7C71} = {04E3C7C5-31F7-4CD6-8BEC-C1032527D231}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2E5D54CD-770A-4345-B585-1848FC2EA6F4}

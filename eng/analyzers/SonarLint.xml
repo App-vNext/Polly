@@ -10,5 +10,14 @@
         </Parameter>
       </Parameters>
     </Rule>
+    <Rule>
+      <Key>S107</Key>
+      <Parameters>
+        <Parameter>
+          <Key>max</Key>
+          <Value>12</Value>
+        </Parameter>
+      </Parameters>
+    </Rule>
   </Rules>
 </AnalysisInput>

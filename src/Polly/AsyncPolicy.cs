@@ -10,7 +10,7 @@ public abstract partial class AsyncPolicy
     /// Initializes a new instance of the <see cref="AsyncPolicy"/> class.
     /// </summary>
     /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
-    internal AsyncPolicy(ExceptionPredicates exceptionPredicates)
+    private protected AsyncPolicy(ExceptionPredicates exceptionPredicates)
         : base(exceptionPredicates)
     {
     }

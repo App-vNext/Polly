@@ -10,7 +10,7 @@ public abstract partial class Policy : PolicyBase
     /// Initializes a new instance of the <see cref="Policy"/> class.
     /// </summary>
     /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
-    internal Policy(ExceptionPredicates exceptionPredicates)
+    private protected Policy(ExceptionPredicates exceptionPredicates)
         : base(exceptionPredicates)
     {
     }

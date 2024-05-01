@@ -12,7 +12,7 @@ public abstract partial class Policy<TResult> : PolicyBase<TResult>
     /// </summary>
     /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle.</param>
     /// <param name="resultPredicates">Predicates indicating which results the policy should handle.</param>
-    internal Policy(ExceptionPredicates exceptionPredicates, ResultPredicates<TResult> resultPredicates)
+    private protected Policy(ExceptionPredicates exceptionPredicates, ResultPredicates<TResult> resultPredicates)
     : base(exceptionPredicates, resultPredicates)
     {
     }
