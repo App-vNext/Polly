@@ -92,7 +92,7 @@ public sealed partial class PolicyBuilder<TResult>
     internal ExceptionPredicates ExceptionPredicates { get; }
 
     /// <summary>
-    /// Gets the Predicates specifying results that the policy is being configured to handle.
+    /// Gets the predicates specifying results that the policy is being configured to handle.
     /// </summary>
     internal ResultPredicates<TResult> ResultPredicates { get; }
 
