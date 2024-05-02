@@ -39,7 +39,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     }
 
     /// <summary>
-    /// Total number of policies in the registry.
+    /// Gets the total number of policies in the registry.
     /// </summary>
     public int Count => _registry.Count;
 

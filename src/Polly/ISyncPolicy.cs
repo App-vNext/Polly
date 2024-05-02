@@ -10,6 +10,7 @@ public interface ISyncPolicy : IsPolicy
     /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
     /// </summary>
     /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
+    /// <returns>An instance of <see cref="ISyncPolicy"/>.</returns>
     ISyncPolicy WithPolicyKey(string policyKey);
 
     /// <summary>

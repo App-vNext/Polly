@@ -8,6 +8,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     ///     Executes the specified asynchronous action within the policy.
     /// </summary>
     /// <param name="action">The action to perform.</param>
+    /// <returns>A <see cref="Task" /> which completes when <see cref="AsyncPolicy"/> is registered.</returns>
     [DebuggerStepThrough]
     public Task ExecuteAsync(Func<Task> action) =>
         ExecuteAsync((_, _) => action(), [], DefaultCancellationToken, DefaultContinueOnCapturedContext);
@@ -17,6 +18,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+    /// <returns>A <see cref="Task" /> which completes when <see cref="AsyncPolicy"/> is registered.</returns>
     [DebuggerStepThrough]
     public Task ExecuteAsync(Func<Context, Task> action, IDictionary<string, object> contextData) =>
         ExecuteAsync((ctx, _) => action(ctx), new Context(contextData), DefaultCancellationToken, DefaultContinueOnCapturedContext);
@@ -26,6 +28,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <param name="context">Context data that is passed to the exception policy.</param>
+    /// <returns>A <see cref="Task" /> which completes when <see cref="AsyncPolicy"/> is registered.</returns>
     [DebuggerStepThrough]
     public Task ExecuteAsync(Func<Context, Task> action, Context context) =>
         ExecuteAsync((ctx, _) => action(ctx), context, DefaultCancellationToken, DefaultContinueOnCapturedContext);
@@ -35,6 +38,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+    /// <returns>A <see cref="Task" /> which completes when <see cref="AsyncPolicy"/> is registered.</returns>
     [DebuggerStepThrough]
     public Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken) =>
         ExecuteAsync((_, ct) => action(ct), [], cancellationToken, DefaultContinueOnCapturedContext);
@@ -45,6 +49,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <param name="action">The action to perform.</param>
     /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+    /// <returns>A <see cref="Task" /> which completes when <see cref="AsyncPolicy"/> is registered.</returns>
     [DebuggerStepThrough]
     public Task ExecuteAsync(Func<Context, CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken) =>
         ExecuteAsync(action, new Context(contextData), cancellationToken, DefaultContinueOnCapturedContext);
@@ -55,6 +60,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <param name="action">The action to perform.</param>
     /// <param name="context">Context data that is passed to the exception policy.</param>
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+    /// <returns>A <see cref="Task" /> which completes when <see cref="AsyncPolicy"/> is registered.</returns>
     [DebuggerStepThrough]
     public Task ExecuteAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken) =>
         ExecuteAsync(action, context, cancellationToken, DefaultContinueOnCapturedContext);
@@ -66,6 +72,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
     /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
+    /// <returns>A <see cref="Task" /> which completes when <see cref="AsyncPolicy"/> is registered.</returns>
     [DebuggerStepThrough]
     public Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
         ExecuteAsync((_, ct) => action(ct), [], cancellationToken, continueOnCapturedContext);
@@ -78,6 +85,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
     /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
+    /// <returns>A <see cref="Task" /> which completes when <see cref="AsyncPolicy"/> is registered.</returns>
     [DebuggerStepThrough]
     public Task ExecuteAsync(Func<Context, CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
         ExecuteAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
@@ -90,6 +98,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
     /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
+    /// <returns>A <see cref="Task" /> which completes when <see cref="AsyncPolicy"/> is registered.</returns>
     [DebuggerStepThrough]
     public async Task ExecuteAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
@@ -277,6 +286,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// </summary>
     /// <param name="action">The action to perform.</param>
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+    /// <returns>The captured result.</returns>
     [DebuggerStepThrough]
     public Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken) =>
         ExecuteAndCaptureAsync((_, ct) => action(ct), [], cancellationToken, DefaultContinueOnCapturedContext);
@@ -299,6 +309,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <param name="action">The action to perform.</param>
     /// <param name="context">Context data that is passed to the exception policy.</param>
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+    /// <returns>The captured result.</returns>
     [DebuggerStepThrough]
     public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken) =>
         ExecuteAndCaptureAsync(action, context, cancellationToken, DefaultContinueOnCapturedContext);
@@ -310,6 +321,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
     /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
+    /// <returns>The captured result.</returns>
     [DebuggerStepThrough]
     public Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
         ExecuteAndCaptureAsync((_, ct) => action(ct), [], cancellationToken, continueOnCapturedContext);
@@ -335,6 +347,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
     /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
+    /// <returns>The captured result.</returns>
     [DebuggerStepThrough]
     public async Task<PolicyResult> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {

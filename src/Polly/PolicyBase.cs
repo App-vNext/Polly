@@ -11,7 +11,7 @@ public abstract partial class PolicyBase
     internal const bool DefaultContinueOnCapturedContext = false;
 
     /// <summary>
-    /// Predicates indicating which exceptions the policy handles.
+    /// Gets the predicates indicating which exceptions the policy handles.
     /// </summary>
     protected internal ExceptionPredicates ExceptionPredicates { get; }
 
@@ -53,7 +53,7 @@ public abstract partial class PolicyBase
 public abstract class PolicyBase<TResult> : PolicyBase
 {
     /// <summary>
-    /// Predicates indicating which results the policy handles.
+    /// Gets the predicates indicating which results the policy handles.
     /// </summary>
     protected internal ResultPredicates<TResult> ResultPredicates { get; }
 

@@ -14,7 +14,7 @@ public sealed partial class PolicyBuilder
     }
 
     /// <summary>
-    /// Predicates specifying exceptions that the policy is being configured to handle.
+    /// Gets the predicates specifying exceptions that the policy is being configured to handle.
     /// </summary>
     internal ExceptionPredicates ExceptionPredicates { get; }
 
@@ -87,12 +87,12 @@ public sealed partial class PolicyBuilder<TResult>
         ExceptionPredicates = exceptionPredicates;
 
     /// <summary>
-    /// Predicates specifying exceptions that the policy is being configured to handle.
+    /// Gets the predicates specifying exceptions that the policy is being configured to handle.
     /// </summary>
     internal ExceptionPredicates ExceptionPredicates { get; }
 
     /// <summary>
-    /// Predicates specifying results that the policy is being configured to handle.
+    /// Gets the predicates specifying results that the policy is being configured to handle.
     /// </summary>
     internal ResultPredicates<TResult> ResultPredicates { get; }
 
