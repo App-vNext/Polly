@@ -43,7 +43,7 @@ public partial class Context
     public string OperationKey { get; }
 
     /// <summary>
-    /// Gets a Guid guaranteed to be unique to each execution.
+    /// Gets a GUID guaranteed to be unique to each execution.
     /// <remarks>Acts as a correlation id so that events specific to a single execution can be identified in logging and telemetry.</remarks>
     /// </summary>
     public Guid CorrelationId
