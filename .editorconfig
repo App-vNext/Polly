@@ -31,9 +31,6 @@ dotnet_diagnostic.S2094.severity = suggestion
 # SA1402 // File may only contain a single type
 dotnet_diagnostic.SA1402.severity = none
 
-# SA1623 // The property's documentation summary text should begin with: 'Gets'
-dotnet_diagnostic.SA1623.severity = none
-
 # S4023 // Interfaces should not be empty
 dotnet_diagnostic.S4023.severity = suggestion
 

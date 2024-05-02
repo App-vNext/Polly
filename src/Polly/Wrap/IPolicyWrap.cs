@@ -6,12 +6,12 @@
 public interface IPolicyWrap : IsPolicy
 {
     /// <summary>
-    /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>.
+    /// Gets the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>.
     /// </summary>
     IsPolicy Outer { get; }
 
     /// <summary>
-    /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>.
+    /// Gets the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>.
     /// </summary>
     IsPolicy Inner { get; }
 }

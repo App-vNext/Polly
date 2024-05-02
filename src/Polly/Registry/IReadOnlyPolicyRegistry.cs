@@ -41,7 +41,7 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
         where TPolicy : IsPolicy;
 
     /// <summary>
-    /// Total number of policies in the registry.
+    /// Gets the total number of policies in the registry.
     /// </summary>
     int Count { get; }
 

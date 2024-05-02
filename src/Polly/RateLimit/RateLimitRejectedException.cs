@@ -17,7 +17,7 @@ namespace Polly.RateLimit;
 public class RateLimitRejectedException : ExecutionRejectedException
 {
     /// <summary>
-    /// The timespan after which the operation may be retried.
+    /// Gets the timespan after which the operation may be retried.
     /// </summary>
     public TimeSpan RetryAfter { get; private set; }
 

@@ -20,12 +20,12 @@ public class DelegateResult<TResult>
         Exception = exception;
 
     /// <summary>
-    /// The result of executing the delegate. Will be default(TResult) if an exception was thrown.
+    /// Gets the result of executing the delegate. Will be default(TResult) if an exception was thrown.
     /// </summary>
     public TResult Result { get; }
 
     /// <summary>
-    /// Any exception thrown while executing the delegate. Will be null if policy executed without exception.
+    /// Gets the exception thrown while executing the delegate. Will be null if policy executed without exception.
     /// </summary>
     public Exception Exception { get; }
 }
