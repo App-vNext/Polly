@@ -19,7 +19,7 @@ public class ResultPredicates<TResult>
     /// Returns a bool indicating whether the passed <typeparamref name="TResult"/> value matched any predicates.
     /// </summary>
     /// <param name="result">The <typeparamref name="TResult"/> value to assess against the predicates.</param>
-    /// <returns><see langword="true"/> if <typeparamref name="TResult"/> value matches any predicates. <see langword="true"/> otherwise.</returns>
+    /// <returns><see langword="true"/> if <typeparamref name="TResult"/> value matches any predicates. <see langword="false"/> otherwise.</returns>
     public bool AnyMatch(TResult result)
     {
         if (_predicates == null)

@@ -13,7 +13,7 @@ internal interface IRateLimiter
     /// </summary>
     /// <returns>
     /// A tuple whose first element is a value indicating whether the execution is permitted,
-    /// and whose second element is the <see cref="TimeSpan"/> should be waited before retrying.
+    /// and whose second element is the what <see cref="TimeSpan"/> should be waited before retrying.
     /// </returns>
     (bool PermitExecution, TimeSpan RetryAfter) PermitExecution();
 }
