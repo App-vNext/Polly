@@ -13,7 +13,7 @@ permissions: {}
 jobs:
   release:
     runs-on: [ ubuntu-latest ]
-
+    if: github.repository == 'App-vNext/Polly'
     concurrency:
       group: ${{ github.workflow }}
       cancel-in-progress: false
