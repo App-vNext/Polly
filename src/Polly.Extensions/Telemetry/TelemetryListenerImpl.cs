@@ -11,7 +11,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
     private readonly ILogger _logger;
     private readonly Func<ResilienceContext, object?, object?> _resultFormatter;
     private readonly List<TelemetryListener> _listeners;
-    private readonly Func<ResilienceEvent, ResilienceEventSeverity>? _severityProvider;
+    private readonly Func<SeverityProviderArguments, ResilienceEventSeverity>? _severityProvider;
     private readonly List<MeteringEnricher> _enrichers;
 
     public TelemetryListenerImpl(TelemetryOptions options)
@@ -58,7 +58,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
         if (_severityProvider is { } provider)
         {
-            severity = provider(args.Event);
+            severity = provider(new SeverityProviderArguments(args.Source, args.Event, args.Context));
         }
 
         LogEvent(in args, severity);

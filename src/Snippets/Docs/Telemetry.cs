@@ -149,13 +149,13 @@ internal static class Telemetry
 
             telemetryOptions.SeverityProvider = ev =>
             {
-                if (ev.EventName == "OnRetry")
+                if (ev.Event.EventName == "OnRetry")
                 {
                     // Decrease the severity of particular event.
                     return ResilienceEventSeverity.Debug;
                 }
 
-                return ev.Severity;
+                return ev.Event.Severity;
             };
 
             builder.AddTimeout(TimeSpan.FromSeconds(1));

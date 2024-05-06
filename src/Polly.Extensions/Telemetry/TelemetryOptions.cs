@@ -78,5 +78,5 @@ public class TelemetryOptions
     /// <value>
     /// The default value is <see langword="null"/>.
     /// </value>
-    public Func<ResilienceEvent, ResilienceEventSeverity>? SeverityProvider { get; set; }
+    public Func<SeverityProviderArguments, ResilienceEventSeverity>? SeverityProvider { get; set; }
 }
