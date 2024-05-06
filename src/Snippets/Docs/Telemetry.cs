@@ -147,15 +147,15 @@ internal static class Telemetry
             // This ensures that common configuration is preserved.
             var telemetryOptions = new TelemetryOptions(context.GetOptions<TelemetryOptions>());
 
-            telemetryOptions.SeverityProvider = ev =>
+            telemetryOptions.SeverityProvider = @event =>
             {
-                if (ev.Event.EventName == "OnRetry")
+                if (@event.Event.EventName == "OnRetry")
                 {
                     // Decrease the severity of particular event.
                     return ResilienceEventSeverity.Debug;
                 }
 
-                return ev.Event.Severity;
+                return @event.Event.Severity;
             };
 
             builder.AddTimeout(TimeSpan.FromSeconds(1));
