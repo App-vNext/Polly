@@ -453,9 +453,33 @@ public class TelemetryListenerImplTests : IDisposable
         events.Should().HaveCount(0);
     }
 
+    [Fact]
+    public void SeverityProvider_EnsureRespected()
+    {
+        var called = false;
+        var telemetry = Create(configure: options =>
+        {
+            options.SeverityProvider = args =>
+            {
+                args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
+                args.Source.Should().NotBeNull();
+                args.Context.Should().NotBeNull();
+                called = true;
+                return ResilienceEventSeverity.Critical;
+            };
+        });
+
+        ReportEvent(telemetry, null, severity: ResilienceEventSeverity.Warning);
+
+        var records = _logger.GetRecords();
+
+        records.Single().LogLevel.Should().Be(LogLevel.Critical);
+        called.Should().BeTrue();
+    }
+
     private List<Dictionary<string, object?>> GetEvents(string eventName) => _events.Where(e => e.Name == eventName).Select(v => v.Tags).ToList();
 
-    private TelemetryListenerImpl Create(IEnumerable<MeteringEnricher>? enrichers = null)
+    private TelemetryListenerImpl Create(IEnumerable<MeteringEnricher>? enrichers = null, Action<TelemetryOptions>? configure = null)
     {
         var options = new TelemetryOptions
         {
@@ -474,6 +498,8 @@ public class TelemetryListenerImplTests : IDisposable
                 options.MeteringEnrichers.Add(enricher);
             }
         }
+
+        configure?.Invoke(options);
 
         return new(options);
     }
