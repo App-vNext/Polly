@@ -1152,6 +1152,16 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Polly.Telemetry.SeverityProviderArguments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Polly.Telemetry.SeverityProviderArguments.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Polly.Telemetry.TelemetryEventArguments-2.yml",
       "output": {
         ".html": {

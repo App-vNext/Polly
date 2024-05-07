@@ -5846,6 +5846,70 @@ references:
   isSpec: "True"
   fullName: Polly.Telemetry.ResilienceTelemetrySource.StrategyName
   nameWithType: ResilienceTelemetrySource.StrategyName
+- uid: Polly.Telemetry.SeverityProviderArguments
+  name: SeverityProviderArguments
+  href: api/Polly.Telemetry.SeverityProviderArguments.html
+  commentId: T:Polly.Telemetry.SeverityProviderArguments
+  fullName: Polly.Telemetry.SeverityProviderArguments
+  nameWithType: SeverityProviderArguments
+- uid: Polly.Telemetry.SeverityProviderArguments.#ctor(Polly.Telemetry.ResilienceTelemetrySource,Polly.Telemetry.ResilienceEvent,Polly.ResilienceContext)
+  name: SeverityProviderArguments(ResilienceTelemetrySource, ResilienceEvent, ResilienceContext)
+  href: api/Polly.Telemetry.SeverityProviderArguments.html#Polly_Telemetry_SeverityProviderArguments__ctor_Polly_Telemetry_ResilienceTelemetrySource_Polly_Telemetry_ResilienceEvent_Polly_ResilienceContext_
+  commentId: M:Polly.Telemetry.SeverityProviderArguments.#ctor(Polly.Telemetry.ResilienceTelemetrySource,Polly.Telemetry.ResilienceEvent,Polly.ResilienceContext)
+  name.vb: New(ResilienceTelemetrySource, ResilienceEvent, ResilienceContext)
+  fullName: Polly.Telemetry.SeverityProviderArguments.SeverityProviderArguments(Polly.Telemetry.ResilienceTelemetrySource, Polly.Telemetry.ResilienceEvent, Polly.ResilienceContext)
+  fullName.vb: Polly.Telemetry.SeverityProviderArguments.New(Polly.Telemetry.ResilienceTelemetrySource, Polly.Telemetry.ResilienceEvent, Polly.ResilienceContext)
+  nameWithType: SeverityProviderArguments.SeverityProviderArguments(ResilienceTelemetrySource, ResilienceEvent, ResilienceContext)
+  nameWithType.vb: SeverityProviderArguments.New(ResilienceTelemetrySource, ResilienceEvent, ResilienceContext)
+- uid: Polly.Telemetry.SeverityProviderArguments.#ctor*
+  name: SeverityProviderArguments
+  href: api/Polly.Telemetry.SeverityProviderArguments.html#Polly_Telemetry_SeverityProviderArguments__ctor_
+  commentId: Overload:Polly.Telemetry.SeverityProviderArguments.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Telemetry.SeverityProviderArguments.SeverityProviderArguments
+  fullName.vb: Polly.Telemetry.SeverityProviderArguments.New
+  nameWithType: SeverityProviderArguments.SeverityProviderArguments
+  nameWithType.vb: SeverityProviderArguments.New
+- uid: Polly.Telemetry.SeverityProviderArguments.Context
+  name: Context
+  href: api/Polly.Telemetry.SeverityProviderArguments.html#Polly_Telemetry_SeverityProviderArguments_Context
+  commentId: P:Polly.Telemetry.SeverityProviderArguments.Context
+  fullName: Polly.Telemetry.SeverityProviderArguments.Context
+  nameWithType: SeverityProviderArguments.Context
+- uid: Polly.Telemetry.SeverityProviderArguments.Context*
+  name: Context
+  href: api/Polly.Telemetry.SeverityProviderArguments.html#Polly_Telemetry_SeverityProviderArguments_Context_
+  commentId: Overload:Polly.Telemetry.SeverityProviderArguments.Context
+  isSpec: "True"
+  fullName: Polly.Telemetry.SeverityProviderArguments.Context
+  nameWithType: SeverityProviderArguments.Context
+- uid: Polly.Telemetry.SeverityProviderArguments.Event
+  name: Event
+  href: api/Polly.Telemetry.SeverityProviderArguments.html#Polly_Telemetry_SeverityProviderArguments_Event
+  commentId: P:Polly.Telemetry.SeverityProviderArguments.Event
+  fullName: Polly.Telemetry.SeverityProviderArguments.Event
+  nameWithType: SeverityProviderArguments.Event
+- uid: Polly.Telemetry.SeverityProviderArguments.Event*
+  name: Event
+  href: api/Polly.Telemetry.SeverityProviderArguments.html#Polly_Telemetry_SeverityProviderArguments_Event_
+  commentId: Overload:Polly.Telemetry.SeverityProviderArguments.Event
+  isSpec: "True"
+  fullName: Polly.Telemetry.SeverityProviderArguments.Event
+  nameWithType: SeverityProviderArguments.Event
+- uid: Polly.Telemetry.SeverityProviderArguments.Source
+  name: Source
+  href: api/Polly.Telemetry.SeverityProviderArguments.html#Polly_Telemetry_SeverityProviderArguments_Source
+  commentId: P:Polly.Telemetry.SeverityProviderArguments.Source
+  fullName: Polly.Telemetry.SeverityProviderArguments.Source
+  nameWithType: SeverityProviderArguments.Source
+- uid: Polly.Telemetry.SeverityProviderArguments.Source*
+  name: Source
+  href: api/Polly.Telemetry.SeverityProviderArguments.html#Polly_Telemetry_SeverityProviderArguments_Source_
+  commentId: Overload:Polly.Telemetry.SeverityProviderArguments.Source
+  isSpec: "True"
+  fullName: Polly.Telemetry.SeverityProviderArguments.Source
+  nameWithType: SeverityProviderArguments.Source
 - uid: Polly.Telemetry.TelemetryEventArguments`2
   name: TelemetryEventArguments<TResult, TArgs>
   href: api/Polly.Telemetry.TelemetryEventArguments-2.html
@@ -5987,6 +6051,34 @@ references:
   commentId: T:Polly.Telemetry.TelemetryOptions
   fullName: Polly.Telemetry.TelemetryOptions
   nameWithType: TelemetryOptions
+- uid: Polly.Telemetry.TelemetryOptions.#ctor
+  name: TelemetryOptions()
+  href: api/Polly.Telemetry.TelemetryOptions.html#Polly_Telemetry_TelemetryOptions__ctor
+  commentId: M:Polly.Telemetry.TelemetryOptions.#ctor
+  name.vb: New()
+  fullName: Polly.Telemetry.TelemetryOptions.TelemetryOptions()
+  fullName.vb: Polly.Telemetry.TelemetryOptions.New()
+  nameWithType: TelemetryOptions.TelemetryOptions()
+  nameWithType.vb: TelemetryOptions.New()
+- uid: Polly.Telemetry.TelemetryOptions.#ctor(Polly.Telemetry.TelemetryOptions)
+  name: TelemetryOptions(TelemetryOptions)
+  href: api/Polly.Telemetry.TelemetryOptions.html#Polly_Telemetry_TelemetryOptions__ctor_Polly_Telemetry_TelemetryOptions_
+  commentId: M:Polly.Telemetry.TelemetryOptions.#ctor(Polly.Telemetry.TelemetryOptions)
+  name.vb: New(TelemetryOptions)
+  fullName: Polly.Telemetry.TelemetryOptions.TelemetryOptions(Polly.Telemetry.TelemetryOptions)
+  fullName.vb: Polly.Telemetry.TelemetryOptions.New(Polly.Telemetry.TelemetryOptions)
+  nameWithType: TelemetryOptions.TelemetryOptions(TelemetryOptions)
+  nameWithType.vb: TelemetryOptions.New(TelemetryOptions)
+- uid: Polly.Telemetry.TelemetryOptions.#ctor*
+  name: TelemetryOptions
+  href: api/Polly.Telemetry.TelemetryOptions.html#Polly_Telemetry_TelemetryOptions__ctor_
+  commentId: Overload:Polly.Telemetry.TelemetryOptions.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Polly.Telemetry.TelemetryOptions.TelemetryOptions
+  fullName.vb: Polly.Telemetry.TelemetryOptions.New
+  nameWithType: TelemetryOptions.TelemetryOptions
+  nameWithType.vb: TelemetryOptions.New
 - uid: Polly.Telemetry.TelemetryOptions.LoggerFactory
   name: LoggerFactory
   href: api/Polly.Telemetry.TelemetryOptions.html#Polly_Telemetry_TelemetryOptions_LoggerFactory
@@ -6026,6 +6118,19 @@ references:
   isSpec: "True"
   fullName: Polly.Telemetry.TelemetryOptions.ResultFormatter
   nameWithType: TelemetryOptions.ResultFormatter
+- uid: Polly.Telemetry.TelemetryOptions.SeverityProvider
+  name: SeverityProvider
+  href: api/Polly.Telemetry.TelemetryOptions.html#Polly_Telemetry_TelemetryOptions_SeverityProvider
+  commentId: P:Polly.Telemetry.TelemetryOptions.SeverityProvider
+  fullName: Polly.Telemetry.TelemetryOptions.SeverityProvider
+  nameWithType: TelemetryOptions.SeverityProvider
+- uid: Polly.Telemetry.TelemetryOptions.SeverityProvider*
+  name: SeverityProvider
+  href: api/Polly.Telemetry.TelemetryOptions.html#Polly_Telemetry_TelemetryOptions_SeverityProvider_
+  commentId: Overload:Polly.Telemetry.TelemetryOptions.SeverityProvider
+  isSpec: "True"
+  fullName: Polly.Telemetry.TelemetryOptions.SeverityProvider
+  nameWithType: TelemetryOptions.SeverityProvider
 - uid: Polly.Telemetry.TelemetryOptions.TelemetryListeners
   name: TelemetryListeners
   href: api/Polly.Telemetry.TelemetryOptions.html#Polly_Telemetry_TelemetryOptions_TelemetryListeners

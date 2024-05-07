@@ -385,6 +385,30 @@ Execution attempt. Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', O
 <p>Each resilience strategy can generate telemetry data through the <a class="xref" href="../api/Polly.Telemetry.ResilienceStrategyTelemetry.html"><code>ResilienceStrategyTelemetry</code></a> API. Polly encapsulates event details as <a class="xref" href="../api/Polly.Telemetry.TelemetryEventArguments-2.html"><code>TelemetryEventArguments</code></a> and emits them via <code>TelemetryListener</code>.</p>
 <p>To leverage this telemetry data, users should assign a <code>TelemetryListener</code> instance to <code>ResiliencePipelineBuilder.TelemetryListener</code> and then consume the <code>TelemetryEventArguments</code>.</p>
 <p>For common scenarios, it is expected that users would make use of <code>Polly.Extensions</code>. This extension enables telemetry configuration through the <code>ResiliencePipelineBuilder.ConfigureTelemetry(...)</code> method, which processes <code>TelemetryEventArguments</code> to generate logs and metrics.</p>
+<h2 id="customizing-the-severity-of-telemetry-events">Customizing the severity of telemetry events</h2>
+<p>To customize the severity of telemetry events, set the <a class="xref" href="../api/Polly.Telemetry.TelemetryOptions.html#Polly_Telemetry_TelemetryOptions_SeverityProvider"><code>SeverityProvider</code></a> delegate that allows changing the default severity of resilience events:</p>
+<!-- snippet: telemetry-severity-override -->
+<pre><code class="lang-cs">services.AddResiliencePipeline(&quot;my-strategy&quot;, (builder, context) =&gt;
+{
+    // Create a new instance of telemetry options by using copy-constructor of the global ones.
+    // This ensures that common configuration is preserved.
+    var telemetryOptions = new TelemetryOptions(context.GetOptions&lt;TelemetryOptions&gt;());
+
+    telemetryOptions.SeverityProvider = args =&gt; args.Event.EventName switch
+    {
+        // Decrease severity of specific events
+        &quot;OnRetry&quot; =&gt; ResilienceEventSeverity.Debug,
+        &quot;ExecutionAttempt&quot; =&gt; ResilienceEventSeverity.Debug,
+        _ =&gt; args.Event.Severity
+    };
+
+    builder.AddRetry(new RetryStrategyOptions());
+
+    // Override the telemetry configuration for this pipeline.
+    builder.ConfigureTelemetry(telemetryOptions);
+});
+</code></pre>
+<!-- endSnippet -->
 
 </article>
 
