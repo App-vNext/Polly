@@ -28,7 +28,7 @@ public class TelemetryOptionsTests
     public void CopyCtor_Ok()
     {
         var options = new TelemetryOptions
-        { 
+        {
             LoggerFactory = Substitute.For<ILoggerFactory>(),
             SeverityProvider = _ => ResilienceEventSeverity.Error,
             ResultFormatter = (_, _) => "x",
