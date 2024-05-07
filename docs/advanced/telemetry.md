@@ -255,3 +255,31 @@ Each resilience strategy can generate telemetry data through the [`ResilienceStr
 To leverage this telemetry data, users should assign a `TelemetryListener` instance to `ResiliencePipelineBuilder.TelemetryListener` and then consume the `TelemetryEventArguments`.
 
 For common scenarios, it is expected that users would make use of `Polly.Extensions`. This extension enables telemetry configuration through the `ResiliencePipelineBuilder.ConfigureTelemetry(...)` method, which processes `TelemetryEventArguments` to generate logs and metrics.
+
+## Customizing the severity of telemetry events
+
+To customize the severity of telemetry events, set the [`SeverityProvider`](xref:Polly.Telemetry.TelemetryOptions.SeverityProvider) delegate that allows changing the default severity of resilience events:
+
+<!-- snippet: telemetry-severity-override -->
+```cs
+services.AddResiliencePipeline("my-strategy", (builder, context) =>
+{
+    // Create a new instance of telemetry options by using copy-constructor of the global ones.
+    // This ensures that common configuration is preserved.
+    var telemetryOptions = new TelemetryOptions(context.GetOptions<TelemetryOptions>());
+
+    telemetryOptions.SeverityProvider = args => args.Event.EventName switch
+    {
+        // Decrease severity of specific events
+        "OnRetry" => ResilienceEventSeverity.Debug,
+        "ExecutionAttempt" => ResilienceEventSeverity.Debug,
+        _ => args.Event.Severity
+    };
+
+    builder.AddRetry(new RetryStrategyOptions());
+
+    // Override the telemetry configuration for this pipeline.
+    builder.ConfigureTelemetry(telemetryOptions);
+});
+```
+<!-- endSnippet -->

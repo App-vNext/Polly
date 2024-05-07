@@ -11,6 +11,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
     private readonly ILogger _logger;
     private readonly Func<ResilienceContext, object?, object?> _resultFormatter;
     private readonly List<TelemetryListener> _listeners;
+    private readonly Func<SeverityProviderArguments, ResilienceEventSeverity>? _severityProvider;
     private readonly List<MeteringEnricher> _enrichers;
 
     public TelemetryListenerImpl(TelemetryOptions options)
@@ -19,6 +20,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
         _logger = options.LoggerFactory.CreateLogger(TelemetryUtil.PollyDiagnosticSource);
         _resultFormatter = options.ResultFormatter;
         _listeners = options.TelemetryListeners.ToList();
+        _severityProvider = options.SeverityProvider;
 
         Counter = Meter.CreateCounter<int>(
             "resilience.polly.strategy.events",
@@ -52,8 +54,15 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
             }
         }
 
-        LogEvent(in args);
-        MeterEvent(in args);
+        var severity = args.Event.Severity;
+
+        if (_severityProvider is { } provider)
+        {
+            severity = provider(new SeverityProviderArguments(args.Source, args.Event, args.Context));
+        }
+
+        LogEvent(in args, severity);
+        MeterEvent(in args, severity);
     }
 
     private static bool GetArgs<T, TArgs>(T inArgs, out TArgs outArgs)
@@ -68,13 +77,13 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
         return false;
     }
 
-    private static void AddCommonTags<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
+    private static void AddCommonTags<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context, ResilienceEventSeverity severity)
     {
         var source = context.TelemetryEvent.Source;
         var ev = context.TelemetryEvent.Event;
 
         context.Tags.Add(new(ResilienceTelemetryTags.EventName, context.TelemetryEvent.Event.EventName));
-        context.Tags.Add(new(ResilienceTelemetryTags.EventSeverity, context.TelemetryEvent.Event.Severity.AsString()));
+        context.Tags.Add(new(ResilienceTelemetryTags.EventSeverity, severity.AsString()));
 
         if (source.PipelineName is not null)
         {
@@ -102,7 +111,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
         }
     }
 
-    private void MeterEvent<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
+    private void MeterEvent<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args, ResilienceEventSeverity severity)
     {
         var arguments = args.Arguments;
 
@@ -115,7 +124,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
             var tags = TagsList.Get();
             var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
-            UpdateEnrichmentContext(in context);
+            UpdateEnrichmentContext(in context, severity);
             ExecutionDuration.Record(executionFinished.Duration.TotalMilliseconds, tags.TagsSpan);
             TagsList.Return(tags);
         }
@@ -128,7 +137,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
             var tags = TagsList.Get();
             var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
-            UpdateEnrichmentContext(in context);
+            UpdateEnrichmentContext(in context, severity);
             context.Tags.Add(new(ResilienceTelemetryTags.AttemptNumber, executionAttempt.AttemptNumber.AsBoxedInt()));
             context.Tags.Add(new(ResilienceTelemetryTags.AttemptHandled, executionAttempt.Handled.AsBoxedBool()));
             AttemptDuration.Record(executionAttempt.Duration.TotalMilliseconds, tags.TagsSpan);
@@ -138,15 +147,15 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
         {
             var tags = TagsList.Get();
             var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
-            UpdateEnrichmentContext(in context);
+            UpdateEnrichmentContext(in context, severity);
             Counter.Add(1, tags.TagsSpan);
             TagsList.Return(tags);
         }
     }
 
-    private void UpdateEnrichmentContext<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
+    private void UpdateEnrichmentContext<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context, ResilienceEventSeverity severity)
     {
-        AddCommonTags(in context);
+        AddCommonTags(in context, severity);
 
         if (_enrichers.Count != 0)
         {
@@ -157,10 +166,10 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
         }
     }
 
-    private void LogEvent<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
+    private void LogEvent<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args, ResilienceEventSeverity severity)
     {
         var result = GetResult(args.Context, args.Outcome);
-        var level = args.Event.Severity.AsLogLevel();
+        var level = severity.AsLogLevel();
 
         if (GetArgs<TArgs, PipelineExecutingArguments>(args.Arguments, out _))
         {
