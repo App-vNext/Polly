@@ -28,7 +28,7 @@ public class TelemetryOptionsTests
     public void CopyCtor_Ok()
     {
         var options = new TelemetryOptions
-        {
+        { 
             LoggerFactory = Substitute.For<ILoggerFactory>(),
             SeverityProvider = _ => ResilienceEventSeverity.Error,
             ResultFormatter = (_, _) => "x",
@@ -44,8 +44,14 @@ public class TelemetryOptionsTests
         other.SeverityProvider.Should().Be(options.SeverityProvider);
         other.MeteringEnrichers.Should().BeEquivalentTo(options.MeteringEnrichers);
         other.TelemetryListeners.Should().BeEquivalentTo(options.TelemetryListeners);
-
         other.TelemetryListeners.Should().NotBeSameAs(options.TelemetryListeners);
         other.MeteringEnrichers.Should().NotBeSameAs(options.MeteringEnrichers);
+
+        typeof(TelemetryOptions).GetRuntimeProperties().Should().HaveCount(5);
     }
+
+    [Fact]
+    public void CopyCtor_Reminder()
+        => typeof(TelemetryOptions).GetRuntimeProperties().Should()
+        .HaveCount(5, "Make sure that when you increase this number, you also update the copy constructor to assign the new property.");
 }

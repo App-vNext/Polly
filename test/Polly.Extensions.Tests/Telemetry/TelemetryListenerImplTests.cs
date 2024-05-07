@@ -454,6 +454,18 @@ public class TelemetryListenerImplTests : IDisposable
     }
 
     [Fact]
+    public void SeverityProvider_NotSet_SeverityRespected()
+    {
+        var telemetry = Create();
+
+        ReportEvent(telemetry, null, severity: ResilienceEventSeverity.Critical);
+
+        var records = _logger.GetRecords();
+
+        records.Single().LogLevel.Should().Be(LogLevel.Critical);
+    }
+
+    [Fact]
     public void SeverityProvider_EnsureRespected()
     {
         var called = false;

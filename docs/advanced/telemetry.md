@@ -264,15 +264,15 @@ services.AddResiliencePipeline("my-strategy", (builder, context) =>
     // This ensures that common configuration is preserved.
     var telemetryOptions = new TelemetryOptions(context.GetOptions<TelemetryOptions>());
 
-    telemetryOptions.SeverityProvider = @event =>
+    telemetryOptions.SeverityProvider = args =>
     {
-        if (@event.Event.EventName == "OnRetry")
+        if (args.Event.EventName == "OnRetry")
         {
             // Decrease the severity of particular event.
             return ResilienceEventSeverity.Debug;
         }
 
-        return @event.Event.Severity;
+        return args.Event.Severity;
     };
 
     builder.AddTimeout(TimeSpan.FromSeconds(1));
