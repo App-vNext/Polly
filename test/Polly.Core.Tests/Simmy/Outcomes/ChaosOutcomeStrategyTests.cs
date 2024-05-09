@@ -156,6 +156,39 @@ public class ChaosOutcomeStrategyTests
     }
 
     [Fact]
+    public async Task Given_enabled_and_randomly_within_threshold_should_inject_exception()
+    {
+        var exception = new InvalidOperationException();
+        var options = new ChaosOutcomeStrategyOptions<int>
+        {
+            InjectionRate = 0.6,
+            Randomizer = () => 0.5,
+            OutcomeGenerator = (_) => new ValueTask<Outcome<int>?>(
+                Outcome.FromException<int>(exception)),
+            OnOutcomeInjected = args =>
+            {
+                args.Outcome.Value.Result.Should().Be(default(int));
+                args.Outcome.Value.Exception.Should().Be(exception);
+                _onOutcomeInjectedExecuted = true;
+                return default;
+            }
+        };
+
+        var sut = CreateSut(options);
+        await sut.Invoking(s => s.ExecuteAsync<int>(async _ =>
+        {
+            _userDelegateExecuted = true;
+            return await Task.FromResult(42);
+        }, CancellationToken.None)
+        .AsTask())
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
+
+        _userDelegateExecuted.Should().BeFalse();
+        _onOutcomeInjectedExecuted.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task Should_not_execute_user_delegate_when_it_was_cancelled_running_the_strategy()
     {
         using var cts = new CancellationTokenSource();

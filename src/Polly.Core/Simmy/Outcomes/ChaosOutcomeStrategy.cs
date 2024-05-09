@@ -31,6 +31,11 @@ internal class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
                     await _onOutcomeInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
                 }
 
+                if (outcome.Value.Exception is not null)
+                {
+                    return new Outcome<T>(outcome.Value.Exception);
+                }
+
                 return new Outcome<T>(outcome.Value.Result);
             }
 
