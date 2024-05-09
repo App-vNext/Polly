@@ -5,18 +5,16 @@ namespace Polly.Simmy.Outcomes;
 internal class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
+    private readonly Func<OnOutcomeInjectedArguments<T>, ValueTask>? _onOutcomeInjected;
+    private readonly Func<OutcomeGeneratorArguments, ValueTask<Outcome<T>?>> _outcomeGenerator;
 
     public ChaosOutcomeStrategy(ChaosOutcomeStrategyOptions<T> options, ResilienceStrategyTelemetry telemetry)
         : base(options)
     {
         _telemetry = telemetry;
-        OnOutcomeInjected = options.OnOutcomeInjected;
-        OutcomeGenerator = options.OutcomeGenerator;
+        _onOutcomeInjected = options.OnOutcomeInjected;
+        _outcomeGenerator = options.OutcomeGenerator;
     }
-
-    public Func<OnOutcomeInjectedArguments<T>, ValueTask>? OnOutcomeInjected { get; }
-
-    public Func<OutcomeGeneratorArguments, ValueTask<Outcome<T>?>> OutcomeGenerator { get; }
 
     protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
@@ -24,13 +22,13 @@ internal class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
         {
             if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext))
             {
-                var outcome = await OutcomeGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
+                var outcome = await _outcomeGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
                 var args = new OnOutcomeInjectedArguments<T>(context, outcome.Value);
                 _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosOutcomeConstants.OnOutcomeInjectedEvent), context, args);
 
-                if (OnOutcomeInjected is not null)
+                if (_onOutcomeInjected is not null)
                 {
-                    await OnOutcomeInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
+                    await _onOutcomeInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
                 }
 
                 return new Outcome<T>(outcome.Value.Result);
