@@ -167,8 +167,8 @@ public class ChaosOutcomeStrategyTests
                 Outcome.FromException<int>(exception)),
             OnOutcomeInjected = args =>
             {
-                args.Outcome.Value.Result.Should().Be(default(int));
-                args.Outcome.Value.Exception.Should().Be(exception);
+                args.Outcome.Result.Should().Be(default(int));
+                args.Outcome.Exception.Should().Be(exception);
                 _onOutcomeInjectedExecuted = true;
                 return default;
             }
