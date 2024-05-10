@@ -20,10 +20,10 @@ internal class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
     {
         try
         {
-            if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext))
+            if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext)
+                && await _outcomeGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext) is Outcome<T> outcome)
             {
-                var outcome = await _outcomeGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
-                var args = new OnOutcomeInjectedArguments<T>(context, outcome.Value);
+                var args = new OnOutcomeInjectedArguments<T>(context, outcome);
                 _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosOutcomeConstants.OnOutcomeInjectedEvent), context, args);
 
                 if (_onOutcomeInjected is not null)
@@ -31,17 +31,12 @@ internal class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
                     await _onOutcomeInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
                 }
 
-                if (!outcome.HasValue)
+                if (outcome.HasResult)
                 {
-                    return new Outcome<T>(default(T?));
+                    return new Outcome<T>(outcome.Result);
                 }
 
-                if (outcome.Value.HasResult)
-                {
-                    return new Outcome<T>(outcome.Value.Result);
-                }
-
-                return new Outcome<T>(outcome.Value.Exception!);
+                return new Outcome<T>(outcome.Exception!);
             }
 
             return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
