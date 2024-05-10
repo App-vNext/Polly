@@ -95,7 +95,7 @@ public class ChaosOutcomeStrategyTests
         var response = await sut.ExecuteAsync(_ =>
         {
             _userDelegateExecuted = true;
-            return ValueTask.FromResult(HttpStatusCode.OK);
+            return new ValueTask<HttpStatusCode>(HttpStatusCode.OK);
         });
 
         response.Should().Be(fakeResult);
@@ -147,7 +147,7 @@ public class ChaosOutcomeStrategyTests
         var response = await sut.ExecuteAsync<HttpStatusCode?>(_ =>
         {
             _userDelegateExecuted = true;
-            return ValueTask.FromResult<HttpStatusCode?>(HttpStatusCode.OK);
+            return new ValueTask<HttpStatusCode?>(HttpStatusCode.OK);
         });
 
         response.Should().Be(null);
@@ -175,7 +175,7 @@ public class ChaosOutcomeStrategyTests
         var response = await sut.ExecuteAsync(_ =>
         {
             _userDelegateExecuted = true;
-            return ValueTask.FromResult(42);
+            return new ValueTask<int>(42);
         });
 
         response.Should().Be(42);
@@ -205,7 +205,7 @@ public class ChaosOutcomeStrategyTests
         await sut.Invoking(s => s.ExecuteAsync(_ =>
         {
             _userDelegateExecuted = true;
-            return ValueTask.FromResult(42);
+            return new ValueTask<int>(42);
         }, CancellationToken.None)
         .AsTask())
             .Should()
@@ -235,7 +235,7 @@ public class ChaosOutcomeStrategyTests
         await sut.Invoking(s => s.ExecuteAsync(_ =>
         {
             _userDelegateExecuted = true;
-            return ValueTask.FromResult(HttpStatusCode.OK);
+            return new ValueTask<HttpStatusCode>(HttpStatusCode.OK);
         }, cts.Token)
         .AsTask())
             .Should()
