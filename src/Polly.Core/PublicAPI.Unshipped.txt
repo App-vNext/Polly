@@ -1,5 +1,1 @@
 ﻿#nullable enable
-Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.get -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>?
-static Polly.ResiliencePipelineBuilderExtensions.AddStrategy(this Polly.ResiliencePipelineBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy<object!>!>! factory) -> Polly.ResiliencePipelineBuilder!
-static Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TBuilder>(this TBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy!>! factory) -> TBuilder!
-static Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy<TResult>!>! factory) -> Polly.ResiliencePipelineBuilder<TResult>!

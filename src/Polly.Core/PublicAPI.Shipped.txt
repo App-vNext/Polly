@@ -421,6 +421,7 @@ Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.ChaosOutcomeStrategyOptions() -> void
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected.get -> System.Func<Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>, System.Threading.Tasks.ValueTask>?
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OnOutcomeInjected.set -> void
+Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.get -> System.Func<Polly.Simmy.Outcomes.OutcomeGeneratorArguments, System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>?>>?
 Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>.OutcomeGenerator.set -> void
 Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>
 Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>.Context.get -> Polly.ResilienceContext!
@@ -527,8 +528,11 @@ static Polly.PredicateResult.True() -> System.Threading.Tasks.ValueTask<bool>
 static Polly.ResilienceContextPool.Shared.get -> Polly.ResilienceContextPool!
 static Polly.ResiliencePipelineBuilderExtensions.AddPipeline<TBuilder>(this TBuilder! builder, Polly.ResiliencePipeline! pipeline) -> TBuilder!
 static Polly.ResiliencePipelineBuilderExtensions.AddPipeline<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.ResiliencePipeline<TResult>! pipeline) -> Polly.ResiliencePipelineBuilder<TResult>!
+static Polly.ResiliencePipelineBuilderExtensions.AddStrategy(this Polly.ResiliencePipelineBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy<object!>!>! factory) -> Polly.ResiliencePipelineBuilder!
 static Polly.ResiliencePipelineBuilderExtensions.AddStrategy(this Polly.ResiliencePipelineBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy<object!>!>! factory, Polly.ResilienceStrategyOptions! options) -> Polly.ResiliencePipelineBuilder!
+static Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TBuilder>(this TBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy!>! factory) -> TBuilder!
 static Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TBuilder>(this TBuilder! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy!>! factory, Polly.ResilienceStrategyOptions! options) -> TBuilder!
+static Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy<TResult>!>! factory) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.ResiliencePipelineBuilderExtensions.AddStrategy<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, System.Func<Polly.StrategyBuilderContext!, Polly.ResilienceStrategy<TResult>!>! factory, Polly.ResilienceStrategyOptions! options) -> Polly.ResiliencePipelineBuilder<TResult>!
 static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry(this Polly.ResiliencePipelineBuilder! builder, Polly.Retry.RetryStrategyOptions! options) -> Polly.ResiliencePipelineBuilder!
 static Polly.RetryResiliencePipelineBuilderExtensions.AddRetry<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Retry.RetryStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!
