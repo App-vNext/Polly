@@ -4,6 +4,40 @@
 
 <!-- next-release -->
 
+## 8.4.0
+
+* Remove async void usage by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2013
+* [Docs] Add cheat sheet for outcome chaos strategy by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/1984
+* Fix SA1515/SA1612/S2681 by [@baranyaimate](https://github.com/baranyaimate) in https://github.com/App-vNext/Polly/pull/2018
+* Fix S3800/CA1821/S2955 by [@baranyaimate](https://github.com/baranyaimate) in https://github.com/App-vNext/Polly/pull/2020
+* Document outcome strategy anti-patterns by [@vany0114](https://github.com/vany0114) in https://github.com/App-vNext/Polly/pull/1994
+* [Docs] Add cheat sheet for latency chaos by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2030
+* [Docs] Add cheat sheet for behavior chaos by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2031
+* Remove DiagnosticSource reference from Extensions for NET 6.0 and later by [@lahma](https://github.com/lahma) in https://github.com/App-vNext/Polly/pull/2033
+* Bump actionlint to 1.6.27 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2040
+* Split docs build and publish by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2054
+* Port fixes from .NET 9 testing by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2056
+* Add sponsorship to README by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2059
+* Add F# and VB.NET samples by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2046
+* Fix ToC by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2063
+* Allow adding a resilience strategy without explicit options by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/2068
+* [Docs] Unify strategy descriptions and add Telemetry sections by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2060
+* Add unit to execution time in telemetry events by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2069
+* Release automation by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2062
+* [Docs] Add telemetry section to chaos strategies documentation pages by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2071
+* Fix CI for macOS 14 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2079
+* Fix SA1618 by documenting typeparams by [@iamdmitrij](https://github.com/iamdmitrij) in https://github.com/App-vNext/Polly/pull/2078
+* Add package tools to manifest by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2084
+* Fix IDE0011 warning by [@iamdmitrij](https://github.com/iamdmitrij) in https://github.com/App-vNext/Polly/pull/2085
+* Fix S3253/S6605/SA1625/S103 warnings by [@iamdmitrij](https://github.com/iamdmitrij) in https://github.com/App-vNext/Polly/pull/2086
+* Add CI timeouts by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2088
+* Fix CA1000/S4023/S3442/S107/SA1402/SA1649 warnings by [@iamdmitrij](https://github.com/iamdmitrij) in https://github.com/App-vNext/Polly/pull/2089
+* Fix SA1615/SA1623 warnings by [@iamdmitrij](https://github.com/iamdmitrij) in https://github.com/App-vNext/Polly/pull/2091
+* Allow changing the severity of resilience events by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/2072
+* Fix typos by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2099
+* [Bug] Fix chaos outcome exception handling by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2101
+* Nullability fixes for chaos outcome strategy by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1982
+
 ## 8.3.1
 
 * Add example for chaos engineering by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1956
