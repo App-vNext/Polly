@@ -140,7 +140,7 @@ jobs:
               state: 'open',
             });
 
-            const milestone = milestones.find((p) => p.title === process.env.RELEASE_VERSION);
+            const milestone = milestones.find((p) => p.title === `v${process.env.RELEASE_VERSION}`);
 
             if (!milestone) {
               return;
