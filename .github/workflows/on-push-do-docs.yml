@@ -12,7 +12,6 @@ jobs:
   update-docs:
     name: update-docs
     runs-on: ubuntu-latest
-    if: github.repository == 'App-vNext/Polly'
     steps:
 
       - name: Generate GitHub application token
