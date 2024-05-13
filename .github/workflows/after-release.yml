@@ -119,9 +119,11 @@ jobs:
   update-milestone:
     runs-on: [ ubuntu-latest ]
     if: github.event.repository.fork == false
+
     concurrency:
       group: '${{ github.workflow }}-milestone'
       cancel-in-progress: false
+
     permissions:
       issues: write
 
