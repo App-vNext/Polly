@@ -12,6 +12,7 @@ jobs:
   update-docs:
     name: update-docs
     runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
 
     steps:
 

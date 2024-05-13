@@ -13,6 +13,7 @@ jobs:
   analysis:
     name: analysis
     runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
 
     permissions:
       id-token: write

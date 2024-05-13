@@ -16,7 +16,7 @@ jobs:
 
   update-changelog:
     runs-on: [ ubuntu-latest ]
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' && github.event.repository.fork == false
 
     concurrency:
       group: '${{ github.workflow }}-changelog'
@@ -118,6 +118,7 @@ jobs:
 
   update-milestone:
     runs-on: [ ubuntu-latest ]
+    if: github.event.repository.fork == false
 
     concurrency:
       group: '${{ github.workflow }}-milestone'
