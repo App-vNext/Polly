@@ -16,7 +16,7 @@ jobs:
 
   update-changelog:
     runs-on: [ ubuntu-latest ]
-    if: github.event_name == 'release' && github.repository == 'App-vNext/Polly'
+    if: github.event_name == 'release' && github.event.repository.fork == false
 
     concurrency:
       group: '${{ github.workflow }}-changelog'
@@ -122,7 +122,7 @@ jobs:
     concurrency:
       group: '${{ github.workflow }}-milestone'
       cancel-in-progress: false
-    if: github.repository == 'App-vNext/Polly'
+    if: github.event.repository.fork == false
     permissions:
       issues: write
 
