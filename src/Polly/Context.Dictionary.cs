@@ -9,9 +9,9 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
     // For an individual execution through a policy or policywrap, it is expected that all execution steps (for example executing the user delegate, invoking policy-activity delegates such as onRetry, onBreak, onTimeout etc) execute sequentially.
     // Therefore, this class is intentionally not constructed to be safe for concurrent access from multiple threads.
 
-    private Dictionary<string, object> wrappedDictionary;
+    private Dictionary<string, object> _wrappedDictionary;
 
-    private Dictionary<string, object> WrappedDictionary => wrappedDictionary ?? (wrappedDictionary = []);
+    private Dictionary<string, object> WrappedDictionary => _wrappedDictionary ?? (_wrappedDictionary = []);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="operationKey" /> and the supplied <paramref name="contextData"/>.
@@ -30,7 +30,7 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
             throw new ArgumentNullException(nameof(contextData));
         }
 
-        wrappedDictionary = new Dictionary<string, object>(contextData);
+        _wrappedDictionary = new Dictionary<string, object>(contextData);
     }
 
     #region IDictionary<string,object> implementation

@@ -6,7 +6,7 @@ namespace Polly.Caching;
 /// </summary>
 public class RelativeTtl : ITtlStrategy
 {
-    private readonly TimeSpan ttl;
+    private readonly TimeSpan _ttl;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RelativeTtl"/> class.
@@ -19,7 +19,7 @@ public class RelativeTtl : ITtlStrategy
             throw new ArgumentOutOfRangeException(nameof(ttl), "The ttl for items to cache must be greater than zero.");
         }
 
-        this.ttl = ttl;
+        _ttl = ttl;
     }
 
     /// <summary>
@@ -28,5 +28,5 @@ public class RelativeTtl : ITtlStrategy
     /// <param name="context">The execution context.</param>
     /// <param name="result">The execution result.</param>
     /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-    public Ttl GetTtl(Context context, object? result) => new(ttl);
+    public Ttl GetTtl(Context context, object? result) => new(_ttl);
 }
