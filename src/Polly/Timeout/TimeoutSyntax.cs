@@ -109,7 +109,9 @@ public partial class Policy
     /// <param name="timeout">The timeout.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout).</exception>
+#pragma warning disable S3872
     public static TimeoutPolicy Timeout(TimeSpan timeout)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
         Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
@@ -124,7 +126,9 @@ public partial class Policy
     /// <param name="timeoutStrategy">The timeout strategy.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout).</exception>
+#pragma warning disable S3872
     public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
         Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
@@ -141,7 +145,9 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout).</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
+#pragma warning disable S3872
     public static TimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task> onTimeout)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
@@ -157,7 +163,9 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
+#pragma warning disable S3872
     public static TimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task, Exception> onTimeout)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
@@ -174,7 +182,9 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout).</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
+#pragma warning disable S3872
     public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
@@ -191,7 +201,9 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
+#pragma warning disable S3872
     public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
