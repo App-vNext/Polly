@@ -103,6 +103,7 @@ public partial class Policy
         return Timeout(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeout);
     }
 
+#pragma warning disable S3872
     /// <summary>
     /// Builds a <see cref="Policy"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
     /// </summary>
@@ -110,6 +111,7 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout).</exception>
     public static TimeoutPolicy Timeout(TimeSpan timeout)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
         Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
@@ -117,6 +119,7 @@ public partial class Policy
         return Timeout(_ => timeout, TimeoutStrategy.Optimistic, doNothing);
     }
 
+#pragma warning disable S3872
     /// <summary>
     /// Builds a <see cref="Policy" /> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException" /> will be thrown if the delegate does not complete within the configured timeout.
     /// </summary>
@@ -125,6 +128,7 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout).</exception>
     public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
         Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
@@ -132,6 +136,7 @@ public partial class Policy
         return Timeout(_ => timeout, timeoutStrategy, doNothing);
     }
 
+#pragma warning disable S3872
     /// <summary>
     /// Builds a <see cref="Policy"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
     /// </summary>
@@ -142,12 +147,14 @@ public partial class Policy
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout).</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task> onTimeout)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
         return Timeout(_ => timeout, TimeoutStrategy.Optimistic, onTimeout);
     }
 
+#pragma warning disable S3872
     /// <summary>
     /// Builds a <see cref="Policy"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
     /// </summary>
@@ -158,12 +165,14 @@ public partial class Policy
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task, Exception> onTimeout)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
         return Timeout(_ => timeout, TimeoutStrategy.Optimistic, onTimeout);
     }
 
+#pragma warning disable S3872
     /// <summary>
     /// Builds a <see cref="Policy" /> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException" /> will be thrown if the delegate does not complete within the configured timeout.
     /// </summary>
@@ -175,12 +184,14 @@ public partial class Policy
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout).</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
         return Timeout(_ => timeout, timeoutStrategy, onTimeout);
     }
 
+#pragma warning disable S3872
     /// <summary>
     /// Builds a <see cref="Policy" /> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException" /> will be thrown if the delegate does not complete within the configured timeout.
     /// </summary>
@@ -192,6 +203,7 @@ public partial class Policy
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
+#pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
