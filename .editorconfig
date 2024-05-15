@@ -18,6 +18,10 @@ indent_style = space
 indent_size = 2
 tab_width = 2
 
+# S3872 // Interfaces should not be empty
+[**/Timeout/{TimeoutSyntax,TimeoutTResultSyntax}.cs]
+dotnet_diagnostic.S3872.severity = suggestion
+
 # C# files
 [*.cs]
 
