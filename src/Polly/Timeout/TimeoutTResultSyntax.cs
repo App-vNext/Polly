@@ -116,8 +116,7 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout).</exception>
 #pragma warning disable S3872
-    public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan
-        timeout)
+    public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout)
 #pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
