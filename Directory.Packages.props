@@ -6,7 +6,7 @@
     <MicrosoftExtensionsTimeProviderVersion>8.4.0</MicrosoftExtensionsTimeProviderVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="coverlet.msbuild" Version="6.0.1" />
+    <PackageVersion Include="coverlet.msbuild" Version="6.0.2" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.13.12" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="FSharp.Core" Version="8.0.200" />
