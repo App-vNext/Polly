@@ -323,11 +323,11 @@ public class CircuitBreakerAsyncSpecs : IDisposable
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
+        breaker.BreakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution.
-        breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
+        breaker.BreakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
     }
 
@@ -353,11 +353,11 @@ public class CircuitBreakerAsyncSpecs : IDisposable
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
+        breaker.BreakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution.
-        breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
+        breaker.BreakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
         // Allow another time window to pass (breaker should still be HalfOpen).
@@ -365,7 +365,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should now permit another trial execution.
-        breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
+        breaker.BreakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
     }
 

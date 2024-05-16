@@ -2,15 +2,15 @@
 
 internal abstract class CircuitStateController<TResult> : ICircuitController<TResult>
 {
-    protected readonly TimeSpan _durationOfBreak;
-    protected readonly Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> _onBreak;
-    protected readonly Action<Context> _onReset;
-    protected readonly Action _onHalfOpen;
-    protected readonly object _lock = new();
+    protected readonly TimeSpan DurationOfBreak;
+    protected readonly Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> OnBreak;
+    protected readonly Action<Context> OnReset;
+    protected readonly Action OnHalfOpen;
+    protected readonly object Lock = new();
 
-    protected long _blockedTill;
-    protected CircuitState _circuitState;
-    protected DelegateResult<TResult> _lastOutcome;
+    protected long BlockedTill;
+    protected CircuitState InternalCircuitState;
+    protected DelegateResult<TResult> LastOutcome;
 
     protected CircuitStateController(
         TimeSpan durationOfBreak,
@@ -18,12 +18,12 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         Action<Context> onReset,
         Action onHalfOpen)
     {
-        _durationOfBreak = durationOfBreak;
-        _onBreak = onBreak;
-        _onReset = onReset;
-        _onHalfOpen = onHalfOpen;
+        DurationOfBreak = durationOfBreak;
+        OnBreak = onBreak;
+        OnReset = onReset;
+        OnHalfOpen = onHalfOpen;
 
-        _circuitState = CircuitState.Closed;
+        InternalCircuitState = CircuitState.Closed;
         Reset();
     }
 
@@ -31,22 +31,22 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
     {
         get
         {
-            if (_circuitState != CircuitState.Open)
+            if (InternalCircuitState != CircuitState.Open)
             {
-                return _circuitState;
+                return InternalCircuitState;
             }
 
-            using var _ = TimedLock.Lock(_lock);
+            using var _ = TimedLock.Lock(Lock);
 
 #pragma warning disable CA1508 // Avoid dead conditional code. _circuitState is checked again in the lock
-            if (_circuitState == CircuitState.Open && !IsInAutomatedBreak_NeedsLock)
+            if (InternalCircuitState == CircuitState.Open && !IsInAutomatedBreak_NeedsLock)
             {
-                _circuitState = CircuitState.HalfOpen;
-                _onHalfOpen();
+                InternalCircuitState = CircuitState.HalfOpen;
+                OnHalfOpen();
             }
 #pragma warning restore CA1508 // Avoid dead conditional code. _circuitState is checked again in the lock
 
-            return _circuitState;
+            return InternalCircuitState;
         }
     }
 
@@ -54,8 +54,8 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
     {
         get
         {
-            using var _ = TimedLock.Lock(_lock);
-            return _lastOutcome?.Exception;
+            using var _ = TimedLock.Lock(Lock);
+            return LastOutcome?.Exception;
         }
     }
 
@@ -63,35 +63,35 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
     {
         get
         {
-            using var _ = TimedLock.Lock(_lock);
-            return _lastOutcome != null ? _lastOutcome.Result : default;
+            using var _ = TimedLock.Lock(Lock);
+            return LastOutcome != null ? LastOutcome.Result : default;
         }
     }
 
-    protected bool IsInAutomatedBreak_NeedsLock => SystemClock.UtcNow().Ticks < _blockedTill;
+    protected bool IsInAutomatedBreak_NeedsLock => SystemClock.UtcNow().Ticks < BlockedTill;
 
     public void Isolate()
     {
-        using var _ = TimedLock.Lock(_lock);
-        _lastOutcome = new DelegateResult<TResult>(new IsolatedCircuitException("The circuit is manually held open and is not allowing calls."));
+        using var _ = TimedLock.Lock(Lock);
+        LastOutcome = new DelegateResult<TResult>(new IsolatedCircuitException("The circuit is manually held open and is not allowing calls."));
         BreakFor_NeedsLock(TimeSpan.MaxValue, Context.None());
-        _circuitState = CircuitState.Isolated;
+        InternalCircuitState = CircuitState.Isolated;
     }
 
     protected void Break_NeedsLock(Context context) =>
-        BreakFor_NeedsLock(_durationOfBreak, context);
+        BreakFor_NeedsLock(DurationOfBreak, context);
 
     private void BreakFor_NeedsLock(TimeSpan durationOfBreak, Context context)
     {
         bool willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.UtcNow();
-        _blockedTill = willDurationTakeUsPastDateTimeMaxValue
+        BlockedTill = willDurationTakeUsPastDateTimeMaxValue
             ? DateTime.MaxValue.Ticks
             : (SystemClock.UtcNow() + durationOfBreak).Ticks;
 
-        var transitionedState = _circuitState;
-        _circuitState = CircuitState.Open;
+        var transitionedState = InternalCircuitState;
+        InternalCircuitState = CircuitState.Open;
 
-        _onBreak(_lastOutcome, transitionedState, durationOfBreak, context);
+        OnBreak(LastOutcome, transitionedState, durationOfBreak, context);
     }
 
     public void Reset() =>
@@ -99,20 +99,20 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
 
     protected void ResetInternal_NeedsLock(Context context)
     {
-        _blockedTill = DateTime.MinValue.Ticks;
-        _lastOutcome = null;
+        BlockedTill = DateTime.MinValue.Ticks;
+        LastOutcome = null;
 
-        CircuitState priorState = _circuitState;
-        _circuitState = CircuitState.Closed;
+        CircuitState priorState = InternalCircuitState;
+        InternalCircuitState = CircuitState.Closed;
         if (priorState != CircuitState.Closed)
         {
-            _onReset(context);
+            OnReset(context);
         }
     }
 
     protected bool PermitHalfOpenCircuitTest()
     {
-        long currentlyBlockedUntil = _blockedTill;
+        long currentlyBlockedUntil = BlockedTill;
         if (SystemClock.UtcNow().Ticks < currentlyBlockedUntil)
         {
             return false;
@@ -120,14 +120,14 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
 
         // It's time to permit a / another trial call in the half-open state ...
         // ... but to prevent race conditions/multiple calls, we have to ensure only _one_ thread wins the race to own this next call.
-        return Interlocked.CompareExchange(ref _blockedTill, SystemClock.UtcNow().Ticks + _durationOfBreak.Ticks, currentlyBlockedUntil) == currentlyBlockedUntil;
+        return Interlocked.CompareExchange(ref BlockedTill, SystemClock.UtcNow().Ticks + DurationOfBreak.Ticks, currentlyBlockedUntil) == currentlyBlockedUntil;
     }
 
     private BrokenCircuitException GetBreakingException()
     {
         const string BrokenCircuitMessage = "The circuit is now open and is not allowing calls.";
 
-        var lastOutcome = _lastOutcome;
+        var lastOutcome = LastOutcome;
         if (lastOutcome == null)
         {
             return new BrokenCircuitException(BrokenCircuitMessage);

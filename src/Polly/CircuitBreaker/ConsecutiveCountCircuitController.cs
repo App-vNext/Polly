@@ -16,16 +16,16 @@ internal class ConsecutiveCountCircuitController<TResult> : CircuitStateControll
 
     public override void OnCircuitReset(Context context)
     {
-        using var _ = TimedLock.Lock(_lock);
+        using var _ = TimedLock.Lock(Lock);
         _consecutiveFailureCount = 0;
         ResetInternal_NeedsLock(context);
     }
 
     public override void OnActionSuccess(Context context)
     {
-        using var _ = TimedLock.Lock(_lock);
+        using var _ = TimedLock.Lock(Lock);
 
-        switch (_circuitState)
+        switch (InternalCircuitState)
         {
             case CircuitState.HalfOpen:
                 OnCircuitReset(context);
@@ -46,11 +46,11 @@ internal class ConsecutiveCountCircuitController<TResult> : CircuitStateControll
 
     public override void OnActionFailure(DelegateResult<TResult> outcome, Context context)
     {
-        using var _ = TimedLock.Lock(_lock);
+        using var _ = TimedLock.Lock(Lock);
 
-        _lastOutcome = outcome;
+        LastOutcome = outcome;
 
-        switch (_circuitState)
+        switch (InternalCircuitState)
         {
             case CircuitState.HalfOpen:
                 Break_NeedsLock(context);

@@ -2,10 +2,12 @@
 
 public abstract partial class PolicyBase
 {
+#pragma warning disable IDE1006
     /// <summary>
     /// A key intended to be unique to each <see cref="IsPolicy"/> instance.
     /// </summary>
     protected string policyKeyInternal;
+#pragma warning restore IDE1006
 
     /// <summary>
     /// Gets a key intended to be unique to each <see cref="IsPolicy"/> instance, which is passed with executions as the <see cref="Context.PolicyKey"/> property.
