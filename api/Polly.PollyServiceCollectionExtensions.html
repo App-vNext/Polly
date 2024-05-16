@@ -29,15 +29,15 @@
       <meta name="loc:changeTheme" content="Change theme">
       <meta name="loc:copy" content="Copy">
       <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-
-  <script type="module" src="./../public/docfx.min.js"></script>
-
-  <script>
-    const theme = localStorage.getItem('theme') || 'auto'
-    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
-  </script>
-
 
   <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
     <header class="bg-body border-bottom">
@@ -573,8 +573,7 @@ This call enables telemetry for the registered resilience pipeline.
 to allow other services / configuration to be available before providing the key.</p>
 <p>
 You can retrieve the registered pipeline by resolving the <a class="xref" href="Polly.Registry.ResiliencePipelineProvider-1.html">ResiliencePipelineProvider&lt;TKey&gt;</a> class from the dependency injection container.
-</p>
-<p>
+</p><p>
 This call enables telemetry for the registered resilience pipeline.
 </p>
 </div>
