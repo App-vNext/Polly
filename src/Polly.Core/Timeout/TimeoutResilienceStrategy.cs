@@ -51,7 +51,9 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         // execution is finished, clean up
         context.CancellationToken = previousToken;
 #pragma warning disable CA1849 // Call async methods when in an async method, OK here as the callback is synchronous
+#pragma warning disable S6966
         registration.Dispose();
+#pragma warning restore S6966
 #pragma warning restore CA1849 // Call async methods when in an async method
 
         _cancellationTokenSourcePool.Return(cancellationSource);

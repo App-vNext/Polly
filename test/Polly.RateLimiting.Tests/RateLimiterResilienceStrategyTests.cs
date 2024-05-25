@@ -101,7 +101,9 @@ public class RateLimiterResilienceStrategyTests
         }
         else
         {
+#pragma warning disable S6966
             strategy.Dispose();
+#pragma warning restore S6966
         }
 
         await limiter.Invoking(l => l.AcquireAsync(1).AsTask()).Should().ThrowAsync<ObjectDisposedException>();
@@ -130,7 +132,7 @@ public class RateLimiterResilienceStrategyTests
         _limiter
             .GetType()
             .GetMethod("AcquireAsyncCore", BindingFlags.NonPublic | BindingFlags.Instance)!
-            .Invoke(_limiter, new object[] { 1, token })
+            .Invoke(_limiter, [1, token])
             .Returns(result);
     }
 
