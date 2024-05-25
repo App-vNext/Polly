@@ -518,7 +518,11 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
         permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
         permitFirstExecutionEnd.Set();
-        Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
+
+#pragma warning disable xUnit1031
+        Task.WaitAll([firstExecution, secondExecution], testTimeoutToExposeDeadlocks).Should().BeTrue();
+#pragma warning restore xUnit1031
+
         if (firstExecution.IsFaulted)
             throw firstExecution!.Exception!;
         if (secondExecution.IsFaulted)
@@ -625,7 +629,11 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
         permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
         permitFirstExecutionEnd.Set();
-        Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
+
+#pragma warning disable xUnit1031
+        Task.WaitAll([firstExecution, secondExecution], testTimeoutToExposeDeadlocks).Should().BeTrue();
+#pragma warning restore xUnit1031
+
         if (firstExecution.IsFaulted)
             throw firstExecution!.Exception!;
         if (secondExecution.IsFaulted)
@@ -890,8 +898,11 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         // Permit the second (long-running) execution to hit the open circuit with its failure.
         permitLongRunningExecutionToReturnItsFailure.Set();
 
+#pragma warning disable xUnit1031
         // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
         longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
+#pragma warning restore xUnit1031
+
         if (longRunningExecution.IsFaulted)
             throw longRunningExecution!.Exception!;
         longRunningExecution.Status.Should().Be(TaskStatus.RanToCompletion);
