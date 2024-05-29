@@ -2,4 +2,8 @@
   <PropertyGroup>
     <UseArtifactsOutput>true</UseArtifactsOutput>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(CI)' == 'true' ">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
 </Project>
