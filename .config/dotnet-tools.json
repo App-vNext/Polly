@@ -26,6 +26,12 @@
         "mdsnippets"
       ]
     },
+    "MartinCostello.WaitForNuGetPackage": {
+      "version": "1.0.1",
+      "commands": [
+        "dotnet-wait-for-package"
+      ]
+    },
     "sign": {
       "version": "0.9.1-beta.24170.3",
       "commands": [
