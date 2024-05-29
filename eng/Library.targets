@@ -54,4 +54,25 @@
     </PackageReference>
   </ItemGroup>
 
+  <Target Name="SetNuGetPackageOutputs" AfterTargets="Pack" Condition=" '$(GITHUB_OUTPUT)' != '' ">
+    <PropertyGroup>
+      <_PackageNamesPath>$(ArtifactsPath)\package-names.txt</_PackageNamesPath>
+    </PropertyGroup>
+    <ReadLinesFromFile File="$(_PackageNamesPath)">
+      <Output TaskParameter="Lines" ItemName="_PackageNames" />
+    </ReadLinesFromFile>
+    <ItemGroup>
+      <_PackageNames Include="$(PackageId)" />
+    </ItemGroup>
+    <RemoveDuplicates Inputs="@(_PackageNames)">
+      <Output TaskParameter="Filtered" ItemName="_UniquePackageNames" />
+    </RemoveDuplicates>
+    <PropertyGroup>
+      <_UniquePackageNames>@(_UniquePackageNames->'%(Identity)', ',')</_UniquePackageNames>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(_PackageNamesPath)" Lines="@(_UniquePackageNames)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <WriteLinesToFile File="$(GITHUB_OUTPUT)" Lines="package-names=$(_UniquePackageNames)" />
+    <WriteLinesToFile File="$(GITHUB_OUTPUT)" Lines="package-version=$(Version)" />
+  </Target>
+
 </Project>

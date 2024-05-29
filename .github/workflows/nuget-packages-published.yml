@@ -1,0 +1,205 @@
+name: nuget-packages-published
+run-name: ${{ github.event.client_payload.version }}
+
+on:
+  repository_dispatch:
+    types: [ nuget_packages_published ]
+
+permissions: {}
+
+jobs:
+
+  wait-for-publish:
+    runs-on: [ ubuntu-latest ]
+    timeout-minutes: 30
+
+    concurrency:
+      group: '${{ github.workflow }}-${{ github.event.client_payload.version }}'
+      cancel-in-progress: false
+
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_GENERATE_ASPNET_CERTIFICATE: false
+      DOTNET_MULTILEVEL_LOOKUP: 0
+      DOTNET_NOLOGO: true
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
+      FORCE_COLOR: 3
+      NUGET_XMLDOC_MODE: skip
+      TERM: xterm
+
+    outputs:
+      package-names: ${{ github.event.client_payload.packages }}
+      package-version: ${{ github.event.client_payload.version }}
+      published: ${{ steps.wait-for-publish.outputs.published }}
+
+    permissions:
+      contents: read
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
+
+      - name: Restore .NET tools
+        shell: pwsh
+        run: dotnet tool restore
+
+      - name: Wait for NuGet packages to be published
+        id: wait-for-publish
+        shell: pwsh
+        env:
+          PACKAGE_NAMES: ${{ github.event.client_payload.packages }}
+          PACKAGE_VERSION: ${{ github.event.client_payload.version }}
+          PUBLISH_TIMEOUT: '00:25:00'
+        run: |
+          $packageNames = ${env:PACKAGE_NAMES} -Split ','
+          $packageVersion = ${env:PACKAGE_VERSION}.TrimStart('v')
+
+          $packages = @()
+
+          foreach ($packageName in $packageNames) {
+            $packages += "${packageName}@${packageVersion}"
+          }
+
+          dotnet wait-for-package $packages --timeout ${env:PUBLISH_TIMEOUT}
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Output "::warning::Failed to wait for NuGet packages to be published and indexed."
+            exit 0
+          }
+
+          "published=true" >> $env:GITHUB_OUTPUT
+
+  notify-release:
+    runs-on: [ ubuntu-latest ]
+    needs: [wait-for-publish]
+    if: needs.wait-for-publish.outputs.published == 'true'
+
+    concurrency:
+      group: '${{ github.workflow }}-notify'
+      cancel-in-progress: false
+
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+
+      - name: Comment on issues and pull requests
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const [ owner, repo ] = process.env.GITHUB_REPOSITORY.split('/');
+            const version = process.env.VERSION;
+
+            const { data: milestones } = await github.rest.issues.listMilestones({
+              owner,
+              repo,
+              state: 'all',
+              sort: 'completeness',
+              direction: 'desc',
+              per_page: 100,
+            });
+
+            core.debug(`Found ${milestones.length} milestones.`);
+
+            const milestone =
+              milestones.find((p) => p.title === version) ||
+              milestones.find((p) => p.title === `v${version}`);
+
+            if (!milestone) {
+              console.log(`Milestone for version ${version} not found.`);
+              return;
+            }
+
+            core.debug(`Found milestone ${milestone.title} (${milestone.number}).`);
+
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              milestone: milestone.number,
+              state: 'all',
+            });
+
+            core.debug(`Found ${issues.length} issues and pull requests for milestone.`);
+
+            const ignoreAssociations = [
+              'COLLABORATOR',
+              'MEMBER',
+              'OWNER',
+            ];
+
+            for (const issue of issues) {
+              const issue_number = issue.number;
+              if (issue.state === 'closed' && issue.state_reason === 'not_planned') {
+                core.debug(`Ignoring issue #${issue_number} as it is not planned.`);
+                continue;
+              }
+
+              const isPullRequest = !!issue.pull_request;
+
+              if (isPullRequest && !issue.pull_request.merged_at) {
+                core.debug(`Ignoring pull request #${issue_number} as it was not merged.`);
+                continue;
+              }
+
+              const userLogin = issue.user.login;
+
+              if (issue.user.type === 'Bot') {
+                core.debug(`Ignoring issue #${issue_number} as it was created by ${userLogin}.`);
+                continue;
+              }
+
+              if (ignoreAssociations.includes(issue.author_association)) {
+                core.debug(`Ignoring issue #${issue_number} as it was created by ${userLogin} who has an association of ${issue.author_association}.`);
+                continue;
+              }
+
+              const watermark = `\n<!-- ${owner}/${repo}/nuget-packages-published#${issue_number} -->`;
+              let comment = null;
+
+              try {
+                const comments = await github.paginate(github.rest.issues.listComments, {
+                  owner,
+                  repo,
+                  issue_number,
+                });
+
+                comment = comments.find((p) => p.body.includes(watermark));
+              } catch (err) {
+                core.warning(`Failed to list comments for issue #${issue_number}: ${err}`);
+                continue;
+              }
+
+              if (comment) {
+                core.debug(`Ignoring issue #${issue_number} as it has already been commented on.`);
+                continue;
+              }
+
+              let body = isPullRequest ?
+                `Thanks for your contribution @${userLogin} - the changes from this pull request have been published as part of version ${version} :package:, which is now available from NuGet.org :rocket:` :
+                `Thanks for creating this issue @${userLogin} - the associated changes have been published as part of version ${version} :package:, which is now available from NuGet.org :rocket:`;
+
+              console.log(`Adding comment to ${isPullRequest ? 'pull request' : 'issue'} #${issue_number}.`);
+              core.debug(`#${issue_number}: ${body}`);
+
+              body += watermark;
+
+              try {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number,
+                  body,
+                });
+              } catch (err) {
+                core.warning(`Failed to add comment to issue #${issue_number}: ${err}`);
+              }
+            }
