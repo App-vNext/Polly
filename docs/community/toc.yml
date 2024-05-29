@@ -1,0 +1,10 @@
+- name: Polly-Contrib projects and libraries
+  href: polly-contrib.md
+- name: Libraries and contributions
+  href: libraries-and-contributions.md
+- name: Useful resources and links
+  href: resources.md
+- name: Git workflow
+  href: git-workflow.md
+- name: Cheat sheets
+  href: cheat-sheets.md

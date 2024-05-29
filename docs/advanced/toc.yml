@@ -1,0 +1,12 @@
+- name: Telemetry
+  href: telemetry.md
+- name: Dependency injection
+  href: dependency-injection.md
+- name: Resilience context
+  href: resilience-context.md
+- name: Performance
+  href: performance.md
+- name: Testing
+  href: testing.md
+- name: Use with F# and Visual Basic
+  href: use-with-fsharp-and-visual-basic.md

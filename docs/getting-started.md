@@ -25,7 +25,7 @@ await pipeline.ExecuteAsync(static async token => { /* Your custom logic goes he
 
 > [!NOTE]
 > Asynchronous methods in the Polly API return `ValueTask` or `ValueTask<T>` instead of `Task` or `Task<T>`.
-> If you are using Polly in Visual Basic or F#, please read [Use with F# and Visual Basic](use-with-fsharp-and-visual-basic.md) for more information.
+> If you are using Polly in Visual Basic or F#, please read [Use with F# and Visual Basic](advanced/use-with-fsharp-and-visual-basic.md) for more information.
 
 ## Dependency injection
 
