@@ -61,6 +61,29 @@
       "version": ""
     },
     {
+      "type": "Toc",
+      "source_relative_path": "advanced/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "advanced/toc.json"
+        },
+        ".html": {
+          "relative_path": "advanced/toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "advanced/use-with-fsharp-and-visual-basic.md",
+      "output": {
+        ".html": {
+          "relative_path": "advanced/use-with-fsharp-and-visual-basic.html"
+        }
+      },
+      "version": ""
+    },
+    {
       "type": "ManagedReference",
       "source_relative_path": "api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.yml",
       "output": {
@@ -1424,6 +1447,19 @@
       "version": ""
     },
     {
+      "type": "Toc",
+      "source_relative_path": "chaos/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "chaos/toc.json"
+        },
+        ".html": {
+          "relative_path": "chaos/toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
       "type": "Conceptual",
       "source_relative_path": "community/cheat-sheets.md",
       "output": {
@@ -1474,6 +1510,19 @@
       "version": ""
     },
     {
+      "type": "Toc",
+      "source_relative_path": "community/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "community/toc.json"
+        },
+        ".html": {
+          "relative_path": "community/toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
       "type": "Conceptual",
       "source_relative_path": "extensibility/index.md",
       "output": {
@@ -1499,6 +1548,19 @@
       "output": {
         ".html": {
           "relative_path": "extensibility/reactive-strategy.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "extensibility/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "extensibility/toc.json"
+        },
+        ".html": {
+          "relative_path": "extensibility/toc.html"
         }
       },
       "version": ""
@@ -1684,6 +1746,19 @@
       "version": ""
     },
     {
+      "type": "Toc",
+      "source_relative_path": "pipelines/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "pipelines/toc.json"
+        },
+        ".html": {
+          "relative_path": "pipelines/toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
       "type": "Conceptual",
       "source_relative_path": "strategies/circuit-breaker.md",
       "output": {
@@ -1755,6 +1830,19 @@
     },
     {
       "type": "Toc",
+      "source_relative_path": "strategies/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "strategies/toc.json"
+        },
+        ".html": {
+          "relative_path": "strategies/toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
         ".json": {
@@ -1762,16 +1850,6 @@
         },
         ".html": {
           "relative_path": "toc.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "use-with-fsharp-and-visual-basic.md",
-      "output": {
-        ".html": {
-          "relative_path": "use-with-fsharp-and-visual-basic.html"
         }
       },
       "version": ""
