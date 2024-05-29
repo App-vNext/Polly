@@ -1,0 +1,6 @@
+- name: Extensibility
+  href: index.md
+- name: Proactive strategy
+  href: proactive-strategy.md
+- name: Reactive strategy
+  href: reactive-strategy.md

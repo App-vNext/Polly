@@ -8,80 +8,22 @@
   href: migration-v8.md
 
 - name: Resilience strategies
-  href: strategies/index.md
-  expanded: true
-  items:
-  - name: Timeout
-    href: strategies/timeout.md
-  - name: Retry
-    href: strategies/retry.md
-  - name: Rate limiter
-    href: strategies/rate-limiter.md
-  - name: Hedging
-    href: strategies/hedging.md
-  - name: Fallback
-    href: strategies/fallback.md
-  - name: Circuit breaker
-    href: strategies/circuit-breaker.md
+  href: strategies/
 
 - name: Resilience pipelines
-  href: pipelines/index.md
-  expanded: true
-  items:
-  - name: Resilience pipeline registry
-    href: pipelines/resilience-pipeline-registry.md
+  href: pipelines/
 
 - name: Chaos engineering
-  href: chaos/index.md
-  expanded: true
-  items:
-  - name: Fault
-    href: chaos/fault.md
-  - name: Outcome
-    href: chaos/outcome.md
-  - name: Latency
-    href: chaos/latency.md
-  - name: Behavior
-    href: chaos/behavior.md
+  href: chaos/
 
 - name: Advanced topics
-  expanded: true
-  items:
-  - name: Telemetry
-    href: advanced/telemetry.md
-  - name: Dependency injection
-    href: advanced/dependency-injection.md
-  - name: Resilience context
-    href: advanced/resilience-context.md
-  - name: Performance
-    href: advanced/performance.md
-  - name: Testing
-    href: advanced/testing.md
-  - name: Use with F# and Visual Basic
-    href: use-with-fsharp-and-visual-basic.md
+  href: advanced/
 
 - name: Extensibility
-  href: extensibility/index.md
-  expanded: true
-  items:
-  - name: Proactive strategy
-    href: extensibility/proactive-strategy.md
-  - name: Reactive strategy
-    href: extensibility/reactive-strategy.md
+  href: extensibility/
 
 - name: Community and resources
-  expanded: true
-  items:
-  - name: Polly-Contrib projects and libraries
-    href: community/polly-contrib.md
-  - name: Libraries and contributions
-    href: community/libraries-and-contributions.md
-  - name: Useful resources and links
-    href: community/resources.md
-  - name: Git workflow
-    href: community/git-workflow.md
-  - name: Cheat sheets
-    href: community/cheat-sheets.md
+  href: community/
 
 - name: API
   href: api/

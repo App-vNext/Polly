@@ -1,0 +1,4 @@
+- name: Resilience pipelines
+  href: index.md
+- name: Resilience pipeline registry
+  href: resilience-pipeline-registry.md
