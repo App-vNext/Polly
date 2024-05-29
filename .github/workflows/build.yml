@@ -154,6 +154,7 @@ jobs:
         }
         if ($invalidPackages -gt 0) {
           Write-Output "::error::$invalidPackages NuGet package(s) failed validation."
+          exit 1
         }
 
   sign:
