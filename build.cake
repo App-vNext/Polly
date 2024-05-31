@@ -114,9 +114,6 @@ Task("__BuildSolutions")
             },
         };
 
-        dotNetBuildSettings.MSBuildSettings.Properties["ContinuousIntegrationBuild"] = [Environment.GetEnvironmentVariable("CI") ?? "false"];
-        dotNetBuildSettings.MSBuildSettings.Properties["Deterministic"] = ["true"];
-
         DotNetBuild(solution.ToString(), dotNetBuildSettings);
     }
 });
