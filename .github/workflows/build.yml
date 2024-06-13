@@ -88,7 +88,7 @@ jobs:
 
     - name: Upload coverage to Codecov
       if: always() && github.event.repository.fork == false
-      uses: codecov/codecov-action@125fc84a9a348dbcf27191600683ec096ec9021c # v4.4.1
+      uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673 # v4.5.0
       with:
         files: ./artifacts/coverage-reports/Polly.Core.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Specs/Cobertura.xml,./artifacts/coverage-reports/Polly.RateLimiting.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Extensions.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Testing.Tests/Cobertura.xml,
         flags: ${{ matrix.os_name }}
