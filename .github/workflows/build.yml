@@ -52,7 +52,7 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       with:
         fetch-depth: 0
 
@@ -251,7 +251,7 @@ jobs:
         }
 
     - name: Checkout vcsjones/AuthenticodeLint
-      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       with:
         path: AuthenticodeLint
         ref: ae44826fdcebaa671b06591ea0b3b47fc946b79c
