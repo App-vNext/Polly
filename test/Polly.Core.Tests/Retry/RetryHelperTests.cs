@@ -197,6 +197,65 @@ public class RetryHelperTests
     [InlineData(1000)]
     [InlineData(1024)]
     [InlineData(1025)]
+    public void GetRetryDelay_Exponential_Is_Positive_When_No_Maximum_Delay(int attempt)
+    {
+        var jitter = true;
+        var type = DelayBackoffType.Exponential;
+
+        var baseDelay = TimeSpan.FromSeconds(2);
+        TimeSpan? maxDelay = null;
+
+        var random = new RandomUtil(0).NextDouble;
+        double state = 0;
+
+        var first = RetryHelper.GetRetryDelay(type, jitter, attempt, baseDelay, maxDelay, ref state, random);
+        var second = RetryHelper.GetRetryDelay(type, jitter, attempt, baseDelay, maxDelay, ref state, random);
+
+        first.Should().BePositive();
+        second.Should().BePositive();
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(10)]
+    [InlineData(100)]
+    [InlineData(1000)]
+    [InlineData(1024)]
+    [InlineData(1025)]
+    public void GetRetryDelay_Exponential_Does_Not_Exceed_MaxDelay(int attempt)
+    {
+        var jitter = true;
+        var type = DelayBackoffType.Exponential;
+
+        var baseDelay = TimeSpan.FromSeconds(2);
+        var maxDelay = TimeSpan.FromSeconds(30);
+
+        var random = new RandomUtil(0).NextDouble;
+        double state = 0;
+
+        var first = RetryHelper.GetRetryDelay(type, jitter, attempt, baseDelay, maxDelay, ref state, random);
+        var second = RetryHelper.GetRetryDelay(type, jitter, attempt, baseDelay, maxDelay, ref state, random);
+
+        first.Should().BePositive();
+        first.Should().BeLessThanOrEqualTo(maxDelay);
+
+        second.Should().BePositive();
+        second.Should().BeLessThanOrEqualTo(maxDelay);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(10)]
+    [InlineData(100)]
+    [InlineData(1000)]
+    [InlineData(1024)]
+    [InlineData(1025)]
     public void ExponentialWithJitter_Ok(int count)
     {
         var delay = TimeSpan.FromSeconds(7.8);
