@@ -75,6 +75,8 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
                 }
             }
 
+            Debug.Assert(delay >= TimeSpan.Zero, "The delay cannot be negative.");
+
             var onRetryArgs = new OnRetryArguments<T>(context, outcome, attempt, delay, executionTime);
             _telemetry.Report<OnRetryArguments<T>, T>(new(ResilienceEventSeverity.Warning, RetryConstants.OnRetryEvent), onRetryArgs);
 
