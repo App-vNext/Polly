@@ -6,6 +6,11 @@ internal static class RetryHelper
 
     private const double ExponentialFactor = 2.0;
 
+    // Upper-bound to prevent overflow beyond TimeSpan.MaxValue. Potential truncation during conversion from double to long
+    // (as described at https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/numeric-conversions)
+    // is avoided by the arbitrary subtraction of 1,000.
+    private static readonly double MaxTimeSpanTicks = (double)TimeSpan.MaxValue.Ticks - 1_000;
+
     public static bool IsValidDelay(TimeSpan delay) => delay >= TimeSpan.Zero;
 
     public static TimeSpan GetRetryDelay(
@@ -101,20 +106,27 @@ internal static class RetryHelper
         // This factor allows the median values to fall approximately at 1, 2, 4 etc seconds, instead of 1.4, 2.8, 5.6, 11.2.
         const double RpScalingFactor = 1 / 1.4d;
 
-        // Upper-bound to prevent overflow beyond TimeSpan.MaxValue. Potential truncation during conversion from double to long
-        // (as described at https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/numeric-conversions)
-        // is avoided by the arbitrary subtraction of 1000. Validated by unit-test Backoff_should_not_overflow_to_give_negative_timespan.
-        double maxTimeSpanDouble = (double)TimeSpan.MaxValue.Ticks - 1000;
-
         long targetTicksFirstDelay = baseDelay.Ticks;
 
         double t = attempt + randomizer();
         double next = Math.Pow(ExponentialFactor, t) * Math.Tanh(Math.Sqrt(PFactor * t));
 
+        // At t >=1024, the above will tend to infinity which would otherwise cause the
+        // ticks to go negative. See https://github.com/App-vNext/Polly/issues/2163.
+        if (double.IsInfinity(next))
+        {
+            prev = next;
+            return TimeSpan.FromTicks((long)MaxTimeSpanTicks);
+        }
+
         double formulaIntrinsicValue = next - prev;
         prev = next;
 
-        return TimeSpan.FromTicks((long)Math.Min(formulaIntrinsicValue * RpScalingFactor * targetTicksFirstDelay, maxTimeSpanDouble));
+        long ticks = (long)Math.Min(formulaIntrinsicValue * RpScalingFactor * targetTicksFirstDelay, MaxTimeSpanTicks);
+
+        Debug.Assert(ticks >= 0, "ticks cannot be negative");
+
+        return TimeSpan.FromTicks(ticks);
     }
 
 #pragma warning disable IDE0047 // Remove unnecessary parentheses which offer less mental gymnastics
