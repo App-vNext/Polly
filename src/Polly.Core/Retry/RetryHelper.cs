@@ -26,6 +26,7 @@ internal static class RetryHelper
         {
             var delay = GetRetryDelayCore(type, jitter, attempt, baseDelay, ref state, randomizer);
 
+            // stryker disable once equality : no means to test this
             if (maxDelay is TimeSpan maxDelayValue && delay > maxDelayValue)
             {
                 return maxDelay.Value;
