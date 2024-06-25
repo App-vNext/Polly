@@ -12,7 +12,7 @@ public partial class IssuesTests
         int attempts = 0;
         int succeedAfter = 2049;
 
-        var options = new RetryStrategyOptions
+        var options = new RetryStrategyOptions<bool>
         {
             BackoffType = DelayBackoffType.Exponential,
             Delay = TimeSpan.FromSeconds(2),
@@ -25,13 +25,14 @@ public partial class IssuesTests
                 attempts++;
                 return default;
             },
+            ShouldHandle = (args) => new ValueTask<bool>(!args.Outcome.Result),
         };
 
         var listener = new FakeTelemetryListener();
         var telemetry = TestUtilities.CreateResilienceTelemetry(listener);
         var timeProvider = new FakeTimeProvider();
 
-        var strategy = new RetryResilienceStrategy<object>(options, timeProvider, telemetry);
+        var strategy = new RetryResilienceStrategy<bool>(options, timeProvider, telemetry);
         var pipeline = strategy.AsPipeline();
 
         using var cts = new CancellationTokenSource(Debugger.IsAttached ? TimeSpan.MaxValue : TimeSpan.FromSeconds(10));
@@ -39,12 +40,7 @@ public partial class IssuesTests
         // Act
         var executing = pipeline.ExecuteAsync((_) =>
         {
-            if (attempts < succeedAfter)
-            {
-                throw new InvalidOperationException("Not enough attempts yet.");
-            }
-
-            return new ValueTask<bool>(true);
+            return new ValueTask<bool>(attempts >= succeedAfter);
         }, cts.Token);
 
         while (!executing.IsCompleted && !cts.IsCancellationRequested)

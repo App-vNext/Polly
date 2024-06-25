@@ -8,6 +8,24 @@ public class RetryHelperTests
 {
     private Func<double> _randomizer = new RandomUtil(0).NextDouble;
 
+    public static TheoryData<int> Attempts()
+    {
+#pragma warning disable IDE0028
+        return new()
+        {
+            1,
+            2,
+            3,
+            4,
+            10,
+            100,
+            1_000,
+            1_024,
+            1_025,
+        };
+#pragma warning restore IDE0028
+    }
+
     [Fact]
     public void IsValidDelay_Ok()
     {
@@ -188,15 +206,7 @@ public class RetryHelperTests
     }
 
     [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    [InlineData(4)]
-    [InlineData(10)]
-    [InlineData(100)]
-    [InlineData(1000)]
-    [InlineData(1024)]
-    [InlineData(1025)]
+    [MemberData(nameof(Attempts))]
     public void GetRetryDelay_Exponential_Is_Positive_When_No_Maximum_Delay(int attempt)
     {
         var jitter = true;
@@ -216,15 +226,7 @@ public class RetryHelperTests
     }
 
     [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    [InlineData(4)]
-    [InlineData(10)]
-    [InlineData(100)]
-    [InlineData(1000)]
-    [InlineData(1024)]
-    [InlineData(1025)]
+    [MemberData(nameof(Attempts))]
     public void GetRetryDelay_Exponential_Does_Not_Exceed_MaxDelay(int attempt)
     {
         var jitter = true;
@@ -247,15 +249,7 @@ public class RetryHelperTests
     }
 
     [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    [InlineData(4)]
-    [InlineData(10)]
-    [InlineData(100)]
-    [InlineData(1000)]
-    [InlineData(1024)]
-    [InlineData(1025)]
+    [MemberData(nameof(Attempts))]
     public void ExponentialWithJitter_Ok(int count)
     {
         var delay = TimeSpan.FromSeconds(7.8);
