@@ -24,7 +24,9 @@ public class CancellationTokenSourcePoolTests
         pool.Get(System.Threading.Timeout.InfiniteTimeSpan).Should().NotBeNull();
     }
 
+#pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [MemberData(nameof(TimeProviders))]
+#pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [Theory]
     public void RentReturn_Reusable_EnsureProperBehavior(object timeProvider)
     {
@@ -48,7 +50,9 @@ public class CancellationTokenSourcePoolTests
 #endif
     }
 
+#pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [MemberData(nameof(TimeProviders))]
+#pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [Theory]
     public void RentReturn_NotReusable_EnsureProperBehavior(object timeProvider)
     {
@@ -63,7 +67,9 @@ public class CancellationTokenSourcePoolTests
         cts2.Token.Should().NotBeNull();
     }
 
+#pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [MemberData(nameof(TimeProviders))]
+#pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [Theory]
     public async Task Rent_Cancellable_EnsureCancelled(object timeProvider)
     {
@@ -80,7 +86,9 @@ public class CancellationTokenSourcePoolTests
         await TestUtilities.AssertWithTimeoutAsync(() => cts.IsCancellationRequested.Should().BeTrue());
     }
 
+#pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [MemberData(nameof(TimeProviders))]
+#pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [Theory]
     public async Task Rent_NotCancellable_EnsureNotCancelled(object timeProvider)
     {
