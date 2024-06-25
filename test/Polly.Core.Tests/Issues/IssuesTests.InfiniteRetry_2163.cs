@@ -9,6 +9,9 @@ public partial class IssuesTests
     public async Task InfiniteRetry_Delay_Does_Not_Overflow_2163()
     {
         // Arrange
+        int attempts = 0;
+        int succeedAfter = 2049;
+
         var options = new RetryStrategyOptions
         {
             BackoffType = DelayBackoffType.Exponential,
@@ -19,6 +22,7 @@ public partial class IssuesTests
             OnRetry = (args) =>
             {
                 args.RetryDelay.Should().BeGreaterThan(TimeSpan.Zero, $"RetryDelay is less than zero after {args.AttemptNumber} attempts");
+                attempts++;
                 return default;
             },
         };
@@ -30,17 +34,14 @@ public partial class IssuesTests
         var strategy = new RetryResilienceStrategy<object>(options, timeProvider, telemetry);
         var pipeline = strategy.AsPipeline();
 
-        int attempts = 0;
-        int succeedAfter = 2049;
-
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        using var cts = new CancellationTokenSource(Debugger.IsAttached ? TimeSpan.MaxValue : TimeSpan.FromSeconds(10));
 
         // Act
         var executing = pipeline.ExecuteAsync((_) =>
         {
-            if (attempts++ < succeedAfter)
+            if (attempts < succeedAfter)
             {
-                throw new InvalidOperationException("Simulated exception");
+                throw new InvalidOperationException("Not enough attempts yet.");
             }
 
             return new ValueTask<bool>(true);

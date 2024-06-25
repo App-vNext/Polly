@@ -187,6 +187,7 @@ public class RetryHelperTests
         RetryHelper.GetRetryDelay(DelayBackoffType.Exponential, false, 1000, TimeSpan.FromDays(1), TimeSpan.FromDays(2), ref state, _randomizer).Should().Be(TimeSpan.FromDays(2));
     }
 
+    [Theory]
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]
@@ -194,7 +195,8 @@ public class RetryHelperTests
     [InlineData(10)]
     [InlineData(100)]
     [InlineData(1000)]
-    [Theory]
+    [InlineData(1024)]
+    [InlineData(1025)]
     public void ExponentialWithJitter_Ok(int count)
     {
         var delay = TimeSpan.FromSeconds(7.8);
@@ -203,6 +205,7 @@ public class RetryHelperTests
 
         newDelays.Should().ContainInConsecutiveOrder(oldDelays);
         newDelays.Should().HaveCount(oldDelays.Count);
+        newDelays.Should().AllSatisfy(delay => delay.Should().BePositive());
     }
 
     [Fact]
@@ -213,6 +216,7 @@ public class RetryHelperTests
         var delays2 = GetExponentialWithJitterBackoff(false, delay, 100, RandomUtil.Instance.NextDouble);
 
         delays1.SequenceEqual(delays2).Should().BeFalse();
+        delays1.Should().AllSatisfy(delay => delay.Should().BePositive());
     }
 
     private static IReadOnlyList<TimeSpan> GetExponentialWithJitterBackoff(bool contrib, TimeSpan baseDelay, int retryCount, Func<double>? randomizer = null)
