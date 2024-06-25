@@ -9,14 +9,14 @@ var configuration = Argument<string>("configuration", "Release");
 // EXTERNAL NUGET TOOLS
 //////////////////////////////////////////////////////////////////////
 
-#Tool "xunit.runner.console&version=2.7.0"
-#Tool "dotnet-stryker&version=4.0.0"
+#Tool "xunit.runner.console&version=2.8.1"
+#Tool "dotnet-stryker&version=4.0.6"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
 //////////////////////////////////////////////////////////////////////
 
-#addin nuget:?package=Cake.FileHelpers&version=6.1.3
+#addin nuget:?package=Cake.FileHelpers&version=7.0.0
 #addin nuget:?package=Newtonsoft.Json&version=13.0.3
 
 ///////////////////////////////////////////////////////////////////////////////
