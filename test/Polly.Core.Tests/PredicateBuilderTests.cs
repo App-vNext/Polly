@@ -36,6 +36,7 @@ public class PredicateBuilderTests
         { builder => builder.HandleInner<InvalidOperationException>(), CreateOutcome(new AggregateException("1", new Exception("2a"), new InvalidOperationException("2b"))), true },
         { builder => builder.HandleInner<InvalidOperationException>(), CreateOutcome(new AggregateException("1", new Exception("2", new InvalidOperationException("3")))), true },
         { builder => builder.HandleInner<InvalidOperationException>(), CreateOutcome(new AggregateException("1", new FormatException("2", new NotSupportedException("3")))), false },
+        { builder => builder.HandleInner<InvalidOperationException>(), CreateOutcome(new AggregateException("1")), false },
         { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "3"), CreateOutcome(new AggregateException("1", new FormatException("2", new NotSupportedException("3")))), false },
         { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "unreachable"), CreateOutcome(new AggregateException("1", new FormatException("2", new NotSupportedException("3")))), false },
         { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "1"), CreateOutcome(new InvalidOperationException("1")), true },
