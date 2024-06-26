@@ -36,6 +36,10 @@ public partial class PredicateBuilder<TResult>
     /// </summary>
     /// <typeparam name="TException">The type of the inner exception to handle.</typeparam>
     /// <returns>The same instance of the <see cref="PredicateBuilder{TResult}"/> for chaining.</returns>
+    /// <remarks>
+    /// This method will also handle any exception found for <see cref="Exception.InnerException"/> of
+    /// an <see cref="Exception"/>, or at any level of nesting within an <see cref="AggregateException"/>.
+    /// </remarks>
     public PredicateBuilder<TResult> HandleInner<TException>()
         where TException : Exception => HandleInner<TException>(static _ => true);
 
@@ -46,12 +50,46 @@ public partial class PredicateBuilder<TResult>
     /// <param name="predicate">The predicate function to use for handling the inner exception.</param>
     /// <returns>The same instance of the <see cref="PredicateBuilder{TResult}"/> for chaining.</returns>
     /// <exception cref="ArgumentNullException">Thrown when the <paramref name="predicate"/> is <see langword="null"/>.</exception>
+    /// <remarks>
+    /// This method will also handle any exception found for <see cref="Exception.InnerException"/> of
+    /// an <see cref="Exception"/>, or at any level of nesting within an <see cref="AggregateException"/>.
+    /// </remarks>
     public PredicateBuilder<TResult> HandleInner<TException>(Func<TException, bool> predicate)
         where TException : Exception
     {
         Guard.NotNull(predicate);
 
-        return Add(outcome => outcome.Exception?.InnerException is TException innerException && predicate(innerException));
+        return Add(outcome => HandleInner(outcome.Exception, predicate));
+
+        static bool HandleInner(Exception? exception, Func<TException, bool> predicate)
+        {
+            if (exception is AggregateException aggregate)
+            {
+                foreach (var innerException in aggregate.Flatten().InnerExceptions)
+                {
+                    if (HandleNested(predicate, innerException))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return HandleNested(predicate, exception);
+
+            static bool HandleNested(Func<TException, bool> predicate, Exception? current)
+            {
+                if (current is null)
+                {
+                    return false;
+                }
+                else if (current is TException exceptionOfT)
+                {
+                    return predicate(exceptionOfT);
+                }
+
+                return HandleNested(predicate, current.InnerException);
+            }
+        }
     }
 
     /// <summary>
@@ -89,7 +127,7 @@ public partial class PredicateBuilder<TResult>
     {
         0 => throw new InvalidOperationException("No predicates were configured. There must be at least one predicate added."),
         1 => _predicates[0],
-        _ => CreatePredicate(_predicates.ToArray()),
+        _ => CreatePredicate([.. _predicates]),
     };
 
     internal Func<TArgs, ValueTask<bool>> Build<TArgs>()
@@ -100,19 +138,19 @@ public partial class PredicateBuilder<TResult>
         return args => new ValueTask<bool>(predicate(args.Outcome));
     }
 
-    private static Predicate<Outcome<TResult>> CreatePredicate(Predicate<Outcome<TResult>>[] predicates)
-        => outcome =>
-           {
-               foreach (var predicate in predicates)
-               {
-                   if (predicate(outcome))
-                   {
-                       return true;
-                   }
-               }
+    private static Predicate<Outcome<TResult>> CreatePredicate(Predicate<Outcome<TResult>>[] predicates) =>
+        outcome =>
+        {
+            foreach (var predicate in predicates)
+            {
+                if (predicate(outcome))
+                {
+                    return true;
+                }
+            }
 
-               return false;
-           };
+            return false;
+        };
 
     private PredicateBuilder<TResult> Add(Predicate<Outcome<TResult>> predicate)
     {
