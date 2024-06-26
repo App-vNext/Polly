@@ -31,9 +31,23 @@ public class PredicateBuilderTests
         //// See https://github.com/App-vNext/Polly/issues/2161
         { builder => builder.HandleInner<InvalidOperationException>(), CreateOutcome(new InvalidOperationException("1")), true },
         { builder => builder.HandleInner<InvalidOperationException>(), CreateOutcome(new Exception("1", new InvalidOperationException("2"))), true },
+        { builder => builder.HandleInner<InvalidOperationException>(), CreateOutcome(new FormatException("1", new InvalidOperationException("2"))), true },
         { builder => builder.HandleInner<InvalidOperationException>(), CreateOutcome(new Exception("1", new Exception("2", new InvalidOperationException("3")))), true },
         { builder => builder.HandleInner<InvalidOperationException>(), CreateOutcome(new AggregateException("1", new Exception("2a"), new InvalidOperationException("2b"))), true },
         { builder => builder.HandleInner<InvalidOperationException>(), CreateOutcome(new AggregateException("1", new Exception("2", new InvalidOperationException("3")))), true },
+        { builder => builder.HandleInner<InvalidOperationException>(), CreateOutcome(new AggregateException("1", new FormatException("2", new NotSupportedException("3")))), false },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "3"), CreateOutcome(new AggregateException("1", new FormatException("2", new NotSupportedException("3")))), false },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "unreachable"), CreateOutcome(new AggregateException("1", new FormatException("2", new NotSupportedException("3")))), false },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "1"), CreateOutcome(new InvalidOperationException("1")), true },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "2"), CreateOutcome(new Exception("1", new InvalidOperationException("2"))), true },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "3"), CreateOutcome(new Exception("1", new Exception("2", new InvalidOperationException("3")))), true },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "2b"), CreateOutcome(new AggregateException("1", new Exception("2a"), new InvalidOperationException("2b"))), true },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "3"), CreateOutcome(new AggregateException("1", new Exception("2", new InvalidOperationException("3")))), true },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "unreachable"), CreateOutcome(new InvalidOperationException("1")), false },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "unreachable"), CreateOutcome(new Exception("1", new InvalidOperationException("2"))), false },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "unreachable"), CreateOutcome(new Exception("1", new Exception("2", new InvalidOperationException("3")))), false },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "unreachable"), CreateOutcome(new AggregateException("1", new Exception("2a"), new InvalidOperationException("2b"))), false },
+        { builder => builder.HandleInner<InvalidOperationException>(ex => ex.Message is "unreachable"), CreateOutcome(new AggregateException("1", new Exception("2", new InvalidOperationException("3")))), false },
 #pragma warning restore CA2201
     };
 
