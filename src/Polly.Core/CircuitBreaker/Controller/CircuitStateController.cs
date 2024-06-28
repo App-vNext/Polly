@@ -209,11 +209,7 @@ internal sealed class CircuitStateController<T> : IDisposable
             // the metric; we do not want to duplicate-signal onBreak; we do not want to extend time for which the circuit is broken.
             // We do not want to mask the fact that the call executed (as replacing its result with a Broken/IsolatedCircuitException would do).
 
-            if (_circuitState == CircuitState.HalfOpen)
-            {
-                OpenCircuit_NeedsLock(outcome, manual: false, context, out task);
-            }
-            else if (_circuitState == CircuitState.Closed && shouldBreak)
+            if (_circuitState == CircuitState.HalfOpen || (_circuitState == CircuitState.Closed && shouldBreak))
             {
                 OpenCircuit_NeedsLock(outcome, manual: false, context, out task);
             }
