@@ -4,6 +4,22 @@
 
 <!-- next-release -->
 
+## 8.4.1
+
+* Fix milestone closure by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2106
+* Fix potential github action smells by [@ceddy4395](https://github.com/ceddy4395) in https://github.com/App-vNext/Polly/pull/2097
+* Bump actionlint to 1.7.0 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2107
+* Drop net7.0 from test projects by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2108
+* Fix S3872 warning by [@iamdmitrij](https://github.com/iamdmitrij) in https://github.com/App-vNext/Polly/pull/2111
+* Fix IDE1006 warning by [@iamdmitrij](https://github.com/iamdmitrij) in https://github.com/App-vNext/Polly/pull/2112
+* [Docs] Fix pollydocs menu by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2136
+* Issue comment automation by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2137
+* Fix package validation by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2138
+* Removing Warnings SA1108 and SA1118 from NoWarn list by [@henriqueholtz](https://github.com/henriqueholtz) in https://github.com/App-vNext/Polly/pull/2148
+* Fix retry delay going negative for large retries with exponential delays by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2164
+* Bump cake tools by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2165
+* Handle nested inner exceptions by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2166
+
 ## 8.4.0
 
 * Remove async void usage by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2013
