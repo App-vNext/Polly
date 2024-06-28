@@ -169,7 +169,7 @@ Class PredicateBuilder&lt;TResult&gt;  <a class="header-action link-secondary" t
 
   <h3 id="Polly_PredicateBuilder_1_Build" data-uid="Polly.PredicateBuilder`1.Build">
   Build()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/PredicateBuilder.TResult.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/PredicateBuilder.TResult.cs/#L126"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Builds the predicate.</p>
@@ -213,7 +213,7 @@ manually as a delegate.</p>
 
   <h3 id="Polly_PredicateBuilder_1_HandleInner__1" data-uid="Polly.PredicateBuilder`1.HandleInner``1">
   HandleInner&lt;TException&gt;()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/PredicateBuilder.TResult.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/PredicateBuilder.TResult.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a predicate for handling inner exceptions of the specified type.</p>
@@ -244,6 +244,10 @@ manually as a delegate.</p>
 
 
 
+  <h4 class="section" id="Polly_PredicateBuilder_1_HandleInner__1_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method will also handle any exception found for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.exception.innerexception">InnerException</a> of
+an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.exception">Exception</a>, or at any level of nesting within an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.aggregateexception">AggregateException</a>.</p>
+</div>
 
 
 
@@ -252,7 +256,7 @@ manually as a delegate.</p>
 
   <h3 id="Polly_PredicateBuilder_1_HandleInner__1_System_Func___0_System_Boolean__" data-uid="Polly.PredicateBuilder`1.HandleInner``1(System.Func{``0,System.Boolean})">
   HandleInner&lt;TException&gt;(Func&lt;TException, bool&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/PredicateBuilder.TResult.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/PredicateBuilder.TResult.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a predicate for handling inner exceptions of the specified type.</p>
@@ -289,6 +293,10 @@ manually as a delegate.</p>
 
 
 
+  <h4 class="section" id="Polly_PredicateBuilder_1_HandleInner__1_System_Func___0_System_Boolean___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method will also handle any exception found for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.exception.innerexception">InnerException</a> of
+an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.exception">Exception</a>, or at any level of nesting within an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.aggregateexception">AggregateException</a>.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -303,7 +311,7 @@ manually as a delegate.</p>
 
   <h3 id="Polly_PredicateBuilder_1_HandleResult_System_Func__0_System_Boolean__" data-uid="Polly.PredicateBuilder`1.HandleResult(System.Func{`0,System.Boolean})">
   HandleResult(Func&lt;TResult, bool&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/PredicateBuilder.TResult.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/PredicateBuilder.TResult.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a predicate for handling results.</p>
@@ -342,7 +350,7 @@ manually as a delegate.</p>
 
   <h3 id="Polly_PredicateBuilder_1_HandleResult__0_System_Collections_Generic_IEqualityComparer__0__" data-uid="Polly.PredicateBuilder`1.HandleResult(`0,System.Collections.Generic.IEqualityComparer{`0})">
   HandleResult(TResult, IEqualityComparer&lt;TResult&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/PredicateBuilder.TResult.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/PredicateBuilder.TResult.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a predicate for handling results with a specific value.</p>
