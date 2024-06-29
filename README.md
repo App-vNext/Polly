@@ -476,9 +476,13 @@ To learn more about Polly, visit [pollydocs.org][polly-docs].
 
 ## Sponsors
 
-Thanks to the [.NET on AWS Open Source Software Fund](https://github.com/aws/dotnet-foss) for sponsoring the ongoing development of Polly.
+Thanks to the following companies for sponsoring the ongoing development of Polly.
+
+- [.NET on AWS Open Source Software Fund](https://github.com/aws/dotnet-foss)
+- [Microsoft](https://opensource.microsoft.com/)
 
 ![AWS logo](./logos/aws.png)
+![Microsoft logo](./logos/microsoft.png)
 
 Help support this project by becoming a sponsor through [GitHub Sponsors](https://github.com/sponsors/martincostello).
 
