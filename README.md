@@ -9,7 +9,9 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 [![Build status](https://github.com/App-vNext/Polly/workflows/build/badge.svg?branch=main&event=push)](https://github.com/App-vNext/Polly/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush) [![Code coverage](https://codecov.io/gh/App-vNext/Polly/branch/main/graph/badge.svg)](https://codecov.io/gh/App-vNext/Polly) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/App-vNext/Polly/badge)](https://securityscorecards.dev/viewer/?uri=github.com/App-vNext/Polly)
 
-![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)
+<!-- markdownlint-disable MD042 -->
+[![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)](#)
+<!-- markdownlint-enable MD034 -->
 
 > [!IMPORTANT]
 > This documentation describes the new Polly v8 API. If you are using the v7 API, please refer to the [previous version](https://github.com/App-vNext/Polly/tree/7.2.4) of the documentation.
@@ -476,9 +478,15 @@ To learn more about Polly, visit [pollydocs.org][polly-docs].
 
 ## Sponsors
 
-Thanks to the [.NET on AWS Open Source Software Fund](https://github.com/aws/dotnet-foss) for sponsoring the ongoing development of Polly.
+Thanks to the following companies for sponsoring the ongoing development of Polly.
 
-![AWS logo](./logos/aws.png)
+- [.NET on AWS Open Source Software Fund](https://github.com/aws/dotnet-foss)
+- [Microsoft](https://opensource.microsoft.com/)
+
+<!-- markdownlint-disable MD042 -->
+[![AWS logo](./logos/aws.png)](#)
+[![Microsoft logo](./logos/microsoft.png)](#)
+<!-- markdownlint-enable MD034 -->
 
 Help support this project by becoming a sponsor through [GitHub Sponsors](https://github.com/sponsors/martincostello).
 
