@@ -481,7 +481,7 @@ To learn more about Polly, visit [pollydocs.org][polly-docs].
 Thanks to the following companies for sponsoring the ongoing development of Polly.
 
 - [.NET on AWS Open Source Software Fund](https://github.com/aws/dotnet-foss)
-- [Microsoft](https://opensource.microsoft.com/)
+- [Microsoft's Free and Open Source Software Fund](https://github.com/microsoft/foss-fund)
 
 <!-- markdownlint-disable MD042 -->
 [![AWS logo](./logos/aws.png)](#)
