@@ -2,9 +2,15 @@ name: code-scan
 
 on:
   push:
-    branches: [ main, release/* ]
+    branches: 
+      - main
+      - release/*
+      - dotnet-vnext
   pull_request:
-    branches: [ main, release/* ]
+    branches: 
+      - main
+      - release/*
+      - dotnet-vnext
   schedule:
     - cron: '0 8 * * MON'
   workflow_dispatch:
