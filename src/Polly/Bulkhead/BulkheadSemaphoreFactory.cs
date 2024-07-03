@@ -3,7 +3,7 @@ namespace Polly.Bulkhead;
 
 internal static class BulkheadSemaphoreFactory
 {
-    public static (SemaphoreSlim, SemaphoreSlim) CreateBulkheadSemaphores(int maxParallelization, int maxQueueingActions)
+    public static (SemaphoreSlim MaxParallelizationSemaphore, SemaphoreSlim MaxQueuedActionsSemaphore) CreateBulkheadSemaphores(int maxParallelization, int maxQueueingActions)
     {
         var maxParallelizationSemaphore = new SemaphoreSlim(maxParallelization, maxParallelization);
 

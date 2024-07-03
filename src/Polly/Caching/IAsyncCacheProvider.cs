@@ -6,6 +6,7 @@ namespace Polly.Caching;
 /// </summary>
 public interface IAsyncCacheProvider
 {
+#pragma warning disable SA1414
     /// <summary>
     /// Gets a value from the cache asynchronously.
     /// </summary>
@@ -17,6 +18,7 @@ public interface IAsyncCacheProvider
     /// the key was found in the cache, and whose second element is the value from the cache (null if not found).
     /// </returns>
     Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore  SA1414
 
     /// <summary>
     /// Puts the specified value in the cache asynchronously.
@@ -36,6 +38,7 @@ public interface IAsyncCacheProvider
 /// <typeparam name="TResult">The type of the result.</typeparam>
 public interface IAsyncCacheProvider<TResult>
 {
+#pragma warning disable SA1414
     /// <summary>
     /// Gets a value from the cache asynchronously.
     /// </summary>
@@ -47,6 +50,7 @@ public interface IAsyncCacheProvider<TResult>
     /// the key was found in the cache, and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
     Task<(bool, TResult?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore SA1414
 
     /// <summary>
     /// Puts the specified value in the cache asynchronously.
