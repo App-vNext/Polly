@@ -129,10 +129,10 @@ Polly.Caching.DefaultCacheKeyStrategy.DefaultCacheKeyStrategy() -> void
 Polly.Caching.DefaultCacheKeyStrategy.GetCacheKey(Polly.Context context) -> string
 Polly.Caching.IAsyncCacheProvider
 Polly.Caching.IAsyncCacheProvider.PutAsync(string key, object value, Polly.Caching.Ttl ttl, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
-Polly.Caching.IAsyncCacheProvider.TryGetAsync(string key, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<(bool CacheHit, object Result)>
+Polly.Caching.IAsyncCacheProvider.TryGetAsync(string key, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<(bool, object)>
 Polly.Caching.IAsyncCacheProvider<TResult>
 Polly.Caching.IAsyncCacheProvider<TResult>.PutAsync(string key, TResult value, Polly.Caching.Ttl ttl, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
-Polly.Caching.IAsyncCacheProvider<TResult>.TryGetAsync(string key, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<(bool CacheHit, TResult Result)>
+Polly.Caching.IAsyncCacheProvider<TResult>.TryGetAsync(string key, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task<(bool, TResult)>
 Polly.Caching.ICacheItemSerializer<TResult, TSerialized>
 Polly.Caching.ICacheItemSerializer<TResult, TSerialized>.Deserialize(TSerialized objectToDeserialize) -> TResult
 Polly.Caching.ICacheItemSerializer<TResult, TSerialized>.Serialize(TResult objectToSerialize) -> TSerialized
@@ -142,10 +142,10 @@ Polly.Caching.ICachePolicy
 Polly.Caching.ICachePolicy<TResult>
 Polly.Caching.ISyncCacheProvider
 Polly.Caching.ISyncCacheProvider.Put(string key, object value, Polly.Caching.Ttl ttl) -> void
-Polly.Caching.ISyncCacheProvider.TryGet(string key) -> (bool CacheHit, object Result)
+Polly.Caching.ISyncCacheProvider.TryGet(string key) -> (bool, object)
 Polly.Caching.ISyncCacheProvider<TResult>
 Polly.Caching.ISyncCacheProvider<TResult>.Put(string key, TResult value, Polly.Caching.Ttl ttl) -> void
-Polly.Caching.ISyncCacheProvider<TResult>.TryGet(string key) -> (bool CacheHit, TResult Result)
+Polly.Caching.ISyncCacheProvider<TResult>.TryGet(string key) -> (bool, TResult)
 Polly.Caching.ITtlStrategy
 Polly.Caching.ITtlStrategy<TResult>
 Polly.Caching.ITtlStrategy<TResult>.GetTtl(Polly.Context context, TResult result) -> Polly.Caching.Ttl

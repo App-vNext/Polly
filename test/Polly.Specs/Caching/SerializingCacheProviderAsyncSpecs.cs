@@ -113,7 +113,7 @@ public class AsyncSerializingCacheProviderSpecs
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 
-        stubCacheProvider.TryGet(key).CacheHit.Should().BeFalse();
+        stubCacheProvider.TryGet(key).Item1.Should().BeFalse();
 
         AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = new AsyncSerializingCacheProvider<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
         (bool cacheHit, object? fromCache) = await serializingCacheProvider.TryGetAsync(key, CancellationToken.None, false);
@@ -200,7 +200,7 @@ public class AsyncSerializingCacheProviderSpecs
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 
-        stubCacheProvider.TryGet(key).CacheHit.Should().BeFalse();
+        stubCacheProvider.TryGet(key).Item1.Should().BeFalse();
 
         AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
         (bool cacheHit, object? fromCache) = await serializingCacheProvider.TryGetAsync(key, CancellationToken.None, false);
@@ -322,7 +322,7 @@ public class AsyncSerializingCacheProviderSpecs
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 
-        stubCacheProvider.TryGet(key).CacheHit.Should().BeFalse();
+        stubCacheProvider.TryGet(key).Item1.Should().BeFalse();
 
         AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider = new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>(), stubTResultSerializer);
         (bool cacheHit, ResultPrimitive? fromCache) = await serializingCacheProvider.TryGetAsync(key, CancellationToken.None, false);
@@ -411,7 +411,7 @@ public class AsyncSerializingCacheProviderSpecs
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 
-        stubCacheProvider.TryGet(key).CacheHit.Should().BeFalse();
+        stubCacheProvider.TryGet(key).Item1.Should().BeFalse();
 
         AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider =
             stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>().WithSerializer(stubTResultSerializer);

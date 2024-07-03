@@ -6,6 +6,7 @@ namespace Polly.Caching;
 /// </summary>
 public interface ISyncCacheProvider
 {
+#pragma warning disable SA1414
     /// <summary>
     /// Gets a value from cache.
     /// </summary>
@@ -14,7 +15,8 @@ public interface ISyncCacheProvider
     /// A tuple whose first element is a value indicating whether the key was found in the cache,
     /// and whose second element is the value from the cache (null if not found).
     /// </returns>
-    (bool CacheHit, object? Result) TryGet(string key);
+    (bool, object?) TryGet(string key);
+#pragma warning restore SA1414
 
     /// <summary>
     /// Puts the specified value in the cache.
@@ -31,6 +33,7 @@ public interface ISyncCacheProvider
 /// <typeparam name="TResult">The type of the result.</typeparam>
 public interface ISyncCacheProvider<TResult>
 {
+#pragma warning disable SA1414
     /// <summary>
     /// Gets a value from cache.
     /// </summary>
@@ -39,7 +42,8 @@ public interface ISyncCacheProvider<TResult>
     /// A tuple whose first element is a value indicating whether the key was found in the cache,
     /// and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
-    (bool CacheHit, TResult? Result) TryGet(string key);
+    (bool, TResult?) TryGet(string key);
+#pragma warning restore  SA1414
 
     /// <summary>
     /// Puts the specified value in the cache.

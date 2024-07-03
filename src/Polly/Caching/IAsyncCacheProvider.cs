@@ -6,6 +6,7 @@ namespace Polly.Caching;
 /// </summary>
 public interface IAsyncCacheProvider
 {
+#pragma warning disable SA1414
     /// <summary>
     /// Gets a value from the cache asynchronously.
     /// </summary>
@@ -16,7 +17,8 @@ public interface IAsyncCacheProvider
     /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
     /// the key was found in the cache, and whose second element is the value from the cache (null if not found).
     /// </returns>
-    Task<(bool CacheHit, object? Result)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
+    Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore  SA1414
 
     /// <summary>
     /// Puts the specified value in the cache asynchronously.
@@ -36,6 +38,7 @@ public interface IAsyncCacheProvider
 /// <typeparam name="TResult">The type of the result.</typeparam>
 public interface IAsyncCacheProvider<TResult>
 {
+#pragma warning disable SA1414
     /// <summary>
     /// Gets a value from the cache asynchronously.
     /// </summary>
@@ -46,7 +49,8 @@ public interface IAsyncCacheProvider<TResult>
     /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
     /// the key was found in the cache, and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
-    Task<(bool CacheHit, TResult? Result)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
+    Task<(bool, TResult?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore SA1414
 
     /// <summary>
     /// Puts the specified value in the cache asynchronously.
