@@ -32,10 +32,9 @@ public class WaitAndRetryForeverTResultAsyncSpecs : IDisposable
             await policy.ExecuteAsync(async () =>
             {
                 await TaskHelper.EmptyTask;
-                if (enumerator.MoveNext())
-                    return enumerator.Current.Key;
-                else
-                    return ResultPrimitive.Undefined;
+                return enumerator.MoveNext()
+                    ? enumerator.Current.Key
+                    : ResultPrimitive.Undefined;
             });
         }
 

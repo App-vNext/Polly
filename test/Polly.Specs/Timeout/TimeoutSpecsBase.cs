@@ -29,7 +29,9 @@ public abstract class TimeoutSpecsBase : IDisposable
         SystemClock.CancelTokenAfter = (tokenSource, timespan) =>
         {
             if (_trackedTokenSource != null && tokenSource != _trackedTokenSource)
+            {
                 throw new InvalidOperationException("Timeout tests cannot track more than one timing out token at a time.");
+            }
 
             _trackedTokenSource = tokenSource;
 
@@ -43,7 +45,9 @@ public abstract class TimeoutSpecsBase : IDisposable
         SystemClock.Sleep = (sleepTimespan, sleepCancellationToken) =>
         {
             if (sleepCancellationToken.IsCancellationRequested)
+            {
                 return;
+            }
 
             if (_trackedTokenSource == null || _trackedTokenSource.IsCancellationRequested)
             {

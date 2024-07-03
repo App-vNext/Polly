@@ -1605,9 +1605,15 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
 
         if (firstExecution.IsFaulted)
+        {
             throw firstExecution!.Exception!;
+        }
+
         if (secondExecution.IsFaulted)
+        {
             throw secondExecution!.Exception!;
+        }
+
         firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
         secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
@@ -1717,9 +1723,15 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
 
         if (firstExecution.IsFaulted)
+        {
             throw firstExecution!.Exception!;
+        }
+
         if (secondExecution.IsFaulted)
+        {
             throw secondExecution!.Exception!;
+        }
+
         firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
         secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 

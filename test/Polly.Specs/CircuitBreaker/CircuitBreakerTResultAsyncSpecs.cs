@@ -524,9 +524,15 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
 #pragma warning restore xUnit1031
 
         if (firstExecution.IsFaulted)
+        {
             throw firstExecution!.Exception!;
+        }
+
         if (secondExecution.IsFaulted)
+        {
             throw secondExecution!.Exception!;
+        }
+
         firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
         secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
@@ -635,9 +641,15 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
 #pragma warning restore xUnit1031
 
         if (firstExecution.IsFaulted)
+        {
             throw firstExecution!.Exception!;
+        }
+
         if (secondExecution.IsFaulted)
+        {
             throw secondExecution!.Exception!;
+        }
+
         firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
         secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
@@ -904,7 +916,10 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
 #pragma warning restore xUnit1031
 
         if (longRunningExecution.IsFaulted)
+        {
             throw longRunningExecution!.Exception!;
+        }
+
         longRunningExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
         // onBreak() should still only have been called once.

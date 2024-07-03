@@ -25,13 +25,9 @@ public class WaitAndRetryTResultSpecs : IDisposable
 
         using (var enumerator = expectedRetryWaits.GetEnumerator())
         {
-            policy.Execute(() =>
-            {
-                if (enumerator.MoveNext())
-                    return enumerator.Current.Key;
-                else
-                    return ResultPrimitive.Undefined;
-            });
+            policy.Execute(() => enumerator.MoveNext()
+                ? enumerator.Current.Key
+                : ResultPrimitive.Undefined);
         }
 
         actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
