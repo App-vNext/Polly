@@ -1,4 +1,6 @@
 ﻿#nullable enable
+using System;
+
 namespace Polly.Caching;
 
 /// <summary>
@@ -27,6 +29,11 @@ public class ContextualTtl : ITtlStrategy
     /// <returns>TimeSpan.</returns>
     public Ttl GetTtl(Context context, object? result)
     {
+        if (context is null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
         if (!context.ContainsKey(TimeSpanKey))
         {
             return NoTtl;

@@ -13,8 +13,18 @@ public class NoOpPolicy : Policy, INoOpPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        NoOpEngine.Implementation(action, context, cancellationToken);
+    protected override TResult Implementation<TResult>(
+        Func<Context, CancellationToken, TResult> action,
+        Context context,
+        CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return NoOpEngine.Implementation(action, context, cancellationToken);
+    }
 }
 
 /// <summary>
@@ -29,6 +39,16 @@ public class NoOpPolicy<TResult> : Policy<TResult>, INoOpPolicy<TResult>
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        NoOpEngine.Implementation(action, context, cancellationToken);
+    protected override TResult Implementation(
+        Func<Context, CancellationToken, TResult> action,
+        Context context,
+        CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return NoOpEngine.Implementation(action, context, cancellationToken);
+    }
 }

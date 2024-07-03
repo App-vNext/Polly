@@ -92,26 +92,28 @@ public class MyApi
     // The value of pipelineProvider is injected via dependency injection
     public MyApi(ResiliencePipelineProvider<string> pipelineProvider)
     {
+        if (pipelineProvider is null)
+        {
+            throw new ArgumentNullException(nameof(pipelineProvider));
+        }
+
         _pipeline = pipelineProvider.GetPipeline("my-pipeline");
     }
 
-    public async Task ExecuteAsync(CancellationToken cancellationToken)
-    {
+    public async Task ExecuteAsync(CancellationToken cancellationToken) =>
         await _pipeline.ExecuteAsync(
             static async token =>
             {
                 // Add your code here
             },
             cancellationToken);
-    }
 }
 
 // Extensions to incorporate MyApi into dependency injection
 public static class MyApiExtensions
 {
-    public static IServiceCollection AddMyApi(this IServiceCollection services)
-    {
-        return services
+    public static IServiceCollection AddMyApi(this IServiceCollection services) =>
+        services
             .AddResiliencePipeline("my-pipeline", builder =>
             {
                 builder.AddRetry(new RetryStrategyOptions
@@ -120,7 +122,6 @@ public static class MyApiExtensions
                 });
             })
             .AddSingleton<MyApi>();
-    }
 }
 
 #endregion

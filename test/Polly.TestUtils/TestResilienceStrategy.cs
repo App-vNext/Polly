@@ -8,7 +8,20 @@ public class TestResilienceStrategy : ResilienceStrategy
 
     public Func<ResilienceContext, object?, Task>? OnExecute { get; set; }
 
-    protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+    protected internal override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
+    {
+        if (callback is null)
+        {
+            throw new ArgumentNullException(nameof(callback));
+        }
+
+        return ExecuteCoreInternal(callback, context, state);
+    }
+
+    private async ValueTask<Outcome<TResult>> ExecuteCoreInternal<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)

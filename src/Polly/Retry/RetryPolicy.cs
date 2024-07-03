@@ -28,6 +28,11 @@ public class RetryPolicy : Policy, IRetryPolicy
     /// <inheritdoc/>
     protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
     {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
         var sleepDurationProvider = _sleepDurationProvider != null
             ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
             : (Func<int, DelegateResult<TResult>, Context, TimeSpan>?)null;
@@ -71,8 +76,14 @@ public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        RetryEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return RetryEngine.Implementation(
             action,
             context,
             cancellationToken,
@@ -82,4 +93,5 @@ public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
             _permittedRetryCount,
             _sleepDurationsEnumerable,
             _sleepDurationProvider);
+    }
 }

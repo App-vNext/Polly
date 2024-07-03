@@ -69,8 +69,17 @@ public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        FallbackEngine.Implementation(
+    protected override TResult Implementation(
+        Func<Context, CancellationToken, TResult> action,
+        Context context,
+        CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return FallbackEngine.Implementation(
             action,
             context,
             cancellationToken,
@@ -78,4 +87,5 @@ public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
             ResultPredicates,
             _onFallback,
             _fallbackAction);
+    }
 }

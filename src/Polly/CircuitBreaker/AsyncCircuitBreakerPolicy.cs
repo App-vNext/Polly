@@ -98,9 +98,18 @@ public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, ICircuit
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncCircuitBreakerEngine.ImplementationAsync(
+    protected override Task<TResult> ImplementationAsync(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncCircuitBreakerEngine.ImplementationAsync(
             action,
             context,
             cancellationToken,
@@ -108,4 +117,5 @@ public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, ICircuit
             ExceptionPredicates,
             ResultPredicates,
             BreakerController);
+    }
 }

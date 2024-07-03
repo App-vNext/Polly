@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -19,7 +20,17 @@ public static class TestUtilities
         },
         TimeSpan.FromSeconds(60));
 
-    public static async Task AssertWithTimeoutAsync(Func<Task> assertion, TimeSpan timeout)
+    public static Task AssertWithTimeoutAsync(Func<Task> assertion, TimeSpan timeout)
+    {
+        if (assertion is null)
+        {
+            throw new ArgumentNullException(nameof(assertion));
+        }
+
+        return AssertWithTimeoutInternalAsync(assertion, timeout);
+    }
+
+    private static async Task AssertWithTimeoutInternalAsync(Func<Task> assertion, TimeSpan timeout)
     {
         var watch = Stopwatch.StartNew();
 
@@ -87,12 +98,22 @@ public static class TestUtilities
 
     public static ResilienceContext WithResultType<T>(this ResilienceContext context)
     {
+        if (context is null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
         context.Initialize<T>(true);
         return context;
     }
 
     public static ResilienceContext WithVoidResultType(this ResilienceContext context)
     {
+        if (context is null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
         context.Initialize<VoidResult>(true);
         return context;
     }

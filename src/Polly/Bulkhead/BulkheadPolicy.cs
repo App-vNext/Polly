@@ -24,8 +24,16 @@ public class BulkheadPolicy : Policy, IBulkheadPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
+    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore,
+            _maxQueuedActionsSemaphore, cancellationToken);
+    }
 
     /// <summary>
     /// Gets the number of slots currently available for executing actions through the bulkhead.
@@ -72,8 +80,16 @@ public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore,
+            _maxQueuedActionsSemaphore, cancellationToken);
+    }
 
     /// <summary>
     /// Gets the number of slots currently available for executing actions through the bulkhead.

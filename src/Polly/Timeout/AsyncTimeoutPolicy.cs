@@ -25,8 +25,14 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncTimeoutEngine.ImplementationAsync(
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncTimeoutEngine.ImplementationAsync(
             action,
             context,
             cancellationToken,
@@ -34,6 +40,7 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
             _timeoutStrategy,
             _onTimeoutAsync,
             continueOnCapturedContext);
+    }
 }
 
 /// <summary>
@@ -62,8 +69,14 @@ public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncTimeoutEngine.ImplementationAsync(
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncTimeoutEngine.ImplementationAsync(
             action,
             context,
             cancellationToken,
@@ -71,4 +84,5 @@ public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<
             _timeoutStrategy,
             _onTimeoutAsync,
             continueOnCapturedContext);
+    }
 }

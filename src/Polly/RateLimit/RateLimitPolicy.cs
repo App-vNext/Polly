@@ -14,8 +14,18 @@ public class RateLimitPolicy : Policy, IRateLimitPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        RateLimitEngine.Implementation(_rateLimiter, null, action, context, cancellationToken);
+    protected override TResult Implementation<TResult>(
+        Func<Context, CancellationToken, TResult> action,
+        Context context,
+        CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return RateLimitEngine.Implementation(_rateLimiter, null, action, context, cancellationToken);
+    }
 }
 
 /// <summary>
@@ -37,6 +47,16 @@ public class RateLimitPolicy<TResult> : Policy<TResult>, IRateLimitPolicy<TResul
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        RateLimitEngine.Implementation(_rateLimiter, _retryAfterFactory, action, context, cancellationToken);
+    protected override TResult Implementation(
+        Func<Context, CancellationToken, TResult> action,
+        Context context,
+        CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return RateLimitEngine.Implementation(_rateLimiter, _retryAfterFactory, action, context, cancellationToken);
+    }
 }

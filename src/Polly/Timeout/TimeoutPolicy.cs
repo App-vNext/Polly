@@ -21,14 +21,21 @@ public class TimeoutPolicy : Policy, ITimeoutPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        TimeoutEngine.Implementation(
+    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return TimeoutEngine.Implementation(
             action,
             context,
             cancellationToken,
             _timeoutProvider,
             _timeoutStrategy,
             _onTimeout);
+    }
 }
 
 /// <summary>
@@ -52,12 +59,19 @@ public class TimeoutPolicy<TResult> : Policy<TResult>, ITimeoutPolicy<TResult>
     }
 
     /// <inheritdoc/>
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        TimeoutEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return TimeoutEngine.Implementation(
             action,
             context,
             cancellationToken,
             _timeoutProvider,
             _timeoutStrategy,
             _onTimeout);
+    }
 }

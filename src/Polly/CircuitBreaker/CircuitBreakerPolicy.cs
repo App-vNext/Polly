@@ -97,12 +97,22 @@ public class CircuitBreakerPolicy<TResult> : Policy<TResult>, ICircuitBreakerPol
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        CircuitBreakerEngine.Implementation(
+    protected override TResult Implementation(
+        Func<Context, CancellationToken, TResult> action,
+        Context context,
+        CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return CircuitBreakerEngine.Implementation(
             action,
             context,
             cancellationToken,
             ExceptionPredicates,
             ResultPredicates,
             BreakerController);
+    }
 }

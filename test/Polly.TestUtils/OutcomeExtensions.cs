@@ -11,6 +11,11 @@ public static class OutcomeExtensions
 
     public static bool ResultPredicate<TResult>(this Outcome<object> outcome, Predicate<TResult> predicate)
     {
+        if (predicate is null)
+        {
+            throw new ArgumentNullException(nameof(predicate));
+        }
+
         if (outcome.TryGetResult(out var result) && result is TResult typedResult)
         {
             return predicate(typedResult);
@@ -29,5 +34,13 @@ public static class OutcomeExtensions
         where TException : Exception => outcome.ExceptionPredicate<TException>(_ => true);
 
     public static bool ExceptionPredicate<TException>(this Outcome<object> outcome, Predicate<TException> predicate)
-        where TException : Exception => outcome.Exception is TException typedException && predicate(typedException);
+        where TException : Exception
+    {
+        if (predicate is null)
+        {
+            throw new ArgumentNullException(nameof(predicate));
+        }
+
+        return outcome.Exception is TException typedException && predicate(typedException);
+    }
 }

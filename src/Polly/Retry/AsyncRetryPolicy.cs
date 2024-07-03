@@ -33,6 +33,11 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
         CancellationToken cancellationToken,
         bool continueOnCapturedContext)
     {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
         var sleepDurationProvider = _sleepDurationProvider != null
             ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
             : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null;
@@ -78,9 +83,18 @@ public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TRes
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncRetryEngine.ImplementationAsync(
+    protected override Task<TResult> ImplementationAsync(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncRetryEngine.ImplementationAsync(
             action,
             context,
             cancellationToken,
@@ -91,5 +105,6 @@ public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TRes
             _sleepDurationsEnumerable,
             _sleepDurationProvider,
             continueOnCapturedContext);
+    }
 }
 

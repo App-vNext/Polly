@@ -14,9 +14,20 @@ public class AsyncRateLimitPolicy : AsyncPolicy, IRateLimitPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, null, action, context, cancellationToken, continueOnCapturedContext);
+    protected override Task<TResult> ImplementationAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, null, action, context, cancellationToken,
+            continueOnCapturedContext);
+    }
 }
 
 /// <summary>
@@ -38,7 +49,18 @@ public class AsyncRateLimitPolicy<TResult> : AsyncPolicy<TResult>, IRateLimitPol
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, _retryAfterFactory, action, context, cancellationToken, continueOnCapturedContext);
+    protected override Task<TResult> ImplementationAsync(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, _retryAfterFactory, action, context,
+            cancellationToken, continueOnCapturedContext);
+    }
 }
