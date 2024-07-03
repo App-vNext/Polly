@@ -647,12 +647,9 @@ public class WaitAndRetryAsyncSpecs : IDisposable
 
         using (var enumerator = expectedRetryWaits.GetEnumerator())
         {
-            await policy.ExecuteAsync(() =>
-            {
-                if (enumerator.MoveNext())
-                    throw enumerator.Current.Key;
-                return TaskHelper.EmptyTask;
-            });
+            await policy.ExecuteAsync(() => enumerator.MoveNext()
+                ? throw enumerator.Current.Key
+                : TaskHelper.EmptyTask);
         }
 
         actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);

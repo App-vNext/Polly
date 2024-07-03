@@ -733,7 +733,9 @@ public class WaitAndRetrySpecs : IDisposable
             policy.Execute(() =>
             {
                 if (enumerator.MoveNext())
+                {
                     throw enumerator.Current.Key;
+                }
             });
         }
 

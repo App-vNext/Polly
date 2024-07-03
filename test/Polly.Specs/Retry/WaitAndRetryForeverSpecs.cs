@@ -309,7 +309,9 @@ public class WaitAndRetryForeverSpecs : IDisposable
             policy.Execute(() =>
             {
                 if (enumerator.MoveNext())
+                {
                     throw enumerator.Current.Key;
+                }
             });
         }
 
