@@ -1602,9 +1602,15 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         permitFirstExecutionEnd.Set();
         Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
         if (firstExecution.IsFaulted)
+        {
             throw firstExecution!.Exception!;
+        }
+
         if (secondExecution.IsFaulted)
+        {
             throw secondExecution!.Exception!;
+        }
+
         firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
         secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
@@ -1711,9 +1717,15 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         permitFirstExecutionEnd.Set();
         Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
         if (firstExecution.IsFaulted)
+        {
             throw firstExecution!.Exception!;
+        }
+
         if (secondExecution.IsFaulted)
+        {
             throw secondExecution!.Exception!;
+        }
+
         firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
         secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
@@ -2030,7 +2042,10 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
         longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
         if (longRunningExecution.IsFaulted)
+        {
             throw longRunningExecution!.Exception!;
+        }
+
         longRunningExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
         // onBreak() should still only have been called once.

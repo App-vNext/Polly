@@ -16,14 +16,20 @@ internal class StubErroringCacheProvider : ISyncCacheProvider, IAsyncCacheProvid
     public (bool, object?) TryGet(string key)
     {
         if (_getException != null)
+        {
             throw _getException;
+        }
+
         return _innerProvider.TryGet(key);
     }
 
     public void Put(string key, object? value, Ttl ttl)
     {
         if (_putException != null)
+        {
             throw _putException;
+        }
+
         _innerProvider.Put(key, value, ttl);
     }
 

@@ -385,7 +385,10 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             await policy.ExecuteAsync(() =>
             {
                 if (enumerator.MoveNext())
+                {
                     throw enumerator.Current.Key;
+                }
+
                 return TaskHelper.EmptyTask;
             });
         }

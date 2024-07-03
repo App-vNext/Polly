@@ -78,7 +78,9 @@ public abstract class BulkheadSpecsBase : IDisposable
     public void Should_control_executions_per_specification(int maxParallelization, int maxQueuingActions, int totalActions, bool cancelQueuing, bool cancelExecuting, string scenario)
     {
         if (totalActions < 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(totalActions));
+        }
 
         MaxParallelization = maxParallelization;
         MaxQueuingActions = maxQueuingActions;
