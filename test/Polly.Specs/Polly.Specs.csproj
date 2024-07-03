@@ -11,7 +11,7 @@
     <NoWarn>$(NoWarn);CA1030;CA1031;CA2008;CA2201</NoWarn>
     <NoWarn>$(NoWarn);IDE0011</NoWarn>
     <NoWarn>$(NoWarn);S103;S104;S2184;S3878;S6966</NoWarn>
-    <NoWarn>$(NoWarn);SA1204;SA1402;SA1600;SA1649</NoWarn>
+    <NoWarn>$(NoWarn);SA1204;SA1402;SA1600</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
