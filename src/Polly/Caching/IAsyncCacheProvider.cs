@@ -16,7 +16,7 @@ public interface IAsyncCacheProvider
     /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
     /// the key was found in the cache, and whose second element is the value from the cache (null if not found).
     /// </returns>
-    Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
+    Task<(bool CacheHit, object? Result)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
 
     /// <summary>
     /// Puts the specified value in the cache asynchronously.
@@ -46,7 +46,7 @@ public interface IAsyncCacheProvider<TResult>
     /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
     /// the key was found in the cache, and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
-    Task<(bool, TResult?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
+    Task<(bool CacheHit, TResult? Result)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
 
     /// <summary>
     /// Puts the specified value in the cache asynchronously.

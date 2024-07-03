@@ -113,7 +113,7 @@ public class SerializingCacheProviderSpecs
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 
-        stubCacheProvider.TryGet(key).Item1.Should().BeFalse();
+        stubCacheProvider.TryGet(key).CacheHit.Should().BeFalse();
 
         SerializingCacheProvider<StubSerialized> serializingCacheProvider = new SerializingCacheProvider<StubSerialized>(stubCacheProvider.For<StubSerialized>(), stubSerializer);
         (bool cacheHit, object? fromCache) = serializingCacheProvider.TryGet(key);
@@ -200,7 +200,7 @@ public class SerializingCacheProviderSpecs
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 
-        stubCacheProvider.TryGet(key).Item1.Should().BeFalse();
+        stubCacheProvider.TryGet(key).CacheHit.Should().BeFalse();
 
         SerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.For<StubSerialized>().WithSerializer(stubSerializer);
         (bool cacheHit, object? fromCache) = serializingCacheProvider.TryGet(key);
@@ -322,7 +322,7 @@ public class SerializingCacheProviderSpecs
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 
-        stubCacheProvider.TryGet(key).Item1.Should().BeFalse();
+        stubCacheProvider.TryGet(key).CacheHit.Should().BeFalse();
 
         SerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider = new SerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(stubCacheProvider.For<StubSerialized<ResultPrimitive>>(), stubTResultSerializer);
         (bool cacheHit, ResultPrimitive fromCache) = serializingCacheProvider.TryGet(key);
@@ -413,7 +413,7 @@ public class SerializingCacheProviderSpecs
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 
-        stubCacheProvider.TryGet(key).Item2.Should().BeNull();
+        stubCacheProvider.TryGet(key).Result.Should().BeNull();
 
         SerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider =
             stubCacheProvider.For<StubSerialized<ResultPrimitive>>().WithSerializer(stubTResultSerializer);
