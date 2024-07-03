@@ -2,6 +2,8 @@
 
 namespace Polly.Benchmarks;
 
+#pragma warning disable CA1822 // Mark members as static
+
 [Config(typeof(PollyConfig))]
 public class Cache
 {
