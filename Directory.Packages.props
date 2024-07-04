@@ -35,7 +35,7 @@
     <PackageVersion Include="Polly.Extensions" Version="$(PollyVersion)" />
     <PackageVersion Include="Polly.Testing" Version="$(PollyVersion)" />
     <PackageVersion Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
-    <PackageVersion Include="ReportGenerator" Version="5.3.6" />
+    <PackageVersion Include="ReportGenerator" Version="5.3.7" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.28.0.94264" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="4.5.0" />
