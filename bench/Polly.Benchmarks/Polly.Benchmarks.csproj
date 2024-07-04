@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <ProjectType>Benchmark</ProjectType>
     <NoWarn>$(NoWarn);IDE0060</NoWarn>
+    <!-- We do not need to fix these as it would break, BenchmarkDotNet supports only non-static, non-sealed public types with instance methods marked as [Benchmark] -->
+    <NoWarn>$(NoWarn);CA1822</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
