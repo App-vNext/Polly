@@ -12,4 +12,12 @@ public class DefaultCacheKeyStrategySpecs
         DefaultCacheKeyStrategy.Instance.GetCacheKey(context)
             .Should().Be(operationKey);
     }
+
+    [Fact]
+    public void Should_throw_when_context_is_null()
+    {
+        Context context = null!;
+        Action action = () => DefaultCacheKeyStrategy.Instance.GetCacheKey(context);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("context");
+    }
 }
