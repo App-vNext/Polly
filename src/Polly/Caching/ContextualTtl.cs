@@ -2,8 +2,6 @@
 
 namespace Polly.Caching;
 
-#pragma warning disable CA1062 // Validate arguments of public methods // Temporary stub
-
 /// <summary>
 /// Defines a ttl strategy which will cache items for a TimeSpan which may be influenced by data in the execution context.
 /// </summary>
@@ -30,6 +28,11 @@ public class ContextualTtl : ITtlStrategy
     /// <returns>TimeSpan.</returns>
     public Ttl GetTtl(Context context, object? result)
     {
+        if (context is null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
         if (!context.ContainsKey(TimeSpanKey))
         {
             return NoTtl;

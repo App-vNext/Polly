@@ -107,4 +107,12 @@ public class ContextualTtlSpecs
         gotTtl.Timespan.Should().Be(ttl);
         gotTtl.SlidingExpiration.Should().BeFalse();
     }
+
+    [Fact]
+    public void Should_throw_when_context_is_null()
+    {
+        Context context = null!;
+        Action action = () => new ContextualTtl().GetTtl(context, null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("context");
+    }
 }
