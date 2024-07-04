@@ -1,5 +1,8 @@
 ﻿#nullable enable
+
 namespace Polly.Caching;
+
+#pragma warning disable CA1062 // Validate arguments of public methods // Temporary stub
 
 /// <summary>
 /// Defines a ttl strategy which will cache items for a TimeSpan which may be influenced by data in the execution context.

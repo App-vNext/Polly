@@ -1,5 +1,8 @@
 ﻿#nullable enable
+
 namespace Polly.Caching;
+
+#pragma warning disable CA1062 // Validate arguments of public methods // Temporary stub
 
 /// <summary>
 /// The default cache key strategy for <see cref="CachePolicy"/>.  Returns the property <see cref="Context.OperationKey"/>.

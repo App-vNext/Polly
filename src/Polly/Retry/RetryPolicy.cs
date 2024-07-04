@@ -1,5 +1,8 @@
 ﻿#nullable enable
+
 namespace Polly.Retry;
+
+#pragma warning disable CA1062 // Validate arguments of public methods // Temporary stub
 
 /// <summary>
 /// A retry policy that can be applied to synchronous delegates.

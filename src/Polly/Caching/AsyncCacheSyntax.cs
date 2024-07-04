@@ -1,5 +1,8 @@
 ﻿#nullable enable
+
 namespace Polly;
+
+#pragma warning disable CA1062 // Validate arguments of public methods // Temporary stub
 
 public partial class Policy
 {

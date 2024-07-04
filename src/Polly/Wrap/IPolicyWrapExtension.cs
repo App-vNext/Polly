@@ -1,5 +1,7 @@
 ﻿namespace Polly.Wrap;
 
+#pragma warning disable CA1062 // Validate arguments of public methods // Temporary stub
+
 /// <summary>
 /// Extension methods for IPolicyWrap.
 /// </summary>

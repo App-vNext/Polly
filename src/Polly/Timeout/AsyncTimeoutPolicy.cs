@@ -1,5 +1,7 @@
 ﻿namespace Polly.Timeout;
 
+#pragma warning disable CA1062 // Validate arguments of public methods // Temporary stub
+
 /// <summary>
 /// A timeout policy which can be applied to async delegates.
 /// </summary>

@@ -2,6 +2,8 @@
 
 namespace Polly.NoOp;
 
+#pragma warning disable CA1062 // Validate arguments of public methods // Temporary stub
+
 /// <summary>
 /// A noop policy that can be applied to asynchronous delegates.
 /// </summary>

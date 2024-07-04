@@ -2,6 +2,8 @@
 
 namespace Polly.Fallback;
 
+#pragma warning disable CA1062 // Validate arguments of public methods // Temporary stub
+
 /// <summary>
 /// A fallback policy that can be applied to asynchronous delegates.
 /// </summary>
