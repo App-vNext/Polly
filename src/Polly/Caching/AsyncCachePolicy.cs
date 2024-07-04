@@ -2,8 +2,6 @@
 
 namespace Polly.Caching;
 
-#pragma warning disable CA1062 // Validate arguments of public methods // Temporary stub
-
 /// <summary>
 /// A cache policy that can be applied to the results of delegate executions.
 /// </summary>
@@ -45,13 +43,31 @@ public class AsyncCachePolicy : AsyncPolicy
         Func<Context, CancellationToken, Task> action,
         Context context,
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext) => action(context, cancellationToken); // Pass-through/NOOP policy action, for void-returning executions through the cache policy.
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        // Pass-through/NOOP policy action, for void-returning executions through the cache policy.
+        return action(context, cancellationToken);
+    }
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncCacheEngine.ImplementationAsync<TResult>(
+    protected override Task<TResult> ImplementationAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncCacheEngine.ImplementationAsync<TResult>(
             _asyncCacheProvider.AsyncFor<TResult>(),
             _ttlStrategy.For<TResult>(),
             _cacheKeyStrategy,
@@ -64,6 +80,7 @@ public class AsyncCachePolicy : AsyncPolicy
             _onCachePut,
             _onCacheGetError,
             _onCachePutError);
+    }
 }
 
 /// <summary>
@@ -106,9 +123,18 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncCacheEngine.ImplementationAsync<TResult>(
+    protected override Task<TResult> ImplementationAsync(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncCacheEngine.ImplementationAsync<TResult>(
             _asyncCacheProvider,
             _ttlStrategy,
             _cacheKeyStrategy,
@@ -121,5 +147,6 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
             _onCachePut,
             _onCacheGetError,
             _onCachePutError);
+    }
 }
 
