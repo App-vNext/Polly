@@ -2,7 +2,7 @@
 
 namespace Polly.Benchmarks;
 
-#pragma warning disable CA1822 // Mark members as static
+#pragma warning disable CA1052 // Static holder types should be Static or NotInheritable
 
 [Config(typeof(PollyConfig))]
 public class Cache
@@ -20,26 +20,26 @@ public class Cache
     private static readonly Context MissContext = new(nameof(MissContext));
 
     [GlobalSetup]
-    public Task GlobalSetup()
+    public static Task GlobalSetup()
     {
         SyncPolicyHit.Execute(_ => GetObject(), HitContext);
         return AsyncPolicyHit.ExecuteAsync((_, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
     }
 
     [Benchmark]
-    public object Cache_Synchronous_Hit() =>
+    public static object Cache_Synchronous_Hit() =>
         SyncPolicyHit.Execute(_ => GetObject(), HitContext);
 
     [Benchmark]
-    public Task<object> Cache_Asynchronous_Hit() =>
+    public static Task<object> Cache_Asynchronous_Hit() =>
         AsyncPolicyHit.ExecuteAsync((_, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
 
     [Benchmark]
-    public object Cache_Synchronous_Miss() =>
+    public static object Cache_Synchronous_Miss() =>
         SyncPolicyMiss.Execute(_ => GetObject(), MissContext);
 
     [Benchmark]
-    public Task<object> Cache_Asynchronous_Miss() =>
+    public static Task<object> Cache_Asynchronous_Miss() =>
         AsyncPolicyMiss.ExecuteAsync((_, token) => GetObjectAsync(token), MissContext, CancellationToken.None);
 
     private static object GetObject() => new();
