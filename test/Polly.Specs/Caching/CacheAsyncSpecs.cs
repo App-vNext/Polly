@@ -26,53 +26,22 @@ public class CacheAsyncSpecs : IDisposable
     public void Should_throw_when_cache_key_strategy_is_null()
     {
         IAsyncCacheProvider cacheProvider = new StubCacheProvider();
-        Func<Context, string> cacheKeyStrategy = null!;
+        ICacheKeyStrategy cacheKeyStrategy = null!;
+        Action<Context, string> emptyDelegate = (_, _) => { };
+
         Action action = () => Policy.CacheAsync(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
-    }
 
-    [Fact]
-    public void Should_throw_when_cache_key_strategy_is_null_overload_1()
-    {
-        ICacheKeyStrategy cacheKeyStrategy = null!;
-
-        Action action = () => Policy.CacheAsync(
+        action = () => Policy.CacheAsync(
             new StubCacheProvider(),
             TimeSpan.MaxValue,
             cacheKeyStrategy,
             null);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
-    }
 
-    [Fact]
-    public void Should_throw_when_cache_key_strategy_is_null_overload_2()
-    {
-        Action<Context, string> emptyDelegate = (_, _) => { };
-
-        ICacheKeyStrategy cacheKeyStrategy = null!;
-
-        Action action = () => Policy.CacheAsync(
+        action = () => Policy.CacheAsync(
             new StubCacheProvider(),
             TimeSpan.MaxValue,
-            cacheKeyStrategy,
-            emptyDelegate,
-            emptyDelegate,
-            emptyDelegate,
-            null,
-            null);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
-    }
-
-    [Fact]
-    public void Should_throw_when_cache_key_strategy_is_null_overload_3()
-    {
-        Action<Context, string> emptyDelegate = (_, _) => { };
-
-        ICacheKeyStrategy cacheKeyStrategy = null!;
-
-        Action action = () => Policy.CacheAsync(
-            new StubCacheProvider(),
-            new RelativeTtl(TimeSpan.MaxValue),
             cacheKeyStrategy,
             emptyDelegate,
             emptyDelegate,
