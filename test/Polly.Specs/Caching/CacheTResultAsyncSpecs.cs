@@ -35,7 +35,7 @@ public class CacheTResultAsyncSpecs : IDisposable
     public void Should_throw_when_cache_key_strategy_is_null()
     {
         IAsyncCacheProvider cacheProvider = new StubCacheProvider();
-        
+
         Func<Context, string> cacheKeyStrategyFunc = null!;
         Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategyFunc);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
