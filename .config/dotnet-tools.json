@@ -9,7 +9,7 @@
       ]
     },
     "docfx": {
-      "version": "2.76.0",
+      "version": "2.77.0",
       "commands": [
         "docfx"
       ]
@@ -33,7 +33,7 @@
       ]
     },
     "sign": {
-      "version": "0.9.1-beta.24312.3",
+      "version": "0.9.1-beta.24325.5",
       "commands": [
         "sign"
       ]
