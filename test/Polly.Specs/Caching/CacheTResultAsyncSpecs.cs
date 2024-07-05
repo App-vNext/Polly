@@ -9,7 +9,16 @@ public class CacheTResultAsyncSpecs : IDisposable
     public void Should_throw_when_cache_provider_is_null()
     {
         IAsyncCacheProvider cacheProvider = null!;
+
         Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
+
+        ITtlStrategy ttlStrategy = new ContextualTtl();
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
+
+        ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
     }
 
@@ -26,8 +35,17 @@ public class CacheTResultAsyncSpecs : IDisposable
     public void Should_throw_when_cache_key_strategy_is_null()
     {
         IAsyncCacheProvider cacheProvider = new StubCacheProvider();
-        Func<Context, string> cacheKeyStrategy = null!;
-        Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
+        
+        Func<Context, string> cacheKeyStrategyFunc = null!;
+        Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategyFunc);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
+
+        ICacheKeyStrategy cacheKeyStrategy = null!;
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy, null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
+
+        ITtlStrategy ttlStrategy = new ContextualTtl();
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategy, null);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
     }
     #endregion
