@@ -18,7 +18,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider cacheProvider, TimeSpan ttl, Action<Context, string, Exception>? onCacheError = null)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -41,7 +41,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -65,12 +65,12 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
 
-        if (cacheKeyStrategy == null)
+        if (cacheKeyStrategy is null)
         {
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
@@ -95,7 +95,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -124,7 +124,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider cacheProvider, TimeSpan ttl, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -149,7 +149,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -185,7 +185,7 @@ public partial class Policy
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -222,7 +222,7 @@ public partial class Policy
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -261,7 +261,7 @@ public partial class Policy
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -314,7 +314,7 @@ public partial class Policy
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -358,7 +358,7 @@ public partial class Policy
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -398,7 +398,7 @@ public partial class Policy
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -923,7 +923,7 @@ public partial class Policy
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError)
     {
-        if (cacheProvider == null)
+        if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
         }
@@ -933,7 +933,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(ttlStrategy));
         }
 
-        if (cacheKeyStrategy == null)
+        if (cacheKeyStrategy is null)
         {
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
