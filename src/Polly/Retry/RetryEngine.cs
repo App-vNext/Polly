@@ -3,13 +3,12 @@ namespace Polly.Retry;
 
 internal static class RetryEngine
 {
-    internal static TResult Implementation<TResult>(
-        Func<Context, CancellationToken, TResult> action,
+    internal static TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action,
         Context context,
-        CancellationToken cancellationToken,
         ExceptionPredicates shouldRetryExceptionPredicates,
         ResultPredicates<TResult> shouldRetryResultPredicates,
         Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry,
+        CancellationToken cancellationToken,
         int permittedRetryCount = int.MaxValue,
         IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,
         Func<int, DelegateResult<TResult>, Context, TimeSpan>? sleepDurationProvider = null)

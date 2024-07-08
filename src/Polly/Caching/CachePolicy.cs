@@ -51,12 +51,11 @@ public class CachePolicy : Policy, ICachePolicy
             _cacheKeyStrategy,
             action,
             context,
-            cancellationToken,
             _onCacheGet,
             _onCacheMiss,
             _onCachePut,
             _onCacheGetError,
-            _onCachePutError);
+            _onCachePutError, cancellationToken);
 }
 
 /// <summary>
@@ -105,10 +104,9 @@ public class CachePolicy<TResult> : Policy<TResult>, ICachePolicy<TResult>
             _cacheKeyStrategy,
             action,
             context,
-            cancellationToken,
             _onCacheGet,
             _onCacheMiss,
             _onCachePut,
             _onCacheGetError,
-            _onCachePutError);
+            _onCachePutError, cancellationToken);
 }

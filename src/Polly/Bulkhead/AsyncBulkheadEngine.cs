@@ -9,8 +9,8 @@ internal static class AsyncBulkheadEngine
         Func<Context, Task> onBulkheadRejectedAsync,
         SemaphoreSlim maxParallelizationSemaphore,
         SemaphoreSlim maxQueuedActionsSemaphore,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken)
     {
         if (!await maxQueuedActionsSemaphore.WaitAsync(TimeSpan.Zero, cancellationToken).ConfigureAwait(continueOnCapturedContext))
         {

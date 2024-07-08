@@ -2,13 +2,12 @@
 
 internal static class AsyncPolicyWrapEngine
 {
-    internal static Task<TResult> ImplementationAsync<TResult>(
-       Func<Context, CancellationToken, Task<TResult>> func,
+    internal static Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func,
         Context context,
-        CancellationToken cancellationToken,
         bool continueOnCapturedContext,
         IAsyncPolicy<TResult> outerPolicy,
-        IAsyncPolicy<TResult> innerPolicy) =>
+        IAsyncPolicy<TResult> innerPolicy,
+        CancellationToken cancellationToken) =>
         outerPolicy.ExecuteAsync(
             (ctx, ct) => innerPolicy.ExecuteAsync(
                 func,
@@ -19,13 +18,12 @@ internal static class AsyncPolicyWrapEngine
             cancellationToken,
             continueOnCapturedContext);
 
-    internal static Task<TResult> ImplementationAsync<TResult>(
-       Func<Context, CancellationToken, Task<TResult>> func,
+    internal static Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func,
         Context context,
-        CancellationToken cancellationToken,
         bool continueOnCapturedContext,
         IAsyncPolicy<TResult> outerPolicy,
-        IAsyncPolicy innerPolicy) =>
+        IAsyncPolicy innerPolicy,
+        CancellationToken cancellationToken) =>
         outerPolicy.ExecuteAsync(
             (ctx, ct) => innerPolicy.ExecuteAsync<TResult>(
                 func,
@@ -36,13 +34,12 @@ internal static class AsyncPolicyWrapEngine
             cancellationToken,
             continueOnCapturedContext);
 
-    internal static Task<TResult> ImplementationAsync<TResult>(
-        Func<Context, CancellationToken, Task<TResult>> func,
+    internal static Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func,
         Context context,
-        CancellationToken cancellationToken,
         bool continueOnCapturedContext,
         IAsyncPolicy outerPolicy,
-        IAsyncPolicy<TResult> innerPolicy) =>
+        IAsyncPolicy<TResult> innerPolicy,
+        CancellationToken cancellationToken) =>
         outerPolicy.ExecuteAsync<TResult>(
             (ctx, ct) => innerPolicy.ExecuteAsync(
                 func,
@@ -53,13 +50,12 @@ internal static class AsyncPolicyWrapEngine
             cancellationToken,
             continueOnCapturedContext);
 
-    internal static Task<TResult> ImplementationAsync<TResult>(
-       Func<Context, CancellationToken, Task<TResult>> func,
-       Context context,
-       CancellationToken cancellationToken,
-       bool continueOnCapturedContext,
-       IAsyncPolicy outerPolicy,
-       IAsyncPolicy innerPolicy) =>
+    internal static Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func,
+        Context context,
+        bool continueOnCapturedContext,
+        IAsyncPolicy outerPolicy,
+        IAsyncPolicy innerPolicy,
+        CancellationToken cancellationToken) =>
         outerPolicy.ExecuteAsync<TResult>(
             (ctx, ct) => innerPolicy.ExecuteAsync<TResult>(
                 func,
@@ -70,13 +66,12 @@ internal static class AsyncPolicyWrapEngine
             cancellationToken,
             continueOnCapturedContext);
 
-    internal static Task ImplementationAsync(
-        Func<Context, CancellationToken, Task> action,
+    internal static Task ImplementationAsync(Func<Context, CancellationToken, Task> action,
         Context context,
-        CancellationToken cancellationToken,
         bool continueOnCapturedContext,
         IAsyncPolicy outerPolicy,
-        IAsyncPolicy innerPolicy) =>
+        IAsyncPolicy innerPolicy,
+        CancellationToken cancellationToken) =>
         outerPolicy.ExecuteAsync(
             (ctx, ct) => innerPolicy.ExecuteAsync(
                 action,

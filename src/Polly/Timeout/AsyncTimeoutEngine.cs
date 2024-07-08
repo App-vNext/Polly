@@ -5,11 +5,11 @@ internal static class AsyncTimeoutEngine
     internal static async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
-        CancellationToken cancellationToken,
         Func<Context, TimeSpan> timeoutProvider,
         TimeoutStrategy timeoutStrategy,
         Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync,
-        bool continueOnCapturedContext)
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         TimeSpan timeout = timeoutProvider(context);
