@@ -47,7 +47,8 @@ public class AsyncCircuitBreakerPolicy : AsyncPolicy, ICircuitBreakerPolicy
             continueOnCapturedContext,
             ExceptionPredicates,
             ResultPredicates<EmptyStruct>.None,
-            BreakerController, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+            BreakerController,
+            cancellationToken).ConfigureAwait(continueOnCapturedContext);
         return result;
     }
 }
@@ -105,5 +106,6 @@ public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, ICircuit
             continueOnCapturedContext,
             ExceptionPredicates,
             ResultPredicates,
-            BreakerController, cancellationToken);
+            BreakerController,
+            cancellationToken);
 }

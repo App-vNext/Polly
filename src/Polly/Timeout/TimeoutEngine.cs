@@ -4,7 +4,8 @@ namespace Polly.Timeout;
 
 internal static class TimeoutEngine
 {
-    internal static TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action,
+    internal static TResult Implementation<TResult>(
+        Func<Context, CancellationToken, TResult> action,
         Context context,
         Func<Context, TimeSpan> timeoutProvider,
         TimeoutStrategy timeoutStrategy,

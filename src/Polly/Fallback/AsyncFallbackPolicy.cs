@@ -39,7 +39,8 @@ public class AsyncFallbackPolicy : AsyncPolicy, IFallbackPolicy
                 await _fallbackAction(outcome.Exception, ctx, ct).ConfigureAwait(continueOnCapturedContext);
                 return EmptyStruct.Instance;
             },
-            continueOnCapturedContext, cancellationToken);
+            continueOnCapturedContext,
+            cancellationToken);
 
     /// <inheritdoc/>
     protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
@@ -80,5 +81,6 @@ public class AsyncFallbackPolicy<TResult> : AsyncPolicy<TResult>, IFallbackPolic
             ResultPredicates,
             _onFallbackAsync,
             _fallbackAction,
-            continueOnCapturedContext, cancellationToken);
+            continueOnCapturedContext,
+            cancellationToken);
 }

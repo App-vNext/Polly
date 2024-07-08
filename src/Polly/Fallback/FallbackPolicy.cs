@@ -37,7 +37,8 @@ public class FallbackPolicy : Policy, IFallbackPolicy
             {
                 _fallbackAction(outcome.Exception, ctx, ct);
                 return EmptyStruct.Instance;
-            }, cancellationToken);
+            },
+            cancellationToken);
 
     /// <inheritdoc/>
     protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
@@ -75,5 +76,6 @@ public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
             ExceptionPredicates,
             ResultPredicates,
             _onFallback,
-            _fallbackAction, cancellationToken);
+            _fallbackAction,
+            cancellationToken);
 }

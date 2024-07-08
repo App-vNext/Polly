@@ -59,7 +59,8 @@ public class AsyncCachePolicy : AsyncPolicy
             _onCacheMiss,
             _onCachePut,
             _onCacheGetError,
-            _onCachePutError, cancellationToken);
+            _onCachePutError,
+            cancellationToken);
 }
 
 /// <summary>
@@ -115,6 +116,7 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
             _onCacheMiss,
             _onCachePut,
             _onCacheGetError,
-            _onCachePutError, cancellationToken);
+            _onCachePutError,
+            cancellationToken);
 }
 

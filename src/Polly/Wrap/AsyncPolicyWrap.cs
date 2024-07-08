@@ -37,7 +37,8 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
             context,
             continueOnCapturedContext,
             _outer,
-            _inner, cancellationToken);
+            _inner,
+            cancellationToken);
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
@@ -48,7 +49,8 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
             context,
             continueOnCapturedContext,
             _outer,
-            _inner, cancellationToken);
+            _inner,
+            cancellationToken);
 }
 
 /// <summary>
@@ -107,7 +109,8 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                     context,
                     continueOnCapturedContext,
                     _outerNonGeneric,
-                    _innerNonGeneric, cancellationToken);
+                    _innerNonGeneric,
+                    cancellationToken);
             }
             else if (_innerGeneric != null)
             {
@@ -116,7 +119,8 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                     context,
                     continueOnCapturedContext,
                     _outerNonGeneric,
-                    _innerGeneric, cancellationToken);
+                    _innerGeneric,
+                    cancellationToken);
 
             }
             else
@@ -133,7 +137,8 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                     context,
                     continueOnCapturedContext,
                     _outerGeneric,
-                    _innerNonGeneric, cancellationToken);
+                    _innerNonGeneric,
+                    cancellationToken);
 
             }
             else if (_innerGeneric != null)
@@ -143,7 +148,8 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
                     context,
                     continueOnCapturedContext,
                     _outerGeneric,
-                    _innerGeneric, cancellationToken);
+                    _innerGeneric,
+                    cancellationToken);
 
             }
             else

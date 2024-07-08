@@ -39,7 +39,8 @@ public class RetryPolicy : Policy, IRetryPolicy
             (outcome, timespan, retryCount, ctx) => _onRetry(outcome.Exception, timespan, retryCount, ctx),
             cancellationToken,
             _permittedRetryCount,
-            _sleepDurationsEnumerable, sleepDurationProvider);
+            _sleepDurationsEnumerable,
+            sleepDurationProvider);
     }
 }
 
@@ -79,5 +80,6 @@ public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
             _onRetry,
             cancellationToken,
             _permittedRetryCount,
-            _sleepDurationsEnumerable, _sleepDurationProvider);
+            _sleepDurationsEnumerable,
+            _sleepDurationProvider);
 }

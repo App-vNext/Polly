@@ -46,7 +46,8 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
             cancellationToken,
             _permittedRetryCount,
             _sleepDurationsEnumerable,
-            sleepDurationProvider, continueOnCapturedContext);
+            sleepDurationProvider,
+            continueOnCapturedContext);
     }
 }
 
@@ -88,6 +89,7 @@ public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TRes
             cancellationToken,
             _permittedRetryCount,
             _sleepDurationsEnumerable,
-            _sleepDurationProvider, continueOnCapturedContext);
+            _sleepDurationProvider,
+            continueOnCapturedContext);
 }
 

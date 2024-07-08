@@ -11,7 +11,8 @@ internal sealed class ResiliencePipelineSyncPolicy : Policy
         var resilienceContext = ResilienceContextFactory.Create(
             context,
             true,
-            out var oldProperties, cancellationToken);
+            out var oldProperties,
+            cancellationToken);
 
         try
         {
@@ -34,7 +35,8 @@ internal sealed class ResiliencePipelineSyncPolicy : Policy
         var resilienceContext = ResilienceContextFactory.Create(
             context,
             true,
-            out var oldProperties, cancellationToken);
+            out var oldProperties,
+            cancellationToken);
 
         try
         {

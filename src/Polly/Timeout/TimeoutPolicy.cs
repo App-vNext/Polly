@@ -27,7 +27,8 @@ public class TimeoutPolicy : Policy, ITimeoutPolicy
             context,
             _timeoutProvider,
             _timeoutStrategy,
-            _onTimeout, cancellationToken);
+            _onTimeout,
+            cancellationToken);
 }
 
 /// <summary>
@@ -57,5 +58,6 @@ public class TimeoutPolicy<TResult> : Policy<TResult>, ITimeoutPolicy<TResult>
             context,
             _timeoutProvider,
             _timeoutStrategy,
-            _onTimeout, cancellationToken);
+            _onTimeout,
+            cancellationToken);
 }

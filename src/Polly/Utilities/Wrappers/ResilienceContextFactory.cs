@@ -2,7 +2,8 @@ namespace Polly.Utilities.Wrappers;
 
 internal static class ResilienceContextFactory
 {
-    public static ResilienceContext Create(Context context,
+    public static ResilienceContext Create(
+        Context context,
         bool continueOnCapturedContext,
         out IDictionary<string, object> oldProperties,
         CancellationToken cancellationToken)

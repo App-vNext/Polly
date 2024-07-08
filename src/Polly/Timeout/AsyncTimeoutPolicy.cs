@@ -32,7 +32,8 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
             _timeoutProvider,
             _timeoutStrategy,
             _onTimeoutAsync,
-            continueOnCapturedContext, cancellationToken);
+            continueOnCapturedContext,
+            cancellationToken);
 }
 
 /// <summary>
@@ -68,5 +69,6 @@ public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<
             _timeoutProvider,
             _timeoutStrategy,
             _onTimeoutAsync,
-            continueOnCapturedContext, cancellationToken);
+            continueOnCapturedContext,
+            cancellationToken);
 }

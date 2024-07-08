@@ -3,7 +3,8 @@ namespace Polly.Retry;
 
 internal static class RetryEngine
 {
-    internal static TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action,
+    internal static TResult Implementation<TResult>(
+        Func<Context, CancellationToken, TResult> action,
         Context context,
         ExceptionPredicates shouldRetryExceptionPredicates,
         ResultPredicates<TResult> shouldRetryResultPredicates,

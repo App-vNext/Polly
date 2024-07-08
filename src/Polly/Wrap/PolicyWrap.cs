@@ -32,7 +32,8 @@ public partial class PolicyWrap : Policy, IPolicyWrap
             action,
             context,
             _outer,
-            _inner, cancellationToken);
+            _inner,
+            cancellationToken);
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
@@ -41,7 +42,8 @@ public partial class PolicyWrap : Policy, IPolicyWrap
             action,
             context,
             _outer,
-            _inner, cancellationToken);
+            _inner,
+            cancellationToken);
 }
 
 /// <summary>
@@ -98,7 +100,8 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
                     action,
                     context,
                     _outerNonGeneric,
-                    _innerNonGeneric, cancellationToken);
+                    _innerNonGeneric,
+                    cancellationToken);
             }
             else if (_innerGeneric != null)
             {
@@ -106,7 +109,8 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
                     action,
                     context,
                     _outerNonGeneric,
-                    _innerGeneric, cancellationToken);
+                    _innerGeneric,
+                    cancellationToken);
             }
             else
             {
@@ -121,7 +125,8 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
                     action,
                     context,
                     _outerGeneric,
-                    _innerNonGeneric, cancellationToken);
+                    _innerNonGeneric,
+                    cancellationToken);
 
             }
             else if (_innerGeneric != null)
@@ -130,7 +135,8 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
                     action,
                     context,
                     _outerGeneric,
-                    _innerGeneric, cancellationToken);
+                    _innerGeneric,
+                    cancellationToken);
             }
             else
             {

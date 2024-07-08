@@ -2,7 +2,8 @@
 
 internal static class AsyncPolicyWrapEngine
 {
-    internal static Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func,
+    internal static Task<TResult> ImplementationAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> func,
         Context context,
         bool continueOnCapturedContext,
         IAsyncPolicy<TResult> outerPolicy,
@@ -18,7 +19,8 @@ internal static class AsyncPolicyWrapEngine
             cancellationToken,
             continueOnCapturedContext);
 
-    internal static Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func,
+    internal static Task<TResult> ImplementationAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> func,
         Context context,
         bool continueOnCapturedContext,
         IAsyncPolicy<TResult> outerPolicy,
@@ -34,7 +36,8 @@ internal static class AsyncPolicyWrapEngine
             cancellationToken,
             continueOnCapturedContext);
 
-    internal static Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func,
+    internal static Task<TResult> ImplementationAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> func,
         Context context,
         bool continueOnCapturedContext,
         IAsyncPolicy outerPolicy,
@@ -50,7 +53,8 @@ internal static class AsyncPolicyWrapEngine
             cancellationToken,
             continueOnCapturedContext);
 
-    internal static Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func,
+    internal static Task<TResult> ImplementationAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> func,
         Context context,
         bool continueOnCapturedContext,
         IAsyncPolicy outerPolicy,
@@ -66,7 +70,8 @@ internal static class AsyncPolicyWrapEngine
             cancellationToken,
             continueOnCapturedContext);
 
-    internal static Task ImplementationAsync(Func<Context, CancellationToken, Task> action,
+    internal static Task ImplementationAsync(
+        Func<Context, CancellationToken, Task> action,
         Context context,
         bool continueOnCapturedContext,
         IAsyncPolicy outerPolicy,

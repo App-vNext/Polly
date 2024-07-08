@@ -4,7 +4,8 @@ namespace Polly.Fallback;
 
 internal static class FallbackEngine
 {
-    internal static TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action,
+    internal static TResult Implementation<TResult>(
+        Func<Context, CancellationToken, TResult> action,
         Context context,
         ExceptionPredicates shouldHandleExceptionPredicates,
         ResultPredicates<TResult> shouldHandleResultPredicates,

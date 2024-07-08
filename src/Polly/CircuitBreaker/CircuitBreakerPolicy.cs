@@ -46,7 +46,8 @@ public class CircuitBreakerPolicy : Policy, ICircuitBreakerPolicy
             context,
             ExceptionPredicates,
             ResultPredicates<EmptyStruct>.None,
-            BreakerController, cancellationToken);
+            BreakerController,
+            cancellationToken);
         return result;
     }
 }
@@ -102,5 +103,6 @@ public class CircuitBreakerPolicy<TResult> : Policy<TResult>, ICircuitBreakerPol
             context,
             ExceptionPredicates,
             ResultPredicates,
-            BreakerController, cancellationToken);
+            BreakerController,
+            cancellationToken);
 }

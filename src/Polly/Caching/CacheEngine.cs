@@ -3,7 +3,8 @@ namespace Polly.Caching;
 
 internal static class CacheEngine
 {
-    internal static TResult Implementation<TResult>(ISyncCacheProvider<TResult> cacheProvider,
+    internal static TResult Implementation<TResult>(
+        ISyncCacheProvider<TResult> cacheProvider,
         ITtlStrategy<TResult> ttlStrategy,
         Func<Context, string> cacheKeyStrategy,
         Func<Context, CancellationToken, TResult> action,
