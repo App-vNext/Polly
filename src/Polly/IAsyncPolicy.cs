@@ -62,6 +62,7 @@ public interface IAsyncPolicy : IsPolicy
     /// <returns>A <see cref="Task" /> which completes when <see cref="IAsyncPolicy"/> is registered.</returns>
     Task ExecuteAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken);
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy.
     /// </summary>
@@ -71,7 +72,9 @@ public interface IAsyncPolicy : IsPolicy
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     /// <returns>A <see cref="Task" /> which completes when <see cref="IAsyncPolicy"/> is registered.</returns>
     Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy.
     /// </summary>
@@ -82,7 +85,9 @@ public interface IAsyncPolicy : IsPolicy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
     /// <returns>A <see cref="Task" /> which completes when <see cref="IAsyncPolicy"/> is registered.</returns>
     Task ExecuteAsync(Func<Context, CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy.
     /// </summary>
@@ -93,6 +98,7 @@ public interface IAsyncPolicy : IsPolicy
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     /// <returns>A <see cref="Task" /> which completes when <see cref="IAsyncPolicy"/> is registered.</returns>
     Task ExecuteAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the result.
@@ -149,6 +155,7 @@ public interface IAsyncPolicy : IsPolicy
     /// <returns>The value returned by the action.</returns>
     Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken);
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the result.
     /// </summary>
@@ -159,7 +166,9 @@ public interface IAsyncPolicy : IsPolicy
     /// <returns>The value returned by the action.</returns>
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the result.
     /// </summary>
@@ -171,7 +180,9 @@ public interface IAsyncPolicy : IsPolicy
     /// <returns>The value returned by the action.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
     Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the result.
     /// </summary>
@@ -183,6 +194,7 @@ public interface IAsyncPolicy : IsPolicy
     /// <returns>The value returned by the action.</returns>
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the captured result.
@@ -235,6 +247,7 @@ public interface IAsyncPolicy : IsPolicy
     /// <returns>The captured result.</returns>
     Task<PolicyResult> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken);
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the captured result.
     /// </summary>
@@ -244,7 +257,9 @@ public interface IAsyncPolicy : IsPolicy
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     /// <returns>An instance of <see cref="PolicyResult"/>.</returns>
     Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the captured result.
     /// </summary>
@@ -255,7 +270,9 @@ public interface IAsyncPolicy : IsPolicy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
     /// <returns>The captured result.</returns>
     Task<PolicyResult> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the captured result.
     /// </summary>
@@ -266,6 +283,7 @@ public interface IAsyncPolicy : IsPolicy
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     /// <returns>The captured result.</returns>
     Task<PolicyResult> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
     /// <summary>
     /// Executes the specified asynchronous action within the policy and returns the result.
@@ -324,6 +342,7 @@ public interface IAsyncPolicy : IsPolicy
     /// <returns>The captured result.</returns>
     Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken);
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the result.
     /// </summary>
@@ -334,7 +353,9 @@ public interface IAsyncPolicy : IsPolicy
     /// <returns>The captured result.</returns>
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the result.
     /// </summary>
@@ -346,7 +367,9 @@ public interface IAsyncPolicy : IsPolicy
     /// <returns>The captured result.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="contextData"/> is <see langword="null"/>.</exception>
     Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
+#pragma warning disable CA1068
     /// <summary>
     ///     Executes the specified asynchronous action within the policy and returns the result.
     /// </summary>
@@ -358,4 +381,5 @@ public interface IAsyncPolicy : IsPolicy
     /// <returns>The captured result.</returns>
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 }

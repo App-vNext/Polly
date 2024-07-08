@@ -2,6 +2,7 @@
 
 public abstract partial class AsyncPolicy
 {
+#pragma warning disable CA1068
     /// <summary>
     /// Defines the implementation of a policy for async executions with no return value.
     /// </summary>
@@ -11,6 +12,7 @@ public abstract partial class AsyncPolicy
     /// <param name="continueOnCapturedContext">Whether async continuations should continue on a captured context.</param>
     /// <returns>A <see cref="Task"/> representing the result of the execution.</returns>
     protected virtual Task ImplementationAsync(
+#pragma warning restore CA1068
         Func<Context, CancellationToken, Task> action,
         Context context,
         CancellationToken cancellationToken,
@@ -21,6 +23,7 @@ public abstract partial class AsyncPolicy
             return EmptyStruct.Instance;
         }, context, cancellationToken, continueOnCapturedContext);
 
+#pragma warning disable CA1068
     /// <summary>
     /// Defines the implementation of a policy for async executions returning <typeparamref name="TResult"/>.
     /// </summary>
@@ -31,6 +34,7 @@ public abstract partial class AsyncPolicy
     /// <param name="continueOnCapturedContext">Whether async continuations should continue on a captured context.</param>
     /// <returns>A <see cref="Task{TResult}"/> representing the result of the execution.</returns>
     protected abstract Task<TResult> ImplementationAsync<TResult>(
+#pragma warning restore CA1068
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
         CancellationToken cancellationToken,

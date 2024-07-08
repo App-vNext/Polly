@@ -2,6 +2,7 @@
 
 public abstract partial class AsyncPolicy<TResult>
 {
+#pragma warning disable CA1068
     /// <summary>
     /// Defines the implementation of a policy for async executions returning <typeparamref name="TResult"/>.
     /// </summary>
@@ -11,6 +12,7 @@ public abstract partial class AsyncPolicy<TResult>
     /// <param name="continueOnCapturedContext">Whether async continuations should continue on a captured context.</param>
     /// <returns>A <see cref="Task{TResult}"/> representing the result of the execution.</returns>
     protected abstract Task<TResult> ImplementationAsync(
+#pragma warning restore CA1068
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
         CancellationToken cancellationToken,
