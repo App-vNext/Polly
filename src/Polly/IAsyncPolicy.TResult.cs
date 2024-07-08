@@ -162,6 +162,7 @@ public interface IAsyncPolicy<TResult> : IsPolicy
     /// <returns>The captured result.</returns>
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 
 #pragma warning disable CA1068
     /// <summary>
