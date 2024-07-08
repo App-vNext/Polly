@@ -13,8 +13,8 @@ public abstract partial class AsyncPolicy<TResult>
     /// <returns>A <see cref="Task{TResult}"/> representing the result of the execution.</returns>
     protected abstract Task<TResult> ImplementationAsync(
         Func<Context, CancellationToken, Task<TResult>> action,
-#pragma warning restore CA1068
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext);
+#pragma warning restore CA1068
 }

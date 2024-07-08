@@ -13,11 +13,11 @@ public abstract partial class AsyncPolicy
     /// <returns>A <see cref="Task"/> representing the result of the execution.</returns>
     protected virtual Task ImplementationAsync(
         Func<Context, CancellationToken, Task> action,
-#pragma warning restore CA1068
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext) =>
         ImplementationAsync<EmptyStruct>(async (ctx, token) =>
+#pragma warning restore CA1068
         {
             await action(ctx, token).ConfigureAwait(continueOnCapturedContext);
             return EmptyStruct.Instance;
@@ -35,8 +35,8 @@ public abstract partial class AsyncPolicy
     /// <returns>A <see cref="Task{TResult}"/> representing the result of the execution.</returns>
     protected abstract Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,
-#pragma warning restore CA1068
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext);
+#pragma warning restore CA1068
 }
