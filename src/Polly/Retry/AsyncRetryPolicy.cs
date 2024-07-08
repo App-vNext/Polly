@@ -40,10 +40,10 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
         return AsyncRetryEngine.ImplementationAsync(
             action,
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates<TResult>.None,
             (outcome, timespan, retryCount, ctx) => _onRetryAsync(outcome.Exception, timespan, retryCount, ctx),
+            cancellationToken,
             _permittedRetryCount,
             _sleepDurationsEnumerable,
             sleepDurationProvider,
@@ -83,10 +83,10 @@ public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TRes
         AsyncRetryEngine.ImplementationAsync(
             action,
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates,
             _onRetryAsync,
+            cancellationToken,
             _permittedRetryCount,
             _sleepDurationsEnumerable,
             _sleepDurationProvider,

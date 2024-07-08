@@ -34,10 +34,10 @@ public class RetryPolicy : Policy, IRetryPolicy
 
         return RetryEngine.Implementation(action,
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates<TResult>.None,
             (outcome, timespan, retryCount, ctx) => _onRetry(outcome.Exception, timespan, retryCount, ctx),
+            cancellationToken,
             _permittedRetryCount,
             _sleepDurationsEnumerable,
             sleepDurationProvider);
@@ -75,10 +75,10 @@ public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
         RetryEngine.Implementation(
             action,
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates,
             _onRetry,
+            cancellationToken,
             _permittedRetryCount,
             _sleepDurationsEnumerable,
             _sleepDurationProvider);

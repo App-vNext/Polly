@@ -30,7 +30,6 @@ public class FallbackPolicy : Policy, IFallbackPolicy
                 return EmptyStruct.Instance;
             },
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates<EmptyStruct>.None,
             (outcome, ctx) => _onFallback(outcome.Exception, ctx),
@@ -38,7 +37,8 @@ public class FallbackPolicy : Policy, IFallbackPolicy
             {
                 _fallbackAction(outcome.Exception, ctx, ct);
                 return EmptyStruct.Instance;
-            });
+            },
+            cancellationToken);
 
     /// <inheritdoc/>
     protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
@@ -73,9 +73,9 @@ public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
         FallbackEngine.Implementation(
             action,
             context,
-            cancellationToken,
             ExceptionPredicates,
             ResultPredicates,
             _onFallback,
-            _fallbackAction);
+            _fallbackAction,
+            cancellationToken);
 }

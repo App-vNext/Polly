@@ -54,13 +54,13 @@ public class AsyncCachePolicy : AsyncPolicy
             _cacheKeyStrategy,
             action,
             context,
-            cancellationToken,
             continueOnCapturedContext,
             _onCacheGet,
             _onCacheMiss,
             _onCachePut,
             _onCacheGetError,
-            _onCachePutError);
+            _onCachePutError,
+            cancellationToken);
 }
 
 /// <summary>
@@ -111,12 +111,12 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
             _cacheKeyStrategy,
             action,
             context,
-            cancellationToken,
             continueOnCapturedContext,
             _onCacheGet,
             _onCacheMiss,
             _onCachePut,
             _onCacheGetError,
-            _onCachePutError);
+            _onCachePutError,
+            cancellationToken);
 }
 

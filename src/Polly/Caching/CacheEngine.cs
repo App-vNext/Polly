@@ -9,12 +9,12 @@ internal static class CacheEngine
         Func<Context, string> cacheKeyStrategy,
         Func<Context, CancellationToken, TResult> action,
         Context context,
-        CancellationToken cancellationToken,
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
         Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCachePutError,
+        CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
