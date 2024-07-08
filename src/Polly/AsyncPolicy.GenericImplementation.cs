@@ -12,8 +12,8 @@ public abstract partial class AsyncPolicy<TResult>
     /// <param name="continueOnCapturedContext">Whether async continuations should continue on a captured context.</param>
     /// <returns>A <see cref="Task{TResult}"/> representing the result of the execution.</returns>
     protected abstract Task<TResult> ImplementationAsync(
-#pragma warning restore CA1068
         Func<Context, CancellationToken, Task<TResult>> action,
+#pragma warning restore CA1068
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext);

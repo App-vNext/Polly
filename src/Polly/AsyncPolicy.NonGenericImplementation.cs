@@ -12,8 +12,8 @@ public abstract partial class AsyncPolicy
     /// <param name="continueOnCapturedContext">Whether async continuations should continue on a captured context.</param>
     /// <returns>A <see cref="Task"/> representing the result of the execution.</returns>
     protected virtual Task ImplementationAsync(
-#pragma warning restore CA1068
         Func<Context, CancellationToken, Task> action,
+#pragma warning restore CA1068
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext) =>
@@ -34,8 +34,8 @@ public abstract partial class AsyncPolicy
     /// <param name="continueOnCapturedContext">Whether async continuations should continue on a captured context.</param>
     /// <returns>A <see cref="Task{TResult}"/> representing the result of the execution.</returns>
     protected abstract Task<TResult> ImplementationAsync<TResult>(
-#pragma warning restore CA1068
         Func<Context, CancellationToken, Task<TResult>> action,
+#pragma warning restore CA1068
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext);
