@@ -8,6 +8,7 @@ namespace Polly.Caching;
 public interface IAsyncCacheProvider
 {
 #pragma warning disable SA1414
+#pragma warning disable CA1068
     /// <summary>
     /// Gets a value from the cache asynchronously.
     /// </summary>
@@ -19,8 +20,10 @@ public interface IAsyncCacheProvider
     /// the key was found in the cache, and whose second element is the value from the cache (null if not found).
     /// </returns>
     Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
-#pragma warning restore  SA1414
+#pragma warning restore CA1068
+#pragma warning restore SA1414
 
+#pragma warning disable CA1068
     /// <summary>
     /// Puts the specified value in the cache asynchronously.
     /// </summary>
@@ -31,6 +34,7 @@ public interface IAsyncCacheProvider
     /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.<para><remarks>Note: if the underlying cache's async API does not support controlling whether to continue on a captured context, async Policy executions with continueOnCapturedContext == true cannot be guaranteed to remain on the captured context.</remarks></para></param>
     /// <returns>A <see cref="Task" /> which completes when the value has been cached.</returns>
     Task PutAsync(string key, object? value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 }
 
 /// <summary>
@@ -40,6 +44,7 @@ public interface IAsyncCacheProvider
 public interface IAsyncCacheProvider<TResult>
 {
 #pragma warning disable SA1414
+#pragma warning disable CA1068
     /// <summary>
     /// Gets a value from the cache asynchronously.
     /// </summary>
@@ -51,8 +56,10 @@ public interface IAsyncCacheProvider<TResult>
     /// the key was found in the cache, and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
     Task<(bool, TResult?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 #pragma warning restore SA1414
 
+#pragma warning disable CA1068
     /// <summary>
     /// Puts the specified value in the cache asynchronously.
     /// </summary>
@@ -63,4 +70,5 @@ public interface IAsyncCacheProvider<TResult>
     /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.<para><remarks>Note: if the underlying cache's async API does not support controlling whether to continue on a captured context, async Policy executions with continueOnCapturedContext == true cannot be guaranteed to remain on the captured context.</remarks></para></param>
     /// <returns>A <see cref="Task" /> which completes when the value has been cached.</returns>
     Task PutAsync(string key, TResult? value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext);
+#pragma warning restore CA1068
 }

@@ -27,10 +27,10 @@ public class TimeoutPolicy : Policy, ITimeoutPolicy
         TimeoutEngine.Implementation(
             action,
             context,
-            cancellationToken,
             _timeoutProvider,
             _timeoutStrategy,
-            _onTimeout);
+            _onTimeout,
+            cancellationToken);
 }
 
 /// <summary>
@@ -58,8 +58,8 @@ public class TimeoutPolicy<TResult> : Policy<TResult>, ITimeoutPolicy<TResult>
         TimeoutEngine.Implementation(
             action,
             context,
-            cancellationToken,
             _timeoutProvider,
             _timeoutStrategy,
-            _onTimeout);
+            _onTimeout,
+            cancellationToken);
 }

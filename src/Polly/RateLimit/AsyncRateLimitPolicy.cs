@@ -18,7 +18,7 @@ public class AsyncRateLimitPolicy : AsyncPolicy, IRateLimitPolicy
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
         bool continueOnCapturedContext) =>
-        AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, null, action, context, cancellationToken, continueOnCapturedContext);
+        AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, null, action, context, continueOnCapturedContext, cancellationToken);
 }
 
 /// <summary>
@@ -42,5 +42,5 @@ public class AsyncRateLimitPolicy<TResult> : AsyncPolicy<TResult>, IRateLimitPol
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
         bool continueOnCapturedContext) =>
-        AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, _retryAfterFactory, action, context, cancellationToken, continueOnCapturedContext);
+        AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, _retryAfterFactory, action, context, continueOnCapturedContext, cancellationToken);
 }

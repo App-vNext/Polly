@@ -7,10 +7,10 @@ internal static class TimeoutEngine
     internal static TResult Implementation<TResult>(
         Func<Context, CancellationToken, TResult> action,
         Context context,
-        CancellationToken cancellationToken,
         Func<Context, TimeSpan> timeoutProvider,
         TimeoutStrategy timeoutStrategy,
-        Action<Context, TimeSpan, Task, Exception> onTimeout)
+        Action<Context, TimeSpan, Task, Exception> onTimeout,
+        CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         TimeSpan timeout = timeoutProvider(context);

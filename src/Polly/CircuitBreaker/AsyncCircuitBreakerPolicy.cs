@@ -46,11 +46,11 @@ public class AsyncCircuitBreakerPolicy : AsyncPolicy, ICircuitBreakerPolicy
         await AsyncCircuitBreakerEngine.ImplementationAsync<EmptyStruct>(
             async (ctx, ct) => { result = await action(ctx, ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
             context,
-            cancellationToken,
             continueOnCapturedContext,
             ExceptionPredicates,
             ResultPredicates<EmptyStruct>.None,
-            BreakerController).ConfigureAwait(continueOnCapturedContext);
+            BreakerController,
+            cancellationToken).ConfigureAwait(continueOnCapturedContext);
         return result;
     }
 }
@@ -105,9 +105,9 @@ public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, ICircuit
         AsyncCircuitBreakerEngine.ImplementationAsync(
             action,
             context,
-            cancellationToken,
             continueOnCapturedContext,
             ExceptionPredicates,
             ResultPredicates,
-            BreakerController);
+            BreakerController,
+            cancellationToken);
 }

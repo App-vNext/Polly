@@ -10,9 +10,9 @@ internal sealed class ResiliencePipelineAsyncPolicy<TResult> : AsyncPolicy<TResu
     {
         var resilienceContext = ResilienceContextFactory.Create(
             context,
-            cancellationToken,
             continueOnCapturedContext,
-            out var oldProperties);
+            out var oldProperties,
+            cancellationToken);
 
         try
         {

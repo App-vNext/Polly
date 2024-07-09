@@ -31,9 +31,9 @@ public partial class PolicyWrap : Policy, IPolicyWrap
         PolicyWrapEngine.Implementation(
             action,
             context,
-            cancellationToken,
             _outer,
-            _inner);
+            _inner,
+            cancellationToken);
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
@@ -41,9 +41,9 @@ public partial class PolicyWrap : Policy, IPolicyWrap
         PolicyWrapEngine.Implementation<TResult>(
             action,
             context,
-            cancellationToken,
             _outer,
-            _inner);
+            _inner,
+            cancellationToken);
 }
 
 /// <summary>
@@ -99,18 +99,18 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
                 return PolicyWrapEngine.Implementation<TResult>(
                     action,
                     context,
-                    cancellationToken,
                     _outerNonGeneric,
-                    _innerNonGeneric);
+                    _innerNonGeneric,
+                    cancellationToken);
             }
             else if (_innerGeneric != null)
             {
                 return PolicyWrapEngine.Implementation<TResult>(
                     action,
                     context,
-                    cancellationToken,
                     _outerNonGeneric,
-                    _innerGeneric);
+                    _innerGeneric,
+                    cancellationToken);
             }
             else
             {
@@ -124,9 +124,9 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
                 return PolicyWrapEngine.Implementation<TResult>(
                     action,
                     context,
-                    cancellationToken,
                     _outerGeneric,
-                    _innerNonGeneric);
+                    _innerNonGeneric,
+                    cancellationToken);
 
             }
             else if (_innerGeneric != null)
@@ -134,9 +134,9 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
                 return PolicyWrapEngine.Implementation<TResult>(
                     action,
                     context,
-                    cancellationToken,
                     _outerGeneric,
-                    _innerGeneric);
+                    _innerGeneric,
+                    cancellationToken);
             }
             else
             {

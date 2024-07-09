@@ -31,11 +31,11 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
         AsyncTimeoutEngine.ImplementationAsync(
             action,
             context,
-            cancellationToken,
             _timeoutProvider,
             _timeoutStrategy,
             _onTimeoutAsync,
-            continueOnCapturedContext);
+            continueOnCapturedContext,
+            cancellationToken);
 }
 
 /// <summary>
@@ -68,9 +68,9 @@ public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<
         AsyncTimeoutEngine.ImplementationAsync(
             action,
             context,
-            cancellationToken,
             _timeoutProvider,
             _timeoutStrategy,
             _onTimeoutAsync,
-            continueOnCapturedContext);
+            continueOnCapturedContext,
+            cancellationToken);
 }
