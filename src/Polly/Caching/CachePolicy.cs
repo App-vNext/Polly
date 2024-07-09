@@ -1,6 +1,8 @@
 ﻿#nullable enable
 namespace Polly.Caching;
 
+#pragma warning disable CA1062 // Validate arguments of public methods
+
 /// <summary>
 /// A cache policy that can be applied to the results of delegate executions.
 /// </summary>
