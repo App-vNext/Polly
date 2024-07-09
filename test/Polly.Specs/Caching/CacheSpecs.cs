@@ -48,7 +48,7 @@ public class CacheSpecs : IDisposable
         ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
         Func<Context, string> cacheKeyStrategyFunc = _ => string.Empty;
         Action<Context, string> emptyDelegate = (_, _) => { };
-        const string Expected = "cacheKeyStrategy";
+        const string Expected = "ttlStrategy";
 
         Action action = () => Policy.Cache(cacheProvider, ttlStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
