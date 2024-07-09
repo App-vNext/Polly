@@ -97,26 +97,6 @@ public class CacheSpecs : IDisposable
         action = () => Policy.Cache(
             cacheProvider,
             ttl,
-            emptyDelegate,
-            emptyDelegate,
-            emptyDelegate,
-            null,
-            null);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
-
-        action = () => Policy.Cache(
-            cacheProvider,
-            ttlStrategy,
-            emptyDelegate,
-            emptyDelegate,
-            emptyDelegate,
-            null,
-            null);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
-
-        action = () => Policy.Cache(
-            cacheProvider,
-            ttl,
             cacheKeyStrategy,
             emptyDelegate,
             emptyDelegate,
