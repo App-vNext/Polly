@@ -9,9 +9,8 @@ public class RetryHelperTests
     private Func<double> _randomizer = new RandomUtil(0).NextDouble;
 
     public static TheoryData<int> Attempts()
-    {
 #pragma warning disable IDE0028
-        return new()
+        => new()
         {
             1,
             2,
