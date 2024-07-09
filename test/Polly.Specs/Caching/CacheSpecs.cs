@@ -1,4 +1,6 @@
-﻿namespace Polly.Specs.Caching;
+﻿using System;
+
+namespace Polly.Specs.Caching;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class CacheSpecs : IDisposable
@@ -137,6 +139,35 @@ public class CacheSpecs : IDisposable
             null,
             null);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
+    }
+
+    [Fact]
+    public void Should_return_cache_policy_when_cache_strategy_is_default()
+    {
+        ISyncCacheProvider cacheProvider = new StubCacheProvider();
+        TimeSpan ttl = TimeSpan.MaxValue;
+        ITtlStrategy ttlStrategy = new ContextualTtl();
+        Action<Context, string> emptyDelegate = (_, _) => { };
+
+        var policy = Policy.Cache(
+            cacheProvider,
+            ttl,
+            emptyDelegate,
+            emptyDelegate,
+            emptyDelegate,
+            null,
+            null);
+        policy.Should().NotBeNull();
+
+        policy = Policy.Cache(
+            cacheProvider,
+            ttlStrategy,
+            emptyDelegate,
+            emptyDelegate,
+            emptyDelegate,
+            null,
+            null);
+        policy.Should().NotBeNull();
     }
 
     #endregion
