@@ -928,7 +928,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheProvider));
         }
 
-        if (ttlStrategy == null)
+        if (ttlStrategy is null)
         {
             throw new ArgumentNullException(nameof(ttlStrategy));
         }
@@ -938,17 +938,17 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        if (onCacheGet == null)
+        if (onCacheGet is null)
         {
             throw new ArgumentNullException(nameof(onCacheGet));
         }
 
-        if (onCacheMiss == null)
+        if (onCacheMiss is null)
         {
             throw new ArgumentNullException(nameof(onCacheMiss));
         }
 
-        if (onCachePut == null)
+        if (onCachePut is null)
         {
             throw new ArgumentNullException(nameof(onCachePut));
         }

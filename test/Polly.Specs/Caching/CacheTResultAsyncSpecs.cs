@@ -97,6 +97,17 @@ public class CacheTResultAsyncSpecs : IDisposable
             null,
             null);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
+
+        action = () => Policy.CacheAsync<ResultPrimitive>(
+            cacheProvider.AsyncFor<ResultPrimitive>(),
+            ttlStrategy.For<ResultPrimitive>(),
+            cacheKeyStrategyFunc,
+            emptyDelegate,
+            emptyDelegate,
+            emptyDelegate,
+            null,
+            null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("nonGenericCacheProvider");
     }
 
     [Fact]
