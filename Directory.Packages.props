@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <PollyVersion>8.4.1</PollyVersion>
-    <MicrosoftExtensionsVersion>8.0.1</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>8.0.0</MicrosoftExtensionsVersion>
     <MicrosoftExtensionsTimeProviderVersion>8.7.0</MicrosoftExtensionsTimeProviderVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -12,7 +12,7 @@
     <PackageVersion Include="FSharp.Core" Version="8.0.200" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="2.4.1" />
     <PackageVersion Include="IcedTasks" Version="0.11.4" />
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Bcl.TimeProvider" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" />
