@@ -25,6 +25,7 @@ public class RateLimitRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="RateLimitRejectedException"/> class.
     /// </summary>
     public RateLimitRejectedException()
+        : base("The operation could not be executed because it was rejected by the rate limit.")
     {
     }
 
