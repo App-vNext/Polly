@@ -24,6 +24,32 @@ public class RateLimitRejectedException : ExecutionRejectedException
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimitRejectedException"/> class.
     /// </summary>
+    public RateLimitRejectedException()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimitRejectedException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    public RateLimitRejectedException(string message)
+        : base(message)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimitRejectedException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="inner">The inner exception.</param>
+    public RateLimitRejectedException(string message, Exception inner)
+        : base(message, inner)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimitRejectedException"/> class.
+    /// </summary>
     /// <param name="retryAfter">The timespan after which the operation may be retried.</param>
     public RateLimitRejectedException(TimeSpan retryAfter)
         : this(retryAfter, DefaultMessage(retryAfter))
