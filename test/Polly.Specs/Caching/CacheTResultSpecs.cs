@@ -97,6 +97,17 @@ public class CacheTResultSpecs : IDisposable
             null,
             null);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
+
+        action = () => Policy.Cache<ResultPrimitive>(
+            cacheProvider.For<ResultPrimitive>(),
+            ttlStrategy.For<ResultPrimitive>(),
+            cacheKeyStrategyFunc,
+            emptyDelegate,
+            emptyDelegate,
+            emptyDelegate,
+            null,
+            null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("nonGenericCacheProvider");
     }
 
     [Fact]
@@ -104,8 +115,27 @@ public class CacheTResultSpecs : IDisposable
     {
         ISyncCacheProvider cacheProvider = new StubCacheProvider();
         ITtlStrategy ttlStrategy = null!;
+        ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
+        Func<Context, string> cacheKeyStrategyFunc = (_) => string.Empty;
+        Action<Context, string> emptyDelegate = (_, _) => { };
+        const string Expected = "ttlStrategy";
+
         Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
+
+        action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategy);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
+
+        action = () => Policy.Cache<ResultPrimitive>(
+            cacheProvider.For<ResultPrimitive>(),
+            ttlStrategy.For<ResultPrimitive>(),
+            cacheKeyStrategyFunc,
+            emptyDelegate,
+            emptyDelegate,
+            emptyDelegate,
+            null,
+            null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
     }
 
     [Fact]
