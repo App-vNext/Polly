@@ -253,7 +253,10 @@ public class PolicyWrapSpecs
     public void Wrapping_only_one_policy_using_static_wrap_syntax_should_throw()
     {
         Policy singlePolicy = Policy.Handle<Exception>().Retry();
+
+#pragma warning disable S3878 // Remove this array creation and simply pass the elements
         Action config = () => Policy.Wrap(new[] { singlePolicy });
+#pragma warning restore S3878
 
         config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
     }
@@ -263,7 +266,7 @@ public class PolicyWrapSpecs
     {
         Policy retry = Policy.Handle<Exception>().Retry();
         Policy breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
-        Action config = () => Policy.Wrap(new[] { retry, breaker });
+        Action config = () => Policy.Wrap(retry, breaker);
 
         config.Should().NotThrow();
     }
@@ -275,7 +278,7 @@ public class PolicyWrapSpecs
         Policy divideByZeroRetry = Policy.Handle<DivideByZeroException>().Retry(2);
         Policy breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
 
-        Action config = () => Policy.Wrap(new[] { divideByZeroRetry, retry, breaker });
+        Action config = () => Policy.Wrap(divideByZeroRetry, retry, breaker);
 
         config.Should().NotThrow();
     }
@@ -308,7 +311,7 @@ public class PolicyWrapSpecs
     public void Wrapping_only_one_policy_using_static_wrap_strongly_typed_syntax_should_throw()
     {
         Policy<int> singlePolicy = Policy<int>.Handle<Exception>().Retry();
-        Action config = () => Policy.Wrap<int>(new[] { singlePolicy });
+        Action config = () => Policy.Wrap<int>(singlePolicy);
 
         config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
     }
@@ -318,7 +321,7 @@ public class PolicyWrapSpecs
     {
         Policy<int> retry = Policy<int>.Handle<Exception>().Retry();
         Policy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
-        Action config = () => Policy.Wrap<int>(new[] { retry, breaker });
+        Action config = () => Policy.Wrap<int>(retry, breaker);
 
         config.Should().NotThrow();
     }
@@ -330,7 +333,7 @@ public class PolicyWrapSpecs
         Policy<int> divideByZeroRetry = Policy<int>.Handle<DivideByZeroException>().Retry(2);
         Policy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
 
-        Action config = () => Policy.Wrap<int>(new[] { divideByZeroRetry, retry, breaker });
+        Action config = () => Policy.Wrap<int>(divideByZeroRetry, retry, breaker);
 
         config.Should().NotThrow();
     }
