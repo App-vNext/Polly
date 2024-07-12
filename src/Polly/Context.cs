@@ -1,10 +1,12 @@
 namespace Polly;
 
+#pragma warning disable CA1033 // Interface methods should be callable by child types
+
 /// <summary>
 /// Context that carries with a single execution through a Policy.   Commonly-used properties are directly on the class.  Backed by a dictionary of string key / object value pairs, to which user-defined values may be added.
 /// <remarks>Do not re-use an instance of <see cref="Context"/> across more than one call through .Execute(...) or .ExecuteAsync(...).</remarks>
 /// </summary>
-public sealed partial class Context
+public partial class Context
 {
     internal static Context None() => [];
 
