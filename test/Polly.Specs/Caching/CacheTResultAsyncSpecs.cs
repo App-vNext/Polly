@@ -25,13 +25,13 @@ public class CacheTResultAsyncSpecs : IDisposable
         action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
 
-        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategy, null);
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
 
-        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategyFunc, null);
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategyFunc);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
 
-        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategyFunc, null);
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategyFunc);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
 
         action = () => Policy.CacheAsync<ResultPrimitive>(
@@ -115,8 +115,23 @@ public class CacheTResultAsyncSpecs : IDisposable
     {
         IAsyncCacheProvider cacheProvider = new StubCacheProvider();
         ITtlStrategy ttlStrategy = null!;
+        Func<Context, string> cacheKeyStrategyFunc = _ => string.Empty;
+        Action<Context, string> emptyDelegate = (_, _) => { };
+        const string Expected = "ttlStrategy";
+
         Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
+
+        action = () => Policy.CacheAsync<ResultPrimitive>(
+            cacheProvider.AsyncFor<ResultPrimitive>(),
+            ttlStrategy.For<ResultPrimitive>(),
+            cacheKeyStrategyFunc,
+            emptyDelegate,
+            emptyDelegate,
+            emptyDelegate,
+            null,
+            null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
     }
 
     [Fact]
@@ -130,13 +145,13 @@ public class CacheTResultAsyncSpecs : IDisposable
         Action<Context, string> emptyDelegate = (_, _) => { };
         const string Expected = "cacheKeyStrategy";
 
-        Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategyFunc);
+        Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
 
-        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategy, null);
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
 
-        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategy, null);
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategyFunc);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
 
         action = () => Policy.CacheAsync<ResultPrimitive>(
@@ -164,22 +179,19 @@ public class CacheTResultAsyncSpecs : IDisposable
         action = () => Policy.CacheAsync<ResultPrimitive>(
             cacheProvider.AsyncFor<ResultPrimitive>(),
             ttl,
-            cacheKeyStrategy,
-            null);
+            cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
 
         action = () => Policy.CacheAsync<ResultPrimitive>(
             cacheProvider.AsyncFor<ResultPrimitive>(),
             ttlStrategy,
-            cacheKeyStrategy,
-            null);
+            cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
 
         action = () => Policy.CacheAsync<ResultPrimitive>(
             cacheProvider.AsyncFor<ResultPrimitive>(),
             ttlStrategy.For<ResultPrimitive>(),
-            cacheKeyStrategy,
-            null);
+            cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
 
         action = () => Policy.CacheAsync<ResultPrimitive>(
