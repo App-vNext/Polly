@@ -51,6 +51,7 @@ public sealed partial class PolicyBuilder
     public override int GetHashCode() =>
         base.GetHashCode();
 
+#pragma warning disable S4049 //Consider making method a property
     /// <summary>
     /// Gets the <see cref="System.Type" /> of the current instance.
     /// </summary>
@@ -60,6 +61,7 @@ public sealed partial class PolicyBuilder
     [EditorBrowsable(EditorBrowsableState.Never)]
     public new Type GetType() =>
         base.GetType();
+#pragma warning restore S4049
 
     #endregion
 }
@@ -129,6 +131,7 @@ public sealed partial class PolicyBuilder<TResult>
     public override int GetHashCode() =>
         base.GetHashCode();
 
+#pragma warning disable S4049 //Consider making method a property
     /// <summary>
     /// Gets the <see cref="System.Type" /> of the current instance.
     /// </summary>
@@ -138,6 +141,7 @@ public sealed partial class PolicyBuilder<TResult>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public new Type GetType() =>
         base.GetType();
+#pragma warning restore S4049
 
     #endregion
 }
