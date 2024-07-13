@@ -253,7 +253,7 @@ public class PolicyWrapSpecsAsync
     public void Wrapping_only_one_policy_using_static_wrap_syntax_should_throw()
     {
         AsyncPolicy singlePolicy = Policy.Handle<Exception>().RetryAsync();
-        Action config = () => Policy.WrapAsync(new[] { singlePolicy });
+        Action config = () => Policy.WrapAsync(singlePolicy);
 
         config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
     }
@@ -263,7 +263,7 @@ public class PolicyWrapSpecsAsync
     {
         AsyncPolicy retry = Policy.Handle<Exception>().RetryAsync();
         AsyncPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
-        Action config = () => Policy.WrapAsync(new[] { retry, breaker });
+        Action config = () => Policy.WrapAsync(retry, breaker);
 
         config.Should().NotThrow();
     }
@@ -275,7 +275,7 @@ public class PolicyWrapSpecsAsync
         AsyncPolicy divideByZeroRetry = Policy.Handle<DivideByZeroException>().RetryAsync(2);
         AsyncPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
 
-        Action config = () => Policy.WrapAsync(new[] { divideByZeroRetry, retry, breaker });
+        Action config = () => Policy.WrapAsync(divideByZeroRetry, retry, breaker);
 
         config.Should().NotThrow();
     }
@@ -308,7 +308,7 @@ public class PolicyWrapSpecsAsync
     public void Wrapping_only_one_policy_using_static_wrap_strongly_typed_syntax_should_throw()
     {
         AsyncPolicy<int> singlePolicy = Policy<int>.Handle<Exception>().RetryAsync();
-        Action config = () => Policy.WrapAsync<int>(new[] { singlePolicy });
+        Action config = () => Policy.WrapAsync<int>(singlePolicy);
 
         config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
     }
@@ -318,7 +318,7 @@ public class PolicyWrapSpecsAsync
     {
         AsyncPolicy<int> retry = Policy<int>.Handle<Exception>().RetryAsync();
         AsyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
-        Action config = () => Policy.WrapAsync<int>(new[] { retry, breaker });
+        Action config = () => Policy.WrapAsync<int>(retry, breaker);
 
         config.Should().NotThrow();
     }
@@ -330,7 +330,7 @@ public class PolicyWrapSpecsAsync
         AsyncPolicy<int> divideByZeroRetry = Policy<int>.Handle<DivideByZeroException>().RetryAsync(2);
         AsyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
 
-        Action config = () => Policy.WrapAsync<int>(new[] { divideByZeroRetry, retry, breaker });
+        Action config = () => Policy.WrapAsync<int>(divideByZeroRetry, retry, breaker);
 
         config.Should().NotThrow();
     }
