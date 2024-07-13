@@ -85,8 +85,30 @@ internal readonly struct TimedLock : IDisposable
 
 internal class LockTimeoutException : Exception
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LockTimeoutException"/> class.
+    /// </summary>
     public LockTimeoutException()
         : base("Timeout waiting for lock")
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LockTimeoutException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    public LockTimeoutException(string message)
+        : base(message)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LockTimeoutException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="innerException">The inner exception.</param>
+    public LockTimeoutException(string message, Exception innerException)
+        : base(message, innerException)
     {
     }
 }
