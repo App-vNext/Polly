@@ -51,7 +51,10 @@ public class TraceableAction : IDisposable
                 return default;
             }, _cancellationSource.Token));
 
-    // Note re TaskCreationOptions.LongRunning: Testing the parallelization of the bulkhead policy efficiently requires the ability to start large numbers of parallel tasks in a short space of time.  The ThreadPool's algorithm of only injecting extra threads (when necessary) at a rate of two-per-second however makes high-volume tests using the ThreadPool both slow and flaky.  For PCL tests further, ThreadPool.SetMinThreads(...) is not available, to mitigate this.  Using TaskCreationOptions.LongRunning allows us to force tasks to be started near-instantly on non-ThreadPool threads.
+    // Note re TaskCreationOptions.LongRunning: Testing the parallelization of the bulkhead policy efficiently requires the ability to start large numbers of parallel tasks in a short space of time.
+    // The ThreadPool's algorithm of only injecting extra threads (when necessary) at a rate of two-per-second however makes high-volume tests using the ThreadPool both slow and flaky.
+    // For PCL tests further, ThreadPool.SetMinThreads(...) is not available, to mitigate this.
+    // Using TaskCreationOptions.LongRunning allows us to force tasks to be started near-instantly on non-ThreadPool threads.
     private Task ExecuteThroughSyncBulkheadOuter(Action executeThroughBulkheadInner)
     {
         if (Status != TraceableActionStatus.Unstarted)
