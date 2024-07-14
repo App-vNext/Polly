@@ -18,7 +18,7 @@ public static class ISyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
-        return ((Policy)outerPolicy).Wrap(innerPolicy);
+        return outerPolicy.Wrap(innerPolicy);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public static class ISyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
-        return ((Policy)outerPolicy).Wrap(innerPolicy);
+        return outerPolicy.Wrap(innerPolicy);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public static class ISyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
-        return ((Policy<TResult>)outerPolicy).Wrap(innerPolicy);
+        return outerPolicy.Wrap(innerPolicy);
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public static class ISyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
-        return ((Policy<TResult>)outerPolicy).Wrap(innerPolicy);
+        return outerPolicy.Wrap(innerPolicy);
     }
 }
 
@@ -148,6 +148,7 @@ public partial class Policy<TResult>
     }
 }
 
+#pragma warning disable S3215 // "interface" instances should not be cast to concrete types
 public partial class Policy
 {
     /// <summary>
@@ -179,3 +180,4 @@ public partial class Policy
             _ => Wrap(policies[0], Wrap(policies.Skip(1).ToArray())),
         };
 }
+#pragma warning restore S3215 // "interface" instances should not be cast to concrete types

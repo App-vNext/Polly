@@ -18,7 +18,7 @@ public static class IAsyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
-        return ((AsyncPolicy)outerPolicy).WrapAsync(innerPolicy);
+        return outerPolicy.WrapAsync(innerPolicy);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public static class IAsyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
-        return ((AsyncPolicy)outerPolicy).WrapAsync(innerPolicy);
+        return outerPolicy.WrapAsync(innerPolicy);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public static class IAsyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
-        return ((AsyncPolicy<TResult>)outerPolicy).WrapAsync(innerPolicy);
+        return outerPolicy.WrapAsync(innerPolicy);
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public static class IAsyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
-        return ((AsyncPolicy<TResult>)outerPolicy).WrapAsync(innerPolicy);
+        return outerPolicy.WrapAsync(innerPolicy);
     }
 }
 
@@ -148,6 +148,7 @@ public partial class AsyncPolicy<TResult>
     }
 }
 
+#pragma warning disable S3215 // "interface" instances should not be cast to concrete types
 public partial class Policy
 {
     private const int MinimumPoliciesRequiredForWrap = 2;
@@ -181,3 +182,4 @@ public partial class Policy
             _ => WrapAsync(policies[0], WrapAsync(policies.Skip(1).ToArray())),
         };
 }
+#pragma warning restore S3215 // "interface" instances should not be cast to concrete types
