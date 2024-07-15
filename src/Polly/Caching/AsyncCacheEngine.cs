@@ -1,5 +1,4 @@
 ﻿#nullable enable
-
 namespace Polly.Caching;
 
 internal static class AsyncCacheEngine
