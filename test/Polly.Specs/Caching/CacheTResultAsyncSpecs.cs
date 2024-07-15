@@ -1,4 +1,6 @@
-﻿namespace Polly.Specs.Caching;
+﻿using System;
+
+namespace Polly.Specs.Caching;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class CacheTResultAsyncSpecs : IDisposable
@@ -237,6 +239,49 @@ public class CacheTResultAsyncSpecs : IDisposable
             null,
             null);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(Expected);
+    }
+
+    [Fact]
+    public void Should_throw_when_action_is_null()
+    {
+        IAsyncCacheProvider cacheProvider = new StubCacheProvider();
+        ITtlStrategy ttlStrategy = new ContextualTtl();
+        Func<Context, string> cacheKeyStrategyFunc = _ => string.Empty;
+        Action<Context, string> emptyDelegate = (_, _) => { };
+        Action<Context, string> nullDelegate = null!;
+
+        var action = () => Policy.CacheAsync<ResultPrimitive>(
+            cacheProvider.AsyncFor<ResultPrimitive>(),
+            ttlStrategy.For<ResultPrimitive>(),
+            cacheKeyStrategyFunc,
+            nullDelegate,
+            emptyDelegate,
+            emptyDelegate,
+            null,
+            null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("onCacheGet");
+
+        action = () => Policy.CacheAsync<ResultPrimitive>(
+            cacheProvider.AsyncFor<ResultPrimitive>(),
+            ttlStrategy.For<ResultPrimitive>(),
+            cacheKeyStrategyFunc,
+            emptyDelegate,
+            nullDelegate,
+            emptyDelegate,
+            null,
+            null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("onCacheMiss");
+
+        action = () => Policy.CacheAsync<ResultPrimitive>(
+            cacheProvider.AsyncFor<ResultPrimitive>(),
+            ttlStrategy.For<ResultPrimitive>(),
+            cacheKeyStrategyFunc,
+            emptyDelegate,
+            emptyDelegate,
+            nullDelegate,
+            null,
+            null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("onCachePut");
     }
     #endregion
 

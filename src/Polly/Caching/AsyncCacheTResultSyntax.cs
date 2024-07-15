@@ -45,6 +45,11 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheProvider));
         }
 
+        if (ttlStrategy is null)
+        {
+            throw new ArgumentNullException(nameof(ttlStrategy));
+        }
+
         return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
     }
 
@@ -126,6 +131,11 @@ public partial class Policy
         if (cacheProvider is null)
         {
             throw new ArgumentNullException(nameof(cacheProvider));
+        }
+
+        if (cacheKeyStrategy is null)
+        {
+            throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
         return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);

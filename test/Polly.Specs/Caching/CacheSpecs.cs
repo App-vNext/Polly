@@ -170,6 +170,48 @@ public class CacheSpecs : IDisposable
         policy.Should().NotBeNull();
     }
 
+    [Fact]
+    public void Should_throw_when_action_is_null()
+    {
+        ISyncCacheProvider cacheProvider = new StubCacheProvider();
+        ITtlStrategy ttlStrategy = new ContextualTtl();
+        Func<Context, string> cacheKeyStrategyFunc = _ => string.Empty;
+        Action<Context, string> emptyDelegate = (_, _) => { };
+        Action<Context, string> nullDelegate = null!;
+
+        var action = () => Policy.Cache(
+            cacheProvider,
+            ttlStrategy,
+            cacheKeyStrategyFunc,
+            nullDelegate,
+            emptyDelegate,
+            emptyDelegate,
+            null,
+            null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("onCacheGet");
+
+        action = () => Policy.Cache(
+            cacheProvider,
+            ttlStrategy,
+            cacheKeyStrategyFunc,
+            emptyDelegate,
+            nullDelegate,
+            emptyDelegate,
+            null,
+            null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("onCacheMiss");
+
+        action = () => Policy.Cache(
+            cacheProvider,
+            ttlStrategy,
+            cacheKeyStrategyFunc,
+            emptyDelegate,
+            emptyDelegate,
+            nullDelegate,
+            null,
+            null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("onCachePut");
+    }
     #endregion
 
     #region Caching behaviours
