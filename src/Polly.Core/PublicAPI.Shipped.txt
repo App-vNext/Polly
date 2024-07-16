@@ -11,14 +11,15 @@ override Polly.Registry.ResiliencePipelineRegistry<TKey>.TryGetPipeline(TKey key
 override Polly.Registry.ResiliencePipelineRegistry<TKey>.TryGetPipeline<TResult>(TKey key, out Polly.ResiliencePipeline<TResult>? pipeline) -> bool
 override Polly.ResiliencePropertyKey<TValue>.ToString() -> string!
 override Polly.Telemetry.ResilienceEvent.ToString() -> string!
-Polly.CircuitBreaker.BreakDurationGeneratorArguments
-Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments() -> void
-Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments(double failureRate, int failureCount, Polly.ResilienceContext! context) -> void
-Polly.CircuitBreaker.BreakDurationGeneratorArguments.BreakDurationGeneratorArguments(double failureRate, int failureCount, Polly.ResilienceContext! context, int halfOpenAttempts) -> void
-Polly.CircuitBreaker.BreakDurationGeneratorArguments.Context.get -> Polly.ResilienceContext!
-Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureCount.get -> int
-Polly.CircuitBreaker.BreakDurationGeneratorArguments.FailureRate.get -> double
-Polly.CircuitBreaker.BreakDurationGeneratorArguments.HalfOpenAttempts.get -> int
+Polly.CircuitBreaker.BreakDurationGeneratorArguments<TResult>
+Polly.CircuitBreaker.BreakDurationGeneratorArguments<TResult>.BreakDurationGeneratorArguments() -> void
+Polly.CircuitBreaker.BreakDurationGeneratorArguments<TResult>.BreakDurationGeneratorArguments(double failureRate, int failureCount, Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome) -> void
+Polly.CircuitBreaker.BreakDurationGeneratorArguments<TResult>.BreakDurationGeneratorArguments(double failureRate, int failureCount, Polly.ResilienceContext! context, int halfOpenAttempts, Polly.Outcome<TResult> outcome) -> void
+Polly.CircuitBreaker.BreakDurationGeneratorArguments<TResult>.Context.get -> Polly.ResilienceContext!
+Polly.CircuitBreaker.BreakDurationGeneratorArguments<TResult>.FailureCount.get -> int
+Polly.CircuitBreaker.BreakDurationGeneratorArguments<TResult>.FailureRate.get -> double
+Polly.CircuitBreaker.BreakDurationGeneratorArguments<TResult>.HalfOpenAttempts.get -> int
+Polly.CircuitBreaker.BreakDurationGeneratorArguments<TResult>.Outcome.get -> Polly.Outcome<TResult>
 Polly.CircuitBreaker.BrokenCircuitException
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException() -> void
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message) -> void
@@ -41,7 +42,7 @@ Polly.CircuitBreaker.CircuitBreakerStrategyOptions.CircuitBreakerStrategyOptions
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDuration.get -> System.TimeSpan
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDuration.set -> void
-Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDurationGenerator.get -> System.Func<Polly.CircuitBreaker.BreakDurationGeneratorArguments, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDurationGenerator.get -> System.Func<Polly.CircuitBreaker.BreakDurationGeneratorArguments<TResult>, System.Threading.Tasks.ValueTask<System.TimeSpan>>?
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.BreakDurationGenerator.set -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.CircuitBreakerStrategyOptions() -> void
 Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.FailureRatio.get -> double

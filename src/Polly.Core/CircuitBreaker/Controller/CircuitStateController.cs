@@ -16,7 +16,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly CircuitBehavior _behavior;
     private readonly TimeSpan _breakDuration;
-    private readonly Func<BreakDurationGeneratorArguments, ValueTask<TimeSpan>>? _breakDurationGenerator;
+    private readonly Func<BreakDurationGeneratorArguments<T>, ValueTask<TimeSpan>>? _breakDurationGenerator;
     private DateTimeOffset _blockedUntil;
     private CircuitState _circuitState = CircuitState.Closed;
     private Outcome<T>? _lastOutcome;
@@ -33,7 +33,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         CircuitBehavior behavior,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry,
-        Func<BreakDurationGeneratorArguments, ValueTask<TimeSpan>>? breakDurationGenerator)
+        Func<BreakDurationGeneratorArguments<T>, ValueTask<TimeSpan>>? breakDurationGenerator)
 #pragma warning restore S107
     {
         _breakDuration = breakDuration;
@@ -323,7 +323,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         {
 #pragma warning disable CA2012
 #pragma warning disable S1226
-            breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount, context, _halfOpenAttempts)).GetAwaiter().GetResult();
+            breakDuration = _breakDurationGenerator(new(_behavior.FailureRate, _behavior.FailureCount, context, _halfOpenAttempts, outcome)).GetAwaiter().GetResult();
 #pragma warning restore S1226
 #pragma warning restore CA2012
         }

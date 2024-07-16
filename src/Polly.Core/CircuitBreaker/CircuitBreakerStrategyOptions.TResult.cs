@@ -75,7 +75,7 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <value>
     /// The default value is <see langword="null"/>.
     /// </value>
-    public Func<BreakDurationGeneratorArguments, ValueTask<TimeSpan>>? BreakDurationGenerator { get; set; }
+    public Func<BreakDurationGeneratorArguments<TResult>, ValueTask<TimeSpan>>? BreakDurationGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets a predicate that determines whether the outcome should be handled by the circuit breaker.
