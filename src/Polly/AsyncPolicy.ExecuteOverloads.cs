@@ -100,23 +100,14 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     /// <returns>A <see cref="Task" /> which completes when <see cref="AsyncPolicy"/> is registered.</returns>
     [DebuggerStepThrough]
-    public async Task ExecuteAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    public Task ExecuteAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
         if (context == null)
         {
             throw new ArgumentNullException(nameof(context));
         }
 
-        SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
-
-        try
-        {
-            await ImplementationAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-        }
-        finally
-        {
-            PolicyBase.RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
-        }
+        return ExecuteInternalAsync(action, context, continueOnCapturedContext, cancellationToken);
     }
 
     #region Overloads method-generic in TResult
@@ -226,23 +217,14 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <returns>The value returned by the action.</returns>
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     [DebuggerStepThrough]
-    public async Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    public Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
         if (context == null)
         {
             throw new ArgumentNullException(nameof(context));
         }
 
-        SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
-
-        try
-        {
-            return await ImplementationAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-        }
-        finally
-        {
-            PolicyBase.RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
-        }
+        return ExecuteInternalAsync(action, context, continueOnCapturedContext, cancellationToken);
     }
 
     #endregion
@@ -349,22 +331,14 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     /// <returns>The captured result.</returns>
     [DebuggerStepThrough]
-    public async Task<PolicyResult> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
         if (context == null)
         {
             throw new ArgumentNullException(nameof(context));
         }
 
-        try
-        {
-            await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-            return PolicyResult.Successful(context);
-        }
-        catch (Exception exception)
-        {
-            return PolicyResult.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
-        }
+        return ExecuteAndCaptureInternalAsync(action, context, continueOnCapturedContext, cancellationToken);
     }
 
     #region Overloads method-generic in TResult
@@ -476,25 +450,88 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
     /// <returns>The captured result.</returns>
     /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
     [DebuggerStepThrough]
-    public async Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
     {
         if (context == null)
         {
             throw new ArgumentNullException(nameof(context));
         }
 
+        return ExecuteAndCaptureInternalAsync(action, context, continueOnCapturedContext, cancellationToken);
+    }
+
+    #endregion
+
+    #endregion
+
+    private async Task ExecuteInternalAsync(Func<Context, CancellationToken, Task> action, Context context, bool continueOnCapturedContext, CancellationToken cancellationToken)
+    {
+        SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
+
+        try
+        {
+            await ImplementationAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+        }
+        finally
+        {
+            PolicyBase.RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+        }
+    }
+
+    private async Task<TResult> ExecuteInternalAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken)
+    {
+        SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
+
+        try
+        {
+            return await ImplementationAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+        }
+        finally
+        {
+            PolicyBase.RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+        }
+    }
+
+    private async Task<PolicyResult> ExecuteAndCaptureInternalAsync(
+        Func<Context, CancellationToken, Task> action,
+        Context context,
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            return PolicyResult.Successful(context);
+        }
+        catch (Exception exception)
+        {
+            return PolicyResult.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
+        }
+    }
+
+    private async Task<PolicyResult<TResult>> ExecuteAndCaptureInternalAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        bool continueOnCapturedContext,
+        CancellationToken cancellationToken)
+    {
         try
         {
             return PolicyResult<TResult>.Successful(
-                await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext), context);
+                await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext)
+                    .ConfigureAwait(continueOnCapturedContext), context);
         }
         catch (Exception exception)
         {
             return PolicyResult<TResult>.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
         }
     }
-
-    #endregion
-
-    #endregion
 }
