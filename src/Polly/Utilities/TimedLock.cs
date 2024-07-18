@@ -32,7 +32,9 @@ internal readonly struct TimedLock : IDisposable
         if (!Monitor.TryEnter(o, timeout))
         {
 #if DEBUG
+#pragma warning disable S3971 // Do not call 'GC.SuppressFinalize'
             GC.SuppressFinalize(tl._leakDetector);
+#pragma warning restore S3971
 #endif
             throw new LockTimeoutException();
         }
