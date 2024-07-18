@@ -4,7 +4,9 @@ namespace Polly.Caching;
 /// <summary>
 /// Represents a time-to-live for a given cache item.
 /// </summary>
+#pragma warning disable CA1815 //Override equals and operator equals on value types
 public struct Ttl
+#pragma warning restore CA1815
 {
     /// <summary>
     /// The timespan for which this cache-item remains valid.
