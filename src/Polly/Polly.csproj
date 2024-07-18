@@ -8,7 +8,7 @@
     <MutationScore>70</MutationScore>
     <IncludePollyUsings>true</IncludePollyUsings>
     <NoWarn>$(NoWarn);CA1010;CA1031;CA1051;CA1062;CA1063;CA1064;CA1710;CA1716;CA1724;CA1805;CA1815;CA1816;CA2211</NoWarn>
-    <NoWarn>$(NoWarn);S2223;S3215;S4039;S4457</NoWarn>
+    <NoWarn>$(NoWarn);S2223;S3215;S4039</NoWarn>
     <!--Public API Analyzers: We do not need to fix these as it would break compatibility with released Polly versions-->
     <NoWarn>$(NoWarn);RS0037;</NoWarn>
   </PropertyGroup>
