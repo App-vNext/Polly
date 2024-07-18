@@ -16,6 +16,7 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// <returns>The value associated with the specified key.</returns>
     IsPolicy this[TKey key] { get; }
 
+#pragma warning disable CA1716 // Identifiers should not match keywords
     /// <summary>
     /// Gets the policy stored under the provided key, casting to <typeparamref name="TPolicy"/>.
     /// </summary>
@@ -23,7 +24,6 @@ public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, 
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
     /// <returns>The policy stored in the registry under the given key.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
-#pragma warning disable CA1716 // Identifiers should not match keywords
     TPolicy Get<TPolicy>(TKey key)
         where TPolicy : IsPolicy;
 #pragma warning restore CA1716
