@@ -31,7 +31,9 @@ public interface ICircuitBreakerPolicy : IsPolicy
 /// Defines properties and methods common to all circuit-breaker policies generic-typed for executions returning results of type <typeparamref name="TResult"/>.
 /// </summary>
 /// <typeparam name="TResult">The type of the result.</typeparam>
-public interface ICircuitBreakerPolicy<out TResult> : ICircuitBreakerPolicy
+#pragma warning disable S3246
+public interface ICircuitBreakerPolicy<TResult> : ICircuitBreakerPolicy
+#pragma warning restore S3246
 {
     /// <summary>
     /// Gets the last result returned from a user delegate which the circuit-breaker handled.
