@@ -12,7 +12,9 @@ public interface ITtlStrategy : ITtlStrategy<object>
 /// Defines a strategy for providing time-to-live durations for cacheable results.
 /// </summary>
 /// <typeparam name="TResult">The type of the result.</typeparam>
+#pragma warning disable S3246
 public interface ITtlStrategy<TResult>
+#pragma warning restore S3246
 {
     /// <summary>
     /// Gets a TTL for a cacheable item, given the current execution context.
