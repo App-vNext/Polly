@@ -1,5 +1,4 @@
 ﻿#nullable enable
-
 namespace Polly.NoOp;
 
 internal static partial class NoOpEngine
