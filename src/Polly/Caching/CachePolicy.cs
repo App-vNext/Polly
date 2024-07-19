@@ -4,6 +4,7 @@ namespace Polly.Caching;
 /// <summary>
 /// A cache policy that can be applied to the results of delegate executions.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public class CachePolicy : Policy, ICachePolicy
 {
     private readonly ISyncCacheProvider _syncCacheProvider;

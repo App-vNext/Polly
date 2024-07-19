@@ -3,6 +3,7 @@
 /// <summary>
 /// Extension methods for IPolicyWrap.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public static class IPolicyWrapExtension
 {
     /// <summary>

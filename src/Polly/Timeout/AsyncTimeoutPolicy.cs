@@ -3,6 +3,7 @@
 /// <summary>
 /// A timeout policy which can be applied to async delegates.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
 {
     private readonly Func<Context, TimeSpan> _timeoutProvider;

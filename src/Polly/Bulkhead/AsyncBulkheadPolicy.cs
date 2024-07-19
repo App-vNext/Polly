@@ -4,6 +4,7 @@ namespace Polly.Bulkhead;
 /// <summary>
 /// A bulkhead-isolation policy which can be applied to delegates.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public class AsyncBulkheadPolicy : AsyncPolicy, IBulkheadPolicy
 {
     private readonly SemaphoreSlim _maxParallelizationSemaphore;

@@ -4,6 +4,7 @@ namespace Polly.Caching;
 /// <summary>
 /// Defines a ttl strategy which will cache items for a TimeSpan which may be influenced by data in the execution context.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public class ContextualTtl : ITtlStrategy
 {
     /// <summary>

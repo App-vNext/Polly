@@ -1,6 +1,7 @@
 ﻿#nullable enable
 namespace Polly;
 
+#pragma warning disable CA1062 // Validate arguments of public methods
 public partial class Policy
 {
     /// <summary>

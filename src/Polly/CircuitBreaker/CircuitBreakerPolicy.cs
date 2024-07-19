@@ -3,6 +3,7 @@
 /// <summary>
 /// A circuit-breaker policy that can be applied to delegates.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public class CircuitBreakerPolicy : Policy, ICircuitBreakerPolicy
 {
     internal readonly ICircuitController<EmptyStruct> BreakerController;

@@ -5,6 +5,7 @@ namespace Polly.RateLimit;
 /// <summary>
 /// A rate-limit policy that can be applied to asynchronous delegates.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public class AsyncRateLimitPolicy : AsyncPolicy, IRateLimitPolicy
 {
     private readonly IRateLimiter _rateLimiter;
