@@ -3,6 +3,7 @@
 /// <summary>
 /// Defines extensions for configuring <see cref="PolicyWrap"/> instances on an <see cref="IAsyncPolicy"/> or <see cref="IAsyncPolicy{TResult}"/>.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public static class IAsyncPolicyPolicyWrapExtensions
 {
     /// <summary>

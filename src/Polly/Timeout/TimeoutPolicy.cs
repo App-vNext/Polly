@@ -3,6 +3,7 @@
 /// <summary>
 /// A timeout policy which can be applied to delegates.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public class TimeoutPolicy : Policy, ITimeoutPolicy
 {
     private readonly TimeoutStrategy _timeoutStrategy;

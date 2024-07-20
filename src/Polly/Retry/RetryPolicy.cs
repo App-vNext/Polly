@@ -4,6 +4,7 @@ namespace Polly.Retry;
 /// <summary>
 /// A retry policy that can be applied to synchronous delegates.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public class RetryPolicy : Policy, IRetryPolicy
 {
     private readonly Action<Exception, TimeSpan, int, Context> _onRetry;

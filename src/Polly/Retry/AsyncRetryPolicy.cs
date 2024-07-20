@@ -3,6 +3,7 @@
 /// <summary>
 /// A retry policy that can be applied to asynchronous delegates.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
 {
     private readonly Func<Exception, TimeSpan, int, Context, Task> _onRetryAsync;

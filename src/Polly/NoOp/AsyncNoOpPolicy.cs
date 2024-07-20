@@ -4,6 +4,7 @@ namespace Polly.NoOp;
 /// <summary>
 /// A noop policy that can be applied to asynchronous delegates.
 /// </summary>
+#pragma warning disable CA1062 // Validate arguments of public methods
 public class AsyncNoOpPolicy : AsyncPolicy, INoOpPolicy
 {
     internal AsyncNoOpPolicy()
