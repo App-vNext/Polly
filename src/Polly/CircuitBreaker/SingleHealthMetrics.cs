@@ -1,5 +1,4 @@
 ﻿#nullable enable
-
 namespace Polly.CircuitBreaker;
 
 internal class SingleHealthMetrics : IHealthMetrics

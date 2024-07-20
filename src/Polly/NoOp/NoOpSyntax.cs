@@ -1,5 +1,4 @@
 ﻿#nullable enable
-
 namespace Polly;
 
 public partial class Policy
