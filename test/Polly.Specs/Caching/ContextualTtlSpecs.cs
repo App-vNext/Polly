@@ -3,6 +3,14 @@
 public class ContextualTtlSpecs
 {
     [Fact]
+    public void Should_throw_when_context_is_null()
+    {
+        Context context = null!;
+        Action action = () => new ContextualTtl().GetTtl(context, null);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("context");
+    }
+
+    [Fact]
     public void Should_return_zero_if_no_value_set_on_context() =>
         new ContextualTtl().GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.Zero);
 
