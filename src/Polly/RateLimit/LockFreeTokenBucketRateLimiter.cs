@@ -13,10 +13,6 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
 
     private long _addNextTokenAtTicks;
 
-#if !NETSTANDARD2_0
-    private SpinWait _spinner = default;
-#endif
-
     /// <summary>
     /// Initializes a new instance of the <see cref="LockFreeTokenBucketRateLimiter"/> class.
     /// </summary>
@@ -109,7 +105,7 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
 #if NETSTANDARD2_0
                 Thread.Sleep(0);
 #else
-                _spinner.SpinOnce();
+                default(SpinWait).SpinOnce();
 #endif
             }
         }
