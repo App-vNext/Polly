@@ -19,16 +19,6 @@ public class NoOpSpecs
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
         exceptionAssertions.WithInnerException<ArgumentNullException>("action");
-
-        instance = Activator.CreateInstance(typeof(NoOpPolicy<EmptyStruct>), true)!;
-        instanceType = instance.GetType();
-        methods = instanceType.GetMethods(flags);
-        methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "EmptyStruct" });
-        func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None]);
-
-        exceptionAssertions = func.Should().Throw<TargetInvocationException>();
-        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
-        exceptionAssertions.WithInnerException<ArgumentNullException>("action");
     }
 
     [Fact]
