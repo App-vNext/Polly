@@ -7,7 +7,7 @@ public class NoOpTResultSpecs
     {
         var flags = BindingFlags.NonPublic | BindingFlags.Instance;
         Func<Context, CancellationToken, EmptyStruct> action = null!;
-        
+
         var instance = Activator.CreateInstance(typeof(NoOpPolicy<EmptyStruct>), true)!;
         var instanceType = instance.GetType();
         var methods = instanceType.GetMethods(flags);
