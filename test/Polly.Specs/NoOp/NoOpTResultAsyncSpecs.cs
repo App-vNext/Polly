@@ -17,7 +17,8 @@ public class NoOpTResultAsyncSpecs
 
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
-        exceptionAssertions.WithInnerException<ArgumentNullException>("action");
+        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
+            .Which.ParamName.Should().Be("action");
     }
 
     [Fact]
