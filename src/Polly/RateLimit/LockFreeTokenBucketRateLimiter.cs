@@ -13,6 +13,12 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
 
     private long _addNextTokenAtTicks;
 
+#if !NETSTANDARD2_0
+#pragma warning disable CA1805
+    private SpinWait _spinner = default;
+#pragma warning restore CA1805
+#endif
+
     /// <summary>
     /// Initializes a new instance of the <see cref="LockFreeTokenBucketRateLimiter"/> class.
     /// </summary>
@@ -105,7 +111,7 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
 #if NETSTANDARD2_0
                 Thread.Sleep(0);
 #else
-                default(SpinWait).SpinOnce();
+                _spinner.SpinOnce();
 #endif
             }
         }
