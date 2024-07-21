@@ -47,4 +47,30 @@ public class RateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase, IDis
             throw new InvalidOperationException("Unexpected policy type in test construction.");
         }
     }
+
+    [Fact]
+    public void Should_throw_when_action_is_null()
+    {
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        Func<Context, CancellationToken, EmptyStruct> action = null!;
+        IRateLimiter rateLimiter = RateLimiterFactory.Create(TimeSpan.FromSeconds(1), 1);
+        Func<TimeSpan, Context, EmptyStruct>? retryAfterFactory = null;
+
+        var instance = Activator.CreateInstance(
+            typeof(RateLimitPolicy<EmptyStruct>),
+            flags,
+            null,
+            [rateLimiter, retryAfterFactory],
+            null)!;
+        var instanceType = instance.GetType();
+        var methods = instanceType.GetMethods(flags);
+        var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "EmptyStruct" });
+
+        var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None]);
+
+        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
+        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
+            .Which.ParamName.Should().Be("action");
+    }
 }
