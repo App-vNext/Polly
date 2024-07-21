@@ -4,7 +4,6 @@ namespace Polly.NoOp;
 /// <summary>
 /// A noop policy that can be applied to asynchronous delegates.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public class AsyncNoOpPolicy : AsyncPolicy, INoOpPolicy
 {
     internal AsyncNoOpPolicy()
@@ -14,8 +13,15 @@ public class AsyncNoOpPolicy : AsyncPolicy, INoOpPolicy
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        NoOpEngine.ImplementationAsync(action, context, cancellationToken);
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return NoOpEngine.ImplementationAsync(action, context, cancellationToken);
+    }
 }
 
 /// <summary>
@@ -31,6 +37,13 @@ public class AsyncNoOpPolicy<TResult> : AsyncPolicy<TResult>, INoOpPolicy<TResul
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        NoOpEngine.ImplementationAsync(action, context, cancellationToken);
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return NoOpEngine.ImplementationAsync(action, context, cancellationToken);
+    }
 }
