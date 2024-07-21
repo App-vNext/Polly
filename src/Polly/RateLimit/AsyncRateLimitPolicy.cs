@@ -4,7 +4,6 @@ namespace Polly.RateLimit;
 /// <summary>
 /// A rate-limit policy that can be applied to asynchronous delegates.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public class AsyncRateLimitPolicy : AsyncPolicy, IRateLimitPolicy
 {
     private readonly IRateLimiter _rateLimiter;
@@ -14,9 +13,20 @@ public class AsyncRateLimitPolicy : AsyncPolicy, IRateLimitPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, null, action, context, continueOnCapturedContext, cancellationToken);
+    protected override Task<TResult> ImplementationAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, null, action, context, continueOnCapturedContext,
+            cancellationToken);
+    }
 }
 
 /// <summary>
@@ -38,7 +48,18 @@ public class AsyncRateLimitPolicy<TResult> : AsyncPolicy<TResult>, IRateLimitPol
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, _retryAfterFactory, action, context, continueOnCapturedContext, cancellationToken);
+    protected override Task<TResult> ImplementationAsync(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, _retryAfterFactory, action, context,
+            continueOnCapturedContext, cancellationToken);
+    }
 }
