@@ -54,7 +54,7 @@ public class AsyncCachePolicy : AsyncPolicy
     }
 
     /// <inheritdoc/>
-    //[DebuggerStepThrough]
+    [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
