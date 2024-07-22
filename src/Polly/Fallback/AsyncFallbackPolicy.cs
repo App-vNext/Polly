@@ -4,7 +4,6 @@ namespace Polly.Fallback;
 /// <summary>
 /// A fallback policy that can be applied to asynchronous delegates.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public class AsyncFallbackPolicy : AsyncPolicy, IFallbackPolicy
 {
     private readonly Func<Exception, Context, Task> _onFallbackAsync;
@@ -72,9 +71,18 @@ public class AsyncFallbackPolicy<TResult> : AsyncPolicy<TResult>, IFallbackPolic
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncFallbackEngine.ImplementationAsync(
+    protected override Task<TResult> ImplementationAsync(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncFallbackEngine.ImplementationAsync(
             action,
             context,
             ExceptionPredicates,
@@ -83,4 +91,5 @@ public class AsyncFallbackPolicy<TResult> : AsyncPolicy<TResult>, IFallbackPolic
             _fallbackAction,
             continueOnCapturedContext,
             cancellationToken);
+    }
 }
