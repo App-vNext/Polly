@@ -35,13 +35,13 @@ public class CacheSpecs : IDisposable
         Action<Context, string> onCachePut = (_, _) => { };
         Action<Context, string, Exception>? onCacheGetError = null;
         Action<Context, string, Exception>? onCachePutError = null;
-        const string expected = "cacheKeyStrategy";
+        const string CacheKeyStrategyExpected = "cacheKeyStrategy";
 
         Action action = () => Policy.Cache(cacheProvider, ttl, cacheKeyStrategy);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(expected);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
 
         action = () => Policy.Cache(cacheProvider, ttl, cacheKeyStrategyFunc);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(expected);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
 
         action = () => Policy.Cache(
             cacheProvider,
@@ -52,7 +52,7 @@ public class CacheSpecs : IDisposable
             onCachePut,
             onCacheGetError,
             onCachePutError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(expected);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
 
         action = () => Policy.Cache(
             cacheProvider,
@@ -63,7 +63,7 @@ public class CacheSpecs : IDisposable
             onCachePut,
             onCacheGetError,
             onCachePutError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(expected);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
     }
 
     #endregion
