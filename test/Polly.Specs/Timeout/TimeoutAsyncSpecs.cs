@@ -8,6 +8,34 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     #region Configuration
 
     [Fact]
+    public void Should_throw_when_action_is_null()
+    {
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        Func<Context, CancellationToken, Task<EmptyStruct>> action = null!;
+        Func<Context, TimeSpan> timeoutProvider = (_) => TimeSpan.Zero;
+        TimeoutStrategy timeoutStrategy = TimeoutStrategy.Optimistic;
+        Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (_, _, _, _) => Task.CompletedTask;
+
+        var instance = Activator.CreateInstance(
+            typeof(AsyncTimeoutPolicy),
+            flags,
+            null,
+            [timeoutProvider, timeoutStrategy, onTimeoutAsync],
+            null)!;
+        var instanceType = instance.GetType();
+        var methods = instanceType.GetMethods(flags);
+        var methodInfo = methods.First(method => method is { Name: "ImplementationAsync", ReturnType.Name: "Task`1" });
+        var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
+
+        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None, false]);
+
+        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
+        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
+            .Which.ParamName.Should().Be("action");
+    }
+
+    [Fact]
     public void Should_throw_when_timeout_is_zero_by_timespan()
     {
         Action policy = () => Policy.TimeoutAsync(TimeSpan.Zero);

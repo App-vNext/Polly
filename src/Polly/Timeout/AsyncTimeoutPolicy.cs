@@ -3,7 +3,6 @@
 /// <summary>
 /// A timeout policy which can be applied to async delegates.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
 {
     private readonly Func<Context, TimeSpan> _timeoutProvider;
@@ -26,8 +25,14 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncTimeoutEngine.ImplementationAsync(
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncTimeoutEngine.ImplementationAsync(
             action,
             context,
             _timeoutProvider,
@@ -35,6 +40,7 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
             _onTimeoutAsync,
             continueOnCapturedContext,
             cancellationToken);
+    }
 }
 
 /// <summary>
@@ -63,8 +69,14 @@ public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncTimeoutEngine.ImplementationAsync(
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncTimeoutEngine.ImplementationAsync(
             action,
             context,
             _timeoutProvider,
@@ -72,4 +84,5 @@ public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<
             _onTimeoutAsync,
             continueOnCapturedContext,
             cancellationToken);
+    }
 }
