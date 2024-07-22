@@ -6,6 +6,49 @@ public class CacheTResultSpecs : IDisposable
     #region Configuration
 
     [Fact]
+    public void Should_throw_when_action_is_null()
+    {
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        Func<Context, CancellationToken, EmptyStruct> action = null!;
+        Action<Context, CancellationToken> actionVoid = null;
+
+        ISyncCacheProvider<EmptyStruct> syncCacheProvider = new StubCacheProvider().For<EmptyStruct>();
+        ITtlStrategy<EmptyStruct> ttlStrategy = new ContextualTtl().For<EmptyStruct>();
+        Func<Context, string> cacheKeyStrategy = (_) => string.Empty;
+        Action<Context, string> onCacheGet = (_, _) => { };
+        Action<Context, string> onCacheMiss = (_, _) => { };
+        Action<Context, string> onCachePut = (_, _) => { };
+        Action<Context, string, Exception>? onCacheGetError = null;
+        Action<Context, string, Exception>? onCachePutError = null;
+
+        var instance = Activator.CreateInstance(
+            typeof(CachePolicy<EmptyStruct>),
+            flags,
+            null,
+            [
+                syncCacheProvider,
+                ttlStrategy,
+                cacheKeyStrategy,
+                onCacheGet,
+                onCacheMiss,
+                onCachePut,
+                onCacheGetError,
+                onCachePutError,
+            ],
+            null)!;
+        var instanceType = instance.GetType();
+        var methods = instanceType.GetMethods(flags);
+        var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "EmptyStruct" });
+
+        var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None]);
+
+        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
+        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
+            .Which.ParamName.Should().Be("action");
+    }
+
+    [Fact]
     public void Should_throw_when_cache_provider_is_null()
     {
         ISyncCacheProvider cacheProvider = null!;
