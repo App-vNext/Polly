@@ -24,7 +24,12 @@ public class AsyncRateLimitPolicy : AsyncPolicy, IRateLimitPolicy
             throw new ArgumentNullException(nameof(action));
         }
 
-        return AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, null, action, context, continueOnCapturedContext,
+        return AsyncRateLimitEngine.ImplementationAsync(
+            _rateLimiter,
+            null,
+            action,
+            context,
+            continueOnCapturedContext,
             cancellationToken);
     }
 }
@@ -59,7 +64,12 @@ public class AsyncRateLimitPolicy<TResult> : AsyncPolicy<TResult>, IRateLimitPol
             throw new ArgumentNullException(nameof(action));
         }
 
-        return AsyncRateLimitEngine.ImplementationAsync(_rateLimiter, _retryAfterFactory, action, context,
-            continueOnCapturedContext, cancellationToken);
+        return AsyncRateLimitEngine.ImplementationAsync(
+            _rateLimiter,
+            _retryAfterFactory,
+            action,
+            context,
+            continueOnCapturedContext,
+            cancellationToken);
     }
 }
