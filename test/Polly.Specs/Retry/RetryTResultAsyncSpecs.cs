@@ -2,7 +2,7 @@
 
 namespace Polly.Specs.Retry;
 
-public class RetryTResultSpecsAsync
+public class RetryTResultAsyncSpecs
 {
     [Fact]
     public void Should_throw_when_action_is_null()

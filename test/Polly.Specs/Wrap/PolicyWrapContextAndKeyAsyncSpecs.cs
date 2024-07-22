@@ -1,7 +1,7 @@
 ﻿namespace Polly.Specs.Wrap;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
-public class PolicyWrapContextAndKeySpecsAsync
+public class PolicyWrapContextAndKeyAsyncSpecs
 {
     #region PolicyKey and execution Context tests
 
@@ -188,7 +188,7 @@ public class PolicyWrapContextAndKeySpecsAsync
 }
 
 [Collection(Constants.SystemClockDependentTestCollection)]
-public class PolicyWrapTResultContextAndKeySpecsAsync
+public class PolicyWrapTResultContextAndKeyAsyncSpecs
 {
     #region PolicyKey and execution Context tests
 
