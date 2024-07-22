@@ -5,6 +5,36 @@ namespace Polly.Specs.Retry;
 public class RetryAsyncSpecs
 {
     [Fact]
+    public void Should_throw_when_action_is_null()
+    {
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        Func<Context, CancellationToken, Task<EmptyStruct>> action = null!;
+        var policyBuilder = new PolicyBuilder(exception => exception);
+        Func<Exception, TimeSpan, int, Context, Task> onRetryAsync = (_, _, _, _) => Task.CompletedTask;
+        int permittedRetryCount = int.MaxValue;
+        IEnumerable<TimeSpan>? sleepDurationsEnumerable = null;
+        Func<int, Exception, Context, TimeSpan> sleepDurationProvider = null!;
+
+        var instance = Activator.CreateInstance(
+            typeof(AsyncRetryPolicy),
+            flags,
+            null,
+            [policyBuilder, onRetryAsync, permittedRetryCount, sleepDurationsEnumerable, sleepDurationProvider],
+            null)!;
+        var instanceType = instance.GetType();
+        var methods = instanceType.GetMethods(flags);
+        var methodInfo = methods.First(method => method is { Name: "ImplementationAsync", ReturnType.Name: "Task`1" });
+        var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
+
+        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None, false]);
+
+        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
+        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
+            .Which.ParamName.Should().Be("action");
+    }
+
+    [Fact]
     public void Should_throw_when_retry_count_is_less_than_zero_without_context()
     {
         Action<Exception, int> onRetry = (_, _) => { };

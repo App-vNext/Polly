@@ -4,7 +4,6 @@ namespace Polly.Retry;
 /// <summary>
 /// A retry policy that can be applied to synchronous delegates.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public class RetryPolicy : Policy, IRetryPolicy
 {
     private readonly Action<Exception, TimeSpan, int, Context> _onRetry;
@@ -29,6 +28,11 @@ public class RetryPolicy : Policy, IRetryPolicy
     /// <inheritdoc/>
     protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
     {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
         var sleepDurationProvider = _sleepDurationProvider != null
             ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
             : (Func<int, DelegateResult<TResult>, Context, TimeSpan>?)null;
@@ -72,8 +76,14 @@ public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        RetryEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return RetryEngine.Implementation(
             action,
             context,
             ExceptionPredicates,
@@ -83,4 +93,5 @@ public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
             _permittedRetryCount,
             _sleepDurationsEnumerable,
             _sleepDurationProvider);
+    }
 }

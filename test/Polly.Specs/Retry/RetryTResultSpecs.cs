@@ -5,6 +5,35 @@ namespace Polly.Specs.Retry;
 public class RetryTResultSpecs
 {
     [Fact]
+    public void Should_throw_when_action_is_null()
+    {
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        Func<Context, CancellationToken, EmptyStruct> action = null!;
+        var policyBuilder = new PolicyBuilder<EmptyStruct>(exception => exception);
+        Action<DelegateResult<EmptyStruct>, TimeSpan, int, Context> onRetry = (_, _, _, _) => { };
+        int permittedRetryCount = int.MaxValue;
+        IEnumerable<TimeSpan>? sleepDurationsEnumerable = null;
+        Func<int, DelegateResult<EmptyStruct>, Context, TimeSpan>? sleepDurationProvider = null;
+
+        var instance = Activator.CreateInstance(
+            typeof(RetryPolicy<EmptyStruct>),
+            flags,
+            null,
+            [policyBuilder, onRetry, permittedRetryCount, sleepDurationsEnumerable, sleepDurationProvider],
+            null)!;
+        var instanceType = instance.GetType();
+        var methods = instanceType.GetMethods(flags);
+        var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "EmptyStruct" });
+
+        var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None]);
+
+        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
+        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
+            .Which.ParamName.Should().Be("action");
+    }
+
+    [Fact]
     public void Should_throw_when_retry_count_is_less_than_zero_without_context()
     {
         Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { };
