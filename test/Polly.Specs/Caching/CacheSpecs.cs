@@ -26,9 +26,44 @@ public class CacheSpecs : IDisposable
     public void Should_throw_when_cache_key_strategy_is_null()
     {
         ISyncCacheProvider cacheProvider = new StubCacheProvider();
-        Func<Context, string> cacheKeyStrategy = null!;
-        Action action = () => Policy.Cache(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
+        var ttl = TimeSpan.MaxValue;
+        ITtlStrategy ttlStrategy = new ContextualTtl();
+        ICacheKeyStrategy cacheKeyStrategy = null!;
+        Func<Context, string> cacheKeyStrategyFunc = null!;
+        Action<Context, string> onCacheGet = (_, _) => { };
+        Action<Context, string> onCacheMiss = (_, _) => { };
+        Action<Context, string> onCachePut = (_, _) => { };
+        Action<Context, string, Exception>? onCacheGetError = null;
+        Action<Context, string, Exception>? onCachePutError = null;
+        const string expected = "cacheKeyStrategy";
+
+        Action action = () => Policy.Cache(cacheProvider, ttl, cacheKeyStrategy);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(expected);
+
+        action = () => Policy.Cache(cacheProvider, ttl, cacheKeyStrategyFunc);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(expected);
+
+        action = () => Policy.Cache(
+            cacheProvider,
+            ttl,
+            cacheKeyStrategy,
+            onCacheGet,
+            onCacheMiss,
+            onCachePut,
+            onCacheGetError,
+            onCachePutError);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(expected);
+
+        action = () => Policy.Cache(
+            cacheProvider,
+            ttlStrategy,
+            cacheKeyStrategy,
+            onCacheGet,
+            onCacheMiss,
+            onCachePut,
+            onCacheGetError,
+            onCachePutError);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(expected);
     }
 
     #endregion
