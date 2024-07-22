@@ -3,7 +3,6 @@
 /// <summary>
 /// Defines extensions for configuring <see cref="PolicyWrap"/> instances on an <see cref="IAsyncPolicy"/> or <see cref="IAsyncPolicy{TResult}"/>.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public static class IAsyncPolicyPolicyWrapExtensions
 {
     /// <summary>
@@ -159,13 +158,21 @@ public partial class Policy
     /// <param name="policies">The policies to place in the wrap, outermost (at left) to innermost (at right).</param>
     /// <returns>The PolicyWrap.</returns>
     /// <exception cref="ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
-    public static AsyncPolicyWrap WrapAsync(params IAsyncPolicy[] policies) =>
-        policies.Length switch
+    public static AsyncPolicyWrap WrapAsync(params IAsyncPolicy[] policies)
+    {
+        if (policies is null)
         {
-            < MinimumPoliciesRequiredForWrap => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
+            throw new ArgumentNullException(nameof(policies));
+        }
+
+        return policies.Length switch
+        {
+            < MinimumPoliciesRequiredForWrap => throw new ArgumentException(
+                "The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
             MinimumPoliciesRequiredForWrap => new AsyncPolicyWrap((AsyncPolicy)policies[0], policies[1]),
             _ => WrapAsync(policies[0], WrapAsync(policies.Skip(1).ToArray())),
         };
+    }
 
     /// <summary>
     /// Creates a <see cref="PolicyWrap" /> of the given policies governing delegates returning values of type <typeparamref name="TResult" />.
@@ -174,11 +181,20 @@ public partial class Policy
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     /// <returns>The PolicyWrap.</returns>
     /// <exception cref="ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
-    public static AsyncPolicyWrap<TResult> WrapAsync<TResult>(params IAsyncPolicy<TResult>[] policies) =>
-        policies.Length switch
+    public static AsyncPolicyWrap<TResult> WrapAsync<TResult>(params IAsyncPolicy<TResult>[] policies)
+    {
+        if (policies is null)
         {
-            < MinimumPoliciesRequiredForWrap => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
-            MinimumPoliciesRequiredForWrap => new AsyncPolicyWrap<TResult>((AsyncPolicy<TResult>)policies[0], policies[1]),
+            throw new ArgumentNullException(nameof(policies));
+        }
+
+        return policies.Length switch
+        {
+            < MinimumPoliciesRequiredForWrap => throw new ArgumentException(
+                "The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
+            MinimumPoliciesRequiredForWrap => new AsyncPolicyWrap<TResult>((AsyncPolicy<TResult>)policies[0],
+                policies[1]),
             _ => WrapAsync(policies[0], WrapAsync(policies.Skip(1).ToArray())),
         };
+    }
 }
