@@ -3,7 +3,6 @@
 /// <summary>
 /// A timeout policy which can be applied to delegates.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public class TimeoutPolicy : Policy, ITimeoutPolicy
 {
     private readonly TimeoutStrategy _timeoutStrategy;
@@ -22,14 +21,21 @@ public class TimeoutPolicy : Policy, ITimeoutPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        TimeoutEngine.Implementation(
+    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return TimeoutEngine.Implementation(
             action,
             context,
             _timeoutProvider,
             _timeoutStrategy,
             _onTimeout,
             cancellationToken);
+    }
 }
 
 /// <summary>
@@ -53,12 +59,19 @@ public class TimeoutPolicy<TResult> : Policy<TResult>, ITimeoutPolicy<TResult>
     }
 
     /// <inheritdoc/>
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        TimeoutEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return TimeoutEngine.Implementation(
             action,
             context,
             _timeoutProvider,
             _timeoutStrategy,
             _onTimeout,
             cancellationToken);
+    }
 }

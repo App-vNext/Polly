@@ -6,6 +6,34 @@ public class TimeoutSpecs : TimeoutSpecsBase
     #region Configuration
 
     [Fact]
+    public void Should_throw_when_action_is_null()
+    {
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        Func<Context, CancellationToken, EmptyStruct> action = null!;
+        Func<Context, TimeSpan> timeoutProvider = (_) => TimeSpan.Zero;
+        TimeoutStrategy timeoutStrategy = TimeoutStrategy.Optimistic;
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, _) => { };
+
+        var instance = Activator.CreateInstance(
+            typeof(TimeoutPolicy),
+            flags,
+            null,
+            [timeoutProvider, timeoutStrategy, onTimeout],
+            null)!;
+        var instanceType = instance.GetType();
+        var methods = instanceType.GetMethods(flags);
+        var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "TResult" });
+        var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
+
+        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None]);
+
+        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
+        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
+            .Which.ParamName.Should().Be("action");
+    }
+
+    [Fact]
     public void Should_throw_when_timeout_is_zero_by_timespan()
     {
         Action policy = () => Policy.Timeout(TimeSpan.Zero);
