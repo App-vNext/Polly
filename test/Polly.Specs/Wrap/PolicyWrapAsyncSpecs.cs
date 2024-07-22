@@ -1,7 +1,7 @@
 ﻿namespace Polly.Specs.Wrap;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
-public class PolicyWrapSpecsAsync
+public class PolicyWrapAsyncSpecs
 {
     #region Instance configuration syntax tests, non-generic outer
 
