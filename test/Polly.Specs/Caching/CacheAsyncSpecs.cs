@@ -26,9 +26,44 @@ public class CacheAsyncSpecs : IDisposable
     public void Should_throw_when_cache_key_strategy_is_null()
     {
         IAsyncCacheProvider cacheProvider = new StubCacheProvider();
-        Func<Context, string> cacheKeyStrategy = null!;
-        Action action = () => Policy.CacheAsync(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
+        var ttl = TimeSpan.MaxValue;
+        ITtlStrategy ttlStrategy = new ContextualTtl();
+        ICacheKeyStrategy cacheKeyStrategy = null!;
+        Func<Context, string> cacheKeyStrategyFunc = null!;
+        Action<Context, string> onCacheGet = (_, _) => { };
+        Action<Context, string> onCacheMiss = (_, _) => { };
+        Action<Context, string> onCachePut = (_, _) => { };
+        Action<Context, string, Exception>? onCacheGetError = (_, _, _) => { };
+        Action<Context, string, Exception>? onCachePutError = (_, _, _) => { };
+        const string CacheKeyStrategyExpected = "cacheKeyStrategy";
+
+        Action action = () => Policy.CacheAsync(cacheProvider, ttl, cacheKeyStrategy);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+
+        action = () => Policy.CacheAsync(cacheProvider, ttl, cacheKeyStrategyFunc);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+
+        action = () => Policy.CacheAsync(
+            cacheProvider,
+            ttl,
+            cacheKeyStrategy,
+            onCacheGet,
+            onCacheMiss,
+            onCachePut,
+            onCacheGetError,
+            onCachePutError);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+
+        action = () => Policy.CacheAsync(
+            cacheProvider,
+            ttlStrategy,
+            cacheKeyStrategy,
+            onCacheGet,
+            onCacheMiss,
+            onCachePut,
+            onCacheGetError,
+            onCachePutError);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
     }
 
     #endregion
