@@ -31,6 +31,19 @@ public class CacheSpecs : IDisposable
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
     }
 
+    [Fact]
+    public void Should_throw_when_policies_is_null()
+    {
+        ISyncPolicy[] policies = null!;
+        ISyncPolicy<int>[] policiesGeneric = null!;
+
+        Action action = () => Policy.Wrap(policies);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("policies");
+
+        action = () => Policy.Wrap<int>(policiesGeneric);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("policies");
+    }
+
     #endregion
 
     #region Caching behaviours
