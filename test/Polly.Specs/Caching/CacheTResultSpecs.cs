@@ -10,7 +10,7 @@ public class CacheTResultSpecs : IDisposable
     {
         var flags = BindingFlags.NonPublic | BindingFlags.Instance;
         Func<Context, CancellationToken, EmptyStruct> action = null!;
-        Action<Context, CancellationToken> actionVoid = null;
+        Action<Context, CancellationToken> actionVoid = null!;
 
         ISyncCacheProvider<EmptyStruct> syncCacheProvider = new StubCacheProvider().For<EmptyStruct>();
         ITtlStrategy<EmptyStruct> ttlStrategy = new ContextualTtl().For<EmptyStruct>();
