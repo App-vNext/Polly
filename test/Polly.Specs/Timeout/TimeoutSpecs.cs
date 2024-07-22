@@ -12,7 +12,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Func<Context, CancellationToken, EmptyStruct> action = null!;
         Func<Context, TimeSpan> timeoutProvider = (_) => TimeSpan.Zero;
         TimeoutStrategy timeoutStrategy = TimeoutStrategy.Optimistic;
-        Action<Context, TimeSpan, Task, Exception> onTimeout = (_ , _, _, _) => {};
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, _) => { };
 
         var instance = Activator.CreateInstance(
             typeof(TimeoutPolicy),
