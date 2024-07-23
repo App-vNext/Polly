@@ -4,7 +4,6 @@ namespace Polly.Caching;
 /// <summary>
 /// A cache policy that can be applied to the results of delegate executions.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public class CachePolicy : Policy, ICachePolicy
 {
     private readonly ISyncCacheProvider _syncCacheProvider;
@@ -39,14 +38,27 @@ public class CachePolicy : Policy, ICachePolicy
     }
 
     /// <inheritdoc/>
-    protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken) // Pass-through/NOOP policy action, for void-returning calls through a cache policy.
-        =>
-            action(context, cancellationToken);
+    protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
+    {
+        // Pass-through/NOOP policy action, for void-returning calls through a cache policy.
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        action(context, cancellationToken);
+    }
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        CacheEngine.Implementation<TResult>(
+    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return CacheEngine.Implementation<TResult>(
             _syncCacheProvider.For<TResult>(),
             _ttlStrategy.For<TResult>(),
             _cacheKeyStrategy,
@@ -58,6 +70,7 @@ public class CachePolicy : Policy, ICachePolicy
             _onCacheGetError,
             _onCachePutError,
             cancellationToken);
+    }
 }
 
 /// <summary>
@@ -99,8 +112,14 @@ public class CachePolicy<TResult> : Policy<TResult>, ICachePolicy<TResult>
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        CacheEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return CacheEngine.Implementation(
             _syncCacheProvider,
             _ttlStrategy,
             _cacheKeyStrategy,
@@ -112,4 +131,5 @@ public class CachePolicy<TResult> : Policy<TResult>, ICachePolicy<TResult>
             _onCacheGetError,
             _onCachePutError,
             cancellationToken);
+    }
 }
