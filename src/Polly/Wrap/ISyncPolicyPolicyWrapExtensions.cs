@@ -3,7 +3,6 @@
 /// <summary>
 /// Defines extensions for configuring <see cref="PolicyWrap"/> instances on an <see cref="ISyncPolicy"/> or <see cref="ISyncPolicy{TResult}"/>.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public static class ISyncPolicyPolicyWrapExtensions
 {
     /// <summary>
@@ -157,13 +156,21 @@ public partial class Policy
     /// <param name="policies">The policies to place in the wrap, outermost (at left) to innermost (at right).</param>
     /// <returns>The PolicyWrap.</returns>
     /// <exception cref="ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
-    public static PolicyWrap Wrap(params ISyncPolicy[] policies) =>
-        policies.Length switch
+    public static PolicyWrap Wrap(params ISyncPolicy[] policies)
+    {
+        if (policies is null)
         {
-            < MinimumPoliciesRequiredForWrap => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
+            throw new ArgumentNullException(nameof(policies));
+        }
+
+        return policies.Length switch
+        {
+            < MinimumPoliciesRequiredForWrap => throw new ArgumentException(
+                "The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
             MinimumPoliciesRequiredForWrap => new PolicyWrap((Policy)policies[0], policies[1]),
             _ => Wrap(policies[0], Wrap(policies.Skip(1).ToArray())),
         };
+    }
 
     /// <summary>
     /// Creates a <see cref="PolicyWrap" /> of the given policies governing delegates returning values of type <typeparamref name="TResult" />.
@@ -172,11 +179,19 @@ public partial class Policy
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     /// <returns>The PolicyWrap.</returns>
     /// <exception cref="ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
-    public static PolicyWrap<TResult> Wrap<TResult>(params ISyncPolicy<TResult>[] policies) =>
-        policies.Length switch
+    public static PolicyWrap<TResult> Wrap<TResult>(params ISyncPolicy<TResult>[] policies)
+    {
+        if (policies is null)
         {
-            < MinimumPoliciesRequiredForWrap => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
+            throw new ArgumentNullException(nameof(policies));
+        }
+
+        return policies.Length switch
+        {
+            < MinimumPoliciesRequiredForWrap => throw new ArgumentException(
+                "The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
             MinimumPoliciesRequiredForWrap => new PolicyWrap<TResult>((Policy<TResult>)policies[0], policies[1]),
             _ => Wrap(policies[0], Wrap(policies.Skip(1).ToArray())),
         };
+    }
 }
