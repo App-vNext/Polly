@@ -302,6 +302,18 @@ public class CacheAsyncSpecs : IDisposable
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
     }
 
+    [Fact]
+    public void Should_throw_when_policies_is_null()
+    {
+        IAsyncPolicy[] policies = null!;
+        IAsyncPolicy<int>[] policiesGeneric = null!;
+
+        Action action = () => Policy.WrapAsync(policies);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("policies");
+
+        action = () => Policy.WrapAsync<int>(policiesGeneric);
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("policies");
+    }
     #endregion
 
     #region Caching behaviours
