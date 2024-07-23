@@ -4,7 +4,6 @@ namespace Polly.Bulkhead;
 /// <summary>
 /// A bulkhead-isolation policy which can be applied to delegates.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public class AsyncBulkheadPolicy : AsyncPolicy, IBulkheadPolicy
 {
     private readonly SemaphoreSlim _maxParallelizationSemaphore;
@@ -35,9 +34,26 @@ public class AsyncBulkheadPolicy : AsyncPolicy, IBulkheadPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncBulkheadEngine.ImplementationAsync(action, context, _onBulkheadRejectedAsync, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, continueOnCapturedContext, cancellationToken);
+    protected override Task<TResult> ImplementationAsync<TResult>(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncBulkheadEngine.ImplementationAsync(
+            action,
+            context,
+            _onBulkheadRejectedAsync,
+            _maxParallelizationSemaphore,
+            _maxQueuedActionsSemaphore,
+            continueOnCapturedContext,
+            cancellationToken);
+    }
 
     /// <inheritdoc/>
     public void Dispose()
@@ -71,8 +87,26 @@ public class AsyncBulkheadPolicy<TResult> : AsyncPolicy<TResult>, IBulkheadPolic
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
-        AsyncBulkheadEngine.ImplementationAsync(action, context, _onBulkheadRejectedAsync, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, continueOnCapturedContext, cancellationToken);
+    protected override Task<TResult> ImplementationAsync(
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return AsyncBulkheadEngine.ImplementationAsync(
+            action,
+            context,
+            _onBulkheadRejectedAsync,
+            _maxParallelizationSemaphore,
+            _maxQueuedActionsSemaphore,
+            continueOnCapturedContext,
+            cancellationToken);
+    }
 
     /// <summary>
     /// Gets the number of slots currently available for executing actions through the bulkhead.
