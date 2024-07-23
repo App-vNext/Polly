@@ -239,8 +239,15 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        return Cache(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss,
-            onCachePut, onCacheGetError, onCachePutError);
+        return Cache(
+            cacheProvider,
+            new RelativeTtl(ttl),
+            cacheKeyStrategy.GetCacheKey,
+            onCacheGet,
+            onCacheMiss,
+            onCachePut,
+            onCacheGetError,
+            onCachePutError);
     }
 
     /// <summary>
@@ -279,8 +286,15 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut,
-            onCacheGetError, onCachePutError);
+        return Cache(
+            cacheProvider,
+            ttlStrategy,
+            cacheKeyStrategy.GetCacheKey,
+            onCacheGet,
+            onCacheMiss,
+            onCachePut,
+            onCacheGetError,
+            onCachePutError);
     }
 
     /// <summary>
