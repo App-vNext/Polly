@@ -6,6 +6,59 @@ public class CacheAsyncSpecs : IDisposable
     #region Configuration
 
     [Fact]
+    public void Should_throw_when_action_is_null()
+    {
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        Func<Context, CancellationToken, Task<EmptyStruct>> action = null!;
+        Func<Context, CancellationToken, Task> actionVoid = null!;
+
+        IAsyncCacheProvider asyncCacheProvider = new StubCacheProvider();
+        ITtlStrategy ttlStrategy = new ContextualTtl();
+        Func<Context, string> cacheKeyStrategy = (_) => string.Empty;
+        Action<Context, string> onCacheGet = (_, _) => { };
+        Action<Context, string> onCacheMiss = (_, _) => { };
+        Action<Context, string> onCachePut = (_, _) => { };
+        Action<Context, string, Exception>? onCacheGetError = null;
+        Action<Context, string, Exception>? onCachePutError = null;
+
+        var instance = Activator.CreateInstance(
+            typeof(AsyncCachePolicy),
+            flags,
+            null,
+            [
+                asyncCacheProvider,
+                ttlStrategy,
+                cacheKeyStrategy,
+                onCacheGet,
+                onCacheMiss,
+                onCachePut,
+                onCacheGetError,
+                onCachePutError,
+            ],
+            null)!;
+        var instanceType = instance.GetType();
+        var methods = instanceType.GetMethods(flags);
+        var methodInfo = methods.First(method => method is { Name: "ImplementationAsync", ReturnType.Name: "Task`1" });
+        var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
+
+        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None, false]);
+
+        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
+        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
+            .Which.ParamName.Should().Be("action");
+
+        methodInfo = methods.First(method => method is { Name: "ImplementationAsync", ReturnType.Name: "Task" });
+
+        func = () => methodInfo.Invoke(instance, [actionVoid, new Context(), CancellationToken.None, false]);
+
+        exceptionAssertions = func.Should().Throw<TargetInvocationException>();
+        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
+            .Which.ParamName.Should().Be("action");
+    }
+
+    [Fact]
     public void Should_throw_when_cache_provider_is_null()
     {
         IAsyncCacheProvider cacheProvider = null!;
