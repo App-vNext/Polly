@@ -8,6 +8,43 @@ public class CircuitBreakerTResultSpecs : IDisposable
     #region Configuration tests
 
     [Fact]
+    public void Should_throw_when_action_is_null()
+    {
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        Func<Context, CancellationToken, EmptyStruct> action = null!;
+        PolicyBuilder<EmptyStruct> policyBuilder = new PolicyBuilder<EmptyStruct>(exception => exception);
+
+        var exceptionsAllowedBeforeBreaking = 1;
+        var durationOfBreak = TimeSpan.Zero;
+        Action<DelegateResult<EmptyStruct>, CircuitState, TimeSpan, Context> onBreak = null!;
+        Action<Context> onReset = null!;
+        Action onHalfOpen = null!;
+        ICircuitController<EmptyStruct> breakerController = new ConsecutiveCountCircuitController<EmptyStruct>(
+            exceptionsAllowedBeforeBreaking,
+            durationOfBreak,
+            onBreak,
+            onReset,
+            onHalfOpen);
+
+        var instance = Activator.CreateInstance(
+            typeof(CircuitBreakerPolicy<EmptyStruct>),
+            flags,
+            null,
+            [policyBuilder, breakerController],
+            null)!;
+        var instanceType = instance.GetType();
+        var methods = instanceType.GetMethods(flags);
+        var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "EmptyStruct" });
+
+        var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None]);
+
+        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
+        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
+            .Which.ParamName.Should().Be("action");
+    }
+
+    [Fact]
     public void Should_be_able_to_handle_a_duration_of_timespan_maxvalue()
     {
         CircuitBreakerPolicy<ResultPrimitive> breaker = Policy

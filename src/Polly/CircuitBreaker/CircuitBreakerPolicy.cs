@@ -3,7 +3,6 @@
 /// <summary>
 /// A circuit-breaker policy that can be applied to delegates.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public class CircuitBreakerPolicy : Policy, ICircuitBreakerPolicy
 {
     internal readonly ICircuitController<EmptyStruct> BreakerController;
@@ -98,12 +97,19 @@ public class CircuitBreakerPolicy<TResult> : Policy<TResult>, ICircuitBreakerPol
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        CircuitBreakerEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return CircuitBreakerEngine.Implementation(
             action,
             context,
             ExceptionPredicates,
             ResultPredicates,
             BreakerController,
             cancellationToken);
+    }
 }
