@@ -3,7 +3,6 @@
 /// <summary>
 /// Extension methods for IPolicyWrap.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public static class IPolicyWrapExtension
 {
     /// <summary>
@@ -13,21 +12,12 @@ public static class IPolicyWrapExtension
     /// <returns>An <see cref="IEnumerable{IsPolicy}"/> of all the policies in the wrap.</returns>
     public static IEnumerable<IsPolicy> GetPolicies(this IPolicyWrap policyWrap)
     {
-        var childPolicies = new[] { policyWrap.Outer, policyWrap.Inner };
-        foreach (var childPolicy in childPolicies)
+        if (policyWrap is null)
         {
-            if (childPolicy is IPolicyWrap anotherWrap)
-            {
-                foreach (var policy in anotherWrap.GetPolicies())
-                {
-                    yield return policy;
-                }
-            }
-            else if (childPolicy != null)
-            {
-                yield return childPolicy;
-            }
+            throw new ArgumentNullException(nameof(policyWrap));
         }
+
+        return GetPoliciesIterator(policyWrap);
     }
 
     /// <summary>
@@ -82,5 +72,24 @@ public static class IPolicyWrapExtension
         }
 
         return policyWrap.GetPolicies().OfType<TPolicy>().SingleOrDefault(filter);
+    }
+
+    private static IEnumerable<IsPolicy> GetPoliciesIterator(IPolicyWrap policyWrap)
+    {
+        var childPolicies = new[] { policyWrap.Outer, policyWrap.Inner };
+        foreach (var childPolicy in childPolicies)
+        {
+            if (childPolicy is IPolicyWrap anotherWrap)
+            {
+                foreach (var policy in anotherWrap.GetPolicies())
+                {
+                    yield return policy;
+                }
+            }
+            else if (childPolicy != null)
+            {
+                yield return childPolicy;
+            }
+        }
     }
 }

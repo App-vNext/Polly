@@ -3,6 +3,15 @@
 public class IPolicyWrapExtensionSpecs
 {
     [Fact]
+    public void Should_throw_when_policy_wrap_is_null()
+    {
+        IPolicyWrap policyWrap = null!;
+
+        var action = () => policyWrap.GetPolicies();
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("policyWrap");
+    }
+
+    [Fact]
     public void Should_pass_all_nested_policies_from_PolicyWrap_in_same_order_they_were_added()
     {
         NoOpPolicy policy0 = Policy.NoOp();
