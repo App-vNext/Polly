@@ -4,7 +4,6 @@ namespace Polly.Bulkhead;
 /// <summary>
 /// A bulkhead-isolation policy which can be applied to delegates.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public class BulkheadPolicy : Policy, IBulkheadPolicy
 {
     private readonly SemaphoreSlim _maxParallelizationSemaphore;
@@ -25,8 +24,21 @@ public class BulkheadPolicy : Policy, IBulkheadPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
+    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return BulkheadEngine.Implementation(
+            action,
+            context,
+            _onBulkheadRejected,
+            _maxParallelizationSemaphore,
+            _maxQueuedActionsSemaphore,
+            cancellationToken);
+    }
 
     /// <summary>
     /// Gets the number of slots currently available for executing actions through the bulkhead.
@@ -73,8 +85,20 @@ public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return BulkheadEngine.Implementation(
+            action,
+            context,
+            _onBulkheadRejected,
+            _maxParallelizationSemaphore,
+            _maxQueuedActionsSemaphore, cancellationToken);
+    }
 
     /// <summary>
     /// Gets the number of slots currently available for executing actions through the bulkhead.
