@@ -7,6 +7,33 @@ public class FallbackTResultSpecs
     #region Configuration guard condition tests
 
     [Fact]
+    public void Should_throw_when_action_is_null()
+    {
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        Func<Context, CancellationToken, EmptyStruct> action = null!;
+        PolicyBuilder<EmptyStruct> policyBuilder = new PolicyBuilder<EmptyStruct>(exception => exception);
+        Action<DelegateResult<EmptyStruct>, Context> onFallback = (_, _) => { };
+        Func<DelegateResult<EmptyStruct>, Context, CancellationToken, EmptyStruct> fallbackAction = (_, _, _) => EmptyStruct.Instance;
+
+        var instance = Activator.CreateInstance(
+            typeof(FallbackPolicy<EmptyStruct>),
+            flags,
+            null,
+            [policyBuilder, onFallback, fallbackAction],
+            null)!;
+        var instanceType = instance.GetType();
+        var methods = instanceType.GetMethods(flags);
+        var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "EmptyStruct" });
+
+        var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None]);
+
+        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
+        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
+            .Which.ParamName.Should().Be("action");
+    }
+
+    [Fact]
     public void Should_throw_when_fallback_action_is_null()
     {
         Func<ResultPrimitive> fallbackAction = null!;

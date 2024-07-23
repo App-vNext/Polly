@@ -4,7 +4,6 @@ namespace Polly.Fallback;
 /// <summary>
 /// A fallback policy that can be applied to delegates.
 /// </summary>
-#pragma warning disable CA1062 // Validate arguments of public methods
 public class FallbackPolicy : Policy, IFallbackPolicy
 {
     private readonly Action<Exception, Context> _onFallback;
@@ -69,8 +68,14 @@ public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        FallbackEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        return FallbackEngine.Implementation(
             action,
             context,
             ExceptionPredicates,
@@ -78,4 +83,5 @@ public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
             _onFallback,
             _fallbackAction,
             cancellationToken);
+    }
 }
