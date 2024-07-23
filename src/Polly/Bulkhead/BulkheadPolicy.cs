@@ -31,8 +31,13 @@ public class BulkheadPolicy : Policy, IBulkheadPolicy
             throw new ArgumentNullException(nameof(action));
         }
 
-        return BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore,
-            _maxQueuedActionsSemaphore, cancellationToken);
+        return BulkheadEngine.Implementation(
+            action,
+            context,
+            _onBulkheadRejected,
+            _maxParallelizationSemaphore,
+            _maxQueuedActionsSemaphore,
+            cancellationToken);
     }
 
     /// <summary>
@@ -87,7 +92,11 @@ public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
             throw new ArgumentNullException(nameof(action));
         }
 
-        return BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore,
+        return BulkheadEngine.Implementation(
+            action,
+            context,
+            _onBulkheadRejected,
+            _maxParallelizationSemaphore,
             _maxQueuedActionsSemaphore, cancellationToken);
     }
 
