@@ -9,9 +9,6 @@ on:
     - cron: '0 8 * * MON'
   workflow_dispatch:
 
-env:
-  SKIP_POLLY_ANALYZERS: true
-
 permissions:
   actions: read
   contents: read
