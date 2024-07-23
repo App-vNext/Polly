@@ -167,8 +167,7 @@ public partial class Policy
 
         return policies.Length switch
         {
-            < MinimumPoliciesRequiredForWrap => throw new ArgumentException(
-                "The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
+            < MinimumPoliciesRequiredForWrap => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
             MinimumPoliciesRequiredForWrap => new AsyncPolicyWrap((AsyncPolicy)policies[0], policies[1]),
             _ => WrapAsync(policies[0], WrapAsync(policies.Skip(1).ToArray())),
         };
@@ -190,10 +189,8 @@ public partial class Policy
 
         return policies.Length switch
         {
-            < MinimumPoliciesRequiredForWrap => throw new ArgumentException(
-                "The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
-            MinimumPoliciesRequiredForWrap => new AsyncPolicyWrap<TResult>((AsyncPolicy<TResult>)policies[0],
-                policies[1]),
+            < MinimumPoliciesRequiredForWrap => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
+            MinimumPoliciesRequiredForWrap => new AsyncPolicyWrap<TResult>((AsyncPolicy<TResult>)policies[0], policies[1]),
             _ => WrapAsync(policies[0], WrapAsync(policies.Skip(1).ToArray())),
         };
     }
