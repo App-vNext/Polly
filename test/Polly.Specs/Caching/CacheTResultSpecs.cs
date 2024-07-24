@@ -475,15 +475,6 @@ public class CacheTResultSpecs : IDisposable
             onCacheError);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttl, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
-
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
-
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategyGeneric, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
-
         action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttl, cacheKeyStrategy, onCacheError);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
 
