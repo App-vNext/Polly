@@ -387,7 +387,7 @@ public class RetrySpecs
             .Retry((_, _, context) => contextData = context);
 
         policy.RaiseException<DivideByZeroException>(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } });
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -404,7 +404,7 @@ public class RetrySpecs
             .Retry((_, _, context) => contextData = context);
 
         policy.Invoking(p => p.ExecuteAndCapture(_ => { throw new DivideByZeroException(); },
-            new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
             .Should().NotThrow();
 
         contextData.Should()
@@ -437,12 +437,12 @@ public class RetrySpecs
             .Retry((_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary());
+            new Dictionary<string, object> { { "key", "original_value" } });
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary());
+            new Dictionary<string, object> { { "key", "new_value" } });
 
         contextValue.Should().Be("new_value");
     }
@@ -457,13 +457,13 @@ public class RetrySpecs
             .Retry((_, _, context) => contextValue = context["key"].ToString());
 
         policy.Invoking(p => p.ExecuteAndCapture(_ => throw new DivideByZeroException(),
-            new { key = "original_value" }.AsDictionary()))
+            new Dictionary<string, object> { { "key", "original_value" } }))
             .Should().NotThrow();
 
         contextValue.Should().Be("original_value");
 
         policy.Invoking(p => p.ExecuteAndCapture(_ => throw new DivideByZeroException(),
-            new { key = "new_value" }.AsDictionary()))
+            new Dictionary<string, object> { { "key", "new_value" } }))
             .Should().NotThrow();
 
         contextValue.Should().Be("new_value");

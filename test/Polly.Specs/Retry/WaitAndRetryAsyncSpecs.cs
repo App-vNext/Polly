@@ -487,7 +487,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             }, (_, _, context) => contextData = context);
 
         await policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } });
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -527,12 +527,12 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             (_, _, context) => contextValue = context["key"].ToString());
 
         await policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary());
+            new Dictionary<string, object> { { "key", "original_value" } });
 
         contextValue.Should().Be("original_value");
 
         await policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary());
+            new Dictionary<string, object> { { "key", "new_value" } });
 
         contextValue.Should().Be("new_value");
     }
@@ -681,7 +681,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
                 throw new DivideByZeroException();
             }
         },
-            new { RetryAfter = defaultRetryAfter }.AsDictionary(), // Can also set an initial value for RetryAfter, in the Context passed into the call.
+            new Dictionary<string, object> { { "RetryAfter", defaultRetryAfter } }, // Can also set an initial value for RetryAfter, in the Context passed into the call.
             CancellationToken.None);
 
         actualRetryDuration.Should().Be(expectedRetryDuration);

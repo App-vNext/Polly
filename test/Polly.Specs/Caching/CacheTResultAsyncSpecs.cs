@@ -303,10 +303,10 @@ public class CacheTResultAsyncSpecs : IDisposable
         bool funcExecuted = false;
         Func<Context, Task<ResultClass>> func = async _ => { funcExecuted = true; await TaskHelper.EmptyTask; return new ResultClass(ResultPrimitive.Fault, "should never return this one"); };
 
-        (await cache.ExecuteAsync(func, new Context("person", new { id = "1" }.AsDictionary()))).Should().BeSameAs(person1);
+        (await cache.ExecuteAsync(func, new Context("person", new Dictionary<string, object> { { "id", "1" } }))).Should().BeSameAs(person1);
         funcExecuted.Should().BeFalse();
 
-        (await cache.ExecuteAsync(func, new Context("person", new { id = "2" }.AsDictionary()))).Should().BeSameAs(person2);
+        (await cache.ExecuteAsync(func, new Context("person", new Dictionary<string, object> { { "id", "2" } }))).Should().BeSameAs(person2);
         funcExecuted.Should().BeFalse();
     }
 
@@ -329,10 +329,10 @@ public class CacheTResultAsyncSpecs : IDisposable
         bool funcExecuted = false;
         Func<Context, Task<ResultClass>> func = async _ => { funcExecuted = true; await TaskHelper.EmptyTask; return new ResultClass(ResultPrimitive.Fault, "should never return this one"); };
 
-        (await cache.ExecuteAsync(func, new Context("person", new { id = "1" }.AsDictionary()))).Should().BeSameAs(person1);
+        (await cache.ExecuteAsync(func, new Context("person", new Dictionary<string, object> { { "id", "1" } }))).Should().BeSameAs(person1);
         funcExecuted.Should().BeFalse();
 
-        (await cache.ExecuteAsync(func, new Context("person", new { id = "2" }.AsDictionary()))).Should().BeSameAs(person2);
+        (await cache.ExecuteAsync(func, new Context("person", new Dictionary<string, object> { { "id", "2" } }))).Should().BeSameAs(person2);
         funcExecuted.Should().BeFalse();
     }
 

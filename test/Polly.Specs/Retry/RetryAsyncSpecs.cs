@@ -296,7 +296,7 @@ public class RetryAsyncSpecs
             .RetryAsync((_, _, context) => contextData = context);
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } });
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -313,7 +313,7 @@ public class RetryAsyncSpecs
             .RetryAsync((_, _, context) => contextData = context);
 
         await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => { throw new DivideByZeroException(); },
-            new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
             .Should().NotThrowAsync();
 
         contextData.Should()
@@ -346,12 +346,12 @@ public class RetryAsyncSpecs
             .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary());
+            new Dictionary<string, object> { { "key", "original_value" } });
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary());
+            new Dictionary<string, object> { { "key", "new_value" } });
 
         contextValue.Should().Be("new_value");
     }
@@ -366,13 +366,13 @@ public class RetryAsyncSpecs
             .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
         await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new DivideByZeroException(),
-            new { key = "original_value" }.AsDictionary()))
+            new Dictionary<string, object> { { "key", "original_value" } }))
             .Should().NotThrowAsync();
 
         contextValue.Should().Be("original_value");
 
         await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new DivideByZeroException(),
-            new { key = "new_value" }.AsDictionary()))
+            new Dictionary<string, object> { { "key", "new_value" } }))
             .Should().NotThrowAsync();
 
         contextValue.Should().Be("new_value");

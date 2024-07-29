@@ -309,7 +309,7 @@ public class FallbackAsyncSpecs
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
         await fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(),
-            new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
             .Should().NotThrowAsync();
 
         contextData.Should()
@@ -331,7 +331,7 @@ public class FallbackAsyncSpecs
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
         await fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new ArgumentNullException(),
-            new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
             .Should().NotThrowAsync();
 
         contextData.Should()
@@ -353,10 +353,10 @@ public class FallbackAsyncSpecs
             .Or<DivideByZeroException>()
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-        await fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(), new { key = "value1" }.AsDictionary()))
+        await fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(), new Dictionary<string, object> { { "key", "value1" } }))
             .Should().NotThrowAsync();
 
-        await fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new DivideByZeroException(), new { key = "value2" }.AsDictionary()))
+        await fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new DivideByZeroException(), new Dictionary<string, object> { { "key", "value2" } }))
             .Should().NotThrowAsync();
 
         contextData.Count.Should().Be(2);
@@ -401,7 +401,7 @@ public class FallbackAsyncSpecs
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
         await fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(),
-                new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+                new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
             .Should().NotThrowAsync();
 
         contextData.Should()
@@ -423,7 +423,7 @@ public class FallbackAsyncSpecs
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
         await fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new ArgumentNullException(),
-                new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+                new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
             .Should().NotThrowAsync();
 
         contextData.Should()

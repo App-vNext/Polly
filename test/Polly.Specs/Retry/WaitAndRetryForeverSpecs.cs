@@ -251,12 +251,12 @@ public class WaitAndRetryForeverSpecs : IDisposable
             (_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary());
+            new Dictionary<string, object> { { "key", "original_value" } });
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary());
+            new Dictionary<string, object> { { "key", "new_value" } });
 
         contextValue.Should().Be("new_value");
     }
@@ -344,7 +344,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
                     throw new DivideByZeroException();
                 }
             },
-            new { RetryAfter = defaultRetryAfter }.AsDictionary()); // Can also set an initial value for RetryAfter, in the Context passed into the call.
+            new Dictionary<string, object> { { "RetryAfter", defaultRetryAfter } }); // Can also set an initial value for RetryAfter, in the Context passed into the call.
 
         actualRetryDuration.Should().Be(expectedRetryDuration);
     }

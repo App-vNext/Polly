@@ -182,7 +182,7 @@ public class RetryForeverSpecs
             .RetryForever((_, context) => contextData = context);
 
         policy.RaiseException<DivideByZeroException>(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } });
 
         contextData.Should()
                    .ContainKeys("key1", "key2").And
@@ -231,12 +231,12 @@ public class RetryForeverSpecs
             .RetryForever((_, context) => contextValue = context["key"].ToString());
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary());
+            new Dictionary<string, object> { { "key", "original_value" } });
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary());
+            new Dictionary<string, object> { { "key", "new_value" } });
 
         contextValue.Should().Be("new_value");
     }
