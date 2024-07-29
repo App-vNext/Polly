@@ -192,6 +192,8 @@ public class PolicyWrapTResultContextAndKeyAsyncSpecs
 {
     #region PolicyKey and execution Context tests
 
+    private static void ThrowException() => throw new Exception();
+
     [Fact]
     public async Task Should_pass_PolicyKey_to_execution_context_of_outer_policy_as_PolicyWrapKey()
     {
@@ -296,11 +298,8 @@ public class PolicyWrapTResultContextAndKeyAsyncSpecs
 
         await policyWrap.ExecuteAsync(async () => await Task.Run(() => // Regression test for issue 510
         {
-            throw new Exception();
-#pragma warning disable 0162 // unreachable code detected
+            ThrowException();
             return ResultPrimitive.WhateverButTooLate;
-#pragma warning restore 0162
-
         }));
     }
 
