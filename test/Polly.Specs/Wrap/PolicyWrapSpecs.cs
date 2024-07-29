@@ -253,10 +253,9 @@ public class PolicyWrapSpecs
     public void Wrapping_only_one_policy_using_static_wrap_syntax_should_throw()
     {
         Policy singlePolicy = Policy.Handle<Exception>().Retry();
+        var policies = new[] { singlePolicy };
 
-#pragma warning disable S3878 // Remove this array creation and simply pass the elements
-        Action config = () => Policy.Wrap(new[] { singlePolicy });
-#pragma warning restore S3878
+        Action config = () => Policy.Wrap(policies);
 
         config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
     }
