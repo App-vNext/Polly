@@ -193,9 +193,7 @@ public abstract class TokenBucketRateLimiterTestsBase : RateLimitSpecsBase, IDis
 
         // Act - release gate.
         gate.Set();
-#pragma warning disable S6603
-        Within(TimeSpan.FromSeconds(10 /* high to allow for slow-running on time-slicing CI servers */), () => tasks.All(t => t.IsCompleted).Should().BeTrue());
-#pragma warning restore S6603
+        Within(TimeSpan.FromSeconds(10 /* high to allow for slow-running on time-slicing CI servers */), () => tasks.ToList().TrueForAll(t => t.IsCompleted).Should().BeTrue());
 
         // Assert - one should have permitted execution, n-1 not.
         var results = tasks.Select(t => t.Result).ToList();
