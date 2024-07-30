@@ -1,4 +1,5 @@
-﻿using Scenario = Polly.Specs.Helpers.PolicyExtensions.ExceptionAndOrCancellationScenario;
+﻿using static Polly.Specs.DictionaryHelpers;
+using Scenario = Polly.Specs.Helpers.PolicyExtensions.ExceptionAndOrCancellationScenario;
 
 namespace Polly.Specs.Fallback;
 
@@ -765,7 +766,7 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.Execute(_ => throw new ArgumentNullException(),
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
+            CreateDictionary("key1", "value1", "key2", "value2")))
             .Should().NotThrow();
 
         contextData.Should()
@@ -787,7 +788,7 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.ExecuteAndCapture(_ => throw new ArgumentNullException(),
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
+            CreateDictionary("key1", "value1", "key2", "value2")))
             .Should().NotThrow();
 
         contextData.Should()
@@ -810,11 +811,11 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(
-            p => p.Execute(_ => throw new ArgumentNullException(), new Dictionary<string, object> { { "key", "value1" } }))
+            p => p.Execute(_ => throw new ArgumentNullException(), CreateDictionary("key", "value1")))
             .Should().NotThrow();
 
         fallbackPolicy.Invoking(
-            p => p.Execute(_ => throw new DivideByZeroException(), new Dictionary<string, object> { { "key", "value2" } }))
+            p => p.Execute(_ => throw new DivideByZeroException(), CreateDictionary("key", "value2")))
             .Should().NotThrow();
 
         contextData.Count.Should().Be(2);
@@ -859,7 +860,7 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.Execute(_ => throw new ArgumentNullException(),
-                new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
+                CreateDictionary("key1", "value1", "key2", "value2")))
             .Should().NotThrow();
 
         contextData.Should()
@@ -881,7 +882,7 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.ExecuteAndCapture(_ => throw new ArgumentNullException(),
-                new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
+                CreateDictionary("key1", "value1", "key2", "value2")))
             .Should().NotThrow();
 
         contextData.Should()

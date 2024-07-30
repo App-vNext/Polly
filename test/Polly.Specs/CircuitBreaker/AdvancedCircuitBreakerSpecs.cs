@@ -1,4 +1,5 @@
-﻿using Scenario = Polly.Specs.Helpers.PolicyExtensions.ExceptionAndOrCancellationScenario;
+﻿using static Polly.Specs.DictionaryHelpers;
+using Scenario = Polly.Specs.Helpers.PolicyExtensions.ExceptionAndOrCancellationScenario;
 
 namespace Polly.Specs.CircuitBreaker;
 
@@ -2531,7 +2532,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         breaker.CircuitState.Should().Be(CircuitState.Closed);
 
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>(
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } })).Should().Throw<DivideByZeroException>();
+            CreateDictionary("key1", "value1", "key2", "value2"))).Should().Throw<DivideByZeroException>();
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         contextData.Should()
@@ -2584,7 +2585,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
         // first call after duration should invoke onReset, with context
-        breaker.Execute(_ => { }, new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } });
+        breaker.Execute(_ => { }, CreateDictionary("key1", "value1", "key2", "value2"));
         breaker.CircuitState.Should().Be(CircuitState.Closed);
 
         contextData.Should()
@@ -2595,7 +2596,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
     [Fact]
     public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
     {
-        IDictionary<string, object> contextData = new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } };
+        IDictionary<string, object> contextData = CreateDictionary("key1", "value1", "key2", "value2");
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
         Action<Context> onReset = _ => { };
@@ -2672,7 +2673,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
             .Should().Throw<DivideByZeroException>();
         breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-        breaker.Invoking(x => x.RaiseException<DivideByZeroException>(new Dictionary<string, object> { { "key", "original_value" } }))
+        breaker.Invoking(x => x.RaiseException<DivideByZeroException>(CreateDictionary("key", "original_value")))
             .Should().Throw<DivideByZeroException>();
         breaker.CircuitState.Should().Be(CircuitState.Open);
         contextValue.Should().Be("original_value");
@@ -2685,7 +2686,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         // but not yet reset
 
         // first call after duration is successful, so circuit should reset
-        breaker.Execute(_ => { }, new Dictionary<string, object> { { "key", "new_value" } });
+        breaker.Execute(_ => { }, CreateDictionary("key", "new_value"));
         breaker.CircuitState.Should().Be(CircuitState.Closed);
         contextValue.Should().Be("new_value");
     }

@@ -1,4 +1,5 @@
-﻿using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
+﻿using static Polly.Specs.DictionaryHelpers;
+using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
 
 namespace Polly.Specs.Retry;
 
@@ -323,12 +324,12 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             (_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new Dictionary<string, object> { { "key", "original_value" } });
+            CreateDictionary("key", "original_value"));
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new Dictionary<string, object> { { "key", "new_value" } });
+            CreateDictionary("key", "new_value"));
 
         contextValue.Should().Be("new_value");
     }
@@ -422,7 +423,7 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
                 throw new DivideByZeroException();
             }
         },
-            new Dictionary<string, object> { { "RetryAfter", defaultRetryAfter } }, // Can also set an initial value for RetryAfter, in the Context passed into the call.
+            CreateDictionary("RetryAfter", defaultRetryAfter), // Can also set an initial value for RetryAfter, in the Context passed into the call.
             CancellationToken.None);
 
         actualRetryDuration.Should().Be(expectedRetryDuration);

@@ -1,4 +1,5 @@
-﻿using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
+﻿using static Polly.Specs.DictionaryHelpers;
+using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.Fallback;
 
@@ -344,7 +345,7 @@ public class FallbackTResultAsyncSpecs
             .FallbackAsync(fallbackAction, onFallbackAsync);
 
         fallbackPolicy.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Fault),
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } })
+            CreateDictionary("key1", "value1", "key2", "value2"))
             .Result
             .Should().Be(ResultPrimitive.Substitute);
 
@@ -367,7 +368,7 @@ public class FallbackTResultAsyncSpecs
             .FallbackAsync(fallbackAction, onFallbackAsync);
 
         (await fallbackPolicy.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Fault),
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
+            CreateDictionary("key1", "value1", "key2", "value2")))
             .Result.Should().Be(ResultPrimitive.Substitute);
 
         contextData.Should()
@@ -389,11 +390,11 @@ public class FallbackTResultAsyncSpecs
             .OrResult(ResultPrimitive.FaultAgain)
             .FallbackAsync(fallbackAction, onFallbackAsync);
 
-        fallbackPolicy.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Fault), new Dictionary<string, object> { { "key", "value1" } })
+        fallbackPolicy.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Fault), CreateDictionary("key", "value1"))
             .Result
             .Should().Be(ResultPrimitive.Substitute);
 
-        fallbackPolicy.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.FaultAgain), new Dictionary<string, object> { { "key", "value2" } })
+        fallbackPolicy.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.FaultAgain), CreateDictionary("key", "value2"))
             .Result
             .Should().Be(ResultPrimitive.Substitute);
 
@@ -439,7 +440,7 @@ public class FallbackTResultAsyncSpecs
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
         fallbackPolicy.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Fault),
-                new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } })
+                CreateDictionary("key1", "value1", "key2", "value2"))
             .Result
             .Should().Be(ResultPrimitive.Substitute);
 
@@ -462,7 +463,7 @@ public class FallbackTResultAsyncSpecs
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
         await fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Fault),
-                new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } }))
+                CreateDictionary("key1", "value1", "key2", "value2")))
             .Should().NotThrowAsync();
 
         contextData.Should()

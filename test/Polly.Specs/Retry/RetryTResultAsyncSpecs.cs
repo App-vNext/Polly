@@ -1,4 +1,5 @@
-﻿using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
+﻿using static Polly.Specs.DictionaryHelpers;
+using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.Retry;
 
@@ -287,7 +288,7 @@ public class RetryTResultAsyncSpecs
             .RetryAsync((_, _, context) => contextData = context);
 
         (await policy.RaiseResultSequenceAsync(
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } },
+            CreateDictionary("key1", "value1", "key2", "value2"),
             ResultPrimitive.Fault, ResultPrimitive.Good))
             .Should().Be(ResultPrimitive.Good);
 
@@ -306,7 +307,7 @@ public class RetryTResultAsyncSpecs
             .RetryAsync((_, _, context) => contextData = context);
 
         PolicyResult<ResultPrimitive> result = await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } },
+            CreateDictionary("key1", "value1", "key2", "value2"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         result.Should().BeEquivalentTo(new
@@ -349,13 +350,13 @@ public class RetryTResultAsyncSpecs
             .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
         await policy.RaiseResultSequenceAsync(
-            new Dictionary<string, object> { { "key", "original_value" } },
+            CreateDictionary("key", "original_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("original_value");
 
         await policy.RaiseResultSequenceAsync(
-            new Dictionary<string, object> { { "key", "new_value" } },
+            CreateDictionary("key", "new_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("new_value");
@@ -371,13 +372,13 @@ public class RetryTResultAsyncSpecs
             .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
         await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
-            new Dictionary<string, object> { { "key", "original_value" } },
+            CreateDictionary("key", "original_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("original_value");
 
         await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
-            new Dictionary<string, object> { { "key", "new_value" } },
+            CreateDictionary("key", "new_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("new_value");
@@ -424,7 +425,7 @@ public class RetryTResultAsyncSpecs
             .RetryAsync(0, onRetry);
 
         (await policy.RaiseResultSequenceAsync(
-            new Dictionary<string, object> { { "key", "value" } },
+            CreateDictionary("key", "value"),
             ResultPrimitive.Fault, ResultPrimitive.Good)).Should().Be(ResultPrimitive.Fault);
 
         retryInvoked.Should().BeFalse();

@@ -1,4 +1,5 @@
-﻿using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
+﻿using static Polly.Specs.DictionaryHelpers;
+using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.Fallback;
 
@@ -404,7 +405,7 @@ public class FallbackTResultSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Execute(_ => ResultPrimitive.Fault,
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } })
+            CreateDictionary("key1", "value1", "key2", "value2"))
             .Should().Be(ResultPrimitive.Substitute);
 
         contextData.Should()
@@ -426,7 +427,7 @@ public class FallbackTResultSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.ExecuteAndCapture(_ => ResultPrimitive.Fault,
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } })
+            CreateDictionary("key1", "value1", "key2", "value2"))
             .Result.Should().Be(ResultPrimitive.Substitute);
 
         contextData.Should()
@@ -448,10 +449,10 @@ public class FallbackTResultSpecs
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction, onFallback);
 
-        fallbackPolicy.Execute(_ => ResultPrimitive.Fault, new Dictionary<string, object> { { "key", "value1" } })
+        fallbackPolicy.Execute(_ => ResultPrimitive.Fault, CreateDictionary("key", "value1"))
             .Should().Be(ResultPrimitive.Substitute);
 
-        fallbackPolicy.Execute(_ => ResultPrimitive.FaultAgain, new Dictionary<string, object> { { "key", "value2" } })
+        fallbackPolicy.Execute(_ => ResultPrimitive.FaultAgain, CreateDictionary("key", "value2"))
             .Should().Be(ResultPrimitive.Substitute);
 
         contextData.Count.Should().Be(2);
@@ -495,7 +496,7 @@ public class FallbackTResultSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Execute(_ => ResultPrimitive.Fault,
-                new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } })
+                CreateDictionary("key1", "value1", "key2", "value2"))
             .Should().Be(ResultPrimitive.Substitute);
 
         contextData.Should()
@@ -517,7 +518,7 @@ public class FallbackTResultSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.ExecuteAndCapture(_ => ResultPrimitive.Fault,
-                new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } })
+                CreateDictionary("key1", "value1", "key2", "value2"))
             .Result.Should().Be(ResultPrimitive.Substitute);
 
         contextData.Should()

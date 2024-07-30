@@ -1,4 +1,6 @@
-﻿namespace Polly.Specs.Retry;
+﻿using static Polly.Specs.DictionaryHelpers;
+
+namespace Polly.Specs.Retry;
 
 public class RetryForeverSpecs
 {
@@ -182,7 +184,7 @@ public class RetryForeverSpecs
             .RetryForever((_, context) => contextData = context);
 
         policy.RaiseException<DivideByZeroException>(
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } });
+            CreateDictionary("key1", "value1", "key2", "value2"));
 
         contextData.Should()
                    .ContainKeys("key1", "key2").And
@@ -231,12 +233,12 @@ public class RetryForeverSpecs
             .RetryForever((_, context) => contextValue = context["key"].ToString());
 
         policy.RaiseException<DivideByZeroException>(
-            new Dictionary<string, object> { { "key", "original_value" } });
+            CreateDictionary("key", "original_value"));
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseException<DivideByZeroException>(
-            new Dictionary<string, object> { { "key", "new_value" } });
+            CreateDictionary("key", "new_value"));
 
         contextValue.Should().Be("new_value");
     }

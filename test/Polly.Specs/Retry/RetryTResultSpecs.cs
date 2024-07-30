@@ -1,4 +1,5 @@
-﻿using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
+﻿using static Polly.Specs.DictionaryHelpers;
+using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.Retry;
 
@@ -284,7 +285,7 @@ public class RetryTResultSpecs
             .Retry((_, _, context) => contextData = context);
 
         policy.RaiseResultSequence(
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } },
+            CreateDictionary("key1", "value1", "key2", "value2"),
             ResultPrimitive.Fault, ResultPrimitive.Good)
             .Should().Be(ResultPrimitive.Good);
 
@@ -303,7 +304,7 @@ public class RetryTResultSpecs
             .Retry((_, _, context) => contextData = context);
 
         PolicyResult<ResultPrimitive> result = policy.RaiseResultSequenceOnExecuteAndCapture(
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } },
+            CreateDictionary("key1", "value1", "key2", "value2"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         result.Should().BeEquivalentTo(new
@@ -346,13 +347,13 @@ public class RetryTResultSpecs
             .Retry((_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseResultSequence(
-            new Dictionary<string, object> { { "key", "original_value" } },
+            CreateDictionary("key", "original_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseResultSequence(
-            new Dictionary<string, object> { { "key", "new_value" } },
+            CreateDictionary("key", "new_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("new_value");
@@ -368,13 +369,13 @@ public class RetryTResultSpecs
             .Retry((_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseResultSequenceOnExecuteAndCapture(
-            new Dictionary<string, object> { { "key", "original_value" } },
+            CreateDictionary("key", "original_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseResultSequenceOnExecuteAndCapture(
-            new Dictionary<string, object> { { "key", "new_value" } },
+            CreateDictionary("key", "new_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("new_value");
@@ -421,7 +422,7 @@ public class RetryTResultSpecs
             .Retry(0, onRetry);
 
         policy.RaiseResultSequence(
-            new Dictionary<string, object> { { "key", "value" } },
+            CreateDictionary("key", "value"),
             ResultPrimitive.Fault, ResultPrimitive.Good).Should().Be(ResultPrimitive.Fault);
 
         retryInvoked.Should().BeFalse();

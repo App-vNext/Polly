@@ -1,4 +1,5 @@
-﻿using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
+﻿using static Polly.Specs.DictionaryHelpers;
+using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
 
 namespace Polly.Specs.Retry;
 
@@ -162,7 +163,7 @@ public class RetryForeverAsyncSpecs
             .RetryForeverAsync((_, context) => contextData = context);
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } });
+            CreateDictionary("key1", "value1", "key2", "value2"));
 
         contextData.Should()
                    .ContainKeys("key1", "key2").And
@@ -210,12 +211,12 @@ public class RetryForeverAsyncSpecs
             .RetryForeverAsync((_, context) => contextValue = context["key"].ToString());
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new Dictionary<string, object> { { "key", "original_value" } });
+            CreateDictionary("key", "original_value"));
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new Dictionary<string, object> { { "key", "new_value" } });
+            CreateDictionary("key", "new_value"));
 
         contextValue.Should().Be("new_value");
     }

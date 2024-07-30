@@ -1,4 +1,6 @@
-﻿namespace Polly.Specs.Retry;
+﻿using static Polly.Specs.DictionaryHelpers;
+
+namespace Polly.Specs.Retry;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class WaitAndRetrySpecs : IDisposable
@@ -513,7 +515,7 @@ public class WaitAndRetrySpecs : IDisposable
             }, (_, _, context) => contextData = context);
 
         policy.RaiseException<DivideByZeroException>(
-            new Dictionary<string, object> { { "key1", "value1" }, { "key2", "value2" } });
+            CreateDictionary("key1", "value1", "key2", "value2"));
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -534,12 +536,12 @@ public class WaitAndRetrySpecs : IDisposable
             (_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseException<DivideByZeroException>(
-            new Dictionary<string, object> { { "key", "original_value" } });
+            CreateDictionary("key", "original_value"));
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseException<DivideByZeroException>(
-            new Dictionary<string, object> { { "key", "new_value" } });
+            CreateDictionary("key", "new_value"));
 
         contextValue.Should().Be("new_value");
     }
@@ -768,7 +770,7 @@ public class WaitAndRetrySpecs : IDisposable
                 throw new DivideByZeroException();
             }
         },
-            new Dictionary<string, object> { { "RetryAfter", defaultRetryAfter } }); // Can also set an initial value for RetryAfter, in the Context passed into the call.
+            CreateDictionary("RetryAfter", defaultRetryAfter)); // Can also set an initial value for RetryAfter, in the Context passed into the call.
 
         actualRetryDuration.Should().Be(expectedRetryDuration);
     }

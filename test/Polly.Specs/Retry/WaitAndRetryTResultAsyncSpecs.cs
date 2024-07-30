@@ -1,4 +1,6 @@
-﻿namespace Polly.Specs.Retry;
+﻿using static Polly.Specs.DictionaryHelpers;
+
+namespace Polly.Specs.Retry;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class WaitAndRetryTResultAsyncSpecs : IDisposable
