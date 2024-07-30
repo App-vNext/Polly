@@ -18,6 +18,7 @@
     <Using Include="FluentAssertions.Execution" />
     <Using Include="FluentAssertions.Extensions" />
     <Using Include="NSubstitute" />
+    <Using Include="Polly.Specs.DictionaryHelpers" Static="true" />
     <Using Include="Polly.Specs.Helpers" />
     <Using Include="Polly.Specs.Helpers.Bulkhead" />
     <Using Include="Polly.Specs.Helpers.Caching" />
@@ -27,7 +28,6 @@
     <Using Include="Xunit" />
     <Using Include="Xunit.Abstractions" />
     <Using Include="Xunit.Sdk" />
-    <Using Include="Polly.Specs.DictionaryHelpers" Static="true" />
   </ItemGroup>
 
   <ItemGroup>

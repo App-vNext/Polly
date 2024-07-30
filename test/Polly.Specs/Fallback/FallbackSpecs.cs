@@ -1,5 +1,4 @@
-﻿using static Polly.Specs.DictionaryHelpers;
-using Scenario = Polly.Specs.Helpers.PolicyExtensions.ExceptionAndOrCancellationScenario;
+﻿using Scenario = Polly.Specs.Helpers.PolicyExtensions.ExceptionAndOrCancellationScenario;
 
 namespace Polly.Specs.Fallback;
 
