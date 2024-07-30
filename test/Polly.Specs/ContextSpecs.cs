@@ -1,6 +1,4 @@
-﻿using static Polly.Specs.DictionaryHelpers;
-
-namespace Polly.Specs;
+﻿namespace Polly.Specs;
 
 public class ContextSpecs
 {

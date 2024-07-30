@@ -1,6 +1,4 @@
-﻿using static Polly.Specs.DictionaryHelpers;
-
-namespace Polly.Specs.Caching;
+﻿namespace Polly.Specs.Caching;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class CacheAsyncSpecs : IDisposable

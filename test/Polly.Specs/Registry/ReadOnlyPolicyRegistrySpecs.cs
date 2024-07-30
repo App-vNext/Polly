@@ -1,6 +1,4 @@
-﻿using static Polly.Specs.DictionaryHelpers;
-
-namespace Polly.Specs.Registry;
+﻿namespace Polly.Specs.Registry;
 
 public class ReadOnlyPolicyRegistrySpecs
 {

@@ -1,6 +1,4 @@
-﻿using static Polly.Specs.DictionaryHelpers;
-
-namespace Polly.Specs.CircuitBreaker;
+﻿namespace Polly.Specs.CircuitBreaker;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class CircuitBreakerSpecs : IDisposable
