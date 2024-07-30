@@ -162,7 +162,7 @@ public class RetryForeverAsyncSpecs
             .RetryForeverAsync((_, context) => contextData = context);
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            CreateDictionary("key1", "value1", "key2", "value2"));
 
         contextData.Should()
                    .ContainKeys("key1", "key2").And
@@ -210,12 +210,12 @@ public class RetryForeverAsyncSpecs
             .RetryForeverAsync((_, context) => contextValue = context["key"].ToString());
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary());
+            CreateDictionary("key", "original_value"));
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary());
+            CreateDictionary("key", "new_value"));
 
         contextValue.Should().Be("new_value");
     }

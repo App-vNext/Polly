@@ -1253,7 +1253,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
             .Should().Be(ResultPrimitive.Fault);
 
-        (await breaker.RaiseResultSequenceAsync(new { key1 = "value1", key2 = "value2" }.AsDictionary(),
+        (await breaker.RaiseResultSequenceAsync(CreateDictionary("key1", "value1", "key2", "value2"),
             ResultPrimitive.Fault))
             .Should().Be(ResultPrimitive.Fault);
 
@@ -1291,7 +1291,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
         // first call after duration should invoke onReset, with context
-        await breaker.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), new { key1 = "value1", key2 = "value2" }.AsDictionary());
+        await breaker.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), CreateDictionary("key1", "value1", "key2", "value2"));
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -1301,7 +1301,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     [Fact]
     public async Task Context_should_be_empty_if_execute_not_called_with_any_context_data()
     {
-        IDictionary<string, object> contextData = new { key1 = "value1", key2 = "value2" }.AsDictionary();
+        IDictionary<string, object> contextData = CreateDictionary("key1", "value1", "key2", "value2");
 
         Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
         Action<Context> onReset = _ => { };
@@ -1342,7 +1342,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .Should().Be(ResultPrimitive.Fault);
 
         // 2 exception or fault raised, circuit is now open
-        (await breaker.RaiseResultSequenceAsync(new { key = "original_value" }.AsDictionary(), ResultPrimitive.Fault))
+        (await breaker.RaiseResultSequenceAsync(CreateDictionary("key", "original_value"), ResultPrimitive.Fault))
             .Should().Be(ResultPrimitive.Fault);
         breaker.CircuitState.Should().Be(CircuitState.Open);
         contextValue.Should().Be("original_value");
@@ -1355,7 +1355,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         // but not yet reset
 
         // first call after duration is successful, so circuit should reset
-        await breaker.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), new { key = "new_value" }.AsDictionary());
+        await breaker.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), CreateDictionary("key", "new_value"));
         breaker.CircuitState.Should().Be(CircuitState.Closed);
         contextValue.Should().Be("new_value");
     }

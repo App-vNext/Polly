@@ -11,6 +11,7 @@ public class RetryHelperTests
     public static TheoryData<int> Attempts()
     {
 #pragma warning disable IDE0028
+#pragma warning disable IDE0022 // Use expression body for method
         return new()
         {
             1,
@@ -23,6 +24,7 @@ public class RetryHelperTests
             1_024,
             1_025,
         };
+#pragma warning restore IDE0022 // Use expression body for method
 #pragma warning restore IDE0028
     }
 

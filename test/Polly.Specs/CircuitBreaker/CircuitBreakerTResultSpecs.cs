@@ -1232,7 +1232,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
         breaker.RaiseResultSequence(ResultPrimitive.Fault)
             .Should().Be(ResultPrimitive.Fault);
 
-        breaker.RaiseResultSequence(new { key1 = "value1", key2 = "value2" }.AsDictionary(),
+        breaker.RaiseResultSequence(CreateDictionary("key1", "value1", "key2", "value2"),
             ResultPrimitive.Fault)
             .Should().Be(ResultPrimitive.Fault);
 
@@ -1270,7 +1270,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
         // first call after duration should invoke onReset, with context
-        breaker.Execute(_ => ResultPrimitive.Good, new { key1 = "value1", key2 = "value2" }.AsDictionary());
+        breaker.Execute(_ => ResultPrimitive.Good, CreateDictionary("key1", "value1", "key2", "value2"));
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -1280,7 +1280,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
     [Fact]
     public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
     {
-        IDictionary<string, object> contextData = new { key1 = "value1", key2 = "value2" }.AsDictionary();
+        IDictionary<string, object> contextData = CreateDictionary("key1", "value1", "key2", "value2");
 
         Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
         Action<Context> onReset = _ => { };
@@ -1321,7 +1321,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
             .Should().Be(ResultPrimitive.Fault);
 
         // 2 exception raised, circuit is now open
-        breaker.RaiseResultSequence(new { key = "original_value" }.AsDictionary(), ResultPrimitive.Fault)
+        breaker.RaiseResultSequence(CreateDictionary("key", "original_value"), ResultPrimitive.Fault)
             .Should().Be(ResultPrimitive.Fault);
         breaker.CircuitState.Should().Be(CircuitState.Open);
         contextValue.Should().Be("original_value");
@@ -1334,7 +1334,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
         // but not yet reset
 
         // first call after duration is successful, so circuit should reset
-        breaker.Execute(_ => ResultPrimitive.Good, new { key = "new_value" }.AsDictionary());
+        breaker.Execute(_ => ResultPrimitive.Good, CreateDictionary("key", "new_value"));
         breaker.CircuitState.Should().Be(CircuitState.Closed);
         contextValue.Should().Be("new_value");
     }

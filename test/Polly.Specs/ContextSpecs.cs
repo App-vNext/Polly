@@ -15,7 +15,7 @@ public class ContextSpecs
     [Fact]
     public void Should_assign_OperationKey_and_context_data_from_constructor()
     {
-        Context context = new Context("SomeKey", new { key1 = "value1", key2 = "value2" }.AsDictionary());
+        Context context = new Context("SomeKey", CreateDictionary("key1", "value1", "key2", "value2"));
 
         context.OperationKey.Should().Be("SomeKey");
         context["key1"].Should().Be("value1");

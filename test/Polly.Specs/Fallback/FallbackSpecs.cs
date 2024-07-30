@@ -765,7 +765,7 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.Execute(_ => throw new ArgumentNullException(),
-            new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+            CreateDictionary("key1", "value1", "key2", "value2")))
             .Should().NotThrow();
 
         contextData.Should()
@@ -787,7 +787,7 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.ExecuteAndCapture(_ => throw new ArgumentNullException(),
-            new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+            CreateDictionary("key1", "value1", "key2", "value2")))
             .Should().NotThrow();
 
         contextData.Should()
@@ -810,11 +810,11 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(
-            p => p.Execute(_ => throw new ArgumentNullException(), new { key = "value1" }.AsDictionary()))
+            p => p.Execute(_ => throw new ArgumentNullException(), CreateDictionary("key", "value1")))
             .Should().NotThrow();
 
         fallbackPolicy.Invoking(
-            p => p.Execute(_ => throw new DivideByZeroException(), new { key = "value2" }.AsDictionary()))
+            p => p.Execute(_ => throw new DivideByZeroException(), CreateDictionary("key", "value2")))
             .Should().NotThrow();
 
         contextData.Count.Should().Be(2);
@@ -859,7 +859,7 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.Execute(_ => throw new ArgumentNullException(),
-                new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+                CreateDictionary("key1", "value1", "key2", "value2")))
             .Should().NotThrow();
 
         contextData.Should()
@@ -881,7 +881,7 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.ExecuteAndCapture(_ => throw new ArgumentNullException(),
-                new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+                CreateDictionary("key1", "value1", "key2", "value2")))
             .Should().NotThrow();
 
         contextData.Should()

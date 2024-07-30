@@ -467,10 +467,10 @@ public class CacheSpecs : IDisposable
         bool funcExecuted = false;
         Func<Context, object> func = _ => { funcExecuted = true; return new object(); };
 
-        cache.Execute(func, new Context("person", new { id = "1" }.AsDictionary())).Should().BeSameAs(person1);
+        cache.Execute(func, new Context("person", CreateDictionary("id", "1"))).Should().BeSameAs(person1);
         funcExecuted.Should().BeFalse();
 
-        cache.Execute(func, new Context("person", new { id = "2" }.AsDictionary())).Should().BeSameAs(person2);
+        cache.Execute(func, new Context("person", CreateDictionary("id", "2"))).Should().BeSameAs(person2);
         funcExecuted.Should().BeFalse();
     }
 
@@ -492,10 +492,10 @@ public class CacheSpecs : IDisposable
         bool funcExecuted = false;
         Func<Context, object> func = _ => { funcExecuted = true; return new object(); };
 
-        cache.Execute(func, new Context("person", new { id = "1" }.AsDictionary())).Should().BeSameAs(person1);
+        cache.Execute(func, new Context("person", CreateDictionary("id", "1"))).Should().BeSameAs(person1);
         funcExecuted.Should().BeFalse();
 
-        cache.Execute(func, new Context("person", new { id = "2" }.AsDictionary())).Should().BeSameAs(person2);
+        cache.Execute(func, new Context("person", CreateDictionary("id", "2"))).Should().BeSameAs(person2);
         funcExecuted.Should().BeFalse();
     }
 

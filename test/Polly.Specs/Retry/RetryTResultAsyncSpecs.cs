@@ -287,7 +287,7 @@ public class RetryTResultAsyncSpecs
             .RetryAsync((_, _, context) => contextData = context);
 
         (await policy.RaiseResultSequenceAsync(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary(),
+            CreateDictionary("key1", "value1", "key2", "value2"),
             ResultPrimitive.Fault, ResultPrimitive.Good))
             .Should().Be(ResultPrimitive.Good);
 
@@ -306,7 +306,7 @@ public class RetryTResultAsyncSpecs
             .RetryAsync((_, _, context) => contextData = context);
 
         PolicyResult<ResultPrimitive> result = await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary(),
+            CreateDictionary("key1", "value1", "key2", "value2"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         result.Should().BeEquivalentTo(new
@@ -349,13 +349,13 @@ public class RetryTResultAsyncSpecs
             .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
         await policy.RaiseResultSequenceAsync(
-            new { key = "original_value" }.AsDictionary(),
+            CreateDictionary("key", "original_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("original_value");
 
         await policy.RaiseResultSequenceAsync(
-            new { key = "new_value" }.AsDictionary(),
+            CreateDictionary("key", "new_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("new_value");
@@ -371,13 +371,13 @@ public class RetryTResultAsyncSpecs
             .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
         await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
-            new { key = "original_value" }.AsDictionary(),
+            CreateDictionary("key", "original_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("original_value");
 
         await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
-            new { key = "new_value" }.AsDictionary(),
+            CreateDictionary("key", "new_value"),
             ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("new_value");
@@ -424,7 +424,7 @@ public class RetryTResultAsyncSpecs
             .RetryAsync(0, onRetry);
 
         (await policy.RaiseResultSequenceAsync(
-             new { key = "value" }.AsDictionary(),
+            CreateDictionary("key", "value"),
             ResultPrimitive.Fault, ResultPrimitive.Good)).Should().Be(ResultPrimitive.Fault);
 
         retryInvoked.Should().BeFalse();

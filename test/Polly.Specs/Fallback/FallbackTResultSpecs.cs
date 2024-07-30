@@ -404,7 +404,7 @@ public class FallbackTResultSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Execute(_ => ResultPrimitive.Fault,
-            new { key1 = "value1", key2 = "value2" }.AsDictionary())
+            CreateDictionary("key1", "value1", "key2", "value2"))
             .Should().Be(ResultPrimitive.Substitute);
 
         contextData.Should()
@@ -426,7 +426,7 @@ public class FallbackTResultSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.ExecuteAndCapture(_ => ResultPrimitive.Fault,
-            new { key1 = "value1", key2 = "value2" }.AsDictionary())
+            CreateDictionary("key1", "value1", "key2", "value2"))
             .Result.Should().Be(ResultPrimitive.Substitute);
 
         contextData.Should()
@@ -448,10 +448,10 @@ public class FallbackTResultSpecs
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction, onFallback);
 
-        fallbackPolicy.Execute(_ => ResultPrimitive.Fault, new { key = "value1" }.AsDictionary())
+        fallbackPolicy.Execute(_ => ResultPrimitive.Fault, CreateDictionary("key", "value1"))
             .Should().Be(ResultPrimitive.Substitute);
 
-        fallbackPolicy.Execute(_ => ResultPrimitive.FaultAgain, new { key = "value2" }.AsDictionary())
+        fallbackPolicy.Execute(_ => ResultPrimitive.FaultAgain, CreateDictionary("key", "value2"))
             .Should().Be(ResultPrimitive.Substitute);
 
         contextData.Count.Should().Be(2);
@@ -495,7 +495,7 @@ public class FallbackTResultSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Execute(_ => ResultPrimitive.Fault,
-                new { key1 = "value1", key2 = "value2" }.AsDictionary())
+                CreateDictionary("key1", "value1", "key2", "value2"))
             .Should().Be(ResultPrimitive.Substitute);
 
         contextData.Should()
@@ -517,7 +517,7 @@ public class FallbackTResultSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.ExecuteAndCapture(_ => ResultPrimitive.Fault,
-                new { key1 = "value1", key2 = "value2" }.AsDictionary())
+                CreateDictionary("key1", "value1", "key2", "value2"))
             .Result.Should().Be(ResultPrimitive.Substitute);
 
         contextData.Should()
