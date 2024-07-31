@@ -2,10 +2,15 @@ name: build
 
 on:
   push:
-    branches: [ main, release/* ]
+    branches:
+      - main
+      - release/*
     tags: [ '*' ]
   pull_request:
-    branches: [ main, release/* ]
+    branches:
+      - main
+      - release/*
+      - dotnet-vnext
   workflow_dispatch:
 
 env:
