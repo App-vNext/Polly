@@ -106,7 +106,7 @@ public class ScheduledTaskExecutorTests
             .Throw<ObjectDisposedException>();
     }
 
-    [Fact(Skip = "TODO - Failing under .NET Framework for some reason.")]
+    [Fact]
     public void Dispose_WhenScheduledTaskExecuting()
     {
         using var disposed = new ManualResetEvent(false);
