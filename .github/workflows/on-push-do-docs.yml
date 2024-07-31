@@ -2,7 +2,7 @@ name: on-push-do-docs
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
     paths: [ "src/Snippets/**" ]
   workflow_dispatch:
 
