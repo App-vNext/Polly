@@ -4,6 +4,10 @@
 
 internal static class StrategyHelper
 {
+    [DebuggerDisableUserUnhandledExceptions]
+#if !DEBUG
+    [DebuggerNonUserCode]
+#endif
     public static ValueTask<Outcome<TResult>> ExecuteCallbackSafeAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
@@ -29,6 +33,7 @@ internal static class StrategyHelper
             return new ValueTask<Outcome<TResult>>(Outcome.FromException<TResult>(e));
         }
 
+        [DebuggerDisableUserUnhandledExceptions]
         static async ValueTask<Outcome<T>> AwaitTask<T>(ValueTask<Outcome<T>> task, bool continueOnCapturedContext)
         {
             try

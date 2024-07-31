@@ -3,6 +3,10 @@ namespace Polly.Retry;
 
 internal static class RetryEngine
 {
+    [DebuggerDisableUserUnhandledExceptions]
+#if !DEBUG
+    [DebuggerNonUserCode]
+#endif
     internal static TResult Implementation<TResult>(
         Func<Context, CancellationToken, TResult> action,
         Context context,

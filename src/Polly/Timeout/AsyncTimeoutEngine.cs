@@ -57,7 +57,11 @@ internal static class AsyncTimeoutEngine
             // See https://github.com/App-vNext/Polly/issues/722.
             if (!combinedTokenSource.IsCancellationRequested && timeoutCancellationTokenSource.IsCancellationRequested)
             {
+#if NET8_0_OR_GREATER
+                await combinedTokenSource.CancelAsync().ConfigureAwait(false);
+#else
                 combinedTokenSource.Cancel();
+#endif
             }
         }
     }
