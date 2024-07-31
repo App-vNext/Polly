@@ -10,6 +10,7 @@
     <NoWarn>$(NoWarn);S6966;SA1600;SA1204</NoWarn>
     <Include>[Polly.Core]*</Include>
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+    <TestTfmsInParallel>false</TestTfmsInParallel>
   </PropertyGroup>
 
   <ItemGroup>
