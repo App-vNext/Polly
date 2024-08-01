@@ -155,7 +155,7 @@ internal sealed class TaskExecution<T>
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback,
         ResilienceContext primaryContext,
         TState state,
-        int attempt) => new(primaryContext, Context, attempt, [DebuggerDisableUserUnhandledExceptions] (context) => primaryCallback(context, state));
+        int attempt) => new(primaryContext, Context, attempt, (context) => primaryCallback(context, state));
 
     public async ValueTask ResetAsync()
     {
