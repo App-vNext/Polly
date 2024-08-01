@@ -155,7 +155,7 @@ internal sealed class TaskExecution<T>
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback,
         ResilienceContext primaryContext,
         TState state,
-        int attempt) => new(primaryContext, Context, attempt, (context) => primaryCallback(context, state));
+        int attempt) => new(primaryContext, Context, attempt, [DebuggerDisableUserUnhandledExceptions] (context) => primaryCallback(context, state));
 
     public async ValueTask ResetAsync()
     {
@@ -199,6 +199,7 @@ internal sealed class TaskExecution<T>
         _stopExecutionTimestamp = 0;
     }
 
+    [DebuggerDisableUserUnhandledExceptions]
     private async Task ExecuteSecondaryActionAsync(Func<ValueTask<Outcome<T>>> action)
     {
         Outcome<T> outcome;
@@ -218,6 +219,7 @@ internal sealed class TaskExecution<T>
 
     private async Task ExecuteCreateActionException(Exception e) => await UpdateOutcomeAsync(Polly.Outcome.FromException<T>(e)).ConfigureAwait(Context.ContinueOnCapturedContext);
 
+    [DebuggerDisableUserUnhandledExceptions]
     private async Task ExecutePrimaryActionAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback, TState state)
     {
         Outcome<T> outcome;

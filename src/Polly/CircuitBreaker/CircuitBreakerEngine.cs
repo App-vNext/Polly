@@ -4,6 +4,7 @@ namespace Polly.CircuitBreaker;
 
 internal class CircuitBreakerEngine
 {
+    [DebuggerDisableUserUnhandledExceptions]
     internal static TResult Implementation<TResult>(
         Func<Context, CancellationToken, TResult> action,
         Context context,

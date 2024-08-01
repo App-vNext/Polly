@@ -3,6 +3,7 @@ namespace Polly.RateLimit;
 
 internal static class AsyncRateLimitEngine
 {
+    [DebuggerDisableUserUnhandledExceptions]
     internal static async Task<TResult> ImplementationAsync<TResult>(
         IRateLimiter rateLimiter,
         Func<TimeSpan, Context, TResult>? retryAfterFactory,

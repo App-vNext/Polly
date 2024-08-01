@@ -3,6 +3,7 @@ namespace Polly.RateLimit;
 
 internal static class RateLimitEngine
 {
+    [DebuggerDisableUserUnhandledExceptions]
     internal static TResult Implementation<TResult>(
         IRateLimiter rateLimiter,
         Func<TimeSpan, Context, TResult>? retryAfterFactory,
