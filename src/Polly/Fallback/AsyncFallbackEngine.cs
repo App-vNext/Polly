@@ -3,6 +3,7 @@ namespace Polly.Fallback;
 
 internal class AsyncFallbackEngine
 {
+    [DebuggerDisableUserUnhandledExceptions]
     internal static async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
