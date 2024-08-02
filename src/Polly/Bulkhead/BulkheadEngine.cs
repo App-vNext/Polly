@@ -3,7 +3,6 @@ namespace Polly.Bulkhead;
 
 internal static class BulkheadEngine
 {
-    [DebuggerDisableUserUnhandledExceptions]
     internal static TResult Implementation<TResult>(
         Func<Context, CancellationToken, TResult> action,
         Context context,

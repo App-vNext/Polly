@@ -3,7 +3,6 @@ namespace Polly.Bulkhead;
 
 internal static class AsyncBulkheadEngine
 {
-    [DebuggerDisableUserUnhandledExceptions]
     internal static async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
