@@ -6,7 +6,7 @@
     <MicrosoftExtensionsTimeProviderVersion>8.7.0</MicrosoftExtensionsTimeProviderVersion>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0'))">
-    <MicrosoftExtensionsVersion>9.0.0-preview.6.24327.7</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>9.0.0-preview.7.24405.7</MicrosoftExtensionsVersion>
     <MicrosoftExtensionsTimeProviderVersion>9.0.0-preview.6.24353.1</MicrosoftExtensionsTimeProviderVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -46,7 +46,7 @@
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="System.Threading.RateLimiting" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.0-preview.6.24327.7" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.0-preview.7.24405.7" />
     <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
     <PackageVersion Include="xunit" Version="2.9.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
