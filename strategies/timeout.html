@@ -221,10 +221,12 @@ catch (TimeoutRejectedException)
 </tr>
 </tbody>
 </table>
-<div class="NOTE">
-<h5>Note</h5>
-<p>If both <code>Timeout</code> and <code>TimeoutGenerator</code> are specified then <code>Timeout</code> will be ignored.</p>
-</div>
+<h3 id="timeout-duration-calculation">Timeout duration calculation</h3>
+<ul>
+<li>If <code>TimeoutGenerator</code> is not specified then <code>Timeout</code> will be used.</li>
+<li>If both <code>Timeout</code> and <code>TimeoutGenerator</code> are specified then <code>Timeout</code> will be ignored.</li>
+<li>If <code>TimeoutGenerator</code> returns a <code>TimeSpan</code> that is less than or equal to <code>TimeSpan.Zero</code> then the strategy will have no effect.</li>
+</ul>
 <h3 id="ontimeout-versus-catching-timeoutrejectedexception"><code>OnTimeout</code> versus catching <code>TimeoutRejectedException</code></h3>
 <p>The <code>OnTimeout</code> user-provided delegate is called just before the strategy throws the <code>TimeoutRejectedException</code>. This delegate receives a parameter which allows you to access the <code>Context</code> object as well as the <code>Timeout</code>:</p>
 <ul>

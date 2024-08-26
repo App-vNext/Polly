@@ -192,7 +192,7 @@ Class TimeoutStrategyOptions  <a class="header-action link-secondary" title="Vie
 
   <h3 id="Polly_Timeout_TimeoutStrategyOptions_OnTimeout" data-uid="Polly.Timeout.TimeoutStrategyOptions.OnTimeout">
   OnTimeout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Timeout/TimeoutStrategyOptions.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Timeout/TimeoutStrategyOptions.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the timeout delegate that raised when timeout occurs.</p>
@@ -259,7 +259,7 @@ public TimeSpan Timeout { get; set; }</code></pre>
 
   <h3 id="Polly_Timeout_TimeoutStrategyOptions_TimeoutGenerator" data-uid="Polly.Timeout.TimeoutStrategyOptions.TimeoutGenerator">
   TimeoutGenerator
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Timeout/TimeoutStrategyOptions.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/Timeout/TimeoutStrategyOptions.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a timeout generator that generates the timeout for a given execution.</p>
@@ -285,8 +285,9 @@ public TimeSpan Timeout { get; set; }</code></pre>
 
 
   <h4 class="section" id="Polly_Timeout_TimeoutStrategyOptions_TimeoutGenerator_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>If generator returns a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a> value that is less or equal to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan.zero">Zero</a>
-its value is ignored and <a class="xref" href="Polly.Timeout.TimeoutStrategyOptions.html#Polly_Timeout_TimeoutStrategyOptions_Timeout">Timeout</a> is used instead. When generator is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> the <a class="xref" href="Polly.Timeout.TimeoutStrategyOptions.html#Polly_Timeout_TimeoutStrategyOptions_Timeout">Timeout</a> is used.</p>
+  <div class="markdown level1 remarks"><p>When generator is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> then the <a class="xref" href="Polly.Timeout.TimeoutStrategyOptions.html#Polly_Timeout_TimeoutStrategyOptions_Timeout">Timeout</a> property's value is used instead.
+When generator returns a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a> value that is less than or equal to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan.zero">Zero</a>
+then the strategy will do nothing.</p>
 <p>
 Return <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.timeout.infinitetimespan">InfiniteTimeSpan</a> to disable the timeout for the given execution.
 </p>
