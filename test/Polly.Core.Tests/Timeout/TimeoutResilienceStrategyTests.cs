@@ -118,6 +118,36 @@ public class TimeoutResilienceStrategyTests : IDisposable
     }
 
     [Fact]
+    public async Task Execute_TimeoutGeneratorIsNull_FallsBackToTimeout()
+    {
+        var called = false;
+        var timeout = TimeSpan.FromMilliseconds(10);
+        _options.TimeoutGenerator = null;
+        _options.Timeout = timeout;
+
+        _options.OnTimeout = args =>
+        {
+            called = true;
+            args.Timeout.Should().Be(timeout);
+            return default;
+        };
+
+        var sut = CreateSut();
+        await sut
+        .Invoking(s => s.ExecuteAsync(async token =>
+        {
+            var delay = _timeProvider.Delay(TimeSpan.FromMilliseconds(50), token);
+            _timeProvider.Advance(timeout);
+            await delay;
+        },
+        CancellationToken.None)
+        .AsTask())
+        .Should().ThrowAsync<TimeoutRejectedException>();
+
+        called.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task Execute_Timeout_EnsureStackTrace()
     {
         SetTimeout(TimeSpan.FromSeconds(2));

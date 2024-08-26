@@ -117,8 +117,11 @@ catch (TimeoutRejectedException)
 | `TimeoutGenerator` | `null`        | This delegate allows you to **dynamically** calculate the timeout period by utilizing information that is only available at runtime. |
 | `OnTimeout`        | `null`        | If provided then it will be invoked after the timeout occurred.                                                                      |
 
-> [!NOTE]
-> If both `Timeout` and `TimeoutGenerator` are specified then `Timeout` will be ignored.
+### Timeout duration calculation
+
+- If `TimeoutGenerator` is not specified then `Timeout` will be used.
+- If both `Timeout` and `TimeoutGenerator` are specified then `Timeout` will be ignored.
+- If `TimeoutGenerator` returns a `TimeSpan` that is less than or equal to `TimeSpan.Zero` then the strategy will have no effect.
 
 ### `OnTimeout` versus catching `TimeoutRejectedException`
 

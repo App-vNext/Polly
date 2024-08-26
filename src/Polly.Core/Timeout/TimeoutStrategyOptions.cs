@@ -27,8 +27,9 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets a timeout generator that generates the timeout for a given execution.
     /// </summary>
     /// <remarks>
-    /// If generator returns a <see cref="TimeSpan"/> value that is less or equal to <see cref="TimeSpan.Zero"/>
-    /// its value is ignored and <see cref="Timeout"/> is used instead. When generator is <see langword="null"/> the <see cref="Timeout"/> is used.
+    /// When generator is <see langword="null"/> then the <see cref="Timeout"/> property's value is used instead.
+    /// When generator returns a <see cref="TimeSpan"/> value that is less than or equal to <see cref="TimeSpan.Zero"/>
+    /// then the strategy will do nothing.
     /// <para>
     /// Return <see cref="System.Threading.Timeout.InfiniteTimeSpan"/> to disable the timeout for the given execution.
     /// </para>
