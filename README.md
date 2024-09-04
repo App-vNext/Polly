@@ -20,11 +20,11 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 | **Package** | **Latest Version** | **About** |
 |:--|:--|:--|
-| `Polly.Core` | [![NuGet](https://buildstats.info/nuget/Polly.Core)](https://www.nuget.org/packages/Polly.Core/ "Download Polly.Core from NuGet.org") | The core abstractions and [built-in strategies](https://www.pollydocs.org/strategies/index). |
-| `Polly.Extensions` | [![NuGet](https://buildstats.info/nuget/Polly.Extensions)](https://www.nuget.org/packages/Polly.Extensions/ "Download Polly.Extensions from NuGet.org") | [Telemetry](https://www.pollydocs.org/advanced/telemetry) and [dependency injection](https://www.pollydocs.org/advanced/dependency-injection) support. |
-| `Polly.RateLimiting` | [![NuGet](https://buildstats.info/nuget/Polly.RateLimiting)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") | Integration with [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) APIs. |
-| `Polly.Testing` | [![NuGet](https://buildstats.info/nuget/Polly.Testing)](https://www.nuget.org/packages/Polly.Testing/ "Download Polly.Testing from NuGet.org") | [Testing support](https://www.pollydocs.org/advanced/testing) for Polly libraries. |
-| `Polly` | [![NuGet](https://buildstats.info/nuget/Polly)](https://www.nuget.org/packages/Polly/ "Download Polly from NuGet.org") | This package contains the legacy API exposed by versions of the Polly library before version 8. |
+| `Polly.Core` | [![NuGet](https://img.shields.io/nuget/v/Polly.Core?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/Polly.Core/ "Download Polly.Core from NuGet.org") | The core abstractions and [built-in strategies](https://www.pollydocs.org/strategies/index). |
+| `Polly.Extensions` | [![NuGet](https://img.shields.io/nuget/v/Polly.Extensions?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/Polly.Extensions/ "Download Polly.Extensions from NuGet.org") | [Telemetry](https://www.pollydocs.org/advanced/telemetry) and [dependency injection](https://www.pollydocs.org/advanced/dependency-injection) support. |
+| `Polly.RateLimiting` | [![NuGet](https://img.shields.io/nuget/v/Polly.RateLimiting?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") | Integration with [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) APIs. |
+| `Polly.Testing` | [![NuGet](https://img.shields.io/nuget/v/Polly.Testing?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/Polly.Testing/ "Download Polly.Testing from NuGet.org") | [Testing support](https://www.pollydocs.org/advanced/testing) for Polly libraries. |
+| `Polly` | [![NuGet](https://img.shields.io/nuget/v/Polly?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/Polly/ "Download Polly from NuGet.org") | This package contains the legacy API exposed by versions of the Polly library before version 8. |
 
 ## Documentation
 
