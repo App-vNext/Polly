@@ -26,4 +26,9 @@
     <Using Include="Polly.Core.Tests.Helpers" />
     <Using Include="Polly.TestUtils" />
   </ItemGroup>
+
+  <!-- Workaround for xunit 2.8.0+ change. See https://github.com/xunit/xunit/discussions/3024.  -->
+  <ItemGroup>
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
