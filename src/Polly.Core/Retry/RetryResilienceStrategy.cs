@@ -57,9 +57,17 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
             var handle = await ShouldHandle(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext);
             var executionTime = _timeProvider.GetElapsedTime(startTimestamp);
 
-            TelemetryUtil.ReportExecutionAttempt(_telemetry, context, outcome, attempt, executionTime, handle);
+            var isLastAttempt = IsLastAttempt(attempt, out bool incrementAttempts);
+            if (isLastAttempt)
+            {
+                TelemetryUtil.ReportFinalExecutionAttempt(_telemetry, context, outcome, attempt, executionTime, handle);
+            }
+            else
+            {
+                TelemetryUtil.ReportExecutionAttempt(_telemetry, context, outcome, attempt, executionTime, handle);
+            }
 
-            if (context.CancellationToken.IsCancellationRequested || IsLastAttempt(attempt, out bool incrementAttempts) || !handle)
+            if (context.CancellationToken.IsCancellationRequested || isLastAttempt || !handle)
             {
                 return outcome;
             }
