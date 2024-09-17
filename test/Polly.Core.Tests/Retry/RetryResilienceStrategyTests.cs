@@ -320,7 +320,7 @@ public class RetryResilienceStrategyTests
     public void Execute_NotHandledFinalAttempt_EnsureAttemptReported()
     {
         _options.MaxRetryAttempts = 1;
-        _options.Delay = TimeSpan.FromMilliseconds(50);
+        _options.Delay = TimeSpan.Zero;
 
         // original attempt is handled, retried attempt is not handled
         _options.ShouldHandle = args => new ValueTask<bool>(args.AttemptNumber == 0);
@@ -361,7 +361,7 @@ public class RetryResilienceStrategyTests
     public void Execute_HandledFinalAttempt_EnsureAttemptReported()
     {
         _options.MaxRetryAttempts = 1;
-        _options.Delay = TimeSpan.FromMilliseconds(50);
+        _options.Delay = TimeSpan.Zero;
         _options.ShouldHandle = _ => new ValueTask<bool>(true);
         var called = false;
         _telemetry = TestUtilities.CreateResilienceTelemetry(args =>
