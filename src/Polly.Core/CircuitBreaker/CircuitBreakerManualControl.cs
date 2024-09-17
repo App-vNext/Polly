@@ -148,7 +148,7 @@ public sealed class CircuitBreakerManualControl
         }
     }
 
-    private class RegistrationDisposable : IDisposable
+    private sealed class RegistrationDisposable : IDisposable
     {
         private readonly Action _disposeAction;
 

@@ -86,7 +86,7 @@ internal static partial class Chaos
     }
 }
 
-internal class RedisConnectionException : Exception
+internal sealed class RedisConnectionException : Exception
 {
     public RedisConnectionException()
     {

@@ -1,7 +1,7 @@
 ﻿#nullable enable
 namespace Polly.CircuitBreaker;
 
-internal class RollingHealthMetrics : IHealthMetrics
+internal sealed class RollingHealthMetrics : IHealthMetrics
 {
     private readonly long _samplingDuration;
     private readonly long _windowDuration;

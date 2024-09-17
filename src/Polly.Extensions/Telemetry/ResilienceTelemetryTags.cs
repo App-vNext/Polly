@@ -1,6 +1,6 @@
 namespace Polly.Telemetry;
 
-internal class ResilienceTelemetryTags
+internal static class ResilienceTelemetryTags
 {
     public const string EventName = "event.name";
 

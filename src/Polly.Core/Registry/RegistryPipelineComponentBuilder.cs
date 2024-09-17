@@ -6,7 +6,7 @@ namespace Polly.Registry;
 /// <summary>
 /// Builds a <see cref="PipelineComponent"/> used by the registry.
 /// </summary>
-internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
+internal sealed class RegistryPipelineComponentBuilder<TBuilder, TKey>
     where TBuilder : ResiliencePipelineBuilderBase
     where TKey : notnull
 {
@@ -75,7 +75,7 @@ internal class RegistryPipelineComponentBuilder<TBuilder, TKey>
             builder);
     }
 
-    private record Builder(
+    private sealed record Builder(
         Func<PipelineComponent> ComponentFactory,
         List<CancellationToken> ReloadTokens,
         ResilienceStrategyTelemetry Telemetry,

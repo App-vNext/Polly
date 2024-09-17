@@ -288,7 +288,7 @@ public static class PollyServiceCollectionExtensions
         });
     }
 
-    private class RegistryMarker<TKey>
+    private sealed class RegistryMarker<TKey>
     {
         public static readonly ServiceDescriptor ServiceDescriptor = ServiceDescriptor.Singleton(new RegistryMarker<TKey>());
     }

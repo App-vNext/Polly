@@ -108,7 +108,7 @@ internal static class DependencyInjection
 
     #region di-keyed-services-use
 
-    public class MyApi
+    public sealed class MyApi
     {
         private readonly ResiliencePipeline _pipeline;
         private readonly ResiliencePipeline<HttpResponseMessage> _genericPipeline;

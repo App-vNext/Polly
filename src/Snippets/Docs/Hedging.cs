@@ -132,7 +132,7 @@ internal static class Hedging
 
     #region hedging-handler
 
-    internal class HedgingHandler : DelegatingHandler
+    internal sealed class HedgingHandler : DelegatingHandler
     {
         private readonly ResiliencePipeline<HttpResponseMessage> _pipeline;
 

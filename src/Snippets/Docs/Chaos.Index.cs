@@ -174,7 +174,7 @@ internal static partial class Chaos
     #region chaos-extension
 
     // Options that represent the chaos pipeline
-    public class MyChaosOptions
+    public sealed class MyChaosOptions
     {
         public ChaosFaultStrategyOptions Fault { get; set; } = new()
         {

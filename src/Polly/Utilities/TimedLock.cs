@@ -68,7 +68,7 @@ internal readonly struct TimedLock : IDisposable
 #if DEBUG
     // (In Debug mode, we make it a class so that we can add a finalizer
     // in order to detect when the object is not freed.)
-    private class Sentinel
+    private sealed class Sentinel
     {
 #if NETSTANDARD2_0
         ~Sentinel()
@@ -85,7 +85,7 @@ internal readonly struct TimedLock : IDisposable
 #endif
 }
 
-internal class LockTimeoutException : Exception
+internal sealed class LockTimeoutException : Exception
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="LockTimeoutException"/> class.

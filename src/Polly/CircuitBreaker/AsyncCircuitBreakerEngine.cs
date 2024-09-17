@@ -1,6 +1,6 @@
 ﻿namespace Polly.CircuitBreaker;
 
-internal class AsyncCircuitBreakerEngine
+internal static class AsyncCircuitBreakerEngine
 {
     internal static async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,

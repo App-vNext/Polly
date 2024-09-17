@@ -1,6 +1,6 @@
 ﻿namespace Polly.Utils.Pipeline;
 
-internal class ComponentWithDisposeCallbacks : PipelineComponent
+internal sealed class ComponentWithDisposeCallbacks : PipelineComponent
 {
     private readonly List<Action> _callbacks;
 

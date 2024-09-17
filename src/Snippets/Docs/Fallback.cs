@@ -57,14 +57,14 @@ internal static class Fallback
         #endregion
     }
 
-    public class UserAvatar
+    public sealed class UserAvatar
     {
         public static readonly UserAvatar Blank = new();
 
         public static UserAvatar GetRandomAvatar() => new();
     }
 
-    private class CustomNetworkException : Exception
+    private sealed class CustomNetworkException : Exception
     {
         public CustomNetworkException()
         {

@@ -5,7 +5,7 @@ namespace Polly.Caching;
 /// Provides a strongly-typed wrapper over a non-generic CacheProvider.
 /// </summary>
 /// <typeparam name="TCacheFormat">The type of the objects in the cache.</typeparam>
-internal class GenericCacheProvider<TCacheFormat> : ISyncCacheProvider<TCacheFormat>
+internal sealed class GenericCacheProvider<TCacheFormat> : ISyncCacheProvider<TCacheFormat>
 {
     private readonly ISyncCacheProvider _wrappedCacheProvider;
 

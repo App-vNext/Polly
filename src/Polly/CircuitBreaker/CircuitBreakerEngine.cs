@@ -2,7 +2,7 @@
 
 namespace Polly.CircuitBreaker;
 
-internal class CircuitBreakerEngine
+internal static class CircuitBreakerEngine
 {
     internal static TResult Implementation<TResult>(
         Func<Context, CancellationToken, TResult> action,

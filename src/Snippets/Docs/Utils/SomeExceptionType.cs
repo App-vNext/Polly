@@ -1,6 +1,6 @@
 ﻿namespace Snippets.Docs.Utils;
 
-internal class SomeExceptionType : Exception
+internal sealed class SomeExceptionType : Exception
 {
     public SomeExceptionType(string message)
         : base(message)
