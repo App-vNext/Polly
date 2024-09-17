@@ -82,7 +82,7 @@ internal static class Telemetry
 
     #region telemetry-listeners
 
-    internal class MyTelemetryListener : TelemetryListener
+    internal sealed class MyTelemetryListener : TelemetryListener
     {
         public override void Write<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
         {
@@ -90,7 +90,7 @@ internal static class Telemetry
         }
     }
 
-    internal class MyMeteringEnricher : MeteringEnricher
+    internal sealed class MyMeteringEnricher : MeteringEnricher
     {
         public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
         {

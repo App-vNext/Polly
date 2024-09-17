@@ -120,13 +120,13 @@ internal static class Performance
 
     private static ValueTask<Member> GetMemberAsync(string id, CancellationToken token) => default;
 
-    public class Member
+    public sealed class Member
     {
     }
 
     #region perf-reuse-pipelines
 
-    public class MyApi
+    public sealed class MyApi
     {
         private readonly ResiliencePipelineRegistry<string> _registry;
 
