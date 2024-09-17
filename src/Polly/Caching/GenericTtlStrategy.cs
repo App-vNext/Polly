@@ -4,7 +4,7 @@ namespace Polly.Caching;
 /// <summary>
 /// Represents a strongly-typed <see cref="ITtlStrategy"/> wrapper of a non-generic strategy.
 /// </summary>
-internal class GenericTtlStrategy<TResult> : ITtlStrategy<TResult>
+internal sealed class GenericTtlStrategy<TResult> : ITtlStrategy<TResult>
 {
     private readonly ITtlStrategy _wrappedTtlStrategy;
 

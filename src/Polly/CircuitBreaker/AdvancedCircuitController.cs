@@ -1,6 +1,6 @@
 ﻿namespace Polly.CircuitBreaker;
 
-internal class AdvancedCircuitController<TResult> : CircuitStateController<TResult>
+internal sealed class AdvancedCircuitController<TResult> : CircuitStateController<TResult>
 {
     private const short NumberOfWindows = 10;
     internal static readonly long ResolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20).Ticks;

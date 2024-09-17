@@ -2,7 +2,7 @@
 
 namespace Polly.Simmy.Outcomes;
 
-internal class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
+internal sealed class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly Func<OnOutcomeInjectedArguments<T>, ValueTask>? _onOutcomeInjected;

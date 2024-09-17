@@ -84,5 +84,5 @@ internal sealed class ScheduledTaskExecutor : IDisposable
         }
     }
 
-    private record Entry(Func<Task> TaskFactory, bool ContinueOnCapturedContext, TaskCompletionSource<object> TaskCompletion);
+    private sealed record Entry(Func<Task> TaskFactory, bool ContinueOnCapturedContext, TaskCompletionSource<object> TaskCompletion);
 }

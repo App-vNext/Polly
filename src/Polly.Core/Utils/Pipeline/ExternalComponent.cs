@@ -1,7 +1,7 @@
 ﻿namespace Polly.Utils.Pipeline;
 
 [DebuggerDisplay("{Component}")]
-internal class ExternalComponent : PipelineComponent
+internal sealed class ExternalComponent : PipelineComponent
 {
     public ExternalComponent(PipelineComponent component) => Component = component;
 

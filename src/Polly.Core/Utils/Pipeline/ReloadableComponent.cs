@@ -98,15 +98,15 @@ internal sealed class ReloadableComponent : PipelineComponent
         _tokenSource.Dispose();
     }
 
-    internal record ReloadFailedArguments(Exception Exception);
+    internal sealed record ReloadFailedArguments(Exception Exception);
 
-    internal record DisposedFailedArguments(Exception Exception);
+    internal sealed record DisposedFailedArguments(Exception Exception);
 
 #pragma warning disable S2094 // Classes should not be empty
 #pragma warning disable S3253 // Constructor and destructor declarations should not be redundant
-    internal record OnReloadArguments();
+    internal sealed record OnReloadArguments();
 #pragma warning restore S3253 // Constructor and destructor declarations should not be redundant
 #pragma warning restore S2094 // Classes should not be empty
 
-    internal record Entry(PipelineComponent Component, List<CancellationToken> ReloadTokens, ResilienceStrategyTelemetry Telemetry);
+    internal sealed record Entry(PipelineComponent Component, List<CancellationToken> ReloadTokens, ResilienceStrategyTelemetry Telemetry);
 }

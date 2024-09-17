@@ -1,7 +1,7 @@
 ﻿#nullable enable
 namespace Polly.Fallback;
 
-internal class AsyncFallbackEngine
+internal static class AsyncFallbackEngine
 {
     internal static async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,

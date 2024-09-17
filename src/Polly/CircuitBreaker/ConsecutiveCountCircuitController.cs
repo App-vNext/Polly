@@ -1,6 +1,6 @@
 ﻿namespace Polly.CircuitBreaker;
 
-internal class ConsecutiveCountCircuitController<TResult> : CircuitStateController<TResult>
+internal sealed class ConsecutiveCountCircuitController<TResult> : CircuitStateController<TResult>
 {
     private readonly int _exceptionsAllowedBeforeBreaking;
     private int _consecutiveFailureCount;
