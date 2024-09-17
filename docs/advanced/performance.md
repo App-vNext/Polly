@@ -135,7 +135,7 @@ Creating a resilience pipeline can be resource-intensive, so it's advisable not 
 
 <!-- snippet: perf-reuse-pipelines -->
 ```cs
-public class MyApi
+public sealed class MyApi
 {
     private readonly ResiliencePipelineRegistry<string> _registry;
 

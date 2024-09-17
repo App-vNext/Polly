@@ -37,7 +37,7 @@ The `MyTelemetryListener` and `MyMeteringEnricher` is implemented as:
 
 <!-- snippet: telemetry-listeners -->
 ```cs
-internal class MyTelemetryListener : TelemetryListener
+internal sealed class MyTelemetryListener : TelemetryListener
 {
     public override void Write<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
     {
@@ -45,7 +45,7 @@ internal class MyTelemetryListener : TelemetryListener
     }
 }
 
-internal class MyMeteringEnricher : MeteringEnricher
+internal sealed class MyMeteringEnricher : MeteringEnricher
 {
     public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context)
     {
