@@ -32,9 +32,11 @@ internal readonly struct TimedLock : IDisposable
         if (!Monitor.TryEnter(o, timeout))
         {
 #if DEBUG
+#pragma warning disable S3234 // "GC.SuppressFinalize" should not be invoked for types without destructors
 #pragma warning disable S3971 // Do not call 'GC.SuppressFinalize'
             GC.SuppressFinalize(tl._leakDetector);
 #pragma warning restore S3971
+#pragma warning restore S3234
 #endif
             throw new LockTimeoutException();
         }
@@ -61,7 +63,9 @@ internal readonly struct TimedLock : IDisposable
         // the error. If Dispose is called, we suppress the
         // finalizer.
 #if DEBUG
+#pragma warning disable S3234 // "GC.SuppressFinalize" should not be invoked for types without destructors
         GC.SuppressFinalize(_leakDetector);
+#pragma warning restore S3234
 #endif
     }
 
