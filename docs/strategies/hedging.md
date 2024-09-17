@@ -658,7 +658,7 @@ A common use case is with [`DelegatingHandler`](https://learn.microsoft.com/aspn
 
 <!-- snippet: hedging-handler -->
 ```cs
-internal class HedgingHandler : DelegatingHandler
+internal sealed class HedgingHandler : DelegatingHandler
 {
     private readonly ResiliencePipeline<HttpResponseMessage> _pipeline;
 

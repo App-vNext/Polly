@@ -127,7 +127,7 @@ Following the definition above, you can resolve the resilience pipelines using k
 
 <!-- snippet: di-keyed-services-use -->
 ```cs
-public class MyApi
+public sealed class MyApi
 {
     private readonly ResiliencePipeline _pipeline;
     private readonly ResiliencePipeline<HttpResponseMessage> _genericPipeline;

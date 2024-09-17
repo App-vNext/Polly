@@ -300,7 +300,7 @@ In this approach, a helper extension method can be introduced to add a predefine
 <!-- snippet: chaos-extension -->
 ```cs
 // Options that represent the chaos pipeline
-public class MyChaosOptions
+public sealed class MyChaosOptions
 {
     public ChaosFaultStrategyOptions Fault { get; set; } = new()
     {
