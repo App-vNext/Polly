@@ -195,7 +195,7 @@ services.AddResiliencePipeline(&quot;my-pipeline&quot;, builder =&gt;
 <!-- endSnippet -->
 <p>Following the definition above, you can resolve the resilience pipelines using keyed services as shown in the example below:</p>
 <!-- snippet: di-keyed-services-use -->
-<pre><code class="lang-cs">public class MyApi
+<pre><code class="lang-cs">public sealed class MyApi
 {
     private readonly ResiliencePipeline _pipeline;
     private readonly ResiliencePipeline&lt;HttpResponseMessage&gt; _genericPipeline;

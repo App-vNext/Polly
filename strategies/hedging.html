@@ -732,7 +732,7 @@ Execution attempt. Source: 'MyPipeline/MyPipelineInstance/Hedging', Operation Ke
 <p>When you have control over the callbacks that the resilience pipeline receives, you can parameterize them. This flexibility allows for reusing the callbacks within an action generator.</p>
 <p>A common use case is with <a href="https://learn.microsoft.com/aspnet/web-api/overview/advanced/http-message-handlers"><code>DelegatingHandler</code></a>. Here, you can parameterize the <code>HttpRequestMessage</code>:</p>
 <!-- snippet: hedging-handler -->
-<pre><code class="lang-cs">internal class HedgingHandler : DelegatingHandler
+<pre><code class="lang-cs">internal sealed class HedgingHandler : DelegatingHandler
 {
     private readonly ResiliencePipeline&lt;HttpResponseMessage&gt; _pipeline;
 

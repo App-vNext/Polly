@@ -411,7 +411,7 @@ builder
 <p>In this approach, a helper extension method can be introduced to add a predefined set of chaos strategies to <code>ResiliencePipelineBuilder&lt;T&gt;</code>:</p>
 <!-- snippet: chaos-extension -->
 <pre><code class="lang-cs">// Options that represent the chaos pipeline
-public class MyChaosOptions
+public sealed class MyChaosOptions
 {
     public ChaosFaultStrategyOptions Fault { get; set; } = new()
     {

@@ -235,7 +235,7 @@ ResilienceContextPool.Shared.Return(context);
 <h3 id="reuse-resilience-pipeline-instances">Reuse resilience pipeline instances</h3>
 <p>Creating a resilience pipeline can be resource-intensive, so it's advisable not to discard the instance after each use. Instead, you can either cache the resilience pipeline or use the <code>GetOrAddPipeline(...)</code> method from <code>ResiliencePipelineRegistry&lt;T&gt;</code> to cache the pipeline dynamically:</p>
 <!-- snippet: perf-reuse-pipelines -->
-<pre><code class="lang-cs">public class MyApi
+<pre><code class="lang-cs">public sealed class MyApi
 {
     private readonly ResiliencePipelineRegistry&lt;string&gt; _registry;
 
