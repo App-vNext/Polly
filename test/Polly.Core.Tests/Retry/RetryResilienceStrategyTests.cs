@@ -292,16 +292,96 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
-    public void Execute_EnsureAttemptReported()
+    public void Execute_NotHandledOriginalAttempt_EnsureAttemptReported()
     {
         var called = false;
         _telemetry = TestUtilities.CreateResilienceTelemetry(args =>
         {
             var attempt = args.Arguments.Should().BeOfType<ExecutionAttemptArguments>().Subject;
-
+            args.Event.Severity.Should().Be(ResilienceEventSeverity.Information);
             attempt.Handled.Should().BeFalse();
             attempt.AttemptNumber.Should().Be(0);
             attempt.Duration.Should().Be(TimeSpan.FromSeconds(1));
+            called = true;
+        });
+
+        var sut = CreateSut();
+
+        sut.Execute(() =>
+        {
+            _timeProvider.Advance(TimeSpan.FromSeconds(1));
+            return 0;
+        });
+
+        called.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Execute_NotHandledFinalAttempt_EnsureAttemptReported()
+    {
+        _options.MaxRetryAttempts = 1;
+        _options.Delay = TimeSpan.Zero;
+
+        // original attempt is handled, retried attempt is not handled
+        _options.ShouldHandle = args => new ValueTask<bool>(args.AttemptNumber == 0);
+        var called = false;
+        _telemetry = TestUtilities.CreateResilienceTelemetry(args =>
+        {
+            // ignore OnRetry event
+            if (args.Arguments is OnRetryArguments<object>)
+            {
+                return;
+            }
+
+            var attempt = args.Arguments.Should().BeOfType<ExecutionAttemptArguments>().Subject;
+            if (attempt.AttemptNumber == 0)
+            {
+                args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
+            }
+            else
+            {
+                args.Event.Severity.Should().Be(ResilienceEventSeverity.Information);
+            }
+
+            called = true;
+        });
+
+        var sut = CreateSut();
+
+        sut.Execute(() =>
+        {
+            _timeProvider.Advance(TimeSpan.FromSeconds(1));
+            return 0;
+        });
+
+        called.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Execute_HandledFinalAttempt_EnsureAttemptReported()
+    {
+        _options.MaxRetryAttempts = 1;
+        _options.Delay = TimeSpan.Zero;
+        _options.ShouldHandle = _ => new ValueTask<bool>(true);
+        var called = false;
+        _telemetry = TestUtilities.CreateResilienceTelemetry(args =>
+        {
+            // ignore OnRetry event
+            if (args.Arguments is OnRetryArguments<object>)
+            {
+                return;
+            }
+
+            var attempt = args.Arguments.Should().BeOfType<ExecutionAttemptArguments>().Subject;
+            if (attempt.AttemptNumber == 0)
+            {
+                args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
+            }
+            else
+            {
+                args.Event.Severity.Should().Be(ResilienceEventSeverity.Error);
+            }
+
             called = true;
         });
 

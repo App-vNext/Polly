@@ -115,10 +115,10 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(optionsExtractDela
 
 The retry strategy reports the following telemetry events:
 
-| Event Name         | Event Severity            | When?                                                 |
-|--------------------|---------------------------|-------------------------------------------------------|
-| `ExecutionAttempt` | `Information` / `Warning` | Just before the strategy calculates the next delay    |
-| `OnRetry`          | `Warning`                 | Just before the strategy calls the `OnRetry` delegate |
+| Event Name         | Event Severity                      | When?                                                 |
+|--------------------|-------------------------------------|-------------------------------------------------------|
+| `ExecutionAttempt` | `Information` / `Warning` / `Error` | Just before the strategy calculates the next delay    |
+| `OnRetry`          | `Warning`                           | Just before the strategy calls the `OnRetry` delegate |
 
 Here are some sample events:
 
@@ -138,7 +138,7 @@ Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Oper
 
 ### Handled case
 
-If the retry strategy performs some retries then the reported telemetry events' severity will be `Warning`:
+If the retry strategy performs some retries then the reported telemetry events' severity will be `Warning`. If the retry strategy runs out of retry attempts then the last event's severity will be `Error`:
 
 ```none
 Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '0', Execution Time: 5.0397ms
@@ -167,6 +167,8 @@ Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Oper
 > On the other hand the `Execution attempt` event will be **always** reported regardless whether the strategy has to perform any retries.
 >
 > Also remember that `Attempt: '0'` relates to the original execution attempt.
+>
+> Only the last error event will have `Error` severity if it was unsuccessful.
 
 For further information please check out the [telemetry page](../advanced/telemetry.md).
 

@@ -26,7 +26,7 @@ telemetryOptions.MeteringEnrichers.Add(new MyMeteringEnricher());
 // Configure telemetry listeners
 telemetryOptions.TelemetryListeners.Add(new MyTelemetryListener());
 
-var builder = new ResiliencePipelineBuilder()
+var pipeline = new ResiliencePipelineBuilder()
     .AddTimeout(TimeSpan.FromSeconds(1))
     .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
     .Build();
@@ -223,7 +223,7 @@ var telemetryOptions = new TelemetryOptions();
 // Register custom enricher
 telemetryOptions.MeteringEnrichers.Add(new CustomMeteringEnricher());
 
-var builder = new ResiliencePipelineBuilder()
+var pipeline = new ResiliencePipelineBuilder()
     .AddRetry(new RetryStrategyOptions())
     .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
     .Build();

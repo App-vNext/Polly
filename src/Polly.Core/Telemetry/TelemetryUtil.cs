@@ -18,15 +18,42 @@ internal static class TelemetryUtil
         TimeSpan executionTime,
         bool handled)
     {
+        ReportAttempt(
+            telemetry,
+            new(handled ? ResilienceEventSeverity.Warning : ResilienceEventSeverity.Information, ExecutionAttempt),
+            context,
+            outcome,
+            new ExecutionAttemptArguments(attempt, executionTime, handled));
+    }
+
+    public static void ReportFinalExecutionAttempt<TResult>(
+        ResilienceStrategyTelemetry telemetry,
+        ResilienceContext context,
+        Outcome<TResult> outcome,
+        int attempt,
+        TimeSpan executionTime,
+        bool handled)
+    {
+        ReportAttempt(
+            telemetry,
+            new(handled ? ResilienceEventSeverity.Error : ResilienceEventSeverity.Information, ExecutionAttempt),
+            context,
+            outcome,
+            new ExecutionAttemptArguments(attempt, executionTime, handled));
+    }
+
+    private static void ReportAttempt<TResult>(
+        ResilienceStrategyTelemetry telemetry,
+        ResilienceEvent resilienceEvent,
+        ResilienceContext context,
+        Outcome<TResult> outcome,
+        ExecutionAttemptArguments args)
+    {
         if (!telemetry.Enabled)
         {
             return;
         }
 
-        telemetry.Report(
-            new(handled ? ResilienceEventSeverity.Warning : ResilienceEventSeverity.Information, ExecutionAttempt),
-            context,
-            outcome,
-            new ExecutionAttemptArguments(attempt, executionTime, handled));
+        telemetry.Report<ExecutionAttemptArguments, TResult>(resilienceEvent, context, outcome, args);
     }
 }

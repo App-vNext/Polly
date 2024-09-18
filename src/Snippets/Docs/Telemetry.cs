@@ -53,7 +53,7 @@ internal static class Telemetry
         // Configure telemetry listeners
         telemetryOptions.TelemetryListeners.Add(new MyTelemetryListener());
 
-        var builder = new ResiliencePipelineBuilder()
+        var pipeline = new ResiliencePipelineBuilder()
             .AddTimeout(TimeSpan.FromSeconds(1))
             .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
             .Build();
@@ -109,7 +109,7 @@ internal static class Telemetry
         // Register custom enricher
         telemetryOptions.MeteringEnrichers.Add(new CustomMeteringEnricher());
 
-        var builder = new ResiliencePipelineBuilder()
+        var pipeline = new ResiliencePipelineBuilder()
             .AddRetry(new RetryStrategyOptions())
             .ConfigureTelemetry(telemetryOptions) // This method enables telemetry in the builder
             .Build();
