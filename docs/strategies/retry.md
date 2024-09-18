@@ -168,7 +168,7 @@ Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Oper
 >
 > Also remember that `Attempt: '0'` relates to the original execution attempt.
 >
-> Only the very last error event will have `Error` severity if it was unsuccessful.
+> Only the last error event will have `Error` severity if it was unsuccessful.
 
 For further information please check out the [telemetry page](../advanced/telemetry.md).
 
