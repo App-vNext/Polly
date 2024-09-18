@@ -251,7 +251,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(optionsExtra
 <tbody>
 <tr>
 <td><code>ExecutionAttempt</code></td>
-<td><code>Information</code> / <code>Warning</code></td>
+<td><code>Information</code> / <code>Warning</code> / <code>Error</code></td>
 <td>Just before the strategy calculates the next delay</td>
 </tr>
 <tr>
@@ -273,7 +273,7 @@ Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Oper
         at Polly.ResiliencePipeline.&lt;&gt;c.&lt;&lt;ExecuteAsync&gt;b__1_0&gt;d.MoveNext() in /_/src/Polly.Core/ResiliencePipeline.Async.cs:line 67
 </code></pre>
 <h3 id="handled-case">Handled case</h3>
-<p>If the retry strategy performs some retries then the reported telemetry events' severity will be <code>Warning</code>:</p>
+<p>If the retry strategy performs some retries then the reported telemetry events' severity will be <code>Warning</code>. If the retry strategy runs out of retry attempts then the last event's severity will be <code>Error</code>:</p>
 <pre><code class="lang-none">Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Operation Key: 'MyRetryableOperation', Result: 'Failed', Handled: 'True', Attempt: '0', Execution Time: 5.0397ms
       System.Exception: Failed
          at Program.&lt;&gt;c.&lt;Main&gt;b__0_1(ResilienceContext ctx)
@@ -298,6 +298,7 @@ Execution attempt. Source: 'MyPipeline/MyPipelineInstance/MyRetryStrategy', Oper
 <p>Please note that the <code>OnRetry</code> telemetry event will be reported <strong>only if</strong> the retry strategy performs any retry attempts.</p>
 <p>On the other hand the <code>Execution attempt</code> event will be <strong>always</strong> reported regardless whether the strategy has to perform any retries.</p>
 <p>Also remember that <code>Attempt: '0'</code> relates to the original execution attempt.</p>
+<p>Only the last error event will have <code>Error</code> severity if it was unsuccessful.</p>
 </div>
 <p>For further information please check out the <a href="../advanced/telemetry.html">telemetry page</a>.</p>
 <h2 id="calculation-of-the-next-delay">Calculation of the next delay</h2>
