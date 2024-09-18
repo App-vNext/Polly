@@ -19,7 +19,6 @@
       "statement"
     ],
     "configuration": "Debug",
-    "dev-mode": true,
     "target-framework": "net8.0",
     "thresholds": {
       "high": 100,
