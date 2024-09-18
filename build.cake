@@ -201,7 +201,7 @@ Task("__RunMutationTests")
 
         Information($"Running mutation tests for '{proj}'. Test Project: '{testProj}'");
 
-        var args = $"{strykerPath} --dev-mode true --project {project} --test-project {testProj.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{project}";
+        var args = $"{strykerPath} --dev-mode --project {project} --test-project {testProj.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{project}";
 
         var result = StartProcess("dotnet", args);
         if (result != 0)
