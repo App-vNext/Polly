@@ -29,11 +29,13 @@ public class ReloadableResiliencePipelineTests
 
         if (name == null)
         {
-            services.Configure<ReloadableStrategyOptions>(configuration);
+            services.Configure<ReloadableStrategyOptions>(configuration)
+                    .Configure<ReloadableStrategyOptions>(options => options.Name = name);
         }
         else
         {
-            services.Configure<ReloadableStrategyOptions>(name, configuration);
+            services.Configure<ReloadableStrategyOptions>(name, configuration)
+                    .Configure<ReloadableStrategyOptions>(name, options => options.Name = name);
         }
 
         services.Configure<TelemetryOptions>(options => options.TelemetryListeners.Add(fakeListener));
@@ -43,6 +45,7 @@ public class ReloadableResiliencePipelineTests
 
             var options = context.GetOptions<ReloadableStrategyOptions>(name);
             options.Should().NotBeNull();
+            options.Name.Should().Be(name);
 
             context.EnableReloads<ReloadableStrategyOptions>(name);
 
@@ -119,6 +122,8 @@ public class ReloadableResiliencePipelineTests
     public class ReloadableStrategyOptions : ResilienceStrategyOptions
     {
         public string Tag { get; set; } = string.Empty;
+
+        public string? Name { get; set; }
     }
 
     private class ReloadableConfiguration : ConfigurationProvider, IConfigurationSource

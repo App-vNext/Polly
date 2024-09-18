@@ -61,8 +61,7 @@ public sealed class AddResiliencePipelineContext<TKey>
     public TOptions GetOptions<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(string? name = null)
     {
         var monitor = ServiceProvider.GetRequiredService<IOptionsMonitor<TOptions>>();
-
-        return name == null ? monitor.CurrentValue : monitor.Get(name);
+        return monitor.Get(name);
     }
 
     /// <summary>
