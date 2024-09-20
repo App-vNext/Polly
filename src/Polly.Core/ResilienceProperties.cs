@@ -27,7 +27,7 @@ public sealed class ResilienceProperties
                 value = typedValue;
                 return true;
             }
-            else if (val == null)
+            else if (val is null)
             {
                 value = default!;
                 return true;
