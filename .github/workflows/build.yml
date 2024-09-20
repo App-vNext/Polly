@@ -27,8 +27,7 @@ jobs:
     timeout-minutes: 60
 
     env:
-      # HACK Running on Windows instead of Linux due to https://github.com/stryker-mutator/stryker-net/issues/2741
-      RUN_MUTATION_TESTS: ${{ matrix.os_name == 'windows' && !startsWith(github.ref, 'refs/tags/') && 'true' || 'false' }}
+      RUN_MUTATION_TESTS: ${{ matrix.os_name == 'linux' && !startsWith(github.ref, 'refs/tags/') && 'true' || 'false' }}
 
     outputs:
       dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
