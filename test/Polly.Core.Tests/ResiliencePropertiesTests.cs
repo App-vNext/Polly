@@ -15,6 +15,18 @@ public class ResiliencePropertiesTests
     }
 
     [Fact]
+    public void TryGetValue_ValueIsNull_Ok()
+    {
+        var key = new ResiliencePropertyKey<string?>("dummy");
+        var props = new ResilienceProperties();
+
+        props.Set(key, null);
+
+        props.TryGetValue(key, out var val).Should().Be(true);
+        val.Should().Be(null);
+    }
+
+    [Fact]
     public void TryGetValue_NotFound_Ok()
     {
         var key = new ResiliencePropertyKey<long>("dummy");
@@ -32,6 +44,17 @@ public class ResiliencePropertiesTests
         props.Set(key, 12345);
 
         props.GetValue(key, default).Should().Be(12345);
+    }
+
+    [Fact]
+    public void GetValue_ValueIsNull_Ok()
+    {
+        var key = new ResiliencePropertyKey<string?>("dummy");
+        var props = new ResilienceProperties();
+
+        props.Set(key, null);
+
+        props.GetValue(key, "default").Should().Be(null);
     }
 
     [Fact]

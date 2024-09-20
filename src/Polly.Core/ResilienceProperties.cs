@@ -20,10 +20,18 @@ public sealed class ResilienceProperties
     /// <returns>True, if a property was retrieved.</returns>
     public bool TryGetValue<TValue>(ResiliencePropertyKey<TValue> key, [MaybeNullWhen(false)] out TValue value)
     {
-        if (Options.TryGetValue(key.Key, out object? val) && val is TValue typedValue)
+        if (Options.TryGetValue(key.Key, out object? val))
         {
-            value = typedValue;
-            return true;
+            if (val is TValue typedValue)
+            {
+                value = typedValue;
+                return true;
+            }
+            else if (val == null)
+            {
+                value = default!;
+                return true;
+            }
         }
 
         value = default;
