@@ -80,7 +80,7 @@ public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
         }
         finally
         {
-            PolicyBase.RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
         }
     }
 

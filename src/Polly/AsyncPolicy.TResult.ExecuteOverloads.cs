@@ -238,7 +238,7 @@ public abstract partial class AsyncPolicy<TResult> : IAsyncPolicy<TResult>
         }
         finally
         {
-            PolicyBase.RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
         }
     }
 
