@@ -478,7 +478,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
         }
         finally
         {
-            PolicyBase.RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
         }
     }
 
@@ -496,7 +496,7 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
         }
         finally
         {
-            PolicyBase.RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
         }
     }
 

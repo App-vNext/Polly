@@ -122,7 +122,7 @@ internal static class ResiliencePipelines
 
     public static async Task ExecuteOutcomeAsync()
     {
-        var pipeline = Polly.ResiliencePipeline.Empty;
+        var pipeline = ResiliencePipeline.Empty;
 
         #region resilience-pipeline-outcome
 

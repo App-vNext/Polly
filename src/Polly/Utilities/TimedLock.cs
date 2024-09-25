@@ -80,7 +80,7 @@ internal readonly struct TimedLock : IDisposable
             // If this finalizer runs, someone somewhere failed to
             // call Dispose, which means we've failed to leave
             // a monitor!
-            System.Diagnostics.Debug.Fail("Undisposed lock");
+            Debug.Fail("Undisposed lock");
         }
 #endif
     }
