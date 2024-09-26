@@ -8,7 +8,7 @@ public class ObjectPoolTests
     public void GetAnd_ReturnObject_SameInstance()
     {
         // Arrange
-        var pool = new ObjectPool<object>(() => new object(), _ => { });
+        var pool = new ObjectPool<object>(() => new object(), _ => true);
 
         var obj1 = pool.Get();
         pool.Return(obj1);
