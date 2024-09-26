@@ -4,6 +4,69 @@
 
 <!-- next-release -->
 
+## 8.4.2
+
+* Update sponsors by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2169
+* Tweak sponsorship details by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2170
+* Fix IDE0011 warning by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2171
+* Fix SA1414 warning  by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2172
+* Fix SA1649 warning by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2173
+* Fix CA1068 warning by [@iamdmitrij](https://github.com/iamdmitrij) in https://github.com/App-vNext/Polly/pull/2182
+* Fix CA1033 warning by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2193
+* Fix S4049 warning by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2195
+* Fix S3878 warning by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2197
+* Fix S103 warning  by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2196
+* Fix CA1032 warning by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2194
+* Fix S3971 warning by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2203
+* Fix S3246 warning by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2204
+* Fix S4457 warning by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2202
+* Fix warning CA1815 by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2211
+* Fix warning CA1716 by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2212
+* Fix warning CA1710 by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2213
+* #nullable enable remove extra empty line by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2214
+* Warning Suppression CA1062 by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2216
+* Fix warning CA1062#ContextualTtl by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2217
+* Fix warning CA1062#DefaultCacheKeyStrategy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2218
+* Fix warning CA1062#NoOpPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2219
+* Fix warning CA1062#AsyncNoOpPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2220
+* fix warning CA1805 by [@Fanatic-off](https://github.com/Fanatic-off) in https://github.com/App-vNext/Polly/pull/2221
+* Fix warning CA1062#RateLimitPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2222
+* Fix warning CA1062#RetryPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2224
+* Fix warning CA1062#AsyncRetryPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2225
+* Fix warning CA1062#AsyncRateLimitPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2223
+* Specs is at the end of the test class by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2226
+* Fix warning CA1062#TimeoutPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2227
+* Fix warning CA1062#AsyncTimeoutPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2228
+* Fix warning CA1062#IPolicyWrapExtension by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2229
+* Fix warning CA1062#ISyncPolicyPolicyWrapExtensions by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2230
+* Fix warning CA1062#FallbackPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2232
+* Fix warning CA1062#AsyncFallbackPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2233
+* Fix warning CA1062#AsyncCircuitBreakerPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2235
+* Fix warning CA1062#AsyncBulkheadPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2237
+* Fix warning CA1062#AsyncCachePolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2239
+* Fix warning CA1062#CachePolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2238
+* Fix warning CA1062#CacheTResultSyntax by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2241
+* Fix warning CA1062#AsyncCacheTResultSyntax by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2243
+* Fix warning CA1062#AsyncCacheSyntax by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2242
+* Fix warning CA1062#IAsyncPolicyPolicyWrapExtensions by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2231
+* Fix warning CA1062#BulkheadPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2236
+* Fix warning CA1062#CacheSyntax by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2240
+* Fix warning CA1062#CircuitBreakerPolicy by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2234
+* Validate arguments of public methods by [@Zombach](https://github.com/Zombach) in https://github.com/App-vNext/Polly/pull/2246
+* Remove code analysis hack by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2245
+* Remove build from CodeQL by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2249
+* Fix 0162 warnings by [@sukreshmanda](https://github.com/sukreshmanda) in https://github.com/App-vNext/Polly/pull/2250
+* Fix S3878 by [@sukreshmanda](https://github.com/sukreshmanda) in https://github.com/App-vNext/Polly/pull/2251
+* Fix warnings for s6603 by [@sukreshmanda](https://github.com/sukreshmanda) in https://github.com/App-vNext/Polly/pull/2252
+* Fix S4225 warnings of extension methods for object class by [@sukreshmanda](https://github.com/sukreshmanda) in https://github.com/App-vNext/Polly/pull/2253
+* Fix Timeout's TimeoutGenerator documentation by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2275
+* Fix NuGet badges by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2279
+* Put dotnet_diagnostic.CA1852.severity = warning into effect. Fix the resulting warnings by [@Henr1k80](https://github.com/Henr1k80) in https://github.com/App-vNext/Polly/pull/2289
+* Suppress S3234 warnings by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2292
+* Report last attempt as error if it would be handled by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2291
+* Fix ide0002 style rule by [@gabidabet](https://github.com/gabidabet) in https://github.com/App-vNext/Polly/pull/2302
+* Update ResilienceProperties to correctly handle null values by [@iliar-turdushev](https://github.com/iliar-turdushev) in https://github.com/App-vNext/Polly/pull/2300
+
 ## 8.4.1
 
 * Fix milestone closure by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2106
