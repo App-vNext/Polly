@@ -70,7 +70,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
     [Fact]
     public void AddRateLimiter_AllExtensions_Ok()
     {
-        foreach (var configure in Data.OfType<Action<ResiliencePipelineBuilder>>())
+        foreach (var configure in Data)
         {
             var builder = new ResiliencePipelineBuilder();
 
