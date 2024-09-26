@@ -193,21 +193,25 @@ jobs:
 
     - name: Sign artifacts
       shell: pwsh
-      run: >
-        ./sign code azure-key-vault
-        **/*.nupkg
-        --base-directory "${{ github.workspace }}/packages"
-        --file-list "${{ github.workspace }}/signing-config/filelist.txt"
-        --application-name "Polly"
-        --publisher-name "App vNext"
-        --description "Polly"
-        --description-url "https://github.com/${{ github.repository }}"
-        --azure-key-vault-certificate "${{ secrets.SIGN_CLI_CERT_NAME }}"
-        --azure-key-vault-client-id "${{ secrets.SIGN_CLI_APPLICATION_ID }}"
-        --azure-key-vault-client-secret "${{ secrets.SIGN_CLI_SECRET }}"
-        --azure-key-vault-tenant-id "${{ secrets.SIGN_CLI_TENANT_ID }}"
-        --azure-key-vault-url "${{ secrets.SIGN_CLI_VAULT_URI }}"
-        --verbosity "${{ runner.debug == '1' && 'Debug' || 'Warning' }}"
+      run: |
+        ./sign code azure-key-vault `
+          **/*.nupkg `
+          --base-directory "${{ github.workspace }}/packages" `
+          --file-list "${{ github.workspace }}/signing-config/filelist.txt" `
+          --application-name "Polly" `
+          --publisher-name "App vNext" `
+          --description "Polly" `
+          --description-url "https://github.com/${{ github.repository }}" `
+          --azure-key-vault-certificate "${{ secrets.SIGN_CLI_CERT_NAME }}" `
+          --azure-key-vault-client-id "${{ secrets.SIGN_CLI_APPLICATION_ID }}" `
+          --azure-key-vault-client-secret "${{ secrets.SIGN_CLI_SECRET }}" `
+          --azure-key-vault-tenant-id "${{ secrets.SIGN_CLI_TENANT_ID }}" `
+          --azure-key-vault-url "${{ secrets.SIGN_CLI_VAULT_URI }}" `
+          --verbosity "${{ runner.debug == '1' && 'Debug' || 'Warning' }}"
+        if ($LASTEXITCODE -ne 0) {
+          Write-Output "::error::Failed to sign NuGet packages"
+          exit 1
+        }
 
     - name: Upload signed packages
       uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
