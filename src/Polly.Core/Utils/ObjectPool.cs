@@ -6,7 +6,7 @@ internal sealed class ObjectPool<T>
 {
     internal static readonly int MaxCapacity = (Environment.ProcessorCount * 2) - 1; // the - 1 is to account for _fastItem
 
-    private readonly Func<ObjectPool<T>, T> _createFunc;
+    private readonly Func<T> _createFunc;
     private readonly Func<T, bool> _returnFunc;
 
     private readonly ConcurrentQueue<T> _items = new();
@@ -14,17 +14,7 @@ internal sealed class ObjectPool<T>
     private T? _fastItem;
     private int _numItems;
 
-    public ObjectPool(Func<T> createFunc, Action<T> reset)
-        : this(createFunc, o => { reset(o); return true; })
-    {
-    }
-
     public ObjectPool(Func<T> createFunc, Func<T, bool> returnFunc)
-        : this(_ => createFunc(), returnFunc)
-    {
-    }
-
-    public ObjectPool(Func<ObjectPool<T>, T> createFunc, Func<T, bool> returnFunc)
     {
         _createFunc = createFunc;
         _returnFunc = returnFunc;
@@ -42,7 +32,7 @@ internal sealed class ObjectPool<T>
             }
 
             // no object available, so go get a brand new one
-            return _createFunc(this);
+            return _createFunc();
         }
 
         return item;
