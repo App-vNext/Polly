@@ -45,7 +45,10 @@ public class HedgingStrategyOptionsTests
         }))!;
 
         var task = action();
-        semaphore.Wait();
+        semaphore
+            .Wait(TimeSpan.FromSeconds(20))
+            .Should()
+            .BeTrue($"The test thread failed to enter the {nameof(semaphore)}, the hedging callback didn't executed");
         (await task).Result.Should().Be(99);
     }
 
