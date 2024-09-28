@@ -48,7 +48,7 @@ public class HedgingStrategyOptionsTests
         semaphore
             .Wait(TimeSpan.FromSeconds(20))
             .Should()
-            .BeTrue($"The test thread failed to enter the {nameof(semaphore)}, the hedging callback didn't executed");
+            .BeTrue("The test thread failed to complete within the timeout");
         (await task).Result.Should().Be(99);
     }
 
