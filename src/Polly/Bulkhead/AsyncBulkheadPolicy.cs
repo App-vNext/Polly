@@ -60,6 +60,7 @@ public class AsyncBulkheadPolicy : AsyncPolicy, IBulkheadPolicy
     {
         _maxParallelizationSemaphore.Dispose();
         _maxQueuedActionsSemaphore.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
 
@@ -123,5 +124,6 @@ public class AsyncBulkheadPolicy<TResult> : AsyncPolicy<TResult>, IBulkheadPolic
     {
         _maxParallelizationSemaphore.Dispose();
         _maxQueuedActionsSemaphore.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

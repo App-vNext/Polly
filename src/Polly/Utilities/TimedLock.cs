@@ -34,7 +34,9 @@ internal readonly struct TimedLock : IDisposable
 #if DEBUG
 #pragma warning disable S3234 // "GC.SuppressFinalize" should not be invoked for types without destructors
 #pragma warning disable S3971 // Do not call 'GC.SuppressFinalize'
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
             GC.SuppressFinalize(tl._leakDetector);
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
 #pragma warning restore S3971
 #pragma warning restore S3234
 #endif
@@ -64,7 +66,9 @@ internal readonly struct TimedLock : IDisposable
         // finalizer.
 #if DEBUG
 #pragma warning disable S3234 // "GC.SuppressFinalize" should not be invoked for types without destructors
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
         GC.SuppressFinalize(_leakDetector);
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
 #pragma warning restore S3234
 #endif
     }
