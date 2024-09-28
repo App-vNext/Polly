@@ -1,6 +1,8 @@
 ﻿#nullable enable
 namespace Polly.Utilities;
 
+#pragma warning disable CA2211 // Non-constant fields should not be visible
+
 /// <summary>
 /// Time related delegates used to support different compilation targets and to improve testability of the code.
 /// </summary>
