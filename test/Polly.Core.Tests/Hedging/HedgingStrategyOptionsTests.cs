@@ -27,6 +27,7 @@ public class HedgingStrategyOptionsTests
         var options = new HedgingStrategyOptions<int>();
         var context = ResilienceContextPool.Shared.Get().Initialize<int>(synchronous);
         var threadId = Thread.CurrentThread.ManagedThreadId;
+        using var semaphore = new SemaphoreSlim(0);
 
         var action = options.ActionGenerator(new HedgingActionGeneratorArguments<int>(context, context, 1, c =>
         {
@@ -39,11 +40,16 @@ public class HedgingStrategyOptionsTests
                 Thread.CurrentThread.ManagedThreadId.Should().Be(threadId);
             }
 
+            semaphore.Release();
             return Outcome.FromResultAsValueTask(99);
         }))!;
 
-        action.Should().NotBeNull();
-        (await action()).Result.Should().Be(99);
+        var task = action();
+        semaphore
+            .Wait(TimeSpan.FromSeconds(20))
+            .Should()
+            .BeTrue("The test thread failed to complete within the timeout");
+        (await task).Result.Should().Be(99);
     }
 
     [Fact]
