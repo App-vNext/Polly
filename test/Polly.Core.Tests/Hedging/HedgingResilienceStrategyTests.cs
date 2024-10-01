@@ -634,7 +634,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         // assert
         _timeProvider.Advance(TimeSpan.FromDays(2));
 
-        await backgroundTasks[0].Invoking(async t => await t).Should().ThrowAsync<TaskCanceledException>();
+        await Assert.ThrowsAsync<TaskCanceledException>(() => backgroundTasks[0]);
 
         // background task is still pending
         backgroundTasks[1].IsCompleted.Should().BeFalse();
