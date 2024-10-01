@@ -634,10 +634,10 @@ public class HedgingResilienceStrategyTests : IDisposable
         // assert
         _timeProvider.Advance(TimeSpan.FromDays(2));
 
-        await Assert.ThrowsAsync<TaskCanceledException>(() => backgroundTasks[0]);
+        await backgroundTasks[0].Invoking(async t => await t).Should().ThrowAsync<TaskCanceledException>();
 
         // background task is still pending
-        Assert.False(backgroundTasks[1].IsCompleted);
+        backgroundTasks[1].IsCompleted.Should().BeFalse();
 
         cts.Cancel();
 
@@ -670,7 +670,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var task = Create().ExecuteAsync(async c => (await Execute(c)).Result!, default);
 
         // assert
-        Assert.True(allExecutionsReached.WaitOne(AssertTimeout));
+        allExecutionsReached.WaitOne(AssertTimeout).Should().BeTrue();
         _timeProvider.Advance(LongDelay);
         await task;
 
@@ -699,7 +699,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var pending = Create().ExecuteAsync(Execute, _cts.Token);
 
         // assert
-        Assert.True(allExecutions.WaitOne(AssertTimeout));
+        allExecutions.WaitOne(AssertTimeout).Should().BeTrue();
 
         async ValueTask<string> Execute(CancellationToken token)
         {

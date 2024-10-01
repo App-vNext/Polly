@@ -199,8 +199,6 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
             return;
         }
 
-        Debug.Assert(Tasks.Count(t => t.IsAccepted) == 1, $"There must be exactly one accepted outcome for hedging. Found {Tasks.Count(t => t.IsAccepted)}.");
-
         if (Tasks.FirstOrDefault(static t => t.IsAccepted) is TaskExecution<T> acceptedExecution)
         {
             PrimaryContext!.Properties.AddOrReplaceProperties(acceptedExecution.Context.Properties);
