@@ -76,6 +76,32 @@ public class BrokenCircuitException : ExecutionRejectedException
     protected BrokenCircuitException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
+        Guard.NotNull(info);
+
+        // https://github.com/dotnet/runtime/issues/42460
+        SerializationInfoEnumerator enumerator = info.GetEnumerator();
+        while (enumerator.MoveNext())
+        {
+            SerializationEntry entry = enumerator.Current;
+            if (string.Equals(entry.Name, "RetryAfter", StringComparison.Ordinal))
+            {
+                var ticks = (long)entry.Value;
+                RetryAfter = new TimeSpan(ticks);
+                break;
+            }
+        }
+    }
+
+    /// <inheritdoc/>
+    public override void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        Guard.NotNull(info);
+        if (RetryAfter.HasValue)
+        {
+            info.AddValue("RetryAfter", RetryAfter.Value.Ticks);
+        }
+
+        base.GetObjectData(info, context);
     }
 #endif
 #pragma warning restore RS0016 // Add public types and members to the declared API

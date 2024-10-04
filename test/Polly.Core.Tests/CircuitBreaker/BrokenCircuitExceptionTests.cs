@@ -56,8 +56,26 @@ public class BrokenCircuitExceptionTests
 
 #if !NETCOREAPP
     [Fact]
-    public void BinarySerialization_Ok() =>
-        BinarySerializationUtil.SerializeAndDeserializeException(new BrokenCircuitException()).Should().NotBeNull();
+    public void BinarySerialization_NonNullRetryAfter_Ok()
+    {
+        var exception = new BrokenCircuitException(TestMessage, TestRetryAfter, new InvalidOperationException());
+        BrokenCircuitException roundtripResult = BinarySerializationUtil.SerializeAndDeserializeException(exception);
+        roundtripResult.Should().NotBeNull();
+        roundtripResult.Message.Should().Be(TestMessage);
+        roundtripResult.InnerException.Should().BeOfType<InvalidOperationException>();
+        roundtripResult.RetryAfter.Should().Be(TestRetryAfter);
+    }
+
+    [Fact]
+    public void BinarySerialization_NullRetryAfter_Ok()
+    {
+        var exception = new BrokenCircuitException(TestMessage, new InvalidOperationException());
+        BrokenCircuitException roundtripResult = BinarySerializationUtil.SerializeAndDeserializeException(exception);
+        roundtripResult.Should().NotBeNull();
+        roundtripResult.Message.Should().Be(TestMessage);
+        roundtripResult.InnerException.Should().BeOfType<InvalidOperationException>();
+        roundtripResult.RetryAfter.Should().BeNull();
+    }
 #endif
 
     private const string TestMessage = "Dummy.";
