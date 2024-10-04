@@ -5,29 +5,53 @@ namespace Polly.Core.Tests.CircuitBreaker;
 public class BrokenCircuitExceptionTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public void Ctor_Default_Ok()
     {
-        var retryAfter = new TimeSpan(1, 0, 0);
-        var defaultException = new BrokenCircuitException();
-        defaultException.Message.Should().Be("The circuit is now open and is not allowing calls.");
-        defaultException.RetryAfter.Should().BeNull();
-        var retryAfterException = new BrokenCircuitException(retryAfter);
-        retryAfterException.Message.Should().Be($"The circuit is now open and is not allowing calls. It can be retried after '{retryAfter}'.");
-        retryAfterException.RetryAfter.Should().Be(retryAfter);
-        var dummyMessageException = new BrokenCircuitException("Dummy.");
-        dummyMessageException.Message.Should().Be("Dummy.");
-        dummyMessageException.RetryAfter.Should().BeNull();
-        var dummyMessageWithRetryAfterException = new BrokenCircuitException("Dummy.", retryAfter);
-        dummyMessageWithRetryAfterException.Message.Should().Be("Dummy.");
-        dummyMessageWithRetryAfterException.RetryAfter.Should().Be(retryAfter);
-        var dummyMessageExceptionWithInnerException = new BrokenCircuitException("Dummy.", new InvalidOperationException());
-        dummyMessageExceptionWithInnerException.Message.Should().Be("Dummy.");
-        dummyMessageExceptionWithInnerException.InnerException.Should().BeOfType<InvalidOperationException>();
-        dummyMessageExceptionWithInnerException.RetryAfter.Should().BeNull();
-        var dummyMessageExceptionWithInnerExceptionAndRetryAfter = new BrokenCircuitException("Dummy.", retryAfter, new InvalidOperationException());
-        dummyMessageExceptionWithInnerExceptionAndRetryAfter.Message.Should().Be("Dummy.");
-        dummyMessageExceptionWithInnerExceptionAndRetryAfter.InnerException.Should().BeOfType<InvalidOperationException>();
-        dummyMessageExceptionWithInnerExceptionAndRetryAfter.RetryAfter.Should().Be(retryAfter);
+        var exception = new BrokenCircuitException();
+        exception.Message.Should().Be("The circuit is now open and is not allowing calls.");
+        exception.RetryAfter.Should().BeNull();
+    }
+
+    [Fact]
+    public void Ctor_Message_Ok()
+    {
+        var exception = new BrokenCircuitException(TestMessage);
+        exception.Message.Should().Be(TestMessage);
+        exception.RetryAfter.Should().BeNull();
+    }
+
+    [Fact]
+    public void Ctor_RetryAfter_Ok()
+    {
+        var exception = new BrokenCircuitException(TestRetryAfter);
+        exception.Message.Should().Be($"The circuit is now open and is not allowing calls. It can be retried after '{TestRetryAfter}'.");
+        exception.RetryAfter.Should().Be(TestRetryAfter);
+    }
+
+    [Fact]
+    public void Ctor_Message_RetryAfter_Ok()
+    {
+        var exception = new BrokenCircuitException(TestMessage, TestRetryAfter);
+        exception.Message.Should().Be(TestMessage);
+        exception.RetryAfter.Should().Be(TestRetryAfter);
+    }
+
+    [Fact]
+    public void Ctor_Message_InnerException_Ok()
+    {
+        var exception = new BrokenCircuitException(TestMessage, new InvalidOperationException());
+        exception.Message.Should().Be(TestMessage);
+        exception.InnerException.Should().BeOfType<InvalidOperationException>();
+        exception.RetryAfter.Should().BeNull();
+    }
+
+    [Fact]
+    public void Ctor_Message_RetryAfter_InnerException_Ok()
+    {
+        var exception = new BrokenCircuitException(TestMessage, TestRetryAfter, new InvalidOperationException());
+        exception.Message.Should().Be(TestMessage);
+        exception.InnerException.Should().BeOfType<InvalidOperationException>();
+        exception.RetryAfter.Should().Be(TestRetryAfter);
     }
 
 #if !NETCOREAPP
@@ -35,4 +59,7 @@ public class BrokenCircuitExceptionTests
     public void BinarySerialization_Ok() =>
         BinarySerializationUtil.SerializeAndDeserializeException(new BrokenCircuitException()).Should().NotBeNull();
 #endif
+
+    private const string TestMessage = "Dummy.";
+    private static readonly TimeSpan TestRetryAfter = TimeSpan.FromHours(1);
 }
