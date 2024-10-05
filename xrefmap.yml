@@ -123,6 +123,33 @@ references:
   fullName.vb: Polly.CircuitBreaker.BrokenCircuitException.New(String, System.Exception)
   nameWithType: BrokenCircuitException.BrokenCircuitException(string, Exception)
   nameWithType.vb: BrokenCircuitException.New(String, Exception)
+- uid: Polly.CircuitBreaker.BrokenCircuitException.#ctor(System.String,System.TimeSpan)
+  name: BrokenCircuitException(string, TimeSpan)
+  href: api/Polly.CircuitBreaker.BrokenCircuitException.html#Polly_CircuitBreaker_BrokenCircuitException__ctor_System_String_System_TimeSpan_
+  commentId: M:Polly.CircuitBreaker.BrokenCircuitException.#ctor(System.String,System.TimeSpan)
+  name.vb: New(String, TimeSpan)
+  fullName: Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string, System.TimeSpan)
+  fullName.vb: Polly.CircuitBreaker.BrokenCircuitException.New(String, System.TimeSpan)
+  nameWithType: BrokenCircuitException.BrokenCircuitException(string, TimeSpan)
+  nameWithType.vb: BrokenCircuitException.New(String, TimeSpan)
+- uid: Polly.CircuitBreaker.BrokenCircuitException.#ctor(System.String,System.TimeSpan,System.Exception)
+  name: BrokenCircuitException(string, TimeSpan, Exception)
+  href: api/Polly.CircuitBreaker.BrokenCircuitException.html#Polly_CircuitBreaker_BrokenCircuitException__ctor_System_String_System_TimeSpan_System_Exception_
+  commentId: M:Polly.CircuitBreaker.BrokenCircuitException.#ctor(System.String,System.TimeSpan,System.Exception)
+  name.vb: New(String, TimeSpan, Exception)
+  fullName: Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string, System.TimeSpan, System.Exception)
+  fullName.vb: Polly.CircuitBreaker.BrokenCircuitException.New(String, System.TimeSpan, System.Exception)
+  nameWithType: BrokenCircuitException.BrokenCircuitException(string, TimeSpan, Exception)
+  nameWithType.vb: BrokenCircuitException.New(String, TimeSpan, Exception)
+- uid: Polly.CircuitBreaker.BrokenCircuitException.#ctor(System.TimeSpan)
+  name: BrokenCircuitException(TimeSpan)
+  href: api/Polly.CircuitBreaker.BrokenCircuitException.html#Polly_CircuitBreaker_BrokenCircuitException__ctor_System_TimeSpan_
+  commentId: M:Polly.CircuitBreaker.BrokenCircuitException.#ctor(System.TimeSpan)
+  name.vb: New(TimeSpan)
+  fullName: Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(System.TimeSpan)
+  fullName.vb: Polly.CircuitBreaker.BrokenCircuitException.New(System.TimeSpan)
+  nameWithType: BrokenCircuitException.BrokenCircuitException(TimeSpan)
+  nameWithType.vb: BrokenCircuitException.New(TimeSpan)
 - uid: Polly.CircuitBreaker.BrokenCircuitException.#ctor*
   name: BrokenCircuitException
   href: api/Polly.CircuitBreaker.BrokenCircuitException.html#Polly_CircuitBreaker_BrokenCircuitException__ctor_
@@ -133,6 +160,19 @@ references:
   fullName.vb: Polly.CircuitBreaker.BrokenCircuitException.New
   nameWithType: BrokenCircuitException.BrokenCircuitException
   nameWithType.vb: BrokenCircuitException.New
+- uid: Polly.CircuitBreaker.BrokenCircuitException.RetryAfter
+  name: RetryAfter
+  href: api/Polly.CircuitBreaker.BrokenCircuitException.html#Polly_CircuitBreaker_BrokenCircuitException_RetryAfter
+  commentId: P:Polly.CircuitBreaker.BrokenCircuitException.RetryAfter
+  fullName: Polly.CircuitBreaker.BrokenCircuitException.RetryAfter
+  nameWithType: BrokenCircuitException.RetryAfter
+- uid: Polly.CircuitBreaker.BrokenCircuitException.RetryAfter*
+  name: RetryAfter
+  href: api/Polly.CircuitBreaker.BrokenCircuitException.html#Polly_CircuitBreaker_BrokenCircuitException_RetryAfter_
+  commentId: Overload:Polly.CircuitBreaker.BrokenCircuitException.RetryAfter
+  isSpec: "True"
+  fullName: Polly.CircuitBreaker.BrokenCircuitException.RetryAfter
+  nameWithType: BrokenCircuitException.RetryAfter
 - uid: Polly.CircuitBreaker.CircuitBreakerManualControl
   name: CircuitBreakerManualControl
   href: api/Polly.CircuitBreaker.CircuitBreakerManualControl.html
