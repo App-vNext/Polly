@@ -68,7 +68,8 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         int closed = 0;
         int halfOpened = 0;
 
-        var breakDuration = TimeSpan.FromSeconds(1);
+        var halfBreakDuration = TimeSpan.FromMilliseconds(500);
+        var breakDuration = halfBreakDuration + halfBreakDuration;
 
         var options = new CircuitBreakerStrategyOptions
         {
@@ -94,15 +95,25 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         opened.Should().Be(1);
         halfOpened.Should().Be(0);
         closed.Should().Be(0);
-        Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
+        BrokenCircuitException exception = Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
+        exception.RetryAfter.Should().Be(breakDuration);
+
+        // Circuit still open after some time
+        timeProvider.Advance(halfBreakDuration);
+        opened.Should().Be(1);
+        halfOpened.Should().Be(0);
+        closed.Should().Be(0);
+        exception = Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
+        exception.RetryAfter.Should().Be(halfBreakDuration);
 
         // Circuit Half Opened
-        timeProvider.Advance(breakDuration);
+        timeProvider.Advance(halfBreakDuration);
         strategy.Execute(_ => -1);
-        Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
+        exception = Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
         opened.Should().Be(2);
         halfOpened.Should().Be(1);
         closed.Should().Be(0);
+        exception.RetryAfter.Should().Be(breakDuration);
 
         // Now close it
         timeProvider.Advance(breakDuration);
@@ -119,7 +130,8 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         int closed = 0;
         int halfOpened = 0;
 
-        var breakDuration = TimeSpan.FromSeconds(1);
+        var halfBreakDuration = TimeSpan.FromMilliseconds(500);
+        var breakDuration = halfBreakDuration + halfBreakDuration;
 
         var options = new CircuitBreakerStrategyOptions
         {
@@ -146,15 +158,25 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         opened.Should().Be(1);
         halfOpened.Should().Be(0);
         closed.Should().Be(0);
-        Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
+        BrokenCircuitException exception = Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
+        exception.RetryAfter.Should().Be(breakDuration);
+
+        // Circuit still open after some time
+        timeProvider.Advance(halfBreakDuration);
+        opened.Should().Be(1);
+        halfOpened.Should().Be(0);
+        closed.Should().Be(0);
+        exception = Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
+        exception.RetryAfter.Should().Be(halfBreakDuration);
 
         // Circuit Half Opened
-        timeProvider.Advance(breakDuration);
+        timeProvider.Advance(halfBreakDuration);
         strategy.Execute(_ => -1);
-        Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
+        exception = Assert.Throws<BrokenCircuitException>(() => strategy.Execute(_ => 0));
         opened.Should().Be(2);
         halfOpened.Should().Be(1);
         closed.Should().Be(0);
+        exception.RetryAfter.Should().Be(breakDuration);
 
         // Now close it
         timeProvider.Advance(breakDuration);
@@ -178,8 +200,8 @@ public class CircuitBreakerResiliencePipelineBuilderTests
             .AddCircuitBreaker(new() { ManualControl = manualControl })
             .Build();
 
-        strategy1.Invoking(s => s.Execute(() => { })).Should().Throw<IsolatedCircuitException>();
-        strategy2.Invoking(s => s.Execute(() => { })).Should().Throw<IsolatedCircuitException>();
+        strategy1.Invoking(s => s.Execute(() => { })).Should().Throw<IsolatedCircuitException>().Where(e => e.RetryAfter == null);
+        strategy2.Invoking(s => s.Execute(() => { })).Should().Throw<IsolatedCircuitException>().Where(e => e.RetryAfter == null);
 
         await manualControl.CloseAsync();
 

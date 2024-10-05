@@ -305,11 +305,15 @@ internal sealed class CircuitStateController<T> : IDisposable
         _breakingException = outcome.Exception;
     }
 
-    private BrokenCircuitException CreateBrokenCircuitException() => _breakingException switch
+    private BrokenCircuitException CreateBrokenCircuitException()
     {
-        Exception exception => new BrokenCircuitException(BrokenCircuitException.DefaultMessage, exception),
-        _ => new BrokenCircuitException(BrokenCircuitException.DefaultMessage)
-    };
+        TimeSpan retryAfter = _blockedUntil - _timeProvider.GetUtcNow();
+        return _breakingException switch
+        {
+            Exception exception => new BrokenCircuitException(BrokenCircuitException.DefaultMessage, retryAfter, exception),
+            _ => new BrokenCircuitException(BrokenCircuitException.DefaultMessage, retryAfter)
+        };
+    }
 
     private void OpenCircuit_NeedsLock(Outcome<T> outcome, bool manual, ResilienceContext context, out Task? scheduledTask)
         => OpenCircuitFor_NeedsLock(outcome, _breakDuration, manual, context, out scheduledTask);

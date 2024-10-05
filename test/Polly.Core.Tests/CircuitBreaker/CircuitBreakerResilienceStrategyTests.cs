@@ -53,7 +53,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         var strategy = Create();
 
         await _options.ManualControl.IsolateAsync(CancellationToken.None);
-        strategy.Invoking(s => s.Execute(_ => 0)).Should().Throw<IsolatedCircuitException>();
+        strategy.Invoking(s => s.Execute(_ => 0)).Should().Throw<IsolatedCircuitException>().Where(e => e.RetryAfter == null);
 
         await _options.ManualControl.CloseAsync(CancellationToken.None);
 
