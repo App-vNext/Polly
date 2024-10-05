@@ -3,6 +3,12 @@
 [Collection(Constants.ParallelThreadDependentTestCollection)]
 public abstract class BulkheadSpecsBase : IDisposable
 {
+    protected static AssertionFailure? Expect(int expected, Func<int> actualFunc, string measure)
+    {
+        int actual = actualFunc();
+        return actual != expected ? new AssertionFailure(expected, actual, measure) : null;
+    }
+
     #region Time constraints
 
     protected readonly TimeSpan ShimTimeSpan = TimeSpan.FromMilliseconds(50); // How frequently to retry the assertions.
@@ -311,12 +317,6 @@ public abstract class BulkheadSpecsBase : IDisposable
     }
 
     #endregion
-
-    protected static AssertionFailure? Expect(int expected, Func<int> actualFunc, string measure)
-    {
-        int actual = actualFunc();
-        return actual != expected ? new AssertionFailure(expected, actual, measure) : null;
-    }
 
     protected void Within(TimeSpan timeSpan, Func<AssertionFailure?> actionContainingAssertions)
     {
