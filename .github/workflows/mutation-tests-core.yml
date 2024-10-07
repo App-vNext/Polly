@@ -2,7 +2,7 @@ name: mutation-tests-core
 
 on:
   push:
-    branches: [ main, release/* ]
+    branches: [ main, release/*, seperate_mutation_tests]
     tags: [ '*' ]
   pull_request:
     branches: [ main, release/* ]

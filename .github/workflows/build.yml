@@ -2,7 +2,7 @@ name: build
 
 on:
   push:
-    branches: [ main, release/* ]
+    branches: [ main, release/*, seperate_mutation_tests ]
     tags: [ '*' ]
   pull_request:
     branches: [ main, release/* ]
@@ -25,10 +25,6 @@ jobs:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
-
-    env:
-      # HACK Running on Windows instead of Linux due to https://github.com/stryker-mutator/stryker-net/issues/2741
-      RUN_MUTATION_TESTS: ${{ matrix.os_name == 'windows' && !startsWith(github.ref, 'refs/tags/') && 'true' || 'false' }}
 
     outputs:
       dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
@@ -93,13 +89,6 @@ jobs:
         files: ./artifacts/coverage-reports/Polly.Core.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Specs/Cobertura.xml,./artifacts/coverage-reports/Polly.RateLimiting.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Extensions.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Testing.Tests/Cobertura.xml,
         flags: ${{ matrix.os_name }}
         token: ${{ secrets.CODECOV_TOKEN }}
-
-    - name: Upload Mutation Report
-      if: always() && env.RUN_MUTATION_TESTS == 'true'
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
-      with:
-        name: mutation-report
-        path: ./artifacts/mutation-report
 
     - name: Publish NuGet packages
       uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
