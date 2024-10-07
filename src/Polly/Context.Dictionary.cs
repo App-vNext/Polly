@@ -1,6 +1,6 @@
 ﻿namespace Polly;
 
-#pragma warning disable CA1033 // Interface methods should be callable by child types
+#pragma warning disable CA1033,S4039 // Interface methods should be callable by child types
 
 /// <summary>
 /// Context that carries with a single execution through a Policy.   Commonly-used properties are directly on the class.  Backed by a dictionary of string key / object value pairs, to which user-defined values may be added.
