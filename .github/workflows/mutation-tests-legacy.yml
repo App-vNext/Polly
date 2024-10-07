@@ -2,7 +2,7 @@ name: mutation-tests-legacy
 
 on:
   push:
-    branches: [ main, release/*, seperate_mutation_tests]
+    branches: [ main, release/* ]
     tags: [ '*' ]
   pull_request:
     branches: [ main, release/* ]
@@ -59,5 +59,5 @@ jobs:
       if: always()
       uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
       with:
-        name: mutation-report-core
+        name: mutation-report-legacy
         path: ./artifacts/mutation-report

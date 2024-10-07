@@ -2,7 +2,7 @@ name: build
 
 on:
   push:
-    branches: [ main, release/*, seperate_mutation_tests ]
+    branches: [ main, release/* ]
     tags: [ '*' ]
   pull_request:
     branches: [ main, release/* ]
