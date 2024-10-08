@@ -83,7 +83,9 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
                 }
             }
 
+#pragma warning disable S3236 // Remove this argument from the method call; it hides the caller information.
             Debug.Assert(delay >= TimeSpan.Zero, "The delay cannot be negative.");
+#pragma warning restore S3236 // Remove this argument from the method call; it hides the caller information.
 
             var onRetryArgs = new OnRetryArguments<T>(context, outcome, attempt, delay, executionTime);
             _telemetry.Report<OnRetryArguments<T>, T>(new(ResilienceEventSeverity.Warning, RetryConstants.OnRetryEvent), onRetryArgs);
