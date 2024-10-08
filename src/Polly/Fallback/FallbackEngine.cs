@@ -3,6 +3,7 @@ namespace Polly.Fallback;
 
 internal static class FallbackEngine
 {
+    [DebuggerDisableUserUnhandledExceptions]
     internal static TResult Implementation<TResult>(
         Func<Context, CancellationToken, TResult> action,
         Context context,
