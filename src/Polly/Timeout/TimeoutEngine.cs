@@ -4,6 +4,7 @@ namespace Polly.Timeout;
 
 internal static class TimeoutEngine
 {
+    [DebuggerDisableUserUnhandledExceptions]
     internal static TResult Implementation<TResult>(
         Func<Context, CancellationToken, TResult> action,
         Context context,

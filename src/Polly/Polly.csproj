@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;netstandard2.0;net472;net462</TargetFrameworks>
+    <TargetFrameworks>net8.0;net6.0;netstandard2.0;net472;net462</TargetFrameworks>
     <AssemblyTitle>Polly</AssemblyTitle>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ProjectType>Library</ProjectType>
@@ -24,6 +24,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0'))">
+    <Compile Include="$(MSBuildThisFileDirectory)..\Shared\DebuggerDisableUserUnhandledExceptionsAttribute.cs" Link="DebuggerDisableUserUnhandledExceptionsAttribute.cs" />
   </ItemGroup>
 
 </Project>
