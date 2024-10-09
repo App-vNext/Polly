@@ -1,4 +1,4 @@
-name: mutation-tests-legacy
+name: mutation-tests
 
 on:
   push:
@@ -22,9 +22,18 @@ permissions:
 
 jobs:
   build:
-    name: Run Mutation Test
+    name: Run Mutation Test ${{ matrix.target }}
     runs-on: windows-latest
     timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: core
+            target: Core
+          - name: legacy
+            target: Legacy
 
     steps:
 
@@ -53,11 +62,15 @@ jobs:
     - name: Build and Run Mutation Tests
       id: build
       shell: pwsh
-      run: ./build.ps1 -Target MutationLegacy
+      run: ./build.ps1 -Target Mutation${{ matrix.target }}
+
+    - name: downcase target
+      run: |
+        echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
 
     - name: Upload Mutation Report
       if: always()
       uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
       with:
-        name: mutation-report-legacy
+        name: mutation-report-${{ matrix.name }}
         path: ./artifacts/mutation-report
