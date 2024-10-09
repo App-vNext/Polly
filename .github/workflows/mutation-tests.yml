@@ -59,7 +59,9 @@ jobs:
 
     - name: Run mutation tests
       shell: pwsh
-      run: ./build.ps1 -Target Mutation${{ matrix.target }}
+      env:
+        MUTATION_TARGET: 'Mutation${{ matrix.target }}'
+      run: ./build.ps1 -Target ${env:MUTATION_TARGET}
 
     - name: Upload Mutation Report
       if: always()
