@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   mutations:
-    name: ${{ matrix.name }}
+    name: 'mutations-${{ matrix.name }}'
     runs-on: windows-latest
     timeout-minutes: 60
 
