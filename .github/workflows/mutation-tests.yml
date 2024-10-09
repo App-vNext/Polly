@@ -3,7 +3,6 @@ name: mutation-tests
 on:
   push:
     branches: [ main, release/* ]
-    tags: [ '*' ]
   pull_request:
     branches: [ main, release/* ]
   workflow_dispatch:
@@ -21,8 +20,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Run Mutation Test ${{ matrix.target }}
+  mutations:
+    name: ${{ matrix.name }}
     runs-on: windows-latest
     timeout-minutes: 60
 
@@ -50,7 +49,6 @@ jobs:
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@6bd8b7f7774af54e05809fcc5431931b3eb1ddee # v4.0.1
-      id: setup-dotnet
 
     - name: Setup NuGet cache
       uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
@@ -59,14 +57,9 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
         restore-keys: ${{ runner.os }}-nuget-
 
-    - name: Build and Run Mutation Tests
-      id: build
+    - name: Run mutation tests
       shell: pwsh
       run: ./build.ps1 -Target Mutation${{ matrix.target }}
-
-    - name: downcase target
-      run: |
-        echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
 
     - name: Upload Mutation Report
       if: always()
