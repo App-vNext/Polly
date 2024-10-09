@@ -162,26 +162,16 @@ Task("__RunTests")
 Task("__RunCoreMutationTests")
     .Does((context) =>
 {
-    var oldDirectory = context.Environment.WorkingDirectory;
-    context.Environment.WorkingDirectory = MakeAbsolute(Directory("test"));
-
-    MutationTestProject(File("../src/Polly.Core/Polly.Core.csproj"), File("./Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core.csproj");
-    MutationTestProject(File("../src/Polly.RateLimiting/Polly.RateLimiting.csproj"), File("./Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj"), "Polly.RateLimiting.csproj");
-    MutationTestProject(File("../src/Polly.Extensions/Polly.Extensions.csproj"), File("./Polly.Extensions.Tests/Polly.Extensions.Tests.csproj"), "Polly.Extensions.csproj");
-    MutationTestProject(File("../src/Polly.Testing/Polly.Testing.csproj"), File("./Polly.Testing.Tests/Polly.Testing.Tests.csproj"), "Polly.Testing.csproj");
-
-    context.Environment.WorkingDirectory = oldDirectory;
+    MutationTestProject(File("./src/Polly.Core/Polly.Core.csproj"), File("./test/Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core.csproj");
+    MutationTestProject(File("./src/Polly.RateLimiting/Polly.RateLimiting.csproj"), File("./test/Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj"), "Polly.RateLimiting.csproj");
+    MutationTestProject(File("./src/Polly.Extensions/Polly.Extensions.csproj"), File("./test/Polly.Extensions.Tests/Polly.Extensions.Tests.csproj"), "Polly.Extensions.csproj");
+    MutationTestProject(File("./src/Polly.Testing/Polly.Testing.csproj"), File("./test/Polly.Testing.Tests/Polly.Testing.Tests.csproj"), "Polly.Testing.csproj");
 });
 
 Task("__RunLegacyMutationTests")
     .Does((context) =>
 {
-    var oldDirectory = context.Environment.WorkingDirectory;
-    context.Environment.WorkingDirectory = MakeAbsolute(Directory("test"));
-
-    MutationTestProject(File("../src/Polly/Polly.csproj"), File("./Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
-
-    context.Environment.WorkingDirectory = oldDirectory;
+    MutationTestProject(File("./src/Polly/Polly.csproj"), File("./test/Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
 });
 
 Task("__CreateNuGetPackages")
