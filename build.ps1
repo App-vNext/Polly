@@ -27,6 +27,7 @@ https://cakebuild.net
 Param(
     [string]$Script = "build.cake",
     [string]$Target = "Default",
+    [ValidateSet("Default", "MutationCore", "MutationLegacy")]
     [string]$Configuration = "Release",
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
     [string]$Verbosity = "Verbose",
