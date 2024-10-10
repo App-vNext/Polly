@@ -76,7 +76,7 @@ jobs:
 
     - name: Upload Coverage Reports
       if: always()
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
       with:
         name: coverage-${{ matrix.os_name }}
         path: ./artifacts/coverage-reports
@@ -91,14 +91,14 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Publish NuGet packages
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
       with:
         name: packages-${{ matrix.os_name }}
         path: ./artifacts/package/release
         if-no-files-found: error
 
     - name: Upload signing file list
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
       if: matrix.os_name == 'windows'
       with:
         name: signing-config
@@ -207,7 +207,7 @@ jobs:
         }
 
     - name: Upload signed packages
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
       with:
         name: signed-packages
         path: packages
