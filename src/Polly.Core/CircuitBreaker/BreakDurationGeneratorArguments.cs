@@ -7,10 +7,11 @@ namespace Polly.CircuitBreaker;
 /// <summary>
 /// Represents arguments used to generate a dynamic break duration for a circuit breaker.
 /// </summary>
-public readonly struct BreakDurationGeneratorArguments
+/// <typeparam name="TResult">The type of result.</typeparam>
+public readonly struct BreakDurationGeneratorArguments<TResult>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BreakDurationGeneratorArguments"/> struct.
+    /// Initializes a new instance of the <see cref="BreakDurationGeneratorArguments{TResult}"/> struct.
     /// </summary>
     /// <param name="failureRate">The failure rate at which the circuit breaker should trip.
     /// It represents the ratio of failed actions to the total executed actions.</param>
@@ -18,20 +19,19 @@ public readonly struct BreakDurationGeneratorArguments
     /// This count is used to determine if the failure threshold has been reached.</param>
     /// <param name="context">The resilience context providing additional information
     /// about the execution state and failures.</param>
+    /// <param name="outcome">The outcome of the resilience operation or event.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public BreakDurationGeneratorArguments(
         double failureRate,
         int failureCount,
-        ResilienceContext context)
+        ResilienceContext context,
+        Outcome<TResult> outcome)
+        : this(failureRate, failureCount, context, 0, outcome)
     {
-        FailureRate = failureRate;
-        FailureCount = failureCount;
-        Context = context;
-        HalfOpenAttempts = 0;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BreakDurationGeneratorArguments"/> struct.
+    /// Initializes a new instance of the <see cref="BreakDurationGeneratorArguments{TResult}"/> struct.
     /// </summary>
     /// <param name="failureRate">The failure rate at which the circuit breaker should trip.
     /// It represents the ratio of failed actions to the total executed actions.</param>
@@ -40,16 +40,19 @@ public readonly struct BreakDurationGeneratorArguments
     /// <param name="context">The resilience context providing additional information
     /// about the execution state and failures.</param>
     /// <param name="halfOpenAttempts">The number of half-open attempts.</param>
+    /// <param name="outcome">The outcome of the resilience operation or event.</param>
     public BreakDurationGeneratorArguments(
         double failureRate,
         int failureCount,
         ResilienceContext context,
-        int halfOpenAttempts)
+        int halfOpenAttempts,
+        Outcome<TResult> outcome)
     {
         FailureRate = failureRate;
         FailureCount = failureCount;
         Context = context;
         HalfOpenAttempts = halfOpenAttempts;
+        Outcome = outcome;
     }
 
     /// <summary>
@@ -71,4 +74,9 @@ public readonly struct BreakDurationGeneratorArguments
     /// Gets the number of half-open attempts.
     /// </summary>
     public int HalfOpenAttempts { get; }
+
+    /// <summary>
+    /// Gets the outcome of the user-specified callback.
+    /// </summary>
+    public Outcome<TResult> Outcome { get; }
 }
