@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
-using Polly.DependencyInjection;
 using Polly.Registry;
 using Polly.Telemetry;
 
@@ -20,18 +19,23 @@ public class ReloadableResiliencePipelineTests
         var resList = new List<IDisposable>();
         var reloadableConfig = new ReloadableConfiguration();
         reloadableConfig.Reload(new() { { "tag", "initial-tag" } });
-        var builder = new ConfigurationBuilder().Add(reloadableConfig);
         var fakeListener = new FakeTelemetryListener();
+
+        var configuration = new ConfigurationBuilder()
+            .Add(reloadableConfig)
+            .Build();
 
         var services = new ServiceCollection();
 
         if (name == null)
         {
-            services.Configure<ReloadableStrategyOptions>(builder.Build());
+            services.Configure<ReloadableStrategyOptions>(configuration)
+                    .Configure<ReloadableStrategyOptions>(options => options.OptionsName = name);
         }
         else
         {
-            services.Configure<ReloadableStrategyOptions>(name, builder.Build());
+            services.Configure<ReloadableStrategyOptions>(name, configuration)
+                    .Configure<ReloadableStrategyOptions>(name, options => options.OptionsName = name);
         }
 
         services.Configure<TelemetryOptions>(options => options.TelemetryListeners.Add(fakeListener));
@@ -40,6 +44,9 @@ public class ReloadableResiliencePipelineTests
             builder.InstanceName = "my-instance";
 
             var options = context.GetOptions<ReloadableStrategyOptions>(name);
+            options.Should().NotBeNull();
+            options.OptionsName.Should().Be(name);
+
             context.EnableReloads<ReloadableStrategyOptions>(name);
 
             builder.AddStrategy(_ =>
@@ -48,7 +55,7 @@ public class ReloadableResiliencePipelineTests
                 resList.Add(res);
                 return new ReloadableStrategy(options.Tag, res);
             },
-            new ReloadableStrategyOptions());
+            options);
         });
 
         var serviceProvider = services.BuildServiceProvider();
@@ -115,6 +122,8 @@ public class ReloadableResiliencePipelineTests
     public class ReloadableStrategyOptions : ResilienceStrategyOptions
     {
         public string Tag { get; set; } = string.Empty;
+
+        public string? OptionsName { get; set; }
     }
 
     private class ReloadableConfiguration : ConfigurationProvider, IConfigurationSource
