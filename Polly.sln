@@ -29,9 +29,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{04E3C7C5-31F7-4CD6-8BEC-C1032527D231}"
 	ProjectSection(SolutionItems) = preProject
 		eng\Analyzers.targets = eng\Analyzers.targets
+		eng\Benchmark.targets = eng\Benchmark.targets
+		eng\bump-version.ps1 = eng\bump-version.ps1
 		eng\Common.targets = eng\Common.targets
 		eng\Library.targets = eng\Library.targets
+		eng\stryker-config.json = eng\stryker-config.json
 		eng\Test.targets = eng\Test.targets
+		eng\update-baselines.ps1 = eng\update-baselines.ps1
+		eng\update-changelog.ps1 = eng\update-changelog.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core.Benchmarks", "bench\Polly.Core.Benchmarks\Polly.Core.Benchmarks.csproj", "{CC306C35-E3BC-4F0B-AB8C-B9D4C82DC3DE}"
