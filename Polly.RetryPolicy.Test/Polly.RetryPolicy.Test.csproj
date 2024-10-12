@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ProjectType>Test</ProjectType>
+    <Threshold>75,60,70</Threshold>
+    <Include>[Polly]*</Include>
+    <IncludePollyUsings>true</IncludePollyUsings>
+    <NoWarn>$(NoWarn);CA1030;CA1031;CA2008;CA2201</NoWarn>
+    <NoWarn>$(NoWarn);S104;S6966</NoWarn>
+    <NoWarn>$(NoWarn);SA1402;SA1600</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="FluentAssertions" />
+    <Using Include="FluentAssertions.Execution" />
+    <Using Include="FluentAssertions.Extensions" />
+    <Using Include="NSubstitute" />
+    <Using Include="Xunit" />
+    <Using Include="Xunit.Abstractions" />
+    <Using Include="Xunit.Sdk" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\Polly\Polly.csproj" />
+  </ItemGroup>
+</Project>
