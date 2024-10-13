@@ -345,3 +345,46 @@ new ResiliencePipelineBuilder()
     });
 ```
 <!-- endSnippet -->
+
+It is also possible to create a rate limiter strategy using [multiple chained rate limiters](https://learn.microsoft.com/aspnet/core/performance/rate-limit#create-chained-limiters)
+to combine multiple rate-limiters with different configurations as shown below.
+
+For example, we can configure a rate limit of 100 requests per minute that also includes a rate limit of 10 requests per second.
+The rate limit is partitioned by a key which could, for example, be the user ID associated with an authenticated HTTP request to
+apply the rate limits to each user of the system individually.
+
+<!-- snippet: rate-limiter-chained -->
+```cs
+// Use the user's ID as the partition key.
+var partitionKey = "user-id";
+
+var firstSlidingWindow = PartitionedRateLimiter.Create<ResilienceContext, string>((context) =>
+{
+    return RateLimitPartition.GetSlidingWindowLimiter(partitionKey, (partitionKey) => new()
+    {
+        PermitLimit = 100,
+        Window = TimeSpan.FromMinutes(1),
+    });
+});
+
+var secondSlidingWindow = PartitionedRateLimiter.Create<ResilienceContext, string>((context) =>
+{
+    return RateLimitPartition.GetSlidingWindowLimiter(partitionKey, (partitionKey) => new()
+    {
+        PermitLimit = 10,
+        Window = TimeSpan.FromSeconds(1),
+    });
+});
+
+// Create a rate limiter that combines the two sliding windows.
+var chainedRateLimiter = PartitionedRateLimiter.CreateChained(firstSlidingWindow, secondSlidingWindow);
+
+// Create the pipeline using the rate limiter that chains the windows together.
+new ResiliencePipelineBuilder()
+    .AddRateLimiter(new RateLimiterStrategyOptions
+    {
+        RateLimiter = (context) => chainedRateLimiter.AcquireAsync(context.Context),
+    })
+    .Build();
+```
+<!-- endSnippet -->
