@@ -56,6 +56,42 @@ internal static class RateLimiter
             });
 
         #endregion
+
+        #region rate-limiter-chained
+
+        // Use the user's ID as the partition key.
+        var partitionKey = "user-id";
+
+        var firstSlidingWindow = PartitionedRateLimiter.Create<ResilienceContext, string>((context) =>
+        {
+            return RateLimitPartition.GetSlidingWindowLimiter(partitionKey, (partitionKey) => new()
+            {
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1),
+            });
+        });
+
+        var secondSlidingWindow = PartitionedRateLimiter.Create<ResilienceContext, string>((context) =>
+        {
+            return RateLimitPartition.GetSlidingWindowLimiter(partitionKey, (partitionKey) => new()
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromSeconds(1),
+            });
+        });
+
+        // Create a rate limiter that combines the two sliding windows.
+        var chainedRateLimiter = PartitionedRateLimiter.CreateChained(firstSlidingWindow, secondSlidingWindow);
+
+        // Create the pipeline using the rate limiter that chains the windows together.
+        new ResiliencePipelineBuilder()
+            .AddRateLimiter(new RateLimiterStrategyOptions
+            {
+                RateLimiter = (context) => chainedRateLimiter.AcquireAsync(context.Context),
+            })
+            .Build();
+
+        #endregion
     }
 
     public static async Task HandleRejection()
