@@ -3,6 +3,8 @@ using System.Runtime.Serialization;
 #endif
 using System.Threading.RateLimiting;
 
+using Polly.Telemetry;
+
 namespace Polly.RateLimiting;
 
 /// <summary>
@@ -24,10 +26,38 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
     /// </summary>
+    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
+    public RateLimiterRejectedException(ResilienceTelemetrySource telemetrySource)
+        : base("The operation could not be executed because it was rejected by the rate limiter.")
+    {
+        var pipelineName = telemetrySource?.PipelineName ?? "(null)";
+        var pipelineInstanceName = telemetrySource?.PipelineInstanceName ?? "(null)";
+        var strategyName = telemetrySource?.StrategyName ?? "(null)";
+        TelemetrySource = $"{pipelineName}/{pipelineInstanceName}/{strategyName}";
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
+    /// </summary>
     /// <param name="retryAfter">The retry after value.</param>
     public RateLimiterRejectedException(TimeSpan retryAfter)
         : base($"The operation could not be executed because it was rejected by the rate limiter. It can be retried after '{retryAfter}'.")
         => RetryAfter = retryAfter;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
+    /// </summary>
+    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
+    /// <param name="retryAfter">The retry after value.</param>
+    public RateLimiterRejectedException(ResilienceTelemetrySource telemetrySource, TimeSpan retryAfter)
+        : base($"The operation could not be executed because it was rejected by the rate limiter. It can be retried after '{retryAfter}'.")
+    {
+        var pipelineName = telemetrySource?.PipelineName ?? "(null)";
+        var pipelineInstanceName = telemetrySource?.PipelineInstanceName ?? "(null)";
+        var strategyName = telemetrySource?.StrategyName ?? "(null)";
+        TelemetrySource = $"{pipelineName}/{pipelineInstanceName}/{strategyName}";
+        RetryAfter = retryAfter;
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -74,6 +104,11 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// </remarks>
     public TimeSpan? RetryAfter { get; }
 
+    /// <summary>
+    /// Gets the name of the strategy which has thrown the exception.
+    /// </summary>
+    public string? TelemetrySource { get; }
+
 #pragma warning disable RS0016 // Add public types and members to the declared API
 #if !NETCOREAPP
     /// <summary>
@@ -84,11 +119,13 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     private RateLimiterRejectedException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        var value = info.GetDouble("RetryAfter");
-        if (value >= 0.0)
+        var retryAfter = info.GetDouble(nameof(RetryAfter));
+        if (retryAfter >= 0.0)
         {
-            RetryAfter = TimeSpan.FromSeconds(value);
+            RetryAfter = TimeSpan.FromSeconds(retryAfter);
         }
+
+        Source = info.GetString(nameof(Source));
     }
 
     /// <inheritdoc/>
@@ -96,13 +133,15 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     {
         Guard.NotNull(info);
 
+        info.AddValue(nameof(Source), Source);
+
         if (RetryAfter.HasValue)
         {
-            info.AddValue("RetryAfter", RetryAfter.Value.TotalSeconds);
+            info.AddValue(nameof(RetryAfter), RetryAfter.Value.TotalSeconds);
         }
         else
         {
-            info.AddValue("RetryAfter", -1.0);
+            info.AddValue(nameof(RetryAfter), -1.0);
         }
 
         base.GetObjectData(info, context);

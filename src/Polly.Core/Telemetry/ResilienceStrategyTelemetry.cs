@@ -19,7 +19,11 @@ public sealed class ResilienceStrategyTelemetry
 
     internal TelemetryListener? Listener { get; }
 
-    internal ResilienceTelemetrySource TelemetrySource { get; }
+    /// <summary>
+    /// Gets BlahBlahBlah.
+    /// </summary>
+    /// <value>dummy.</value>
+    public ResilienceTelemetrySource TelemetrySource { get; } // TODO: fix visibility
 
     /// <summary>
     /// Reports an event that occurred in a resilience strategy.
