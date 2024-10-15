@@ -23,7 +23,7 @@ public sealed class ResilienceStrategyTelemetry
     /// Gets BlahBlahBlah.
     /// </summary>
     /// <value>dummy.</value>
-    public ResilienceTelemetrySource TelemetrySource { get; } // TODO: fix visibility
+    public ResilienceTelemetrySource TelemetrySource { get; } // Fix visibility
 
     /// <summary>
     /// Reports an event that occurred in a resilience strategy.
