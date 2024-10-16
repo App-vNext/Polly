@@ -125,6 +125,16 @@ public class RateLimiterRejectedExceptionTests
     }
 
     [Fact]
+    public void Ctor_Message_RetryAfter_Ok()
+    {
+        var exception = new RateLimiterRejectedException(_message, _retryAfter);
+        exception.InnerException.Should().BeNull();
+        exception.Message.Should().Be(_message);
+        exception.RetryAfter.Should().Be(_retryAfter);
+        exception.TelemetrySource.Should().BeNull();
+    }
+
+    [Fact]
     public void Ctor_Message_InnerException_Ok()
     {
         var exception = new RateLimiterRejectedException(_message, new InvalidOperationException());
