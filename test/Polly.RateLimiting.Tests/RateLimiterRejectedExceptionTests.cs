@@ -1,5 +1,6 @@
 using Polly.RateLimiting;
 using Polly.Telemetry;
+using Polly.TestUtils;
 
 namespace Polly.Core.Tests.Timeout;
 
