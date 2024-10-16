@@ -125,7 +125,11 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
             RetryAfter = TimeSpan.FromSeconds(retryAfter);
         }
 
-        Source = info.GetString(nameof(Source));
+        var telemetrySource = info.GetString(nameof(TelemetrySource));
+        if (telemetrySource is not null)
+        {
+            Source = telemetrySource;
+        }
     }
 
     /// <inheritdoc/>
@@ -133,7 +137,14 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     {
         Guard.NotNull(info);
 
-        info.AddValue(nameof(Source), Source);
+        if (TelemetrySource is not null)
+        {
+            info.AddValue(nameof(TelemetrySource), TelemetrySource);
+        }
+        else
+        {
+            info.AddValue(nameof(TelemetrySource), "(null)/(null)/(null)");
+        }
 
         if (RetryAfter.HasValue)
         {
