@@ -1,6 +1,5 @@
 using Polly.RateLimiting;
 using Polly.Telemetry;
-using Polly.TestUtils;
 
 namespace Polly.Core.Tests.Timeout;
 
@@ -150,17 +149,27 @@ public class RateLimiterRejectedExceptionTests
     public void BinaryDeserialization_Ok()
     {
         var timeout = TimeSpan.FromSeconds(4);
-        var result = BinarySerializationUtil.SerializeAndDeserializeException(new RateLimiterRejectedException(timeout));
+        var result = SerializeAndDeserializeException(new RateLimiterRejectedException(timeout));
         result.RetryAfter.Should().Be(timeout);
 
-        result = BinarySerializationUtil.SerializeAndDeserializeException(new RateLimiterRejectedException(TimeSpan.Zero));
+        result = SerializeAndDeserializeException(new RateLimiterRejectedException(TimeSpan.Zero));
         result.RetryAfter.Should().BeNull();
 
-        result = BinarySerializationUtil.SerializeAndDeserializeException(new RateLimiterRejectedException());
+        result = SerializeAndDeserializeException(new RateLimiterRejectedException());
         result.RetryAfter.Should().BeNull();
 
-        result = BinarySerializationUtil.SerializeAndDeserializeException(new RateLimiterRejectedException(_source));
+        result = SerializeAndDeserializeException(new RateLimiterRejectedException(_source));
         result.TelemetrySource.Should().Be(_telemetrySource);
+    }
+
+        public static T SerializeAndDeserializeException<T>(T exception)
+        where T : Exception
+    {
+        using var stream = new MemoryStream();
+        var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+        formatter.Serialize(stream, exception);
+        stream.Position = 0;
+        return (T)formatter.Deserialize(stream);
     }
 #endif
 }
