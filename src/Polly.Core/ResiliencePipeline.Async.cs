@@ -25,7 +25,7 @@ public partial class ResiliencePipeline
         InitializeAsyncContext(context);
 
         var outcome = await Component.ExecuteCore(
-            static async (context, state) =>
+            [DebuggerDisableUserUnhandledExceptions] static async (context, state) =>
             {
                 try
                 {
@@ -60,7 +60,7 @@ public partial class ResiliencePipeline
         InitializeAsyncContext(context);
 
         var outcome = await Component.ExecuteCore(
-            static async (context, state) =>
+            [DebuggerDisableUserUnhandledExceptions] static async (context, state) =>
             {
                 try
                 {
@@ -99,7 +99,7 @@ public partial class ResiliencePipeline
         try
         {
             var outcome = await Component.ExecuteCore(
-                static async (context, state) =>
+                [DebuggerDisableUserUnhandledExceptions] static async (context, state) =>
                 {
                     try
                     {
@@ -140,7 +140,7 @@ public partial class ResiliencePipeline
         try
         {
             var outcome = await Component.ExecuteCore(
-                static async (context, state) =>
+                [DebuggerDisableUserUnhandledExceptions] static async (context, state) =>
                 {
                     try
                     {

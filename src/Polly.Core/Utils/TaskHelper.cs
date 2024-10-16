@@ -1,5 +1,6 @@
 ﻿namespace Polly.Utils;
 
+#pragma warning disable S3236 // Remove this argument from the method call; it hides the caller information.
 #pragma warning disable S5034 // "ValueTask" should be consumed correctly
 
 internal static class TaskHelper
