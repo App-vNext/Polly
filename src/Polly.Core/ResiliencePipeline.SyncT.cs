@@ -26,7 +26,7 @@ public partial class ResiliencePipeline
         InitializeSyncContext<TResult>(context);
 
         return Component.ExecuteCoreSync(
-           static (context, state) =>
+           [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
            {
                try
                {
@@ -60,7 +60,7 @@ public partial class ResiliencePipeline
         InitializeSyncContext<TResult>(context);
 
         return Component.ExecuteCoreSync(
-            static (context, state) =>
+            [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
             {
                 try
                 {
@@ -95,7 +95,7 @@ public partial class ResiliencePipeline
         try
         {
             return Component.ExecuteCoreSync(
-                static (context, state) =>
+                [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
                 {
                     try
                     {
@@ -131,7 +131,7 @@ public partial class ResiliencePipeline
         try
         {
             return Component.ExecuteCoreSync(
-                static (_, state) =>
+                [DebuggerDisableUserUnhandledExceptions] static (_, state) =>
                 {
                     try
                     {
@@ -169,7 +169,7 @@ public partial class ResiliencePipeline
         try
         {
             return Component.ExecuteCoreSync(
-                static (_, state) =>
+                [DebuggerDisableUserUnhandledExceptions] static (_, state) =>
                 {
                     try
                     {
@@ -211,7 +211,7 @@ public partial class ResiliencePipeline
         try
         {
             return Component.ExecuteCoreSync(
-                static (context, state) =>
+                [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
                 {
                     try
                     {

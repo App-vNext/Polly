@@ -3,6 +3,7 @@ namespace Polly.Retry;
 
 internal static class AsyncRetryEngine
 {
+    [DebuggerDisableUserUnhandledExceptions]
     internal static async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
