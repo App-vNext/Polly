@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0;net8.0;net6.0;netstandard2.0;net472;net462</TargetFrameworks>
+    <TargetFrameworks>net8.0;net6.0;netstandard2.0;net472;net462</TargetFrameworks>
     <AssemblyTitle>Polly.Core</AssemblyTitle>
     <RootNamespace>Polly</RootNamespace>
     <Nullable>enable</Nullable>
