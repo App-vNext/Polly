@@ -172,7 +172,7 @@ public class RateLimiterRejectedExceptionTests
         result.TelemetrySource.Should().Be(_telemetrySource);
     }
 
-        public static T SerializeAndDeserializeException<T>(T exception)
+    public static T SerializeAndDeserializeException<T>(T exception)
         where T : Exception
     {
         using var stream = new MemoryStream();
