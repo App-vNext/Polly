@@ -3,8 +3,6 @@ using System.Runtime.Serialization;
 #endif
 using System.Threading.RateLimiting;
 
-using Polly.Telemetry;
-
 namespace Polly.RateLimiting;
 
 /// <summary>
@@ -26,27 +24,10 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
     /// </summary>
-    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
-    public RateLimiterRejectedException(ResilienceTelemetrySource telemetrySource)
-        : base("The operation could not be executed because it was rejected by the rate limiter.")
-        => TelemetrySource = ComposeTelemetrySource(telemetrySource);
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
-    /// </summary>
     /// <param name="retryAfter">The retry after value.</param>
     public RateLimiterRejectedException(TimeSpan retryAfter)
         : base($"The operation could not be executed because it was rejected by the rate limiter. It can be retried after '{retryAfter}'.")
         => RetryAfter = retryAfter;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
-    /// </summary>
-    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
-    /// <param name="retryAfter">The retry after value.</param>
-    public RateLimiterRejectedException(ResilienceTelemetrySource telemetrySource, TimeSpan retryAfter)
-        : base($"The operation could not be executed because it was rejected by the rate limiter. It can be retried after '{retryAfter}'.")
-        => (TelemetrySource, RetryAfter) = (ComposeTelemetrySource(telemetrySource), retryAfter);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -62,9 +43,9 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
     /// <param name="telemetrySource">The source pipeline and strategy names.</param>
-    public RateLimiterRejectedException(string message, ResilienceTelemetrySource telemetrySource)
+    public RateLimiterRejectedException(string message, string telemetrySource)
         : base(message)
-        => TelemetrySource = ComposeTelemetrySource(telemetrySource);
+        => TelemetrySource = telemetrySource;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -81,9 +62,9 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// <param name="message">The message that describes the error.</param>
     /// <param name="telemetrySource">The source pipeline and strategy names.</param>
     /// <param name="retryAfter">The retry after value.</param>
-    public RateLimiterRejectedException(string message, ResilienceTelemetrySource telemetrySource, TimeSpan retryAfter)
+    public RateLimiterRejectedException(string message, string telemetrySource, TimeSpan retryAfter)
         : base(message)
-        => (TelemetrySource, RetryAfter) = (ComposeTelemetrySource(telemetrySource), retryAfter);
+        => (TelemetrySource, RetryAfter) = (telemetrySource, retryAfter);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -101,9 +82,9 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// <param name="message">The message that describes the error.</param>
     /// <param name="telemetrySource">The source pipeline and strategy names.</param>
     /// <param name="inner">The inner exception.</param>
-    public RateLimiterRejectedException(string message, ResilienceTelemetrySource telemetrySource, Exception inner)
+    public RateLimiterRejectedException(string message, string telemetrySource, Exception inner)
         : base(message, inner)
-        => TelemetrySource = ComposeTelemetrySource(telemetrySource);
+        => TelemetrySource = telemetrySource;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -122,9 +103,9 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// <param name="telemetrySource">The source pipeline and strategy names.</param>
     /// <param name="retryAfter">The retry after value.</param>
     /// <param name="inner">The inner exception.</param>
-    public RateLimiterRejectedException(string message, ResilienceTelemetrySource telemetrySource, TimeSpan retryAfter, Exception inner)
+    public RateLimiterRejectedException(string message, string telemetrySource, TimeSpan retryAfter, Exception inner)
         : base(message, inner)
-        => (TelemetrySource, RetryAfter) = (ComposeTelemetrySource(telemetrySource), retryAfter);
+        => (TelemetrySource, RetryAfter) = (telemetrySource, retryAfter);
 
     /// <summary>
     /// Gets the amount of time to wait before retrying again.
@@ -139,14 +120,6 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// Gets the name of the strategy which has thrown the exception.
     /// </summary>
     public string? TelemetrySource { get; }
-
-    private static string ComposeTelemetrySource(ResilienceTelemetrySource telemetrySource)
-    {
-        var pipelineName = telemetrySource?.PipelineName ?? "(null)";
-        var pipelineInstanceName = telemetrySource?.PipelineInstanceName ?? "(null)";
-        var strategyName = telemetrySource?.StrategyName ?? "(null)";
-        return $"{pipelineName}/{pipelineInstanceName}/{strategyName}";
-    }
 
 #pragma warning disable RS0016 // Add public types and members to the declared API
 #if !NETCOREAPP
@@ -176,23 +149,8 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     {
         Guard.NotNull(info);
 
-        if (TelemetrySource is not null)
-        {
-            info.AddValue(nameof(TelemetrySource), TelemetrySource);
-        }
-        else
-        {
-            info.AddValue(nameof(TelemetrySource), "(null)/(null)/(null)");
-        }
-
-        if (RetryAfter.HasValue)
-        {
-            info.AddValue(nameof(RetryAfter), RetryAfter.Value.TotalSeconds);
-        }
-        else
-        {
-            info.AddValue(nameof(RetryAfter), -1.0);
-        }
+        info.AddValue(nameof(TelemetrySource), TelemetrySource ?? "(null)/(null)/(null)");
+        info.AddValue(nameof(RetryAfter), RetryAfter.HasValue ? RetryAfter.Value.TotalSeconds : -1.0);
 
         base.GetObjectData(info, context);
     }

@@ -65,7 +65,7 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy, IDispo
             await OnLeaseRejected(new OnRateLimiterRejectedArguments(context, lease)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
-        var source = _telemetry.TelemetrySource;
+        var source = _telemetry.GetTelemetrySource();
         var exception = retryAfter.HasValue ? new RateLimiterRejectedException(source, retryAfter.Value) : new RateLimiterRejectedException(source);
 
         return Outcome.FromException<TResult>(exception.TrySetStackTrace());

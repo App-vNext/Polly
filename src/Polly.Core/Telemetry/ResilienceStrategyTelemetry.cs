@@ -19,11 +19,21 @@ public sealed class ResilienceStrategyTelemetry
 
     internal TelemetryListener? Listener { get; }
 
+    internal ResilienceTelemetrySource TelemetrySource { get; }
+
+ #pragma warning (disable: S4049 CA1024)
     /// <summary>
-    /// Gets BlahBlahBlah.
+    /// Returns the concatenated telemetry source.
     /// </summary>
-    /// <value>dummy.</value>
-    public ResilienceTelemetrySource TelemetrySource { get; } // Fix visibility
+    /// <returns>The concatenated telemetry source.</returns>
+    public string GetTelemetrySource()
+    {
+        var pipelineName = TelemetrySource?.PipelineName ?? "(null)";
+        var pipelineInstanceName = TelemetrySource?.PipelineInstanceName ?? "(null)";
+        var strategyName = TelemetrySource?.StrategyName ?? "(null)";
+        return $"{pipelineName}/{pipelineInstanceName}/{strategyName}";
+    }
+ #pragma warning (restore S4049 CA1024)
 
     /// <summary>
     /// Reports an event that occurred in a resilience strategy.
