@@ -83,38 +83,6 @@ public class RateLimiterRejectedExceptionTests
     }
 
     [Fact]
-    public void Ctor_TelemetrySource_Null_RetryAfter_Ok()
-    {
-        // Arrange
-        ResilienceTelemetrySource? source = null;
-
-        // Act
-        var exception = new RateLimiterRejectedException(source!, _retryAfter);
-
-        // Assert
-        exception.InnerException.Should().BeNull();
-        exception.Message.Should().Be($"The operation could not be executed because it was rejected by the rate limiter. It can be retried after '00:00:04'.");
-        exception.RetryAfter.Should().Be(_retryAfter);
-        exception.TelemetrySource.Should().Be("(null)/(null)/(null)");
-    }
-
-    [Fact]
-    public void Ctor_TelemetrySource_Nulls_RetryAfter_Ok()
-    {
-        // Arrange
-        var source = new ResilienceTelemetrySource(null, null, null);
-
-        // Act
-        var exception = new RateLimiterRejectedException(source, _retryAfter);
-
-        // Assert
-        exception.InnerException.Should().BeNull();
-        exception.Message.Should().Be($"The operation could not be executed because it was rejected by the rate limiter. It can be retried after '00:00:04'.");
-        exception.RetryAfter.Should().Be(_retryAfter);
-        exception.TelemetrySource.Should().Be("(null)/(null)/(null)");
-    }
-
-    [Fact]
     public void Ctor_Message_Ok()
     {
         var exception = new RateLimiterRejectedException(_message);
@@ -122,6 +90,16 @@ public class RateLimiterRejectedExceptionTests
         exception.Message.Should().Be(_message);
         exception.RetryAfter.Should().BeNull();
         exception.TelemetrySource.Should().BeNull();
+    }
+
+    [Fact]
+    public void Ctor_Message_TelemetrySource_Ok()
+    {
+        var exception = new RateLimiterRejectedException(_message, _source);
+        exception.InnerException.Should().BeNull();
+        exception.Message.Should().Be(_message);
+        exception.RetryAfter.Should().BeNull();
+        exception.TelemetrySource.Should().Be(_telemetrySource);
     }
 
     [Fact]
@@ -135,6 +113,16 @@ public class RateLimiterRejectedExceptionTests
     }
 
     [Fact]
+    public void Ctor_Message_TelemetrySource_RetryAfter_Ok()
+    {
+        var exception = new RateLimiterRejectedException(_message, _source, _retryAfter);
+        exception.InnerException.Should().BeNull();
+        exception.Message.Should().Be(_message);
+        exception.RetryAfter.Should().Be(_retryAfter);
+        exception.TelemetrySource.Should().Be(_telemetrySource);
+    }
+
+    [Fact]
     public void Ctor_Message_InnerException_Ok()
     {
         var exception = new RateLimiterRejectedException(_message, new InvalidOperationException());
@@ -145,6 +133,16 @@ public class RateLimiterRejectedExceptionTests
     }
 
     [Fact]
+    public void Ctor_Message_TelemetrySource_InnerException_Ok()
+    {
+        var exception = new RateLimiterRejectedException(_message, _source, new InvalidOperationException());
+        exception.InnerException.Should().BeOfType<InvalidOperationException>();
+        exception.Message.Should().Be(_message);
+        exception.RetryAfter.Should().BeNull();
+        exception.TelemetrySource.Should().Be(_telemetrySource);
+    }
+
+    [Fact]
     public void Ctor_Message_RetryAfter_InnerException_Ok()
     {
         var exception = new RateLimiterRejectedException(_message, _retryAfter, new InvalidOperationException());
@@ -152,6 +150,16 @@ public class RateLimiterRejectedExceptionTests
         exception.Message.Should().Be(_message);
         exception.RetryAfter.Should().Be(_retryAfter);
         exception.TelemetrySource.Should().BeNull();
+    }
+
+    [Fact]
+    public void Ctor_Message_TelemetrySource_RetryAfter_InnerException_Ok()
+    {
+        var exception = new RateLimiterRejectedException(_message, _source, _retryAfter, new InvalidOperationException());
+        exception.InnerException.Should().BeOfType<InvalidOperationException>();
+        exception.Message.Should().Be(_message);
+        exception.RetryAfter.Should().Be(_retryAfter);
+        exception.TelemetrySource.Should().Be(_telemetrySource);
     }
 
 #if !NETCOREAPP

@@ -29,12 +29,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// <param name="telemetrySource">The source pipeline and strategy names.</param>
     public RateLimiterRejectedException(ResilienceTelemetrySource telemetrySource)
         : base("The operation could not be executed because it was rejected by the rate limiter.")
-    {
-        var pipelineName = telemetrySource?.PipelineName ?? "(null)";
-        var pipelineInstanceName = telemetrySource?.PipelineInstanceName ?? "(null)";
-        var strategyName = telemetrySource?.StrategyName ?? "(null)";
-        TelemetrySource = $"{pipelineName}/{pipelineInstanceName}/{strategyName}";
-    }
+        => TelemetrySource = ComposeTelemetrySource(telemetrySource);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -51,13 +46,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// <param name="retryAfter">The retry after value.</param>
     public RateLimiterRejectedException(ResilienceTelemetrySource telemetrySource, TimeSpan retryAfter)
         : base($"The operation could not be executed because it was rejected by the rate limiter. It can be retried after '{retryAfter}'.")
-    {
-        var pipelineName = telemetrySource?.PipelineName ?? "(null)";
-        var pipelineInstanceName = telemetrySource?.PipelineInstanceName ?? "(null)";
-        var strategyName = telemetrySource?.StrategyName ?? "(null)";
-        TelemetrySource = $"{pipelineName}/{pipelineInstanceName}/{strategyName}";
-        RetryAfter = retryAfter;
-    }
+        => (TelemetrySource, RetryAfter) = (ComposeTelemetrySource(telemetrySource), retryAfter);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -72,9 +61,29 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
+    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
+    public RateLimiterRejectedException(string message, ResilienceTelemetrySource telemetrySource)
+        : base(message)
+        => TelemetrySource = ComposeTelemetrySource(telemetrySource);
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
     /// <param name="retryAfter">The retry after value.</param>
     public RateLimiterRejectedException(string message, TimeSpan retryAfter)
-        : base(message) => RetryAfter = retryAfter;
+        : base(message)
+        => RetryAfter = retryAfter;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
+    /// <param name="retryAfter">The retry after value.</param>
+    public RateLimiterRejectedException(string message, ResilienceTelemetrySource telemetrySource, TimeSpan retryAfter)
+        : base(message)
+        => (TelemetrySource, RetryAfter) = (ComposeTelemetrySource(telemetrySource), retryAfter);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -90,10 +99,32 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
+    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
+    /// <param name="inner">The inner exception.</param>
+    public RateLimiterRejectedException(string message, ResilienceTelemetrySource telemetrySource, Exception inner)
+        : base(message, inner)
+        => TelemetrySource = ComposeTelemetrySource(telemetrySource);
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
     /// <param name="retryAfter">The retry after value.</param>
     /// <param name="inner">The inner exception.</param>
     public RateLimiterRejectedException(string message, TimeSpan retryAfter, Exception inner)
-        : base(message, inner) => RetryAfter = retryAfter;
+        : base(message, inner)
+        => RetryAfter = retryAfter;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
+    /// <param name="retryAfter">The retry after value.</param>
+    /// <param name="inner">The inner exception.</param>
+    public RateLimiterRejectedException(string message, ResilienceTelemetrySource telemetrySource, TimeSpan retryAfter, Exception inner)
+        : base(message, inner)
+        => (TelemetrySource, RetryAfter) = (ComposeTelemetrySource(telemetrySource), retryAfter);
 
     /// <summary>
     /// Gets the amount of time to wait before retrying again.
@@ -108,6 +139,14 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// Gets the name of the strategy which has thrown the exception.
     /// </summary>
     public string? TelemetrySource { get; }
+
+    private static string ComposeTelemetrySource(ResilienceTelemetrySource telemetrySource)
+    {
+        var pipelineName = telemetrySource?.PipelineName ?? "(null)";
+        var pipelineInstanceName = telemetrySource?.PipelineInstanceName ?? "(null)";
+        var strategyName = telemetrySource?.StrategyName ?? "(null)";
+        return $"{pipelineName}/{pipelineInstanceName}/{strategyName}";
+    }
 
 #pragma warning disable RS0016 // Add public types and members to the declared API
 #if !NETCOREAPP

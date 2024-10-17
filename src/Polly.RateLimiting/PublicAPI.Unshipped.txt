@@ -1,4 +1,8 @@
 ﻿#nullable enable
 Polly.RateLimiting.RateLimiterRejectedException.RateLimiterRejectedException(Polly.Telemetry.ResilienceTelemetrySource! telemetrySource) -> void
 Polly.RateLimiting.RateLimiterRejectedException.RateLimiterRejectedException(Polly.Telemetry.ResilienceTelemetrySource! telemetrySource, System.TimeSpan retryAfter) -> void
+Polly.RateLimiting.RateLimiterRejectedException.RateLimiterRejectedException(string! message, Polly.Telemetry.ResilienceTelemetrySource! telemetrySource) -> void
+Polly.RateLimiting.RateLimiterRejectedException.RateLimiterRejectedException(string! message, Polly.Telemetry.ResilienceTelemetrySource! telemetrySource, System.Exception! inner) -> void
+Polly.RateLimiting.RateLimiterRejectedException.RateLimiterRejectedException(string! message, Polly.Telemetry.ResilienceTelemetrySource! telemetrySource, System.TimeSpan retryAfter) -> void
+Polly.RateLimiting.RateLimiterRejectedException.RateLimiterRejectedException(string! message, Polly.Telemetry.ResilienceTelemetrySource! telemetrySource, System.TimeSpan retryAfter, System.Exception! inner) -> void
 Polly.RateLimiting.RateLimiterRejectedException.TelemetrySource.get -> string?
