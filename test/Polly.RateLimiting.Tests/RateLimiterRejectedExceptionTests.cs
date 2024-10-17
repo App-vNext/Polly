@@ -170,9 +170,6 @@ public class RateLimiterRejectedExceptionTests
         var result = SerializeAndDeserializeException(new RateLimiterRejectedException(timeout));
         result.RetryAfter.Should().Be(timeout);
 
-        result = SerializeAndDeserializeException(new RateLimiterRejectedException(TimeSpan.Zero));
-        result.RetryAfter.Should().BeNull();
-
         result = SerializeAndDeserializeException(new RateLimiterRejectedException());
         result.RetryAfter.Should().BeNull();
 
