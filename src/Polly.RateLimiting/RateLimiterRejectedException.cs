@@ -42,7 +42,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
-    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
+    /// <param name="telemetrySource">A string representing the source of the telemetry.</param>
     public RateLimiterRejectedException(string message, string telemetrySource)
         : base(message)
         => TelemetrySource = telemetrySource;
@@ -60,7 +60,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
-    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
+    /// <param name="telemetrySource">A string representing the source of the telemetry.</param>
     /// <param name="retryAfter">The retry after value.</param>
     public RateLimiterRejectedException(string message, string telemetrySource, TimeSpan retryAfter)
         : base(message)
@@ -80,7 +80,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
-    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
+    /// <param name="telemetrySource">A string representing the source of the telemetry.</param>
     /// <param name="inner">The inner exception.</param>
     public RateLimiterRejectedException(string message, string telemetrySource, Exception inner)
         : base(message, inner)
@@ -100,7 +100,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
-    /// <param name="telemetrySource">The source pipeline and strategy names.</param>
+    /// <param name="telemetrySource">A string representing the source of the telemetry.</param>
     /// <param name="retryAfter">The retry after value.</param>
     /// <param name="inner">The inner exception.</param>
     public RateLimiterRejectedException(string message, string telemetrySource, TimeSpan retryAfter, Exception inner)
@@ -117,7 +117,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     public TimeSpan? RetryAfter { get; }
 
     /// <summary>
-    /// Gets the name of the strategy which has thrown the exception.
+    /// Gets the source of the strategy which has thrown the exception, if known.
     /// </summary>
     public string? TelemetrySource { get; }
 
