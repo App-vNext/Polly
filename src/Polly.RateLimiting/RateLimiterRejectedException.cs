@@ -167,7 +167,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
         var telemetrySource = info.GetString(nameof(TelemetrySource));
         if (telemetrySource is not null)
         {
-            Source = telemetrySource;
+            TelemetrySource = telemetrySource;
         }
     }
 
