@@ -26,24 +26,24 @@ public class ResilienceStrategyTelemetryTests
     }
 
     [Fact]
-    public void GetTelemetrySource_Ok()
+    public void AsTelemetrySourceString_Ok()
     {
         var source = new ResilienceTelemetrySource("builder", "instance", "strategy_name");
-        new ResilienceStrategyTelemetry(source, null).GetTelemetrySource().Should().Be("builder/instance/strategy_name");
+        new ResilienceStrategyTelemetry(source, null).AsTelemetrySourceString().Should().Be("builder/instance/strategy_name");
     }
 
     [Fact]
-    public void GetTelemetrySource_Null_Ok()
+    public void AsTelemetrySourceString_Null_Ok()
     {
         ResilienceTelemetrySource? source = null;
-        new ResilienceStrategyTelemetry(source!, null).GetTelemetrySource().Should().Be("(null)/(null)/(null)");
+        new ResilienceStrategyTelemetry(source!, null).AsTelemetrySourceString().Should().Be("(null)/(null)/(null)");
     }
 
     [Fact]
-    public void GetTelemetrySource_Nulls_Ok()
+    public void AsTelemetrySourceString_Nulls_Ok()
     {
         var source = new ResilienceTelemetrySource(null, null, null);
-        new ResilienceStrategyTelemetry(source, null).GetTelemetrySource().Should().Be("(null)/(null)/(null)");
+        new ResilienceStrategyTelemetry(source, null).AsTelemetrySourceString().Should().Be("(null)/(null)/(null)");
     }
 
     [Fact]

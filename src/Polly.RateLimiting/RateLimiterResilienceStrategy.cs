@@ -5,6 +5,7 @@ namespace Polly.RateLimiting;
 
 internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy, IDisposable, IAsyncDisposable
 {
+    private const string Message = "The operation could not be executed because it was rejected by the rate limiter.";
     private readonly ResilienceStrategyTelemetry _telemetry;
 
     public RateLimiterResilienceStrategy(
@@ -65,8 +66,11 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy, IDispo
             await OnLeaseRejected(new OnRateLimiterRejectedArguments(context, lease)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
-        var source = _telemetry.GetTelemetrySource();
-        var exception = retryAfter.HasValue ? new RateLimiterRejectedException(source, retryAfter.Value) : new RateLimiterRejectedException(source);
+        var source = _telemetry.AsTelemetrySourceString();
+
+        var exception = retryAfter.HasValue
+            ? new RateLimiterRejectedException($"{Message} It can be retried after '{retryAfter.Value}'.", source, retryAfter.Value)
+            : new RateLimiterRejectedException(Message, source);
 
         return Outcome.FromException<TResult>(exception.TrySetStackTrace());
     }
