@@ -21,7 +21,8 @@ public sealed class ResilienceStrategyTelemetry
 
     internal ResilienceTelemetrySource TelemetrySource { get; }
 
- #pragma warning (disable: S4049 CA1024)
+ #pragma warning disable S4049
+ #pragma warning disable CA1024
     /// <summary>
     /// Returns the concatenated telemetry source.
     /// </summary>
@@ -33,7 +34,8 @@ public sealed class ResilienceStrategyTelemetry
         var strategyName = TelemetrySource?.StrategyName ?? "(null)";
         return $"{pipelineName}/{pipelineInstanceName}/{strategyName}";
     }
- #pragma warning (restore S4049 CA1024)
+ #pragma warning restore CA1024
+ #pragma warning restore S4049
 
     /// <summary>
     /// Reports an event that occurred in a resilience strategy.
