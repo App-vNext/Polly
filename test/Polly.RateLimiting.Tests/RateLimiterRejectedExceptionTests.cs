@@ -119,7 +119,7 @@ public class RateLimiterRejectedExceptionTests
         result = SerializeAndDeserializeException(new RateLimiterRejectedException());
         result.RetryAfter.Should().BeNull();
 
-        result = SerializeAndDeserializeException(new RateLimiterRejectedException(_telemetrySource));
+        result = SerializeAndDeserializeException(new RateLimiterRejectedException("message", _telemetrySource));
         result.TelemetrySource.Should().Be(_telemetrySource);
     }
 
