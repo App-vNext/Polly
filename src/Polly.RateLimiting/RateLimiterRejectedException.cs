@@ -42,9 +42,29 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
+    /// <param name="telemetrySource">A string representing the source of the telemetry.</param>
+    public RateLimiterRejectedException(string message, string telemetrySource)
+        : base(message)
+        => TelemetrySource = telemetrySource;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
     /// <param name="retryAfter">The retry after value.</param>
     public RateLimiterRejectedException(string message, TimeSpan retryAfter)
-        : base(message) => RetryAfter = retryAfter;
+        : base(message)
+        => RetryAfter = retryAfter;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="telemetrySource">A string representing the source of the telemetry.</param>
+    /// <param name="retryAfter">The retry after value.</param>
+    public RateLimiterRejectedException(string message, string telemetrySource, TimeSpan retryAfter)
+        : base(message)
+        => (TelemetrySource, RetryAfter) = (telemetrySource, retryAfter);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -60,10 +80,32 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
+    /// <param name="telemetrySource">A string representing the source of the telemetry.</param>
+    /// <param name="inner">The inner exception.</param>
+    public RateLimiterRejectedException(string message, string telemetrySource, Exception inner)
+        : base(message, inner)
+        => TelemetrySource = telemetrySource;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
     /// <param name="retryAfter">The retry after value.</param>
     /// <param name="inner">The inner exception.</param>
     public RateLimiterRejectedException(string message, TimeSpan retryAfter, Exception inner)
-        : base(message, inner) => RetryAfter = retryAfter;
+        : base(message, inner)
+        => RetryAfter = retryAfter;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="telemetrySource">A string representing the source of the telemetry.</param>
+    /// <param name="retryAfter">The retry after value.</param>
+    /// <param name="inner">The inner exception.</param>
+    public RateLimiterRejectedException(string message, string telemetrySource, TimeSpan retryAfter, Exception inner)
+        : base(message, inner)
+        => (TelemetrySource, RetryAfter) = (telemetrySource, retryAfter);
 
     /// <summary>
     /// Gets the amount of time to wait before retrying again.
@@ -73,6 +115,11 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// Defaults to <c>null</c>.
     /// </remarks>
     public TimeSpan? RetryAfter { get; }
+
+    /// <summary>
+    /// Gets the source of the strategy which has thrown the exception, if known.
+    /// </summary>
+    public string? TelemetrySource { get; }
 
 #pragma warning disable RS0016 // Add public types and members to the declared API
 #if !NETCOREAPP
@@ -84,10 +131,16 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     private RateLimiterRejectedException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        var value = info.GetDouble("RetryAfter");
-        if (value >= 0.0)
+        var retryAfter = info.GetDouble(nameof(RetryAfter));
+        if (retryAfter >= 0.0)
         {
-            RetryAfter = TimeSpan.FromSeconds(value);
+            RetryAfter = TimeSpan.FromSeconds(retryAfter);
+        }
+
+        var telemetrySource = info.GetString(nameof(TelemetrySource));
+        if (telemetrySource is not null)
+        {
+            TelemetrySource = telemetrySource;
         }
     }
 
@@ -96,14 +149,8 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     {
         Guard.NotNull(info);
 
-        if (RetryAfter.HasValue)
-        {
-            info.AddValue("RetryAfter", RetryAfter.Value.TotalSeconds);
-        }
-        else
-        {
-            info.AddValue("RetryAfter", -1.0);
-        }
+        info.AddValue(nameof(TelemetrySource), TelemetrySource ?? "(null)/(null)/(null)");
+        info.AddValue(nameof(RetryAfter), RetryAfter.HasValue ? RetryAfter.Value.TotalSeconds : -1.0);
 
         base.GetObjectData(info, context);
     }

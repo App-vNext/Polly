@@ -65,7 +65,12 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy, IDispo
             await OnLeaseRejected(new OnRateLimiterRejectedArguments(context, lease)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
-        var exception = retryAfter.HasValue ? new RateLimiterRejectedException(retryAfter.Value) : new RateLimiterRejectedException();
+        const string Message = "The operation could not be executed because it was rejected by the rate limiter.";
+        var source = _telemetry.AsTelemetrySourceString();
+
+        var exception = retryAfter.HasValue
+            ? new RateLimiterRejectedException($"{Message} It can be retried after '{retryAfter.Value}'.", source, retryAfter.Value)
+            : new RateLimiterRejectedException(Message, source);
 
         return Outcome.FromException<TResult>(exception.TrySetStackTrace());
     }

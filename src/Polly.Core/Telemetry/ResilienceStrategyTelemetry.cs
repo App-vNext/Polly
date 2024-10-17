@@ -22,6 +22,18 @@ public sealed class ResilienceStrategyTelemetry
     internal ResilienceTelemetrySource TelemetrySource { get; }
 
     /// <summary>
+    /// Returns a string representation of the source of the telemetry.
+    /// </summary>
+    /// <returns>The string representation of the source of the telemetry.</returns>
+    public string AsTelemetrySourceString()
+    {
+        var pipelineName = TelemetrySource?.PipelineName ?? "(null)";
+        var pipelineInstanceName = TelemetrySource?.PipelineInstanceName ?? "(null)";
+        var strategyName = TelemetrySource?.StrategyName ?? "(null)";
+        return $"{pipelineName}/{pipelineInstanceName}/{strategyName}";
+    }
+
+    /// <summary>
     /// Reports an event that occurred in a resilience strategy.
     /// </summary>
     /// <typeparam name="TArgs">The arguments associated with this event.</typeparam>
