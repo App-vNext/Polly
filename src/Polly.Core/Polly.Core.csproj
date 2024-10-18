@@ -36,4 +36,8 @@
     <PackageReference Include="System.ComponentModel.Annotations" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
   </ItemGroup>
 
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0'))">
+    <Compile Include="$(MSBuildThisFileDirectory)..\Shared\DebuggerDisableUserUnhandledExceptionsAttribute.cs" Link="DebuggerDisableUserUnhandledExceptionsAttribute.cs" />
+  </ItemGroup>
+
 </Project>

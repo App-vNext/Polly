@@ -26,4 +26,8 @@
     <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0'))">
+    <Compile Include="$(MSBuildThisFileDirectory)..\Shared\DebuggerDisableUserUnhandledExceptionsAttribute.cs" Link="DebuggerDisableUserUnhandledExceptionsAttribute.cs" />
+  </ItemGroup>
+
 </Project>

@@ -3,6 +3,7 @@ namespace Polly.Caching;
 
 internal static class CacheEngine
 {
+    [DebuggerDisableUserUnhandledExceptions]
     internal static TResult Implementation<TResult>(
         ISyncCacheProvider<TResult> cacheProvider,
         ITtlStrategy<TResult> ttlStrategy,

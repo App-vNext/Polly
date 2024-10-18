@@ -90,5 +90,4 @@ public readonly struct Outcome<TResult>
         ExceptionDispatchInfo?.Throw();
         return Result!;
     }
-
 }

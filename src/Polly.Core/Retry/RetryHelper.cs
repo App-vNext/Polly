@@ -124,7 +124,9 @@ internal static class RetryHelper
 
         long ticks = (long)Math.Min(formulaIntrinsicValue * RpScalingFactor * targetTicksFirstDelay, MaxTimeSpanTicks);
 
+#pragma warning disable S3236 // Remove this argument from the method call; it hides the caller information.
         Debug.Assert(ticks >= 0, "ticks cannot be negative");
+#pragma warning restore S3236 // Remove this argument from the method call; it hides the caller information.
 
         return TimeSpan.FromTicks(ticks);
     }
