@@ -2,6 +2,8 @@
 using System.Runtime.Serialization;
 #endif
 
+using Polly.Telemetry;
+
 namespace Polly.CircuitBreaker;
 
 /// <summary>
@@ -114,4 +116,6 @@ public class BrokenCircuitException : ExecutionRejectedException
     /// Can be <see langword="null"/> if not provided or if the circuit was manually isolated.
     /// </remarks>
     public TimeSpan? RetryAfter { get; }
+
+    public ResilienceTelemetrySource? TelemetrySource { get; internal set; }
 }

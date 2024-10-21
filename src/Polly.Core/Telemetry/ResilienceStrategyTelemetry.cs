@@ -60,6 +60,17 @@ public sealed class ResilienceStrategyTelemetry
         Listener.Write<TResult, TArgs>(new(TelemetrySource, resilienceEvent, context, args, outcome));
     }
 
+    /// <summary>
+    /// Updates the <see cref="ExecutionRejectedException.TelemetrySource"/> property of the exception.
+    /// </summary>
+    /// <param name="exception">The exception to update.</param>
+    public void UpdateTelemetrySource(ExecutionRejectedException exception)
+    {
+        Guard.NotNull(exception);
+
+        exception.TelemetrySource = TelemetrySource;
+    }
+
     internal void Report<TArgs, TResult>(ResilienceEvent resilienceEvent, TArgs args)
         where TArgs : IOutcomeArguments<TResult>
     {

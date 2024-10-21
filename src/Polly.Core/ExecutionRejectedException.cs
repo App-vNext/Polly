@@ -2,6 +2,8 @@
 using System.Runtime.Serialization;
 #endif
 
+using Polly.Telemetry;
+
 namespace Polly;
 
 /// <summary>
@@ -35,6 +37,8 @@ public abstract class ExecutionRejectedException : Exception
         : base(message, inner)
     {
     }
+
+    public ResilienceTelemetrySource? TelemetrySource { get; internal set; }
 
 #pragma warning disable RS0016 // Add public types and members to the declared API
 #if !NETCOREAPP
