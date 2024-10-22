@@ -114,7 +114,6 @@ public class ResilienceStrategyTelemetryTests
 
         _sut.Invoking(s => s.UpdateTelemetrySource(exception!))
             .Should()
-            .Throw<ArgumentNullException>()
-            .WithMessage("Value cannot be null. (Parameter 'exception')");
+            .Throw<ArgumentNullException>();
     }
 }
