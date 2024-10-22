@@ -52,8 +52,9 @@ public class CircuitStateControllerTests
         called.Should().BeTrue();
 
         var outcome = await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
-        outcome.Value.Exception.Should().BeOfType<IsolatedCircuitException>()
-            .And.Subject.As<IsolatedCircuitException>().RetryAfter.Should().BeNull();
+        var exception = outcome.Value.Exception.Should().BeOfType<IsolatedCircuitException>().Subject;
+        exception.RetryAfter.Should().BeNull();
+        exception.TelemetrySource.Should().NotBeNull();
 
         // now close it
         await controller.CloseCircuitAsync(ResilienceContextPool.Shared.Get());
@@ -119,8 +120,9 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         await OpenCircuit(controller, Outcome.FromResult(99));
-        var error = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception!;
-        error.Should().BeOfType<BrokenCircuitException>().And.Subject.As<BrokenCircuitException>().RetryAfter.Should().NotBeNull();
+        var exception = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception!;
+        exception.RetryAfter.Should().NotBeNull();
+        exception.TelemetrySource.Should().NotBeNull();
 
         GetBlockedTill(controller).Should().Be(_timeProvider.GetUtcNow() + _options.BreakDuration);
     }
@@ -149,6 +151,7 @@ public class CircuitStateControllerTests
                 stacks.Add(e.StackTrace!);
                 e.Message.Should().Be("The circuit is now open and is not allowing calls.");
                 e.RetryAfter.Should().NotBeNull();
+                e.TelemetrySource.Should().NotBeNull();
 
                 if (innerException)
                 {
@@ -206,9 +209,10 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         await OpenCircuit(controller, Outcome.FromException<int>(new InvalidOperationException()));
-        var error = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception!;
-        error.InnerException.Should().BeOfType<InvalidOperationException>();
-        error.RetryAfter.Should().NotBeNull();
+        var exception = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception!;
+        exception.InnerException.Should().BeOfType<InvalidOperationException>();
+        exception.RetryAfter.Should().NotBeNull();
+        exception.TelemetrySource.Should().NotBeNull();
     }
 
     [Fact]
@@ -261,9 +265,11 @@ public class CircuitStateControllerTests
         // act
         await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
         var error = (await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get())).Value.Exception;
-        error.Should().BeOfType<BrokenCircuitException>().And.Subject.As<BrokenCircuitException>().RetryAfter.Should().NotBeNull();
 
         // assert
+        var exception = error.Should().BeOfType<BrokenCircuitException>().Subject;
+        exception.RetryAfter.Should().NotBeNull();
+        exception.TelemetrySource.Should().NotBeNull();
         controller.CircuitState.Should().Be(CircuitState.HalfOpen);
         called.Should().BeTrue();
     }
@@ -465,7 +471,9 @@ public class CircuitStateControllerTests
         // assert
         controller.LastException.Should().BeNull();
         var outcome = await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
-        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException>().And.Subject.As<BrokenCircuitException>().RetryAfter.Should().NotBeNull();
+        var exception = outcome.Value.Exception.Should().BeOfType<BrokenCircuitException>().Subject;
+        exception.RetryAfter.Should().NotBeNull();
+        exception.TelemetrySource.Should().NotBeNull();
     }
 
     [Fact]
@@ -501,8 +509,9 @@ public class CircuitStateControllerTests
         TimeSpan advanceTimeRejected = TimeSpan.FromMilliseconds(1);
         AdvanceTime(advanceTimeRejected);
         var outcome = await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get());
-        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException>()
-            .And.Subject.As<BrokenCircuitException>().RetryAfter.Should().Be(_options.BreakDuration - advanceTimeRejected);
+        var exception = outcome.Value.Exception.Should().BeOfType<BrokenCircuitException>().Subject;
+        exception.RetryAfter.Should().Be(_options.BreakDuration - advanceTimeRejected);
+        exception.TelemetrySource.Should().NotBeNull();
 
         // wait and try, transition to half open
         AdvanceTime(_options.BreakDuration + _options.BreakDuration);
