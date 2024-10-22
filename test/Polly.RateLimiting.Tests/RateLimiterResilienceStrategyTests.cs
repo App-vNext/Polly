@@ -70,13 +70,13 @@ public class RateLimiterResilienceStrategyTests
         var context = ResilienceContextPool.Shared.Get(cts.Token);
         var outcome = await strategy.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("dummy"), context, "state");
 
-        outcome.Exception
+        RateLimiterRejectedException exception = outcome.Exception
             .Should()
-            .BeOfType<RateLimiterRejectedException>().Subject
-            .RetryAfter
-            .Should().Be((TimeSpan?)metadata);
+            .BeOfType<RateLimiterRejectedException>().Subject;
 
-        outcome.Exception!.StackTrace.Should().Contain("Execute_LeaseRejected");
+        exception.RetryAfter.Should().Be((TimeSpan?)metadata);
+        exception.StackTrace.Should().Contain("Execute_LeaseRejected");
+        exception.TelemetrySource.Should().NotBeNull();
 
         eventCalled.Should().Be(hasEvents);
 

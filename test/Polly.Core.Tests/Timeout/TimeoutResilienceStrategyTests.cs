@@ -174,6 +174,27 @@ public class TimeoutResilienceStrategyTests : IDisposable
     }
 
     [Fact]
+    public async Task Execute_Timeout_EnsureTelemetrySource()
+    {
+        SetTimeout(TimeSpan.FromSeconds(2));
+        var sut = CreateSut();
+
+        var outcome = await sut.ExecuteOutcomeAsync(
+            async (c, _) =>
+            {
+                var delay = _timeProvider.Delay(TimeSpan.FromSeconds(4), c.CancellationToken);
+                _timeProvider.Advance(TimeSpan.FromSeconds(2));
+                await delay;
+
+                return Outcome.FromResult("dummy");
+            },
+            ResilienceContextPool.Shared.Get(),
+            "state");
+
+        outcome.Exception.Should().BeOfType<TimeoutRejectedException>().Subject.TelemetrySource.Should().NotBeNull();
+    }
+
+    [Fact]
     public async Task Execute_Cancelled_EnsureNoTimeout()
     {
         var delay = TimeSpan.FromSeconds(10);

@@ -1,4 +1,5 @@
 using Polly.Telemetry;
+using Polly.Timeout;
 
 namespace Polly.Core.Tests.Telemetry;
 
@@ -93,5 +94,27 @@ public class ResilienceStrategyTelemetryTests
         sut.Invoking(s => s.Report(new(ResilienceEventSeverity.None, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments()))
            .Should()
            .NotThrow();
+    }
+
+    [Fact]
+    public void UpdateTelemetrySource_Ok()
+    {
+        var sut = new ResilienceStrategyTelemetry(_source, null);
+        var exception = new TimeoutRejectedException();
+
+        sut.UpdateTelemetrySource(exception);
+
+        exception.TelemetrySource.Should().Be(_source);
+    }
+
+    [Fact]
+    public void UpdateTelemetrySource_ShouldThrow()
+    {
+        ExecutionRejectedException? exception = null;
+
+        _sut.Invoking(s => s.UpdateTelemetrySource(exception!))
+            .Should()
+            .Throw<ArgumentNullException>()
+            .WithMessage("Value cannot be null. (Parameter 'exception')");
     }
 }
