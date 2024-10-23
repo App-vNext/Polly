@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
+    <TestTfmsInParallel Condition="$([MSBuild]::IsOSPlatform('Windows'))">false</TestTfmsInParallel>
     <ProjectType>Test</ProjectType>
     <Nullable>enable</Nullable>
     <Threshold>100</Threshold>
@@ -11,9 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.TimeProvider" VersionOverride="8.0.1" />
+    <PackageReference Include="Microsoft.Bcl.TimeProvider" />
     <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
     <PackageReference Include="Polly.Contrib.WaitAndRetry" />
+  </ItemGroup>
+
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0'))">
+    <PackageReference Update="Microsoft.Bcl.TimeProvider" VersionOverride="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>

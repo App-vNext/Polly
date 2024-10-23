@@ -74,9 +74,11 @@ public sealed class ResilienceContext
         Properties.AddOrReplaceProperties(context.Properties);
     }
 
+#pragma warning disable S3236 // Remove this argument from the method call; it hides the caller information.
     [ExcludeFromCodeCoverage]
     [Conditional("DEBUG")]
     internal void AssertInitialized() => Debug.Assert(IsInitialized, "The resilience context is not initialized.");
+#pragma warning restore S3236 // Remove this argument from the method call; it hides the caller information.
 
     internal ResilienceContext Initialize<TResult>(bool isSynchronous)
     {

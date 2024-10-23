@@ -9,10 +9,8 @@ public class RetryHelperTests
     private Func<double> _randomizer = new RandomUtil(0).NextDouble;
 
     public static TheoryData<int> Attempts()
-    {
 #pragma warning disable IDE0028
-#pragma warning disable IDE0022 // Use expression body for method
-        return new()
+        => new()
         {
             1,
             2,
@@ -24,9 +22,7 @@ public class RetryHelperTests
             1_024,
             1_025,
         };
-#pragma warning restore IDE0022 // Use expression body for method
 #pragma warning restore IDE0028
-    }
 
     [Fact]
     public void IsValidDelay_Ok()
