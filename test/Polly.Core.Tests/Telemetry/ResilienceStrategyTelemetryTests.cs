@@ -97,22 +97,22 @@ public class ResilienceStrategyTelemetryTests
     }
 
     [Fact]
-    public void UpdateTelemetrySource_Ok()
+    public void SetTelemetrySource_Ok()
     {
         var sut = new ResilienceStrategyTelemetry(_source, null);
         var exception = new TimeoutRejectedException();
 
-        sut.UpdateTelemetrySource(exception);
+        sut.SetTelemetrySource(exception);
 
         exception.TelemetrySource.Should().Be(_source);
     }
 
     [Fact]
-    public void UpdateTelemetrySource_ShouldThrow()
+    public void SetTelemetrySource_ShouldThrow()
     {
         ExecutionRejectedException? exception = null;
 
-        _sut.Invoking(s => s.UpdateTelemetrySource(exception!))
+        _sut.Invoking(s => s.SetTelemetrySource(exception!))
             .Should()
             .Throw<ArgumentNullException>();
     }

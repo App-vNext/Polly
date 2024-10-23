@@ -4,4 +4,4 @@ Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! messa
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(System.TimeSpan retryAfter) -> void
 Polly.CircuitBreaker.BrokenCircuitException.RetryAfter.get -> System.TimeSpan?
 virtual Polly.ExecutionRejectedException.TelemetrySource.get -> Polly.Telemetry.ResilienceTelemetrySource?
-Polly.Telemetry.ResilienceStrategyTelemetry.UpdateTelemetrySource(Polly.ExecutionRejectedException! exception) -> void
+Polly.Telemetry.ResilienceStrategyTelemetry.SetTelemetrySource(Polly.ExecutionRejectedException! exception) -> void

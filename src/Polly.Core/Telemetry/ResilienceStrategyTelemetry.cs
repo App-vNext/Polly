@@ -24,11 +24,11 @@ public sealed class ResilienceStrategyTelemetry
     internal ResilienceTelemetrySource TelemetrySource { get; }
 
     /// <summary>
-    ///  Updates the source of the telemetry on the provided exception.
+    ///  Sets the source of the telemetry on the provided exception.
     /// </summary>
     /// <param name="exception">The to-be-updated exception.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void UpdateTelemetrySource(ExecutionRejectedException exception)
+    public void SetTelemetrySource(ExecutionRejectedException exception)
     {
         Guard.NotNull(exception);
 

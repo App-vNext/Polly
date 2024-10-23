@@ -96,7 +96,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         lock (_lock)
         {
             var exception = new IsolatedCircuitException();
-            _telemetry.UpdateTelemetrySource(exception);
+            _telemetry.SetTelemetrySource(exception);
             SetLastHandledOutcome_NeedsLock(Outcome.FromException<T>(exception));
             OpenCircuitFor_NeedsLock(Outcome.FromResult<T>(default), TimeSpan.MaxValue, manual: true, context, out task);
             _circuitState = CircuitState.Isolated;
@@ -159,7 +159,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         if (exception is not null)
         {
-            _telemetry.UpdateTelemetrySource(exception);
+            _telemetry.SetTelemetrySource(exception);
             return Outcome.FromException<T>(exception);
         }
 
@@ -311,12 +311,12 @@ internal sealed class CircuitStateController<T> : IDisposable
     private BrokenCircuitException CreateBrokenCircuitException()
     {
         TimeSpan retryAfter = _blockedUntil - _timeProvider.GetUtcNow();
-        BrokenCircuitException exception = _breakingException switch
+        var exception = _breakingException switch
         {
             Exception ex => new BrokenCircuitException(BrokenCircuitException.DefaultMessage, retryAfter, ex),
             _ => new BrokenCircuitException(BrokenCircuitException.DefaultMessage, retryAfter)
         };
-        _telemetry.UpdateTelemetrySource(exception);
+        _telemetry.SetTelemetrySource(exception);
         return exception;
     }
 

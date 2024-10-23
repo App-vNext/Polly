@@ -56,5 +56,4 @@ public abstract class ExecutionRejectedException : Exception
     /// Gets the source of the strategy which has thrown the exception, if known.
     /// </summary>
     public virtual ResilienceTelemetrySource? TelemetrySource { get; internal set; }
-
 }
