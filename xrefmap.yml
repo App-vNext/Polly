@@ -1071,6 +1071,19 @@ references:
   fullName.vb: Polly.ExecutionRejectedException.New
   nameWithType: ExecutionRejectedException.ExecutionRejectedException
   nameWithType.vb: ExecutionRejectedException.New
+- uid: Polly.ExecutionRejectedException.TelemetrySource
+  name: TelemetrySource
+  href: api/Polly.ExecutionRejectedException.html#Polly_ExecutionRejectedException_TelemetrySource
+  commentId: P:Polly.ExecutionRejectedException.TelemetrySource
+  fullName: Polly.ExecutionRejectedException.TelemetrySource
+  nameWithType: ExecutionRejectedException.TelemetrySource
+- uid: Polly.ExecutionRejectedException.TelemetrySource*
+  name: TelemetrySource
+  href: api/Polly.ExecutionRejectedException.html#Polly_ExecutionRejectedException_TelemetrySource_
+  commentId: Overload:Polly.ExecutionRejectedException.TelemetrySource
+  isSpec: "True"
+  fullName: Polly.ExecutionRejectedException.TelemetrySource
+  nameWithType: ExecutionRejectedException.TelemetrySource
 - uid: Polly.Fallback
   name: Polly.Fallback
   href: api/Polly.Fallback.html
