@@ -26,7 +26,7 @@ public sealed class ResilienceStrategyTelemetry
     /// <summary>
     ///  Sets the source of the telemetry on the provided exception.
     /// </summary>
-    /// <param name="exception">The to-be-updated exception.</param>
+    /// <param name="exception">The to-be-set exception.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public void SetTelemetrySource(ExecutionRejectedException exception)
     {
