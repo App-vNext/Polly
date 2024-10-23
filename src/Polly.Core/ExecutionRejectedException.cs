@@ -2,6 +2,8 @@
 using System.Runtime.Serialization;
 #endif
 
+using Polly.Telemetry;
+
 namespace Polly;
 
 /// <summary>
@@ -49,4 +51,9 @@ public abstract class ExecutionRejectedException : Exception
     }
 #endif
 #pragma warning restore RS0016 // Add public types and members to the declared API
+
+    /// <summary>
+    /// Gets the source of the strategy which has thrown the exception, if known.
+    /// </summary>
+    public virtual ResilienceTelemetrySource? TelemetrySource { get; internal set; }
 }

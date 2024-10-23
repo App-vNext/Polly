@@ -74,6 +74,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
                 timeout,
                 e);
 
+            _telemetry.SetTelemetrySource(timeoutException);
             return Outcome.FromException<TResult>(timeoutException.TrySetStackTrace());
         }
 

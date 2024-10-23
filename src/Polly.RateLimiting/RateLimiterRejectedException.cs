@@ -44,7 +44,8 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// <param name="message">The message that describes the error.</param>
     /// <param name="retryAfter">The retry after value.</param>
     public RateLimiterRejectedException(string message, TimeSpan retryAfter)
-        : base(message) => RetryAfter = retryAfter;
+        : base(message)
+        => RetryAfter = retryAfter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -63,7 +64,8 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// <param name="retryAfter">The retry after value.</param>
     /// <param name="inner">The inner exception.</param>
     public RateLimiterRejectedException(string message, TimeSpan retryAfter, Exception inner)
-        : base(message, inner) => RetryAfter = retryAfter;
+        : base(message, inner)
+        => RetryAfter = retryAfter;
 
     /// <summary>
     /// Gets the amount of time to wait before retrying again.
@@ -84,10 +86,10 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     private RateLimiterRejectedException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        var value = info.GetDouble("RetryAfter");
-        if (value >= 0.0)
+        var retryAfter = info.GetDouble(nameof(RetryAfter));
+        if (retryAfter >= 0.0)
         {
-            RetryAfter = TimeSpan.FromSeconds(value);
+            RetryAfter = TimeSpan.FromSeconds(retryAfter);
         }
     }
 
@@ -96,14 +98,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     {
         Guard.NotNull(info);
 
-        if (RetryAfter.HasValue)
-        {
-            info.AddValue("RetryAfter", RetryAfter.Value.TotalSeconds);
-        }
-        else
-        {
-            info.AddValue("RetryAfter", -1.0);
-        }
+        info.AddValue(nameof(RetryAfter), RetryAfter.HasValue ? RetryAfter.Value.TotalSeconds : -1.0);
 
         base.GetObjectData(info, context);
     }

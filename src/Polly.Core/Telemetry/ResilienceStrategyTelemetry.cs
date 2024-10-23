@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace Polly.Telemetry;
 
 /// <summary>
@@ -20,6 +22,18 @@ public sealed class ResilienceStrategyTelemetry
     internal TelemetryListener? Listener { get; }
 
     internal ResilienceTelemetrySource TelemetrySource { get; }
+
+    /// <summary>
+    ///  Sets the source of the telemetry on the provided exception.
+    /// </summary>
+    /// <param name="exception">The to-be-set exception.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public void SetTelemetrySource(ExecutionRejectedException exception)
+    {
+        Guard.NotNull(exception);
+
+        exception.TelemetrySource = TelemetrySource;
+    }
 
     /// <summary>
     /// Reports an event that occurred in a resilience strategy.
