@@ -77,7 +77,7 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
 
 ### Failure handling
 
-At the first glance it might not be obvious what is the difference between these two techniques:
+At first glance it might not be obvious what the difference between these two techniques is:
 
 <!-- snippet: timeout-with-ontimeout -->
 ```cs
@@ -120,9 +120,9 @@ The `OnTimeout` user-provided delegate is called just before the strategy throws
 
 So, what is the purpose of the `OnTimeout` in case of static timeout settings?
 
-The `OnTimeout` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `TimeoutRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that a timeout has occurred, you have to provide a delegate to the `OnTimeout` property.
+The `OnTimeout` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `TimeoutRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you need to be notified about a timeout occurring, you must provide a delegate to the `OnTimeout` property.
 
-The `TimeoutRejectedException` provides access to a property called `TelemetrySource`. This property is a [`ResilienceTelemetrySource`](xref:Polly.Telemetry.ResilienceTelemetrySource) which allows you retrieve information like the executed pipeline and the executed strategy. These can be really handy whenever you have multiple Timeout strategies in your pipeline and you want to know which strategy threw the `TimeoutRejectedException`.
+The `TimeoutRejectedException` provides access to a `TelemetrySource` property. This property is a [`ResilienceTelemetrySource`](xref:Polly.Telemetry.ResilienceTelemetrySource) which allows you retrieve information such as the executed pipeline and strategy. These can be useful if you have multiple timeout strategies in your pipeline and you need to know which strategy caused the `TimeoutRejectedException` to be thrown.
 
 ## Defaults
 

@@ -73,7 +73,7 @@ catch (RateLimiterRejectedException ex)
 
 ### Failure handling
 
-At the first glance it might not be obvious what is the difference between these two techniques:
+At first glance it might not be obvious what the difference between these two techniques is:
 
 <!-- snippet: rate-limiter-with-onrejected -->
 ```cs
@@ -124,12 +124,12 @@ So, what is the purpose of the `OnRejected`?
 
 The `OnRejected` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `RateLimiterRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the `OnRejected` property.
 
-The `RateLimiterRejectedException` has a `RetryAfter` and a `TelemetrySource` property. If the `RetryAfter` optional `TimeSpan` is provided then this indicates that your requests are throttled and you should retry them no sooner than the value given.
+The `RateLimiterRejectedException` has a `RetryAfter` and a `TelemetrySource` property. If the optional `RetryAfter` value is provided then this indicates that your requests are being throttled and you should retry them no sooner than the property's value.
 
 > [!NOTE]
-> Please note that the `RetryAfter` information is not available inside the `OnRejected` callback.
+> The `RetryAfter` value is not available inside the `OnRejected` callback.
 
- The `TelemetrySource` property is a [`ResilienceTelemetrySource`](xref:Polly.Telemetry.ResilienceTelemetrySource) which allows you retrieve information like the executed pipeline and the executed strategy. These can be really handy whenever you have multiple limiter strategies in your pipeline (for example a rate and a concurrency limiter) and you want to know which strategy threw the `RateLimiterRejectedException`.
+ The `TelemetrySource` property is a [`ResilienceTelemetrySource`](xref:Polly.Telemetry.ResilienceTelemetrySource) which allows you retrieve information such as the executed pipeline and strategy. These can be useful if you have multiple limiter strategies in your pipeline (for example both a rate and concurrency limiter) and you need to know which strategy caused the `RateLimiterRejectedException` to be thrown.
 
 ## Defaults
 

@@ -9,7 +9,7 @@
   - `AddCircuitBreaker`
 - **Strategy Type**: Reactive
 - **Exception(s)**:
-  - [`BrokenCircuitException`](xref:Polly.CircuitBreaker.BrokenCircuitException): Thrown when a circuit is broken and the action could not be executed.
+  - [`BrokenCircuitException`](xref:Polly.CircuitBreaker.BrokenCircuitException): Thrown when a circuit is broken and the action was not executed.
   - [`IsolatedCircuitException`](xref:Polly.CircuitBreaker.IsolatedCircuitException): Thrown when a circuit is isolated (held open) by manual override.
 
 ---
@@ -94,7 +94,7 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(optionsSt
 
 ### Failure handling
 
-The circuit breaker returns the result / exception during the sampling period. Once the strategy opens the circuit every subsequent calls will be shortcut with a `BrokenCircuitException`.
+The circuit breaker returns the result / exception during the sampling period. Once the strategy opens the circuit, every subsequent call will be shortcut with a `BrokenCircuitException`.
 
 <!-- snippet: circuit-breaker-failure-handling -->
 ```cs
@@ -142,7 +142,14 @@ Operation failed too many times please try again later.
 Operation failed too many times please try again later.
 ```
 
-The `BrokenCircuitException` and the `IsolatedCircuitException` provides access to the following properties: `RetryAfter`, and `TelemetrySource`. If the `RetryAfter` optional `TimeSpan` is provided then this indicates that circuit is open at least this time period and you should retry your operation no sooner than the value given. The `TelemetrySource` property is a [`ResilienceTelemetrySource`](xref:Polly.Telemetry.ResilienceTelemetrySource) which allows you retrieve information like the executed pipeline and the executed strategy. These can be really handy whenever you have multiple circuit breaker strategies in your pipeline and you want to know which strategy threw the `BrokenCircuitException`.
+The `BrokenCircuitException` and the `IsolatedCircuitException` provide access to the following properties:
+
+- `RetryAfter`;
+- `TelemetrySource`.
+
+If a `TimeSpan` value is provided to the optional `RetryAfter` property then this indicates that circuit is open for at least this time period and you should retry your operation no sooner than the value given.
+
+The `TelemetrySource` property is a [`ResilienceTelemetrySource`](xref:Polly.Telemetry.ResilienceTelemetrySource) which allows you retrieve information such as the executed pipeline and strategy. These can be useful if you have multiple circuit breaker strategies in your pipeline and you need to know which strategy caused the `BrokenCircuitException` to be thrown.
 
 ## Defaults
 
