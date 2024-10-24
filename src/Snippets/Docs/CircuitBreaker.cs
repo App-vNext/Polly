@@ -95,17 +95,17 @@ internal static class CircuitBreaker
             })
             .Build();
 
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
             try
             {
                 pipeline.Execute(() => throw new SomeExceptionType());
             }
-			catch(SomeExceptionType)
+            catch (SomeExceptionType)
             {
                 Console.WriteLine("Operation failed please try again.");
             }
-            catch(BrokenCircuitException)
+            catch (BrokenCircuitException)
             {
                 Console.WriteLine("Operation failed too many times please try again later.");
             }
