@@ -97,7 +97,7 @@ internal static class RateLimiter
     public static async Task HandleRejection()
     {
         var query = "dummy";
-        #region rate-limiter-handling-failure
+        #region rate-limiter-with-onrejected
         var withOnRejected = new ResiliencePipelineBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions
             {
@@ -111,7 +111,9 @@ internal static class RateLimiter
                     return default;
                 }
             }).Build();
+        #endregion
 
+        #region rate-limiter-without-onrejected
         var withoutOnRejected = new ResiliencePipelineBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions
             {

@@ -7,7 +7,7 @@
 - **Extension(s)**:
   - `AddTimeout`
 - **Exception(s)**:
-  - `TimeoutRejectedException`: Thrown when a delegate executed through a timeout strategy does not complete before the timeout.
+  - [`TimeoutRejectedException`](xref:Polly.Timeout.TimeoutRejectedException): Thrown when a delegate executed through a timeout strategy does not complete before the timeout.
 
 ---
 
