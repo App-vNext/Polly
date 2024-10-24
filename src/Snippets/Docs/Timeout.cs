@@ -70,7 +70,7 @@ internal static class Timeout
     public static async Task HandleTimeout()
     {
         static ValueTask UserDelegate(CancellationToken ct) => ValueTask.CompletedTask;
-        #region timeout-handling-failure
+        #region timeout-with-ontimeout
         var withOnTimeout = new ResiliencePipelineBuilder()
             .AddTimeout(new TimeoutStrategyOptions
             {
@@ -81,7 +81,9 @@ internal static class Timeout
                     return default;
                 }
             }).Build();
+        #endregion
 
+        #region timeout-without-ontimeout
         var withoutOnTimeout = new ResiliencePipelineBuilder()
             .AddTimeout(new TimeoutStrategyOptions
             {

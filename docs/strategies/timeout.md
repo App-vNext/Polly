@@ -77,9 +77,9 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
 
 ### Failure handling
 
-It might not be obvious at the first glance what is the difference between these two techniques:
+At the first glance it might not be obvious what is the difference between these two techniques:
 
-<!-- snippet: timeout-handling-failure -->
+<!-- snippet: timeout-with-ontimeout -->
 ```cs
 var withOnTimeout = new ResiliencePipelineBuilder()
     .AddTimeout(new TimeoutStrategyOptions
@@ -91,7 +91,11 @@ var withOnTimeout = new ResiliencePipelineBuilder()
             return default;
         }
     }).Build();
+```
+<!-- endSnippet -->
 
+<!-- snippet: timeout-without-ontimeout -->
+```cs
 var withoutOnTimeout = new ResiliencePipelineBuilder()
     .AddTimeout(new TimeoutStrategyOptions
     {
@@ -109,6 +113,17 @@ catch (TimeoutRejectedException)
 ```
 <!-- endSnippet -->
 
+The `OnTimeout` user-provided delegate is called just before the strategy throws the `TimeoutRejectedException`. This delegate receives a parameter which allows you to access the `Context` object as well as the `Timeout`:
+
+- `Context` can be also accessed via some `Execute{Async}` overloads.
+- `Timeout` can be useful if you are using the `TimeoutGenerator` property of the `TimeoutStrategyOptions` rather than its `Timeout` property.
+
+So, what is the purpose of the `OnTimeout` in case of static timeout settings?
+
+The `OnTimeout` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `TimeoutRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that a timeout has occurred, you have to provide a delegate to the `OnTimeout` property.
+
+The `TimeoutRejectedException` provides access to a property called `TelemetrySource`. This property is a [`ResilienceTelemetrySource`](xref:Polly.Telemetry.ResilienceTelemetrySource) which allows you retrieve information like the executed pipeline and the executed strategy. These can be really handy whenever you have multiple Timeout strategies in your pipeline and you want to know which strategy threw the `TimeoutRejectedException`.
+
 ## Defaults
 
 | Property           | Default Value | Description                                                                                                                          |
@@ -122,17 +137,6 @@ catch (TimeoutRejectedException)
 - If `TimeoutGenerator` is not specified then `Timeout` will be used.
 - If both `Timeout` and `TimeoutGenerator` are specified then `Timeout` will be ignored.
 - If `TimeoutGenerator` returns a `TimeSpan` that is less than or equal to `TimeSpan.Zero` then the strategy will have no effect.
-
-### `OnTimeout` versus catching `TimeoutRejectedException`
-
-The `OnTimeout` user-provided delegate is called just before the strategy throws the `TimeoutRejectedException`. This delegate receives a parameter which allows you to access the `Context` object as well as the `Timeout`:
-
-- Accessing the `Context` is also possible via a different `Execute{Async}` overload.
-- Accessing the `Timeout` can be useful if you are using the `TimeoutGenerator` property rather than the `Timeout` property.
-
-So, what is the purpose of the `OnTimeout` in case of static timeout settings?
-
-The `OnTimeout` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `TimeoutRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that a timeout has occurred, you have to provide a delegate to the `OnTimeout` property.
 
 ## Telemetry
 
