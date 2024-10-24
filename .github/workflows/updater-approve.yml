@@ -95,7 +95,7 @@ jobs:
         "is-trusted-update=$isTrusted" >> $env:GITHUB_OUTPUT
 
     - name: Checkout code
-      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     - name: Approve pull request and enable auto-merge
       if: steps.check-dependencies.outputs.is-trusted-update == 'true'
