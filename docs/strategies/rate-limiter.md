@@ -155,7 +155,7 @@ Resilience event occurred. EventName: 'OnRateLimiterRejected', Source: 'MyPipeli
 ```
 
 > [!NOTE]
-> Please note that the `OnRateLimiterRejected` telemetry event will be reported **only if** the rate limiter strategy rejects the provided callback execution.
+> The `OnRateLimiterRejected` telemetry event will be reported **only if** the rate limiter strategy rejects the provided callback execution.
 >
 > Also remember that the `Result` will be **always empty** for the `OnRateLimiterRejected` telemetry event.
 
