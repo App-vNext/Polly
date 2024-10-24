@@ -102,7 +102,7 @@
 </li>
 <li><strong>Exception(s)</strong>:
 <ul>
-<li><code>RateLimiterRejectedException</code>: Thrown when a rate limiter rejects an execution.</li>
+<li><a class="xref" href="../api/Polly.RateLimiting.RateLimiterRejectedException.html"><code>RateLimiterRejectedException</code></a>: Thrown when a rate limiter rejects an execution.</li>
 </ul>
 </li>
 </ul>
@@ -161,8 +161,8 @@ catch (RateLimiterRejectedException ex)
 </code></pre>
 <!-- endSnippet -->
 <h3 id="failure-handling">Failure handling</h3>
-<p>It might not be obvious at the first glance what is the difference between these two techniques:</p>
-<!-- snippet: rate-limiter-handling-failure -->
+<p>At first glance it might not be obvious what the difference between these two techniques is:</p>
+<!-- snippet: rate-limiter-with-onrejected -->
 <pre><code class="lang-cs">var withOnRejected = new ResiliencePipelineBuilder()
     .AddRateLimiter(new RateLimiterStrategyOptions
     {
@@ -176,8 +176,10 @@ catch (RateLimiterRejectedException ex)
             return default;
         }
     }).Build();
-
-var withoutOnRejected = new ResiliencePipelineBuilder()
+</code></pre>
+<!-- endSnippet -->
+<!-- snippet: rate-limiter-without-onrejected -->
+<pre><code class="lang-cs">var withoutOnRejected = new ResiliencePipelineBuilder()
     .AddRateLimiter(new RateLimiterStrategyOptions
     {
         DefaultRateLimiterOptions = new ConcurrencyLimiterOptions
@@ -196,6 +198,19 @@ catch (RateLimiterRejectedException)
 }
 </code></pre>
 <!-- endSnippet -->
+<p>The <code>OnRejected</code> user-provided delegate is called just before the strategy throws the <code>RateLimiterRejectedException</code>. This delegate receives a parameter which allows you to access the <code>Context</code> object as well as the <code>Lease</code>:</p>
+<ul>
+<li><code>Context</code> can be accessed via some <code>Execute{Async}</code> overloads.</li>
+<li><code>Lease</code> can be useful in advanced scenarios.</li>
+</ul>
+<p>So, what is the purpose of the <code>OnRejected</code>?</p>
+<p>The <code>OnRejected</code> delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle <code>RateLimiterRejectedException</code>, that means the <code>Execute{Async}</code> may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the <code>OnRejected</code> property.</p>
+<p>The <code>RateLimiterRejectedException</code> has a <code>RetryAfter</code> and a <code>TelemetrySource</code> property. If the optional <code>RetryAfter</code> value is provided then this indicates that your requests are being throttled and you should retry them no sooner than the property's value.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The <code>RetryAfter</code> value is not available inside the <code>OnRejected</code> callback.</p>
+</div>
+<p>The <code>TelemetrySource</code> property is a <a class="xref" href="../api/Polly.Telemetry.ResilienceTelemetrySource.html"><code>ResilienceTelemetrySource</code></a> which allows you retrieve information such as the executed pipeline and strategy. These can be useful if you have multiple limiter strategies in your pipeline (for example both a rate and concurrency limiter) and you need to know which strategy caused the <code>RateLimiterRejectedException</code> to be thrown.</p>
 <h2 id="defaults">Defaults</h2>
 <table>
 <thead>
@@ -223,19 +238,6 @@ catch (RateLimiterRejectedException)
 </tr>
 </tbody>
 </table>
-<h3 id="onrejected-versus-catching-ratelimiterrejectedexception"><code>OnRejected</code> versus catching <code>RateLimiterRejectedException</code></h3>
-<p>The <code>OnRejected</code> user-provided delegate is called just before the strategy throws the <code>RateLimiterRejectedException</code>. This delegate receives a parameter which allows you to access the <code>Context</code> object as well as the <code>Lease</code>:</p>
-<ul>
-<li>Accessing the <code>Context</code> is also possible via a different <code>Execute{Async}</code> overload.</li>
-<li>Accessing the rejected <code>Lease</code> can be useful in certain scenarios.</li>
-</ul>
-<p>So, what is the purpose of the <code>OnRejected</code>?</p>
-<p>The <code>OnRejected</code> delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle <code>RateLimiterRejectedException</code>, that means the <code>Execute{Async}</code> may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the <code>OnRejected</code> property.</p>
-<div class="IMPORTANT">
-<h5>Important</h5>
-<p>The <a class="xref" href="../api/Polly.RateLimiting.RateLimiterRejectedException.html"><code>RateLimiterRejectedException</code></a> has a <code>RetryAfter</code> property. If this optional <code>TimeSpan</code> is provided then this indicates that your requests are throttled and you should retry them no sooner than the value given.
-Please note that this information is not available inside the <code>OnRejected</code> callback.</p>
-</div>
 <h2 id="telemetry">Telemetry</h2>
 <p>The rate limiter strategy reports the following telemetry events:</p>
 <table>
@@ -260,7 +262,7 @@ Resilience event occurred. EventName: 'OnRateLimiterRejected', Source: 'MyPipeli
 </code></pre>
 <div class="NOTE">
 <h5>Note</h5>
-<p>Please note that the <code>OnRateLimiterRejected</code> telemetry event will be reported <strong>only if</strong> the rate limiter strategy rejects the provided callback execution.</p>
+<p>The <code>OnRateLimiterRejected</code> telemetry event will be reported <strong>only if</strong> the rate limiter strategy rejects the provided callback execution.</p>
 <p>Also remember that the <code>Result</code> will be <strong>always empty</strong> for the <code>OnRateLimiterRejected</code> telemetry event.</p>
 </div>
 <p>For further information please check out the <a href="../advanced/telemetry.html">telemetry page</a>.</p>

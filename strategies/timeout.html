@@ -101,7 +101,7 @@
 </li>
 <li><strong>Exception(s)</strong>:
 <ul>
-<li><code>TimeoutRejectedException</code>: Thrown when a delegate executed through a timeout strategy does not complete before the timeout.</li>
+<li><a class="xref" href="../api/Polly.Timeout.TimeoutRejectedException.html"><code>TimeoutRejectedException</code></a>: Thrown when a delegate executed through a timeout strategy does not complete before the timeout.</li>
 </ul>
 </li>
 </ul>
@@ -165,8 +165,8 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
 </code></pre>
 <!-- endSnippet -->
 <h3 id="failure-handling">Failure handling</h3>
-<p>It might not be obvious at the first glance what is the difference between these two techniques:</p>
-<!-- snippet: timeout-handling-failure -->
+<p>At first glance it might not be obvious what the difference between these two techniques is:</p>
+<!-- snippet: timeout-with-ontimeout -->
 <pre><code class="lang-cs">var withOnTimeout = new ResiliencePipelineBuilder()
     .AddTimeout(new TimeoutStrategyOptions
     {
@@ -177,8 +177,10 @@ HttpResponseMessage httpResponse = await pipeline.ExecuteAsync(
             return default;
         }
     }).Build();
-
-var withoutOnTimeout = new ResiliencePipelineBuilder()
+</code></pre>
+<!-- endSnippet -->
+<!-- snippet: timeout-without-ontimeout -->
+<pre><code class="lang-cs">var withoutOnTimeout = new ResiliencePipelineBuilder()
     .AddTimeout(new TimeoutStrategyOptions
     {
         Timeout = TimeSpan.FromSeconds(2)
@@ -194,6 +196,14 @@ catch (TimeoutRejectedException)
 }
 </code></pre>
 <!-- endSnippet -->
+<p>The <code>OnTimeout</code> user-provided delegate is called just before the strategy throws the <code>TimeoutRejectedException</code>. This delegate receives a parameter which allows you to access the <code>Context</code> object as well as the <code>Timeout</code>:</p>
+<ul>
+<li><code>Context</code> can be also accessed via some <code>Execute{Async}</code> overloads.</li>
+<li><code>Timeout</code> can be useful if you are using the <code>TimeoutGenerator</code> property of the <code>TimeoutStrategyOptions</code> rather than its <code>Timeout</code> property.</li>
+</ul>
+<p>So, what is the purpose of the <code>OnTimeout</code> in case of static timeout settings?</p>
+<p>The <code>OnTimeout</code> delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle <code>TimeoutRejectedException</code>, that means the <code>Execute{Async}</code> may or may not throw that exception depending on future attempts. So, if you need to be notified about a timeout occurring, you must provide a delegate to the <code>OnTimeout</code> property.</p>
+<p>The <code>TimeoutRejectedException</code> provides access to a <code>TelemetrySource</code> property. This property is a <a class="xref" href="../api/Polly.Telemetry.ResilienceTelemetrySource.html"><code>ResilienceTelemetrySource</code></a> which allows you retrieve information such as the executed pipeline and strategy. These can be useful if you have multiple timeout strategies in your pipeline and you need to know which strategy caused the <code>TimeoutRejectedException</code> to be thrown.</p>
 <h2 id="defaults">Defaults</h2>
 <table>
 <thead>
@@ -227,14 +237,6 @@ catch (TimeoutRejectedException)
 <li>If both <code>Timeout</code> and <code>TimeoutGenerator</code> are specified then <code>Timeout</code> will be ignored.</li>
 <li>If <code>TimeoutGenerator</code> returns a <code>TimeSpan</code> that is less than or equal to <code>TimeSpan.Zero</code> then the strategy will have no effect.</li>
 </ul>
-<h3 id="ontimeout-versus-catching-timeoutrejectedexception"><code>OnTimeout</code> versus catching <code>TimeoutRejectedException</code></h3>
-<p>The <code>OnTimeout</code> user-provided delegate is called just before the strategy throws the <code>TimeoutRejectedException</code>. This delegate receives a parameter which allows you to access the <code>Context</code> object as well as the <code>Timeout</code>:</p>
-<ul>
-<li>Accessing the <code>Context</code> is also possible via a different <code>Execute{Async}</code> overload.</li>
-<li>Accessing the <code>Timeout</code> can be useful if you are using the <code>TimeoutGenerator</code> property rather than the <code>Timeout</code> property.</li>
-</ul>
-<p>So, what is the purpose of the <code>OnTimeout</code> in case of static timeout settings?</p>
-<p>The <code>OnTimeout</code> delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example you have a timeout as the inner strategy and a retry as the outer strategy. If the retry is defined to handle <code>TimeoutRejectedException</code>, that means the <code>Execute{Async}</code> may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that a timeout has occurred, you have to provide a delegate to the <code>OnTimeout</code> property.</p>
 <h2 id="telemetry">Telemetry</h2>
 <p>The timeout strategy reports the following telemetry events:</p>
 <table>
