@@ -9,8 +9,8 @@
   - `AddCircuitBreaker`
 - **Strategy Type**: Reactive
 - **Exception(s)**:
-  - `BrokenCircuitException`: Thrown when a circuit is broken and the action could not be executed.
-  - `IsolatedCircuitException`: Thrown when a circuit is isolated (held open) by manual override.
+  - [`BrokenCircuitException`](xref:Polly.CircuitBreaker.BrokenCircuitException): Thrown when a circuit is broken and the action was not executed.
+  - [`IsolatedCircuitException`](xref:Polly.CircuitBreaker.IsolatedCircuitException): Thrown when a circuit is isolated (held open) by manual override.
 
 ---
 
@@ -91,6 +91,65 @@ new ResiliencePipelineBuilder().AddCircuitBreaker(optionsDefaults);
 new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(optionsStateProvider);
 ```
 <!-- endSnippet -->
+
+### Failure handling
+
+The circuit breaker returns the result / exception during the sampling period. Once the strategy opens the circuit, every subsequent call will be shortcut with a `BrokenCircuitException`.
+
+<!-- snippet: circuit-breaker-failure-handling -->
+```cs
+var pipeline = new ResiliencePipelineBuilder()
+    .AddCircuitBreaker(new CircuitBreakerStrategyOptions
+    {
+        FailureRatio = 0.1,
+        SamplingDuration = TimeSpan.FromSeconds(1),
+        MinimumThroughput = 3,
+        BreakDuration = TimeSpan.FromSeconds(30),
+        ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
+    })
+    .Build();
+
+for (int i = 0; i < 10; i++)
+{
+    try
+    {
+        pipeline.Execute(() => throw new SomeExceptionType());
+    }
+    catch (SomeExceptionType)
+    {
+        Console.WriteLine("Operation failed please try again.");
+    }
+    catch (BrokenCircuitException)
+    {
+        Console.WriteLine("Operation failed too many times please try again later.");
+    }
+}
+```
+<!-- endSnippet -->
+
+The output would look like this:
+
+```none
+Operation failed please try again.
+Operation failed please try again.
+Operation failed please try again.
+Operation failed too many times please try again later.
+Operation failed too many times please try again later.
+Operation failed too many times please try again later.
+Operation failed too many times please try again later.
+Operation failed too many times please try again later.
+Operation failed too many times please try again later.
+Operation failed too many times please try again later.
+```
+
+The `BrokenCircuitException` and the `IsolatedCircuitException` provide access to the following properties:
+
+- `RetryAfter`;
+- `TelemetrySource`.
+
+If a `TimeSpan` value is provided to the optional `RetryAfter` property then this indicates that circuit is open for at least this time period and you should retry your operation no sooner than the value given.
+
+The `TelemetrySource` property is a [`ResilienceTelemetrySource`](xref:Polly.Telemetry.ResilienceTelemetrySource) which allows you retrieve information such as the executed pipeline and strategy. These can be useful if you have multiple circuit breaker strategies in your pipeline and you need to know which strategy caused the `BrokenCircuitException` to be thrown.
 
 ## Defaults
 

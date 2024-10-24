@@ -82,6 +82,35 @@ internal static class CircuitBreaker
         new ResiliencePipelineBuilder<HttpResponseMessage>().AddCircuitBreaker(optionsStateProvider);
 
         #endregion
+
+        #region circuit-breaker-failure-handling
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddCircuitBreaker(new CircuitBreakerStrategyOptions
+            {
+                FailureRatio = 0.1,
+                SamplingDuration = TimeSpan.FromSeconds(1),
+                MinimumThroughput = 3,
+                BreakDuration = TimeSpan.FromSeconds(30),
+                ShouldHandle = new PredicateBuilder().Handle<SomeExceptionType>()
+            })
+            .Build();
+
+        for (int i = 0; i < 10; i++)
+        {
+            try
+            {
+                pipeline.Execute(() => throw new SomeExceptionType());
+            }
+            catch (SomeExceptionType)
+            {
+                Console.WriteLine("Operation failed please try again.");
+            }
+            catch (BrokenCircuitException)
+            {
+                Console.WriteLine("Operation failed too many times please try again later.");
+            }
+        }
+        #endregion
     }
 
     public static void AntiPattern_CircuitAwareRetry()

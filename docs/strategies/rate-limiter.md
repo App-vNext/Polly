@@ -8,7 +8,7 @@
   - `AddRateLimiter`,
   - `AddConcurrencyLimiter`
 - **Exception(s)**:
-  - `RateLimiterRejectedException`: Thrown when a rate limiter rejects an execution.
+  - [`RateLimiterRejectedException`](xref:Polly.RateLimiting.RateLimiterRejectedException): Thrown when a rate limiter rejects an execution.
 
 > [!NOTE]
 > The rate limiter strategy resides inside the [Polly.RateLimiting](https://www.nuget.org/packages/Polly.RateLimiting) package, not in ([Polly.Core](https://www.nuget.org/packages/Polly.Core)) like other strategies.
@@ -73,9 +73,9 @@ catch (RateLimiterRejectedException ex)
 
 ### Failure handling
 
-It might not be obvious at the first glance what is the difference between these two techniques:
+At first glance it might not be obvious what the difference between these two techniques is:
 
-<!-- snippet: rate-limiter-handling-failure -->
+<!-- snippet: rate-limiter-with-onrejected -->
 ```cs
 var withOnRejected = new ResiliencePipelineBuilder()
     .AddRateLimiter(new RateLimiterStrategyOptions
@@ -90,7 +90,11 @@ var withOnRejected = new ResiliencePipelineBuilder()
             return default;
         }
     }).Build();
+```
+<!-- endSnippet -->
 
+<!-- snippet: rate-limiter-without-onrejected -->
+```cs
 var withoutOnRejected = new ResiliencePipelineBuilder()
     .AddRateLimiter(new RateLimiterStrategyOptions
     {
@@ -111,6 +115,22 @@ catch (RateLimiterRejectedException)
 ```
 <!-- endSnippet -->
 
+The `OnRejected` user-provided delegate is called just before the strategy throws the `RateLimiterRejectedException`. This delegate receives a parameter which allows you to access the `Context` object as well as the `Lease`:
+
+- `Context` can be accessed via some `Execute{Async}` overloads.
+- `Lease` can be useful in advanced scenarios.
+
+So, what is the purpose of the `OnRejected`?
+
+The `OnRejected` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `RateLimiterRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the `OnRejected` property.
+
+The `RateLimiterRejectedException` has a `RetryAfter` and a `TelemetrySource` property. If the optional `RetryAfter` value is provided then this indicates that your requests are being throttled and you should retry them no sooner than the property's value.
+
+> [!NOTE]
+> The `RetryAfter` value is not available inside the `OnRejected` callback.
+
+ The `TelemetrySource` property is a [`ResilienceTelemetrySource`](xref:Polly.Telemetry.ResilienceTelemetrySource) which allows you retrieve information such as the executed pipeline and strategy. These can be useful if you have multiple limiter strategies in your pipeline (for example both a rate and concurrency limiter) and you need to know which strategy caused the `RateLimiterRejectedException` to be thrown.
+
 ## Defaults
 
 | Property                    | Default Value                                        | Description                                                                                                 |
@@ -118,21 +138,6 @@ catch (RateLimiterRejectedException)
 | `RateLimiter`               | `null`                                               | **Dynamically** creates a `RateLimitLease` for executions.                                                  |
 | `DefaultRateLimiterOptions` | `PermitLimit` set to 1000 and `QueueLimit` set to 0. | If `RateLimiter` is not provided then this options object will be used for the default concurrency limiter. |
 | `OnRejected`                | `null`                                               | If provided then it will be invoked after the limiter rejected an execution.                                |
-
-### `OnRejected` versus catching `RateLimiterRejectedException`
-
-The `OnRejected` user-provided delegate is called just before the strategy throws the `RateLimiterRejectedException`. This delegate receives a parameter which allows you to access the `Context` object as well as the `Lease`:
-
-- Accessing the `Context` is also possible via a different `Execute{Async}` overload.
-- Accessing the rejected `Lease` can be useful in certain scenarios.
-
-So, what is the purpose of the `OnRejected`?
-
-The `OnRejected` delegate can be useful when you define a resilience pipeline which consists of multiple strategies. For example, you have a rate limiter as the inner strategy and a retry as the outer strategy. If the retry is defined to handle `RateLimiterRejectedException`, that means the `Execute{Async}` may or may not throw that exception depending on future attempts. So, if you want to get notification about the fact that the rate limit has been exceeded, you have to provide a delegate to the `OnRejected` property.
-
-> [!IMPORTANT]
-> The [`RateLimiterRejectedException`](xref:Polly.RateLimiting.RateLimiterRejectedException) has a `RetryAfter` property. If this optional `TimeSpan` is provided then this indicates that your requests are throttled and you should retry them no sooner than the value given.
-> Please note that this information is not available inside the `OnRejected` callback.
 
 ## Telemetry
 
@@ -150,7 +155,7 @@ Resilience event occurred. EventName: 'OnRateLimiterRejected', Source: 'MyPipeli
 ```
 
 > [!NOTE]
-> Please note that the `OnRateLimiterRejected` telemetry event will be reported **only if** the rate limiter strategy rejects the provided callback execution.
+> The `OnRateLimiterRejected` telemetry event will be reported **only if** the rate limiter strategy rejects the provided callback execution.
 >
 > Also remember that the `Result` will be **always empty** for the `OnRateLimiterRejected` telemetry event.
 
