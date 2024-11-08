@@ -37,9 +37,10 @@ await resiliencePipeline.ExecuteAsync(
     cancellationToken);
 
 // This approach uses a static lambda, avoiding allocations.
-// The "userId" is stored as state, and the lambda consumes it.
+// The "userId" is passed to the execution via the state argument, and the lambda consumes it as the first
+// parameter passed to the GetMemberAsync() method. In this case, userIdAsState and userId are the same value.
 await resiliencePipeline.ExecuteAsync(
-    static (state, cancellationToken) => GetMemberAsync(state, cancellationToken),
+    static (userIdAsState, cancellationToken) => GetMemberAsync(userIdAsState, cancellationToken),
     userId,
     cancellationToken);
 ```
