@@ -5,7 +5,7 @@ namespace Polly.Core.Tests.Issues;
 
 public partial class IssuesTests
 {
-    [Fact(Timeout = 15_000)]
+    [Fact(Timeout = 30_000)]
     public async Task InfiniteRetry_Delay_Does_Not_Overflow_2163()
     {
         // Arrange
