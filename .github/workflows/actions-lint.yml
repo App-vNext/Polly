@@ -2,13 +2,18 @@ name: actions-lint
 
 on:
   push:
-    branches: [ main, release/* ]
+    branches:
+      - main
+      - release/*
     paths-ignore:
       - '**/*.gitattributes'
       - '**/*.gitignore'
       - '**/*.md'
   pull_request:
-    branches: [ main, release/* ]
+    branches:
+      - main
+      - release/*
+      - dotnet-vnext
   workflow_dispatch:
 
 permissions:

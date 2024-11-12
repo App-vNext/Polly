@@ -2,9 +2,14 @@ name: github-pages
 
 on:
   push:
-    branches: [ main, release/* ]
+    branches:
+      - main
+      - release/*
   pull_request:
-    branches: [ main, release/* ]
+    branches:
+      - main
+      - release/*
+      - dotnet-vnext
   workflow_dispatch:
 
 permissions:
@@ -14,6 +19,7 @@ jobs:
 
   build-docs:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
 
@@ -37,6 +43,8 @@ jobs:
       uses: actions/setup-dotnet@3e891b0cb619bf60e2c25674b222b8940e2c1c25 # v4.1.0
 
     - name: Generate documentation
+      env:
+        DOTNET_ROLL_FORWARD: LatestMajor
       run: |
         dotnet tool restore
         dotnet build --configuration Release /p:SKIP_POLLY_ANALYZERS=true
