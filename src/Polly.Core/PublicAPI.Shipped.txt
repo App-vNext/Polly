@@ -23,6 +23,10 @@ Polly.CircuitBreaker.BrokenCircuitException
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException() -> void
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message) -> void
 Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message, System.Exception! inner) -> void
+Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message, System.TimeSpan retryAfter) -> void
+Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(string! message, System.TimeSpan retryAfter, System.Exception! inner) -> void
+Polly.CircuitBreaker.BrokenCircuitException.BrokenCircuitException(System.TimeSpan retryAfter) -> void
+Polly.CircuitBreaker.BrokenCircuitException.RetryAfter.get -> System.TimeSpan?
 Polly.CircuitBreaker.CircuitBreakerManualControl
 Polly.CircuitBreaker.CircuitBreakerManualControl.CircuitBreakerManualControl() -> void
 Polly.CircuitBreaker.CircuitBreakerManualControl.CircuitBreakerManualControl(bool isIsolated) -> void
@@ -469,6 +473,7 @@ Polly.Telemetry.ResilienceEventSeverity.Warning = 3 -> Polly.Telemetry.Resilienc
 Polly.Telemetry.ResilienceStrategyTelemetry
 Polly.Telemetry.ResilienceStrategyTelemetry.Report<TArgs, TResult>(Polly.Telemetry.ResilienceEvent resilienceEvent, Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome, TArgs args) -> void
 Polly.Telemetry.ResilienceStrategyTelemetry.Report<TArgs>(Polly.Telemetry.ResilienceEvent resilienceEvent, Polly.ResilienceContext! context, TArgs args) -> void
+Polly.Telemetry.ResilienceStrategyTelemetry.SetTelemetrySource(Polly.ExecutionRejectedException! exception) -> void
 Polly.Telemetry.ResilienceTelemetrySource
 Polly.Telemetry.ResilienceTelemetrySource.PipelineInstanceName.get -> string?
 Polly.Telemetry.ResilienceTelemetrySource.PipelineName.get -> string?
@@ -550,5 +555,6 @@ static Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(thi
 static Polly.TimeoutResiliencePipelineBuilderExtensions.AddTimeout<TBuilder>(this TBuilder! builder, System.TimeSpan timeout) -> TBuilder!
 static readonly Polly.ResiliencePipeline.Empty -> Polly.ResiliencePipeline!
 static readonly Polly.ResiliencePipeline<T>.Empty -> Polly.ResiliencePipeline<T>!
+virtual Polly.ExecutionRejectedException.TelemetrySource.get -> Polly.Telemetry.ResilienceTelemetrySource?
 virtual Polly.Registry.ResiliencePipelineProvider<TKey>.GetPipeline(TKey key) -> Polly.ResiliencePipeline!
 virtual Polly.Registry.ResiliencePipelineProvider<TKey>.GetPipeline<TResult>(TKey key) -> Polly.ResiliencePipeline<TResult>!
