@@ -20,12 +20,12 @@
   </ItemGroup>
 
   <PropertyGroup Label="MinVer">
-    <MinVerMinimumMajorMinor>8.4</MinVerMinimumMajorMinor>
+    <MinVerMinimumMajorMinor>8.5</MinVerMinimumMajorMinor>
   </PropertyGroup>
 
   <Target Name="CustomizeVersions" AfterTargets="MinVer" Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <PropertyGroup>
-      <FileVersion>$([MSBuild]::ValueOrDefault('$(MinVerMajor)', '8')).$([MSBuild]::ValueOrDefault('$(MinVerMinor)', '4')).$([MSBuild]::ValueOrDefault('$(MinVerPatch)', '0')).$(GITHUB_RUN_NUMBER)</FileVersion>
+      <FileVersion>$([MSBuild]::ValueOrDefault('$(MinVerMajor)', '8')).$([MSBuild]::ValueOrDefault('$(MinVerMinor)', '5')).$([MSBuild]::ValueOrDefault('$(MinVerPatch)', '0')).$(GITHUB_RUN_NUMBER)</FileVersion>
     </PropertyGroup>
     <PropertyGroup Condition="$(GITHUB_REF.StartsWith(`refs/pull/`))">
       <PackageVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)-pr.$(GITHUB_REF_NAME.Replace(`/merge`, ``)).$(GITHUB_RUN_NUMBER)</PackageVersion>

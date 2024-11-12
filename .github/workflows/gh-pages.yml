@@ -45,7 +45,6 @@ jobs:
     - name: Generate documentation
       env:
         DOTNET_ROLL_FORWARD: LatestMajor
-        DOTNET_ROLL_FORWARD_TO_PRERELEASE: 1
       run: |
         dotnet tool restore
         dotnet build --configuration Release /p:SKIP_POLLY_ANALYZERS=true
