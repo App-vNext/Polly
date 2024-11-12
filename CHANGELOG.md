@@ -4,6 +4,27 @@
 
 <!-- next-release -->
 
+## 8.5.0
+
+* Clean the Polly.Utils.ObjectPool class by [@gabidabet](https://github.com/gabidabet) in https://github.com/App-vNext/Polly/pull/2312
+* Fix issue #2288 by [@gabidabet](https://github.com/gabidabet) in https://github.com/App-vNext/Polly/pull/2313
+* Remove CA2211 NoWarn by [@gabidabet](https://github.com/gabidabet) in https://github.com/App-vNext/Polly/pull/2316
+* Remove CA1816 NoWarn by [@gabidabet](https://github.com/gabidabet) in https://github.com/App-vNext/Polly/pull/2317
+* Update signing workflow by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2323
+* Fix hedging failing test by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2321
+* Fix S2184, S2104 in Polly.Spec by [@ShawnWu33](https://github.com/ShawnWu33) in https://github.com/App-vNext/Polly/pull/2328
+* Add `RetryAfter` to `BrokenCircuitException`. by [@DL444](https://github.com/DL444) in https://github.com/App-vNext/Polly/pull/2324
+* Supress S4039, CA1010 in Context.Dictionary by [@ShawnWu33](https://github.com/ShawnWu33) in https://github.com/App-vNext/Polly/pull/2329
+* Seperate mutation tests by [@ShawnWu33](https://github.com/ShawnWu33) in https://github.com/App-vNext/Polly/pull/2331
+* Add chained rate limiter example by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2344
+* Update cake tools by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2293
+* Update Microsoft.Extensions.Caching.Memory by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2347
+* Add TelemetrySource to ExecutionRejectedException by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2346
+* Document TelemetrySource property of the ExecutionRejectedException by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2355
+* Extend snippet explanation by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2373
+* Update to .NET 9 SDK by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2003
+* Use `[DebuggerDisableUserUnhandledExceptions]` by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2003
+
 ## 8.4.2
 
 * Update sponsors by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2169
