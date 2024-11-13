@@ -43,10 +43,6 @@ jobs:
       matrix:
         os: [ windows-latest ]
         include:
-          - os: macos-latest
-            os_name: macos
-          - os: ubuntu-latest
-            os_name: linux
           - os: windows-latest
             os_name: windows
 
@@ -157,9 +153,6 @@ jobs:
   sign:
     needs: [ build, validate-packages ]
     runs-on: windows-latest
-    if: |
-      github.event.repository.fork == false &&
-      startsWith(github.ref, 'refs/tags/')
 
     steps:
 
@@ -332,40 +325,3 @@ jobs:
         } else {
           Write-Output "All $($packages.Length) NuGet packages have valid signatures."
         }
-
-  publish-nuget:
-    needs: [ build, validate-signed-packages ]
-    runs-on: ubuntu-latest
-    steps:
-
-    - name: Download signed packages
-      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
-      with:
-        name: signed-packages
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3e891b0cb619bf60e2c25674b222b8940e2c1c25 # v4.1.0
-      with:
-        dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
-
-    - name: Push signed NuGet packages to NuGet.org
-      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json
-
-    - name: Generate GitHub application token
-      id: generate-application-token
-      uses: peter-murray/workflow-application-token-action@8e4e6fbf6fcc8a272781d97597969d21b3812974 # v4.0.0
-      with:
-        application_id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
-        application_private_key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
-        permissions: 'contents:write'
-
-    - name: Publish nuget_packages_published
-      uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3.0.0
-      with:
-        event-type: nuget_packages_published
-        token: ${{ steps.generate-application-token.outputs.token }}
-        client-payload: |-
-          {
-            "packages": "${{ needs.build.outputs.package-names }}",
-            "version": "${{ needs.build.outputs.package-version }}"
-          }
