@@ -194,9 +194,6 @@ jobs:
           --description "Polly" `
           --description-url "https://github.com/${{ github.repository }}" `
           --azure-key-vault-certificate "${{ secrets.SIGN_CLI_CERT_NAME }}" `
-          --azure-key-vault-client-id ${env:AZURE_CLIENT_ID} `
-          --azure-key-vault-client-secret ${env:AZURE_CLIENT_SECRET} `
-          --azure-key-vault-tenant-id ${env:AZURE_TENANT_ID} `
           --azure-key-vault-url "${{ secrets.SIGN_CLI_VAULT_URI }}" `
           --verbosity "${{ runner.debug == '1' && 'Debug' || 'Warning' }}"
         if ($LASTEXITCODE -ne 0) {
