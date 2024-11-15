@@ -21,9 +21,11 @@ updates:
   ignore:
     # Ignore the libraries which are pinned
     - dependency-name: "Microsoft.Bcl.AsyncInterfaces"
+    - dependency-name: "Microsoft.Extensions.Caching.Memory"
     - dependency-name: "Microsoft.Extensions.Logging"
     - dependency-name: "Microsoft.Extensions.Logging.Abstractions"
     - dependency-name: "Microsoft.Extensions.Options"
+    - dependency-name: "Microsoft.Extensions.TimeProvider.Testing"
     - dependency-name: "System.ComponentModel.Annotations"
     - dependency-name: "System.Diagnostics.DiagnosticSource"
     - dependency-name: "System.Threading.RateLimiting"
