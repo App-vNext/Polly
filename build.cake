@@ -159,21 +159,6 @@ Task("__RunTests")
     }
 });
 
-Task("__RunCoreMutationTests")
-    .Does((context) =>
-{
-    MutationTestProject(File("./src/Polly.Core/Polly.Core.csproj"), File("./test/Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core.csproj");
-    MutationTestProject(File("./src/Polly.RateLimiting/Polly.RateLimiting.csproj"), File("./test/Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj"), "Polly.RateLimiting.csproj");
-    MutationTestProject(File("./src/Polly.Extensions/Polly.Extensions.csproj"), File("./test/Polly.Extensions.Tests/Polly.Extensions.Tests.csproj"), "Polly.Extensions.csproj");
-    MutationTestProject(File("./src/Polly.Testing/Polly.Testing.csproj"), File("./test/Polly.Testing.Tests/Polly.Testing.Tests.csproj"), "Polly.Testing.csproj");
-});
-
-Task("__RunLegacyMutationTests")
-    .Does((context) =>
-{
-    MutationTestProject(File("./src/Polly/Polly.csproj"), File("./test/Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
-});
-
 Task("__CreateNuGetPackages")
     .Does(() =>
 {
@@ -215,9 +200,12 @@ Task("__ValidateDocs")
     }
 });
 
-Task("__CommonBuild")
+Task("__Setup")
     .IsDependentOn("__Clean")
-    .IsDependentOn("__RestoreNuGetPackages")
+    .IsDependentOn("__RestoreNuGetPackages");
+
+Task("__CommonBuild")
+    .IsDependentOn("__Setup")
     .IsDependentOn("__ValidateDocs")
     .IsDependentOn("__BuildSolutions");
 
@@ -238,13 +226,51 @@ Task("Build")
 Task("Default")
     .IsDependentOn("Build");
 
-Task("MutationCore")
-    .IsDependentOn("__CommonBuild")
-    .IsDependentOn("__RunCoreMutationTests");
+///////////////////////////////////////////////////////////////////////////////
+// MUTATION TESTING TARGETS
+///////////////////////////////////////////////////////////////////////////////
 
-Task("MutationLegacy")
-    .IsDependentOn("__CommonBuild")
-    .IsDependentOn("__RunLegacyMutationTests");
+Task("MutationTestsCore")
+    .IsDependentOn("__Setup")
+    .Does((context) =>
+{
+    RunMutationTests(File("./src/Polly.Core/Polly.Core.csproj"), File("./test/Polly.Core.Tests/Polly.Core.Tests.csproj"));
+});
+
+Task("MutationTestsRateLimiting")
+    .IsDependentOn("__Setup")
+    .Does((context) =>
+{
+    RunMutationTests(File("./src/Polly.RateLimiting/Polly.RateLimiting.csproj"), File("./test/Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj"));
+});
+
+Task("MutationTestsExtensions")
+    .IsDependentOn("__Setup")
+    .Does((context) =>
+{
+    RunMutationTests(File("./src/Polly.Extensions/Polly.Extensions.csproj"), File("./test/Polly.Extensions.Tests/Polly.Extensions.Tests.csproj"));
+});
+
+Task("MutationTestsTesting")
+    .IsDependentOn("__Setup")
+    .Does((context) =>
+{
+    RunMutationTests(File("./src/Polly.Testing/Polly.Testing.csproj"), File("./test/Polly.Testing.Tests/Polly.Testing.Tests.csproj"));
+});
+
+Task("MutationTestsLegacy")
+    .IsDependentOn("__Setup")
+    .Does((context) =>
+{
+    RunMutationTests(File("./src/Polly/Polly.csproj"), File("./test/Polly.Specs/Polly.Specs.csproj"));
+});
+
+Task("MutationTests")
+    .IsDependentOn("MutationTestsCore")
+    .IsDependentOn("MutationTestsRateLimiting")
+    .IsDependentOn("MutationTestsExtensions")
+    .IsDependentOn("MutationTestsTesting")
+    .IsDependentOn("MutationTestsLegacy");
 
 ///////////////////////////////////////////////////////////////////////////////
 // EXECUTION
@@ -261,28 +287,20 @@ string ToolsExePath(string exeFileName) {
     return exePath;
 }
 
-void MutationTestProject(FilePath proj, FilePath testProj, string project)
+void RunMutationTests(FilePath target, FilePath testProject)
 {
-    var dotNetBuildSettings = new DotNetBuildSettings
-    {
-        Configuration = "Debug",
-        Verbosity = DotNetVerbosity.Minimal,
-        NoRestore = true
-    };
-
-    DotNetBuild(proj.ToString(), dotNetBuildSettings);
-
     var strykerPath = Context.Tools.Resolve("Stryker.CLI.dll");
-    var mutationScore = XmlPeek(proj, "/Project/PropertyGroup/MutationScore/text()", new XmlPeekSettings { SuppressWarning = true });
+    var mutationScore = XmlPeek(target, "/Project/PropertyGroup/MutationScore/text()", new XmlPeekSettings { SuppressWarning = true });
     var score = int.Parse(mutationScore);
+    var targetFileName = target.GetFilename();
 
-    Information($"Running mutation tests for '{proj}'. Test Project: '{testProj}'");
+    Information($"Running mutation tests for '{targetFileName}'. Test Project: '{testProject}'");
 
-    var args = $"{strykerPath} --project {project} --test-project {testProj.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{project}";
+    var args = $"{strykerPath} --project {targetFileName} --test-project {testProject.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{targetFileName}";
 
     var result = StartProcess("dotnet", args);
     if (result != 0)
     {
-        throw new InvalidOperationException($"The mutation testing of '{project}' project failed.");
+        throw new InvalidOperationException($"The mutation testing of '{targetFileName}' project failed.");
     }
 }

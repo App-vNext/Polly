@@ -31,8 +31,14 @@ jobs:
         include:
           - name: core
             target: Core
+          - name: extensions
+            target: Extensions
           - name: legacy
             target: Legacy
+          - name: rate-limiting
+            target: RateLimiting
+          - name: testing
+            target: Testing
 
     steps:
 
@@ -46,6 +52,7 @@ jobs:
       with:
         dotnet-version: |
           6.0.x
+          8.0.x
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3e891b0cb619bf60e2c25674b222b8940e2c1c25 # v4.1.0
@@ -57,15 +64,32 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
         restore-keys: ${{ runner.os }}-nuget-
 
-    - name: Run mutation tests
+    - name: Run mutation tests for ${{ matrix.target }}
       shell: pwsh
       env:
-        MUTATION_TARGET: 'Mutation${{ matrix.target }}'
+        MUTATION_TARGET: 'MutationTests${{ matrix.target }}'
+        SKIP_POLLY_ANALYZERS: 'true'
       run: ./build.ps1 -Target ${env:MUTATION_TARGET}
 
     - name: Upload Mutation Report
-      if: always()
+      if: !cancelled()
       uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
       with:
         name: mutation-report-${{ matrix.name }}
         path: ./artifacts/mutation-report
+
+  mutation-tests:
+    needs: [ mutations ]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    env:
+      MUTATIONS_SUCCESS: ${{ !contains(needs.*.result, 'failure') }}
+    steps:
+      - run: |
+          if [ "$MUTATIONS_SUCCESS" == "true" ]
+          then
+            echo 'Mutation tests successful ✅'
+          else
+            echo 'One or more mutation test runs failed ❌'
+            exit 1
+          fi
