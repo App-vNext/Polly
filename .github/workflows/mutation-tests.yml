@@ -57,13 +57,6 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3e891b0cb619bf60e2c25674b222b8940e2c1c25 # v4.1.0
 
-    - name: Setup NuGet cache
-      uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a # v4.1.2
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
-        restore-keys: ${{ runner.os }}-nuget-
-
     - name: Run mutation tests for ${{ matrix.target }}
       shell: pwsh
       env:
