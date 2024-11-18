@@ -53,6 +53,15 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
         {
             var startTimestamp = _timeProvider.GetTimestamp();
             var outcome = await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            try
+            {
+                context.CancellationToken.ThrowIfCancellationRequested();
+            }
+            catch (OperationCanceledException e)
+            {
+                outcome = Outcome.FromException<T>(e);
+            }
+
             var shouldRetryArgs = new RetryPredicateArguments<T>(context, outcome, attempt);
             var handle = await ShouldHandle(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext);
             var executionTime = _timeProvider.GetElapsedTime(startTimestamp);
@@ -67,7 +76,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
                 TelemetryUtil.ReportExecutionAttempt(_telemetry, context, outcome, attempt, executionTime, handle);
             }
 
-            if (context.CancellationToken.IsCancellationRequested || isLastAttempt || !handle)
+            if (isLastAttempt || !handle)
             {
                 return outcome;
             }

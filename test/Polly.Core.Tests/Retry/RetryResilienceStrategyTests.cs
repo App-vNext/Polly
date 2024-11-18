@@ -31,11 +31,13 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_CancellationRequested_EnsureNotRetried()
+    public async Task ExecuteAsync_CancellationRequestedBeforeCallback_EnsureNoAttempt()
     {
         SetupNoDelay();
-        var sut = CreateSut();
         using var cancellationToken = new CancellationTokenSource();
+        _options.ShouldHandle = _ => PredicateResult.True();
+        var sut = CreateSut();
+
         cancellationToken.Cancel();
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellationToken.Token;
@@ -47,10 +49,36 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_CancellationRequestedDuringCallback_EnsureNotRetried()
+    {
+        SetupNoDelay();
+        using var cancellationToken = new CancellationTokenSource();
+        _options.ShouldHandle = _ => PredicateResult.True();
+        var sut = CreateSut();
+
+        var context = ResilienceContextPool.Shared.Get();
+        context.CancellationToken = cancellationToken.Token;
+        var executed = false;
+        var attemptCounter = 0;
+
+        var result = await sut.ExecuteOutcomeAsync((_, _) =>
+        {
+            executed = true;
+            ++attemptCounter;
+            cancellationToken.Cancel();
+            return Outcome.FromResultAsValueTask("dummy");
+        }, context, "state");
+
+        result.Exception.Should().BeOfType<OperationCanceledException>();
+        executed.Should().BeTrue();
+        attemptCounter.Should().Be(1);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_CancellationRequestedAfterCallback_EnsureNotRetried()
     {
+        SetupNoDelay();
         using var cancellationToken = new CancellationTokenSource();
-
         _options.ShouldHandle = _ => PredicateResult.True();
         _options.OnRetry = _ =>
         {
@@ -62,10 +90,18 @@ public class RetryResilienceStrategyTests
         var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellationToken.Token;
         var executed = false;
+        var attemptCounter = 0;
 
-        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsValueTask("dummy"); }, context, "state");
+        var result = await sut.ExecuteOutcomeAsync((_, _) =>
+        {
+            executed = true;
+            ++attemptCounter;
+            return Outcome.FromResultAsValueTask("dummy");
+        }, context, "state");
+
         result.Exception.Should().BeOfType<OperationCanceledException>();
         executed.Should().BeTrue();
+        attemptCounter.Should().Be(1);
     }
 
     [Fact]
