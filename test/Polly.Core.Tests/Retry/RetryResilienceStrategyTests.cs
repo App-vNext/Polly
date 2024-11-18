@@ -105,6 +105,37 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_CancellationRequestedDuringDelay_EnsureNotRetried()
+    {
+        using var cancellationToken = new CancellationTokenSource();
+        _options.Delay = TimeSpan.FromMilliseconds(100);
+        _options.ShouldHandle = _ => PredicateResult.True();
+        _options.OnRetry = _ =>
+        {
+            cancellationToken.Cancel();
+            return default;
+        };
+
+        var sut = CreateSut(TimeProvider.System);
+        var context = ResilienceContextPool.Shared.Get();
+        context.CancellationToken = cancellationToken.Token;
+        var executed = false;
+        var attemptCounter = 0;
+
+        var result = await sut.ExecuteOutcomeAsync((_, _) =>
+        {
+            executed = true;
+            ++attemptCounter;
+            return Outcome.FromResultAsValueTask("dummy");
+        }, context, "state");
+
+        result.Exception.Should().BeAssignableTo<OperationCanceledException>();
+        cancellationToken.Token.IsCancellationRequested.Should().BeTrue();
+        executed.Should().BeTrue();
+        attemptCounter.Should().Be(1);
+    }
+
+    [Fact]
     public void ExecuteAsync_MultipleRetries_EnsureDiscardedResultsDisposed()
     {
         // arrange
