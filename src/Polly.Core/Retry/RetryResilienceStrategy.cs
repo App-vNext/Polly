@@ -76,7 +76,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
                 TelemetryUtil.ReportExecutionAttempt(_telemetry, context, outcome, attempt, executionTime, handle);
             }
 
-            if (isLastAttempt || !handle)
+            if (context.CancellationToken.IsCancellationRequested || isLastAttempt || !handle)
             {
                 return outcome;
             }
