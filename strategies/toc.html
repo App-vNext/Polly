@@ -1,4 +1,4 @@
-﻿
+
 <div id="sidetoggle">
   <div>
     <div class="sidefilter">
