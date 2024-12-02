@@ -53,13 +53,9 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
         {
             var startTimestamp = _timeProvider.GetTimestamp();
             var outcome = await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            try
+            if (context.CancellationToken.IsCancellationRequested)
             {
-                context.CancellationToken.ThrowIfCancellationRequested();
-            }
-            catch (OperationCanceledException e)
-            {
-                outcome = Outcome.FromException<T>(e);
+                outcome = Outcome.FromException<T>(new OperationCanceledException(context.CancellationToken));
             }
 
             var shouldRetryArgs = new RetryPredicateArguments<T>(context, outcome, attempt);
