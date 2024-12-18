@@ -43,8 +43,6 @@ jobs:
       uses: actions/setup-dotnet@3e891b0cb619bf60e2c25674b222b8940e2c1c25 # v4.1.0
 
     - name: Generate documentation
-      env:
-        DOTNET_ROLL_FORWARD: LatestMajor
       run: |
         dotnet tool restore
         dotnet build --configuration Release /p:SKIP_POLLY_ANALYZERS=true
