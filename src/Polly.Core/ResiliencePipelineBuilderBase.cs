@@ -18,6 +18,9 @@ namespace Polly;
 public abstract class ResiliencePipelineBuilderBase
 #pragma warning restore S1694 // An abstract class should have both abstract and concrete methods
 {
+    // Workaround for https://github.com/dotnet/runtime/issues/110917
+    private static readonly object ValidatorLock = new();
+
     private readonly List<Entry> _entries = [];
     private bool _used;
 
@@ -105,7 +108,14 @@ public abstract class ResiliencePipelineBuilderBase
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        Validator(new ResilienceValidationContext(options, $"The '{TypeNameFormatter.Format(options.GetType())}' are invalid."));
+        var validationContext = new ResilienceValidationContext(
+            options,
+            $"The '{TypeNameFormatter.Format(options.GetType())}' are invalid.");
+
+        lock (ValidatorLock)
+        {
+            Validator(validationContext);
+        }
 
         if (_used)
         {

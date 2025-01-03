@@ -351,6 +351,26 @@ The RequiredProperty field is required.
         executions.Should().HaveCount(7);
     }
 
+    /// <summary>
+    /// Test for <see href="https://github.com/App-vNext/Polly/issues/2412">validator concurrency issue</see>.
+    /// </summary>
+    [Fact]
+    public void AddStrategy_DoesNotValidateOptionsConcurrently()
+    {
+        var detector = new ConcurrencyDetector();
+
+        Parallel.For(
+            0,
+            2,
+            index =>
+            {
+                new ResiliencePipelineBuilder()
+                    .AddStrategy(_ => new TestResilienceStrategy(), new ConcurrencyResiliencePipelineOptions(detector));
+            });
+
+        detector.InvokedConcurrently.Should().BeFalse();
+    }
+
     [Fact]
     public void Build_EnsureCorrectContext()
     {
@@ -500,9 +520,37 @@ The RequiredProperty field is required.
         public string? RequiredProperty { get; set; }
     }
 
+    private class ConcurrencyResiliencePipelineOptions(ConcurrencyDetector detector)
+        : ResilienceStrategyOptions, IValidatableObject
+    {
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            detector.Execute();
+            yield break;
+        }
+    }
+
     private class InvalidResiliencePipelineBuilder : ResiliencePipelineBuilderBase
     {
         [Required]
         public string? RequiredProperty { get; set; }
+    }
+
+    private class ConcurrencyDetector
+    {
+        private int _count;
+
+        public bool InvokedConcurrently { get; private set; }
+
+        public void Execute()
+        {
+            if (Interlocked.Increment(ref _count) > 1)
+            {
+                InvokedConcurrently = true;
+            }
+
+            Thread.Sleep(1);
+            Interlocked.Decrement(ref _count);
+        }
     }
 }
