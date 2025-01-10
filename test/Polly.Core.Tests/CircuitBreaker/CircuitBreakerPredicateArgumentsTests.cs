@@ -2,12 +2,14 @@ using Polly.CircuitBreaker;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
-public class CircuitBreakerPredicateArgumentsTests
+public static class CircuitBreakerPredicateArgumentsTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public static void Ctor_Ok()
     {
-        var args = new CircuitBreakerPredicateArguments<int>(ResilienceContextPool.Shared.Get(), Outcome.FromResult(1));
+        var args = new CircuitBreakerPredicateArguments<int>(
+            ResilienceContextPool.Shared.Get(CancellationToken.None),
+            Outcome.FromResult(1));
 
         args.Context.Should().NotBeNull();
         args.Outcome.Result.Should().Be(1);

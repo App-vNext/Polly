@@ -8,6 +8,7 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_throw_when_action_is_null()
     {
+        var cancellationToken = CancellationToken.None;
         var flags = BindingFlags.NonPublic | BindingFlags.Instance;
         Func<Context, CancellationToken, EmptyStruct> action = null!;
         Action<Context, CancellationToken> actionVoid = null!;
@@ -41,7 +42,7 @@ public class CacheSpecs : IDisposable
         var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "TResult" });
         var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
 
-        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None]);
+        var func = () => generic.Invoke(instance, [action, new Context(), cancellationToken]);
 
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
@@ -50,7 +51,7 @@ public class CacheSpecs : IDisposable
 
         methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "Void" });
 
-        func = () => methodInfo.Invoke(instance, [actionVoid, new Context(), CancellationToken.None]);
+        func = () => methodInfo.Invoke(instance, [actionVoid, new Context(), cancellationToken]);
 
         exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");

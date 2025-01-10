@@ -2,12 +2,18 @@ using Polly.Simmy.Latency;
 
 namespace Polly.Core.Tests.Simmy.Latency;
 
-public class LatencyGeneratorArgumentsTests
+public static class LatencyGeneratorArgumentsTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public static void Ctor_Ok()
     {
-        var args = new LatencyGeneratorArguments(ResilienceContextPool.Shared.Get());
+        // Arrange
+        var context = ResilienceContextPool.Shared.Get();
+
+        // Act
+        var args = new LatencyGeneratorArguments(context);
+
+        // Assert
         args.Context.Should().NotBeNull();
     }
 }

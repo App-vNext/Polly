@@ -12,7 +12,9 @@ public abstract class RateLimitSpecsBase
         TimeSpan retryInterval = TimeSpan.FromSeconds(0.2);
 
         Stopwatch watch = Stopwatch.StartNew();
-        while (true)
+        var token = CancellationToken.None;
+
+        while (!token.IsCancellationRequested)
         {
             try
             {
@@ -21,7 +23,7 @@ public abstract class RateLimitSpecsBase
             }
             catch (Exception e)
             {
-                if (!(e is AssertionFailedException || e is XunitException))
+                if (e is not AssertionFailedException and not IAssertionException)
                 {
                     throw;
                 }
@@ -34,6 +36,8 @@ public abstract class RateLimitSpecsBase
                 Thread.Sleep(retryInterval);
             }
         }
+
+        token.ThrowIfCancellationRequested();
     }
 
     protected static void FixClock()

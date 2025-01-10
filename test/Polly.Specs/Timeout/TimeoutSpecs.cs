@@ -25,7 +25,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "TResult" });
         var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
 
-        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None]);
+        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken]);
 
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
@@ -239,7 +239,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     {
         var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Pessimistic);
 
-        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None)))
+        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken)))
             .Should().Throw<TimeoutRejectedException>();
     }
 
@@ -249,7 +249,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         var policy = Policy.Timeout(TimeSpan.FromSeconds(1), TimeoutStrategy.Pessimistic);
 
         var result = ResultPrimitive.Undefined;
-        var userCancellationToken = CancellationToken.None;
+        var userCancellationToken = CancellationToken;
 
         Action act = () =>
         {
@@ -275,7 +275,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
         watch.Start();
-        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(10), CancellationToken.None)))
+        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(10), CancellationToken)))
             .Should().Throw<TimeoutRejectedException>();
         watch.Stop();
 
@@ -379,7 +379,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     public void Should_throw_when_timeout_is_less_than_execution_duration__optimistic()
     {
         var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Optimistic);
-        var userCancellationToken = CancellationToken.None;
+        var userCancellationToken = CancellationToken;
 
         policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), userCancellationToken)) // Delegate observes cancellation token, so permitting optimistic cancellation.
             .Should().Throw<TimeoutRejectedException>();
@@ -390,7 +390,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     {
         var policy = Policy.Timeout(TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic);
         var result = ResultPrimitive.Undefined;
-        var userCancellationToken = CancellationToken.None;
+        var userCancellationToken = CancellationToken;
 
         Action act = () =>
         {
@@ -412,7 +412,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         TimeSpan timeout = TimeSpan.FromSeconds(1);
         var policy = Policy.Timeout(timeout);
-        var userCancellationToken = CancellationToken.None;
+        var userCancellationToken = CancellationToken;
 
         TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
@@ -449,7 +449,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
             {
                 userTokenSource.Cancel(); // User token cancels in the middle of execution ...
                 SystemClock.Sleep(TimeSpan.FromSeconds(timeout * 2),
-                    CancellationToken.None); // ... but if the executed delegate does not observe it
+                    CancellationToken); // ... but if the executed delegate does not observe it
             },
             userTokenSource.Token)).Should().Throw<TimeoutRejectedException>(); // ... it's still the timeout we expect.
     }
@@ -518,7 +518,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
             {
                 try
                 {
-                    SystemClock.Sleep(shimTimeSpan + shimTimeSpan, CancellationToken.None);
+                    SystemClock.Sleep(shimTimeSpan + shimTimeSpan, CancellationToken);
                 }
                 catch
                 {
@@ -531,7 +531,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
                 throw new InvalidOperationException("This exception should not be thrown. Test should throw for timeout earlier.");
 
-            }, CancellationToken.None))
+            }, CancellationToken))
             .Should()
             .Throw<Exception>()
             .Which;
@@ -556,7 +556,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeout);
 
-        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None)))
+        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken)))
             .Should().Throw<TimeoutRejectedException>();
 
         timeoutPassedToOnTimeout.Should().Be(timeoutPassedToConfiguration);
@@ -574,7 +574,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
         var policy = Policy.Timeout(timeout, TimeoutStrategy.Pessimistic, onTimeout);
 
-        policy.Invoking(p => p.Execute(_ => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None), contextPassedToExecute))
+        policy.Invoking(p => p.Execute(_ => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken), contextPassedToExecute))
             .Should().Throw<TimeoutRejectedException>();
 
         contextPassedToOnTimeout!.Should().NotBeNull();
@@ -595,7 +595,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         var policy = Policy.Timeout(timeoutFunc, TimeoutStrategy.Pessimistic, onTimeout);
 
-        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None)))
+        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken)))
             .Should().Throw<TimeoutRejectedException>();
 
         timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
@@ -616,7 +616,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         // Supply a programatically-controlled timeout, via the execution context.
         Context context = new Context("SomeOperationKey") { ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay) };
 
-        policy.Invoking(p => p.Execute(_ => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None), context))
+        policy.Invoking(p => p.Execute(_ => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken), context))
             .Should().Throw<TimeoutRejectedException>();
 
         timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));
@@ -631,7 +631,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
         var policy = Policy.Timeout(timeout, TimeoutStrategy.Pessimistic, onTimeout);
 
-        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None)))
+        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken)))
             .Should().Throw<TimeoutRejectedException>();
 
         taskPassedToOnTimeout.Should().NotBeNull();
@@ -659,12 +659,12 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         policy.Invoking(p => p.Execute(() =>
         {
-            SystemClock.Sleep(thriceShimTimeSpan, CancellationToken.None);
+            SystemClock.Sleep(thriceShimTimeSpan, CancellationToken);
             throw exceptionToThrow;
         }))
             .Should().Throw<TimeoutRejectedException>();
 
-        SystemClock.Sleep(thriceShimTimeSpan, CancellationToken.None);
+        SystemClock.Sleep(thriceShimTimeSpan, CancellationToken);
         exceptionObservedFromTaskPassedToOnTimeout.Should().NotBeNull();
         exceptionObservedFromTaskPassedToOnTimeout.Should().Be(exceptionToThrow);
 
@@ -680,11 +680,11 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeout);
 
-        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None)))
+        policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken)))
             .Should().Throw<TimeoutRejectedException>();
 
         exceptionPassedToOnTimeout.Should().NotBeNull();
-        exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
+        exceptionPassedToOnTimeout.Should().BeOfType<OperationCanceledException>();
     }
 
     #endregion
@@ -700,7 +700,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => { timeoutPassedToOnTimeout = span; };
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeout);
-        var userCancellationToken = CancellationToken.None;
+        var userCancellationToken = CancellationToken;
 
         policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(1), ct), userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
@@ -719,7 +719,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
         var policy = Policy.Timeout(timeout, TimeoutStrategy.Optimistic, onTimeout);
-        var userCancellationToken = CancellationToken.None;
+        var userCancellationToken = CancellationToken;
 
         policy.Invoking(p => p.Execute((_, ct) => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), contextPassedToExecute, userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
@@ -741,7 +741,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => { timeoutPassedToOnTimeout = span; };
 
         var policy = Policy.Timeout(timeoutFunc, TimeoutStrategy.Optimistic, onTimeout);
-        var userCancellationToken = CancellationToken.None;
+        var userCancellationToken = CancellationToken;
 
         policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
@@ -761,7 +761,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => { timeoutPassedToOnTimeout = span; };
         var policy = Policy.Timeout(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
 
-        var userCancellationToken = CancellationToken.None;
+        var userCancellationToken = CancellationToken;
 
         // Supply a programatically-controlled timeout, via the execution context.
         Context context = new Context("SomeOperationKey")
@@ -783,7 +783,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
         var policy = Policy.Timeout(timeout, TimeoutStrategy.Optimistic, onTimeout);
-        var userCancellationToken = CancellationToken.None;
+        var userCancellationToken = CancellationToken;
 
         policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
@@ -800,13 +800,13 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, exception) => { exceptionPassedToOnTimeout = exception; };
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeout);
-        var userCancellationToken = CancellationToken.None;
+        var userCancellationToken = CancellationToken;
 
         policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(1), ct), userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
 
         exceptionPassedToOnTimeout.Should().NotBeNull();
-        exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
+        exceptionPassedToOnTimeout.Should().BeOfType<OperationCanceledException>();
     }
 
     #endregion

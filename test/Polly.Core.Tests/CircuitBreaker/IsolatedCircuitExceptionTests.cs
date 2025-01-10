@@ -29,7 +29,7 @@ public class IsolatedCircuitExceptionTests
         exception.RetryAfter.Should().BeNull();
     }
 
-#if !NETCOREAPP
+#if NETFRAMEWORK
     [Fact]
     public void BinarySerialization_Ok()
     {

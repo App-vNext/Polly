@@ -2,10 +2,10 @@
 
 namespace Polly.Core.Tests.Registry;
 
-public class ConfigureBuilderContextTests
+public static class ConfigureBuilderContextTests
 {
     [Fact]
-    public void AddReloadToken_Ok()
+    public static void AddReloadToken_Ok()
     {
         var context = new ConfigureBuilderContext<int>(0, "dummy", "dummy");
         using var source = new CancellationTokenSource();

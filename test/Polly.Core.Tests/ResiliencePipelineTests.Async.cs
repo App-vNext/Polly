@@ -87,9 +87,11 @@ public partial class ResiliencePipelineTests
     [Fact]
     public async Task ExecuteAsync_EnsureCallStackPreserved()
     {
+        var context = ResilienceContextPool.Shared.Get();
+
         await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod()));
-        await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod(), ResilienceContextPool.Shared.Get()));
-        await AssertStackTrace(s => s.ExecuteAsync((_, _) => MyThrowingMethod(), ResilienceContextPool.Shared.Get(), "state"));
+        await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod(), context));
+        await AssertStackTrace(s => s.ExecuteAsync((_, _) => MyThrowingMethod(), context, "state"));
         await AssertStackTrace(s => s.ExecuteAsync((_, _) => MyThrowingMethod(), "state"));
 
         static async ValueTask AssertStackTrace(Func<ResiliencePipeline, ValueTask> execute)

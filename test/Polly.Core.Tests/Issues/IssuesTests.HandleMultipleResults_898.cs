@@ -7,6 +7,7 @@ public partial class IssuesTests
     [Fact]
     public void HandleMultipleResults_898()
     {
+        var cancellationToken = CancellationToken.None;
         var isRetryKey = new ResiliencePropertyKey<bool>("is-retry");
         var options = new RetryStrategyOptions
         {
@@ -44,7 +45,7 @@ public partial class IssuesTests
 
             isRetry = true;
             return -1;
-        }).Should().Be(0);
+        }, cancellationToken).Should().Be(0);
 
         // check that string-based results is retried
         isRetry = false;
@@ -57,6 +58,6 @@ public partial class IssuesTests
 
             isRetry = true;
             return "error";
-        }).Should().Be("no-error");
+        }, cancellationToken).Should().Be("no-error");
     }
 }

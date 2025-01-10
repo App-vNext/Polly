@@ -468,6 +468,7 @@ ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
     .AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
     {
         PermitLimit = 100,
+        SegmentsPerWindow = 4,
         Window = TimeSpan.FromMinutes(1),
     }))
     .Build();
@@ -479,6 +480,7 @@ ResiliencePipeline<HttpResponseMessage> pipelineT = new ResiliencePipelineBuilde
     .AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
     {
         PermitLimit = 100,
+        SegmentsPerWindow = 4,
         Window = TimeSpan.FromMinutes(1),
     }))
     .Build();
