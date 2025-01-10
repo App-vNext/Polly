@@ -41,6 +41,7 @@ new ResiliencePipelineBuilder()
         new SlidingWindowRateLimiterOptions
         {
             PermitLimit = 100,
+            SegmentsPerWindow = 4,
             Window = TimeSpan.FromMinutes(1)
         }));
 ```
