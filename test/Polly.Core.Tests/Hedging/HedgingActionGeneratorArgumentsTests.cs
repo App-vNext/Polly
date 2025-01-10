@@ -2,15 +2,22 @@ using Polly.Hedging;
 
 namespace Polly.Core.Tests.Hedging;
 
-public class HedgingActionGeneratorArgumentsTests
+public static class HedgingActionGeneratorArgumentsTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public static void Ctor_Ok()
     {
-        var args = new HedgingActionGeneratorArguments<string>(ResilienceContextPool.Shared.Get(), ResilienceContextPool.Shared.Get(), 5, _ => Outcome.FromResultAsValueTask("dummy"));
+        // Arrange
+        var cancellationToken = CancellationToken.None;
+        var primaryContext = ResilienceContextPool.Shared.Get(cancellationToken);
+        var actionContext = ResilienceContextPool.Shared.Get(cancellationToken);
 
-        args.PrimaryContext.Should().NotBeNull();
-        args.ActionContext.Should().NotBeNull();
+        // Act
+        var args = new HedgingActionGeneratorArguments<string>(primaryContext, actionContext, 5, _ => Outcome.FromResultAsValueTask("dummy"));
+
+        // Assert
+        args.PrimaryContext.Should().Be(primaryContext);
+        args.ActionContext.Should().Be(actionContext);
         args.AttemptNumber.Should().Be(5);
         args.Callback.Should().NotBeNull();
     }

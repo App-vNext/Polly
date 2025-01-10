@@ -30,7 +30,7 @@ public class BulkheadSpecs : BulkheadSpecsBase
         var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "TResult" });
         var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
 
-        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None]);
+        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken]);
 
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
@@ -94,7 +94,7 @@ public class BulkheadSpecs : BulkheadSpecsBase
         using BulkheadPolicy bulkhead = Policy.Bulkhead(1, onRejected);
         TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
-        Task.Run(() => { bulkhead.Execute(() => { tcs.Task.Wait(); }); });
+        Task.Run(() => { bulkhead.Execute(() => { tcs.Task.Wait(); }); }, CancellationToken);
 
         // Time for the other thread to kick up and take the bulkhead.
         Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
@@ -102,7 +102,11 @@ public class BulkheadSpecs : BulkheadSpecsBase
         bulkhead.Invoking(b => b.Execute(_ => { }, contextPassedToExecute)).Should()
             .Throw<BulkheadRejectedException>();
 
+#if NET
+        tcs.SetCanceled(CancellationToken);
+#else
         tcs.SetCanceled();
+#endif
 
         contextPassedToOnRejected!.Should().NotBeNull();
         contextPassedToOnRejected!.OperationKey.Should().Be(operationKey);

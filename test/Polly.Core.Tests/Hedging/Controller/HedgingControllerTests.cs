@@ -7,13 +7,14 @@ public class HedgingControllerTests
     [Fact]
     public async Task Pooling_Ok()
     {
+        var context = ResilienceContextPool.Shared.Get();
         var telemetry = TestUtilities.CreateResilienceTelemetry(_ => { });
         var controller = new HedgingController<int>(telemetry, new HedgingTimeProvider(), HedgingHelper.CreateHandler<int>(_ => false, args => null), 3);
 
-        var context1 = controller.GetContext(ResilienceContextPool.Shared.Get());
+        var context1 = controller.GetContext(context);
         await PrepareAsync(context1);
 
-        var context2 = controller.GetContext(ResilienceContextPool.Shared.Get());
+        var context2 = controller.GetContext(context);
         await PrepareAsync(context2);
 
         controller.RentedContexts.Should().Be(2);

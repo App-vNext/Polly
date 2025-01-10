@@ -33,14 +33,14 @@ public partial class ResiliencePipelineTests
             AssertContext = AssertResilienceContext,
         };
 
-        yield return new ExecuteParameters<long>(r => r.Execute(_ => result, ResilienceContextPool.Shared.Get()), result)
+        yield return new ExecuteParameters<long>(r => r.Execute(_ => result, ResilienceContextPool.Shared.Get(CancellationToken)), result)
         {
             Caption = "ExecuteT_ResilienceContext",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextInitialized
         };
 
-        yield return new ExecuteParameters<long>(r => r.Execute((_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContextPool.Shared.Get(), "dummy-state"), result)
+        yield return new ExecuteParameters<long>(r => r.Execute((_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContextPool.Shared.Get(CancellationToken), "dummy-state"), result)
         {
             Caption = "ExecuteT_ResilienceContext",
             AssertContext = AssertResilienceContext,
@@ -56,7 +56,7 @@ public partial class ResiliencePipelineTests
         {
             context.IsSynchronous.Should().BeTrue();
             context.IsVoid.Should().BeFalse();
-            context.ResultType.Should().Be(typeof(long));
+            context.ResultType.Should().Be<long>();
             context.ContinueOnCapturedContext.Should().BeFalse();
         }
 
@@ -69,8 +69,10 @@ public partial class ResiliencePipelineTests
         static void AssertContextInitialized(ResilienceContext context) => context.IsInitialized.Should().BeTrue();
     }
 
-    [MemberData(nameof(ExecuteT_EnsureCorrectBehavior_Data))]
     [Theory]
+#pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
+    [MemberData(nameof(ExecuteT_EnsureCorrectBehavior_Data))]
+#pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     public async Task ExecuteT_Ok(ExecuteParameters parameters)
     {
         ResilienceContext? context = null;
@@ -93,11 +95,13 @@ public partial class ResiliencePipelineTests
     [Fact]
     public void Execute_T_EnsureCallStackPreserved()
     {
+        var context = ResilienceContextPool.Shared.Get(CancellationToken);
+
         AssertStackTrace(s => s.Execute(() => MyThrowingMethod()));
         AssertStackTrace(s => s.Execute(_ => MyThrowingMethod()));
-        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), ResilienceContextPool.Shared.Get()));
-        AssertStackTrace(s => s.Execute((_) => MyThrowingMethod(), ResilienceContextPool.Shared.Get()));
-        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), ResilienceContextPool.Shared.Get(), "state"));
+        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), context));
+        AssertStackTrace(s => s.Execute((_) => MyThrowingMethod(), context));
+        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), context, "state"));
         AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), "state"));
         AssertStackTrace(s => s.Execute((_) => MyThrowingMethod(), "state"));
 

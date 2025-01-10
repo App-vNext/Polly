@@ -949,7 +949,7 @@ public class FallbackSpecs
             .Should().NotThrow();
 
         fallbackException.Should().NotBeNull()
-            .And.BeOfType(typeof(ArgumentNullException));
+            .And.BeOfType<ArgumentNullException>();
     }
 
     [Fact]

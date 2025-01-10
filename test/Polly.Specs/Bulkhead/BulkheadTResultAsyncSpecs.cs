@@ -29,7 +29,7 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
         var methods = instanceType.GetMethods(flags);
         var methodInfo = methods.First(method => method is { Name: "ImplementationAsync", ReturnType.Name: "Task`1" });
 
-        var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None, false]);
+        var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken, false]);
 
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
@@ -101,14 +101,19 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
                     await tcs.Task;
                     return 0;
                 });
-            });
+            }, CancellationToken);
 
             Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
             await bulkhead.Awaiting(b => b.ExecuteAsync(_ => Task.FromResult(1), contextPassedToExecute)).Should().ThrowAsync<BulkheadRejectedException>();
 
             cancellationSource.Cancel();
+
+#if NET
+            tcs.SetCanceled(CancellationToken);
+#else
             tcs.SetCanceled();
+#endif
         }
 
         contextPassedToOnRejected!.Should().NotBeNull();

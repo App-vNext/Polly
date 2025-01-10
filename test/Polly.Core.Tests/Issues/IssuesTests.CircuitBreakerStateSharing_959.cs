@@ -7,6 +7,7 @@ public partial class IssuesTests
     [Fact]
     public void CircuitBreakerStateSharing_959()
     {
+        var cancellationToken = CancellationToken.None;
         var options = new CircuitBreakerStrategyOptions
         {
             FailureRatio = 1,
@@ -28,8 +29,8 @@ public partial class IssuesTests
         // now trigger the circuit breaker by evaluating multiple result types
         for (int i = 0; i < 5; i++)
         {
-            strategy.Execute(_ => -1);
-            strategy.Execute(_ => "error");
+            strategy.Execute(_ => -1, cancellationToken);
+            strategy.Execute(_ => "error", cancellationToken);
         }
 
         // now the circuit breaker should be open
@@ -40,7 +41,7 @@ public partial class IssuesTests
         TimeProvider.Advance(options.BreakDuration);
 
         // OK, circuit is closed now
-        strategy.Execute(_ => 0);
-        strategy.Execute(_ => "valid-result");
+        strategy.Execute(_ => 0, cancellationToken);
+        strategy.Execute(_ => "valid-result", cancellationToken);
     }
 }

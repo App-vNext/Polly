@@ -35,8 +35,10 @@ public class ChaosOutcomePipelineBuilderExtensionsTests
         options.OutcomeGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(outcome);
     }
 
-    [MemberData(nameof(ResultStrategy))]
     [Theory]
+#pragma warning disable xUnit1044 // Avoid using TheoryData type arguments that are not serializable
+    [MemberData(nameof(ResultStrategy))]
+#pragma warning restore xUnit1044 // Avoid using TheoryData type arguments that are not serializable
     internal void AddResult_Options_Ok(Action<ResiliencePipelineBuilder<int>> configure)
     {
         var builder = new ResiliencePipelineBuilder<int>();

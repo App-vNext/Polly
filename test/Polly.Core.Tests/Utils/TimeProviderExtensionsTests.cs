@@ -4,20 +4,19 @@ namespace Polly.Core.Tests.Utils;
 
 public class TimeProviderExtensionsTests
 {
+    [Theory]
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
-    [Theory]
     public async Task DelayAsync_System_Ok(bool synchronous, bool hasCancellation)
     {
         using var tcs = new CancellationTokenSource();
         var token = hasCancellation ? tcs.Token : default;
         var delay = TimeSpan.FromMilliseconds(10);
         var timeProvider = TimeProvider.System;
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(token);
         context.Initialize<VoidResult>(isSynchronous: synchronous);
-        context.CancellationToken = token;
 
         await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
@@ -48,9 +47,8 @@ public class TimeProviderExtensionsTests
     {
         using var cts = new CancellationTokenSource(5);
         var delay = TimeSpan.FromMilliseconds(10);
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(cts.Token);
         context.Initialize<VoidResult>(isSynchronous: true);
-        context.CancellationToken = cts.Token;
 
         await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
@@ -61,19 +59,17 @@ public class TimeProviderExtensionsTests
         });
     }
 
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    [Theory]
     public async Task DelayAsync_CancellationRequestedBefore_Throws(bool synchronous)
     {
-        using var tcs = new CancellationTokenSource();
-        tcs.Cancel();
-        var token = tcs.Token;
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
         var delay = TimeSpan.FromMilliseconds(10);
         var timeProvider = TimeProvider.System;
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(cts.Token);
         context.Initialize<VoidResult>(isSynchronous: synchronous);
-        context.CancellationToken = token;
 
         await Assert.ThrowsAsync<OperationCanceledException>(() => timeProvider.DelayAsync(delay, context));
     }
@@ -88,11 +84,9 @@ public class TimeProviderExtensionsTests
         await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
             using var tcs = new CancellationTokenSource();
-            var token = tcs.Token;
             var timeProvider = TimeProvider.System;
-            var context = ResilienceContextPool.Shared.Get();
+            var context = ResilienceContextPool.Shared.Get(tcs.Token);
             context.Initialize<VoidResult>(isSynchronous: synchronous);
-            context.CancellationToken = token;
 
             tcs.CancelAfter(TimeSpan.FromMilliseconds(5));
 
@@ -107,16 +101,15 @@ public class TimeProviderExtensionsTests
 
         await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
-            using var cancellation = new CancellationTokenSource();
+            using var cts = new CancellationTokenSource();
             var timeProvider = TimeProvider.System;
-            var context = ResilienceContextPool.Shared.Get();
+            var context = ResilienceContextPool.Shared.Get(cts.Token);
             context.Initialize<VoidResult>(isSynchronous: false);
-            context.CancellationToken = cancellation.Token;
 
             var delayTask = timeProvider.DelayAsync(delay, context);
             delayTask.Wait(TimeSpan.FromMilliseconds(10)).Should().BeFalse();
 
-            cancellation.Cancel();
+            cts.Cancel();
 
             await delayTask.Invoking(t => t).Should().ThrowAsync<OperationCanceledException>();
         });

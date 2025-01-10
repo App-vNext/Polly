@@ -17,9 +17,10 @@ public class ResilienceContextPoolTests
     [Fact]
     public void Get_EnsureDefaults()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var cancellationToken = CancellationToken.None;
+        var context = ResilienceContextPool.Shared.Get(cancellationToken);
 
-        AssertDefaults(context);
+        AssertDefaults(context, cancellationToken);
     }
 
     [Fact]
@@ -79,11 +80,11 @@ public class ResilienceContextPoolTests
     public async Task Get_EnsurePooled() =>
         await TestUtilities.AssertWithTimeoutAsync(() =>
         {
-            var context = ResilienceContextPool.Shared.Get();
+            var context = ResilienceContextPool.Shared.Get(default(CancellationToken));
 
             ResilienceContextPool.Shared.Return(context);
 
-            ResilienceContextPool.Shared.Get().Should().BeSameAs(context);
+            ResilienceContextPool.Shared.Get(default(CancellationToken)).Should().BeSameAs(context);
         });
 
     [Fact]
@@ -95,24 +96,24 @@ public class ResilienceContextPoolTests
         await TestUtilities.AssertWithTimeoutAsync(() =>
         {
             using var cts = new CancellationTokenSource();
-            var context = ResilienceContextPool.Shared.Get();
+            var context = ResilienceContextPool.Shared.Get(CancellationToken.None);
             context.CancellationToken = cts.Token;
             context.Initialize<bool>(true);
             context.CancellationToken.Should().Be(cts.Token);
             context.Properties.Set(new ResiliencePropertyKey<int>("abc"), 10);
             ResilienceContextPool.Shared.Return(context);
 
-            AssertDefaults(context);
+            AssertDefaults(context, CancellationToken.None);
         });
 
-    private static void AssertDefaults(ResilienceContext context)
+    private static void AssertDefaults(ResilienceContext context, CancellationToken expectedToken)
     {
         context.IsInitialized.Should().BeFalse();
         context.ContinueOnCapturedContext.Should().BeFalse();
         context.IsVoid.Should().BeFalse();
         context.ResultType.Name.Should().Be("UnknownResult");
         context.IsSynchronous.Should().BeFalse();
-        context.CancellationToken.Should().Be(CancellationToken.None);
+        context.CancellationToken.Should().Be(expectedToken);
         context.Properties.Options.Should().BeEmpty();
         context.OperationKey.Should().BeNull();
     }

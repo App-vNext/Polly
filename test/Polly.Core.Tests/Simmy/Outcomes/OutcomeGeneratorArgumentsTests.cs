@@ -2,12 +2,18 @@ using Polly.Simmy.Outcomes;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
 
-public class OutcomeGeneratorArgumentsTests
+public static class OutcomeGeneratorArgumentsTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public static void Ctor_Ok()
     {
-        var args = new OutcomeGeneratorArguments(ResilienceContextPool.Shared.Get());
+        // Arrange
+        var context = ResilienceContextPool.Shared.Get();
+
+        // Act
+        var args = new OutcomeGeneratorArguments(context);
+
+        // Assert
         args.Context.Should().NotBeNull();
     }
 }

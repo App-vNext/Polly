@@ -54,7 +54,7 @@ public class BrokenCircuitExceptionTests
         exception.RetryAfter.Should().Be(TestRetryAfter);
     }
 
-#if !NETCOREAPP
+#if NETFRAMEWORK
     [Fact]
     public void BinarySerialization_NonNullRetryAfter_Ok()
     {

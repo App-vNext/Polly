@@ -44,8 +44,10 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
     };
 #pragma warning restore IDE0028
 
-    [MemberData(nameof(Data))]
     [Theory(Skip = "https://github.com/stryker-mutator/stryker-net/issues/2144")]
+#pragma warning disable xUnit1045
+    [MemberData(nameof(Data))]
+#pragma warning restore xUnit1045
     public void AddRateLimiter_Extensions_Ok(Action<ResiliencePipelineBuilder> configure)
     {
         var builder = new ResiliencePipelineBuilder();
@@ -70,7 +72,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
     [Fact]
     public void AddRateLimiter_AllExtensions_Ok()
     {
-        foreach (var configure in Data)
+        foreach (Action<ResiliencePipelineBuilder> configure in Data)
         {
             var builder = new ResiliencePipelineBuilder();
 

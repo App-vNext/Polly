@@ -36,6 +36,8 @@ public class HedgingResilienceStrategyTests : IDisposable
         _testOutput = testOutput;
     }
 
+    private CancellationToken CancellationToken => _cts.Token;
+
     public void Dispose()
     {
         _cts.Dispose();
@@ -61,7 +63,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         var strategy = (HedgingResilienceStrategy<string>)Create().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
         _cts.Cancel();
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(CancellationToken);
         context.CancellationToken = _cts.Token;
 
         var outcome = await strategy.ExecuteCore((_, _) => Outcome.FromResultAsValueTask("dummy"), context, "state");
@@ -82,7 +84,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         ConfigureHedging(_ => true, args => () => Outcome.FromResultAsValueTask("any"));
         var strategy = Create();
 
-        strategy.Execute(_ => "dummy");
+        strategy.Execute(_ => "dummy", CancellationToken);
 
         var attempts = _events.Select(v => v.Arguments).OfType<ExecutionAttemptArguments>().ToArray();
 
@@ -112,7 +114,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
                 return new ValueTask<string>("primary");
             },
-            ResilienceContextPool.Shared.Get());
+            ResilienceContextPool.Shared.Get(CancellationToken));
 
         result.Should().Be("secondary");
     }
@@ -129,7 +131,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         var strategy = (HedgingResilienceStrategy<string>)Create().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
-        var result = await strategy.GetHedgingDelayAsync(ResilienceContextPool.Shared.Get(), 0);
+        var result = await strategy.GetHedgingDelayAsync(ResilienceContextPool.Shared.Get(CancellationToken), 0);
 
         result.Should().Be(TimeSpan.FromSeconds(seconds));
     }
@@ -141,7 +143,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         var strategy = (HedgingResilienceStrategy<string>)Create().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
-        var result = await strategy.GetHedgingDelayAsync(ResilienceContextPool.Shared.Get(), 0);
+        var result = await strategy.GetHedgingDelayAsync(ResilienceContextPool.Shared.Get(CancellationToken), 0);
 
         result.Should().Be(TimeSpan.FromMilliseconds(123));
     }
@@ -152,7 +154,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         ConfigureHedging();
 
         var strategy = Create();
-        var result = await strategy.ExecuteAsync(_primaryTasks.SlowTask);
+        var result = await strategy.ExecuteAsync(_primaryTasks.SlowTask, CancellationToken);
 
         result.Should().NotBeNull();
 #if NET8_0_OR_GREATER
@@ -166,7 +168,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     [Fact]
     public async Task ExecuteAsync_EnsurePrimaryContextFlows()
     {
-        var primaryContext = ResilienceContextPool.Shared.Get();
+        var primaryContext = ResilienceContextPool.Shared.Get(CancellationToken);
         var attempts = 0;
         var key = new ResiliencePropertyKey<string>("primary-key");
 
@@ -236,13 +238,13 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             await _timeProvider.Delay(TimeSpan.FromHours(1), token);
             return Success;
-        });
+        }, CancellationToken);
 
         // assert
         _timeProvider.Advance(_options.Delay);
-        await Task.Delay(20);
+        await Task.Delay(20, CancellationToken);
         _timeProvider.Advance(_options.Delay);
-        await Task.Delay(20);
+        await Task.Delay(20, CancellationToken);
 
         _timeProvider.Advance(TimeSpan.FromHours(1));
         (await result).Should().Be(Success);
@@ -275,7 +277,7 @@ public class HedgingResilienceStrategyTests : IDisposable
             }
 
             return Success;
-        });
+        }, CancellationToken);
 
         // assert
         _timeProvider.Advance(TimeSpan.FromHours(2));
@@ -312,7 +314,7 @@ public class HedgingResilienceStrategyTests : IDisposable
             await _timeProvider.Delay(LongDelay);
 #pragma warning restore CA2016 // Forward the 'CancellationToken' parameter to methods
             return primaryResult;
-        });
+        }, CancellationToken);
 
         // assert
         _timeProvider.Advance(LongDelay);
@@ -332,7 +334,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var beforeKey = new ResiliencePropertyKey<string>("before");
         var afterKey = new ResiliencePropertyKey<string>("after");
 
-        var primaryContext = ResilienceContextPool.Shared.Get();
+        var primaryContext = ResilienceContextPool.Shared.Get(CancellationToken);
         primaryContext.Properties.Set(beforeKey, "before");
         var contexts = new List<ResilienceContext>();
         var tokenHashCodes = new List<long>();
@@ -380,7 +382,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     {
         // arrange
         using var cancellationSource = new CancellationTokenSource();
-        var primaryContext = ResilienceContextPool.Shared.Get();
+        var primaryContext = ResilienceContextPool.Shared.Get(CancellationToken);
         primaryContext.CancellationToken = cancellationSource.Token;
         ConfigureHedging(TimeSpan.Zero);
         var strategy = Create();
@@ -400,7 +402,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         // arrange
         _options.MaxHedgedAttempts = 1;
         var attempts = _options.MaxHedgedAttempts;
-        var primaryContext = ResilienceContextPool.Shared.Get();
+        var primaryContext = ResilienceContextPool.Shared.Get(CancellationToken);
         var storedProps = primaryContext.Properties;
         var contexts = new List<ResilienceContext>();
         var primaryKey = new ResiliencePropertyKey<string>("primary-key");
@@ -460,7 +462,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var key = new ResiliencePropertyKey<string>("my-key");
         var key2 = new ResiliencePropertyKey<string>("my-key-2");
         using var cancellationSource = new CancellationTokenSource();
-        var primaryContext = ResilienceContextPool.Shared.Get();
+        var primaryContext = ResilienceContextPool.Shared.Get(CancellationToken);
         primaryContext.Properties.Set(key2, "my-value-2");
         primaryContext.CancellationToken = cancellationSource.Token;
         var props = primaryContext.Properties;
@@ -490,7 +492,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         // arrange
         var key = new ResiliencePropertyKey<string>("my-key");
         var key2 = new ResiliencePropertyKey<string>("my-key-2");
-        var primaryContext = ResilienceContextPool.Shared.Get();
+        var primaryContext = ResilienceContextPool.Shared.Get(CancellationToken);
         var storedProps = primaryContext.Properties;
         primaryContext.Properties.Set(key2, "my-value-2");
         ConfigureHedging(args =>
@@ -571,7 +573,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         using var primaryCancelled = new ManualResetEvent(false);
         using var secondaryCancelled = new ManualResetEvent(false);
         using var cancellationSource = new CancellationTokenSource();
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(CancellationToken);
         context.CancellationToken = cancellationSource.Token;
 
         ConfigureHedging(async context =>
@@ -667,7 +669,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         _options.Delay = TimeSpan.Zero;
 
         // act
-        var task = Create().ExecuteAsync(async c => (await Execute(c)).Result!, default);
+        var task = Create().ExecuteAsync(async c => (await Execute(c)).Result!, CancellationToken);
 
         // assert
         allExecutionsReached.WaitOne(AssertTimeout).Should().BeTrue();
@@ -843,7 +845,7 @@ public class HedgingResilienceStrategyTests : IDisposable
             });
 
         var strategy = Create();
-        var result = await strategy.ExecuteAsync<string>(_ => throw new InvalidCastException());
+        var result = await strategy.ExecuteAsync<string>(_ => throw new InvalidCastException(), CancellationToken);
         result.Should().Be(Success);
     }
 
@@ -860,7 +862,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             await _timeProvider.Delay(TimeSpan.FromDays(1), token);
             throw new InvalidCastException();
-        });
+        }, CancellationToken);
 
         _timeProvider.Advance(TimeSpan.FromHours(5));
         (await task).Should().Be(Success);
@@ -885,7 +887,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     [Fact]
     public async Task ExecuteAsync_EnsureOnHedgingCalled()
     {
-        var primaryContext = ResilienceContextPool.Shared.Get();
+        var primaryContext = ResilienceContextPool.Shared.Get(CancellationToken);
         var key = new ResiliencePropertyKey<string>("my-key");
         primaryContext.Properties.Set(key, "my-value");
 
@@ -919,7 +921,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     [Fact]
     public async Task ExecuteAsync_EnsureOnHedgingTelemetry()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(CancellationToken);
 
         ConfigureHedging(res => res.Result == Failure, args => () => Outcome.FromResultAsValueTask(Failure));
 

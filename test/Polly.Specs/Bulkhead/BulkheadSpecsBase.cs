@@ -15,17 +15,18 @@ public abstract class BulkheadSpecsBase : IDisposable
     protected readonly TimeSpan CohesionTimeLimit = TimeSpan.FromMilliseconds(1000); // Consider increasing CohesionTimeLimit if bulkhead specs fail transiently in slower build environments.
 
     #endregion
+
+    protected static CancellationToken CancellationToken => CancellationToken.None;
+
     protected BulkheadSpecsBase(ITestOutputHelper testOutputHelper)
     {
-#if !DEBUG
-        TestOutputHelper = new SilentOutputHelper();
-#else
+#if DEBUG
         TestOutputHelper = new AnnotatedOutputHelper(testOutputHelper);
+#else
+        TestOutputHelper = new SilentOutputHelper();
 #endif
 
-#if !NETCOREAPP1_1
         ThreadPool.SetMinThreads(50, 20);
-#endif
     }
 
     #region Operating variables

@@ -2,12 +2,18 @@ using Polly.Simmy;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
 
-public class InjectionRateGeneratorArgumentsTests
+public static class InjectionRateGeneratorArgumentsTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public static void Ctor_Ok()
     {
-        var args = new InjectionRateGeneratorArguments(ResilienceContextPool.Shared.Get());
-        args.Context.Should().NotBeNull();
+        // Arrange
+        var context = ResilienceContextPool.Shared.Get();
+
+        // Act
+        var args = new InjectionRateGeneratorArguments(context);
+
+        // Assert
+        args.Context.Should().Be(context);
     }
 }

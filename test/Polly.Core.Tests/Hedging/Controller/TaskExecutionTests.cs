@@ -15,7 +15,7 @@ public class TaskExecutionTests : IDisposable
     private readonly HedgingTimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly List<ExecutionAttemptArguments> _args = [];
-    private ResilienceContext _primaryContext = ResilienceContextPool.Shared.Get();
+    private ResilienceContext _primaryContext;
 
     public TaskExecutionTests()
     {
@@ -29,6 +29,7 @@ public class TaskExecutionTests : IDisposable
 
         _timeProvider = new HedgingTimeProvider();
         _cts = new CancellationTokenSource();
+        _primaryContext = ResilienceContextPool.Shared.Get(_cts.Token);
         _hedgingHandler = HedgingHelper.CreateHandler<DisposableResult>(outcome => outcome switch
         {
             { Exception: ApplicationException } => true,
@@ -238,7 +239,7 @@ public class TaskExecutionTests : IDisposable
         execution.IsHandled.Should().BeFalse();
         context.Properties.Options.Should().HaveCount(0);
         execution.Invoking(e => e.Context).Should().Throw<InvalidOperationException>();
-#if !NETCOREAPP
+#if NETFRAMEWORK
         token.Invoking(t => t.WaitHandle).Should().Throw<InvalidOperationException>();
 #endif
         if (accept)

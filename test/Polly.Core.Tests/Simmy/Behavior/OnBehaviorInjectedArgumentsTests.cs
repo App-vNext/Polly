@@ -2,12 +2,18 @@ using Polly.Simmy.Behavior;
 
 namespace Polly.Core.Tests.Simmy.Behavior;
 
-public class OnBehaviorInjectedArgumentsTests
+public static class OnBehaviorInjectedArgumentsTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public static void Ctor_Ok()
     {
-        var args = new OnBehaviorInjectedArguments(ResilienceContextPool.Shared.Get());
-        args.Context.Should().NotBeNull();
+        // Arrange
+        var context = ResilienceContextPool.Shared.Get();
+
+        // Act
+        var args = new OnBehaviorInjectedArguments(context);
+
+        // Assert
+        args.Context.Should().Be(context);
     }
 }

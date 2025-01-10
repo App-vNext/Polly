@@ -2,14 +2,19 @@ using Polly.Retry;
 
 namespace Polly.Core.Tests.Retry;
 
-public class RetryDelayGeneratorArgumentsTests
+public static class RetryDelayGeneratorArgumentsTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public static void Ctor_Ok()
     {
-        var args = new RetryDelayGeneratorArguments<int>(ResilienceContextPool.Shared.Get(), Outcome.FromResult(1), 2);
+        // Arrange
+        var context = ResilienceContextPool.Shared.Get();
 
-        args.Context.Should().NotBeNull();
+        // Act
+        var args = new RetryDelayGeneratorArguments<int>(context, Outcome.FromResult(1), 2);
+
+        // Assert
+        args.Context.Should().Be(context);
         args.Outcome.Result.Should().Be(1);
         args.AttemptNumber.Should().Be(2);
     }

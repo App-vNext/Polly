@@ -49,4 +49,8 @@ public class AnnotatedOutputHelper : ITestOutputHelper
 
     public void WriteLine(string format, params object[] args) =>
         _items.TryAdd(Guid.NewGuid(), new Item(format ?? string.Empty, args == null || args.Length == 0 ? _noArgs : args));
+
+    public void Write(string message) => throw new NotSupportedException();
+
+    public void Write(string format, params object[] args) => throw new NotSupportedException();
 }

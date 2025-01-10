@@ -33,8 +33,7 @@ public class HedgingExecutionContextTests : IDisposable
             _ => false
         },
         args => Generator(args));
-        _resilienceContext = ResilienceContextPool.Shared.Get().Initialize<string>(false);
-        _resilienceContext.CancellationToken = _cts.Token;
+        _resilienceContext = ResilienceContextPool.Shared.Get(_cts.Token).Initialize<string>(false);
         _resilienceContext.Properties.Set(_myKey, "dummy");
 
         // HedgingExecutionContext has some Debug.Assert pieces which trigger failures in Debug mode
