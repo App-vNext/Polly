@@ -949,7 +949,11 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
 
 #pragma warning disable xUnit1031
         // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
+#if NET
+        longRunningExecution.Wait(testTimeoutToExposeDeadlocks, CancellationToken.None).Should().BeTrue();
+#else
         longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
+#endif
 #pragma warning restore xUnit1031
 
         if (longRunningExecution.IsFaulted)

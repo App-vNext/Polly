@@ -82,6 +82,7 @@ internal static class Testing
     }
 }
 
+#pragma warning disable IDE0290
 #region testing-resilience-pipeline-provider-usage
 
 // Represents an arbitrary API that needs resilience support
@@ -124,3 +125,4 @@ public static class MyApiExtensions
 }
 
 #endregion
+#pragma warning restore IDE0290

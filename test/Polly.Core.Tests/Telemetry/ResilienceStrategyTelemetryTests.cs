@@ -29,7 +29,9 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void Report_NoOutcome_OK()
     {
-        _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments());
+        var context = ResilienceContextPool.Shared.Get();
+
+        _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), context, new TestArguments());
 
         _args.Should().HaveCount(1);
         var args = _args.Single();
@@ -39,7 +41,7 @@ public class ResilienceStrategyTelemetryTests
         args.Source.StrategyName.Should().Be("strategy_name");
         args.Arguments.Should().BeOfType<TestArguments>();
         args.Outcome.Should().BeNull();
-        args.Context.Should().NotBeNull();
+        args.Context.Should().Be(context);
     }
 
     [Fact]
@@ -75,7 +77,7 @@ public class ResilienceStrategyTelemetryTests
     {
         var context = ResilienceContextPool.Shared.Get();
         _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), context, Outcome.FromResult(99), new TestArguments());
-        _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments());
+        _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), context, new TestArguments());
 
         _args.Should().BeEmpty();
     }
@@ -91,7 +93,7 @@ public class ResilienceStrategyTelemetryTests
            .Should()
            .NotThrow();
 
-        sut.Invoking(s => s.Report(new(ResilienceEventSeverity.None, "dummy-event"), ResilienceContextPool.Shared.Get(), new TestArguments()))
+        sut.Invoking(s => s.Report(new(ResilienceEventSeverity.None, "dummy-event"), context, new TestArguments()))
            .Should()
            .NotThrow();
     }

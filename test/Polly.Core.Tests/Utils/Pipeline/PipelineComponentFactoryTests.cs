@@ -23,7 +23,9 @@ public class PipelineComponentFactoryTests
 #pragma warning restore IDE0028
 
     [Theory]
+#pragma warning disable xUnit1045
     [MemberData(nameof(EmptyCallbacks))]
+#pragma warning restore xUnit1045
     public void WithDisposableCallbacks_NoCallbacks_ReturnsOriginalComponent(IEnumerable<Action> callbacks)
     {
         var component = Substitute.For<PipelineComponent>();
@@ -32,7 +34,9 @@ public class PipelineComponentFactoryTests
     }
 
     [Theory]
+#pragma warning disable xUnit1045
     [MemberData(nameof(NonEmptyCallbacks))]
+#pragma warning restore xUnit1045
     public void PipelineComponentFactory_Should_Return_WrapperComponent_With_Callbacks(IEnumerable<Action> callbacks)
     {
         var component = Substitute.For<PipelineComponent>();

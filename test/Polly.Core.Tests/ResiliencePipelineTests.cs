@@ -69,11 +69,11 @@ public partial class ResiliencePipelineTests
     [Fact]
     public async Task DebuggerProxy_Ok()
     {
-        await using var pipeline = (CompositeComponent)PipelineComponentFactory.CreateComposite(new[]
-        {
+        await using var pipeline = (CompositeComponent)PipelineComponentFactory.CreateComposite(
+        [
             Substitute.For<PipelineComponent>(),
             Substitute.For<PipelineComponent>(),
-        }, null!, null!);
+        ], null!, null!);
 
         new CompositeComponentDebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
     }

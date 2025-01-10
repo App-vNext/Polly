@@ -46,7 +46,7 @@ public class ChaosFaultStrategyTests
         catch (Exception ex)
         {
             Assert.IsType(expectedException, ex);
-#if !NET481
+#if NET
             Assert.Equal(expectedMessage, ex.Message);
 #endif
         }

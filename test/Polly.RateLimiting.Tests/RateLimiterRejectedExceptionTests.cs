@@ -67,7 +67,7 @@ public class RateLimiterRejectedExceptionTests
         exception.TelemetrySource.Should().BeNull();
     }
 
-#if !NETCOREAPP
+#if NETFRAMEWORK
     [Fact]
     public void BinaryDeserialization_Ok()
     {

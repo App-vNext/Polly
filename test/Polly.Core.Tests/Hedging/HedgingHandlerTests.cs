@@ -3,11 +3,14 @@ using Polly.Hedging.Utils;
 
 namespace Polly.Core.Tests.Hedging;
 
-public class HedgingHandlerTests
+public static class HedgingHandlerTests
 {
     [Fact]
-    public async Task GenerateAction_Generic_Ok()
+    public static async Task GenerateAction_Generic_Ok()
     {
+        // Arrange
+        var context = ResilienceContextPool.Shared.Get();
+
         var handler = new HedgingHandler<string>(
             args => PredicateResult.True(),
             args => () => Outcome.FromResultAsValueTask("ok"),
@@ -16,12 +19,15 @@ public class HedgingHandlerTests
         handler.OnHedging.Should().NotBeNull();
 
         var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(
-            ResilienceContextPool.Shared.Get(),
-            ResilienceContextPool.Shared.Get(),
+            context,
+            context,
             0,
             _ => Outcome.FromResultAsValueTask("primary")))!;
+
+        // Act
         var res = await action();
 
+        // Assert
         res.Result.Should().Be("ok");
     }
 }

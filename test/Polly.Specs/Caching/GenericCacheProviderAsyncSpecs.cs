@@ -33,10 +33,11 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         const ResultPrimitive ValueToReturn = ResultPrimitive.Substitute;
         const string OperationKey = "SomeOperationKey";
 
+        var cancellationToken = CancellationToken.None;
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
 
-        (bool cacheHit1, object? fromCache1) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken.None, false);
+        (bool cacheHit1, object? fromCache1) = await stubCacheProvider.TryGetAsync(OperationKey, cancellationToken, false);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
@@ -46,7 +47,7 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
             return ResultPrimitive.Substitute;
         }, new Context(OperationKey))).Should().Be(ValueToReturn);
 
-        (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken.None, false);
+        (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(OperationKey, cancellationToken, false);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(ValueToReturn);
     }

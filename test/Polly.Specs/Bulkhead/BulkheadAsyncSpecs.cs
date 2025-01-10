@@ -25,7 +25,7 @@ public class BulkheadAsyncSpecs(ITestOutputHelper testOutputHelper) : BulkheadSp
         var methodInfo = methods.First(method => method is { Name: "ImplementationAsync", ReturnType.Name: "Task`1" });
         var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
 
-        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None, false]);
+        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken, false]);
 
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
@@ -90,14 +90,19 @@ public class BulkheadAsyncSpecs(ITestOutputHelper testOutputHelper) : BulkheadSp
         TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
         using (var cancellationSource = new CancellationTokenSource())
         {
-            _ = Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task; }); });
+            _ = Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task; }); }, CancellationToken);
 
             Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
             await bulkhead.Awaiting(b => b.ExecuteAsync(_ => TaskHelper.EmptyTask, contextPassedToExecute)).Should().ThrowAsync<BulkheadRejectedException>();
 
             cancellationSource.Cancel();
+
+#if NET
+            tcs.SetCanceled(CancellationToken);
+#else
             tcs.SetCanceled();
+#endif
         }
 
         contextPassedToOnRejected!.Should().NotBeNull();

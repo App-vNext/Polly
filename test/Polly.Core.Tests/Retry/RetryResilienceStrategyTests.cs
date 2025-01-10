@@ -35,10 +35,9 @@ public class RetryResilienceStrategyTests
     {
         SetupNoDelay();
         var sut = CreateSut();
-        using var cancellationToken = new CancellationTokenSource();
-        cancellationToken.Cancel();
-        var context = ResilienceContextPool.Shared.Get();
-        context.CancellationToken = cancellationToken.Token;
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+        var context = ResilienceContextPool.Shared.Get(cts.Token);
         var executed = false;
 
         var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsValueTask("dummy"); }, context, "state");
@@ -49,18 +48,17 @@ public class RetryResilienceStrategyTests
     [Fact]
     public async Task ExecuteAsync_CancellationRequestedAfterCallback_EnsureNotRetried()
     {
-        using var cancellationToken = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
 
         _options.ShouldHandle = _ => PredicateResult.True();
         _options.OnRetry = _ =>
         {
-            cancellationToken.Cancel();
+            cts.Cancel();
             return default;
         };
 
         var sut = CreateSut(TimeProvider.System);
-        var context = ResilienceContextPool.Shared.Get();
-        context.CancellationToken = cancellationToken.Token;
+        var context = ResilienceContextPool.Shared.Get(cts.Token);
         var executed = false;
 
         var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsValueTask("dummy"); }, context, "state");
@@ -154,7 +152,7 @@ public class RetryResilienceStrategyTests
             return new ValueTask<TimeSpan?>(delay);
         };
 
-        CreateSut(TimeProvider.System).Execute<string>(_ => "dummy");
+        CreateSut(TimeProvider.System).Execute(_ => "dummy");
 
         retries.Should().Be(3);
         generatedValues.Should().Be(3);

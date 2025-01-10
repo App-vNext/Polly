@@ -5,12 +5,12 @@ using Polly.Registry;
 
 namespace Polly.Extensions.Tests.Issues;
 
+#pragma warning disable xUnit1031
+
 public partial class IssuesTests
 {
-    /// <summary>
-    /// This test demonstrates how to use <see cref="PartitionedRateLimiter"/> to rate-limit the individual users.
-    /// Additionally, it also shows how to disable rate limiting for admin users.
-    /// </summary>
+    //// This test demonstrates how to use PartitionedRateLimiter to rate-limit the individual users.
+    //// Additionally, it also shows how to disable rate limiting for admin users.
     [Fact]
     public async Task PartitionedRateLimiter_EnsureUserLimited_1365()
     {

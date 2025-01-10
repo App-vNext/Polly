@@ -30,8 +30,12 @@ public class ChaosOutcomeStrategyTests
             ],
         ];
 
+    private static CancellationToken CancellationToken => CancellationToken.None;
+
     [Theory]
+#pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [MemberData(nameof(ResultCtorTestCases))]
+#pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
     public void ResultInvalidCtor(object options, string expectedMessage, Type expectedException)
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
@@ -44,7 +48,7 @@ public class ChaosOutcomeStrategyTests
         catch (Exception ex)
         {
             Assert.IsType(expectedException, ex);
-#if !NET481
+#if NET
             Assert.Equal(expectedMessage, ex.Message);
 #endif
         }
@@ -96,7 +100,7 @@ public class ChaosOutcomeStrategyTests
         {
             _userDelegateExecuted = true;
             return new ValueTask<HttpStatusCode>(HttpStatusCode.OK);
-        });
+        }, CancellationToken);
 
         response.Should().Be(fakeResult);
         _userDelegateExecuted.Should().BeFalse();
@@ -125,7 +129,7 @@ public class ChaosOutcomeStrategyTests
         {
             _userDelegateExecuted = true;
             return HttpStatusCode.OK;
-        });
+        }, CancellationToken);
 
         response.Should().Be(HttpStatusCode.OK);
         _userDelegateExecuted.Should().BeTrue();
@@ -148,7 +152,7 @@ public class ChaosOutcomeStrategyTests
         {
             _userDelegateExecuted = true;
             return new ValueTask<HttpStatusCode?>(HttpStatusCode.OK);
-        });
+        }, CancellationToken);
 
         response.Should().Be(null);
         _userDelegateExecuted.Should().BeFalse();
@@ -176,7 +180,7 @@ public class ChaosOutcomeStrategyTests
         {
             _userDelegateExecuted = true;
             return new ValueTask<int>(42);
-        });
+        }, CancellationToken);
 
         response.Should().Be(42);
         _userDelegateExecuted.Should().BeTrue();
@@ -206,7 +210,7 @@ public class ChaosOutcomeStrategyTests
         {
             _userDelegateExecuted = true;
             return new ValueTask<int>(42);
-        }, CancellationToken.None)
+        }, CancellationToken)
         .AsTask())
             .Should()
             .ThrowAsync<InvalidOperationException>();

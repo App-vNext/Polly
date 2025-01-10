@@ -2,13 +2,20 @@ using Polly.Simmy.Fault;
 
 namespace Polly.Core.Tests.Simmy.Fault;
 
-public class OnFaultInjectedArgumentsTests
+public static class OnFaultInjectedArgumentsTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public static void Ctor_Ok()
     {
-        var args = new OnFaultInjectedArguments(ResilienceContextPool.Shared.Get(), new InvalidCastException());
-        args.Context.Should().NotBeNull();
-        args.Fault.Should().NotBeNull();
+        // Arrange
+        var context = ResilienceContextPool.Shared.Get();
+        var fault = new InvalidCastException();
+
+        // Act
+        var args = new OnFaultInjectedArguments(context, fault);
+
+        // Assert
+        args.Context.Should().Be(context);
+        args.Fault.Should().Be(fault);
     }
 }
