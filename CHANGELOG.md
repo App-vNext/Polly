@@ -4,6 +4,10 @@
 
 <!-- next-release -->
 
+## 8.5.1
+
+* Synchronize access to `System.ComponentModel.DataAnnotations.Validator` by [@kmcclellan](https://github.com/kmcclellan) in https://github.com/App-vNext/Polly/pull/2428
+
 ## 8.5.0
 
 * Clean the Polly.Utils.ObjectPool class by [@gabidabet](https://github.com/gabidabet) in https://github.com/App-vNext/Polly/pull/2312
