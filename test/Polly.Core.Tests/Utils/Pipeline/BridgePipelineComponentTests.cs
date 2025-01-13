@@ -13,6 +13,7 @@ public class BridgePipelineComponentTests
     [Fact]
     public void Execute_NonGeneric_Ok()
     {
+        var cancellationToken = CancellationToken.None;
         var values = new List<object?>();
 
         var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new Strategy<object>(outcome =>
@@ -20,10 +21,10 @@ public class BridgePipelineComponentTests
             values.Add(outcome.Result);
         })), DisposeBehavior.Allow, null);
 
-        pipeline.Execute(args => "dummy");
-        pipeline.Execute(args => 0);
-        pipeline.Execute<object?>(args => null);
-        pipeline.Execute(args => true);
+        pipeline.Execute(args => "dummy", cancellationToken);
+        pipeline.Execute(args => 0, cancellationToken);
+        pipeline.Execute<object?>(args => null, cancellationToken);
+        pipeline.Execute(args => true, cancellationToken);
 
         values[0].Should().Be("dummy");
         values[1].Should().Be(0);
@@ -92,16 +93,12 @@ public class BridgePipelineComponentTests
     private static async Task Dispose(PipelineComponent component) =>
         await component.DisposeAsync();
 
-    private class Strategy<T> : ResilienceStrategy<T>
+    private class Strategy<T>(Action<Outcome<T>> onOutcome) : ResilienceStrategy<T>
     {
-        private readonly Action<Outcome<T>> _onOutcome;
-
-        public Strategy(Action<Outcome<T>> onOutcome) => _onOutcome = onOutcome;
-
         protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
         {
             var outcome = await callback(context, state);
-            _onOutcome(outcome);
+            onOutcome(outcome);
             return outcome;
         }
     }

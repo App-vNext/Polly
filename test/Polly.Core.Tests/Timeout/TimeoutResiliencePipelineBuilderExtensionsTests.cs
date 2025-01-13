@@ -17,8 +17,8 @@ public class TimeoutResiliencePipelineBuilderExtensionsTests
         };
     }
 
-    [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
     [Theory]
+    [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
     public void AddTimeout_InvalidTimeout_EnsureValidated(TimeSpan timeout)
     {
         var builder = new ResiliencePipelineBuilder<int>();
@@ -26,8 +26,10 @@ public class TimeoutResiliencePipelineBuilderExtensionsTests
         Assert.Throws<ValidationException>(() => builder.AddTimeout(timeout));
     }
 
-    [MemberData(nameof(AddTimeout_Ok_Data))]
     [Theory]
+#pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
+    [MemberData(nameof(AddTimeout_Ok_Data))]
+#pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     internal void AddTimeout_Ok(TimeSpan timeout, Action<ResiliencePipelineBuilder<int>> configure, Action<TimeoutResilienceStrategy> assert)
     {
         var builder = new ResiliencePipelineBuilder<int>();
@@ -60,6 +62,8 @@ public class TimeoutResiliencePipelineBuilderExtensionsTests
             return strategy.DefaultTimeout;
         }
 
-        return strategy.TimeoutGenerator(new TimeoutGeneratorArguments(ResilienceContextPool.Shared.Get())).Preserve().GetAwaiter().GetResult();
+        return strategy.TimeoutGenerator(
+            new TimeoutGeneratorArguments(
+                ResilienceContextPool.Shared.Get())).Preserve().GetAwaiter().GetResult();
     }
 }

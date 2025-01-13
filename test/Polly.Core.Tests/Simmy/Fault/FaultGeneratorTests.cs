@@ -1,5 +1,4 @@
-﻿using System;
-using Polly.Simmy.Fault;
+﻿using Polly.Simmy.Fault;
 
 namespace Polly.Core.Tests.Simmy.Fault;
 
@@ -44,6 +43,8 @@ public class FaultGeneratorTests
     {
         Func<FaultGeneratorArguments, ValueTask<Exception?>> func = generator;
 
-        return func(new FaultGeneratorArguments(ResilienceContextPool.Shared.Get())).AsTask().Result;
+        return func(
+            new FaultGeneratorArguments(
+                ResilienceContextPool.Shared.Get())).AsTask().Result;
     }
 }

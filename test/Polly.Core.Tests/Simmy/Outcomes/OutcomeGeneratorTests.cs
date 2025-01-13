@@ -1,5 +1,4 @@
-﻿using System;
-using Polly.Simmy.Outcomes;
+﻿using Polly.Simmy.Outcomes;
 
 namespace Polly.Core.Tests.Simmy.Outcomes;
 
@@ -72,6 +71,8 @@ public class OutcomeGeneratorTests
     {
         Func<OutcomeGeneratorArguments, ValueTask<Outcome<string>?>> func = generator;
 
-        return func(new OutcomeGeneratorArguments(ResilienceContextPool.Shared.Get())).AsTask().Result;
+        return func(
+            new OutcomeGeneratorArguments(
+                ResilienceContextPool.Shared.Get())).AsTask().Result;
     }
 }

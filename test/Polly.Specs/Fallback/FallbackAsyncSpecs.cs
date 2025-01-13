@@ -493,7 +493,7 @@ public class FallbackAsyncSpecs
             .Should().NotThrowAsync();
 
         fallbackException.Should().NotBeNull()
-            .And.BeOfType(typeof(ArgumentNullException));
+            .And.BeOfType<ArgumentNullException>();
     }
 
     [Fact]

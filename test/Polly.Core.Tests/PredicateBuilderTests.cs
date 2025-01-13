@@ -59,8 +59,10 @@ public class PredicateBuilderTests
         new PredicateBuilder<string>().Should().NotBeNull();
     }
 
-    [MemberData(nameof(HandleResultData))]
     [Theory]
+#pragma warning disable xUnit1044 // Avoid using TheoryData type arguments that are not serializable
+    [MemberData(nameof(HandleResultData))]
+#pragma warning restore xUnit1044 // Avoid using TheoryData type arguments that are not serializable
     public void HandleResult_Ok(Action<PredicateBuilder<string>> configure, Outcome<string> value, bool handled)
     {
         var predicate = new PredicateBuilder<string>();
@@ -84,12 +86,13 @@ public class PredicateBuilderTests
     [Fact]
     public async Task Operator_RetryStrategyOptions_Ok()
     {
+        var context = ResilienceContextPool.Shared.Get();
         var options = new RetryStrategyOptions<string>
         {
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new RetryPredicateArguments<string>(ResilienceContextPool.Shared.Get(), CreateOutcome("error"), 0));
+        var handled = await options.ShouldHandle(new RetryPredicateArguments<string>(context, CreateOutcome("error"), 0));
 
         handled.Should().BeTrue();
     }
@@ -97,12 +100,13 @@ public class PredicateBuilderTests
     [Fact]
     public async Task Operator_FallbackStrategyOptions_Ok()
     {
+        var context = ResilienceContextPool.Shared.Get();
         var options = new FallbackStrategyOptions<string>
         {
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), CreateOutcome("error")));
+        var handled = await options.ShouldHandle(new(context, CreateOutcome("error")));
 
         handled.Should().BeTrue();
     }
@@ -110,12 +114,13 @@ public class PredicateBuilderTests
     [Fact]
     public async Task Operator_HedgingStrategyOptions_Ok()
     {
+        var context = ResilienceContextPool.Shared.Get();
         var options = new HedgingStrategyOptions<string>
         {
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), CreateOutcome("error")));
+        var handled = await options.ShouldHandle(new(context, CreateOutcome("error")));
 
         handled.Should().BeTrue();
     }
@@ -123,12 +128,13 @@ public class PredicateBuilderTests
     [Fact]
     public async Task Operator_AdvancedCircuitBreakerStrategyOptions_Ok()
     {
+        var context = ResilienceContextPool.Shared.Get();
         var options = new CircuitBreakerStrategyOptions<string>
         {
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(ResilienceContextPool.Shared.Get(), CreateOutcome("error")));
+        var handled = await options.ShouldHandle(new(context, CreateOutcome("error")));
 
         handled.Should().BeTrue();
     }

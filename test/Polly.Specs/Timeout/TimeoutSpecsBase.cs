@@ -19,6 +19,8 @@ public abstract class TimeoutSpecsBase : IDisposable
     private DateTimeOffset _offsetUtcNow = DateTimeOffset.UtcNow;
     private DateTime _utcNow = DateTime.UtcNow;
 
+    protected static CancellationToken CancellationToken => CancellationToken.None;
+
     protected TimeoutSpecsBase()
     {
         // Override the SystemClock, to return time stored in variables we manipulate.
@@ -38,7 +40,7 @@ public abstract class TimeoutSpecsBase : IDisposable
             DateTimeOffset newCancelAt = _offsetUtcNow.Add(timespan);
             _cancelAt = newCancelAt < _cancelAt ? newCancelAt : _cancelAt;
 
-            SystemClock.Sleep(TimeSpan.Zero, CancellationToken.None); // Invoke our custom definition of sleep, to check for immediate cancellation.
+            SystemClock.Sleep(TimeSpan.Zero, CancellationToken); // Invoke our custom definition of sleep, to check for immediate cancellation.
         };
 
         // Override SystemClock.Sleep, to manipulate our artificial clock.  And - if it means sleeping beyond the time when a tracked token should cancel - cancel it!

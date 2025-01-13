@@ -53,7 +53,7 @@ public class ResiliencePipelineExtensionsTests
         descriptor.Strategies[4].StrategyInstance.GetType().FullName.Should().Contain("Hedging");
         descriptor.Strategies[5].Options.Should().BeOfType<RateLimiterStrategyOptions>();
         descriptor.Strategies[5].StrategyInstance.GetType().FullName.Should().Contain("RateLimiter");
-        descriptor.Strategies[6].StrategyInstance.GetType().Should().Be(typeof(CustomStrategy));
+        descriptor.Strategies[6].StrategyInstance.GetType().Should().Be<CustomStrategy>();
     }
 
     [Fact]
@@ -88,7 +88,7 @@ public class ResiliencePipelineExtensionsTests
 
         descriptor.Strategies[3].Options.Should().BeOfType<RateLimiterStrategyOptions>();
         descriptor.Strategies[3].StrategyInstance.GetType().FullName.Should().Contain("RateLimiter");
-        descriptor.Strategies[4].StrategyInstance.GetType().Should().Be(typeof(CustomStrategy));
+        descriptor.Strategies[4].StrategyInstance.GetType().Should().Be<CustomStrategy>();
     }
 
     [Fact]
@@ -131,7 +131,7 @@ public class ResiliencePipelineExtensionsTests
         descriptor.IsReloadable.Should().BeTrue();
         descriptor.Strategies.Should().HaveCount(2);
         descriptor.Strategies[0].Options.Should().BeOfType<RateLimiterStrategyOptions>();
-        descriptor.Strategies[1].StrategyInstance.GetType().Should().Be(typeof(CustomStrategy));
+        descriptor.Strategies[1].StrategyInstance.GetType().Should().Be<CustomStrategy>();
     }
 
     [Fact]

@@ -2,14 +2,19 @@ using Polly.Hedging;
 
 namespace Polly.Core.Tests.Hedging;
 
-public class HedgingDelayGeneratorArgumentsTests
+public static class HedgingDelayGeneratorArgumentsTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public static void Ctor_Ok()
     {
-        var args = new HedgingDelayGeneratorArguments(ResilienceContextPool.Shared.Get(), 5);
+        // Arrange
+        var context = ResilienceContextPool.Shared.Get();
 
-        args.Context.Should().NotBeNull();
+        // Act
+        var args = new HedgingDelayGeneratorArguments(context, 5);
+
+        // Assert
+        args.Context.Should().Be(context);
         args.AttemptNumber.Should().Be(5);
     }
 }

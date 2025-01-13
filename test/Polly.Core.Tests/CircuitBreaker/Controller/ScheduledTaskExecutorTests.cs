@@ -4,6 +4,8 @@ namespace Polly.Core.Tests.CircuitBreaker.Controller;
 
 public class ScheduledTaskExecutorTests
 {
+    private static CancellationToken CancellationToken => CancellationToken.None;
+
     [Fact]
     public async Task ScheduleTask_Success_EnsureExecuted()
     {
@@ -15,7 +17,7 @@ public class ScheduledTaskExecutorTests
                 executed = true;
                 return Task.CompletedTask;
             },
-            ResilienceContextPool.Shared.Get(),
+            ResilienceContextPool.Shared.Get(CancellationToken),
             out var task);
 
         await task;
@@ -29,7 +31,7 @@ public class ScheduledTaskExecutorTests
         using var scheduler = new ScheduledTaskExecutor();
         scheduler.ScheduleTask(
             () => throw new OperationCanceledException(),
-            ResilienceContextPool.Shared.Get(),
+            ResilienceContextPool.Shared.Get(CancellationToken),
             out var task);
 
         await task.Invoking(async t => await task).Should().ThrowAsync<OperationCanceledException>();
@@ -41,7 +43,7 @@ public class ScheduledTaskExecutorTests
         using var scheduler = new ScheduledTaskExecutor();
         scheduler.ScheduleTask(
             () => throw new InvalidOperationException(),
-            ResilienceContextPool.Shared.Get(),
+            ResilienceContextPool.Shared.Get(CancellationToken),
             out var task);
 
         await task.Invoking(async t => await task).Should().ThrowAsync<InvalidOperationException>();
@@ -61,13 +63,16 @@ public class ScheduledTaskExecutorTests
                 verified.WaitOne();
                 return Task.CompletedTask;
             },
-            ResilienceContextPool.Shared.Get(),
+            ResilienceContextPool.Shared.Get(CancellationToken),
             out var task);
 
         executing.WaitOne();
 
-        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(), out var otherTask);
-        otherTask.Wait(50).Should().BeFalse();
+        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(CancellationToken), out var otherTask);
+
+#pragma warning disable xUnit1031 // Do not use blocking task operations in test method
+        otherTask.Wait(50, CancellationToken).Should().BeFalse();
+#pragma warning restore xUnit1031 // Do not use blocking task operations in test method
 
         verified.Set();
 
@@ -89,11 +94,11 @@ public class ScheduledTaskExecutorTests
                 verified.WaitOne();
                 return Task.CompletedTask;
             },
-            ResilienceContextPool.Shared.Get(),
+            ResilienceContextPool.Shared.Get(CancellationToken),
             out var task);
 
         executing.WaitOne();
-        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(), out var otherTask);
+        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(CancellationToken), out var otherTask);
         scheduler.Dispose();
         verified.Set();
         await task;
@@ -101,7 +106,7 @@ public class ScheduledTaskExecutorTests
         await otherTask.Invoking(t => otherTask).Should().ThrowAsync<OperationCanceledException>();
 
         scheduler
-            .Invoking(s => s.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(), out _))
+            .Invoking(s => s.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(CancellationToken), out _))
             .Should()
             .Throw<ObjectDisposedException>();
     }
@@ -109,6 +114,8 @@ public class ScheduledTaskExecutorTests
     [Fact]
     public void Dispose_WhenScheduledTaskExecuting()
     {
+        var timeout = TimeSpan.FromSeconds(10);
+
         using var disposed = new ManualResetEvent(false);
         using var ready = new ManualResetEvent(false);
 
@@ -120,21 +127,27 @@ public class ScheduledTaskExecutorTests
                 disposed.WaitOne();
                 return Task.CompletedTask;
             },
-            ResilienceContextPool.Shared.Get(),
+            ResilienceContextPool.Shared.Get(CancellationToken),
             out var task);
 
-        ready.WaitOne(TimeSpan.FromSeconds(10)).Should().BeTrue();
+        ready.WaitOne(timeout).Should().BeTrue();
         scheduler.Dispose();
         disposed.Set();
 
-        scheduler.ProcessingTask.Wait(TimeSpan.FromSeconds(10)).Should().BeTrue();
+#pragma warning disable xUnit1031
+#if NET
+        scheduler.ProcessingTask.Wait(timeout, CancellationToken).Should().BeTrue();
+#else
+        scheduler.ProcessingTask.Wait(timeout).Should().BeTrue();
+#endif
+#pragma warning restore xUnit1031
     }
 
     [Fact]
     public async Task Dispose_EnsureNoBackgroundProcessing()
     {
         var scheduler = new ScheduledTaskExecutor();
-        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(), out var otherTask);
+        scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(CancellationToken), out var otherTask);
         await otherTask;
         scheduler.Dispose();
 #pragma warning disable S3966 // Objects should not be disposed more than once

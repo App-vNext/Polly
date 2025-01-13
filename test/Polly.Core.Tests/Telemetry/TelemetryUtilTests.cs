@@ -2,37 +2,39 @@ using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Telemetry;
 
-public class TelemetryUtilTests
+public static class TelemetryUtilTests
 {
+    [Theory]
     [InlineData(true, ResilienceEventSeverity.Warning)]
     [InlineData(false, ResilienceEventSeverity.Information)]
-    [Theory]
-    public void ReportExecutionAttempt_Ok(bool handled, ResilienceEventSeverity severity)
+    public static void ReportExecutionAttempt_Ok(bool handled, ResilienceEventSeverity severity)
     {
         var asserted = false;
+        var context = ResilienceContextPool.Shared.Get();
         var listener = TestUtilities.CreateResilienceTelemetry(args =>
         {
             args.Event.Severity.Should().Be(severity);
             asserted = true;
         });
 
-        TelemetryUtil.ReportExecutionAttempt(listener, ResilienceContextPool.Shared.Get(), Outcome.FromResult("dummy"), 0, TimeSpan.Zero, handled);
+        TelemetryUtil.ReportExecutionAttempt(listener, context, Outcome.FromResult("dummy"), 0, TimeSpan.Zero, handled);
         asserted.Should().BeTrue();
     }
 
+    [Theory]
     [InlineData(true, ResilienceEventSeverity.Error)]
     [InlineData(false, ResilienceEventSeverity.Information)]
-    [Theory]
-    public void ReportFinalExecutionAttempt_Ok(bool handled, ResilienceEventSeverity severity)
+    public static void ReportFinalExecutionAttempt_Ok(bool handled, ResilienceEventSeverity severity)
     {
         var asserted = false;
+        var context = ResilienceContextPool.Shared.Get();
         var listener = TestUtilities.CreateResilienceTelemetry(args =>
         {
             args.Event.Severity.Should().Be(severity);
             asserted = true;
         });
 
-        TelemetryUtil.ReportFinalExecutionAttempt(listener, ResilienceContextPool.Shared.Get(), Outcome.FromResult("dummy"), 1, TimeSpan.Zero, handled);
+        TelemetryUtil.ReportFinalExecutionAttempt(listener, context, Outcome.FromResult("dummy"), 1, TimeSpan.Zero, handled);
         asserted.Should().BeTrue();
     }
 }

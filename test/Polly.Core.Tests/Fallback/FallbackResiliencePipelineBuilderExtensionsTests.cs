@@ -27,7 +27,7 @@ public class FallbackResiliencePipelineBuilderExtensionsTests
         var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 
-        builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType(typeof(FallbackResilienceStrategy<int>));
+        builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<FallbackResilienceStrategy<int>>();
     }
 
     [Fact]

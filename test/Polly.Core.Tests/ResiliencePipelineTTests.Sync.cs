@@ -49,7 +49,7 @@ public partial class ResiliencePipelineTests
 
         strategy =>
         {
-            var context = ResilienceContextPool.Shared.Get();
+            var context = ResilienceContextPool.Shared.Get(CancellationToken);
             context.CancellationToken = CancellationToken;
             strategy.Execute(
                 (context, state) =>
@@ -65,7 +65,7 @@ public partial class ResiliencePipelineTests
 
         strategy =>
         {
-            var context = ResilienceContextPool.Shared.Get();
+            var context = ResilienceContextPool.Shared.Get(CancellationToken);
             context.CancellationToken = CancellationToken;
             strategy.Execute(
                 (context) =>
@@ -87,7 +87,7 @@ public partial class ResiliencePipelineTests
             Before = (c, _) =>
             {
                 c.IsSynchronous.Should().BeTrue();
-                c.ResultType.Should().Be(typeof(string));
+                c.ResultType.Should().Be<string>();
             },
         }), DisposeBehavior.Allow, null);
 

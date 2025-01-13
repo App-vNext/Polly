@@ -140,7 +140,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
             _timeProvider.Advance(timeout);
             await delay;
         },
-        CancellationToken.None)
+        _cancellationSource.Token)
         .AsTask())
         .Should().ThrowAsync<TimeoutRejectedException>();
 
@@ -162,7 +162,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
                 return Outcome.FromResult("dummy");
             },
-            ResilienceContextPool.Shared.Get(),
+            ResilienceContextPool.Shared.Get(_cancellationSource.Token),
             "state");
 
         outcome.Exception.Should().BeOfType<TimeoutRejectedException>();
@@ -188,7 +188,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
                 return Outcome.FromResult("dummy");
             },
-            ResilienceContextPool.Shared.Get(),
+            ResilienceContextPool.Shared.Get(_cancellationSource.Token),
             "state");
 
         outcome.Exception.Should().BeOfType<TimeoutRejectedException>().Subject.TelemetrySource.Should().NotBeNull();
@@ -236,8 +236,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         var sut = CreateSut();
 
-        var context = ResilienceContextPool.Shared.Get();
-        context.CancellationToken = cts.Token;
+        var context = ResilienceContextPool.Shared.Get(cts.Token);
 
         await sut.ExecuteAsync(
             (r, _) =>

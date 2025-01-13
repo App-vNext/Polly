@@ -44,6 +44,7 @@ internal static partial class Migration
             .AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
             {
                 PermitLimit = 100,
+                SegmentsPerWindow = 4,
                 Window = TimeSpan.FromMinutes(1),
             }))
             .Build();
@@ -55,6 +56,7 @@ internal static partial class Migration
             .AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
             {
                 PermitLimit = 100,
+                SegmentsPerWindow = 4,
                 Window = TimeSpan.FromMinutes(1),
             }))
             .Build();

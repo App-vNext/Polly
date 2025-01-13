@@ -37,14 +37,14 @@ public partial class ResiliencePipelineTests
             AssertContext = AssertResilienceContext,
         };
 
-        yield return new ExecuteParameters(r => r.Execute(context => { }, ResilienceContextPool.Shared.Get()))
+        yield return new ExecuteParameters(r => r.Execute(context => { }, ResilienceContextPool.Shared.Get(CancellationToken)))
         {
             Caption = "ResilienceContext",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextInitialized,
         };
 
-        yield return new ExecuteParameters(r => r.Execute((_, s) => { s.Should().Be("dummy-state"); }, ResilienceContextPool.Shared.Get(), "dummy-state"))
+        yield return new ExecuteParameters(r => r.Execute((_, s) => { s.Should().Be("dummy-state"); }, ResilienceContextPool.Shared.Get(CancellationToken), "dummy-state"))
         {
             Caption = "Execute_ResilienceContextAndState",
             AssertContext = AssertResilienceContext,
@@ -91,11 +91,13 @@ public partial class ResiliencePipelineTests
     [Fact]
     public void Execute_EnsureCallStackPreserved()
     {
+        var context = ResilienceContextPool.Shared.Get(CancellationToken);
+
         AssertStackTrace(s => s.Execute(() => MyThrowingMethod()));
         AssertStackTrace(s => s.Execute(_ => MyThrowingMethod()));
-        AssertStackTrace(s => s.Execute((_) => MyThrowingMethod(), ResilienceContextPool.Shared.Get()));
-        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), ResilienceContextPool.Shared.Get()));
-        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), ResilienceContextPool.Shared.Get(), "state"));
+        AssertStackTrace(s => s.Execute((_) => MyThrowingMethod(), context));
+        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), context));
+        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), context, "state"));
         AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), "state"));
         AssertStackTrace(s => s.Execute((_) => MyThrowingMethod(), "state"));
 

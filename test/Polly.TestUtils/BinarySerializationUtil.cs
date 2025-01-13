@@ -1,4 +1,4 @@
-#if !NETCOREAPP
+#if NETFRAMEWORK
 
 using System;
 

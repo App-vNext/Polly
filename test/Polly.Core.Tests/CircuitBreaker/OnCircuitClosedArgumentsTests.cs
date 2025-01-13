@@ -2,14 +2,19 @@ using Polly.CircuitBreaker;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
-public class OnCircuitClosedArgumentsTests
+public static class OnCircuitClosedArgumentsTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public static void Ctor_Ok()
     {
-        var args = new OnCircuitClosedArguments<int>(ResilienceContextPool.Shared.Get(), Outcome.FromResult(1), true);
+        // Arrange
+        var context = ResilienceContextPool.Shared.Get();
 
-        args.Context.Should().NotBeNull();
+        // Act
+        var args = new OnCircuitClosedArguments<int>(context, Outcome.FromResult(1), true);
+
+        // Assert
+        args.Context.Should().Be(context);
         args.Outcome.Result.Should().Be(1);
         args.IsManual.Should().BeTrue();
     }

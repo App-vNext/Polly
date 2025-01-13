@@ -2,6 +2,8 @@
 
 public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
 {
+    protected static CancellationToken CancellationToken => CancellationToken.None;
+
     protected abstract IRateLimitPolicy GetPolicyViaSyntax(
         int numberOfExecutions,
         TimeSpan perTimeSpan);
@@ -282,7 +284,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
 
         // Arrange - parallel tasks all waiting on a manual reset event.
         using var gate = new ManualResetEventSlim();
-        Task<(bool PermitExecution, TimeSpan RetryAfter)>[] tasks = new Task<(bool, TimeSpan)>[parallelContention];
+        var tasks = new Task<(bool PermitExecution, TimeSpan RetryAfter)>[parallelContention];
         for (int i = 0; i < parallelContention; i++)
         {
             tasks[i] = Task.Run(() =>
@@ -294,7 +296,9 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
 
         // Act - release gate.
         gate.Set();
-        Within(TimeSpan.FromSeconds(10 /* high to allow for slow-running on time-slicing CI servers */), () => tasks.ToList().TrueForAll(t => t.IsCompleted).Should().BeTrue());
+        Within(
+            TimeSpan.FromSeconds(10 /* high to allow for slow-running on time-slicing CI servers */),
+            () => Assert.All(tasks, (t) => Assert.True(t.IsCompleted)));
 
         // Assert - one should have permitted execution, n-1 not.
         var results = tasks.Select(t => t.Result).ToList();

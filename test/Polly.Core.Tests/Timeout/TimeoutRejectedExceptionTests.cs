@@ -18,7 +18,7 @@ public class TimeoutRejectedExceptionTests
         new TimeoutRejectedException("dummy", delay, new InvalidOperationException()).Timeout.Should().Be(delay);
     }
 
-#if !NETCOREAPP
+#if NETFRAMEWORK
     [Fact]
     public void BinaryDeserialization_Ok()
     {
