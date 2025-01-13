@@ -7,6 +7,9 @@ namespace Polly.Utils;
 [ExcludeFromCodeCoverage]
 internal static class ValidationHelper
 {
+    // Workaround for https://github.com/dotnet/runtime/issues/110917
+    private static readonly object ValidatorLock = new();
+
     public static string[]? GetMemberName(this ValidationContext? validationContext) =>
 #pragma warning disable S1168 // Empty arrays and collections should be returned instead of null
         validationContext?.MemberName is { } memberName
@@ -26,9 +29,15 @@ internal static class ValidationHelper
     {
         Guard.NotNull(context);
 
+        bool valid;
         var errors = new List<ValidationResult>();
 
-        if (!Validator.TryValidateObject(context.Instance, new ValidationContext(context.Instance), errors, true))
+        lock (ValidatorLock)
+        {
+            valid = Validator.TryValidateObject(context.Instance, new(context.Instance), errors, true);
+        }
+
+        if (!valid)
         {
             var stringBuilder = new StringBuilder(context.PrimaryMessage);
             stringBuilder.AppendLine();

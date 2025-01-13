@@ -31,4 +31,45 @@ public class ValidationHelperTests
         context = new ValidationContext(new object()) { DisplayName = "X" };
         context.GetDisplayName().Should().Be("X");
     }
+
+    /// <summary>
+    /// Test for <see href="https://github.com/App-vNext/Polly/issues/2412">validator concurrency issue</see>.
+    /// </summary>
+    [Fact]
+    public void ValidateObject_SynchronizesValidation()
+    {
+        var detector = new ConcurrencyDetector();
+        Parallel.For(0, 2, _ => ValidationHelper.ValidateObject(new(new TestOptions(detector), string.Empty)));
+
+        detector.InvokedConcurrently.Should().BeFalse();
+    }
+
+    private sealed class TestOptions(ConcurrencyDetector detector) : IValidatableObject
+    {
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            detector.Execute();
+            yield break;
+        }
+    }
+
+    private sealed class ConcurrencyDetector
+    {
+        private readonly object _sync = new();
+
+        public bool InvokedConcurrently { get; private set; }
+
+        public void Execute()
+        {
+            if (Monitor.TryEnter(_sync))
+            {
+                Thread.Sleep(1);
+                Monitor.Exit(_sync);
+            }
+            else
+            {
+                InvokedConcurrently = true;
+            }
+        }
+    }
 }
