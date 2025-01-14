@@ -1006,8 +1006,8 @@ In v7, the following registry APIs are exposed:
 
 In v8, these have been replaced by:
 
-- `ResiliencePipelineProvider<TKey>`: Allows adding and accessing resilience pipelines.
-- `ResiliencePipelineRegistry<TKey>`: Read-only access to resilience pipelines.
+- `ResiliencePipelineRegistry<TKey>`: Allows adding and accessing resilience pipelines.
+- `ResiliencePipelineProvider<TKey>`: Read-only access to resilience pipelines.
 
 The main updates:
 
