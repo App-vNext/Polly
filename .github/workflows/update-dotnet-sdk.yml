@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   update-dotnet-sdk:
-    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@76e2c0df2303d4f6a404228105ebb7d60ace0556 # v3.4.0
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@758e92b362c4164925583874878423a794cce239 # v3.4.1
     with:
       labels: "dependencies,.NET"
       update-nuget-packages: false
