@@ -9,7 +9,7 @@ public class DisposeHelperTests
     [InlineData(false)]
     [Theory]
     public void Dispose_Object_Ok(bool synchronous) =>
-        DisposeHelper.TryDisposeSafeAsync(new object(), synchronous).AsTask().IsCompleted.Should().BeTrue();
+        DisposeHelper.TryDisposeSafeAsync(new object(), synchronous).AsTask().IsCompleted.ShouldBeTrue();
 
     [InlineData(true)]
     [InlineData(false)]
@@ -18,7 +18,7 @@ public class DisposeHelperTests
     {
         using var disposable = new DisposableResult();
         await DisposeHelper.TryDisposeSafeAsync(disposable, synchronous);
-        disposable.IsDisposed.Should().BeTrue();
+        disposable.IsDisposed.ShouldBeTrue();
     }
 
     [InlineData(true)]
@@ -34,7 +34,7 @@ public class DisposeHelperTests
 
         await DisposeHelper.TryDisposeSafeAsync(disposable, synchronous);
 
-        disposed.Should().BeTrue();
+        disposed.ShouldBeTrue();
     }
 
     [InlineData(true)]
@@ -45,7 +45,7 @@ public class DisposeHelperTests
         var disposable = Substitute.For<IAsyncDisposable>();
         disposable.When(async v => await v.DisposeAsync()).Do((_) => throw new InvalidOperationException());
 
-        await disposable.Invoking(async _ => await DisposeHelper.TryDisposeSafeAsync(disposable, synchronous)).Should().NotThrowAsync();
+        await Should.NotThrowAsync(async () => await DisposeHelper.TryDisposeSafeAsync(disposable, synchronous));
     }
 
     [InlineData(true)]
@@ -57,8 +57,8 @@ public class DisposeHelperTests
 
         await DisposeHelper.TryDisposeSafeAsync(disposable, synchronous);
 
-        disposable.IsDisposedAsync.Should().Be(!synchronous);
-        disposable.IsDisposed.Should().Be(synchronous);
+        disposable.IsDisposedAsync.ShouldBe(!synchronous);
+        disposable.IsDisposed.ShouldBe(synchronous);
     }
 
     private class MyDisposable : DisposableResult, IAsyncDisposable

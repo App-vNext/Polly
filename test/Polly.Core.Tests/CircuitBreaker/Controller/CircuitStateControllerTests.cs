@@ -17,9 +17,9 @@ public class CircuitStateControllerTests
     {
         using var controller = CreateController();
 
-        controller.CircuitState.Should().Be(CircuitState.Closed);
-        controller.LastException.Should().BeNull();
-        controller.LastHandledOutcome.Should().BeNull();
+        controller.CircuitState.ShouldBe(CircuitState.Closed);
+        controller.LastException.ShouldBeNull();
+        controller.LastHandledOutcome.ShouldBeNull();
     }
 
     [Fact]
@@ -30,13 +30,13 @@ public class CircuitStateControllerTests
         bool called = false;
         _options.OnOpened = args =>
         {
-            args.BreakDuration.Should().Be(TimeSpan.MaxValue);
-            args.Context.IsSynchronous.Should().BeFalse();
-            args.Context.IsVoid.Should().BeFalse();
-            args.Context.ResultType.Should().Be<int>();
-            args.IsManual.Should().BeTrue();
-            args.Outcome.IsVoidResult.Should().BeFalse();
-            args.Outcome.Result.Should().Be(0);
+            args.BreakDuration.ShouldBe(TimeSpan.MaxValue);
+            args.Context.IsSynchronous.ShouldBeFalse();
+            args.Context.IsVoid.ShouldBeFalse();
+            args.Context.ResultType.ShouldBe(typeof(int));
+            args.IsManual.ShouldBeTrue();
+            args.Outcome.IsVoidResult.ShouldBeFalse();
+            args.Outcome.Result.ShouldBe(0);
             called = true;
             return default;
         };
@@ -49,20 +49,20 @@ public class CircuitStateControllerTests
         await controller.IsolateCircuitAsync(context);
 
         // assert
-        controller.CircuitState.Should().Be(CircuitState.Isolated);
-        called.Should().BeTrue();
+        controller.CircuitState.ShouldBe(CircuitState.Isolated);
+        called.ShouldBeTrue();
 
         var outcome = await controller.OnActionPreExecuteAsync(context);
-        var exception = outcome.Value.Exception.Should().BeOfType<IsolatedCircuitException>().Subject;
-        exception.RetryAfter.Should().BeNull();
-        exception.TelemetrySource.Should().NotBeNull();
+        var exception = outcome.Value.Exception.ShouldBeOfType<IsolatedCircuitException>();
+        exception.RetryAfter.ShouldBeNull();
+        exception.TelemetrySource.ShouldNotBeNull();
 
         // now close it
         await controller.CloseCircuitAsync(context);
         await controller.OnActionPreExecuteAsync(context);
 
         _circuitBehavior.Received().OnCircuitClosed();
-        _telemetryListener.GetArgs<OnCircuitOpenedArguments<int>>().Should().NotBeEmpty();
+        _telemetryListener.GetArgs<OnCircuitOpenedArguments<int>>().ShouldNotBeEmpty();
     }
 
     [Fact]
@@ -73,12 +73,12 @@ public class CircuitStateControllerTests
         bool called = false;
         _options.OnClosed = args =>
         {
-            args.Context.IsSynchronous.Should().BeFalse();
-            args.Context.IsVoid.Should().BeFalse();
-            args.Context.ResultType.Should().Be<int>();
-            args.IsManual.Should().BeTrue();
-            args.Outcome.IsVoidResult.Should().BeFalse();
-            args.Outcome.Result.Should().Be(0);
+            args.Context.IsSynchronous.ShouldBeFalse();
+            args.Context.IsVoid.ShouldBeFalse();
+            args.Context.ResultType.ShouldBe(typeof(int));
+            args.IsManual.ShouldBeTrue();
+            args.Outcome.IsVoidResult.ShouldBeFalse();
+            args.Outcome.Result.ShouldBe(0);
             called = true;
             return default;
         };
@@ -92,11 +92,11 @@ public class CircuitStateControllerTests
         await controller.CloseCircuitAsync(context);
 
         // assert
-        called.Should().BeTrue();
+        called.ShouldBeTrue();
 
         await controller.OnActionPreExecuteAsync(ResilienceContextPool.Shared.Get(cancellationToken));
         _circuitBehavior.Received().OnCircuitClosed();
-        _telemetryListener.GetArgs<OnCircuitClosedArguments<int>>().Should().NotBeEmpty();
+        _telemetryListener.GetArgs<OnCircuitClosedArguments<int>>().ShouldNotBeEmpty();
     }
 
     [Fact]
@@ -126,10 +126,10 @@ public class CircuitStateControllerTests
 
         await OpenCircuit(controller, Outcome.FromResult(99));
         var exception = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(context)).Value.Exception!;
-        exception.RetryAfter.Should().NotBeNull();
-        exception.TelemetrySource.Should().NotBeNull();
+        exception.RetryAfter.ShouldNotBeNull();
+        exception.TelemetrySource.ShouldNotBeNull();
 
-        GetBlockedTill(controller).Should().Be(_timeProvider.GetUtcNow() + _options.BreakDuration);
+        GetBlockedTill(controller).ShouldBe(_timeProvider.GetUtcNow() + _options.BreakDuration);
     }
 
     [InlineData(true)]
@@ -154,22 +154,22 @@ public class CircuitStateControllerTests
             catch (BrokenCircuitException e)
             {
                 stacks.Add(e.StackTrace!);
-                e.Message.Should().Be("The circuit is now open and is not allowing calls.");
-                e.RetryAfter.Should().NotBeNull();
-                e.TelemetrySource.Should().NotBeNull();
+                e.Message.ShouldBe("The circuit is now open and is not allowing calls.");
+                e.RetryAfter.ShouldNotBeNull();
+                e.TelemetrySource.ShouldNotBeNull();
 
                 if (innerException)
                 {
-                    e.InnerException.Should().BeOfType<InvalidOperationException>();
+                    e.InnerException.ShouldBeOfType<InvalidOperationException>();
                 }
                 else
                 {
-                    e.InnerException.Should().BeNull();
+                    e.InnerException.ShouldBeNull();
                 }
             }
         }
 
-        stacks.Distinct().Should().HaveCount(1);
+        stacks.Distinct().Count().ShouldBe(1);
     }
 
     [Fact]
@@ -179,7 +179,7 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         await TransitionToState(controller, CircuitState.HalfOpen, context);
-        GetBlockedTill(controller).Should().Be(_timeProvider.GetUtcNow() + _options.BreakDuration);
+        GetBlockedTill(controller).ShouldBe(_timeProvider.GetUtcNow() + _options.BreakDuration);
     }
 
     [InlineData(true)]
@@ -195,7 +195,7 @@ public class CircuitStateControllerTests
         if (success)
         {
             await controller.OnUnhandledOutcomeAsync(Outcome.FromResult(0), context);
-            controller.CircuitState.Should().Be(CircuitState.Closed);
+            controller.CircuitState.ShouldBe(CircuitState.Closed);
 
             _circuitBehavior.Received().OnActionSuccess(CircuitState.HalfOpen);
             _circuitBehavior.Received().OnCircuitClosed();
@@ -203,7 +203,7 @@ public class CircuitStateControllerTests
         else
         {
             await controller.OnHandledOutcomeAsync(Outcome.FromResult(0), context);
-            controller.CircuitState.Should().Be(CircuitState.Open);
+            controller.CircuitState.ShouldBe(CircuitState.Open);
 
             _circuitBehavior.DidNotReceiveWithAnyArgs().OnActionSuccess(default);
             _circuitBehavior.Received().OnActionFailure(CircuitState.HalfOpen, out _);
@@ -218,9 +218,9 @@ public class CircuitStateControllerTests
 
         await OpenCircuit(controller, Outcome.FromException<int>(new InvalidOperationException()));
         var exception = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(context)).Value.Exception!;
-        exception.InnerException.Should().BeOfType<InvalidOperationException>();
-        exception.RetryAfter.Should().NotBeNull();
-        exception.TelemetrySource.Should().NotBeNull();
+        exception.InnerException.ShouldBeOfType<InvalidOperationException>();
+        exception.RetryAfter.ShouldNotBeNull();
+        exception.TelemetrySource.ShouldNotBeNull();
     }
 
     [Fact]
@@ -250,7 +250,7 @@ public class CircuitStateControllerTests
 
         // assert
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
-        executeAction.Wait(50, cancellationToken).Should().BeFalse();
+        executeAction.Wait(50, cancellationToken).ShouldBeFalse();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
         verified.Set();
         await executeAction;
@@ -279,11 +279,11 @@ public class CircuitStateControllerTests
         var error = (await controller.OnActionPreExecuteAsync(context)).Value.Exception;
 
         // assert
-        var exception = error.Should().BeOfType<BrokenCircuitException>().Subject;
-        exception.RetryAfter.Should().NotBeNull();
-        exception.TelemetrySource.Should().NotBeNull();
-        controller.CircuitState.Should().Be(CircuitState.HalfOpen);
-        called.Should().BeTrue();
+        var exception = error.ShouldBeOfType<BrokenCircuitException>();
+        exception.RetryAfter.ShouldNotBeNull();
+        exception.TelemetrySource.ShouldNotBeNull();
+        controller.CircuitState.ShouldBe(CircuitState.HalfOpen);
+        called.ShouldBeTrue();
     }
 
     [InlineData(CircuitState.HalfOpen, CircuitState.Closed)]
@@ -297,7 +297,7 @@ public class CircuitStateControllerTests
         var called = false;
         _options.OnClosed = args =>
         {
-            args.IsManual.Should().BeFalse();
+            args.IsManual.ShouldBeFalse();
             called = true;
             return default;
         };
@@ -310,13 +310,13 @@ public class CircuitStateControllerTests
         await controller.OnUnhandledOutcomeAsync(Outcome.FromResult(10), context);
 
         // assert
-        controller.CircuitState.Should().Be(expectedState);
+        controller.CircuitState.ShouldBe(expectedState);
 
         _circuitBehavior.Received().OnActionSuccess(state);
         if (expectedState == CircuitState.Closed && state != CircuitState.Closed)
         {
             _circuitBehavior.Received().OnCircuitClosed();
-            called.Should().BeTrue();
+            called.ShouldBeTrue();
         }
     }
 
@@ -335,11 +335,11 @@ public class CircuitStateControllerTests
         {
             if (state == CircuitState.Isolated)
             {
-                args.IsManual.Should().BeTrue();
+                args.IsManual.ShouldBeTrue();
             }
             else
             {
-                args.IsManual.Should().BeFalse();
+                args.IsManual.ShouldBeFalse();
             }
 
             called = true;
@@ -356,13 +356,13 @@ public class CircuitStateControllerTests
         await controller.OnHandledOutcomeAsync(Outcome.FromResult(99), context);
 
         // assert
-        controller.LastHandledOutcome!.Value.Result.Should().Be(99);
-        controller.CircuitState.Should().Be(expectedState);
+        controller.LastHandledOutcome!.Value.Result.ShouldBe(99);
+        controller.CircuitState.ShouldBe(expectedState);
         _circuitBehavior.Received().OnActionFailure(state, out Arg.Any<bool>());
 
         if (expectedState == CircuitState.Open && state != CircuitState.Open)
         {
-            called.Should().BeTrue();
+            called.ShouldBeTrue();
         }
     }
 
@@ -373,8 +373,8 @@ public class CircuitStateControllerTests
         var context = ResilienceContextPool.Shared.Get();
         _options.BreakDurationGenerator = static args =>
         {
-            args.FailureCount.Should().Be(1);
-            args.FailureRate.Should().Be(0.5);
+            args.FailureCount.ShouldBe(1);
+            args.FailureRate.ShouldBe(0.5);
             return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(42));
         };
 
@@ -395,7 +395,7 @@ public class CircuitStateControllerTests
 
         // assert
         var blockedTill = GetBlockedTill(controller);
-        blockedTill.Should().Be(utcNow + TimeSpan.FromMinutes(42));
+        blockedTill.ShouldBe(utcNow + TimeSpan.FromMinutes(42));
     }
 
     [Fact]
@@ -431,7 +431,7 @@ public class CircuitStateControllerTests
         }
 
         // assert
-        halfOpenAttempts.Should().BeEquivalentTo([0, 1, 2, 3, 4, 0, 1, 2]);
+        halfOpenAttempts.ShouldBe([0, 1, 2, 3, 4, 0, 1, 2]);
     }
 
     [InlineData(true)]
@@ -463,11 +463,11 @@ public class CircuitStateControllerTests
 
         if (overflow)
         {
-            blockedTill.Should().Be(DateTimeOffset.MaxValue);
+            blockedTill.ShouldBe(DateTimeOffset.MaxValue);
         }
         else
         {
-            blockedTill.Should().Be(utcNow + _options.BreakDuration);
+            blockedTill.ShouldBe(utcNow + _options.BreakDuration);
         }
     }
 
@@ -487,11 +487,11 @@ public class CircuitStateControllerTests
         await controller.OnHandledOutcomeAsync(Outcome.FromResult(99), context);
 
         // assert
-        controller.LastException.Should().BeNull();
+        controller.LastException.ShouldBeNull();
         var outcome = await controller.OnActionPreExecuteAsync(context);
-        var exception = outcome.Value.Exception.Should().BeOfType<BrokenCircuitException>().Subject;
-        exception.RetryAfter.Should().NotBeNull();
-        exception.TelemetrySource.Should().NotBeNull();
+        var exception = outcome.Value.Exception.ShouldBeOfType<BrokenCircuitException>();
+        exception.RetryAfter.ShouldNotBeNull();
+        exception.TelemetrySource.ShouldNotBeNull();
     }
 
     [Fact]
@@ -503,7 +503,7 @@ public class CircuitStateControllerTests
         await TransitionToState(controller, CircuitState.HalfOpen, context);
 
         await controller.OnUnhandledOutcomeAsync(Outcome.FromResult(0), context);
-        controller.CircuitState.Should().Be(CircuitState.Closed);
+        controller.CircuitState.ShouldBe(CircuitState.Closed);
 
         _circuitBehavior.Received().OnActionSuccess(CircuitState.HalfOpen);
         _circuitBehavior.Received().OnCircuitClosed();
@@ -524,24 +524,24 @@ public class CircuitStateControllerTests
                         .Do(x => x[1] = shouldBreak);
 
         await controller.OnHandledOutcomeAsync(Outcome.FromResult(0), context);
-        controller.CircuitState.Should().Be(CircuitState.Open);
+        controller.CircuitState.ShouldBe(CircuitState.Open);
 
         // execution rejected
         TimeSpan advanceTimeRejected = TimeSpan.FromMilliseconds(1);
         AdvanceTime(advanceTimeRejected);
         var outcome = await controller.OnActionPreExecuteAsync(context);
-        var exception = outcome.Value.Exception.Should().BeOfType<BrokenCircuitException>().Subject;
-        exception.RetryAfter.Should().Be(_options.BreakDuration - advanceTimeRejected);
-        exception.TelemetrySource.Should().NotBeNull();
+        var exception = outcome.Value.Exception.ShouldBeOfType<BrokenCircuitException>();
+        exception.RetryAfter.ShouldBe(_options.BreakDuration - advanceTimeRejected);
+        exception.TelemetrySource.ShouldNotBeNull();
 
         // wait and try, transition to half open
         AdvanceTime(_options.BreakDuration + _options.BreakDuration);
         await controller.OnActionPreExecuteAsync(context);
-        controller.CircuitState.Should().Be(CircuitState.HalfOpen);
+        controller.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // close circuit
         await controller.OnUnhandledOutcomeAsync(Outcome.FromResult(0), context);
-        controller.CircuitState.Should().Be(CircuitState.Closed);
+        controller.CircuitState.ShouldBe(CircuitState.Closed);
 
         _circuitBehavior.Received().OnActionSuccess(CircuitState.HalfOpen);
         _circuitBehavior.Received().OnCircuitClosed();
@@ -557,14 +557,14 @@ public class CircuitStateControllerTests
         var task = CircuitStateController<string>.ExecuteScheduledTaskAsync(source.Task, context.Initialize<string>(isSynchronous: false)).AsTask();
 
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
-        task.Wait(3, cancellationToken).Should().BeFalse();
+        task.Wait(3, cancellationToken).ShouldBeFalse();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
-        task.IsCompleted.Should().BeFalse();
+        task.IsCompleted.ShouldBeFalse();
 
         source.SetResult("ok");
 
         await task;
-        task.IsCompleted.Should().BeTrue();
+        task.IsCompleted.ShouldBeTrue();
     }
 
     private static DateTimeOffset? GetBlockedTill(CircuitStateController<int> controller) =>
@@ -593,7 +593,7 @@ public class CircuitStateControllerTests
                 break;
         }
 
-        controller.CircuitState.Should().Be(state);
+        controller.CircuitState.ShouldBe(state);
     }
 
     private async Task OpenCircuit(CircuitStateController<int> controller, Outcome<int>? outcome = null)

@@ -7,8 +7,8 @@ public class ChaosLatencyConstantsTests
     [Fact]
     public void EnsureDefaults()
     {
-        ChaosLatencyConstants.DefaultName.Should().Be("Chaos.Latency");
-        ChaosLatencyConstants.OnLatencyInjectedEvent.Should().Be("Chaos.OnLatency");
-        ChaosLatencyConstants.DefaultLatency.Should().Be(TimeSpan.FromSeconds(30));
+        ChaosLatencyConstants.DefaultName.ShouldBe("Chaos.Latency");
+        ChaosLatencyConstants.OnLatencyInjectedEvent.ShouldBe("Chaos.OnLatency");
+        ChaosLatencyConstants.DefaultLatency.ShouldBe(TimeSpan.FromSeconds(30));
     }
 }

@@ -22,7 +22,7 @@ public partial class ResiliencePipelineTests
         await ResiliencePipeline.Empty.DisposeHelper.DisposeAsync();
         await ResiliencePipeline.Empty.DisposeHelper.DisposeAsync();
 
-        ResiliencePipeline.Empty.Execute(() => 1).Should().Be(1);
+        ResiliencePipeline.Empty.Execute(() => 1).ShouldBe(1);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public partial class ResiliencePipelineTests
         await ResiliencePipeline<int>.Empty.DisposeHelper.DisposeAsync();
         await ResiliencePipeline<int>.Empty.DisposeHelper.DisposeAsync();
 
-        ResiliencePipeline.Empty.Execute(() => 1).Should().Be(1);
+        ResiliencePipeline.Empty.Execute(() => 1).ShouldBe(1);
     }
 
     [Fact]
@@ -40,10 +40,8 @@ public partial class ResiliencePipelineTests
         var component = Substitute.For<PipelineComponent>();
         var pipeline = new ResiliencePipeline(component, DisposeBehavior.Reject, null);
 
-        (await pipeline.Invoking(p => p.DisposeHelper.DisposeAsync().AsTask())
-            .Should()
-            .ThrowAsync<InvalidOperationException>())
-            .WithMessage("Disposing this resilience pipeline is not allowed because it is owned by the pipeline registry.");
+        var exception = await Should.ThrowAsync<InvalidOperationException>(() => pipeline.DisposeHelper.DisposeAsync().AsTask());
+        exception.Message.ShouldBe("Disposing this resilience pipeline is not allowed because it is owned by the pipeline registry.");
     }
 
     [Fact]
@@ -54,7 +52,7 @@ public partial class ResiliencePipelineTests
         await pipeline.DisposeHelper.DisposeAsync();
         await pipeline.DisposeHelper.DisposeAsync();
 
-        pipeline.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
+        Should.Throw<ObjectDisposedException>(() => pipeline.Execute(() => { }));
 
         await component.Received(1).DisposeAsync();
     }
@@ -62,8 +60,8 @@ public partial class ResiliencePipelineTests
     [Fact]
     public void Null_Ok()
     {
-        ResiliencePipeline.Empty.Should().NotBeNull();
-        ResiliencePipeline<string>.Empty.Should().NotBeNull();
+        ResiliencePipeline.Empty.ShouldNotBeNull();
+        ResiliencePipeline<string>.Empty.ShouldNotBeNull();
     }
 
     [Fact]
@@ -75,7 +73,7 @@ public partial class ResiliencePipelineTests
             Substitute.For<PipelineComponent>(),
         ], null!, null!);
 
-        new CompositeComponentDebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
+        new CompositeComponentDebuggerProxy(pipeline).Strategies.Count().ShouldBe(2);
     }
 
     [Fact]
@@ -86,7 +84,7 @@ public partial class ResiliencePipelineTests
         ResilienceContextPool? pool = null;
 
         var pipeline = new ResiliencePipeline(component, disposeBehavior, pool);
-        pipeline.Pool.Should().Be(ResilienceContextPool.Shared);
+        pipeline.Pool.ShouldBe(ResilienceContextPool.Shared);
     }
 
     [Fact]
@@ -97,7 +95,7 @@ public partial class ResiliencePipelineTests
         var pool = Substitute.For<ResilienceContextPool>();
 
         var pipeline = new ResiliencePipeline(component, disposeBehavior, pool);
-        pipeline.Pool.Should().Be(pool);
+        pipeline.Pool.ShouldBe(pool);
     }
 
     public class ExecuteParameters<T> : ExecuteParameters
@@ -110,7 +108,7 @@ public partial class ResiliencePipelineTests
                 return result!;
             };
 
-            AssertResult = result => result.Should().BeOfType<T>().And.Be(resultValue);
+            AssertResult = result => result.ShouldBeOfType<T>().ShouldBe(resultValue);
         }
 
         public ExecuteParameters(Func<ResiliencePipeline, ValueTask<T>> execute, T resultValue)
@@ -121,13 +119,13 @@ public partial class ResiliencePipelineTests
                 return result!;
             };
 
-            AssertResult = result => result.Should().BeOfType<T>().And.Be(resultValue);
+            AssertResult = result => result.ShouldBeOfType<T>().ShouldBe(resultValue);
         }
 
         public ExecuteParameters(Func<ResiliencePipeline, T> execute, T resultValue)
         {
             Execute = strategy => new ValueTask<object>(execute(strategy)!);
-            AssertResult = result => result.Should().BeOfType<T>().And.Be(resultValue);
+            AssertResult = result => result.ShouldBeOfType<T>().ShouldBe(resultValue);
         }
     }
 
@@ -145,7 +143,7 @@ public partial class ResiliencePipelineTests
                 return VoidResult.Instance;
             };
 
-            AssertResult = r => r.Should().Be(VoidResult.Instance);
+            AssertResult = r => r.ShouldBe(VoidResult.Instance);
         }
 
         public ExecuteParameters(Func<ResiliencePipeline, Task> execute)
@@ -156,7 +154,7 @@ public partial class ResiliencePipelineTests
                 return VoidResult.Instance;
             };
 
-            AssertResult = r => r.Should().Be(VoidResult.Instance);
+            AssertResult = r => r.ShouldBe(VoidResult.Instance);
         }
 
         public ExecuteParameters(Action<ResiliencePipeline> execute)
@@ -167,7 +165,7 @@ public partial class ResiliencePipelineTests
                 return new ValueTask<object>(VoidResult.Instance);
             };
 
-            AssertResult = r => r.Should().Be(VoidResult.Instance);
+            AssertResult = r => r.ShouldBe(VoidResult.Instance);
         }
 
         public Func<ResiliencePipeline, ValueTask<object>> Execute { get; set; } = r => new ValueTask<object>(VoidResult.Instance);

@@ -16,9 +16,9 @@ public class ChaosBehaviorPipelineBuilderExtensionsTests
             (ResiliencePipelineBuilder<int> builder) => { builder.AddChaosBehavior(0.5, behavior); },
             (ChaosBehaviorStrategy strategy) =>
             {
-                strategy.Behavior!.Invoke(new(context)).Preserve().GetAwaiter().IsCompleted.Should().BeTrue();
-                strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeTrue();
-                strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(0.5);
+                strategy.Behavior!.Invoke(new(context)).Preserve().GetAwaiter().IsCompleted.ShouldBeTrue();
+                strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBeTrue();
+                strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBe(0.5);
             }
         };
     }
@@ -27,22 +27,16 @@ public class ChaosBehaviorPipelineBuilderExtensionsTests
     public void AddBehavior_Shortcut_Option_Ok()
     {
         var sut = new ResiliencePipelineBuilder().AddChaosBehavior(0.5, _ => default).Build();
-        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosBehaviorStrategy>();
+        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<ChaosBehaviorStrategy>();
     }
 
     [Fact]
     public void AddBehavior_Shortcut_Option_Throws() =>
-        new ResiliencePipelineBuilder()
-            .Invoking(b => b.AddChaosBehavior(-1, _ => default))
-            .Should()
-            .Throw<ValidationException>();
+        Should.Throw<ValidationException>(() => new ResiliencePipelineBuilder().AddChaosBehavior(-1, _ => default));
 
     [Fact]
     public void AddBehavior_InvalidOptions_Throws() =>
-        new ResiliencePipelineBuilder()
-            .Invoking(b => b.AddChaosBehavior(new ChaosBehaviorStrategyOptions()))
-            .Should()
-            .Throw<ValidationException>();
+        Should.Throw<ValidationException>(() => new ResiliencePipelineBuilder().AddChaosBehavior(new ChaosBehaviorStrategyOptions()));
 
     [Fact]
     public void AddBehavior_Options_Ok()
@@ -55,7 +49,7 @@ public class ChaosBehaviorPipelineBuilderExtensionsTests
             })
             .Build();
 
-        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosBehaviorStrategy>();
+        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<ChaosBehaviorStrategy>();
     }
 
     [MemberData(nameof(AddBehavior_Ok_Data))]
@@ -65,7 +59,7 @@ public class ChaosBehaviorPipelineBuilderExtensionsTests
         var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosBehaviorStrategy>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<ChaosBehaviorStrategy>();
         assert(strategy);
     }
 }

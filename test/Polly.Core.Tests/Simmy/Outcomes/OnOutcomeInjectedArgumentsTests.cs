@@ -9,12 +9,13 @@ public static class OnOutcomeInjectedArgumentsTests
     {
         // Arrange
         var context = ResilienceContextPool.Shared.Get();
+        var outcome = 200;
 
         // Act
-        var args = new OnOutcomeInjectedArguments<int>(context, new(200));
+        var args = new OnOutcomeInjectedArguments<int>(context, new(outcome));
 
         // Assert
-        args.Context.Should().Be(context);
-        args.Outcome.Should().NotBeNull();
+        args.Context.ShouldBe(context);
+        args.Outcome.Result.ShouldBe(outcome);
     }
 }

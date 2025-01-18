@@ -11,7 +11,7 @@ public static class CircuitBreakerPredicateArgumentsTests
             ResilienceContextPool.Shared.Get(CancellationToken.None),
             Outcome.FromResult(1));
 
-        args.Context.Should().NotBeNull();
-        args.Outcome.Result.Should().Be(1);
+        args.Context.ShouldNotBeNull();
+        args.Outcome.Result.ShouldBe(1);
     }
 }

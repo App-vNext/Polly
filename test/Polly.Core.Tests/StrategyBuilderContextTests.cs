@@ -14,13 +14,13 @@ public class StrategyBuilderContextTests
             new ResilienceStrategyTelemetry(new ResilienceTelemetrySource("builder-name", "instance", "strategy_name"),
             Substitute.For<TelemetryListener>()), timeProvider);
 
-        context.Telemetry.TelemetrySource.PipelineName.Should().Be("builder-name");
-        context.Telemetry.TelemetrySource.PipelineInstanceName.Should().Be("instance");
-        context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy_name");
-        context.TimeProvider.Should().Be(timeProvider);
-        context.Telemetry.Should().NotBeNull();
+        context.Telemetry.TelemetrySource.PipelineName.ShouldBe("builder-name");
+        context.Telemetry.TelemetrySource.PipelineInstanceName.ShouldBe("instance");
+        context.Telemetry.TelemetrySource.StrategyName.ShouldBe("strategy_name");
+        context.TimeProvider.ShouldBe(timeProvider);
+        context.Telemetry.ShouldNotBeNull();
 
-        context.Telemetry.TelemetrySource.PipelineName.Should().Be("builder-name");
-        context.Telemetry.TelemetrySource.StrategyName.Should().Be("strategy_name");
+        context.Telemetry.TelemetrySource.PipelineName.ShouldBe("builder-name");
+        context.Telemetry.TelemetrySource.StrategyName.ShouldBe("strategy_name");
     }
 }

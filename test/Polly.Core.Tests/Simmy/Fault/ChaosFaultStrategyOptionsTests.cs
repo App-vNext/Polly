@@ -11,13 +11,13 @@ public class ChaosFaultStrategyOptionsTests
     public void Ctor_Ok()
     {
         var sut = new ChaosFaultStrategyOptions();
-        sut.Randomizer.Should().NotBeNull();
-        sut.Enabled.Should().BeTrue();
-        sut.EnabledGenerator.Should().BeNull();
-        sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
-        sut.InjectionRateGenerator.Should().BeNull();
-        sut.OnFaultInjected.Should().BeNull();
-        sut.FaultGenerator.Should().BeNull();
+        sut.Randomizer.ShouldNotBeNull();
+        sut.Enabled.ShouldBeTrue();
+        sut.EnabledGenerator.ShouldBeNull();
+        sut.InjectionRate.ShouldBe(ChaosStrategyConstants.DefaultInjectionRate);
+        sut.InjectionRateGenerator.ShouldBeNull();
+        sut.OnFaultInjected.ShouldBeNull();
+        sut.FaultGenerator.ShouldBeNull();
     }
 
     [Fact]
@@ -28,14 +28,12 @@ public class ChaosFaultStrategyOptionsTests
             FaultGenerator = null!,
         };
 
-        options.Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid Options")))
-            .Should()
-            .Throw<ValidationException>()
-            .WithMessage("""
+        var exception = Should.Throw<ValidationException>(() => ValidationHelper.ValidateObject(new(options, "Invalid Options")));
+        exception.Message.Trim().ShouldBe("""
             Invalid Options
-
             Validation Errors:
             The FaultGenerator field is required.
-            """);
+            """,
+            StringCompareShould.IgnoreLineEndings);
     }
 }

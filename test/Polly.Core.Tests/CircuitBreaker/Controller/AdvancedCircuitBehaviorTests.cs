@@ -28,7 +28,7 @@ public class AdvancedCircuitBehaviorTests
 
         behavior.OnActionFailure(CircuitState.Closed, out var shouldBreak);
 
-        shouldBreak.Should().Be(expectedShouldBreak);
+        shouldBreak.ShouldBe(expectedShouldBreak);
         _metrics.Received(1).IncrementFailure();
     }
 
@@ -44,7 +44,7 @@ public class AdvancedCircuitBehaviorTests
         var sut = Create();
         sut.OnActionFailure(state, out var shouldBreak);
 
-        shouldBreak.Should().BeFalse();
+        shouldBreak.ShouldBeFalse();
         if (shouldIncrementFailure)
         {
             _metrics.Received(1).IncrementFailure();
@@ -83,8 +83,8 @@ public class AdvancedCircuitBehaviorTests
         _metrics.GetHealthInfo().Returns(new HealthInfo(throughput, failureRate, failureCount));
         var behavior = new AdvancedCircuitBehavior(anyFailureThreshold, anyMinimumThruput, _metrics);
 
-        behavior.FailureCount.Should().Be(failureCount, "because the FailureCount should match the HealthInfo");
-        behavior.FailureRate.Should().Be(failureRate, "because the FailureRate should match the HealthInfo");
+        behavior.FailureCount.ShouldBe(failureCount, "because the FailureCount should match the HealthInfo");
+        behavior.FailureRate.ShouldBe(failureRate, "because the FailureRate should match the HealthInfo");
     }
 
     private AdvancedCircuitBehavior Create() =>

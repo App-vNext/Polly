@@ -16,8 +16,8 @@ public static class OnHedgingArgumentsTests
         var args = new OnHedgingArguments<int>(primaryContext, actionContext, 1);
 
         // Assert
-        args.PrimaryContext.Should().Be(primaryContext);
-        args.ActionContext.Should().Be(actionContext);
-        args.AttemptNumber.Should().Be(1);
+        args.PrimaryContext.ShouldBe(primaryContext);
+        args.ActionContext.ShouldBe(actionContext);
+        args.AttemptNumber.ShouldBe(1);
     }
 }

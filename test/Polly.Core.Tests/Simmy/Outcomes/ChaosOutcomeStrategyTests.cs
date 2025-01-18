@@ -71,9 +71,9 @@ public class ChaosOutcomeStrategyTests
         var sut = CreateSut(options);
         var response = sut.Execute(() => { _userDelegateExecuted = true; return HttpStatusCode.OK; });
 
-        response.Should().Be(HttpStatusCode.OK);
-        _userDelegateExecuted.Should().BeTrue();
-        _onOutcomeInjectedExecuted.Should().BeFalse();
+        response.ShouldBe(HttpStatusCode.OK);
+        _userDelegateExecuted.ShouldBeTrue();
+        _onOutcomeInjectedExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -88,8 +88,8 @@ public class ChaosOutcomeStrategyTests
             OutcomeGenerator = _ => new ValueTask<Outcome<HttpStatusCode>?>(Outcome.FromResult(fakeResult)),
             OnOutcomeInjected = args =>
             {
-                args.Context.Should().NotBeNull();
-                args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
+                args.Context.ShouldNotBeNull();
+                args.Context.CancellationToken.IsCancellationRequested.ShouldBeFalse();
                 _onOutcomeInjectedExecuted = true;
                 return default;
             }
@@ -102,13 +102,13 @@ public class ChaosOutcomeStrategyTests
             return new ValueTask<HttpStatusCode>(HttpStatusCode.OK);
         }, CancellationToken);
 
-        response.Should().Be(fakeResult);
-        _userDelegateExecuted.Should().BeFalse();
-        _onOutcomeInjectedExecuted.Should().BeTrue();
+        response.ShouldBe(fakeResult);
+        _userDelegateExecuted.ShouldBeFalse();
+        _onOutcomeInjectedExecuted.ShouldBeTrue();
 
-        _args.Should().HaveCount(1);
-        _args[0].Arguments.Should().BeOfType<OnOutcomeInjectedArguments<HttpStatusCode>>();
-        _args[0].Event.EventName.Should().Be(ChaosOutcomeConstants.OnOutcomeInjectedEvent);
+        _args.Count.ShouldBe(1);
+        _args[0].Arguments.ShouldBeOfType<OnOutcomeInjectedArguments<HttpStatusCode>>();
+        _args[0].Event.EventName.ShouldBe(ChaosOutcomeConstants.OnOutcomeInjectedEvent);
     }
 
     [Fact]
@@ -131,9 +131,9 @@ public class ChaosOutcomeStrategyTests
             return HttpStatusCode.OK;
         }, CancellationToken);
 
-        response.Should().Be(HttpStatusCode.OK);
-        _userDelegateExecuted.Should().BeTrue();
-        _onOutcomeInjectedExecuted.Should().BeFalse();
+        response.ShouldBe(HttpStatusCode.OK);
+        _userDelegateExecuted.ShouldBeTrue();
+        _onOutcomeInjectedExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -154,9 +154,9 @@ public class ChaosOutcomeStrategyTests
             return new ValueTask<HttpStatusCode?>(HttpStatusCode.OK);
         }, CancellationToken);
 
-        response.Should().Be(null);
-        _userDelegateExecuted.Should().BeFalse();
-        _onOutcomeInjectedExecuted.Should().BeFalse();
+        response.ShouldBe(null);
+        _userDelegateExecuted.ShouldBeFalse();
+        _onOutcomeInjectedExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -182,9 +182,9 @@ public class ChaosOutcomeStrategyTests
             return new ValueTask<int>(42);
         }, CancellationToken);
 
-        response.Should().Be(42);
-        _userDelegateExecuted.Should().BeTrue();
-        _onOutcomeInjectedExecuted.Should().BeFalse();
+        response.ShouldBe(42);
+        _userDelegateExecuted.ShouldBeTrue();
+        _onOutcomeInjectedExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -198,25 +198,25 @@ public class ChaosOutcomeStrategyTests
             OutcomeGenerator = _ => new ValueTask<Outcome<int>?>(Outcome.FromException<int>(exception)),
             OnOutcomeInjected = args =>
             {
-                args.Outcome.Result.Should().Be(default);
-                args.Outcome.Exception.Should().Be(exception);
+                args.Outcome.Result.ShouldBe(default);
+                args.Outcome.Exception.ShouldBe(exception);
                 _onOutcomeInjectedExecuted = true;
                 return default;
             }
         };
 
         var sut = CreateSut(options);
-        await sut.Invoking(s => s.ExecuteAsync(_ =>
-        {
-            _userDelegateExecuted = true;
-            return new ValueTask<int>(42);
-        }, CancellationToken)
-        .AsTask())
-            .Should()
-            .ThrowAsync<InvalidOperationException>();
 
-        _userDelegateExecuted.Should().BeFalse();
-        _onOutcomeInjectedExecuted.Should().BeTrue();
+        await Should.ThrowAsync<InvalidOperationException>(
+            () => sut.ExecuteAsync(_ =>
+            {
+                _userDelegateExecuted = true;
+                return new ValueTask<int>(42);
+            }, CancellationToken)
+            .AsTask());
+
+        _userDelegateExecuted.ShouldBeFalse();
+        _onOutcomeInjectedExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -236,17 +236,17 @@ public class ChaosOutcomeStrategyTests
         };
 
         var sut = CreateSut(options);
-        await sut.Invoking(s => s.ExecuteAsync(_ =>
-        {
-            _userDelegateExecuted = true;
-            return new ValueTask<HttpStatusCode>(HttpStatusCode.OK);
-        }, cts.Token)
-        .AsTask())
-            .Should()
-            .ThrowAsync<OperationCanceledException>();
 
-        _userDelegateExecuted.Should().BeFalse();
-        _onOutcomeInjectedExecuted.Should().BeFalse();
+        await Should.ThrowAsync<OperationCanceledException>(
+            () => sut.ExecuteAsync(_ =>
+            {
+                _userDelegateExecuted = true;
+                return new ValueTask<HttpStatusCode>(HttpStatusCode.OK);
+            }, cts.Token)
+            .AsTask());
+
+        _userDelegateExecuted.ShouldBeFalse();
+        _onOutcomeInjectedExecuted.ShouldBeFalse();
     }
 
     private ResiliencePipeline<TResult> CreateSut<TResult>(ChaosOutcomeStrategyOptions<TResult> options) =>

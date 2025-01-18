@@ -11,7 +11,7 @@ public class OutcomeGeneratorTests
 
         generator.AddException<InvalidOperationException>();
 
-        Generate(generator)!.Value.Exception.Should().BeOfType<InvalidOperationException>();
+        Generate(generator)!.Value.Exception.ShouldBeOfType<InvalidOperationException>();
     }
 
     [Fact]
@@ -21,7 +21,7 @@ public class OutcomeGeneratorTests
 
         generator.AddException(() => new InvalidOperationException());
 
-        Generate(generator)!.Value.Exception.Should().BeOfType<InvalidOperationException>();
+        Generate(generator)!.Value.Exception.ShouldBeOfType<InvalidOperationException>();
     }
 
     [Fact]
@@ -31,12 +31,12 @@ public class OutcomeGeneratorTests
 
         generator.AddException(context =>
         {
-            context.Should().NotBeNull();
+            context.ShouldNotBeNull();
 
             return new InvalidOperationException();
         });
 
-        Generate(generator)!.Value.Exception.Should().BeOfType<InvalidOperationException>();
+        Generate(generator)!.Value.Exception.ShouldBeOfType<InvalidOperationException>();
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class OutcomeGeneratorTests
             return "dummy";
         });
 
-        Generate(generator)!.Value.Result.Should().Be("dummy");
+        Generate(generator)!.Value.Result.ShouldBe("dummy");
     }
 
     [Fact]
@@ -59,12 +59,12 @@ public class OutcomeGeneratorTests
 
         generator.AddResult(context =>
         {
-            context.Should().NotBeNull();
+            context.ShouldNotBeNull();
 
             return "dummy";
         });
 
-        Generate(generator)!.Value.Result.Should().Be("dummy");
+        Generate(generator)!.Value.Result.ShouldBe("dummy");
     }
 
     private static Outcome<string>? Generate(OutcomeGenerator<string> generator)

@@ -8,25 +8,25 @@ public class IsolatedCircuitExceptionTests
     public void Ctor_Default_Ok()
     {
         var exception = new IsolatedCircuitException();
-        exception.Message.Should().Be("The circuit is manually held open and is not allowing calls.");
-        exception.RetryAfter.Should().BeNull();
+        exception.Message.ShouldBe("The circuit is manually held open and is not allowing calls.");
+        exception.RetryAfter.ShouldBeNull();
     }
 
     [Fact]
     public void Ctor_Message_Ok()
     {
         var exception = new IsolatedCircuitException(TestMessage);
-        exception.Message.Should().Be(TestMessage);
-        exception.RetryAfter.Should().BeNull();
+        exception.Message.ShouldBe(TestMessage);
+        exception.RetryAfter.ShouldBeNull();
     }
 
     [Fact]
     public void Ctor_Message_InnerException_Ok()
     {
         var exception = new IsolatedCircuitException(TestMessage, new InvalidOperationException());
-        exception.Message.Should().Be(TestMessage);
-        exception.InnerException.Should().BeOfType<InvalidOperationException>();
-        exception.RetryAfter.Should().BeNull();
+        exception.Message.ShouldBe(TestMessage);
+        exception.InnerException.ShouldBeOfType<InvalidOperationException>();
+        exception.RetryAfter.ShouldBeNull();
     }
 
 #if NETFRAMEWORK
@@ -35,10 +35,10 @@ public class IsolatedCircuitExceptionTests
     {
         var exception = new IsolatedCircuitException(TestMessage, new InvalidOperationException());
         IsolatedCircuitException roundtripResult = BinarySerializationUtil.SerializeAndDeserializeException(exception);
-        roundtripResult.Should().NotBeNull();
-        roundtripResult.Message.Should().Be(TestMessage);
-        roundtripResult.InnerException.Should().BeOfType<InvalidOperationException>();
-        roundtripResult.RetryAfter.Should().BeNull();
+        roundtripResult.ShouldNotBeNull();
+        roundtripResult.Message.ShouldBe(TestMessage);
+        roundtripResult.InnerException.ShouldBeOfType<InvalidOperationException>();
+        roundtripResult.RetryAfter.ShouldBeNull();
     }
 #endif
 

@@ -11,9 +11,9 @@ public class TimeoutStrategyOptionsTests
     {
         var options = new TimeoutStrategyOptions();
 
-        options.TimeoutGenerator.Should().BeNull();
-        options.OnTimeout.Should().BeNull();
-        options.Name.Should().Be("Timeout");
+        options.TimeoutGenerator.ShouldBeNull();
+        options.OnTimeout.ShouldBeNull();
+        options.Name.ShouldBe("Timeout");
     }
 
     [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
@@ -25,10 +25,8 @@ public class TimeoutStrategyOptionsTests
             Timeout = value
         };
 
-        options
-            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Dummy message")))
-            .Should()
-            .Throw<ValidationException>();
+        Should.Throw<ValidationException>(
+            () => ValidationHelper.ValidateObject(new(options, "Dummy message")));
     }
 
     [MemberData(nameof(TimeoutTestUtils.ValidTimeouts), MemberType = typeof(TimeoutTestUtils))]
@@ -40,9 +38,7 @@ public class TimeoutStrategyOptionsTests
             Timeout = value
         };
 
-        options
-            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Dummy message")))
-            .Should()
-            .NotThrow();
+        Should.NotThrow(
+            () => ValidationHelper.ValidateObject(new(options, "Dummy message")));
     }
 }

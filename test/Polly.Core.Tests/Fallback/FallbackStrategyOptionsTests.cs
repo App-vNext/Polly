@@ -11,10 +11,10 @@ public class FallbackStrategyOptionsTests
     {
         var options = new FallbackStrategyOptions<int>();
 
-        options.ShouldHandle.Should().NotBeNull();
-        options.OnFallback.Should().BeNull();
-        options.FallbackAction.Should().BeNull();
-        options.Name.Should().Be("Fallback");
+        options.ShouldHandle.ShouldNotBeNull();
+        options.OnFallback.ShouldBeNull();
+        options.FallbackAction.ShouldBeNull();
+        options.Name.ShouldBe("Fallback");
     }
 
     [Fact]
@@ -23,9 +23,9 @@ public class FallbackStrategyOptionsTests
         var options = new FallbackStrategyOptions<int>();
         var context = ResilienceContextPool.Shared.Get();
 
-        (await options.ShouldHandle(new FallbackPredicateArguments<int>(context, Outcome.FromResult(0)))).Should().Be(false);
-        (await options.ShouldHandle(new FallbackPredicateArguments<int>(context, Outcome.FromException<int>(new OperationCanceledException())))).Should().Be(false);
-        (await options.ShouldHandle(new FallbackPredicateArguments<int>(context, Outcome.FromException<int>(new InvalidOperationException())))).Should().Be(true);
+        (await options.ShouldHandle(new FallbackPredicateArguments<int>(context, Outcome.FromResult(0)))).ShouldBe(false);
+        (await options.ShouldHandle(new FallbackPredicateArguments<int>(context, Outcome.FromException<int>(new OperationCanceledException())))).ShouldBe(false);
+        (await options.ShouldHandle(new FallbackPredicateArguments<int>(context, Outcome.FromException<int>(new InvalidOperationException())))).ShouldBe(true);
     }
 
     [Fact]
@@ -36,16 +36,13 @@ public class FallbackStrategyOptionsTests
             ShouldHandle = null!
         };
 
-        options
-            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid.")))
-            .Should()
-            .Throw<ValidationException>()
-            .WithMessage("""
+        var exception = Should.Throw<ValidationException>(() => ValidationHelper.ValidateObject(new(options, "Invalid.")));
+        exception.Message.Trim().ShouldBe("""
             Invalid.
-
             Validation Errors:
             The ShouldHandle field is required.
             The FallbackAction field is required.
-            """);
+            """,
+            StringCompareShould.IgnoreLineEndings);
     }
 }

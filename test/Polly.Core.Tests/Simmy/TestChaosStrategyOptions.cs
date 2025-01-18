@@ -2,6 +2,4 @@
 
 namespace Polly.Core.Tests.Simmy;
 
-public sealed class TestChaosStrategyOptions : ChaosStrategyOptions
-{
-}
+public sealed class TestChaosStrategyOptions : ChaosStrategyOptions;

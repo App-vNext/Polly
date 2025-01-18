@@ -9,27 +9,27 @@ public class ValidationHelperTests
     public void GetMemberName_Ok()
     {
         ValidationContext? context = null;
-        context.GetMemberName().Should().BeNull();
+        context.GetMemberName().ShouldBeNull();
 
         context = new ValidationContext(new object());
-        context.GetMemberName().Should().BeNull();
+        context.GetMemberName().ShouldBeNull();
 
         context = new ValidationContext(new object()) { MemberName = "X" };
-        context.GetMemberName().Should().NotBeNull();
-        context.GetMemberName()![0].Should().Be("X");
+        context.GetMemberName().ShouldNotBeNull();
+        context.GetMemberName()![0].ShouldBe("X");
     }
 
     [Fact]
     public void GetDisplayName_Ok()
     {
         ValidationContext? context = null;
-        context.GetDisplayName().Should().Be("");
+        context.GetDisplayName().ShouldBe("");
 
         context = new ValidationContext(new object());
-        context.GetDisplayName().Should().Be("Object");
+        context.GetDisplayName().ShouldBe("Object");
 
         context = new ValidationContext(new object()) { DisplayName = "X" };
-        context.GetDisplayName().Should().Be("X");
+        context.GetDisplayName().ShouldBe("X");
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public class ValidationHelperTests
         var detector = new ConcurrencyDetector();
         Parallel.For(0, 2, _ => ValidationHelper.ValidateObject(new(new TestOptions(detector), string.Empty)));
 
-        detector.InvokedConcurrently.Should().BeFalse();
+        detector.InvokedConcurrently.ShouldBeFalse();
     }
 
     private sealed class TestOptions(ConcurrencyDetector detector) : IValidatableObject

@@ -7,7 +7,7 @@ public class ChaosOutcomeConstantsTests
     [Fact]
     public void EnsureDefaults()
     {
-        ChaosOutcomeConstants.DefaultName.Should().Be("Chaos.Outcome");
-        ChaosOutcomeConstants.OnOutcomeInjectedEvent.Should().Be("Chaos.OnOutcome");
+        ChaosOutcomeConstants.DefaultName.ShouldBe("Chaos.Outcome");
+        ChaosOutcomeConstants.OnOutcomeInjectedEvent.ShouldBe("Chaos.OnOutcome");
     }
 }

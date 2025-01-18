@@ -16,7 +16,7 @@ public static class HedgingHandlerTests
             args => () => Outcome.FromResultAsValueTask("ok"),
             args => default);
 
-        handler.OnHedging.Should().NotBeNull();
+        handler.OnHedging.ShouldNotBeNull();
 
         var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(
             context,
@@ -28,6 +28,6 @@ public static class HedgingHandlerTests
         var res = await action();
 
         // Assert
-        res.Result.Should().Be("ok");
+        res.Result.ShouldBe("ok");
     }
 }

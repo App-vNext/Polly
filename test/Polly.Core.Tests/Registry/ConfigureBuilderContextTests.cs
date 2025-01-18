@@ -16,6 +16,6 @@ public static class ConfigureBuilderContextTests
         source.Cancel();
         context.AddReloadToken(source.Token);
 
-        context.ReloadTokens.Should().HaveCount(1);
+        context.ReloadTokens.Count.ShouldBe(1);
     }
 }

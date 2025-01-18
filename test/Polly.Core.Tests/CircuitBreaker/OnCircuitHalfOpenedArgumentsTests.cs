@@ -14,6 +14,6 @@ public static class OnCircuitHalfOpenedArgumentsTests
         var target = new OnCircuitHalfOpenedArguments(context);
 
         // Assert
-        target.Context.Should().Be(context);
+        target.Context.ShouldBe(context);
     }
 }

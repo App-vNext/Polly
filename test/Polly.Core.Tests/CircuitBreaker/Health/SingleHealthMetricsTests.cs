@@ -15,8 +15,8 @@ public class SingleHealthMetricsTests
         var metrics = new SingleHealthMetrics(TimeSpan.FromMilliseconds(100), _timeProvider);
         var health = metrics.GetHealthInfo();
 
-        health.FailureRate.Should().Be(0);
-        health.Throughput.Should().Be(0);
+        health.FailureRate.ShouldBe(0);
+        health.Throughput.ShouldBe(0);
     }
 
     [Fact]
@@ -32,8 +32,8 @@ public class SingleHealthMetricsTests
 
         var health = metrics.GetHealthInfo();
 
-        health.FailureRate.Should().Be(0.2);
-        health.Throughput.Should().Be(5);
+        health.FailureRate.ShouldBe(0.2);
+        health.Throughput.ShouldBe(5);
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class SingleHealthMetricsTests
         metrics.IncrementSuccess();
         metrics.Reset();
 
-        metrics.GetHealthInfo().Throughput.Should().Be(0);
+        metrics.GetHealthInfo().Throughput.ShouldBe(0);
     }
 
     [Fact]
@@ -57,6 +57,6 @@ public class SingleHealthMetricsTests
 
         _timeProvider.Advance(TimeSpan.FromMilliseconds(100));
 
-        metrics.GetHealthInfo().Throughput.Should().Be(0);
+        metrics.GetHealthInfo().Throughput.ShouldBe(0);
     }
 }

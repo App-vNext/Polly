@@ -9,7 +9,7 @@ public class GeneratorHelperTests
     {
         var helper = new GeneratorHelper<int>(_ => 10);
 
-        helper.CreateGenerator()(ResilienceContextPool.Shared.Get()).Should().BeNull();
+        helper.CreateGenerator()(ResilienceContextPool.Shared.Get()).ShouldBeNull();
     }
 
     [Fact]
@@ -31,14 +31,14 @@ public class GeneratorHelperTests
         var generator = helper.CreateGenerator();
 
         weight = 0;
-        generator(context)!.Value.Result.Should().Be(1);
+        generator(context)!.Value.Result.ShouldBe(1);
         weight = 39;
-        generator(context)!.Value.Result.Should().Be(1);
+        generator(context)!.Value.Result.ShouldBe(1);
 
         weight = 40;
-        generator(context)!.Value.Result.Should().Be(2);
+        generator(context)!.Value.Result.ShouldBe(2);
 
-        maxWeight.Should().Be(120);
+        maxWeight.ShouldBe(120);
     }
 
     [Fact]
@@ -50,6 +50,6 @@ public class GeneratorHelperTests
         helper.AddOutcome(_ => Outcome.FromResult(1), 40);
 
         var generator = helper.CreateGenerator();
-        generator(context).Should().BeNull();
+        generator(context).ShouldBeNull();
     }
 }

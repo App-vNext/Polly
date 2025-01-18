@@ -24,9 +24,9 @@ public class ReloadablePipelineComponentTests : IDisposable
         var component = Substitute.For<PipelineComponent>();
         await using var sut = CreateSut(component);
 
-        sut.Component.Should().Be(component);
+        sut.Component.ShouldBe(component);
 
-        ReloadableComponent.ReloadFailedEvent.Should().Be("ReloadFailed");
+        ReloadableComponent.ReloadFailedEvent.ShouldBe("ReloadFailed");
     }
 
     [Fact]
@@ -43,12 +43,12 @@ public class ReloadablePipelineComponentTests : IDisposable
         var component = Substitute.For<PipelineComponent>();
         await using var sut = CreateSut(component);
 
-        sut.Component.Should().Be(component);
+        sut.Component.ShouldBe(component);
         _cancellationTokenSource.Cancel();
-        sut.Component.Should().NotBe(component);
+        sut.Component.ShouldNotBe(component);
 
-        _listener.Events.Where(e => e.Event.EventName == "ReloadFailed").Should().HaveCount(0);
-        _listener.Events.Where(e => e.Event.EventName == "OnReload").Should().HaveCount(1);
+        _listener.Events.Count(e => e.Event.EventName == "ReloadFailed").ShouldBe(0);
+        _listener.Events.Count(e => e.Event.EventName == "OnReload").ShouldBe(1);
     }
 
     [Fact]
@@ -76,23 +76,20 @@ public class ReloadablePipelineComponentTests : IDisposable
 
         _cancellationTokenSource.Cancel();
 
-        sut.Component.Should().Be(component);
-        _listener.Events.Should().HaveCount(2);
+        sut.Component.ShouldBe(component);
+        _listener.Events.Count.ShouldBe(2);
 
         _listener.Events[0]
             .Arguments
-            .Should()
-            .BeOfType<ReloadableComponent.OnReloadArguments>();
+            .ShouldBeOfType<ReloadableComponent.OnReloadArguments>();
 
         var args = _listener.Events[1]
             .Arguments
-            .Should()
-            .BeOfType<ReloadableComponent.ReloadFailedArguments>()
-            .Subject;
+            .ShouldBeOfType<ReloadableComponent.ReloadFailedArguments>();
 
-        args.Exception.Should().BeOfType<InvalidOperationException>();
+        args.Exception.ShouldBeOfType<InvalidOperationException>();
 
-        _synchronousFlags.Should().AllSatisfy(f => f.Should().BeTrue());
+        _synchronousFlags.ShouldAllBe(f => f);
     }
 
     [Fact]
@@ -109,24 +106,21 @@ public class ReloadablePipelineComponentTests : IDisposable
 
         _cancellationTokenSource.Cancel();
 
-        _listener.Events.Should().HaveCount(2);
+        _listener.Events.Count.ShouldBe(2);
 
         _listener.Events[0]
             .Arguments
-            .Should()
-            .BeOfType<ReloadableComponent.OnReloadArguments>();
+            .ShouldBeOfType<ReloadableComponent.OnReloadArguments>();
 
         var args = _listener.Events[1]
             .Arguments
-            .Should()
-            .BeOfType<ReloadableComponent.DisposedFailedArguments>()
-            .Subject;
+            .ShouldBeOfType<ReloadableComponent.DisposedFailedArguments>();
 
-        args.Exception.Should().BeOfType<InvalidOperationException>();
+        args.Exception.ShouldBeOfType<InvalidOperationException>();
 
-        _synchronousFlags.Should().HaveCount(2);
-        _synchronousFlags[0].Should().BeTrue();
-        _synchronousFlags[1].Should().BeFalse();
+        _synchronousFlags.Count.ShouldBe(2);
+        _synchronousFlags[0].ShouldBeTrue();
+        _synchronousFlags[1].ShouldBeFalse();
     }
 
     private ReloadableComponent CreateSut(PipelineComponent? initial = null, Func<ReloadableComponent.Entry>? factory = null)

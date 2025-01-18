@@ -21,7 +21,7 @@ public class TimeProviderExtensionsTests
         await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
             var task = timeProvider.DelayAsync(delay, context);
-            task.IsCompleted.Should().Be(synchronous);
+            task.IsCompleted.ShouldBe(synchronous);
             await task;
         });
     }
@@ -38,7 +38,7 @@ public class TimeProviderExtensionsTests
             var watch = Stopwatch.StartNew();
             await TimeProvider.System.DelayAsync(delay, context);
             var elapsed = watch.Elapsed;
-            elapsed.Should().BeGreaterThanOrEqualTo(delay);
+            elapsed.ShouldBeGreaterThanOrEqualTo(delay);
         });
     }
 
@@ -52,10 +52,8 @@ public class TimeProviderExtensionsTests
 
         await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
-            await TimeProvider.System
-                .Invoking(p => p.DelayAsync(delay, context))
-                .Should()
-                .ThrowAsync<OperationCanceledException>();
+            await Should.ThrowAsync<OperationCanceledException>(
+                () => TimeProvider.System.DelayAsync(delay, context));
         });
     }
 
@@ -107,11 +105,11 @@ public class TimeProviderExtensionsTests
             context.Initialize<VoidResult>(isSynchronous: false);
 
             var delayTask = timeProvider.DelayAsync(delay, context);
-            delayTask.Wait(TimeSpan.FromMilliseconds(10)).Should().BeFalse();
+            delayTask.Wait(TimeSpan.FromMilliseconds(10)).ShouldBeFalse();
 
             cts.Cancel();
 
-            await delayTask.Invoking(t => t).Should().ThrowAsync<OperationCanceledException>();
+            await Should.ThrowAsync<OperationCanceledException>(() => delayTask);
         });
     }
 }

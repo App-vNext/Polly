@@ -5,8 +5,8 @@ public class TypeNameFormatterTests
     [Fact]
     public void AsString_Ok()
     {
-        Polly.Utils.TypeNameFormatter.Format(typeof(string)).Should().Be("String");
-        Polly.Utils.TypeNameFormatter.Format(typeof(List<string>)).Should().Be("List<String>");
-        Polly.Utils.TypeNameFormatter.Format(typeof(KeyValuePair<string, string>)).Should().Be("KeyValuePair`2");
+        Polly.Utils.TypeNameFormatter.Format(typeof(string)).ShouldBe("String");
+        Polly.Utils.TypeNameFormatter.Format(typeof(List<string>)).ShouldBe("List<String>");
+        Polly.Utils.TypeNameFormatter.Format(typeof(KeyValuePair<string, string>)).ShouldBe("KeyValuePair`2");
     }
 }

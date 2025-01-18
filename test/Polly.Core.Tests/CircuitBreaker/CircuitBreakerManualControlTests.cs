@@ -15,13 +15,13 @@ public class CircuitBreakerManualControlTests
         using var reg = control.Initialize(
             c =>
             {
-                c.IsSynchronous.Should().BeTrue();
+                c.IsSynchronous.ShouldBeTrue();
                 isolateCalled = true;
                 return Task.CompletedTask;
             },
             _ => Task.CompletedTask);
 
-        isolateCalled.Should().Be(isolated);
+        isolateCalled.ShouldBe(isolated);
     }
 
     [InlineData(true)]
@@ -42,13 +42,13 @@ public class CircuitBreakerManualControlTests
         using var reg = control.Initialize(
             c =>
             {
-                c.IsSynchronous.Should().BeTrue();
+                c.IsSynchronous.ShouldBeTrue();
                 isolated = true;
                 return Task.CompletedTask;
             },
             _ => Task.CompletedTask);
 
-        isolated.Should().Be(!closedAfter);
+        isolated.ShouldBe(!closedAfter);
     }
 
     [Fact]
@@ -56,10 +56,7 @@ public class CircuitBreakerManualControlTests
     {
         var control = new CircuitBreakerManualControl();
 
-        await control
-            .Invoking(c => c.CloseAsync())
-            .Should()
-            .NotThrowAsync();
+        await Should.NotThrowAsync(() => control.CloseAsync());
     }
 
     [Fact]
@@ -74,7 +71,7 @@ public class CircuitBreakerManualControlTests
         await control.IsolateAsync(cancellationToken);
         await control.CloseAsync(cancellationToken);
 
-        called.Should().Be(2);
+        called.ShouldBe(2);
     }
 
     [Fact]
@@ -93,7 +90,7 @@ public class CircuitBreakerManualControlTests
         await control.IsolateAsync(cancellationToken);
         await control.CloseAsync(cancellationToken);
 
-        called.Should().Be(2);
+        called.ShouldBe(2);
     }
 
     [Fact]
@@ -107,15 +104,15 @@ public class CircuitBreakerManualControlTests
         control.Initialize(
             context =>
             {
-                context.IsVoid.Should().BeTrue();
-                context.IsSynchronous.Should().BeFalse();
+                context.IsVoid.ShouldBeTrue();
+                context.IsSynchronous.ShouldBeFalse();
                 isolateCalled = true;
                 return Task.CompletedTask;
             },
             context =>
             {
-                context.IsVoid.Should().BeTrue();
-                context.IsSynchronous.Should().BeFalse();
+                context.IsVoid.ShouldBeTrue();
+                context.IsSynchronous.ShouldBeFalse();
                 resetCalled = true;
                 return Task.CompletedTask;
             });
@@ -123,7 +120,7 @@ public class CircuitBreakerManualControlTests
         await control.IsolateAsync(cancellationToken);
         await control.CloseAsync(cancellationToken);
 
-        isolateCalled.Should().BeTrue();
-        resetCalled.Should().BeTrue();
+        isolateCalled.ShouldBeTrue();
+        resetCalled.ShouldBeTrue();
     }
 }

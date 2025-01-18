@@ -31,10 +31,10 @@ public class CompositePipelineComponentTests
 
         for (var i = 0; i < pipelines.Length; i++)
         {
-            pipeline.Components[i].Should().BeSameAs(pipelines[i]);
+            pipeline.Components[i].ShouldBeSameAs(pipelines[i]);
         }
 
-        pipeline.Components.SequenceEqual(pipelines).Should().BeTrue();
+        pipeline.Components.SequenceEqual(pipelines).ShouldBeTrue();
     }
 
     [Fact]
@@ -48,10 +48,8 @@ public class CompositePipelineComponentTests
         };
 
         var pipeline = CreateSut(components);
-        await pipeline
-            .Invoking(p => p.ExecuteCore((_, _) => Outcome.FromResultAsValueTask(10), context, "state").AsTask())
-            .Should()
-            .ThrowAsync<NotSupportedException>();
+        await Should.ThrowAsync<NotSupportedException>(
+            () => pipeline.ExecuteCore((_, _) => Outcome.FromResultAsValueTask(10), context, "state").AsTask());
     }
 
     [Fact]
@@ -69,9 +67,7 @@ public class CompositePipelineComponentTests
 
         CreateSut([PipelineComponent.Empty, pipeline]);
 
-        this.Invoking(_ => CreateSut([PipelineComponent.Empty, pipeline]))
-            .Should()
-            .NotThrow();
+        Should.NotThrow(() => CreateSut([PipelineComponent.Empty, pipeline]));
     }
 
     [Fact]
@@ -90,7 +86,7 @@ public class CompositePipelineComponentTests
         context.CancellationToken = cancellation.Token;
 
         var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("result"), context, "state");
-        result.Exception.Should().BeOfType<OperationCanceledException>();
+        result.Exception.ShouldBeOfType<OperationCanceledException>();
     }
 
     [Fact]
@@ -108,8 +104,8 @@ public class CompositePipelineComponentTests
         context.CancellationToken = cancellation.Token;
 
         var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("result"), context, "state");
-        result.Exception.Should().BeOfType<OperationCanceledException>();
-        executed.Should().BeTrue();
+        result.Exception.ShouldBeOfType<OperationCanceledException>();
+        executed.ShouldBeTrue();
     }
 
     [Fact]
@@ -120,9 +116,9 @@ public class CompositePipelineComponentTests
         var pipeline = new ResiliencePipeline(CreateSut([Substitute.For<PipelineComponent>()], timeProvider), DisposeBehavior.Allow, null);
         pipeline.Execute(() => { timeProvider.Advance(TimeSpan.FromHours(1)); });
 
-        _listener.Events.Should().HaveCount(2);
-        _listener.GetArgs<PipelineExecutingArguments>().Should().HaveCount(1);
-        _listener.GetArgs<PipelineExecutedArguments>().Should().HaveCount(1);
+        _listener.Events.Count.ShouldBe(2);
+        _listener.GetArgs<PipelineExecutingArguments>().Count().ShouldBe(1);
+        _listener.GetArgs<PipelineExecutedArguments>().Count().ShouldBe(1);
     }
 
     [Fact]

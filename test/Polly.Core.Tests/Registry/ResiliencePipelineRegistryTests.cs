@@ -28,13 +28,11 @@ public class ResiliencePipelineRegistryTests
 
     [Fact]
     public void Ctor_Default_Ok() =>
-        this.Invoking(_ => new ResiliencePipelineRegistry<string>()).Should().NotThrow();
+        Should.NotThrow(() => new ResiliencePipelineRegistry<string>());
 
     [Fact]
     public void Ctor_InvalidOptions_Throws() =>
-        this.Invoking(_ => new ResiliencePipelineRegistry<string>(new ResiliencePipelineRegistryOptions<string> { BuilderFactory = null! }))
-            .Should()
-            .Throw<ArgumentNullException>();
+        Should.Throw<ArgumentNullException>(() => new ResiliencePipelineRegistry<string>(new ResiliencePipelineRegistryOptions<string> { BuilderFactory = null! }));
 
     [Fact]
     public void GetPipeline_BuilderMultiInstance_EnsureMultipleInstances()
@@ -54,7 +52,7 @@ public class ResiliencePipelineRegistryTests
             strategies.Add(registry.GetPipeline(key));
         }
 
-        strategies.Should().HaveCount(100);
+        strategies.Count.ShouldBe(100);
     }
 
     [Fact]
@@ -75,7 +73,7 @@ public class ResiliencePipelineRegistryTests
             strategies.Add(registry.GetPipeline<string>(key));
         }
 
-        strategies.Should().HaveCount(100);
+        strategies.Count.ShouldBe(100);
     }
 
     [Fact]
@@ -101,9 +99,9 @@ public class ResiliencePipelineRegistryTests
             registry.GetPipeline(key);
         }
 
-        called.Should().Be(3);
-        activatorCalls.Should().Be(3);
-        strategies.Keys.Should().HaveCount(3);
+        called.ShouldBe(3);
+        activatorCalls.ShouldBe(3);
+        strategies.Keys.Count.ShouldBe(3);
     }
 
     [Fact]
@@ -129,9 +127,9 @@ public class ResiliencePipelineRegistryTests
             registry.GetPipeline<string>(key);
         }
 
-        called.Should().Be(3);
-        activatorCalls.Should().Be(3);
-        strategies.Keys.Should().HaveCount(3);
+        called.ShouldBe(3);
+        activatorCalls.ShouldBe(3);
+        strategies.Keys.Count.ShouldBe(3);
     }
 
     [Fact]
@@ -144,17 +142,17 @@ public class ResiliencePipelineRegistryTests
         using var registry = CreateRegistry();
         registry.TryAddBuilder(StrategyId.Create("A"), (builder, context) =>
         {
-            context.BuilderName.Should().Be("A");
-            context.BuilderInstanceName.Should().Be("Instance1");
-            context.PipelineKey.Should().Be(StrategyId.Create("A", "Instance1"));
+            context.BuilderName.ShouldBe("A");
+            context.BuilderInstanceName.ShouldBe("Instance1");
+            context.PipelineKey.ShouldBe(StrategyId.Create("A", "Instance1"));
 
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.Name.Should().Be("A");
+            builder.Name.ShouldBe("A");
             called = true;
         });
 
         registry.GetPipeline(StrategyId.Create("A", "Instance1"));
-        called.Should().BeTrue();
+        called.ShouldBeTrue();
     }
 
     [InlineData(false)]
@@ -167,8 +165,8 @@ public class ResiliencePipelineRegistryTests
         var called1 = false;
         var called2 = false;
 
-        AddBuilder(() => called1 = true).Should().BeTrue();
-        AddBuilder(() => called2 = true).Should().BeFalse();
+        AddBuilder(() => called1 = true).ShouldBeTrue();
+        AddBuilder(() => called2 = true).ShouldBeFalse();
 
         if (generic)
         {
@@ -179,8 +177,8 @@ public class ResiliencePipelineRegistryTests
             registry.GetPipeline("A");
         }
 
-        called1.Should().BeTrue();
-        called2.Should().BeFalse();
+        called1.ShouldBeTrue();
+        called2.ShouldBeFalse();
 
         bool AddBuilder(Action onCalled)
         {
@@ -202,8 +200,8 @@ public class ResiliencePipelineRegistryTests
         registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, _) => builder.AddStrategy(new TestResilienceStrategy()));
         registry.TryAddBuilder<int>(StrategyId.Create("A"), (builder, _) => builder.AddStrategy(new TestResilienceStrategy()));
 
-        registry.GetPipeline<string>(StrategyId.Create("A", "Instance1")).Should().BeSameAs(registry.GetPipeline<string>(StrategyId.Create("A", "Instance1")));
-        registry.GetPipeline<int>(StrategyId.Create("A", "Instance1")).Should().BeSameAs(registry.GetPipeline<int>(StrategyId.Create("A", "Instance1")));
+        registry.GetPipeline<string>(StrategyId.Create("A", "Instance1")).ShouldBeSameAs(registry.GetPipeline<string>(StrategyId.Create("A", "Instance1")));
+        registry.GetPipeline<int>(StrategyId.Create("A", "Instance1")).ShouldBeSameAs(registry.GetPipeline<int>(StrategyId.Create("A", "Instance1")));
     }
 
     [Fact]
@@ -217,13 +215,13 @@ public class ResiliencePipelineRegistryTests
         registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, _) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.Name.Should().Be("A");
-            builder.InstanceName.Should().Be("Instance1");
+            builder.Name.ShouldBe("A");
+            builder.InstanceName.ShouldBe("Instance1");
             called = true;
         });
 
         registry.GetPipeline<string>(StrategyId.Create("A", "Instance1"));
-        called.Should().BeTrue();
+        called.ShouldBeTrue();
     }
 
     [Fact]
@@ -232,8 +230,8 @@ public class ResiliencePipelineRegistryTests
         using var registry = CreateRegistry();
         var key = StrategyId.Create("A");
 
-        registry.TryGetPipeline(key, out var strategy).Should().BeFalse();
-        strategy.Should().BeNull();
+        registry.TryGetPipeline(key, out var strategy).ShouldBeFalse();
+        strategy.ShouldBeNull();
     }
 
     [Fact]
@@ -242,8 +240,8 @@ public class ResiliencePipelineRegistryTests
         using var registry = CreateRegistry();
         var key = StrategyId.Create("A");
 
-        registry.TryGetPipeline<string>(key, out var strategy).Should().BeFalse();
-        strategy.Should().BeNull();
+        registry.TryGetPipeline<string>(key, out var strategy).ShouldBeFalse();
+        strategy.ShouldBeNull();
     }
 
     [InlineData(true)]
@@ -277,7 +275,7 @@ public class ResiliencePipelineRegistryTests
         // assert
         var tries = 0;
         strategy.Execute(() => tries++);
-        tries.Should().Be(retryCount + 1);
+        tries.ShouldBe(retryCount + 1);
 
         tries = 0;
         retryCount = 5;
@@ -292,7 +290,7 @@ public class ResiliencePipelineRegistryTests
         }
 
         strategy.Execute(() => tries++);
-        tries.Should().Be(retryCount + 1);
+        tries.ShouldBe(retryCount + 1);
     }
 
     [Fact]
@@ -315,15 +313,15 @@ public class ResiliencePipelineRegistryTests
         var strategy = registry.GetPipeline("dummy");
 
         // assert
-        disposedCalls.Should().Be(0);
+        disposedCalls.ShouldBe(0);
         strategy.Execute(() => { });
 
         changeSource.Cancel();
-        disposedCalls.Should().Be(1);
+        disposedCalls.ShouldBe(1);
         strategy.Execute(() => { });
 
         registry.Dispose();
-        disposedCalls.Should().Be(2);
+        disposedCalls.ShouldBe(2);
     }
 
     [Fact]
@@ -353,13 +351,13 @@ public class ResiliencePipelineRegistryTests
         // assert
         var tries = 0;
         strategy.Execute(() => { tries++; return "dummy"; });
-        tries.Should().Be(retryCount + 1);
+        tries.ShouldBe(retryCount + 1);
 
         tries = 0;
         retryCount = 5;
         changeSource.Cancel();
         strategy.Execute(() => { tries++; return "dummy"; });
-        tries.Should().Be(retryCount + 1);
+        tries.ShouldBe(retryCount + 1);
     }
 
     [Fact]
@@ -372,9 +370,9 @@ public class ResiliencePipelineRegistryTests
         var strategy = registry.GetOrAddPipeline(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
         var otherPipeline = registry.GetOrAddPipeline(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
 
-        strategy.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<TimeoutResilienceStrategy>();
+        strategy.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<TimeoutResilienceStrategy>();
 
-        called.Should().Be(1);
+        called.ShouldBe(1);
     }
 
     [Fact]
@@ -385,10 +383,10 @@ public class ResiliencePipelineRegistryTests
         using var registry = CreateRegistry();
 
         var pipeline = registry.GetOrAddPipeline(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
-        pipeline.Component.Should().BeOfType<ExecutionTrackingComponent>().Subject.Component.Should().BeOfType<CompositeComponent>();
+        pipeline.Component.ShouldBeOfType<ExecutionTrackingComponent>().Component.ShouldBeOfType<CompositeComponent>();
 
         var genericPipeline = registry.GetOrAddPipeline<string>(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
-        pipeline.Component.Should().BeOfType<ExecutionTrackingComponent>().Subject.Component.Should().BeOfType<CompositeComponent>();
+        pipeline.Component.ShouldBeOfType<ExecutionTrackingComponent>().Component.ShouldBeOfType<CompositeComponent>();
     }
 
     [Fact]
@@ -401,7 +399,7 @@ public class ResiliencePipelineRegistryTests
         var strategy = registry.GetOrAddPipeline<string>(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
         var otherPipeline = registry.GetOrAddPipeline<string>(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
 
-        strategy.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<TimeoutResilienceStrategy>();
+        strategy.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<TimeoutResilienceStrategy>();
     }
 
     [InlineData(true)]
@@ -429,10 +427,10 @@ public class ResiliencePipelineRegistryTests
         }
 #pragma warning restore S3966 // Objects should not be disposed more than once
 
-        pipeline1.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
-        pipeline2.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
-        pipeline3.Invoking(p => p.Execute(() => "dummy")).Should().Throw<ObjectDisposedException>();
-        pipeline4.Invoking(p => p.Execute(() => "dummy")).Should().Throw<ObjectDisposedException>();
+        Should.Throw<ObjectDisposedException>(() => pipeline1.Execute(() => { }));
+        Should.Throw<ObjectDisposedException>(() => pipeline2.Execute(() => { }));
+        Should.Throw<ObjectDisposedException>(() => pipeline3.Execute(() => "dummy"));
+        Should.Throw<ObjectDisposedException>(() => pipeline4.Execute(() => "dummy"));
     }
 
     [Fact]
@@ -441,8 +439,7 @@ public class ResiliencePipelineRegistryTests
         using var registry = CreateRegistry();
         var pipeline = registry.GetOrAddPipeline(StrategyId.Create("A"), builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); });
 
-        await pipeline.Invoking(p => p.DisposeHelper.DisposeAsync().AsTask()).Should().ThrowAsync<InvalidOperationException>();
-
+        await Should.ThrowAsync<InvalidOperationException>(() => pipeline.DisposeHelper.DisposeAsync().AsTask());
     }
 
     [InlineData(true)]
@@ -453,16 +450,16 @@ public class ResiliencePipelineRegistryTests
         using var registry = new ResiliencePipelineRegistry<string>();
         await DisposeHelper.TryDisposeSafeAsync(registry, !isAsync);
 
-        registry.Invoking(r => r.GetOrAddPipeline("dummy", builder => { })).Should().Throw<ObjectDisposedException>();
-        registry.Invoking(r => r.GetOrAddPipeline<string>("dummy", builder => { })).Should().Throw<ObjectDisposedException>();
-        registry.Invoking(r => r.GetOrAddPipeline("dummy", (_, _) => { })).Should().Throw<ObjectDisposedException>();
-        registry.Invoking(r => r.GetOrAddPipeline<string>("dummy", (_, _) => { })).Should().Throw<ObjectDisposedException>();
-        registry.Invoking(r => r.TryAddBuilder("dummy", (_, _) => { })).Should().Throw<ObjectDisposedException>();
-        registry.Invoking(r => r.TryAddBuilder<string>("dummy", (_, _) => { })).Should().Throw<ObjectDisposedException>();
-        registry.Invoking(r => r.GetPipeline<string>("dummy")).Should().Throw<ObjectDisposedException>();
-        registry.Invoking(r => r.GetPipeline("dummy")).Should().Throw<ObjectDisposedException>();
-        registry.Invoking(r => r.TryGetPipeline<string>("dummy", out _)).Should().Throw<ObjectDisposedException>();
-        registry.Invoking(r => r.TryGetPipeline("dummy", out _)).Should().Throw<ObjectDisposedException>();
+        Should.Throw<ObjectDisposedException>(() => registry.GetOrAddPipeline("dummy", builder => { }));
+        Should.Throw<ObjectDisposedException>(() => registry.GetOrAddPipeline<string>("dummy", builder => { }));
+        Should.Throw<ObjectDisposedException>(() => registry.GetOrAddPipeline("dummy", (_, _) => { }));
+        Should.Throw<ObjectDisposedException>(() => registry.GetOrAddPipeline<string>("dummy", (_, _) => { }));
+        Should.Throw<ObjectDisposedException>(() => registry.TryAddBuilder("dummy", (_, _) => { }));
+        Should.Throw<ObjectDisposedException>(() => registry.TryAddBuilder<string>("dummy", (_, _) => { }));
+        Should.Throw<ObjectDisposedException>(() => registry.GetPipeline<string>("dummy"));
+        Should.Throw<ObjectDisposedException>(() => registry.GetPipeline("dummy"));
+        Should.Throw<ObjectDisposedException>(() => registry.TryGetPipeline<string>("dummy", out _));
+        Should.Throw<ObjectDisposedException>(() => registry.TryGetPipeline("dummy", out _));
     }
 
     private ResiliencePipelineRegistry<StrategyId> CreateRegistry() => new(_options);

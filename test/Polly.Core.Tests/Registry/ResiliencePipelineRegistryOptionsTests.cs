@@ -8,10 +8,10 @@ public class ResiliencePipelineRegistryOptionsTests
     {
         ResiliencePipelineRegistryOptions<object> options = new();
 
-        options.InstanceNameFormatter.Should().BeNull();
+        options.InstanceNameFormatter.ShouldBeNull();
 
-        options.BuilderNameFormatter.Should().NotBeNull();
-        options.BuilderNameFormatter(null!).Should().Be("");
-        options.BuilderNameFormatter("ABC").Should().Be("ABC");
+        options.BuilderNameFormatter.ShouldNotBeNull();
+        options.BuilderNameFormatter(null!).ShouldBe("");
+        options.BuilderNameFormatter("ABC").ShouldBe("ABC");
     }
 }

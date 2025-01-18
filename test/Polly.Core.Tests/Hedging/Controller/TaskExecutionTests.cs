@@ -52,20 +52,20 @@ public class TaskExecutionTests : IDisposable
             (context, state) =>
             {
                 AssertContext(context);
-                state.Should().Be("dummy-state");
+                state.ShouldBe("dummy-state");
                 return Outcome.FromResultAsValueTask(new DisposableResult { Name = value });
             },
             "dummy-state",
             99);
 
         await execution.ExecutionTaskSafe!;
-        execution.Outcome.Result!.Name.Should().Be(value);
-        execution.IsHandled.Should().Be(handled);
+        execution.Outcome.Result!.Name.ShouldBe(value);
+        execution.IsHandled.ShouldBe(handled);
         AssertContext(execution.Context);
 
-        _args.Should().HaveCount(1);
-        _args[0].Handled.Should().Be(handled);
-        _args[0].AttemptNumber.Should().Be(99);
+        _args.Count.ShouldBe(1);
+        _args[0].Handled.ShouldBe(handled);
+        _args[0].AttemptNumber.ShouldBe(99);
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class TaskExecutionTests : IDisposable
 
         await execution.ExecutionTaskSafe!;
 
-        execution.Outcome.Exception.Should().BeOfType<InvalidOperationException>();
+        execution.Outcome.Exception.ShouldBeOfType<InvalidOperationException>();
     }
 
     [InlineData(Handled, true)]
@@ -91,16 +91,16 @@ public class TaskExecutionTests : IDisposable
         Generator = args =>
         {
             AssertContext(args.ActionContext);
-            args.AttemptNumber.Should().Be(4);
+            args.AttemptNumber.ShouldBe(4);
             return () => Outcome.FromResultAsValueTask(new DisposableResult { Name = value });
         };
 
-        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).Should().BeTrue();
+        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).ShouldBeTrue();
 
         await execution.ExecutionTaskSafe!;
 
-        execution.Outcome.Result!.Name.Should().Be(value);
-        execution.IsHandled.Should().Be(handled);
+        execution.Outcome.Result!.Name.ShouldBe(value);
+        execution.IsHandled.ShouldBe(handled);
         AssertContext(execution.Context);
     }
 
@@ -110,9 +110,9 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args => null;
 
-        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).Should().BeFalse();
+        (await execution.InitializeAsync(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).ShouldBeFalse();
 
-        execution.Invoking(e => e.Context).Should().Throw<InvalidOperationException>();
+        Should.Throw<InvalidOperationException>(() => execution.Context);
     }
 
     [Fact]
@@ -126,7 +126,7 @@ public class TaskExecutionTests : IDisposable
         execution.AcceptOutcome();
         execution.Cancel();
 
-        cancelled.Should().BeFalse();
+        cancelled.ShouldBeFalse();
     }
 
     [Fact]
@@ -138,7 +138,7 @@ public class TaskExecutionTests : IDisposable
         await InitializePrimaryAsync(execution, onContext: context => context.CancellationToken.Register(() => cancelled = true));
 
         execution.Cancel();
-        cancelled.Should().BeTrue();
+        cancelled.ShouldBeTrue();
     }
 
     [Fact]
@@ -147,10 +147,10 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args => throw new FormatException();
 
-        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).Should().BeTrue();
+        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).ShouldBeTrue();
 
         await execution.ExecutionTaskSafe!;
-        execution.Outcome.Exception.Should().BeOfType<FormatException>();
+        execution.Outcome.Exception.ShouldBeOfType<FormatException>();
     }
 
     [Fact]
@@ -159,9 +159,9 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args => throw new FormatException();
 
-        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).Should().BeTrue();
+        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).ShouldBeTrue();
 
-        await execution.ExecutionTaskSafe!.Invoking(async t => await t).Should().NotThrowAsync();
+        await Should.NotThrowAsync(async () => await execution.ExecutionTaskSafe!);
     }
 
     [InlineData(true)]
@@ -202,7 +202,7 @@ public class TaskExecutionTests : IDisposable
         await execution.ExecutionTaskSafe!;
 
         // assert
-        execution.Outcome.Exception.Should().BeAssignableTo<OperationCanceledException>();
+        execution.Outcome.Exception.ShouldBeAssignableTo<OperationCanceledException>();
     }
 
     [Fact]
@@ -210,7 +210,7 @@ public class TaskExecutionTests : IDisposable
     {
         var execution = Create();
 
-        execution.Invoking(e => e.AcceptOutcome()).Should().Throw<InvalidOperationException>();
+        Should.Throw<InvalidOperationException>(() => execution.AcceptOutcome());
     }
 
     [InlineData(true)]
@@ -235,20 +235,20 @@ public class TaskExecutionTests : IDisposable
         await execution.ResetAsync();
 
         // assert
-        execution.IsAccepted.Should().BeFalse();
-        execution.IsHandled.Should().BeFalse();
-        context.Properties.Options.Should().HaveCount(0);
-        execution.Invoking(e => e.Context).Should().Throw<InvalidOperationException>();
+        execution.IsAccepted.ShouldBeFalse();
+        execution.IsHandled.ShouldBeFalse();
+        context.Properties.Options.ShouldBeEmpty();
+        Should.Throw<InvalidOperationException>(() => execution.Context);
 #if NETFRAMEWORK
-        token.Invoking(t => t.WaitHandle).Should().Throw<InvalidOperationException>();
+        Should.Throw<InvalidOperationException>(() => token.WaitHandle);
 #endif
         if (accept)
         {
-            result.IsDisposed.Should().BeFalse();
+            result.IsDisposed.ShouldBeFalse();
         }
         else
         {
-            result.IsDisposed.Should().BeTrue();
+            result.IsDisposed.ShouldBeTrue();
         }
     }
 
@@ -261,14 +261,14 @@ public class TaskExecutionTests : IDisposable
 
     private void AssertContext(ResilienceContext context)
     {
-        context.Should().NotBeSameAs(_primaryContext);
-        context.Properties.Should().NotBeSameAs(_primaryContext.Properties);
-        context.CancellationToken.Should().NotBeSameAs(_primaryContext.CancellationToken);
-        context.CancellationToken.CanBeCanceled.Should().BeTrue();
+        context.ShouldNotBeSameAs(_primaryContext);
+        context.Properties.ShouldNotBeSameAs(_primaryContext.Properties);
+        context.CancellationToken.ShouldNotBeSameAs(_primaryContext.CancellationToken);
+        context.CancellationToken.CanBeCanceled.ShouldBeTrue();
 
-        context.Properties.Options.Should().HaveCount(1);
-        context.Properties.TryGetValue(_myKey, out var value).Should().BeTrue();
-        value.Should().Be("dummy-value");
+        context.Properties.Options.Count.ShouldBe(1);
+        context.Properties.TryGetValue(_myKey, out var value).ShouldBeTrue();
+        value.ShouldBe("dummy-value");
     }
 
     private void CreateSnapshot(CancellationToken? token = null)

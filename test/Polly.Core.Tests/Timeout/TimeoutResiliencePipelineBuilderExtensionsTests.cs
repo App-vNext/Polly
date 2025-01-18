@@ -13,7 +13,7 @@ public class TimeoutResiliencePipelineBuilderExtensionsTests
         {
             timeout,
             (ResiliencePipelineBuilder<int> builder) => { builder.AddTimeout(timeout); },
-            (TimeoutResilienceStrategy strategy) => { GetTimeout(strategy).Should().Be(timeout); }
+            (TimeoutResilienceStrategy strategy) => { GetTimeout(strategy).ShouldBe(timeout); }
         };
     }
 
@@ -35,9 +35,9 @@ public class TimeoutResiliencePipelineBuilderExtensionsTests
         var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<TimeoutResilienceStrategy>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<TimeoutResilienceStrategy>();
         assert(strategy);
-        GetTimeout(strategy).Should().Be(timeout);
+        GetTimeout(strategy).ShouldBe(timeout);
     }
 
     [Fact]
@@ -45,15 +45,13 @@ public class TimeoutResiliencePipelineBuilderExtensionsTests
     {
         var strategy = new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions()).Build();
 
-        strategy.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<TimeoutResilienceStrategy>();
+        strategy.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<TimeoutResilienceStrategy>();
     }
 
     [Fact]
     public void AddTimeout_InvalidOptions_Throws() =>
-        new ResiliencePipelineBuilder()
-            .Invoking(b => b.AddTimeout(new TimeoutStrategyOptions { Timeout = TimeSpan.Zero }))
-            .Should()
-            .Throw<ValidationException>();
+        Should.Throw<ValidationException>(
+            () => new ResiliencePipelineBuilder().AddTimeout(new TimeoutStrategyOptions { Timeout = TimeSpan.Zero }));
 
     private static TimeSpan GetTimeout(TimeoutResilienceStrategy strategy)
     {

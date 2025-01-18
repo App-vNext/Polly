@@ -14,6 +14,6 @@ public static class OutcomeGeneratorArgumentsTests
         var args = new OutcomeGeneratorArguments(context);
 
         // Assert
-        args.Context.Should().NotBeNull();
+        args.Context.ShouldNotBeNull();
     }
 }

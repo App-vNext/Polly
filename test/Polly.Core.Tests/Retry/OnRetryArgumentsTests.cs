@@ -14,10 +14,10 @@ public static class OnRetryArgumentsTests
         var args = new OnRetryArguments<int>(context, Outcome.FromResult(1), 2, TimeSpan.FromSeconds(3), TimeSpan.MaxValue);
 
         // Assert
-        args.Context.Should().Be(context);
-        args.Outcome.Result.Should().Be(1);
-        args.AttemptNumber.Should().Be(2);
-        args.RetryDelay.Should().Be(TimeSpan.FromSeconds(3));
-        args.Duration.Should().Be(TimeSpan.MaxValue);
+        args.Context.ShouldBe(context);
+        args.Outcome.Result.ShouldBe(1);
+        args.AttemptNumber.ShouldBe(2);
+        args.RetryDelay.ShouldBe(TimeSpan.FromSeconds(3));
+        args.Duration.ShouldBe(TimeSpan.MaxValue);
     }
 }

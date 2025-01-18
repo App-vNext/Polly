@@ -18,16 +18,13 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
         });
 
         _builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance
-            .Should().BeOfType<HedgingResilienceStrategy<string>>().Subject
-            .HedgingHandler.ActionGenerator.Should().NotBeNull();
+            .ShouldBeOfType<HedgingResilienceStrategy<string>>()
+            .HedgingHandler.ActionGenerator.ShouldNotBeNull();
     }
 
     [Fact]
     public void AddHedgingT_InvalidOptions_Throws() =>
-        _builder
-            .Invoking(b => b.AddHedging(new HedgingStrategyOptions<string> { ShouldHandle = null! }))
-            .Should()
-            .Throw<ValidationException>();
+        Should.Throw<ValidationException>(() => _builder.AddHedging(new HedgingStrategyOptions<string> { ShouldHandle = null! }));
 
     [Fact]
     public async Task AddHedging_IntegrationTest()
@@ -60,8 +57,8 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
         .Build();
 
         var result = await strategy.ExecuteAsync(token => new ValueTask<string>("error"));
-        result.Should().Be("success");
-        hedgingCount.Should().Be(3);
+        result.ShouldBe("success");
+        hedgingCount.ShouldBe(3);
     }
 
     [Fact]
@@ -92,6 +89,6 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
         .Build();
 
         var result = await strategy.ExecuteAsync(token => new ValueTask<string>("error"));
-        result.Should().Be("success");
+        result.ShouldBe("success");
     }
 }

@@ -14,6 +14,6 @@ public static class EnabledGeneratorArgumentsTests
         var args = new EnabledGeneratorArguments(context);
 
         // Assert
-        args.Context.Should().Be(context);
+        args.Context.ShouldBe(context);
     }
 }
