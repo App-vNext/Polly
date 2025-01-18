@@ -35,7 +35,7 @@ public class ObjectPoolTests
         var items2 = GetStoreReturn(pool);
 
         // Assert
-        items1.ShouldBeEquivalentTo(items2);
+        items1.ShouldBe(items2);
     }
 
     [Fact]
