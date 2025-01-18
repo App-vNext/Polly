@@ -13,5 +13,9 @@
     <ProjectReference Include="..\..\src\Polly.Extensions\Polly.Extensions.csproj" />
     <ProjectReference Include="..\..\src\Polly.RateLimiting\Polly.RateLimiting.csproj" />
     <ProjectReference Include="..\..\src\Polly.Testing\Polly.Testing.csproj" />
+    <PackageReference Include="FluentAssertions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="FluentAssertions" />
   </ItemGroup>
 </Project>

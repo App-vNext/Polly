@@ -6,13 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="FluentAssertions"/>
-    <Using Include="Xunit"/>
+    <Using Include="Xunit" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" PrivateAssets="all" />
-    <PackageReference Include="FluentAssertions" />
     <PackageReference Include="GitHubActionsTestLogger" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NSubstitute" />
