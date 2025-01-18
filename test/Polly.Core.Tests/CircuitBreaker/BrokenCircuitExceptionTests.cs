@@ -8,50 +8,50 @@ public class BrokenCircuitExceptionTests
     public void Ctor_Default_Ok()
     {
         var exception = new BrokenCircuitException();
-        exception.Message.Should().Be("The circuit is now open and is not allowing calls.");
-        exception.RetryAfter.Should().BeNull();
+        exception.Message.ShouldBe("The circuit is now open and is not allowing calls.");
+        exception.RetryAfter.ShouldBeNull();
     }
 
     [Fact]
     public void Ctor_Message_Ok()
     {
         var exception = new BrokenCircuitException(TestMessage);
-        exception.Message.Should().Be(TestMessage);
-        exception.RetryAfter.Should().BeNull();
+        exception.Message.ShouldBe(TestMessage);
+        exception.RetryAfter.ShouldBeNull();
     }
 
     [Fact]
     public void Ctor_RetryAfter_Ok()
     {
         var exception = new BrokenCircuitException(TestRetryAfter);
-        exception.Message.Should().Be($"The circuit is now open and is not allowing calls. It can be retried after '{TestRetryAfter}'.");
-        exception.RetryAfter.Should().Be(TestRetryAfter);
+        exception.Message.ShouldBe($"The circuit is now open and is not allowing calls. It can be retried after '{TestRetryAfter}'.");
+        exception.RetryAfter.ShouldBe(TestRetryAfter);
     }
 
     [Fact]
     public void Ctor_Message_RetryAfter_Ok()
     {
         var exception = new BrokenCircuitException(TestMessage, TestRetryAfter);
-        exception.Message.Should().Be(TestMessage);
-        exception.RetryAfter.Should().Be(TestRetryAfter);
+        exception.Message.ShouldBe(TestMessage);
+        exception.RetryAfter.ShouldBe(TestRetryAfter);
     }
 
     [Fact]
     public void Ctor_Message_InnerException_Ok()
     {
         var exception = new BrokenCircuitException(TestMessage, new InvalidOperationException());
-        exception.Message.Should().Be(TestMessage);
-        exception.InnerException.Should().BeOfType<InvalidOperationException>();
-        exception.RetryAfter.Should().BeNull();
+        exception.Message.ShouldBe(TestMessage);
+        exception.InnerException.ShouldBeOfType<InvalidOperationException>();
+        exception.RetryAfter.ShouldBeNull();
     }
 
     [Fact]
     public void Ctor_Message_RetryAfter_InnerException_Ok()
     {
         var exception = new BrokenCircuitException(TestMessage, TestRetryAfter, new InvalidOperationException());
-        exception.Message.Should().Be(TestMessage);
-        exception.InnerException.Should().BeOfType<InvalidOperationException>();
-        exception.RetryAfter.Should().Be(TestRetryAfter);
+        exception.Message.ShouldBe(TestMessage);
+        exception.InnerException.ShouldBeOfType<InvalidOperationException>();
+        exception.RetryAfter.ShouldBe(TestRetryAfter);
     }
 
 #if NETFRAMEWORK
@@ -60,10 +60,10 @@ public class BrokenCircuitExceptionTests
     {
         var exception = new BrokenCircuitException(TestMessage, TestRetryAfter, new InvalidOperationException());
         BrokenCircuitException roundtripResult = BinarySerializationUtil.SerializeAndDeserializeException(exception);
-        roundtripResult.Should().NotBeNull();
-        roundtripResult.Message.Should().Be(TestMessage);
-        roundtripResult.InnerException.Should().BeOfType<InvalidOperationException>();
-        roundtripResult.RetryAfter.Should().Be(TestRetryAfter);
+        roundtripResult.ShouldNotBeNull();
+        roundtripResult.Message.ShouldBe(TestMessage);
+        roundtripResult.InnerException.ShouldBeOfType<InvalidOperationException>();
+        roundtripResult.RetryAfter.ShouldBe(TestRetryAfter);
     }
 
     [Fact]
@@ -71,10 +71,10 @@ public class BrokenCircuitExceptionTests
     {
         var exception = new BrokenCircuitException(TestMessage, new InvalidOperationException());
         BrokenCircuitException roundtripResult = BinarySerializationUtil.SerializeAndDeserializeException(exception);
-        roundtripResult.Should().NotBeNull();
-        roundtripResult.Message.Should().Be(TestMessage);
-        roundtripResult.InnerException.Should().BeOfType<InvalidOperationException>();
-        roundtripResult.RetryAfter.Should().BeNull();
+        roundtripResult.ShouldNotBeNull();
+        roundtripResult.Message.ShouldBe(TestMessage);
+        roundtripResult.InnerException.ShouldBeOfType<InvalidOperationException>();
+        roundtripResult.RetryAfter.ShouldBeNull();
     }
 #endif
 

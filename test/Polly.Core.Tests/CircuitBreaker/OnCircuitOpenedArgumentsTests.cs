@@ -14,9 +14,9 @@ public static class OnCircuitOpenedArgumentsTests
         var args = new OnCircuitOpenedArguments<int>(context, Outcome.FromResult(1), TimeSpan.FromSeconds(2), true);
 
         // Assert
-        args.Context.Should().Be(context);
-        args.Outcome.Result.Should().Be(1);
-        args.BreakDuration.Should().Be(TimeSpan.FromSeconds(2));
-        args.IsManual.Should().BeTrue();
+        args.Context.ShouldBe(context);
+        args.Outcome.Result.ShouldBe(1);
+        args.BreakDuration.ShouldBe(TimeSpan.FromSeconds(2));
+        args.IsManual.ShouldBeTrue();
     }
 }

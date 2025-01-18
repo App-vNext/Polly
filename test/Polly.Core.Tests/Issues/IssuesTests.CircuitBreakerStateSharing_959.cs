@@ -34,8 +34,8 @@ public partial class IssuesTests
         }
 
         // now the circuit breaker should be open
-        strategy.Invoking(s => s.Execute(_ => 0)).Should().Throw<BrokenCircuitException>();
-        strategy.Invoking(s => s.Execute(_ => "valid-result")).Should().Throw<BrokenCircuitException>();
+        Should.Throw<BrokenCircuitException>(() => strategy.Execute(_ => 0));
+        Should.Throw<BrokenCircuitException>(() => strategy.Execute(_ => "valid-result"));
 
         // now wait for recovery
         TimeProvider.Advance(options.BreakDuration);

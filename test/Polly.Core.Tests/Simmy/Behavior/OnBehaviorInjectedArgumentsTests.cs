@@ -14,6 +14,6 @@ public static class OnBehaviorInjectedArgumentsTests
         var args = new OnBehaviorInjectedArguments(context);
 
         // Assert
-        args.Context.Should().Be(context);
+        args.Context.ShouldBe(context);
     }
 }

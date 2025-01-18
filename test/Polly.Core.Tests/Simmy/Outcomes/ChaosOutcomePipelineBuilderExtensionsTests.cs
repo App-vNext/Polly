@@ -28,11 +28,11 @@ public class ChaosOutcomePipelineBuilderExtensionsTests
     private static void AssertResultStrategy<T>(ResiliencePipelineBuilder<T> builder, ChaosOutcomeStrategyOptions<T> options, bool enabled, double injectionRate, Outcome<T> outcome)
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosOutcomeStrategy<T>>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<ChaosOutcomeStrategy<T>>();
 
-        strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
-        strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
-        options.OutcomeGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(outcome);
+        strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBe(enabled);
+        strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBe(injectionRate);
+        options.OutcomeGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBe(outcome);
     }
 
     [Theory]
@@ -42,7 +42,7 @@ public class ChaosOutcomePipelineBuilderExtensionsTests
     internal void AddResult_Options_Ok(Action<ResiliencePipelineBuilder<int>> configure)
     {
         var builder = new ResiliencePipelineBuilder<int>();
-        builder.Invoking(b => configure(b)).Should().NotThrow();
+        Should.NotThrow(() => configure(builder));
     }
 
     [Fact]
@@ -61,8 +61,6 @@ public class ChaosOutcomePipelineBuilderExtensionsTests
 
     [Fact]
     public void AddResult_Shortcut_Option_Throws() =>
-        new ResiliencePipelineBuilder<int>()
-            .Invoking(b => b.AddChaosOutcome(-1, () => 120))
-            .Should()
-            .Throw<ValidationException>();
+        Should.Throw<ValidationException>(
+            () => new ResiliencePipelineBuilder<int>().AddChaosOutcome(-1, () => 120));
 }

@@ -21,7 +21,7 @@ public partial class IssuesTests
             UseJitter = true,
             OnRetry = (args) =>
             {
-                args.RetryDelay.Should().BeGreaterThan(TimeSpan.Zero, $"RetryDelay is less than zero after {args.AttemptNumber} attempts");
+                args.RetryDelay.ShouldBeGreaterThan(TimeSpan.Zero, $"RetryDelay is less than zero after {args.AttemptNumber} attempts");
                 attempts++;
                 return default;
             },
@@ -54,7 +54,7 @@ public partial class IssuesTests
 
         var actual = await executing;
 
-        actual.Should().BeTrue();
-        attempts.Should().Be(succeedAfter);
+        actual.ShouldBeTrue();
+        attempts.ShouldBe(succeedAfter);
     }
 }

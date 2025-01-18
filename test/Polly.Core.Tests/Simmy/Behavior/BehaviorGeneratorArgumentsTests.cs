@@ -14,6 +14,6 @@ public static class BehaviorGeneratorArgumentsTests
         var args = new BehaviorGeneratorArguments(context);
 
         // Assert
-        args.Context.Should().Be(context);
+        args.Context.ShouldBe(context);
     }
 }

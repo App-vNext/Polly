@@ -14,6 +14,6 @@ public static class FaultGeneratorArgumentsTests
         var args = new FaultGeneratorArguments(context);
 
         // Assert
-        args.Context.Should().Be(context);
+        args.Context.ShouldBe(context);
     }
 }

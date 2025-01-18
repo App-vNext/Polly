@@ -15,10 +15,10 @@ public class ChaosLatencyPipelineBuilderExtensionsTests
             (ResiliencePipelineBuilder<int> builder) => { builder.AddChaosLatency(0.5, TimeSpan.FromSeconds(10)); },
             (ChaosLatencyStrategy strategy) =>
             {
-                strategy.Latency.Should().Be(TimeSpan.FromSeconds(10));
-                strategy.LatencyGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(TimeSpan.FromSeconds(10));
-                strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeTrue();
-                strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(0.5);
+                strategy.Latency.ShouldBe(TimeSpan.FromSeconds(10));
+                strategy.LatencyGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBe(TimeSpan.FromSeconds(10));
+                strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBeTrue();
+                strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBe(0.5);
             }
         };
     }
@@ -27,7 +27,7 @@ public class ChaosLatencyPipelineBuilderExtensionsTests
     public void AddLatency_Shortcut_Option_Ok()
     {
         var sut = new ResiliencePipelineBuilder().AddChaosLatency(0.5, TimeSpan.FromSeconds(10)).Build();
-        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosLatencyStrategy>();
+        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<ChaosLatencyStrategy>();
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class ChaosLatencyPipelineBuilderExtensionsTests
             })
             .Build();
 
-        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosLatencyStrategy>();
+        sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<ChaosLatencyStrategy>();
     }
 
     [MemberData(nameof(AddLatency_Ok_Data))]
@@ -51,7 +51,7 @@ public class ChaosLatencyPipelineBuilderExtensionsTests
         var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosLatencyStrategy>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<ChaosLatencyStrategy>();
         assert(strategy);
     }
 }

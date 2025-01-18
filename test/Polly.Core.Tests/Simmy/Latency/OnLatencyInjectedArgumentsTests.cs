@@ -14,7 +14,7 @@ public static class OnLatencyInjectedArgumentsTests
         var args = new OnLatencyInjectedArguments(context, TimeSpan.FromSeconds(10));
 
         // Assert
-        args.Context.Should().Be(context);
-        args.Latency.Should().Be(TimeSpan.FromSeconds(10));
+        args.Context.ShouldBe(context);
+        args.Latency.ShouldBe(TimeSpan.FromSeconds(10));
     }
 }

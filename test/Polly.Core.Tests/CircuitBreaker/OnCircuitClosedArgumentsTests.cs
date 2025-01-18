@@ -14,8 +14,8 @@ public static class OnCircuitClosedArgumentsTests
         var args = new OnCircuitClosedArguments<int>(context, Outcome.FromResult(1), true);
 
         // Assert
-        args.Context.Should().Be(context);
-        args.Outcome.Result.Should().Be(1);
-        args.IsManual.Should().BeTrue();
+        args.Context.ShouldBe(context);
+        args.Outcome.Result.ShouldBe(1);
+        args.IsManual.ShouldBeTrue();
     }
 }

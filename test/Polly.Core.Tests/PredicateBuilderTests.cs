@@ -55,8 +55,8 @@ public class PredicateBuilderTests
     [Fact]
     public void Ctor_Ok()
     {
-        new PredicateBuilder().Should().NotBeNull();
-        new PredicateBuilder<string>().Should().NotBeNull();
+        new PredicateBuilder().ShouldNotBeNull();
+        new PredicateBuilder<string>().ShouldNotBeNull();
     }
 
     [Theory]
@@ -70,17 +70,14 @@ public class PredicateBuilderTests
         configure(predicate);
 
         var result = predicate.Build()(value);
-        result.Should().Be(handled);
+        result.ShouldBe(handled);
     }
 
     [Fact]
     public void CreatePredicate_NotConfigured_Throws()
     {
-        var predicate = new PredicateBuilder<string>()
-            .Invoking(b => b.Build())
-            .Should()
-            .Throw<InvalidOperationException>()
-            .WithMessage("No predicates were configured. There must be at least one predicate added.");
+        var exception = Should.Throw<InvalidOperationException>(() => new PredicateBuilder<string>().Build());
+        exception.Message.ShouldBe("No predicates were configured. There must be at least one predicate added.");
     }
 
     [Fact]
@@ -94,7 +91,7 @@ public class PredicateBuilderTests
 
         var handled = await options.ShouldHandle(new RetryPredicateArguments<string>(context, CreateOutcome("error"), 0));
 
-        handled.Should().BeTrue();
+        handled.ShouldBeTrue();
     }
 
     [Fact]
@@ -108,7 +105,7 @@ public class PredicateBuilderTests
 
         var handled = await options.ShouldHandle(new(context, CreateOutcome("error")));
 
-        handled.Should().BeTrue();
+        handled.ShouldBeTrue();
     }
 
     [Fact]
@@ -122,7 +119,7 @@ public class PredicateBuilderTests
 
         var handled = await options.ShouldHandle(new(context, CreateOutcome("error")));
 
-        handled.Should().BeTrue();
+        handled.ShouldBeTrue();
     }
 
     [Fact]
@@ -136,7 +133,7 @@ public class PredicateBuilderTests
 
         var handled = await options.ShouldHandle(new(context, CreateOutcome("error")));
 
-        handled.Should().BeTrue();
+        handled.ShouldBeTrue();
     }
 
     private static Outcome<string> CreateOutcome(Exception exception)

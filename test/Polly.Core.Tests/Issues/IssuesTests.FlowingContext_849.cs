@@ -16,7 +16,7 @@ public partial class IssuesTests
                 {
                     // access the context to evaluate the retry
                     ResilienceContext context = args.Context;
-                    context.Should().NotBeNull();
+                    context.ShouldNotBeNull();
                     contextChecked = true;
                     return PredicateResult.False();
                 }
@@ -26,6 +26,6 @@ public partial class IssuesTests
         // execute the retry
         strategy.Execute(_ => 0);
 
-        contextChecked.Should().BeTrue();
+        contextChecked.ShouldBeTrue();
     }
 }

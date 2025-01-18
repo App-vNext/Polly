@@ -9,7 +9,7 @@ public class CircuitBreakerStateProviderTests
     {
         var provider = new CircuitBreakerStateProvider();
 
-        provider.IsInitialized.Should().BeFalse();
+        provider.IsInitialized.ShouldBeFalse();
     }
 
     [Fact]
@@ -17,7 +17,7 @@ public class CircuitBreakerStateProviderTests
     {
         var provider = new CircuitBreakerStateProvider();
 
-        provider.CircuitState.Should().Be(CircuitState.Closed);
+        provider.CircuitState.ShouldBe(CircuitState.Closed);
     }
 
     [Fact]
@@ -25,10 +25,7 @@ public class CircuitBreakerStateProviderTests
     {
         var control = new CircuitBreakerManualControl();
 
-        await control
-            .Invoking(c => c.CloseAsync(CancellationToken.None))
-            .Should()
-            .NotThrowAsync<InvalidOperationException>();
+        await Should.NotThrowAsync(() => control.CloseAsync(CancellationToken.None));
     }
 
     [Fact]
@@ -37,10 +34,7 @@ public class CircuitBreakerStateProviderTests
         var provider = new CircuitBreakerStateProvider();
         provider.Initialize(() => CircuitState.Closed);
 
-        provider
-            .Invoking(c => c.Initialize(() => CircuitState.Closed))
-            .Should()
-            .Throw<InvalidOperationException>();
+        Should.Throw<InvalidOperationException>(() => provider.Initialize(() => CircuitState.Closed));
     }
 
     [Fact]
@@ -56,8 +50,8 @@ public class CircuitBreakerStateProviderTests
                 return CircuitState.HalfOpen;
             });
 
-        provider.CircuitState.Should().Be(CircuitState.HalfOpen);
+        provider.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
-        stateCalled.Should().BeTrue();
+        stateCalled.ShouldBeTrue();
     }
 }

@@ -9,7 +9,7 @@ public class ResilienceEventTests
     {
         var ev = new ResilienceEvent(ResilienceEventSeverity.Warning, "A");
 
-        ev.ToString().Should().Be("A");
-        ev.Severity.Should().Be(ResilienceEventSeverity.Warning);
+        ev.ToString().ShouldBe("A");
+        ev.Severity.ShouldBe(ResilienceEventSeverity.Warning);
     }
 }

@@ -14,6 +14,6 @@ public static class InjectionRateGeneratorArgumentsTests
         var args = new InjectionRateGeneratorArguments(context);
 
         // Assert
-        args.Context.Should().Be(context);
+        args.Context.ShouldBe(context);
     }
 }

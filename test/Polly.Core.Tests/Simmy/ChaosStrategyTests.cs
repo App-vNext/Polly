@@ -20,16 +20,11 @@ public class ChaosStrategyTests
     [Fact]
     public void InvalidCtor()
     {
-        Action act = () =>
-        {
-            var _ = new TestChaosStrategy(null);
-        };
+        Should.Throw<ArgumentNullException>(() => new TestChaosStrategy(null));
 
-        act.Should().Throw<ArgumentNullException>();
-
-        _wasChaosUnleashed.Should().BeFalse();
-        _enableGeneratorExecuted.Should().BeFalse();
-        _injectionRateGeneratorExecuted.Should().BeFalse();
+        _wasChaosUnleashed.ShouldBeFalse();
+        _enableGeneratorExecuted.ShouldBeFalse();
+        _injectionRateGeneratorExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -41,15 +36,15 @@ public class ChaosStrategyTests
 
         var sut = CreateSut();
 
-        sut.EnabledGenerator.Should().NotBeNull();
-        (await sut.EnabledGenerator(new(context))).Should().BeTrue();
+        sut.EnabledGenerator.ShouldNotBeNull();
+        (await sut.EnabledGenerator(new(context))).ShouldBeTrue();
 
-        sut.InjectionRateGenerator.Should().NotBeNull();
-        (await sut.InjectionRateGenerator(new(context))).Should().Be(0.5);
+        sut.InjectionRateGenerator.ShouldNotBeNull();
+        (await sut.InjectionRateGenerator(new(context))).ShouldBe(0.5);
 
-        _wasChaosUnleashed.Should().BeFalse();
-        _enableGeneratorExecuted.Should().BeFalse();
-        _injectionRateGeneratorExecuted.Should().BeFalse();
+        _wasChaosUnleashed.ShouldBeFalse();
+        _enableGeneratorExecuted.ShouldBeFalse();
+        _injectionRateGeneratorExecuted.ShouldBeFalse();
     }
 
     [InlineData(0, false)]
@@ -69,9 +64,9 @@ public class ChaosStrategyTests
 
         await sut.AsPipeline().ExecuteAsync((_) => { return default; });
 
-        _wasChaosUnleashed.Should().Be(shouldBeInjected);
-        _enableGeneratorExecuted.Should().BeFalse();
-        _injectionRateGeneratorExecuted.Should().BeFalse();
+        _wasChaosUnleashed.ShouldBe(shouldBeInjected);
+        _enableGeneratorExecuted.ShouldBeFalse();
+        _injectionRateGeneratorExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -93,13 +88,11 @@ public class ChaosStrategyTests
         var sut = CreateSut();
         sut.Before = (_, _) => { cts.Cancel(); };
 
-        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
-            .Should()
-            .ThrowAsync<OperationCanceledException>();
+        await Should.ThrowAsync<OperationCanceledException>(() => sut.AsPipeline().ExecuteAsync(async _ => await Task.CompletedTask, cts.Token).AsTask());
 
-        _wasChaosUnleashed.Should().BeFalse();
-        _enableGeneratorExecuted.Should().BeFalse();
-        _injectionRateGeneratorExecuted.Should().BeFalse();
+        _wasChaosUnleashed.ShouldBeFalse();
+        _enableGeneratorExecuted.ShouldBeFalse();
+        _injectionRateGeneratorExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -121,13 +114,11 @@ public class ChaosStrategyTests
 
         var sut = CreateSut();
 
-        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
-            .Should()
-            .ThrowAsync<OperationCanceledException>();
+        await Should.ThrowAsync<OperationCanceledException>(() => sut.AsPipeline().ExecuteAsync(async _ => await Task.CompletedTask, cts.Token).AsTask());
 
-        _wasChaosUnleashed.Should().BeFalse();
-        _enableGeneratorExecuted.Should().BeTrue();
-        _injectionRateGeneratorExecuted.Should().BeFalse();
+        _wasChaosUnleashed.ShouldBeFalse();
+        _enableGeneratorExecuted.ShouldBeTrue();
+        _injectionRateGeneratorExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -149,13 +140,11 @@ public class ChaosStrategyTests
 
         var sut = CreateSut();
 
-        await sut.Invoking(s => s.AsPipeline().ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
-            .Should()
-            .ThrowAsync<OperationCanceledException>();
+        await Should.ThrowAsync<OperationCanceledException>(() => sut.AsPipeline().ExecuteAsync(async _ => await Task.CompletedTask, cts.Token).AsTask());
 
-        _wasChaosUnleashed.Should().BeFalse();
-        _enableGeneratorExecuted.Should().BeTrue();
-        _injectionRateGeneratorExecuted.Should().BeTrue();
+        _wasChaosUnleashed.ShouldBeFalse();
+        _enableGeneratorExecuted.ShouldBeTrue();
+        _injectionRateGeneratorExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -170,9 +159,9 @@ public class ChaosStrategyTests
 
         await sut.AsPipeline().ExecuteAsync((_) => { return default; });
 
-        _wasChaosUnleashed.Should().BeTrue();
-        _enableGeneratorExecuted.Should().BeFalse();
-        _injectionRateGeneratorExecuted.Should().BeFalse();
+        _wasChaosUnleashed.ShouldBeTrue();
+        _enableGeneratorExecuted.ShouldBeFalse();
+        _injectionRateGeneratorExecuted.ShouldBeFalse();
     }
 
     private TestChaosStrategy CreateSut() => new(_options);

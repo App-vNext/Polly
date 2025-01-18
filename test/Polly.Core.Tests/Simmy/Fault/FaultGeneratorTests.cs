@@ -11,7 +11,7 @@ public class FaultGeneratorTests
 
         generator.AddException<InvalidOperationException>();
 
-        Generate(generator).Should().BeOfType<InvalidOperationException>();
+        Generate(generator).ShouldBeOfType<InvalidOperationException>();
     }
 
     [Fact]
@@ -21,7 +21,7 @@ public class FaultGeneratorTests
 
         generator.AddException(() => new InvalidOperationException());
 
-        Generate(generator).Should().BeOfType<InvalidOperationException>();
+        Generate(generator).ShouldBeOfType<InvalidOperationException>();
     }
 
     [Fact]
@@ -31,12 +31,12 @@ public class FaultGeneratorTests
 
         generator.AddException(context =>
         {
-            context.Should().NotBeNull();
+            context.ShouldNotBeNull();
 
             return new InvalidOperationException();
         });
 
-        Generate(generator).Should().BeOfType<InvalidOperationException>();
+        Generate(generator).ShouldBeOfType<InvalidOperationException>();
     }
 
     private static Exception? Generate(FaultGenerator generator)

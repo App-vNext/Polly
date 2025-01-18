@@ -10,11 +10,11 @@ public class TaskHelperTests
     public void GetResult_ValueTaskT_Ok()
     {
         var result = TaskHelper.GetResult(new ValueTask<int>(42));
-        result.Should().Be(42);
+        result.ShouldBe(42);
 
         result = TaskHelper.GetResult(GetValue());
 
-        result.Should().Be(42);
+        result.ShouldBe(42);
 
         static async ValueTask<int> GetValue()
         {
@@ -28,7 +28,7 @@ public class TaskHelperTests
     {
         TaskHelper.GetResult(default);
 
-        this.Invoking(_ => TaskHelper.GetResult(GetValue())).Should().NotThrow();
+        Should.NotThrow(() => TaskHelper.GetResult(GetValue()));
 
         static async ValueTask<VoidResult> GetValue()
         {

@@ -11,17 +11,17 @@ public class RetryStrategyOptionsTests
     {
         var options = new RetryStrategyOptions<int>();
 
-        options.ShouldHandle.Should().NotBeNull();
+        options.ShouldHandle.ShouldNotBeNull();
 
-        options.DelayGenerator.Should().BeNull();
+        options.DelayGenerator.ShouldBeNull();
 
-        options.OnRetry.Should().BeNull();
+        options.OnRetry.ShouldBeNull();
 
-        options.MaxRetryAttempts.Should().Be(3);
-        options.BackoffType.Should().Be(DelayBackoffType.Constant);
-        options.Delay.Should().Be(TimeSpan.FromSeconds(2));
-        options.Name.Should().Be("Retry");
-        options.Randomizer.Should().NotBeNull();
+        options.MaxRetryAttempts.ShouldBe(3);
+        options.BackoffType.ShouldBe(DelayBackoffType.Constant);
+        options.Delay.ShouldBe(TimeSpan.FromSeconds(2));
+        options.Name.ShouldBe("Retry");
+        options.Randomizer.ShouldNotBeNull();
     }
 
     [Fact]
@@ -30,9 +30,9 @@ public class RetryStrategyOptionsTests
         var options = new RetryStrategyOptions<int>();
         var context = ResilienceContextPool.Shared.Get();
 
-        (await options.ShouldHandle(new RetryPredicateArguments<int>(context, Outcome.FromResult(0), 0))).Should().Be(false);
-        (await options.ShouldHandle(new RetryPredicateArguments<int>(context, Outcome.FromException<int>(new OperationCanceledException()), 0))).Should().Be(false);
-        (await options.ShouldHandle(new RetryPredicateArguments<int>(context, Outcome.FromException<int>(new InvalidOperationException()), 0))).Should().Be(true);
+        (await options.ShouldHandle(new RetryPredicateArguments<int>(context, Outcome.FromResult(0), 0))).ShouldBe(false);
+        (await options.ShouldHandle(new RetryPredicateArguments<int>(context, Outcome.FromException<int>(new OperationCanceledException()), 0))).ShouldBe(false);
+        (await options.ShouldHandle(new RetryPredicateArguments<int>(context, Outcome.FromException<int>(new InvalidOperationException()), 0))).ShouldBe(true);
     }
 
     [Fact]
@@ -48,17 +48,15 @@ public class RetryStrategyOptionsTests
             MaxDelay = TimeSpan.FromSeconds(-10)
         };
 
-        options.Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid Options")))
-            .Should()
-            .Throw<ValidationException>()
-            .WithMessage("""
+        var exception = Should.Throw<ValidationException>(() => ValidationHelper.ValidateObject(new(options, "Invalid Options")));
+        exception.Message.Trim().ShouldBe("""
             Invalid Options
-            
             Validation Errors:
             The field MaxRetryAttempts must be between 1 and 2147483647.
             The field Delay must be between 00:00:00 and 1.00:00:00.
             The field MaxDelay must be between 00:00:00 and 1.00:00:00.
             The ShouldHandle field is required.
-            """);
+            """,
+            StringCompareShould.IgnoreLineEndings);
     }
 }

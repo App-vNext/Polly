@@ -28,7 +28,7 @@ public class ExecutionTrackingComponentTests
 
         var disposeTask = component.DisposeAsync().AsTask();
         _timeProvider.Advance(ExecutionTrackingComponent.SleepDelay);
-        inner.Disposed.Should().BeFalse();
+        inner.Disposed.ShouldBeFalse();
         assert.Set();
 
         _timeProvider.Advance(ExecutionTrackingComponent.SleepDelay);
@@ -37,7 +37,7 @@ public class ExecutionTrackingComponentTests
         _timeProvider.Advance(ExecutionTrackingComponent.SleepDelay);
         await disposeTask;
 
-        inner.Disposed.Should().BeTrue();
+        inner.Disposed.ShouldBeTrue();
     }
 
     [Fact]
@@ -59,11 +59,11 @@ public class ExecutionTrackingComponentTests
         var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }));
         executing.WaitOne();
 
-        component.HasPendingExecutions.Should().BeTrue();
+        component.HasPendingExecutions.ShouldBeTrue();
         assert.Set();
         await execution;
 
-        component.HasPendingExecutions.Should().BeFalse();
+        component.HasPendingExecutions.ShouldBeFalse();
     }
 
     [Fact]
@@ -86,13 +86,13 @@ public class ExecutionTrackingComponentTests
         executing.WaitOne();
 
         var disposeTask = component.DisposeAsync().AsTask();
-        inner.Disposed.Should().BeFalse();
+        inner.Disposed.ShouldBeFalse();
         _timeProvider.Advance(ExecutionTrackingComponent.Timeout - TimeSpan.FromSeconds(1));
-        inner.Disposed.Should().BeFalse();
+        inner.Disposed.ShouldBeFalse();
         _timeProvider.Advance(TimeSpan.FromSeconds(1));
         _timeProvider.Advance(TimeSpan.FromSeconds(1));
         await disposeTask;
-        inner.Disposed.Should().BeTrue();
+        inner.Disposed.ShouldBeTrue();
 
         assert.Set();
         await execution;
@@ -129,19 +129,19 @@ public class ExecutionTrackingComponentTests
 
         while (tasks.Count > 1)
         {
-            tasks.TryDequeue(out var ev).Should().BeTrue();
+            tasks.TryDequeue(out var ev).ShouldBeTrue();
             ev!.Set();
             ev.Dispose();
-            disposeTask.Wait(1).Should().BeFalse();
-            inner.Disposed.Should().BeFalse();
+            disposeTask.Wait(1).ShouldBeFalse();
+            inner.Disposed.ShouldBeFalse();
         }
 
         // last one
-        tasks.TryDequeue(out var last).Should().BeTrue();
+        tasks.TryDequeue(out var last).ShouldBeTrue();
         last!.Set();
         last.Dispose();
         await disposeTask;
-        inner.Disposed.Should().BeTrue();
+        inner.Disposed.ShouldBeTrue();
     }
 
     private class Inner : PipelineComponent

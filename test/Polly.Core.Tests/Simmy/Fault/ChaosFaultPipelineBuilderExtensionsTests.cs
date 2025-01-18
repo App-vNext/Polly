@@ -19,7 +19,7 @@ public class ChaosFaultPipelineBuilderExtensionsTests
                 FaultGenerator = _=> new ValueTask<Exception?>( new InvalidOperationException("Dummy exception."))
             });
 
-            AssertFaultStrategy<InvalidOperationException>(builder, true, 0.6).FaultGenerator.Should().NotBeNull();
+            AssertFaultStrategy<InvalidOperationException>(builder, true, 0.6).FaultGenerator.ShouldNotBeNull();
         },
     };
 #pragma warning restore IDE0028
@@ -28,22 +28,22 @@ public class ChaosFaultPipelineBuilderExtensionsTests
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosFaultStrategy>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<ChaosFaultStrategy>();
 
-        strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
-        strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
-        strategy.FaultGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeOfType<TException>();
+        strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBe(enabled);
+        strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBe(injectionRate);
+        strategy.FaultGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBeOfType<TException>();
     }
 
     private static ChaosFaultStrategy AssertFaultStrategy<TException>(ResiliencePipelineBuilder builder, bool enabled, double injectionRate)
         where TException : Exception
     {
         var context = ResilienceContextPool.Shared.Get();
-        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosFaultStrategy>().Subject;
+        var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<ChaosFaultStrategy>();
 
-        strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);
-        strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(injectionRate);
-        strategy.FaultGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().BeOfType<TException>();
+        strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBe(enabled);
+        strategy.InjectionRateGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBe(injectionRate);
+        strategy.FaultGenerator!.Invoke(new(context)).Preserve().GetAwaiter().GetResult().ShouldBeOfType<TException>();
 
         return strategy;
     }
@@ -53,26 +53,22 @@ public class ChaosFaultPipelineBuilderExtensionsTests
     internal void AddFault_Options_Ok(Action<ResiliencePipelineBuilder> configure)
     {
         var builder = new ResiliencePipelineBuilder();
-        builder.Invoking(b => configure(b)).Should().NotThrow();
+        Should.NotThrow(() => configure(builder));
     }
 
     [Fact]
     public void AddFault_Generic_Shortcut_Generator_Option_Throws() =>
-        new ResiliencePipelineBuilder<int>()
-            .Invoking(b => b.AddChaosFault(
-                1.5,
-                () => new InvalidOperationException()))
-            .Should()
-            .Throw<ValidationException>();
+        Should.Throw<ValidationException>(
+            () =>
+                new ResiliencePipelineBuilder<int>()
+                .AddChaosFault(1.5, () => new InvalidOperationException()));
 
     [Fact]
     public void AddFault_Shortcut_Generator_Option_Throws() =>
-        new ResiliencePipelineBuilder()
-            .Invoking(b => b.AddChaosFault(
-                1.5,
-                () => new InvalidOperationException()))
-            .Should()
-            .Throw<ValidationException>();
+        Should.Throw<ValidationException>(
+            () =>
+                new ResiliencePipelineBuilder()
+                .AddChaosFault(1.5, () => new InvalidOperationException()));
 
     [Fact]
     public void AddFault_Shortcut_Generator_Option_Ok()

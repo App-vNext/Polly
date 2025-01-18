@@ -6,5 +6,5 @@ public class TimeoutConstantsTests
 {
     [Fact]
     public void EnsureDefaultValues() =>
-        TimeoutConstants.OnTimeoutEvent.Should().Be("OnTimeout");
+        TimeoutConstants.OnTimeoutEvent.ShouldBe("OnTimeout");
 }

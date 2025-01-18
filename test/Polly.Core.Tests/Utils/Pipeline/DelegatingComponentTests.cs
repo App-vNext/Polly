@@ -19,8 +19,7 @@ public static class DelegatingComponentTests
             context,
             state);
 
-        actual.Should().NotBeNull();
-        actual.Result.Should().Be(2);
+        actual.Result.ShouldBe(2);
     }
 
 #if NET6_0_OR_GREATER
@@ -39,8 +38,7 @@ public static class DelegatingComponentTests
             context,
             state);
 
-        actual.Should().NotBeNull();
-        actual.Result.Should().Be(2);
+        actual.Result.ShouldBe(2);
     }
 #endif
 

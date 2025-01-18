@@ -11,13 +11,13 @@ public class ChaosBehaviorStrategyOptionsTests
     public void Ctor_Ok()
     {
         var sut = new ChaosBehaviorStrategyOptions();
-        sut.Randomizer.Should().NotBeNull();
-        sut.Enabled.Should().BeTrue();
-        sut.EnabledGenerator.Should().BeNull();
-        sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
-        sut.InjectionRateGenerator.Should().BeNull();
-        sut.BehaviorGenerator.Should().BeNull();
-        sut.OnBehaviorInjected.Should().BeNull();
+        sut.Randomizer.ShouldNotBeNull();
+        sut.Enabled.ShouldBeTrue();
+        sut.EnabledGenerator.ShouldBeNull();
+        sut.InjectionRate.ShouldBe(ChaosStrategyConstants.DefaultInjectionRate);
+        sut.InjectionRateGenerator.ShouldBeNull();
+        sut.BehaviorGenerator.ShouldBeNull();
+        sut.OnBehaviorInjected.ShouldBeNull();
     }
 
     [Fact]
@@ -25,15 +25,12 @@ public class ChaosBehaviorStrategyOptionsTests
     {
         var sut = new ChaosBehaviorStrategyOptions();
 
-        sut
-            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid Options")))
-            .Should()
-            .Throw<ValidationException>()
-            .WithMessage("""
+        var exception = Should.Throw<ValidationException>(() => ValidationHelper.ValidateObject(new(sut, "Invalid Options")));
+        exception.Message.Trim().ShouldBe("""
             Invalid Options
-
             Validation Errors:
             The BehaviorGenerator field is required.
-            """);
+            """,
+            StringCompareShould.IgnoreLineEndings);
     }
 }

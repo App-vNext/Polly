@@ -14,9 +14,9 @@ public class BreakDurationGeneratorArgumentsTests
 
         var args = new BreakDurationGeneratorArguments(expectedFailureRate, failureCount, context);
 
-        args.FailureRate.Should().Be(expectedFailureRate);
-        args.FailureCount.Should().Be(failureCount);
-        args.Context.Should().Be(context);
+        args.FailureRate.ShouldBe(expectedFailureRate);
+        args.FailureCount.ShouldBe(failureCount);
+        args.Context.ShouldBe(context);
     }
 
     [Fact]
@@ -28,9 +28,9 @@ public class BreakDurationGeneratorArgumentsTests
 
         var args = new BreakDurationGeneratorArguments(expectedFailureRate, failureCount, context, 99);
 
-        args.FailureRate.Should().Be(expectedFailureRate);
-        args.FailureCount.Should().Be(failureCount);
-        args.Context.Should().Be(context);
-        args.HalfOpenAttempts.Should().Be(99);
+        args.FailureRate.ShouldBe(expectedFailureRate);
+        args.FailureCount.ShouldBe(failureCount);
+        args.Context.ShouldBe(context);
+        args.HalfOpenAttempts.ShouldBe(99);
     }
 }

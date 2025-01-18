@@ -18,10 +18,10 @@ public class CancellationTokenSourcePoolTests
 
         Assert.Throws<ArgumentOutOfRangeException>(() => pool.Get(TimeSpan.Zero));
         var e = Assert.Throws<ArgumentOutOfRangeException>(() => pool.Get(TimeSpan.FromMilliseconds(-2)));
-        e.Message.Should().StartWith("Invalid delay specified.");
-        e.ActualValue.Should().Be(TimeSpan.FromMilliseconds(-2));
+        e.Message.ShouldStartWith("Invalid delay specified.");
+        e.ActualValue.ShouldBe(TimeSpan.FromMilliseconds(-2));
 
-        pool.Get(System.Threading.Timeout.InfiniteTimeSpan).Should().NotBeNull();
+        pool.Get(System.Threading.Timeout.InfiniteTimeSpan).ShouldNotBeNull();
     }
 
 #pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
@@ -39,14 +39,14 @@ public class CancellationTokenSourcePoolTests
 #if NET6_0_OR_GREATER
         if (timeProvider == TimeProvider.System)
         {
-            cts2.Should().BeSameAs(cts);
+            cts2.ShouldBeSameAs(cts);
         }
         else
         {
-            cts2.Should().NotBeSameAs(cts);
+            cts2.ShouldNotBeSameAs(cts);
         }
 #else
-        cts2.Should().NotBeSameAs(cts);
+        cts2.ShouldNotBeSameAs(cts);
 #endif
     }
 
@@ -61,10 +61,11 @@ public class CancellationTokenSourcePoolTests
         cts.Cancel();
         pool.Return(cts);
 
-        cts.Invoking(c => c.Token).Should().Throw<ObjectDisposedException>();
+        Should.Throw<ObjectDisposedException>(() => cts.Token);
 
         var cts2 = pool.Get(System.Threading.Timeout.InfiniteTimeSpan);
-        cts2.Token.Should().NotBeNull();
+
+        Should.NotThrow(() => cts2.Token);
     }
 
 #pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
@@ -83,7 +84,7 @@ public class CancellationTokenSourcePoolTests
 
         await Task.Delay(100);
 
-        await TestUtilities.AssertWithTimeoutAsync(() => cts.IsCancellationRequested.Should().BeTrue());
+        await TestUtilities.AssertWithTimeoutAsync(() => cts.IsCancellationRequested.ShouldBeTrue());
     }
 
 #pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
@@ -97,7 +98,7 @@ public class CancellationTokenSourcePoolTests
 
         await Task.Delay(20);
 
-        cts.IsCancellationRequested.Should().BeFalse();
+        cts.IsCancellationRequested.ShouldBeFalse();
     }
 
     private static TimeProvider GetTimeProvider(object timeProvider) => (TimeProvider)timeProvider;

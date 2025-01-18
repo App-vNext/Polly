@@ -14,7 +14,7 @@ public static class HedgingDelayGeneratorArgumentsTests
         var args = new HedgingDelayGeneratorArguments(context, 5);
 
         // Assert
-        args.Context.Should().Be(context);
-        args.AttemptNumber.Should().Be(5);
+        args.Context.ShouldBe(context);
+        args.AttemptNumber.ShouldBe(5);
     }
 }

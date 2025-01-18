@@ -7,6 +7,6 @@ public class ResilienceStrategyOptionsTests
     {
         var options = new TestResilienceStrategyOptions();
 
-        options.Name.Should().BeNull();
+        options.Name.ShouldBeNull();
     }
 }

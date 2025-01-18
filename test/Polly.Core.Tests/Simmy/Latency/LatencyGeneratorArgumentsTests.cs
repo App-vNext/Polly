@@ -14,6 +14,6 @@ public static class LatencyGeneratorArgumentsTests
         var args = new LatencyGeneratorArguments(context);
 
         // Assert
-        args.Context.Should().NotBeNull();
+        args.Context.ShouldNotBeNull();
     }
 }

@@ -17,7 +17,7 @@ public partial class ResiliencePipelineTests
             AssertContext = AssertResilienceContext,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async t => { t.Should().Be(CancellationToken); return result; }, CancellationToken), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async t => { t.ShouldBe(CancellationToken); return result; }, CancellationToken), result)
         {
             Caption = "ExecuteAsyncT_Cancellation",
             AssertContext = AssertResilienceContextAndToken,
@@ -25,8 +25,8 @@ public partial class ResiliencePipelineTests
 
         yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async (state, t) =>
         {
-            state.Should().Be("state");
-            t.Should().Be(CancellationToken);
+            state.ShouldBe("state");
+            t.ShouldBe(CancellationToken);
             return result;
         }, "state", CancellationToken), result)
         {
@@ -34,7 +34,7 @@ public partial class ResiliencePipelineTests
             AssertContext = AssertResilienceContextAndToken,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContextPool.Shared.Get(), "dummy-state"), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async (_, s) => { s.ShouldBe("dummy-state"); return result; }, ResilienceContextPool.Shared.Get(), "dummy-state"), result)
         {
             Caption = "ExecuteAsyncT_ResilienceContextAndState",
             AssertContext = AssertResilienceContext,
@@ -50,19 +50,19 @@ public partial class ResiliencePipelineTests
 
         static void AssertResilienceContext(ResilienceContext context)
         {
-            context.IsSynchronous.Should().BeFalse();
-            context.IsVoid.Should().BeFalse();
-            context.ResultType.Should().Be<long>();
-            context.ContinueOnCapturedContext.Should().BeFalse();
+            context.IsSynchronous.ShouldBeFalse();
+            context.IsVoid.ShouldBeFalse();
+            context.ResultType.ShouldBe(typeof(long));
+            context.ContinueOnCapturedContext.ShouldBeFalse();
         }
 
         static void AssertResilienceContextAndToken(ResilienceContext context)
         {
             AssertResilienceContext(context);
-            context.CancellationToken.Should().Be(CancellationToken);
+            context.CancellationToken.ShouldBe(CancellationToken);
         }
 
-        static void AssertContextInitialized(ResilienceContext context) => context.IsInitialized.Should().BeTrue();
+        static void AssertContextInitialized(ResilienceContext context) => context.IsInitialized.ShouldBeTrue();
     }
 
     [Theory]
@@ -102,15 +102,10 @@ public partial class ResiliencePipelineTests
         {
             var strategy = new TestResilienceStrategy().AsPipeline();
 
-            var error = await strategy
-                .Invoking(s =>
-                {
-                    return execute(s).AsTask();
-                })
-                .Should()
-                .ThrowAsync<FormatException>();
+            var error = await Should.ThrowAsync<FormatException>(() => execute(strategy).AsTask());
 
-            error.And.StackTrace.Should().Contain(nameof(MyThrowingMethod));
+            error.StackTrace.ShouldNotBeNull();
+            error.StackTrace.ShouldContain(nameof(MyThrowingMethod));
         }
 
         static ValueTask<string> MyThrowingMethod() => throw new FormatException();
@@ -121,14 +116,14 @@ public partial class ResiliencePipelineTests
     {
         var result = await ResiliencePipeline.Empty.ExecuteOutcomeAsync((context, state) =>
         {
-            state.Should().Be("state");
-            context.IsSynchronous.Should().BeFalse();
-            context.ResultType.Should().Be<int>();
+            state.ShouldBe("state");
+            context.IsSynchronous.ShouldBeFalse();
+            context.ResultType.ShouldBe(typeof(int));
             return Outcome.FromResultAsValueTask(12345);
         },
         ResilienceContextPool.Shared.Get(),
         "state");
 
-        result.Result.Should().Be(12345);
+        result.Result.ShouldBe(12345);
     }
 }

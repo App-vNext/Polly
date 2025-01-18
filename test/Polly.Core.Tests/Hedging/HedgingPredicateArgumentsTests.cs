@@ -14,7 +14,7 @@ public static class HedgingPredicateArgumentsTests
         var args = new HedgingPredicateArguments<int>(context, Outcome.FromResult(1));
 
         // Assert
-        args.Context.Should().Be(context);
-        args.Outcome.Result.Should().Be(1);
+        args.Context.ShouldBe(context);
+        args.Outcome.Result.ShouldBe(1);
     }
 }

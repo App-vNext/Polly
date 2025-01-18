@@ -7,10 +7,10 @@ public class RetryConstantsTests
     [Fact]
     public void EnsureDefaults()
     {
-        RetryConstants.DefaultBackoffType.Should().Be(DelayBackoffType.Constant);
-        RetryConstants.DefaultBaseDelay.Should().Be(TimeSpan.FromSeconds(2));
-        RetryConstants.DefaultRetryCount.Should().Be(3);
-        RetryConstants.MaxRetryCount.Should().Be(int.MaxValue);
-        RetryConstants.OnRetryEvent.Should().Be("OnRetry");
+        RetryConstants.DefaultBackoffType.ShouldBe(DelayBackoffType.Constant);
+        RetryConstants.DefaultBaseDelay.ShouldBe(TimeSpan.FromSeconds(2));
+        RetryConstants.DefaultRetryCount.ShouldBe(3);
+        RetryConstants.MaxRetryCount.ShouldBe(int.MaxValue);
+        RetryConstants.OnRetryEvent.ShouldBe("OnRetry");
     }
 }

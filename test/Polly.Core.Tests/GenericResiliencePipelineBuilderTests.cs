@@ -12,23 +12,23 @@ public class GenericResiliencePipelineBuilderTests
     [Fact]
     public void Ctor_EnsureDefaults()
     {
-        _builder.Name.Should().BeNull();
-        _builder.TimeProvider.Should().BeNull();
+        _builder.Name.ShouldBeNull();
+        _builder.TimeProvider.ShouldBeNull();
     }
 
     [Fact]
     public void CopyCtor_Ok() =>
-        new ResiliencePipelineBuilder<string>(new ResiliencePipelineBuilder()).Should().NotBeNull();
+        new ResiliencePipelineBuilder<string>(new ResiliencePipelineBuilder()).ShouldNotBeNull();
 
     [Fact]
     public void Properties_GetSet_Ok()
     {
         _builder.Name = "dummy";
-        _builder.Name.Should().Be("dummy");
+        _builder.Name.ShouldBe("dummy");
 
         var timeProvider = new FakeTimeProvider();
         _builder.TimeProvider = timeProvider;
-        _builder.TimeProvider.Should().Be(timeProvider);
+        _builder.TimeProvider.ShouldBe(timeProvider);
     }
 
     [Fact]
@@ -42,8 +42,8 @@ public class GenericResiliencePipelineBuilderTests
         var strategy = _builder.Build();
 
         // assert
-        strategy.Should().NotBeNull();
-        strategy.Component.Should().BeOfType<CompositeComponent>().Subject.Components.Should().HaveCount(2);
+        strategy.ShouldNotBeNull();
+        strategy.Component.ShouldBeOfType<CompositeComponent>().Components.Count.ShouldBe(2);
     }
 
     [Fact]
@@ -57,12 +57,10 @@ public class GenericResiliencePipelineBuilderTests
         var pipeline = _builder.Build();
 
         // assert
-        strategy.Should().NotBeNull();
+        strategy.ShouldNotBeNull();
         ((CompositeComponent)pipeline.Component).Components[0]
-            .Should()
-            .BeOfType<BridgeComponent<string>>().Subject.Strategy
-            .Should()
-            .Be(strategy);
+            .ShouldBeOfType<BridgeComponent<string>>().Strategy
+            .ShouldBe(strategy);
     }
 
     [Fact]
@@ -76,7 +74,7 @@ public class GenericResiliencePipelineBuilderTests
         builder
             .Build()
             .GetPipelineDescriptor()
-            .FirstStrategy.StrategyInstance.Should()
-            .BeSameAs(strategy);
+            .FirstStrategy.StrategyInstance
+            .ShouldBeSameAs(strategy);
     }
 }

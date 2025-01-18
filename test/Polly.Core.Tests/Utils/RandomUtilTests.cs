@@ -12,10 +12,10 @@ public class RandomUtilTests
     {
         var util = new RandomUtil(seed);
 
-        util.Invoking(u => u.NextDouble()).Should().NotThrow();
+        Should.NotThrow(util.NextDouble);
     }
 
     [Fact]
     public void Instance_Ok() =>
-        RandomUtil.Instance.Should().NotBeNull();
+        RandomUtil.Instance.ShouldNotBeNull();
 }

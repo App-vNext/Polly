@@ -13,8 +13,7 @@ public class HealthMetricsTests
         HealthMetrics.Create(
             TimeSpan.FromMilliseconds(samplingDurationMs),
             TimeProvider.System)
-            .Should()
-            .BeOfType(expectedType);
+            .ShouldBeOfType(expectedType);
 
     [Fact]
     public void HealthInfo_WithZeroTotal_ShouldSetValuesCorrectly()
@@ -23,9 +22,9 @@ public class HealthMetricsTests
         var result = HealthInfo.Create(0, 0);
 
         // Assert
-        result.Throughput.Should().Be(0);
-        result.FailureRate.Should().Be(0);
-        result.FailureCount.Should().Be(0);
+        result.Throughput.ShouldBe(0);
+        result.FailureRate.ShouldBe(0);
+        result.FailureCount.ShouldBe(0);
     }
 
     [Fact]
@@ -40,9 +39,9 @@ public class HealthMetricsTests
         var result = new HealthInfo(expectedThroughput, expectedFailureRate, expectedFailureCount);
 
         // Assert
-        result.Throughput.Should().Be(expectedThroughput);
-        result.FailureRate.Should().Be(expectedFailureRate);
-        result.FailureCount.Should().Be(expectedFailureCount);
+        result.Throughput.ShouldBe(expectedThroughput);
+        result.FailureRate.ShouldBe(expectedFailureRate);
+        result.FailureCount.ShouldBe(expectedFailureCount);
     }
 
     [Fact]
@@ -57,8 +56,8 @@ public class HealthMetricsTests
         var result = new HealthInfo(throughput, failureRate, failureCount);
 
         // Assert
-        result.Throughput.Should().Be(throughput);
-        result.FailureRate.Should().Be(failureRate);
-        result.FailureCount.Should().Be(failureCount);
+        result.Throughput.ShouldBe(throughput);
+        result.FailureRate.ShouldBe(failureRate);
+        result.FailureCount.ShouldBe(failureCount);
     }
 }

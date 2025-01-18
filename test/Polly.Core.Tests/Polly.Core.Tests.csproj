@@ -12,10 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.Bcl.TimeProvider" />
     <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
     <PackageReference Include="Polly.Contrib.WaitAndRetry" />
+    <PackageReference Include="Shouldly" />
   </ItemGroup>
 
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0'))">
@@ -29,8 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="FluentAssertions" />
     <Using Include="Polly.Core.Tests.Helpers" />
     <Using Include="Polly.TestUtils" />
+    <Using Include="Shouldly" />
   </ItemGroup>
 </Project>
