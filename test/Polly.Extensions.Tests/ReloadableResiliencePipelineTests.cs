@@ -44,8 +44,8 @@ public class ReloadableResiliencePipelineTests
             builder.InstanceName = "my-instance";
 
             var options = context.GetOptions<ReloadableStrategyOptions>(name);
-            options.Should().NotBeNull();
-            options.OptionsName.Should().Be(name);
+            options.ShouldNotBeNull();
+            options.OptionsName.ShouldBe(name);
 
             context.EnableReloads<ReloadableStrategyOptions>(name);
 
@@ -64,18 +64,18 @@ public class ReloadableResiliencePipelineTests
 
         // initial
         pipeline.Execute(_ => "dummy", context);
-        context.Properties.GetValue(TagKey, string.Empty).Should().Be("initial-tag");
+        context.Properties.GetValue(TagKey, string.Empty).ShouldBe("initial-tag");
 
         // reloads
         for (int i = 0; i < 10; i++)
         {
             reloadableConfig.Reload(new() { { "tag", $"reload-{i}" } });
             pipeline.Execute(_ => "dummy", context);
-            context.Properties.GetValue(TagKey, string.Empty).Should().Be($"reload-{i}");
+            context.Properties.GetValue(TagKey, string.Empty).ShouldBe($"reload-{i}");
         }
 
         // check resource disposed
-        resList.Should().HaveCount(11);
+        resList.Count.ShouldBe(11);
         for (int i = 0; i < resList.Count - 1; i++)
         {
             resList[i].Received(1).Dispose();
@@ -86,12 +86,12 @@ public class ReloadableResiliencePipelineTests
         // check disposal of service provider
         serviceProvider.Dispose();
         resList[resList.Count - 1].Received(1).Dispose();
-        pipeline.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
+        Should.Throw<ObjectDisposedException>(() => pipeline.Execute(() => { }));
 
         foreach (var ev in fakeListener.Events)
         {
-            ev.Source.PipelineName.Should().Be("my-pipeline");
-            ev.Source.PipelineInstanceName.Should().Be("my-instance");
+            ev.Source.PipelineName.ShouldBe("my-pipeline");
+            ev.Source.PipelineInstanceName.ShouldBe("my-instance");
         }
     }
 

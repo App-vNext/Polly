@@ -28,7 +28,7 @@ public partial class IssuesTests
             ResilienceContext context,
             TState state)
         {
-            context.ContinueOnCapturedContext.Should().BeTrue();
+            context.ContinueOnCapturedContext.ShouldBeTrue();
 
             HitCount++;
 
@@ -51,7 +51,7 @@ public partial class IssuesTests
 
         services.AddResiliencePipeline(key, builder =>
         {
-            builder.ContextPool.Should().Be(pool);
+            builder.ContextPool.ShouldBe(pool);
             builder.AddStrategy(strategy);
         });
 
@@ -62,6 +62,6 @@ public partial class IssuesTests
 
         await pipeline.ExecuteAsync(async ct => await default(ValueTask));
 
-        strategy.HitCount.Should().BeGreaterThan(0);
+        strategy.HitCount.ShouldBeGreaterThan(0);
     }
 }

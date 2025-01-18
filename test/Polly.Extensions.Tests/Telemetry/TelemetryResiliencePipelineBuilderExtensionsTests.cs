@@ -12,8 +12,8 @@ public class TelemetryResiliencePipelineBuilderExtensionsTests
     public void ConfigureTelemetry_EnsureDiagnosticSourceUpdated()
     {
         _builder.ConfigureTelemetry(NullLoggerFactory.Instance);
-        _builder.TelemetryListener.Should().BeOfType<TelemetryListenerImpl>();
-        _builder.AddStrategy(new TestResilienceStrategy()).Build().Should().NotBeOfType<TestResilienceStrategy>();
+        _builder.TelemetryListener.ShouldBeOfType<TelemetryListenerImpl>();
+        _builder.AddStrategy(new TestResilienceStrategy()).Build().ShouldNotBeOfType<TestResilienceStrategy>();
     }
 
     [Fact]
@@ -24,22 +24,23 @@ public class TelemetryResiliencePipelineBuilderExtensionsTests
         _builder.ConfigureTelemetry(factory);
         _builder.AddStrategy(new TestResilienceStrategy()).Build().Execute(_ => { });
 
-        fakeLogger.GetRecords().Should().NotBeEmpty();
-        fakeLogger.GetRecords().Should().HaveCount(2);
+        fakeLogger.GetRecords().ShouldNotBeEmpty();
+        fakeLogger.GetRecords().Count().ShouldBe(2);
     }
 
     [Fact]
-    public void ConfigureTelemetry_InvalidOptions_Throws() =>
-        _builder
-            .Invoking(b => b.ConfigureTelemetry(new TelemetryOptions
+    public void ConfigureTelemetry_InvalidOptions_Throws()
+    {
+        var exception = Should.Throw<ValidationException>(() =>
+            _builder.ConfigureTelemetry(new TelemetryOptions
             {
                 LoggerFactory = null!,
-            })).Should()
-            .Throw<ValidationException>()
-            .WithMessage("""
+            }));
+        exception.Message.Trim().ShouldBe("""
             The 'TelemetryOptions' are invalid.
-
             Validation Errors:
             The LoggerFactory field is required.
-            """);
+            """,
+            StringCompareShould.IgnoreLineEndings);
+    }
 }

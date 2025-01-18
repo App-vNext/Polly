@@ -13,6 +13,6 @@ public class TagsListTests
 
             TagsList.Return(context);
 
-            TagsList.Get().Should().BeSameAs(context);
+            TagsList.Get().ShouldBeSameAs(context);
         });
 }

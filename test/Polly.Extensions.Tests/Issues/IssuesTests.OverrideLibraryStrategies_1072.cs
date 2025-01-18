@@ -40,13 +40,12 @@ public partial class IssuesTests
         if (overrideStrategy)
         {
             // The library now also handles SocketException.
-            api.Invoking(a => a.ExecuteLibrary(UnstableCall)).Should().NotThrow();
-
+            Should.NotThrow(() => api.ExecuteLibrary(UnstableCall));
         }
         else
         {
             // Originally, the library pipeline only handled InvalidOperationException.
-            api.Invoking(a => a.ExecuteLibrary(UnstableCall)).Should().Throw<SocketException>();
+            Should.Throw<SocketException>(() => api.ExecuteLibrary(UnstableCall));
         }
 
         void UnstableCall()
@@ -74,11 +73,9 @@ public partial class IssuesTests
         }));
     }
 
-    public class LibraryApi
+    public class LibraryApi(ResiliencePipelineProvider<string> provider)
     {
-        private readonly ResiliencePipeline _pipeline;
-
-        public LibraryApi(ResiliencePipelineProvider<string> provider) => _pipeline = provider.GetPipeline("library-pipeline");
+        private readonly ResiliencePipeline _pipeline = provider.GetPipeline("library-pipeline");
 
         public void ExecuteLibrary(Action execute) => _pipeline.Execute(execute);
     }
