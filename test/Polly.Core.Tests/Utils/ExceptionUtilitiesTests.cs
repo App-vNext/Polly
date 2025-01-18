@@ -11,7 +11,8 @@ public class ExceptionUtilitiesTests
 
         ExceptionUtilities.TrySetStackTrace(exception);
 
-        exception.StackTrace.Should().Contain("ExceptionUtilitiesTests");
+        exception.StackTrace.ShouldNotBeNull();
+        exception.StackTrace.ShouldContain("ExceptionUtilitiesTests");
     }
 
     [Fact]
@@ -26,7 +27,8 @@ public class ExceptionUtilitiesTests
         {
             var oldTrace = e.StackTrace;
             ExceptionUtilities.TrySetStackTrace(e);
-            e.StackTrace.Should().Be(oldTrace);
+            e.StackTrace.ShouldNotBeNull();
+            e.StackTrace.ShouldBe(oldTrace);
         }
     }
 }

@@ -13,7 +13,7 @@ public class RateLimiterResilienceStrategyTests
 
     [Fact]
     public void Ctor_Ok() =>
-        Create().Should().NotBeNull();
+        Create().ShouldNotBeNull();
 
     [Fact]
     public async Task Execute_HappyPath()
@@ -24,7 +24,7 @@ public class RateLimiterResilienceStrategyTests
 
         _lease.IsAcquired.Returns(true);
 
-        Create().Should().NotBeNull();
+        Create().ShouldNotBeNull();
 
         var strategy = Create();
 
@@ -59,8 +59,8 @@ public class RateLimiterResilienceStrategyTests
         {
             _event = args =>
             {
-                args.Context.Should().NotBeNull();
-                args.Lease.Should().Be(_lease);
+                args.Context.ShouldNotBeNull();
+                args.Lease.ShouldBe(_lease);
                 eventCalled = true;
                 return default;
             };
@@ -70,20 +70,22 @@ public class RateLimiterResilienceStrategyTests
         var context = ResilienceContextPool.Shared.Get(cts.Token);
         var outcome = await strategy.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("dummy"), context, "state");
 
+        outcome.Exception.ShouldNotBeNull();
+
         RateLimiterRejectedException exception = outcome.Exception
-            .Should()
-            .BeOfType<RateLimiterRejectedException>().Subject;
+            .ShouldBeOfType<RateLimiterRejectedException>();
 
-        exception.RetryAfter.Should().Be((TimeSpan?)metadata);
-        exception.StackTrace.Should().Contain("Execute_LeaseRejected");
-        exception.TelemetrySource.Should().NotBeNull();
+        exception.RetryAfter.ShouldBe((TimeSpan?)metadata);
+        exception.StackTrace.ShouldNotBeNull();
+        exception.StackTrace.ShouldContain("Execute_LeaseRejected");
+        exception.TelemetrySource.ShouldNotBeNull();
 
-        eventCalled.Should().Be(hasEvents);
+        eventCalled.ShouldBe(hasEvents);
 
         await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, default);
         _lease.Received().Dispose();
 
-        _listener.GetArgs<OnRateLimiterRejectedArguments>().Should().HaveCount(1);
+        _listener.GetArgs<OnRateLimiterRejectedArguments>().Count().ShouldBe(1);
     }
 
     [InlineData(true)]
@@ -106,7 +108,7 @@ public class RateLimiterResilienceStrategyTests
 #pragma warning restore S6966
         }
 
-        await limiter.Invoking(l => l.AcquireAsync(1).AsTask()).Should().ThrowAsync<ObjectDisposedException>();
+        await Should.ThrowAsync<ObjectDisposedException>(() => limiter.AcquireAsync(1).AsTask());
     }
 
     [InlineData(true)]
@@ -118,11 +120,11 @@ public class RateLimiterResilienceStrategyTests
 
         if (isAsync)
         {
-            await strategy.Invoking(s => s.DisposeAsync().AsTask()).Should().NotThrowAsync();
+            await Should.NotThrowAsync(() => strategy.DisposeAsync().AsTask());
         }
         else
         {
-            strategy.Invoking(s => s.Dispose()).Should().NotThrow();
+            Should.NotThrow(() => strategy.Dispose());
         }
     }
 

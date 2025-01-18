@@ -12,7 +12,7 @@ public static class OnRateLimiterRejectedArgumentsTests
             ResilienceContextPool.Shared.Get(CancellationToken.None),
             Substitute.For<RateLimitLease>());
 
-        args.Context.Should().NotBeNull();
-        args.Lease.Should().NotBeNull();
+        args.Context.ShouldNotBeNull();
+        args.Lease.ShouldNotBeNull();
     }
 }
