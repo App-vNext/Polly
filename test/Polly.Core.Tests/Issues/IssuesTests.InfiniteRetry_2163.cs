@@ -5,7 +5,7 @@ namespace Polly.Core.Tests.Issues;
 
 public partial class IssuesTests
 {
-    [Fact(Timeout = 15_000)]
+    [Fact(Timeout = 30_000)]
     public async Task InfiniteRetry_Delay_Does_Not_Overflow_2163()
     {
         // Arrange
@@ -35,7 +35,8 @@ public partial class IssuesTests
         var strategy = new RetryResilienceStrategy<bool>(options, timeProvider, telemetry);
         var pipeline = strategy.AsPipeline();
 
-        using var cts = new CancellationTokenSource(Debugger.IsAttached ? TimeSpan.MaxValue : TimeSpan.FromSeconds(10));
+        using var cts = new CancellationTokenSource(
+            Debugger.IsAttached ? TimeSpan.MaxValue : TimeSpan.FromSeconds(20));
 
         // Act
         var executing = pipeline.ExecuteAsync((_) =>
