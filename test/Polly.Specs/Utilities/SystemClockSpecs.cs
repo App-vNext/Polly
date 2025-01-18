@@ -1,10 +1,21 @@
 ﻿namespace Polly.Specs.Utilities;
 
+[Collection(Constants.SystemClockDependentTestCollection)]
 public class SystemClockSpecs
 {
+    private readonly Action<TimeSpan, CancellationToken> _sleep;
+    private readonly Func<TimeSpan, CancellationToken, Task> _sleepAsync;
+
+    public SystemClockSpecs()
+    {
+        SystemClock.Reset();
+        _sleep = SystemClock.Sleep;
+        _sleepAsync = SystemClock.SleepAsync;
+    }
+
     [Fact]
     public void Sleep_ShouldNotThrow_WhenCancellationNotRequested() =>
-        SystemClock.Sleep.Invoking(s =>
+        _sleep.Invoking(s =>
         {
             using var cts = new CancellationTokenSource();
             s(TimeSpan.FromMilliseconds(1), cts.Token);
@@ -12,7 +23,7 @@ public class SystemClockSpecs
 
     [Fact]
     public void Sleep_ShouldThrow_WhenCancellationRequested() =>
-        SystemClock.Sleep.Invoking(s =>
+        _sleep.Invoking(s =>
         {
             using var cts = new CancellationTokenSource();
             cts.Cancel();
@@ -21,7 +32,7 @@ public class SystemClockSpecs
 
     [Fact]
     public async Task SleepAsync_ShouldNotThrow_WhenCancellationNotRequested() =>
-        await SystemClock.SleepAsync.Invoking(async s =>
+        await _sleepAsync.Invoking(async s =>
         {
             using var cts = new CancellationTokenSource();
             await s(TimeSpan.FromMilliseconds(1), cts.Token);
@@ -29,7 +40,7 @@ public class SystemClockSpecs
 
     [Fact]
     public async Task SleepAsync_ShouldThrow_WhenCancellationRequested() =>
-        await SystemClock.SleepAsync.Invoking(async s =>
+        await _sleepAsync.Invoking(async s =>
         {
             using var cts = new CancellationTokenSource();
             cts.Cancel();
