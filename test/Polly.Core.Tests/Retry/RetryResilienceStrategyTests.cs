@@ -67,6 +67,51 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_CancellationRequestedDuringCallback_EnsureNotRetried()
+    {
+        using var cts = new CancellationTokenSource();
+        _options.ShouldHandle = _ => PredicateResult.True();
+
+        var sut = CreateSut(TimeProvider.System);
+        var context = ResilienceContextPool.Shared.Get(cts.Token);
+
+        var result = await sut.ExecuteOutcomeAsync(
+            (_, _) =>
+            {
+                cts.Cancel();
+                return Outcome.FromResultAsValueTask(new object());
+            },
+            context,
+            default(object));
+
+        result.Exception.Should().BeOfType<OperationCanceledException>();
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_CancellationRequestedDuringCallback_EnsureResultDisposed()
+    {
+        using var cts = new CancellationTokenSource();
+        _options.ShouldHandle = _ => PredicateResult.True();
+
+        var sut = CreateSut(TimeProvider.System);
+        var context = ResilienceContextPool.Shared.Get(cts.Token);
+        var result = default(DisposableResult);
+
+        var outcome = await sut.ExecuteOutcomeAsync(
+            (_, _) =>
+            {
+                cts.Cancel();
+                result = new();
+                return Outcome.FromResultAsValueTask(result);
+            },
+            context,
+            default(object));
+
+        result.Should().NotBeNull();
+        result!.IsDisposed.Should().BeTrue();
+    }
+
+    [Fact]
     public void ExecuteAsync_MultipleRetries_EnsureDiscardedResultsDisposed()
     {
         // arrange
