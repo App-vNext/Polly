@@ -222,7 +222,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         onTimeoutCalled.ShouldBeFalse();
 
-        _args.Count.ShouldBe(0);
+        _args.ShouldBeEmpty();
     }
 
     [Fact]
