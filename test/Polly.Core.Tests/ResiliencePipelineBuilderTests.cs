@@ -68,7 +68,7 @@ public class ResiliencePipelineBuilderTests
         pipeline.Execute(_ => executions.Add(2));
 
         pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<TestResilienceStrategy>();
-        executions.ShouldBe(executions.OrderBy(p => p));
+        executions.ShouldBeInOrder();
         executions.Count.ShouldBe(3);
     }
 
@@ -110,7 +110,7 @@ public class ResiliencePipelineBuilderTests
         // assert
         strategy.Execute(_ => executions.Add(4));
 
-        executions.ShouldBe(executions.OrderBy(p => p));
+        executions.ShouldBeInOrder();
         executions.Count.ShouldBe(7);
     }
 
@@ -195,7 +195,7 @@ public class ResiliencePipelineBuilderTests
         // assert
         strategy.Execute(_ => executions.Add(4));
 
-        executions.ShouldBe(executions.OrderBy(p => p));
+        executions.ShouldBeInOrder();
         executions.Count.ShouldBe(7);
     }
 
@@ -330,7 +330,7 @@ public class ResiliencePipelineBuilderTests
         // assert
         strategy.Execute(_ => executions.Add(4));
 
-        executions.ShouldBe(executions.OrderBy(p => p));
+        executions.ShouldBeInOrder();
         executions.Count.ShouldBe(7);
     }
 
@@ -413,8 +413,8 @@ public class ResiliencePipelineBuilderTests
         strategy.Execute(_ => executions.Add("execute"));
 
         // assert
-        executions.SequenceEqual(new[]
-        {
+        executions.SequenceEqual(
+        [
             "first-start",
             "second-start",
             "third-start",
@@ -425,7 +425,7 @@ public class ResiliencePipelineBuilderTests
             "third-end",
             "second-end",
             "first-end",
-        })
+        ])
         .ShouldBeTrue();
     }
 

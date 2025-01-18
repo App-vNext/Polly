@@ -914,7 +914,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         await strategy.ExecuteAsync(_ => new ValueTask<string>(Failure), primaryContext);
 
         attempts.Count.ShouldBe(_options.MaxHedgedAttempts);
-        attempts.OrderBy(p => p).ShouldBe(attempts);
+        attempts.ShouldBeInOrder();
         attempts[0].ShouldBe(0);
     }
 
