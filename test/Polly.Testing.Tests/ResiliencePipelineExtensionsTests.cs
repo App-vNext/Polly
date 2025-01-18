@@ -33,27 +33,26 @@ public class ResiliencePipelineExtensionsTests
         var descriptor = strategy.GetPipelineDescriptor();
 
         // assert
-        descriptor.IsReloadable.Should().BeFalse();
-        descriptor.Strategies.Should().HaveCount(7);
-        descriptor.FirstStrategy.Options.Should().BeOfType<FallbackStrategyOptions<string>>();
-        descriptor.Strategies[0].Options.Should().BeOfType<FallbackStrategyOptions<string>>();
-        descriptor.Strategies[0].StrategyInstance.GetType().FullName.Should().Contain("Fallback");
-        descriptor.Strategies[1].Options.Should().BeOfType<RetryStrategyOptions<string>>();
-        descriptor.Strategies[1].StrategyInstance.GetType().FullName.Should().Contain("Retry");
-        descriptor.Strategies[2].Options.Should().BeOfType<CircuitBreakerStrategyOptions<string>>();
-        descriptor.Strategies[2].StrategyInstance.GetType().FullName.Should().Contain("CircuitBreaker");
-        descriptor.Strategies[3].Options.Should().BeOfType<TimeoutStrategyOptions>();
-        descriptor.Strategies[3].StrategyInstance.GetType().FullName.Should().Contain("Timeout");
+        descriptor.IsReloadable.ShouldBeFalse();
+        descriptor.Strategies.Count.ShouldBe(7);
+        descriptor.FirstStrategy.Options.ShouldBeOfType<FallbackStrategyOptions<string>>();
+        descriptor.Strategies[0].Options.ShouldBeOfType<FallbackStrategyOptions<string>>();
+        descriptor.Strategies[0].StrategyInstance.GetType().FullName.ShouldNotBeNull().ShouldContain("Fallback");
+        descriptor.Strategies[1].Options.ShouldBeOfType<RetryStrategyOptions<string>>();
+        descriptor.Strategies[1].StrategyInstance.GetType().FullName.ShouldNotBeNull().ShouldContain("Retry");
+        descriptor.Strategies[2].Options.ShouldBeOfType<CircuitBreakerStrategyOptions<string>>();
+        descriptor.Strategies[2].StrategyInstance.GetType().FullName.ShouldNotBeNull().ShouldContain("CircuitBreaker");
+        descriptor.Strategies[3].Options.ShouldBeOfType<TimeoutStrategyOptions>();
+        descriptor.Strategies[3].StrategyInstance.GetType().FullName.ShouldNotBeNull().ShouldContain("Timeout");
         descriptor.Strategies[3].Options
-            .Should()
-            .BeOfType<TimeoutStrategyOptions>().Subject.Timeout
-            .Should().Be(TimeSpan.FromSeconds(1));
+            .ShouldBeOfType<TimeoutStrategyOptions>().Timeout
+            .ShouldBe(TimeSpan.FromSeconds(1));
 
-        descriptor.Strategies[4].Options.Should().BeOfType<HedgingStrategyOptions<string>>();
-        descriptor.Strategies[4].StrategyInstance.GetType().FullName.Should().Contain("Hedging");
-        descriptor.Strategies[5].Options.Should().BeOfType<RateLimiterStrategyOptions>();
-        descriptor.Strategies[5].StrategyInstance.GetType().FullName.Should().Contain("RateLimiter");
-        descriptor.Strategies[6].StrategyInstance.GetType().Should().Be<CustomStrategy>();
+        descriptor.Strategies[4].Options.ShouldBeOfType<HedgingStrategyOptions<string>>();
+        descriptor.Strategies[4].StrategyInstance.GetType().FullName.ShouldNotBeNull().ShouldContain("Hedging");
+        descriptor.Strategies[5].Options.ShouldBeOfType<RateLimiterStrategyOptions>();
+        descriptor.Strategies[5].StrategyInstance.GetType().FullName.ShouldNotBeNull().ShouldContain("RateLimiter");
+        descriptor.Strategies[6].StrategyInstance.ShouldBeOfType<CustomStrategy>();
     }
 
     [Fact]
@@ -73,22 +72,21 @@ public class ResiliencePipelineExtensionsTests
         var descriptor = strategy.GetPipelineDescriptor();
 
         // assert
-        descriptor.IsReloadable.Should().BeFalse();
-        descriptor.Strategies.Should().HaveCount(5);
-        descriptor.Strategies[0].Options.Should().BeOfType<RetryStrategyOptions>();
-        descriptor.Strategies[0].StrategyInstance.GetType().FullName.Should().Contain("Retry");
-        descriptor.Strategies[1].Options.Should().BeOfType<CircuitBreakerStrategyOptions>();
-        descriptor.Strategies[1].StrategyInstance.GetType().FullName.Should().Contain("CircuitBreaker");
-        descriptor.Strategies[2].Options.Should().BeOfType<TimeoutStrategyOptions>();
-        descriptor.Strategies[2].StrategyInstance.GetType().FullName.Should().Contain("Timeout");
+        descriptor.IsReloadable.ShouldBeFalse();
+        descriptor.Strategies.Count.ShouldBe(5);
+        descriptor.Strategies[0].Options.ShouldBeOfType<RetryStrategyOptions>();
+        descriptor.Strategies[0].StrategyInstance.GetType().FullName.ShouldNotBeNull().ShouldContain("Retry");
+        descriptor.Strategies[1].Options.ShouldBeOfType<CircuitBreakerStrategyOptions>();
+        descriptor.Strategies[1].StrategyInstance.GetType().FullName.ShouldNotBeNull().ShouldContain("CircuitBreaker");
+        descriptor.Strategies[2].Options.ShouldBeOfType<TimeoutStrategyOptions>();
+        descriptor.Strategies[2].StrategyInstance.GetType().FullName.ShouldNotBeNull().ShouldContain("Timeout");
         descriptor.Strategies[2].Options
-            .Should()
-            .BeOfType<TimeoutStrategyOptions>().Subject.Timeout
-            .Should().Be(TimeSpan.FromSeconds(1));
+            .ShouldBeOfType<TimeoutStrategyOptions>().Timeout
+            .ShouldBe(TimeSpan.FromSeconds(1));
 
-        descriptor.Strategies[3].Options.Should().BeOfType<RateLimiterStrategyOptions>();
-        descriptor.Strategies[3].StrategyInstance.GetType().FullName.Should().Contain("RateLimiter");
-        descriptor.Strategies[4].StrategyInstance.GetType().Should().Be<CustomStrategy>();
+        descriptor.Strategies[3].Options.ShouldBeOfType<RateLimiterStrategyOptions>();
+        descriptor.Strategies[3].StrategyInstance.GetType().FullName.ShouldNotBeNull().ShouldContain("RateLimiter");
+        descriptor.Strategies[4].StrategyInstance.ShouldBeOfType<CustomStrategy>();
     }
 
     [Fact]
@@ -103,9 +101,9 @@ public class ResiliencePipelineExtensionsTests
         var descriptor = strategy.GetPipelineDescriptor();
 
         // assert
-        descriptor.IsReloadable.Should().BeFalse();
-        descriptor.Strategies.Should().HaveCount(1);
-        descriptor.Strategies[0].Options.Should().BeOfType<TimeoutStrategyOptions>();
+        descriptor.IsReloadable.ShouldBeFalse();
+        descriptor.Strategies.Count.ShouldBe(1);
+        descriptor.Strategies[0].Options.ShouldBeOfType<TimeoutStrategyOptions>();
     }
 
     [Fact]
@@ -128,10 +126,10 @@ public class ResiliencePipelineExtensionsTests
         var descriptor = strategy.GetPipelineDescriptor();
 
         // assert
-        descriptor.IsReloadable.Should().BeTrue();
-        descriptor.Strategies.Should().HaveCount(2);
-        descriptor.Strategies[0].Options.Should().BeOfType<RateLimiterStrategyOptions>();
-        descriptor.Strategies[1].StrategyInstance.GetType().Should().Be<CustomStrategy>();
+        descriptor.IsReloadable.ShouldBeTrue();
+        descriptor.Strategies.Count.ShouldBe(2);
+        descriptor.Strategies[0].Options.ShouldBeOfType<RateLimiterStrategyOptions>();
+        descriptor.Strategies[1].StrategyInstance.ShouldBeOfType<CustomStrategy>();
     }
 
     [Fact]
@@ -142,8 +140,8 @@ public class ResiliencePipelineExtensionsTests
             .Build()
             .GetPipelineDescriptor();
 
-        descriptor.Strategies.Should().HaveCount(1);
-        descriptor.Strategies[0].Options.Should().BeOfType<RateLimiterStrategyOptions>();
+        descriptor.Strategies.Count.ShouldBe(1);
+        descriptor.Strategies[0].Options.ShouldBeOfType<RateLimiterStrategyOptions>();
     }
 
     private sealed class CustomStrategy : ResilienceStrategy
@@ -152,7 +150,5 @@ public class ResiliencePipelineExtensionsTests
             => throw new NotSupportedException();
     }
 
-    private class TestOptions : ResilienceStrategyOptions
-    {
-    }
+    private class TestOptions : ResilienceStrategyOptions;
 }
