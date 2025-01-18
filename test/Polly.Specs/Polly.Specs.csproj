@@ -33,5 +33,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
     <ProjectReference Include="..\..\src\Polly\Polly.csproj" />
+    <PackageReference Include="FluentAssertions" />
   </ItemGroup>
 </Project>
