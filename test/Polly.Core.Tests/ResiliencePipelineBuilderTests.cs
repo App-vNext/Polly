@@ -68,7 +68,7 @@ public class ResiliencePipelineBuilderTests
         pipeline.Execute(_ => executions.Add(2));
 
         pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<TestResilienceStrategy>();
-        executions.OrderBy(p => p).ShouldBe(executions);
+        executions.ShouldBe(executions.OrderBy(p => p));
         executions.Count.ShouldBe(3);
     }
 
@@ -110,7 +110,7 @@ public class ResiliencePipelineBuilderTests
         // assert
         strategy.Execute(_ => executions.Add(4));
 
-        executions.OrderBy(p => p).ShouldBe(executions);
+        executions.ShouldBe(executions.OrderBy(p => p));
         executions.Count.ShouldBe(7);
     }
 
@@ -195,7 +195,7 @@ public class ResiliencePipelineBuilderTests
         // assert
         strategy.Execute(_ => executions.Add(4));
 
-        executions.OrderBy(p => p).ShouldBe(executions);
+        executions.ShouldBe(executions.OrderBy(p => p));
         executions.Count.ShouldBe(7);
     }
 
@@ -330,7 +330,7 @@ public class ResiliencePipelineBuilderTests
         // assert
         strategy.Execute(_ => executions.Add(4));
 
-        executions.OrderBy(p => p).ShouldBe(executions);
+        executions.ShouldBe(executions.OrderBy(p => p));
         executions.Count.ShouldBe(7);
     }
 
