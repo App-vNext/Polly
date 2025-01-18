@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Polly.CircuitBreaker;
-using Polly.DependencyInjection;
 using Polly.Registry;
 
 namespace Polly.Extensions.Tests.Issues;
@@ -25,7 +24,7 @@ public partial class IssuesTests
                     MinimumThroughput = 10,
                     OnOpened = async args =>
                     {
-                        args.Context.Properties.GetValue(ServiceProviderKey, null!).Should().NotBeNull();
+                        args.Context.Properties.GetValue(ServiceProviderKey, null!).ShouldNotBeNull();
                         contextChecked = true;
 
                         // do asynchronous call
@@ -50,10 +49,10 @@ public partial class IssuesTests
         }
 
         // now the circuit breaker should be open
-        await pipeline.Invoking(s => s.ExecuteAsync(_ => new ValueTask<string>("valid-result")).AsTask()).Should().ThrowAsync<BrokenCircuitException>();
+        await Should.ThrowAsync<BrokenCircuitException>(() => pipeline.ExecuteAsync(_ => new ValueTask<string>("valid-result")).AsTask());
 
         // check that service provider was received in the context
-        contextChecked.Should().BeTrue();
+        contextChecked.ShouldBeTrue();
     }
 
     private class ServiceProviderStrategy : ResilienceStrategy

@@ -14,14 +14,14 @@ public class TelemetryOptionsTests
     {
         var options = new TelemetryOptions();
 
-        options.MeteringEnrichers.Should().BeEmpty();
-        options.LoggerFactory.Should().Be(NullLoggerFactory.Instance);
+        options.MeteringEnrichers.ShouldBeEmpty();
+        options.LoggerFactory.ShouldBe(NullLoggerFactory.Instance);
         var resilienceContext = ResilienceContextPool.Shared.Get();
-        options.ResultFormatter(resilienceContext, null).Should().BeNull();
-        options.ResultFormatter(resilienceContext, "dummy").Should().Be("dummy");
+        options.ResultFormatter(resilienceContext, null).ShouldBeNull();
+        options.ResultFormatter(resilienceContext, "dummy").ShouldBe("dummy");
 
         using var response = new HttpResponseMessage(HttpStatusCode.OK);
-        options.ResultFormatter(resilienceContext, response).Should().Be(200);
+        options.ResultFormatter(resilienceContext, response).ShouldBe(200);
     }
 
     [Fact]
@@ -39,19 +39,19 @@ public class TelemetryOptionsTests
 
         var other = new TelemetryOptions(options);
 
-        other.ResultFormatter.Should().Be(options.ResultFormatter);
-        other.LoggerFactory.Should().Be(options.LoggerFactory);
-        other.SeverityProvider.Should().Be(options.SeverityProvider);
-        other.MeteringEnrichers.Should().BeEquivalentTo(options.MeteringEnrichers);
-        other.TelemetryListeners.Should().BeEquivalentTo(options.TelemetryListeners);
-        other.TelemetryListeners.Should().NotBeSameAs(options.TelemetryListeners);
-        other.MeteringEnrichers.Should().NotBeSameAs(options.MeteringEnrichers);
+        other.ResultFormatter.ShouldBe(options.ResultFormatter);
+        other.LoggerFactory.ShouldBe(options.LoggerFactory);
+        other.SeverityProvider.ShouldBe(options.SeverityProvider);
+        other.MeteringEnrichers.ShouldBeEquivalentTo(options.MeteringEnrichers);
+        other.TelemetryListeners.ShouldBeEquivalentTo(options.TelemetryListeners);
+        other.TelemetryListeners.ShouldNotBeSameAs(options.TelemetryListeners);
+        other.MeteringEnrichers.ShouldNotBeSameAs(options.MeteringEnrichers);
 
-        typeof(TelemetryOptions).GetRuntimeProperties().Should().HaveCount(5);
+        typeof(TelemetryOptions).GetRuntimeProperties().Count().ShouldBe(5);
     }
 
     [Fact]
     public void CopyCtor_Reminder()
-        => typeof(TelemetryOptions).GetRuntimeProperties().Should()
-        .HaveCount(5, "Make sure that when you increase this number, you also update the copy constructor to assign the new property.");
+        => typeof(TelemetryOptions).GetRuntimeProperties().Count()
+        .ShouldBe(5, "Make sure that when you increase this number, you also update the copy constructor to assign the new property.");
 }

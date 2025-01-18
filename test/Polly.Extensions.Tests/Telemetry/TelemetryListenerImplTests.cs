@@ -22,16 +22,16 @@ public class TelemetryListenerImplTests : IDisposable
     [Fact]
     public void Meter_Ok()
     {
-        TelemetryListenerImpl.Meter.Name.Should().Be("Polly");
-        TelemetryListenerImpl.Meter.Version.Should().Be("1.0");
+        TelemetryListenerImpl.Meter.Name.ShouldBe("Polly");
+        TelemetryListenerImpl.Meter.Version.ShouldBe("1.0");
         var source = new TelemetryListenerImpl(new TelemetryOptions());
 
-        source.Counter.Description.Should().Be("Tracks the number of resilience events that occurred in resilience strategies.");
-        source.AttemptDuration.Description.Should().Be("Tracks the duration of execution attempts.");
-        source.AttemptDuration.Unit.Should().Be("ms");
+        source.Counter.Description.ShouldBe("Tracks the number of resilience events that occurred in resilience strategies.");
+        source.AttemptDuration.Description.ShouldBe("Tracks the duration of execution attempts.");
+        source.AttemptDuration.Unit.ShouldBe("ms");
 
-        source.ExecutionDuration.Description.Should().Be("The execution duration of resilience pipelines.");
-        source.ExecutionDuration.Unit.Should().Be("ms");
+        source.ExecutionDuration.Description.ShouldBe("The execution duration of resilience pipelines.");
+        source.ExecutionDuration.Unit.ShouldBe("ms");
     }
 
     [InlineData(true)]
@@ -44,15 +44,15 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, noOutcome ? null : Outcome.FromResult<object>(response));
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
-        messages.Should().HaveCount(1);
+        messages.Count.ShouldBe(1);
 
         if (noOutcome)
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: ''");
+            messages[0].Message.ShouldBe("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: ''");
         }
         else
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: '200'");
+            messages[0].Message.ShouldBe("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: '200'");
         }
     }
 
@@ -66,20 +66,20 @@ public class TelemetryListenerImplTests : IDisposable
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
 
-        messages.Should().HaveCount(1);
+        messages.Count.ShouldBe(1);
 
         if (!noOutcome)
         {
-            messages[0].Exception.Should().NotBeNull();
+            messages[0].Exception.ShouldNotBeNull();
         }
 
         if (noOutcome)
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: ''");
+            messages[0].Message.ShouldBe("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: ''");
         }
         else
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.'");
+            messages[0].Message.ShouldBe("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.'");
         }
     }
 
@@ -91,7 +91,7 @@ public class TelemetryListenerImplTests : IDisposable
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
 
-        messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/(null)/my-strategy', Operation Key: 'op-key', Result: ''");
+        messages[0].Message.ShouldBe("Resilience event occurred. EventName: 'my-event', Source: 'my-pipeline/(null)/my-strategy', Operation Key: 'op-key', Result: ''");
     }
 
     [InlineData(ResilienceEventSeverity.Error, LogLevel.Error)]
@@ -111,11 +111,11 @@ public class TelemetryListenerImplTests : IDisposable
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
 
-        messages[0].LogLevel.Should().Be(logLevel);
+        messages[0].LogLevel.ShouldBe(logLevel);
 
         var events = GetEvents("resilience.polly.strategy.events");
-        events.Should().HaveCount(1);
-        var ev = events[0]["event.severity"].Should().Be(severity.ToString());
+        events.Count.ShouldBe(1);
+        events[0]["event.severity"].ShouldBe(severity.ToString());
     }
 
     [Fact]
@@ -126,9 +126,9 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, Outcome.FromException<object>(new InvalidOperationException("Dummy message.")), arg: new ExecutionAttemptArguments(4, TimeSpan.FromMilliseconds(123), true));
 
         var messages = _logger.GetRecords(new EventId(3, "ExecutionAttempt")).ToList();
-        messages.Should().HaveCount(1);
+        messages.Count.ShouldBe(1);
 
-        messages[0].Message.Should().Be("Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.', Handled: 'True', Attempt: '4', Execution Time: 123ms");
+        messages[0].Message.ShouldBe("Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: 'Dummy message.', Handled: 'True', Attempt: '4', Execution Time: 123ms");
     }
 
     [InlineData(true, true)]
@@ -143,19 +143,19 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, noOutcome ? null : Outcome.FromResult<object>(response), arg: new ExecutionAttemptArguments(4, TimeSpan.FromMilliseconds(123), handled));
 
         var messages = _logger.GetRecords(new EventId(3, "ExecutionAttempt")).ToList();
-        messages.Should().HaveCount(1);
+        messages.Count.ShouldBe(1);
 
         if (noOutcome)
         {
             string resultString = string.Empty;
-            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: 123ms");
+            messages[0].Message.ShouldBe($"Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: 123ms");
         }
         else
         {
-            messages[0].Message.Should().Be($"Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: '200', Handled: '{handled}', Attempt: '4', Execution Time: 123ms");
+            messages[0].Message.ShouldBe($"Execution attempt. Source: 'my-pipeline/my-instance/my-strategy', Operation Key: 'op-key', Result: '200', Handled: '{handled}', Attempt: '4', Execution Time: 123ms");
         }
 
-        messages[0].LogLevel.Should().Be(LogLevel.Warning);
+        messages[0].LogLevel.ShouldBe(LogLevel.Warning);
     }
 
     [Fact]
@@ -167,7 +167,7 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, null, arg: new ExecutionAttemptArguments(4, TimeSpan.FromMilliseconds(123), true));
 
         var messages = _logger.GetRecords(new EventId(3, "ExecutionAttempt")).ToList();
-        messages.Should().HaveCount(0);
+        messages.ShouldBeEmpty();
     }
 
     [InlineData(true, false)]
@@ -188,32 +188,32 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>());
 
         var events = GetEvents("resilience.polly.strategy.events");
-        events.Should().HaveCount(1);
+        events.Count.ShouldBe(1);
         var ev = events[0];
 
         if (noOutcome && exception)
         {
-            ev.Count.Should().Be(7);
+            ev.Count.ShouldBe(7);
         }
         else
         {
-            ev.Count.Should().Be(6);
+            ev.Count.ShouldBe(6);
         }
 
-        ev["event.name"].Should().Be("my-event");
-        ev["event.severity"].Should().Be("Warning");
-        ev["pipeline.name"].Should().Be("my-pipeline");
-        ev["pipeline.instance"].Should().Be("my-instance");
-        ev["operation.key"].Should().Be("op-key");
-        ev["strategy.name"].Should().Be("my-strategy");
+        ev["event.name"].ShouldBe("my-event");
+        ev["event.severity"].ShouldBe("Warning");
+        ev["pipeline.name"].ShouldBe("my-pipeline");
+        ev["pipeline.instance"].ShouldBe("my-instance");
+        ev["operation.key"].ShouldBe("op-key");
+        ev["strategy.name"].ShouldBe("my-strategy");
 
         if (outcome?.Exception is not null)
         {
-            ev["exception.type"].Should().Be("System.InvalidOperationException");
+            ev["exception.type"].ShouldBe("System.InvalidOperationException");
         }
         else
         {
-            ev.Should().NotContainKey("exception.type");
+            ev.ShouldNotContainKey("exception.type");
         }
     }
 
@@ -236,37 +236,37 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
 
         var events = GetEvents("resilience.polly.strategy.attempt.duration");
-        events.Should().HaveCount(1);
+        events.Count.ShouldBe(1);
         var ev = events[0];
 
         if (noOutcome && exception)
         {
-            ev.Count.Should().Be(9);
+            ev.Count.ShouldBe(9);
         }
         else
         {
-            ev.Count.Should().Be(8);
+            ev.Count.ShouldBe(8);
         }
 
-        ev["event.name"].Should().Be("my-event");
-        ev["event.severity"].Should().Be("Warning");
-        ev["pipeline.name"].Should().Be("my-pipeline");
-        ev["pipeline.instance"].Should().Be("my-instance");
-        ev["operation.key"].Should().Be("op-key");
-        ev["pipeline.name"].Should().Be("my-pipeline");
-        ev["attempt.number"].Should().Be(5);
-        ev["attempt.handled"].Should().Be(true);
+        ev["event.name"].ShouldBe("my-event");
+        ev["event.severity"].ShouldBe("Warning");
+        ev["pipeline.name"].ShouldBe("my-pipeline");
+        ev["pipeline.instance"].ShouldBe("my-instance");
+        ev["operation.key"].ShouldBe("op-key");
+        ev["pipeline.name"].ShouldBe("my-pipeline");
+        ev["attempt.number"].ShouldBe(5);
+        ev["attempt.handled"].ShouldBe(true);
 
         if (outcome?.Exception is not null)
         {
-            ev["exception.type"].Should().Be("System.InvalidOperationException");
+            ev["exception.type"].ShouldBe("System.InvalidOperationException");
         }
         else
         {
-            ev.Should().NotContainKey("exception.type");
+            ev.ShouldNotContainKey("exception.type");
         }
 
-        _events.Single(v => v.Name == "resilience.polly.strategy.attempt.duration").Measurement.Should().Be(50000);
+        _events.Single(v => v.Name == "resilience.polly.strategy.attempt.duration").Measurement.ShouldBe(50000);
     }
 
     [Fact]
@@ -279,7 +279,7 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, Outcome.FromResult<object>(true), context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
 
         var events = GetEvents("resilience.polly.strategy.attempt.duration");
-        events.Should().HaveCount(0);
+        events.ShouldBeEmpty();
     }
 
     [InlineData(1)]
@@ -311,12 +311,12 @@ public class TelemetryListenerImplTests : IDisposable
 
         var events = GetEvents("resilience.polly.strategy.events");
         var ev = events[0];
-        ev.Count.Should().Be(DefaultDimensions + count + 1);
-        ev["other"].Should().Be("other-value");
+        ev.Count.ShouldBe(DefaultDimensions + count + 1);
+        ev["other"].ShouldBe("other-value");
 
         for (int i = 0; i < count; i++)
         {
-            ev[$"custom-{i}"].Should().Be($"custom-{i}-value");
+            ev[$"custom-{i}"].ShouldBe($"custom-{i}-value");
         }
     }
 
@@ -326,7 +326,7 @@ public class TelemetryListenerImplTests : IDisposable
         using var metering = TestUtilities.EnablePollyMetering(_events);
         var telemetry = Create();
         ReportEvent(telemetry, null, instanceName: null);
-        var events = GetEvents("resilience.polly.strategy.events")[0].Should().NotContainKey("pipeline.instance");
+        GetEvents("resilience.polly.strategy.events")[0].ShouldNotContainKey("pipeline.instance");
     }
 
     [InlineData(true)]
@@ -344,7 +344,7 @@ public class TelemetryListenerImplTests : IDisposable
         var telemetry = Create();
         ReportEvent(telemetry, null, instanceName: null);
 
-        called.Should().Be(hasCallback);
+        called.ShouldBe(hasCallback);
     }
 
     [InlineData(true)]
@@ -361,12 +361,12 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
-        messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience pipeline executing. Source: 'my-pipeline/my-instance', Operation Key: 'op-key'");
+        messages.Count.ShouldBe(1);
+        messages[0].Message.ShouldBe("Resilience pipeline executing. Source: 'my-pipeline/my-instance', Operation Key: 'op-key'");
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
-        messages.Should().HaveCount(1);
-        messages[0].Message.Should().Match($"Resilience pipeline executed. Source: 'my-pipeline/my-instance', Operation Key: 'op-key', Result: '{result}', Execution Time: 10000ms");
-        messages[0].LogLevel.Should().Be(LogLevel.Debug);
+        messages.Count.ShouldBe(1);
+        messages[0].Message.ShouldMatch($"Resilience pipeline executed. Source: 'my-pipeline/my-instance', Operation Key: 'op-key', Result: '{result}', Execution Time: 10000ms");
+        messages[0].LogLevel.ShouldBe(LogLevel.Debug);
     }
 
     [Fact]
@@ -377,8 +377,8 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, outcome: null, arg: default(PipelineExecutingArguments), context: context);
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
-        messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience pipeline executing. Source: 'my-pipeline/my-instance', Operation Key: 'op-key'");
+        messages.Count.ShouldBe(1);
+        messages[0].Message.ShouldBe("Resilience pipeline executing. Source: 'my-pipeline/my-instance', Operation Key: 'op-key'");
     }
 
     [Fact]
@@ -390,7 +390,7 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, outcome: null, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
 
         var messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
-        messages[0].Message.Should().Match($"Resilience pipeline executed. Source: 'my-pipeline/my-instance', Operation Key: 'op-key', Result: '', Execution Time: 10000ms");
+        messages[0].Message.ShouldMatch($"Resilience pipeline executed. Source: 'my-pipeline/my-instance', Operation Key: 'op-key', Result: '', Execution Time: 10000ms");
     }
 
     [InlineData(false)]
@@ -410,7 +410,7 @@ public class TelemetryListenerImplTests : IDisposable
             {
                 if (exception)
                 {
-                    context.TelemetryEvent.Outcome!.Value.Exception.Should().BeOfType<InvalidOperationException>();
+                    context.TelemetryEvent.Outcome!.Value.Exception.ShouldBeOfType<InvalidOperationException>();
                 }
 
                 context.Tags.Add(new("custom-tag", "custom-tag-value"));
@@ -421,22 +421,22 @@ public class TelemetryListenerImplTests : IDisposable
 
         var ev = _events.Single(v => v.Name == "resilience.polly.pipeline.duration").Tags;
 
-        ev.Count.Should().Be(exception ? 8 : 7);
-        ev["pipeline.instance"].Should().Be("my-instance");
-        ev["operation.key"].Should().Be("op-key");
-        ev["pipeline.name"].Should().Be("my-pipeline");
-        ev["event.name"].Should().Be("my-event");
-        ev["event.severity"].Should().Be("Warning");
-        ev["pipeline.name"].Should().Be("my-pipeline");
-        ev["custom-tag"].Should().Be("custom-tag-value");
+        ev.Count.ShouldBe(exception ? 8 : 7);
+        ev["pipeline.instance"].ShouldBe("my-instance");
+        ev["operation.key"].ShouldBe("op-key");
+        ev["pipeline.name"].ShouldBe("my-pipeline");
+        ev["event.name"].ShouldBe("my-event");
+        ev["event.severity"].ShouldBe("Warning");
+        ev["pipeline.name"].ShouldBe("my-pipeline");
+        ev["custom-tag"].ShouldBe("custom-tag-value");
 
         if (exception)
         {
-            ev["exception.type"].Should().Be("System.InvalidOperationException");
+            ev["exception.type"].ShouldBe("System.InvalidOperationException");
         }
         else
         {
-            ev.Should().NotContainKey("exception.type");
+            ev.ShouldNotContainKey("exception.type");
         }
     }
 
@@ -450,7 +450,7 @@ public class TelemetryListenerImplTests : IDisposable
         ReportEvent(telemetry, Outcome.FromResult<object>(true), context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
 
         var events = GetEvents("resilience.polly.pipeline.duration");
-        events.Should().HaveCount(0);
+        events.ShouldBeEmpty();
     }
 
     [Fact]
@@ -462,7 +462,7 @@ public class TelemetryListenerImplTests : IDisposable
 
         var records = _logger.GetRecords();
 
-        records.Single().LogLevel.Should().Be(LogLevel.Critical);
+        records.Single().LogLevel.ShouldBe(LogLevel.Critical);
     }
 
     [Fact]
@@ -473,9 +473,9 @@ public class TelemetryListenerImplTests : IDisposable
         {
             options.SeverityProvider = args =>
             {
-                args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
-                args.Source.Should().NotBeNull();
-                args.Context.Should().NotBeNull();
+                args.Event.Severity.ShouldBe(ResilienceEventSeverity.Warning);
+                args.Source.ShouldNotBeNull();
+                args.Context.ShouldNotBeNull();
                 called = true;
                 return ResilienceEventSeverity.Critical;
             };
@@ -485,8 +485,8 @@ public class TelemetryListenerImplTests : IDisposable
 
         var records = _logger.GetRecords();
 
-        records.Single().LogLevel.Should().Be(LogLevel.Critical);
-        called.Should().BeTrue();
+        records.Single().LogLevel.ShouldBe(LogLevel.Critical);
+        called.ShouldBeTrue();
     }
 
     private List<Dictionary<string, object?>> GetEvents(string eventName) => _events.Where(e => e.Name == eventName).Select(v => v.Tags).ToList();

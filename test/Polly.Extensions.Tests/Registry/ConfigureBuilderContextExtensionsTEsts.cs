@@ -24,10 +24,8 @@ public class ConfigureBuilderContextExtensionsTests
 
         await registry.DisposeAsync();
 
-        listener.Events.Should().BeEmpty();
+        listener.Events.ShouldBeEmpty();
     }
 
-    public class Options
-    {
-    }
+    public class Options;
 }
