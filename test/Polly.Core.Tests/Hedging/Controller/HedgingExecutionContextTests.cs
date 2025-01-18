@@ -225,7 +225,7 @@ public class HedgingExecutionContextTests : IDisposable
 
         context.LoadedTasks.ShouldBe(_maxAttempts);
         context.Tasks[0].AcceptOutcome();
-        _returnedExecutions.Count.ShouldBe(0);
+        _returnedExecutions.ShouldBeEmpty();
     }
 
     [Fact]
