@@ -15,7 +15,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         builder =>
         {
             builder.AddConcurrencyLimiter(2, 2);
-            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper!.Limiter.Should().BeOfType<ConcurrencyLimiter>());
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper!.Limiter.ShouldBeOfType<ConcurrencyLimiter>());
         },
         builder =>
         {
@@ -26,20 +26,20 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
                     QueueLimit = 2
                 });
 
-            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper!.Limiter.Should().BeOfType<ConcurrencyLimiter>());
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper!.Limiter.ShouldBeOfType<ConcurrencyLimiter>());
         },
         builder =>
         {
             var expected = Substitute.For<RateLimiter>();
             builder.AddRateLimiter(expected);
-            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper.Should().BeNull());
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper.ShouldBeNull());
         },
         builder =>
         {
             var limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = 1 });
             builder.AddRateLimiter(limiter);
             builder.Build().Execute(() => { });
-            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper.Should().BeNull());
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper.ShouldBeNull());
         }
     };
 #pragma warning restore IDE0028
@@ -54,7 +54,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
 
         configure(builder);
 
-        builder.Build().Should().BeOfType<RateLimiterResilienceStrategy>();
+        builder.Build().ShouldBeOfType<RateLimiterResilienceStrategy>();
     }
 
     [Fact]
@@ -100,33 +100,38 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
             .GetPipelineDescriptor()
             .FirstStrategy
             .StrategyInstance
-            .Should()
-            .BeOfType<RateLimiterResilienceStrategy>();
+            .ShouldBeOfType<RateLimiterResilienceStrategy>();
     }
 
     [Fact]
-    public void AddRateLimiter_InvalidOptions_Throws() =>
-        new ResiliencePipelineBuilder().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! }))
-            .Should()
-            .Throw<ValidationException>()
-            .WithMessage("""
-            The 'RateLimiterStrategyOptions' are invalid.
+    public void AddRateLimiter_InvalidOptions_Throws()
+    {
+        var options = new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! };
+        var builder = new ResiliencePipelineBuilder();
 
+        var exception = Should.Throw<ValidationException>(() => builder.AddRateLimiter(options));
+        exception.Message.Trim().ShouldBe("""
+            The 'RateLimiterStrategyOptions' are invalid.
             Validation Errors:
             The DefaultRateLimiterOptions field is required.
-            """);
+            """,
+            StringCompareShould.IgnoreLineEndings);
+    }
 
     [Fact]
-    public void AddGenericRateLimiter_InvalidOptions_Throws() =>
-        new ResiliencePipelineBuilder<int>().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! }))
-            .Should()
-            .Throw<ValidationException>()
-            .WithMessage("""
-            The 'RateLimiterStrategyOptions' are invalid.
+    public void AddGenericRateLimiter_InvalidOptions_Throws()
+    {
+        var options = new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! };
+        var builder = new ResiliencePipelineBuilder<int>();
 
+        var exception = Should.Throw<ValidationException>(() => builder.AddRateLimiter(options));
+        exception.Message.Trim().ShouldBe("""
+            The 'RateLimiterStrategyOptions' are invalid.
             Validation Errors:
             The DefaultRateLimiterOptions field is required.
-            """);
+            """,
+            StringCompareShould.IgnoreLineEndings);
+    }
 
     [Fact]
     public void AddRateLimiter_Options_Ok()
@@ -140,8 +145,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
             .GetPipelineDescriptor()
             .FirstStrategy
             .StrategyInstance
-            .Should()
-            .BeOfType<RateLimiterResilienceStrategy>();
+            .ShouldBeOfType<RateLimiterResilienceStrategy>();
     }
 
     [Fact]
@@ -154,7 +158,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
 
         await registry.DisposeAsync();
 
-        strategy.AsPipeline().Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
+        Should.Throw<ObjectDisposedException>(() => strategy.AsPipeline().Execute(() => { }));
     }
 
     private static void AssertRateLimiterStrategy(ResiliencePipelineBuilder builder, Action<RateLimiterResilienceStrategy>? assert = null, bool hasEvents = false)
@@ -167,21 +171,20 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
 
         if (hasEvents)
         {
-            limiterStrategy.OnLeaseRejected.Should().NotBeNull();
+            limiterStrategy.OnLeaseRejected.ShouldNotBeNull();
             limiterStrategy
                 .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Substitute.For<RateLimitLease>()))
                 .Preserve().GetAwaiter().GetResult();
         }
         else
         {
-            limiterStrategy.OnLeaseRejected.Should().BeNull();
+            limiterStrategy.OnLeaseRejected.ShouldBeNull();
         }
 
         strategy
             .GetPipelineDescriptor()
             .FirstStrategy
             .StrategyInstance
-            .Should()
-            .BeOfType<RateLimiterResilienceStrategy>();
+            .ShouldBeOfType<RateLimiterResilienceStrategy>();
     }
 }
