@@ -7,12 +7,12 @@ public class ContextualTtlSpecs
     {
         Context context = null!;
         Action action = () => new ContextualTtl().GetTtl(context, null);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("context");
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("context");
     }
 
     [Fact]
     public void Should_return_zero_if_no_value_set_on_context() =>
-        new ContextualTtl().GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.Zero);
+        new ContextualTtl().GetTtl(new Context("someOperationKey"), null).Timespan.ShouldBe(TimeSpan.Zero);
 
     [Fact]
     public void Should_return_zero_if_invalid_value_set_on_context()
@@ -23,7 +23,7 @@ public class ContextualTtlSpecs
         };
 
         Context context = new Context(string.Empty, contextData);
-        new ContextualTtl().GetTtl(context, null).Timespan.Should().Be(TimeSpan.Zero);
+        new ContextualTtl().GetTtl(context, null).Timespan.ShouldBe(TimeSpan.Zero);
     }
 
     [Fact]
@@ -37,8 +37,8 @@ public class ContextualTtlSpecs
 
         Context context = new Context(string.Empty, contextData);
         Ttl gotTtl = new ContextualTtl().GetTtl(context, null);
-        gotTtl.Timespan.Should().Be(ttl);
-        gotTtl.SlidingExpiration.Should().BeFalse();
+        gotTtl.Timespan.ShouldBe(ttl);
+        gotTtl.SlidingExpiration.ShouldBeFalse();
     }
 
     [Fact]
@@ -52,8 +52,8 @@ public class ContextualTtlSpecs
 
         Context context = new Context(string.Empty, contextData);
         Ttl gotTtl = new ContextualTtl().GetTtl(context, null);
-        gotTtl.Timespan.Should().Be(ttl);
-        gotTtl.SlidingExpiration.Should().BeFalse();
+        gotTtl.Timespan.ShouldBe(ttl);
+        gotTtl.SlidingExpiration.ShouldBeFalse();
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class ContextualTtlSpecs
         };
 
         Context context = new Context(string.Empty, contextData);
-        new ContextualTtl().GetTtl(context, null).Timespan.Should().Be(TimeSpan.Zero);
+        new ContextualTtl().GetTtl(context, null).Timespan.ShouldBe(TimeSpan.Zero);
     }
 
     [Fact]
@@ -80,8 +80,8 @@ public class ContextualTtlSpecs
 
         var context = new Context(string.Empty, contextData);
         var gotTtl = new ContextualTtl().GetTtl(context, null);
-        gotTtl.Timespan.Should().Be(ttl);
-        gotTtl.SlidingExpiration.Should().BeTrue();
+        gotTtl.Timespan.ShouldBe(ttl);
+        gotTtl.SlidingExpiration.ShouldBeTrue();
     }
 
     [Fact]
@@ -96,8 +96,8 @@ public class ContextualTtlSpecs
 
         var context = new Context(string.Empty, contextData);
         var gotTtl = new ContextualTtl().GetTtl(context, null);
-        gotTtl.Timespan.Should().Be(ttl);
-        gotTtl.SlidingExpiration.Should().BeFalse();
+        gotTtl.Timespan.ShouldBe(ttl);
+        gotTtl.SlidingExpiration.ShouldBeFalse();
     }
 
     [Fact]
@@ -112,7 +112,7 @@ public class ContextualTtlSpecs
 
         var context = new Context(string.Empty, contextData);
         var gotTtl = new ContextualTtl().GetTtl(context, null);
-        gotTtl.Timespan.Should().Be(ttl);
-        gotTtl.SlidingExpiration.Should().BeFalse();
+        gotTtl.Timespan.ShouldBe(ttl);
+        gotTtl.SlidingExpiration.ShouldBeFalse();
     }
 }

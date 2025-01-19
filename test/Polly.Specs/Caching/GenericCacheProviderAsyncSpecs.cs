@@ -15,8 +15,8 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
 
         (bool cacheHit, object? fromCache) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken.None, false);
-        cacheHit.Should().BeFalse();
-        fromCache.Should().BeNull();
+        cacheHit.ShouldBeFalse();
+        fromCache.ShouldBeNull();
 
         ResultPrimitive result = await cache.ExecuteAsync(async _ =>
         {
@@ -24,7 +24,7 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
             return ResultPrimitive.Substitute;
         }, new Context(OperationKey));
 
-        onErrorCalled.Should().BeFalse();
+        onErrorCalled.ShouldBeFalse();
     }
 
     [Fact]
@@ -38,18 +38,18 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object? fromCache1) = await stubCacheProvider.TryGetAsync(OperationKey, cancellationToken, false);
-        cacheHit1.Should().BeFalse();
-        fromCache1.Should().BeNull();
+        cacheHit1.ShouldBeFalse();
+        fromCache1.ShouldBeNull();
 
         (await cache.ExecuteAsync(async _ =>
         {
             await TaskHelper.EmptyTask;
             return ResultPrimitive.Substitute;
-        }, new Context(OperationKey))).Should().Be(ValueToReturn);
+        }, new Context(OperationKey))).ShouldBe(ValueToReturn);
 
         (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(OperationKey, cancellationToken, false);
-        cacheHit2.Should().BeTrue();
-        fromCache2.Should().Be(ValueToReturn);
+        cacheHit2.ShouldBeTrue();
+        fromCache2.ShouldBe(ValueToReturn);
     }
 
     public void Dispose() =>

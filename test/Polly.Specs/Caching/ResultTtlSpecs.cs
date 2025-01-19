@@ -7,7 +7,7 @@ public class ResultTtlSpecs
     {
         Action configure = () => _ = new ResultTtl<object>((Func<object?, Ttl>)null!);
 
-        configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
+        Should.Throw<ArgumentNullException>(configure).ParamName.ShouldBe("ttlFunc");
     }
 
     [Fact]
@@ -15,7 +15,7 @@ public class ResultTtlSpecs
     {
         Action configure = () => _ = new ResultTtl<object>((Func<Context, object?, Ttl>)null!);
 
-        configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
+        Should.Throw<ArgumentNullException>(configure).ParamName.ShouldBe("ttlFunc");
     }
 
     [Fact]
@@ -23,7 +23,7 @@ public class ResultTtlSpecs
     {
         Action configure = () => _ = new ResultTtl<object>(_ => default);
 
-        configure.Should().NotThrow();
+        Should.NotThrow(configure);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class ResultTtlSpecs
     {
         Action configure = () => _ = new ResultTtl<object>((_, _) => default);
 
-        configure.Should().NotThrow();
+        Should.NotThrow(configure);
     }
 
     [Fact]
@@ -43,8 +43,8 @@ public class ResultTtlSpecs
         ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
         Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl });
-        retrieved.Timespan.Should().Be(ttl);
-        retrieved.SlidingExpiration.Should().BeFalse();
+        retrieved.Timespan.ShouldBe(ttl);
+        retrieved.SlidingExpiration.ShouldBeFalse();
     }
 
     [Fact]
@@ -57,7 +57,7 @@ public class ResultTtlSpecs
 
         ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
-        ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl }).Timespan.Should().Be(ttl);
-        ttlStrategy.GetTtl(new Context(SpecialKey), new { Ttl = ttl }).Timespan.Should().Be(TimeSpan.Zero);
+        ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl }).Timespan.ShouldBe(ttl);
+        ttlStrategy.GetTtl(new Context(SpecialKey), new { Ttl = ttl }).Timespan.ShouldBe(TimeSpan.Zero);
     }
 }

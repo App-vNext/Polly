@@ -9,7 +9,7 @@ public class PolicyKeySpecs
     {
         var policy = Policy.Handle<Exception>().Retry().WithPolicyKey(Guid.NewGuid().ToString());
 
-        policy.Should().BeAssignableTo<Policy>();
+        policy.ShouldBeAssignableTo<Policy>();
     }
 
     [Fact]
@@ -18,7 +18,7 @@ public class PolicyKeySpecs
         ISyncPolicy policyAsInterface = Policy.Handle<Exception>().Retry();
         var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
 
-        policyAsInterfaceAfterWithPolicyKey.Should().BeAssignableTo<ISyncPolicy>();
+        policyAsInterfaceAfterWithPolicyKey.ShouldBeAssignableTo<ISyncPolicy>();
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public class PolicyKeySpecs
 
         var policy = Policy.Handle<Exception>().Retry().WithPolicyKey(Key);
 
-        policy.PolicyKey.Should().Be(Key);
+        policy.PolicyKey.ShouldBe(Key);
     }
 
     [Fact]
@@ -38,9 +38,9 @@ public class PolicyKeySpecs
 
         Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-        configure.Should().NotThrow();
+        Should.NotThrow(configure);
 
-        configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
+        Should.Throw<ArgumentException>(configure).ParamName.ShouldBe("policyKey");
     }
 
     [Fact]
@@ -48,7 +48,7 @@ public class PolicyKeySpecs
     {
         var policy = Policy.Handle<Exception>().Retry();
 
-        policy.PolicyKey.Should().NotBeNullOrEmpty();
+        policy.PolicyKey.ShouldNotBeNullOrEmpty();
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class PolicyKeySpecs
     {
         var policy = Policy.Handle<Exception>().Retry();
 
-        policy.PolicyKey.Should().StartWith("Retry");
+        policy.PolicyKey.ShouldStartWith("Retry");
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class PolicyKeySpecs
         var policy1 = Policy.Handle<Exception>().Retry();
         var policy2 = Policy.Handle<Exception>().Retry();
 
-        policy1.PolicyKey.Should().NotBe(policy2.PolicyKey);
+        policy1.PolicyKey.ShouldNotBe(policy2.PolicyKey);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class PolicyKeySpecs
         var keyRetrievedFirst = policy.PolicyKey;
         var keyRetrievedSecond = policy.PolicyKey;
 
-        keyRetrievedSecond.Should().Be(keyRetrievedFirst);
+        keyRetrievedSecond.ShouldBe(keyRetrievedFirst);
     }
 
     [Fact]
@@ -88,7 +88,7 @@ public class PolicyKeySpecs
 
         Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-        configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
+        Should.Throw<ArgumentException>(configure).ParamName.ShouldBe("policyKey");
     }
 
     #endregion
@@ -106,7 +106,7 @@ public class PolicyKeySpecs
 
         retry.RaiseException<Exception>(1);
 
-        policyKeySetOnExecutionContext.Should().Be(policyKey);
+        policyKeySetOnExecutionContext.ShouldBe(policyKey);
     }
 
     [Fact]
@@ -128,7 +128,7 @@ public class PolicyKeySpecs
             }
         }, new Context(operationKey));
 
-        operationKeySetOnContext.Should().Be(operationKey);
+        operationKeySetOnContext.ShouldBe(operationKey);
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public class PolicyKeySpecs
             return 0;
         });
 
-        policyKeySetOnExecutionContext.Should().Be(policyKey);
+        policyKeySetOnExecutionContext.ShouldBe(policyKey);
     }
 
     [Fact]
@@ -176,7 +176,7 @@ public class PolicyKeySpecs
             return 0;
         }, new Context(operationKey));
 
-        operationKeySetOnContext.Should().Be(operationKey);
+        operationKeySetOnContext.ShouldBe(operationKey);
     }
     #endregion
 }

@@ -334,7 +334,7 @@ public abstract class BulkheadSpecsBase : IDisposable
             if (watch.Elapsed > permitted)
             {
                 TestOutputHelper.WriteLine("Failing assertion on: {0}", potentialFailure.Measure);
-                potentialFailure.Actual.Should().Be(potentialFailure.Expected, $"for '{potentialFailure.Measure}', in scenario: {Scenario}");
+                potentialFailure.Actual.ShouldBe(potentialFailure.Expected, $"for '{potentialFailure.Measure}', in scenario: {Scenario}");
                 throw new InvalidOperationException("Code should never reach here. Preceding assertion should fail.");
             }
 

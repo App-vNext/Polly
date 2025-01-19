@@ -14,36 +14,36 @@ public class SystemClockSpecs
     }
 
     [Fact]
-    public void Sleep_ShouldNotThrow_WhenCancellationNotRequested() =>
-        _sleep.Invoking(s =>
+    public void Sleep_Should_NotThrow_WhenCancellationNotRequested() =>
+        Should.NotThrow(() =>
         {
             using var cts = new CancellationTokenSource();
-            s(TimeSpan.FromMilliseconds(1), cts.Token);
-        }).Should().NotThrow();
+            _sleep(TimeSpan.FromMilliseconds(1), cts.Token);
+        });
 
     [Fact]
-    public void Sleep_ShouldThrow_WhenCancellationRequested() =>
-        _sleep.Invoking(s =>
+    public void Sleep_Should_Throw_WhenCancellationRequested() =>
+        Should.Throw<OperationCanceledException>(() =>
         {
             using var cts = new CancellationTokenSource();
             cts.Cancel();
-            s(TimeSpan.FromMilliseconds(1), cts.Token);
-        }).Should().Throw<OperationCanceledException>();
+            _sleep(TimeSpan.FromMilliseconds(1), cts.Token);
+        });
 
     [Fact]
-    public async Task SleepAsync_ShouldNotThrow_WhenCancellationNotRequested() =>
-        await _sleepAsync.Invoking(async s =>
+    public async Task SleepAsync_Should_NotThrow_WhenCancellationNotRequested() =>
+        await Should.NotThrowAsync(async () =>
         {
             using var cts = new CancellationTokenSource();
-            await s(TimeSpan.FromMilliseconds(1), cts.Token);
-        }).Should().NotThrowAsync();
+            await _sleepAsync(TimeSpan.FromMilliseconds(1), cts.Token);
+        });
 
     [Fact]
-    public async Task SleepAsync_ShouldThrow_WhenCancellationRequested() =>
-        await _sleepAsync.Invoking(async s =>
+    public async Task SleepAsync_Should_Throw_WhenCancellationRequested() =>
+        await Should.ThrowAsync<OperationCanceledException>(async () =>
         {
             using var cts = new CancellationTokenSource();
             cts.Cancel();
-            await s(TimeSpan.FromMilliseconds(1), cts.Token);
-        }).Should().ThrowAsync<OperationCanceledException>();
+            await _sleepAsync(TimeSpan.FromMilliseconds(1), cts.Token);
+        });
 }

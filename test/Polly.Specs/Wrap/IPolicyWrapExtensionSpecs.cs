@@ -7,8 +7,8 @@ public class IPolicyWrapExtensionSpecs
     {
         IPolicyWrap policyWrap = null!;
 
-        var action = () => policyWrap.GetPolicies();
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("policyWrap");
+        var action = policyWrap.GetPolicies;
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("policyWrap");
     }
 
     [Fact]
@@ -21,10 +21,10 @@ public class IPolicyWrapExtensionSpecs
         PolicyWrap policyWrap = Policy.Wrap(policy0, policy1, policy2);
 
         List<IsPolicy> policies = policyWrap.GetPolicies().ToList();
-        policies.Count.Should().Be(3);
-        policies[0].Should().Be(policy0);
-        policies[1].Should().Be(policy1);
-        policies[2].Should().Be(policy2);
+        policies.Count.ShouldBe(3);
+        policies[0].ShouldBe(policy0);
+        policies[1].ShouldBe(policy1);
+        policies[2].ShouldBe(policy2);
     }
 
     [Fact]
@@ -34,11 +34,7 @@ public class IPolicyWrapExtensionSpecs
         Policy policyB = Policy.NoOp();
         PolicyWrap wrap = Policy.Wrap(policyA, policyB);
 
-        wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB },
-            options => options
-                .WithStrictOrdering()
-                .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
-                .WhenTypeIs<IsPolicy>());
+        wrap.GetPolicies().ShouldBe([policyA, policyB]);
     }
 
     [Fact]
@@ -49,11 +45,7 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = Policy.Wrap(policyA, policyB, policyC);
 
-        wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC },
-            options => options
-                .WithStrictOrdering()
-                .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
-                .WhenTypeIs<IsPolicy>());
+        wrap.GetPolicies().ShouldBe([policyA, policyB, policyC]);
     }
 
     [Fact]
@@ -64,11 +56,7 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = policyA.Wrap(policyB).Wrap(policyC);
 
-        wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC },
-            options => options
-                .WithStrictOrdering()
-                .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
-                .WhenTypeIs<IsPolicy>());
+        wrap.GetPolicies().ShouldBe([policyA, policyB, policyC]);
     }
 
     [Fact]
@@ -79,11 +67,7 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC },
-            options => options
-                .WithStrictOrdering()
-                .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
-                .WhenTypeIs<IsPolicy>());
+        wrap.GetPolicies().ShouldBe([policyA, policyB, policyC]);
     }
 
     [Fact]
@@ -94,11 +78,9 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.GetPolicies<RetryPolicy>().Should().BeEquivalentTo(new[] { policyB },
-            options => options
-                .WithStrictOrdering()
-                .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
-                .WhenTypeIs<IsPolicy>());
+        wrap.GetPolicies<RetryPolicy>()
+            .OfType<IsPolicy>()
+            .ShouldBe([policyB]);
     }
 
     [Fact]
@@ -109,7 +91,7 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.GetPolicies<CircuitBreakerPolicy>().Should().BeEmpty();
+        wrap.GetPolicies<CircuitBreakerPolicy>().ShouldBeEmpty();
     }
 
     [Fact]
@@ -120,11 +102,9 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.GetPolicies<NoOpPolicy>().Should().BeEquivalentTo(new[] { policyA, policyC },
-            options => options
-                .WithStrictOrdering()
-                .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
-                .WhenTypeIs<IsPolicy>());
+        wrap.GetPolicies<NoOpPolicy>()
+            .OfType<IsPolicy>()
+            .ShouldBe([policyA, policyC]);
     }
 
     [Fact]
@@ -138,11 +118,7 @@ public class IPolicyWrapExtensionSpecs
 
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.GetPolicies<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Closed).Should().BeEquivalentTo(new[] { policyC },
-            options => options
-                .WithStrictOrdering()
-                .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
-                .WhenTypeIs<IsPolicy>());
+        wrap.GetPolicies<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Closed).ShouldBe([policyC]);
     }
 
     [Fact]
@@ -154,7 +130,7 @@ public class IPolicyWrapExtensionSpecs
 
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.GetPolicies<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Open).Should().BeEmpty();
+        wrap.GetPolicies<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Open).ShouldBeEmpty();
     }
 
     [Fact]
@@ -165,11 +141,7 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.GetPolicies<NoOpPolicy>(_ => true).Should().BeEquivalentTo(new[] { policyA, policyC },
-            options => options
-                .WithStrictOrdering()
-                .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
-                .WhenTypeIs<IsPolicy>());
+        wrap.GetPolicies<NoOpPolicy>(_ => true).ShouldBe([policyA, policyC]);
     }
 
     [Fact]
@@ -181,7 +153,7 @@ public class IPolicyWrapExtensionSpecs
 
         Action configure = () => wrap.GetPolicies<NoOpPolicy>(null);
 
-        configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("filter");
+        Should.Throw<ArgumentNullException>(configure).ParamName.ShouldBe("filter");
     }
 
     [Fact]
@@ -192,7 +164,7 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.GetPolicy<RetryPolicy>().Should().BeSameAs(policyB);
+        wrap.GetPolicy<RetryPolicy>().ShouldBeSameAs(policyB);
     }
 
     [Fact]
@@ -203,7 +175,7 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.GetPolicy<CircuitBreakerPolicy>().Should().BeNull();
+        wrap.GetPolicy<CircuitBreakerPolicy>().ShouldBeNull();
     }
 
     [Fact]
@@ -214,7 +186,7 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.Invoking(p => p.GetPolicy<NoOpPolicy>()).Should().Throw<InvalidOperationException>();
+        Should.Throw<InvalidOperationException>(() => wrap.GetPolicy<NoOpPolicy>());
     }
 
     [Fact]
@@ -228,7 +200,7 @@ public class IPolicyWrapExtensionSpecs
 
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.GetPolicy<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Closed).Should().BeSameAs(policyC);
+        wrap.GetPolicy<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Closed).ShouldBeSameAs(policyC);
     }
 
     [Fact]
@@ -240,7 +212,7 @@ public class IPolicyWrapExtensionSpecs
 
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.GetPolicy<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Open).Should().BeNull();
+        wrap.GetPolicy<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Open).ShouldBeNull();
     }
 
     [Fact]
@@ -251,7 +223,7 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        wrap.Invoking(p => p.GetPolicy<NoOpPolicy>(_ => true)).Should().Throw<InvalidOperationException>();
+        Should.Throw<InvalidOperationException>(() => wrap.GetPolicy<NoOpPolicy>(_ => true));
     }
 
     [Fact]
@@ -263,6 +235,6 @@ public class IPolicyWrapExtensionSpecs
 
         Action configure = () => wrap.GetPolicy<NoOpPolicy>(null);
 
-        configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("filter");
+        Should.Throw<ArgumentNullException>(configure).ParamName.ShouldBe("filter");
     }
 }

@@ -10,8 +10,8 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
     {
         Dictionary<ResultPrimitive, TimeSpan> expectedRetryWaits = new Dictionary<ResultPrimitive, TimeSpan>
         {
-            {ResultPrimitive.Fault, 2.Seconds()},
-            {ResultPrimitive.FaultAgain, 4.Seconds()},
+            [ResultPrimitive.Fault] = TimeSpan.FromSeconds(2),
+            [ResultPrimitive.FaultAgain] = TimeSpan.FromSeconds(4),
         };
 
         var actualRetryWaits = new List<TimeSpan>();
@@ -38,7 +38,7 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
             });
         }
 
-        actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
+        actualRetryWaits.ShouldBeSubsetOf(expectedRetryWaits.Values);
     }
 
     [Fact]
@@ -46,8 +46,8 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
     {
         var expectedRetryWaits = new Dictionary<ResultPrimitive, TimeSpan>
         {
-            {ResultPrimitive.Fault, 2.Seconds()},
-            {ResultPrimitive.FaultAgain, 4.Seconds()},
+            [ResultPrimitive.Fault] = TimeSpan.FromSeconds(2),
+            [ResultPrimitive.FaultAgain] = TimeSpan.FromSeconds(4),
         };
 
         var actualRetryWaits = new List<TimeSpan>();
@@ -62,7 +62,7 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
                     return TaskHelper.EmptyTask;
                 });
 
-        configure.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("retryCount");
+        Should.Throw<ArgumentOutOfRangeException>(configure).ParamName.ShouldBe("retryCount");
     }
 
     [Fact]
@@ -70,8 +70,8 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
     {
         var expectedRetryWaits = new Dictionary<ResultPrimitive, TimeSpan>
         {
-            {ResultPrimitive.Fault, 2.Seconds()},
-            {ResultPrimitive.FaultAgain, 4.Seconds()},
+            [ResultPrimitive.Fault] = TimeSpan.FromSeconds(2),
+            [ResultPrimitive.FaultAgain] = TimeSpan.FromSeconds(4),
         };
 
         Action configure = () => Policy
@@ -80,7 +80,7 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
                 (_, outcome, _) => expectedRetryWaits[outcome.Result],
                 null);
 
-        configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("onRetryAsync");
+        Should.Throw<ArgumentNullException>(configure).ParamName.ShouldBe("onRetryAsync");
     }
 
     public void Dispose() =>

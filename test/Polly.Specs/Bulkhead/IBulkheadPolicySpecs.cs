@@ -7,7 +7,7 @@ public class IBulkheadPolicySpecs
     {
         IBulkheadPolicy bulkhead = Policy.Bulkhead(20, 10);
 
-        bulkhead.BulkheadAvailableCount.Should().Be(20);
+        bulkhead.BulkheadAvailableCount.ShouldBe(20);
     }
 
     [Fact]
@@ -15,6 +15,6 @@ public class IBulkheadPolicySpecs
     {
         IBulkheadPolicy bulkhead = Policy.Bulkhead(20, 10);
 
-        bulkhead.QueueAvailableCount.Should().Be(10);
+        bulkhead.QueueAvailableCount.ShouldBe(10);
     }
 }

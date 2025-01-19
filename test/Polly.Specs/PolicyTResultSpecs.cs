@@ -13,8 +13,7 @@ public class PolicyTResultSpecs
 
         var result = policy.Execute(() => ResultPrimitive.Good);
 
-        result.Should()
-            .Be(ResultPrimitive.Good);
+        result.ShouldBe(ResultPrimitive.Good);
     }
 
     #endregion
@@ -29,15 +28,13 @@ public class PolicyTResultSpecs
             .Retry((_, _) => { })
             .ExecuteAndCapture(() => ResultPrimitive.Good);
 
-        result.Should().BeEquivalentTo(new
-        {
-            Outcome = OutcomeType.Successful,
-            FinalException = (Exception?)null,
-            ExceptionType = (ExceptionType?)null,
-            Result = ResultPrimitive.Good,
-            FinalHandledResult = default(ResultPrimitive),
-            FaultType = (FaultType?)null
-        });
+        result.ShouldNotBeNull();
+        result.Outcome.ShouldBe(OutcomeType.Successful);
+        result.FinalException.ShouldBeNull();
+        result.ExceptionType.ShouldBeNull();
+        result.Result.ShouldBe(ResultPrimitive.Good);
+        result.FinalHandledResult.ShouldBe(default);
+        result.FaultType.ShouldBeNull();
     }
 
     [Fact]
@@ -50,15 +47,13 @@ public class PolicyTResultSpecs
             .Retry((_, _) => { })
             .ExecuteAndCapture(() => handledResult);
 
-        result.Should().BeEquivalentTo(new
-        {
-            Outcome = OutcomeType.Failure,
-            FinalException = (Exception?)null,
-            ExceptionType = (ExceptionType?)null,
-            FaultType = FaultType.ResultHandledByThisPolicy,
-            FinalHandledResult = handledResult,
-            Result = default(ResultPrimitive)
-        });
+        result.ShouldNotBeNull();
+        result.Outcome.ShouldBe(OutcomeType.Failure);
+        result.FinalException.ShouldBeNull();
+        result.ExceptionType.ShouldBeNull();
+        result.FaultType.ShouldBe(FaultType.ResultHandledByThisPolicy);
+        result.FinalHandledResult.ShouldBe(handledResult);
+        result.Result.ShouldBe(default);
     }
 
     [Fact]
@@ -72,15 +67,13 @@ public class PolicyTResultSpecs
             .Retry((_, _) => { })
             .ExecuteAndCapture(() => unhandledResult);
 
-        result.Should().BeEquivalentTo(new
-        {
-            Outcome = OutcomeType.Successful,
-            FinalException = (Exception?)null,
-            ExceptionType = (ExceptionType?)null,
-            Result = unhandledResult,
-            FinalHandledResult = default(ResultPrimitive),
-            FaultType = (FaultType?)null
-        });
+        result.ShouldNotBeNull();
+        result.Outcome.ShouldBe(OutcomeType.Successful);
+        result.FinalException.ShouldBeNull();
+        result.ExceptionType.ShouldBeNull();
+        result.Result.ShouldBe(unhandledResult);
+        result.FinalHandledResult.ShouldBe(default);
+        result.FaultType.ShouldBeNull();
     }
 
     #endregion
@@ -94,8 +87,7 @@ public class PolicyTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => ResultPrimitive.Good, (IDictionary<string, object>)null!))
-            .Should().Throw<ArgumentNullException>();
+        Should.Throw<ArgumentNullException>(() => policy.Execute(_ => ResultPrimitive.Good, (IDictionary<string, object>)null!));
     }
 
     [Fact]
@@ -105,9 +97,8 @@ public class PolicyTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => ResultPrimitive.Good, null!))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
+        Should.Throw<ArgumentNullException>(() => policy.Execute(_ => ResultPrimitive.Good, null!))
+            .ParamName.ShouldBe("context");
     }
 
     [Fact]
@@ -121,7 +112,8 @@ public class PolicyTResultSpecs
 
         policy.Execute(context => { capturedContext = context; return ResultPrimitive.Good; }, executionContext);
 
-        capturedContext.Should().BeSameAs(executionContext);
+        capturedContext.ShouldNotBeNull();
+        capturedContext.ShouldBeSameAs(executionContext);
     }
 
     [Fact]
@@ -131,8 +123,7 @@ public class PolicyTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, (IDictionary<string, object>)null!))
-              .Should().Throw<ArgumentNullException>();
+        Should.Throw<ArgumentNullException>(() => policy.ExecuteAndCapture(_ => ResultPrimitive.Good, (IDictionary<string, object>)null!));
     }
 
     [Fact]
@@ -142,9 +133,8 @@ public class PolicyTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, null!))
-              .Should().Throw<ArgumentNullException>().And
-              .ParamName.Should().Be("context");
+        Should.Throw<ArgumentNullException>(() => policy.ExecuteAndCapture(_ => ResultPrimitive.Good, null!))
+              .ParamName.ShouldBe("context");
     }
 
     [Fact]
@@ -158,7 +148,8 @@ public class PolicyTResultSpecs
 
         policy.ExecuteAndCapture(context => { capturedContext = context; return ResultPrimitive.Good; }, executionContext);
 
-        capturedContext.Should().BeSameAs(executionContext);
+        capturedContext.ShouldNotBeNull();
+        capturedContext.ShouldBeSameAs(executionContext);
     }
 
     [Fact]
@@ -170,7 +161,7 @@ public class PolicyTResultSpecs
         Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 
         policy.ExecuteAndCapture(_ => ResultPrimitive.Good, executionContext)
-            .Context.Should().BeSameAs(executionContext);
+            .Context.ShouldBeSameAs(executionContext);
     }
 
     #endregion

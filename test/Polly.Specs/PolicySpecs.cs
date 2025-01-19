@@ -15,8 +15,7 @@ public class PolicySpecs
 
         policy.Execute(() => executed = true);
 
-        executed.Should()
-            .BeTrue();
+        executed.ShouldBeTrue();
     }
 
     [Fact]
@@ -28,8 +27,7 @@ public class PolicySpecs
 
         var result = policy.Execute(() => 2);
 
-        result.Should()
-            .Be(2);
+        result.ShouldBe(2);
     }
 
     #endregion
@@ -44,12 +42,10 @@ public class PolicySpecs
             .Retry((_, _) => { })
             .ExecuteAndCapture(() => { });
 
-        result.Should().BeEquivalentTo(new
-        {
-            Outcome = OutcomeType.Successful,
-            FinalException = (Exception?)null,
-            ExceptionType = (ExceptionType?)null,
-        });
+        result.ShouldNotBeNull();
+        result.Outcome.ShouldBe(OutcomeType.Successful);
+        result.FinalException.ShouldBeNull();
+        result.ExceptionType.ShouldBeNull();
     }
 
     [Fact]
@@ -62,12 +58,10 @@ public class PolicySpecs
             .Retry((_, _) => { })
             .ExecuteAndCapture(() => throw handledException);
 
-        result.Should().BeEquivalentTo(new
-        {
-            Outcome = OutcomeType.Failure,
-            FinalException = handledException,
-            ExceptionType = ExceptionType.HandledByThisPolicy
-        });
+        result.ShouldNotBeNull();
+        result.Outcome.ShouldBe(OutcomeType.Failure);
+        result.FinalException.ShouldBeSameAs(handledException);
+        result.ExceptionType.ShouldBe(ExceptionType.HandledByThisPolicy);
     }
 
     [Fact]
@@ -80,12 +74,10 @@ public class PolicySpecs
             .Retry((_, _) => { })
             .ExecuteAndCapture(() => throw unhandledException);
 
-        result.Should().BeEquivalentTo(new
-        {
-            Outcome = OutcomeType.Failure,
-            FinalException = unhandledException,
-            ExceptionType = ExceptionType.Unhandled
-        });
+        result.ShouldNotBeNull();
+        result.Outcome.ShouldBe(OutcomeType.Failure);
+        result.FinalException.ShouldBeSameAs(unhandledException);
+        result.ExceptionType.ShouldBe(ExceptionType.Unhandled);
     }
 
     [Fact]
@@ -96,15 +88,13 @@ public class PolicySpecs
             .Retry((_, _) => { })
             .ExecuteAndCapture(() => int.MaxValue);
 
-        result.Should().BeEquivalentTo(new
-        {
-            Outcome = OutcomeType.Successful,
-            FinalException = (Exception?)null,
-            ExceptionType = (ExceptionType?)null,
-            FaultType = (FaultType?)null,
-            FinalHandledResult = default(int),
-            Result = int.MaxValue
-        });
+        result.ShouldNotBeNull();
+        result.Outcome.ShouldBe(OutcomeType.Successful);
+        result.FinalException.ShouldBeNull();
+        result.ExceptionType.ShouldBeNull();
+        result.FaultType.ShouldBeNull();
+        result.FinalHandledResult.ShouldBe(default);
+        result.Result.ShouldBe(int.MaxValue);
     }
 
     [Fact]
@@ -117,15 +107,13 @@ public class PolicySpecs
             .Retry((_, _) => { })
             .ExecuteAndCapture<int>(() => throw handledException);
 
-        result.Should().BeEquivalentTo(new
-        {
-            Outcome = OutcomeType.Failure,
-            FinalException = handledException,
-            ExceptionType = ExceptionType.HandledByThisPolicy,
-            FaultType = FaultType.ExceptionHandledByThisPolicy,
-            FinalHandledResult = default(int),
-            Result = default(int)
-        });
+        result.ShouldNotBeNull();
+        result.Outcome.ShouldBe(OutcomeType.Failure);
+        result.FinalException.ShouldBeSameAs(handledException);
+        result.ExceptionType.ShouldBe(ExceptionType.HandledByThisPolicy);
+        result.FaultType.ShouldBe(FaultType.ExceptionHandledByThisPolicy);
+        result.FinalHandledResult.ShouldBe(default);
+        result.Result.ShouldBe(default);
     }
 
     [Fact]
@@ -138,15 +126,13 @@ public class PolicySpecs
             .Retry((_, _) => { })
             .ExecuteAndCapture<int>(() => throw unhandledException);
 
-        result.Should().BeEquivalentTo(new
-        {
-            Outcome = OutcomeType.Failure,
-            FinalException = unhandledException,
-            ExceptionType = ExceptionType.Unhandled,
-            FaultType = FaultType.UnhandledException,
-            FinalHandledResult = default(int),
-            Result = default(int)
-        });
+        result.ShouldNotBeNull();
+        result.Outcome.ShouldBe(OutcomeType.Failure);
+        result.FinalException.ShouldBeSameAs(unhandledException);
+        result.ExceptionType.ShouldBe(ExceptionType.Unhandled);
+        result.FaultType.ShouldBe(FaultType.UnhandledException);
+        result.FinalHandledResult.ShouldBe(default);
+        result.Result.ShouldBe(default);
     }
 
     #endregion
@@ -160,8 +146,7 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => { }, (IDictionary<string, object>)null!))
-              .Should().Throw<ArgumentNullException>();
+        Should.Throw<ArgumentNullException>(() => policy.Execute(_ => { }, (IDictionary<string, object>)null!));
     }
 
     [Fact]
@@ -171,9 +156,8 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => { }, null!))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
+        Should.Throw<ArgumentNullException>(() => policy.Execute(_ => { }, null!))
+            .ParamName.ShouldBe("context");
     }
 
     [Fact]
@@ -183,8 +167,7 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => 2, (IDictionary<string, object>)null!))
-            .Should().Throw<ArgumentNullException>();
+        Should.Throw<ArgumentNullException>(() => policy.Execute(_ => 2, (IDictionary<string, object>)null!));
     }
 
     [Fact]
@@ -194,9 +177,8 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => 2, null!))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
+        Should.Throw<ArgumentNullException>(() => policy.Execute(_ => 2, null!))
+            .ParamName.ShouldBe("context");
     }
 
     [Fact]
@@ -208,9 +190,9 @@ public class PolicySpecs
 
         Policy policy = Policy.NoOp();
 
-        policy.Execute(context => { capturedContext = context; }, executionContext);
+        policy.Execute(context => capturedContext = context, executionContext);
 
-        capturedContext.Should().BeSameAs(executionContext);
+        capturedContext.ShouldBeSameAs(executionContext);
     }
 
     [Fact]
@@ -220,8 +202,7 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => { }, (IDictionary<string, object>)null!))
-              .Should().Throw<ArgumentNullException>();
+        Should.Throw<ArgumentNullException>(() => policy.ExecuteAndCapture(_ => { }, (IDictionary<string, object>)null!));
     }
 
     [Fact]
@@ -231,9 +212,8 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => { }, null!))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
+        Should.Throw<ArgumentNullException>(() => policy.ExecuteAndCapture(_ => { }, null!))
+            .ParamName.ShouldBe("context");
     }
 
     [Fact]
@@ -243,8 +223,7 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => 2, (IDictionary<string, object>)null!))
-              .Should().Throw<ArgumentNullException>();
+        Should.Throw<ArgumentNullException>(() => policy.ExecuteAndCapture(_ => 2, (IDictionary<string, object>)null!));
     }
 
     [Fact]
@@ -254,9 +233,8 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => 2, null!))
-              .Should().Throw<ArgumentNullException>().And
-              .ParamName.Should().Be("context");
+        Should.Throw<ArgumentNullException>(() => policy.ExecuteAndCapture(_ => 2, null!))
+              .ParamName.ShouldBe("context");
     }
 
     [Fact]
@@ -270,7 +248,7 @@ public class PolicySpecs
 
         policy.ExecuteAndCapture(context => { capturedContext = context; }, executionContext);
 
-        capturedContext.Should().BeSameAs(executionContext);
+        capturedContext.ShouldBeSameAs(executionContext);
     }
 
     [Fact]
@@ -282,7 +260,7 @@ public class PolicySpecs
         Policy policy = Policy.NoOp();
 
         policy.ExecuteAndCapture(_ => { }, executionContext)
-            .Context.Should().BeSameAs(executionContext);
+            .Context.ShouldBeSameAs(executionContext);
     }
 
     #endregion

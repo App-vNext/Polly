@@ -8,7 +8,7 @@ public class ISyncPolicyExtensionsSpecs
         ISyncPolicy nonGenericPolicy = Policy.Timeout(10);
         var genericPolicy = nonGenericPolicy.AsPolicy<ResultClass>();
 
-        genericPolicy.Should().BeAssignableTo<ISyncPolicy<ResultClass>>();
+        genericPolicy.ShouldBeAssignableTo<ISyncPolicy<ResultClass>>();
     }
 
     [Fact]
@@ -21,9 +21,9 @@ public class ISyncPolicyExtensionsSpecs
         var genericPolicy = nonGenericPolicy.AsPolicy<ResultPrimitive>();
         Func<ResultPrimitive> deleg = () => ResultPrimitive.Good;
 
-        genericPolicy.Execute(deleg).Should().Be(ResultPrimitive.Good);
+        genericPolicy.Execute(deleg).ShouldBe(ResultPrimitive.Good);
         breaker.Isolate();
-        genericPolicy.Invoking(p => p.Execute(deleg)).Should().Throw<BrokenCircuitException>();
+        Should.Throw<BrokenCircuitException>(() => genericPolicy.Execute(deleg));
     }
 }
 
