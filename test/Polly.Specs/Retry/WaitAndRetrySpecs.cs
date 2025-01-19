@@ -1048,8 +1048,7 @@ public class WaitAndRetrySpecs : IDisposable
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        Stopwatch watch = new Stopwatch();
-        watch.Start();
+        var watch = Stopwatch.StartNew();
 
         PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
         {

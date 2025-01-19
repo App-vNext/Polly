@@ -266,14 +266,12 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_timeout_after_correct_duration__pessimistic()
     {
-        Stopwatch watch = new Stopwatch();
-
         TimeSpan timeout = TimeSpan.FromSeconds(1);
         var policy = Policy.Timeout(timeout, TimeoutStrategy.Pessimistic);
 
         TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
-        watch.Start();
+        var watch = Stopwatch.StartNew();
         Should.Throw<TimeoutRejectedException>(() => policy.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(10), CancellationToken)));
         watch.Stop();
 
@@ -410,15 +408,13 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_timeout_after_correct_duration__optimistic()
     {
-        Stopwatch watch = new Stopwatch();
-
         TimeSpan timeout = TimeSpan.FromSeconds(1);
         var policy = Policy.Timeout(timeout);
         var userCancellationToken = CancellationToken;
 
         TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
-        watch.Start();
+        var watch = Stopwatch.StartNew();
 
         // Delegate observes cancellation token, so permitting optimistic cancellation.
         Should.Throw<TimeoutRejectedException>(() => policy.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(10), ct), userCancellationToken));
