@@ -38,10 +38,10 @@ public class CacheTResultSpecs : IDisposable
 
         var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None]);
 
-        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
-        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
-        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
-            .Which.ParamName.Should().Be("action");
+        var exceptionAssertions = Should.Throw<TargetInvocationException>(func);
+        exceptionAssertions.Message.ShouldBe("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.InnerException.ShouldBeOfType<ArgumentNullException>()
+            .ParamName.ShouldBe("action");
     }
 
     [Fact]
@@ -50,31 +50,31 @@ public class CacheTResultSpecs : IDisposable
         ISyncCacheProvider cacheProvider = null!;
         ISyncCacheProvider<ResultPrimitive> cacheProviderGeneric = null!;
         var ttl = TimeSpan.MaxValue;
-        ITtlStrategy ttlStrategy = new ContextualTtl();
-        ITtlStrategy<ResultPrimitive> ttlStrategyGeneric = new ContextualTtl().For<ResultPrimitive>();
-        ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
+        var ttlStrategy = new ContextualTtl();
+        var ttlStrategyGeneric = new ContextualTtl().For<ResultPrimitive>();
+        var cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
         Func<Context, string> cacheKeyStrategyFunc = (_) => string.Empty;
         Action<Context, string> onCache = (_, _) => { };
         Action<Context, string, Exception>? onCacheError = null;
         const string CacheProviderExpected = "cacheProvider";
 
         Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttl, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -84,7 +84,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -94,7 +94,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -105,7 +105,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -116,7 +116,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -127,7 +127,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -138,36 +138,36 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttl, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttl, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategy, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategyGeneric, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategyGeneric, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttl, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttl, cacheKeyStrategy, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategy, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategy, cacheKeyStrategy, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategy, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttl, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttl, cacheKeyStrategyFunc, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategy, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategy, cacheKeyStrategyFunc, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategyFunc, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             onCache,
@@ -175,9 +175,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             onCache,
@@ -185,9 +185,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             onCache,
@@ -195,9 +195,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             cacheKeyStrategy,
@@ -206,9 +206,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategy,
@@ -217,9 +217,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategy,
@@ -228,9 +228,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             cacheKeyStrategyFunc,
@@ -239,9 +239,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategyFunc,
@@ -250,9 +250,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategyFunc,
@@ -261,13 +261,13 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheProviderExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
     }
 
     [Fact]
     public void Should_throw_when_ttl_strategy_is_null()
     {
-        ISyncCacheProvider cacheProvider = new StubCacheProvider();
+        var cacheProvider = new StubCacheProvider();
         ISyncCacheProvider<ResultPrimitive> cacheProviderGeneric = new StubCacheProvider().For<ResultPrimitive>();
         ITtlStrategy ttlStrategy = null!;
         ITtlStrategy<ResultPrimitive> ttlStrategyGeneric = null!;
@@ -278,16 +278,16 @@ public class CacheTResultSpecs : IDisposable
         const string TtlStrategyExpected = "ttlStrategy";
 
         Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -297,7 +297,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -308,7 +308,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -319,39 +319,39 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategy, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategyGeneric, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategyGeneric, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategy, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategy, cacheKeyStrategy, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategy, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategy, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategy, cacheKeyStrategy, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategy, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategy, cacheKeyStrategyFunc, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategyFunc, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy, onCache,
             onCache,
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             onCache,
@@ -359,9 +359,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategy,
@@ -370,9 +370,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategy,
@@ -381,9 +381,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategyFunc,
@@ -392,9 +392,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategyFunc,
@@ -403,13 +403,13 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(TtlStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(TtlStrategyExpected);
     }
 
     [Fact]
     public void Should_throw_when_cache_key_strategy_is_null()
     {
-        ISyncCacheProvider cacheProvider = new StubCacheProvider();
+        var cacheProvider = new StubCacheProvider();
         ISyncCacheProvider<ResultPrimitive> cacheProviderGeneric = new StubCacheProvider().For<ResultPrimitive>();
         var ttl = TimeSpan.MaxValue;
         ITtlStrategy ttlStrategy = new ContextualTtl();
@@ -421,16 +421,16 @@ public class CacheTResultSpecs : IDisposable
         const string CacheKeyStrategyExpected = "cacheKeyStrategy";
 
         Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -441,7 +441,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -452,7 +452,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(cacheProvider,
             ttl,
@@ -462,7 +462,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -473,27 +473,27 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttl, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttl, cacheKeyStrategy, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategy, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategy, cacheKeyStrategy, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategy, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategy, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttl, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttl, cacheKeyStrategyFunc, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategy, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategy, cacheKeyStrategyFunc, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategyFunc, onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        action = () => Policy.Cache(cacheProviderGeneric, ttlStrategyGeneric, cacheKeyStrategyFunc, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             cacheKeyStrategy,
@@ -502,9 +502,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategy,
@@ -513,9 +513,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategy,
@@ -524,9 +524,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             cacheKeyStrategyFunc,
@@ -535,9 +535,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategyFunc,
@@ -546,9 +546,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategyFunc,
@@ -557,13 +557,13 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(CacheKeyStrategyExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheKeyStrategyExpected);
     }
 
     [Fact]
     public void Should_throw_when_on_cache_get_is_null()
     {
-        ISyncCacheProvider cacheProvider = new StubCacheProvider();
+        var cacheProvider = new StubCacheProvider();
         ISyncCacheProvider<ResultPrimitive> cacheProviderGeneric = new StubCacheProvider().For<ResultPrimitive>();
         var ttl = TimeSpan.MaxValue;
         ITtlStrategy ttlStrategy = new ContextualTtl();
@@ -583,7 +583,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -593,7 +593,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -604,7 +604,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -615,7 +615,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -626,7 +626,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -637,9 +637,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             onCacheGet,
@@ -647,9 +647,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             onCacheGet,
@@ -657,9 +657,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             onCacheGet,
@@ -667,9 +667,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             cacheKeyStrategy,
@@ -678,9 +678,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategy,
@@ -689,9 +689,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategy,
@@ -700,9 +700,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             cacheKeyStrategyFunc,
@@ -711,9 +711,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategyFunc,
@@ -722,9 +722,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategyFunc,
@@ -733,13 +733,13 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheGetExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheGetExpected);
     }
 
     [Fact]
     public void Should_throw_when_on_cache_miss_is_null()
     {
-        ISyncCacheProvider cacheProvider = new StubCacheProvider();
+        var cacheProvider = new StubCacheProvider();
         ISyncCacheProvider<ResultPrimitive> cacheProviderGeneric = new StubCacheProvider().For<ResultPrimitive>();
         var ttl = TimeSpan.MaxValue;
         ITtlStrategy ttlStrategy = new ContextualTtl();
@@ -759,7 +759,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -769,7 +769,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -780,7 +780,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -791,7 +791,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -802,7 +802,7 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -813,9 +813,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             onCache,
@@ -823,9 +823,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             onCache,
@@ -833,9 +833,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             onCache,
@@ -843,9 +843,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             cacheKeyStrategy,
@@ -854,9 +854,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategy,
@@ -865,9 +865,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategy,
@@ -876,9 +876,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             cacheKeyStrategyFunc,
@@ -887,9 +887,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategyFunc,
@@ -898,9 +898,9 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategyFunc,
@@ -909,13 +909,13 @@ public class CacheTResultSpecs : IDisposable
             onCache,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCacheMissExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCacheMissExpected);
     }
 
     [Fact]
     public void Should_throw_when_on_cache_put_is_null()
     {
-        ISyncCacheProvider cacheProvider = new StubCacheProvider();
+        var cacheProvider = new StubCacheProvider();
         ISyncCacheProvider<ResultPrimitive> cacheProviderGeneric = new StubCacheProvider().For<ResultPrimitive>();
         var ttl = TimeSpan.MaxValue;
         ITtlStrategy ttlStrategy = new ContextualTtl();
@@ -935,7 +935,7 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -945,7 +945,7 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -956,7 +956,7 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -967,7 +967,7 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -978,7 +978,7 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
         action = () => Policy.Cache<ResultPrimitive>(
             cacheProvider,
@@ -989,9 +989,9 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             onCache,
@@ -999,9 +999,9 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             onCache,
@@ -1009,9 +1009,9 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             onCache,
@@ -1019,9 +1019,9 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             cacheKeyStrategy,
@@ -1030,9 +1030,9 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategy,
@@ -1041,9 +1041,9 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategy,
@@ -1052,9 +1052,9 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttl,
             cacheKeyStrategyFunc,
@@ -1063,9 +1063,9 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategy,
             cacheKeyStrategyFunc,
@@ -1074,9 +1074,9 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
 
-        action = () => Policy.Cache<ResultPrimitive>(
+        action = () => Policy.Cache(
             cacheProviderGeneric,
             ttlStrategyGeneric,
             cacheKeyStrategyFunc,
@@ -1085,7 +1085,7 @@ public class CacheTResultSpecs : IDisposable
             onCachePut,
             onCacheError,
             onCacheError);
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be(OnCachePutExpected);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(OnCachePutExpected);
     }
 
     #endregion
@@ -1099,7 +1099,7 @@ public class CacheTResultSpecs : IDisposable
         const string ValueToReturnFromExecution = "valueToReturnFromExecution";
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
         stubCacheProvider.Put(OperationKey, ValueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
@@ -1110,9 +1110,9 @@ public class CacheTResultSpecs : IDisposable
             delegateExecuted = true;
             return ValueToReturnFromExecution;
         }, new Context(OperationKey))
-            .Should().Be(ValueToReturnFromCache);
+            .ShouldBe(ValueToReturnFromCache);
 
-        delegateExecuted.Should().BeFalse();
+        delegateExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -1121,18 +1121,18 @@ public class CacheTResultSpecs : IDisposable
         const string ValueToReturn = "valueToReturn";
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit1.Should().BeFalse();
-        fromCache1.Should().BeNull();
+        cacheHit1.ShouldBeFalse();
+        fromCache1.ShouldBeNull();
 
-        cache.Execute(_ => ValueToReturn, new Context(OperationKey)).Should().Be(ValueToReturn);
+        cache.Execute(_ => ValueToReturn, new Context(OperationKey)).ShouldBe(ValueToReturn);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit2.Should().BeTrue();
-        fromCache2.Should().Be(ValueToReturn);
+        cacheHit2.ShouldBeTrue();
+        fromCache2.ShouldBe(ValueToReturn);
     }
 
     [Fact]
@@ -1141,13 +1141,13 @@ public class CacheTResultSpecs : IDisposable
         const string ValueToReturn = "valueToReturn";
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        TimeSpan ttl = TimeSpan.FromMinutes(30);
+        var stubCacheProvider = new StubCacheProvider();
+        var ttl = TimeSpan.FromMinutes(30);
         CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, ttl);
 
         (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit1.Should().BeFalse();
-        fromCache1.Should().BeNull();
+        cacheHit1.ShouldBeFalse();
+        fromCache1.ShouldBeNull();
 
         int delegateInvocations = 0;
         Func<Context, string> func = _ =>
@@ -1160,25 +1160,25 @@ public class CacheTResultSpecs : IDisposable
         SystemClock.DateTimeOffsetUtcNow = () => fixedTime;
 
         // First execution should execute delegate and put result in the cache.
-        cache.Execute(func, new Context(OperationKey)).Should().Be(ValueToReturn);
-        delegateInvocations.Should().Be(1);
+        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        delegateInvocations.ShouldBe(1);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit2.Should().BeTrue();
-        fromCache2.Should().Be(ValueToReturn);
+        cacheHit2.ShouldBeTrue();
+        fromCache2.ShouldBe(ValueToReturn);
 
         // Second execution (before cache expires) should get it from the cache - no further delegate execution.
         // (Manipulate time so just prior cache expiry).
         SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddSeconds(-1);
-        cache.Execute(func, new Context(OperationKey)).Should().Be(ValueToReturn);
-        delegateInvocations.Should().Be(1);
+        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        delegateInvocations.ShouldBe(1);
 
         // Manipulate time to force cache expiry.
         SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddSeconds(1);
 
         // Third execution (cache expired) should not get it from the cache - should cause further delegate execution.
-        cache.Execute(func, new Context(OperationKey)).Should().Be(ValueToReturn);
-        delegateInvocations.Should().Be(2);
+        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        delegateInvocations.ShouldBe(2);
     }
 
     [Fact]
@@ -1187,18 +1187,18 @@ public class CacheTResultSpecs : IDisposable
         const string ValueToReturn = "valueToReturn";
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.Zero);
 
         (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit1.Should().BeFalse();
-        fromCache1.Should().BeNull();
+        cacheHit1.ShouldBeFalse();
+        fromCache1.ShouldBeNull();
 
-        cache.Execute(_ => ValueToReturn, new Context(OperationKey)).Should().Be(ValueToReturn);
+        cache.Execute(_ => ValueToReturn, new Context(OperationKey)).ShouldBe(ValueToReturn);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit2.Should().BeFalse();
-        fromCache2.Should().BeNull();
+        cacheHit2.ShouldBeFalse();
+        fromCache2.ShouldBeNull();
     }
 
     [Fact]
@@ -1216,20 +1216,20 @@ public class CacheTResultSpecs : IDisposable
             return ValueToReturn;
         };
 
-        cache.Execute(func, new Context(OperationKey)).Should().Be(ValueToReturn);
-        delegateInvocations.Should().Be(1);
+        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        delegateInvocations.ShouldBe(1);
 
-        cache.Execute(func, new Context(OperationKey)).Should().Be(ValueToReturn);
-        delegateInvocations.Should().Be(1);
+        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        delegateInvocations.ShouldBe(1);
 
-        cache.Execute(func, new Context(OperationKey)).Should().Be(ValueToReturn);
-        delegateInvocations.Should().Be(1);
+        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        delegateInvocations.ShouldBe(1);
     }
 
     [Fact]
     public void Should_allow_custom_FuncICacheKeyStrategy()
     {
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy<ResultClass> cache = Policy.Cache<ResultClass>(stubCacheProvider, TimeSpan.MaxValue, context => context.OperationKey + context["id"]);
 
         object person1 = new ResultClass(ResultPrimitive.Good, "person1");
@@ -1240,11 +1240,11 @@ public class CacheTResultSpecs : IDisposable
         bool funcExecuted = false;
         Func<Context, ResultClass> func = _ => { funcExecuted = true; return new ResultClass(ResultPrimitive.Fault, "should never return this one"); };
 
-        cache.Execute(func, new Context("person", CreateDictionary("id", "1"))).Should().BeSameAs(person1);
-        funcExecuted.Should().BeFalse();
+        cache.Execute(func, new Context("person", CreateDictionary("id", "1"))).ShouldBeSameAs(person1);
+        funcExecuted.ShouldBeFalse();
 
-        cache.Execute(func, new Context("person", CreateDictionary("id", "2"))).Should().BeSameAs(person2);
-        funcExecuted.Should().BeFalse();
+        cache.Execute(func, new Context("person", CreateDictionary("id", "2"))).ShouldBeSameAs(person2);
+        funcExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -1253,9 +1253,9 @@ public class CacheTResultSpecs : IDisposable
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
-        CachePolicy<ResultClass> cache = Policy.Cache<ResultClass>(stubCacheProvider.For<ResultClass>(), new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
+        CachePolicy<ResultClass> cache = Policy.Cache(stubCacheProvider.For<ResultClass>(), new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
 
         object person1 = new ResultClass(ResultPrimitive.Good, "person1");
         stubCacheProvider.Put("person1", person1, new Ttl(TimeSpan.MaxValue));
@@ -1265,11 +1265,11 @@ public class CacheTResultSpecs : IDisposable
         bool funcExecuted = false;
         Func<Context, ResultClass> func = _ => { funcExecuted = true; return new ResultClass(ResultPrimitive.Fault, "should never return this one"); };
 
-        cache.Execute(func, new Context("person", CreateDictionary("id", "1"))).Should().BeSameAs(person1);
-        funcExecuted.Should().BeFalse();
+        cache.Execute(func, new Context("person", CreateDictionary("id", "1"))).ShouldBeSameAs(person1);
+        funcExecuted.ShouldBeFalse();
 
-        cache.Execute(func, new Context("person", CreateDictionary("id", "2"))).Should().BeSameAs(person2);
-        funcExecuted.Should().BeFalse();
+        cache.Execute(func, new Context("person", CreateDictionary("id", "2"))).ShouldBeSameAs(person2);
+        funcExecuted.ShouldBeFalse();
     }
 
     #endregion
@@ -1282,18 +1282,18 @@ public class CacheTResultSpecs : IDisposable
         ResultClass? valueToReturn = null;
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy<ResultClass?> cache = Policy.Cache<ResultClass?>(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit1.Should().BeFalse();
-        fromCache1.Should().BeNull();
+        cacheHit1.ShouldBeFalse();
+        fromCache1.ShouldBeNull();
 
-        cache.Execute(_ => valueToReturn, new Context(OperationKey)).Should().Be(valueToReturn);
+        cache.Execute(_ => valueToReturn, new Context(OperationKey)).ShouldBe(valueToReturn);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit2.Should().BeTrue();
-        fromCache2.Should().Be(valueToReturn);
+        cacheHit2.ShouldBeTrue();
+        fromCache2.ShouldBe(valueToReturn);
     }
 
     [Fact]
@@ -1303,7 +1303,7 @@ public class CacheTResultSpecs : IDisposable
         ResultClass valueToReturnFromExecution = new ResultClass(ResultPrimitive.Good);
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy<ResultClass> cache = Policy.Cache<ResultClass>(stubCacheProvider, TimeSpan.MaxValue);
         stubCacheProvider.Put(OperationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
@@ -1314,9 +1314,9 @@ public class CacheTResultSpecs : IDisposable
             delegateExecuted = true;
             return valueToReturnFromExecution;
         }, new Context(OperationKey))
-            .Should().Be(valueToReturnFromCache);
+            .ShouldBe(valueToReturnFromCache);
 
-        delegateExecuted.Should().BeFalse();
+        delegateExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -1325,18 +1325,18 @@ public class CacheTResultSpecs : IDisposable
         ResultPrimitive valueToReturn = default;
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy<ResultPrimitive> cache = Policy.Cache<ResultPrimitive>(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit1.Should().BeFalse();
-        fromCache1.Should().BeNull();
+        cacheHit1.ShouldBeFalse();
+        fromCache1.ShouldBeNull();
 
-        cache.Execute(_ => valueToReturn, new Context(OperationKey)).Should().Be(valueToReturn);
+        cache.Execute(_ => valueToReturn, new Context(OperationKey)).ShouldBe(valueToReturn);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit2.Should().BeTrue();
-        fromCache2.Should().Be(valueToReturn);
+        cacheHit2.ShouldBeTrue();
+        fromCache2.ShouldBe(valueToReturn);
     }
 
     [Fact]
@@ -1344,10 +1344,10 @@ public class CacheTResultSpecs : IDisposable
     {
         ResultPrimitive valueToReturnFromCache = default;
         ResultPrimitive valueToReturnFromExecution = ResultPrimitive.Good;
-        valueToReturnFromExecution.Should().NotBe(valueToReturnFromCache);
+        valueToReturnFromExecution.ShouldNotBe(valueToReturnFromCache);
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy<ResultPrimitive> cache = Policy.Cache<ResultPrimitive>(stubCacheProvider, TimeSpan.MaxValue);
         stubCacheProvider.Put(OperationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
@@ -1358,9 +1358,9 @@ public class CacheTResultSpecs : IDisposable
             delegateExecuted = true;
             return valueToReturnFromExecution;
         }, new Context(OperationKey))
-            .Should().Be(valueToReturnFromCache);
+            .ShouldBe(valueToReturnFromCache);
 
-        delegateExecuted.Should().BeFalse();
+        delegateExecuted.ShouldBeFalse();
     }
 
     #endregion
@@ -1374,7 +1374,7 @@ public class CacheTResultSpecs : IDisposable
         const string ValueToReturnFromExecution = "valueToReturnFromExecution";
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
         Policy noop = Policy.NoOp();
         PolicyWrap<string> wrap = cache.Wrap(noop);
@@ -1388,9 +1388,9 @@ public class CacheTResultSpecs : IDisposable
             delegateExecuted = true;
             return ValueToReturnFromExecution;
         }, new Context(OperationKey))
-            .Should().Be(ValueToReturnFromCache);
+            .ShouldBe(ValueToReturnFromCache);
 
-        delegateExecuted.Should().BeFalse();
+        delegateExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -1400,7 +1400,7 @@ public class CacheTResultSpecs : IDisposable
         const string ValueToReturnFromExecution = "valueToReturnFromExecution";
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
         Policy noop = Policy.NoOp();
         PolicyWrap<string> wrap = noop.Wrap(cache);
@@ -1414,9 +1414,9 @@ public class CacheTResultSpecs : IDisposable
             delegateExecuted = true;
             return ValueToReturnFromExecution;
         }, new Context(OperationKey))
-            .Should().Be(ValueToReturnFromCache);
+            .ShouldBe(ValueToReturnFromCache);
 
-        delegateExecuted.Should().BeFalse();
+        delegateExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -1426,7 +1426,7 @@ public class CacheTResultSpecs : IDisposable
         const string ValueToReturnFromExecution = "valueToReturnFromExecution";
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
         Policy<string> noop = Policy.NoOp<string>();
         PolicyWrap<string> wrap = Policy.Wrap(noop, cache, noop);
@@ -1440,9 +1440,9 @@ public class CacheTResultSpecs : IDisposable
             delegateExecuted = true;
             return ValueToReturnFromExecution;
         }, new Context(OperationKey))
-            .Should().Be(ValueToReturnFromCache);
+            .ShouldBe(ValueToReturnFromCache);
 
-        delegateExecuted.Should().BeFalse();
+        delegateExecuted.ShouldBeFalse();
     }
 
     #endregion
@@ -1463,11 +1463,11 @@ public class CacheTResultSpecs : IDisposable
             return valueToReturn;
         };
 
-        cache.Execute(func /*, no operation key */).Should().Be(valueToReturn);
-        delegateInvocations.Should().Be(1);
+        cache.Execute(func /*, no operation key */).ShouldBe(valueToReturn);
+        delegateInvocations.ShouldBe(1);
 
-        cache.Execute(func /*, no operation key */).Should().Be(valueToReturn);
-        delegateInvocations.Should().Be(2);
+        cache.Execute(func /*, no operation key */).ShouldBe(valueToReturn);
+        delegateInvocations.ShouldBe(2);
     }
 
     #endregion
@@ -1480,7 +1480,7 @@ public class CacheTResultSpecs : IDisposable
         const string ValueToReturn = "valueToReturn";
         const string OperationKey = "SomeOperationKey";
 
-        CachePolicy<string> cache = Policy.Cache<string>(new StubCacheProvider(), TimeSpan.MaxValue);
+        CachePolicy<string> policy = Policy.Cache<string>(new StubCacheProvider(), TimeSpan.MaxValue);
 
         int delegateInvocations = 0;
 
@@ -1493,16 +1493,15 @@ public class CacheTResultSpecs : IDisposable
                 return ValueToReturn;
             };
 
-            cache.Execute(func, new Context(OperationKey), tokenSource.Token).Should().Be(ValueToReturn);
-            delegateInvocations.Should().Be(1);
+            policy.Execute(func, new Context(OperationKey), tokenSource.Token).ShouldBe(ValueToReturn);
+            delegateInvocations.ShouldBe(1);
 
             tokenSource.Cancel();
 
-            cache.Invoking(policy => policy.Execute(func, new Context(OperationKey), tokenSource.Token))
-                .Should().Throw<OperationCanceledException>();
+            Should.Throw<OperationCanceledException>(() => policy.Execute(func, new Context(OperationKey), tokenSource.Token));
         }
 
-        delegateInvocations.Should().Be(1);
+        delegateInvocations.ShouldBe(1);
     }
 
     [Fact]
@@ -1511,8 +1510,8 @@ public class CacheTResultSpecs : IDisposable
         const string ValueToReturn = "valueToReturn";
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
+        var stubCacheProvider = new StubCacheProvider();
+        CachePolicy<string> policy = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
 
         using (var tokenSource = new CancellationTokenSource())
         {
@@ -1523,13 +1522,12 @@ public class CacheTResultSpecs : IDisposable
                 return ValueToReturn;
             };
 
-            cache.Invoking(policy => policy.Execute(func, new Context(OperationKey), tokenSource.Token))
-                .Should().Throw<OperationCanceledException>();
+            Should.Throw<OperationCanceledException>(() => policy.Execute(func, new Context(OperationKey), tokenSource.Token));
         }
 
         (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit.Should().BeFalse();
-        fromCache.Should().BeNull();
+        cacheHit.ShouldBeFalse();
+        fromCache.ShouldBeNull();
     }
 
     #endregion

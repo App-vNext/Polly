@@ -15,13 +15,11 @@
 
   <ItemGroup>
     <Using Include="Polly.TestUtils" />
-    <Using Include="Shouldly" />
     <ProjectReference Include="..\..\src\Polly.Extensions\Polly.Extensions.csproj" />
     <ProjectReference Include="..\..\src\Polly.RateLimiting\Polly.RateLimiting.csproj" />
     <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-    <PackageReference Include="Shouldly" />
     <Reference Include="System.Net.Http" Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'" />
   </ItemGroup>
 </Project>

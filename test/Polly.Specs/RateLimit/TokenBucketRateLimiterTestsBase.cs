@@ -120,7 +120,7 @@ public abstract class TokenBucketRateLimiterTestsBase : RateLimitSpecsBase, IDis
     [InlineData(100)]
     public void Given_any_bucket_capacity_rate_limiter_permits_half_full_bucket_burst_after_half_required_refill_time_elapsed(int bucketCapacity)
     {
-        (bucketCapacity % 2).Should().Be(0);
+        (bucketCapacity % 2).ShouldBe(0);
 
         FixClock();
 
@@ -146,7 +146,7 @@ public abstract class TokenBucketRateLimiterTestsBase : RateLimitSpecsBase, IDis
     [InlineData(100, 5)]
     public void Given_any_bucket_capacity_rate_limiter_permits_only_full_bucket_burst_even_if_multiple_required_refill_time_elapsed(int bucketCapacity, int multipleRefillTimePassed)
     {
-        multipleRefillTimePassed.Should().BeGreaterThan(1);
+        multipleRefillTimePassed.ShouldBeGreaterThan(1);
 
         FixClock();
 
@@ -200,7 +200,7 @@ public abstract class TokenBucketRateLimiterTestsBase : RateLimitSpecsBase, IDis
 
         // Assert - one should have permitted execution, n-1 not.
         var results = tasks.Select(t => t.Result).ToList();
-        results.Count(r => r.PermitExecution).Should().Be(1);
-        results.Count(r => !r.PermitExecution).Should().Be(parallelContention - 1);
+        results.Count(r => r.PermitExecution).ShouldBe(1);
+        results.Count(r => !r.PermitExecution).ShouldBe(parallelContention - 1);
     }
 }

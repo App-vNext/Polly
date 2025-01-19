@@ -8,7 +8,7 @@ public class AbsoluteTtlSpecs : IDisposable
     {
         Action configure = () => _ = new AbsoluteTtl(DateTimeOffset.UtcNow.Date.AddDays(1));
 
-        configure.Should().NotThrow();
+        Should.NotThrow(configure);
     }
 
     [Fact]
@@ -16,7 +16,7 @@ public class AbsoluteTtlSpecs : IDisposable
     {
         Action configure = () => _ = new AbsoluteTtl(DateTimeOffset.MaxValue);
 
-        configure.Should().NotThrow();
+        Should.NotThrow(configure);
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public class AbsoluteTtlSpecs : IDisposable
     {
         Action configure = () => _ = new AbsoluteTtl(DateTimeOffset.MinValue);
 
-        configure.Should().NotThrow();
+        Should.NotThrow(configure);
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class AbsoluteTtlSpecs : IDisposable
     {
         AbsoluteTtl ttlStrategy = new AbsoluteTtl(SystemClock.DateTimeOffsetUtcNow().Subtract(TimeSpan.FromTicks(1)));
 
-        ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.Zero);
+        ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.ShouldBe(TimeSpan.Zero);
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class AbsoluteTtlSpecs : IDisposable
         AbsoluteTtl ttlStrategy = new AbsoluteTtl(tomorrow);
 
         SystemClock.DateTimeOffsetUtcNow = () => today;
-        ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.FromDays(1));
+        ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.ShouldBe(TimeSpan.FromDays(1));
     }
 
     public void Dispose() =>

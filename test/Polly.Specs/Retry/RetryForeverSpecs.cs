@@ -11,8 +11,8 @@ public class RetryForeverSpecs
                                   .Handle<DivideByZeroException>()
                                   .RetryForever(nullOnRetry);
 
-        policy.Should().Throw<ArgumentNullException>().And
-              .ParamName.Should().Be("onRetry");
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
     }
 
     [Fact]
@@ -24,8 +24,8 @@ public class RetryForeverSpecs
                                   .Handle<DivideByZeroException>()
                                   .RetryForever(nullOnRetry);
 
-        policy.Should().Throw<ArgumentNullException>().And
-              .ParamName.Should().Be("onRetry");
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
     }
 
     [Fact]
@@ -35,8 +35,7 @@ public class RetryForeverSpecs
             .Handle<DivideByZeroException>()
             .RetryForever();
 
-        policy.Invoking(x => x.RaiseException<DivideByZeroException>(3))
-              .Should().NotThrow();
+        Should.NotThrow(() => policy.RaiseException<DivideByZeroException>(3));
     }
 
     [Fact]
@@ -47,8 +46,7 @@ public class RetryForeverSpecs
             .Or<ArgumentException>()
             .RetryForever();
 
-        policy.Invoking(x => x.RaiseException<ArgumentException>(3))
-              .Should().NotThrow();
+        Should.NotThrow(() => policy.RaiseException<ArgumentException>(3));
     }
 
     [Fact]
@@ -58,8 +56,7 @@ public class RetryForeverSpecs
             .Handle<DivideByZeroException>()
             .RetryForever();
 
-        policy.Invoking(x => x.RaiseException<NullReferenceException>())
-              .Should().Throw<NullReferenceException>();
+        Should.Throw<NullReferenceException>(() => policy.RaiseException<NullReferenceException>());
     }
 
     [Fact]
@@ -69,8 +66,7 @@ public class RetryForeverSpecs
             .Handle<DivideByZeroException>()
             .RetryForeverAsync();
 
-        await policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
-              .Should().ThrowAsync<NullReferenceException>();
+        await Should.ThrowAsync<NullReferenceException>(() => policy.RaiseExceptionAsync<NullReferenceException>());
     }
 
     [Fact]
@@ -81,8 +77,7 @@ public class RetryForeverSpecs
             .Or<ArgumentException>()
             .RetryForever();
 
-        policy.Invoking(x => x.RaiseException<NullReferenceException>())
-              .Should().Throw<NullReferenceException>();
+        Should.Throw<NullReferenceException>(() => policy.RaiseException<NullReferenceException>());
     }
 
     [Fact]
@@ -92,8 +87,7 @@ public class RetryForeverSpecs
             .Handle<DivideByZeroException>(_ => false)
             .RetryForever();
 
-        policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-              .Should().Throw<DivideByZeroException>();
+        Should.Throw<DivideByZeroException>(() => policy.RaiseException<DivideByZeroException>());
     }
 
     [Fact]
@@ -104,8 +98,7 @@ public class RetryForeverSpecs
             .Or<ArgumentException>(_ => false)
             .RetryForever();
 
-        policy.Invoking(x => x.RaiseException<ArgumentException>())
-              .Should().Throw<ArgumentException>();
+        Should.Throw<ArgumentException>(() => policy.RaiseException<ArgumentException>());
     }
 
     [Fact]
@@ -115,8 +108,7 @@ public class RetryForeverSpecs
             .Handle<DivideByZeroException>(_ => true)
             .RetryForever();
 
-        policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-              .Should().NotThrow();
+        Should.NotThrow(() => policy.RaiseException<DivideByZeroException>());
     }
 
     [Fact]
@@ -126,8 +118,7 @@ public class RetryForeverSpecs
             .Handle<DivideByZeroException>(_ => true)
             .RetryForeverAsync();
 
-        await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-              .Should().NotThrowAsync();
+        await Should.NotThrowAsync(() => policy.RaiseExceptionAsync<DivideByZeroException>());
     }
 
     [Fact]
@@ -138,8 +129,7 @@ public class RetryForeverSpecs
             .Or<ArgumentException>(_ => true)
             .RetryForever();
 
-        policy.Invoking(x => x.RaiseException<ArgumentException>())
-              .Should().NotThrow();
+        Should.NotThrow(() => policy.RaiseException<ArgumentException>());
     }
 
     [Fact]
@@ -150,8 +140,7 @@ public class RetryForeverSpecs
             .Or<ArgumentException>(_ => true)
             .RetryForeverAsync();
 
-        await policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
-              .Should().NotThrowAsync();
+        await Should.NotThrowAsync(() => policy.RaiseExceptionAsync<ArgumentException>());
     }
 
     [Fact]
@@ -162,14 +151,13 @@ public class RetryForeverSpecs
 
         var policy = Policy
             .Handle<DivideByZeroException>()
-            .RetryForever(exception => retryExceptions.Add(exception));
+            .RetryForever(retryExceptions.Add);
 
         policy.RaiseException<DivideByZeroException>(3, (e, i) => e.HelpLink = "Exception #" + i);
 
         retryExceptions
             .Select(x => x.HelpLink)
-            .Should()
-            .ContainInOrder(expectedExceptions);
+            .ShouldBe(expectedExceptions);
     }
 
     [Fact]
@@ -184,9 +172,9 @@ public class RetryForeverSpecs
         policy.RaiseException<DivideByZeroException>(
             CreateDictionary("key1", "value1", "key2", "value2"));
 
-        contextData.Should()
-                   .ContainKeys("key1", "key2").And
-                   .ContainValues("value1", "value2");
+        contextData.ShouldNotBeNull();
+        contextData.ShouldContainKeyAndValue("key1", "value1");
+        contextData.ShouldContainKeyAndValue("key2", "value2");
     }
 
     [Fact]
@@ -201,8 +189,7 @@ public class RetryForeverSpecs
 
         policy.RaiseException<DivideByZeroException>(3);
 
-        retryCounts.Should()
-            .ContainInOrder(expectedRetryCounts);
+        retryCounts.ShouldBe(expectedRetryCounts);
     }
 
     [Fact]
@@ -212,13 +199,11 @@ public class RetryForeverSpecs
 
         var policy = Policy
             .Handle<DivideByZeroException>()
-            .RetryForever(exception => retryExceptions.Add(exception));
+            .RetryForever(retryExceptions.Add);
 
-        policy.Invoking(x => x.RaiseException<ArgumentException>())
-              .Should().Throw<ArgumentException>();
+        Should.Throw<ArgumentException>(() => policy.RaiseException<ArgumentException>());
 
-        retryExceptions.Should()
-                       .BeEmpty();
+        retryExceptions.ShouldBeEmpty();
     }
 
     [Fact]
@@ -233,11 +218,11 @@ public class RetryForeverSpecs
         policy.RaiseException<DivideByZeroException>(
             CreateDictionary("key", "original_value"));
 
-        contextValue.Should().Be("original_value");
+        contextValue.ShouldBe("original_value");
 
         policy.RaiseException<DivideByZeroException>(
             CreateDictionary("key", "new_value"));
 
-        contextValue.Should().Be("new_value");
+        contextValue.ShouldBe("new_value");
     }
 }

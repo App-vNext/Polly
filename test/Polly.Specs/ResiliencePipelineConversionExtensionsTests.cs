@@ -22,11 +22,11 @@ public class ResiliencePipelineConversionExtensionsTests
         {
             Before = (context, _) =>
             {
-                context.GetType().GetProperty("IsVoid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context).Should().Be(_isVoid);
-                context.GetType().GetProperty("IsSynchronous", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context).Should().Be(_isSynchronous);
+                context.GetType().GetProperty("IsVoid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context).ShouldBe(_isVoid);
+                context.GetType().GetProperty("IsSynchronous", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context).ShouldBe(_isSynchronous);
                 context.Properties.Set(Outgoing, "outgoing-value");
-                context.Properties.GetValue(Incoming, string.Empty).Should().Be("incoming-value");
-                context.OperationKey.Should().Be("op-key");
+                context.Properties.GetValue(Incoming, string.Empty).ShouldBe("incoming-value");
+                context.OperationKey.ShouldBe("op-key");
             }
         };
 
@@ -66,7 +66,7 @@ public class ResiliencePipelineConversionExtensionsTests
 
         var result = _genericStrategy.AsSyncPolicy().Execute(_ => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
         AssertContext(context);
-        result.Should().Be("dummy");
+        result.ShouldBe("dummy");
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class ResiliencePipelineConversionExtensionsTests
         var result = _strategy.AsPipeline().AsSyncPolicy().Execute(_ => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
 
         AssertContext(context);
-        result.Should().Be("dummy");
+        result.ShouldBe("dummy");
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class ResiliencePipelineConversionExtensionsTests
         },
         context);
         AssertContext(context);
-        result.Should().Be("dummy");
+        result.ShouldBe("dummy");
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class ResiliencePipelineConversionExtensionsTests
         context);
 
         AssertContext(context);
-        result.Should().Be("dummy");
+        result.ShouldBe("dummy");
     }
 
     [Fact]
@@ -172,15 +172,14 @@ public class ResiliencePipelineConversionExtensionsTests
                 return "dummy";
             },
             context)
-            .Should()
-            .Be("dummy");
+            .ShouldBe("dummy");
 
-        context["retry"].Should().Be(6);
+        context["retry"].ShouldBe(6);
     }
 
     private static void AssertContext(Context context)
     {
-        context[Outgoing.Key].Should().Be("outgoing-value");
-        context[Executing.Key].Should().Be("executing-value");
+        context[Outgoing.Key].ShouldBe("outgoing-value");
+        context[Executing.Key].ShouldBe("executing-value");
     }
 }

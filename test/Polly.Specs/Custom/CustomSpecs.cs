@@ -10,7 +10,7 @@ public class CustomSpecs
             PreExecutePolicy policy = PreExecutePolicy.Create(() => Console.WriteLine("Do something"));
         };
 
-        construct.Should().NotThrow();
+        Should.NotThrow(construct);
     }
 
     [Fact]
@@ -21,11 +21,10 @@ public class CustomSpecs
 
         bool executed = false;
 
-        policy.Invoking(x => x.Execute(() => { executed = true; }))
-            .Should().NotThrow();
+        Should.NotThrow(() => policy.Execute(() => executed = true));
 
-        executed.Should().BeTrue();
-        preExecuted.Should().BeTrue();
+        executed.ShouldBeTrue();
+        preExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -36,7 +35,7 @@ public class CustomSpecs
             AddBehaviourIfHandlePolicy policy = Policy.Handle<Exception>().WithBehaviour(ex => Console.WriteLine("Handling " + ex.Message));
         };
 
-        construct.Should().NotThrow();
+        Should.NotThrow(construct);
     }
 
     [Fact]
@@ -48,15 +47,14 @@ public class CustomSpecs
         Exception toThrow = new InvalidOperationException();
         bool executed = false;
 
-        policy.Invoking(x => x.Execute(() =>
+        Should.Throw<Exception>(() => policy.Execute(() =>
         {
             executed = true;
             throw toThrow;
-        }))
-            .Should().Throw<Exception>().Which.Should().Be(toThrow);
+        })).ShouldBe(toThrow);
 
-        executed.Should().BeTrue();
-        handled.Should().Be(toThrow);
+        executed.ShouldBeTrue();
+        handled.ShouldBe(toThrow);
     }
 
     [Fact]
@@ -68,14 +66,13 @@ public class CustomSpecs
         Exception toThrow = new NotImplementedException();
         bool executed = false;
 
-        policy.Invoking(x => x.Execute(() =>
+        Should.Throw<Exception>(() => policy.Execute(() =>
         {
             executed = true;
             throw toThrow;
-        }))
-            .Should().Throw<Exception>().Which.Should().Be(toThrow);
+        })).ShouldBe(toThrow);
 
-        executed.Should().BeTrue();
-        handled.Should().Be(null);
+        executed.ShouldBeTrue();
+        handled.ShouldBeNull();
     }
 }

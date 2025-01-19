@@ -2,10 +2,7 @@
 
 public class PolicyRegistrySpecs
 {
-    private readonly IPolicyRegistry<string> _registry;
-
-    public PolicyRegistrySpecs() =>
-        _registry = new PolicyRegistry();
+    private readonly PolicyRegistry _registry = [];
 
     #region Tests for adding Policy
 
@@ -16,13 +13,13 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.Count.Should().Be(1);
+        _registry.Count.ShouldBe(1);
 
         Policy policy2 = Policy.NoOp();
         string key2 = Guid.NewGuid().ToString();
 
         _registry.Add(key2, policy2);
-        _registry.Count.Should().Be(2);
+        _registry.Count.ShouldBe(2);
     }
 
     [Fact]
@@ -32,13 +29,13 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.Count.Should().Be(1);
+        _registry.Count.ShouldBe(1);
 
         Policy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
         string key2 = Guid.NewGuid().ToString();
 
         _registry.Add(key2, policy2);
-        _registry.Count.Should().Be(2);
+        _registry.Count.ShouldBe(2);
     }
 
     [Fact]
@@ -48,13 +45,13 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.Count.Should().Be(1);
+        _registry.Count.ShouldBe(1);
 
         ISyncPolicy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
         string key2 = Guid.NewGuid().ToString();
 
         _registry.Add<ISyncPolicy<ResultPrimitive>>(key2, policy2);
-        _registry.Count.Should().Be(2);
+        _registry.Count.ShouldBe(2);
     }
 
     [Fact]
@@ -64,13 +61,13 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry[key] = policy;
-        _registry.Count.Should().Be(1);
+        _registry.Count.ShouldBe(1);
 
         Policy policy2 = Policy.NoOp();
         string key2 = Guid.NewGuid().ToString();
 
         _registry[key2] = policy2;
-        _registry.Count.Should().Be(2);
+        _registry.Count.ShouldBe(2);
     }
 
     [Fact]
@@ -80,13 +77,13 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry[key] = policy;
-        _registry.Count.Should().Be(1);
+        _registry.Count.ShouldBe(1);
 
         Policy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
         string key2 = Guid.NewGuid().ToString();
 
         _registry[key2] = policy2;
-        _registry.Count.Should().Be(2);
+        _registry.Count.ShouldBe(2);
     }
 
     [Fact]
@@ -95,13 +92,11 @@ public class PolicyRegistrySpecs
         Policy policy = Policy.NoOp();
         string key = Guid.NewGuid().ToString();
 
-        _registry.Invoking(r => r.Add(key, policy))
-            .Should().NotThrow();
+        Should.NotThrow(() => _registry.Add(key, policy));
 
-        _registry.Invoking(r => r.Add(key, policy))
-            .Should().Throw<ArgumentException>();
+        Should.Throw<ArgumentException>(() => _registry.Add(key, policy));
 
-        _registry.Count.Should().Be(1);
+        _registry.Count.ShouldBe(1);
     }
 
     [Fact]
@@ -114,9 +109,9 @@ public class PolicyRegistrySpecs
         Policy policy_new = Policy.NoOp();
         _registry[key] = policy_new;
 
-        _registry.Count.Should().Be(1);
+        _registry.Count.ShouldBe(1);
 
-        _registry.Get<Policy>(key).Should().BeSameAs(policy_new);
+        _registry.Get<Policy>(key).ShouldBeSameAs(policy_new);
     }
 
     [Fact]
@@ -129,9 +124,9 @@ public class PolicyRegistrySpecs
         Policy<ResultPrimitive> policy_new = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
         _registry[key] = policy_new;
 
-        _registry.Count.Should().Be(1);
+        _registry.Count.ShouldBe(1);
 
-        _registry.Get<Policy<ResultPrimitive>>(key).Should().BeSameAs(policy_new);
+        _registry.Get<Policy<ResultPrimitive>>(key).ShouldBeSameAs(policy_new);
     }
 
     [Fact]
@@ -139,8 +134,7 @@ public class PolicyRegistrySpecs
     {
         string key = null!;
         Policy policy = Policy.NoOp();
-        _registry.Invoking(r => r.Add(key, policy))
-            .Should().Throw<ArgumentNullException>();
+        Should.Throw<ArgumentNullException>(() => _registry.Add(key, policy));
     }
 
     [Fact]
@@ -148,8 +142,7 @@ public class PolicyRegistrySpecs
     {
         string key = null!;
         Policy policy = Policy.NoOp();
-        _registry.Invoking(r => r[key] = policy)
-            .Should().Throw<ArgumentNullException>();
+        Should.Throw<ArgumentNullException>(() => _registry[key] = policy);
     }
 
     #endregion
@@ -163,8 +156,8 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.TryGet(key, out Policy? outPolicy).Should().BeTrue();
-        outPolicy.Should().BeSameAs(policy);
+        _registry.TryGet(key, out Policy? outPolicy).ShouldBeTrue();
+        outPolicy.ShouldBeSameAs(policy);
     }
 
     [Fact]
@@ -174,8 +167,8 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.TryGet(key, out Policy<ResultPrimitive> outPolicy).Should().BeTrue();
-        outPolicy.Should().BeSameAs(policy);
+        _registry.TryGet(key, out Policy<ResultPrimitive> outPolicy).ShouldBeTrue();
+        outPolicy.ShouldBeSameAs(policy);
     }
 
     [Fact]
@@ -185,8 +178,8 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.TryGet(key, out ISyncPolicy<ResultPrimitive> outPolicy).Should().BeTrue();
-        outPolicy.Should().BeSameAs(policy);
+        _registry.TryGet(key, out ISyncPolicy<ResultPrimitive> outPolicy).ShouldBeTrue();
+        outPolicy.ShouldBeSameAs(policy);
     }
 
     [Fact]
@@ -196,7 +189,7 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.Get<Policy>(key).Should().BeSameAs(policy);
+        _registry.Get<Policy>(key).ShouldBeSameAs(policy);
     }
 
     [Fact]
@@ -206,7 +199,7 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.Get<Policy<ResultPrimitive>>(key).Should().BeSameAs(policy);
+        _registry.Get<Policy<ResultPrimitive>>(key).ShouldBeSameAs(policy);
     }
 
     [Fact]
@@ -216,7 +209,7 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.Get<ISyncPolicy<ResultPrimitive>>(key).Should().BeSameAs(policy);
+        _registry.Get<ISyncPolicy<ResultPrimitive>>(key).ShouldBeSameAs(policy);
     }
 
     [Fact]
@@ -226,7 +219,7 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry[key].Should().BeSameAs(policy);
+        _registry[key].ShouldBeSameAs(policy);
     }
 
     [Fact]
@@ -236,7 +229,7 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry[key].Should().BeSameAs(policy);
+        _registry[key].ShouldBeSameAs(policy);
     }
 
     [Fact]
@@ -246,7 +239,7 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry[key].Should().BeSameAs(policy);
+        _registry[key].ShouldBeSameAs(policy);
     }
 
     [Fact]
@@ -256,11 +249,10 @@ public class PolicyRegistrySpecs
         Policy? policy = null;
         bool result = false;
 
-        _registry.Invoking(r => result = r.TryGet(key, out policy))
-            .Should().NotThrow();
+        Should.NotThrow(() => result = _registry.TryGet(key, out policy));
 
-        result.Should().BeFalse();
-        policy.Should().BeNull();
+        result.ShouldBeFalse();
+        policy.ShouldBeNull();
     }
 
     [Fact]
@@ -270,11 +262,10 @@ public class PolicyRegistrySpecs
         Policy<ResultPrimitive>? policy = null;
         bool result = false;
 
-        _registry.Invoking(r => result = r.TryGet(key, out policy))
-            .Should().NotThrow();
+        Should.NotThrow(() => result = _registry.TryGet(key, out policy));
 
-        result.Should().BeFalse();
-        policy.Should().BeNull();
+        result.ShouldBeFalse();
+        policy.ShouldBeNull();
     }
 
     [Fact]
@@ -284,11 +275,10 @@ public class PolicyRegistrySpecs
         ISyncPolicy<ResultPrimitive>? policy = null;
         bool result = false;
 
-        _registry.Invoking(r => result = r.TryGet<ISyncPolicy<ResultPrimitive>>(key, out policy))
-            .Should().NotThrow();
+        Should.NotThrow(() => result = _registry.TryGet<ISyncPolicy<ResultPrimitive>>(key, out policy));
 
-        result.Should().BeFalse();
-        policy.Should().BeNull();
+        result.ShouldBeFalse();
+        policy.ShouldBeNull();
     }
 
     [Fact]
@@ -296,9 +286,8 @@ public class PolicyRegistrySpecs
     {
         string key = Guid.NewGuid().ToString();
         Policy? policy = null;
-        _registry.Invoking(r => policy = r.Get<Policy>(key))
-            .Should().Throw<KeyNotFoundException>();
-        policy.Should().BeNull();
+        Should.Throw<KeyNotFoundException>(() => policy = _registry.Get<Policy>(key));
+        policy.ShouldBeNull();
     }
 
     [Fact]
@@ -306,9 +295,8 @@ public class PolicyRegistrySpecs
     {
         string key = Guid.NewGuid().ToString();
         Policy<ResultPrimitive>? policy = null;
-        _registry.Invoking(r => policy = r.Get<Policy<ResultPrimitive>>(key))
-            .Should().Throw<KeyNotFoundException>();
-        policy.Should().BeNull();
+        Should.Throw<KeyNotFoundException>(() => policy = _registry.Get<Policy<ResultPrimitive>>(key));
+        policy.ShouldBeNull();
     }
 
     [Fact]
@@ -316,9 +304,8 @@ public class PolicyRegistrySpecs
     {
         string key = Guid.NewGuid().ToString();
         ISyncPolicy<ResultPrimitive>? policy = null;
-        _registry.Invoking(r => policy = r.Get<ISyncPolicy<ResultPrimitive>>(key))
-            .Should().Throw<KeyNotFoundException>();
-        policy.Should().BeNull();
+        Should.Throw<KeyNotFoundException>(() => policy = _registry.Get<ISyncPolicy<ResultPrimitive>>(key));
+        policy.ShouldBeNull();
     }
 
     [Fact]
@@ -326,9 +313,8 @@ public class PolicyRegistrySpecs
     {
         string key = Guid.NewGuid().ToString();
         IsPolicy? policy = null;
-        _registry.Invoking(r => policy = r[key])
-            .Should().Throw<KeyNotFoundException>();
-        policy.Should().BeNull();
+        Should.Throw<KeyNotFoundException>(() => policy = _registry[key]);
+        policy.ShouldBeNull();
     }
 
     [Fact]
@@ -336,9 +322,8 @@ public class PolicyRegistrySpecs
     {
         string key = null!;
         Policy? policy = null;
-        _registry.Invoking(r => policy = r.Get<Policy>(key))
-            .Should().Throw<ArgumentNullException>();
-        policy.Should().BeNull();
+        Should.Throw<ArgumentNullException>(() => policy = _registry.Get<Policy>(key));
+        policy.ShouldBeNull();
     }
 
     [Fact]
@@ -346,9 +331,8 @@ public class PolicyRegistrySpecs
     {
         string key = null!;
         Policy<ResultPrimitive>? policy = null;
-        _registry.Invoking(r => policy = r.Get<Policy<ResultPrimitive>>(key))
-            .Should().Throw<ArgumentNullException>();
-        policy.Should().BeNull();
+        Should.Throw<ArgumentNullException>(() => policy = _registry.Get<Policy<ResultPrimitive>>(key));
+        policy.ShouldBeNull();
     }
 
     [Fact]
@@ -356,9 +340,8 @@ public class PolicyRegistrySpecs
     {
         string key = null!;
         ISyncPolicy<ResultPrimitive>? policy = null;
-        _registry.Invoking(r => policy = r.Get<ISyncPolicy<ResultPrimitive>>(key))
-            .Should().Throw<ArgumentNullException>();
-        policy.Should().BeNull();
+        Should.Throw<ArgumentNullException>(() => policy = _registry.Get<ISyncPolicy<ResultPrimitive>>(key));
+        policy.ShouldBeNull();
     }
 
     [Fact]
@@ -366,9 +349,8 @@ public class PolicyRegistrySpecs
     {
         string key = null!;
         IsPolicy? policy = null;
-        _registry.Invoking(r => policy = r[key])
-            .Should().Throw<ArgumentNullException>();
-        policy.Should().BeNull();
+        Should.Throw<ArgumentNullException>(() => policy = _registry[key]);
+        policy.ShouldBeNull();
     }
     #endregion
 
@@ -380,16 +362,16 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.Count.Should().Be(1);
+        _registry.Count.ShouldBe(1);
 
         Policy policy2 = Policy.NoOp();
         string key2 = Guid.NewGuid().ToString();
 
         _registry.Add(key2, policy2);
-        _registry.Count.Should().Be(2);
+        _registry.Count.ShouldBe(2);
 
         _registry.Clear();
-        _registry.Count.Should().Be(0);
+        _registry.Count.ShouldBe(0);
     }
 
     [Fact]
@@ -399,18 +381,17 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.Count.Should().Be(1);
+        _registry.Count.ShouldBe(1);
 
         _registry.Remove(key);
-        _registry.Count.Should().Be(0);
+        _registry.Count.ShouldBe(0);
     }
 
     [Fact]
     public void Should_throw_when_removing_Policy_when_key_is_null()
     {
         string key = null!;
-        _registry.Invoking(r => r.Remove(key))
-            .Should().Throw<ArgumentNullException>();
+        Should.Throw<ArgumentNullException>(() => _registry.Remove(key));
     }
     #endregion
 
@@ -423,18 +404,17 @@ public class PolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.ContainsKey(key).Should().BeTrue();
+        _registry.ContainsKey(key).ShouldBeTrue();
 
         string key2 = Guid.NewGuid().ToString();
-        _registry.ContainsKey(key2).Should().BeFalse();
+        _registry.ContainsKey(key2).ShouldBeFalse();
     }
 
     [Fact]
     public void Should_throw_when_checking_if_key_exists_when_key_is_null()
     {
         string key = null!;
-        _registry.Invoking(r => r.ContainsKey(key))
-            .Should().Throw<ArgumentNullException>();
+        Should.Throw<ArgumentNullException>(() => _registry.ContainsKey(key));
     }
     #endregion
 
@@ -448,7 +428,7 @@ public class PolicyRegistrySpecs
         // Generally, using reflection is a bad practice, but we are accepting it given we own the implementation.
         var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance)!;
         var registryFieldValue = registryField.GetValue(testRegistry);
-        registryFieldValue.Should().Be(testDictionary);
+        registryFieldValue.ShouldBe(testDictionary);
     }
 
     [Fact]
@@ -460,7 +440,7 @@ public class PolicyRegistrySpecs
         // Generally, using reflection is a bad practice, but we are accepting it given we own the implementation.
         var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance)!;
         var registryFieldValue = registryField.GetValue(testRegistry);
-        registryFieldValue.Should().BeOfType(expectedDictionaryType);
+        registryFieldValue.ShouldBeOfType(expectedDictionaryType);
     }
 
     #endregion

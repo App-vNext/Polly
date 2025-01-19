@@ -10,7 +10,7 @@ public class CustomTResultSpecs
             PreExecutePolicy<ResultPrimitive> policy = PreExecutePolicy<ResultPrimitive>.Create(() => Console.WriteLine("Do something"));
         };
 
-        construct.Should().NotThrow();
+        Should.NotThrow(construct);
     }
 
     [Fact]
@@ -21,15 +21,14 @@ public class CustomTResultSpecs
 
         bool executed = false;
 
-        policy.Invoking(x => x.Execute(() =>
+        Should.NotThrow(() => policy.Execute(() =>
         {
             executed = true;
             return ResultPrimitive.Undefined;
-        }))
-            .Should().NotThrow();
+        }));
 
-        executed.Should().BeTrue();
-        preExecuted.Should().BeTrue();
+        executed.ShouldBeTrue();
+        preExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -40,7 +39,7 @@ public class CustomTResultSpecs
             AddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviour(outcome => Console.WriteLine("Handling " + outcome.Result));
         };
 
-        construct.Should().NotThrow();
+        Should.NotThrow(construct);
     }
 
     [Fact]
@@ -57,10 +56,10 @@ public class CustomTResultSpecs
                 executed = true;
                 return toReturn;
             })
-            .Should().Be(toReturn);
+            .ShouldBe(toReturn);
 
-        executed.Should().BeTrue();
-        handled.Should().Be(toReturn);
+        executed.ShouldBeTrue();
+        handled.ShouldBe(toReturn);
     }
 
     [Fact]
@@ -77,9 +76,9 @@ public class CustomTResultSpecs
                 executed = true;
                 return toReturn;
             })
-            .Should().Be(toReturn);
+            .ShouldBe(toReturn);
 
-        executed.Should().BeTrue();
-        handled.Should().Be(null);
+        executed.ShouldBeTrue();
+        handled.ShouldBe(null);
     }
 }

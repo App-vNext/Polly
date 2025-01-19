@@ -38,10 +38,10 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
 
         var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None, false]);
 
-        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
-        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
-        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
-            .Which.ParamName.Should().Be("action");
+        var exceptionAssertions = Should.Throw<TargetInvocationException>(func);
+        exceptionAssertions.Message.ShouldBe("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.InnerException.ShouldBeOfType<ArgumentNullException>()
+            .ParamName.ShouldBe("action");
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(1, TimeSpan.MaxValue);
 
         var result = await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault);
-        result.Should().Be(ResultPrimitive.Fault);
+        result.ShouldBe(ResultPrimitive.Fault);
     }
 
     [Fact]
@@ -62,9 +62,8 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                                  .HandleResult(ResultPrimitive.Fault)
                                  .CircuitBreakerAsync(0, TimeSpan.FromSeconds(10));
 
-        action.Should().Throw<ArgumentOutOfRangeException>()
-              .And.ParamName.Should()
-              .Be("handledEventsAllowedBeforeBreaking");
+        Should.Throw<ArgumentOutOfRangeException>(action)
+              .ParamName.ShouldBe("handledEventsAllowedBeforeBreaking");
     }
 
     [Fact]
@@ -74,9 +73,8 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                                  .HandleResult(ResultPrimitive.Fault)
                                  .CircuitBreakerAsync(1, -TimeSpan.FromSeconds(1));
 
-        action.Should().Throw<ArgumentOutOfRangeException>()
-            .And.ParamName.Should()
-            .Be("durationOfBreak");
+        Should.Throw<ArgumentOutOfRangeException>(action)
+            .ParamName.ShouldBe("durationOfBreak");
     }
 
     [Fact]
@@ -85,7 +83,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         Action action = () => Policy
                                  .HandleResult(ResultPrimitive.Fault)
                                  .CircuitBreakerAsync(1, TimeSpan.Zero);
-        action.Should().NotThrow();
+        Should.NotThrow(action);
     }
 
     [Fact]
@@ -97,7 +95,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, durationOfBreak);
 
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
     }
 
     #endregion
@@ -112,16 +110,16 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Good))
-              .Should().Be(ResultPrimitive.Good);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.Good);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
     }
 
     [Fact]
@@ -132,19 +130,18 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
-        await breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().ThrowAsync<BrokenCircuitException<ResultPrimitive>>()
-            .WithMessage("The circuit is now open and is not allowing calls.")
-            .Where(e => e.Result == ResultPrimitive.Fault);
+        var ex = await Should.ThrowAsync<BrokenCircuitException<ResultPrimitive>>(() => breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault));
+        ex.Message.ShouldBe("The circuit is now open and is not allowing calls.");
+        ex.Result.ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
     }
 
     [Fact]
@@ -156,19 +153,18 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
-              .Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+              .ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         // 2 exception or fault raised, circuit is now open
-        await breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().ThrowAsync<BrokenCircuitException<ResultPrimitive>>()
-            .WithMessage("The circuit is now open and is not allowing calls.")
-            .Where(e => e.Result == ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        var ex = await Should.ThrowAsync<BrokenCircuitException<ResultPrimitive>>(() => breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault));
+        ex.Message.ShouldBe("The circuit is now open and is not allowing calls.");
+        ex.Result.ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
     }
 
     [Fact]
@@ -179,19 +175,18 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault)))
-              .ResultCode.Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ResultCode.ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault)))
-              .ResultCode.Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+              .ResultCode.ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
-        await breaker.Awaiting(b => b.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Good)))
-            .Should().ThrowAsync<BrokenCircuitException<ResultClass>>()
-            .WithMessage("The circuit is now open and is not allowing calls.")
-            .Where(e => e.Result.ResultCode == ResultPrimitive.Fault);
+        var ex = await Should.ThrowAsync<BrokenCircuitException<ResultClass>>(() => breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Good)));
+        ex.Message.ShouldBe("The circuit is now open and is not allowing calls.");
+        ex.Result.ResultCode.ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
     }
 
     [Fact]
@@ -202,16 +197,16 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
-              .Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
-              .Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
-              .Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
     }
 
     [Fact]
@@ -223,16 +218,16 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
-            .Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+            .ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
-            .Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+            .ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
-            .Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+            .ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
     }
 
     [Fact]
@@ -243,16 +238,16 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
-            .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+            .ResultCode.ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
-            .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+            .ResultCode.ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
-            .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+            .ResultCode.ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
     }
 
     [Fact]
@@ -264,16 +259,16 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
-            .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+            .ResultCode.ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
-            .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+            .ResultCode.ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
-            .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+            .ResultCode.ShouldBe(ResultPrimitive.FaultAgain);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
     }
 
     #endregion
@@ -283,7 +278,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_halfopen_circuit_after_the_specified_duration_has_passed()
     {
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -293,30 +288,29 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, durationOfBreak);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         // 2 exception or fault raised, circuit is now open
-        await breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().ThrowAsync<BrokenCircuitException>();
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        await Should.ThrowAsync<BrokenCircuitException>(() => breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault));
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
 
         // duration has passed, circuit now half open
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
+              .ShouldBe(ResultPrimitive.Fault);
     }
 
     [Fact]
     public async Task Should_open_circuit_again_after_the_specified_duration_has_passed_if_the_next_call_raises_a_fault()
     {
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -326,35 +320,33 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, durationOfBreak);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         // 2 exception or fault raised, circuit is now open
-        await breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().ThrowAsync<BrokenCircuitException>();
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        await Should.ThrowAsync<BrokenCircuitException>(() => breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault));
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
 
         // duration has passed, circuit now half open
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // first call after duration returns a fault, so circuit should break again
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
-        await breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().ThrowAsync<BrokenCircuitException>();
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
+        await Should.ThrowAsync<BrokenCircuitException>(() => breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault));
     }
 
     [Fact]
     public async Task Should_reset_circuit_after_the_specified_duration_has_passed_if_the_next_call_does_not_return_a_fault()
     {
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -364,46 +356,44 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, durationOfBreak);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         // 2 exception or fault raised, circuit is now open
-        await breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().ThrowAsync<BrokenCircuitException>();
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        await Should.ThrowAsync<BrokenCircuitException>(() => breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault));
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
 
         // duration has passed, circuit now half open
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // first call after duration is successful, so circuit should reset
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Good))
-            .Should().Be(ResultPrimitive.Good);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+            .ShouldBe(ResultPrimitive.Good);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         // circuit has been reset so should once again allow 2 faults to be raised before breaking
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
-        await breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().ThrowAsync<BrokenCircuitException>();
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        await Should.ThrowAsync<BrokenCircuitException>(() => breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault));
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
     }
 
     [Fact]
     public async Task Should_only_allow_single_execution_on_first_entering_halfopen_state__test_execution_permit_directly()
     {
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -412,28 +402,28 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(1, durationOfBreak);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
+              .ShouldBe(ResultPrimitive.Fault);
 
         // exception raised, circuit is now open.
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         // break duration passes, circuit now half open
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        breaker.BreakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution.
-        breaker.BreakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        Should.Throw<BrokenCircuitException>(() => breaker.BreakerController.OnActionPreExecute());
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
     }
 
     [Fact]
     public async Task Should_allow_single_execution_per_break_duration_in_halfopen_state__test_execution_permit_directly()
     {
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -442,36 +432,36 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(1, durationOfBreak);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
+              .ShouldBe(ResultPrimitive.Fault);
 
         // exception raised, circuit is now open.
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         // break duration passes, circuit now half open
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        breaker.BreakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution.
-        breaker.BreakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        Should.Throw<BrokenCircuitException>(() => breaker.BreakerController.OnActionPreExecute());
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // Allow another time window to pass (breaker should still be HalfOpen).
         SystemClock.UtcNow = () => time.Add(durationOfBreak).Add(durationOfBreak);
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should now permit another trial execution.
-        breaker.BreakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
     }
 
     [Fact]
     public async Task Should_only_allow_single_execution_on_first_entering_halfopen_state__integration_test()
     {
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -480,14 +470,14 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(1, durationOfBreak);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
+              .ShouldBe(ResultPrimitive.Fault);
 
         // exception raised, circuit is now open.
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         // break duration passes, circuit now half open
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // Start one execution during the HalfOpen state, and request a second execution before the first has completed (ie still during the HalfOpen state).
         // The second execution should be rejected due to the halfopen state.
@@ -504,7 +494,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
         Task firstExecution = Task.Factory.StartNew(async () =>
         {
-            await breaker.Awaiting(x => x.ExecuteAsync(async () =>
+            await Should.NotThrowAsync(() => breaker.ExecuteAsync(async () =>
             {
                 firstDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
 
@@ -513,22 +503,22 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                 permitSecondExecutionAttempt.Set();
 
                 // Hold first execution open until second indicates it is no longer needed, or time out.
-                permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks).Should().BeTrue();
+                permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks).ShouldBeTrue();
                 await TaskHelper.EmptyTask;
                 firstExecutionActive = false;
 
                 return ResultPrimitive.Good;
-            })).Should().NotThrowAsync();
+            }));
         }, TaskCreationOptions.LongRunning);
 
         // Attempt a second execution, signalled by the first execution to ensure they overlap: we should be able to verify it doesn't execute, and is rejected by a breaker in a HalfOpen state.
-        permitSecondExecutionAttempt.WaitOne(testTimeoutToExposeDeadlocks).Should().BeTrue();
+        permitSecondExecutionAttempt.WaitOne(testTimeoutToExposeDeadlocks).ShouldBeTrue();
 
         Task secondExecution = Task.Factory.StartNew(async () =>
         {
             // Validation of correct sequencing and overlapping of tasks in test (guard against erroneous test refactorings/operation).
-            firstExecutionActive.Should().BeTrue();
-            breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+            firstExecutionActive.ShouldBeTrue();
+            breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
             try
             {
@@ -557,7 +547,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         permitFirstExecutionEnd.Set();
 
 #pragma warning disable xUnit1031
-        Task.WaitAll([firstExecution, secondExecution], testTimeoutToExposeDeadlocks).Should().BeTrue();
+        Task.WaitAll([firstExecution, secondExecution], testTimeoutToExposeDeadlocks).ShouldBeTrue();
 #pragma warning restore xUnit1031
 
         if (firstExecution.IsFaulted)
@@ -570,22 +560,25 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             throw secondExecution!.Exception!;
         }
 
-        firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
-        secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
+        firstExecution.Status.ShouldBe(TaskStatus.RanToCompletion);
+        secondExecution.Status.ShouldBe(TaskStatus.RanToCompletion);
 
         // Assert:
         // - First execution should have been permitted and executed under a HalfOpen state
         // - Second overlapping execution in halfopen state should not have been permitted.
         // - Second execution attempt should have been rejected with HalfOpen state as cause.
-        firstDelegateExecutedInHalfOpenState.Should().BeTrue();
-        secondDelegateExecutedInHalfOpenState.Should().BeFalse();
-        secondDelegateRejectedInHalfOpenState.Should().BeTrue();
+        firstDelegateExecutedInHalfOpenState.ShouldNotBeNull();
+        firstDelegateExecutedInHalfOpenState.Value.ShouldBeTrue();
+        secondDelegateExecutedInHalfOpenState.ShouldNotBeNull();
+        secondDelegateExecutedInHalfOpenState.Value.ShouldBeFalse();
+        secondDelegateRejectedInHalfOpenState.ShouldNotBeNull();
+        secondDelegateRejectedInHalfOpenState.Value.ShouldBeTrue();
     }
 
     [Fact]
     public async Task Should_allow_single_execution_per_break_duration_in_halfopen_state__integration_test()
     {
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -594,14 +587,14 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(1, durationOfBreak);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
+              .ShouldBe(ResultPrimitive.Fault);
 
         // exception raised, circuit is now open.
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         // break duration passes, circuit now half open
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // Start one execution during the HalfOpen state.
         // Request a second execution while the first is still in flight (not completed), while still during the HalfOpen state, but after one breakDuration later.
@@ -619,7 +612,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
         Task firstExecution = Task.Factory.StartNew(async () =>
         {
-            await breaker.Awaiting(x => x.ExecuteAsync(async () =>
+            await Should.NotThrowAsync(() => breaker.ExecuteAsync(async () =>
             {
                 firstDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
 
@@ -633,7 +626,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                 firstExecutionActive = false;
 
                 return ResultPrimitive.Good;
-            })).Should().NotThrowAsync();
+            }));
         }, TaskCreationOptions.LongRunning);
 
         // Attempt a second execution, signalled by the first execution to ensure they overlap; start it one breakDuration later.  We should be able to verify it does execute, though the breaker is still in a HalfOpen state.
@@ -642,8 +635,8 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         Task secondExecution = Task.Factory.StartNew(async () =>
         {
             // Validation of correct sequencing and overlapping of tasks in test (guard against erroneous test refactorings/operation).
-            firstExecutionActive.Should().BeTrue();
-            breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+            firstExecutionActive.ShouldBeTrue();
+            breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
             try
             {
@@ -674,7 +667,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         permitFirstExecutionEnd.Set();
 
 #pragma warning disable xUnit1031
-        Task.WaitAll([firstExecution, secondExecution], testTimeoutToExposeDeadlocks).Should().BeTrue();
+        Task.WaitAll([firstExecution, secondExecution], testTimeoutToExposeDeadlocks).ShouldBeTrue();
 #pragma warning restore xUnit1031
 
         if (firstExecution.IsFaulted)
@@ -687,15 +680,18 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             throw secondExecution!.Exception!;
         }
 
-        firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
-        secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
+        firstExecution.Status.ShouldBe(TaskStatus.RanToCompletion);
+        secondExecution.Status.ShouldBe(TaskStatus.RanToCompletion);
 
         // Assert:
         // - First execution should have been permitted and executed under a HalfOpen state
         // - Second overlapping execution in halfopen state should have been permitted, one breakDuration later.
-        firstDelegateExecutedInHalfOpenState.Should().BeTrue();
-        secondDelegateExecutedInHalfOpenState.Should().BeTrue();
-        secondDelegateRejectedInHalfOpenState.Should().BeFalse();
+        firstDelegateExecutedInHalfOpenState.ShouldNotBeNull();
+        firstDelegateExecutedInHalfOpenState.Value.ShouldBeTrue();
+        secondDelegateExecutedInHalfOpenState.ShouldNotBeNull();
+        secondDelegateExecutedInHalfOpenState.Value.ShouldBeTrue();
+        secondDelegateRejectedInHalfOpenState.ShouldNotBeNull();
+        secondDelegateRejectedInHalfOpenState.Value.ShouldBeFalse();
     }
 
     #endregion
@@ -705,7 +701,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_open_circuit_and_block_calls_if_manual_override_open()
     {
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -713,26 +709,25 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         var breaker = Policy
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, durationOfBreak);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         // manually break circuit
         breaker.Isolate();
-        breaker.CircuitState.Should().Be(CircuitState.Isolated);
+        breaker.CircuitState.ShouldBe(CircuitState.Isolated);
 
         // circuit manually broken: execution should be blocked; even non-fault-returning executions should not reset circuit
         bool delegateExecutedWhenBroken = false;
-        await breaker.Awaiting(b => b.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }))
-            .Should().ThrowAsync<IsolatedCircuitException>();
-        breaker.CircuitState.Should().Be(CircuitState.Isolated);
-        breaker.LastException.Should().BeOfType<IsolatedCircuitException>();
-        delegateExecutedWhenBroken.Should().BeFalse();
+        await Should.ThrowAsync<IsolatedCircuitException>(() => breaker.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }));
+        breaker.CircuitState.ShouldBe(CircuitState.Isolated);
+        breaker.LastException.ShouldBeOfType<IsolatedCircuitException>();
+        delegateExecutedWhenBroken.ShouldBeFalse();
 
     }
 
     [Fact]
     public async Task Should_hold_circuit_open_despite_elapsed_time_if_manual_override_open()
     {
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -740,24 +735,23 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         var breaker = Policy
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, durationOfBreak);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         breaker.Isolate();
-        breaker.CircuitState.Should().Be(CircuitState.Isolated);
+        breaker.CircuitState.ShouldBe(CircuitState.Isolated);
 
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
-        breaker.CircuitState.Should().Be(CircuitState.Isolated);
+        breaker.CircuitState.ShouldBe(CircuitState.Isolated);
 
         bool delegateExecutedWhenBroken = false;
-        await breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }))
-            .Should().ThrowAsync<IsolatedCircuitException>();
-        delegateExecutedWhenBroken.Should().BeFalse();
+        await Should.ThrowAsync<IsolatedCircuitException>(() => breaker.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }));
+        delegateExecutedWhenBroken.ShouldBeFalse();
     }
 
     [Fact]
     public async Task Should_close_circuit_again_on_reset_after_manual_override()
     {
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -765,22 +759,21 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         var breaker = Policy
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, durationOfBreak);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         breaker.Isolate();
-        breaker.CircuitState.Should().Be(CircuitState.Isolated);
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
-            .Should().ThrowAsync<IsolatedCircuitException>();
+        breaker.CircuitState.ShouldBe(CircuitState.Isolated);
+        await Should.ThrowAsync<IsolatedCircuitException>(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
 
         breaker.Reset();
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrowAsync();
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
+        await Should.NotThrowAsync(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
     }
 
     [Fact]
     public async Task Should_be_able_to_reset_automatically_opened_circuit_without_specified_duration_passing()
     {
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -790,23 +783,22 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, durationOfBreak);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         // 2 exception or fault raised, circuit is now open
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
-              .Should().ThrowAsync<BrokenCircuitException>();
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        await Should.ThrowAsync<BrokenCircuitException>(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         // reset circuit, with no time having passed
         breaker.Reset();
-        SystemClock.UtcNow().Should().Be(time);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrowAsync();
+        SystemClock.UtcNow().ShouldBe(time);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
+        await Should.NotThrowAsync(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
     }
 
     #endregion
@@ -818,20 +810,20 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     {
         Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { };
         bool onResetCalled = false;
-        Action onReset = () => { onResetCalled = true; };
+        Action onReset = () => onResetCalled = true;
 
         Policy
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-        onResetCalled.Should().BeFalse();
+        onResetCalled.ShouldBeFalse();
     }
 
     [Fact]
     public async Task Should_call_onbreak_when_breaking_circuit_automatically()
     {
         bool onBreakCalled = false;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled = true;
         Action onReset = () => { };
 
         var breaker = Policy
@@ -839,40 +831,40 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
+              .ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
-        onBreakCalled.Should().BeFalse();
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
+        onBreakCalled.ShouldBeFalse();
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
+              .ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Open);
-        onBreakCalled.Should().BeTrue();
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
+        onBreakCalled.ShouldBeTrue();
     }
 
     [Fact]
     public void Should_call_onbreak_when_breaking_circuit_manually()
     {
         bool onBreakCalled = false;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled = true;
         Action onReset = () => { };
 
         var breaker = Policy
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
-        onBreakCalled.Should().BeFalse();
+        onBreakCalled.ShouldBeFalse();
 
         breaker.Isolate();
 
-        onBreakCalled.Should().BeTrue();
+        onBreakCalled.ShouldBeTrue();
     }
 
     [Fact]
     public async Task Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_placed_through_open_circuit()
     {
         int onBreakCalled = 0;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled++;
         Action onReset = () => { };
 
         var breaker = Policy
@@ -880,30 +872,29 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
+              .ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
-        onBreakCalled.Should().Be(0);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
+        onBreakCalled.ShouldBe(0);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
+              .ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Open);
-        onBreakCalled.Should().Be(1);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
+        onBreakCalled.ShouldBe(1);
 
         // call through circuit when already broken - should not retrigger onBreak
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
-                     .Should().ThrowAsync<BrokenCircuitException>();
+        await Should.ThrowAsync<BrokenCircuitException>(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
 
-        breaker.CircuitState.Should().Be(CircuitState.Open);
-        onBreakCalled.Should().Be(1);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
+        onBreakCalled.ShouldBe(1);
     }
 
     [Fact]
     public async Task Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_call_failure_which_arrives_on_open_state_though_started_on_closed_state()
     {
         int onBreakCalled = 0;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled++;
         Action onReset = () => { };
 
         var breaker = Policy
@@ -916,7 +907,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         using ManualResetEvent permitMainThreadToOpenCircuit = new ManualResetEvent(false);
         Task longRunningExecution = Task.Factory.StartNew(async () =>
         {
-            breaker.CircuitState.Should().Be(CircuitState.Closed);
+            breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
             (await breaker.ExecuteAsync(async () =>
             {
@@ -928,21 +919,21 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                 permitLongRunningExecutionToReturnItsFailure.WaitOne(testTimeoutToExposeDeadlocks);
 
                 // Throw a further failure when rest of test has already broken the circuit.
-                breaker.CircuitState.Should().Be(CircuitState.Open);
+                breaker.CircuitState.ShouldBe(CircuitState.Open);
                 return ResultPrimitive.Fault;
 
-            })).Should().Be(ResultPrimitive.Fault); // However, since execution started when circuit was closed, BrokenCircuitException will not have been thrown on entry; the original fault should still be returned.
+            })).ShouldBe(ResultPrimitive.Fault); // However, since execution started when circuit was closed, BrokenCircuitException will not have been thrown on entry; the original fault should still be returned.
         }, TaskCreationOptions.LongRunning);
 
-        permitMainThreadToOpenCircuit.WaitOne(testTimeoutToExposeDeadlocks).Should().BeTrue();
+        permitMainThreadToOpenCircuit.WaitOne(testTimeoutToExposeDeadlocks).ShouldBeTrue();
 
         // Break circuit in the normal manner: onBreak() should be called once.
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
-        onBreakCalled.Should().Be(0);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
+        onBreakCalled.ShouldBe(0);
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
-        onBreakCalled.Should().Be(1);
+              .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
+        onBreakCalled.ShouldBe(1);
 
         // Permit the second (long-running) execution to hit the open circuit with its failure.
         permitLongRunningExecutionToReturnItsFailure.Set();
@@ -950,9 +941,9 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
 #pragma warning disable xUnit1031
         // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
 #if NET
-        longRunningExecution.Wait(testTimeoutToExposeDeadlocks, CancellationToken.None).Should().BeTrue();
+        longRunningExecution.Wait(testTimeoutToExposeDeadlocks, CancellationToken.None).ShouldBeTrue();
 #else
-        longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
+        longRunningExecution.Wait(testTimeoutToExposeDeadlocks).ShouldBeTrue();
 #endif
 #pragma warning restore xUnit1031
 
@@ -961,11 +952,11 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             throw longRunningExecution!.Exception!;
         }
 
-        longRunningExecution.Status.Should().Be(TaskStatus.RanToCompletion);
+        longRunningExecution.Status.ShouldBe(TaskStatus.RanToCompletion);
 
         // onBreak() should still only have been called once.
-        breaker.CircuitState.Should().Be(CircuitState.Open);
-        onBreakCalled.Should().Be(1);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
+        onBreakCalled.ShouldBe(1);
     }
 
     [Fact]
@@ -973,10 +964,10 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     {
         int onBreakCalled = 0;
         int onResetCalled = 0;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-        Action onReset = () => { onResetCalled++; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled++;
+        Action onReset = () => onResetCalled++;
 
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -985,34 +976,33 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .HandleResult(ResultPrimitive.Fault)
                         .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
-        onBreakCalled.Should().Be(0);
+        onBreakCalled.ShouldBe(0);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        onBreakCalled.Should().Be(0);
+              .ShouldBe(ResultPrimitive.Fault);
+        onBreakCalled.ShouldBe(0);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        onBreakCalled.Should().Be(1);
+              .ShouldBe(ResultPrimitive.Fault);
+        onBreakCalled.ShouldBe(1);
 
         // 2 exception or fault raised, circuit is now open
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
-              .Should().ThrowAsync<BrokenCircuitException>();
-        breaker.CircuitState.Should().Be(CircuitState.Open);
-        onBreakCalled.Should().Be(1);
+        await Should.ThrowAsync<BrokenCircuitException>(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
+        onBreakCalled.ShouldBe(1);
 
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
 
         // duration has passed, circuit now half open
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // but not yet reset
-        onResetCalled.Should().Be(0);
+        onResetCalled.ShouldBe(0);
 
         // first call after duration is successful, so circuit should reset
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrowAsync();
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
-        onResetCalled.Should().Be(1);
+        await Should.NotThrowAsync(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
+        onResetCalled.ShouldBe(1);
     }
 
     [Fact]
@@ -1026,15 +1016,15 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-        onResetCalled.Should().BeFalse();
+        onResetCalled.ShouldBeFalse();
 
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrowAsync();
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
-        onResetCalled.Should().BeFalse();
+        await Should.NotThrowAsync(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
+        onResetCalled.ShouldBeFalse();
 
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrowAsync();
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
-        onResetCalled.Should().BeFalse();
+        await Should.NotThrowAsync(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
+        onResetCalled.ShouldBeFalse();
     }
 
     [Fact]
@@ -1043,11 +1033,11 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         int onBreakCalled = 0;
         int onResetCalled = 0;
         int onHalfOpenCalled = 0;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-        Action onReset = () => { onResetCalled++; };
-        Action onHalfOpen = () => { onHalfOpenCalled++; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled++;
+        Action onReset = () => onResetCalled++;
+        Action onHalfOpen = () => onHalfOpenCalled++;
 
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -1056,33 +1046,31 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .HandleResult(ResultPrimitive.Fault)
                         .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset, onHalfOpen);
 
-        onBreakCalled.Should().Be(0);
+        onBreakCalled.ShouldBe(0);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        onBreakCalled.Should().Be(0);
+              .ShouldBe(ResultPrimitive.Fault);
+        onBreakCalled.ShouldBe(0);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        onBreakCalled.Should().Be(1);
+              .ShouldBe(ResultPrimitive.Fault);
+        onBreakCalled.ShouldBe(1);
 
         // 2 exception or fault raised, circuit is now open
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
-                     .Should().ThrowAsync<BrokenCircuitException>();
-        breaker.CircuitState.Should().Be(CircuitState.Open);
-        onBreakCalled.Should().Be(1);
+        await Should.ThrowAsync<BrokenCircuitException>(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
+        onBreakCalled.ShouldBe(1);
 
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
 
         // duration has passed, circuit now half open
-        onHalfOpenCalled.Should().Be(0); // not yet transitioned to half-open, because we have not queried state
+        onHalfOpenCalled.ShouldBe(0); // not yet transitioned to half-open, because we have not queried state
 
         // first call after duration is successful, so circuit should reset
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
-                     .Should().NotThrowAsync();
-        onHalfOpenCalled.Should().Be(1);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
-        onResetCalled.Should().Be(1);
+        await Should.NotThrowAsync(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
+        onHalfOpenCalled.ShouldBe(1);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
+        onResetCalled.ShouldBe(1);
     }
 
     [Fact]
@@ -1091,11 +1079,11 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         int onBreakCalled = 0;
         int onResetCalled = 0;
         int onHalfOpenCalled = 0;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-        Action onReset = () => { onResetCalled++; };
-        Action onHalfOpen = () => { onHalfOpenCalled++; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled++;
+        Action onReset = () => onResetCalled++;
+        Action onHalfOpen = () => onHalfOpenCalled++;
 
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -1104,28 +1092,27 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .HandleResult(ResultPrimitive.Fault)
                         .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset, onHalfOpen);
 
-        onBreakCalled.Should().Be(0);
+        onBreakCalled.ShouldBe(0);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        onBreakCalled.Should().Be(0);
+              .ShouldBe(ResultPrimitive.Fault);
+        onBreakCalled.ShouldBe(0);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-              .Should().Be(ResultPrimitive.Fault);
-        onBreakCalled.Should().Be(1);
+              .ShouldBe(ResultPrimitive.Fault);
+        onBreakCalled.ShouldBe(1);
 
         // 2 exception or fault raised, circuit is now open
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
-                     .Should().ThrowAsync<BrokenCircuitException>();
-        breaker.CircuitState.Should().Be(CircuitState.Open);
-        onBreakCalled.Should().Be(1);
+        await Should.ThrowAsync<BrokenCircuitException>(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
+        onBreakCalled.ShouldBe(1);
 
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
 
         // duration has passed, circuit now half open
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
-        onHalfOpenCalled.Should().Be(1);
-        onResetCalled.Should().Be(0);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
+        onHalfOpenCalled.ShouldBe(1);
+        onResetCalled.ShouldBe(0);
     }
 
     [Fact]
@@ -1133,10 +1120,10 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     {
         int onBreakCalled = 0;
         int onResetCalled = 0;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-        Action onReset = () => { onResetCalled++; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled++;
+        Action onReset = () => onResetCalled++;
 
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -1145,21 +1132,19 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
                         .HandleResult(ResultPrimitive.Fault)
                         .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
-        onBreakCalled.Should().Be(0);
+        onBreakCalled.ShouldBe(0);
         breaker.Isolate();
-        onBreakCalled.Should().Be(1);
+        onBreakCalled.ShouldBe(1);
 
-        breaker.CircuitState.Should().Be(CircuitState.Isolated);
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
-            .Should().ThrowAsync<IsolatedCircuitException>();
+        breaker.CircuitState.ShouldBe(CircuitState.Isolated);
+        await Should.ThrowAsync<IsolatedCircuitException>(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
 
-        onResetCalled.Should().Be(0);
+        onResetCalled.ShouldBe(0);
         breaker.Reset();
-        onResetCalled.Should().Be(1);
+        onResetCalled.ShouldBe(1);
 
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
-        await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
-            .Should().NotThrowAsync();
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
+        await Should.NotThrowAsync(() => breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)));
     }
 
     #region Tests of supplied parameters to onBreak delegate
@@ -1169,7 +1154,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     {
         ResultPrimitive? handledResult = null;
 
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (outcome, _, _) => { handledResult = outcome.Result; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (outcome, _, _) => handledResult = outcome.Result;
         Action<Context> onReset = _ => { };
 
         TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
@@ -1179,14 +1164,14 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
-        handledResult?.Should().Be(ResultPrimitive.Fault);
+        handledResult?.ShouldBe(ResultPrimitive.Fault);
     }
 
     [Fact]
@@ -1194,7 +1179,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     {
         TimeSpan? passedBreakTimespan = null;
 
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, timespan, _) => { passedBreakTimespan = timespan; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, timespan, _) => passedBreakTimespan = timespan;
         Action<Context> onReset = _ => { };
 
         TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
@@ -1204,24 +1189,24 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
-        passedBreakTimespan.Should().Be(durationOfBreak);
+        passedBreakTimespan.ShouldBe(durationOfBreak);
     }
 
     [Fact]
     public void Should_open_circuit_with_timespan_maxvalue_if_manual_override_open()
     {
         TimeSpan? passedBreakTimespan = null;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, timespan, _) => { passedBreakTimespan = timespan; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, timespan, _) => passedBreakTimespan = timespan;
         Action<Context> onReset = _ => { };
 
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -1229,13 +1214,13 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         var breaker = Policy
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
         // manually break circuit
         breaker.Isolate();
-        breaker.CircuitState.Should().Be(CircuitState.Isolated);
+        breaker.CircuitState.ShouldBe(CircuitState.Isolated);
 
-        passedBreakTimespan.Should().Be(TimeSpan.MaxValue);
+        passedBreakTimespan.ShouldBe(TimeSpan.MaxValue);
     }
 
     #endregion
@@ -1247,7 +1232,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     {
         IDictionary<string, object>? contextData = null;
 
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => contextData = context;
         Action<Context> onReset = _ => { };
 
         var breaker = Policy
@@ -1255,17 +1240,17 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
         (await breaker.RaiseResultSequenceAsync(CreateDictionary("key1", "value1", "key2", "value2"),
             ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
-        contextData.Should()
-            .ContainKeys("key1", "key2").And
-            .ContainValues("value1", "value2");
+        contextData.ShouldNotBeNull();
+        contextData.ShouldContainKeyAndValue("key1", "value1");
+        contextData.ShouldContainKeyAndValue("key2", "value2");
     }
 
     [Fact]
@@ -1274,9 +1259,9 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         IDictionary<string, object>? contextData = null;
 
         Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, _) => { };
-        Action<Context> onReset = context => { contextData = context; };
+        Action<Context> onReset = context => contextData = context;
 
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
@@ -1286,20 +1271,20 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+            .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // first call after duration should invoke onReset, with context
         await breaker.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), CreateDictionary("key1", "value1", "key2", "value2"));
 
-        contextData.Should()
-            .ContainKeys("key1", "key2").And
-            .ContainValues("value1", "value2");
+        contextData.ShouldNotBeNull();
+        contextData.ShouldContainKeyAndValue("key1", "value1");
+        contextData.ShouldContainKeyAndValue("key2", "value2");
     }
 
     [Fact]
@@ -1307,7 +1292,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     {
         IDictionary<string, object> contextData = CreateDictionary("key1", "value1", "key2", "value2");
 
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => contextData = context;
         Action<Context> onReset = _ => { };
 
         var breaker = Policy
@@ -1315,14 +1300,14 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
-        contextData.Should().BeEmpty();
+        contextData.ShouldBeEmpty();
     }
 
     [Fact]
@@ -1337,31 +1322,31 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-        var time = 1.January(2000);
+        var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
 
         var durationOfBreak = TimeSpan.FromMinutes(1);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
         // 2 exception or fault raised, circuit is now open
         (await breaker.RaiseResultSequenceAsync(CreateDictionary("key", "original_value"), ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
-        breaker.CircuitState.Should().Be(CircuitState.Open);
-        contextValue.Should().Be("original_value");
+            .ShouldBe(ResultPrimitive.Fault);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
+        contextValue.ShouldBe("original_value");
 
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
 
         // duration has passed, circuit now half open
-        breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // but not yet reset
 
         // first call after duration is successful, so circuit should reset
         await breaker.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), CreateDictionary("key", "new_value"));
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
-        contextValue.Should().Be("new_value");
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
+        contextValue.ShouldBe("new_value");
     }
 
     #endregion
@@ -1377,8 +1362,8 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-        breaker.LastHandledResult.Should().Be(default);
-        breaker.LastException.Should().BeNull();
+        breaker.LastHandledResult.ShouldBe(default);
+        breaker.LastException.ShouldBeNull();
     }
 
     [Fact]
@@ -1389,12 +1374,12 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
-        breaker.LastHandledResult.Should().Be(ResultPrimitive.Fault);
-        breaker.LastException.Should().BeNull();
+        breaker.LastHandledResult.ShouldBe(ResultPrimitive.Fault);
+        breaker.LastException.ShouldBeNull();
     }
 
     [Fact]
@@ -1405,15 +1390,15 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
-        breaker.LastHandledResult.Should().Be(ResultPrimitive.Fault);
-        breaker.LastException.Should().BeNull();
+        breaker.LastHandledResult.ShouldBe(ResultPrimitive.Fault);
+        breaker.LastException.ShouldBeNull();
     }
 
     [Fact]
@@ -1424,20 +1409,20 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
-        breaker.CircuitState.Should().Be(CircuitState.Open);
+        breaker.CircuitState.ShouldBe(CircuitState.Open);
 
-        breaker.LastHandledResult.Should().Be(ResultPrimitive.Fault);
-        breaker.LastException.Should().BeNull();
+        breaker.LastHandledResult.ShouldBe(ResultPrimitive.Fault);
+        breaker.LastException.ShouldBeNull();
 
         breaker.Reset();
 
-        breaker.LastHandledResult.Should().Be(default);
-        breaker.LastException.Should().BeNull();
+        breaker.LastHandledResult.ShouldBe(default);
+        breaker.LastException.ShouldBeNull();
     }
 
     #endregion
@@ -1465,10 +1450,10 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             (await breaker.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                 ResultPrimitive.Good))
-                .Should().Be(ResultPrimitive.Good);
+                .ShouldBe(ResultPrimitive.Good);
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
     }
 
     [Fact]
@@ -1492,15 +1477,18 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             cancellationTokenSource.Cancel();
 
-            var ex = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-               ResultPrimitive.Fault,
-               ResultPrimitive.Fault,
-               ResultPrimitive.Good))
-            .Should().ThrowAsync<OperationCanceledException>();
-            ex.And.CancellationToken.Should().Be(cancellationToken);
+            var ex = await Should.ThrowAsync<OperationCanceledException>(
+                () => breaker.RaiseResultSequenceAndOrCancellationAsync(
+                    scenario,
+                    cancellationTokenSource,
+                    onExecute,
+                    ResultPrimitive.Fault,
+                    ResultPrimitive.Fault,
+                    ResultPrimitive.Good));
+            ex.CancellationToken.ShouldBe(cancellationToken);
         }
 
-        attemptsInvoked.Should().Be(0);
+        attemptsInvoked.ShouldBe(0);
     }
 
     [Fact]
@@ -1524,14 +1512,17 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            var ex = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                   ResultPrimitive.Good,
-                   ResultPrimitive.Good))
-                .Should().ThrowAsync<OperationCanceledException>();
-            ex.And.CancellationToken.Should().Be(cancellationToken);
+            var ex = await Should.ThrowAsync<OperationCanceledException>(
+                () => breaker.RaiseResultSequenceAndOrCancellationAsync(
+                    scenario,
+                    cancellationTokenSource,
+                    onExecute,
+                    ResultPrimitive.Good,
+                    ResultPrimitive.Good));
+            ex.CancellationToken.ShouldBe(cancellationToken);
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
     }
 
     [Fact]
@@ -1555,14 +1546,17 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            var ex = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                   ResultPrimitive.Fault,
-                   ResultPrimitive.Good))
-                .Should().ThrowAsync<OperationCanceledException>();
-            ex.And.CancellationToken.Should().Be(cancellationToken);
+            var ex = await Should.ThrowAsync<OperationCanceledException>(
+                () => breaker.RaiseResultSequenceAndOrCancellationAsync(
+                    scenario,
+                    cancellationTokenSource,
+                    onExecute,
+                    ResultPrimitive.Fault,
+                    ResultPrimitive.Good));
+            ex.CancellationToken.ShouldBe(cancellationToken);
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
     }
 
     [Fact]
@@ -1587,10 +1581,10 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             (await breaker.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault))
-                            .Should().Be(ResultPrimitive.Fault);
+                            .ShouldBe(ResultPrimitive.Fault);
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
     }
 
     [Fact]
@@ -1601,11 +1595,10 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .CircuitBreakerAsync(1, TimeSpan.FromMinutes(1));
 
         (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().Be(ResultPrimitive.Fault);
+            .ShouldBe(ResultPrimitive.Fault);
 
-        var ex = await breaker.Awaiting(x => x.RaiseResultSequenceAsync(ResultPrimitive.Fault))
-            .Should().ThrowAsync<BrokenCircuitException>()
-            .WithMessage("The circuit is now open and is not allowing calls.");
+        var ex = await Should.ThrowAsync<BrokenCircuitException>(() => breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault));
+        ex.Message.ShouldBe("The circuit is now open and is not allowing calls.");
 
         // Circuit is now broken.
 
@@ -1623,14 +1616,13 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             cancellationTokenSource.Cancel();
 
-            var ex2 = await breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            var ex2 = await Should.ThrowAsync<OperationCanceledException>(() => breaker.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
-                   ResultPrimitive.Good))
-                .Should().ThrowAsync<OperationCanceledException>();
-            ex2.And.CancellationToken.Should().Be(cancellationToken);
+                   ResultPrimitive.Good));
+            ex2.CancellationToken.ShouldBe(cancellationToken);
         }
 
-        attemptsInvoked.Should().Be(0);
+        attemptsInvoked.ShouldBe(0);
     }
 
     [Fact]
@@ -1653,18 +1645,17 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
 
             implicitlyCapturedActionCancellationTokenSource.Cancel();
 
-            var ex = await breaker.Awaiting(x => x.ExecuteAsync(async _ =>
+            var ex = await Should.ThrowAsync<OperationCanceledException>(() => breaker.ExecuteAsync(async _ =>
             {
                 attemptsInvoked++;
                 await TaskHelper.EmptyTask;
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
                 return ResultPrimitive.Good;
-            }, policyCancellationToken))
-                .Should().ThrowAsync<OperationCanceledException>();
-            ex.And.CancellationToken.Should().Be(implicitlyCapturedActionCancellationToken);
+            }, policyCancellationToken));
+            ex.CancellationToken.ShouldBe(implicitlyCapturedActionCancellationToken);
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
     }
 
     #endregion

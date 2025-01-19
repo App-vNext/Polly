@@ -15,8 +15,8 @@ public class FallbackAsyncSpecs
             .Handle<DivideByZeroException>()
             .FallbackAsync(fallbackActionAsync);
 
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("fallbackAction");
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("fallbackAction");
     }
 
     [Fact]
@@ -29,8 +29,8 @@ public class FallbackAsyncSpecs
             .Handle<DivideByZeroException>()
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("fallbackAction");
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("fallbackAction");
     }
 
     [Fact]
@@ -43,8 +43,8 @@ public class FallbackAsyncSpecs
                                 .Handle<DivideByZeroException>()
                                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("fallbackAction");
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("fallbackAction");
     }
 
     [Fact]
@@ -57,8 +57,8 @@ public class FallbackAsyncSpecs
                                 .Handle<DivideByZeroException>()
                                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("onFallbackAsync");
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallbackAsync");
     }
 
     [Fact]
@@ -71,8 +71,8 @@ public class FallbackAsyncSpecs
                                 .Handle<DivideByZeroException>()
                                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("onFallbackAsync");
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallbackAsync");
     }
 
     #endregion
@@ -91,7 +91,7 @@ public class FallbackAsyncSpecs
 
         await fallbackPolicy.ExecuteAsync(() => TaskHelper.EmptyTask);
 
-        fallbackActionExecuted.Should().BeFalse();
+        fallbackActionExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -104,9 +104,9 @@ public class FallbackAsyncSpecs
                                 .Handle<DivideByZeroException>()
                                 .FallbackAsync(fallbackActionAsync);
 
-        await fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>()).Should().ThrowAsync<ArgumentNullException>();
+        await Should.ThrowAsync<ArgumentNullException>(() => fallbackPolicy.RaiseExceptionAsync<ArgumentNullException>());
 
-        fallbackActionExecuted.Should().BeFalse();
+        fallbackActionExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -119,9 +119,9 @@ public class FallbackAsyncSpecs
                                 .Handle<DivideByZeroException>()
                                 .FallbackAsync(fallbackActionAsync);
 
-        await fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrowAsync();
+        await Should.NotThrowAsync(() => fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>());
 
-        fallbackActionExecuted.Should().BeTrue();
+        fallbackActionExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -135,9 +135,9 @@ public class FallbackAsyncSpecs
                                 .Or<ArgumentException>()
                                 .FallbackAsync(fallbackActionAsync);
 
-        await fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>()).Should().NotThrowAsync();
+        await Should.NotThrowAsync(() => fallbackPolicy.RaiseExceptionAsync<ArgumentException>());
 
-        fallbackActionExecuted.Should().BeTrue();
+        fallbackActionExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -151,9 +151,9 @@ public class FallbackAsyncSpecs
                                 .Or<NullReferenceException>()
                                 .FallbackAsync(fallbackActionAsync);
 
-        await fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>()).Should().ThrowAsync<ArgumentNullException>();
+        await Should.ThrowAsync<ArgumentNullException>(() => fallbackPolicy.RaiseExceptionAsync<ArgumentNullException>());
 
-        fallbackActionExecuted.Should().BeFalse();
+        fallbackActionExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -166,9 +166,9 @@ public class FallbackAsyncSpecs
                                 .Handle<DivideByZeroException>(_ => false)
                                 .FallbackAsync(fallbackActionAsync);
 
-        await fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().ThrowAsync<DivideByZeroException>();
+        await Should.ThrowAsync<DivideByZeroException>(() => fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>());
 
-        fallbackActionExecuted.Should().BeFalse();
+        fallbackActionExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -182,9 +182,9 @@ public class FallbackAsyncSpecs
                                 .Or<ArgumentNullException>(_ => false)
                                 .FallbackAsync(fallbackActionAsync);
 
-        await fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().ThrowAsync<DivideByZeroException>();
+        await Should.ThrowAsync<DivideByZeroException>(() => fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>());
 
-        fallbackActionExecuted.Should().BeFalse();
+        fallbackActionExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -197,9 +197,9 @@ public class FallbackAsyncSpecs
                                 .Handle<DivideByZeroException>(_ => true)
                                 .FallbackAsync(fallbackActionAsync);
 
-        await fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrowAsync();
+        await Should.NotThrowAsync(() => fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>());
 
-        fallbackActionExecuted.Should().BeTrue();
+        fallbackActionExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -213,9 +213,9 @@ public class FallbackAsyncSpecs
                                 .Or<ArgumentNullException>()
                                 .FallbackAsync(fallbackActionAsync);
 
-        await fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrowAsync();
+        await Should.NotThrowAsync(() => fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>());
 
-        fallbackActionExecuted.Should().BeTrue();
+        fallbackActionExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -232,11 +232,10 @@ public class FallbackAsyncSpecs
             .Handle<DivideByZeroException>()
             .FallbackAsync(fallbackActionAsync);
 
-        var ex = await fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>((e, _) => e.HelpLink = "FromExecuteDelegate"))
-            .Should().ThrowAsync<DivideByZeroException>();
-        ex.And.HelpLink.Should().Be("FromFallbackAction");
+        var ex = await Should.ThrowAsync<DivideByZeroException>(() => fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>((e, _) => e.HelpLink = "FromExecuteDelegate"));
+        ex.HelpLink.ShouldBe("FromFallbackAction");
 
-        fallbackActionExecuted.Should().BeTrue();
+        fallbackActionExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -246,7 +245,7 @@ public class FallbackAsyncSpecs
             .Handle<DivideByZeroException>()
             .FallbackAsync(_ => TaskHelper.EmptyTask);
 
-        await fallbackPolicy.Awaiting(p => p.ExecuteAsync<int>(() => Task.FromResult(0))).Should().ThrowAsync<InvalidOperationException>();
+        await Should.ThrowAsync<InvalidOperationException>(() => fallbackPolicy.ExecuteAsync<int>(() => Task.FromResult(0)));
     }
 
     #endregion
@@ -269,9 +268,9 @@ public class FallbackAsyncSpecs
         Exception instanceToThrow = new ArgumentNullException("myParam");
         await fallbackPolicy.RaiseExceptionAsync(instanceToThrow);
 
-        fallbackActionExecuted.Should().BeTrue();
-        exceptionPassedToOnFallback.Should().BeOfType<ArgumentNullException>();
-        exceptionPassedToOnFallback.Should().Be(instanceToThrow);
+        fallbackActionExecuted.ShouldBeTrue();
+        exceptionPassedToOnFallback.ShouldBeOfType<ArgumentNullException>();
+        exceptionPassedToOnFallback.ShouldBe(instanceToThrow);
     }
 
     [Fact]
@@ -288,7 +287,7 @@ public class FallbackAsyncSpecs
 
         await fallbackPolicy.ExecuteAsync(() => TaskHelper.EmptyTask);
 
-        onFallbackExecuted.Should().BeFalse();
+        onFallbackExecuted.ShouldBeFalse();
     }
 
     #endregion
@@ -308,13 +307,15 @@ public class FallbackAsyncSpecs
             .Handle<ArgumentNullException>()
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-        await fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(),
-            CreateDictionary("key1", "value1", "key2", "value2")))
-            .Should().NotThrowAsync();
+        await Should.NotThrowAsync(
+            () =>
+                fallbackPolicy.ExecuteAsync(
+                    _ => throw new ArgumentNullException(),
+                    CreateDictionary("key1", "value1", "key2", "value2")));
 
-        contextData.Should()
-            .ContainKeys("key1", "key2").And
-            .ContainValues("value1", "value2");
+        contextData.ShouldNotBeNull();
+        contextData.ShouldContainKeyAndValue("key1", "value1");
+        contextData.ShouldContainKeyAndValue("key2", "value2");
     }
 
     [Fact]
@@ -330,13 +331,15 @@ public class FallbackAsyncSpecs
             .Handle<ArgumentNullException>()
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-        await fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new ArgumentNullException(),
-            CreateDictionary("key1", "value1", "key2", "value2")))
-            .Should().NotThrowAsync();
+        await Should.NotThrowAsync(
+            () =>
+                fallbackPolicy.ExecuteAndCaptureAsync(
+                    _ => throw new ArgumentNullException(),
+                    CreateDictionary("key1", "value1", "key2", "value2")));
 
-        contextData.Should()
-            .ContainKeys("key1", "key2").And
-            .ContainValues("value1", "value2");
+        contextData.ShouldNotBeNull();
+        contextData.ShouldContainKeyAndValue("key1", "value1");
+        contextData.ShouldContainKeyAndValue("key2", "value2");
     }
 
     [Fact]
@@ -344,7 +347,7 @@ public class FallbackAsyncSpecs
     {
         Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
 
-        IDictionary<Type, object> contextData = new Dictionary<Type, object>();
+        var contextData = new Dictionary<Type, object>();
 
         Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => { contextData[ex.GetType()] = ctx["key"]; return TaskHelper.EmptyTask; };
 
@@ -353,18 +356,13 @@ public class FallbackAsyncSpecs
             .Or<DivideByZeroException>()
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-        await fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(), CreateDictionary("key", "value1")))
-            .Should().NotThrowAsync();
+        await Should.NotThrowAsync(() => fallbackPolicy.ExecuteAsync(_ => throw new ArgumentNullException(), CreateDictionary("key", "value1")));
+        await Should.NotThrowAsync(() => fallbackPolicy.ExecuteAsync(_ => throw new DivideByZeroException(), CreateDictionary("key", "value2")));
 
-        await fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new DivideByZeroException(), CreateDictionary("key", "value2")))
-            .Should().NotThrowAsync();
-
-        contextData.Count.Should().Be(2);
-        contextData.Keys.Should().Contain(typeof(ArgumentNullException));
-        contextData.Keys.Should().Contain(typeof(DivideByZeroException));
-        contextData[typeof(ArgumentNullException)].Should().Be("value1");
-        contextData[typeof(DivideByZeroException)].Should().Be("value2");
-
+        contextData.ShouldNotBeNull();
+        contextData.ShouldContainKeyAndValue(typeof(ArgumentNullException), "value1");
+        contextData.ShouldContainKeyAndValue(typeof(DivideByZeroException), "value2");
+        contextData.Count.ShouldBe(2);
     }
 
     [Fact]
@@ -383,8 +381,8 @@ public class FallbackAsyncSpecs
 
         await fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>();
 
-        onFallbackExecuted.Should().BeTrue();
-        capturedContext.Should().BeEmpty();
+        onFallbackExecuted.ShouldBeTrue();
+        capturedContext.ShouldBeEmpty();
     }
 
     [Fact]
@@ -400,13 +398,15 @@ public class FallbackAsyncSpecs
             .Handle<ArgumentNullException>()
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-        await fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(),
-                CreateDictionary("key1", "value1", "key2", "value2")))
-            .Should().NotThrowAsync();
+        await Should.NotThrowAsync(
+            () =>
+                fallbackPolicy.ExecuteAsync(
+                    _ => throw new ArgumentNullException(),
+                    CreateDictionary("key1", "value1", "key2", "value2")));
 
-        contextData.Should()
-            .ContainKeys("key1", "key2").And
-            .ContainValues("value1", "value2");
+        contextData.ShouldNotBeNull();
+        contextData.ShouldContainKeyAndValue("key1", "value1");
+        contextData.ShouldContainKeyAndValue("key2", "value2");
     }
 
     [Fact]
@@ -422,13 +422,15 @@ public class FallbackAsyncSpecs
             .Handle<ArgumentNullException>()
             .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-        await fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new ArgumentNullException(),
-                CreateDictionary("key1", "value1", "key2", "value2")))
-            .Should().NotThrowAsync();
+        await Should.NotThrowAsync(
+            () =>
+                fallbackPolicy.ExecuteAndCaptureAsync(
+                    _ => throw new ArgumentNullException(),
+                    CreateDictionary("key1", "value1", "key2", "value2")));
 
-        contextData.Should()
-            .ContainKeys("key1", "key2").And
-            .ContainValues("value1", "value2");
+        contextData.ShouldNotBeNull();
+        contextData.ShouldContainKeyAndValue("key1", "value1");
+        contextData.ShouldContainKeyAndValue("key2", "value2");
     }
 
     [Fact]
@@ -448,8 +450,8 @@ public class FallbackAsyncSpecs
 
         await fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>();
 
-        fallbackExecuted.Should().BeTrue();
-        capturedContext.Should().BeEmpty();
+        fallbackExecuted.ShouldBeTrue();
+        capturedContext.ShouldBeEmpty();
     }
 
     #endregion
@@ -470,10 +472,9 @@ public class FallbackAsyncSpecs
             .FallbackAsync(fallbackFunc, onFallback);
 
         Exception instanceToThrow = new ArgumentNullException("myParam");
-        await fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
-            .Should().NotThrowAsync();
+        await Should.NotThrowAsync(() => fallbackPolicy.RaiseExceptionAsync(instanceToThrow));
 
-        fallbackException.Should().Be(instanceToThrow);
+        fallbackException.ShouldBe(instanceToThrow);
     }
 
     [Fact]
@@ -489,11 +490,10 @@ public class FallbackAsyncSpecs
             .Handle<ArgumentNullException>()
             .FallbackAsync(fallbackFunc, onFallback);
 
-        await fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(() => throw new ArgumentNullException()))
-            .Should().NotThrowAsync();
+        await Should.NotThrowAsync(() => fallbackPolicy.ExecuteAndCaptureAsync(() => throw new ArgumentNullException()));
 
-        fallbackException.Should().NotBeNull()
-            .And.BeOfType<ArgumentNullException>();
+        fallbackException.ShouldNotBeNull()
+            .ShouldBeOfType<ArgumentNullException>();
     }
 
     [Fact]
@@ -511,10 +511,9 @@ public class FallbackAsyncSpecs
 
         Exception instanceToCapture = new ArgumentNullException("myParam");
         Exception instanceToThrow = new Exception(string.Empty, instanceToCapture);
-        await fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
-            .Should().NotThrowAsync();
+        await Should.NotThrowAsync(() => fallbackPolicy.RaiseExceptionAsync(instanceToThrow));
 
-        fallbackException.Should().Be(instanceToCapture);
+        fallbackException.ShouldBe(instanceToCapture);
     }
 
     [Fact]
@@ -532,10 +531,9 @@ public class FallbackAsyncSpecs
 
         Exception instanceToCapture = new ArgumentNullException("myParam");
         Exception instanceToThrow = new AggregateException(instanceToCapture);
-        await fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
-            .Should().NotThrowAsync();
+        await Should.NotThrowAsync(() => fallbackPolicy.RaiseExceptionAsync(instanceToThrow));
 
-        fallbackException.Should().Be(instanceToCapture);
+        fallbackException.ShouldBe(instanceToCapture);
     }
 
     [Fact]
@@ -551,10 +549,9 @@ public class FallbackAsyncSpecs
             .Handle<DivideByZeroException>()
             .FallbackAsync(fallbackFunc, onFallback);
 
-        await fallbackPolicy.Awaiting(p => p.ExecuteAsync(() => throw new ArgumentNullException()))
-            .Should().ThrowAsync<ArgumentNullException>();
+        await Should.ThrowAsync<ArgumentNullException>(() => fallbackPolicy.ExecuteAsync(() => throw new ArgumentNullException()));
 
-        fallbackException.Should().BeNull();
+        fallbackException.ShouldBeNull();
     }
 
     #endregion
@@ -567,9 +564,8 @@ public class FallbackAsyncSpecs
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-        var policy = Policy
-                                .Handle<DivideByZeroException>()
-                                .FallbackAsync(fallbackActionAsync);
+        var policy = Policy.Handle<DivideByZeroException>()
+                           .FallbackAsync(fallbackActionAsync);
 
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
@@ -583,13 +579,12 @@ public class FallbackAsyncSpecs
         using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
-            await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().NotThrowAsync();
+            await Should.NotThrowAsync(() => policy.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute));
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
 
-        fallbackActionExecuted.Should().BeFalse();
+        fallbackActionExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -598,9 +593,8 @@ public class FallbackAsyncSpecs
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-        var policy = Policy
-                                .Handle<DivideByZeroException>()
-                                .FallbackAsync(fallbackActionAsync);
+        var policy = Policy.Handle<DivideByZeroException>()
+                           .FallbackAsync(fallbackActionAsync);
 
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
@@ -614,13 +608,12 @@ public class FallbackAsyncSpecs
         using (var cancellationTokenSource = new CancellationTokenSource())
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
-            await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().NotThrowAsync();
+            await Should.NotThrowAsync(() => policy.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute));
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
 
-        fallbackActionExecuted.Should().BeTrue();
+        fallbackActionExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -629,9 +622,8 @@ public class FallbackAsyncSpecs
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-        var policy = Policy
-                                .Handle<DivideByZeroException>()
-                                .FallbackAsync(fallbackActionAsync);
+        var policy = Policy.Handle<DivideByZeroException>()
+                           .FallbackAsync(fallbackActionAsync);
 
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
@@ -647,14 +639,13 @@ public class FallbackAsyncSpecs
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             cancellationTokenSource.Cancel();
 
-            var ex = await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().ThrowAsync<OperationCanceledException>();
-            ex.And.CancellationToken.Should().Be(cancellationToken);
+            var ex = await Should.ThrowAsync<OperationCanceledException>(() => policy.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute));
+            ex.CancellationToken.ShouldBe(cancellationToken);
         }
 
-        attemptsInvoked.Should().Be(0);
+        attemptsInvoked.ShouldBe(0);
 
-        fallbackActionExecuted.Should().BeFalse();
+        fallbackActionExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -663,9 +654,8 @@ public class FallbackAsyncSpecs
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-        var policy = Policy
-                                .Handle<DivideByZeroException>()
-                                .FallbackAsync(fallbackActionAsync);
+        var policy = Policy.Handle<DivideByZeroException>()
+                           .FallbackAsync(fallbackActionAsync);
 
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
@@ -681,14 +671,13 @@ public class FallbackAsyncSpecs
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            var ex = await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().ThrowAsync<OperationCanceledException>();
-            ex.And.CancellationToken.Should().Be(cancellationToken);
+            var ex = await Should.ThrowAsync<OperationCanceledException>(() => policy.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute));
+            ex.CancellationToken.ShouldBe(cancellationToken);
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
 
-        fallbackActionExecuted.Should().BeFalse();
+        fallbackActionExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -697,10 +686,9 @@ public class FallbackAsyncSpecs
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-        var policy = Policy
-                                .Handle<DivideByZeroException>()
-                                .Or<OperationCanceledException>()
-                                .FallbackAsync(fallbackActionAsync);
+        var policy = Policy.Handle<DivideByZeroException>()
+                           .Or<OperationCanceledException>()
+                           .FallbackAsync(fallbackActionAsync);
 
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
@@ -716,13 +704,12 @@ public class FallbackAsyncSpecs
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().NotThrowAsync();
+            await Should.NotThrowAsync(() => policy.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute));
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
 
-        fallbackActionExecuted.Should().BeTrue();
+        fallbackActionExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -731,9 +718,8 @@ public class FallbackAsyncSpecs
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-        var policy = Policy
-                                .Handle<DivideByZeroException>()
-                                .FallbackAsync(fallbackActionAsync);
+        var policy = Policy.Handle<DivideByZeroException>()
+                           .FallbackAsync(fallbackActionAsync);
 
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
@@ -749,13 +735,12 @@ public class FallbackAsyncSpecs
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().NotThrowAsync();
+            await Should.NotThrowAsync(() => policy.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute));
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
 
-        fallbackActionExecuted.Should().BeFalse();
+        fallbackActionExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -764,9 +749,8 @@ public class FallbackAsyncSpecs
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-        var policy = Policy
-                                .Handle<DivideByZeroException>()
-                                .FallbackAsync(fallbackActionAsync);
+        var policy = Policy.Handle<DivideByZeroException>()
+                           .FallbackAsync(fallbackActionAsync);
 
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
@@ -782,13 +766,12 @@ public class FallbackAsyncSpecs
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<NullReferenceException>(scenario, cancellationTokenSource, onExecute))
-                .Should().ThrowAsync<NullReferenceException>();
+            await Should.ThrowAsync<NullReferenceException>(() => policy.RaiseExceptionAndOrCancellationAsync<NullReferenceException>(scenario, cancellationTokenSource, onExecute));
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
 
-        fallbackActionExecuted.Should().BeFalse();
+        fallbackActionExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -797,9 +780,8 @@ public class FallbackAsyncSpecs
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-        var policy = Policy
-                                .Handle<DivideByZeroException>()
-                                .FallbackAsync(fallbackActionAsync);
+        var policy = Policy.Handle<DivideByZeroException>()
+                           .FallbackAsync(fallbackActionAsync);
 
         int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
@@ -815,13 +797,12 @@ public class FallbackAsyncSpecs
         {
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().NotThrowAsync();
+            await Should.NotThrowAsync(() => policy.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute));
         }
 
-        attemptsInvoked.Should().Be(1);
+        attemptsInvoked.ShouldBe(1);
 
-        fallbackActionExecuted.Should().BeTrue();
+        fallbackActionExecuted.ShouldBeTrue();
     }
 
     #endregion

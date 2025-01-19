@@ -14,9 +14,9 @@ public class NoOpTResultSpecs
         var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "EmptyStruct" });
         var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None]);
 
-        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
-        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
-        exceptionAssertions.WithInnerException<ArgumentNullException>("action");
+        var exceptionAssertions = Should.Throw<TargetInvocationException>(func);
+        exceptionAssertions.Message.ShouldBe("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.InnerException.ShouldBeOfType<ArgumentNullException>().ParamName.ShouldBe("action");
     }
 
     [Fact]
@@ -25,11 +25,10 @@ public class NoOpTResultSpecs
         NoOpPolicy<int> policy = Policy.NoOp<int>();
         int? result = null;
 
-        policy.Invoking(x => result = x.Execute(() => 10))
-            .Should().NotThrow();
+        Should.NotThrow(() => result = policy.Execute(() => 10));
 
-        result.HasValue.Should().BeTrue();
-        result.Should().Be(10);
+        result.HasValue.ShouldBeTrue();
+        result.ShouldBe(10);
     }
 
     [Fact]
@@ -42,11 +41,10 @@ public class NoOpTResultSpecs
         {
             cts.Cancel();
 
-            policy.Invoking(p => result = p.Execute(_ => 10, cts.Token))
-               .Should().NotThrow();
+            Should.NotThrow(() => result = policy.Execute(_ => 10, cts.Token));
         }
 
-        result.HasValue.Should().BeTrue();
-        result.Should().Be(10);
+        result.HasValue.ShouldBeTrue();
+        result.ShouldBe(10);
     }
 }

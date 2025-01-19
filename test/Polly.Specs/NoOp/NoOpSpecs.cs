@@ -16,10 +16,10 @@ public class NoOpSpecs
         var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
         var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None]);
 
-        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
-        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
-        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
-            .Which.ParamName.Should().Be("action");
+        var exceptionAssertions = Should.Throw<TargetInvocationException>(func);
+        exceptionAssertions.Message.ShouldBe("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.InnerException.ShouldBeOfType<ArgumentNullException>()
+            .ParamName.ShouldBe("action");
     }
 
     [Fact]
@@ -28,10 +28,9 @@ public class NoOpSpecs
         NoOpPolicy policy = Policy.NoOp();
         bool executed = false;
 
-        policy.Invoking(x => x.Execute(() => { executed = true; }))
-            .Should().NotThrow();
+        Should.NotThrow(() => policy.Execute(() => executed = true));
 
-        executed.Should().BeTrue();
+        executed.ShouldBeTrue();
     }
 
     [Fact]
@@ -44,10 +43,9 @@ public class NoOpSpecs
         {
             cts.Cancel();
 
-            policy.Invoking(p => p.Execute(_ => { executed = true; }, cts.Token))
-                .Should().NotThrow();
+            Should.NotThrow(() => policy.Execute(_ => executed = true, cts.Token));
         }
 
-        executed.Should().BeTrue();
+        executed.ShouldBeTrue();
     }
 }
