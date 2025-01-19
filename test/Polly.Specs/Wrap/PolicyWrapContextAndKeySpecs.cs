@@ -1,7 +1,4 @@
 ﻿namespace Polly.Specs.Wrap;
-﻿using Shouldly;
-
-namespace Polly.Specs.Wrap;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class PolicyWrapContextAndKeySpecs
