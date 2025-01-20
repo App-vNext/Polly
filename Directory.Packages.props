@@ -9,7 +9,7 @@
     <MicrosoftExtensionsTimeProviderVersion>9.0.0</MicrosoftExtensionsTimeProviderVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="coverlet.msbuild" Version="6.0.3" />
+    <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
     <PackageVersion Include="FluentAssertions" Version="6.12.2" />
     <PackageVersion Include="FSharp.Core" Version="8.0.200" />
