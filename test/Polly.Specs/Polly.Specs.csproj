@@ -10,7 +10,6 @@
     <IncludePollyUsings>true</IncludePollyUsings>
     <NoWarn>$(NoWarn);CA1030;CA1031;CA2008;CA2201</NoWarn>
     <NoWarn>$(NoWarn);S104;S6966</NoWarn>
-    <NoWarn>$(NoWarn);SA1402;SA1600</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
