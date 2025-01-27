@@ -99,7 +99,9 @@ public class TraceableAction : IDisposable
                     throw;
                 }
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
             {
                 _testOutputHelper.WriteLine(_id + "Caught unexpected exception during execution: " + e);
 
@@ -165,7 +167,9 @@ public class TraceableAction : IDisposable
                         Status = TraceableActionStatus.Canceled;
                     } // else: was execution cancellation rethrown: ignore
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
                 {
                     _testOutputHelper.WriteLine(_id + "Caught unexpected exception during execution: " + e);
 
