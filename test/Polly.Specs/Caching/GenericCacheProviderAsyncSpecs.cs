@@ -9,9 +9,9 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         const string OperationKey = "SomeOperationKey";
 
         bool onErrorCalled = false;
-        Action<Context, string, Exception> onError = (_, _, _) => { onErrorCalled = true; };
+        Action<Context, string, Exception> onError = (_, _, _) => onErrorCalled = true;
 
-        IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
 
         (bool cacheHit, object? fromCache) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken.None, false);
@@ -34,7 +34,7 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         const string OperationKey = "SomeOperationKey";
 
         var cancellationToken = CancellationToken.None;
-        IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object? fromCache1) = await stubCacheProvider.TryGetAsync(OperationKey, cancellationToken, false);

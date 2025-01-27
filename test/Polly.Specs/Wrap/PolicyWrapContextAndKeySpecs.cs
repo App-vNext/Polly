@@ -13,10 +13,7 @@ public class PolicyWrapContextAndKeySpecs
         string wrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<Exception, int, Context> onRetry = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
 
         var retry = Policy.Handle<Exception>().Retry(1, onRetry).WithPolicyKey(retryKey);
         var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero).WithPolicyKey(breakerKey);
@@ -38,10 +35,7 @@ public class PolicyWrapContextAndKeySpecs
         string wrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
         Action<Context> onReset = _ => { };
 
         var retry = Policy.Handle<Exception>().Retry(1).WithPolicyKey(retryKey);
@@ -93,10 +87,7 @@ public class PolicyWrapContextAndKeySpecs
         string outerWrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
         Action<Context> doNothingOnReset = _ => { };
 
         var retry = Policy.Handle<Exception>().Retry(1).WithPolicyKey(retryKey);
@@ -125,10 +116,7 @@ public class PolicyWrapContextAndKeySpecs
         string outerWrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
         Action<Context> doNothingOnReset = _ => { };
 
         var retry = Policy.Handle<Exception>().Retry(1).WithPolicyKey(retryKey);
@@ -171,10 +159,7 @@ public class PolicyWrapTResultContextAndKeySpecs
         string wrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
 
         var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry).WithPolicyKey(retryKey);
         var breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreaker(1, TimeSpan.Zero).WithPolicyKey(breakerKey);
@@ -195,10 +180,7 @@ public class PolicyWrapTResultContextAndKeySpecs
         string wrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
         Action<Context> onReset = _ => { };
 
         var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1).WithPolicyKey(retryKey);
@@ -217,7 +199,7 @@ public class PolicyWrapTResultContextAndKeySpecs
     {
         ISyncPolicy<ResultPrimitive> fallback = Policy<ResultPrimitive>
             .Handle<Exception>()
-            .Fallback<ResultPrimitive>(ResultPrimitive.Undefined, onFallback: (_, context) =>
+            .Fallback(ResultPrimitive.Undefined, onFallback: (_, context) =>
             {
                 context.PolicyWrapKey.ShouldBe("PolicyWrap");
                 context.PolicyKey.ShouldBe("FallbackPolicy");
@@ -249,10 +231,7 @@ public class PolicyWrapTResultContextAndKeySpecs
         string outerWrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
         Action<Context> doNothingOnReset = _ => { };
 
         var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1).WithPolicyKey(retryKey);

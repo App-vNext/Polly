@@ -12,7 +12,7 @@ public abstract class BulkheadSpecsBase : IDisposable
     #region Time constraints
 
     protected readonly TimeSpan ShimTimeSpan = TimeSpan.FromMilliseconds(50); // How frequently to retry the assertions.
-    protected readonly TimeSpan CohesionTimeLimit = TimeSpan.FromMilliseconds(1000); // Consider increasing CohesionTimeLimit if bulkhead specs fail transiently in slower build environments.
+    protected readonly TimeSpan CohesionTimeLimit = TimeSpan.FromSeconds(1);
 
     #endregion
 
@@ -33,9 +33,9 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     protected IBulkheadPolicy BulkheadForStats { get; set; } = null!;
 
-    internal TraceableAction[] Actions { get; set; } = { };
+    internal TraceableAction[] Actions { get; set; } = [];
 
-    protected Task[] Tasks { get; set; } = { };
+    protected Task[] Tasks { get; set; } = [];
 
     protected readonly AutoResetEvent StatusChangedEvent = new(false);
 
@@ -84,10 +84,7 @@ public abstract class BulkheadSpecsBase : IDisposable
     [ClassData(typeof(BulkheadScenarios))]
     public void Should_control_executions_per_specification(int maxParallelization, int maxQueuingActions, int totalActions, bool cancelQueuing, bool cancelExecuting, string scenario)
     {
-        if (totalActions < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(totalActions));
-        }
+        totalActions.ShouldBeGreaterThanOrEqualTo(0);
 
         MaxParallelization = maxParallelization;
         MaxQueuingActions = maxQueuingActions;
@@ -312,7 +309,7 @@ public abstract class BulkheadSpecsBase : IDisposable
             }
             catch (Exception e)
             {
-                throw new Exception("Task " + i + " raised the following unobserved task exception: ", e);
+                throw new Exception($"Task {i} raised the following unobserved task exception: ", e);
             }
         }
     }
@@ -373,6 +370,7 @@ public abstract class BulkheadSpecsBase : IDisposable
     private void ShowTestOutput() =>
         ((AnnotatedOutputHelper)TestOutputHelper).Flush();
 #endif
+
     #endregion
 
     public void Dispose()

@@ -14,7 +14,7 @@ public class RateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase, IDis
 
     protected override IRateLimitPolicy<TResult> GetPolicyViaSyntax<TResult>(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst,
         Func<TimeSpan, Context, TResult> retryAfterFactory) =>
-        Policy.RateLimit<TResult>(numberOfExecutions, perTimeSpan, maxBurst, retryAfterFactory);
+        Policy.RateLimit(numberOfExecutions, perTimeSpan, maxBurst, retryAfterFactory);
 
     protected override (bool, TimeSpan) TryExecuteThroughPolicy(IRateLimitPolicy policy)
     {

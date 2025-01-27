@@ -14,7 +14,7 @@ public class AsyncRateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase,
 
     protected override IRateLimitPolicy<TResult> GetPolicyViaSyntax<TResult>(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst,
         Func<TimeSpan, Context, TResult> retryAfterFactory) =>
-        Policy.RateLimitAsync<TResult>(numberOfExecutions, perTimeSpan, maxBurst, retryAfterFactory);
+        Policy.RateLimitAsync(numberOfExecutions, perTimeSpan, maxBurst, retryAfterFactory);
 
     protected override (bool, TimeSpan) TryExecuteThroughPolicy(IRateLimitPolicy policy)
     {

@@ -10,8 +10,8 @@ public class WaitAndRetryTResultSpecs : IDisposable
     {
         Dictionary<ResultPrimitive, TimeSpan> expectedRetryWaits = new Dictionary<ResultPrimitive, TimeSpan>
         {
-            {ResultPrimitive.Fault, TimeSpan.FromSeconds(2)},
-            {ResultPrimitive.FaultAgain, TimeSpan.FromSeconds(4)},
+            [ResultPrimitive.Fault] = TimeSpan.FromSeconds(2),
+            [ResultPrimitive.FaultAgain] = TimeSpan.FromSeconds(4),
         };
 
         var actualRetryWaits = new List<TimeSpan>();

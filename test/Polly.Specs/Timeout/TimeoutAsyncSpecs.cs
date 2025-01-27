@@ -228,7 +228,6 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         await Should.ThrowAsync<TimeoutRejectedException>(() => policy.ExecuteAsync(async () =>
         {
             await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken);
-
         }));
     }
 
@@ -261,7 +260,6 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         await Should.ThrowAsync<TimeoutRejectedException>(() => policy.ExecuteAsync(async () =>
         {
             await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), CancellationToken);
-
         }));
 
         watch.Stop();
@@ -315,7 +313,6 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         await Should.ThrowAsync<TimeoutRejectedException>(() => policy.ExecuteAsync(async ct =>
         {
             await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
-
         }, userCancellationToken));
     }
 
@@ -625,7 +622,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
             return TaskHelper.EmptyTask;
         };
 
-        TimeSpan shimTimespan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+        TimeSpan shimTimespan = TimeSpan.FromSeconds(1);
         TimeSpan thriceShimTimeSpan = shimTimespan + shimTimespan + shimTimespan;
         var policy = Policy.TimeoutAsync(shimTimespan, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 

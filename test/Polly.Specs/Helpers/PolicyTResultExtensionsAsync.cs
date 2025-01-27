@@ -18,7 +18,7 @@ public static class PolicyTResultExtensionsAsync
         {
             if (!enumerator.MoveNext())
             {
-                throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name}  values in {nameof(resultsToRaise)}.");
+                throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name} values in {nameof(resultsToRaise)}.");
             }
 
             return Task.FromResult(enumerator.Current);

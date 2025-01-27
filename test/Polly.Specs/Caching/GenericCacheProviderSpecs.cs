@@ -29,7 +29,7 @@ public class GenericCacheProviderSpecs : IDisposable
         const ResultPrimitive ValueToReturn = ResultPrimitive.Substitute;
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(OperationKey);

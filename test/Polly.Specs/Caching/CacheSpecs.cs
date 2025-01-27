@@ -312,7 +312,7 @@ public class CacheSpecs : IDisposable
         Action action = () => Policy.Wrap(policies);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("policies");
 
-        action = () => Policy.Wrap<int>(policiesGeneric);
+        action = () => Policy.Wrap(policiesGeneric);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("policies");
     }
 

@@ -245,7 +245,7 @@ public class FallbackAsyncSpecs
             .Handle<DivideByZeroException>()
             .FallbackAsync(_ => TaskHelper.EmptyTask);
 
-        await Should.ThrowAsync<InvalidOperationException>(() => fallbackPolicy.ExecuteAsync<int>(() => Task.FromResult(0)));
+        await Should.ThrowAsync<InvalidOperationException>(() => fallbackPolicy.ExecuteAsync(() => Task.FromResult(0)));
     }
 
     #endregion
