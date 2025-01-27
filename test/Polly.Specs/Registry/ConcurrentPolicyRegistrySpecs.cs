@@ -2,10 +2,7 @@
 
 public class ConcurrentPolicyRegistrySpecs
 {
-    private readonly IConcurrentPolicyRegistry<string> _registry;
-
-    public ConcurrentPolicyRegistrySpecs() =>
-        _registry = new PolicyRegistry();
+    private readonly PolicyRegistry _registry = [];
 
     [Fact]
     public void Should_be_able_to_add_Policy_using_TryAdd()
