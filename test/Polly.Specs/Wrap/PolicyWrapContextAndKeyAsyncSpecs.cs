@@ -13,10 +13,7 @@ public class PolicyWrapContextAndKeyAsyncSpecs
         string wrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<Exception, int, Context> onRetry = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
 
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(retryKey);
         var breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.Zero).WithPolicyKey(breakerKey);
@@ -38,10 +35,7 @@ public class PolicyWrapContextAndKeyAsyncSpecs
         string wrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
         Action<Context> onReset = _ => { };
 
         var retry = Policy.Handle<Exception>().RetryAsync(1).WithPolicyKey(retryKey);
@@ -122,10 +116,7 @@ public class PolicyWrapContextAndKeyAsyncSpecs
         string outerWrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
         Action<Context> doNothingOnReset = _ => { };
 
         var retry = Policy.Handle<Exception>().RetryAsync(1).WithPolicyKey(retryKey);
@@ -154,10 +145,7 @@ public class PolicyWrapContextAndKeyAsyncSpecs
         string outerWrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
         Action<Context> doNothingOnReset = _ => { };
 
         var retry = Policy.Handle<Exception>().RetryAsync(1).WithPolicyKey(retryKey);
@@ -204,10 +192,7 @@ public class PolicyWrapTResultContextAndKeyAsyncSpecs
         string wrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
 
         var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry).WithPolicyKey(retryKey);
         var breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreakerAsync(1, TimeSpan.Zero).WithPolicyKey(breakerKey);
@@ -228,10 +213,7 @@ public class PolicyWrapTResultContextAndKeyAsyncSpecs
         string wrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
         Action<Context> onReset = _ => { };
 
         var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1).WithPolicyKey(retryKey);
@@ -315,10 +297,7 @@ public class PolicyWrapTResultContextAndKeyAsyncSpecs
         string outerWrapKey = Guid.NewGuid().ToString();
 
         string? policyWrapKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
         Action<Context> doNothingOnReset = _ => { };
 
         var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1).WithPolicyKey(retryKey);

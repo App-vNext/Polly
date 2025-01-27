@@ -455,7 +455,7 @@ public class PolicyWrapAsyncSpecs
         AsyncPolicyWrap wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
 
         PolicyResult executeAndCaptureResultOnPolicyWrap =
-            await wrap.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); });
+            await wrap.ExecuteAndCaptureAsync(() => throw new ArgumentNullException());
 
         executeAndCaptureResultOnPolicyWrap.Outcome.ShouldBe(OutcomeType.Failure);
         executeAndCaptureResultOnPolicyWrap.FinalException.ShouldBeOfType<ArgumentNullException>();
@@ -474,7 +474,7 @@ public class PolicyWrapAsyncSpecs
         AsyncPolicyWrap wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
 
         PolicyResult executeAndCaptureResultOnPolicyWrap =
-            await wrap.ExecuteAndCaptureAsync(() => { throw new DivideByZeroException(); });
+            await wrap.ExecuteAndCaptureAsync(() => throw new DivideByZeroException());
 
         executeAndCaptureResultOnPolicyWrap.Outcome.ShouldBe(OutcomeType.Failure);
         executeAndCaptureResultOnPolicyWrap.FinalException.ShouldBeOfType<DivideByZeroException>();
@@ -492,7 +492,7 @@ public class PolicyWrapAsyncSpecs
             .CircuitBreakerAsync(1, TimeSpan.Zero);
         AsyncPolicyWrap<ResultPrimitive> wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
 
-        PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = await wrap.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); });
+        PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = await wrap.ExecuteAndCaptureAsync(() => throw new ArgumentNullException());
 
         executeAndCaptureResultOnPolicyWrap.Outcome.ShouldBe(OutcomeType.Failure);
         executeAndCaptureResultOnPolicyWrap.FinalException.ShouldBeOfType<ArgumentNullException>();
@@ -511,7 +511,7 @@ public class PolicyWrapAsyncSpecs
             .CircuitBreakerAsync(1, TimeSpan.Zero);
         AsyncPolicyWrap<ResultPrimitive> wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
 
-        PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = await wrap.ExecuteAndCaptureAsync(() => { throw new DivideByZeroException(); });
+        PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = await wrap.ExecuteAndCaptureAsync(() => throw new DivideByZeroException());
 
         executeAndCaptureResultOnPolicyWrap.Outcome.ShouldBe(OutcomeType.Failure);
         executeAndCaptureResultOnPolicyWrap.FinalException.ShouldBeOfType<DivideByZeroException>();

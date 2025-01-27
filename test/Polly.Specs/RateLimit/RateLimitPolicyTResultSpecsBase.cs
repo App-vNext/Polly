@@ -26,7 +26,7 @@ public abstract class RateLimitPolicyTResultSpecsBase : RateLimitPolicySpecsBase
             contextPassedToRetryAfter = ctx;
             return new ResultClassWithRetryAfter(t);
         };
-        var rateLimiter = GetPolicyViaSyntax<ResultClassWithRetryAfter>(1, onePer, 1, retryAfterFactory);
+        var rateLimiter = GetPolicyViaSyntax(1, onePer, 1, retryAfterFactory);
 
         // Arrange - drain first permitted execution after initialising.
         ShouldPermitAnExecution(rateLimiter);

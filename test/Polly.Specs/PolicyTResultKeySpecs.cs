@@ -7,7 +7,7 @@ public class PolicyTResultKeySpecs
     [Fact]
     public void Should_be_able_fluently_to_configure_the_policy_key()
     {
-        var policy = Policy.HandleResult<int>(0).Retry().WithPolicyKey(Guid.NewGuid().ToString());
+        var policy = Policy.HandleResult(0).Retry().WithPolicyKey(Guid.NewGuid().ToString());
 
         policy.ShouldBeAssignableTo<Policy<int>>();
     }
@@ -15,7 +15,7 @@ public class PolicyTResultKeySpecs
     [Fact]
     public void Should_be_able_fluently_to_configure_the_policy_key_via_interface()
     {
-        ISyncPolicy<int> policyAsInterface = Policy.HandleResult<int>(0).Retry();
+        ISyncPolicy<int> policyAsInterface = Policy.HandleResult(0).Retry();
         var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
 
         policyAsInterfaceAfterWithPolicyKey.ShouldBeAssignableTo<ISyncPolicy<int>>();
@@ -101,7 +101,7 @@ public class PolicyTResultKeySpecs
         string policyKey = Guid.NewGuid().ToString();
 
         string? policyKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => policyKeySetOnExecutionContext = context.PolicyKey;
         var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry).WithPolicyKey(policyKey);
 
         retry.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
@@ -115,7 +115,7 @@ public class PolicyTResultKeySpecs
         string operationKey = "SomeKey";
 
         string? operationKeySetOnContext = null;
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
+        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => operationKeySetOnContext = context.OperationKey;
         var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry);
 
         bool firstExecution = true;

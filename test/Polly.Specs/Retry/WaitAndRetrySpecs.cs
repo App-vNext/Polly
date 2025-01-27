@@ -1072,7 +1072,7 @@ public class WaitAndRetrySpecs : IDisposable
         attemptsInvoked.ShouldBe(1);
 
         watch.Elapsed.ShouldBeLessThan(retryDelay);
-        watch.Elapsed.ShouldBe(shimTimeSpan, TimeSpan.FromMilliseconds(shimTimeSpan.TotalMilliseconds / 2));  // Consider increasing shimTimeSpan, or loosening precision, if test fails transiently in different environments.
+        watch.Elapsed.ShouldBe(shimTimeSpan, TimeSpan.FromMilliseconds(shimTimeSpan.TotalMilliseconds / 2));
     }
 
     [Fact]

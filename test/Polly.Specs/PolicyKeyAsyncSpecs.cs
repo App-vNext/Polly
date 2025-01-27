@@ -120,7 +120,7 @@ public class PolicyKeyAsyncSpecs
         string policyKey = Guid.NewGuid().ToString();
 
         string? policyKeySetOnExecutionContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+        Action<Exception, int, Context> onRetry = (_, _, context) => policyKeySetOnExecutionContext = context.PolicyKey;
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
 
         await retry.RaiseExceptionAsync<Exception>(1);
@@ -134,7 +134,7 @@ public class PolicyKeyAsyncSpecs
         string operationKey = "SomeKey";
 
         string? operationKeySetOnContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
+        Action<Exception, int, Context> onRetry = (_, _, context) => operationKeySetOnContext = context.OperationKey;
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
         bool firstExecution = true;
@@ -157,11 +157,11 @@ public class PolicyKeyAsyncSpecs
         string policyKey = Guid.NewGuid().ToString();
 
         string? policyKeySetOnExecutionContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+        Action<Exception, int, Context> onRetry = (_, _, context) => policyKeySetOnExecutionContext = context.PolicyKey;
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
 
         bool firstExecution = true;
-        await retry.ExecuteAsync<int>(async () =>
+        await retry.ExecuteAsync(async () =>
         {
             await TaskHelper.EmptyTask;
             if (firstExecution)
@@ -182,7 +182,7 @@ public class PolicyKeyAsyncSpecs
         string operationKey = "SomeKey";
 
         string? operationKeySetOnContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
+        Action<Exception, int, Context> onRetry = (_, _, context) => operationKeySetOnContext = context.OperationKey;
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
         bool firstExecution = true;

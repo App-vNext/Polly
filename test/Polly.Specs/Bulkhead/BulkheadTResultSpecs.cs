@@ -124,7 +124,7 @@ public class BulkheadTResultSpecs(ITestOutputHelper testOutputHelper) : Bulkhead
         Policy.Bulkhead<ResultPrimitive>(maxParallelization, maxQueuingActions);
 
     protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action) =>
-        action.ExecuteOnBulkhead<ResultPrimitive>((BulkheadPolicy<ResultPrimitive>)bulkhead);
+        action.ExecuteOnBulkhead((BulkheadPolicy<ResultPrimitive>)bulkhead);
 
     #endregion
 }

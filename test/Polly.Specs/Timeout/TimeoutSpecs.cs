@@ -269,7 +269,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         TimeSpan timeout = TimeSpan.FromSeconds(1);
         var policy = Policy.Timeout(timeout, TimeoutStrategy.Pessimistic);
 
-        TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+        TimeSpan tolerance = TimeSpan.FromSeconds(3);
 
         var watch = Stopwatch.StartNew();
         Should.Throw<TimeoutRejectedException>(() => policy.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(10), CancellationToken)));
@@ -412,7 +412,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         var policy = Policy.Timeout(timeout);
         var userCancellationToken = CancellationToken;
 
-        TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+        TimeSpan tolerance = TimeSpan.FromSeconds(3);
 
         var watch = Stopwatch.StartNew();
 
@@ -552,7 +552,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
         TimeSpan? timeoutPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => { timeoutPassedToOnTimeout = span; };
+        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => timeoutPassedToOnTimeout = span;
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeout);
 
@@ -568,7 +568,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Context contextPassedToExecute = new Context(operationKey);
 
         Context? contextPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task> onTimeout = (ctx, _, _) => { contextPassedToOnTimeout = ctx; };
+        Action<Context, TimeSpan, Task> onTimeout = (ctx, _, _) => contextPassedToOnTimeout = ctx;
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
         var policy = Policy.Timeout(timeout, TimeoutStrategy.Pessimistic, onTimeout);
@@ -589,7 +589,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay);
 
         TimeSpan? timeoutPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => { timeoutPassedToOnTimeout = span; };
+        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => timeoutPassedToOnTimeout = span;
 
         var policy = Policy.Timeout(timeoutFunc, TimeoutStrategy.Pessimistic, onTimeout);
 
@@ -607,7 +607,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Func<Context, TimeSpan> timeoutProvider = ctx => (TimeSpan)ctx["timeout"];
 
         TimeSpan? timeoutPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => { timeoutPassedToOnTimeout = span; };
+        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => timeoutPassedToOnTimeout = span;
         var policy = Policy.Timeout(timeoutProvider, TimeoutStrategy.Pessimistic, onTimeout);
 
         // Supply a programatically-controlled timeout, via the execution context.
@@ -622,7 +622,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     public void Should_call_ontimeout_with_task_wrapping_abandoned_action__pessimistic()
     {
         Task? taskPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task> onTimeout = (_, _, task) => { taskPassedToOnTimeout = task; };
+        Action<Context, TimeSpan, Task> onTimeout = (_, _, task) => taskPassedToOnTimeout = task;
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
         var policy = Policy.Timeout(timeout, TimeoutStrategy.Pessimistic, onTimeout);
@@ -648,7 +648,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
             task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception!.InnerException);
         };
 
-        TimeSpan shimTimespan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+        TimeSpan shimTimespan = TimeSpan.FromSeconds(1);
         TimeSpan thriceShimTimeSpan = shimTimespan + shimTimespan + shimTimespan;
         var policy = Policy.Timeout(shimTimespan, TimeoutStrategy.Pessimistic, onTimeout);
 
@@ -670,7 +670,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
         Exception? exceptionPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, exception) => { exceptionPassedToOnTimeout = exception; };
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, exception) => exceptionPassedToOnTimeout = exception;
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeout);
 
@@ -690,7 +690,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
         TimeSpan? timeoutPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => { timeoutPassedToOnTimeout = span; };
+        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => timeoutPassedToOnTimeout = span;
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeout);
         var userCancellationToken = CancellationToken;
@@ -707,7 +707,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Context contextPassedToExecute = new Context(operationKey);
 
         Context? contextPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task> onTimeout = (ctx, _, _) => { contextPassedToOnTimeout = ctx; };
+        Action<Context, TimeSpan, Task> onTimeout = (ctx, _, _) => contextPassedToOnTimeout = ctx;
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
         var policy = Policy.Timeout(timeout, TimeoutStrategy.Optimistic, onTimeout);
@@ -729,7 +729,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay);
 
         TimeSpan? timeoutPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => { timeoutPassedToOnTimeout = span; };
+        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => timeoutPassedToOnTimeout = span;
 
         var policy = Policy.Timeout(timeoutFunc, TimeoutStrategy.Optimistic, onTimeout);
         var userCancellationToken = CancellationToken;
@@ -748,7 +748,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Func<Context, TimeSpan> timeoutProvider = ctx => (TimeSpan)ctx["timeout"];
 
         TimeSpan? timeoutPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => { timeoutPassedToOnTimeout = span; };
+        Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => timeoutPassedToOnTimeout = span;
         var policy = Policy.Timeout(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
 
         var userCancellationToken = CancellationToken;
@@ -768,7 +768,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     public void Should_call_ontimeout_but_not_with_task_wrapping_abandoned_action__optimistic()
     {
         Task? taskPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task> onTimeout = (_, _, task) => { taskPassedToOnTimeout = task; };
+        Action<Context, TimeSpan, Task> onTimeout = (_, _, task) => taskPassedToOnTimeout = task;
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
         var policy = Policy.Timeout(timeout, TimeoutStrategy.Optimistic, onTimeout);
@@ -785,7 +785,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
         Exception? exceptionPassedToOnTimeout = null;
-        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, exception) => { exceptionPassedToOnTimeout = exception; };
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, exception) => exceptionPassedToOnTimeout = exception;
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeout);
         var userCancellationToken = CancellationToken;

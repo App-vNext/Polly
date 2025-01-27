@@ -2,12 +2,9 @@
 
 public class ReadOnlyPolicyRegistrySpecs
 {
-    private readonly IPolicyRegistry<string> _registry;
+    private readonly PolicyRegistry _registry = [];
 
     private IReadOnlyPolicyRegistry<string> ReadOnlyRegistry => _registry;
-
-    public ReadOnlyPolicyRegistrySpecs() =>
-        _registry = new PolicyRegistry();
 
     #region Tests for retrieving policy
 

@@ -248,7 +248,7 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
         TimeSpan timeout = TimeSpan.FromSeconds(1);
         var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic);
 
-        TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+        TimeSpan tolerance = TimeSpan.FromSeconds(3);
 
         Stopwatch watch = Stopwatch.StartNew();
 
@@ -308,7 +308,7 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
         var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Optimistic);
         var userCancellationToken = CancellationToken;
 
-        TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+        TimeSpan tolerance = TimeSpan.FromSeconds(3);
 
         Stopwatch watch = Stopwatch.StartNew();
         await Should.ThrowAsync<TimeoutRejectedException>(() => policy.ExecuteAsync(async ct =>
@@ -561,7 +561,7 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
             return TaskHelper.EmptyTask;
         };
 
-        TimeSpan shimTimespan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+        TimeSpan shimTimespan = TimeSpan.FromSeconds(1);
         TimeSpan thriceShimTimeSpan = shimTimespan + shimTimespan + shimTimespan;
         var policy = Policy.TimeoutAsync<ResultPrimitive>(shimTimespan, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 

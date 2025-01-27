@@ -320,7 +320,7 @@ public class PolicyWrapSpecs
     {
         Policy<int> retry = Policy<int>.Handle<Exception>().Retry();
         Policy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
-        Action config = () => Policy.Wrap<int>(retry, breaker);
+        Action config = () => Policy.Wrap(retry, breaker);
 
         Should.NotThrow(config);
     }
@@ -456,7 +456,7 @@ public class PolicyWrapSpecs
             .CircuitBreaker(1, TimeSpan.Zero);
         PolicyWrap wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
 
-        PolicyResult executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new ArgumentNullException(); });
+        PolicyResult executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => throw new ArgumentNullException());
 
         executeAndCaptureResultOnPolicyWrap.Outcome.ShouldBe(OutcomeType.Failure);
         executeAndCaptureResultOnPolicyWrap.FinalException.ShouldBeOfType<ArgumentNullException>();
@@ -474,7 +474,7 @@ public class PolicyWrapSpecs
             .CircuitBreaker(1, TimeSpan.Zero);
         PolicyWrap wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
 
-        PolicyResult executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new DivideByZeroException(); });
+        PolicyResult executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => throw new DivideByZeroException());
 
         executeAndCaptureResultOnPolicyWrap.Outcome.ShouldBe(OutcomeType.Failure);
         executeAndCaptureResultOnPolicyWrap.FinalException.ShouldBeOfType<DivideByZeroException>();
@@ -492,7 +492,7 @@ public class PolicyWrapSpecs
             .CircuitBreaker(1, TimeSpan.Zero);
         PolicyWrap<ResultPrimitive> wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
 
-        PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new ArgumentNullException(); });
+        PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => throw new ArgumentNullException());
 
         executeAndCaptureResultOnPolicyWrap.Outcome.ShouldBe(OutcomeType.Failure);
         executeAndCaptureResultOnPolicyWrap.FinalException.ShouldBeOfType<ArgumentNullException>();
@@ -511,7 +511,7 @@ public class PolicyWrapSpecs
             .CircuitBreaker(1, TimeSpan.Zero);
         PolicyWrap<ResultPrimitive> wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
 
-        PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new DivideByZeroException(); });
+        PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => throw new DivideByZeroException());
 
         executeAndCaptureResultOnPolicyWrap.Outcome.ShouldBe(OutcomeType.Failure);
         executeAndCaptureResultOnPolicyWrap.FinalException.ShouldBeOfType<DivideByZeroException>();

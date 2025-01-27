@@ -391,7 +391,7 @@ public class RetryTResultSpecs
     {
         bool retryInvoked = false;
 
-        Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { retryInvoked = true; };
+        Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => retryInvoked = true;
 
         RetryPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -407,7 +407,7 @@ public class RetryTResultSpecs
     {
         bool retryInvoked = false;
 
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, _) => { retryInvoked = true; };
+        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, _) => retryInvoked = true;
 
         RetryPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)

@@ -7,7 +7,7 @@ public class PolicyTResultKeyAsyncSpecs
     [Fact]
     public void Should_be_able_fluently_to_configure_the_policy_key()
     {
-        var policy = Policy.HandleResult<int>(0).RetryAsync().WithPolicyKey(Guid.NewGuid().ToString());
+        var policy = Policy.HandleResult(0).RetryAsync().WithPolicyKey(Guid.NewGuid().ToString());
 
         policy.ShouldBeAssignableTo<AsyncPolicy<int>>();
     }
@@ -15,7 +15,7 @@ public class PolicyTResultKeyAsyncSpecs
     [Fact]
     public void Should_be_able_fluently_to_configure_the_policy_key_via_interface()
     {
-        IAsyncPolicy<int> policyAsInterface = Policy.HandleResult<int>(0).RetryAsync();
+        IAsyncPolicy<int> policyAsInterface = Policy.HandleResult(0).RetryAsync();
         var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
 
         policyAsInterfaceAfterWithPolicyKey.ShouldBeAssignableTo<IAsyncPolicy<int>>();
@@ -112,7 +112,7 @@ public class PolicyTResultKeyAsyncSpecs
         string policyKey = Guid.NewGuid().ToString();
 
         string? policyKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => policyKeySetOnExecutionContext = context.PolicyKey;
         var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry).WithPolicyKey(policyKey);
 
         await retry.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
@@ -126,7 +126,7 @@ public class PolicyTResultKeyAsyncSpecs
         string operationKey = "SomeKey";
 
         string? operationKeySetOnContext = null;
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
+        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => operationKeySetOnContext = context.OperationKey;
         var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry);
 
         bool firstExecution = true;

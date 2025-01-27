@@ -52,7 +52,7 @@ public static class PolicyExtensions
     public static void RaiseExceptionAndOrCancellation<TException>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute)
         where TException : Exception, new()
         =>
-        policy.RaiseExceptionAndOrCancellation<TException>(scenario, cancellationTokenSource, onExecute, _ => new TException());
+        policy.RaiseExceptionAndOrCancellation(scenario, cancellationTokenSource, onExecute, _ => new TException());
 
     public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, TResult successResult)
         where TException : Exception, new()

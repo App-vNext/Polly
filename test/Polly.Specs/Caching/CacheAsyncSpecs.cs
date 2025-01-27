@@ -313,7 +313,7 @@ public class CacheAsyncSpecs : IDisposable
         Action action = () => Policy.WrapAsync(policies);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("policies");
 
-        action = () => Policy.WrapAsync<int>(policiesGeneric);
+        action = () => Policy.WrapAsync(policiesGeneric);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("policies");
     }
     #endregion
