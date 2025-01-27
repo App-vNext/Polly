@@ -8,7 +8,6 @@
     <Threshold>75,60,70</Threshold>
     <Include>[Polly]*</Include>
     <IncludePollyUsings>true</IncludePollyUsings>
-    <NoWarn>$(NoWarn);CA1030</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
