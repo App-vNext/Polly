@@ -57,8 +57,10 @@ public class AsyncBulkheadPolicy : AsyncPolicy, IBulkheadPolicy
             cancellationToken);
     }
 
+#pragma warning disable CA1063
     /// <inheritdoc/>
     public void Dispose()
+#pragma warning restore CA1063
     {
         _maxParallelizationSemaphore.Dispose();
         _maxQueuedActionsSemaphore.Dispose();
@@ -123,8 +125,10 @@ public class AsyncBulkheadPolicy<TResult> : AsyncPolicy<TResult>, IBulkheadPolic
     /// </summary>
     public int QueueAvailableCount => Math.Min(_maxQueuedActionsSemaphore.CurrentCount, _maxQueueingActions);
 
+#pragma warning disable CA1063
     /// <inheritdoc/>
     public void Dispose()
+#pragma warning restore CA1063
     {
         _maxParallelizationSemaphore.Dispose();
         _maxQueuedActionsSemaphore.Dispose();
