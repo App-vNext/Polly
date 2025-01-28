@@ -412,11 +412,11 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution.
-        Should.Throw<BrokenCircuitException>(() => breaker.BreakerController.OnActionPreExecute());
+        Should.Throw<BrokenCircuitException>(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
     }
 
@@ -442,11 +442,11 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution.
-        Should.Throw<BrokenCircuitException>(() => breaker.BreakerController.OnActionPreExecute());
+        Should.Throw<BrokenCircuitException>(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // Allow another time window to pass (breaker should still be HalfOpen).
@@ -454,7 +454,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should now permit another trial execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
     }
 
@@ -1010,7 +1010,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     {
         Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { };
         bool onResetCalled = false;
-        Action onReset = () => { onResetCalled = true; };
+        Action onReset = () => onResetCalled = true;
 
         var breaker = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -1315,8 +1315,8 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     {
         string? contextValue = null;
 
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
-        Action<Context> onReset = context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => contextValue = context.ContainsKey("key") ? context["key"].ToString() : null;
+        Action<Context> onReset = context => contextValue = context.ContainsKey("key") ? context["key"].ToString() : null;
 
         var breaker = Policy
             .HandleResult(ResultPrimitive.Fault)

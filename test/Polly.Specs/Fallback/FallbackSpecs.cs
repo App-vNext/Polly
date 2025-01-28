@@ -1001,10 +1001,7 @@ public class FallbackSpecs
     {
         Exception? fallbackException = null;
 
-        Action<Exception, Context, CancellationToken> fallbackAction = (ex, _, _) =>
-        {
-            fallbackException = ex;
-        };
+        Action<Exception, Context, CancellationToken> fallbackAction = (ex, _, _) => fallbackException = ex;
 
         Action<Exception, Context> onFallback = (_, _) => { };
 
@@ -1025,7 +1022,7 @@ public class FallbackSpecs
     public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
     {
         bool fallbackActionExecuted = false;
-        Action fallbackAction = () => { fallbackActionExecuted = true; };
+        Action fallbackAction = () => fallbackActionExecuted = true;
 
         FallbackPolicy policy = Policy
             .Handle<DivideByZeroException>()
@@ -1054,7 +1051,7 @@ public class FallbackSpecs
     public void Should_execute_fallback_when_faulting_and_cancellationToken_not_cancelled()
     {
         bool fallbackActionExecuted = false;
-        Action fallbackAction = () => { fallbackActionExecuted = true; };
+        Action fallbackAction = () => fallbackActionExecuted = true;
 
         FallbackPolicy policy = Policy
             .Handle<DivideByZeroException>()
@@ -1083,7 +1080,7 @@ public class FallbackSpecs
     public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
     {
         bool fallbackActionExecuted = false;
-        Action fallbackAction = () => { fallbackActionExecuted = true; };
+        Action fallbackAction = () => fallbackActionExecuted = true;
 
         FallbackPolicy policy = Policy
             .Handle<DivideByZeroException>()

@@ -801,7 +801,7 @@ public class CacheAsyncSpecs : IDisposable
         const string ValueToReturnFromExecution = "valueToReturnFromExecution";
         const string OperationKey = "SomeOperationKey";
 
-        Action<Context, string, Exception> onError = (_, _, exc) => { exceptionFromCacheProvider = exc; };
+        Action<Context, string, Exception> onError = (_, _, exc) => exceptionFromCacheProvider = exc;
 
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
 
@@ -835,7 +835,7 @@ public class CacheAsyncSpecs : IDisposable
         const string ValueToReturn = "valueToReturn";
         const string OperationKey = "SomeOperationKey";
 
-        Action<Context, string, Exception> onError = (_, _, exc) => { exceptionFromCacheProvider = exc; };
+        Action<Context, string, Exception> onError = (_, _, exc) => exceptionFromCacheProvider = exc;
 
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
 
@@ -868,7 +868,11 @@ public class CacheAsyncSpecs : IDisposable
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
-        Action<Context, string> onCacheAction = (ctx, key) => { contextPassedToDelegate = ctx; keyPassedToDelegate = key; };
+        Action<Context, string> onCacheAction = (ctx, key) =>
+        {
+            contextPassedToDelegate = ctx;
+            keyPassedToDelegate = key;
+        };
 
         var stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, onCacheAction, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
@@ -967,7 +971,7 @@ public class CacheAsyncSpecs : IDisposable
         Action<Context, string> emptyDelegate = (_, _) => { };
 
         bool onCacheMissExecuted = false;
-        Action<Context, string> onCacheMiss = (_, _) => { onCacheMissExecuted = true; };
+        Action<Context, string> onCacheMiss = (_, _) => onCacheMissExecuted = true;
 
         var cache = Policy.CacheAsync(new StubCacheProvider(), new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, emptyDelegate, noErrorHandling, noErrorHandling);
 

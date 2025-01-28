@@ -823,7 +823,7 @@ public class CacheSpecs : IDisposable
         const string ValueToReturn = "valueToReturn";
         const string OperationKey = "SomeOperationKey";
 
-        Action<Context, string, Exception> onError = (_, _, exc) => { exceptionFromCacheProvider = exc; };
+        Action<Context, string, Exception> onError = (_, _, exc) => exceptionFromCacheProvider = exc;
 
         CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
 
@@ -857,7 +857,11 @@ public class CacheSpecs : IDisposable
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
-        Action<Context, string> onCacheAction = (ctx, key) => { contextPassedToDelegate = ctx; keyPassedToDelegate = key; };
+        Action<Context, string> onCacheAction = (ctx, key) =>
+        {
+            contextPassedToDelegate = ctx;
+            keyPassedToDelegate = key;
+        };
 
         var stubCacheProvider = new StubCacheProvider();
         CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, onCacheAction, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
@@ -957,7 +961,7 @@ public class CacheSpecs : IDisposable
         Action<Context, string> emptyDelegate = (_, _) => { };
 
         bool onCacheMissExecuted = false;
-        Action<Context, string> onCacheMiss = (_, _) => { onCacheMissExecuted = true; };
+        Action<Context, string> onCacheMiss = (_, _) => onCacheMissExecuted = true;
 
         CachePolicy cache = Policy.Cache(new StubCacheProvider(), new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, emptyDelegate, noErrorHandling, noErrorHandling);
 

@@ -405,7 +405,12 @@ public class FallbackTResultAsyncSpecs
         bool onFallbackExecuted = false;
 
         Func<Context, CancellationToken, Task<ResultPrimitive>> fallbackAction = (_, _) => Task.FromResult(ResultPrimitive.Substitute);
-        Func<DelegateResult<ResultPrimitive>, Context, Task> onFallbackAsync = (_, ctx) => { onFallbackExecuted = true; capturedContext = ctx; return TaskHelper.EmptyTask; };
+        Func<DelegateResult<ResultPrimitive>, Context, Task> onFallbackAsync = (_, ctx) =>
+        {
+            onFallbackExecuted = true;
+            capturedContext = ctx;
+            return TaskHelper.EmptyTask;
+        };
 
         var fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)
