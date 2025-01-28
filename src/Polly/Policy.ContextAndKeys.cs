@@ -37,7 +37,9 @@ public abstract partial class Policy
     }
 }
 
+#pragma warning disable CA1724
 public abstract partial class Policy<TResult>
+#pragma warning restore CA1724
 {
     /// <summary>
     /// Sets the PolicyKey for this <see cref="Policy{TResult}"/> instance.
