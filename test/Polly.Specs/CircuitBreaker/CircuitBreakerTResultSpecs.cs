@@ -411,11 +411,11 @@ public class CircuitBreakerTResultSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution.
-        Should.Throw<BrokenCircuitException>(() => breaker.BreakerController.OnActionPreExecute());
+        Should.Throw<BrokenCircuitException>(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
     }
 
@@ -441,11 +441,11 @@ public class CircuitBreakerTResultSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution.
-        Should.Throw<BrokenCircuitException>(() => breaker.BreakerController.OnActionPreExecute());
+        Should.Throw<BrokenCircuitException>(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // Allow another time window to pass (breaker should still be HalfOpen).
@@ -453,7 +453,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should now permit another trial execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
     }
 
@@ -816,7 +816,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
     public void Should_call_onbreak_when_breaking_circuit_automatically()
     {
         bool onBreakCalled = false;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled = true;
         Action onReset = () => { };
 
         CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -840,7 +840,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
     public void Should_call_onbreak_when_breaking_circuit_manually()
     {
         bool onBreakCalled = false;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled = true;
         Action onReset = () => { };
 
         CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -857,7 +857,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
     public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_placed_through_open_circuit()
     {
         int onBreakCalled = 0;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled++;
         Action onReset = () => { };
 
         CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -887,7 +887,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
     public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_call_failure_which_arrives_on_open_state_though_started_on_closed_state()
     {
         int onBreakCalled = 0;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled++;
         Action onReset = () => { };
 
         CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -955,8 +955,8 @@ public class CircuitBreakerTResultSpecs : IDisposable
     {
         int onBreakCalled = 0;
         int onResetCalled = 0;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-        Action onReset = () => { onResetCalled++; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled++;
+        Action onReset = () => onResetCalled++;
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
@@ -1070,9 +1070,9 @@ public class CircuitBreakerTResultSpecs : IDisposable
         int onBreakCalled = 0;
         int onResetCalled = 0;
         int onHalfOpenCalled = 0;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-        Action onReset = () => { onResetCalled++; };
-        Action onHalfOpen = () => { onHalfOpenCalled++; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled++;
+        Action onReset = () => onResetCalled++;
+        Action onHalfOpen = () => onHalfOpenCalled++;
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
@@ -1111,8 +1111,8 @@ public class CircuitBreakerTResultSpecs : IDisposable
     {
         int onBreakCalled = 0;
         int onResetCalled = 0;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-        Action onReset = () => { onResetCalled++; };
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => onBreakCalled++;
+        Action onReset = () => onResetCalled++;
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;

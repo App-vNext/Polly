@@ -1272,11 +1272,11 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution. (tho still in half-open condition).
-        Should.Throw<BrokenCircuitException>(() => breaker.BreakerController.OnActionPreExecute());
+        Should.Throw<BrokenCircuitException>(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
     }
 
@@ -1306,11 +1306,11 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution. (tho still in half-open condition).
-        Should.Throw<BrokenCircuitException>(() => breaker.BreakerController.OnActionPreExecute());
+        Should.Throw<BrokenCircuitException>(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // Allow another time window to pass (breaker should still be HalfOpen).
@@ -1318,7 +1318,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should now permit another trial execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
     }
 
@@ -1916,7 +1916,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     {
         Action<Exception, TimeSpan> onBreak = (_, _) => { };
         bool onResetCalled = false;
-        Action onReset = () => { onResetCalled = true; };
+        Action onReset = () => onResetCalled = true;
 
         var durationOfBreak = TimeSpan.FromSeconds(30);
         var breaker = Policy
@@ -2049,7 +2049,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         int onBreakCalled = 0;
         int onResetCalled = 0;
         Action<Exception, TimeSpan> onBreak = (_, _) => onBreakCalled++;
-        Action onReset = () => { onResetCalled++; };
+        Action onReset = () => onResetCalled++;
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
@@ -2081,7 +2081,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     {
         Exception? passedException = null;
 
-        Action<Exception, TimeSpan, Context> onBreak = (exception, _, _) => { passedException = exception; };
+        Action<Exception, TimeSpan, Context> onBreak = (exception, _, _) => passedException = exception;
         Action<Context> onReset = _ => { };
 
         var breaker = Policy
@@ -2152,7 +2152,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     {
         List<CircuitState> transitionedStates = [];
 
-        Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => { transitionedStates.Add(state); };
+        Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => transitionedStates.Add(state);
         Action<Context> onReset = _ => { };
         Action onHalfOpen = () => { };
 
@@ -2290,7 +2290,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_failureThreshold_is_more_than_one()
     {
-        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => _ = timespan;
         Action<Context> onReset = _ => { };
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -2312,7 +2312,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_samplingDuration_is_less_than_resolutionOfCircuit()
     {
-        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => _ = timespan;
         Action<Context> onReset = _ => { };
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -2334,7 +2334,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_minimumThroughput_is_less_or_equals_than_one()
     {
-        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => _ = timespan;
         Action<Context> onReset = _ => { };
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -2356,7 +2356,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_durationOfBreak_is_negative_timespan()
     {
-        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => _ = timespan;
         Action<Context> onReset = _ => { };
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -2378,7 +2378,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_onReset_is_null()
     {
-        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => _ = timespan;
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
@@ -2399,7 +2399,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_onHalfOpen_is_null()
     {
-        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { _ = timespan; };
+        Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => _ = timespan;
         Action<Context> onReset = _ => { };
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -2428,7 +2428,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     {
         IDictionary<string, object>? contextData = null;
 
-        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
+        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => contextData = context;
         Action<Context> onReset = _ => { };
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -2471,7 +2471,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         IDictionary<string, object>? contextData = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, _) => { };
-        Action<Context> onReset = context => { contextData = context; };
+        Action<Context> onReset = context => contextData = context;
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;
@@ -2518,7 +2518,7 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
     {
         IDictionary<string, object> contextData = CreateDictionary("key1", "value1", "key2", "value2");
 
-        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
+        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => contextData = context;
         Action<Context> onReset = _ => { };
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -2556,9 +2556,9 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         string? contextValue = null;
 
         Action<Exception, TimeSpan, Context> onBreak =
-            (_, _, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
+            (_, _, context) => contextValue = context.ContainsKey("key") ? context["key"].ToString() : null;
         Action<Context> onReset =
-            context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
+            context => contextValue = context.ContainsKey("key") ? context["key"].ToString() : null;
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;

@@ -83,7 +83,7 @@ public class BulkheadTResultSpecs(ITestOutputHelper testOutputHelper) : Bulkhead
         Context contextPassedToExecute = new Context(operationKey);
 
         Context? contextPassedToOnRejected = null;
-        Action<Context> onRejected = ctx => { contextPassedToOnRejected = ctx; };
+        Action<Context> onRejected = ctx => contextPassedToOnRejected = ctx;
 
         using BulkheadPolicy<int> bulkhead = Policy.Bulkhead<int>(1, onRejected);
         TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();

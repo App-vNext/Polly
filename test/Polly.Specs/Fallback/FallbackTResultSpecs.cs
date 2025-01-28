@@ -399,7 +399,7 @@ public class FallbackTResultSpecs
 
         IDictionary<string, object>? contextData = null;
 
-        Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, ctx) => { contextData = ctx; };
+        Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, ctx) => contextData = ctx;
 
         FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -421,7 +421,7 @@ public class FallbackTResultSpecs
 
         IDictionary<string, object>? contextData = null;
 
-        Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, ctx) => { contextData = ctx; };
+        Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, ctx) => contextData = ctx;
 
         FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -443,7 +443,7 @@ public class FallbackTResultSpecs
 
         IDictionary<ResultPrimitive, object> contextData = new Dictionary<ResultPrimitive, object>();
 
-        Action<DelegateResult<ResultPrimitive>, Context> onFallback = (dr, ctx) => { contextData[dr.Result] = ctx["key"]; };
+        Action<DelegateResult<ResultPrimitive>, Context> onFallback = (dr, ctx) => contextData[dr.Result] = ctx["key"];
 
         FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -533,7 +533,12 @@ public class FallbackTResultSpecs
         Context? capturedContext = null;
         bool fallbackExecuted = false;
 
-        Func<Context, CancellationToken, ResultPrimitive> fallbackAction = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx; return ResultPrimitive.Substitute; };
+        Func<Context, CancellationToken, ResultPrimitive> fallbackAction = (ctx, _) =>
+        {
+            fallbackExecuted = true;
+            capturedContext = ctx;
+            return ResultPrimitive.Substitute;
+        };
 
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => { };
 

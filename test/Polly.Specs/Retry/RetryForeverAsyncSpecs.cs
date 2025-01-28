@@ -134,7 +134,7 @@ public class RetryForeverAsyncSpecs
 
         var policy = Policy
             .Handle<DivideByZeroException>()
-            .RetryForeverAsync(exception => retryExceptions.Add(exception));
+            .RetryForeverAsync(retryExceptions.Add);
 
         await policy.RaiseExceptionAsync<DivideByZeroException>(3, (e, i) => e.HelpLink = "Exception #" + i);
 

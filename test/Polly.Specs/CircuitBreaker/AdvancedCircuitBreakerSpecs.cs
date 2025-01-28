@@ -1276,11 +1276,11 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution.
-        Should.Throw<BrokenCircuitException>(() => breaker.BreakerController.OnActionPreExecute());
+        Should.Throw<BrokenCircuitException>(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
     }
 
@@ -1311,11 +1311,11 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should permit first execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should reject a second execution.
-        Should.Throw<BrokenCircuitException>(() => breaker.BreakerController.OnActionPreExecute());
+        Should.Throw<BrokenCircuitException>(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // Allow another time window to pass (breaker should still be HalfOpen).
@@ -1323,7 +1323,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
 
         // OnActionPreExecute() should now permit another trial execution.
-        Should.NotThrow(() => breaker.BreakerController.OnActionPreExecute());
+        Should.NotThrow(breaker.BreakerController.OnActionPreExecute);
         breaker.CircuitState.ShouldBe(CircuitState.HalfOpen);
     }
 
@@ -2152,7 +2152,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
     {
         List<CircuitState> transitionedStates = [];
 
-        Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => { transitionedStates.Add(state); };
+        Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => transitionedStates.Add(state);
         Action<Context> onReset = _ => { };
         Action onHalfOpen = () => { };
 
@@ -2398,9 +2398,9 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         string? contextValue = null;
 
         Action<Exception, TimeSpan, Context> onBreak =
-            (_, _, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
+            (_, _, context) => contextValue = context.ContainsKey("key") ? context["key"].ToString() : null;
         Action<Context> onReset =
-            context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
+            context => contextValue = context.ContainsKey("key") ? context["key"].ToString() : null;
 
         var time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         SystemClock.UtcNow = () => time;

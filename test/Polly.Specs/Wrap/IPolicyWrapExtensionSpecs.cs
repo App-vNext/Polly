@@ -186,7 +186,7 @@ public class IPolicyWrapExtensionSpecs
         Policy policyC = Policy.NoOp();
         PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-        Should.Throw<InvalidOperationException>(() => wrap.GetPolicy<NoOpPolicy>());
+        Should.Throw<InvalidOperationException>(wrap.GetPolicy<NoOpPolicy>);
     }
 
     [Fact]
