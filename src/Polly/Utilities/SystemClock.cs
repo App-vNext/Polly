@@ -8,11 +8,11 @@ namespace Polly.Utilities;
 /// </summary>
 public static class SystemClock
 {
+#pragma warning disable S2223 // Non-constant static fields should not be visible
     /// <summary>
     /// Allows the setting of a custom Thread.Sleep implementation for testing.
     /// By default this will use the <see cref="CancellationToken"/>'s <see cref="WaitHandle"/>.
     /// </summary>
-#pragma warning disable S2223 // Non-constant static fields should not be visible
     public static Action<TimeSpan, CancellationToken> Sleep = (timeSpan, cancellationToken) =>
 #pragma warning restore S2223 // Non-constant static fields should not be visible
     {
@@ -22,35 +22,35 @@ public static class SystemClock
         }
     };
 
+#pragma warning disable S2223 // Non-constant static fields should not be visible
     /// <summary>
     /// Allows the setting of a custom async Sleep implementation for testing.
     /// By default this will be a call to <see cref="Task.Delay(TimeSpan)"/> taking a <see cref="CancellationToken"/>.
     /// </summary>
-#pragma warning disable S2223 // Non-constant static fields should not be visible
     public static Func<TimeSpan, CancellationToken, Task> SleepAsync = Task.Delay;
 #pragma warning restore S2223 // Non-constant static fields should not be visible
 
+#pragma warning disable S2223 // Non-constant static fields should not be visible
     /// <summary>
     /// Allows the setting of a custom DateTime.UtcNow implementation for testing.
     /// By default this will be a call to <see cref="DateTime.UtcNow"/>.
     /// </summary>
-#pragma warning disable S2223 // Non-constant static fields should not be visible
     public static Func<DateTime> UtcNow = () => DateTime.UtcNow;
 #pragma warning restore S2223 // Non-constant static fields should not be visible
 
+#pragma warning disable S2223 // Non-constant static fields should not be visible
     /// <summary>
     /// Allows the setting of a custom DateTimeOffset.UtcNow implementation for testing.
     /// By default this will be a call to <see cref="DateTime.UtcNow"/>.
     /// </summary>
-#pragma warning disable S2223 // Non-constant static fields should not be visible
     public static Func<DateTimeOffset> DateTimeOffsetUtcNow = () => DateTimeOffset.UtcNow;
 #pragma warning restore S2223 // Non-constant static fields should not be visible
 
+#pragma warning disable S2223 // Non-constant static fields should not be visible
     /// <summary>
     /// Allows the setting of a custom method for cancelling tokens after a timespan, for use in testing.
     /// By default this will be a call to CancellationTokenSource.CancelAfter(timespan).
     /// </summary>
-#pragma warning disable S2223 // Non-constant static fields should not be visible
     public static Action<CancellationTokenSource, TimeSpan> CancelTokenAfter = (tokenSource, timespan) => tokenSource.CancelAfter(timespan);
 #pragma warning restore S2223 // Non-constant static fields should not be visible
 
