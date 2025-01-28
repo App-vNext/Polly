@@ -6,11 +6,13 @@ namespace Polly.Caching;
 /// </summary>
 public abstract class NonSlidingTtl : ITtlStrategy
 {
+#pragma warning disable CA1051 // Do not declare visible instance fields
 #pragma warning disable IDE1006
     /// <summary>
     /// The absolute expiration time for cache items, represented by this strategy.
     /// </summary>
     protected readonly DateTimeOffset absoluteExpirationTime;
+#pragma warning restore CA1051 // Do not declare visible instance fields
 #pragma warning restore IDE1006
 
     /// <summary>

@@ -2,17 +2,19 @@
 
 public abstract partial class PolicyBase
 {
+#pragma warning disable CA1051 // Do not declare visible instance fields
 #pragma warning disable IDE1006
     /// <summary>
     /// A key intended to be unique to each <see cref="IsPolicy"/> instance.
     /// </summary>
     protected string policyKeyInternal;
+#pragma warning restore CA1051 // Do not declare visible instance fields
 #pragma warning restore IDE1006
 
     /// <summary>
     /// Gets a key intended to be unique to each <see cref="IsPolicy"/> instance, which is passed with executions as the <see cref="Context.PolicyKey"/> property.
     /// </summary>
-    public string PolicyKey => policyKeyInternal ?? (policyKeyInternal = GetType().Name + "-" + KeyHelper.GuidPart());
+    public string PolicyKey => policyKeyInternal ??= GetType().Name + "-" + KeyHelper.GuidPart();
 
     internal static ArgumentException PolicyKeyMustBeImmutableException(string policyKeyParamName) => new("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.", policyKeyParamName);
 
