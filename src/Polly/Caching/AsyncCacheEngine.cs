@@ -32,7 +32,9 @@ internal static class AsyncCacheEngine
         {
             (cacheHit, valueFromCache) = await cacheProvider.TryGetAsync(cacheKey, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
         }
+#pragma warning disable CA1031
         catch (Exception ex)
+#pragma warning restore CA1031
         {
             cacheHit = false;
             valueFromCache = default;
@@ -59,7 +61,9 @@ internal static class AsyncCacheEngine
                 await cacheProvider.PutAsync(cacheKey, result, ttl, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
                 onCachePut(context, cacheKey);
             }
+#pragma warning disable CA1031
             catch (Exception ex)
+#pragma warning restore CA1031
             {
                 onCachePutError?.Invoke(context, cacheKey, ex);
             }
