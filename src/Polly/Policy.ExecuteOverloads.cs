@@ -242,7 +242,9 @@ public abstract partial class Policy : ISyncPolicy
             Execute(action, context, cancellationToken);
             return PolicyResult.Successful(context);
         }
+#pragma warning disable CA1031
         catch (Exception exception)
+#pragma warning restore CA1031
         {
             return PolicyResult.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
         }
@@ -327,7 +329,9 @@ public abstract partial class Policy : ISyncPolicy
         {
             return PolicyResult<TResult>.Successful(Execute(action, context, cancellationToken), context);
         }
+#pragma warning disable CA1031
         catch (Exception exception)
+#pragma warning restore CA1031
         {
             return PolicyResult<TResult>.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
         }

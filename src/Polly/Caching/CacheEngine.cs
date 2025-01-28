@@ -31,7 +31,9 @@ internal static class CacheEngine
         {
             (cacheHit, valueFromCache) = cacheProvider.TryGet(cacheKey);
         }
+#pragma warning disable CA1031
         catch (Exception ex)
+#pragma warning restore CA1031
         {
             cacheHit = false;
             valueFromCache = default;
@@ -58,7 +60,9 @@ internal static class CacheEngine
                 cacheProvider.Put(cacheKey, result, ttl);
                 onCachePut(context, cacheKey);
             }
+#pragma warning disable CA1031
             catch (Exception ex)
+#pragma warning restore CA1031
             {
                 onCachePutError?.Invoke(context, cacheKey, ex);
             }
