@@ -7,8 +7,7 @@
     <ProjectType>Library</ProjectType>
     <MutationScore>70</MutationScore>
     <IncludePollyUsings>true</IncludePollyUsings>
-    <NoWarn>$(NoWarn);CA1063</NoWarn>
-    <!--Public API Analyzers: We do not need to fix these as it would break compatibility with released Polly versions-->
+    <!-- We do not plan on enabling nullable annotations for Polly -->
     <NoWarn>$(NoWarn);RS0037</NoWarn>
   </PropertyGroup>
 

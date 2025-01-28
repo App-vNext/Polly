@@ -4,7 +4,9 @@ namespace Polly.Bulkhead;
 /// <summary>
 /// A bulkhead-isolation policy which can be applied to delegates.
 /// </summary>
+#pragma warning disable CA1063
 public class AsyncBulkheadPolicy : AsyncPolicy, IBulkheadPolicy
+#pragma warning restore CA1063
 {
     private readonly SemaphoreSlim _maxParallelizationSemaphore;
     private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
@@ -68,7 +70,9 @@ public class AsyncBulkheadPolicy : AsyncPolicy, IBulkheadPolicy
 /// A bulkhead-isolation policy which can be applied to delegates.
 /// </summary>
 /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
+#pragma warning disable CA1063
 public class AsyncBulkheadPolicy<TResult> : AsyncPolicy<TResult>, IBulkheadPolicy<TResult>
+#pragma warning restore CA1063
 {
     private readonly SemaphoreSlim _maxParallelizationSemaphore;
     private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
