@@ -1,7 +1,9 @@
 #nullable enable
 namespace Polly;
 
+#pragma warning disable CA1724
 public partial class Policy
+#pragma warning restore CA1724
 {
     /// <summary>
     /// <para>Builds a bulkhead isolation <see cref="Policy"/>, which limits the maximum concurrency of actions executed through the policy.  Imposing a maximum concurrency limits the potential of governed actions, when faulting, to bring down the system.</para>

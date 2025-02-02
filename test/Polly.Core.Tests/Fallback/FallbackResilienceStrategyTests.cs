@@ -14,7 +14,7 @@ public class FallbackResilienceStrategyTests
 
     [Fact]
     public void Ctor_Ok() =>
-        Create().Should().NotBeNull();
+        Create().ShouldNotBeNull();
 
     [Fact]
     public void Handle_Result_Ok()
@@ -23,10 +23,10 @@ public class FallbackResilienceStrategyTests
         _options.OnFallback = _ => { called = true; return default; };
         SetHandler(outcome => outcome.Result == "error", () => Outcome.FromResult("success"));
 
-        Create().Execute(_ => "error").Should().Be("success");
+        Create().Execute(_ => "error").ShouldBe("success");
 
-        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments<string>);
-        called.Should().BeTrue();
+        _args.Count(v => v.Arguments is OnFallbackArguments<string>).ShouldBe(1);
+        called.ShouldBeTrue();
     }
 
     [InlineData(true)]
@@ -39,16 +39,16 @@ public class FallbackResilienceStrategyTests
         _handler = new FallbackHandler<string>(
             args =>
             {
-                args.Outcome.Result.Should().Be("ok");
-                args.Context.Should().NotBeNull();
+                args.Outcome.Result.ShouldBe("ok");
+                args.Context.ShouldNotBeNull();
                 called++;
 
                 return new ValueTask<bool>(handle);
             },
             args =>
             {
-                args.Outcome.Result.Should().Be("ok");
-                args.Context.Should().NotBeNull();
+                args.Outcome.Result.ShouldBe("ok");
+                args.Context.ShouldNotBeNull();
                 called++;
                 return Outcome.FromResultAsValueTask("fallback");
             });
@@ -57,13 +57,13 @@ public class FallbackResilienceStrategyTests
 
         if (handle)
         {
-            result.Should().Be("fallback");
-            called.Should().Be(2);
+            result.ShouldBe("fallback");
+            called.ShouldBe(2);
         }
         else
         {
-            result.Should().Be("ok");
-            called.Should().Be(1);
+            result.ShouldBe("ok");
+            called.ShouldBe(1);
         }
     }
 
@@ -71,7 +71,7 @@ public class FallbackResilienceStrategyTests
     public void Handle_Result_FallbackActionThrows()
     {
         SetHandler(_ => true, () => throw new InvalidOperationException());
-        Create().Invoking(s => s.Execute(_ => "dummy")).Should().Throw<InvalidOperationException>();
+        Should.Throw<InvalidOperationException>(() => Create().Execute(_ => "dummy"));
     }
 
     [Fact]
@@ -81,10 +81,10 @@ public class FallbackResilienceStrategyTests
         _options.OnFallback = _ => { called = true; return default; };
 
         SetHandler(outcome => outcome.Exception is InvalidOperationException, () => Outcome.FromResult("secondary"));
-        Create().Execute<string>(_ => throw new InvalidOperationException()).Should().Be("secondary");
+        Create().Execute<string>(_ => throw new InvalidOperationException()).ShouldBe("secondary");
 
-        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments<string>);
-        called.Should().BeTrue();
+        _args.Count(v => v.Arguments is OnFallbackArguments<string>).ShouldBe(1);
+        called.ShouldBeTrue();
     }
 
     [Fact]
@@ -96,11 +96,11 @@ public class FallbackResilienceStrategyTests
         _options.OnFallback = _ => { called = true; return default; };
         SetHandler(outcome => outcome.Exception is InvalidOperationException, () => { fallbackActionCalled = true; return Outcome.FromResult("secondary"); });
 
-        Create().Invoking(s => s.Execute<string>(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
+        Should.Throw<ArgumentException>(() => Create().Execute<string>(_ => throw new ArgumentException()));
 
-        _args.Should().BeEmpty();
-        called.Should().BeFalse();
-        fallbackActionCalled.Should().BeFalse();
+        _args.ShouldBeEmpty();
+        called.ShouldBeFalse();
+        fallbackActionCalled.ShouldBeFalse();
     }
 
     [Fact]
@@ -112,10 +112,10 @@ public class FallbackResilienceStrategyTests
         _options.OnFallback = _ => { called = true; return default; };
         SetHandler(outcome => false, () => Outcome.FromResult("secondary"));
 
-        Create().Execute(_ => "primary").Should().Be("primary");
-        _args.Should().BeEmpty();
-        called.Should().BeFalse();
-        fallbackActionCalled.Should().BeFalse();
+        Create().Execute(_ => "primary").ShouldBe("primary");
+        _args.ShouldBeEmpty();
+        called.ShouldBeFalse();
+        fallbackActionCalled.ShouldBeFalse();
     }
 
     private void SetHandler(

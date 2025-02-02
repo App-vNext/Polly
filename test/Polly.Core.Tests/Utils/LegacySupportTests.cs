@@ -11,7 +11,7 @@ public class LegacySupportTests
 
         resilienceProperties.SetProperties(newProps, out var oldProperties2);
 
-        resilienceProperties.Options.Should().BeSameAs(newProps);
-        oldProperties2.Should().BeSameAs(oldProps);
+        resilienceProperties.Options.ShouldBeSameAs(newProps);
+        oldProperties2.ShouldBeSameAs(oldProps);
     }
 }

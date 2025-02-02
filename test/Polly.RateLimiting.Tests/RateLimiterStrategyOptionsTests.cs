@@ -7,10 +7,10 @@ public class RateLimiterStrategyOptionsTests
     {
         var options = new RateLimiterStrategyOptions();
 
-        options.RateLimiter.Should().BeNull();
-        options.OnRejected.Should().BeNull();
-        options.DefaultRateLimiterOptions.PermitLimit.Should().Be(1000);
-        options.DefaultRateLimiterOptions.QueueLimit.Should().Be(0);
-        options.Name.Should().Be("RateLimiter");
+        options.RateLimiter.ShouldBeNull();
+        options.OnRejected.ShouldBeNull();
+        options.DefaultRateLimiterOptions.PermitLimit.ShouldBe(1000);
+        options.DefaultRateLimiterOptions.QueueLimit.ShouldBe(0);
+        options.Name.ShouldBe("RateLimiter");
     }
 }

@@ -167,7 +167,9 @@ public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
 
             return PolicyResult<TResult>.Successful(result, context);
         }
+#pragma warning disable CA1031
         catch (Exception exception)
+#pragma warning restore CA1031
         {
             return PolicyResult<TResult>.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
         }

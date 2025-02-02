@@ -9,14 +9,14 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         const string OperationKey = "SomeOperationKey";
 
         bool onErrorCalled = false;
-        Action<Context, string, Exception> onError = (_, _, _) => { onErrorCalled = true; };
+        Action<Context, string, Exception> onError = (_, _, _) => onErrorCalled = true;
 
-        IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
 
         (bool cacheHit, object? fromCache) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken.None, false);
-        cacheHit.Should().BeFalse();
-        fromCache.Should().BeNull();
+        cacheHit.ShouldBeFalse();
+        fromCache.ShouldBeNull();
 
         ResultPrimitive result = await cache.ExecuteAsync(async _ =>
         {
@@ -24,7 +24,7 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
             return ResultPrimitive.Substitute;
         }, new Context(OperationKey));
 
-        onErrorCalled.Should().BeFalse();
+        onErrorCalled.ShouldBeFalse();
     }
 
     [Fact]
@@ -34,22 +34,22 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         const string OperationKey = "SomeOperationKey";
 
         var cancellationToken = CancellationToken.None;
-        IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object? fromCache1) = await stubCacheProvider.TryGetAsync(OperationKey, cancellationToken, false);
-        cacheHit1.Should().BeFalse();
-        fromCache1.Should().BeNull();
+        cacheHit1.ShouldBeFalse();
+        fromCache1.ShouldBeNull();
 
         (await cache.ExecuteAsync(async _ =>
         {
             await TaskHelper.EmptyTask;
             return ResultPrimitive.Substitute;
-        }, new Context(OperationKey))).Should().Be(ValueToReturn);
+        }, new Context(OperationKey))).ShouldBe(ValueToReturn);
 
         (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(OperationKey, cancellationToken, false);
-        cacheHit2.Should().BeTrue();
-        fromCache2.Should().Be(ValueToReturn);
+        cacheHit2.ShouldBeTrue();
+        fromCache2.ShouldBe(ValueToReturn);
     }
 
     public void Dispose() =>

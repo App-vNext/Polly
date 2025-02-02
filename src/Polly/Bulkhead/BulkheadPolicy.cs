@@ -4,7 +4,9 @@ namespace Polly.Bulkhead;
 /// <summary>
 /// A bulkhead-isolation policy which can be applied to delegates.
 /// </summary>
+#pragma warning disable CA1063
 public class BulkheadPolicy : Policy, IBulkheadPolicy
+#pragma warning restore CA1063
 {
     private readonly SemaphoreSlim _maxParallelizationSemaphore;
     private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
@@ -50,11 +52,13 @@ public class BulkheadPolicy : Policy, IBulkheadPolicy
     /// </summary>
     public int QueueAvailableCount => Math.Min(_maxQueuedActionsSemaphore.CurrentCount, _maxQueueingActions);
 
+#pragma warning disable CA1063
     /// <summary>
     /// Disposes of the <see cref="BulkheadPolicy"/>, allowing it to dispose its internal resources.
     /// <remarks>Only call <see cref="Dispose()"/> on a <see cref="BulkheadPolicy"/> after all actions executed through the policy have completed.  If actions are still executing through the policy when <see cref="Dispose()"/> is called, an <see cref="ObjectDisposedException"/> may be thrown on the actions' threads when those actions complete.</remarks>
     /// </summary>
     public void Dispose()
+#pragma warning restore CA1063
     {
         _maxParallelizationSemaphore.Dispose();
         _maxQueuedActionsSemaphore.Dispose();
@@ -66,7 +70,9 @@ public class BulkheadPolicy : Policy, IBulkheadPolicy
 /// A bulkhead-isolation policy which can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
 /// </summary>
 /// <typeparam name="TResult">The type of the result.</typeparam>
+#pragma warning disable CA1063
 public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
+#pragma warning restore CA1063
 {
     private readonly SemaphoreSlim _maxParallelizationSemaphore;
     private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
@@ -111,11 +117,13 @@ public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
     /// </summary>
     public int QueueAvailableCount => Math.Min(_maxQueuedActionsSemaphore.CurrentCount, _maxQueueingActions);
 
+#pragma warning disable CA1063
     /// <summary>
     /// Disposes of the <see cref="BulkheadPolicy"/>, allowing it to dispose its internal resources.
     /// <remarks>Only call <see cref="Dispose()"/> on a <see cref="BulkheadPolicy"/> after all actions executed through the policy have completed.  If actions are still executing through the policy when <see cref="Dispose()"/> is called, an <see cref="ObjectDisposedException"/> may be thrown on the actions' threads when those actions complete.</remarks>
     /// </summary>
     public void Dispose()
+#pragma warning restore CA1063
     {
         _maxParallelizationSemaphore.Dispose();
         _maxQueuedActionsSemaphore.Dispose();

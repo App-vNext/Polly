@@ -8,11 +8,11 @@ public class LockTimeoutExceptionTests
         const string Dummy = "dummy";
         var exception = new InvalidOperationException();
 
-        new LockTimeoutException().Message.Should().Be("Timeout waiting for lock");
-        new LockTimeoutException(Dummy).Message.Should().Be(Dummy);
+        new LockTimeoutException().Message.ShouldBe("Timeout waiting for lock");
+        new LockTimeoutException(Dummy).Message.ShouldBe(Dummy);
 
         var rate = new LockTimeoutException(Dummy, exception);
-        rate.Message.Should().Be(Dummy);
-        rate.InnerException.Should().Be(exception);
+        rate.Message.ShouldBe(Dummy);
+        rate.InnerException.ShouldBe(exception);
     }
 }

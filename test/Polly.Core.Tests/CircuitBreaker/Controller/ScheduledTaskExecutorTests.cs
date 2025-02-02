@@ -22,7 +22,7 @@ public class ScheduledTaskExecutorTests
 
         await task;
 
-        executed.Should().BeTrue();
+        executed.ShouldBeTrue();
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class ScheduledTaskExecutorTests
             ResilienceContextPool.Shared.Get(CancellationToken),
             out var task);
 
-        await task.Invoking(async t => await task).Should().ThrowAsync<OperationCanceledException>();
+        await Should.ThrowAsync<OperationCanceledException>(() => task);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class ScheduledTaskExecutorTests
             ResilienceContextPool.Shared.Get(CancellationToken),
             out var task);
 
-        await task.Invoking(async t => await task).Should().ThrowAsync<InvalidOperationException>();
+        await Should.ThrowAsync<InvalidOperationException>(() => task);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class ScheduledTaskExecutorTests
         scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(CancellationToken), out var otherTask);
 
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
-        otherTask.Wait(50, CancellationToken).Should().BeFalse();
+        otherTask.Wait(50, CancellationToken).ShouldBeFalse();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
 
         verified.Set();
@@ -103,12 +103,10 @@ public class ScheduledTaskExecutorTests
         verified.Set();
         await task;
 
-        await otherTask.Invoking(t => otherTask).Should().ThrowAsync<OperationCanceledException>();
+        await Should.ThrowAsync<OperationCanceledException>(() => otherTask);
 
-        scheduler
-            .Invoking(s => s.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(CancellationToken), out _))
-            .Should()
-            .Throw<ObjectDisposedException>();
+        Should.Throw<ObjectDisposedException>(
+            () => scheduler.ScheduleTask(() => Task.CompletedTask, ResilienceContextPool.Shared.Get(CancellationToken), out _));
     }
 
     [Fact]
@@ -130,15 +128,15 @@ public class ScheduledTaskExecutorTests
             ResilienceContextPool.Shared.Get(CancellationToken),
             out var task);
 
-        ready.WaitOne(timeout).Should().BeTrue();
+        ready.WaitOne(timeout).ShouldBeTrue();
         scheduler.Dispose();
         disposed.Set();
 
 #pragma warning disable xUnit1031
 #if NET
-        scheduler.ProcessingTask.Wait(timeout, CancellationToken).Should().BeTrue();
+        scheduler.ProcessingTask.Wait(timeout, CancellationToken).ShouldBeTrue();
 #else
-        scheduler.ProcessingTask.Wait(timeout).Should().BeTrue();
+        scheduler.ProcessingTask.Wait(timeout).ShouldBeTrue();
 #endif
 #pragma warning restore xUnit1031
     }
@@ -156,6 +154,6 @@ public class ScheduledTaskExecutorTests
 
         await scheduler.ProcessingTask;
 
-        scheduler.ProcessingTask.IsCompleted.Should().BeTrue();
+        scheduler.ProcessingTask.IsCompleted.ShouldBeTrue();
     }
 }

@@ -10,8 +10,8 @@ public class ResiliencePropertiesTests
 
         props.Set(key, 12345);
 
-        props.TryGetValue(key, out var val).Should().Be(true);
-        val.Should().Be(12345);
+        props.TryGetValue(key, out var val).ShouldBe(true);
+        val.ShouldBe(12345);
     }
 
     [Fact]
@@ -22,8 +22,8 @@ public class ResiliencePropertiesTests
 
         props.Set(key, null);
 
-        props.TryGetValue(key, out var val).Should().Be(true);
-        val.Should().Be(null);
+        props.TryGetValue(key, out var val).ShouldBe(true);
+        val.ShouldBe(null);
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class ResiliencePropertiesTests
         var key = new ResiliencePropertyKey<long>("dummy");
         var props = new ResilienceProperties();
 
-        props.TryGetValue(key, out var val).Should().Be(false);
+        props.TryGetValue(key, out var val).ShouldBe(false);
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class ResiliencePropertiesTests
 
         props.Set(key, 12345);
 
-        props.GetValue(key, default).Should().Be(12345);
+        props.GetValue(key, default).ShouldBe(12345);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class ResiliencePropertiesTests
 
         props.Set(key, null);
 
-        props.GetValue(key, "default").Should().Be(null);
+        props.GetValue(key, "default").ShouldBe(null);
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class ResiliencePropertiesTests
         var key = new ResiliencePropertyKey<long>("dummy");
         var props = new ResilienceProperties();
 
-        props.GetValue(key, -1).Should().Be(-1);
+        props.GetValue(key, -1).ShouldBe(-1);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class ResiliencePropertiesTests
 
         props.Set(key1, 12345);
 
-        props.TryGetValue(key2, out var val).Should().Be(false);
+        props.TryGetValue(key2, out var val).ShouldBe(false);
     }
 
     [InlineData(true)]
@@ -99,8 +99,8 @@ public class ResiliencePropertiesTests
         otherProps.Set(key2, "B");
 
         props.AddOrReplaceProperties(otherProps);
-        props.Options.Should().HaveCount(2);
-        props.GetValue(key1, "").Should().Be("A");
-        props.GetValue(key2, "").Should().Be("B");
+        props.Options.Count.ShouldBe(2);
+        props.GetValue(key1, "").ShouldBe("A");
+        props.GetValue(key2, "").ShouldBe("B");
     }
 }

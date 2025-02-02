@@ -14,8 +14,8 @@ public static class RetryDelayGeneratorArgumentsTests
         var args = new RetryDelayGeneratorArguments<int>(context, Outcome.FromResult(1), 2);
 
         // Assert
-        args.Context.Should().Be(context);
-        args.Outcome.Result.Should().Be(1);
-        args.AttemptNumber.Should().Be(2);
+        args.Context.ShouldBe(context);
+        args.Outcome.Result.ShouldBe(1);
+        args.AttemptNumber.ShouldBe(2);
     }
 }

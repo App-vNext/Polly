@@ -5,8 +5,8 @@ public class ExecutionRejectedExceptionTests
     [Fact]
     public void Ctor_Ok()
     {
-        new CustomException().Message.Should().Be("Exception of type 'Polly.Core.Tests.ExecutionRejectedExceptionTests+CustomException' was thrown.");
-        new CustomException("Dummy").Message.Should().Be("Dummy");
+        new CustomException().Message.ShouldBe("Exception of type 'Polly.Core.Tests.ExecutionRejectedExceptionTests+CustomException' was thrown.");
+        new CustomException("Dummy").Message.ShouldBe("Dummy");
     }
 
     private class CustomException : ExecutionRejectedException

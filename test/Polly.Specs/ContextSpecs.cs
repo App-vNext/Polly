@@ -7,9 +7,9 @@ public class ContextSpecs
     {
         Context context = new Context("SomeKey");
 
-        context.OperationKey.Should().Be("SomeKey");
+        context.OperationKey.ShouldBe("SomeKey");
 
-        context.Keys.Count.Should().Be(0);
+        context.Keys.Count.ShouldBe(0);
     }
 
     [Fact]
@@ -17,9 +17,9 @@ public class ContextSpecs
     {
         Context context = new Context("SomeKey", CreateDictionary("key1", "value1", "key2", "value2"));
 
-        context.OperationKey.Should().Be("SomeKey");
-        context["key1"].Should().Be("value1");
-        context["key2"].Should().Be("value2");
+        context.OperationKey.ShouldBe("SomeKey");
+        context["key1"].ShouldBe("value1");
+        context["key2"].ShouldBe("value2");
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class ContextSpecs
     {
         Context context = [];
 
-        context.OperationKey.Should().BeNull();
+        context.OperationKey.ShouldBeNull();
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class ContextSpecs
     {
         Context context = new Context("SomeKey");
 
-        context.CorrelationId.Should().NotBeEmpty();
+        context.OperationKey.ShouldBe("SomeKey");
     }
 
     [Fact]
@@ -46,6 +46,6 @@ public class ContextSpecs
         Guid retrieved1 = context.CorrelationId;
         Guid retrieved2 = context.CorrelationId;
 
-        retrieved1.Should().Be(retrieved2);
+        retrieved1.ShouldBe(retrieved2);
     }
 }

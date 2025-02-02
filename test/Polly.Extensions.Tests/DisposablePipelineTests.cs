@@ -32,15 +32,15 @@ public class DisposablePipelineTests
             })
             .BuildServiceProvider();
 
-        limiters.Should().HaveCount(0);
+        limiters.Count.ShouldBe(0);
         provider.GetRequiredService<ResiliencePipelineProvider<string>>().GetPipeline("my-pipeline");
         provider.GetRequiredService<ResiliencePipelineProvider<string>>().GetPipeline("my-pipeline");
-        limiters.Should().HaveCount(1);
-        IsDisposed(limiters[0]).Should().BeFalse();
+        limiters.Count.ShouldBe(1);
+        IsDisposed(limiters[0]).ShouldBeFalse();
 
         provider.Dispose();
-        limiters.Should().HaveCount(1);
-        IsDisposed(limiters[0]).Should().BeTrue();
+        limiters.Count.ShouldBe(1);
+        IsDisposed(limiters[0]).ShouldBeTrue();
     }
 
     [Fact]
@@ -57,15 +57,15 @@ public class DisposablePipelineTests
 
         pipeline3.Execute(() => string.Empty);
         await registry2.DisposeAsync();
-        pipeline3.Invoking(p => p.Execute(() => string.Empty)).Should().Throw<ObjectDisposedException>();
+        Should.Throw<ObjectDisposedException>(() => pipeline3.Execute(() => string.Empty));
 
         pipeline1.Execute(() => { });
         pipeline2.Execute(() => string.Empty);
 
         await registry1.DisposeAsync();
 
-        pipeline1.Invoking(p => p.Execute(() => { })).Should().Throw<ObjectDisposedException>();
-        pipeline2.Invoking(p => p.Execute(() => string.Empty)).Should().Throw<ObjectDisposedException>();
+        Should.Throw<ObjectDisposedException>(() => pipeline1.Execute(() => { }));
+        Should.Throw<ObjectDisposedException>(() => pipeline2.Execute(() => string.Empty));
     }
 
     private static bool IsDisposed(RateLimiter limiter)

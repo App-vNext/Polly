@@ -10,7 +10,7 @@ internal class AsyncAddBehaviourIfHandlePolicy : AsyncPolicy
         : base(policyBuilder) =>
         _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
 
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, System.Threading.CancellationToken, Task<TResult>> action, Context context, System.Threading.CancellationToken cancellationToken,
+    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
         bool continueOnCapturedContext) =>
         AsyncAddBehaviourIfHandleEngine.ImplementationAsync(
             ExceptionPredicates,
@@ -32,7 +32,7 @@ internal class AsyncAddBehaviourIfHandlePolicy<TResult> : AsyncPolicy<TResult>
         : base(policyBuilder) =>
         _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
 
-    protected override Task<TResult> ImplementationAsync(Func<Context, System.Threading.CancellationToken, Task<TResult>> action, Context context, System.Threading.CancellationToken cancellationToken,
+    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
         bool continueOnCapturedContext) =>
         AsyncAddBehaviourIfHandleEngine.ImplementationAsync(
             ExceptionPredicates,

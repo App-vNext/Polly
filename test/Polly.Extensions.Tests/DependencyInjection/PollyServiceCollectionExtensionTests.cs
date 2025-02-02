@@ -58,10 +58,10 @@ public class PollyServiceCollectionExtensionTests
 
         var serviceProvider = _services.BuildServiceProvider();
 
-        serviceProvider.GetServices<ResiliencePipelineBuilder>().Should().NotBeNull();
-        serviceProvider.GetServices<ResiliencePipelineRegistry<string>>().Should().NotBeNull();
-        serviceProvider.GetServices<ResiliencePipelineProvider<string>>().Should().NotBeNull();
-        serviceProvider.GetServices<ResiliencePipelineBuilder>().Should().NotBeSameAs(serviceProvider.GetServices<ResiliencePipelineBuilder>());
+        serviceProvider.GetServices<ResiliencePipelineBuilder>().ShouldNotBeNull();
+        serviceProvider.GetServices<ResiliencePipelineRegistry<string>>().ShouldNotBeNull();
+        serviceProvider.GetServices<ResiliencePipelineProvider<string>>().ShouldNotBeNull();
+        serviceProvider.GetServices<ResiliencePipelineBuilder>().ShouldNotBeSameAs(serviceProvider.GetServices<ResiliencePipelineBuilder>());
     }
 
     [Fact]
@@ -77,13 +77,13 @@ public class PollyServiceCollectionExtensionTests
 
         var serviceProvider = _services.BuildServiceProvider();
 
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline(Key).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<string>(Key).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<int>(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline(Key).ShouldNotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<string>(Key).ShouldNotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<int>(Key).ShouldNotBeNull();
 
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline(10).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<string>(10).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<int>(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline(10).ShouldNotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<string>(10).ShouldNotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<int>(10).ShouldNotBeNull();
     }
 
     [InlineData(true)]
@@ -97,11 +97,11 @@ public class PollyServiceCollectionExtensionTests
         {
             _services.AddResiliencePipeline<string, string>(Key, (builder, context) =>
             {
-                context.RegistryContext.Should().NotBeNull();
-                context.PipelineKey.Should().Be(Key);
-                builder.Name.Should().Be(Key);
-                builder.Should().NotBeNull();
-                context.ServiceProvider.Should().NotBeNull();
+                context.RegistryContext.ShouldNotBeNull();
+                context.PipelineKey.ShouldBe(Key);
+                builder.Name.ShouldBe(Key);
+                builder.ShouldNotBeNull();
+                context.ServiceProvider.ShouldNotBeNull();
                 builder.AddStrategy(new TestStrategy());
                 asserted = true;
             });
@@ -112,9 +112,9 @@ public class PollyServiceCollectionExtensionTests
         {
             _services.AddResiliencePipeline(Key, (builder, context) =>
             {
-                context.PipelineKey.Should().Be(Key);
-                builder.Should().NotBeNull();
-                context.ServiceProvider.Should().NotBeNull();
+                context.PipelineKey.ShouldBe(Key);
+                builder.ShouldNotBeNull();
+                context.ServiceProvider.ShouldNotBeNull();
                 builder.AddStrategy(new TestStrategy());
                 asserted = true;
             });
@@ -122,7 +122,7 @@ public class PollyServiceCollectionExtensionTests
             CreateProvider().GetPipeline(Key);
         }
 
-        asserted.Should().BeTrue();
+        asserted.ShouldBeTrue();
     }
 
     [InlineData(true)]
@@ -148,17 +148,17 @@ public class PollyServiceCollectionExtensionTests
         CreateProvider().GetPipeline(Key);
 
         var diagSource = telemetry!.GetType().GetProperty("Listener", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(telemetry);
-        diagSource.Should().BeOfType<TelemetryListenerImpl>();
+        diagSource.ShouldBeOfType<TelemetryListenerImpl>();
 
         var factory = _services.BuildServiceProvider().GetRequiredService<IOptions<TelemetryOptions>>().Value.LoggerFactory;
 
         if (hasLogging)
         {
-            factory.Should().NotBe(NullLoggerFactory.Instance);
+            factory.ShouldNotBe(NullLoggerFactory.Instance);
         }
         else
         {
-            factory.Should().Be(NullLoggerFactory.Instance);
+            factory.ShouldBe(NullLoggerFactory.Instance);
         }
     }
 
@@ -172,7 +172,7 @@ public class PollyServiceCollectionExtensionTests
 
         CreateProvider().GetPipeline(Key);
 
-        asserted.Should().BeTrue();
+        asserted.ShouldBeTrue();
     }
 
     [Fact]
@@ -183,7 +183,7 @@ public class PollyServiceCollectionExtensionTests
 
         AddResiliencePipeline(Key);
 
-        _services.Count.Should().Be(count + 1);
+        _services.Count.ShouldBe(count + 1);
     }
 
     [Fact]
@@ -194,7 +194,7 @@ public class PollyServiceCollectionExtensionTests
         var provider = CreateProvider();
 
         var pipeline = provider.GetPipeline(Key);
-        provider.GetPipeline("my-pipeline").Should().BeSameAs(provider.GetPipeline("my-pipeline"));
+        provider.GetPipeline("my-pipeline").ShouldBeSameAs(provider.GetPipeline("my-pipeline"));
     }
 
     [Fact]
@@ -205,9 +205,9 @@ public class PollyServiceCollectionExtensionTests
         var provider = _services.BuildServiceProvider();
 
         var pipeline = provider.GetKeyedService<ResiliencePipeline>(Key);
-        provider.GetKeyedService<ResiliencePipeline>(Key).Should().BeSameAs(pipeline);
+        provider.GetKeyedService<ResiliencePipeline>(Key).ShouldBeSameAs(pipeline);
 
-        pipeline.Should().NotBeNull();
+        pipeline.ShouldNotBeNull();
     }
 
     [Fact]
@@ -218,9 +218,9 @@ public class PollyServiceCollectionExtensionTests
         var provider = _services.BuildServiceProvider();
 
         var pipeline = provider.GetKeyedService<ResiliencePipeline<string>>(Key);
-        provider.GetKeyedService<ResiliencePipeline<string>>(Key).Should().BeSameAs(pipeline);
+        provider.GetKeyedService<ResiliencePipeline<string>>(Key).ShouldBeSameAs(pipeline);
 
-        pipeline.Should().NotBeNull();
+        pipeline.ShouldNotBeNull();
     }
 
     [Fact]
@@ -232,7 +232,7 @@ public class PollyServiceCollectionExtensionTests
 
         var provider = _services.BuildServiceProvider();
 
-        provider.GetKeyedService<ResiliencePipeline>(Key).Should().BeSameAs(pipeline);
+        provider.GetKeyedService<ResiliencePipeline>(Key).ShouldBeSameAs(pipeline);
     }
 
     [Fact]
@@ -244,7 +244,7 @@ public class PollyServiceCollectionExtensionTests
 
         var provider = _services.BuildServiceProvider();
 
-        provider.GetKeyedService<ResiliencePipeline<string>>(Key).Should().BeSameAs(pipeline);
+        provider.GetKeyedService<ResiliencePipeline<string>>(Key).ShouldBeSameAs(pipeline);
     }
 
     [InlineData(true)]
@@ -268,8 +268,8 @@ public class PollyServiceCollectionExtensionTests
             CreateProvider().GetPipeline(Key);
         }
 
-        firstCalled.Should().BeTrue();
-        secondCalled.Should().BeFalse();
+        firstCalled.ShouldBeTrue();
+        secondCalled.ShouldBeFalse();
     }
 
     [Fact]
@@ -298,8 +298,8 @@ public class PollyServiceCollectionExtensionTests
                 };
             })
             .Distinct()
-            .Should()
-            .HaveCount(30);
+            .Count()
+            .ShouldBe(30);
     }
 
     [InlineData(true)]
@@ -319,18 +319,18 @@ public class PollyServiceCollectionExtensionTests
         {
             if (timeProviderRegistered)
             {
-                builder.TimeProvider.Should().Be(timeProvider);
+                builder.TimeProvider.ShouldBe(timeProvider);
             }
             else
             {
-                builder.TimeProvider.Should().BeNull();
+                builder.TimeProvider.ShouldBeNull();
             }
 
             asserted = true;
         });
 
         CreateProvider().GetPipeline("dummy");
-        asserted.Should().BeTrue();
+        asserted.ShouldBeTrue();
     }
 
     [Fact]
@@ -338,9 +338,9 @@ public class PollyServiceCollectionExtensionTests
     {
         var provider = new ServiceCollection().AddResiliencePipelineRegistry<string>().BuildServiceProvider();
 
-        provider.GetRequiredService<ResiliencePipelineRegistry<string>>().Should().NotBeNull();
-        provider.GetRequiredService<ResiliencePipelineProvider<string>>().Should().NotBeNull();
-        provider.GetRequiredService<ResiliencePipelineBuilder>().TelemetryListener.Should().NotBeNull();
+        provider.GetRequiredService<ResiliencePipelineRegistry<string>>().ShouldNotBeNull();
+        provider.GetRequiredService<ResiliencePipelineProvider<string>>().ShouldNotBeNull();
+        provider.GetRequiredService<ResiliencePipelineBuilder>().TelemetryListener.ShouldNotBeNull();
     }
 
     [Fact]
@@ -350,9 +350,9 @@ public class PollyServiceCollectionExtensionTests
 
         var provider = new ServiceCollection().AddResiliencePipelineRegistry<string>(options => options.InstanceNameFormatter = formatter).BuildServiceProvider();
 
-        provider.GetRequiredService<ResiliencePipelineRegistry<string>>().Should().NotBeNull();
-        provider.GetRequiredService<ResiliencePipelineProvider<string>>().Should().NotBeNull();
-        provider.GetRequiredService<IOptions<ResiliencePipelineRegistryOptions<string>>>().Value.InstanceNameFormatter.Should().Be(formatter);
+        provider.GetRequiredService<ResiliencePipelineRegistry<string>>().ShouldNotBeNull();
+        provider.GetRequiredService<ResiliencePipelineProvider<string>>().ShouldNotBeNull();
+        provider.GetRequiredService<IOptions<ResiliencePipelineRegistryOptions<string>>>().Value.InstanceNameFormatter.ShouldBe(formatter);
     }
 
     [InlineData(true)]
@@ -383,17 +383,17 @@ public class PollyServiceCollectionExtensionTests
         // assert
         foreach (var ev in listener.Events)
         {
-            ev.Source.PipelineInstanceName.Should().Be("my-instance");
-            ev.Source.PipelineName.Should().Be("my-pipeline");
+            ev.Source.PipelineInstanceName.ShouldBe("my-instance");
+            ev.Source.PipelineName.ShouldBe("my-pipeline");
         }
 
         var record = loggerFactory.FakeLogger.GetRecords(new EventId(0, "ResilienceEvent")).First();
 
-        record.Message.Should().Contain("my-pipeline/my-instance");
+        record.Message.ShouldContain("my-pipeline/my-instance");
 
         static void ConfigureBuilder(ResiliencePipelineBuilder builder)
         {
-            builder.Name.Should().Be("my-pipeline");
+            builder.Name.ShouldBe("my-pipeline");
             builder.InstanceName = "my-instance";
             builder.AddRetry(new()
             {
@@ -436,8 +436,8 @@ public class PollyServiceCollectionExtensionTests
                 };
             })
             .Distinct()
-            .Should()
-            .HaveCount(30);
+            .Count()
+            .ShouldBe(30);
     }
 
     [Fact]
@@ -459,13 +459,13 @@ public class PollyServiceCollectionExtensionTests
 
         var serviceProvider = _services.BuildServiceProvider();
 
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline(Key).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<string>(Key).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<int>(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline(Key).ShouldNotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<string>(Key).ShouldNotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<string>>().GetPipeline<int>(Key).ShouldNotBeNull();
 
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline(10).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<string>(10).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<int>(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline(10).ShouldNotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<string>(10).ShouldNotBeNull();
+        serviceProvider.GetRequiredService<ResiliencePipelineRegistry<int>>().GetPipeline<int>(10).ShouldNotBeNull();
     }
 
     private void AddResiliencePipeline(string key, Action<StrategyBuilderContext>? onBuilding = null) =>

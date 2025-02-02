@@ -4,14 +4,14 @@
 /// A traceable action that can be executed on a <see cref="BulkheadPolicy"/>, to support specs.
 /// <remarks>We can execute multiple instances of <see cref="TraceableAction"/> in parallel on a bulkhead, and manually control the cancellation and completion of each, to provide determinate tests on the bulkhead operation.  The status of this <see cref="TraceableAction"/> as it executes is fully traceable through the <see cref="TraceableActionStatus"/> property.</remarks>
 /// </summary>
-public class TraceableAction : IDisposable
+public class TraceableAction(int id, AutoResetEvent statusChanged, ITestOutputHelper testOutputHelper) : IDisposable
 {
-    private readonly string _id;
-    private readonly ITestOutputHelper _testOutputHelper;
+    private readonly string _id = $"{id:00}: ";
+    private readonly ITestOutputHelper _testOutputHelper = testOutputHelper;
 
     private readonly TaskCompletionSource<object?> _tcsProxyForRealWork = new();
     private readonly CancellationTokenSource _cancellationSource = new();
-    private readonly AutoResetEvent _statusChanged;
+    private readonly AutoResetEvent _statusChanged = statusChanged;
 
     private TraceableActionStatus _status;
 
@@ -24,13 +24,6 @@ public class TraceableAction : IDisposable
             _testOutputHelper.WriteLine(_id + "Updated status to {0}, signalling AutoResetEvent.", _status);
             SignalStateChange();
         }
-    }
-
-    public TraceableAction(int id, AutoResetEvent statusChanged, ITestOutputHelper testOutputHelper)
-    {
-        _id = $"{id:00}: ";
-        _statusChanged = statusChanged;
-        _testOutputHelper = testOutputHelper;
     }
 
     public void SignalStateChange()
@@ -99,7 +92,9 @@ public class TraceableAction : IDisposable
                     throw;
                 }
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
             {
                 _testOutputHelper.WriteLine(_id + "Caught unexpected exception during execution: " + e);
 
@@ -165,7 +160,9 @@ public class TraceableAction : IDisposable
                         Status = TraceableActionStatus.Canceled;
                     } // else: was execution cancellation rethrown: ignore
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
                 {
                     _testOutputHelper.WriteLine(_id + "Caught unexpected exception during execution: " + e);
 
@@ -233,6 +230,9 @@ public class TraceableAction : IDisposable
         _tcsProxyForRealWork.SetCanceled();
     }
 
-    public void Dispose() =>
+    public void Dispose()
+    {
+        _statusChanged?.Dispose();
         _cancellationSource.Dispose();
+    }
 }

@@ -15,7 +15,7 @@ public static class OnFaultInjectedArgumentsTests
         var args = new OnFaultInjectedArguments(context, fault);
 
         // Assert
-        args.Context.Should().Be(context);
-        args.Fault.Should().Be(fault);
+        args.Context.ShouldBe(context);
+        args.Fault.ShouldBe(fault);
     }
 }

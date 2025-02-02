@@ -23,7 +23,7 @@ public abstract class RateLimitSpecsBase
             }
             catch (Exception e)
             {
-                if (e is not AssertionFailedException and not IAssertionException)
+                if (e is not IAssertionException)
                 {
                     throw;
                 }

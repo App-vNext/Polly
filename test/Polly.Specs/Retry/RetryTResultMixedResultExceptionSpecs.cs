@@ -9,7 +9,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .Handle<DivideByZeroException>().Retry(1);
 
         ResultPrimitive result = policy.RaiseResultAndOrExceptionSequence(new DivideByZeroException(), ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.Good);
+        result.ShouldBe(ResultPrimitive.Good);
     }
 
     [Fact]
@@ -18,8 +18,7 @@ public class RetryTResultMixedResultExceptionSpecs
         Policy<ResultPrimitive> policy = Policy<ResultPrimitive>
             .Handle<DivideByZeroException>().Retry(1);
 
-        policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(new ArgumentException(), ResultPrimitive.Good))
-            .Should().Throw<ArgumentException>();
+        Should.Throw<ArgumentException>(() => policy.RaiseResultAndOrExceptionSequence(new ArgumentException(), ResultPrimitive.Good));
     }
 
     [Fact]
@@ -31,7 +30,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .Retry(2);
 
         ResultPrimitive result = policy.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.Good);
+        result.ShouldBe(ResultPrimitive.Good);
     }
 
     [Fact]
@@ -43,7 +42,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .Retry(2);
 
         ResultPrimitive result = policy.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.Good);
+        result.ShouldBe(ResultPrimitive.Good);
     }
 
     [Fact]
@@ -57,7 +56,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .Retry(4);
 
         ResultPrimitive result = policy.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), new ArgumentException(), ResultPrimitive.FaultAgain, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.Good);
+        result.ShouldBe(ResultPrimitive.Good);
     }
 
     [Fact]
@@ -71,7 +70,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .Retry(4);
 
         ResultPrimitive result = policy.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), new ArgumentException(), ResultPrimitive.FaultAgain, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.Good);
+        result.ShouldBe(ResultPrimitive.Good);
     }
 
     [Fact]
@@ -85,7 +84,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .Retry(3);
 
         ResultPrimitive result = policy.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), new ArgumentException(), ResultPrimitive.FaultAgain, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.FaultAgain);
+        result.ShouldBe(ResultPrimitive.FaultAgain);
     }
 
     [Fact]
@@ -98,8 +97,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .Or<ArgumentException>()
             .Retry(3);
 
-        policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), ResultPrimitive.FaultAgain, new ArgumentException(), ResultPrimitive.Good))
-            .Should().Throw<ArgumentException>();
+        Should.Throw<ArgumentException>(() => policy.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), ResultPrimitive.FaultAgain, new ArgumentException(), ResultPrimitive.Good));
     }
 
     [Fact]
@@ -113,7 +111,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .Retry(3);
 
         ResultPrimitive result = policy.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), new ArgumentException(), ResultPrimitive.FaultAgain, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.FaultAgain);
+        result.ShouldBe(ResultPrimitive.FaultAgain);
     }
 
     [Fact]
@@ -126,8 +124,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .OrResult(ResultPrimitive.FaultAgain)
             .Retry(3);
 
-        policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), ResultPrimitive.FaultAgain, new ArgumentException(), ResultPrimitive.Good))
-            .Should().Throw<ArgumentException>();
+        Should.Throw<ArgumentException>(() => policy.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), ResultPrimitive.FaultAgain, new ArgumentException(), ResultPrimitive.Good));
     }
 
     [Fact]
@@ -139,7 +136,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .Retry(2);
 
         ResultPrimitive result = policy.RaiseResultSequence(ResultPrimitive.FaultAgain);
-        result.Should().Be(ResultPrimitive.FaultAgain);
+        result.ShouldBe(ResultPrimitive.FaultAgain);
     }
 
     [Fact]
@@ -150,8 +147,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .OrResult(ResultPrimitive.Fault)
             .Retry(2);
 
-        policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(new ArgumentException(), ResultPrimitive.Good))
-            .Should().Throw<ArgumentException>();
+        Should.Throw<ArgumentException>(() => policy.RaiseResultAndOrExceptionSequence(new ArgumentException(), ResultPrimitive.Good));
     }
 
     [Fact]
@@ -163,7 +159,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .Retry(2);
 
         ResultClass result = policy.RaiseResultAndOrExceptionSequence(new ResultClass(ResultPrimitive.Fault), new ArgumentException("message", "key"), new ResultClass(ResultPrimitive.Good));
-        result.ResultCode.Should().Be(ResultPrimitive.Good);
+        result.ResultCode.ShouldBe(ResultPrimitive.Good);
     }
 
     [Fact]
@@ -174,8 +170,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
             .Retry(2);
 
-        policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(new ResultClass(ResultPrimitive.Fault), new ArgumentException("message", "value"), new ResultClass(ResultPrimitive.Good)))
-            .Should().Throw<ArgumentException>();
+        Should.Throw<ArgumentException>(() => policy.RaiseResultAndOrExceptionSequence(new ResultClass(ResultPrimitive.Fault), new ArgumentException("message", "value"), new ResultClass(ResultPrimitive.Good)));
     }
 
     [Fact]
@@ -187,6 +182,6 @@ public class RetryTResultMixedResultExceptionSpecs
             .Retry(2);
 
         ResultClass result = policy.RaiseResultAndOrExceptionSequence(new ArgumentException("message", "key"), new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
-        result.ResultCode.Should().Be(ResultPrimitive.FaultAgain);
+        result.ResultCode.ShouldBe(ResultPrimitive.FaultAgain);
     }
 }

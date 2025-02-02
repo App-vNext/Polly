@@ -9,12 +9,12 @@ public class ChaosOutcomeStrategyOptionsTests
     public void Ctor_Ok()
     {
         var sut = new ChaosOutcomeStrategyOptions<int>();
-        sut.Randomizer.Should().NotBeNull();
-        sut.Enabled.Should().BeTrue();
-        sut.EnabledGenerator.Should().BeNull();
-        sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
-        sut.InjectionRateGenerator.Should().BeNull();
-        sut.OnOutcomeInjected.Should().BeNull();
-        sut.OutcomeGenerator.Should().BeNull();
+        sut.Randomizer.ShouldNotBeNull();
+        sut.Enabled.ShouldBeTrue();
+        sut.EnabledGenerator.ShouldBeNull();
+        sut.InjectionRate.ShouldBe(ChaosStrategyConstants.DefaultInjectionRate);
+        sut.InjectionRateGenerator.ShouldBeNull();
+        sut.OnOutcomeInjected.ShouldBeNull();
+        sut.OutcomeGenerator.ShouldBeNull();
     }
 }

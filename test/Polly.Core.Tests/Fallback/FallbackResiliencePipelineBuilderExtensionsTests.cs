@@ -27,13 +27,10 @@ public class FallbackResiliencePipelineBuilderExtensionsTests
         var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 
-        builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<FallbackResilienceStrategy<int>>();
+        builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<FallbackResilienceStrategy<int>>();
     }
 
     [Fact]
-    public void AddFallbackT_InvalidOptions_Throws() =>
-        new ResiliencePipelineBuilder<double>()
-            .Invoking(b => b.AddFallback(new FallbackStrategyOptions<double>()))
-            .Should()
-            .Throw<ValidationException>();
+    public void AddFallbackT_InvalidOptions_Throws()
+        => Should.Throw<ValidationException>(() => new ResiliencePipelineBuilder<double>().AddFallback(new FallbackStrategyOptions<double>()));
 }

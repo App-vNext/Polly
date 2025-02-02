@@ -22,7 +22,7 @@ public class ObjectPoolTests
 
     [Fact]
     public void MaxCapacity_Ok() =>
-        ObjectPool<object>.MaxCapacity.Should().Be((Environment.ProcessorCount * 2) - 1);
+        ObjectPool<object>.MaxCapacity.ShouldBe((Environment.ProcessorCount * 2) - 1);
 
     [Fact]
     public void MaxCapacity_Respected()
@@ -35,7 +35,7 @@ public class ObjectPoolTests
         var items2 = GetStoreReturn(pool);
 
         // Assert
-        items1.Should().BeEquivalentTo(items2);
+        items1.ShouldBe(items2);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class ObjectPoolTests
         var items2 = GetStoreReturn(pool, count);
 
         // Assert
-        items1[items1.Count - 1].Should().NotBeSameAs(items2[items2.Count - 1]);
+        items1[items1.Count - 1].ShouldNotBeSameAs(items2[items2.Count - 1]);
     }
 
     [Fact]

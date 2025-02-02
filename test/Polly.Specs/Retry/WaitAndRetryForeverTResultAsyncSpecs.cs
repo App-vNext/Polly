@@ -10,8 +10,8 @@ public class WaitAndRetryForeverTResultAsyncSpecs : IDisposable
     {
         Dictionary<ResultPrimitive, TimeSpan> expectedRetryWaits = new Dictionary<ResultPrimitive, TimeSpan>
         {
-            {ResultPrimitive.Fault, 2.Seconds()},
-            {ResultPrimitive.FaultAgain, 4.Seconds()},
+            [ResultPrimitive.Fault] = TimeSpan.FromSeconds(2),
+            [ResultPrimitive.FaultAgain] = TimeSpan.FromSeconds(4)
         };
 
         var actualRetryWaits = new List<TimeSpan>();
@@ -38,7 +38,7 @@ public class WaitAndRetryForeverTResultAsyncSpecs : IDisposable
             });
         }
 
-        actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
+        actualRetryWaits.ShouldBe(expectedRetryWaits.Values);
     }
 
     public void Dispose() =>

@@ -1,2 +1,6 @@
 [*.cs]
+
+dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.SA1204.severity = none
+dotnet_diagnostic.SA1600.severity = none
 dotnet_diagnostic.xUnit1031.severity = suggestion

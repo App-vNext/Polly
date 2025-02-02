@@ -15,7 +15,7 @@ public static class StrategyHelperTests
             ResilienceContextPool.Shared.Get(token.Token),
             "dummy");
 
-        outcome.Exception.Should().BeOfType<OperationCanceledException>();
+        outcome.Exception.ShouldBeOfType<OperationCanceledException>();
     }
 
     [Theory]
@@ -37,7 +37,7 @@ public static class StrategyHelperTests
                 ResilienceContextPool.Shared.Get(),
                 "dummy");
 
-            outcome.Exception.Should().BeOfType<InvalidOperationException>();
+            outcome.Exception.ShouldBeOfType<InvalidOperationException>();
         });
 
     [Theory]
@@ -59,7 +59,7 @@ public static class StrategyHelperTests
                 ResilienceContextPool.Shared.Get(),
                 "dummy");
 
-            outcomeTask.IsCompleted.Should().Be(!isAsync);
-            (await outcomeTask).Result.Should().Be("success");
+            outcomeTask.IsCompleted.ShouldBe(!isAsync);
+            (await outcomeTask).Result.ShouldBe("success");
         });
 }

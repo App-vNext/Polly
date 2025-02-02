@@ -19,8 +19,8 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     {
         (bool permitExecution, TimeSpan retryAfter) = TryExecuteThroughPolicy(policy);
 
-        permitExecution.Should().BeTrue();
-        retryAfter.Should().Be(TimeSpan.Zero);
+        permitExecution.ShouldBeTrue();
+        retryAfter.ShouldBe(TimeSpan.Zero);
     }
 
     protected void ShouldPermitNExecutions(IRateLimitPolicy policy, long numberOfExecutions)
@@ -35,14 +35,14 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     {
         (bool PermitExecution, TimeSpan RetryAfter) canExecute = TryExecuteThroughPolicy(policy);
 
-        canExecute.PermitExecution.Should().BeFalse();
+        canExecute.PermitExecution.ShouldBeFalse();
         if (retryAfter == null)
         {
-            canExecute.RetryAfter.Should().BeGreaterThan(TimeSpan.Zero);
+            canExecute.RetryAfter.ShouldBeGreaterThan(TimeSpan.Zero);
         }
         else
         {
-            canExecute.RetryAfter.Should().Be(retryAfter.Value);
+            canExecute.RetryAfter.ShouldBe(retryAfter.Value);
         }
     }
 
@@ -51,7 +51,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     {
         Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.Zero);
 
-        invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
+        Should.Throw<ArgumentOutOfRangeException>(invalidSyntax).ParamName.ShouldBe("perTimeSpan");
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     {
         Action invalidSyntax = () => GetPolicyViaSyntax(1, System.Threading.Timeout.InfiniteTimeSpan);
 
-        invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
+        Should.Throw<ArgumentOutOfRangeException>(invalidSyntax).ParamName.ShouldBe("perTimeSpan");
     }
 
     [Fact]
@@ -67,8 +67,8 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     {
         Action invalidSyntax = () => GetPolicyViaSyntax(int.MaxValue, TimeSpan.FromSeconds(1));
 
-        invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
-        invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.Message.Should().StartWith("The number of executions per timespan must be positive.");
+        Should.Throw<ArgumentOutOfRangeException>(invalidSyntax).ParamName.ShouldBe("perTimeSpan");
+        Should.Throw<ArgumentOutOfRangeException>(invalidSyntax).Message.ShouldStartWith("The number of executions per timespan must be positive.");
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     {
         Action invalidSyntax = () => GetPolicyViaSyntax(-1, TimeSpan.FromSeconds(1));
 
-        invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("numberOfExecutions");
+        Should.Throw<ArgumentOutOfRangeException>(invalidSyntax).ParamName.ShouldBe("numberOfExecutions");
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     {
         Action invalidSyntax = () => GetPolicyViaSyntax(0, TimeSpan.FromSeconds(1));
 
-        invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("numberOfExecutions");
+        Should.Throw<ArgumentOutOfRangeException>(invalidSyntax).ParamName.ShouldBe("numberOfExecutions");
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     {
         Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.FromTicks(-1));
 
-        invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
+        Should.Throw<ArgumentOutOfRangeException>(invalidSyntax).ParamName.ShouldBe("perTimeSpan");
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     {
         Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.FromSeconds(1), -1);
 
-        invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("maxBurst");
+        Should.Throw<ArgumentOutOfRangeException>(invalidSyntax).ParamName.ShouldBe("maxBurst");
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     {
         Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.FromSeconds(1), 0);
 
-        invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("maxBurst");
+        Should.Throw<ArgumentOutOfRangeException>(invalidSyntax).ParamName.ShouldBe("maxBurst");
     }
 
     [Theory]
@@ -223,7 +223,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     [InlineData(100)]
     public void Given_any_bucket_capacity_rate_limiter_permits_half_full_bucket_burst_after_half_required_refill_time_elapsed(int bucketCapacity)
     {
-        (bucketCapacity % 2).Should().Be(0);
+        (bucketCapacity % 2).ShouldBe(0);
 
         FixClock();
 
@@ -249,7 +249,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
     [InlineData(100, 5)]
     public void Given_any_bucket_capacity_rate_limiter_permits_only_full_bucket_burst_even_if_multiple_required_refill_time_elapsed(int bucketCapacity, int multipleRefillTimePassed)
     {
-        multipleRefillTimePassed.Should().BeGreaterThan(1);
+        multipleRefillTimePassed.ShouldBeGreaterThan(1);
 
         FixClock();
 
@@ -302,7 +302,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
 
         // Assert - one should have permitted execution, n-1 not.
         var results = tasks.Select(t => t.Result).ToList();
-        results.Count(r => r.PermitExecution).Should().Be(1);
-        results.Count(r => !r.PermitExecution).Should().Be(parallelContention - 1);
+        results.Count(r => r.PermitExecution).ShouldBe(1);
+        results.Count(r => !r.PermitExecution).ShouldBe(parallelContention - 1);
     }
 }

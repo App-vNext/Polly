@@ -58,14 +58,14 @@ jobs:
         fetch-depth: 0
 
     - name: Setup .NET SDKs
-      uses: actions/setup-dotnet@87b7050bc53ea08284295505d98d2aa94301e852 # v4.2.0
+      uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
       with:
         dotnet-version: |
           6.0.x
           8.0.x
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@87b7050bc53ea08284295505d98d2aa94301e852 # v4.2.0
+      uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
       id: setup-dotnet
 
     - name: Setup NuGet cache
@@ -90,7 +90,7 @@ jobs:
 
     - name: Upload coverage to Codecov
       if: always() && github.event.repository.fork == false
-      uses: codecov/codecov-action@1e68e06f1dbfde0e4cefc87efeba9e4643565303 # v5.1.2
+      uses: codecov/codecov-action@13ce06bfc6bbe3ecf90edbbf1bc32fe5978ca1d3 # v5.3.1
       with:
         flags: ${{ matrix.os_name }}
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -131,7 +131,7 @@ jobs:
         name: packages-windows
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@87b7050bc53ea08284295505d98d2aa94301e852 # v4.2.0
+      uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -176,7 +176,7 @@ jobs:
         path: signing-config
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@87b7050bc53ea08284295505d98d2aa94301e852 # v4.2.0
+      uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -226,7 +226,7 @@ jobs:
         name: signed-packages
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@87b7050bc53ea08284295505d98d2aa94301e852 # v4.2.0
+      uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -258,7 +258,7 @@ jobs:
         submodules: recursive
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@87b7050bc53ea08284295505d98d2aa94301e852 # v4.2.0
+      uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
       with:
         global-json-file: AuthenticodeLint/global.json
 
@@ -341,7 +341,7 @@ jobs:
         name: signed-packages
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@87b7050bc53ea08284295505d98d2aa94301e852 # v4.2.0
+      uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -350,7 +350,7 @@ jobs:
 
     - name: Generate GitHub application token
       id: generate-application-token
-      uses: peter-murray/workflow-application-token-action@8e4e6fbf6fcc8a272781d97597969d21b3812974 # v4.0.0
+      uses: peter-murray/workflow-application-token-action@d17e3a9a36850ea89f35db16c1067dd2b68ee343 # v4.0.1
       with:
         application_id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
         application_private_key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}

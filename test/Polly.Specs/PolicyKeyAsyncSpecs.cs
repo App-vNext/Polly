@@ -9,7 +9,7 @@ public class PolicyKeyAsyncSpecs
     {
         var policy = Policy.Handle<Exception>().RetryAsync().WithPolicyKey(Guid.NewGuid().ToString());
 
-        policy.Should().BeAssignableTo<AsyncPolicy>();
+        policy.ShouldBeAssignableTo<AsyncPolicy>();
     }
 
     [Fact]
@@ -18,7 +18,7 @@ public class PolicyKeyAsyncSpecs
         IAsyncPolicy policyAsInterface = Policy.Handle<Exception>().RetryAsync();
         var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
 
-        policyAsInterfaceAfterWithPolicyKey.Should().BeAssignableTo<IAsyncPolicy>();
+        policyAsInterfaceAfterWithPolicyKey.ShouldBeAssignableTo<IAsyncPolicy>();
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public class PolicyKeyAsyncSpecs
 
         var policy = Policy.Handle<Exception>().RetryAsync().WithPolicyKey(Key);
 
-        policy.PolicyKey.Should().Be(Key);
+        policy.PolicyKey.ShouldBe(Key);
     }
 
     [Fact]
@@ -38,9 +38,9 @@ public class PolicyKeyAsyncSpecs
 
         Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-        configure.Should().NotThrow();
+        Should.NotThrow(configure);
 
-        configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
+        Should.Throw<ArgumentException>(configure).ParamName.ShouldBe("policyKey");
     }
 
     [Fact]
@@ -50,9 +50,9 @@ public class PolicyKeyAsyncSpecs
 
         Action configure = () => policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
 
-        configure.Should().NotThrow();
+        Should.NotThrow(configure);
 
-        configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
+        Should.Throw<ArgumentException>(configure).ParamName.ShouldBe("policyKey");
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class PolicyKeyAsyncSpecs
     {
         var policy = Policy.Handle<Exception>().RetryAsync();
 
-        policy.PolicyKey.Should().NotBeNullOrEmpty();
+        policy.PolicyKey.ShouldNotBeNullOrEmpty();
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class PolicyKeyAsyncSpecs
     {
         var policy = Policy.Handle<Exception>().RetryAsync();
 
-        policy.PolicyKey.Should().StartWith("AsyncRetry");
+        policy.PolicyKey.ShouldStartWith("AsyncRetry");
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class PolicyKeyAsyncSpecs
         var policy1 = Policy.Handle<Exception>().RetryAsync();
         var policy2 = Policy.Handle<Exception>().RetryAsync();
 
-        policy1.PolicyKey.Should().NotBe(policy2.PolicyKey);
+        policy1.PolicyKey.ShouldNotBe(policy2.PolicyKey);
     }
 
     [Fact]
@@ -88,7 +88,7 @@ public class PolicyKeyAsyncSpecs
         var keyRetrievedFirst = policy.PolicyKey;
         var keyRetrievedSecond = policy.PolicyKey;
 
-        keyRetrievedSecond.Should().Be(keyRetrievedFirst);
+        keyRetrievedSecond.ShouldBe(keyRetrievedFirst);
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class PolicyKeyAsyncSpecs
 
         Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-        configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
+        Should.Throw<ArgumentException>(configure).ParamName.ShouldBe("policyKey");
     }
 
     [Fact]
@@ -120,12 +120,12 @@ public class PolicyKeyAsyncSpecs
         string policyKey = Guid.NewGuid().ToString();
 
         string? policyKeySetOnExecutionContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+        Action<Exception, int, Context> onRetry = (_, _, context) => policyKeySetOnExecutionContext = context.PolicyKey;
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
 
         await retry.RaiseExceptionAsync<Exception>(1);
 
-        policyKeySetOnExecutionContext.Should().Be(policyKey);
+        policyKeySetOnExecutionContext.ShouldBe(policyKey);
     }
 
     [Fact]
@@ -134,7 +134,7 @@ public class PolicyKeyAsyncSpecs
         string operationKey = "SomeKey";
 
         string? operationKeySetOnContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
+        Action<Exception, int, Context> onRetry = (_, _, context) => operationKeySetOnContext = context.OperationKey;
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
         bool firstExecution = true;
@@ -148,7 +148,7 @@ public class PolicyKeyAsyncSpecs
             }
         }, new Context(operationKey));
 
-        operationKeySetOnContext.Should().Be(operationKey);
+        operationKeySetOnContext.ShouldBe(operationKey);
     }
 
     [Fact]
@@ -157,11 +157,11 @@ public class PolicyKeyAsyncSpecs
         string policyKey = Guid.NewGuid().ToString();
 
         string? policyKeySetOnExecutionContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+        Action<Exception, int, Context> onRetry = (_, _, context) => policyKeySetOnExecutionContext = context.PolicyKey;
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
 
         bool firstExecution = true;
-        await retry.ExecuteAsync<int>(async () =>
+        await retry.ExecuteAsync(async () =>
         {
             await TaskHelper.EmptyTask;
             if (firstExecution)
@@ -173,7 +173,7 @@ public class PolicyKeyAsyncSpecs
             return 0;
         });
 
-        policyKeySetOnExecutionContext.Should().Be(policyKey);
+        policyKeySetOnExecutionContext.ShouldBe(policyKey);
     }
 
     [Fact]
@@ -182,11 +182,11 @@ public class PolicyKeyAsyncSpecs
         string operationKey = "SomeKey";
 
         string? operationKeySetOnContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
+        Action<Exception, int, Context> onRetry = (_, _, context) => operationKeySetOnContext = context.OperationKey;
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
         bool firstExecution = true;
-        await retry.ExecuteAsync<int>(async _ =>
+        await retry.ExecuteAsync(async _ =>
         {
             await TaskHelper.EmptyTask;
             if (firstExecution)
@@ -198,7 +198,7 @@ public class PolicyKeyAsyncSpecs
             return 0;
         }, new Context(operationKey));
 
-        operationKeySetOnContext.Should().Be(operationKey);
+        operationKeySetOnContext.ShouldBe(operationKey);
     }
     #endregion
 }

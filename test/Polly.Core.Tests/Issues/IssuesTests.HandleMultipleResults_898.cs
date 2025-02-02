@@ -45,7 +45,7 @@ public partial class IssuesTests
 
             isRetry = true;
             return -1;
-        }, cancellationToken).Should().Be(0);
+        }, cancellationToken).ShouldBe(0);
 
         // check that string-based results is retried
         isRetry = false;
@@ -58,6 +58,6 @@ public partial class IssuesTests
 
             isRetry = true;
             return "error";
-        }, cancellationToken).Should().Be("no-error");
+        }, cancellationToken).ShouldBe("no-error");
     }
 }

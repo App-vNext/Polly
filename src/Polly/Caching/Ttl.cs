@@ -8,15 +8,19 @@ namespace Polly.Caching;
 public struct Ttl
 #pragma warning restore CA1815
 {
+#pragma warning disable CA1051 // Do not declare visible instance fields
     /// <summary>
     /// The timespan for which this cache-item remains valid.
     /// </summary>
     public TimeSpan Timespan;
+#pragma warning restore CA1051 // Do not declare visible instance fields
 
+#pragma warning disable CA1051 // Do not declare visible instance fields
     /// <summary>
     /// Whether this <see cref="Ttl"/> should be considered as sliding expiration: that is, the cache item should be considered valid for a further period of duration <see cref="Timespan"/> each time the cache item is retrieved.
     /// </summary>
     public bool SlidingExpiration;
+#pragma warning restore CA1051 // Do not declare visible instance fields
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Ttl"/> struct.

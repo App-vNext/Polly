@@ -13,10 +13,10 @@ public partial class ResiliencePipelineTests
             (await strategy.ExecuteAsync(
                 token =>
                 {
-                    token.Should().Be(CancellationToken);
+                    token.ShouldBe(CancellationToken);
                     return new ValueTask<string>("res");
                 },
-                CancellationToken)).Should().Be("res");
+                CancellationToken)).ShouldBe("res");
         },
 
         async strategy =>
@@ -24,12 +24,12 @@ public partial class ResiliencePipelineTests
             (await strategy.ExecuteAsync(
                 (state, token) =>
                 {
-                    state.Should().Be("state");
-                    token.Should().Be(CancellationToken);
+                    state.ShouldBe("state");
+                    token.ShouldBe(CancellationToken);
                     return new ValueTask<string>("res");
                 },
                 "state",
-                CancellationToken)).Should().Be("res");
+                CancellationToken)).ShouldBe("res");
         },
 
         async strategy =>
@@ -39,12 +39,12 @@ public partial class ResiliencePipelineTests
             (await strategy.ExecuteAsync(
                 (context, state) =>
                 {
-                    state.Should().Be("state");
-                    context.Should().Be(context);
+                    state.ShouldBe("state");
+                    context.ShouldBe(context);
                     return new ValueTask<string>("res");
                 },
                 context,
-                "state")).Should().Be("res");
+                "state")).ShouldBe("res");
         },
 
         async strategy =>
@@ -54,10 +54,10 @@ public partial class ResiliencePipelineTests
             (await strategy.ExecuteAsync(
                 (context) =>
                 {
-                    context.Should().Be(context);
+                    context.ShouldBe(context);
                     return new ValueTask<string>("res");
                 },
-                context)).Should().Be("res");
+                context)).ShouldBe("res");
         },
     };
 #pragma warning restore IDE0028
@@ -72,9 +72,9 @@ public partial class ResiliencePipelineTests
         {
             Before = (c, _) =>
             {
-                c.IsSynchronous.Should().BeFalse();
-                c.ResultType.Should().Be<string>();
-                c.CancellationToken.CanBeCanceled.Should().BeTrue();
+                c.IsSynchronous.ShouldBeFalse();
+                c.ResultType.ShouldBe(typeof(string));
+                c.CancellationToken.CanBeCanceled.ShouldBeTrue();
             },
         }), DisposeBehavior.Allow, null);
 
@@ -86,14 +86,14 @@ public partial class ResiliencePipelineTests
     {
         var result = await ResiliencePipeline<int>.Empty.ExecuteOutcomeAsync((context, state) =>
         {
-            state.Should().Be("state");
-            context.IsSynchronous.Should().BeFalse();
-            context.ResultType.Should().Be<int>();
+            state.ShouldBe("state");
+            context.IsSynchronous.ShouldBeFalse();
+            context.ResultType.ShouldBe(typeof(int));
             return Outcome.FromResultAsValueTask(12345);
         },
         ResilienceContextPool.Shared.Get(CancellationToken),
         "state");
 
-        result.Result.Should().Be(12345);
+        result.Result.ShouldBe(12345);
     }
 }

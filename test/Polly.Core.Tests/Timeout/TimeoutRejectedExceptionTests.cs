@@ -9,13 +9,13 @@ public class TimeoutRejectedExceptionTests
     {
         var delay = TimeSpan.FromSeconds(4);
 
-        new TimeoutRejectedException().Message.Should().Be("The operation didn't complete within the allowed timeout.");
-        new TimeoutRejectedException("dummy").Message.Should().Be("dummy");
-        new TimeoutRejectedException("dummy", new InvalidOperationException()).Message.Should().Be("dummy");
-        new TimeoutRejectedException(delay).Timeout.Should().Be(delay);
-        new TimeoutRejectedException(delay).Message.Should().Be("The operation didn't complete within the allowed timeout.");
-        new TimeoutRejectedException("dummy", delay).Timeout.Should().Be(delay);
-        new TimeoutRejectedException("dummy", delay, new InvalidOperationException()).Timeout.Should().Be(delay);
+        new TimeoutRejectedException().Message.ShouldBe("The operation didn't complete within the allowed timeout.");
+        new TimeoutRejectedException("dummy").Message.ShouldBe("dummy");
+        new TimeoutRejectedException("dummy", new InvalidOperationException()).Message.ShouldBe("dummy");
+        new TimeoutRejectedException(delay).Timeout.ShouldBe(delay);
+        new TimeoutRejectedException(delay).Message.ShouldBe("The operation didn't complete within the allowed timeout.");
+        new TimeoutRejectedException("dummy", delay).Timeout.ShouldBe(delay);
+        new TimeoutRejectedException("dummy", delay, new InvalidOperationException()).Timeout.ShouldBe(delay);
     }
 
 #if NETFRAMEWORK
@@ -26,7 +26,7 @@ public class TimeoutRejectedExceptionTests
 
         var result = BinarySerializationUtil.SerializeAndDeserializeException(new TimeoutRejectedException(timeout));
 
-        result.Timeout.Should().Be(timeout);
+        result.Timeout.ShouldBe(timeout);
     }
 #endif
 }

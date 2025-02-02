@@ -4,15 +4,15 @@ public class ResilienceContextPoolTests
 {
     [Fact]
     public void Shared_NotNull() =>
-        ResilienceContextPool.Shared.Should().NotBeNull();
+        ResilienceContextPool.Shared.ShouldNotBeNull();
 
     [Fact]
     public void Shared_SameInstance() =>
-        ResilienceContextPool.Shared.Should().BeSameAs(ResilienceContextPool.Shared);
+        ResilienceContextPool.Shared.ShouldBeSameAs(ResilienceContextPool.Shared);
 
     [Fact]
     public void Get_EnsureNotNull() =>
-        ResilienceContextPool.Shared.Get().Should().NotBeNull();
+        ResilienceContextPool.Shared.Get().ShouldNotBeNull();
 
     [Fact]
     public void Get_EnsureDefaults()
@@ -30,7 +30,7 @@ public class ResilienceContextPoolTests
 
         var context = ResilienceContextPool.Shared.Get(token.Token);
 
-        context.CancellationToken.Should().Be(token.Token);
+        context.CancellationToken.ShouldBe(token.Token);
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class ResilienceContextPoolTests
 
         var context = ResilienceContextPool.Shared.Get();
 
-        context.ContinueOnCapturedContext.Should().BeFalse();
+        context.ContinueOnCapturedContext.ShouldBeFalse();
     }
 
     [Fact]
@@ -48,7 +48,7 @@ public class ResilienceContextPoolTests
     {
         var context = ResilienceContextPool.Shared.Get(true);
 
-        context.ContinueOnCapturedContext.Should().Be(true);
+        context.ContinueOnCapturedContext.ShouldBe(true);
     }
 
     [Fact]
@@ -58,9 +58,9 @@ public class ResilienceContextPoolTests
 
         var context = ResilienceContextPool.Shared.Get("dummy", true, token.Token);
 
-        context.ContinueOnCapturedContext.Should().Be(true);
-        context.OperationKey.Should().Be("dummy");
-        context.CancellationToken.Should().Be(token.Token);
+        context.ContinueOnCapturedContext.ShouldBe(true);
+        context.OperationKey.ShouldBe("dummy");
+        context.CancellationToken.ShouldBe(token.Token);
     }
 
     [InlineData(null)]
@@ -72,8 +72,8 @@ public class ResilienceContextPoolTests
         using var token = new CancellationTokenSource();
 
         var context = ResilienceContextPool.Shared.Get(key!, token.Token);
-        context.OperationKey.Should().Be(key);
-        context.CancellationToken.Should().Be(token.Token);
+        context.OperationKey.ShouldBe(key);
+        context.CancellationToken.ShouldBe(token.Token);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class ResilienceContextPoolTests
 
             ResilienceContextPool.Shared.Return(context);
 
-            ResilienceContextPool.Shared.Get(default(CancellationToken)).Should().BeSameAs(context);
+            ResilienceContextPool.Shared.Get(default(CancellationToken)).ShouldBeSameAs(context);
         });
 
     [Fact]
@@ -99,7 +99,7 @@ public class ResilienceContextPoolTests
             var context = ResilienceContextPool.Shared.Get(CancellationToken.None);
             context.CancellationToken = cts.Token;
             context.Initialize<bool>(true);
-            context.CancellationToken.Should().Be(cts.Token);
+            context.CancellationToken.ShouldBe(cts.Token);
             context.Properties.Set(new ResiliencePropertyKey<int>("abc"), 10);
             ResilienceContextPool.Shared.Return(context);
 
@@ -108,13 +108,13 @@ public class ResilienceContextPoolTests
 
     private static void AssertDefaults(ResilienceContext context, CancellationToken expectedToken)
     {
-        context.IsInitialized.Should().BeFalse();
-        context.ContinueOnCapturedContext.Should().BeFalse();
-        context.IsVoid.Should().BeFalse();
-        context.ResultType.Name.Should().Be("UnknownResult");
-        context.IsSynchronous.Should().BeFalse();
-        context.CancellationToken.Should().Be(expectedToken);
-        context.Properties.Options.Should().BeEmpty();
-        context.OperationKey.Should().BeNull();
+        context.IsInitialized.ShouldBeFalse();
+        context.ContinueOnCapturedContext.ShouldBeFalse();
+        context.IsVoid.ShouldBeFalse();
+        context.ResultType.Name.ShouldBe("UnknownResult");
+        context.IsSynchronous.ShouldBeFalse();
+        context.CancellationToken.ShouldBe(expectedToken);
+        context.Properties.Options.ShouldBeEmpty();
+        context.OperationKey.ShouldBeNull();
     }
 }

@@ -30,7 +30,7 @@ public class PipelineComponentFactoryTests
     {
         var component = Substitute.For<PipelineComponent>();
         var result = PipelineComponentFactory.WithDisposableCallbacks(component, callbacks);
-        result.Should().BeSameAs(component);
+        result.ShouldBeSameAs(component);
     }
 
     [Theory]
@@ -43,7 +43,7 @@ public class PipelineComponentFactoryTests
 
         var result = PipelineComponentFactory.WithDisposableCallbacks(component, callbacks);
 
-        result.Should().BeOfType<ComponentWithDisposeCallbacks>();
+        result.ShouldBeOfType<ComponentWithDisposeCallbacks>();
     }
 
     private sealed class EmptyActionEnumerable : IEnumerable<Action>, IEnumerator<Action>

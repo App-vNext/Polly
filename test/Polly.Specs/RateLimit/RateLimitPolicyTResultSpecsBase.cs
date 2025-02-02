@@ -26,7 +26,7 @@ public abstract class RateLimitPolicyTResultSpecsBase : RateLimitPolicySpecsBase
             contextPassedToRetryAfter = ctx;
             return new ResultClassWithRetryAfter(t);
         };
-        var rateLimiter = GetPolicyViaSyntax<ResultClassWithRetryAfter>(1, onePer, 1, retryAfterFactory);
+        var rateLimiter = GetPolicyViaSyntax(1, onePer, 1, retryAfterFactory);
 
         // Arrange - drain first permitted execution after initialising.
         ShouldPermitAnExecution(rateLimiter);
@@ -39,13 +39,13 @@ public abstract class RateLimitPolicyTResultSpecsBase : RateLimitPolicySpecsBase
         var resultExpectedBlocked = TryExecuteThroughPolicy(rateLimiter, contextToPassIn, new ResultClassWithRetryAfter(ResultPrimitive.Good));
 
         // Assert - should be blocked - time not advanced.
-        resultExpectedBlocked.ResultCode.Should().NotBe(ResultPrimitive.Good);
+        resultExpectedBlocked.ResultCode.ShouldNotBe(ResultPrimitive.Good);
 
         // Result should be expressed per the retryAfterFactory.
-        resultExpectedBlocked.RetryAfter.Should().Be(onePer);
+        resultExpectedBlocked.RetryAfter.ShouldBe(onePer);
 
         // Context should have been passed to the retryAfterFactory.
-        contextPassedToRetryAfter.Should().NotBeNull();
-        contextPassedToRetryAfter.Should().BeSameAs(contextToPassIn);
+        contextPassedToRetryAfter.ShouldNotBeNull();
+        contextPassedToRetryAfter.ShouldBeSameAs(contextToPassIn);
     }
 }

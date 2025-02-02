@@ -16,9 +16,9 @@ public static class HedgingActionGeneratorArgumentsTests
         var args = new HedgingActionGeneratorArguments<string>(primaryContext, actionContext, 5, _ => Outcome.FromResultAsValueTask("dummy"));
 
         // Assert
-        args.PrimaryContext.Should().Be(primaryContext);
-        args.ActionContext.Should().Be(actionContext);
-        args.AttemptNumber.Should().Be(5);
-        args.Callback.Should().NotBeNull();
+        args.PrimaryContext.ShouldBe(primaryContext);
+        args.ActionContext.ShouldBe(actionContext);
+        args.AttemptNumber.ShouldBe(5);
+        args.Callback.ShouldNotBeNull();
     }
 }

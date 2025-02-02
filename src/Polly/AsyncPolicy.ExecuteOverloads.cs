@@ -511,7 +511,9 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
             await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             return PolicyResult.Successful(context);
         }
+#pragma warning disable CA1031
         catch (Exception exception)
+#pragma warning restore CA1031
         {
             return PolicyResult.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
         }
@@ -529,7 +531,9 @@ public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
                 await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext)
                     .ConfigureAwait(continueOnCapturedContext), context);
         }
+#pragma warning disable CA1031
         catch (Exception exception)
+#pragma warning restore CA1031
         {
             return PolicyResult<TResult>.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
         }

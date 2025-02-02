@@ -16,8 +16,8 @@ public class RollingHealthMetricsTests
     {
         var metrics = Create();
         var health = metrics.GetHealthInfo();
-        health.FailureRate.Should().Be(0);
-        health.Throughput.Should().Be(0);
+        health.FailureRate.ShouldBe(0);
+        health.Throughput.ShouldBe(0);
     }
 
     [Fact]
@@ -33,8 +33,8 @@ public class RollingHealthMetricsTests
 
         var health = metrics.GetHealthInfo();
 
-        health.FailureRate.Should().Be(0.2);
-        health.Throughput.Should().Be(5);
+        health.FailureRate.ShouldBe(0.2);
+        health.Throughput.ShouldBe(5);
     }
 
     [Fact]
@@ -62,11 +62,11 @@ public class RollingHealthMetricsTests
         _timeProvider.Advance(TimeSpan.FromSeconds(2));
         health.Add(metrics.GetHealthInfo());
 
-        health[0].Should().Be(new HealthInfo(2, 0.5, 1));
-        health[1].Should().Be(new HealthInfo(4, 0.5, 2));
-        health[3].Should().Be(new HealthInfo(8, 0.25, 2));
-        health[4].Should().Be(new HealthInfo(8, 0.125, 1));
-        health[5].Should().Be(new HealthInfo(6, 0.0, 0));
+        health[0].ShouldBe(new HealthInfo(2, 0.5, 1));
+        health[1].ShouldBe(new HealthInfo(4, 0.5, 2));
+        health[3].ShouldBe(new HealthInfo(8, 0.25, 2));
+        health[4].ShouldBe(new HealthInfo(8, 0.125, 1));
+        health[5].ShouldBe(new HealthInfo(6, 0.0, 0));
     }
 
     [Fact]
@@ -81,9 +81,9 @@ public class RollingHealthMetricsTests
             _timeProvider.Advance(delay);
         }
 
-        metrics.GetHealthInfo().Throughput.Should().Be(9);
+        metrics.GetHealthInfo().Throughput.ShouldBe(9);
         _timeProvider.Advance(delay);
-        metrics.GetHealthInfo().Throughput.Should().Be(8);
+        metrics.GetHealthInfo().Throughput.ShouldBe(8);
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public class RollingHealthMetricsTests
         metrics.IncrementSuccess();
         metrics.Reset();
 
-        metrics.GetHealthInfo().Throughput.Should().Be(0);
+        metrics.GetHealthInfo().Throughput.ShouldBe(0);
     }
 
     [InlineData(true)]
@@ -109,7 +109,7 @@ public class RollingHealthMetricsTests
 
         _timeProvider.Advance(_samplingDuration + (variance ? TimeSpan.FromMilliseconds(1) : TimeSpan.Zero));
 
-        metrics.GetHealthInfo().Should().Be(new HealthInfo(0, 0, 0));
+        metrics.GetHealthInfo().ShouldBe(new HealthInfo(0, 0, 0));
     }
 
     private RollingHealthMetrics Create() => new(_samplingDuration, _windows, _timeProvider);

@@ -10,11 +10,11 @@ public class ResilienceContextTests
         var context = ResilienceContextPool.Shared.Get();
         context.Initialize<bool>(synchronous);
 
-        context.ResultType.Should().Be<bool>();
-        context.IsVoid.Should().BeFalse();
-        context.IsInitialized.Should().BeTrue();
-        context.IsSynchronous.Should().Be(synchronous);
-        context.ContinueOnCapturedContext.Should().BeFalse();
+        context.ResultType.ShouldBe(typeof(bool));
+        context.IsVoid.ShouldBeFalse();
+        context.IsInitialized.ShouldBeTrue();
+        context.IsSynchronous.ShouldBe(synchronous);
+        context.ContinueOnCapturedContext.ShouldBeFalse();
     }
 
     [Theory]
@@ -31,14 +31,14 @@ public class ResilienceContextTests
         var other = ResilienceContextPool.Shared.Get(cancellationToken);
         other.InitializeFrom(context, cancellation.Token);
 
-        other.ResultType.Should().Be<bool>();
-        other.IsVoid.Should().BeFalse();
-        other.IsInitialized.Should().BeTrue();
-        other.IsSynchronous.Should().Be(synchronous);
-        other.ContinueOnCapturedContext.Should().BeTrue();
-        other.OperationKey.Should().Be("some-key");
-        other.CancellationToken.Should().Be(cancellation.Token);
-        other.Properties.GetValue(new ResiliencePropertyKey<string>("A"), string.Empty).Should().Be("B");
+        other.ResultType.ShouldBe(typeof(bool));
+        other.IsVoid.ShouldBeFalse();
+        other.IsInitialized.ShouldBeTrue();
+        other.IsSynchronous.ShouldBe(synchronous);
+        other.ContinueOnCapturedContext.ShouldBeTrue();
+        other.OperationKey.ShouldBe("some-key");
+        other.CancellationToken.ShouldBe(cancellation.Token);
+        other.Properties.GetValue(new ResiliencePropertyKey<string>("A"), string.Empty).ShouldBe("B");
     }
 
     [InlineData(true)]
@@ -49,10 +49,10 @@ public class ResilienceContextTests
         var context = ResilienceContextPool.Shared.Get();
         context.Initialize<VoidResult>(synchronous);
 
-        context.ResultType.Should().Be<VoidResult>();
-        context.IsVoid.Should().BeTrue();
-        context.IsInitialized.Should().BeTrue();
-        context.IsSynchronous.Should().Be(synchronous);
-        context.ContinueOnCapturedContext.Should().BeFalse();
+        context.ResultType.ShouldBe(typeof(VoidResult));
+        context.IsVoid.ShouldBeTrue();
+        context.IsInitialized.ShouldBeTrue();
+        context.IsSynchronous.ShouldBe(synchronous);
+        context.ContinueOnCapturedContext.ShouldBeFalse();
     }
 }

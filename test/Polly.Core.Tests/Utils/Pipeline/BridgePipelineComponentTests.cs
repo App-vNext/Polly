@@ -8,7 +8,7 @@ public class BridgePipelineComponentTests
 {
     [Fact]
     public void Ctor_Ok() =>
-        new Strategy<string>(args => { }).Should().NotBeNull();
+        new Strategy<string>(args => { }).ShouldNotBeNull();
 
     [Fact]
     public void Execute_NonGeneric_Ok()
@@ -26,10 +26,10 @@ public class BridgePipelineComponentTests
         pipeline.Execute<object?>(args => null, cancellationToken);
         pipeline.Execute(args => true, cancellationToken);
 
-        values[0].Should().Be("dummy");
-        values[1].Should().Be(0);
-        values[2].Should().BeNull();
-        values[3].Should().Be(true);
+        values[0].ShouldBe("dummy");
+        values[1].ShouldBe(0);
+        values[2].ShouldBeNull();
+        values[3].ShouldBe(true);
     }
 
     [Fact]
@@ -44,8 +44,8 @@ public class BridgePipelineComponentTests
 
         pipeline.Execute(args => "dummy");
 
-        values.Should().HaveCount(1);
-        values[0].Should().Be("dummy");
+        values.Count.ShouldBe(1);
+        values[0].ShouldBe("dummy");
     }
 
     [Fact]
@@ -55,13 +55,13 @@ public class BridgePipelineComponentTests
 
         var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new Strategy<object>(outcome =>
         {
-            outcome.Result.Should().Be(-1);
+            outcome.Result.ShouldBe(-1);
             called = true;
         })), DisposeBehavior.Allow, null);
 
         pipeline.Execute(() => -1);
 
-        called.Should().BeTrue();
+        called.ShouldBeTrue();
     }
 
 #pragma warning disable S1944 // Invalid casts should be avoided

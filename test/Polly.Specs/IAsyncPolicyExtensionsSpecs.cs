@@ -8,7 +8,7 @@ public class IAsyncPolicyExtensionsSpecs
         IAsyncPolicy nonGenericPolicy = Policy.TimeoutAsync(10);
         var genericPolicy = nonGenericPolicy.AsAsyncPolicy<ResultClass>();
 
-        genericPolicy.Should().BeAssignableTo<IAsyncPolicy<ResultClass>>();
+        genericPolicy.ShouldBeAssignableTo<IAsyncPolicy<ResultClass>>();
     }
 
     [Fact]
@@ -21,9 +21,9 @@ public class IAsyncPolicyExtensionsSpecs
         var genericPolicy = nonGenericPolicy.AsAsyncPolicy<ResultPrimitive>();
         Func<Task<ResultPrimitive>> deleg = () => Task.FromResult(ResultPrimitive.Good);
 
-        (await genericPolicy.ExecuteAsync(deleg)).Should().Be(ResultPrimitive.Good);
+        (await genericPolicy.ExecuteAsync(deleg)).ShouldBe(ResultPrimitive.Good);
         breaker.Isolate();
-        await genericPolicy.Awaiting(p => p.ExecuteAsync(deleg)).Should().ThrowAsync<BrokenCircuitException>();
+        await Should.ThrowAsync<BrokenCircuitException>(() => genericPolicy.ExecuteAsync(deleg));
     }
 }
 

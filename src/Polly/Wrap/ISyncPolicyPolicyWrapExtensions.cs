@@ -18,7 +18,9 @@ public static class ISyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
+#pragma warning disable S3215 // "interface" instances should not be cast to concrete types
         return ((Policy)outerPolicy).Wrap(innerPolicy);
+#pragma warning restore S3215 // "interface" instances should not be cast to concrete types
     }
 
     /// <summary>
@@ -35,7 +37,9 @@ public static class ISyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
+#pragma warning disable S3215 // "interface" instances should not be cast to concrete types
         return ((Policy)outerPolicy).Wrap(innerPolicy);
+#pragma warning restore S3215 // "interface" instances should not be cast to concrete types
     }
 
     /// <summary>
@@ -52,7 +56,9 @@ public static class ISyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
+#pragma warning disable S3215 // "interface" instances should not be cast to concrete types
         return ((Policy<TResult>)outerPolicy).Wrap(innerPolicy);
+#pragma warning restore S3215 // "interface" instances should not be cast to concrete types
     }
 
     /// <summary>
@@ -69,7 +75,9 @@ public static class ISyncPolicyPolicyWrapExtensions
             throw new ArgumentNullException(nameof(outerPolicy));
         }
 
+#pragma warning disable S3215 // "interface" instances should not be cast to concrete types
         return ((Policy<TResult>)outerPolicy).Wrap(innerPolicy);
+#pragma warning restore S3215 // "interface" instances should not be cast to concrete types
     }
 }
 
@@ -163,6 +171,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(policies));
         }
 
+#pragma warning disable S3215 // "interface" instances should not be cast to concrete types
         return policies.Length switch
         {
             < MinimumPoliciesRequiredForWrap => throw new ArgumentException(
@@ -170,6 +179,7 @@ public partial class Policy
             MinimumPoliciesRequiredForWrap => new PolicyWrap((Policy)policies[0], policies[1]),
             _ => Wrap(policies[0], Wrap(policies.Skip(1).ToArray())),
         };
+#pragma warning restore S3215 // "interface" instances should not be cast to concrete types
     }
 
     /// <summary>
@@ -186,6 +196,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(policies));
         }
 
+#pragma warning disable S3215 // "interface" instances should not be cast to concrete types
         return policies.Length switch
         {
             < MinimumPoliciesRequiredForWrap => throw new ArgumentException(
@@ -193,5 +204,6 @@ public partial class Policy
             MinimumPoliciesRequiredForWrap => new PolicyWrap<TResult>((Policy<TResult>)policies[0], policies[1]),
             _ => Wrap(policies[0], Wrap(policies.Skip(1).ToArray())),
         };
+#pragma warning restore S3215 // "interface" instances should not be cast to concrete types
     }
 }

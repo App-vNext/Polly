@@ -9,7 +9,7 @@ public class ICircuitBreakerPolicySpecs
             .Handle<DivideByZeroException>()
             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
 
     }
 
@@ -21,7 +21,7 @@ public class ICircuitBreakerPolicySpecs
             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
         breaker.Isolate();
-        breaker.CircuitState.Should().Be(CircuitState.Isolated);
+        breaker.CircuitState.ShouldBe(CircuitState.Isolated);
     }
 
     [Fact]
@@ -32,10 +32,10 @@ public class ICircuitBreakerPolicySpecs
             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
         breaker.Isolate();
-        breaker.CircuitState.Should().Be(CircuitState.Isolated);
+        breaker.CircuitState.ShouldBe(CircuitState.Isolated);
 
         breaker.Reset();
-        breaker.CircuitState.Should().Be(CircuitState.Closed);
+        breaker.CircuitState.ShouldBe(CircuitState.Closed);
     }
 
     [Fact]
@@ -45,6 +45,6 @@ public class ICircuitBreakerPolicySpecs
             .Handle<DivideByZeroException>()
             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
-        breaker.LastException.Should().BeNull();
+        breaker.LastException.ShouldBeNull();
     }
 }

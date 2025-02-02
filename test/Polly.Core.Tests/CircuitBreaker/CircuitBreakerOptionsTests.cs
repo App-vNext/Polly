@@ -12,9 +12,9 @@ public class CircuitBreakerOptionsTests
         var options = new CircuitBreakerStrategyOptions();
         var context = ResilienceContextPool.Shared.Get();
 
-        (await options.ShouldHandle(new CircuitBreakerPredicateArguments<object>(context, Outcome.FromResult<object>("dummy")))).Should().Be(false);
-        (await options.ShouldHandle(new CircuitBreakerPredicateArguments<object>(context, Outcome.FromException<object>(new OperationCanceledException())))).Should().Be(false);
-        (await options.ShouldHandle(new CircuitBreakerPredicateArguments<object>(context, Outcome.FromException<object>(new InvalidOperationException())))).Should().Be(true);
+        (await options.ShouldHandle(new CircuitBreakerPredicateArguments<object>(context, Outcome.FromResult<object>("dummy")))).ShouldBe(false);
+        (await options.ShouldHandle(new CircuitBreakerPredicateArguments<object>(context, Outcome.FromException<object>(new OperationCanceledException())))).ShouldBe(false);
+        (await options.ShouldHandle(new CircuitBreakerPredicateArguments<object>(context, Outcome.FromException<object>(new InvalidOperationException())))).ShouldBe(true);
     }
 
     [Fact]
@@ -22,15 +22,15 @@ public class CircuitBreakerOptionsTests
     {
         var options = new CircuitBreakerStrategyOptions<int>();
 
-        options.BreakDuration.Should().Be(TimeSpan.FromSeconds(5));
-        options.FailureRatio.Should().Be(0.1);
-        options.MinimumThroughput.Should().Be(100);
-        options.SamplingDuration.Should().Be(TimeSpan.FromSeconds(30));
-        options.OnOpened.Should().BeNull();
-        options.OnClosed.Should().BeNull();
-        options.OnHalfOpened.Should().BeNull();
-        options.ShouldHandle.Should().NotBeNull();
-        options.Name.Should().Be("CircuitBreaker");
+        options.BreakDuration.ShouldBe(TimeSpan.FromSeconds(5));
+        options.FailureRatio.ShouldBe(0.1);
+        options.MinimumThroughput.ShouldBe(100);
+        options.SamplingDuration.ShouldBe(TimeSpan.FromSeconds(30));
+        options.OnOpened.ShouldBeNull();
+        options.OnClosed.ShouldBeNull();
+        options.OnHalfOpened.ShouldBeNull();
+        options.ShouldHandle.ShouldNotBeNull();
+        options.Name.ShouldBe("CircuitBreaker");
 
         // now set to min values
         options.FailureRatio = 0.001;
@@ -56,18 +56,15 @@ public class CircuitBreakerOptionsTests
             ShouldHandle = null!,
         };
 
-        options
-            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Dummy.")))
-            .Should()
-            .Throw<ValidationException>()
-            .WithMessage("""
+        var exception = Should.Throw<ValidationException>(() => ValidationHelper.ValidateObject(new(options, "Dummy.")));
+        exception.Message.Trim().ShouldBe("""
             Dummy.
-
             Validation Errors:
             The field MinimumThroughput must be between 2 and 2147483647.
             The field SamplingDuration must be between 00:00:00.5000000 and 1.00:00:00.
             The field BreakDuration must be between 00:00:00.5000000 and 1.00:00:00.
             The ShouldHandle field is required.
-            """);
+            """,
+            StringCompareShould.IgnoreLineEndings);
     }
 }

@@ -12,12 +12,12 @@ public class TelemetryEventArgumentsTests
         var context = ResilienceContextPool.Shared.Get();
         var args = new TelemetryEventArguments<string, string>(_source, new ResilienceEvent(ResilienceEventSeverity.Warning, "ev"), context, "arg", Outcome.FromResult("dummy"));
 
-        args.Outcome!.Value.Result.Should().Be("dummy");
-        args.Context.Should().Be(context);
-        args.Event.EventName.Should().Be("ev");
-        args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
-        args.Source.Should().Be(_source);
-        args.Arguments.Should().BeEquivalentTo("arg");
-        args.Context.Should().Be(context);
+        args.Outcome!.Value.Result.ShouldBe("dummy");
+        args.Context.ShouldBe(context);
+        args.Event.EventName.ShouldBe("ev");
+        args.Event.Severity.ShouldBe(ResilienceEventSeverity.Warning);
+        args.Source.ShouldBe(_source);
+        args.Arguments.ShouldBeEquivalentTo("arg");
+        args.Context.ShouldBe(context);
     }
 }

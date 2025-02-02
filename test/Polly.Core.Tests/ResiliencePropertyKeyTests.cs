@@ -7,8 +7,8 @@ public class ResiliencePropertyKeyTests
     {
         var instance = new ResiliencePropertyKey<int>("dummy");
 
-        instance.Key.Should().Be("dummy");
-        instance.ToString().Should().Be("dummy");
+        instance.Key.ShouldBe("dummy");
+        instance.ToString().ShouldBe("dummy");
     }
 
     [Fact]

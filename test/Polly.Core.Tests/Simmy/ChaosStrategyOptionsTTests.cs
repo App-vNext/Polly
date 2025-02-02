@@ -11,11 +11,11 @@ public class ChaosStrategyOptionsTTests
     {
         var sut = new TestChaosStrategyOptions<int>();
 
-        sut.Randomizer.Should().NotBeNull();
-        sut.Enabled.Should().BeTrue();
-        sut.EnabledGenerator.Should().BeNull();
-        sut.InjectionRate.Should().Be(ChaosStrategyConstants.DefaultInjectionRate);
-        sut.InjectionRateGenerator.Should().BeNull();
+        sut.Randomizer.ShouldNotBeNull();
+        sut.Enabled.ShouldBeTrue();
+        sut.EnabledGenerator.ShouldBeNull();
+        sut.InjectionRate.ShouldBe(ChaosStrategyConstants.DefaultInjectionRate);
+        sut.InjectionRateGenerator.ShouldBeNull();
     }
 
     [InlineData(-1)]
@@ -28,15 +28,12 @@ public class ChaosStrategyOptionsTTests
             InjectionRate = injectionRate,
         };
 
-        sut
-            .Invoking(o => ValidationHelper.ValidateObject(new(o, "Invalid Options")))
-            .Should()
-            .Throw<ValidationException>()
-            .WithMessage("""
+        var exception = Should.Throw<ValidationException>(() => ValidationHelper.ValidateObject(new(sut, "Invalid Options")));
+        exception.Message.Trim().ShouldBe("""
             Invalid Options
-
             Validation Errors:
             The field InjectionRate must be between 0 and 1.
-            """);
+            """,
+            StringCompareShould.IgnoreLineEndings);
     }
 }

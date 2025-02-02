@@ -15,12 +15,12 @@ public class GenericCacheProviderSpecs : IDisposable
         CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
 
         (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(OperationKey);
-        cacheHit.Should().BeFalse();
-        fromCache.Should().BeNull();
+        cacheHit.ShouldBeFalse();
+        fromCache.ShouldBeNull();
 
         ResultPrimitive result = cache.Execute(_ => ResultPrimitive.Substitute, new Context(OperationKey));
 
-        onErrorCalled.Should().BeFalse();
+        onErrorCalled.ShouldBeFalse();
     }
 
     [Fact]
@@ -29,20 +29,20 @@ public class GenericCacheProviderSpecs : IDisposable
         const ResultPrimitive ValueToReturn = ResultPrimitive.Substitute;
         const string OperationKey = "SomeOperationKey";
 
-        ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+        var stubCacheProvider = new StubCacheProvider();
         CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(OperationKey);
 
-        cacheHit1.Should().BeFalse();
-        fromCache1.Should().BeNull();
+        cacheHit1.ShouldBeFalse();
+        fromCache1.ShouldBeNull();
 
-        cache.Execute(_ => ValueToReturn, new Context(OperationKey)).Should().Be(ValueToReturn);
+        cache.Execute(_ => ValueToReturn, new Context(OperationKey)).ShouldBe(ValueToReturn);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
 
-        cacheHit2.Should().BeTrue();
-        fromCache2.Should().Be(ValueToReturn);
+        cacheHit2.ShouldBeTrue();
+        fromCache2.ShouldBe(ValueToReturn);
     }
 
     public void Dispose() =>

@@ -15,7 +15,7 @@ public partial class ResiliencePipelineTests
             AssertContext = AssertResilienceContext,
         };
 
-        yield return new ExecuteParameters<long>(r => r.Execute(t => { t.Should().Be(CancellationToken); return result; }, CancellationToken), result)
+        yield return new ExecuteParameters<long>(r => r.Execute(t => { t.ShouldBe(CancellationToken); return result; }, CancellationToken), result)
         {
             Caption = "ExecuteT_Cancellation",
             AssertContext = AssertResilienceContextAndToken,
@@ -27,7 +27,7 @@ public partial class ResiliencePipelineTests
             AssertContext = AssertResilienceContext,
         };
 
-        yield return new ExecuteParameters<long>(r => r.Execute((state) => { state.Should().Be("state"); return result; }, "state"), result)
+        yield return new ExecuteParameters<long>(r => r.Execute((state) => { state.ShouldBe("state"); return result; }, "state"), result)
         {
             Caption = "ExecuteT_State",
             AssertContext = AssertResilienceContext,
@@ -40,13 +40,13 @@ public partial class ResiliencePipelineTests
             AssertContextAfter = AssertContextInitialized
         };
 
-        yield return new ExecuteParameters<long>(r => r.Execute((_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContextPool.Shared.Get(CancellationToken), "dummy-state"), result)
+        yield return new ExecuteParameters<long>(r => r.Execute((_, s) => { s.ShouldBe("dummy-state"); return result; }, ResilienceContextPool.Shared.Get(CancellationToken), "dummy-state"), result)
         {
             Caption = "ExecuteT_ResilienceContext",
             AssertContext = AssertResilienceContext,
         };
 
-        yield return new ExecuteParameters<long>(r => r.Execute((state, _) => { state.Should().Be("dummy-state"); return result; }, "dummy-state", CancellationToken), result)
+        yield return new ExecuteParameters<long>(r => r.Execute((state, _) => { state.ShouldBe("dummy-state"); return result; }, "dummy-state", CancellationToken), result)
         {
             Caption = "ExecuteT_StateAndCancellation",
             AssertContext = AssertResilienceContextAndToken,
@@ -54,19 +54,19 @@ public partial class ResiliencePipelineTests
 
         static void AssertResilienceContext(ResilienceContext context)
         {
-            context.IsSynchronous.Should().BeTrue();
-            context.IsVoid.Should().BeFalse();
-            context.ResultType.Should().Be<long>();
-            context.ContinueOnCapturedContext.Should().BeFalse();
+            context.IsSynchronous.ShouldBeTrue();
+            context.IsVoid.ShouldBeFalse();
+            context.ResultType.ShouldBe(typeof(long));
+            context.ContinueOnCapturedContext.ShouldBeFalse();
         }
 
         static void AssertResilienceContextAndToken(ResilienceContext context)
         {
             AssertResilienceContext(context);
-            context.CancellationToken.Should().Be(CancellationToken);
+            context.CancellationToken.ShouldBe(CancellationToken);
         }
 
-        static void AssertContextInitialized(ResilienceContext context) => context.IsInitialized.Should().BeTrue();
+        static void AssertContextInitialized(ResilienceContext context) => context.IsInitialized.ShouldBeTrue();
     }
 
     [Theory]
@@ -109,12 +109,10 @@ public partial class ResiliencePipelineTests
         {
             var strategy = new TestResilienceStrategy().AsPipeline();
 
-            var error = strategy
-                .Invoking(s => execute(s))
-                .Should()
-                .Throw<FormatException>();
+            var error = Should.Throw<FormatException>(() => execute(strategy));
 
-            error.And.StackTrace.Should().Contain(nameof(MyThrowingMethod));
+            error.StackTrace.ShouldNotBeNull();
+            error.StackTrace.ShouldContain(nameof(MyThrowingMethod));
         }
 
         static string MyThrowingMethod() => throw new FormatException();

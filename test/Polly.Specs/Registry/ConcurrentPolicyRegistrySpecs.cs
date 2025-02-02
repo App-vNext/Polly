@@ -2,10 +2,7 @@
 
 public class ConcurrentPolicyRegistrySpecs
 {
-    private readonly IConcurrentPolicyRegistry<string> _registry;
-
-    public ConcurrentPolicyRegistrySpecs() =>
-        _registry = new PolicyRegistry();
+    private readonly PolicyRegistry _registry = [];
 
     [Fact]
     public void Should_be_able_to_add_Policy_using_TryAdd()
@@ -14,15 +11,15 @@ public class ConcurrentPolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         var insert = _registry.TryAdd(key, policy);
-        _registry.Count.Should().Be(1);
-        insert.Should().Be(true);
+        _registry.Count.ShouldBe(1);
+        insert.ShouldBe(true);
 
         Policy policy2 = Policy.NoOp();
         string key2 = Guid.NewGuid().ToString();
 
         var insert2 = _registry.TryAdd(key2, policy2);
-        _registry.Count.Should().Be(2);
-        insert2.Should().Be(true);
+        _registry.Count.ShouldBe(2);
+        insert2.ShouldBe(true);
     }
 
     [Fact]
@@ -32,15 +29,15 @@ public class ConcurrentPolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         var insert = _registry.TryAdd(key, policy);
-        _registry.Count.Should().Be(1);
-        insert.Should().Be(true);
+        _registry.Count.ShouldBe(1);
+        insert.ShouldBe(true);
 
         Policy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
         string key2 = Guid.NewGuid().ToString();
 
         var insert2 = _registry.TryAdd(key2, policy2);
-        _registry.Count.Should().Be(2);
-        insert2.Should().Be(true);
+        _registry.Count.ShouldBe(2);
+        insert2.ShouldBe(true);
     }
 
     [Fact]
@@ -50,15 +47,15 @@ public class ConcurrentPolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         var insert = _registry.TryAdd(key, policy);
-        _registry.Count.Should().Be(1);
-        insert.Should().Be(true);
+        _registry.Count.ShouldBe(1);
+        insert.ShouldBe(true);
 
         ISyncPolicy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
         string key2 = Guid.NewGuid().ToString();
 
         var insert2 = _registry.TryAdd(key2, policy2);
-        _registry.Count.Should().Be(2);
-        insert2.Should().Be(true);
+        _registry.Count.ShouldBe(2);
+        insert2.ShouldBe(true);
     }
 
     [Fact]
@@ -68,12 +65,12 @@ public class ConcurrentPolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
-        _registry.Count.Should().Be(1);
+        _registry.Count.ShouldBe(1);
 
         bool removed = _registry.TryRemove(key, out IsPolicy removedPolicy);
-        _registry.Count.Should().Be(0);
-        removedPolicy.Should().BeSameAs(policy);
-        removed.Should().BeTrue();
+        _registry.Count.ShouldBe(0);
+        removedPolicy.ShouldBeSameAs(policy);
+        removed.ShouldBeTrue();
     }
 
     [Fact]
@@ -82,7 +79,7 @@ public class ConcurrentPolicyRegistrySpecs
         string key = Guid.NewGuid().ToString();
 
         bool removed = _registry.TryRemove(key, out IsPolicy removedPolicy);
-        removed.Should().BeFalse();
+        removed.ShouldBeFalse();
     }
 
     [Fact]
@@ -96,8 +93,8 @@ public class ConcurrentPolicyRegistrySpecs
 
         bool updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, existingPolicy);
 
-        updated.Should().BeTrue();
-        _registry[key].Should().BeSameAs(newPolicy);
+        updated.ShouldBeTrue();
+        _registry[key].ShouldBeSameAs(newPolicy);
     }
 
     [Fact]
@@ -112,8 +109,8 @@ public class ConcurrentPolicyRegistrySpecs
 
         bool updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, someOtherPolicy);
 
-        updated.Should().BeFalse();
-        _registry[key].Should().BeSameAs(existingPolicy);
+        updated.ShouldBeFalse();
+        _registry[key].ShouldBeSameAs(existingPolicy);
     }
 
     [Fact]
@@ -126,8 +123,8 @@ public class ConcurrentPolicyRegistrySpecs
 
         bool updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, someOtherPolicy);
 
-        updated.Should().BeFalse();
-        _registry.ContainsKey(key).Should().BeFalse();
+        updated.ShouldBeFalse();
+        _registry.ContainsKey(key).ShouldBeFalse();
     }
 
     [Fact]
@@ -138,7 +135,7 @@ public class ConcurrentPolicyRegistrySpecs
 
         var returnedPolicy = _registry.GetOrAdd(key, newPolicy);
 
-        returnedPolicy.Should().BeSameAs(newPolicy);
+        returnedPolicy.ShouldBeSameAs(newPolicy);
     }
 
     [Fact]
@@ -149,7 +146,7 @@ public class ConcurrentPolicyRegistrySpecs
 
         var returnedPolicy = _registry.GetOrAdd(key, _ => newPolicy);
 
-        returnedPolicy.Should().BeSameAs(newPolicy);
+        returnedPolicy.ShouldBeSameAs(newPolicy);
     }
 
     [Fact]
@@ -163,7 +160,7 @@ public class ConcurrentPolicyRegistrySpecs
 
         var returnedPolicy = _registry.GetOrAdd(key, newPolicy);
 
-        returnedPolicy.Should().BeSameAs(existingPolicy);
+        returnedPolicy.ShouldBeSameAs(existingPolicy);
     }
 
     [Fact]
@@ -177,7 +174,7 @@ public class ConcurrentPolicyRegistrySpecs
 
         var returnedPolicy = _registry.GetOrAdd(key, _ => newPolicy);
 
-        returnedPolicy.Should().BeSameAs(existingPolicy);
+        returnedPolicy.ShouldBeSameAs(existingPolicy);
     }
 
     [Fact]
@@ -191,7 +188,7 @@ public class ConcurrentPolicyRegistrySpecs
             newPolicy,
             (_, _) => throw new InvalidOperationException("Update factory should not be called in this test."));
 
-        returnedPolicy.Should().BeSameAs(newPolicy);
+        returnedPolicy.ShouldBeSameAs(newPolicy);
     }
 
     [Fact]
@@ -205,7 +202,7 @@ public class ConcurrentPolicyRegistrySpecs
             _ => newPolicy,
             (_, _) => throw new InvalidOperationException("Update factory should not be called in this test."));
 
-        returnedPolicy.Should().BeSameAs(newPolicy);
+        returnedPolicy.ShouldBeSameAs(newPolicy);
     }
 
     [Fact]
@@ -224,9 +221,9 @@ public class ConcurrentPolicyRegistrySpecs
             otherPolicyNotExpectingToAdd,
             (_, _) => existingPolicy.WithPolicyKey(PolicyKeyToDecorate));
 
-        returnedPolicy.Should().NotBeSameAs(otherPolicyNotExpectingToAdd);
-        returnedPolicy.Should().BeSameAs(existingPolicy);
-        returnedPolicy.PolicyKey.Should().Be(PolicyKeyToDecorate);
+        returnedPolicy.ShouldNotBeSameAs(otherPolicyNotExpectingToAdd);
+        returnedPolicy.ShouldBeSameAs(existingPolicy);
+        returnedPolicy.PolicyKey.ShouldBe(PolicyKeyToDecorate);
     }
 
     [Fact]
@@ -245,8 +242,8 @@ public class ConcurrentPolicyRegistrySpecs
             _ => otherPolicyNotExpectingToAdd,
             (_, _) => existingPolicy.WithPolicyKey(PolicyKeyToDecorate));
 
-        returnedPolicy.Should().NotBeSameAs(otherPolicyNotExpectingToAdd);
-        returnedPolicy.Should().BeSameAs(existingPolicy);
-        returnedPolicy.PolicyKey.Should().Be(PolicyKeyToDecorate);
+        returnedPolicy.ShouldNotBeSameAs(otherPolicyNotExpectingToAdd);
+        returnedPolicy.ShouldBeSameAs(existingPolicy);
+        returnedPolicy.PolicyKey.ShouldBe(PolicyKeyToDecorate);
     }
 }

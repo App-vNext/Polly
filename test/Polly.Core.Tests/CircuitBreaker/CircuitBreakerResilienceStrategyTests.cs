@@ -34,7 +34,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
 
     [Fact]
     public void Ctor_Ok() =>
-        this.Invoking(_ => Create()).Should().NotThrow();
+        Should.NotThrow(Create);
 
     [Fact]
     public void Ctor_StateProvider_EnsureAttached()
@@ -42,9 +42,9 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _options.StateProvider = new CircuitBreakerStateProvider();
         Create();
 
-        _options.StateProvider.IsInitialized.Should().BeTrue();
+        _options.StateProvider.IsInitialized.ShouldBeTrue();
 
-        _options.StateProvider.CircuitState.Should().Be(CircuitState.Closed);
+        _options.StateProvider.CircuitState.ShouldBe(CircuitState.Closed);
     }
 
     [Fact]
@@ -55,11 +55,11 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         var strategy = Create();
 
         await _options.ManualControl.IsolateAsync(CancellationToken);
-        strategy.Invoking(s => s.Execute(_ => 0)).Should().Throw<IsolatedCircuitException>().Where(e => e.RetryAfter == null);
+        Should.Throw<IsolatedCircuitException>(() => strategy.Execute(_ => 0)).RetryAfter.ShouldBeNull();
 
         await _options.ManualControl.CloseAsync(CancellationToken);
 
-        strategy.Invoking(s => s.Execute(_ => 0)).Should().NotThrow();
+        Should.NotThrow(() => strategy.Execute(_ => 0));
 
         _behavior.Received().OnCircuitClosed();
         _behavior.Received().OnActionSuccess(CircuitState.Closed);
@@ -75,7 +75,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _behavior.When(v => v.OnActionFailure(CircuitState.Closed, out Arg.Any<bool>()))
                  .Do(x => x[1] = shouldBreak);
 
-        strategy.Execute(_ => -1, CancellationToken).Should().Be(-1);
+        strategy.Execute(_ => -1, CancellationToken).ShouldBe(-1);
 
         _behavior.Received().OnActionFailure(CircuitState.Closed, out Arg.Any<bool>());
     }
@@ -86,7 +86,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _options.ShouldHandle = args => new ValueTask<bool>(args.Outcome.Result is -1);
         var strategy = Create();
 
-        strategy.Execute(_ => 0, CancellationToken).Should().Be(0);
+        strategy.Execute(_ => 0, CancellationToken).ShouldBe(0);
 
         _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
     }
@@ -101,7 +101,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _behavior.When(v => v.OnActionFailure(CircuitState.Closed, out Arg.Any<bool>()))
                  .Do(x => x[1] = shouldBreak);
 
-        strategy.Invoking(s => s.Execute<int>(_ => throw new InvalidOperationException())).Should().Throw<InvalidOperationException>();
+        Should.Throw<InvalidOperationException>(() => strategy.Execute<int>(_ => throw new InvalidOperationException()));
 
         _behavior.Received().OnActionFailure(CircuitState.Closed, out Arg.Any<bool>());
     }
@@ -112,7 +112,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _options.ShouldHandle = args => new ValueTask<bool>(args.Outcome.Exception is InvalidOperationException);
         var strategy = Create();
 
-        strategy.Invoking(s => s.Execute<int>(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
+        Should.Throw<ArgumentException>(() => strategy.Execute<int>(_ => throw new ArgumentException()));
 
         _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
     }
@@ -124,7 +124,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     {
         _options.ShouldHandle = _ => PredicateResult.False();
 
-        Create().Invoking(s => s.Execute(_ => 0)).Should().NotThrow();
+        Should.NotThrow(() => Create().Execute(_ => 0));
 
         _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
     }

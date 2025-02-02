@@ -1,8 +1,8 @@
-using FluentAssertions.Execution;
 using Microsoft.Extensions.Time.Testing;
 using Polly.Retry;
 using Polly.Telemetry;
 using Polly.Testing;
+using Xunit.Sdk;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -27,7 +27,7 @@ public class RetryResilienceStrategyTests
         var sut = CreateSut();
 
         var result = sut.Execute(() => new DisposableResult());
-        result.IsDisposed.Should().BeFalse();
+        result.IsDisposed.ShouldBeFalse();
     }
 
     [Fact]
@@ -45,8 +45,8 @@ public class RetryResilienceStrategyTests
             ResilienceContextPool.Shared.Get(new CancellationToken(canceled: true)),
             default(object));
 
-        result.Exception.Should().BeAssignableTo<OperationCanceledException>();
-        executed.Should().BeFalse();
+        result.Exception.ShouldBeAssignableTo<OperationCanceledException>();
+        executed.ShouldBeFalse();
     }
 
     [Fact]
@@ -66,8 +66,8 @@ public class RetryResilienceStrategyTests
             ResilienceContextPool.Shared.Get(cancellation.Token),
             default(object));
 
-        result.Exception.Should().BeNull();
-        executions.Should().Be(1);
+        result.Exception.ShouldBeNull();
+        executions.ShouldBe(1);
     }
 
     [Fact]
@@ -97,9 +97,9 @@ public class RetryResilienceStrategyTests
             ResilienceContextPool.Shared.Get(cancellation.Token),
             default(object));
 
-        result.Exception.Should().BeAssignableTo<OperationCanceledException>();
-        executions.Should().Be(1);
-        reported.Should().BeTrue();
+        result.Exception.ShouldBeAssignableTo<OperationCanceledException>();
+        executions.ShouldBe(1);
+        reported.ShouldBeTrue();
     }
 
     [Fact]
@@ -127,8 +127,8 @@ public class RetryResilienceStrategyTests
             ResilienceContextPool.Shared.Get(cancellation.Token),
             default(object));
 
-        result.Exception.Should().BeAssignableTo<OperationCanceledException>();
-        executions.Should().Be(1);
+        result.Exception.ShouldBeAssignableTo<OperationCanceledException>();
+        executions.ShouldBe(1);
     }
 
     [Fact]
@@ -153,8 +153,8 @@ public class RetryResilienceStrategyTests
         _timeProvider.Advance(_options.Delay);
         var result = await resultTask;
 
-        result.Exception.Should().BeAssignableTo<OperationCanceledException>();
-        executions.Should().Be(1);
+        result.Exception.ShouldBeAssignableTo<OperationCanceledException>();
+        executions.ShouldBe(1);
     }
 
     [Fact]
@@ -176,12 +176,12 @@ public class RetryResilienceStrategyTests
         });
 
         // assert
-        result.IsDisposed.Should().BeFalse();
-        results.Count.Should().Be(_options.MaxRetryAttempts + 1);
-        results[results.Count - 1].IsDisposed.Should().BeFalse();
+        result.IsDisposed.ShouldBeFalse();
+        results.Count.ShouldBe(_options.MaxRetryAttempts + 1);
+        results[results.Count - 1].IsDisposed.ShouldBeFalse();
 
         results.Remove(results[results.Count - 1]);
-        results.Should().AllSatisfy(r => r.IsDisposed.Should().BeTrue());
+        results.ShouldAllBe(r => r.IsDisposed);
     }
 
     [Fact]
@@ -196,7 +196,7 @@ public class RetryResilienceStrategyTests
 
         sut.Execute(() => 0);
 
-        calls.Should().Be(12);
+        calls.ShouldBe(12);
     }
 
     [Fact]
@@ -205,7 +205,7 @@ public class RetryResilienceStrategyTests
         int calls = 0;
         _options.OnRetry = args =>
         {
-            args.Outcome.Exception.Should().BeOfType<InvalidOperationException>();
+            args.Outcome.Exception.ShouldBeOfType<InvalidOperationException>();
             calls++;
             return default;
         };
@@ -217,7 +217,7 @@ public class RetryResilienceStrategyTests
 
         Assert.Throws<InvalidOperationException>(() => sut.Execute<int>(() => throw new InvalidOperationException()));
 
-        calls.Should().Be(3);
+        calls.ShouldBe(3);
     }
 
     [Fact]
@@ -234,7 +234,7 @@ public class RetryResilienceStrategyTests
         _options.OnRetry = args =>
         {
             retries++;
-            args.RetryDelay.Should().Be(delay);
+            args.RetryDelay.ShouldBe(delay);
             return default;
         };
         _options.DelayGenerator = _ =>
@@ -245,8 +245,8 @@ public class RetryResilienceStrategyTests
 
         CreateSut(TimeProvider.System).Execute(_ => "dummy");
 
-        retries.Should().Be(3);
-        generatedValues.Should().Be(3);
+        retries.ShouldBe(3);
+        generatedValues.ShouldBe(3);
     }
 
     [Fact]
@@ -276,8 +276,8 @@ public class RetryResilienceStrategyTests
         var sut = CreateSut(provider);
         await sut.ExecuteAsync(_ => new ValueTask<string>("dummy"));
 
-        retries.Should().Be(3);
-        generatedValues.Should().Be(3);
+        retries.ShouldBe(3);
+        generatedValues.ShouldBe(3);
     }
 
     [Fact]
@@ -285,16 +285,16 @@ public class RetryResilienceStrategyTests
     {
         var sut = (RetryResilienceStrategy<object>)CreateSut().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
 
-        sut.IsLastAttempt(int.MaxValue, out var increment).Should().BeFalse();
-        increment.Should().BeFalse();
+        sut.IsLastAttempt(int.MaxValue, out var increment).ShouldBeFalse();
+        increment.ShouldBeFalse();
     }
 
     private sealed class ThrowingFakeTimeProvider : FakeTimeProvider
     {
-        public override DateTimeOffset GetUtcNow() => throw new AssertionFailedException("TimeProvider should not be used.");
+        public override DateTimeOffset GetUtcNow() => throw new XunitException("TimeProvider should not be used.");
 
         public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
-            => throw new AssertionFailedException("TimeProvider should not be used.");
+            => throw new XunitException("TimeProvider should not be used.");
     }
 
     [Fact]
@@ -307,8 +307,8 @@ public class RetryResilienceStrategyTests
             attempts.Add(args.AttemptNumber);
             delays.Add(args.RetryDelay);
 
-            args.Outcome.Exception.Should().BeNull();
-            args.Outcome.Result.Should().Be(0);
+            args.Outcome.Exception.ShouldBeNull();
+            args.Outcome.Result.ShouldBe(0);
             return default;
         };
 
@@ -322,14 +322,14 @@ public class RetryResilienceStrategyTests
 
         await executing;
 
-        attempts.Should().HaveCount(3);
-        attempts[0].Should().Be(0);
-        attempts[1].Should().Be(1);
-        attempts[2].Should().Be(2);
+        attempts.Count.ShouldBe(3);
+        attempts[0].ShouldBe(0);
+        attempts[1].ShouldBe(1);
+        attempts[2].ShouldBe(2);
 
-        delays[0].Should().Be(TimeSpan.FromSeconds(2));
-        delays[1].Should().Be(TimeSpan.FromSeconds(4));
-        delays[2].Should().Be(TimeSpan.FromSeconds(6));
+        delays[0].ShouldBe(TimeSpan.FromSeconds(2));
+        delays[1].ShouldBe(TimeSpan.FromSeconds(4));
+        delays[2].ShouldBe(TimeSpan.FromSeconds(6));
     }
 
     [Fact]
@@ -351,9 +351,9 @@ public class RetryResilienceStrategyTests
 
         await ExecuteAndAdvance(sut);
 
-        delays[0].Should().Be(TimeSpan.FromMilliseconds(123));
-        delays[1].Should().Be(TimeSpan.FromMilliseconds(123));
-        delays[2].Should().Be(TimeSpan.FromMilliseconds(123));
+        delays[0].ShouldBe(TimeSpan.FromMilliseconds(123));
+        delays[1].ShouldBe(TimeSpan.FromMilliseconds(123));
+        delays[2].ShouldBe(TimeSpan.FromMilliseconds(123));
     }
 
     [Fact]
@@ -361,7 +361,7 @@ public class RetryResilienceStrategyTests
     {
         _options.OnRetry = args =>
         {
-            args.Duration.Should().Be(TimeSpan.FromMinutes(1));
+            args.Duration.ShouldBe(TimeSpan.FromMinutes(1));
 
             return default;
         };
@@ -386,11 +386,11 @@ public class RetryResilienceStrategyTests
         var called = false;
         _telemetry = TestUtilities.CreateResilienceTelemetry(args =>
         {
-            var attempt = args.Arguments.Should().BeOfType<ExecutionAttemptArguments>().Subject;
-            args.Event.Severity.Should().Be(ResilienceEventSeverity.Information);
-            attempt.Handled.Should().BeFalse();
-            attempt.AttemptNumber.Should().Be(0);
-            attempt.Duration.Should().Be(TimeSpan.FromSeconds(1));
+            var attempt = args.Arguments.ShouldBeOfType<ExecutionAttemptArguments>();
+            args.Event.Severity.ShouldBe(ResilienceEventSeverity.Information);
+            attempt.Handled.ShouldBeFalse();
+            attempt.AttemptNumber.ShouldBe(0);
+            attempt.Duration.ShouldBe(TimeSpan.FromSeconds(1));
             called = true;
         });
 
@@ -402,7 +402,7 @@ public class RetryResilienceStrategyTests
             return 0;
         });
 
-        called.Should().BeTrue();
+        called.ShouldBeTrue();
     }
 
     [Fact]
@@ -422,14 +422,14 @@ public class RetryResilienceStrategyTests
                 return;
             }
 
-            var attempt = args.Arguments.Should().BeOfType<ExecutionAttemptArguments>().Subject;
+            var attempt = args.Arguments.ShouldBeOfType<ExecutionAttemptArguments>();
             if (attempt.AttemptNumber == 0)
             {
-                args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
+                args.Event.Severity.ShouldBe(ResilienceEventSeverity.Warning);
             }
             else
             {
-                args.Event.Severity.Should().Be(ResilienceEventSeverity.Information);
+                args.Event.Severity.ShouldBe(ResilienceEventSeverity.Information);
             }
 
             called = true;
@@ -443,7 +443,7 @@ public class RetryResilienceStrategyTests
             return 0;
         });
 
-        called.Should().BeTrue();
+        called.ShouldBeTrue();
     }
 
     [Fact]
@@ -461,14 +461,14 @@ public class RetryResilienceStrategyTests
                 return;
             }
 
-            var attempt = args.Arguments.Should().BeOfType<ExecutionAttemptArguments>().Subject;
+            var attempt = args.Arguments.ShouldBeOfType<ExecutionAttemptArguments>();
             if (attempt.AttemptNumber == 0)
             {
-                args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
+                args.Event.Severity.ShouldBe(ResilienceEventSeverity.Warning);
             }
             else
             {
-                args.Event.Severity.Should().Be(ResilienceEventSeverity.Error);
+                args.Event.Severity.ShouldBe(ResilienceEventSeverity.Error);
             }
 
             called = true;
@@ -482,7 +482,7 @@ public class RetryResilienceStrategyTests
             return 0;
         });
 
-        called.Should().BeTrue();
+        called.ShouldBeTrue();
     }
 
     [Fact]
@@ -499,7 +499,7 @@ public class RetryResilienceStrategyTests
 
         await ExecuteAndAdvance(sut);
 
-        _args.Select(a => a.Arguments).OfType<OnRetryArguments<object>>().Should().HaveCount(3);
+        _args.Select(a => a.Arguments).OfType<OnRetryArguments<object>>().Count().ShouldBe(3);
     }
 
     [Fact]
@@ -511,8 +511,8 @@ public class RetryResilienceStrategyTests
         {
             attempts.Add(args.AttemptNumber);
 
-            args.Outcome.Exception.Should().BeNull();
-            args.Outcome.Result.Should().Be(0);
+            args.Outcome.Exception.ShouldBeNull();
+            args.Outcome.Result.ShouldBe(0);
 
             return new ValueTask<TimeSpan?>(TimeSpan.Zero);
         };
@@ -525,10 +525,10 @@ public class RetryResilienceStrategyTests
 
         sut.Execute(() => 0);
 
-        attempts.Should().HaveCount(3);
-        attempts[0].Should().Be(0);
-        attempts[1].Should().Be(1);
-        attempts[2].Should().Be(2);
+        attempts.Count.ShouldBe(3);
+        attempts[0].ShouldBe(0);
+        attempts[1].ShouldBe(1);
+        attempts[2].ShouldBe(2);
     }
 
     [Fact]
@@ -550,9 +550,9 @@ public class RetryResilienceStrategyTests
 
         sut.Execute(() => 0);
 
-        delays.Should().HaveCount(2);
-        delays[0].Should().Be(TimeSpan.FromMilliseconds(2));
-        delays[1].Should().Be(TimeSpan.FromMilliseconds(2));
+        delays.Count.ShouldBe(2);
+        delays[0].ShouldBe(TimeSpan.FromMilliseconds(2));
+        delays[1].ShouldBe(TimeSpan.FromMilliseconds(2));
     }
 
     private void SetupNoDelay() => _options.DelayGenerator = _ => new ValueTask<TimeSpan?>(TimeSpan.Zero);

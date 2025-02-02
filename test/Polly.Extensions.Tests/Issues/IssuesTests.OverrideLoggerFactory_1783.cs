@@ -30,7 +30,7 @@ public partial class IssuesTests
 
         provider.GetPipeline("dummy").Execute(() => { });
 
-        loggerFactory1.FakeLogger.GetRecords().Should().BeEmpty();
-        loggerFactory2.FakeLogger.GetRecords().Should().NotBeEmpty();
+        loggerFactory1.FakeLogger.GetRecords().ShouldBeEmpty();
+        loggerFactory2.FakeLogger.GetRecords().ShouldNotBeEmpty();
     }
 }

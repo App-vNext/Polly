@@ -92,14 +92,14 @@ public partial class IssuesTests
         var pipeline1 = provider.GetPipeline(resource1Key);
         var pipeline2 = provider.GetPipeline(resource2Key);
 
-        pipeline1.Should().NotBe(pipeline2);
-        provider.GetPipeline(resource1Key).Should().BeSameAs(pipeline1);
-        provider.GetPipeline(resource2Key).Should().BeSameAs(pipeline2);
+        pipeline1.ShouldNotBe(pipeline2);
+        provider.GetPipeline(resource1Key).ShouldBeSameAs(pipeline1);
+        provider.GetPipeline(resource2Key).ShouldBeSameAs(pipeline2);
 
         pipeline1.Execute(() => { });
-        events.Should().HaveCount(5);
-        events[0].Tags["pipeline.name"].Should().Be("endpoint-pipeline");
-        events[0].Tags["pipeline.instance"].Should().Be("Endpoint 1/Resource 1");
+        events.Count.ShouldBe(5);
+        events[0].Tags["pipeline.name"].ShouldBe("endpoint-pipeline");
+        events[0].Tags["pipeline.instance"].ShouldBe("Endpoint 1/Resource 1");
     }
 
     public class EndpointOptions

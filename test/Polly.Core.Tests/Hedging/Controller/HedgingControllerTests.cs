@@ -17,14 +17,14 @@ public class HedgingControllerTests
         var context2 = controller.GetContext(context);
         await PrepareAsync(context2);
 
-        controller.RentedContexts.Should().Be(2);
-        controller.RentedExecutions.Should().Be(2);
+        controller.RentedContexts.ShouldBe(2);
+        controller.RentedExecutions.ShouldBe(2);
 
         await context1.DisposeAsync();
         await context2.DisposeAsync();
 
-        controller.RentedContexts.Should().Be(0);
-        controller.RentedExecutions.Should().Be(0);
+        controller.RentedContexts.ShouldBe(0);
+        controller.RentedExecutions.ShouldBe(0);
     }
 
     private static async Task PrepareAsync(HedgingExecutionContext<int> context)

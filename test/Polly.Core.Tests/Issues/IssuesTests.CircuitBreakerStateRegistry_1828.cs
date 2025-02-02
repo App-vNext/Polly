@@ -35,13 +35,13 @@ public partial class IssuesTests
         });
 
         // Assert
-        states.Should().HaveCount(2);
+        states.Count.ShouldBe(2);
         registry.GetPipeline("C");
-        states.Should().HaveCount(3);
+        states.Count.ShouldBe(3);
 
         foreach (var state in states)
         {
-            state.CircuitState.Should().Be(CircuitState.Closed);
+            state.CircuitState.ShouldBe(CircuitState.Closed);
         }
     }
 }

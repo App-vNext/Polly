@@ -26,8 +26,8 @@ public class ComponentWithDisposeCallbacksTests
         await component.Received(2).DisposeAsync();
 
         // Assert
-        callbacks.Should().BeEmpty();
-        called1.Should().Be(1);
-        called2.Should().Be(1);
+        callbacks.ShouldBeEmpty();
+        called1.ShouldBe(1);
+        called2.ShouldBe(1);
     }
 }

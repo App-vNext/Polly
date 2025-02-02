@@ -14,7 +14,7 @@ public class RateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase, IDis
 
     protected override IRateLimitPolicy<TResult> GetPolicyViaSyntax<TResult>(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst,
         Func<TimeSpan, Context, TResult> retryAfterFactory) =>
-        Policy.RateLimit<TResult>(numberOfExecutions, perTimeSpan, maxBurst, retryAfterFactory);
+        Policy.RateLimit(numberOfExecutions, perTimeSpan, maxBurst, retryAfterFactory);
 
     protected override (bool, TimeSpan) TryExecuteThroughPolicy(IRateLimitPolicy policy)
     {
@@ -68,9 +68,9 @@ public class RateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase, IDis
 
         var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None]);
 
-        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
-        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
-        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
-            .Which.ParamName.Should().Be("action");
+        var exceptionAssertions = Should.Throw<TargetInvocationException>(func);
+        exceptionAssertions.Message.ShouldBe("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.InnerException.ShouldBeOfType<ArgumentNullException>()
+            .ParamName.ShouldBe("action");
     }
 }

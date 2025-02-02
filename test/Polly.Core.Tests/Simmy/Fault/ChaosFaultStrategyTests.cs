@@ -69,8 +69,8 @@ public class ChaosFaultStrategyTests
         var sut = CreateSut(options);
         sut.Execute(() => { _userDelegateExecuted = true; });
 
-        _userDelegateExecuted.Should().BeTrue();
-        _onFaultInjectedExecuted.Should().BeFalse();
+        _userDelegateExecuted.ShouldBeTrue();
+        _onFaultInjectedExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -93,9 +93,9 @@ public class ChaosFaultStrategyTests
             return await Task.FromResult(HttpStatusCode.OK);
         });
 
-        response.Should().Be(HttpStatusCode.OK);
-        _userDelegateExecuted.Should().BeTrue();
-        _onFaultInjectedExecuted.Should().BeFalse();
+        response.ShouldBe(HttpStatusCode.OK);
+        _userDelegateExecuted.ShouldBeTrue();
+        _onFaultInjectedExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -111,25 +111,26 @@ public class ChaosFaultStrategyTests
             FaultGenerator = _ => new ValueTask<Exception?>(fault),
             OnFaultInjected = args =>
             {
-                args.Context.Should().NotBeNull();
-                args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
+                args.Context.ShouldNotBeNull();
+                args.Context.CancellationToken.IsCancellationRequested.ShouldBeFalse();
                 _onFaultInjectedExecuted = true;
                 return default;
             }
         };
 
         var sut = new ResiliencePipelineBuilder<HttpStatusCode>().AddChaosFault(options).Build();
-        await sut.Invoking(s => s.ExecuteAsync(async _ =>
-        {
-            _userDelegateExecuted = true;
-            return await Task.FromResult(HttpStatusCode.OK);
-        }).AsTask())
-            .Should()
-            .ThrowAsync<InvalidOperationException>()
-            .WithMessage(exceptionMessage);
 
-        _userDelegateExecuted.Should().BeFalse();
-        _onFaultInjectedExecuted.Should().BeTrue();
+        var exception = await Should.ThrowAsync<InvalidOperationException>(
+            () => sut.ExecuteAsync(async _ =>
+            {
+                _userDelegateExecuted = true;
+                return await Task.FromResult(HttpStatusCode.OK);
+            }).AsTask());
+
+        exception.Message.ShouldBe(exceptionMessage);
+
+        _userDelegateExecuted.ShouldBeFalse();
+        _onFaultInjectedExecuted.ShouldBeTrue();
     }
 
     [Fact]
@@ -145,28 +146,28 @@ public class ChaosFaultStrategyTests
             FaultGenerator = _ => new ValueTask<Exception?>(fault),
             OnFaultInjected = args =>
             {
-                args.Context.Should().NotBeNull();
-                args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
+                args.Context.ShouldNotBeNull();
+                args.Context.CancellationToken.IsCancellationRequested.ShouldBeFalse();
                 _onFaultInjectedExecuted = true;
                 return default;
             }
         };
 
         var sut = CreateSut(options);
-        await sut.Invoking(s => s.ExecuteAsync(async _ =>
-        {
-            _userDelegateExecuted = true;
-            return await Task.FromResult(200);
-        }).AsTask())
-            .Should()
-            .ThrowAsync<InvalidOperationException>()
-            .WithMessage(exceptionMessage);
 
-        _userDelegateExecuted.Should().BeFalse();
-        _onFaultInjectedExecuted.Should().BeTrue();
-        _args.Should().HaveCount(1);
-        _args[0].Arguments.Should().BeOfType<OnFaultInjectedArguments>();
-        _args[0].Event.EventName.Should().Be(ChaosFaultConstants.OnFaultInjectedEvent);
+        var exception = await Should.ThrowAsync<InvalidOperationException>(
+            () => sut.ExecuteAsync(async _ =>
+            {
+                _userDelegateExecuted = true;
+                return await Task.FromResult(200);
+            }).AsTask());
+        exception.Message.ShouldBe(exceptionMessage);
+
+        _userDelegateExecuted.ShouldBeFalse();
+        _onFaultInjectedExecuted.ShouldBeTrue();
+        _args.Count.ShouldBe(1);
+        _args[0].Arguments.ShouldBeOfType<OnFaultInjectedArguments>();
+        _args[0].Event.EventName.ShouldBe(ChaosFaultConstants.OnFaultInjectedEvent);
     }
 
     [Fact]
@@ -188,9 +189,9 @@ public class ChaosFaultStrategyTests
             return 200;
         });
 
-        result.Should().Be(200);
-        _userDelegateExecuted.Should().BeTrue();
-        _onFaultInjectedExecuted.Should().BeFalse();
+        result.ShouldBe(200);
+        _userDelegateExecuted.ShouldBeTrue();
+        _onFaultInjectedExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -209,8 +210,8 @@ public class ChaosFaultStrategyTests
             _userDelegateExecuted = true;
         });
 
-        _userDelegateExecuted.Should().BeTrue();
-        _onFaultInjectedExecuted.Should().BeFalse();
+        _userDelegateExecuted.ShouldBeTrue();
+        _onFaultInjectedExecuted.ShouldBeFalse();
     }
 
     [Fact]
@@ -232,17 +233,17 @@ public class ChaosFaultStrategyTests
         };
 
         var sut = CreateSut(options);
-        await sut.Invoking(s => s.ExecuteAsync(async _ =>
-        {
-            _userDelegateExecuted = true;
-            return await Task.FromResult(1);
-        }, cts.Token)
-        .AsTask())
-            .Should()
-            .ThrowAsync<OperationCanceledException>();
 
-        _userDelegateExecuted.Should().BeFalse();
-        _onFaultInjectedExecuted.Should().BeFalse();
+        await Should.ThrowAsync<OperationCanceledException>(
+            () => sut.ExecuteAsync(async _ =>
+            {
+                _userDelegateExecuted = true;
+                return await Task.FromResult(1);
+            }, cts.Token)
+            .AsTask());
+
+        _userDelegateExecuted.ShouldBeFalse();
+        _onFaultInjectedExecuted.ShouldBeFalse();
     }
 
     private ResiliencePipeline CreateSut(ChaosFaultStrategyOptions options) =>

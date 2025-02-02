@@ -1,38 +1,49 @@
 ﻿namespace Polly.Specs.Utilities;
 
+[Collection(Constants.SystemClockDependentTestCollection)]
 public class SystemClockSpecs
 {
-    [Fact]
-    public void Sleep_ShouldNotThrow_WhenCancellationNotRequested() =>
-        SystemClock.Sleep.Invoking(s =>
-        {
-            using var cts = new CancellationTokenSource();
-            s(TimeSpan.FromMilliseconds(1), cts.Token);
-        }).Should().NotThrow();
+    private readonly Action<TimeSpan, CancellationToken> _sleep;
+    private readonly Func<TimeSpan, CancellationToken, Task> _sleepAsync;
+
+    public SystemClockSpecs()
+    {
+        SystemClock.Reset();
+        _sleep = SystemClock.Sleep;
+        _sleepAsync = SystemClock.SleepAsync;
+    }
 
     [Fact]
-    public void Sleep_ShouldThrow_WhenCancellationRequested() =>
-        SystemClock.Sleep.Invoking(s =>
+    public void Sleep_Should_NotThrow_WhenCancellationNotRequested() =>
+        Should.NotThrow(() =>
+        {
+            using var cts = new CancellationTokenSource();
+            _sleep(TimeSpan.FromMilliseconds(1), cts.Token);
+        });
+
+    [Fact]
+    public void Sleep_Should_Throw_WhenCancellationRequested() =>
+        Should.Throw<OperationCanceledException>(() =>
         {
             using var cts = new CancellationTokenSource();
             cts.Cancel();
-            s(TimeSpan.FromMilliseconds(1), cts.Token);
-        }).Should().Throw<OperationCanceledException>();
+            _sleep(TimeSpan.FromMilliseconds(1), cts.Token);
+        });
 
     [Fact]
-    public async Task SleepAsync_ShouldNotThrow_WhenCancellationNotRequested() =>
-        await SystemClock.SleepAsync.Invoking(async s =>
+    public async Task SleepAsync_Should_NotThrow_WhenCancellationNotRequested() =>
+        await Should.NotThrowAsync(async () =>
         {
             using var cts = new CancellationTokenSource();
-            await s(TimeSpan.FromMilliseconds(1), cts.Token);
-        }).Should().NotThrowAsync();
+            await _sleepAsync(TimeSpan.FromMilliseconds(1), cts.Token);
+        });
 
     [Fact]
-    public async Task SleepAsync_ShouldThrow_WhenCancellationRequested() =>
-        await SystemClock.SleepAsync.Invoking(async s =>
+    public async Task SleepAsync_Should_Throw_WhenCancellationRequested() =>
+        await Should.ThrowAsync<OperationCanceledException>(async () =>
         {
             using var cts = new CancellationTokenSource();
             cts.Cancel();
-            await s(TimeSpan.FromMilliseconds(1), cts.Token);
-        }).Should().ThrowAsync<OperationCanceledException>();
+            await _sleepAsync(TimeSpan.FromMilliseconds(1), cts.Token);
+        });
 }

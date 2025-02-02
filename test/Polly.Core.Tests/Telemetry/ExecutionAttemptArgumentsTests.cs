@@ -8,8 +8,8 @@ public class ExecutionAttemptArgumentsTests
     public void Ctor_Ok()
     {
         var args = new ExecutionAttemptArguments(99, TimeSpan.MaxValue, true);
-        args.AttemptNumber.Should().Be(99);
-        args.Duration.Should().Be(TimeSpan.MaxValue);
-        args.Handled.Should().BeTrue();
+        args.AttemptNumber.ShouldBe(99);
+        args.Duration.ShouldBe(TimeSpan.MaxValue);
+        args.Handled.ShouldBeTrue();
     }
 }

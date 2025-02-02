@@ -13,12 +13,12 @@ public static class TelemetryUtilTests
         var context = ResilienceContextPool.Shared.Get();
         var listener = TestUtilities.CreateResilienceTelemetry(args =>
         {
-            args.Event.Severity.Should().Be(severity);
+            args.Event.Severity.ShouldBe(severity);
             asserted = true;
         });
 
         TelemetryUtil.ReportExecutionAttempt(listener, context, Outcome.FromResult("dummy"), 0, TimeSpan.Zero, handled);
-        asserted.Should().BeTrue();
+        asserted.ShouldBeTrue();
     }
 
     [Theory]
@@ -30,11 +30,11 @@ public static class TelemetryUtilTests
         var context = ResilienceContextPool.Shared.Get();
         var listener = TestUtilities.CreateResilienceTelemetry(args =>
         {
-            args.Event.Severity.Should().Be(severity);
+            args.Event.Severity.ShouldBe(severity);
             asserted = true;
         });
 
         TelemetryUtil.ReportFinalExecutionAttempt(listener, context, Outcome.FromResult("dummy"), 1, TimeSpan.Zero, handled);
-        asserted.Should().BeTrue();
+        asserted.ShouldBeTrue();
     }
 }

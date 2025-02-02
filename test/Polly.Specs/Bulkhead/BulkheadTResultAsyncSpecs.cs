@@ -1,13 +1,8 @@
 ﻿namespace Polly.Specs.Bulkhead;
 
 [Collection(Constants.ParallelThreadDependentTestCollection)]
-public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
+public class BulkheadTResultAsyncSpecs(ITestOutputHelper testOutputHelper) : BulkheadSpecsBase(testOutputHelper)
 {
-    public BulkheadTResultAsyncSpecs(ITestOutputHelper testOutputHelper)
-        : base(testOutputHelper)
-    {
-    }
-
     #region Configuration
 
     [Fact]
@@ -31,10 +26,10 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
 
         var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken, false]);
 
-        var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
-        exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
-        exceptionAssertions.And.InnerException.Should().BeOfType<ArgumentNullException>()
-            .Which.ParamName.Should().Be("action");
+        var exceptionAssertions = Should.Throw<TargetInvocationException>(func);
+        exceptionAssertions.Message.ShouldBe("Exception has been thrown by the target of an invocation.");
+        exceptionAssertions.InnerException.ShouldBeOfType<ArgumentNullException>()
+            .ParamName.ShouldBe("action");
     }
 
     [Fact]
@@ -43,8 +38,8 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
         Action policy = () => Policy
             .BulkheadAsync(0);
 
-        policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("maxParallelization");
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("maxParallelization");
     }
 
     [Fact]
@@ -53,8 +48,8 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
         Action policy = () => Policy
             .BulkheadAsync<int>(0, 1);
 
-        policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("maxParallelization");
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("maxParallelization");
     }
 
     [Fact]
@@ -63,8 +58,8 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
         Action policy = () => Policy
             .BulkheadAsync<int>(1, -1);
 
-        policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("maxQueuingActions");
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("maxQueuingActions");
     }
 
     [Fact]
@@ -73,8 +68,8 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
         Action policy = () => Policy
             .BulkheadAsync<int>(1, 0, null!);
 
-        policy.Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("onBulkheadRejectedAsync");
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onBulkheadRejectedAsync");
     }
 
     #endregion
@@ -105,7 +100,7 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
 
             Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
-            await bulkhead.Awaiting(b => b.ExecuteAsync(_ => Task.FromResult(1), contextPassedToExecute)).Should().ThrowAsync<BulkheadRejectedException>();
+            await Should.ThrowAsync<BulkheadRejectedException>(() => bulkhead.ExecuteAsync(_ => Task.FromResult(1), contextPassedToExecute));
 
             cancellationSource.Cancel();
 
@@ -116,9 +111,9 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
 #endif
         }
 
-        contextPassedToOnRejected!.Should().NotBeNull();
-        contextPassedToOnRejected!.OperationKey.Should().Be(operationKey);
-        contextPassedToOnRejected!.Should().BeSameAs(contextPassedToExecute);
+        contextPassedToOnRejected.ShouldNotBeNull();
+        contextPassedToOnRejected.OperationKey.ShouldBe(operationKey);
+        contextPassedToOnRejected.ShouldBeSameAs(contextPassedToExecute);
     }
 
     #endregion
@@ -129,7 +124,7 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
         Policy.BulkheadAsync<ResultPrimitive>(maxParallelization, maxQueuingActions);
 
     protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action) =>
-        action.ExecuteOnBulkheadAsync<ResultPrimitive>((AsyncBulkheadPolicy<ResultPrimitive>)bulkhead);
+        action.ExecuteOnBulkheadAsync((AsyncBulkheadPolicy<ResultPrimitive>)bulkhead);
 
     #endregion
 }

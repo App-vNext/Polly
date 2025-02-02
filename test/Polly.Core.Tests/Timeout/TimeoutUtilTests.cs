@@ -22,5 +22,5 @@ public class TimeoutUtilTests
     [MemberData(nameof(ShouldApplyTimeoutData))]
     [Theory]
     public void ShouldApplyTimeout_Ok(TimeSpan timeSpan, bool result) =>
-        TimeoutUtil.ShouldApplyTimeout(timeSpan).Should().Be(result);
+        TimeoutUtil.ShouldApplyTimeout(timeSpan).ShouldBe(result);
 }

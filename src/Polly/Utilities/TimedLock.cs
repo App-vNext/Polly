@@ -93,7 +93,9 @@ internal readonly struct TimedLock : IDisposable
 #endif
 }
 
+#pragma warning disable CA1064 // Exceptions should be public
 internal sealed class LockTimeoutException : Exception
+#pragma warning restore CA1064 // Exceptions should be public
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="LockTimeoutException"/> class.

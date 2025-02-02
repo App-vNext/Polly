@@ -7,7 +7,7 @@ public class ChaosBehaviorConstantsTests
     [Fact]
     public void EnsureDefaults()
     {
-        ChaosBehaviorConstants.DefaultName.Should().Be("Chaos.Behavior");
-        ChaosBehaviorConstants.OnBehaviorInjectedEvent.Should().Be("Chaos.OnBehavior");
+        ChaosBehaviorConstants.DefaultName.ShouldBe("Chaos.Behavior");
+        ChaosBehaviorConstants.OnBehaviorInjectedEvent.ShouldBe("Chaos.OnBehavior");
     }
 }

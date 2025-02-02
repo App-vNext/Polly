@@ -54,7 +54,7 @@ public static class PolicyExtensionsAsync
     public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute)
         where TException : Exception, new()
         =>
-        policy.RaiseExceptionAndOrCancellationAsync<TException>(scenario, cancellationTokenSource, onExecute, _ => new TException());
+        policy.RaiseExceptionAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, _ => new TException());
 
     public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, TResult successResult)
         where TException : Exception, new()

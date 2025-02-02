@@ -10,17 +10,17 @@ public partial class ResiliencePipelineTests
     {
         strategy =>
         {
-            strategy.Execute(() => "res").Should().Be("res");
+            strategy.Execute(() => "res").ShouldBe("res");
         },
 
         strategy =>
         {
             strategy.Execute(state =>
             {
-                state.Should().Be("state");
+                state.ShouldBe("state");
                 return "res";
             },
-            "state").Should().Be("res");
+            "state").ShouldBe("res");
         },
 
         strategy =>
@@ -28,10 +28,10 @@ public partial class ResiliencePipelineTests
             strategy.Execute(
                 token =>
                 {
-                    token.Should().Be(CancellationToken);
+                    token.ShouldBe(CancellationToken);
                     return "res";
                 },
-                CancellationToken).Should().Be("res");
+                CancellationToken).ShouldBe("res");
         },
 
         strategy =>
@@ -39,12 +39,12 @@ public partial class ResiliencePipelineTests
             strategy.Execute(
                 (state, token) =>
                 {
-                    state.Should().Be("state");
-                    token.Should().Be(CancellationToken);
+                    state.ShouldBe("state");
+                    token.ShouldBe(CancellationToken);
                     return "res";
                 },
                 "state",
-                CancellationToken).Should().Be("res");
+                CancellationToken).ShouldBe("res");
         },
 
         strategy =>
@@ -54,13 +54,13 @@ public partial class ResiliencePipelineTests
             strategy.Execute(
                 (context, state) =>
                 {
-                    state.Should().Be("state");
-                    context.Should().Be(context);
-                    context.CancellationToken.Should().Be(CancellationToken);
+                    state.ShouldBe("state");
+                    context.ShouldBe(context);
+                    context.CancellationToken.ShouldBe(CancellationToken);
                     return "res";
                 },
                 context,
-                "state").Should().Be("res");
+                "state").ShouldBe("res");
         },
 
         strategy =>
@@ -70,10 +70,10 @@ public partial class ResiliencePipelineTests
             strategy.Execute(
                 (context) =>
                 {
-                    context.Should().Be(context);
+                    context.ShouldBe(context);
                     return "res";
                 },
-                context).Should().Be("res");
+                context).ShouldBe("res");
         },
     };
 #pragma warning restore IDE0028
@@ -86,8 +86,8 @@ public partial class ResiliencePipelineTests
         {
             Before = (c, _) =>
             {
-                c.IsSynchronous.Should().BeTrue();
-                c.ResultType.Should().Be<string>();
+                c.IsSynchronous.ShouldBeTrue();
+                c.ResultType.ShouldBe(typeof(string));
             },
         }), DisposeBehavior.Allow, null);
 
