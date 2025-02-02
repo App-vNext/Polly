@@ -31,84 +31,130 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_CancellationRequested_EnsureNotRetried()
+    public async Task ExecuteAsync_CanceledBeforeExecution_EnsureNotExecuted()
     {
-        SetupNoDelay();
         var sut = CreateSut();
-        using var cts = new CancellationTokenSource();
-        cts.Cancel();
-        var context = ResilienceContextPool.Shared.Get(cts.Token);
         var executed = false;
-
-        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsValueTask("dummy"); }, context, "state");
-        result.Exception.Should().BeOfType<OperationCanceledException>();
-        executed.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task ExecuteAsync_CancellationRequestedAfterCallback_EnsureNotRetried()
-    {
-        using var cts = new CancellationTokenSource();
-
-        _options.ShouldHandle = _ => PredicateResult.True();
-        _options.OnRetry = _ =>
-        {
-            cts.Cancel();
-            return default;
-        };
-
-        var sut = CreateSut(TimeProvider.System);
-        var context = ResilienceContextPool.Shared.Get(cts.Token);
-        var executed = false;
-
-        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsValueTask("dummy"); }, context, "state");
-        result.Exception.Should().BeOfType<OperationCanceledException>();
-        executed.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ExecuteAsync_CancellationRequestedDuringCallback_EnsureNotRetried()
-    {
-        using var cts = new CancellationTokenSource();
-        _options.ShouldHandle = _ => PredicateResult.True();
-
-        var sut = CreateSut(TimeProvider.System);
-        var context = ResilienceContextPool.Shared.Get(cts.Token);
 
         var result = await sut.ExecuteOutcomeAsync(
             (_, _) =>
             {
-                cts.Cancel();
+                executed = true;
                 return Outcome.FromResultAsValueTask(new object());
             },
-            context,
+            ResilienceContextPool.Shared.Get(new CancellationToken(canceled: true)),
             default(object));
 
-        result.Exception.Should().BeOfType<OperationCanceledException>();
+        result.Exception.Should().BeAssignableTo<OperationCanceledException>();
+        executed.Should().BeFalse();
     }
 
     [Fact]
-    public async Task ExecuteAsync_CancellationRequestedDuringCallback_EnsureResultDisposed()
+    public async Task ExecuteAsync_CanceledDuringExecution_EnsureResultReturned()
     {
-        using var cts = new CancellationTokenSource();
-        _options.ShouldHandle = _ => PredicateResult.True();
+        var sut = CreateSut();
+        using var cancellation = new CancellationTokenSource();
+        var executions = 0;
 
-        var sut = CreateSut(TimeProvider.System);
-        var context = ResilienceContextPool.Shared.Get(cts.Token);
-        var result = default(DisposableResult);
-
-        var outcome = await sut.ExecuteOutcomeAsync(
+        var result = await sut.ExecuteOutcomeAsync(
             (_, _) =>
             {
-                cts.Cancel();
-                result = new();
-                return Outcome.FromResultAsValueTask(result);
+                executions++;
+                cancellation.Cancel();
+                return Outcome.FromResultAsValueTask(new object());
             },
-            context,
+            ResilienceContextPool.Shared.Get(cancellation.Token),
             default(object));
 
-        result.Should().NotBeNull();
-        result!.IsDisposed.Should().BeTrue();
+        result.Exception.Should().BeNull();
+        executions.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_CanceledDuringExecution_EnsureNotExecutedAgain()
+    {
+        var reported = false;
+
+        _options.ShouldHandle = _ => PredicateResult.True();
+        _options.OnRetry =
+            args =>
+            {
+                reported = true;
+                return default;
+            };
+
+        var sut = CreateSut();
+        using var cancellation = new CancellationTokenSource();
+        var executions = 0;
+
+        var result = await sut.ExecuteOutcomeAsync(
+            (_, _) =>
+            {
+                executions++;
+                cancellation.Cancel();
+                return Outcome.FromResultAsValueTask(new object());
+            },
+            ResilienceContextPool.Shared.Get(cancellation.Token),
+            default(object));
+
+        result.Exception.Should().BeAssignableTo<OperationCanceledException>();
+        executions.Should().Be(1);
+        reported.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_CanceledAfterExecution_EnsureNotExecutedAgain()
+    {
+        using var cancellation = new CancellationTokenSource();
+
+        _options.ShouldHandle = _ => PredicateResult.True();
+        _options.OnRetry =
+            args =>
+            {
+                cancellation.Cancel();
+                return default;
+            };
+
+        var sut = CreateSut();
+        var executions = 0;
+
+        var result = await sut.ExecuteOutcomeAsync(
+            (_, _) =>
+            {
+                executions++;
+                return Outcome.FromResultAsValueTask(new object());
+            },
+            ResilienceContextPool.Shared.Get(cancellation.Token),
+            default(object));
+
+        result.Exception.Should().BeAssignableTo<OperationCanceledException>();
+        executions.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_CanceledDuringDelay_EnsureNotExecutedAgain()
+    {
+        _options.ShouldHandle = _ => PredicateResult.True();
+
+        using var cancellation = _timeProvider.CreateCancellationTokenSource(_options.Delay);
+
+        var sut = CreateSut();
+        var executions = 0;
+
+        var resultTask = sut.ExecuteOutcomeAsync(
+            (_, _) =>
+            {
+                executions++;
+                return Outcome.FromResultAsValueTask(new object());
+            },
+            ResilienceContextPool.Shared.Get(cancellation.Token),
+            default(object));
+
+        _timeProvider.Advance(_options.Delay);
+        var result = await resultTask;
+
+        result.Exception.Should().BeAssignableTo<OperationCanceledException>();
+        executions.Should().Be(1);
     }
 
     [Fact]
