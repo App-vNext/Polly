@@ -67,7 +67,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
                 TelemetryUtil.ReportExecutionAttempt(_telemetry, context, outcome, attempt, executionTime, handle);
             }
 
-            if (context.CancellationToken.IsCancellationRequested || isLastAttempt || !handle)
+            if (isLastAttempt || !handle)
             {
                 return outcome;
             }
@@ -100,17 +100,20 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
                 await DisposeHelper.TryDisposeSafeAsync(resultValue, context.IsSynchronous).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
-            // stryker disable once all : no means to test this
-            if (delay > TimeSpan.Zero)
+            try
             {
-                try
+                context.CancellationToken.ThrowIfCancellationRequested();
+
+                // stryker disable once all : no means to test this
+                if (delay > TimeSpan.Zero)
                 {
                     await _timeProvider.DelayAsync(delay, context).ConfigureAwait(context.ContinueOnCapturedContext);
                 }
-                catch (OperationCanceledException e)
-                {
-                    return Outcome.FromException<T>(e);
-                }
+
+            }
+            catch (OperationCanceledException e)
+            {
+                return Outcome.FromException<T>(e);
             }
 
             if (incrementAttempts)
