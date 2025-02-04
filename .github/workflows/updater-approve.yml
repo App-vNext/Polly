@@ -31,7 +31,7 @@ jobs:
 
     - name: Install powershell-yaml
       shell: pwsh
-      run: Install-Module -Name powershell-yaml -Force -MaximumVersion "0.4.7"
+      run: Install-Module -Name powershell-yaml -Force -MaximumVersion "0.4.12"
 
     - name: Check which dependencies were updated
       id: check-dependencies
