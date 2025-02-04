@@ -4,6 +4,15 @@
 
 <!-- next-release -->
 
+## 8.5.2
+
+* Fix build badges by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2445
+* Fix Registry vs. Provider Migration doc typo by [@jernejg](https://github.com/jernejg) in https://github.com/App-vNext/Polly/pull/2447
+* Fix flaky test by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2457
+* Use Shouldly in all test projects by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2458 and https://github.com/App-vNext/Polly/pull/2459
+* Tidy up code in Polly.Specs by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2466 and https://github.com/App-vNext/Polly/pull/2467
+* Fix for retry cancellation by [@kmcclellan](https://github.com/kmcclellan) in https://github.com/App-vNext/Polly/pull/2456
+
 ## 8.5.1
 
 * Synchronize access to `System.ComponentModel.DataAnnotations.Validator` by [@kmcclellan](https://github.com/kmcclellan) in https://github.com/App-vNext/Polly/pull/2428
