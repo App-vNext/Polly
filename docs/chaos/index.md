@@ -47,6 +47,7 @@ builder
     .AddChaosBehavior(behaviorInjectionRate, cancellationToken => RestartRedisAsync(cancellationToken)); // Inject a chaos behavior to executions
 ```
 <!-- endSnippet -->
+
 > [!NOTE]
 > It is usual to place the chaos strategy as the last strategy in the resilience pipeline.
 > By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc.
