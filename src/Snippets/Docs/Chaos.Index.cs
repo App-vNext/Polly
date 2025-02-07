@@ -28,14 +28,14 @@ internal static partial class Chaos
         // Finally, configure chaos strategies if you want to inject chaos.
         // These should come after the regular resilience strategies.
 
-        // 2% of total requests will be injected with chaos fault.
+        // 2% of all requests will be injected with chaos fault.
         const double faultInjectionRate = 0.02;
-        // For the other 98% of total requests, 50% of them will be injected with latency. Then 49% of total request will be injected with chaos latency.
+        // For the remaining 98% of total requests, 50% of them will be injected with latency. Then 49% of total request will be injected with chaos latency.
         // Latency injection does not return early.
         const double latencyInjectionRate = 0.50;
-        // For the other 98% of total requests, 10% of them will be injected with outcome. Then 9.8% of total request will be injected with chaos outcome.
+        // For the remaining 98% of total requests, 10% of them will be injected with outcome. Then 9.8% of total request will be injected with chaos outcome.
         const double outcomeInjectionRate = 0.10;
-        // For the other 88.2% of total requests, 1% of them will be injected with behavior. Then 0.882% of total request will be injected with chaos behavior.
+        // For the remaining 88.2% of total requests, 1% of them will be injected with behavior. Then 0.882% of total request will be injected with chaos behavior.
         const double behaviorInjectionRate = 0.01;
 
         builder
