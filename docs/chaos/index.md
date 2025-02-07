@@ -53,7 +53,9 @@ builder
 
 > [!NOTE]
 > The `AddChaosFault`, `AddChaosLatency`, `AddChaosOutcome` will take effect sequentially if you combine them together.
+
 > In the above example, we use **fault first then latency strategy**, it can save fault waiting time. 
+
 > If you put `AddChaosLatency` before `AddChaosFault`, you will get different behavior.
 
 ```mermaid
