@@ -52,7 +52,7 @@ builder
 > It is usual to place the chaos strategy as the last strategy in the resilience pipeline. By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.
 
 > [!NOTE]
-> The `AddChaosFault`, `AddChaosLatency`, `AddChaosOutcome` will take effect sequentially if you combine them together. In the above example, we use `fault first then latency stragtegy`, it can save fault waiting time. If you put `AddChaosLatency` before `AddChaosFault`, you will get different behavior. 
+> The `AddChaosFault`, `AddChaosLatency`, `AddChaosOutcome` will take effect sequentially if you combine them together. In the above example, we use **fault first then latency strategy**, it can save fault waiting time. If you put `AddChaosLatency` before `AddChaosFault`, you will get different behavior.
 
 ## Major differences
 
