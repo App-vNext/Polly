@@ -31,20 +31,20 @@ builder
 // These should come after the regular resilience strategies.
 
 // 2% of all requests will be injected with chaos fault.
-const double faultInjectionRate = 0.02;
+const double FaultInjectionRate = 0.02;
 // For the remaining 98% of total requests, 50% of them will be injected with latency. Then 49% of total request will be injected with chaos latency.
 // Latency injection does not return early.
-const double latencyInjectionRate = 0.50;
+const double LatencyInjectionRate = 0.50;
 // For the remaining 98% of total requests, 10% of them will be injected with outcome. Then 9.8% of total request will be injected with chaos outcome.
-const double outcomeInjectionRate = 0.10;
+const double OutcomeInjectionRate = 0.10;
 // For the remaining 88.2% of total requests, 1% of them will be injected with behavior. Then 0.882% of total request will be injected with chaos behavior.
-const double behaviorInjectionRate = 0.01;
+const double BehaviorInjectionRate = 0.01;
 
 builder
-    .AddChaosFault(faultInjectionRate, () => new InvalidOperationException("Injected by chaos strategy!")) // Inject a chaos fault to executions
-    .AddChaosLatency(latencyInjectionRate, TimeSpan.FromMinutes(1)) // Inject a chaos latency to executions
-    .AddChaosOutcome(outcomeInjectionRate, () => new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)) // Inject a chaos outcome to executions
-    .AddChaosBehavior(behaviorInjectionRate, cancellationToken => RestartRedisAsync(cancellationToken)); // Inject a chaos behavior to executions
+    .AddChaosFault(FaultInjectionRate, () => new InvalidOperationException("Injected by chaos strategy!")) // Inject a chaos fault to executions
+    .AddChaosLatency(LatencyInjectionRate, TimeSpan.FromMinutes(1)) // Inject a chaos latency to executions
+    .AddChaosOutcome(OutcomeInjectionRate, () => new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)) // Inject a chaos outcome to executions
+    .AddChaosBehavior(BehaviorInjectionRate, cancellationToken => RestartRedisAsync(cancellationToken)); // Inject a chaos behavior to executions
 ```
 <!-- endSnippet -->
 
