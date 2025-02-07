@@ -35,7 +35,7 @@ internal static partial class Chaos
         const double latencyInjectionRate = 0.50;
         // For the other 98% of total requests, 10% of them will be injected with outcome. Then 9.8% of total request will be injected with chaos outcome.
         const double outcomeInjectionRate = 0.10;
-        // For the other 89.2% of total requests, 1% of them will be injected with behavior. Then 0.892% of total request will be injected with chaos behavior.
+        // For the other 88.2% of total requests, 1% of them will be injected with behavior. Then 0.882% of total request will be injected with chaos behavior.
         const double behaviorInjectionRate = 0.01;
 
         builder
