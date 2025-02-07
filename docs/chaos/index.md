@@ -30,19 +30,26 @@ builder
 // Finally, configure chaos strategies if you want to inject chaos.
 // These should come after the regular resilience strategies.
 
-// 2% of invocations will be injected with chaos
-const double InjectionRate = 0.02;
+// 2% of total requests will be injected with chaos fault.
+const double faultInjectionRate = 0.02;
+// For the other 98% of total requests, 50% of them will be injected with latency. Then 49% of total request will be injected with chaos latency.
+const double latencyInjectionRate = 0.50;
+// For the other 49% of total requests, 10% of them will be injected with outcome. Then 4.9% of total request will be injected with chaos outcome.
+const double outcomeInjectionRate = 0.10;
 
 builder
-    .AddChaosLatency(InjectionRate, TimeSpan.FromMinutes(1)) // Inject a chaos latency to executions
-    .AddChaosFault(InjectionRate, () => new InvalidOperationException("Injected by chaos strategy!")) // Inject a chaos fault to executions
-    .AddChaosOutcome(InjectionRate, () => new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)) // Inject a chaos outcome to executions
+    .AddChaosFault(faultInjectionRate, () => new InvalidOperationException("Injected by chaos strategy!")) // Inject a chaos fault to executions
+    .AddChaosLatency(latencyInjectionRate, TimeSpan.FromMinutes(1)) // Inject a chaos latency to executions
+    .AddChaosOutcome(outcomeInjectionRate, () => new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)) // Inject a chaos outcome to executions
     .AddChaosBehavior(0.001, cancellationToken => RestartRedisAsync(cancellationToken)); // Inject a chaos behavior to executions
 ```
 <!-- endSnippet -->
 
 > [!NOTE]
 > It is usual to place the chaos strategy as the last strategy in the resilience pipeline. By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc. The existing resilience strategies - further out in the `ResiliencePipeline` - still apply, so you can test how the Polly resilience strategies you have configured handle the chaos/faults injected by Simmy.
+
+> [!NOTE]
+> The `AddChaosFault`, `AddChaosLatency`, `AddChaosOutcome` will take effect sequentially if you combine them together. In the above example, we use `fault first then latency stragtegy`, it can save fault waiting time. If you put `AddChaosLatency` before `AddChaosFault`, you will get different behavior. 
 
 ## Major differences
 
