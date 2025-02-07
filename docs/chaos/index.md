@@ -67,10 +67,10 @@ sequenceDiagram
     F-->>F: Determines Injection
     deactivate F
 
-    alt 2% injects: 🙈
+    alt 2% chance <br/>to inject: 🙈
         F->>P: Throws injected Fault
         P->>C: Propagates Exception
-    else 98% passes: 🐵
+    else 98% chance <br/>to continue: 🐵
         F->>L: Calls ExecuteCore
     end
 
@@ -79,10 +79,10 @@ sequenceDiagram
     L-->>L: Determines Injection
     deactivate L
 
-    alt 50% injects: 🙈
+    alt 50% chance <br/>to inject: 🙈
         L->>L: Injects delay
         L->>O: Calls ExecuteCore
-    else 50% passes: 🐵
+    else 50% chance <br/>to continue: 🐵
         L->>O: Calls ExecuteCore
     end
 
@@ -91,13 +91,13 @@ sequenceDiagram
     O-->>O: Determines Injection
     deactivate  O
 
-    alt 10% injects: 🙈
+    alt 10% chance <br/>to inject: 🙈
         O->>O: Injects outcome
         O->>L: Returns result
         L->>F: Returns result
         F->>P: Returns result
         P->>C: Returns result
-    else 90% passes: 🐵
+    else 90% chance <br/>to continue: 🐵
         O->>B: Calls ExecuteCore
     end
 
@@ -106,10 +106,10 @@ sequenceDiagram
     B-->>B: Determines Injection
     deactivate B
 
-    alt 1% injects: 🙈
+    alt 1% chance <br/>to inject: 🙈
         B->>B: Injects behavior
         B->>D: Invokes
-    else 99% passes: 🐵
+    else 99% chance <br/>to continue: 🐵
         B->>D: Invokes
     end
 
