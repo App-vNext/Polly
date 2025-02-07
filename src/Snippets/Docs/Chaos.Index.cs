@@ -28,14 +28,21 @@ internal static partial class Chaos
         // Finally, configure chaos strategies if you want to inject chaos.
         // These should come after the regular resilience strategies.
 
-        // 2% of invocations will be injected with chaos
-        const double InjectionRate = 0.02;
+        // 2% of all requests will be injected with chaos fault.
+        const double FaultInjectionRate = 0.02;
+        // For the remaining 98% of total requests, 50% of them will be injected with latency. Then 49% of total request will be injected with chaos latency.
+        // Latency injection does not return early.
+        const double LatencyInjectionRate = 0.50;
+        // For the remaining 98% of total requests, 10% of them will be injected with outcome. Then 9.8% of total request will be injected with chaos outcome.
+        const double OutcomeInjectionRate = 0.10;
+        // For the remaining 88.2% of total requests, 1% of them will be injected with behavior. Then 0.882% of total request will be injected with chaos behavior.
+        const double BehaviorInjectionRate = 0.01;
 
         builder
-            .AddChaosLatency(InjectionRate, TimeSpan.FromMinutes(1)) // Inject a chaos latency to executions
-            .AddChaosFault(InjectionRate, () => new InvalidOperationException("Injected by chaos strategy!")) // Inject a chaos fault to executions
-            .AddChaosOutcome(InjectionRate, () => new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)) // Inject a chaos outcome to executions
-            .AddChaosBehavior(0.001, cancellationToken => RestartRedisAsync(cancellationToken)); // Inject a chaos behavior to executions
+            .AddChaosFault(FaultInjectionRate, () => new InvalidOperationException("Injected by chaos strategy!")) // Inject a chaos fault to executions
+            .AddChaosLatency(LatencyInjectionRate, TimeSpan.FromMinutes(1)) // Inject a chaos latency to executions
+            .AddChaosOutcome(OutcomeInjectionRate, () => new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)) // Inject a chaos outcome to executions
+            .AddChaosBehavior(BehaviorInjectionRate, cancellationToken => RestartRedisAsync(cancellationToken)); // Inject a chaos behavior to executions
 
         #endregion
     }
