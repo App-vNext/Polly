@@ -56,28 +56,6 @@ builder
 > The `AddChaosFault` `AddChaosLatency` `AddChaosOutcome` `AddChaosBehavior` will take effect sequentially if you combine them together.
 > In the above example, we use **fault first then latency strategy**, it can save fault waiting time. If you put `AddChaosLatency` before `AddChaosFault`, you will get different behavior.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor C as Caller
-    participant F as Fault
-    participant L as Latency
-    participant O as Outcome
-    participant B as Behavior
-    actor E as Callee
-
-    C->>F: Calls AddChaosFault
-    F->>C: 2% requests return
-    F->>L: Calls AddChaosLatency [98% requests left]
-    L->>L: 49% requests with latency 
-    L->>O: Calls AddChaosOutcome [98% requests left]
-    O->>C: 9.8% reqeuests return
-    O->>B: Calls AddChaosBehavior [88.2% requests left]
-    B->>B: 0.882% requests with behavior
-    B->>E: Outgoing requests
-    E->>C: returns real result
-```
-
 ## Major differences
 
 This section highlights the major differences compared to the [`Polly.Contrib.Simmy`](https://github.com/Polly-Contrib/Simmy) library:
