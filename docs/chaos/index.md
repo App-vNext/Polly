@@ -48,6 +48,79 @@ builder
 ```
 <!-- endSnippet -->
 
+```mermaid
+sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant F as Fault
+    participant L as Latency
+    participant O as Outcome
+    participant B as Behavior
+    participant D as DecoratedUserCallback
+
+    C->>P: Calls ExecuteAsync
+
+    P->>F: Calls ExecuteCore
+
+    %% Fault Chaos
+    activate F
+    F-->>F: Determines Injection
+    deactivate F
+
+    alt 2% chance <br/>to inject: 🙈
+        F->>P: Throws injected Fault
+        P->>C: Propagates Exception
+    else 98% chance <br/>to continue: 🐵
+        F->>L: Calls ExecuteCore
+    end
+
+    %% Delay Chaos
+    activate L
+    L-->>L: Determines Injection
+    deactivate L
+
+    alt 50% chance <br/>to inject: 🙈
+        L->>L: Injects delay
+        L->>O: Calls ExecuteCore
+    else 50% chance <br/>to continue: 🐵
+        L->>O: Calls ExecuteCore
+    end
+
+    %% Outcome Chaos
+    activate O 
+    O-->>O: Determines Injection
+    deactivate  O
+
+    alt 10% chance <br/>to inject: 🙈
+        O->>O: Injects outcome
+        O->>L: Returns result
+        L->>F: Returns result
+        F->>P: Returns result
+        P->>C: Returns result
+    else 90% chance <br/>to continue: 🐵
+        O->>B: Calls ExecuteCore
+    end
+
+    %% Behavior Chaos
+    activate B
+    B-->>B: Determines Injection
+    deactivate B
+
+    alt 1% chance <br/>to inject: 🙈
+        B->>B: Injects behavior
+        B->>D: Invokes
+    else 99% chance <br/>to continue: 🐵
+        B->>D: Invokes
+    end
+
+    D->>B: Returns result
+    B->>O: Returns result
+    O->>L: Returns result
+    L->>F: Returns result
+    F->>P: Returns result
+    P->>C: Returns result
+```
+
 > [!NOTE]
 > It is usual to place the chaos strategy as the last strategy in the resilience pipeline.
 > By placing the chaos strategies as last, they subvert the usual outbound call at the last minute, substituting their fault or adding extra latency, etc.
