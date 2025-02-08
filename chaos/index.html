@@ -128,6 +128,77 @@ builder
     .AddChaosBehavior(BehaviorInjectionRate, cancellationToken =&gt; RestartRedisAsync(cancellationToken)); // Inject a chaos behavior to executions
 </code></pre>
 <!-- endSnippet -->
+<pre><code class="lang-mermaid">sequenceDiagram
+    actor C as Caller
+    participant P as Pipeline
+    participant F as Fault
+    participant L as Latency
+    participant O as Outcome
+    participant B as Behavior
+    participant D as DecoratedUserCallback
+
+    C-&gt;&gt;P: Calls ExecuteAsync
+
+    P-&gt;&gt;F: Calls ExecuteCore
+
+    %% Fault Chaos
+    activate F
+    F--&gt;&gt;F: Determines Injection
+    deactivate F
+
+    alt 2% chance &lt;br/&gt;to inject: 🙈
+        F-&gt;&gt;P: Throws injected Fault
+        P-&gt;&gt;C: Propagates Exception
+    else 98% chance &lt;br/&gt;to continue: 🐵
+        F-&gt;&gt;L: Calls ExecuteCore
+    end
+
+    %% Delay Chaos
+    activate L
+    L--&gt;&gt;L: Determines Injection
+    deactivate L
+
+    alt 50% chance &lt;br/&gt;to inject: 🙈
+        L-&gt;&gt;L: Injects delay
+        L-&gt;&gt;O: Calls ExecuteCore
+    else 50% chance &lt;br/&gt;to continue: 🐵
+        L-&gt;&gt;O: Calls ExecuteCore
+    end
+
+    %% Outcome Chaos
+    activate O 
+    O--&gt;&gt;O: Determines Injection
+    deactivate  O
+
+    alt 10% chance &lt;br/&gt;to inject: 🙈
+        O-&gt;&gt;O: Injects outcome
+        O-&gt;&gt;L: Returns result
+        L-&gt;&gt;F: Returns result
+        F-&gt;&gt;P: Returns result
+        P-&gt;&gt;C: Returns result
+    else 90% chance &lt;br/&gt;to continue: 🐵
+        O-&gt;&gt;B: Calls ExecuteCore
+    end
+
+    %% Behavior Chaos
+    activate B
+    B--&gt;&gt;B: Determines Injection
+    deactivate B
+
+    alt 1% chance &lt;br/&gt;to inject: 🙈
+        B-&gt;&gt;B: Injects behavior
+        B-&gt;&gt;D: Invokes
+    else 99% chance &lt;br/&gt;to continue: 🐵
+        B-&gt;&gt;D: Invokes
+    end
+
+    D-&gt;&gt;B: Returns result
+    B-&gt;&gt;O: Returns result
+    O-&gt;&gt;L: Returns result
+    L-&gt;&gt;F: Returns result
+    F-&gt;&gt;P: Returns result
+    P-&gt;&gt;C: Returns result
+</code></pre>
 <div class="NOTE">
 <h5>Note</h5>
 <p>It is usual to place the chaos strategy as the last strategy in the resilience pipeline.
