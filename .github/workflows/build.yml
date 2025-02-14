@@ -34,7 +34,7 @@ jobs:
     outputs:
       dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
       dotnet-sign-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-sign-version }}
-      dotnet-validate-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-validate-version }}
+      dotnet-validate-version: '0.0.1-preview.304' # HACK Hardcoded until https://github.com/dotnet/sdk/issues/46857 resolved
       package-names: ${{ steps.build.outputs.package-names }}
       package-version: ${{ steps.build.outputs.package-version }}
 
