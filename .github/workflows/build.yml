@@ -67,14 +67,15 @@ jobs:
       uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
       id: setup-dotnet
 
-    - run: |
+    - name: Restore packages and tools
+      env:
+        DOTNET_NUGET_SIGNATURE_VERIFICATION: false
+      run: |
         echo "DOTNET_NUGET_SIGNATURE_VERIFICATION=${DOTNET_NUGET_SIGNATURE_VERIFICATION}"
         dotnet --version
         dotnet --info
         dotnet restore
-        dotnet tool restore --no-http-cache
-      env:
-        DOTNET_NUGET_SIGNATURE_VERIFICATION: false
+        dotnet tool restore --no-http-cache --verbosity diagnostic
 
     - name: Build, Test and Package
       id: build
