@@ -314,6 +314,7 @@ Polly.IAsyncPolicy<TResult>.ExecuteAsync(System.Func<System.Threading.Tasks.Task
 Polly.IAsyncPolicy<TResult>.WithPolicyKey(string policyKey) -> Polly.IAsyncPolicy<TResult>
 Polly.IAsyncPolicyExtensions
 Polly.IAsyncPolicyPolicyWrapExtensions
+Polly.IInvoker<TResult, TInput>
 Polly.IsPolicy
 Polly.IsPolicy.PolicyKey.get -> string
 Polly.ISyncPolicy

@@ -1,1 +1,1 @@
-﻿
+﻿Polly.IInvoker<TResult, TInput>
