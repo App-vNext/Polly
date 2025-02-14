@@ -75,6 +75,7 @@ jobs:
         restore-keys: ${{ runner.os }}-nuget-
 
     - run: |
+        echo "DOTNET_NUGET_SIGNATURE_VERIFICATION=${DOTNET_NUGET_SIGNATURE_VERIFICATION}"
         dotnet --version
         dotnet --info
         dotnet restore
