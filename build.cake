@@ -293,24 +293,27 @@ void RunMutationTests(FilePath target, FilePath testProject)
     var mutationScore = XmlPeek(target, "/Project/PropertyGroup/MutationScore/text()", new XmlPeekSettings { SuppressWarning = true });
     var score = int.Parse(mutationScore);
     var targetFileName = target.GetFilename();
-    var moduleName = target.GetFilenameWithoutExtension().ToString();
 
-    var config = Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText(strykerConfig.FullPath));
 
-    config["project-info"] = new Newtonsoft.Json.Linq.JObject()
-    {
-        ["module"] = moduleName
-    };
+    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("STRYKER_DASHBOARD_API_KEY"))) {
+        var moduleName = target.GetFilenameWithoutExtension().ToString();
+        var config = Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText(strykerConfig.FullPath));
 
-    System.IO.File.WriteAllText(strykerConfig.FullPath, config.ToString());
+        var reporters = config["stryker-config"].Value<Newtonsoft.Json.Linq.JArray>("reporters");
+        reporters.Add("dashboard");
+
+        config["stryker-config"]["reporters"] = reporters;
+        config["stryker-config"]["project-info"] = new Newtonsoft.Json.Linq.JObject()
+        {
+            ["module"] = moduleName
+        };
+
+        System.IO.File.WriteAllText(strykerConfig.FullPath, config.ToString());
+    }
 
     Information($"Running mutation tests for '{targetFileName}'. Test Project: '{testProject}'");
 
     var args = $"{strykerPath} --project {targetFileName} --test-project {testProject.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{targetFileName}";
-
-    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("STRYKER_DASHBOARD_API_KEY"))) {
-        args += " --reporter dashboard";
-    }
 
     var result = StartProcess("dotnet", args);
     if (result != 0)
