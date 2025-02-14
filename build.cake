@@ -317,6 +317,12 @@ void RunMutationTests(FilePath target, FilePath testProject)
 
     var args = $"{strykerPath} --project {targetFileName} --test-project {testProject.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{targetFileName}";
 
+    if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true")
+    {
+        var version = Environment.GetEnvironmentVariable("GITHUB_REF_NAME");
+        args += $" --version {version}";
+    }
+
     var result = StartProcess("dotnet", args);
     if (result != 0)
     {
