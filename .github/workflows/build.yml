@@ -72,7 +72,7 @@ jobs:
         dotnet --version
         dotnet --info
         dotnet restore
-        dotnet tool restore
+        dotnet tool restore --no-http-cache
       env:
         DOTNET_NUGET_SIGNATURE_VERIFICATION: false
 
