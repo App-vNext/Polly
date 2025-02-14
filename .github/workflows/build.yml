@@ -80,6 +80,8 @@ jobs:
         dotnet --info
         dotnet restore
         dotnet tool restore
+      env:
+        DOTNET_NUGET_SIGNATURE_VERIFICATION: false
 
     - name: Build, Test and Package
       id: build
