@@ -62,6 +62,7 @@ jobs:
       env:
         MUTATION_TARGET: 'MutationTests${{ matrix.target }}'
         SKIP_POLLY_ANALYZERS: 'true'
+        STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
       run: ./build.ps1 -Target ${env:MUTATION_TARGET}
 
     - name: Upload Mutation Report
