@@ -76,6 +76,8 @@ jobs:
         restore-keys: ${{ runner.os }}-nuget-
 
     - run: |
+        dotnet --version
+        dotnet --info
         dotnet restore
         dotnet tool restore
 
