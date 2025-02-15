@@ -7,7 +7,7 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 **Keep up to date with new feature announcements, tips & tricks, and other news through [www.thepollyproject.org](https://www.thepollyproject.org)**
 
-[![Build status](https://github.com/App-vNext/Polly/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/App-vNext/Polly/actions/workflows/build.yml?query=branch%3Amain+event%3Apush) [![Code coverage](https://codecov.io/gh/App-vNext/Polly/branch/main/graph/badge.svg)](https://codecov.io/gh/App-vNext/Polly) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/App-vNext/Polly/badge)](https://securityscorecards.dev/viewer/?uri=github.com/App-vNext/Polly)
+[![Build status](https://github.com/App-vNext/Polly/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/App-vNext/Polly/actions/workflows/build.yml?query=branch%3Amain+event%3Apush) [![Code coverage](https://codecov.io/gh/App-vNext/Polly/branch/main/graph/badge.svg)](https://codecov.io/gh/App-vNext/Polly) [![Mutation score](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2FApp-vNext%2FPolly%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/App-vNext/Polly/main) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/App-vNext/Polly/badge)](https://securityscorecards.dev/viewer/?uri=github.com/App-vNext/Polly)
 
 <!-- markdownlint-disable MD042 -->
 [![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)](#)
