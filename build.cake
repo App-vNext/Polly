@@ -288,7 +288,6 @@ string ToolsExePath(string exeFileName) {
 
 void RunMutationTests(FilePath target, FilePath testProject)
 {
-    var strykerPath = Context.Tools.Resolve("Stryker.CLI.dll");
     var mutationScore = XmlPeek(target, "/Project/PropertyGroup/MutationScore/text()", new XmlPeekSettings { SuppressWarning = true });
     var score = int.Parse(mutationScore);
     var targetFileName = target.GetFilename();
@@ -325,7 +324,7 @@ void RunMutationTests(FilePath target, FilePath testProject)
 
     Information($"Running mutation tests for '{targetFileName}'. Test Project: '{testProject}'");
 
-    var args = $"{strykerPath} --project {targetFileName} --test-project {testProject.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{targetFileName}";
+    var args = $"stryker --project {targetFileName} --test-project {testProject.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{targetFileName}";
 
     var result = StartProcess("dotnet", args);
     if (result != 0)
