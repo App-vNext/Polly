@@ -12,9 +12,21 @@ namespace Polly.Testing.Tests;
 public class ResiliencePipelineExtensionsTests
 {
     [Fact]
+    public void GetPipelineDescriptor_Throws_If_Pipeline_Null()
+    {
+        // Arrange
+        ResiliencePipeline pipeline = null!;
+        ResiliencePipeline<string> pipelineGeneric = null!;
+
+        // Act and Assert
+        Should.Throw<ArgumentNullException>(() => pipeline.GetPipelineDescriptor()).ParamName.ShouldBe("pipeline");
+        Should.Throw<ArgumentNullException>(() => pipelineGeneric.GetPipelineDescriptor()).ParamName.ShouldBe("pipeline");
+    }
+
+    [Fact]
     public void GetPipelineDescriptor_Generic_Ok()
     {
-        // arrange
+        // Arrange
         var strategy = new ResiliencePipelineBuilder<string>()
             .AddFallback(new()
             {
@@ -29,10 +41,11 @@ public class ResiliencePipelineExtensionsTests
             .ConfigureTelemetry(NullLoggerFactory.Instance)
             .Build();
 
-        // act
+        // Act
         var descriptor = strategy.GetPipelineDescriptor();
 
-        // assert
+        // Assert
+        descriptor.ShouldNotBeNull();
         descriptor.IsReloadable.ShouldBeFalse();
         descriptor.Strategies.Count.ShouldBe(7);
         descriptor.FirstStrategy.Options.ShouldBeOfType<FallbackStrategyOptions<string>>();
@@ -58,7 +71,7 @@ public class ResiliencePipelineExtensionsTests
     [Fact]
     public void GetPipelineDescriptor_NonGeneric_Ok()
     {
-        // arrange
+        // Arrange
         var strategy = new ResiliencePipelineBuilder()
             .AddRetry(new())
             .AddCircuitBreaker(new())
@@ -68,10 +81,11 @@ public class ResiliencePipelineExtensionsTests
             .ConfigureTelemetry(NullLoggerFactory.Instance)
             .Build();
 
-        // act
+        // Act
         var descriptor = strategy.GetPipelineDescriptor();
 
-        // assert
+        // Assert
+        descriptor.ShouldNotBeNull();
         descriptor.IsReloadable.ShouldBeFalse();
         descriptor.Strategies.Count.ShouldBe(5);
         descriptor.Strategies[0].Options.ShouldBeOfType<RetryStrategyOptions>();
@@ -92,15 +106,16 @@ public class ResiliencePipelineExtensionsTests
     [Fact]
     public void GetPipelineDescriptor_SingleStrategy_Ok()
     {
-        // arrange
+        // Arrange
         var strategy = new ResiliencePipelineBuilder<string>()
             .AddTimeout(TimeSpan.FromSeconds(1))
             .Build();
 
-        // act
+        // Act
         var descriptor = strategy.GetPipelineDescriptor();
 
-        // assert
+        // Assert
+        descriptor.ShouldNotBeNull();
         descriptor.IsReloadable.ShouldBeFalse();
         descriptor.Strategies.Count.ShouldBe(1);
         descriptor.Strategies[0].Options.ShouldBeOfType<TimeoutStrategyOptions>();
@@ -109,10 +124,11 @@ public class ResiliencePipelineExtensionsTests
     [Fact]
     public async Task GetPipelineDescriptor_Reloadable_Ok()
     {
-        // arrange
+        // Arrange
         using var source = new CancellationTokenSource();
         await using var registry = new ResiliencePipelineRegistry<string>();
-        var strategy = registry.GetOrAddPipeline("dummy", (builder, context) =>
+
+        var pipeline = registry.GetOrAddPipeline("first", (builder, context) =>
         {
             context.OnPipelineDisposed(() => { });
             context.AddReloadToken(source.Token);
@@ -122,10 +138,11 @@ public class ResiliencePipelineExtensionsTests
                 .AddStrategy(_ => new CustomStrategy(), new TestOptions());
         });
 
-        // act
-        var descriptor = strategy.GetPipelineDescriptor();
+        // Act
+        var descriptor = pipeline.GetPipelineDescriptor();
 
-        // assert
+        // Assert
+        descriptor.ShouldNotBeNull();
         descriptor.IsReloadable.ShouldBeTrue();
         descriptor.Strategies.Count.ShouldBe(2);
         descriptor.Strategies[0].Options.ShouldBeOfType<RateLimiterStrategyOptions>();
@@ -135,11 +152,16 @@ public class ResiliencePipelineExtensionsTests
     [Fact]
     public void GetPipelineDescriptor_InnerPipeline_Ok()
     {
-        var descriptor = new ResiliencePipelineBuilder()
+        // Arrange
+        var pipeline = new ResiliencePipelineBuilder()
             .AddPipeline(new ResiliencePipelineBuilder().AddConcurrencyLimiter(1).Build())
-            .Build()
-            .GetPipelineDescriptor();
+            .Build();
 
+        // Act
+        var descriptor = pipeline.GetPipelineDescriptor();
+
+        // Assert
+        descriptor.ShouldNotBeNull();
         descriptor.Strategies.Count.ShouldBe(1);
         descriptor.Strategies[0].Options.ShouldBeOfType<RateLimiterStrategyOptions>();
     }
