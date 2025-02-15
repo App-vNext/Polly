@@ -353,7 +353,7 @@ jobs:
     - name: Push signed NuGet packages to NuGet.org
       env:
         NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
-      run: dotnet nuget push "*.nupkg" --api-key ${env:NUGET_TOKEN} --skip-duplicate --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push "*.nupkg" --api-key "${NUGET_TOKEN}" --skip-duplicate --source https://api.nuget.org/v3/index.json
 
     - name: Generate GitHub application token
       id: generate-application-token
