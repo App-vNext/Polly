@@ -75,7 +75,7 @@ jobs:
             exit 0
           }
 
-          "published=true" >> $env:GITHUB_OUTPUT
+          "published=true" >> ${env:GITHUB_OUTPUT}
 
   notify-release:
     runs-on: [ ubuntu-latest ]

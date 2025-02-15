@@ -49,13 +49,13 @@ jobs:
 
           $GitStatus = (git status --porcelain)
           if ([string]::IsNullOrEmpty($GitStatus)) {
-            Write-Host "No changes to commit."
+            Write-Output "No changes to commit."
             exit 0
           }
 
           $TimeStamp = Get-Date -Format "yyyy-MM-dd-HH-mm"
           $BranchName = "docs/update-docs-$TimeStamp"
-          "branchName=$BranchName" >> $env:GITHUB_OUTPUT
+          "branchName=$BranchName" >> ${env:GITHUB_OUTPUT}
 
           $GitEmail = "138034000+polly-updater-bot[bot]@users.noreply.github.com"
           $GitUser = "polly-updater-bot[bot]"
@@ -67,7 +67,7 @@ jobs:
           git rev-parse --verify --quiet ("remotes/origin/" + $BranchName) | Out-Null
 
           if ($LASTEXITCODE -eq 0) {
-            Write-Host "Branch $BranchName already exists."
+            Write-Output "Branch $BranchName already exists."
             exit 0
           }
 
@@ -75,7 +75,7 @@ jobs:
           git add .
           git commit -m "Update the code-snippets in the documentation"
           git push -u origin $BranchName
-          "updated-docs=true" >> $env:GITHUB_OUTPUT
+          "updated-docs=true" >> ${env:GITHUB_OUTPUT}
 
       - name: Create pull request
         if: steps.update-docs.outputs.updated-docs == 'true'

@@ -117,8 +117,8 @@ jobs:
         $manifest = (Get-Content "./.config/dotnet-tools.json" | Out-String | ConvertFrom-Json)
         $dotnetSignVersion = $manifest.tools.sign.version
         $dotnetValidateVersion = $manifest.tools.'dotnet-validate'.version
-        "dotnet-sign-version=${dotnetSignVersion}" >> $env:GITHUB_OUTPUT
-        "dotnet-validate-version=${dotnetValidateVersion}" >> $env:GITHUB_OUTPUT
+        "dotnet-sign-version=${dotnetSignVersion}" >> ${env:GITHUB_OUTPUT}
+        "dotnet-validate-version=${dotnetValidateVersion}" >> ${env:GITHUB_OUTPUT}
 
   validate-packages:
     needs: build
