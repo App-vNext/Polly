@@ -57,4 +57,26 @@ public class RateLimitPolicySpecs : RateLimitPolicySpecsBase, IDisposable
         exceptionAssertions.InnerException.ShouldBeOfType<ArgumentNullException>()
             .ParamName.ShouldBe("action");
     }
+
+    [Fact]
+    public void Should_throw_when_pertimespan_is_negative()
+    {
+        // Act
+        var exception = Should.Throw<ArgumentOutOfRangeException>(() => Policy.RateLimit(1, TimeSpan.FromSeconds(-1), 1));
+
+        // Assert
+        exception.ParamName.ShouldBe("perTimeSpan");
+        exception.ActualValue.ShouldBe(TimeSpan.FromSeconds(-1));
+    }
+
+    [Fact]
+    public void Should_throw_when_pertimespan_is_zero()
+    {
+        // Act
+        var exception = Should.Throw<ArgumentOutOfRangeException>(() => Policy.RateLimit(1, TimeSpan.Zero, 1));
+
+        // Assert
+        exception.ParamName.ShouldBe("perTimeSpan");
+        exception.ActualValue.ShouldBe(TimeSpan.Zero);
+    }
 }

@@ -103,6 +103,110 @@ public class RetryForeverAsyncSpecs
     }
 
     [Fact]
+    public void Should_throw_when_onretry_is_null()
+    {
+        Action<DelegateResult<ResultPrimitive>> onRetry = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForeverAsync(onRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_with_int_is_null()
+    {
+        Action<DelegateResult<ResultPrimitive>, int> onRetry = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForeverAsync(onRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretryasync_is_null()
+    {
+        Func<DelegateResult<ResultPrimitive>, Task> onRetryAsync = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForeverAsync(onRetryAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretryasync_with_int_is_null()
+    {
+        Func<DelegateResult<ResultPrimitive>, int, Task> onRetryAsync = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForeverAsync(onRetryAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_with_context_is_null()
+    {
+        Action<DelegateResult<ResultPrimitive>, Context> onRetry = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForeverAsync(onRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_with_int_and_context_is_null()
+    {
+        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForeverAsync(onRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretryasync_with_context_is_null()
+    {
+        Func<DelegateResult<ResultPrimitive>, Context, Task> onRetryAsync = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForeverAsync(onRetryAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretryasync_with_int_and_context_is_null()
+    {
+        Func<DelegateResult<ResultPrimitive>, int, Context, Task> onRetryAsync = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForeverAsync(onRetryAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+    }
+
+    [Fact]
     public void Should_throw_when_onretry_exception_context_is_null()
     {
         var policyBuilder = Policy.Handle<Exception>();

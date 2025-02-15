@@ -161,6 +161,26 @@ public class PolicyRegistrySpecs
     }
 
     [Fact]
+    public void Should_return_false_if_policy_does_not_exist_TryGet()
+    {
+        var policy = Policy.NoOp();
+        string key = Guid.NewGuid().ToString();
+
+        _registry.TryGet<NoOpPolicy>(key, out var outPolicy).ShouldBeFalse();
+        outPolicy.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Should_return_false_if_policy_does_not_exist_TryRemove()
+    {
+        var policy = Policy.NoOp();
+        string key = Guid.NewGuid().ToString();
+
+        _registry.TryRemove<NoOpPolicy>(key, out var outPolicy).ShouldBeFalse();
+        outPolicy.ShouldBeNull();
+    }
+
+    [Fact]
     public void Should_be_able_to_retrieve_stored_PolicyTResult_using_TryGet()
     {
         Policy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();

@@ -33,11 +33,6 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
             throw new ArgumentOutOfRangeException(nameof(onePer), onePer, $"The {nameof(LockFreeTokenBucketRateLimiter)} must specify a positive TimeSpan for how often an execution is permitted.");
         }
 
-        if (bucketCapacity <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(bucketCapacity), bucketCapacity, $"{nameof(bucketCapacity)} must be greater than or equal to 1.");
-        }
-
         _addTokenTickInterval = onePer.Ticks;
         _bucketCapacity = bucketCapacity;
 
@@ -82,6 +77,7 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
             long tokensToAdd = Math.Min(_bucketCapacity, tokensMissedAdding);
 
             // Work out when tokens would next be due to be added, if we add these tokens.
+            // stryker disable once all : no means to test this
             long newAddNextTokenAtTicks = currentAddNextTokenAtTicks + (tokensToAdd * _addTokenTickInterval);
 
             // But if we were way overdue refilling the bucket (there was inactivity for a while), that value would be out-of-date: the next time we add tokens must be at least addTokenTickInterval from now.

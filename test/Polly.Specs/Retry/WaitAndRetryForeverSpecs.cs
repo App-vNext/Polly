@@ -8,6 +8,19 @@ public class WaitAndRetryForeverSpecs : IDisposable
     [Fact]
     public void Should_throw_when_sleep_duration_provider_is_null_without_context()
     {
+        Func<int, Context, TimeSpan> sleepDurationProvider = null!;
+
+        Action policy = () => Policy
+                                  .Handle<DivideByZeroException>()
+                                  .WaitAndRetryForever(sleepDurationProvider);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("sleepDurationProvider");
+    }
+
+    [Fact]
+    public void Should_throw_when_sleep_duration_provider_is_null_without_context_with_onretry()
+    {
         Action<Exception, TimeSpan> onRetry = (_, _) => { };
 
         Action policy = () => Policy
@@ -22,6 +35,21 @@ public class WaitAndRetryForeverSpecs : IDisposable
     public void Should_throw_when_sleep_duration_provider_is_null_with_context()
     {
         Action<Exception, TimeSpan, Context> onRetry = (_, _, _) => { };
+
+        Func<int, Context, TimeSpan> sleepDurationProvider = null!;
+
+        Action policy = () => Policy
+                                  .Handle<DivideByZeroException>()
+                                  .WaitAndRetryForever(sleepDurationProvider, onRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("sleepDurationProvider");
+    }
+
+    [Fact]
+    public void Should_throw_when_sleep_duration_provider_is_null_with_context_and_onretry_with_attempt()
+    {
+        Action<Exception, int, TimeSpan, Context> onRetry = (_, _, _, _) => { };
 
         Func<int, Context, TimeSpan> sleepDurationProvider = null!;
 

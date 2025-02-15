@@ -110,9 +110,45 @@ public class TimeoutSpecs : TimeoutSpecsBase
     }
 
     [Fact]
+    public void Should_throw_when_timeout_is_less_than_zero_by_seconds_with_timeoutstrategy()
+    {
+        Action policy = () => Policy.Timeout(-10, TimeoutStrategy.Optimistic);
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("seconds");
+    }
+
+    [Fact]
+    public void Should_not_throw_when_timeout_is_greater_than_zero_by_seconds_with_timeoutstrategy()
+    {
+        Action policy = () => Policy.Timeout(3, TimeoutStrategy.Optimistic);
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
     public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy()
     {
         Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic);
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
+    public void Should_throw_when_timeout_is_less_than_zero_by_seconds_with_ontimeout()
+    {
+        Action<Context, TimeSpan, Task> doNothing = (_, _, _) => { };
+        Action policy = () => Policy.Timeout(-10, doNothing);
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("seconds");
+    }
+
+    [Fact]
+    public void Should_not_throw_when_timeout_is_greater_than_zero_by_seconds_with_ontimeout()
+    {
+        Action<Context, TimeSpan, Task> doNothing = (_, _, _) => { };
+        Action policy = () => Policy.Timeout(3, doNothing);
 
         Should.NotThrow(policy);
     }
@@ -598,6 +634,35 @@ public class TimeoutSpecs : TimeoutSpecsBase
         timeoutPassedToOnTimeout.ShouldBe(timeoutFunc());
     }
 
+    [Fact]
+    public void Should_throw_when_timeoutProvider_is_null_with_strategy()
+    {
+        // Arrange
+        Func<TimeSpan> timeoutProvider = null!;
+        Action policy = () => Policy.Timeout(timeoutProvider, TimeoutStrategy.Pessimistic);
+
+        // Act
+        var exception = Should.Throw<ArgumentNullException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("timeoutProvider");
+    }
+
+    [Fact]
+    public void Should_throw_when_timeoutProvider_is_null_with_strategy_and_ontimeout()
+    {
+        // Arrange
+        Func<TimeSpan> timeoutProvider = null!;
+        Action<Context, TimeSpan, Task> onTimeout = (_, _, _) => { };
+        Action policy = () => Policy.Timeout(timeoutProvider, TimeoutStrategy.Pessimistic, onTimeout);
+
+        // Act
+        var exception = Should.Throw<ArgumentNullException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("timeoutProvider");
+    }
+
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
@@ -777,6 +842,44 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Should.Throw<TimeoutRejectedException>(() => policy.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), userCancellationToken));
 
         taskPassedToOnTimeout.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Should_throw_when_timeout_is_less_than_zero_by_seconds_with_ontimeout_with_exception()
+    {
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, _) => { };
+        Action policy = () => Policy.Timeout(-10, onTimeout);
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("seconds");
+    }
+
+    [Fact]
+    public void Should_not_throw_when_timeout_is_greater_than_zero_by_seconds_with_ontimeout_with_exception()
+    {
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, _) => { };
+        Action policy = () => Policy.Timeout(3, onTimeout);
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
+    public void Should_throw_when_timeout_is_less_than_zero_by_seconds_with_ontimeout_with_exception_and_strategy()
+    {
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, _) => { };
+        Action policy = () => Policy.Timeout(-10, TimeoutStrategy.Pessimistic, onTimeout);
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("seconds");
+    }
+
+    [Fact]
+    public void Should_not_throw_when_timeout_is_greater_than_zero_by_seconds_with_ontimeout_with_exception_and_strategy()
+    {
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, _) => { };
+        Action policy = () => Policy.Timeout(3, TimeoutStrategy.Pessimistic, onTimeout);
+
+        Should.NotThrow(policy);
     }
 
     [Fact]

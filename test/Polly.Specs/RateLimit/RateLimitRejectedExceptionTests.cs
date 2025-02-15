@@ -31,5 +31,17 @@ public class RateLimitRejectedExceptionTests
         rate.RetryAfter.ShouldBe(retryAfter);
         rate.Message.ShouldBe(Dummy);
         rate.InnerException.ShouldBe(exception);
+
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() => new RateLimitRejectedException(TimeSpan.FromSeconds(-1)));
+        ex.ParamName.ShouldBe("retryAfter");
+        ex.ActualValue.ShouldBe(TimeSpan.FromSeconds(-1));
+
+        ex = Should.Throw<ArgumentOutOfRangeException>(() => new RateLimitRejectedException(TimeSpan.FromSeconds(-1), rate));
+        ex.ParamName.ShouldBe("retryAfter");
+        ex.ActualValue.ShouldBe(TimeSpan.FromSeconds(-1));
+
+        ex = Should.Throw<ArgumentOutOfRangeException>(() => new RateLimitRejectedException(TimeSpan.FromSeconds(-1), "Error", rate));
+        ex.ParamName.ShouldBe("retryAfter");
+        ex.ActualValue.ShouldBe(TimeSpan.FromSeconds(-1));
     }
 }

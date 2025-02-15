@@ -15,14 +15,14 @@ public class FallbackPolicy : Policy, IFallbackPolicy
         Action<Exception, Context, CancellationToken> fallbackAction)
         : base(policyBuilder)
     {
-        _onFallback = onFallback ?? throw new ArgumentNullException(nameof(onFallback));
-        _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));
+        _onFallback = onFallback;
+        _fallbackAction = fallbackAction;
     }
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken) =>
-        FallbackEngine.Implementation<EmptyStruct>(
+        FallbackEngine.Implementation(
             (ctx, token) =>
             {
                 action(ctx, token);
@@ -62,8 +62,8 @@ public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
         Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction)
         : base(policyBuilder)
     {
-        _onFallback = onFallback ?? throw new ArgumentNullException(nameof(onFallback));
-        _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));
+        _onFallback = onFallback;
+        _fallbackAction = fallbackAction;
     }
 
     /// <inheritdoc/>

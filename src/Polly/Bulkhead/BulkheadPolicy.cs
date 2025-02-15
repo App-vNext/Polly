@@ -19,7 +19,7 @@ public class BulkheadPolicy : Policy, IBulkheadPolicy
         Action<Context> onBulkheadRejected)
     {
         _maxQueueingActions = maxQueueingActions;
-        _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
+        _onBulkheadRejected = onBulkheadRejected;
 
         (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
     }
@@ -85,7 +85,7 @@ public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
         Action<Context> onBulkheadRejected)
     {
         _maxQueueingActions = maxQueueingActions;
-        _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
+        _onBulkheadRejected = onBulkheadRejected;
 
         (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
     }

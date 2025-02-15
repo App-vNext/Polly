@@ -25,8 +25,13 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <remarks>This internal constructor exists solely to facilitate testing of the GetEnumerator() methods, which allow us to support collection initialisation syntax.</remarks>
     /// </summary>
     /// <param name="registry">a dictionary containing keys and policies used for testing.</param>
-    internal PolicyRegistry(IDictionary<string, IsPolicy> registry) =>
-        _registry = registry ?? throw new ArgumentNullException(nameof(registry));
+    internal PolicyRegistry(IDictionary<string, IsPolicy> registry)
+    {
+#pragma warning disable S3236 // Remove this argument from the method call; it hides the caller information.
+        Debug.Assert(registry != null, "This constructor is for testing only, and should not be called with a null registry.");
+#pragma warning restore S3236 // Remove this argument from the method call; it hides the caller information.
+        _registry = registry;
+    }
 
     private ConcurrentDictionary<string, IsPolicy> ThrowIfNotConcurrentImplementation()
     {

@@ -80,6 +80,7 @@ public class ConcurrentPolicyRegistrySpecs
 
         bool removed = _registry.TryRemove(key, out IsPolicy removedPolicy);
         removed.ShouldBeFalse();
+        removedPolicy.ShouldBeNull();
     }
 
     [Fact]

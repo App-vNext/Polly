@@ -437,8 +437,8 @@ public partial class Policy
         }
 
         return new TimeoutPolicy<TResult>(
-                timeoutProvider,
-                timeoutStrategy,
-                onTimeout);
+            timeoutProvider,
+            timeoutStrategy,
+            onTimeout);
     }
 }

@@ -115,4 +115,32 @@ public class ContextualTtlSpecs
         gotTtl.Timespan.ShouldBe(ttl);
         gotTtl.SlidingExpiration.ShouldBeFalse();
     }
+
+    [Fact]
+    public void TimeSpanKey_is_correct()
+    {
+        // Assert
+        ContextualTtl.TimeSpanKey.ShouldBe("ContextualTtlTimeSpan");
+    }
+
+    [Fact]
+    public void SlidingExpirationKey_is_correct()
+    {
+        // Assert
+        ContextualTtl.SlidingExpirationKey.ShouldBe("ContextualTtlSliding");
+    }
+
+    [Fact]
+    public void ContextualTtl_behaves_correctly_for_no_ttl()
+    {
+        // Arrange
+        var target = new ContextualTtl();
+
+        // Act
+        var actual = target.GetTtl([], null);
+
+        // Assert
+        actual.Timespan.ShouldBe(TimeSpan.Zero);
+        actual.SlidingExpiration.ShouldBeFalse();
+    }
 }

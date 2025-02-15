@@ -418,8 +418,8 @@ public partial class Policy
         }
 
         return new TimeoutPolicy(
-                timeoutProvider,
-                timeoutStrategy,
-                onTimeout);
+            timeoutProvider,
+            timeoutStrategy,
+            onTimeout);
     }
 }

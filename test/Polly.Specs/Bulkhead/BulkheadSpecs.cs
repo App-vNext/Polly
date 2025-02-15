@@ -94,7 +94,8 @@ public class BulkheadSpecs(ITestOutputHelper testOutputHelper) : BulkheadSpecsBa
         // Time for the other thread to kick up and take the bulkhead.
         Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
-        Should.Throw<BulkheadRejectedException>(() => bulkhead.Execute(_ => { }, contextPassedToExecute));
+        Should.Throw<BulkheadRejectedException>(() => bulkhead.Execute(_ => { }, contextPassedToExecute))
+            .Message.ShouldBe("The bulkhead semaphore and queue are full and execution was rejected.");
 
 #if NET
         tcs.SetCanceled(CancellationToken);
