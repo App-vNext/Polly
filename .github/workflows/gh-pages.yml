@@ -12,14 +12,16 @@ on:
       - dotnet-vnext
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
 
   build-docs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
+    permissions:
+      contents: read
 
     steps:
 

@@ -40,7 +40,7 @@ Param(
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
-Write-Host "Preparing to run build script..."
+Write-Output "Preparing to run build script..."
 
 # Should we show verbose messages?
 if ($Verbose.IsPresent)
@@ -49,12 +49,6 @@ if ($Verbose.IsPresent)
 }
 
 $TOOLS_DIR = Join-Path $PSScriptRoot "tools"
-
-# Is this a dry run?
-$UseDryRun = "";
-if ($WhatIf.IsPresent) {
-    $UseDryRun = "-dryrun"
-}
 
 # Make sure tools folder exists
 if ((Test-Path $PSScriptRoot) -and !(Test-Path $TOOLS_DIR)) {
@@ -70,8 +64,7 @@ if (-Not $SkipToolPackageRestore.IsPresent)
 
     Write-Verbose -Message "Restoring tools from NuGet..."
 
-    $NuGetOutput = Invoke-Expression "& dotnet tool restore"
-    Write-Verbose ($NuGetOutput | Out-String)
+    & dotnet tool restore | Write-Verbose
 
     Pop-Location
     if ($LASTEXITCODE -ne 0)
@@ -80,7 +73,15 @@ if (-Not $SkipToolPackageRestore.IsPresent)
     }
 }
 
+# Is this a dry run?
+$additionalArgs = @();
+if ($WhatIf.IsPresent) {
+    $additionalArgs += "-dryrun"
+}
+
 # Start Cake
-Write-Host "Running build script..."
-Invoke-Expression "dotnet dotnet-cake `"$Script`" --target=`"$Target`" --configuration=`"$Configuration`" --verbosity=`"$Verbosity`" $UseDryRun"
+Write-Output "Running build script..."
+
+& dotnet cake $Script "--target=$Target" "--configuration=$Configuration" "--verbosity=$Verbosity" $additionalArgs
+
 exit $LASTEXITCODE

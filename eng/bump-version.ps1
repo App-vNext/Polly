@@ -18,7 +18,7 @@ if ($ReleaseVersion.StartsWith("v")) {
 $version = [System.Version]::new($ReleaseVersion)
 $releasedVersion = $version.ToString()
 
-Write-Host "Bumping version from $($pollyVersion.InnerText) to $releasedVersion"
+Write-Output "Bumping version from $($pollyVersion.InnerText) to $releasedVersion"
 
 $pollyVersion.InnerText = $releasedVersion
 

@@ -11,7 +11,7 @@ if ($ReleaseVersion.StartsWith("v")) {
     $ReleaseVersion = $ReleaseVersion.Substring(1)
 }
 
-Write-Host "Updating CHANGELOG for v$ReleaseVersion"
+Write-Output "Updating CHANGELOG for v$ReleaseVersion"
 
 $repo = Join-Path $PSScriptRoot ".."
 $changelog = Join-Path $repo "CHANGELOG.md"
@@ -27,20 +27,20 @@ $entry = [System.Collections.Generic.List[string]]@(
 
 $releaseNotes = $ReleaseNotesText.Split("`n") | Select-Object -Skip 1
 foreach ($line in $releaseNotes) {
-if ($line -eq "") {
-    continue
-}
-if ($line.StartsWith("##")) {
-    break
-}
-if (!$line.StartsWith("* ")) {
-    continue
-}
+    if ($line -eq "") {
+        continue
+    }
+    if ($line.StartsWith("##")) {
+        break
+    }
+    if (!$line.StartsWith("* ")) {
+        continue
+    }
 
-# Update the user's login to link to their GitHub profile
-$line = $line -Replace "\@(([a-zA-Z0-9\-]+))", ('[@$1](' + $GitHubServerUrl + '/$1)')
+    # Update the user's login to link to their GitHub profile
+    $line = $line -Replace "\@(([a-zA-Z0-9\-]+))", ('[@$1](' + $GitHubServerUrl + '/$1)')
 
-$entry.Add($line)
+    $entry.Add($line)
 }
 
 $index = $lines.IndexOf("<!-- next-release -->")

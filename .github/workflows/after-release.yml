@@ -75,7 +75,7 @@ jobs:
           git rev-parse --verify --quiet "remotes/origin/${branchName}" | Out-Null
 
           if ($LASTEXITCODE -eq 0) {
-            Write-Host "Branch ${branchName} already exists."
+            Write-Output "Branch ${branchName} already exists."
             exit 0
           }
 
@@ -84,8 +84,8 @@ jobs:
           git commit -m "Update CHANGELOG`n`nUpdate CHANGELOG and samples for v${env:RELEASE_VERSION}."
           git push -u origin $branchName
 
-          "branch-name=${branchName}" >> $env:GITHUB_OUTPUT
-          "updated-version=true" >> $env:GITHUB_OUTPUT
+          "branch-name=${branchName}" >> ${env:GITHUB_OUTPUT}
+          "updated-version=true" >> ${env:GITHUB_OUTPUT}
 
       - name: Create pull request
         if: steps.push-changes.outputs.updated-version == 'true'

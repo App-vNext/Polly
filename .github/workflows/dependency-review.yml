@@ -7,13 +7,15 @@ on:
       - release/*
       - dotnet-vnext
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
     if: github.event.repository.fork == false
+
+    permissions:
+      contents: read
 
     steps:
 

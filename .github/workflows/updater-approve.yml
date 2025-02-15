@@ -7,8 +7,7 @@ on:
       - release/*
       - dotnet-vnext
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   review:
@@ -19,6 +18,9 @@ jobs:
       REVIEWER_LOGIN: "polly-reviewer-bot[bot]"
       UPDATER_LOGIN: "polly-updater-bot[bot]"
 
+    permissions:
+      contents: read
+
     steps:
 
     - name: Generate GitHub application token
@@ -27,7 +29,7 @@ jobs:
       with:
         application_id: ${{ secrets.POLLY_REVIEWER_BOT_APP_ID }}
         application_private_key: ${{ secrets.POLLY_REVIEWER_BOT_KEY }}
-        permissions: "contents:write, pull_requests:write"
+        permissions: 'contents:write, pull_requests:write'
 
     - name: Install powershell-yaml
       shell: pwsh
@@ -38,13 +40,14 @@ jobs:
       env:
         INCLUDE_NUGET_PACKAGES: "Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,System.Text.Json"
         GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
       shell: pwsh
       run: |
         $commits = gh api `
-          /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/commits `
+          /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/commits `
           --jq '.[] | { author: .author.login, message: .commit.message }' | ConvertFrom-Json
 
-        $expectedUser = $env:UPDATER_LOGIN
+        $expectedUser = ${env:UPDATER_LOGIN}
         $onlyDependencyUpdates = $True
         $onlyChangesFromUser = $True
 
@@ -79,7 +82,7 @@ jobs:
         # Did we find at least one dependency?
         $isPatch = $dependencies.Length -gt 0
         $onlyTrusted = $dependencies.Length -gt 0
-        $trustedPackages = $env:INCLUDE_NUGET_PACKAGES.Split(',')
+        $trustedPackages = ${env:INCLUDE_NUGET_PACKAGES}.Split(',')
 
         foreach ($dependency in $dependencies) {
           $isPatch = $isPatch -And $dependency.Type -eq "version-update:semver-patch"
@@ -95,7 +98,7 @@ jobs:
         # Microsoft-published NuGet packages that were made by the GitHub
         # login we expect to make those changes in the other workflow.
         $isTrusted = (($onlyTrusted -And $isPatch) -And $onlyChangesFromUser) -And $onlyDependencyUpdates
-        "is-trusted-update=$isTrusted" >> $env:GITHUB_OUTPUT
+        "is-trusted-update=$isTrusted" >> ${env:GITHUB_OUTPUT}
 
     - name: Checkout code
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -107,44 +110,46 @@ jobs:
       if: steps.check-dependencies.outputs.is-trusted-update == 'true'
       env:
         GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
         PR_URL: ${{ github.event.pull_request.html_url }}
       shell: pwsh
       run: |
-        $approvals = gh api /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews | ConvertFrom-Json
-        $approvals = $approvals | Where-Object { $_.user.login -eq $env:REVIEWER_LOGIN }
+        $approvals = gh api /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews | ConvertFrom-Json
+        $approvals = $approvals | Where-Object { $_.user.login -eq ${env:REVIEWER_LOGIN} }
         $approvals = $approvals | Where-Object { $_.state -eq "APPROVED" }
 
         if ($approvals.Length -eq 0) {
-          gh pr checkout "$env:PR_URL"
-          gh pr review --approve "$env:PR_URL"
-          gh pr merge --auto --squash "$env:PR_URL"
+          gh pr checkout "${env:PR_URL}"
+          gh pr review --approve "${env:PR_URL}"
+          gh pr merge --auto --squash "${env:PR_URL}"
         }
         else {
-          Write-Host "PR already approved.";
+          Write-Output "PR already approved.";
         }
 
     - name: Disable auto-merge and dismiss approvals
       if: steps.check-dependencies.outputs.is-trusted-update != 'true'
       env:
         GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
         PR_URL: ${{ github.event.pull_request.html_url }}
       shell: pwsh
       run: |
-        $approvals = gh api /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews | ConvertFrom-Json
-        $approvals = $approvals | Where-Object { $_.user.login -eq $env:REVIEWER_LOGIN }
+        $approvals = gh api /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews | ConvertFrom-Json
+        $approvals = $approvals | Where-Object { $_.user.login -eq ${env:REVIEWER_LOGIN} }
         $approvals = $approvals | Where-Object { $_.state -eq "APPROVED" }
 
         if ($approvals.Length -gt 0) {
-          gh pr checkout "$env:PR_URL"
-          gh pr merge --disable-auto "$env:PR_URL"
+          gh pr checkout "${env:PR_URL}"
+          gh pr merge --disable-auto "${env:PR_URL}"
           foreach ($approval in $approvals) {
             gh api `
               --method PUT `
-              /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews/$($approval.id)/dismissals `
+              /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews/$($approval.id)/dismissals `
               -f message='Cannot approve as other changes have been introduced.' `
               -f event='DISMISS'
           }
         }
         else {
-          Write-Host "PR not already approved.";
+          Write-Output "PR not already approved.";
         }

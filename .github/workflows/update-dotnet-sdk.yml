@@ -5,12 +5,13 @@ on:
     - cron:  '0 12 * * WED'
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   update-dotnet-sdk:
     uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@758e92b362c4164925583874878423a794cce239 # v3.4.1
+    permissions:
+      contents: read
     with:
       labels: "dependencies,.NET"
       update-nuget-packages: false
@@ -32,4 +33,5 @@ jobs:
     - name: Add security label
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: gh pr edit "${{ needs.update-dotnet-sdk.outputs.pull-request-html-url }}" --add-label security
+        PR_URL: ${{ needs.update-dotnet-sdk.outputs.pull-request-html-url }}
+      run: gh pr edit "${PR_URL}" --add-label security
