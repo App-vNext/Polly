@@ -320,7 +320,7 @@ void RunMutationTests(FilePath target, FilePath testProject)
         System.IO.File.WriteAllText(strykerConfig.FullPath, config.ToString());
 
         Information("Configured Stryker dashboard.");
-        Information($"Mutation report will be available at {dashboardUrl}.");
+        Information($"Mutation report will be available at {dashboardUrl}");
     }
 
     Information($"Running mutation tests for '{targetFileName}'. Test Project: '{testProject}'");
