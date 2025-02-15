@@ -94,6 +94,6 @@ jobs:
           then
             echo "Mutation tests successful ✅"
           else
-            echo "One or more mutation test runs failed ❌"
+            echo "::error title=Mutation Tests::One or more mutation test runs failed ❌"
             exit 1
           fi
