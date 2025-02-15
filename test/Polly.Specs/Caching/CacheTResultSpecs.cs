@@ -45,6 +45,13 @@ public class CacheTResultSpecs : IDisposable
     }
 
     [Fact]
+    public void For_throws_if_cache_provider_is_null()
+    {
+        ISyncCacheProvider nonGenericCacheProvider = null!;
+        Should.Throw<ArgumentNullException>(() => nonGenericCacheProvider.For<string>()).ParamName.ShouldBe("nonGenericCacheProvider");
+    }
+
+    [Fact]
     public void Should_throw_when_cache_provider_is_null()
     {
         ISyncCacheProvider cacheProvider = null!;

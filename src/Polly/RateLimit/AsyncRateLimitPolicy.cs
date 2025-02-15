@@ -9,7 +9,7 @@ public class AsyncRateLimitPolicy : AsyncPolicy, IRateLimitPolicy
     private readonly IRateLimiter _rateLimiter;
 
     internal AsyncRateLimitPolicy(IRateLimiter rateLimiter) =>
-        _rateLimiter = rateLimiter ?? throw new ArgumentNullException(nameof(rateLimiter));
+        _rateLimiter = rateLimiter;
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
@@ -47,7 +47,7 @@ public class AsyncRateLimitPolicy<TResult> : AsyncPolicy<TResult>, IRateLimitPol
         IRateLimiter rateLimiter,
         Func<TimeSpan, Context, TResult>? retryAfterFactory)
     {
-        _rateLimiter = rateLimiter ?? throw new ArgumentNullException(nameof(rateLimiter));
+        _rateLimiter = rateLimiter;
         _retryAfterFactory = retryAfterFactory;
     }
 

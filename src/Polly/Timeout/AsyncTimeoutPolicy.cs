@@ -14,9 +14,9 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
         TimeoutStrategy timeoutStrategy,
         Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
-        _timeoutProvider = timeoutProvider ?? throw new ArgumentNullException(nameof(timeoutProvider));
+        _timeoutProvider = timeoutProvider;
         _timeoutStrategy = timeoutStrategy;
-        _onTimeoutAsync = onTimeoutAsync ?? throw new ArgumentNullException(nameof(onTimeoutAsync));
+        _onTimeoutAsync = onTimeoutAsync;
     }
 
     /// <inheritdoc/>
@@ -58,9 +58,9 @@ public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<
         TimeoutStrategy timeoutStrategy,
         Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
-        _timeoutProvider = timeoutProvider ?? throw new ArgumentNullException(nameof(timeoutProvider));
+        _timeoutProvider = timeoutProvider;
         _timeoutStrategy = timeoutStrategy;
-        _onTimeoutAsync = onTimeoutAsync ?? throw new ArgumentNullException(nameof(onTimeoutAsync));
+        _onTimeoutAsync = onTimeoutAsync;
     }
 
     /// <inheritdoc/>

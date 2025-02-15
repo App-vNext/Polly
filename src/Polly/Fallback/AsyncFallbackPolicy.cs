@@ -9,12 +9,14 @@ public class AsyncFallbackPolicy : AsyncPolicy, IFallbackPolicy
     private readonly Func<Exception, Context, Task> _onFallbackAsync;
     private readonly Func<Exception, Context, CancellationToken, Task> _fallbackAction;
 
-    internal AsyncFallbackPolicy(PolicyBuilder policyBuilder, Func<Exception, Context, Task> onFallbackAsync,
+    internal AsyncFallbackPolicy(
+        PolicyBuilder policyBuilder,
+        Func<Exception, Context, Task> onFallbackAsync,
         Func<Exception, Context, CancellationToken, Task> fallbackAction)
        : base(policyBuilder)
     {
-        _onFallbackAsync = onFallbackAsync ?? throw new ArgumentNullException(nameof(onFallbackAsync));
-        _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));
+        _onFallbackAsync = onFallbackAsync;
+        _fallbackAction = fallbackAction;
     }
 
     /// <inheritdoc/>
@@ -65,8 +67,8 @@ public class AsyncFallbackPolicy<TResult> : AsyncPolicy<TResult>, IFallbackPolic
         Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> fallbackAction)
         : base(policyBuilder)
     {
-        _onFallbackAsync = onFallbackAsync ?? throw new ArgumentNullException(nameof(onFallbackAsync));
-        _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));
+        _onFallbackAsync = onFallbackAsync;
+        _fallbackAction = fallbackAction;
     }
 
     /// <inheritdoc/>

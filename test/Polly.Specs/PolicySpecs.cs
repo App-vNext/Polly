@@ -263,5 +263,35 @@ public class PolicySpecs
             .Context.ShouldBeSameAs(executionContext);
     }
 
+    [Fact]
+    public void PolicyKey_Is_Correct()
+    {
+        // Arrange
+        var policy = Policy.NoOp();
+
+        // Act
+        var actual = policy.PolicyKey;
+
+        // Assert
+        actual.ShouldNotBeNull();
+        actual.ShouldStartWith("NoOpPolicy-");
+    }
+
+    [Fact]
+    public void PolicyKey_Is_Immutable()
+    {
+        // Arrange
+        var policy = Policy.NoOp();
+        var expected = policy.PolicyKey;
+
+        // Act
+        var exception = Should.Throw<ArgumentException>(() => policy.WithPolicyKey("foo"));
+
+        // Assert
+        exception.ParamName.ShouldBe("policyKey");
+        exception.Message.ShouldStartWith("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.");
+        policy.PolicyKey.ShouldBe(expected);
+    }
+
     #endregion
 }

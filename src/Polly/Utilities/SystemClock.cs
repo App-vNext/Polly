@@ -16,6 +16,7 @@ public static class SystemClock
     public static Action<TimeSpan, CancellationToken> Sleep = (timeSpan, cancellationToken) =>
 #pragma warning restore S2223 // Non-constant static fields should not be visible
     {
+        // Stryker disable once Boolean : no means to test this
         if (cancellationToken.WaitHandle.WaitOne(timeSpan))
         {
             cancellationToken.ThrowIfCancellationRequested();

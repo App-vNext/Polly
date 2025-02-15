@@ -34,6 +34,32 @@ public class RetryTResultAsyncSpecs
     }
 
     [Fact]
+    public void Should_throw_when_onretryasync_is_null()
+    {
+        Func<DelegateResult<ResultPrimitive>, int, Task> onRetryAsync = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryAsync(1, onRetryAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_is_null()
+    {
+        Action<DelegateResult<ResultPrimitive>> onRetry = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForeverAsync(onRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
     public void Should_throw_when_retry_count_is_less_than_zero_without_context()
     {
         Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { };

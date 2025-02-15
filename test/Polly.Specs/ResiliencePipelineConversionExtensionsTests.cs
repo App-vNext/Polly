@@ -36,6 +36,30 @@ public class ResiliencePipelineConversionExtensionsTests
     }
 
     [Fact]
+    public void AsAsyncPolicy_Throws_If_Null()
+    {
+        // Arrange
+        ResiliencePipeline strategy = null!;
+        ResiliencePipeline<string> strategyGeneric = null!;
+
+        // Act and Assert
+        Should.Throw<ArgumentNullException>(strategy.AsAsyncPolicy).ParamName.ShouldBe("strategy");
+        Should.Throw<ArgumentNullException>(strategyGeneric.AsAsyncPolicy).ParamName.ShouldBe("strategy");
+    }
+
+    [Fact]
+    public void AsSyncPolicy_Throws_If_Null()
+    {
+        // Arrange
+        ResiliencePipeline strategy = null!;
+        ResiliencePipeline<string> strategyGeneric = null!;
+
+        // Act and Assert
+        Should.Throw<ArgumentNullException>(strategy.AsSyncPolicy).ParamName.ShouldBe("strategy");
+        Should.Throw<ArgumentNullException>(strategyGeneric.AsSyncPolicy).ParamName.ShouldBe("strategy");
+    }
+
+    [Fact]
     public void AsSyncPolicy_Ok()
     {
         _isVoid = true;

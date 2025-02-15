@@ -165,6 +165,33 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     }
 
     [Fact]
+    public void Should_throw_when_timeout_is_less_than_zero_by_seconds_and_onTimeout_is_full_argument_set()
+    {
+        // Arrange
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, _) => { };
+        Action policy = () => Policy.Timeout<ResultPrimitive>(-1, onTimeout);
+
+        // Act
+        var exception = Should.Throw<ArgumentOutOfRangeException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("seconds");
+    }
+
+    [Fact]
+    public void Should_throw_when_timeout_is_zero_by_seconds_and_onTimeout_is_full_argument_set()
+    {
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, _) => { };
+        Action policy = () => Policy.Timeout<ResultPrimitive>(0, onTimeout);
+
+        // Act
+        var exception = Should.Throw<ArgumentOutOfRangeException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("seconds");
+    }
+
+    [Fact]
     public void Should_throw_when_onTimeout_is_null_with_seconds_and_onTimeout_is_full_argument_set()
     {
         Action<Context, TimeSpan, Task, Exception> onTimeout = null!;
@@ -214,6 +241,20 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     #endregion
 
     #region Timeout operation - pessimistic
+
+    [Fact]
+    public void Should_throw_when_timeoutProvider_is_null_with_strategy()
+    {
+        // Arrange
+        Func<TimeSpan> timeoutProvider = null!;
+        Action policy = () => Policy.Timeout<ResultPrimitive>(timeoutProvider, TimeoutStrategy.Pessimistic);
+
+        // Act
+        var exception = Should.Throw<ArgumentNullException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("timeoutProvider");
+    }
 
     [Fact]
     public void Should_throw_when_timeout_is_less_than_execution_duration__pessimistic()
@@ -516,6 +557,48 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     #endregion
 
     #region onTimeout overload - pessimistic
+
+    [Fact]
+    public void Should_throw_when_timeoutProvider_is_null_with_strategy_and_ontimeout()
+    {
+        // Arrange
+        Func<TimeSpan> timeoutProvider = null!;
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, _) => { };
+        Action policy = () => Policy.Timeout<ResultPrimitive>(timeoutProvider, TimeoutStrategy.Pessimistic, onTimeout);
+
+        // Act
+        var exception = Should.Throw<ArgumentNullException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("timeoutProvider");
+    }
+
+    [Fact]
+    public void Should_throw_when_timeout_is_less_than_zero_by_seconds_with_strategy_and_ontimeout()
+    {
+        // Arrange
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, _) => { };
+        Action policy = () => Policy.Timeout<ResultPrimitive>(-1, TimeoutStrategy.Pessimistic, onTimeout);
+
+        // Act
+        var exception = Should.Throw<ArgumentOutOfRangeException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("seconds");
+    }
+
+    [Fact]
+    public void Should_throw_when_timeout_is_zero_by_seconds_with_strategy_and_ontimeout()
+    {
+        Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, _) => { };
+        Action policy = () => Policy.Timeout<ResultPrimitive>(0, TimeoutStrategy.Pessimistic, onTimeout);
+
+        // Act
+        var exception = Should.Throw<ArgumentOutOfRangeException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("seconds");
+    }
 
     [Fact]
     public void Should_call_ontimeout_with_configured_timeout__pessimistic()

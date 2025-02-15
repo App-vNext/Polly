@@ -521,6 +521,20 @@ public class WaitAndRetrySpecs : IDisposable
     }
 
     [Fact]
+    public void Should_throw_when_retry_count_is_less_than_zero_with_attempts_with_context_and_attempt()
+    {
+        Func<int, Exception, Context, TimeSpan> sleepDurationProvider = (_, _, _) => TimeSpan.Zero;
+        Action<Exception, TimeSpan, int, Context> onRetry = (_, _, _, _) => { };
+
+        Action policy = () =>
+            Policy.Handle<DivideByZeroException>()
+                  .WaitAndRetry(-1, sleepDurationProvider, onRetry);
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+              .ParamName.ShouldBe("retryCount");
+    }
+
+    [Fact]
     public void Should_throw_when_retry_count_is_less_than_zero_with_attempts_with_context()
     {
         Action<Exception, TimeSpan, int, Context> onRetry = (_, _, _, _) => { };

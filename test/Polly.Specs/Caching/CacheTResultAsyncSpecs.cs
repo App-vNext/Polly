@@ -67,6 +67,14 @@ public class CacheTResultAsyncSpecs : IDisposable
     }
 
     [Fact]
+    public void Should_throw_when_cacheProvider_is_null()
+    {
+        IAsyncCacheProvider nonGenericCacheProvider = null!;
+        Action action = () => nonGenericCacheProvider.AsyncFor<string>();
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("nonGenericCacheProvider");
+    }
+
+    [Fact]
     public void Should_throw_when_cache_key_strategy_is_null()
     {
         var cacheProvider = new StubCacheProvider();
