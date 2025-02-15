@@ -8,7 +8,7 @@ Param(
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
-Write-Host "Running benchmarks..."
+Write-Output "Running benchmarks..."
 
 $additionalArgs = @()
 
