@@ -294,8 +294,8 @@ void RunMutationTests(FilePath target, FilePath testProject)
     var score = int.Parse(mutationScore);
     var targetFileName = target.GetFilename();
 
-
-    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("STRYKER_DASHBOARD_API_KEY"))) {
+    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("STRYKER_DASHBOARD_API_KEY")))
+    {
         var moduleName = target.GetFilenameWithoutExtension().ToString();
         var config = Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText(strykerConfig.FullPath));
 
@@ -327,5 +327,17 @@ void RunMutationTests(FilePath target, FilePath testProject)
     if (result != 0)
     {
         throw new InvalidOperationException($"The mutation testing of '{targetFileName}' project failed.");
+    }
+
+    var stepSummary = Environment.GetEnvironmentVariable("GITHUB_STEP_SUMMARY");
+    var markdownSummary = System.IO.Path.Combine(
+        strykerOutput.FullPath,
+        targetFileName.ToString(),
+        "reports",
+        "mutation-report.md");
+
+    if (!string.IsNullOrWhiteSpace(stepSummary) && System.IO.File.Exists(markdownSummary))
+    {
+        System.IO.File.WriteAllText(stepSummary, System.IO.File.ReadAllText(markdownSummary));
     }
 }
