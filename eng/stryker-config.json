@@ -1,6 +1,7 @@
 {
   "stryker-config": {
     "reporters": [
+      "dots",
       "json",
       "html",
       "markdown"
