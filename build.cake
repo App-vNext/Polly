@@ -293,11 +293,17 @@ void RunMutationTests(FilePath target, FilePath testProject)
     var score = int.Parse(mutationScore);
     var targetFileName = target.GetFilename();
     var isGitHubActions = Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true";
+    var dashboardUrl = string.Empty;
+    var moduleName = target.GetFilenameWithoutExtension().ToString();
 
     if (isGitHubActions &&
         !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("STRYKER_DASHBOARD_API_KEY")))
     {
-        var moduleName = target.GetFilenameWithoutExtension().ToString();
+        dashboardUrl = $"https://dashboard.stryker-mutator.io/reports/{projectName}/{version}#mutant/{moduleName}";
+
+        var projectName = $"github.com/{Environment.GetEnvironmentVariable("GITHUB_REPOSITORY")}";
+        var version = Environment.GetEnvironmentVariable("GITHUB_REF_NAME");
+
         var config = Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText(strykerConfig.FullPath));
 
         var reporters = config["stryker-config"].Value<Newtonsoft.Json.Linq.JArray>("reporters");
@@ -307,13 +313,14 @@ void RunMutationTests(FilePath target, FilePath testProject)
         config["stryker-config"]["project-info"] = new Newtonsoft.Json.Linq.JObject()
         {
             ["module"] = moduleName,
-            ["name"] = $"github.com/{Environment.GetEnvironmentVariable("GITHUB_REPOSITORY")}",
-            ["version"] = Environment.GetEnvironmentVariable("GITHUB_REF_NAME")
+            ["name"] = projectName,
+            ["version"] = version
         };
 
         System.IO.File.WriteAllText(strykerConfig.FullPath, config.ToString());
 
-        Information($"Configured Stryker dashboard.");
+        Information("Configured Stryker dashboard.");
+        Information($"Mutation report will be available at {dashboardUrl}.");
     }
 
     Information($"Running mutation tests for '{targetFileName}'. Test Project: '{testProject}'");
@@ -335,6 +342,13 @@ void RunMutationTests(FilePath target, FilePath testProject)
 
     if (!string.IsNullOrWhiteSpace(stepSummary) && System.IO.File.Exists(markdownSummary))
     {
-        System.IO.File.WriteAllText(stepSummary, System.IO.File.ReadAllText(markdownSummary));
+        var markdown = System.IO.File.ReadAllText(markdownSummary);
+
+        if (!string.IsNullOrWhiteSpace(dashboardUrl))
+        {
+            markdown += $"\n\n[View Mutation Report :notebook:]({dashboardUrl})";
+        }
+
+        System.IO.File.WriteAllText(stepSummary, markdown);
     }
 }
