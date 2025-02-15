@@ -1,4 +1,4 @@
-name: code-scan
+name: code-ql
 
 on:
   push:
@@ -14,22 +14,21 @@ on:
     - cron: '0 8 * * MON'
   workflow_dispatch:
 
-permissions:
-  actions: read
-  contents: read
+permissions: {}
 
 jobs:
-  code-ql:
-
+  analysis:
     runs-on: ubuntu-latest
 
     permissions:
+      actions: read
+      contents: read
       security-events: write
 
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'csharp' ]
+        language: [ 'actions', 'csharp' ]
 
     steps:
     - name: Checkout repository
@@ -48,3 +47,22 @@ jobs:
       uses: github/codeql-action/analyze@9e8d0789d4a0fa9ceb6b1738f7e269594bdd67f0 # v3.28.9
       with:
         category: '/language:${{ matrix.language }}'
+
+  code-ql:
+    if: ${{ !cancelled() }}
+    needs: [ analysis ]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Report status
+      shell: bash
+      env:
+        SCAN_SUCCESS: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
+      run: |
+        if [ "${SCAN_SUCCESS}" == "true" ]
+        then
+          echo 'CodeQL analysis successful ✅'
+        else
+          echo '::error title=CodeQL::CodeQL analysis failed ❌'
+          exit 1
+        fi
