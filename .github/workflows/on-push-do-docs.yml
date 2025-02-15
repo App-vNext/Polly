@@ -27,6 +27,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          filter: 'tree:0'
+          show-progress: false
           token: ${{ steps.generate-application-token.outputs.token }}
 
       - name: Setup .NET SDK
@@ -37,14 +39,14 @@ jobs:
         shell: pwsh
         env:
           DOTNET_CLI_TELEMETRY_OPTOUT: true
-          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true        
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
         run: |
           $ErrorActionPreference = "Stop"
           $ProgressPreference = "SilentlyContinue"
-  
+
           dotnet tool restore
           dotnet mdsnippets
-  
+
           $GitStatus = (git status --porcelain)
           if ([string]::IsNullOrEmpty($GitStatus)) {
             Write-Host "No changes to commit."
@@ -57,18 +59,18 @@ jobs:
 
           $GitEmail = "138034000+polly-updater-bot[bot]@users.noreply.github.com"
           $GitUser = "polly-updater-bot[bot]"
-  
+
           git config user.email $GitEmail | Out-Null
           git config user.name $GitUser | Out-Null
           git remote set-url "${{ github.server_url }}/${{ github.repository }}.git" | Out-Null
           git fetch origin | Out-Null
           git rev-parse --verify --quiet ("remotes/origin/" + $BranchName) | Out-Null
-  
+
           if ($LASTEXITCODE -eq 0) {
             Write-Host "Branch $BranchName already exists."
             exit 0
           }
-  
+
           git checkout -b $BranchName
           git add .
           git commit -m "Update the code-snippets in the documentation"

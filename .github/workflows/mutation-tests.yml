@@ -46,6 +46,7 @@ jobs:
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
         fetch-depth: 0
+        show-progress: false
 
     - name: Setup .NET SDKs
       uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
@@ -56,11 +57,15 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
 
+    - name: Restore .NET tools
+      run: dotnet tool restore
+
     - name: Run mutation tests for ${{ matrix.target }}
       shell: pwsh
       env:
         MUTATION_TARGET: 'MutationTests${{ matrix.target }}'
         SKIP_POLLY_ANALYZERS: 'true'
+        STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
       run: ./build.ps1 -Target ${env:MUTATION_TARGET}
 
     - name: Upload Mutation Report
@@ -76,12 +81,18 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MUTATIONS_SUCCESS: ${{ !contains(needs.*.result, 'failure') }}
+      STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
     steps:
       - run: |
+          if [ -z "${STRYKER_DASHBOARD_API_KEY}" ]
+          then
+            DASHBOARD_URL="https://dashboard.stryker-mutator.io/reports/github.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}"
+            printf "# Mutations Dashboard\n\n[View report :notebook:](%s)\n" "${DASHBOARD_URL}" >> "${GITHUB_STEP_SUMMARY}"
+          fi
           if [ "$MUTATIONS_SUCCESS" == "true" ]
           then
-            echo 'Mutation tests successful ✅'
+            echo "Mutation tests successful ✅"
           else
-            echo 'One or more mutation test runs failed ❌'
+            echo "::error title=Mutation Tests::One or more mutation test runs failed ❌"
             exit 1
           fi

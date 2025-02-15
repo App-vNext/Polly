@@ -6,13 +6,6 @@ var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Release");
 
 //////////////////////////////////////////////////////////////////////
-// EXTERNAL NUGET TOOLS
-//////////////////////////////////////////////////////////////////////
-
-#Tool "xunit.runner.console&version=2.9.3"
-#Tool "dotnet-stryker&version=4.5.1"
-
-//////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
 //////////////////////////////////////////////////////////////////////
 
@@ -65,6 +58,12 @@ Teardown(_ =>
 Task("__Clean")
     .Does(() =>
 {
+    if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true")
+    {
+        // Nothing to clean in CI
+        return;
+    }
+
     CleanDirectories(
     [
         testResultsDir,
@@ -289,18 +288,66 @@ string ToolsExePath(string exeFileName) {
 
 void RunMutationTests(FilePath target, FilePath testProject)
 {
-    var strykerPath = Context.Tools.Resolve("Stryker.CLI.dll");
     var mutationScore = XmlPeek(target, "/Project/PropertyGroup/MutationScore/text()", new XmlPeekSettings { SuppressWarning = true });
     var score = int.Parse(mutationScore);
     var targetFileName = target.GetFilename();
+    var isGitHubActions = Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true";
+    var dashboardUrl = string.Empty;
+    var moduleName = target.GetFilenameWithoutExtension().ToString();
+
+    if (isGitHubActions &&
+        !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("STRYKER_DASHBOARD_API_KEY")))
+    {
+        var projectName = $"github.com/{Environment.GetEnvironmentVariable("GITHUB_REPOSITORY")}";
+        var version = Environment.GetEnvironmentVariable("GITHUB_REF_NAME");
+
+        dashboardUrl = $"https://dashboard.stryker-mutator.io/reports/{projectName}/{version}#mutant/{moduleName}";
+
+        var config = Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText(strykerConfig.FullPath));
+
+        var reporters = config["stryker-config"].Value<Newtonsoft.Json.Linq.JArray>("reporters");
+        reporters.Add("dashboard");
+
+        config["stryker-config"]["reporters"] = reporters;
+        config["stryker-config"]["project-info"] = new Newtonsoft.Json.Linq.JObject()
+        {
+            ["module"] = moduleName,
+            ["name"] = projectName,
+            ["version"] = version
+        };
+
+        System.IO.File.WriteAllText(strykerConfig.FullPath, config.ToString());
+
+        Information("Configured Stryker dashboard.");
+        Information($"Mutation report will be available at {dashboardUrl}");
+    }
 
     Information($"Running mutation tests for '{targetFileName}'. Test Project: '{testProject}'");
 
-    var args = $"{strykerPath} --project {targetFileName} --test-project {testProject.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{targetFileName}";
+    var args = $"stryker --project {targetFileName} --test-project {testProject.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{targetFileName}";
 
     var result = StartProcess("dotnet", args);
     if (result != 0)
     {
         throw new InvalidOperationException($"The mutation testing of '{targetFileName}' project failed.");
+    }
+
+    var stepSummary = Environment.GetEnvironmentVariable("GITHUB_STEP_SUMMARY");
+    var markdownSummary = System.IO.Path.Combine(
+        strykerOutput.FullPath,
+        targetFileName.ToString(),
+        "reports",
+        "mutation-report.md");
+
+    if (!string.IsNullOrWhiteSpace(stepSummary) && System.IO.File.Exists(markdownSummary))
+    {
+        var markdown = System.IO.File.ReadAllText(markdownSummary);
+
+        if (!string.IsNullOrWhiteSpace(dashboardUrl))
+        {
+            markdown += $"\n\n## Mutation Dashboard\n\n[View Mutation Report :notebook:]({dashboardUrl})";
+        }
+
+        System.IO.File.WriteAllText(stepSummary, markdown);
     }
 }
