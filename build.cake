@@ -299,8 +299,10 @@ void RunMutationTests(FilePath target, FilePath testProject)
     var mutationScore = XmlPeek(target, "/Project/PropertyGroup/MutationScore/text()", new XmlPeekSettings { SuppressWarning = true });
     var score = int.Parse(mutationScore);
     var targetFileName = target.GetFilename();
+    var isGitHubActions = Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true";
 
-    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("STRYKER_DASHBOARD_API_KEY")))
+    if (isGitHubActions &&
+        !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("STRYKER_DASHBOARD_API_KEY")))
     {
         var moduleName = target.GetFilenameWithoutExtension().ToString();
         var config = Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText(strykerConfig.FullPath));
@@ -311,7 +313,9 @@ void RunMutationTests(FilePath target, FilePath testProject)
         config["stryker-config"]["reporters"] = reporters;
         config["stryker-config"]["project-info"] = new Newtonsoft.Json.Linq.JObject()
         {
-            ["module"] = moduleName
+            ["module"] = moduleName,
+            ["name"] = $"github.com/{Environment.GetEnvironmentVariable("GITHUB_REPOSITORY")}",
+            ["version"] = Environment.GetEnvironmentVariable("GITHUB_REF_NAME")
         };
 
         System.IO.File.WriteAllText(strykerConfig.FullPath, config.ToString());
@@ -322,12 +326,6 @@ void RunMutationTests(FilePath target, FilePath testProject)
     Information($"Running mutation tests for '{targetFileName}'. Test Project: '{testProject}'");
 
     var args = $"{strykerPath} --project {targetFileName} --test-project {testProject.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{targetFileName}";
-
-    if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true")
-    {
-        var version = Environment.GetEnvironmentVariable("GITHUB_REF_NAME");
-        args += $" --version {version}";
-    }
 
     var result = StartProcess("dotnet", args);
     if (result != 0)
