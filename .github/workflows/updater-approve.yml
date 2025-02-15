@@ -7,8 +7,7 @@ on:
       - release/*
       - dotnet-vnext
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   review:
@@ -19,6 +18,9 @@ jobs:
       REVIEWER_LOGIN: "polly-reviewer-bot[bot]"
       UPDATER_LOGIN: "polly-updater-bot[bot]"
 
+    permissions:
+      contents: read
+
     steps:
 
     - name: Generate GitHub application token
@@ -27,7 +29,7 @@ jobs:
       with:
         application_id: ${{ secrets.POLLY_REVIEWER_BOT_APP_ID }}
         application_private_key: ${{ secrets.POLLY_REVIEWER_BOT_KEY }}
-        permissions: "contents:write, pull_requests:write"
+        permissions: 'contents:write, pull_requests:write'
 
     - name: Install powershell-yaml
       shell: pwsh
@@ -38,10 +40,11 @@ jobs:
       env:
         INCLUDE_NUGET_PACKAGES: "Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,System.Text.Json"
         GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
       shell: pwsh
       run: |
         $commits = gh api `
-          /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/commits `
+          /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/commits `
           --jq '.[] | { author: .author.login, message: .commit.message }' | ConvertFrom-Json
 
         $expectedUser = ${env:UPDATER_LOGIN}
@@ -107,10 +110,11 @@ jobs:
       if: steps.check-dependencies.outputs.is-trusted-update == 'true'
       env:
         GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
         PR_URL: ${{ github.event.pull_request.html_url }}
       shell: pwsh
       run: |
-        $approvals = gh api /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews | ConvertFrom-Json
+        $approvals = gh api /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews | ConvertFrom-Json
         $approvals = $approvals | Where-Object { $_.user.login -eq ${env:REVIEWER_LOGIN} }
         $approvals = $approvals | Where-Object { $_.state -eq "APPROVED" }
 
@@ -127,10 +131,11 @@ jobs:
       if: steps.check-dependencies.outputs.is-trusted-update != 'true'
       env:
         GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
         PR_URL: ${{ github.event.pull_request.html_url }}
       shell: pwsh
       run: |
-        $approvals = gh api /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews | ConvertFrom-Json
+        $approvals = gh api /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews | ConvertFrom-Json
         $approvals = $approvals | Where-Object { $_.user.login -eq ${env:REVIEWER_LOGIN} }
         $approvals = $approvals | Where-Object { $_.state -eq "APPROVED" }
 
@@ -140,7 +145,7 @@ jobs:
           foreach ($approval in $approvals) {
             gh api `
               --method PUT `
-              /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews/$($approval.id)/dismissals `
+              /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews/$($approval.id)/dismissals `
               -f message='Cannot approve as other changes have been introduced.' `
               -f event='DISMISS'
           }

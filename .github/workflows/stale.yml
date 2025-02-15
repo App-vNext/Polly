@@ -5,9 +5,7 @@ on:
     - cron: '30 1 * * *'
   workflow_dispatch:
 
-permissions:
-  issues: read
-  pull-requests: read
+permissions: {}
 
 jobs:
   stale:

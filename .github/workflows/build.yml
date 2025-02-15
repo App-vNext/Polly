@@ -190,19 +190,22 @@ jobs:
       env:
         AZURE_CLIENT_ID: ${{ secrets.SIGN_CLI_APPLICATION_ID }}
         AZURE_CLIENT_SECRET: ${{ secrets.SIGN_CLI_SECRET }}
+        AZURE_KEY_VAULT_CERTIFICATE: ${{ secrets.SIGN_CLI_CERT_NAME }}
+        AZURE_KEY_VAULT_URL: ${{ secrets.SIGN_CLI_VAULT_URI }}
         AZURE_TENANT_ID: ${{ secrets.SIGN_CLI_TENANT_ID }}
+        VERBOSITY: ${{ runner.debug == '1' && 'Debug' || 'Warning' }}
       run: |
         ./sign code azure-key-vault `
           **/*.nupkg `
-          --base-directory "${{ github.workspace }}/packages" `
-          --file-list "${{ github.workspace }}/signing-config/filelist.txt" `
+          --base-directory "${env:GITHUB_WORKSPACE}/packages" `
+          --file-list "${env:GITHUB_WORKSPACE}/signing-config/filelist.txt" `
           --application-name "Polly" `
           --publisher-name "App vNext" `
           --description "Polly" `
-          --description-url "https://github.com/${{ github.repository }}" `
-          --azure-key-vault-certificate "${{ secrets.SIGN_CLI_CERT_NAME }}" `
-          --azure-key-vault-url "${{ secrets.SIGN_CLI_VAULT_URI }}" `
-          --verbosity "${{ runner.debug == '1' && 'Debug' || 'Warning' }}"
+          --description-url "https://github.com/${env:GITHUB_REPOSITORY}" `
+          --azure-key-vault-certificate ${env:AZURE_KEY_VAULT_CERTIFICATE} `
+          --azure-key-vault-url ${env:AZURE_KEY_VAULT_URL} `
+          --verbosity "${env:VERBOSITY}"
         if ($LASTEXITCODE -ne 0) {
           Write-Output "::error::Failed to sign NuGet packages"
           exit 1
@@ -348,7 +351,9 @@ jobs:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
     - name: Push signed NuGet packages to NuGet.org
-      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json
+      env:
+        NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+      run: dotnet nuget push "*.nupkg" --api-key ${env:NUGET_TOKEN} --skip-duplicate --source https://api.nuget.org/v3/index.json
 
     - name: Generate GitHub application token
       id: generate-application-token

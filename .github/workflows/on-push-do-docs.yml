@@ -62,7 +62,7 @@ jobs:
 
           git config user.email $GitEmail | Out-Null
           git config user.name $GitUser | Out-Null
-          git remote set-url "${{ github.server_url }}/${{ github.repository }}.git" | Out-Null
+          git remote set-url "${env:GITHUB_SERVER_URL}/${env:GITHUB_REPOSITORY}.git" | Out-Null
           git fetch origin | Out-Null
           git rev-parse --verify --quiet ("remotes/origin/" + $BranchName) | Out-Null
 
@@ -80,17 +80,18 @@ jobs:
       - name: Create pull request
         if: steps.update-docs.outputs.updated-docs == 'true'
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        env:
+          BRANCH_NAME: ${{ steps.update-docs.outputs.branchName }}
         with:
           github-token: ${{ steps.generate-application-token.outputs.token }}
           script: |
             const { repo, owner } = context.repo;
-            const workflowUrl = `${{ github.server_url }}/${owner}/${repo}/actions/runs/${process.env.GITHUB_RUN_ID}`;
-            const branchName = "${{ steps.update-docs.outputs.branchName }}";
-            const result = await github.rest.pulls.create({
+            const workflowUrl = `${process.env.GITHUB_SERVER_URL}/${owner}/${repo}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            await github.rest.pulls.create({
               title: 'Update the code-snippets in the documentation',
               owner,
               repo,
-              head: branchName,
+              head: process.env.BRANCH_NAME,
               base: 'main',
               body: [
                 'This PR updates the code-snippets in the documentation.',
