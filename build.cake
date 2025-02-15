@@ -299,10 +299,10 @@ void RunMutationTests(FilePath target, FilePath testProject)
     if (isGitHubActions &&
         !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("STRYKER_DASHBOARD_API_KEY")))
     {
-        dashboardUrl = $"https://dashboard.stryker-mutator.io/reports/{projectName}/{version}#mutant/{moduleName}";
-
         var projectName = $"github.com/{Environment.GetEnvironmentVariable("GITHUB_REPOSITORY")}";
         var version = Environment.GetEnvironmentVariable("GITHUB_REF_NAME");
+
+        dashboardUrl = $"https://dashboard.stryker-mutator.io/reports/{projectName}/{version}#mutant/{moduleName}";
 
         var config = Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText(strykerConfig.FullPath));
 
