@@ -88,7 +88,7 @@ jobs:
           if [ -z "${STRYKER_DASHBOARD_API_KEY}" ]
           then
             DASHBOARD_URL="https://dashboard.stryker-mutator.io/reports/github.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}"
-            printf "# Mutations Dashboard\n\n[View report :notebook:](${DASHBOARD_URL})\n" >> "${GITHUB_STEP_SUMMARY}"
+            printf "# Mutations Dashboard\n\n[View report :notebook:](%s)\n" "${DASHBOARD_URL}" >> "${GITHUB_STEP_SUMMARY}"
           fi
           if [ "$MUTATIONS_SUCCESS" == "true" ]
           then
