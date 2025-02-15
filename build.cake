@@ -286,14 +286,20 @@ string ToolsExePath(string exeFileName) {
     return exePath;
 }
 
-void PatchStrykerConfig(string path, Action<Newtonsoft.Json.Linq.JObject> patch)
+string PatchStrykerConfig(string path, Action<Newtonsoft.Json.Linq.JObject> patch)
 {
     var json = System.IO.File.ReadAllText(path);
     var config = Newtonsoft.Json.Linq.JObject.Parse(json);
 
     patch(config.Value<Newtonsoft.Json.Linq.JObject>("stryker-config"));
 
-    System.IO.File.WriteAllText(path, config.ToString());
+    // Create a new file to avoid polluting the Git tree
+    var tempPath = System.IO.Path.GetTempFileName();
+    tempPath = System.IO.Path.ChangeExtension(tempPath, "json");
+
+    System.IO.File.WriteAllText(tempPath, config.ToString());
+
+    return tempPath;
 }
 
 void RunMutationTests(FilePath target, FilePath testProject)
@@ -308,7 +314,7 @@ void RunMutationTests(FilePath target, FilePath testProject)
 
     if (moduleName == "Polly.Testing")
     {
-        PatchStrykerConfig(strykerConfigPath, (config) => config.Remove("ignore-mutations"));
+        strykerConfigPath = PatchStrykerConfig(strykerConfigPath, (config) => config.Remove("ignore-mutations"));
     }
 
     if (isGitHubActions &&
@@ -319,7 +325,7 @@ void RunMutationTests(FilePath target, FilePath testProject)
 
         dashboardUrl = $"https://dashboard.stryker-mutator.io/reports/{projectName}/{version}#mutant/{moduleName}";
 
-        PatchStrykerConfig(strykerConfigPath, (config) =>
+        strykerConfigPath = PatchStrykerConfig(strykerConfigPath, (config) =>
         {
             var reporters = config.Value<Newtonsoft.Json.Linq.JArray>("reporters");
             reporters.Add("dashboard");
@@ -339,7 +345,7 @@ void RunMutationTests(FilePath target, FilePath testProject)
 
     Information($"Running mutation tests for '{targetFileName}'. Test Project: '{testProject}'");
 
-    var args = $"stryker --project {targetFileName} --test-project {testProject.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{targetFileName}";
+    var args = $"stryker --project {targetFileName} --test-project {testProject.FullPath} --break-at {score} --config-file {strykerConfigPath} --output {strykerOutput}/{targetFileName}";
 
     var result = StartProcess("dotnet", args);
     if (result != 0)
