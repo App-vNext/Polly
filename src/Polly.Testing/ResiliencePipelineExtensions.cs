@@ -40,7 +40,11 @@ public static class ResiliencePipelineExtensions
         var components = new List<PipelineComponent>();
         component.ExpandComponents(components);
 
-        var descriptors = components.OfType<BridgeComponentBase>().Select(s => new ResilienceStrategyDescriptor(s.Options, GetStrategyInstance<T>(s))).ToList().AsReadOnly();
+        var descriptors = components
+            .OfType<BridgeComponentBase>()
+            .Select(s => new ResilienceStrategyDescriptor(s.Options, GetStrategyInstance<T>(s)))
+            .ToList()
+            .AsReadOnly();
 
         return new ResiliencePipelineDescriptor(
             descriptors,
@@ -73,7 +77,6 @@ public static class ResiliencePipelineExtensions
         }
         else if (component is ExecutionTrackingComponent tracking)
         {
-            components.Add(tracking);
             ExpandComponents(tracking.Component, components);
         }
         else if (component is ComponentWithDisposeCallbacks callbacks)

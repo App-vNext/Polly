@@ -286,6 +286,16 @@ string ToolsExePath(string exeFileName) {
     return exePath;
 }
 
+void PatchStrykerConfig(string path, Action<Newtonsoft.Json.Linq.JObject> patch)
+{
+    var json = System.IO.File.ReadAllText(path);
+    var config = Newtonsoft.Json.Linq.JObject.Parse(json);
+
+    patch(config.Value<Newtonsoft.Json.Linq.JObject>("stryker-config"));
+
+    System.IO.File.WriteAllText(path, config.ToString());
+}
+
 void RunMutationTests(FilePath target, FilePath testProject)
 {
     var mutationScore = XmlPeek(target, "/Project/PropertyGroup/MutationScore/text()", new XmlPeekSettings { SuppressWarning = true });
@@ -294,6 +304,12 @@ void RunMutationTests(FilePath target, FilePath testProject)
     var isGitHubActions = Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true";
     var dashboardUrl = string.Empty;
     var moduleName = target.GetFilenameWithoutExtension().ToString();
+    var strykerConfigPath = strykerConfig.FullPath;
+
+    if (moduleName == "Polly.Testing")
+    {
+        PatchStrykerConfig(strykerConfigPath, (config) => config.Remove("ignore-mutations"));
+    }
 
     if (isGitHubActions &&
         !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("STRYKER_DASHBOARD_API_KEY")))
@@ -303,20 +319,19 @@ void RunMutationTests(FilePath target, FilePath testProject)
 
         dashboardUrl = $"https://dashboard.stryker-mutator.io/reports/{projectName}/{version}#mutant/{moduleName}";
 
-        var config = Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText(strykerConfig.FullPath));
-
-        var reporters = config["stryker-config"].Value<Newtonsoft.Json.Linq.JArray>("reporters");
-        reporters.Add("dashboard");
-
-        config["stryker-config"]["reporters"] = reporters;
-        config["stryker-config"]["project-info"] = new Newtonsoft.Json.Linq.JObject()
+        PatchStrykerConfig(strykerConfigPath, (config) =>
         {
-            ["module"] = moduleName,
-            ["name"] = projectName,
-            ["version"] = version
-        };
+            var reporters = config.Value<Newtonsoft.Json.Linq.JArray>("reporters");
+            reporters.Add("dashboard");
 
-        System.IO.File.WriteAllText(strykerConfig.FullPath, config.ToString());
+            config["reporters"] = reporters;
+            config["project-info"] = new Newtonsoft.Json.Linq.JObject()
+            {
+                ["module"] = moduleName,
+                ["name"] = projectName,
+                ["version"] = version
+            };
+        });
 
         Information("Configured Stryker dashboard.");
         Information($"Mutation report will be available at {dashboardUrl}");
