@@ -346,7 +346,7 @@ void RunMutationTests(FilePath target, FilePath testProject)
 
         if (!string.IsNullOrWhiteSpace(dashboardUrl))
         {
-            markdown += $"\n\n[View Mutation Report :notebook:]({dashboardUrl})";
+            markdown += $"\n\n## Mutation Dashboard\n\n[View Mutation Report :notebook:]({dashboardUrl})";
         }
 
         System.IO.File.WriteAllText(stepSummary, markdown);
