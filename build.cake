@@ -65,6 +65,12 @@ Teardown(_ =>
 Task("__Clean")
     .Does(() =>
 {
+    if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true")
+    {
+        // Nothing to clean in CI
+        return;
+    }
+
     CleanDirectories(
     [
         testResultsDir,
