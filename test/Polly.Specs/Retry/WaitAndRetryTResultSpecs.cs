@@ -65,11 +65,27 @@ public class WaitAndRetryTResultSpecs : IDisposable
     }
 
     [Fact]
+    public void Should_not_throw_when_sleepDurationProvider_is_not_null()
+    {
+        Action policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(1, (_) => TimeSpan.Zero);
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
     public void Should_not_throw_when_retry_count_is_zero()
     {
         Action policy = () =>
             Policy.HandleResult(ResultPrimitive.Fault)
                   .WaitAndRetry(0, (_, _, _) => default, (_, _, _, _) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(0, (_) => default, (_, _, _, _) => { });
 
         Should.NotThrow(policy);
     }

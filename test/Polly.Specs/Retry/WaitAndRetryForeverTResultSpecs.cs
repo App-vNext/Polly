@@ -124,6 +124,16 @@ public class WaitAndRetryForeverTResultSpecs : IDisposable
               .ParamName.ShouldBe("onRetry");
     }
 
+    [Fact]
+    public void Should_not_throw_when_sleepDurationProvider_is_not_null()
+    {
+        Action policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetryForever((_) => TimeSpan.Zero);
+
+        Should.NotThrow(policy);
+    }
+
     public void Dispose() =>
         SystemClock.Reset();
 }

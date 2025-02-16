@@ -22,11 +22,7 @@ public static class RetryTResultSyntax
     /// <param name="retryCount">The retry count.</param>
     /// <returns>The policy instance.</returns>
     public static RetryPolicy<TResult> Retry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount)
-    {
-        Action<DelegateResult<TResult>, int> doNothing = (_, _) => { };
-
-        return policyBuilder.Retry(retryCount, doNothing);
-    }
+        => policyBuilder.Retry(retryCount, static (_, _) => { });
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will retry once
@@ -114,11 +110,7 @@ public static class RetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <returns>The policy instance.</returns>
     public static RetryPolicy<TResult> RetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder)
-    {
-        Action<DelegateResult<TResult>> doNothing = _ => { };
-
-        return policyBuilder.RetryForever(doNothing);
-    }
+        => policyBuilder.RetryForever(static _ => { });
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will retry indefinitely
@@ -211,11 +203,7 @@ public static class RetryTResultSyntax
     /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <returns>The policy instance.</returns>
     public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider)
-    {
-        Action<DelegateResult<TResult>, TimeSpan, int, Context> doNothing = (_, _, _, _) => { };
-
-        return policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, doNothing);
-    }
+        => policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, EmptyHandlerWithContext);
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will wait and retry <paramref name="retryCount"/> times
@@ -323,11 +311,7 @@ public static class RetryTResultSyntax
     /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <returns>The policy instance.</returns>
     public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Func<int, Context, TimeSpan> sleepDurationProvider)
-    {
-        Action<DelegateResult<TResult>, TimeSpan, int, Context> doNothing = (_, _, _, _) => { };
-
-        return policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, doNothing);
-    }
+        => policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, EmptyHandlerWithContext);
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will wait and retry <paramref name="retryCount"/> times
@@ -387,11 +371,7 @@ public static class RetryTResultSyntax
     /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <returns>The policy instance.</returns>
     public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider)
-    {
-        Action<DelegateResult<TResult>, TimeSpan, int, Context> doNothing = (_, _, _, _) => { };
-
-        return policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, doNothing);
-    }
+        => policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, EmptyHandlerWithContext);
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will wait and retry <paramref name="retryCount"/> times
@@ -467,11 +447,7 @@ public static class RetryTResultSyntax
     /// <param name="sleepDurations">The sleep durations to wait for on each retry.</param>
     /// <returns>The policy instance.</returns>
     public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, IEnumerable<TimeSpan> sleepDurations)
-    {
-        Action<DelegateResult<TResult>, TimeSpan> doNothing = (_, _) => { };
-
-        return policyBuilder.WaitAndRetry(sleepDurations, doNothing);
-    }
+        => policyBuilder.WaitAndRetry(sleepDurations, EmptyHandler);
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will wait and retry as many times as there are provided <paramref name="sleepDurations"/>
@@ -555,16 +531,7 @@ public static class RetryTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, TimeSpan> sleepDurationProvider)
-    {
-        if (sleepDurationProvider == null)
-        {
-            throw new ArgumentNullException(nameof(sleepDurationProvider));
-        }
-
-        Action<DelegateResult<TResult>, TimeSpan> doNothing = (_, _) => { };
-
-        return policyBuilder.WaitAndRetryForever(sleepDurationProvider, doNothing);
-    }
+        => policyBuilder.WaitAndRetryForever(sleepDurationProvider, EmptyHandler);
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will wait and retry indefinitely until the action succeeds.
@@ -577,16 +544,7 @@ public static class RetryTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
     public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider)
-    {
-        if (sleepDurationProvider == null)
-        {
-            throw new ArgumentNullException(nameof(sleepDurationProvider));
-        }
-
-        Action<DelegateResult<TResult>, TimeSpan, Context> doNothing = (_, _, _) => { };
-
-        return policyBuilder.WaitAndRetryForever(sleepDurationProvider, doNothing);
-    }
+        => policyBuilder.WaitAndRetryForever(sleepDurationProvider, static (_, _, _) => { });
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will wait and retry indefinitely until the action succeeds,
@@ -758,5 +716,15 @@ public static class RetryTResultSyntax
             policyBuilder,
             (exception, timespan, i, ctx) => onRetry(exception, i, timespan, ctx),
             sleepDurationProvider: sleepDurationProvider);
+    }
+
+    private static void EmptyHandler<T>(DelegateResult<T> result, TimeSpan retryAfter)
+    {
+        // No-op
+    }
+
+    private static void EmptyHandlerWithContext<T>(DelegateResult<T> result, TimeSpan retryAfter, int attempts, Context context)
+    {
+        // No-op
     }
 }
