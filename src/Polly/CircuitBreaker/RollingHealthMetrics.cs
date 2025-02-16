@@ -14,8 +14,9 @@ internal sealed class RollingHealthMetrics : IHealthMetrics
     public RollingHealthMetrics(TimeSpan samplingDuration)
     {
         _samplingDuration = samplingDuration.Ticks;
-
         _windowDuration = _samplingDuration / WindowCount;
+
+        // stryker disable once all : only affects capacity and not logic
         _windows = new(WindowCount + 1);
     }
 
@@ -64,6 +65,7 @@ internal sealed class RollingHealthMetrics : IHealthMetrics
         var now = SystemClock.UtcNow().Ticks;
         var currentWindow = _currentWindow;
 
+        // stryker disable once all : no means to test this
         if (currentWindow == null || now - currentWindow.StartedAt >= _windowDuration)
         {
             _currentWindow = currentWindow = new()
@@ -73,6 +75,7 @@ internal sealed class RollingHealthMetrics : IHealthMetrics
             _windows.Enqueue(currentWindow);
         }
 
+        // stryker disable once all : no means to test this
         while (_windows.Count > 0 && now - _windows.Peek().StartedAt >= _samplingDuration)
         {
             _windows.Dequeue();

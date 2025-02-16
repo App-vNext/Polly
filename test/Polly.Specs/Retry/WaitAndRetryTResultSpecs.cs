@@ -33,6 +33,27 @@ public class WaitAndRetryTResultSpecs : IDisposable
         actualRetryWaits.ShouldBeSubsetOf(expectedRetryWaits.Values);
     }
 
+    [Fact]
+    public void Should_throw_when_retry_count_is_less_than_zero()
+    {
+        Action policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(-1, (_, _, _) => default, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+              .ParamName.ShouldBe("retryCount");
+    }
+
+    [Fact]
+    public void Should_not_throw_when_retry_count_is_zero()
+    {
+        Action policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(0, (_, _, _) => default, (_, _, _, _) => { });
+
+        Should.NotThrow(policy);
+    }
+
     public void Dispose() =>
         SystemClock.Reset();
 }

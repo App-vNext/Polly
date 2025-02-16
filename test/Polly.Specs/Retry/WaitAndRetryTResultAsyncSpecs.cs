@@ -44,8 +44,6 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_retry_count_is_less_than_zero()
     {
-        var actualRetryWaits = new List<TimeSpan>();
-
         Action configure = () => Policy
             .HandleResult(ResultPrimitive.Fault)
             .WaitAndRetryAsync(
@@ -66,18 +64,35 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
     }
 
     [Fact]
-    public void Should_throw_when_onRetryAsync_is_null()
+    public void Should_not_throw_when_retry_count_is_zero()
     {
-        var expectedRetryWaits = new Dictionary<ResultPrimitive, TimeSpan>
-        {
-            [ResultPrimitive.Fault] = TimeSpan.FromSeconds(2),
-            [ResultPrimitive.FaultAgain] = TimeSpan.FromSeconds(4),
-        };
-
         Action configure = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .WaitAndRetryAsync(2,
-                (_, outcome, _) => expectedRetryWaits[outcome.Result],
+            .WaitAndRetryAsync(
+                0,
+                (_) => TimeSpan.Zero,
+                (_, _, _, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(configure);
+
+        configure = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .WaitAndRetryAsync(
+                0,
+                (_, _, _) => TimeSpan.Zero,
+                (_, _, _, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(configure);
+    }
+
+    [Fact]
+    public void Should_throw_when_onRetryAsync_is_null()
+    {
+        Action configure = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .WaitAndRetryAsync(
+                2,
+                (_, _, _) => default,
                 null);
 
         Should.Throw<ArgumentNullException>(configure).ParamName.ShouldBe("onRetryAsync");
