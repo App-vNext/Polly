@@ -11,7 +11,7 @@ public class FallbackSpecs
     {
         Action policy = () => Policy
             .Handle<DivideByZeroException>()
-            .Fallback((fallbackAction) => { });
+            .Fallback(() => { });
 
         Should.NotThrow(policy);
 
