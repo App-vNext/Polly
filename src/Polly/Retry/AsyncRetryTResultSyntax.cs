@@ -533,8 +533,11 @@ public static class AsyncRetryTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> or <paramref name="onRetryAsync"/> is <see langword="null"/>.</exception>
-    public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount,
-        Func<int, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync)
+    public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(
+        this PolicyBuilder<TResult> policyBuilder,
+        int retryCount,
+        Func<int, TimeSpan> sleepDurationProvider,
+        Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync)
     {
         if (retryCount < 0)
         {
@@ -575,8 +578,11 @@ public static class AsyncRetryTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> or <paramref name="onRetry"/> is <see langword="null"/>.</exception>
-    public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount,
-        Func<int, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
+    public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(
+        this PolicyBuilder<TResult> policyBuilder,
+        int retryCount,
+        Func<int, Context, TimeSpan> sleepDurationProvider,
+        Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
     {
         if (onRetry == null)
         {

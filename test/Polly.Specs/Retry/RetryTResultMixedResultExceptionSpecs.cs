@@ -151,6 +151,17 @@ public class RetryTResultMixedResultExceptionSpecs
     }
 
     [Fact]
+    public void Should_handle_default_value_for_enum()
+    {
+        Policy<ResultPrimitive> policy = Policy
+            .Handle<DivideByZeroException>()
+            .OrResult(ResultPrimitive.Fault)
+            .Retry(2);
+
+        policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good).ShouldBe(ResultPrimitive.Good);
+    }
+
+    [Fact]
     public void Should_handle_both_exceptions_and_specified_results_with_predicates()
     {
         Policy<ResultClass> policy = Policy

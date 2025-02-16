@@ -27,6 +27,10 @@ public class RateLimitRejectedExceptionTests
         rate.RetryAfter.ShouldBe(retryAfter);
         rate.Message.ShouldBe(Dummy);
 
+        rate = new RateLimitRejectedException(TimeSpan.Zero, Dummy);
+        rate.RetryAfter.ShouldBe(TimeSpan.Zero);
+        rate.Message.ShouldBe(Dummy);
+
         rate = new RateLimitRejectedException(retryAfter, Dummy, exception);
         rate.RetryAfter.ShouldBe(retryAfter);
         rate.Message.ShouldBe(Dummy);

@@ -85,7 +85,7 @@ public partial class Policy
             throw new ArgumentOutOfRangeException(nameof(perTimeSpan), perTimeSpan, "The number of executions per timespan must be positive.");
         }
 
-        IRateLimiter rateLimiter = RateLimiterFactory.Create(onePer, maxBurst);
+        IRateLimiter rateLimiter = new LockFreeTokenBucketRateLimiter(onePer, maxBurst);
 
         return new RateLimitPolicy<TResult>(rateLimiter, retryAfterFactory);
     }

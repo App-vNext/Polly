@@ -53,7 +53,7 @@ public class RateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase, IDis
     {
         var flags = BindingFlags.NonPublic | BindingFlags.Instance;
         Func<Context, CancellationToken, EmptyStruct> action = null!;
-        IRateLimiter rateLimiter = RateLimiterFactory.Create(TimeSpan.FromSeconds(1), 1);
+        IRateLimiter rateLimiter = new LockFreeTokenBucketRateLimiter(TimeSpan.FromSeconds(1), 1);
         Func<TimeSpan, Context, EmptyStruct>? retryAfterFactory = null;
 
         var instance = Activator.CreateInstance(
@@ -81,6 +81,7 @@ public class RateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase, IDis
         var exception = Should.Throw<ArgumentOutOfRangeException>(() => Policy.RateLimit<EmptyStruct>(1, TimeSpan.FromSeconds(-1), 1));
 
         // Assert
+        exception.Message.ShouldStartWith("perTimeSpan must be a positive timespan");
         exception.ParamName.ShouldBe("perTimeSpan");
         exception.ActualValue.ShouldBe(TimeSpan.FromSeconds(-1));
     }
@@ -92,7 +93,15 @@ public class RateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase, IDis
         var exception = Should.Throw<ArgumentOutOfRangeException>(() => Policy.RateLimit<EmptyStruct>(1, TimeSpan.Zero, 1));
 
         // Assert
+        exception.Message.ShouldStartWith("perTimeSpan must be a positive timespan");
         exception.ParamName.ShouldBe("perTimeSpan");
         exception.ActualValue.ShouldBe(TimeSpan.Zero);
+    }
+
+    [Fact]
+    public void Should_not_throw_when_pertimespan_is_greater_than_zero()
+    {
+        // Act and Assert
+        Should.NotThrow(() => Policy.RateLimit<EmptyStruct>(1, TimeSpan.FromTicks(1), 1));
     }
 }

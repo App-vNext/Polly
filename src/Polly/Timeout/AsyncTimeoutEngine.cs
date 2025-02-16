@@ -56,6 +56,7 @@ internal static class AsyncTimeoutEngine
             // If timeoutCancellationTokenSource was canceled & our combined token hasn't been signaled, cancel it.
             // This avoids the exception propagating before the linked token can signal the downstream to cancel.
             // See https://github.com/App-vNext/Polly/issues/722.
+            // stryker disable once all : no means to test this
             if (!combinedTokenSource.IsCancellationRequested && timeoutCancellationTokenSource.IsCancellationRequested)
             {
 #if NET8_0_OR_GREATER
@@ -72,12 +73,13 @@ internal static class AsyncTimeoutEngine
         var tcs = new TaskCompletionSource<TResult>();
 
         // A generalised version of this method would include a hotpath returning a canceled task (rather than setting up a registration) if (cancellationToken.IsCancellationRequested) on entry.  This is omitted, since we only start the timeout countdown in the token _after calling this method.
+        CancellationTokenRegistration registration = default;
 
-        IDisposable registration = null;
+        // stryker disable once all : no means to test this
         registration = cancellationToken.Register(() =>
         {
             tcs.TrySetCanceled();
-            registration?.Dispose();
+            registration.Dispose();
         }, useSynchronizationContext: false);
 
         return tcs.Task;

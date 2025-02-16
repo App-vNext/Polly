@@ -1,4 +1,5 @@
-﻿using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
+﻿using System.Globalization;
+using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
 
 namespace Polly.Specs.CircuitBreaker;
 
@@ -2961,6 +2962,155 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
         result.ShouldBeNull();
 
         attemptsInvoked.ShouldBe(1);
+    }
+
+    [Theory]
+    [InlineData(-0.1)]
+    [InlineData(0)]
+    [InlineData(1.1)]
+    public void Should_throw_if_failure_threshold_is_outside_allowed_range(double failureThreshold)
+    {
+        Action action = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .AdvancedCircuitBreakerAsync(
+                failureThreshold,
+                TimeSpan.FromMinutes(1),
+                60,
+                TimeSpan.FromMinutes(1),
+                (_, _, _, _) => { },
+                (_) => { },
+                () => { });
+
+        Should.Throw<ArgumentOutOfRangeException>(action)
+            .ParamName.ShouldBe("failureThreshold");
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    public void Should_throw_if_minimum_throughput_is_outside_allowed_range(int minimumThroughput)
+    {
+        Action action = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .AdvancedCircuitBreakerAsync(
+                1,
+                TimeSpan.FromMinutes(1),
+                minimumThroughput,
+                TimeSpan.FromMinutes(1),
+                (_, _, _, _) => { },
+                (_) => { },
+                () => { });
+
+        Should.Throw<ArgumentOutOfRangeException>(action)
+            .ParamName.ShouldBe("minimumThroughput");
+    }
+
+    [Fact]
+    public void Should_throw_if_sampling_duration_is_negative()
+    {
+        Action action = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .AdvancedCircuitBreakerAsync(
+                1,
+                TimeSpan.FromSeconds(-1),
+                60,
+                TimeSpan.FromSeconds(1),
+                (_, _, _, _) => { },
+                (_) => { },
+                () => { });
+
+        Should.Throw<ArgumentOutOfRangeException>(action)
+            .ParamName.ShouldBe("samplingDuration");
+    }
+
+    [Fact]
+    public void Should_not_throw_if_sampling_duration_is_minimum()
+    {
+        Action action = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .AdvancedCircuitBreakerAsync(
+                1,
+                TimeSpan.FromTicks(AdvancedCircuitController<EmptyStruct>.ResolutionOfCircuitTimer),
+                60,
+                TimeSpan.FromSeconds(1),
+                (_, _, _, _) => { },
+                (_) => { },
+                () => { });
+
+        Should.NotThrow(action);
+    }
+
+    [Fact]
+    public void Should_throw_if_duration_of_break_is_negative()
+    {
+        Action action = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .AdvancedCircuitBreakerAsync(
+                1,
+                TimeSpan.FromMinutes(1),
+                60,
+                TimeSpan.FromSeconds(-1),
+                (_, _, _, _) => { },
+                (_) => { },
+                () => { });
+
+        Should.Throw<ArgumentOutOfRangeException>(action)
+            .ParamName.ShouldBe("durationOfBreak");
+    }
+
+    [Fact]
+    public void Should_not_throw_if_duration_of_break_is_zero()
+    {
+        Action action = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .AdvancedCircuitBreakerAsync(
+                1,
+                TimeSpan.FromMinutes(1),
+                60,
+                TimeSpan.Zero,
+                (_, _, _, _) => { },
+                (_) => { },
+                () => { });
+
+        Should.NotThrow(action);
+    }
+
+    [Fact]
+    public void Should_throw_if_delegates_are_null()
+    {
+        double failureThreshold = 1;
+        var samplingDuration = TimeSpan.FromMinutes(1);
+        int mimimumThroughput = 60;
+        var breakDuration = TimeSpan.FromSeconds(1);
+        var builder = Policy.HandleResult(ResultPrimitive.Fault);
+
+        Action action = () => builder.AdvancedCircuitBreakerAsync(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (null as Action<DelegateResult<ResultPrimitive>, CircuitState, TimeSpan, Context>)!, (_) => { }, () => { });
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onBreak");
+
+        action = () => builder.AdvancedCircuitBreakerAsync(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, null!, () => { });
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onReset");
+
+        action = () => builder.AdvancedCircuitBreakerAsync(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, (_) => { }, null!);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onHalfOpen");
+    }
+
+    [Theory]
+    [InlineData("00:00:00.001", typeof(SingleHealthMetrics))]
+    [InlineData("00:00:00.199", typeof(SingleHealthMetrics))]
+    [InlineData("00:00:00.200", typeof(RollingHealthMetrics))]
+    [InlineData("00:00:00.201", typeof(RollingHealthMetrics))]
+    public void AdvancedCircuitController_uses_correct_metrics(string samplingDuration, Type expectedMetricsType)
+    {
+        var target = new AdvancedCircuitController<EmptyStruct>(
+            failureThreshold: 0.5,
+            samplingDuration: TimeSpan.Parse(samplingDuration, CultureInfo.InvariantCulture),
+            minimumThroughput: 4,
+            durationOfBreak: TimeSpan.FromSeconds(30),
+            onBreak: (_, _, _, _) => { },
+            onReset: _ => { },
+            onHalfOpen: () => { });
+
+        target.Metrics.ShouldBeOfType(expectedMetricsType);
     }
 
     #endregion

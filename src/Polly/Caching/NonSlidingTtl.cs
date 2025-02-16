@@ -30,8 +30,7 @@ public abstract class NonSlidingTtl : ITtlStrategy
     /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
     public Ttl GetTtl(Context context, object? result)
     {
-        TimeSpan untilPointInTime = absoluteExpirationTime.Subtract(SystemClock.DateTimeOffsetUtcNow());
-        TimeSpan remaining = untilPointInTime > TimeSpan.Zero ? untilPointInTime : TimeSpan.Zero;
-        return new Ttl(remaining, false);
+        long remaining = Math.Max(0, absoluteExpirationTime.Subtract(SystemClock.DateTimeOffsetUtcNow()).Ticks);
+        return new Ttl(TimeSpan.FromTicks(remaining), false);
     }
 }

@@ -10,7 +10,7 @@ public abstract partial class Policy
     /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
     [DebuggerStepThrough]
     protected virtual void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken) =>
-        Implementation<EmptyStruct>((ctx, token) =>
+        Implementation((ctx, token) =>
         {
             action(ctx, token);
             return EmptyStruct.Instance;

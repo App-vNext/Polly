@@ -44,6 +44,31 @@ public class FallbackTResultSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
+
+        Func<CancellationToken, ResultPrimitive> fallbackActionToken = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(fallbackActionToken);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("fallbackAction");
+    }
+
+    [Fact]
+    public void Should_not_throw_when_fallback_action_is_not_null()
+    {
+        Action policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(() => ResultPrimitive.Substitute);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback((_) => ResultPrimitive.Substitute);
+
+        Should.NotThrow(policy);
     }
 
     [Fact]
@@ -124,6 +149,13 @@ public class FallbackTResultSpecs
         Action policy = () => Policy
                                 .HandleResult(ResultPrimitive.Fault)
                                 .Fallback(fallbackAction, onFallback);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallback");
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(ResultPrimitive.Substitute, onFallback);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallback");
@@ -783,6 +815,30 @@ public class FallbackTResultSpecs
         attemptsInvoked.ShouldBe(1);
 
         fallbackActionExecuted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Should_handle_exception_correctly_and_return_fallback()
+    {
+        var policy = Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Or<IOException>()
+            .Fallback(ResultPrimitive.Substitute);
+
+        var result = policy.Execute(() => throw new IOException());
+
+        result.ShouldBe(ResultPrimitive.Substitute);
+    }
+
+    [Fact]
+    public void Should_not_handle_wrong_exception()
+    {
+        var policy = Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Or<IOException>()
+            .Fallback(ResultPrimitive.Substitute);
+
+        Should.Throw<InvalidOperationException>(() => policy.Execute(() => throw new InvalidOperationException()));
     }
 
     [Fact]

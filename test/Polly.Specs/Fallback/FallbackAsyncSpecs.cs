@@ -59,6 +59,13 @@ public class FallbackAsyncSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallbackAsync");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallbackAsync");
     }
 
     [Fact]

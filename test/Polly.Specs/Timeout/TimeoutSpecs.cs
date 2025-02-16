@@ -49,6 +49,16 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         Should.Throw<ArgumentOutOfRangeException>(policy)
             .ParamName.ShouldBe("seconds");
+
+        policy = () => Policy.Timeout(0, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("seconds");
+
+        policy = () => Policy.Timeout(0, TimeoutStrategy.Pessimistic, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("seconds");
     }
 
     [Fact]
@@ -130,6 +140,14 @@ public class TimeoutSpecs : TimeoutSpecsBase
     public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy()
     {
         Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic);
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
+    public void Should_not_throw_when_timeout_is_greater_than_zero_by_seconds_with_timeoutstrategy_and_handler()
+    {
+        Action policy = () => Policy.Timeout(3, TimeoutStrategy.Optimistic, (_, _, _) => { });
 
         Should.NotThrow(policy);
     }
@@ -236,6 +254,26 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("timeoutProvider");
+
+        policy = () => Policy.Timeout((Func<TimeSpan>)null!, TimeoutStrategy.Pessimistic, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("timeoutProvider");
+
+        policy = () => Policy.Timeout((Func<TimeSpan>)null!, (_, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("timeoutProvider");
+
+        policy = () => Policy.Timeout((Func<TimeSpan>)null!, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("timeoutProvider");
+
+        policy = () => Policy.Timeout((Func<Context, TimeSpan>)null!, TimeoutStrategy.Pessimistic, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("timeoutProvider");
     }
 
     [Fact]
@@ -259,9 +297,38 @@ public class TimeoutSpecs : TimeoutSpecsBase
     }
 
     [Fact]
-    public void Should_be_able_to_configure_with_timeout_func()
+    public void Should_be_able_to_configure_without_an_exception()
     {
         Action policy = () => Policy.Timeout(() => TimeSpan.FromSeconds(1));
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout(
+            () => TimeSpan.FromSeconds(1),
+            TimeoutStrategy.Optimistic,
+            (_, _, _, _) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout((_) => TimeSpan.FromSeconds(1));
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout(
+            (_) => TimeSpan.FromSeconds(1),
+            TimeoutStrategy.Optimistic);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout(
+            (_) => TimeSpan.FromSeconds(1),
+            (_, _, _) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout(
+            (_) => TimeSpan.FromSeconds(1),
+            (_, _, _, _) => { });
 
         Should.NotThrow(policy);
     }
@@ -802,6 +869,21 @@ public class TimeoutSpecs : TimeoutSpecsBase
         Should.Throw<TimeoutRejectedException>(() => policy.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), userCancellationToken));
 
         timeoutPassedToOnTimeout.ShouldBe(timeoutFunc());
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func_not_context__optimistic(int programaticallyControlledDelay)
+    {
+        Func<TimeSpan> timeoutProvider = () => TimeSpan.FromSeconds(programaticallyControlledDelay);
+
+        var policy = Policy.Timeout(timeoutProvider, TimeoutStrategy.Optimistic);
+
+        var userCancellationToken = CancellationToken;
+
+        Should.Throw<TimeoutRejectedException>(() => policy.Execute((ct) => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), userCancellationToken));
     }
 
     [Theory]

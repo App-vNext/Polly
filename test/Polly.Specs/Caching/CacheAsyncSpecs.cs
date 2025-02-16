@@ -107,6 +107,9 @@ public class CacheAsyncSpecs : IDisposable
 
         action = () => Policy.CacheAsync(cacheProvider, ttlStrategy, cacheKeyStrategyFunc, onCache, onCache, onCache, onCacheError, onCacheError);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttlStrategy, cacheKeyStrategyFunc, onCache, onCache, onCache, onCacheError, onCacheError);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe(CacheProviderExpected);
     }
 
     [Fact]

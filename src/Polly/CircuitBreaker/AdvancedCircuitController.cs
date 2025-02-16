@@ -2,10 +2,11 @@
 
 internal sealed class AdvancedCircuitController<TResult> : CircuitStateController<TResult>
 {
-    private const short NumberOfWindows = 10;
     internal static readonly long ResolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20).Ticks;
 
+#pragma warning disable IDE0032 // Use auto property
     private readonly IHealthMetrics _metrics;
+#pragma warning restore IDE0032 // Use auto property
     private readonly double _failureThreshold;
     private readonly int _minimumThroughput;
 
@@ -19,13 +20,15 @@ internal sealed class AdvancedCircuitController<TResult> : CircuitStateControlle
         Action onHalfOpen)
         : base(durationOfBreak, onBreak, onReset, onHalfOpen)
     {
-        _metrics = samplingDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
+        _metrics = samplingDuration.Ticks < ResolutionOfCircuitTimer * RollingHealthMetrics.WindowCount
             ? new SingleHealthMetrics(samplingDuration)
-            : new RollingHealthMetrics(samplingDuration, NumberOfWindows);
+            : new RollingHealthMetrics(samplingDuration);
 
         _failureThreshold = failureThreshold;
         _minimumThroughput = minimumThroughput;
     }
+
+    internal IHealthMetrics Metrics => _metrics; // For testing
 
     public override void OnCircuitReset(Context context)
     {

@@ -163,7 +163,6 @@ public class PolicyRegistrySpecs
     [Fact]
     public void Should_return_false_if_policy_does_not_exist_TryGet()
     {
-        var policy = Policy.NoOp();
         string key = Guid.NewGuid().ToString();
 
         _registry.TryGet<NoOpPolicy>(key, out var outPolicy).ShouldBeFalse();

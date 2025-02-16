@@ -14,8 +14,16 @@ internal sealed class AsyncGenericCacheProvider<TCacheFormat> : IAsyncCacheProvi
 
     async Task<(bool, TCacheFormat?)> IAsyncCacheProvider<TCacheFormat>.TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
-        (bool cacheHit, object? result) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-        return (cacheHit, (TCacheFormat?)(result ?? default(TCacheFormat)));
+        (bool cacheHit, object? cached) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+
+        TCacheFormat? result = default;
+
+        if (cacheHit)
+        {
+            result = (TCacheFormat?)cached;
+        }
+
+        return (cacheHit, result);
     }
 
     Task IAsyncCacheProvider<TCacheFormat>.PutAsync(string key, TCacheFormat? value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext) =>

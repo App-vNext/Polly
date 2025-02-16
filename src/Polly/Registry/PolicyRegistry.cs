@@ -113,8 +113,14 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     public bool TryGet<TPolicy>(string key, out TPolicy policy)
         where TPolicy : IsPolicy
     {
+        policy = default;
         bool got = _registry.TryGetValue(key, out IsPolicy value);
-        policy = got ? (TPolicy)value : default;
+
+        if (got)
+        {
+            policy = (TPolicy)value;
+        }
+
         return got;
     }
 
@@ -158,8 +164,14 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     {
         var registry = ThrowIfNotConcurrentImplementation();
 
+        policy = default;
         bool got = registry.TryRemove(key, out IsPolicy value);
-        policy = got ? (TPolicy)value : default;
+
+        if (got)
+        {
+            policy = (TPolicy)value;
+        }
+
         return got;
     }
 

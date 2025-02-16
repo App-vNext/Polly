@@ -86,6 +86,13 @@ public class FallbackTResultAsyncSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallbackAsync");
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .FallbackAsync(ResultPrimitive.Substitute, onFallbackAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallbackAsync");
     }
 
     [Fact]
@@ -100,6 +107,29 @@ public class FallbackTResultAsyncSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallbackAsync");
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .FallbackAsync(ResultPrimitive.Substitute, onFallbackAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallbackAsync");
+    }
+
+    [Fact]
+    public void Should_not_throw_when_onFallback_delegate_is_not_null()
+    {
+        Action policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .FallbackAsync((_, _) => Task.FromResult(ResultPrimitive.Substitute), (_, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .FallbackAsync(ResultPrimitive.Substitute, (_, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
     }
 
     #endregion

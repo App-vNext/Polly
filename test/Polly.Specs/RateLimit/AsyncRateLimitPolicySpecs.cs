@@ -37,7 +37,7 @@ public class AsyncRateLimitPolicySpecs : RateLimitPolicySpecsBase, IDisposable
     {
         var flags = BindingFlags.NonPublic | BindingFlags.Instance;
         Func<Context, CancellationToken, Task<EmptyStruct>> action = null!;
-        IRateLimiter rateLimiter = RateLimiterFactory.Create(TimeSpan.FromSeconds(1), 1);
+        IRateLimiter rateLimiter = new LockFreeTokenBucketRateLimiter(TimeSpan.FromSeconds(1), 1);
 
         var instance = Activator.CreateInstance(
             typeof(AsyncRateLimitPolicy),
@@ -65,6 +65,7 @@ public class AsyncRateLimitPolicySpecs : RateLimitPolicySpecsBase, IDisposable
         var exception = Should.Throw<ArgumentOutOfRangeException>(() => Policy.RateLimitAsync(1, TimeSpan.FromSeconds(-1), 1));
 
         // Assert
+        exception.Message.ShouldStartWith("perTimeSpan must be a positive timespan");
         exception.ParamName.ShouldBe("perTimeSpan");
         exception.ActualValue.ShouldBe(TimeSpan.FromSeconds(-1));
     }
@@ -76,7 +77,15 @@ public class AsyncRateLimitPolicySpecs : RateLimitPolicySpecsBase, IDisposable
         var exception = Should.Throw<ArgumentOutOfRangeException>(() => Policy.RateLimitAsync(1, TimeSpan.Zero, 1));
 
         // Assert
+        exception.Message.ShouldStartWith("perTimeSpan must be a positive timespan");
         exception.ParamName.ShouldBe("perTimeSpan");
         exception.ActualValue.ShouldBe(TimeSpan.Zero);
+    }
+
+    [Fact]
+    public void Should_not_throw_when_pertimespan_is_positive()
+    {
+        // Act and Assert
+        Should.NotThrow(() => Policy.RateLimitAsync(1, TimeSpan.FromTicks(1), 1));
     }
 }

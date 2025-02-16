@@ -123,5 +123,5 @@ public partial class Policy<TResult>
     /// <remarks>This policy filter matches the <paramref name="result"/> value returned using .Equals(), ideally suited for value types such as int and enum.  To match characteristics of class return types, consider the overload taking a result predicate.</remarks>
     /// <returns>The PolicyBuilder instance.</returns>
     public static PolicyBuilder<TResult> HandleResult(TResult result) =>
-        HandleResult(r => (!Equals(r, default(TResult)) && r.Equals(result)) || (Equals(r, default(TResult)) && Equals(result, default(TResult))));
+        HandleResult(r => EqualityComparer<TResult>.Default.Equals(r, result));
 }

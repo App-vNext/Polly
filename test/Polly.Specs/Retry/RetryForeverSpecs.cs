@@ -29,6 +29,69 @@ public class RetryForeverSpecs
     }
 
     [Fact]
+    public void Should_throw_when_onretry_action_is_null()
+    {
+        Action<DelegateResult<ResultPrimitive>> nullOnRetry = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForever(nullOnRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_action_with_int_is_null()
+    {
+        Action<DelegateResult<ResultPrimitive>, int> nullOnRetry = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForever(nullOnRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_for_result_action_with_context_is_null()
+    {
+        Action<DelegateResult<ResultPrimitive>, Context> nullOnRetry = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForever(nullOnRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
+    public void Should_not_throw_when_onretry_action_with_context_is_valid()
+    {
+        Action<DelegateResult<ResultPrimitive>, Context> onRetry = (_, _) => { };
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForever(onRetry);
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
+    public void Should_not_throw_when_onretry_action_with_int_is_valid()
+    {
+        Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { };
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForever(onRetry);
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
     public void Should_not_throw_regardless_of_how_many_times_the_specified_exception_is_raised()
     {
         var policy = Policy

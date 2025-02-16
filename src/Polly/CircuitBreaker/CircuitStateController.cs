@@ -83,10 +83,11 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
 
     private void BreakFor_NeedsLock(TimeSpan durationOfBreak, Context context)
     {
-        bool willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.UtcNow();
-        BlockedTill = willDurationTakeUsPastDateTimeMaxValue
-            ? DateTime.MaxValue.Ticks
-            : (SystemClock.UtcNow() + durationOfBreak).Ticks;
+        // Prevent overflow if DurationOfBreak goes beyond the maximum possible DateTime
+        ulong utcNowTicks = (ulong)SystemClock.UtcNow().Ticks;
+        ulong durationOfBreakTicks = (ulong)durationOfBreak.Ticks;
+
+        BlockedTill = (long)Math.Min(utcNowTicks + durationOfBreakTicks, (ulong)DateTime.MaxValue.Ticks);
 
         var transitionedState = InternalCircuitState;
         InternalCircuitState = CircuitState.Open;

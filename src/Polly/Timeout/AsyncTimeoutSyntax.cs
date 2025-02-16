@@ -40,8 +40,7 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onTimeoutAsync"/> is <see langword="null"/>.</exception>
-    public static AsyncTimeoutPolicy TimeoutAsync(int seconds, Func<Context
-        , TimeSpan, Task, Task> onTimeoutAsync)
+    public static AsyncTimeoutPolicy TimeoutAsync(int seconds, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
     {
         TimeoutValidator.ValidateSecondsTimeout(seconds);
         if (onTimeoutAsync == null)
