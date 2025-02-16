@@ -39,6 +39,11 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
 
         Should.Throw<ArgumentOutOfRangeException>(policy)
             .ParamName.ShouldBe("timeout");
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.Zero, (_, _, _, _) => TaskHelper.EmptyTask);
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("timeout");
     }
 
     [Fact]
@@ -48,12 +53,22 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
 
         Should.Throw<ArgumentOutOfRangeException>(policy)
             .ParamName.ShouldBe("seconds");
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(0, (_, _, _, _) => TaskHelper.EmptyTask);
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("seconds");
     }
 
     [Fact]
     public void Should_throw_when_timeout_is_less_than_zero_by_timespan()
     {
-        Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(-TimeSpan.FromHours(1));
+        Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromHours(-1));
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("timeout");
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromHours(-1), (_, _, _, _) => TaskHelper.EmptyTask);
 
         Should.Throw<ArgumentOutOfRangeException>(policy)
             .ParamName.ShouldBe("timeout");
@@ -230,6 +245,15 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onTimeoutAsync");
+    }
+
+    [Fact]
+    public void Should_not_throw_when_onTimeout_is_not_null_with_valid_timespan()
+    {
+        Func<Context, TimeSpan, Task, Exception, Task> onTimeout = (_, _, _, _) => TaskHelper.EmptyTask;
+        Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromMinutes(0.5), onTimeout);
+
+        Should.NotThrow(policy);
     }
 
     [Fact]

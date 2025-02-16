@@ -181,6 +181,19 @@ public class RetryForeverAsyncSpecs
     }
 
     [Fact]
+    public void Should_throw_when_onretry_with_exception_and_int_is_null()
+    {
+        Func<Exception, int, Task> onRetryAsync = null!;
+
+        Action policy = () => Policy
+                                  .Handle<DivideByZeroException>()
+                                  .RetryForeverAsync(onRetryAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+    }
+
+    [Fact]
     public void Should_throw_when_onretryasync_with_context_is_null()
     {
         Func<DelegateResult<ResultPrimitive>, Context, Task> onRetryAsync = null!;

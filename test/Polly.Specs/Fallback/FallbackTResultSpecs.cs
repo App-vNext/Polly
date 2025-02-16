@@ -44,6 +44,15 @@ public class FallbackTResultSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
+
+        Func<CancellationToken, ResultPrimitive> fallbackActionToken = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(fallbackActionToken);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("fallbackAction");
     }
 
     [Fact]
@@ -124,6 +133,13 @@ public class FallbackTResultSpecs
         Action policy = () => Policy
                                 .HandleResult(ResultPrimitive.Fault)
                                 .Fallback(fallbackAction, onFallback);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallback");
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(ResultPrimitive.Substitute, onFallback);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallback");

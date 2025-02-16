@@ -425,5 +425,69 @@ public class AsyncSerializingCacheProviderSpecs
         fromCache.ShouldBe(ResultPrimitive.Undefined);
     }
 
+    [Fact]
+    public void TryGetAsync_for_sync_provider_returns_false_and_default_if_key_not_found()
+    {
+        // Arrange
+        var cacheProvider = new StubCacheProvider();
+        var genericCacheProvider = cacheProvider.For<string>();
+
+        // Act
+        (var cacheHit, var cacheValue) = genericCacheProvider.TryGet("key");
+
+        // Assert
+        cacheHit.ShouldBeFalse();
+        cacheValue.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task TryGetAsync_for_async_provider_returns_false_and_default_if_key_not_found()
+    {
+        // Arrange
+        var cacheProvider = new StubCacheProvider();
+        var asyncCacheProvider = cacheProvider.AsyncFor<string>();
+
+        // Act
+        (var cacheHit, var cacheValue) = await asyncCacheProvider.TryGetAsync("key", CancellationToken.None, false);
+
+        // Assert
+        cacheHit.ShouldBeFalse();
+        cacheValue.ShouldBeNull();
+    }
+
+    [Fact]
+    public void TryGetAsync_for_sync_provider_returns_true_and_value_if_key_found()
+    {
+        // Arrange
+        var cacheProvider = new StubCacheProvider();
+        var genericCacheProvider = cacheProvider.For<string>();
+
+        genericCacheProvider.Put("key", "value", new Ttl(TimeSpan.MaxValue));
+
+        // Act
+        (var cacheHit, var cacheValue) = genericCacheProvider.TryGet("key");
+
+        // Assert
+        cacheHit.ShouldBeTrue();
+        cacheValue.ShouldBe("value");
+    }
+
+    [Fact]
+    public async Task TryGetAsync_for_async_provider_returns_true_and_value_if_key_found()
+    {
+        // Arrange
+        var cacheProvider = new StubCacheProvider();
+        var asyncCacheProvider = cacheProvider.AsyncFor<string>();
+
+        await asyncCacheProvider.PutAsync("key", "value", new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
+
+        // Act
+        (var cacheHit, var cacheValue) = await asyncCacheProvider.TryGetAsync("key", CancellationToken.None, false);
+
+        // Assert
+        cacheHit.ShouldBeTrue();
+        cacheValue.ShouldBe("value");
+    }
+
     #endregion
 }

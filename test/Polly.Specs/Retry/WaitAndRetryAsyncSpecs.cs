@@ -548,6 +548,32 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     }
 
     [Fact]
+    public void Should_throw_when_onretryasync_action_is_null_without_context()
+    {
+        Func<Exception, TimeSpan, Context, Task> onRetryAsync = null!;
+
+        Action policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync(1, _ => TimeSpan.Zero, onRetryAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretryasync_action_is_null_with_context()
+    {
+        Func<Exception, TimeSpan, Context, Task> onRetryAsync = null!;
+
+        Action policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync(1, (_, _) => TimeSpan.Zero, onRetryAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+    }
+
+    [Fact]
     public async Task Should_calculate_retry_timespans_from_current_retry_attempt_and_timespan_provider()
     {
         var expectedRetryWaits = new[]

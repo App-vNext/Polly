@@ -29,6 +29,19 @@ public class RetryForeverSpecs
     }
 
     [Fact]
+    public void Should_throw_when_onretry_actionis_null()
+    {
+        Action<DelegateResult<ResultPrimitive>> nullOnRetry = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForever(nullOnRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
     public void Should_not_throw_regardless_of_how_many_times_the_specified_exception_is_raised()
     {
         var policy = Policy

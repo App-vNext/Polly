@@ -53,7 +53,7 @@ public class AsyncRateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase,
     {
         var flags = BindingFlags.NonPublic | BindingFlags.Instance;
         Func<Context, CancellationToken, Task<EmptyStruct>> action = null!;
-        IRateLimiter rateLimiter = RateLimiterFactory.Create(TimeSpan.FromSeconds(1), 1);
+        IRateLimiter rateLimiter = new LockFreeTokenBucketRateLimiter(TimeSpan.FromSeconds(1), 1);
         Func<TimeSpan, Context, EmptyStruct>? retryAfterFactory = null!;
 
         var instance = Activator.CreateInstance(

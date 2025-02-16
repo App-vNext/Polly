@@ -17,6 +17,15 @@ public class FallbackSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
+
+        Action<CancellationToken> fallbackActionToken = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .Fallback(fallbackActionToken);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("fallbackAction");
     }
 
     [Fact]

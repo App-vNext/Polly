@@ -495,7 +495,7 @@ public class WaitAndRetrySpecs : IDisposable
     }
 
     [Fact]
-    public void Should_throw_when_retry_count_is_less_than_zero_without_context()
+    public void Should_throw_when_retry_count_is_less_than_zero()
     {
         Action<Exception, TimeSpan> onRetry = (_, _) => { };
 
@@ -505,19 +505,35 @@ public class WaitAndRetrySpecs : IDisposable
 
         Should.Throw<ArgumentOutOfRangeException>(policy)
               .ParamName.ShouldBe("retryCount");
-    }
 
-    [Fact]
-    public void Should_throw_when_retry_count_is_less_than_zero_with_context()
-    {
-        Action<Exception, TimeSpan, Context> onRetry = (_, _, _) => { };
+        Action<Exception, TimeSpan, Context> onRetryContext = (_, _, _) => { };
 
-        Action policy = () =>
+        policy = () =>
             Policy.Handle<DivideByZeroException>()
-                  .WaitAndRetry(-1, _ => default, onRetry);
+                  .WaitAndRetry(-1, _ => default, onRetryContext);
 
         Should.Throw<ArgumentOutOfRangeException>(policy)
               .ParamName.ShouldBe("retryCount");
+    }
+
+    [Fact]
+    public void Should_not_throw_when_retry_count_is_zero()
+    {
+        Action<Exception, TimeSpan> onRetry = (_, _) => { };
+
+        Action policy = () =>
+            Policy.Handle<DivideByZeroException>()
+                  .WaitAndRetry(0, _ => default, onRetry);
+
+        Should.NotThrow(policy);
+
+        Action<Exception, TimeSpan, Context> onRetryContext = (_, _, _) => { };
+
+        policy = () =>
+            Policy.Handle<DivideByZeroException>()
+                  .WaitAndRetry(0, _ => default, onRetryContext);
+
+        Should.NotThrow(policy);
     }
 
     [Fact]

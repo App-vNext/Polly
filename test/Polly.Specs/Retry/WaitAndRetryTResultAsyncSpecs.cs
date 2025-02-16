@@ -83,6 +83,43 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
         Should.Throw<ArgumentNullException>(configure).ParamName.ShouldBe("onRetryAsync");
     }
 
+
+    [Fact]
+    public void Should_throw_when_onretry_action_is_null()
+    {
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onRetry = null!;
+
+        Action policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .WaitAndRetryAsync(1, _ => TimeSpan.Zero, onRetry);
+
+        Should.Throw<ArgumentNullException>(policy).ParamName.ShouldBe("onRetry");
+
+        Func<DelegateResult<ResultPrimitive>, TimeSpan, Task> onRetryAsync = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .WaitAndRetryAsync(1, (_) => TimeSpan.Zero, onRetryAsync);
+
+        Should.Throw<ArgumentNullException>(policy).ParamName.ShouldBe("onRetryAsync");
+
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onRetryContext = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .WaitAndRetryAsync(1, (_) => TimeSpan.Zero, onRetryContext);
+
+        Should.Throw<ArgumentNullException>(policy).ParamName.ShouldBe("onRetry");
+
+        Func<DelegateResult<ResultPrimitive>, TimeSpan, Context, Task> onRetryAsyncContext = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .WaitAndRetryAsync(1, (_) => TimeSpan.Zero, onRetryAsyncContext);
+
+        Should.Throw<ArgumentNullException>(policy).ParamName.ShouldBe("onRetryAsync");
+    }
+
     public void Dispose() =>
         SystemClock.Reset();
 }

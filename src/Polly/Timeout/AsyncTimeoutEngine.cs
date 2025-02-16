@@ -43,6 +43,7 @@ internal static class AsyncTimeoutEngine
         {
             // Note that we cannot rely on testing (operationCanceledException.CancellationToken == combinedToken || operationCanceledException.CancellationToken == timeoutCancellationTokenSource.Token)
             // as either of those tokens could have been onward combined with another token by executed code, and so may not be the token expressed on operationCanceledException.CancellationToken.
+            // stryker disable once all : no means to test this
             if (ex is OperationCanceledException && timeoutCancellationTokenSource.IsCancellationRequested)
             {
                 await onTimeoutAsync(context, timeout, actionTask, ex).ConfigureAwait(continueOnCapturedContext);

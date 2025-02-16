@@ -28,11 +28,6 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
     /// </param>
     public LockFreeTokenBucketRateLimiter(TimeSpan onePer, long bucketCapacity)
     {
-        if (onePer <= TimeSpan.Zero)
-        {
-            throw new ArgumentOutOfRangeException(nameof(onePer), onePer, $"The {nameof(LockFreeTokenBucketRateLimiter)} must specify a positive TimeSpan for how often an execution is permitted.");
-        }
-
         _addTokenTickInterval = onePer.Ticks;
         _bucketCapacity = bucketCapacity;
 

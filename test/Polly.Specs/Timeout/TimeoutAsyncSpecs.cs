@@ -34,6 +34,27 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     }
 
     [Fact]
+    public void Should_throw_when_ontimeoutasync_is_null()
+    {
+        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = null!;
+
+        Action policy = () => Policy.TimeoutAsync(1, onTimeoutAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onTimeoutAsync");
+    }
+
+    [Fact]
+    public void Should_throw_when_ontimeoutasync_is_null_with_ontimeoutasync_with_exception()
+    {
+        Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = null!;
+        Action policy = () => Policy.TimeoutAsync(1, onTimeoutAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onTimeoutAsync");
+    }
+
+    [Fact]
     public void Should_throw_when_timeout_is_zero_by_timespan()
     {
         Action policy = () => Policy.TimeoutAsync(TimeSpan.Zero);
@@ -214,6 +235,16 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     }
 
     [Fact]
+    public void Should_throw_when_timeout_is_zero_by_seconds_with_ontimeoutasync_with_exception()
+    {
+        Func<Context, TimeSpan, Task, Exception, Task> onTimeout = (_, _, _, _) => TaskHelper.EmptyTask;
+        Action policy = () => Policy.TimeoutAsync(0, onTimeout);
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("seconds");
+    }
+
+    [Fact]
     public void Should_throw_when_timeout_is_zero_by_seconds_with_timeoutstrategy_and_full_argument_list_onTimeout()
     {
         Func<Context, TimeSpan, Task, Exception, Task> onTimeout = (_, _, _, _) => TaskHelper.EmptyTask;
@@ -365,9 +396,18 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
 
         var act = () => policy.ExecuteAsync(async (combinedToken) =>
         {
-            combinedToken.Register(() => isCancelled = true);
-            await SystemClock.SleepAsync(TimeSpan.FromMilliseconds(1000), combinedToken);
-        }, CancellationToken);
+            combinedToken.IsCancellationRequested.ShouldBeFalse();
+
+            try
+            {
+                combinedToken.Register(() => isCancelled = true);
+                await SystemClock.SleepAsync(TimeSpan.FromMilliseconds(1000), combinedToken);
+            }
+            finally
+            {
+                combinedToken.IsCancellationRequested.ShouldBeTrue();
+            }
+        }, CancellationToken.None);
 
         await Should.ThrowAsync<TimeoutRejectedException>(act);
 
@@ -755,7 +795,6 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         await SystemClock.SleepAsync(thriceShimTimeSpan, CancellationToken);
         exceptionObservedFromTaskPassedToOnTimeout.ShouldNotBeNull();
         exceptionObservedFromTaskPassedToOnTimeout.ShouldBe(exceptionToThrow);
-
     }
 
     [Fact]

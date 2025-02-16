@@ -7,9 +7,7 @@ internal static class BulkheadSemaphoreFactory
     {
         var maxParallelizationSemaphore = new SemaphoreSlim(maxParallelization, maxParallelization);
 
-        var maxQueuingCompounded = maxQueueingActions <= int.MaxValue - maxParallelization
-            ? maxQueueingActions + maxParallelization
-            : int.MaxValue;
+        var maxQueuingCompounded = Math.Min(maxQueueingActions + maxParallelization, int.MaxValue);
         var maxQueuedActionsSemaphore = new SemaphoreSlim(maxQueuingCompounded, maxQueuingCompounded);
 
         return (maxParallelizationSemaphore, maxQueuedActionsSemaphore);

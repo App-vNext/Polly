@@ -19,6 +19,18 @@ public class WaitAndRetryForeverSpecs : IDisposable
     }
 
     [Fact]
+    public void Should_throw_not_when_sleep_duration_provider_is_not_null_with_context()
+    {
+        Func<int, Context, TimeSpan> sleepDurationProvider = (_, _) => TimeSpan.Zero;
+
+        Action policy = () => Policy
+                                  .Handle<DivideByZeroException>()
+                                  .WaitAndRetryForever(sleepDurationProvider);
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
     public void Should_throw_when_sleep_duration_provider_is_null_without_context_with_onretry()
     {
         Action<Exception, TimeSpan> onRetry = (_, _) => { };

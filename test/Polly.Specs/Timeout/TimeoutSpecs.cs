@@ -49,6 +49,16 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         Should.Throw<ArgumentOutOfRangeException>(policy)
             .ParamName.ShouldBe("seconds");
+
+        policy = () => Policy.Timeout(0, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("seconds");
+
+        policy = () => Policy.Timeout(0, TimeoutStrategy.Pessimistic, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("seconds");
     }
 
     [Fact]
@@ -233,6 +243,11 @@ public class TimeoutSpecs : TimeoutSpecsBase
     public void Should_throw_when_timeoutProvider_is_null()
     {
         Action policy = () => Policy.Timeout((Func<TimeSpan>)null!);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("timeoutProvider");
+
+        policy = () => Policy.Timeout((Func<TimeSpan>)null!, TimeoutStrategy.Pessimistic, (_, _, _, _) => { });
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("timeoutProvider");

@@ -22,7 +22,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheProvider));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheProvider));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheError);
     }
 
     /// <summary>
@@ -112,7 +112,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheError);
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheProvider));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheProvider));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy, onCacheError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy, onCacheError);
     }
 
     /// <summary>
@@ -197,7 +197,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheProvider));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
     }
 
     /// <summary>
@@ -234,7 +234,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheProvider));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
     }
 
     /// <summary>
@@ -278,7 +278,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
     }
 
     /// <summary>
@@ -323,7 +323,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
     }
 
     /// <summary>
@@ -362,7 +362,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheProvider));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
     }
 
     /// <summary>
@@ -402,7 +402,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheProvider));
         }
 
-        return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
     }
 
     /// <summary>
@@ -477,7 +477,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        return CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheError);
+        return CacheAsync(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheError);
     }
 
     /// <summary>
@@ -508,7 +508,7 @@ public partial class Policy
 
         Action<Context, string> emptyDelegate = (_, _) => { };
 
-        return CacheAsync<TResult>(
+        return CacheAsync(
             cacheProvider,
             ttlStrategy,
             cacheKeyStrategy.GetCacheKey,
@@ -547,7 +547,7 @@ public partial class Policy
 
         Action<Context, string> emptyDelegate = (_, _) => { };
 
-        return CacheAsync<TResult>(
+        return CacheAsync(
             cacheProvider,
             ttlStrategy,
             cacheKeyStrategy.GetCacheKey,
@@ -745,7 +745,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        return CacheAsync<TResult>(
+        return CacheAsync(
             cacheProvider,
             new RelativeTtl(ttl),
             cacheKeyStrategy.GetCacheKey,
@@ -793,7 +793,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        return CacheAsync<TResult>(
+        return CacheAsync(
             cacheProvider,
             ttlStrategy.For<TResult>(),
             cacheKeyStrategy.GetCacheKey,
@@ -841,7 +841,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        return CacheAsync<TResult>(
+        return CacheAsync(
             cacheProvider,
             ttlStrategy,
             cacheKeyStrategy.GetCacheKey,

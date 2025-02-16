@@ -53,6 +53,19 @@ public class AbsoluteTtlSpecs : IDisposable
         actual.SlidingExpiration.ShouldBeFalse();
     }
 
+    [Fact]
+    public void Should_return_zero_ttl_if_configured_to_expire_now()
+    {
+        SystemClock.DateTimeOffsetUtcNow = () => new(2025, 02, 16, 12, 34, 56, TimeSpan.Zero);
+
+        AbsoluteTtl ttlStrategy = new AbsoluteTtl(SystemClock.DateTimeOffsetUtcNow());
+
+        var actual = ttlStrategy.GetTtl(new Context("someOperationKey"), null);
+
+        actual.Timespan.ShouldBe(TimeSpan.Zero);
+        actual.SlidingExpiration.ShouldBeFalse();
+    }
+
     public void Dispose() =>
         SystemClock.Reset();
 }
