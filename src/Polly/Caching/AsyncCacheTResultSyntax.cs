@@ -418,7 +418,7 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, Action<Context, string, Exception>? onCacheError = null) =>
-        CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+        CacheAsync(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
 
     /// <summary>
     /// <para>Builds an <see cref="AsyncPolicy{TResult}"/> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -434,7 +434,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, Action<Context, string, Exception>? onCacheError = null) =>
-        CacheAsync<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+        CacheAsync(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
 
     /// <summary>
     /// <para>Builds an <see cref="AsyncPolicy{TResult}"/> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -450,7 +450,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, Action<Context, string, Exception>? onCacheError = null) =>
-        CacheAsync<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+        CacheAsync(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
 
     /// <summary>
     /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -506,15 +506,13 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        Action<Context, string> emptyDelegate = (_, _) => { };
-
         return CacheAsync(
             cacheProvider,
             ttlStrategy,
             cacheKeyStrategy.GetCacheKey,
-            emptyDelegate,
-            emptyDelegate,
-            emptyDelegate,
+            EmptyCallback,
+            EmptyCallback,
+            EmptyCallback,
             onCacheError,
             onCacheError);
     }
@@ -545,15 +543,13 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        Action<Context, string> emptyDelegate = (_, _) => { };
-
         return CacheAsync(
             cacheProvider,
             ttlStrategy,
             cacheKeyStrategy.GetCacheKey,
-            emptyDelegate,
-            emptyDelegate,
-            emptyDelegate,
+            EmptyCallback,
+            EmptyCallback,
+            EmptyCallback,
             onCacheError,
             onCacheError);
     }
@@ -573,7 +569,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheProvider"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null) =>
-        CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
+        CacheAsync(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
 
     /// <summary>
     /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -591,11 +587,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
-    {
-        Action<Context, string> emptyDelegate = (_, _) => { };
-
-        return CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
-    }
+        => CacheAsync(cacheProvider, ttlStrategy, cacheKeyStrategy, EmptyCallback, EmptyCallback, EmptyCallback, onCacheError, onCacheError);
 
     /// <summary>
     /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -613,11 +605,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
-    {
-        Action<Context, string> emptyDelegate = (_, _) => { };
-
-        return CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
-    }
+        => CacheAsync(cacheProvider, ttlStrategy, cacheKeyStrategy, EmptyCallback, EmptyCallback, EmptyCallback, onCacheError, onCacheError);
 
     /// <summary>
     /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -646,8 +634,15 @@ public partial class Policy
         Action<Context, string> onCachePut,
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError) =>
-        CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss,
-            onCachePut, onCacheGetError, onCachePutError);
+        CacheAsync(
+            cacheProvider,
+            new RelativeTtl(ttl),
+            DefaultCacheKeyStrategy.Instance.GetCacheKey,
+            onCacheGet,
+            onCacheMiss,
+            onCachePut,
+            onCacheGetError,
+            onCachePutError);
 
     /// <summary>
     /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -677,7 +672,15 @@ public partial class Policy
         Action<Context, string> onCachePut,
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError) =>
-        CacheAsync<TResult>(cacheProvider, ttlStrategy.For<TResult>(), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        CacheAsync(
+            cacheProvider,
+            ttlStrategy.For<TResult>(),
+            DefaultCacheKeyStrategy.Instance.GetCacheKey,
+            onCacheGet,
+            onCacheMiss,
+            onCachePut,
+            onCacheGetError,
+            onCachePutError);
 
     /// <summary>
     /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -707,7 +710,15 @@ public partial class Policy
         Action<Context, string> onCachePut,
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError) =>
-        CacheAsync<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        CacheAsync(
+            cacheProvider,
+            ttlStrategy,
+            DefaultCacheKeyStrategy.Instance.GetCacheKey,
+            onCacheGet,
+            onCacheMiss,
+            onCachePut,
+            onCacheGetError,
+            onCachePutError);
 
     /// <summary>
     /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -882,8 +893,15 @@ public partial class Policy
         Action<Context, string> onCachePut,
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError) =>
-        CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss,
-            onCachePut, onCacheGetError, onCachePutError);
+        CacheAsync(
+            cacheProvider,
+            new RelativeTtl(ttl),
+            cacheKeyStrategy,
+            onCacheGet,
+            onCacheMiss,
+            onCachePut,
+            onCacheGetError,
+            onCachePutError);
 
     /// <summary>
     /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -916,7 +934,15 @@ public partial class Policy
         Action<Context, string> onCachePut,
         Action<Context, string, Exception>? onCacheGetError,
         Action<Context, string, Exception>? onCachePutError) =>
-        CacheAsync<TResult>(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        CacheAsync(
+            cacheProvider,
+            ttlStrategy.For<TResult>(),
+            cacheKeyStrategy,
+            onCacheGet,
+            onCacheMiss,
+            onCachePut,
+            onCacheGetError,
+            onCachePutError);
 
     /// <summary>
     /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -981,5 +1007,10 @@ public partial class Policy
         }
 
         return new AsyncCachePolicy<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+    }
+
+    private static void EmptyCallback(Context context, string key)
+    {
+        // No-op
     }
 }

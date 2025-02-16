@@ -590,6 +590,15 @@ public class WaitAndRetryAsyncSpecs : IDisposable
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("onRetryAsync");
+
+        Func<Exception, TimeSpan, Context, Task> onRetryContextAsync = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync([], onRetryContextAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
     }
 
     [Fact]
@@ -598,6 +607,12 @@ public class WaitAndRetryAsyncSpecs : IDisposable
         Action policy = () => Policy
             .Handle<DivideByZeroException>()
             .WaitAndRetryAsync([], (_, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync([], (_, _, _) => TaskHelper.EmptyTask);
 
         Should.NotThrow(policy);
     }

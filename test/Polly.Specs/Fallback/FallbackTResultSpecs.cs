@@ -818,6 +818,30 @@ public class FallbackTResultSpecs
     }
 
     [Fact]
+    public void Should_handle_exception_correctly_and_return_fallback()
+    {
+        var policy = Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Or<IOException>()
+            .Fallback(ResultPrimitive.Substitute);
+
+        var result = policy.Execute(() => throw new IOException());
+
+        result.ShouldBe(ResultPrimitive.Substitute);
+    }
+
+    [Fact]
+    public void Should_not_handle_wrong_exception()
+    {
+        var policy = Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Or<IOException>()
+            .Fallback(ResultPrimitive.Substitute);
+
+        Should.Throw<InvalidOperationException>(() => policy.Execute(() => throw new InvalidOperationException()));
+    }
+
+    [Fact]
     public void Should_not_report_cancellation_and_not_execute_fallback_if_non_faulting_action_execution_completes_and_user_delegate_does_not_observe_the_set_cancellationToken()
     {
         bool fallbackActionExecuted = false;

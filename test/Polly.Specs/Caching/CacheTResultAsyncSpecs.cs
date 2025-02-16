@@ -50,12 +50,116 @@ public class CacheTResultAsyncSpecs : IDisposable
     }
 
     [Fact]
+    public void Should_not_throw_when_arguments_valid()
+    {
+        IAsyncCacheProvider cacheProvider = new StubCacheProvider();
+        IAsyncCacheProvider<string> genericCacheProvider = cacheProvider.AsyncFor<string>();
+        Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue);
+        Should.NotThrow(action);
+
+        var ttl = TimeSpan.MaxValue;
+        ITtlStrategy ttlStrategy = Substitute.For<ITtlStrategy>();
+        Func<Context, string> cacheKeyStrategy = (_) => string.Empty;
+
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy, cacheKeyStrategy);
+        Should.NotThrow(action);
+
+        Action<Context, string> emptyAction = (_, _) => { };
+        Action<Context, string, Exception> emptyHandler = (_, _, _) => { };
+
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttl, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, Substitute.For<ICacheKeyStrategy>(), emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttlStrategy, Substitute.For<ICacheKeyStrategy>(), emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, cacheKeyStrategy, emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, Substitute.For<ICacheKeyStrategy>(), emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttlStrategy, Substitute.For<ICacheKeyStrategy>(), emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttlStrategy.For<string>(), cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttl);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttlStrategy);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttlStrategy.For<string>());
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttl, cacheKeyStrategy);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttlStrategy, cacheKeyStrategy);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttlStrategy.For<string>(), cacheKeyStrategy);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttl, cacheKeyStrategy);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttlStrategy.For<string>(), cacheKeyStrategy);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttl, emptyAction, emptyAction, emptyAction, null, null);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttlStrategy, emptyAction, emptyAction, emptyAction, null, null);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttlStrategy.For<string>(), emptyAction, emptyAction, emptyAction, null, null);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttl, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, null, null);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttlStrategy, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, null, null);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttlStrategy.For<string>(), cacheKeyStrategy, emptyAction, emptyAction, emptyAction, null, null);
+        Should.NotThrow(action);
+
+        action = () => Policy.CacheAsync(genericCacheProvider, ttl, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, null, null);
+        Should.NotThrow(action);
+    }
+
+    [Fact]
     public void Should_throw_when_cache_provider_is_null()
     {
         IAsyncCacheProvider cacheProvider = null!;
         Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
 
+        var ttl = TimeSpan.MaxValue;
         ITtlStrategy ttlStrategy = Substitute.For<ITtlStrategy>();
         Func<Context, string> cacheKeyStrategy = (_) => string.Empty;
 
@@ -65,23 +169,64 @@ public class CacheTResultAsyncSpecs : IDisposable
         Action<Context, string> emptyAction = (_, _) => { };
         Action<Context, string, Exception> emptyHandler = (_, _, _) => { };
 
-        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttl, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
 
         action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
 
-        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttl, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
 
-        action = () => Policy.CacheAsync<string>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
 
         action = () => Policy.CacheAsync<string>(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
 
-        action = () => Policy.CacheAsync<string>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, emptyHandler);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, Substitute.For<ICacheKeyStrategy>(), emptyHandler);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttlStrategy, Substitute.For<ICacheKeyStrategy>(), emptyHandler);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, cacheKeyStrategy, emptyHandler);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttl, Substitute.For<ICacheKeyStrategy>(), emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
+
+        action = () => Policy.CacheAsync<string>(cacheProvider, ttlStrategy, Substitute.For<ICacheKeyStrategy>(), emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
+
+        action = () => Policy.CacheAsync(null!, ttlStrategy.For<string>(), cacheKeyStrategy, emptyAction, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("cacheProvider");
+    }
+
+    [Fact]
+    public void Should_throw_if_delegates_are_null()
+    {
+        IAsyncCacheProvider<string> asyncCacheProvider = new StubCacheProvider().AsyncFor<string>();
+        ITtlStrategy<string> ttlStrategy = Substitute.For<ITtlStrategy>().For<string>();
+        Func<Context, string> cacheKeyStrategy = (_) => string.Empty;
+
+        Action<Context, string> emptyAction = (_, _) => { };
+        Action<Context, string, Exception> emptyHandler = (_, _, _) => { };
+
+        Action action = () => Policy.CacheAsync(asyncCacheProvider, ttlStrategy, cacheKeyStrategy, null!, emptyAction, emptyAction, emptyHandler, emptyHandler);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onCacheGet");
+
+        action = () => Policy.CacheAsync(asyncCacheProvider, ttlStrategy, cacheKeyStrategy, emptyAction, null!, emptyAction, emptyHandler, emptyHandler);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onCacheMiss");
+
+        action = () => Policy.CacheAsync(asyncCacheProvider, ttlStrategy, cacheKeyStrategy, emptyAction, emptyAction, null!, emptyHandler, emptyHandler);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onCachePut");
     }
 
     [Fact]

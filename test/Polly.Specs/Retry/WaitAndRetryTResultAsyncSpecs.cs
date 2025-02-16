@@ -44,23 +44,23 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_retry_count_is_less_than_zero()
     {
-        var expectedRetryWaits = new Dictionary<ResultPrimitive, TimeSpan>
-        {
-            [ResultPrimitive.Fault] = TimeSpan.FromSeconds(2),
-            [ResultPrimitive.FaultAgain] = TimeSpan.FromSeconds(4),
-        };
-
         var actualRetryWaits = new List<TimeSpan>();
 
         Action configure = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .WaitAndRetryAsync(-1,
-                (_, outcome, _) => expectedRetryWaits[outcome.Result],
-                (_, timeSpan, _, _) =>
-                {
-                    actualRetryWaits.Add(timeSpan);
-                    return TaskHelper.EmptyTask;
-                });
+            .WaitAndRetryAsync(
+                -1,
+                (_) => TimeSpan.Zero,
+                (_, _, _, _) => TaskHelper.EmptyTask);
+
+        Should.Throw<ArgumentOutOfRangeException>(configure).ParamName.ShouldBe("retryCount");
+
+        configure = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .WaitAndRetryAsync(
+                -1,
+                (_, _, _) => TimeSpan.Zero,
+                (_, _, _, _) => TaskHelper.EmptyTask);
 
         Should.Throw<ArgumentOutOfRangeException>(configure).ParamName.ShouldBe("retryCount");
     }
@@ -118,11 +118,19 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
 
         Should.Throw<ArgumentNullException>(policy).ParamName.ShouldBe("onRetryAsync");
 
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, int, Context> onRetryResult = null!;
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, int, Context> onRetryAttemptsResult = null!;
 
         policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .WaitAndRetryAsync(1, (_) => TimeSpan.Zero, onRetryResult);
+            .WaitAndRetryAsync(1, (_) => TimeSpan.Zero, onRetryAttemptsResult);
+
+        Should.Throw<ArgumentNullException>(policy).ParamName.ShouldBe("onRetry");
+
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onRetryResult = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .WaitAndRetryAsync(1, (_, _) => TimeSpan.Zero, onRetryResult);
 
         Should.Throw<ArgumentNullException>(policy).ParamName.ShouldBe("onRetry");
     }

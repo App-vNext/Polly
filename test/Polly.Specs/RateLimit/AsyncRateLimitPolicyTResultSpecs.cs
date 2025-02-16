@@ -81,6 +81,7 @@ public class AsyncRateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase,
         var exception = Should.Throw<ArgumentOutOfRangeException>(() => Policy.RateLimitAsync<EmptyStruct>(1, TimeSpan.FromSeconds(-1), 1));
 
         // Assert
+        exception.Message.ShouldStartWith("perTimeSpan must be a positive timespan");
         exception.ParamName.ShouldBe("perTimeSpan");
         exception.ActualValue.ShouldBe(TimeSpan.FromSeconds(-1));
     }
@@ -92,6 +93,7 @@ public class AsyncRateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase,
         var exception = Should.Throw<ArgumentOutOfRangeException>(() => Policy.RateLimitAsync<EmptyStruct>(1, TimeSpan.Zero, 1));
 
         // Assert
+        exception.Message.ShouldStartWith("perTimeSpan must be a positive timespan");
         exception.ParamName.ShouldBe("perTimeSpan");
         exception.ActualValue.ShouldBe(TimeSpan.Zero);
     }
