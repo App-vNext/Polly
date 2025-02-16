@@ -10,11 +10,21 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_sleep_duration_provider_is_null_without_context()
     {
-        Action<Exception, TimeSpan> onRetry = (_, _) => { };
+        Func<int, Context, TimeSpan> sleepDurationProviderContext = null!;
 
         Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .WaitAndRetryForeverAsync(null, onRetry);
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForeverAsync(sleepDurationProviderContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("sleepDurationProvider");
+
+        Func<int, TimeSpan> sleepDurationProvider = null!;
+        Action<Exception, TimeSpan> onRetry = (_, _) => { };
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForeverAsync(sleepDurationProvider, onRetry);
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("sleepDurationProvider");

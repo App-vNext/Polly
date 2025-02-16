@@ -20,11 +20,7 @@ public static class AsyncRetrySyntax
     /// <param name="retryCount">The retry count.</param>
     /// <returns>The policy instance.</returns>
     public static AsyncRetryPolicy RetryAsync(this PolicyBuilder policyBuilder, int retryCount)
-    {
-        Action<Exception, int, Context> doNothing = (_, _, _) => { };
-
-        return policyBuilder.RetryAsync(retryCount, onRetry: doNothing);
-    }
+        => policyBuilder.RetryAsync(retryCount, onRetry: EmptyHandler);
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy" /> that will retry once
@@ -172,11 +168,7 @@ public static class AsyncRetrySyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <returns>The policy instance.</returns>
     public static AsyncRetryPolicy RetryForeverAsync(this PolicyBuilder policyBuilder)
-    {
-        Action<Exception> doNothing = _ => { };
-
-        return policyBuilder.RetryForeverAsync(doNothing);
-    }
+        => policyBuilder.RetryForeverAsync(static (_) => { });
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy" /> that will retry indefinitely
@@ -348,11 +340,7 @@ public static class AsyncRetrySyntax
     /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <returns>The policy instance.</returns>
     public static AsyncRetryPolicy WaitAndRetryAsync(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider)
-    {
-        Action<Exception, TimeSpan> doNothing = (_, _) => { };
-
-        return policyBuilder.WaitAndRetryAsync(retryCount, sleepDurationProvider, doNothing);
-    }
+        => policyBuilder.WaitAndRetryAsync(retryCount, sleepDurationProvider, EmptyHandler);
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy" /> that will wait and retry <paramref name="retryCount" /> times
@@ -696,11 +684,7 @@ public static class AsyncRetrySyntax
     /// <param name="sleepDurations">The sleep durations to wait for on each retry.</param>
     /// <returns>The policy instance.</returns>
     public static AsyncRetryPolicy WaitAndRetryAsync(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations)
-    {
-        Action<Exception, TimeSpan, int, Context> doNothing = (_, _, _, _) => { };
-
-        return policyBuilder.WaitAndRetryAsync(sleepDurations, doNothing);
-    }
+        => policyBuilder.WaitAndRetryAsync(sleepDurations, EmptyHandlerWithContext);
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy" /> that will wait and retry as many times as there are provided
@@ -862,16 +846,7 @@ public static class AsyncRetrySyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
     public static AsyncRetryPolicy WaitAndRetryForeverAsync(this PolicyBuilder policyBuilder, Func<int, TimeSpan> sleepDurationProvider)
-    {
-        if (sleepDurationProvider == null)
-        {
-            throw new ArgumentNullException(nameof(sleepDurationProvider));
-        }
-
-        Action<Exception, TimeSpan> doNothing = (_, _) => { };
-
-        return policyBuilder.WaitAndRetryForeverAsync(sleepDurationProvider, doNothing);
-    }
+        => policyBuilder.WaitAndRetryForeverAsync(sleepDurationProvider, EmptyHandler);
 
     /// <summary>
     /// Builds an <see cref="AsyncRetryPolicy"/> that will wait and retry indefinitely until the action succeeds.
@@ -883,16 +858,7 @@ public static class AsyncRetrySyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
     public static AsyncRetryPolicy WaitAndRetryForeverAsync(this PolicyBuilder policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider)
-    {
-        if (sleepDurationProvider == null)
-        {
-            throw new ArgumentNullException(nameof(sleepDurationProvider));
-        }
-
-        Action<Exception, TimeSpan, Context> doNothing = (_, _, _) => { };
-
-        return policyBuilder.WaitAndRetryForeverAsync(sleepDurationProvider, doNothing);
-    }
+        => policyBuilder.WaitAndRetryForeverAsync(sleepDurationProvider, EmptyHandlerWithContext);
 
     /// <summary>
     /// Builds an <see cref="AsyncRetryPolicy"/> that will wait and retry indefinitely
@@ -1178,6 +1144,21 @@ public static class AsyncRetrySyntax
             policyBuilder,
             (exception, timespan, i, ctx) => onRetryAsync(exception, i, timespan, ctx),
             sleepDurationProvider: sleepDurationProvider);
+    }
+
+    private static void EmptyHandler(Exception exception, int retryCount, Context context)
+    {
+        // No-op
+    }
+
+    private static void EmptyHandler(Exception exception, TimeSpan duration)
+    {
+        // No-op
+    }
+
+    private static void EmptyHandlerWithContext(Exception exception, TimeSpan duration, Context context)
+    {
+        // No-op
     }
 }
 
