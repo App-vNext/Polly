@@ -83,7 +83,6 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
         Should.Throw<ArgumentNullException>(configure).ParamName.ShouldBe("onRetryAsync");
     }
 
-
     [Fact]
     public void Should_throw_when_onretry_action_is_null()
     {
