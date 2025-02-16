@@ -3,18 +3,20 @@ namespace Polly.CircuitBreaker;
 
 internal sealed class RollingHealthMetrics : IHealthMetrics
 {
+    internal const short WindowCount = 10;
+
     private readonly long _samplingDuration;
     private readonly long _windowDuration;
     private readonly Queue<HealthCount> _windows;
 
     private HealthCount? _currentWindow;
 
-    public RollingHealthMetrics(TimeSpan samplingDuration, short numberOfWindows)
+    public RollingHealthMetrics(TimeSpan samplingDuration)
     {
         _samplingDuration = samplingDuration.Ticks;
 
-        _windowDuration = _samplingDuration / numberOfWindows;
-        _windows = new(numberOfWindows + 1);
+        _windowDuration = _samplingDuration / WindowCount;
+        _windows = new(WindowCount + 1);
     }
 
     public void IncrementSuccess_NeedsLock()
@@ -60,13 +62,15 @@ internal sealed class RollingHealthMetrics : IHealthMetrics
     private HealthCount ActualiseCurrentMetric_NeedsLock()
     {
         var now = SystemClock.UtcNow().Ticks;
-        if (_currentWindow == null || now - _currentWindow.StartedAt >= _windowDuration)
+        var currentWindow = _currentWindow;
+
+        if (currentWindow == null || now - currentWindow.StartedAt >= _windowDuration)
         {
-            _currentWindow = new()
+            _currentWindow = currentWindow = new()
             {
                 StartedAt = now
             };
-            _windows.Enqueue(_currentWindow);
+            _windows.Enqueue(currentWindow);
         }
 
         while (_windows.Count > 0 && now - _windows.Peek().StartedAt >= _samplingDuration)
@@ -74,6 +78,6 @@ internal sealed class RollingHealthMetrics : IHealthMetrics
             _windows.Dequeue();
         }
 
-        return _currentWindow;
+        return currentWindow;
     }
 }

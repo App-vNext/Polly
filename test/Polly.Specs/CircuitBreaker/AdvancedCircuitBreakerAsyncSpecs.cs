@@ -1,4 +1,5 @@
-﻿using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
+﻿using System.Globalization;
+using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
 
 namespace Polly.Specs.CircuitBreaker;
 
@@ -3091,6 +3092,25 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
 
         action = () => builder.AdvancedCircuitBreakerAsync(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, (_) => { }, null!);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onHalfOpen");
+    }
+
+    [Theory]
+    [InlineData("00:00:00.001", typeof(SingleHealthMetrics))]
+    [InlineData("00:00:00.199", typeof(SingleHealthMetrics))]
+    [InlineData("00:00:00.200", typeof(RollingHealthMetrics))]
+    [InlineData("00:00:00.201", typeof(RollingHealthMetrics))]
+    public void AdvancedCircuitController_uses_correct_metrics(string samplingDuration, Type expectedMetricsType)
+    {
+        var target = new AdvancedCircuitController<EmptyStruct>(
+            failureThreshold: 0.5,
+            samplingDuration: TimeSpan.Parse(samplingDuration, CultureInfo.InvariantCulture),
+            minimumThroughput: 4,
+            durationOfBreak: TimeSpan.FromSeconds(30),
+            onBreak: (_, _, _, _) => { },
+            onReset: _ => { },
+            onHalfOpen: () => { });
+
+        target.Metrics.ShouldBeOfType(expectedMetricsType);
     }
 
     #endregion

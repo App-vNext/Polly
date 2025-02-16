@@ -5,7 +5,7 @@
     <AssemblyTitle>Polly</AssemblyTitle>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ProjectType>Library</ProjectType>
-    <MutationScore>92</MutationScore>
+    <MutationScore>93</MutationScore>
     <IncludePollyUsings>true</IncludePollyUsings>
     <!-- We do not plan on enabling nullable annotations for Polly -->
     <NoWarn>$(NoWarn);RS0037</NoWarn>
