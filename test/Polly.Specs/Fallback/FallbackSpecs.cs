@@ -7,6 +7,22 @@ public class FallbackSpecs
     #region Configuration guard condition tests
 
     [Fact]
+    public void Should_not_throw_when_fallback_action_is__not_null()
+    {
+        Action policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .Fallback((fallbackAction) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .Fallback((_) => { });
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
     public void Should_throw_when_fallback_action_is_null()
     {
         Action fallbackAction = null!;

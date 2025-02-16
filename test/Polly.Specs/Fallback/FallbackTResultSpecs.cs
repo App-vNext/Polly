@@ -56,6 +56,22 @@ public class FallbackTResultSpecs
     }
 
     [Fact]
+    public void Should_not_throw_when_fallback_action_is_not_null()
+    {
+        Action policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(() => ResultPrimitive.Substitute);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback((_) => ResultPrimitive.Substitute);
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
     public void Should_throw_when_fallback_action_with_cancellation_is_null()
     {
         Func<CancellationToken, ResultPrimitive> fallbackAction = null!;

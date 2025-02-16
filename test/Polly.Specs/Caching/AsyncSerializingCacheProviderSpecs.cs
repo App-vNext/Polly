@@ -1,5 +1,6 @@
 ﻿namespace Polly.Specs.Caching;
 
+[Collection(Constants.SystemClockDependentTestCollection)]
 public class AsyncSerializingCacheProviderSpecs
 {
     #region Object-to-TSerialized serializer

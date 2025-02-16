@@ -34,6 +34,14 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     }
 
     [Fact]
+    public void Should_not_throw_with_ontimeoutasync()
+    {
+        Action policy = () => Policy.TimeoutAsync(1, (_, _, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
     public void Should_throw_when_ontimeoutasync_is_null()
     {
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = null!;
@@ -42,6 +50,14 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onTimeoutAsync");
+    }
+
+    [Fact]
+    public void Should_not_throw_with_ontimeoutasync_with_exception()
+    {
+        Action policy = () => Policy.TimeoutAsync(1, (_, _, _, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
     }
 
     [Fact]

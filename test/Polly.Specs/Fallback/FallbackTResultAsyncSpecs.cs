@@ -116,6 +116,22 @@ public class FallbackTResultAsyncSpecs
             .ParamName.ShouldBe("onFallbackAsync");
     }
 
+    [Fact]
+    public void Should_not_throw_when_onFallback_delegate_is_not_null()
+    {
+        Action policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .FallbackAsync((_, _) => Task.FromResult(ResultPrimitive.Substitute), (_, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .FallbackAsync(ResultPrimitive.Substitute, (_, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+    }
+
     #endregion
 
     #region Policy operation tests

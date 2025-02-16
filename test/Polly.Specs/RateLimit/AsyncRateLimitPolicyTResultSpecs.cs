@@ -95,4 +95,11 @@ public class AsyncRateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase,
         exception.ParamName.ShouldBe("perTimeSpan");
         exception.ActualValue.ShouldBe(TimeSpan.Zero);
     }
+
+    [Fact]
+    public void Should_not_throw_when_pertimespan_is_greater_than_zero()
+    {
+        // Act and Assert
+        Should.NotThrow(() => Policy.RateLimitAsync<EmptyStruct>(1, TimeSpan.FromTicks(1), 1));
+    }
 }

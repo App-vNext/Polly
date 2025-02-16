@@ -117,6 +117,24 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
             .WaitAndRetryAsync(1, (_) => TimeSpan.Zero, onRetryAsyncContext);
 
         Should.Throw<ArgumentNullException>(policy).ParamName.ShouldBe("onRetryAsync");
+
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, int, Context> onRetryResult = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .WaitAndRetryAsync(1, (_) => TimeSpan.Zero, onRetryResult);
+
+        Should.Throw<ArgumentNullException>(policy).ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
+    public void Should_not_throw_arguments_valid()
+    {
+        Action policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .WaitAndRetryAsync(1, (_) => TimeSpan.Zero, (_, _, _, _) => { });
+
+        Should.NotThrow(policy);
     }
 
     public void Dispose() =>

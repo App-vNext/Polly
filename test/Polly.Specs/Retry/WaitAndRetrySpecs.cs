@@ -534,6 +534,12 @@ public class WaitAndRetrySpecs : IDisposable
                   .WaitAndRetry(0, _ => default, onRetryContext);
 
         Should.NotThrow(policy);
+
+        policy = () =>
+            Policy.Handle<DivideByZeroException>()
+                  .WaitAndRetry(0, (_, _, _) => TimeSpan.Zero, (_, _, _, _) => { });
+
+        Should.NotThrow(policy);
     }
 
     [Fact]

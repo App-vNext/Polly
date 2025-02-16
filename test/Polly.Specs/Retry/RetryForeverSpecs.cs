@@ -29,7 +29,7 @@ public class RetryForeverSpecs
     }
 
     [Fact]
-    public void Should_throw_when_onretry_actionis_null()
+    public void Should_throw_when_onretry_action_is_null()
     {
         Action<DelegateResult<ResultPrimitive>> nullOnRetry = null!;
 
@@ -39,6 +39,31 @@ public class RetryForeverSpecs
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_onretry_action_with_int_is_null()
+    {
+        Action<DelegateResult<ResultPrimitive>, int> nullOnRetry = null!;
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForever(nullOnRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
+    public void Should_not_throw_when_onretry_action_with_int_is_valid()
+    {
+        Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { };
+
+        Action policy = () => Policy
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryForever(onRetry);
+
+        Should.NotThrow(policy);
     }
 
     [Fact]
