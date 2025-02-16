@@ -42,6 +42,26 @@ public class WaitAndRetryTResultSpecs : IDisposable
 
         Should.Throw<ArgumentOutOfRangeException>(policy)
               .ParamName.ShouldBe("retryCount");
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(-1, (_) => default, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+              .ParamName.ShouldBe("retryCount");
+    }
+
+    [Fact]
+    public void Should_throw_when_sleepDurationProvider_is_null()
+    {
+        Func<int, TimeSpan> sleepDurationProvider = null!;
+
+        Action policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(1, sleepDurationProvider, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("sleepDurationProvider");
     }
 
     [Fact]
@@ -52,6 +72,85 @@ public class WaitAndRetryTResultSpecs : IDisposable
                   .WaitAndRetry(0, (_, _, _) => default, (_, _, _, _) => { });
 
         Should.NotThrow(policy);
+    }
+
+    [Fact]
+    public void Should_throw_when_onRetry_is_null()
+    {
+        Action<DelegateResult<ResultPrimitive>, TimeSpan> onRetry = null!;
+
+        Action policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(1, (_) => TimeSpan.Zero, onRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onRetryContext = null!;
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(1, (_) => TimeSpan.Zero, onRetryContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+
+        Action<DelegateResult<ResultPrimitive>, TimeSpan, int, Context> onRetryAttempts = null!;
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(1, (_) => TimeSpan.Zero, onRetryAttempts);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(1, (_, _) => TimeSpan.Zero, onRetryContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(1, (_, _, _) => TimeSpan.Zero, onRetryContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry([], onRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry([], onRetryContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry([], onRetryAttempts);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+    }
+
+    [Fact]
+    public void Should_throw_when_sleepDurations_is_null()
+    {
+        IEnumerable<TimeSpan> sleepDurations = null!;
+
+        Action policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(sleepDurations, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("sleepDurations");
     }
 
     public void Dispose() =>
