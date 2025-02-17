@@ -22,7 +22,7 @@ jobs:
         with:
           application_id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
           application_private_key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
-          permissions: "contents:write, pull_requests:write"
+          permissions: 'contents:write, pull_requests:write'
 
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -40,6 +40,8 @@ jobs:
         env:
           DOTNET_CLI_TELEMETRY_OPTOUT: true
           DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+          GIT_COMMIT_USER_EMAIL: '138034000+polly-updater-bot[bot]@users.noreply.github.com'
+          GIT_COMMIT_USER_NAME: 'polly-updater-bot[bot]'
         run: |
           $ErrorActionPreference = "Stop"
           $ProgressPreference = "SilentlyContinue"
@@ -57,11 +59,8 @@ jobs:
           $BranchName = "docs/update-docs-$TimeStamp"
           "branchName=$BranchName" >> ${env:GITHUB_OUTPUT}
 
-          $GitEmail = "138034000+polly-updater-bot[bot]@users.noreply.github.com"
-          $GitUser = "polly-updater-bot[bot]"
-
-          git config user.email $GitEmail | Out-Null
-          git config user.name $GitUser | Out-Null
+          git config user.email ${env:GIT_COMMIT_USER_EMAIL} | Out-Null
+          git config user.name ${env:GIT_COMMIT_USER_NAME} | Out-Null
           git remote set-url "${env:GITHUB_SERVER_URL}/${env:GITHUB_REPOSITORY}.git" | Out-Null
           git fetch origin | Out-Null
           git rev-parse --verify --quiet ("remotes/origin/" + $BranchName) | Out-Null

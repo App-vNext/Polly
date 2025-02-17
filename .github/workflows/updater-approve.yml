@@ -15,8 +15,9 @@ jobs:
     if: github.event.repository.fork == false && github.event.pull_request.user.login == 'polly-updater-bot[bot]'
 
     env:
-      REVIEWER_LOGIN: "polly-reviewer-bot[bot]"
-      UPDATER_LOGIN: "polly-updater-bot[bot]"
+      POWERSHELL_YAML_VERSION: '0.4.12'
+      REVIEWER_LOGIN: 'polly-reviewer-bot[bot]'
+      UPDATER_LOGIN: 'polly-updater-bot[bot]'
 
     permissions:
       contents: read
@@ -33,18 +34,18 @@ jobs:
 
     - name: Install powershell-yaml
       shell: pwsh
-      run: Install-Module -Name powershell-yaml -Force -MaximumVersion "0.4.12"
+      run: Install-Module -Name powershell-yaml -Force -MaximumVersion ${env:POWERSHELL_YAML_VERSION}
 
     - name: Check which dependencies were updated
       id: check-dependencies
       env:
-        INCLUDE_NUGET_PACKAGES: "Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,System.Text.Json"
+        INCLUDE_NUGET_PACKAGES: 'Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,System.Text.Json'
         GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
       shell: pwsh
       run: |
         $commits = gh api `
-          /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/commits `
+          "/repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/commits" `
           --jq '.[] | { author: .author.login, message: .commit.message }' | ConvertFrom-Json
 
         $expectedUser = ${env:UPDATER_LOGIN}
@@ -114,14 +115,14 @@ jobs:
         PR_URL: ${{ github.event.pull_request.html_url }}
       shell: pwsh
       run: |
-        $approvals = gh api /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews | ConvertFrom-Json
+        $approvals = gh api "/repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews" | ConvertFrom-Json
         $approvals = $approvals | Where-Object { $_.user.login -eq ${env:REVIEWER_LOGIN} }
         $approvals = $approvals | Where-Object { $_.state -eq "APPROVED" }
 
         if ($approvals.Length -eq 0) {
-          gh pr checkout "${env:PR_URL}"
-          gh pr review --approve "${env:PR_URL}"
-          gh pr merge --auto --squash "${env:PR_URL}"
+          gh pr checkout ${env:PR_URL}
+          gh pr review --approve ${env:PR_URL}
+          gh pr merge --auto --squash ${env:PR_URL}
         }
         else {
           Write-Output "PR already approved.";
@@ -135,17 +136,17 @@ jobs:
         PR_URL: ${{ github.event.pull_request.html_url }}
       shell: pwsh
       run: |
-        $approvals = gh api /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews | ConvertFrom-Json
+        $approvals = gh api "/repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews" | ConvertFrom-Json
         $approvals = $approvals | Where-Object { $_.user.login -eq ${env:REVIEWER_LOGIN} }
         $approvals = $approvals | Where-Object { $_.state -eq "APPROVED" }
 
         if ($approvals.Length -gt 0) {
-          gh pr checkout "${env:PR_URL}"
-          gh pr merge --disable-auto "${env:PR_URL}"
+          gh pr checkout ${env:PR_URL}
+          gh pr merge --disable-auto ${env:PR_URL}
           foreach ($approval in $approvals) {
             gh api `
               --method PUT `
-              /repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews/$($approval.id)/dismissals `
+              "/repos/${env:GITHUB_REPOSITORY}/pulls/${env:PR_NUMBER}/reviews/$($approval.id)/dismissals" `
               -f message='Cannot approve as other changes have been introduced.' `
               -f event='DISMISS'
           }
