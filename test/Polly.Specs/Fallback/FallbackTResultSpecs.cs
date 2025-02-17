@@ -34,28 +34,6 @@ public class FallbackTResultSpecs
     }
 
     [Fact]
-    public void Should_throw_when_fallback_action_is_null()
-    {
-        Func<ResultPrimitive> fallbackAction = null!;
-
-        Action policy = () => Policy
-                                .HandleResult(ResultPrimitive.Fault)
-                                .Fallback(fallbackAction);
-
-        Should.Throw<ArgumentNullException>(policy)
-            .ParamName.ShouldBe("fallbackAction");
-
-        Func<CancellationToken, ResultPrimitive> fallbackActionToken = null!;
-
-        policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackActionToken);
-
-        Should.Throw<ArgumentNullException>(policy)
-            .ParamName.ShouldBe("fallbackAction");
-    }
-
-    [Fact]
     public void Should_not_throw_when_fallback_action_is_not_null()
     {
         Action policy = () => Policy
@@ -69,12 +47,18 @@ public class FallbackTResultSpecs
             .Fallback((_) => ResultPrimitive.Substitute);
 
         Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(ResultPrimitive.Substitute, (_) => { });
+
+        Should.NotThrow(policy);
     }
 
     [Fact]
-    public void Should_throw_when_fallback_action_with_cancellation_is_null()
+    public void Should_throw_when_fallback_action_is_null()
     {
-        Func<CancellationToken, ResultPrimitive> fallbackAction = null!;
+        Func<ResultPrimitive> fallbackAction = null!;
 
         Action policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -82,59 +66,53 @@ public class FallbackTResultSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
 
-    [Fact]
-    public void Should_throw_when_fallback_action_is_null_with_onFallback()
-    {
-        Func<ResultPrimitive> fallbackAction = null!;
-        Action<DelegateResult<ResultPrimitive>> onFallback = _ => { };
+        Func<CancellationToken, ResultPrimitive> fallbackActionToken = null!;
 
-        Action policy = () => Policy
-                                .HandleResult(ResultPrimitive.Fault)
-                                .Fallback(fallbackAction, onFallback);
-
-        Should.Throw<ArgumentNullException>(policy)
-            .ParamName.ShouldBe("fallbackAction");
-    }
-
-    [Fact]
-    public void Should_throw_when_fallback_action_with_cancellation_is_null_with_onFallback()
-    {
-        Func<CancellationToken, ResultPrimitive> fallbackAction = null!;
-        Action<DelegateResult<ResultPrimitive>> onFallback = _ => { };
-
-        Action policy = () => Policy
+        policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction, onFallback);
+            .Fallback(fallbackActionToken);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
 
-    [Fact]
-    public void Should_throw_when_fallback_action_is_null_with_onFallback_with_context()
-    {
-        Func<Context, ResultPrimitive> fallbackAction = null!;
-        Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => { };
-
-        Action policy = () => Policy
-                                .HandleResult(ResultPrimitive.Fault)
-                                .Fallback(fallbackAction, onFallback);
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(fallbackAction, _ => { });
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
 
-    [Fact]
-    public void Should_throw_when_fallback_action_with_cancellation_is_null_with_onFallback_with_context()
-    {
-        Func<Context, CancellationToken, ResultPrimitive> fallbackAction = null!;
-        Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => { };
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(fallbackActionToken, _ => { });
 
-        Action policy = () => Policy
-                                .HandleResult(ResultPrimitive.Fault)
-                                .Fallback(fallbackAction, onFallback);
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("fallbackAction");
+
+        Func<Context, ResultPrimitive> fallbackActionContext = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(fallbackActionContext, (_, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("fallbackAction");
+
+        Func<Context, CancellationToken, ResultPrimitive> fallbackActionContextToken = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(fallbackActionContextToken, (_, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("fallbackAction");
+
+        Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, ResultPrimitive> fallbackActionResultContextToken = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(fallbackActionResultContextToken, (_, _) => { });
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
@@ -143,12 +121,11 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_throw_when_onFallback_delegate_is_null()
     {
-        Func<ResultPrimitive> fallbackAction = () => ResultPrimitive.Substitute;
         Action<DelegateResult<ResultPrimitive>> onFallback = null!;
 
         Action policy = () => Policy
-                                .HandleResult(ResultPrimitive.Fault)
-                                .Fallback(fallbackAction, onFallback);
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(() => ResultPrimitive.Substitute, onFallback);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallback");
@@ -159,45 +136,40 @@ public class FallbackTResultSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallback");
-    }
 
-    [Fact]
-    public void Should_throw_when_onFallback_delegate_is_null_with_action_with_cancellation()
-    {
-        Func<CancellationToken, ResultPrimitive> fallbackAction = _ => ResultPrimitive.Substitute;
-        Action<DelegateResult<ResultPrimitive>> onFallback = null!;
-
-        Action policy = () => Policy
+        policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction, onFallback);
+            .Fallback(_ => ResultPrimitive.Substitute, onFallback);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallback");
-    }
 
-    [Fact]
-    public void Should_throw_when_onFallback_delegate_is_null_with_context()
-    {
-        Func<Context, ResultPrimitive> fallbackAction = _ => ResultPrimitive.Substitute;
-        Action<DelegateResult<ResultPrimitive>, Context> onFallback = null!;
+        Action<DelegateResult<ResultPrimitive>, Context> onFallbackContext = null!;
 
-        Action policy = () => Policy
-                                .HandleResult(ResultPrimitive.Fault)
-                                .Fallback(fallbackAction, onFallback);
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(_ => ResultPrimitive.Substitute, onFallbackContext);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallback");
-    }
 
-    [Fact]
-    public void Should_throw_when_onFallback_delegate_is_null_with_context_with_action_with_cancellation()
-    {
-        Func<Context, CancellationToken, ResultPrimitive> fallbackAction = (_, _) => ResultPrimitive.Substitute;
-        Action<DelegateResult<ResultPrimitive>, Context> onFallback = null!;
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback((_, _) => ResultPrimitive.Substitute, onFallbackContext);
 
-        Action policy = () => Policy
-                                .HandleResult(ResultPrimitive.Fault)
-                                .Fallback(fallbackAction, onFallback);
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallback");
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback(ResultPrimitive.Substitute, onFallbackContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallback");
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Fallback((_, _, _) => ResultPrimitive.Substitute, onFallbackContext);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallback");

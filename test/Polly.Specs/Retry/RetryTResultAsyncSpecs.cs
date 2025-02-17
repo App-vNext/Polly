@@ -34,13 +34,97 @@ public class RetryTResultAsyncSpecs
     }
 
     [Fact]
+    public void Should_not_throw_when_arguments_are_valid()
+    {
+        Action policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryAsync(1, (_, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryAsync((_, _, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForeverAsync();
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForeverAsync((_) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForeverAsync((DelegateResult<ResultPrimitive> _, int _) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForeverAsync((_) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+
+        Func<DelegateResult<ResultPrimitive>, int, Task> onRetryAttempts = (_, _) => TaskHelper.EmptyTask;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForeverAsync(onRetryAttempts);
+
+        Should.NotThrow(policy);
+
+        Func<DelegateResult<ResultPrimitive>, Context, Task> onRetryContext = (_, _) => TaskHelper.EmptyTask;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForeverAsync(onRetryContext);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForeverAsync((_, _, _) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForeverAsync((_, _, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
     public void Should_throw_when_onretryasync_is_null()
     {
         Func<DelegateResult<ResultPrimitive>, int, Task> onRetryAsync = null!;
 
         Action policy = () => Policy
-                                  .HandleResult(ResultPrimitive.Fault)
-                                  .RetryAsync(1, onRetryAsync);
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryAsync(1, onRetryAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryAsync(1, onRetryAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+
+        Func<DelegateResult<ResultPrimitive>, int, Context, Task> onRetryAsyncContext = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryAsync(1, onRetryAsyncContext);
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("onRetryAsync");

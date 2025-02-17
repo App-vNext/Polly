@@ -6,99 +6,114 @@ public class WaitAndRetryForeverSpecs : IDisposable
     public WaitAndRetryForeverSpecs() => SystemClock.Sleep = (_, _) => { };
 
     [Fact]
-    public void Should_throw_when_sleep_duration_provider_is_null_without_context()
+    public void Should_throw_when_sleep_duration_provider_is_null()
     {
         Func<int, Context, TimeSpan> sleepDurationProvider = null!;
 
         Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .WaitAndRetryForever(sleepDurationProvider);
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever(sleepDurationProvider);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("sleepDurationProvider");
+            .ParamName.ShouldBe("sleepDurationProvider");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever(null, (_, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("sleepDurationProvider");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever(sleepDurationProvider, (_, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("sleepDurationProvider");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever(sleepDurationProvider, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("sleepDurationProvider");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever((Func<int, TimeSpan>)null!, (_, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("sleepDurationProvider");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever((Func<int, Exception, Context, TimeSpan>)null!, (_, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("sleepDurationProvider");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever((Func<int, Exception, Context, TimeSpan>)null!, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("sleepDurationProvider");
     }
 
     [Fact]
-    public void Should_throw_not_when_sleep_duration_provider_is_not_null_with_context()
+    public void Should_throw_not_when_argumets_are_valid()
     {
-        Func<int, Context, TimeSpan> sleepDurationProvider = (_, _) => TimeSpan.Zero;
-
         Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .WaitAndRetryForever(sleepDurationProvider);
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever((_, _) => TimeSpan.Zero);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever((_, _) => TimeSpan.Zero, (_, _, _, _) => { });
 
         Should.NotThrow(policy);
     }
 
     [Fact]
-    public void Should_throw_when_sleep_duration_provider_is_null_without_context_with_onretry()
+    public void Should_throw_when_onretry_action_is_null()
     {
-        Action<Exception, TimeSpan> onRetry = (_, _) => { };
+        Action<Exception, TimeSpan> onRetry = null!;
 
         Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .WaitAndRetryForever(null, onRetry);
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever(_ => TimeSpan.Zero, onRetry);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("sleepDurationProvider");
-    }
+            .ParamName.ShouldBe("onRetry");
 
-    [Fact]
-    public void Should_throw_when_sleep_duration_provider_is_null_with_context()
-    {
-        Action<Exception, TimeSpan, Context> onRetry = (_, _, _) => { };
+        Action<Exception, TimeSpan, Context> onRetryContext = null!;
 
-        Func<int, Context, TimeSpan> sleepDurationProvider = null!;
-
-        Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .WaitAndRetryForever(sleepDurationProvider, onRetry);
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever((_, _) => TimeSpan.Zero, onRetryContext);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("sleepDurationProvider");
-    }
+            .ParamName.ShouldBe("onRetry");
 
-    [Fact]
-    public void Should_throw_when_sleep_duration_provider_is_null_with_context_and_onretry_with_attempt()
-    {
-        Action<Exception, int, TimeSpan, Context> onRetry = (_, _, _, _) => { };
+        Action<Exception, int, TimeSpan> onRetryAttempts = null!;
 
-        Func<int, Context, TimeSpan> sleepDurationProvider = null!;
-
-        Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .WaitAndRetryForever(sleepDurationProvider, onRetry);
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever((_) => TimeSpan.Zero, onRetryAttempts);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("sleepDurationProvider");
-    }
+            .ParamName.ShouldBe("onRetry");
 
-    [Fact]
-    public void Should_throw_when_onretry_action_is_null_without_context()
-    {
-        Action<Exception, TimeSpan> nullOnRetry = null!;
-        Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
+        Action<Exception, int, TimeSpan, Context> onRetryAttemptsContext = null!;
 
-        Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .WaitAndRetryForever(provider, nullOnRetry);
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForever((_, _, _) => TimeSpan.Zero, onRetryAttemptsContext);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("onRetry");
-    }
-
-    [Fact]
-    public void Should_throw_when_onretry_action_is_null_with_context()
-    {
-        Action<Exception, TimeSpan, Context> nullOnRetry = null!;
-        Func<int, Context, TimeSpan> provider = (_, _) => TimeSpan.Zero;
-
-        Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .WaitAndRetryForever(provider, nullOnRetry);
-
-        Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("onRetry");
+            .ParamName.ShouldBe("onRetry");
     }
 
     [Fact]

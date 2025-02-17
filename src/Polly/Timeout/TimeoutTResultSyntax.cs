@@ -12,9 +12,7 @@ public partial class Policy
     public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds)
     {
         TimeoutValidator.ValidateSecondsTimeout(seconds);
-        Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
-
-        return Timeout<TResult>(_ => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothing);
+        return Timeout<TResult>(_ => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, EmptyHandler);
     }
 
     /// <summary>
@@ -28,9 +26,7 @@ public partial class Policy
     public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds, TimeoutStrategy timeoutStrategy)
     {
         TimeoutValidator.ValidateSecondsTimeout(seconds);
-        Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
-
-        return Timeout<TResult>(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothing);
+        return Timeout<TResult>(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, EmptyHandler);
     }
 
     /// <summary>
@@ -120,9 +116,7 @@ public partial class Policy
 #pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
-        Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
-
-        return Timeout<TResult>(_ => timeout, TimeoutStrategy.Optimistic, doNothing);
+        return Timeout<TResult>(_ => timeout, TimeoutStrategy.Optimistic, EmptyHandler);
     }
 
 #pragma warning disable S3872
@@ -138,9 +132,7 @@ public partial class Policy
 #pragma warning restore S3872
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
-        Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
-
-        return Timeout<TResult>(_ => timeout, timeoutStrategy, doNothing);
+        return Timeout<TResult>(_ => timeout, timeoutStrategy, EmptyHandler);
     }
 
 #pragma warning disable S3872
@@ -231,8 +223,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(timeoutProvider));
         }
 
-        Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
-        return Timeout<TResult>(_ => timeoutProvider(), TimeoutStrategy.Optimistic, doNothing);
+        return Timeout<TResult>(_ => timeoutProvider(), TimeoutStrategy.Optimistic, EmptyHandler);
     }
 
     /// <summary>
@@ -250,8 +241,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(timeoutProvider));
         }
 
-        Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
-        return Timeout<TResult>(_ => timeoutProvider(), timeoutStrategy, doNothing);
+        return Timeout<TResult>(_ => timeoutProvider(), timeoutStrategy, EmptyHandler);
     }
 
     /// <summary>
@@ -344,10 +334,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider)
-    {
-        Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
-        return Timeout<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, doNothing);
-    }
+        => Timeout<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, EmptyHandler);
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}" /> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException" /> will be thrown if the delegate does not complete within the configured timeout.
@@ -358,10 +345,7 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
     public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
-    {
-        Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
-        return Timeout<TResult>(timeoutProvider, timeoutStrategy, doNothing);
-    }
+        => Timeout<TResult>(timeoutProvider, timeoutStrategy, EmptyHandler);
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.

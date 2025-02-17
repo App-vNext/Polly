@@ -3,68 +3,77 @@
 public class RetryForeverSpecs
 {
     [Fact]
-    public void Should_throw_when_onretry_action_without_context_is_null()
-    {
-        Action<Exception> nullOnRetry = null!;
-
-        Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .RetryForever(nullOnRetry);
-
-        Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("onRetry");
-    }
-
-    [Fact]
-    public void Should_throw_when_onretry_action_with_context_is_null()
-    {
-        Action<Exception, Context> nullOnRetry = null!;
-
-        Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .RetryForever(nullOnRetry);
-
-        Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("onRetry");
-    }
-
-    [Fact]
     public void Should_throw_when_onretry_action_is_null()
     {
-        Action<DelegateResult<ResultPrimitive>> nullOnRetry = null!;
+        Action<Exception> onRetry = null!;
 
         Action policy = () => Policy
-                                  .HandleResult(ResultPrimitive.Fault)
-                                  .RetryForever(nullOnRetry);
+            .Handle<DivideByZeroException>()
+            .RetryForever(onRetry);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onRetry");
+
+        Action<Exception, Context> onRetryContext = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .RetryForever(onRetryContext);
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("onRetry");
-    }
 
-    [Fact]
-    public void Should_throw_when_onretry_action_with_int_is_null()
-    {
-        Action<DelegateResult<ResultPrimitive>, int> nullOnRetry = null!;
+        Action<DelegateResult<ResultPrimitive>> onRetryResult = null!;
 
-        Action policy = () => Policy
-                                  .HandleResult(ResultPrimitive.Fault)
-                                  .RetryForever(nullOnRetry);
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForever(onRetryResult);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("onRetry");
-    }
+            .ParamName.ShouldBe("onRetry");
 
-    [Fact]
-    public void Should_throw_when_onretry_for_result_action_with_context_is_null()
-    {
-        Action<DelegateResult<ResultPrimitive>, Context> nullOnRetry = null!;
+        Action<DelegateResult<ResultPrimitive>, int> onRetryResultAttempts = null!;
 
-        Action policy = () => Policy
-                                  .HandleResult(ResultPrimitive.Fault)
-                                  .RetryForever(nullOnRetry);
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForever(onRetryResultAttempts);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("onRetry");
+            .ParamName.ShouldBe("onRetry");
+
+        Action<DelegateResult<ResultPrimitive>, Context> onRetryResultContext = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForever(onRetryResultContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onRetry");
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForever(onRetryResultContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onRetry");
+
+        Action<Exception, int> onRetryAttempts = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .RetryForever(onRetryAttempts);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onRetry");
+
+        Action<Exception, int, Context> onRetryAttemptsContext = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .RetryForever(onRetryAttemptsContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onRetry");
     }
 
     [Fact]

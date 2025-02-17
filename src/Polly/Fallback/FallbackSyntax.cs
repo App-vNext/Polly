@@ -14,15 +14,7 @@ public static class FallbackSyntax
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action fallbackAction)
-    {
-        if (fallbackAction == null)
-        {
-            throw new ArgumentNullException(nameof(fallbackAction));
-        }
-
-        Action<Exception> doNothing = _ => { };
-        return policyBuilder.Fallback(fallbackAction, doNothing);
-    }
+        => policyBuilder.Fallback(fallbackAction, EmptyAction);
 
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, calls <paramref name="fallbackAction"/>.
@@ -32,15 +24,7 @@ public static class FallbackSyntax
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<CancellationToken> fallbackAction)
-    {
-        if (fallbackAction == null)
-        {
-            throw new ArgumentNullException(nameof(fallbackAction));
-        }
-
-        Action<Exception> doNothing = _ => { };
-        return policyBuilder.Fallback(fallbackAction, doNothing);
-    }
+        => policyBuilder.Fallback(fallbackAction, EmptyAction);
 
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception; then calls <paramref name="fallbackAction"/>.
@@ -164,6 +148,11 @@ public static class FallbackSyntax
                 onFallback,
                 fallbackAction);
     }
+
+    private static void EmptyAction(Exception exception)
+    {
+        // No-op
+    }
 }
 
 /// <summary>
@@ -179,10 +168,7 @@ public static class FallbackTResultSyntax
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue)
-    {
-        Action<DelegateResult<TResult>> doNothing = _ => { };
-        return policyBuilder.Fallback(() => fallbackValue, doNothing);
-    }
+        => policyBuilder.Fallback(() => fallbackValue, EmptyAction);
 
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, calls <paramref name="fallbackAction"/> and returns its result.
@@ -193,15 +179,7 @@ public static class FallbackTResultSyntax
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<TResult> fallbackAction)
-    {
-        if (fallbackAction == null)
-        {
-            throw new ArgumentNullException(nameof(fallbackAction));
-        }
-
-        Action<DelegateResult<TResult>> doNothing = _ => { };
-        return policyBuilder.Fallback(fallbackAction, doNothing);
-    }
+        => policyBuilder.Fallback(fallbackAction, EmptyAction);
 
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, calls <paramref name="fallbackAction"/> and returns its result.
@@ -212,15 +190,7 @@ public static class FallbackTResultSyntax
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, TResult> fallbackAction)
-    {
-        if (fallbackAction == null)
-        {
-            throw new ArgumentNullException(nameof(fallbackAction));
-        }
-
-        Action<DelegateResult<TResult>> doNothing = _ => { };
-        return policyBuilder.Fallback(fallbackAction, doNothing);
-    }
+        => policyBuilder.Fallback(fallbackAction, EmptyAction);
 
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result; then returns <paramref name="fallbackValue"/>.
@@ -386,5 +356,10 @@ public static class FallbackTResultSyntax
             policyBuilder,
             onFallback,
             fallbackAction);
+    }
+
+    private static void EmptyAction<T>(DelegateResult<T> result)
+    {
+        // No-op
     }
 }

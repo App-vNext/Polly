@@ -11,10 +11,7 @@ public partial class Policy
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
     /// <returns>The policy instance.</returns>
     public static BulkheadPolicy Bulkhead(int maxParallelization)
-    {
-        Action<Context> doNothing = _ => { };
-        return Bulkhead(maxParallelization, 0, doNothing);
-    }
+        => Bulkhead(maxParallelization, 0, EmptyAction);
 
     /// <summary>
     /// <para>Builds a bulkhead isolation <see cref="Policy"/>, which limits the maximum concurrency of actions executed through the policy.  Imposing a maximum concurrency limits the potential of governed actions, when faulting, to bring down the system.</para>
@@ -38,10 +35,7 @@ public partial class Policy
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
     public static BulkheadPolicy Bulkhead(int maxParallelization, int maxQueuingActions)
-    {
-        Action<Context> doNothing = _ => { };
-        return Bulkhead(maxParallelization, maxQueuingActions, doNothing);
-    }
+        => Bulkhead(maxParallelization, maxQueuingActions, EmptyAction);
 
     /// <summary>
     /// Builds a bulkhead isolation <see cref="Policy" />, which limits the maximum concurrency of actions executed through the policy.  Imposing a maximum concurrency limits the potential of governed actions, when faulting, to bring down the system.
@@ -75,5 +69,10 @@ public partial class Policy
             maxParallelization,
             maxQueuingActions,
             onBulkheadRejected);
+    }
+
+    private static void EmptyAction(Context context)
+    {
+        // No-op
     }
 }

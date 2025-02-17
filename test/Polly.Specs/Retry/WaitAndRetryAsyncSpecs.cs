@@ -509,7 +509,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     }
 
     [Fact]
-    public void Should_throw_when_retry_count_is_less_than_zero_without_context()
+    public void Should_throw_when_retry_count_is_less_than_zero()
     {
         Action<Exception, TimeSpan> onRetry = (_, _) => { };
 
@@ -529,7 +529,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     }
 
     [Fact]
-    public void Should_not_throw_when_retry_count_is_zero_without_context()
+    public void Should_not_throw_when_arguments_are_valid()
     {
         Action policy = () => Policy
             .Handle<DivideByZeroException>()
@@ -540,6 +540,18 @@ public class WaitAndRetryAsyncSpecs : IDisposable
         policy = () => Policy
             .Handle<DivideByZeroException>()
             .WaitAndRetryAsync(0, (_, _, _) => TimeSpan.Zero, (_, _, _, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync([], (_, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync([], (_, _, _) => TaskHelper.EmptyTask);
 
         Should.NotThrow(policy);
     }
@@ -558,7 +570,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     }
 
     [Fact]
-    public void Should_throw_when_onretry_action_is_null_without_context_when_using_provider_overload()
+    public void Should_throw_when_onretry_action_is_null()
     {
         Action<Exception, TimeSpan> nullOnRetry = null!;
 
@@ -571,7 +583,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     }
 
     [Fact]
-    public void Should_throw_when_onretryasync_action_is_null_without_context()
+    public void Should_throw_when_onretryasync_action_is_null()
     {
         Func<Exception, TimeSpan, Context, Task> onRetryWithContextAsync = null!;
 
@@ -599,32 +611,10 @@ public class WaitAndRetryAsyncSpecs : IDisposable
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("onRetryAsync");
-    }
-
-    [Fact]
-    public void Should_not_throw_when_onretryasync_action_has_context()
-    {
-        Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .WaitAndRetryAsync([], (_, _) => TaskHelper.EmptyTask);
-
-        Should.NotThrow(policy);
 
         policy = () => Policy
             .Handle<DivideByZeroException>()
-            .WaitAndRetryAsync([], (_, _, _) => TaskHelper.EmptyTask);
-
-        Should.NotThrow(policy);
-    }
-
-    [Fact]
-    public void Should_throw_when_onretryasync_action_is_null_with_context()
-    {
-        Func<Exception, TimeSpan, Context, Task> onRetryAsync = null!;
-
-        Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .WaitAndRetryAsync(1, (_, _) => TimeSpan.Zero, onRetryAsync);
+            .WaitAndRetryAsync(1, (_, _) => TimeSpan.Zero, onRetryWithContextAsync);
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("onRetryAsync");

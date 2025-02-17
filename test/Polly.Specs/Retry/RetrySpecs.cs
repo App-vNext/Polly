@@ -46,29 +46,39 @@ public class RetrySpecs
     }
 
     [Fact]
-    public void Should_throw_when_onretry_action_without_context_is_null()
+    public void Should_throw_when_onretry_action_is_null()
     {
-        Action<Exception, int> nullOnRetry = null!;
+        Action<Exception, int> onRetry = null!;
 
         Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .Retry(1, nullOnRetry);
+            .Handle<DivideByZeroException>()
+            .Retry(1, onRetry);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("onRetry");
-    }
+            .ParamName.ShouldBe("onRetry");
 
-    [Fact]
-    public void Should_throw_when_retry_count_is_less_than_zero_with_context()
-    {
-        Action<Exception, int, Context> onRetry = (_, _, _) => { };
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .Retry(onRetry);
 
-        Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .Retry(-1, onRetry);
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onRetry");
+
+        Action<Exception, int, Context> onRetryContext = (_, _, _) => { };
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .Retry(-1, onRetryContext);
 
         Should.Throw<ArgumentOutOfRangeException>(policy)
-              .ParamName.ShouldBe("retryCount");
+            .ParamName.ShouldBe("retryCount");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .Retry(-1, onRetryContext);
+
+        Should.Throw<ArgumentOutOfRangeException>(policy)
+            .ParamName.ShouldBe("retryCount");
     }
 
     [Fact]

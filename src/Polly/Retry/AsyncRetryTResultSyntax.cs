@@ -22,11 +22,7 @@ public static class AsyncRetryTResultSyntax
     /// <param name="retryCount">The retry count.</param>
     /// <returns>The policy instance.</returns>
     public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount)
-    {
-        Action<DelegateResult<TResult>, int> doNothing = (_, _) => { };
-
-        return policyBuilder.RetryAsync(retryCount, doNothing);
-    }
+        => policyBuilder.RetryAsync(retryCount, static (_, _) => { });
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy{TResult}" /> that will retry once
@@ -183,11 +179,7 @@ public static class AsyncRetryTResultSyntax
     /// <param name="policyBuilder">The policy builder.</param>
     /// <returns>The policy instance.</returns>
     public static AsyncRetryPolicy<TResult> RetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder)
-    {
-        Action<DelegateResult<TResult>> doNothing = _ => { };
-
-        return policyBuilder.RetryForeverAsync(doNothing);
-    }
+        => policyBuilder.RetryForeverAsync(static _ => { });
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy{TResult}" /> that will retry indefinitely
@@ -368,11 +360,7 @@ public static class AsyncRetryTResultSyntax
     /// <param name="sleepDurationProvider">The function that provides the duration to wait for a particular retry attempt.</param>
     /// <returns>The policy instance.</returns>
     public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider)
-    {
-        Action<DelegateResult<TResult>, TimeSpan> doNothing = (_, _) => { };
-
-        return policyBuilder.WaitAndRetryAsync(retryCount, sleepDurationProvider, doNothing);
-    }
+        => policyBuilder.WaitAndRetryAsync(retryCount, sleepDurationProvider, EmptyAction);
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy{TResult}" /> that will wait and retry <paramref name="retryCount" /> times
@@ -388,8 +376,11 @@ public static class AsyncRetryTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> or <paramref name="onRetry"/> is <see langword="null"/>.</exception>
-    public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount,
-        Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan> onRetry)
+    public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(
+        this PolicyBuilder<TResult> policyBuilder,
+        int retryCount,
+        Func<int, TimeSpan> sleepDurationProvider,
+        Action<DelegateResult<TResult>, TimeSpan> onRetry)
     {
         if (onRetry == null)
         {
@@ -667,8 +658,11 @@ public static class AsyncRetryTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> or <paramref name="onRetryAsync"/> is <see langword="null"/>.</exception>
-    public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount,
-        Func<int, Context, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync)
+    public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(
+        this PolicyBuilder<TResult> policyBuilder,
+        int retryCount,
+        Func<int, Context, TimeSpan> sleepDurationProvider,
+        Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync)
     {
         if (sleepDurationProvider == null)
         {
@@ -695,8 +689,11 @@ public static class AsyncRetryTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> or <paramref name="onRetryAsync"/> is <see langword="null"/>.</exception>
-    public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount,
-        Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync)
+    public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(
+        this PolicyBuilder<TResult> policyBuilder,
+        int retryCount,
+        Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider,
+        Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync)
     {
         if (retryCount < 0)
         {
@@ -730,11 +727,7 @@ public static class AsyncRetryTResultSyntax
     /// <param name="sleepDurations">The sleep durations to wait for on each retry.</param>
     /// <returns>The policy instance.</returns>
     public static AsyncRetryPolicy<TResult> WaitAndRetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, IEnumerable<TimeSpan> sleepDurations)
-    {
-        Action<DelegateResult<TResult>, TimeSpan> doNothing = (_, _) => { };
-
-        return policyBuilder.WaitAndRetryAsync(sleepDurations, doNothing);
-    }
+        => policyBuilder.WaitAndRetryAsync(sleepDurations, EmptyAction);
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy{TResult}" /> that will wait and retry as many times as there are provided
@@ -903,16 +896,7 @@ public static class AsyncRetryTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
     public static AsyncRetryPolicy<TResult> WaitAndRetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, TimeSpan> sleepDurationProvider)
-    {
-        if (sleepDurationProvider == null)
-        {
-            throw new ArgumentNullException(nameof(sleepDurationProvider));
-        }
-
-        Action<DelegateResult<TResult>, TimeSpan> doNothing = (_, _) => { };
-
-        return policyBuilder.WaitAndRetryForeverAsync(sleepDurationProvider, doNothing);
-    }
+        => policyBuilder.WaitAndRetryForeverAsync(sleepDurationProvider, EmptyAction);
 
     /// <summary>
     /// Builds an <see cref="AsyncRetryPolicy{TResult}"/> that will wait and retry indefinitely until the action succeeds.
@@ -925,16 +909,7 @@ public static class AsyncRetryTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="sleepDurationProvider"/> is <see langword="null"/>.</exception>
     public static AsyncRetryPolicy<TResult> WaitAndRetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider)
-    {
-        if (sleepDurationProvider == null)
-        {
-            throw new ArgumentNullException(nameof(sleepDurationProvider));
-        }
-
-        Action<DelegateResult<TResult>, TimeSpan, Context> doNothing = (_, _, _) => { };
-
-        return policyBuilder.WaitAndRetryForeverAsync(sleepDurationProvider, doNothing);
-    }
+        => policyBuilder.WaitAndRetryForeverAsync(sleepDurationProvider, static (_, _, _) => { });
 
     /// <summary>
     /// Builds an <see cref="AsyncRetryPolicy{TResult}"/> that will wait and retry indefinitely until the action succeeds,
@@ -1220,6 +1195,11 @@ public static class AsyncRetryTResultSyntax
             policyBuilder,
             (exception, timespan, i, ctx) => onRetryAsync(exception, i, timespan, ctx),
             sleepDurationProvider: sleepDurationProvider);
+    }
+
+    private static void EmptyAction<T>(DelegateResult<T> result, TimeSpan retryAfter)
+    {
+        // No-op
     }
 }
 
