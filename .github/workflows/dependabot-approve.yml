@@ -55,7 +55,7 @@ jobs:
           GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
           PR_URL: ${{ github.event.pull_request.html_url }}
         run: |
-          gh pr checkout "$PR_URL"
+          gh pr checkout "${PR_URL}"
           if [ "$(gh pr status --json reviewDecision -q .currentBranch.reviewDecision)" != "APPROVED" ];
-          then gh pr review --approve "$PR_URL" && gh pr merge --auto --squash "$PR_URL"
+          then gh pr review --approve "${PR_URL}" && gh pr merge --auto --squash "${PR_URL}"
           fi
