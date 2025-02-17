@@ -17,31 +17,28 @@ public class FallbackAsyncSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
 
-    [Fact]
-    public void Should_throw_when_fallback_func_is_null_with_onFallback()
-    {
-        Func<CancellationToken, Task> fallbackActionAsync = null!;
-        Func<Exception, Task> onFallbackAsync = _ => TaskHelper.EmptyTask;
-
-        Action policy = () => Policy
+        policy = () => Policy
             .Handle<DivideByZeroException>()
-            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+            .FallbackAsync(fallbackActionAsync, _ => TaskHelper.EmptyTask);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
 
-    [Fact]
-    public void Should_throw_when_fallback_func_is_null_with_onFallback_with_context()
-    {
-        Func<Context, CancellationToken, Task> fallbackActionAsync = null!;
-        Func<Exception, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
+        Func<Context, CancellationToken, Task> fallbackActionAsyncContext = null!;
 
-        Action policy = () => Policy
-                                .Handle<DivideByZeroException>()
-                                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsyncContext, (_, _) => TaskHelper.EmptyTask);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("fallbackAction");
+
+        Func<Exception, Context, CancellationToken, Task> fallbackActionAsyncExceptionContext = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsyncExceptionContext, (_, _) => TaskHelper.EmptyTask);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
@@ -50,33 +47,20 @@ public class FallbackAsyncSpecs
     [Fact]
     public void Should_throw_when_onFallback_delegate_is_null()
     {
-        Func<CancellationToken, Task> fallbackActionAsync = _ => TaskHelper.EmptyTask;
         Func<Exception, Task> onFallbackAsync = null!;
 
         Action policy = () => Policy
-                                .Handle<DivideByZeroException>()
-                                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(_ => TaskHelper.EmptyTask, onFallbackAsync);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallbackAsync");
+
+        Func<Exception, Context, Task> onFallbackAsyncContext = null!;
 
         policy = () => Policy
             .Handle<DivideByZeroException>()
-            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
-
-        Should.Throw<ArgumentNullException>(policy)
-            .ParamName.ShouldBe("onFallbackAsync");
-    }
-
-    [Fact]
-    public void Should_throw_when_onFallback_delegate_is_null_with_context()
-    {
-        Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
-        Func<Exception, Context, Task> onFallbackAsync = null!;
-
-        Action policy = () => Policy
-                                .Handle<DivideByZeroException>()
-                                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+            .FallbackAsync((_, _, _) => TaskHelper.EmptyTask, onFallbackAsyncContext);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallbackAsync");

@@ -44,31 +44,29 @@ public class FallbackTResultAsyncSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
-
-    [Fact]
-    public void Should_throw_when_fallback_action_is_null_with_onFallback()
-    {
-        Func<CancellationToken, Task<ResultPrimitive>> fallbackAction = null!;
         Func<DelegateResult<ResultPrimitive>, Task> onFallbackAsync = _ => TaskHelper.EmptyTask;
 
-        Action policy = () => Policy
+        policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .FallbackAsync(fallbackAction, onFallbackAsync);
+            .FallbackAsync(fallbackAction, _ => TaskHelper.EmptyTask);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
 
-    [Fact]
-    public void Should_throw_when_fallback_action_is_null_with_onFallback_with_context()
-    {
-        Func<Context, CancellationToken, Task<ResultPrimitive>> fallbackAction = null!;
-        Func<DelegateResult<ResultPrimitive>, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
+        Func<Context, CancellationToken, Task<ResultPrimitive>> fallbackActionContext = null!;
 
-        Action policy = () => Policy
+        policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .FallbackAsync(fallbackAction, onFallbackAsync);
+            .FallbackAsync(fallbackActionContext, (_, _) => TaskHelper.EmptyTask);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("fallbackAction");
+
+        Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, Task<ResultPrimitive>> fallbackActionResult = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .FallbackAsync(fallbackActionResult, (_, _) => TaskHelper.EmptyTask);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
@@ -77,12 +75,11 @@ public class FallbackTResultAsyncSpecs
     [Fact]
     public void Should_throw_when_onFallback_delegate_is_null()
     {
-        Func<CancellationToken, Task<ResultPrimitive>> fallbackAction = _ => Task.FromResult(ResultPrimitive.Substitute);
         Func<DelegateResult<ResultPrimitive>, Task> onFallbackAsync = null!;
 
         Action policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .FallbackAsync(fallbackAction, onFallbackAsync);
+            .FallbackAsync(_ => Task.FromResult(ResultPrimitive.Substitute), onFallbackAsync);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallbackAsync");
@@ -93,17 +90,12 @@ public class FallbackTResultAsyncSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallbackAsync");
-    }
 
-    [Fact]
-    public void Should_throw_when_onFallback_delegate_is_null_with_context()
-    {
-        Func<Context, CancellationToken, Task<ResultPrimitive>> fallbackAction = (_, _) => Task.FromResult(ResultPrimitive.Substitute);
-        Func<DelegateResult<ResultPrimitive>, Context, Task> onFallbackAsync = null!;
+        Func<DelegateResult<ResultPrimitive>, Context, Task> onFallbackAsyncContext = null!;
 
-        Action policy = () => Policy
+        policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .FallbackAsync(fallbackAction, onFallbackAsync);
+            .FallbackAsync((_, _) => Task.FromResult(ResultPrimitive.Substitute), onFallbackAsyncContext);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallbackAsync");
@@ -111,6 +103,13 @@ public class FallbackTResultAsyncSpecs
         policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
             .FallbackAsync(ResultPrimitive.Substitute, onFallbackAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallbackAsync");
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .FallbackAsync((_, _, _) => Task.FromResult(ResultPrimitive.Substitute), onFallbackAsyncContext);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallbackAsync");
@@ -122,6 +121,12 @@ public class FallbackTResultAsyncSpecs
         Action policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
             .FallbackAsync((_, _) => Task.FromResult(ResultPrimitive.Substitute), (_, _) => TaskHelper.EmptyTask);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .FallbackAsync(ResultPrimitive.Substitute, (_) => TaskHelper.EmptyTask);
 
         Should.NotThrow(policy);
 

@@ -234,8 +234,8 @@ public static class AsyncFallbackTResultSyntax
         }
 
         return new AsyncFallbackPolicy<TResult>(
-                policyBuilder,
-                onFallbackAsync,
-                fallbackAction);
+            policyBuilder,
+            onFallbackAsync,
+            fallbackAction);
     }
 }
