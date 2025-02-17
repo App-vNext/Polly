@@ -5,6 +5,16 @@ namespace Polly.Specs.Retry;
 public class RetryForeverAsyncSpecs
 {
     [Fact]
+    public void Should_not_throw_if_arguments_are_valid()
+    {
+        Action policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForeverAsync((DelegateResult<ResultPrimitive> _, Context _) => { });
+
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
     public async Task Should_not_throw_regardless_of_how_many_times_the_specified_exception_is_raised()
     {
         var policy = Policy
@@ -108,11 +118,20 @@ public class RetryForeverAsyncSpecs
         Action<DelegateResult<ResultPrimitive>> onRetry = null!;
 
         Action policy = () => Policy
-                                  .HandleResult(ResultPrimitive.Fault)
-                                  .RetryForeverAsync(onRetry);
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForeverAsync(onRetry);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("onRetry");
+            .ParamName.ShouldBe("onRetry");
+
+        Action<DelegateResult<ResultPrimitive>, int> onRetryAttempts = null!;
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .RetryForeverAsync(onRetryAttempts);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onRetry");
     }
 
     [Fact]

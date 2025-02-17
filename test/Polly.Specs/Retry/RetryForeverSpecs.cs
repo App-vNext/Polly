@@ -65,6 +65,15 @@ public class RetryForeverSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onRetry");
+
+        Action<Exception, int, Context> onRetryAttemptsContext = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .RetryForever(onRetryAttemptsContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onRetry");
     }
 
     [Fact]

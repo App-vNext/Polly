@@ -642,6 +642,13 @@ public class WaitAndRetrySpecs : IDisposable
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("sleepDurationProvider");
+
+        policy = () =>
+            Policy.Handle<DivideByZeroException>()
+                  .WaitAndRetry(1, (Func<int, Context, TimeSpan>)null!, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("sleepDurationProvider");
     }
 
     [Fact]
