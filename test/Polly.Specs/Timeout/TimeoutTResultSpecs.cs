@@ -130,6 +130,18 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
         policy = () => Policy.Timeout<ResultPrimitive>((_) => TimeSpan.Zero, TimeoutStrategy.Optimistic, (_, _, _, _) => { });
 
         Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout<ResultPrimitive>(() => TimeSpan.Zero, TimeoutStrategy.Optimistic, (_, _, _, _) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout<ResultPrimitive>((_) => TimeSpan.Zero, (_, _, _) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout<ResultPrimitive>((_) => TimeSpan.Zero, (_, _, _, _) => { });
+
+        Should.NotThrow(policy);
     }
 
     [Fact]

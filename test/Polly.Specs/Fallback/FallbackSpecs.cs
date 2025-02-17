@@ -42,72 +42,44 @@ public class FallbackSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
 
-    [Fact]
-    public void Should_throw_when_fallback_action_with_cancellation_is_null()
-    {
-        Action<CancellationToken> fallbackAction = null!;
-
-        Action policy = () => Policy
+        policy = () => Policy
             .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction);
+            .Fallback(fallbackAction, _ => { });
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
 
-    [Fact]
-    public void Should_throw_when_fallback_action_is_null_with_onFallback()
-    {
-        Action fallbackAction = null!;
-        Action<Exception> onFallback = _ => { };
-
-        Action policy = () => Policy
+        policy = () => Policy
             .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+            .Fallback(fallbackActionToken, _ => { });
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
 
-    [Fact]
-    public void Should_throw_when_fallback_action_with_cancellation_is_null_with_onFallback()
-    {
-        Action<CancellationToken> fallbackAction = null!;
-        Action<Exception> onFallback = _ => { };
+        Action<Context> fallbackActionContext = null!;
 
-        Action policy = () => Policy
+        policy = () => Policy
             .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+            .Fallback(fallbackActionContext, (_, _) => { });
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
 
-    [Fact]
-    public void Should_throw_when_fallback_action_is_null_with_onFallback_with_context()
-    {
-        Action<Context> fallbackAction = null!;
-        Action<Exception, Context> onFallback = (_, _) => { };
+        Action<Context, CancellationToken> fallbackActionContextToken = null!;
 
-        Action policy = () => Policy
+        policy = () => Policy
             .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+            .Fallback(fallbackActionContextToken, (_, _) => { });
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
-    }
 
-    [Fact]
-    public void Should_throw_when_fallback_action_with_cancellation_is_null_with_onFallback_with_context()
-    {
-        Action<Context, CancellationToken> fallbackAction = null!;
-        Action<Exception, Context> onFallback = (_, _) => { };
+        Action<Exception, Context, CancellationToken> fallbackActionExceptionContextToken = null!;
 
-        Action policy = () => Policy
+        policy = () => Policy
             .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+            .Fallback(fallbackActionExceptionContextToken, (_, _) => { });
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("fallbackAction");
@@ -116,54 +88,43 @@ public class FallbackSpecs
     [Fact]
     public void Should_throw_when_onFallback_delegate_is_null()
     {
-        Action fallbackAction = () => { };
         Action<Exception> onFallback = null!;
 
         Action policy = () => Policy
             .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+            .Fallback(() => { }, onFallback);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallback");
-    }
 
-    [Fact]
-    public void Should_throw_when_onFallback_delegate_is_null_with_action_with_cancellation()
-    {
-        Action<CancellationToken> fallbackAction = _ => { };
-        Action<Exception> onFallback = null!;
+        Action<Exception> onFallbackException = null!;
 
-        Action policy = () => Policy
+        policy = () => Policy
             .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+            .Fallback(_ => { }, onFallbackException);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallback");
-    }
 
-    [Fact]
-    public void Should_throw_when_onFallback_delegate_is_null_with_context()
-    {
-        Action<Context> fallbackAction = _ => { };
-        Action<Exception, Context> onFallback = null!;
+        Action<Exception, Context> onFallbackExceptionContext = null!;
 
-        Action policy = () => Policy
+        policy = () => Policy
             .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+            .Fallback(_ => { }, onFallbackExceptionContext);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallback");
-    }
 
-    [Fact]
-    public void Should_throw_when_onFallback_delegate_is_null_with_context_with_action_with_cancellation()
-    {
-        Action<Context, CancellationToken> fallbackAction = (_, _) => { };
-        Action<Exception, Context> onFallback = null!;
-
-        Action policy = () => Policy
+        policy = () => Policy
             .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+            .Fallback((_, _) => { }, onFallbackExceptionContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallback");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .Fallback((_, _, _) => { }, onFallbackExceptionContext);
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallback");
