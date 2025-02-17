@@ -56,7 +56,7 @@ public class RetryTResultAsyncSpecs
 
         policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .RetryForeverAsync((DelegateResult<ResultPrimitive> _) => { });
+            .RetryForeverAsync((_) => { });
 
         Should.NotThrow(policy);
 
@@ -72,15 +72,19 @@ public class RetryTResultAsyncSpecs
 
         Should.NotThrow(policy);
 
+        Func<DelegateResult<ResultPrimitive>, int, Task> onRetryAttempts = (_, _) => TaskHelper.EmptyTask;
+
         policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .RetryForeverAsync((DelegateResult<ResultPrimitive> _, int _) => TaskHelper.EmptyTask);
+            .RetryForeverAsync(onRetryAttempts);
 
         Should.NotThrow(policy);
 
+        Func<DelegateResult<ResultPrimitive>, Context, Task> onRetryContext = (_, _) => TaskHelper.EmptyTask;
+
         policy = () => Policy
             .HandleResult(ResultPrimitive.Fault)
-            .RetryForeverAsync((DelegateResult<ResultPrimitive> _, Context _) => TaskHelper.EmptyTask);
+            .RetryForeverAsync(onRetryContext);
 
         Should.NotThrow(policy);
 
