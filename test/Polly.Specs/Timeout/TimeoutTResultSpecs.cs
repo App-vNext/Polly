@@ -69,67 +69,65 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     }
 
     [Fact]
-    public void Should_not_throw_when_timeout_is_greater_than_zero_by_timespan()
+    public void Should_not_throw_when_arguments_are_valid()
     {
         Action policy = () => Policy.Timeout<ResultPrimitive>(TimeSpan.FromMilliseconds(1));
 
         Should.NotThrow(policy);
-    }
 
-    [Fact]
-    public void Should_not_throw_when_timeout_is_greater_than_zero_by_seconds()
-    {
-        Action policy = () => Policy.Timeout<ResultPrimitive>(3);
+        policy = () => Policy.Timeout<ResultPrimitive>(3);
 
         Should.NotThrow(policy);
-    }
 
-    [Fact]
-    public void Should_not_throw_when_timeout_is_maxvalue()
-    {
-        Action policy = () => Policy.Timeout<ResultPrimitive>(TimeSpan.MaxValue);
+        policy = () => Policy.Timeout<ResultPrimitive>(TimeSpan.MaxValue);
 
         Should.NotThrow(policy);
-    }
 
-    [Fact]
-    public void Should_not_throw_when_timeout_seconds_is_maxvalue()
-    {
-        Action policy = () => Policy.Timeout<ResultPrimitive>(int.MaxValue);
+        policy = () => Policy.Timeout<ResultPrimitive>(int.MaxValue);
 
         Should.NotThrow(policy);
-    }
 
-    [Fact]
-    public void Should_not_throw_when_timeout_is_infinitetimespan()
-    {
-        Action policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan);
+        policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan);
 
         Should.NotThrow(policy);
-    }
 
-    [Fact]
-    public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy()
-    {
-        Action policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic);
+        policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic);
 
         Should.NotThrow(policy);
-    }
 
-    [Fact]
-    public void Should_not_throw_when_timeout_is_infinitetimespan_with_ontimeout()
-    {
-        Action<Context, TimeSpan, Task> doNothing = (_, _, _) => { };
-        Action policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, doNothing);
+        policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, (_, _, _) => { });
 
         Should.NotThrow(policy);
-    }
 
-    [Fact]
-    public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy_and_ontimeout()
-    {
-        Action<Context, TimeSpan, Task> doNothing = (_, _, _) => { };
-        Action policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic, doNothing);
+        policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic, (_, _, _) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout<ResultPrimitive>(1, TimeoutStrategy.Optimistic, (_, _, _) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout<ResultPrimitive>(1, TimeoutStrategy.Optimistic, (_, _, _, _) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout<ResultPrimitive>(() => TimeSpan.Zero, TimeoutStrategy.Optimistic);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout<ResultPrimitive>((_) => TimeSpan.Zero);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout<ResultPrimitive>((_) => TimeSpan.Zero, TimeoutStrategy.Optimistic);
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout<ResultPrimitive>((_) => TimeSpan.Zero, TimeoutStrategy.Optimistic, (_, _, _) => { });
+
+        Should.NotThrow(policy);
+
+        policy = () => Policy.Timeout<ResultPrimitive>((_) => TimeSpan.Zero, TimeoutStrategy.Optimistic, (_, _, _, _) => { });
 
         Should.NotThrow(policy);
     }
@@ -205,6 +203,31 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     public void Should_throw_when_timeoutProvider_is_null()
     {
         Action policy = () => Policy.Timeout<ResultPrimitive>((Func<TimeSpan>)null!);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("timeoutProvider");
+
+        policy = () => Policy.Timeout<ResultPrimitive>((Func<TimeSpan>)null!, (_, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("timeoutProvider");
+
+        policy = () => Policy.Timeout<ResultPrimitive>((Func<TimeSpan>)null!, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("timeoutProvider");
+
+        policy = () => Policy.Timeout<ResultPrimitive>((Func<TimeSpan>)null!, TimeoutStrategy.Pessimistic, (_, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("timeoutProvider");
+
+        policy = () => Policy.Timeout<ResultPrimitive>((Func<TimeSpan>)null!, TimeoutStrategy.Pessimistic, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("timeoutProvider");
+
+        policy = () => Policy.Timeout<ResultPrimitive>((Func<Context, TimeSpan>)null!, TimeoutStrategy.Pessimistic, (_, _, _, _) => { });
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("timeoutProvider");
