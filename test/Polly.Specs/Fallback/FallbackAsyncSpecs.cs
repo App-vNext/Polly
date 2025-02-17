@@ -60,6 +60,13 @@ public class FallbackAsyncSpecs
 
         policy = () => Policy
             .Handle<DivideByZeroException>()
+            .FallbackAsync((_, _) => TaskHelper.EmptyTask, onFallbackAsyncContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallbackAsync");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
             .FallbackAsync((_, _, _) => TaskHelper.EmptyTask, onFallbackAsyncContext);
 
         Should.Throw<ArgumentNullException>(policy)

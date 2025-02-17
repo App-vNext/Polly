@@ -113,6 +113,13 @@ public class FallbackTResultAsyncSpecs
 
         Should.Throw<ArgumentNullException>(policy)
             .ParamName.ShouldBe("onFallbackAsync");
+
+        policy = () => Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .FallbackAsync(ResultPrimitive.Substitute, onFallbackAsyncContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("onFallbackAsync");
     }
 
     [Fact]
