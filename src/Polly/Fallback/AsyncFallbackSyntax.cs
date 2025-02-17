@@ -14,17 +14,7 @@ public static class AsyncFallbackSyntax
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy FallbackAsync(this PolicyBuilder policyBuilder, Func<CancellationToken, Task> fallbackAction)
-    {
-        if (fallbackAction == null)
-        {
-            throw new ArgumentNullException(nameof(fallbackAction));
-        }
-
-        Func<Exception, Task> doNothing = _ => TaskHelper.EmptyTask;
-        return policyBuilder.FallbackAsync(
-            fallbackAction,
-            doNothing);
-    }
+        => policyBuilder.FallbackAsync(fallbackAction, static _ => TaskHelper.EmptyTask);
 
     /// <summary>
     /// Builds an <see cref="AsyncFallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception; then asynchronously calls <paramref name="fallbackAction"/>.
@@ -114,12 +104,7 @@ public static class AsyncFallbackTResultSyntax
     /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue)
-    {
-        Func<DelegateResult<TResult>, Task> doNothing = _ => TaskHelper.EmptyTask;
-        return policyBuilder.FallbackAsync(
-            _ => Task.FromResult(fallbackValue),
-            doNothing);
-    }
+        => policyBuilder.FallbackAsync(_ => Task.FromResult(fallbackValue), static _ => TaskHelper.EmptyTask);
 
     /// <summary>
     /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, asynchronously calls <paramref name="fallbackAction"/> and returns its result.
@@ -130,17 +115,7 @@ public static class AsyncFallbackTResultSyntax
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, Task<TResult>> fallbackAction)
-    {
-        if (fallbackAction == null)
-        {
-            throw new ArgumentNullException(nameof(fallbackAction));
-        }
-
-        Func<DelegateResult<TResult>, Task> doNothing = _ => TaskHelper.EmptyTask;
-        return policyBuilder.FallbackAsync(
-            fallbackAction,
-            doNothing);
-    }
+        => policyBuilder.FallbackAsync(fallbackAction, static _ => TaskHelper.EmptyTask);
 
     /// <summary>
     /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result; then returns <paramref name="fallbackValue"/>.

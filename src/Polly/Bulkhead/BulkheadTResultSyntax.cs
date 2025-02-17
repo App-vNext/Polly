@@ -12,10 +12,7 @@ public partial class Policy
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
     /// <returns>The policy instance.</returns>
     public static BulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization)
-    {
-        Action<Context> doNothing = _ => { };
-        return Bulkhead<TResult>(maxParallelization, 0, doNothing);
-    }
+        => Bulkhead<TResult>(maxParallelization, 0, EmptyAction);
 
     /// <summary>
     /// <para>Builds a bulkhead isolation <see cref="Policy{TResult}"/>, which limits the maximum concurrency of actions executed through the policy.  Imposing a maximum concurrency limits the potential of governed actions, when faulting, to bring down the system.</para>
@@ -41,10 +38,7 @@ public partial class Policy
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
     public static BulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, int maxQueuingActions)
-    {
-        Action<Context> doNothing = _ => { };
-        return Bulkhead<TResult>(maxParallelization, maxQueuingActions, doNothing);
-    }
+        => Bulkhead<TResult>(maxParallelization, maxQueuingActions, EmptyAction);
 
     /// <summary>
     /// Builds a bulkhead isolation <see cref="Policy{TResult}" />, which limits the maximum concurrency of actions executed through the policy.  Imposing a maximum concurrency limits the potential of governed actions, when faulting, to bring down the system.
