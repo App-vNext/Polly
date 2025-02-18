@@ -19,6 +19,7 @@
       "block",
       "statement"
     ],
+    "disable-mix-mutants": true,
     "configuration": "Debug",
     "target-framework": "net8.0",
     "thresholds": {
