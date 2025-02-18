@@ -52,10 +52,13 @@ public class ChaosBehaviorPipelineBuilderExtensionsTests
         sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<ChaosBehaviorStrategy>();
     }
 
-    [MemberData(nameof(AddBehavior_Ok_Data))]
+    //[MemberData(nameof(AddBehavior_Ok_Data))]
+    [InlineData(0)]
     [Theory]
-    internal void AddBehavior_Generic_Options_Ok(Action<ResiliencePipelineBuilder<int>> configure, Action<ChaosBehaviorStrategy> assert)
+    internal void AddBehavior_Generic_Options_Ok(int index)
     {
+        var parameters = AddBehavior_Ok_Data().ElementAt(index);
+        (Action<ResiliencePipelineBuilder<int>> configure, Action<ChaosBehaviorStrategy> assert) = ((Action<ResiliencePipelineBuilder<int>>)parameters[0], (Action<ChaosBehaviorStrategy>)parameters[1]);
         var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 

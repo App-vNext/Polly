@@ -8,7 +8,7 @@ namespace Polly.Core.Tests.Retry;
 public class RetryResiliencePipelineBuilderExtensionsTests
 {
 #pragma warning disable IDE0028
-    public static readonly TheoryData<Action<ResiliencePipelineBuilder>> OverloadsData = new()
+    public static readonly List<Action<ResiliencePipelineBuilder>> OverloadsData = new()
     {
         builder =>
         {
@@ -24,7 +24,7 @@ public class RetryResiliencePipelineBuilderExtensionsTests
         },
     };
 
-    public static readonly TheoryData<Action<ResiliencePipelineBuilder<int>>> OverloadsDataGeneric = new()
+    public static readonly List<Action<ResiliencePipelineBuilder<int>>> OverloadsDataGeneric = new()
     {
         builder =>
         {
@@ -41,19 +41,23 @@ public class RetryResiliencePipelineBuilderExtensionsTests
     };
 #pragma warning restore IDE0028
 
-    [MemberData(nameof(OverloadsData))]
+    //[MemberData(nameof(OverloadsData))]
+    [InlineData(0)]
     [Theory]
-    public void AddRetry_Overloads_Ok(Action<ResiliencePipelineBuilder> configure)
+    public void AddRetry_Overloads_Ok(int index)
     {
+        Action<ResiliencePipelineBuilder> configure = OverloadsData[index];
         var builder = new ResiliencePipelineBuilder();
 
         Should.NotThrow(() => configure(builder));
     }
 
-    [MemberData(nameof(OverloadsDataGeneric))]
+    //[MemberData(nameof(OverloadsDataGeneric))]
+    [InlineData(0)]
     [Theory]
-    public void AddRetry_GenericOverloads_Ok(Action<ResiliencePipelineBuilder<int>> configure)
+    public void AddRetry_GenericOverloads_Ok(int index)
     {
+        Action<ResiliencePipelineBuilder<int>> configure = OverloadsDataGeneric[index];
         var builder = new ResiliencePipelineBuilder<int>();
 
         Should.NotThrow(() => configure(builder));

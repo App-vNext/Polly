@@ -23,7 +23,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     }
 
 #pragma warning disable IDE0028 // Simplify collection initialization
-    public static TheoryData<Func<TimeSpan>> Execute_NoTimeout_Data() => new()
+    public static List<Func<TimeSpan>> Execute_NoTimeout_Data() => new()
     {
         () => TimeSpan.Zero,
         () => TimeSpan.FromMilliseconds(-1),
@@ -84,10 +84,14 @@ public class TimeoutResilienceStrategyTests : IDisposable
         _args[0].Arguments.ShouldBeOfType<OnTimeoutArguments>();
     }
 
-    [MemberData(nameof(Execute_NoTimeout_Data))]
+    //[MemberData(nameof(Execute_NoTimeout_Data))]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
     [Theory]
-    public void Execute_NoTimeout(Func<TimeSpan> timeout)
+    public void Execute_NoTimeout(int index)
     {
+        Func<TimeSpan> timeout = Execute_NoTimeout_Data()[index];
         var called = false;
         SetTimeout(timeout());
         var sut = CreateSut();

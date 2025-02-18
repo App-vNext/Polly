@@ -25,11 +25,14 @@ public class CancellationTokenSourcePoolTests
     }
 
 #pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
-    [MemberData(nameof(TimeProviders))]
+    //[MemberData(nameof(TimeProviders))]
+    [InlineData(0)]
+    [InlineData(1)]
 #pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [Theory]
-    public void RentReturn_Reusable_EnsureProperBehavior(object timeProvider)
+    public void RentReturn_Reusable_EnsureProperBehavior(int index)
     {
+        object timeProvider = TimeProviders().ElementAt(index)[0];
         var pool = CancellationTokenSourcePool.Create(GetTimeProvider(timeProvider));
         var cts = pool.Get(System.Threading.Timeout.InfiniteTimeSpan);
         pool.Return(cts);
@@ -51,11 +54,14 @@ public class CancellationTokenSourcePoolTests
     }
 
 #pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
-    [MemberData(nameof(TimeProviders))]
+    //[MemberData(nameof(TimeProviders))]
+    [InlineData(0)]
+    [InlineData(1)]
 #pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [Theory]
-    public void RentReturn_NotReusable_EnsureProperBehavior(object timeProvider)
+    public void RentReturn_NotReusable_EnsureProperBehavior(int index)
     {
+        object timeProvider = TimeProviders().ElementAt(index)[0];
         var pool = CancellationTokenSourcePool.Create(GetTimeProvider(timeProvider));
         var cts = pool.Get(System.Threading.Timeout.InfiniteTimeSpan);
         cts.Cancel();
@@ -69,11 +75,14 @@ public class CancellationTokenSourcePoolTests
     }
 
 #pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
-    [MemberData(nameof(TimeProviders))]
+    //[MemberData(nameof(TimeProviders))]
+    [InlineData(0)]
+    [InlineData(1)]
 #pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [Theory]
-    public async Task Rent_Cancellable_EnsureCancelled(object timeProvider)
+    public async Task Rent_Cancellable_EnsureCancelled(int index)
     {
+        object timeProvider = TimeProviders().ElementAt(index)[0];
         var pool = CancellationTokenSourcePool.Create(GetTimeProvider(timeProvider));
         var cts = pool.Get(TimeSpan.FromMilliseconds(1));
 
@@ -88,11 +97,14 @@ public class CancellationTokenSourcePoolTests
     }
 
 #pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
-    [MemberData(nameof(TimeProviders))]
+    //[MemberData(nameof(TimeProviders))]
+    [InlineData(0)]
+    [InlineData(1)]
 #pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
     [Theory]
-    public async Task Rent_NotCancellable_EnsureNotCancelled(object timeProvider)
+    public async Task Rent_NotCancellable_EnsureNotCancelled(int index)
     {
+        object timeProvider = TimeProviders().ElementAt(index)[0];
         var pool = CancellationTokenSourcePool.Create(GetTimeProvider(timeProvider));
         var cts = pool.Get(System.Threading.Timeout.InfiniteTimeSpan);
 

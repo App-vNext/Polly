@@ -71,10 +71,16 @@ public partial class ResiliencePipelineTests
 
     [Theory]
 #pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
-    [MemberData(nameof(ExecuteT_EnsureCorrectBehavior_Data))]
+    //[MemberData(nameof(ExecuteT_EnsureCorrectBehavior_Data))]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
 #pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
-    public async Task ExecuteT_Ok(ExecuteParameters parameters)
+    public async Task ExecuteT_Ok(int index)
     {
+        ExecuteParameters parameters = (ExecuteParameters)ExecuteAsync_EnsureCorrectBehavior_Data().ElementAt(index)[0];
         ResilienceContext? context = null;
 
         var strategy = new TestResilienceStrategy

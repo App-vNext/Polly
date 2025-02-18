@@ -18,9 +18,15 @@ public class TimeoutResiliencePipelineBuilderExtensionsTests
     }
 
     [Theory]
-    [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
-    public void AddTimeout_InvalidTimeout_EnsureValidated(TimeSpan timeout)
+    //[MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    public void AddTimeout_InvalidTimeout_EnsureValidated(int index)
     {
+        TimeSpan timeout = TimeoutTestUtils.InvalidTimeouts[index];
         var builder = new ResiliencePipelineBuilder<int>();
 
         Assert.Throws<ValidationException>(() => builder.AddTimeout(timeout));
@@ -28,10 +34,13 @@ public class TimeoutResiliencePipelineBuilderExtensionsTests
 
     [Theory]
 #pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
-    [MemberData(nameof(AddTimeout_Ok_Data))]
+    //[MemberData(nameof(AddTimeout_Ok_Data))]
+    [InlineData(0)]
 #pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
-    internal void AddTimeout_Ok(TimeSpan timeout, Action<ResiliencePipelineBuilder<int>> configure, Action<TimeoutResilienceStrategy> assert)
+    internal void AddTimeout_Ok(int index)
     {
+        var parameters = AddTimeout_Ok_Data().ElementAt(index);
+        (TimeSpan timeout, Action<ResiliencePipelineBuilder<int>> configure, Action<TimeoutResilienceStrategy> assert) = ((TimeSpan)parameters[0], (Action<ResiliencePipelineBuilder<int>>)parameters[1], (Action<TimeoutResilienceStrategy>)parameters[2]);
         var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 

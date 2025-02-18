@@ -8,7 +8,7 @@ namespace Polly.Core.Tests.Simmy.Outcomes;
 public class ChaosOutcomePipelineBuilderExtensionsTests
 {
 #pragma warning disable IDE0028
-    public static readonly TheoryData<Action<ResiliencePipelineBuilder<int>>> ResultStrategy = new()
+    public static readonly List<Action<ResiliencePipelineBuilder<int>>> ResultStrategy = new()
     {
         builder =>
         {
@@ -37,10 +37,12 @@ public class ChaosOutcomePipelineBuilderExtensionsTests
 
     [Theory]
 #pragma warning disable xUnit1044 // Avoid using TheoryData type arguments that are not serializable
-    [MemberData(nameof(ResultStrategy))]
+    //[MemberData(nameof(ResultStrategy))]
+    [InlineData(0)]
 #pragma warning restore xUnit1044 // Avoid using TheoryData type arguments that are not serializable
-    internal void AddResult_Options_Ok(Action<ResiliencePipelineBuilder<int>> configure)
+    internal void AddResult_Options_Ok(int index)
     {
+        Action<ResiliencePipelineBuilder<int>> configure = ResultStrategy[index];
         var builder = new ResiliencePipelineBuilder<int>();
         Should.NotThrow(() => configure(builder));
     }

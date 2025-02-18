@@ -6,7 +6,7 @@ namespace Polly.Core.Tests;
 public partial class ResiliencePipelineTests
 {
 #pragma warning disable IDE0028
-    public static TheoryData<Func<ResiliencePipeline<string>, ValueTask>> ExecuteAsyncGenericStrategyData = new()
+    public static List<Func<ResiliencePipeline<string>, ValueTask>> ExecuteAsyncGenericStrategyData = new()
     {
         async strategy =>
         {
@@ -64,10 +64,16 @@ public partial class ResiliencePipelineTests
 
     [Theory]
 #pragma warning disable xUnit1044 // Avoid using TheoryData type arguments that are not serializable
-    [MemberData(nameof(ExecuteAsyncGenericStrategyData))]
+    //[MemberData(nameof(ExecuteAsyncGenericStrategyData))]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
 #pragma warning restore xUnit1044 // Avoid using TheoryData type arguments that are not serializable
-    public async Task ExecuteAsync_GenericStrategy_Ok(Func<ResiliencePipeline<string>, ValueTask> execute)
+    public async Task ExecuteAsync_GenericStrategy_Ok(int index)
     {
+        Func<ResiliencePipeline<string>, ValueTask> execute = ExecuteAsyncGenericStrategyData[index];
+
         var pipeline = new ResiliencePipeline<string>(PipelineComponentFactory.FromStrategy(new TestResilienceStrategy
         {
             Before = (c, _) =>

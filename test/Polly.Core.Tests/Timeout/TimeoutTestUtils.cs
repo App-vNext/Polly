@@ -11,7 +11,7 @@ public static class TimeoutTestUtils
         => new(ResilienceContextPool.Shared.Get());
 
 #pragma warning disable IDE0028
-    public static readonly TheoryData<TimeSpan> InvalidTimeouts = new()
+    public static readonly List<TimeSpan> InvalidTimeouts = new()
     {
         TimeSpan.MinValue,
         TimeSpan.Zero,
@@ -20,7 +20,7 @@ public static class TimeoutTestUtils
         TimeSpan.FromMilliseconds(9),
     };
 
-    public static readonly TheoryData<TimeSpan> ValidTimeouts = new()
+    public static readonly List<TimeSpan> ValidTimeouts = new()
     {
         TimeSpan.FromSeconds(1),
         TimeSpan.FromHours(1),

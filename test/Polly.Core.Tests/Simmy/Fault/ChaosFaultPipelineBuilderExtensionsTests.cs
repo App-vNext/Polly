@@ -8,7 +8,7 @@ namespace Polly.Core.Tests.Simmy.Fault;
 public class ChaosFaultPipelineBuilderExtensionsTests
 {
 #pragma warning disable IDE0028
-    public static readonly TheoryData<Action<ResiliencePipelineBuilder>> FaultStrategy = new()
+    public static readonly List<Action<ResiliencePipelineBuilder>> FaultStrategy = new()
     {
         builder =>
         {
@@ -48,10 +48,12 @@ public class ChaosFaultPipelineBuilderExtensionsTests
         return strategy;
     }
 
-    [MemberData(nameof(FaultStrategy))]
+    //[MemberData(nameof(FaultStrategy))]
+    [InlineData(0)]
     [Theory]
-    internal void AddFault_Options_Ok(Action<ResiliencePipelineBuilder> configure)
+    internal void AddFault_Options_Ok(int index)
     {
+        Action<ResiliencePipelineBuilder> configure = FaultStrategy[index];
         var builder = new ResiliencePipelineBuilder();
         Should.NotThrow(() => configure(builder));
     }

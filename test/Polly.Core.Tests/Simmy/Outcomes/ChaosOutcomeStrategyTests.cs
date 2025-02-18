@@ -34,12 +34,16 @@ public class ChaosOutcomeStrategyTests
 
     [Theory]
 #pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
-    [MemberData(nameof(ResultCtorTestCases))]
+    //[MemberData(nameof(ResultCtorTestCases))]
+    [InlineData(0)]
+    [InlineData(1)]
 #pragma warning restore xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
-    public void ResultInvalidCtor(object options, string expectedMessage, Type expectedException)
+    public void ResultInvalidCtor(int index)
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
     {
+        var parameters = ResultCtorTestCases[index];
+        (object options, string expectedMessage, Type expectedException) = (parameters[0], (string)parameters[1], (Type)parameters[2]);
 #pragma warning disable CA1031 // Do not catch general exception types
         try
         {

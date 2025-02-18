@@ -33,12 +33,16 @@ public class ChaosFaultStrategyTests
         ];
 
     [Theory]
-    [MemberData(nameof(FaultCtorTestCases))]
+    //[MemberData(nameof(FaultCtorTestCases))]
+    [InlineData(0)]
+    [InlineData(1)]
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
-    public void FaultInvalidCtor(object options, string expectedMessage, Type expectedException)
+    public void FaultInvalidCtor(int index)
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
     {
 #pragma warning disable CA1031 // Do not catch general exception types
+        var parameters = FaultCtorTestCases[index];
+        (object options, string expectedMessage, Type expectedException) = (parameters[0], (string)parameters[1], (Type)parameters[2]);
         try
         {
             var _ = new ChaosFaultStrategy((ChaosFaultStrategyOptions)options, _telemetry);

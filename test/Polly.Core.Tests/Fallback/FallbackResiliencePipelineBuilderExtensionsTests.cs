@@ -7,7 +7,7 @@ namespace Polly.Core.Tests.Fallback;
 public class FallbackResiliencePipelineBuilderExtensionsTests
 {
 #pragma warning disable IDE0028
-    public static readonly TheoryData<Action<ResiliencePipelineBuilder<int>>> FallbackOverloadsGeneric = new()
+    public static readonly List<Action<ResiliencePipelineBuilder<int>>> FallbackOverloadsGeneric = new()
     {
         builder =>
         {
@@ -20,10 +20,13 @@ public class FallbackResiliencePipelineBuilderExtensionsTests
     };
 #pragma warning restore IDE0028
 
-    [MemberData(nameof(FallbackOverloadsGeneric))]
+    //[MemberData(nameof(FallbackOverloadsGeneric))]
+    [InlineData(0)]
     [Theory]
-    public void AddFallback_Generic_Ok(Action<ResiliencePipelineBuilder<int>> configure)
+    public void AddFallback_Generic_Ok(int index)
     {
+        Action<ResiliencePipelineBuilder<int>> configure = FallbackOverloadsGeneric[index];
+
         var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 

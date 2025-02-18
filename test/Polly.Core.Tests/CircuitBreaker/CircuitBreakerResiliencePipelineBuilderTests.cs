@@ -8,7 +8,7 @@ namespace Polly.Core.Tests.CircuitBreaker;
 public class CircuitBreakerResiliencePipelineBuilderTests
 {
 #pragma warning disable IDE0028
-    public static TheoryData<Action<ResiliencePipelineBuilder>> ConfigureData = new()
+    public static List<Action<ResiliencePipelineBuilder>> ConfigureData = new()
     {
         builder => builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions
         {
@@ -16,7 +16,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         }),
     };
 
-    public static TheoryData<Action<ResiliencePipelineBuilder<int>>> ConfigureDataGeneric = new()
+    public static List<Action<ResiliencePipelineBuilder<int>>> ConfigureDataGeneric = new()
     {
         builder => builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions<int>
         {
@@ -25,10 +25,12 @@ public class CircuitBreakerResiliencePipelineBuilderTests
     };
 #pragma warning restore IDE0028
 
-    [MemberData(nameof(ConfigureData))]
+    //[MemberData(nameof(ConfigureData))]
+    [InlineData(0)]
     [Theory]
-    public void AddCircuitBreaker_Configure(Action<ResiliencePipelineBuilder> builderAction)
+    public void AddCircuitBreaker_Configure(int index)
     {
+        Action<ResiliencePipelineBuilder> builderAction = ConfigureData[index];
         var builder = new ResiliencePipelineBuilder();
 
         builderAction(builder);
@@ -36,10 +38,13 @@ public class CircuitBreakerResiliencePipelineBuilderTests
         builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<CircuitBreakerResilienceStrategy<object>>();
     }
 
-    [MemberData(nameof(ConfigureDataGeneric))]
+    //[MemberData(nameof(ConfigureDataGeneric))]
+    [InlineData(0)]
     [Theory]
-    public void AddCircuitBreaker_Generic_Configure(Action<ResiliencePipelineBuilder<int>> builderAction)
+    public void AddCircuitBreaker_Generic_Configure(int index)
     {
+        Action<ResiliencePipelineBuilder<int>> builderAction = ConfigureDataGeneric[index];
+
         var builder = new ResiliencePipelineBuilder<int>();
 
         builderAction(builder);

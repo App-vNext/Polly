@@ -63,10 +63,16 @@ public partial class ResiliencePipelineTests
         static void AssertContextInitialized(ResilienceContext context) => context.IsInitialized.ShouldBeTrue();
     }
 
-    [MemberData(nameof(ExecuteAsync_EnsureCorrectBehavior_Data))]
+    //[MemberData(nameof(ExecuteAsync_EnsureCorrectBehavior_Data))]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
     [Theory]
-    public async Task ExecuteAsync_Ok(ExecuteParameters parameters)
+    public async Task ExecuteAsync_Ok(int index)
     {
+        ExecuteParameters parameters = (ExecuteParameters)ExecuteAsync_EnsureCorrectBehavior_Data().ElementAt(index)[0];
         ResilienceContext? context = null;
 
         var strategy = new TestResilienceStrategy

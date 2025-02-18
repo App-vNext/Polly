@@ -195,7 +195,16 @@ public class RetryHelperTests
     }
 
     [Theory]
-    [MemberData(nameof(Attempts))]
+    //[MemberData(nameof(Attempts))]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(10)]
+    [InlineData(100)]
+    [InlineData(1_000)]
+    [InlineData(1_024)]
+    [InlineData(1_025)]
     public void GetRetryDelay_Exponential_Is_Positive_When_No_Maximum_Delay(int attempt)
     {
         var jitter = true;
@@ -215,7 +224,16 @@ public class RetryHelperTests
     }
 
     [Theory]
-    [MemberData(nameof(Attempts))]
+    //[MemberData(nameof(Attempts))]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(10)]
+    [InlineData(100)]
+    [InlineData(1_000)]
+    [InlineData(1_024)]
+    [InlineData(1_025)]
     public void GetRetryDelay_Exponential_Does_Not_Exceed_MaxDelay(int attempt)
     {
         var jitter = true;
@@ -238,7 +256,16 @@ public class RetryHelperTests
     }
 
     [Theory]
-    [MemberData(nameof(Attempts))]
+    //[MemberData(nameof(Attempts))]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(10)]
+    [InlineData(100)]
+    [InlineData(1_000)]
+    [InlineData(1_024)]
+    [InlineData(1_025)]
     public void ExponentialWithJitter_Ok(int count)
     {
         var delay = TimeSpan.FromSeconds(7.8);

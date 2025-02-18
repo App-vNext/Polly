@@ -44,10 +44,13 @@ public class ChaosLatencyPipelineBuilderExtensionsTests
         sut.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<ChaosLatencyStrategy>();
     }
 
-    [MemberData(nameof(AddLatency_Ok_Data))]
+    //[MemberData(nameof(AddLatency_Ok_Data))]
+    [InlineData(0)]
     [Theory]
-    internal void AddLatency_Generic_Options_Ok(Action<ResiliencePipelineBuilder<int>> configure, Action<ChaosLatencyStrategy> assert)
+    internal void AddLatency_Generic_Options_Ok(int index)
     {
+        var parameters = AddLatency_Ok_Data().ElementAt(index);
+        (Action<ResiliencePipelineBuilder<int>> configure, Action<ChaosLatencyStrategy> assert) = ((Action<ResiliencePipelineBuilder<int>>)parameters[0], (Action<ChaosLatencyStrategy>)parameters[1]);
         var builder = new ResiliencePipelineBuilder<int>();
         configure(builder);
 

@@ -16,10 +16,16 @@ public class TimeoutStrategyOptionsTests
         options.Name.ShouldBe("Timeout");
     }
 
-    [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
+    //[MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
     [Theory]
-    public void Timeout_Invalid_EnsureValidationError(TimeSpan value)
+    public void Timeout_Invalid_EnsureValidationError(int index)
     {
+        TimeSpan value = TimeoutTestUtils.InvalidTimeouts[index];
         var options = new TimeoutStrategyOptions
         {
             Timeout = value
@@ -29,10 +35,14 @@ public class TimeoutStrategyOptionsTests
             () => ValidationHelper.ValidateObject(new(options, "Dummy message")));
     }
 
-    [MemberData(nameof(TimeoutTestUtils.ValidTimeouts), MemberType = typeof(TimeoutTestUtils))]
+    //[MemberData(nameof(TimeoutTestUtils.ValidTimeouts), MemberType = typeof(TimeoutTestUtils))]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
     [Theory]
-    public void Timeout_Valid(TimeSpan value)
+    public void Timeout_Valid(int index)
     {
+        TimeSpan value = TimeoutTestUtils.ValidTimeouts[index];
         var options = new TimeoutStrategyOptions
         {
             Timeout = value
