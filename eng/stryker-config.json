@@ -20,7 +20,7 @@
       "statement"
     ],
     "configuration": "Debug",
-    "disable-mix-mutants": true,
+    "disable-mix-mutants": false,
     "target-framework": "net8.0",
     "thresholds": {
       "high": 100,
