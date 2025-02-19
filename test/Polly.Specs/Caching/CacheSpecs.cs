@@ -60,6 +60,54 @@ public class CacheSpecs : IDisposable
     }
 
     [Fact]
+    public void Should_not_throw_when_arguments_valid()
+    {
+        ISyncCacheProvider cacheProvider = new StubCacheProvider();
+        var ttl = TimeSpan.MaxValue;
+        ITtlStrategy ttlStrategy = new ContextualTtl();
+        ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
+        Func<Context, string> cacheKeyStrategyFunc = (_) => string.Empty;
+        Action<Context, string> onCache = (_, _) => { };
+        Action<Context, string, Exception>? onCacheError = (_, _, _) => { };
+
+        Action action = () => Policy.Cache(cacheProvider, ttl, onCacheError);
+        Should.NotThrow(action);
+
+        action = () => Policy.Cache(cacheProvider, ttlStrategy, onCacheError);
+        Should.NotThrow(action);
+
+        action = () => Policy.Cache(cacheProvider, ttl, cacheKeyStrategy, onCacheError);
+        Should.NotThrow(action);
+
+        action = () => Policy.Cache(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheError);
+        Should.NotThrow(action);
+
+        action = () => Policy.Cache(cacheProvider, ttl, cacheKeyStrategyFunc, onCacheError);
+        Should.NotThrow(action);
+
+        action = () => Policy.Cache(cacheProvider, ttlStrategy, cacheKeyStrategyFunc, onCacheError);
+        Should.NotThrow(action);
+
+        action = () => Policy.Cache(cacheProvider, ttl, onCache, onCache, onCache, onCacheError, onCacheError);
+        Should.NotThrow(action);
+
+        action = () => Policy.Cache(cacheProvider, ttlStrategy, onCache, onCache, onCache, onCacheError, onCacheError);
+        Should.NotThrow(action);
+
+        action = () => Policy.Cache(cacheProvider, ttl, cacheKeyStrategy, onCache, onCache, onCache, onCacheError, onCacheError);
+        Should.NotThrow(action);
+
+        action = () => Policy.Cache(cacheProvider, ttlStrategy, cacheKeyStrategy, onCache, onCache, onCache, onCacheError, onCacheError);
+        Should.NotThrow(action);
+
+        action = () => Policy.Cache(cacheProvider, ttl, cacheKeyStrategyFunc, onCache, onCache, onCache, onCacheError, onCacheError);
+        Should.NotThrow(action);
+
+        action = () => Policy.Cache(cacheProvider, ttlStrategy, cacheKeyStrategyFunc, onCache, onCache, onCache, onCacheError, onCacheError);
+        Should.NotThrow(action);
+    }
+
+    [Fact]
     public void Should_throw_when_cache_provider_is_null()
     {
         ISyncCacheProvider cacheProvider = null!;

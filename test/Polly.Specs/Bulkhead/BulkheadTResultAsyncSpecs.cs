@@ -72,6 +72,14 @@ public class BulkheadTResultAsyncSpecs(ITestOutputHelper testOutputHelper) : Bul
             .ParamName.ShouldBe("onBulkheadRejectedAsync");
     }
 
+    [Fact]
+    public void Should_not_throw_when_arguments_valid()
+    {
+        Action policy = () => Policy.BulkheadAsync<int>(1);
+
+        Should.NotThrow(policy);
+    }
+
     #endregion
 
     #region onBulkheadRejected delegate
