@@ -150,7 +150,7 @@ public class PolicyAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        await Should.ThrowAsync<ArgumentNullException>(() => policy.ExecuteAsync(_ => TaskHelper.EmptyTask, (IDictionary<string, object>)null!));
+        await Assert.ThrowsAsync<ArgumentNullException>("contextData", () => policy.ExecuteAsync(_ => TaskHelper.EmptyTask, (IDictionary<string, object>)null!));
     }
 
     [Fact]

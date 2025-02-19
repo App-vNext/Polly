@@ -7,7 +7,7 @@
 /// <remarks>Uses ConcurrentDictionary to store the collection.</remarks>
 public class PolicyRegistry : IConcurrentPolicyRegistry<string>
 {
-    private readonly IDictionary<string, IsPolicy> _registry = new ConcurrentDictionary<string, IsPolicy>();
+    private readonly ConcurrentDictionary<string, IsPolicy> _registry = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PolicyRegistry"/> class, with <see cref="string"/> keys.
@@ -26,22 +26,9 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// </summary>
     /// <param name="registry">a dictionary containing keys and policies used for testing.</param>
     internal PolicyRegistry(IDictionary<string, IsPolicy> registry)
-    {
-#pragma warning disable S3236 // Remove this argument from the method call; it hides the caller information.
-        Debug.Assert(registry != null, "This constructor is for testing only, and should not be called with a null registry.");
-#pragma warning restore S3236 // Remove this argument from the method call; it hides the caller information.
-        _registry = registry;
-    }
-
-    private ConcurrentDictionary<string, IsPolicy> ThrowIfNotConcurrentImplementation()
-    {
-        if (_registry is ConcurrentDictionary<string, IsPolicy> concurrentRegistry)
-        {
-            return concurrentRegistry;
-        }
-
-        throw new InvalidOperationException($"This {nameof(PolicyRegistry)} is not configured for concurrent operations. This exception should never be thrown in production code as the only public constructors create {nameof(PolicyRegistry)} instances of the correct form.");
-    }
+#pragma warning disable IDE0306 // Simplify collection initialization
+        => _registry = new(registry);
+#pragma warning restore IDE0306 // Simplify collection initialization
 
     /// <summary>
     /// Gets the total number of policies in the registry.
@@ -57,7 +44,11 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">A Policy with same <paramref name="key"/> already exists.</exception>
     public void Add<TPolicy>(string key, TPolicy policy)
-        where TPolicy : IsPolicy => _registry.Add(key, policy);
+        where TPolicy : IsPolicy
+    {
+        IDictionary<string, IsPolicy> dictionary = _registry;
+        dictionary.Add(key, policy);
+    }
 
     /// <summary>
     /// Adds a policy with the provided key and policy to the registry.
@@ -68,11 +59,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <returns>True if Policy was added. False otherwise.</returns>
     public bool TryAdd<TPolicy>(string key, TPolicy policy)
         where TPolicy : IsPolicy
-    {
-        var registry = ThrowIfNotConcurrentImplementation();
-
-        return registry.TryAdd(key, policy);
-    }
+        => _registry.TryAdd(key, policy);
 
     /// <summary>
     /// Gets of sets the <see cref="IsPolicy"/> with the specified key.
@@ -145,8 +132,11 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <param name="key">The <paramref name="key"/> of the policy to remove.</param>
     /// <returns>True if the policy is successfully removed. Otherwise false.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
-    public bool Remove(string key) =>
-        _registry.Remove(key);
+    public bool Remove(string key)
+    {
+        IDictionary<string, IsPolicy> dictionary = _registry;
+        return dictionary.Remove(key);
+    }
 
     /// <summary>
     /// Removes the policy stored under the specified <paramref name="key"/> from the registry.
@@ -162,10 +152,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     public bool TryRemove<TPolicy>(string key, out TPolicy policy)
         where TPolicy : IsPolicy
     {
-        var registry = ThrowIfNotConcurrentImplementation();
-
         policy = default;
-        bool got = registry.TryRemove(key, out IsPolicy value);
+        bool got = _registry.TryRemove(key, out IsPolicy value);
 
         if (got)
         {
@@ -188,11 +176,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// </returns>
     public bool TryUpdate<TPolicy>(string key, TPolicy newPolicy, TPolicy comparisonPolicy)
         where TPolicy : IsPolicy
-    {
-        var registry = ThrowIfNotConcurrentImplementation();
-
-        return registry.TryUpdate(key, newPolicy, comparisonPolicy);
-    }
+        => _registry.TryUpdate(key, newPolicy, comparisonPolicy);
 
     /// <summary>
     /// Adds a policy with the provided key and policy to the registry
@@ -206,11 +190,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// if the key was not in the registry.</returns>
     public TPolicy GetOrAdd<TPolicy>(string key, Func<string, TPolicy> policyFactory)
         where TPolicy : IsPolicy
-    {
-        var registry = ThrowIfNotConcurrentImplementation();
-
-        return (TPolicy)registry.GetOrAdd(key, k => policyFactory(k));
-    }
+        => (TPolicy)_registry.GetOrAdd(key, k => policyFactory(k));
 
     /// <summary>
     /// Adds a key/policy pair to the registry
@@ -223,11 +203,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// key is already in the registry, or the new policy if the key was not in the registry.</returns>
     public TPolicy GetOrAdd<TPolicy>(string key, TPolicy policy)
         where TPolicy : IsPolicy
-    {
-        var registry = ThrowIfNotConcurrentImplementation();
-
-        return (TPolicy)registry.GetOrAdd(key, policy);
-    }
+        => (TPolicy)_registry.GetOrAdd(key, policy);
 
     /// <summary>
     /// Adds a key/policy pair to the registry if the key does not already
@@ -243,11 +219,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// absent) or the result of updatePolicyFactory (if the key was present).</returns>
     public TPolicy AddOrUpdate<TPolicy>(string key, Func<string, TPolicy> addPolicyFactory, Func<string, TPolicy, TPolicy> updatePolicyFactory)
         where TPolicy : IsPolicy
-    {
-        var registry = ThrowIfNotConcurrentImplementation();
-
-        return (TPolicy)registry.AddOrUpdate(key, k => addPolicyFactory(k), (k, e) => updatePolicyFactory(k, (TPolicy)e));
-    }
+        => (TPolicy)_registry.AddOrUpdate(key, k => addPolicyFactory(k), (k, e) => updatePolicyFactory(k, (TPolicy)e));
 
     /// <summary>
     /// Adds a key/policy pair to the registry if the key does not already
@@ -263,11 +235,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// absent) or the result of updatePolicyFactory (if the key was present).</returns>
     public TPolicy AddOrUpdate<TPolicy>(string key, TPolicy addPolicy, Func<string, TPolicy, TPolicy> updatePolicyFactory)
         where TPolicy : IsPolicy
-    {
-        var registry = ThrowIfNotConcurrentImplementation();
-
-        return (TPolicy)registry.AddOrUpdate(key, addPolicy, (k, e) => updatePolicyFactory(k, (TPolicy)e));
-    }
+        => (TPolicy)_registry.AddOrUpdate(key, addPolicy, (k, e) => updatePolicyFactory(k, (TPolicy)e));
 
     /// <summary>Returns an enumerator that iterates through the policy objects in the <see
     /// cref="PolicyRegistry"/>.</summary>

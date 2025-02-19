@@ -11,10 +11,7 @@ public partial class Policy
     /// <param name="maxParallelization">The maximum number of concurrent actions that may be executing through the policy.</param>
     /// <returns>The policy instance.</returns>
     public static AsyncBulkheadPolicy<TResult> BulkheadAsync<TResult>(int maxParallelization)
-    {
-        Func<Context, Task> doNothingAsync = _ => TaskHelper.EmptyTask;
-        return BulkheadAsync<TResult>(maxParallelization, 0, doNothingAsync);
-    }
+        => BulkheadAsync<TResult>(maxParallelization, 0, EmptyHandler);
 
     /// <summary>
     /// <para>Builds a bulkhead isolation <see cref="AsyncPolicy{TResult}"/>, which limits the maximum concurrency of actions executed through the policy.  Imposing a maximum concurrency limits the potential of governed actions, when faulting, to bring down the system.</para>
@@ -40,10 +37,7 @@ public partial class Policy
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
     public static AsyncBulkheadPolicy<TResult> BulkheadAsync<TResult>(int maxParallelization, int maxQueuingActions)
-    {
-        Func<Context, Task> doNothingAsync = _ => TaskHelper.EmptyTask;
-        return BulkheadAsync<TResult>(maxParallelization, maxQueuingActions, doNothingAsync);
-    }
+        => BulkheadAsync<TResult>(maxParallelization, maxQueuingActions, EmptyHandler);
 
     /// <summary>
     /// Builds a bulkhead isolation <see cref="AsyncPolicy{TResult}" />, which limits the maximum concurrency of actions executed through the policy.  Imposing a maximum concurrency limits the potential of governed actions, when faulting, to bring down the system.
@@ -79,4 +73,6 @@ public partial class Policy
             maxQueuingActions,
             onBulkheadRejectedAsync);
     }
+
+    private static Task EmptyHandler(Context context) => TaskHelper.EmptyTask;
 }

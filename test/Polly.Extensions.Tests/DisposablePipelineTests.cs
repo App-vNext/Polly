@@ -68,6 +68,23 @@ public class DisposablePipelineTests
         Should.Throw<ObjectDisposedException>(() => pipeline2.Execute(() => string.Empty));
     }
 
+    [Fact]
+    public void DisposePipeline_OnPipelineDisposed_Throws_NullArg()
+    {
+        var asserted = false;
+
+        var provider = new ServiceCollection()
+            .AddResiliencePipeline("my-pipeline", (_, context) =>
+            {
+                Assert.Throws<ArgumentNullException>("callback", () => context.OnPipelineDisposed(null!));
+                asserted = true;
+            })
+            .BuildServiceProvider();
+
+        provider.GetRequiredService<ResiliencePipelineProvider<string>>().GetPipeline("my-pipeline");
+        asserted.ShouldBeTrue();
+    }
+
     private static bool IsDisposed(RateLimiter limiter)
     {
         try

@@ -25,16 +25,7 @@ public abstract partial class Policy
     /// </summary>
     /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
     /// <returns>An instance of <see cref="ISyncPolicy"/>.</returns>
-    ISyncPolicy ISyncPolicy.WithPolicyKey(string policyKey)
-    {
-        if (policyKeyInternal != null)
-        {
-            throw PolicyKeyMustBeImmutableException(nameof(policyKey));
-        }
-
-        policyKeyInternal = policyKey;
-        return this;
-    }
+    ISyncPolicy ISyncPolicy.WithPolicyKey(string policyKey) => WithPolicyKey(policyKey);
 }
 
 #pragma warning disable CA1724
@@ -64,14 +55,5 @@ public abstract partial class Policy<TResult>
     /// </summary>
     /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy{TResult}"/> instance.</param>
     /// <returns>An instance of <see cref="ISyncPolicy{TResult}"/>.</returns>
-    ISyncPolicy<TResult> ISyncPolicy<TResult>.WithPolicyKey(string policyKey)
-    {
-        if (policyKeyInternal != null)
-        {
-            throw PolicyKeyMustBeImmutableException(nameof(policyKey));
-        }
-
-        policyKeyInternal = policyKey;
-        return this;
-    }
+    ISyncPolicy<TResult> ISyncPolicy<TResult>.WithPolicyKey(string policyKey) => WithPolicyKey(policyKey);
 }

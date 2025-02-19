@@ -22,24 +22,34 @@ public class PollyServiceCollectionExtensionTests
     public void AddResiliencePipeline_ArgValidation()
     {
         _services = null!;
-        Assert.Throws<ArgumentNullException>(() => AddResiliencePipeline(Key));
-        Assert.Throws<ArgumentNullException>(() => AddResiliencePipeline<string>(Key));
+        Assert.Throws<ArgumentNullException>("services", () => AddResiliencePipeline(Key));
+        Assert.Throws<ArgumentNullException>("services", () => AddResiliencePipeline<string>(Key));
+        Assert.Throws<ArgumentNullException>("services", () => _services.AddResiliencePipeline(Key, (_) => { }));
+        Assert.Throws<ArgumentNullException>("services", () => _services.AddResiliencePipeline(Key, (_, _) => { }));
+        Assert.Throws<ArgumentNullException>("services", () => _services.AddResiliencePipeline<string, string>(Key, (_) => { }));
+        Assert.Throws<ArgumentNullException>("services", () => _services.AddResiliencePipeline<string, string>(Key, (_, _) => { }));
 
         _services = [];
-        Assert.Throws<ArgumentNullException>(() => _services.AddResiliencePipeline(
+        Assert.Throws<ArgumentNullException>("configure", () => _services.AddResiliencePipeline(
             Key,
             (Action<ResiliencePipelineBuilder, AddResiliencePipelineContext<string>>)null!));
-        Assert.Throws<ArgumentNullException>(() => _services.AddResiliencePipeline(
+        Assert.Throws<ArgumentNullException>("configure", () => _services.AddResiliencePipeline(
             Key,
             (Action<ResiliencePipelineBuilder<string>, AddResiliencePipelineContext<string>>)null!));
 
-        Assert.Throws<ArgumentNullException>(() => _services.AddResiliencePipeline(
+        Assert.Throws<ArgumentNullException>("configure", () => _services.AddResiliencePipeline(
             Key,
             (Action<ResiliencePipelineBuilder>)null!));
 
-        Assert.Throws<ArgumentNullException>(() => _services.AddResiliencePipeline(
+        Assert.Throws<ArgumentNullException>("configure", () => _services.AddResiliencePipeline(
             Key,
             (Action<ResiliencePipelineBuilder<string>>)null!));
+
+        _services.AddResiliencePipelines<string>(ctx =>
+        {
+            Assert.Throws<ArgumentNullException>("configure", () => ctx.AddResiliencePipeline(Key, null!));
+            Assert.Throws<ArgumentNullException>("configure", () => ctx.AddResiliencePipeline<string>(Key, null!));
+        });
     }
 
     [InlineData(true)]
@@ -62,6 +72,7 @@ public class PollyServiceCollectionExtensionTests
         serviceProvider.GetServices<ResiliencePipelineRegistry<string>>().ShouldNotBeNull();
         serviceProvider.GetServices<ResiliencePipelineProvider<string>>().ShouldNotBeNull();
         serviceProvider.GetServices<ResiliencePipelineBuilder>().ShouldNotBeSameAs(serviceProvider.GetServices<ResiliencePipelineBuilder>());
+        serviceProvider.GetRequiredService<IOptions<ResiliencePipelineRegistryOptions<string>>>().ShouldNotBeNull();
     }
 
     [Fact]

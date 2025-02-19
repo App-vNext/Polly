@@ -90,9 +90,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        Action<Context, string> emptyDelegate = (_, _) => { };
-
-        return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+        return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, EmptyCallback, EmptyCallback, EmptyCallback, onCacheError, onCacheError);
     }
 
     /// <summary>
@@ -142,9 +140,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(cacheKeyStrategy));
         }
 
-        Action<Context, string> emptyDelegate = (_, _) => { };
-
-        return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+        return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy, EmptyCallback, EmptyCallback, EmptyCallback, onCacheError, onCacheError);
     }
 
     /// <summary>

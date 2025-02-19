@@ -234,7 +234,6 @@ public static class PollyServiceCollectionExtensions
             return services;
         }
 
-        services.AddOptions();
         services.Add(RegistryMarker<TKey>.ServiceDescriptor);
         services.AddResiliencePipelineBuilder();
 

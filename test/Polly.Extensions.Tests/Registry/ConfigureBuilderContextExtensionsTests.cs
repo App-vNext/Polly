@@ -8,6 +8,22 @@ namespace Polly.Extensions.Tests.Registry;
 public class ConfigureBuilderContextExtensionsTests
 {
     [Fact]
+    public async Task ConfigureReloads_NullArguments_Throws()
+    {
+        await using var registry = new ResiliencePipelineRegistry<string>();
+        registry.GetOrAddPipeline("pipeline", (_, builderContext) =>
+        {
+            ConfigureBuilderContext<string> nullContext = null!;
+            IOptionsMonitor<Options> nullMonitor = null!;
+
+            var monitor = Substitute.For<IOptionsMonitor<Options>>();
+
+            Assert.Throws<ArgumentNullException>("context", () => nullContext.EnableReloads(monitor));
+            Assert.Throws<ArgumentNullException>("optionsMonitor", () => builderContext.EnableReloads(nullMonitor));
+        });
+    }
+
+    [Fact]
     public async Task ConfigureReloads_MonitorRegistrationReturnsNull_DoesNotThrow()
     {
         var monitor = Substitute.For<IOptionsMonitor<Options>>();
@@ -27,5 +43,7 @@ public class ConfigureBuilderContextExtensionsTests
         listener.Events.ShouldBeEmpty();
     }
 
+#pragma warning disable S2094 // Classes should not be empty
     public class Options;
+#pragma warning restore S2094 // Classes should not be empty
 }
