@@ -16,8 +16,6 @@
       "LogInformation"
     ],
     "ignore-mutations": [
-      "block",
-      "statement"
     ],
     "configuration": "Debug",
     "target-framework": "net8.0",
