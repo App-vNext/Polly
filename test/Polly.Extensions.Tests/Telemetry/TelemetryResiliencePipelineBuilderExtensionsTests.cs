@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Polly.Telemetry;
 
@@ -26,6 +27,24 @@ public class TelemetryResiliencePipelineBuilderExtensionsTests
 
         fakeLogger.GetRecords().ShouldNotBeEmpty();
         fakeLogger.GetRecords().Count().ShouldBe(2);
+    }
+
+    [Fact]
+    public void ConfigureTelemetry_NullArguments_Throws()
+    {
+        ResiliencePipelineBuilder builder = null!;
+
+        using var loggerFactory = TestUtilities.CreateLoggerFactory(out var fakeLogger);
+        var options = new TelemetryOptions();
+
+        Assert.Throws<ArgumentNullException>("builder", () => builder.ConfigureTelemetry(loggerFactory));
+        Assert.Throws<ArgumentNullException>("builder", () => builder.ConfigureTelemetry(options));
+
+        ILoggerFactory nulLoggerFactory = null!;
+        TelemetryOptions nulOptions = null!;
+
+        Assert.Throws<ArgumentNullException>("loggerFactory", () => _builder.ConfigureTelemetry(nulLoggerFactory));
+        Assert.Throws<ArgumentNullException>("options", () => _builder.ConfigureTelemetry(nulOptions));
     }
 
     [Fact]

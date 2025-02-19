@@ -25,6 +25,13 @@ public class TelemetryOptionsTests
     }
 
     [Fact]
+    public void CopyCtor_OtherNull_Throws()
+    {
+        var options = new TelemetryOptions();
+        Assert.Throws<ArgumentNullException>("other", () => new TelemetryOptions(null!));
+    }
+
+    [Fact]
     public void CopyCtor_Ok()
     {
         var options = new TelemetryOptions
