@@ -268,9 +268,12 @@ public TimeSpan Delay { get; set; }</code></pre>
 
   <h4 class="section" id="Polly_Retry_RetryStrategyOptions_1_Delay_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>This value is used with the combination of <a class="xref" href="Polly.Retry.RetryStrategyOptions-1.html#Polly_Retry_RetryStrategyOptions_1_BackoffType">BackoffType</a> to generate the final delay for each individual retry attempt:</p>
-<ul><li><a class="xref" href="Polly.DelayBackoffType.html#Polly_DelayBackoffType_Exponential">Exponential</a>: Represents the median delay to target before the first retry.
-</li><li><a class="xref" href="Polly.DelayBackoffType.html#Polly_DelayBackoffType_Linear">Linear</a>: Represents the initial delay, the following delays increasing linearly with this value.
-</li><li><a class="xref" href="Polly.DelayBackoffType.html#Polly_DelayBackoffType_Constant">Constant</a> Represents the constant delay between retries.
+<ul><li>
+<a class="xref" href="Polly.DelayBackoffType.html#Polly_DelayBackoffType_Exponential">Exponential</a>: Represents the median delay to target before the first retry.
+</li><li>
+<a class="xref" href="Polly.DelayBackoffType.html#Polly_DelayBackoffType_Linear">Linear</a>: Represents the initial delay, the following delays increasing linearly with this value.
+</li><li>
+<a class="xref" href="Polly.DelayBackoffType.html#Polly_DelayBackoffType_Constant">Constant</a> Represents the constant delay between retries.
 </li></ul>
 This property is ignored when <a class="xref" href="Polly.Retry.RetryStrategyOptions-1.html#Polly_Retry_RetryStrategyOptions_1_DelayGenerator">DelayGenerator</a> is set and returns a valid <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a> value.
 </div>

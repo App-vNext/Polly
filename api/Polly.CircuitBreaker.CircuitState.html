@@ -118,21 +118,25 @@ Enum CircuitState  <a class="header-action link-secondary" title="View source" h
 </h2>
   <dl class="parameters">
     <dt id="Polly_CircuitBreaker_CircuitState_Closed"><code>Closed = 0</code></dt>
-    <dd><p>Closed - When the circuit is closed. Execution of actions is allowed.</p>
+  
+  <dd><p>Closed - When the circuit is closed. Execution of actions is allowed.</p>
 </dd>
     <dt id="Polly_CircuitBreaker_CircuitState_HalfOpen"><code>HalfOpen = 2</code></dt>
-    <dd><p>Half-open - When the circuit is half-open, it is recovering from an open state.
+  
+  <dd><p>Half-open - When the circuit is half-open, it is recovering from an open state.
 The duration of break of the preceding open state has typically passed.
 In the half-open state, actions may be executed, but the results of these actions may be treated with criteria different to normal operation,
 to decide if the circuit has recovered sufficiently to be placed back in to the closed state,
 or if continuing failures mean the circuit should revert to open perhaps more quickly than in normal operation.</p>
 </dd>
     <dt id="Polly_CircuitBreaker_CircuitState_Isolated"><code>Isolated = 3</code></dt>
-    <dd><p>Isolated - When the circuit has been placed into a fixed open state by the isolate call.
+  
+  <dd><p>Isolated - When the circuit has been placed into a fixed open state by the isolate call.
 This isolates the circuit manually, blocking execution of all actions until a reset call is made.</p>
 </dd>
     <dt id="Polly_CircuitBreaker_CircuitState_Open"><code>Open = 1</code></dt>
-    <dd><p>Open - When the automated controller has opened the circuit (typically due to some failure threshold being exceeded by recent actions). Execution of actions is blocked.</p>
+  
+  <dd><p>Open - When the automated controller has opened the circuit (typically due to some failure threshold being exceeded by recent actions). Execution of actions is blocked.</p>
 </dd>
   </dl>
 

@@ -193,7 +193,8 @@ provided also that the number of actions through the circuit in the time-slice i
 The circuit will stay broken for the <a class="xref" href="Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.html#Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_BreakDuration">BreakDuration</a>.
 Any attempt to execute this while the circuit is broken, will immediately throw a <a class="xref" href="Polly.CircuitBreaker.BrokenCircuitException.html">BrokenCircuitException</a> containing the exception
 that broke the circuit.
-</p><p>
+</p>
+<p>
 If the first action after the break duration period results in a handled exception, the circuit will break
 again for another <a class="xref" href="Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.html#Polly_CircuitBreaker_CircuitBreakerStrategyOptions_1_BreakDuration">BreakDuration</a>; if no exception is thrown, the circuit will reset.
 </p>

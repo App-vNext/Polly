@@ -118,14 +118,21 @@ Enum DelayBackoffType  <a class="header-action link-secondary" title="View sourc
 </h2>
   <dl class="parameters">
     <dt id="Polly_DelayBackoffType_Constant"><code>Constant = 0</code></dt>
-    <dd><p>The constant backoff type.</p>
+  <dd><p>The constant backoff type.</p>
+<p>Ensures a constant backoff for each attempt.</p>
 </dd>
+  
     <dt id="Polly_DelayBackoffType_Exponential"><code>Exponential = 2</code></dt>
-    <dd><p>The exponential backoff type with the power of 2.</p>
+  
+  <dd><p>The exponential backoff type with the power of 2.</p>
 </dd>
     <dt id="Polly_DelayBackoffType_Linear"><code>Linear = 1</code></dt>
-    <dd><p>The linear backoff type.</p>
+  <dd><p>The linear backoff type.</p>
+<p>Generates backoffs in an linear manner.
+In the case randomization introduced by the jitter and exponential growth are not appropriate,
+the linear growth allows for more precise control over the backoff intervals.</p>
 </dd>
+  
   </dl>
 
 

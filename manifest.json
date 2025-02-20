@@ -91,7 +91,11 @@
           "relative_path": "api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.BreakDurationGeneratorArguments",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.BreakDurationGeneratorArguments.yml\" sourcestartlinenumber=\"1\">Represents arguments used to generate a dynamic break duration for a circuit breaker.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -101,7 +105,11 @@
           "relative_path": "api/Polly.CircuitBreaker.BrokenCircuitException.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.BrokenCircuitException",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.BrokenCircuitException.yml\" sourcestartlinenumber=\"1\">Exception thrown when a circuit is broken.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -111,7 +119,11 @@
           "relative_path": "api/Polly.CircuitBreaker.CircuitBreakerManualControl.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.CircuitBreakerManualControl",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.CircuitBreakerManualControl.yml\" sourcestartlinenumber=\"1\">Allows manual control of the circuit-breaker.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -121,7 +133,11 @@
           "relative_path": "api/Polly.CircuitBreaker.CircuitBreakerPredicateArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.CircuitBreakerPredicateArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.CircuitBreakerPredicateArguments-1.yml\" sourcestartlinenumber=\"1\">Arguments used by <xref href=\"Polly.CircuitBreaker.CircuitBreakerStrategyOptions%601.ShouldHandle\" data-throw-if-not-resolved=\"false\"></xref> predicate.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -131,7 +147,11 @@
           "relative_path": "api/Polly.CircuitBreaker.CircuitBreakerStateProvider.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.CircuitBreakerStateProvider",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.CircuitBreakerStateProvider.yml\" sourcestartlinenumber=\"1\">Allows retrieval of the circuit breaker state.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -141,7 +161,11 @@
           "relative_path": "api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions-1.yml\" sourcestartlinenumber=\"1\">The options for circuit breaker resilience strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -151,7 +175,11 @@
           "relative_path": "api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.CircuitBreakerStrategyOptions",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.CircuitBreakerStrategyOptions.yml\" sourcestartlinenumber=\"1\">The options for circuit breaker resilience strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -161,7 +189,11 @@
           "relative_path": "api/Polly.CircuitBreaker.CircuitState.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.CircuitState",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.CircuitState.yml\" sourcestartlinenumber=\"1\">Describes the possible states the circuit of a Circuit Breaker may be in.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -171,7 +203,11 @@
           "relative_path": "api/Polly.CircuitBreaker.IsolatedCircuitException.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.IsolatedCircuitException",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.IsolatedCircuitException.yml\" sourcestartlinenumber=\"1\">Exception thrown when a circuit is isolated (held open) by manual override.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -181,7 +217,11 @@
           "relative_path": "api/Polly.CircuitBreaker.OnCircuitClosedArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.OnCircuitClosedArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.OnCircuitClosedArguments-1.yml\" sourcestartlinenumber=\"1\">Arguments used by <xref href=\"Polly.CircuitBreaker.CircuitBreakerStrategyOptions%601.OnClosed\" data-throw-if-not-resolved=\"false\"></xref> event.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -191,7 +231,11 @@
           "relative_path": "api/Polly.CircuitBreaker.OnCircuitHalfOpenedArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.OnCircuitHalfOpenedArguments",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.OnCircuitHalfOpenedArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by <xref href=\"Polly.CircuitBreaker.CircuitBreakerStrategyOptions%601.OnHalfOpened\" data-throw-if-not-resolved=\"false\"></xref> event.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -201,7 +245,11 @@
           "relative_path": "api/Polly.CircuitBreaker.OnCircuitOpenedArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker.OnCircuitOpenedArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreaker.OnCircuitOpenedArguments-1.yml\" sourcestartlinenumber=\"1\">Arguments used by <xref href=\"Polly.CircuitBreaker.CircuitBreakerStrategyOptions%601.OnOpened\" data-throw-if-not-resolved=\"false\"></xref> event.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -211,7 +259,11 @@
           "relative_path": "api/Polly.CircuitBreaker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreaker",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -221,7 +273,11 @@
           "relative_path": "api/Polly.CircuitBreakerResiliencePipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.CircuitBreakerResiliencePipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.CircuitBreakerResiliencePipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Circuit breaker extensions for <xref href=\"Polly.ResiliencePipelineBuilder\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -231,7 +287,11 @@
           "relative_path": "api/Polly.DelayBackoffType.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.DelayBackoffType",
+      "Summary": "<p sourcefile=\"api/Polly.DelayBackoffType.yml\" sourcestartlinenumber=\"1\">The backoff type used by the strategies.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -241,7 +301,11 @@
           "relative_path": "api/Polly.DependencyInjection.AddResiliencePipelineContext-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.DependencyInjection.AddResiliencePipelineContext<TKey>",
+      "Summary": "<p sourcefile=\"api/Polly.DependencyInjection.AddResiliencePipelineContext-1.yml\" sourcestartlinenumber=\"1\">Represents the context for adding a resilience pipeline with the specified key.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -251,7 +315,11 @@
           "relative_path": "api/Polly.DependencyInjection.AddResiliencePipelinesContext-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.DependencyInjection.AddResiliencePipelinesContext<TKey>",
+      "Summary": "<p sourcefile=\"api/Polly.DependencyInjection.AddResiliencePipelinesContext-1.yml\" sourcestartlinenumber=\"1\">Represents the context for configuring resilience pipelines with the specified key.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -261,7 +329,11 @@
           "relative_path": "api/Polly.DependencyInjection.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.DependencyInjection",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -271,7 +343,11 @@
           "relative_path": "api/Polly.ExecutionRejectedException.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ExecutionRejectedException",
+      "Summary": "<p sourcefile=\"api/Polly.ExecutionRejectedException.yml\" sourcestartlinenumber=\"1\">Exception thrown when a policy rejects execution of a delegate.\n<remarks>More specific exceptions which derive from this type, are generally thrown.</remarks></p>\n"
     },
     {
       "type": "ManagedReference",
@@ -281,7 +357,11 @@
           "relative_path": "api/Polly.Fallback.FallbackActionArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Fallback.FallbackActionArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Fallback.FallbackActionArguments-1.yml\" sourcestartlinenumber=\"1\">Arguments used by <xref href=\"Polly.Fallback.FallbackStrategyOptions%601.FallbackAction\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -291,7 +371,11 @@
           "relative_path": "api/Polly.Fallback.FallbackPredicateArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Fallback.FallbackPredicateArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Fallback.FallbackPredicateArguments-1.yml\" sourcestartlinenumber=\"1\">Represents arguments used in fallback handling scenarios.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -301,7 +385,11 @@
           "relative_path": "api/Polly.Fallback.FallbackStrategyOptions-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Fallback.FallbackStrategyOptions<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Fallback.FallbackStrategyOptions-1.yml\" sourcestartlinenumber=\"1\">Represents the options for configuring a fallback resilience strategy with a specific result type.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -311,7 +399,11 @@
           "relative_path": "api/Polly.Fallback.OnFallbackArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Fallback.OnFallbackArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Fallback.OnFallbackArguments-1.yml\" sourcestartlinenumber=\"1\">Represents arguments used in fallback handling scenarios.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -321,7 +413,11 @@
           "relative_path": "api/Polly.Fallback.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Fallback",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -331,7 +427,11 @@
           "relative_path": "api/Polly.FallbackResiliencePipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.FallbackResiliencePipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.FallbackResiliencePipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Extensions for adding fallback to <xref href=\"Polly.ResiliencePipelineBuilder\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -341,7 +441,11 @@
           "relative_path": "api/Polly.Hedging.HedgingActionGeneratorArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Hedging.HedgingActionGeneratorArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Hedging.HedgingActionGeneratorArguments-1.yml\" sourcestartlinenumber=\"1\">Represents arguments used in the hedging resilience strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -351,7 +455,11 @@
           "relative_path": "api/Polly.Hedging.HedgingDelayGeneratorArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Hedging.HedgingDelayGeneratorArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Hedging.HedgingDelayGeneratorArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by hedging delay generator.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -361,7 +469,11 @@
           "relative_path": "api/Polly.Hedging.HedgingPredicateArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Hedging.HedgingPredicateArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Hedging.HedgingPredicateArguments-1.yml\" sourcestartlinenumber=\"1\">Represents arguments used in hedging handling scenarios.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -371,7 +483,11 @@
           "relative_path": "api/Polly.Hedging.HedgingStrategyOptions-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Hedging.HedgingStrategyOptions<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Hedging.HedgingStrategyOptions-1.yml\" sourcestartlinenumber=\"1\">Hedging strategy options.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -381,7 +497,11 @@
           "relative_path": "api/Polly.Hedging.OnHedgingArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Hedging.OnHedgingArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Hedging.OnHedgingArguments-1.yml\" sourcestartlinenumber=\"1\">Represents arguments used by the on-hedging event.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -391,7 +511,11 @@
           "relative_path": "api/Polly.Hedging.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Hedging",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -401,7 +525,11 @@
           "relative_path": "api/Polly.HedgingResiliencePipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.HedgingResiliencePipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.HedgingResiliencePipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Extensions for adding hedging to <xref href=\"Polly.ResiliencePipelineBuilder\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -411,7 +539,11 @@
           "relative_path": "api/Polly.Outcome-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Outcome<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Outcome-1.yml\" sourcestartlinenumber=\"1\">Represents the outcome of an operation which could be a result of type <code class=\"typeparamref\">TResult</code> or an exception.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -421,7 +553,11 @@
           "relative_path": "api/Polly.Outcome.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Outcome",
+      "Summary": "<p sourcefile=\"api/Polly.Outcome.yml\" sourcestartlinenumber=\"1\">Produces instances of <xref href=\"Polly.Outcome%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -431,7 +567,11 @@
           "relative_path": "api/Polly.PollyServiceCollectionExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.PollyServiceCollectionExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.PollyServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Provides extension methods for registering resilience pipelines using the <xref href=\"Microsoft.Extensions.DependencyInjection.IServiceCollection\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -441,7 +581,11 @@
           "relative_path": "api/Polly.PredicateBuilder-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.PredicateBuilder<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.PredicateBuilder-1.yml\" sourcestartlinenumber=\"1\">Defines a builder for creating predicates for <code class=\"typeparamref\">TResult</code> and <xref href=\"System.Exception\" data-throw-if-not-resolved=\"false\"></xref> combinations.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -451,7 +595,11 @@
           "relative_path": "api/Polly.PredicateBuilder.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.PredicateBuilder",
+      "Summary": "<p sourcefile=\"api/Polly.PredicateBuilder.yml\" sourcestartlinenumber=\"1\">Defines a builder for creating exception predicates.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -461,7 +609,11 @@
           "relative_path": "api/Polly.PredicateResult.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.PredicateResult",
+      "Summary": "<p sourcefile=\"api/Polly.PredicateResult.yml\" sourcestartlinenumber=\"1\">Class that represents the results that can be used in predicates.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -471,7 +623,11 @@
           "relative_path": "api/Polly.RateLimiterResiliencePipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.RateLimiterResiliencePipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.RateLimiterResiliencePipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Extensions for adding rate limiting to <xref href=\"Polly.ResiliencePipelineBuilder\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -481,7 +637,11 @@
           "relative_path": "api/Polly.RateLimiting.OnRateLimiterRejectedArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.RateLimiting.OnRateLimiterRejectedArguments",
+      "Summary": "<p sourcefile=\"api/Polly.RateLimiting.OnRateLimiterRejectedArguments.yml\" sourcestartlinenumber=\"1\">The arguments used by the <xref href=\"Polly.RateLimiting.RateLimiterStrategyOptions.OnRejected\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -491,7 +651,11 @@
           "relative_path": "api/Polly.RateLimiting.RateLimiterArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.RateLimiting.RateLimiterArguments",
+      "Summary": "<p sourcefile=\"api/Polly.RateLimiting.RateLimiterArguments.yml\" sourcestartlinenumber=\"1\">The arguments used by the <xref href=\"Polly.RateLimiting.RateLimiterStrategyOptions.RateLimiter\" data-throw-if-not-resolved=\"false\"></xref> delegate.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -501,7 +665,11 @@
           "relative_path": "api/Polly.RateLimiting.RateLimiterRejectedException.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.RateLimiting.RateLimiterRejectedException",
+      "Summary": "<p sourcefile=\"api/Polly.RateLimiting.RateLimiterRejectedException.yml\" sourcestartlinenumber=\"1\">Exception thrown when a rate limiter rejects an execution.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -511,7 +679,11 @@
           "relative_path": "api/Polly.RateLimiting.RateLimiterStrategyOptions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.RateLimiting.RateLimiterStrategyOptions",
+      "Summary": "<p sourcefile=\"api/Polly.RateLimiting.RateLimiterStrategyOptions.yml\" sourcestartlinenumber=\"1\">Options for the rate limiter strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -521,7 +693,11 @@
           "relative_path": "api/Polly.RateLimiting.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.RateLimiting",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -531,7 +707,11 @@
           "relative_path": "api/Polly.Registry.ConfigureBuilderContext-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Registry.ConfigureBuilderContext<TKey>",
+      "Summary": "<p sourcefile=\"api/Polly.Registry.ConfigureBuilderContext-1.yml\" sourcestartlinenumber=\"1\">The context used by <xref href=\"Polly.Registry.ResiliencePipelineRegistry%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -541,7 +721,11 @@
           "relative_path": "api/Polly.Registry.ConfigureBuilderContextExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Registry.ConfigureBuilderContextExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.Registry.ConfigureBuilderContextExtensions.yml\" sourcestartlinenumber=\"1\">Extensions for <xref href=\"Polly.Registry.ConfigureBuilderContext%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -551,7 +735,11 @@
           "relative_path": "api/Polly.Registry.ResiliencePipelineProvider-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Registry.ResiliencePipelineProvider<TKey>",
+      "Summary": "<p sourcefile=\"api/Polly.Registry.ResiliencePipelineProvider-1.yml\" sourcestartlinenumber=\"1\">Represents a provider for resilience pipelines that are accessible by <code class=\"typeparamref\">TKey</code>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -561,7 +749,11 @@
           "relative_path": "api/Polly.Registry.ResiliencePipelineRegistry-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Registry.ResiliencePipelineRegistry<TKey>",
+      "Summary": "<p sourcefile=\"api/Polly.Registry.ResiliencePipelineRegistry-1.yml\" sourcestartlinenumber=\"1\">Represents a registry of resilience pipelines and builders that are accessible by <code class=\"typeparamref\">TKey</code>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -571,7 +763,11 @@
           "relative_path": "api/Polly.Registry.ResiliencePipelineRegistryOptions-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Registry.ResiliencePipelineRegistryOptions<TKey>",
+      "Summary": "<p sourcefile=\"api/Polly.Registry.ResiliencePipelineRegistryOptions-1.yml\" sourcestartlinenumber=\"1\">An options class used by <xref href=\"Polly.Registry.ResiliencePipelineRegistry%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -581,7 +777,11 @@
           "relative_path": "api/Polly.Registry.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Registry",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -591,7 +791,11 @@
           "relative_path": "api/Polly.ResilienceContext.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResilienceContext",
+      "Summary": "<p sourcefile=\"api/Polly.ResilienceContext.yml\" sourcestartlinenumber=\"1\">A context assigned to a single execution of <xref href=\"Polly.ResiliencePipeline\" data-throw-if-not-resolved=\"false\"></xref>. It is created manually or automatically\nwhen the user calls the various extensions on top of <xref href=\"Polly.ResiliencePipeline\" data-throw-if-not-resolved=\"false\"></xref>. After every execution the context should be discarded and returned to the pool.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -601,7 +805,11 @@
           "relative_path": "api/Polly.ResilienceContextCreationArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResilienceContextCreationArguments",
+      "Summary": "<p sourcefile=\"api/Polly.ResilienceContextCreationArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by the <xref href=\"Polly.ResilienceContextPool\" data-throw-if-not-resolved=\"false\"></xref> when creating <xref href=\"Polly.ResilienceContext\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -611,7 +819,11 @@
           "relative_path": "api/Polly.ResilienceContextPool.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResilienceContextPool",
+      "Summary": "<p sourcefile=\"api/Polly.ResilienceContextPool.yml\" sourcestartlinenumber=\"1\">The pool of <xref href=\"Polly.ResilienceContext\" data-throw-if-not-resolved=\"false\"></xref> instances.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -621,7 +833,11 @@
           "relative_path": "api/Polly.ResiliencePipeline-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResiliencePipeline<T>",
+      "Summary": "<p sourcefile=\"api/Polly.ResiliencePipeline-1.yml\" sourcestartlinenumber=\"1\">Resilience pipeline is used to execute the user-provided callbacks.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -631,7 +847,11 @@
           "relative_path": "api/Polly.ResiliencePipeline.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResiliencePipeline",
+      "Summary": "<p sourcefile=\"api/Polly.ResiliencePipeline.yml\" sourcestartlinenumber=\"1\">Resilience pipeline is used to execute the user-provided callbacks.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -641,7 +861,11 @@
           "relative_path": "api/Polly.ResiliencePipelineBuilder-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResiliencePipelineBuilder<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.ResiliencePipelineBuilder-1.yml\" sourcestartlinenumber=\"1\">A builder that is used to create an instance of <xref href=\"Polly.ResiliencePipeline%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -651,7 +875,11 @@
           "relative_path": "api/Polly.ResiliencePipelineBuilder.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResiliencePipelineBuilder",
+      "Summary": "<p sourcefile=\"api/Polly.ResiliencePipelineBuilder.yml\" sourcestartlinenumber=\"1\">A builder that is used to create an instance of <xref href=\"Polly.ResiliencePipeline\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -661,7 +889,11 @@
           "relative_path": "api/Polly.ResiliencePipelineBuilderBase.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResiliencePipelineBuilderBase",
+      "Summary": "<p sourcefile=\"api/Polly.ResiliencePipelineBuilderBase.yml\" sourcestartlinenumber=\"1\">A builder that is used to create an instance of <xref href=\"Polly.ResiliencePipeline\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -671,7 +903,11 @@
           "relative_path": "api/Polly.ResiliencePipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResiliencePipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.ResiliencePipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Extensions for <xref href=\"Polly.ResiliencePipelineBuilderBase\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -681,7 +917,11 @@
           "relative_path": "api/Polly.ResilienceProperties.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResilienceProperties",
+      "Summary": "<p sourcefile=\"api/Polly.ResilienceProperties.yml\" sourcestartlinenumber=\"1\">Represents a collection of custom resilience properties.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -691,7 +931,11 @@
           "relative_path": "api/Polly.ResiliencePropertyKey-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResiliencePropertyKey<TValue>",
+      "Summary": "<p sourcefile=\"api/Polly.ResiliencePropertyKey-1.yml\" sourcestartlinenumber=\"1\">Represents a key used by <xref href=\"Polly.ResilienceProperties\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -701,7 +945,11 @@
           "relative_path": "api/Polly.ResilienceStrategy-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResilienceStrategy<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.ResilienceStrategy-1.yml\" sourcestartlinenumber=\"1\">This base strategy class is used to simplify the implementation of generic (reactive)\nstrategies by limiting the number of generic types the execute method receives.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -711,7 +959,11 @@
           "relative_path": "api/Polly.ResilienceStrategy.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResilienceStrategy",
+      "Summary": "<p sourcefile=\"api/Polly.ResilienceStrategy.yml\" sourcestartlinenumber=\"1\">Base class for all proactive resilience strategies.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -721,7 +973,11 @@
           "relative_path": "api/Polly.ResilienceStrategyOptions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.ResilienceStrategyOptions",
+      "Summary": "<p sourcefile=\"api/Polly.ResilienceStrategyOptions.yml\" sourcestartlinenumber=\"1\">The options associated with the individual resilience strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -731,7 +987,11 @@
           "relative_path": "api/Polly.Retry.OnRetryArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Retry.OnRetryArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Retry.OnRetryArguments-1.yml\" sourcestartlinenumber=\"1\">Represents the arguments used by <xref href=\"Polly.Retry.RetryStrategyOptions%601.OnRetry\" data-throw-if-not-resolved=\"false\"></xref> for handling the retry event.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -741,7 +1001,11 @@
           "relative_path": "api/Polly.Retry.RetryDelayGeneratorArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Retry.RetryDelayGeneratorArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Retry.RetryDelayGeneratorArguments-1.yml\" sourcestartlinenumber=\"1\">Represents the arguments used by <xref href=\"Polly.Retry.RetryStrategyOptions%601.DelayGenerator\" data-throw-if-not-resolved=\"false\"></xref> for generating the next retry delay.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -751,7 +1015,11 @@
           "relative_path": "api/Polly.Retry.RetryPredicateArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Retry.RetryPredicateArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Retry.RetryPredicateArguments-1.yml\" sourcestartlinenumber=\"1\">Represents the arguments used by <xref href=\"Polly.Retry.RetryStrategyOptions%601.ShouldHandle\" data-throw-if-not-resolved=\"false\"></xref> for determining whether a retry should be performed.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -761,7 +1029,11 @@
           "relative_path": "api/Polly.Retry.RetryStrategyOptions-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Retry.RetryStrategyOptions<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Retry.RetryStrategyOptions-1.yml\" sourcestartlinenumber=\"1\">Represents the options used to configure a retry strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -771,7 +1043,11 @@
           "relative_path": "api/Polly.Retry.RetryStrategyOptions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Retry.RetryStrategyOptions",
+      "Summary": "<p sourcefile=\"api/Polly.Retry.RetryStrategyOptions.yml\" sourcestartlinenumber=\"1\">Represents the options used to configure a retry strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -781,7 +1057,11 @@
           "relative_path": "api/Polly.Retry.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Retry",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -791,7 +1071,11 @@
           "relative_path": "api/Polly.RetryResiliencePipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.RetryResiliencePipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.RetryResiliencePipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Extensions for adding retries to <xref href=\"Polly.ResiliencePipelineBuilder\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -801,7 +1085,11 @@
           "relative_path": "api/Polly.Simmy.Behavior.BehaviorGeneratorArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Behavior.BehaviorGeneratorArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Behavior.BehaviorGeneratorArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by the behavior chaos strategy to execute a user's delegate custom action.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -811,7 +1099,11 @@
           "relative_path": "api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Behavior.ChaosBehaviorStrategyOptions.yml\" sourcestartlinenumber=\"1\">Represents the options for the behavior chaos strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -821,7 +1113,11 @@
           "relative_path": "api/Polly.Simmy.Behavior.OnBehaviorInjectedArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Behavior.OnBehaviorInjectedArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Behavior.OnBehaviorInjectedArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by the behavior chaos strategy to notify that a custom behavior was injected.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -831,7 +1127,11 @@
           "relative_path": "api/Polly.Simmy.Behavior.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Behavior",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -841,7 +1141,11 @@
           "relative_path": "api/Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.ChaosBehaviorPipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods for adding chaos behaviors to a <xref href=\"Polly.ResiliencePipelineBuilder\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -851,7 +1155,11 @@
           "relative_path": "api/Polly.Simmy.ChaosFaultPipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.ChaosFaultPipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.ChaosFaultPipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods for adding chaos fault strategy to a <xref href=\"Polly.ResiliencePipelineBuilder\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -861,7 +1169,11 @@
           "relative_path": "api/Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.ChaosLatencyPipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.ChaosLatencyPipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods for adding chaos latency strategies to a <xref href=\"Polly.ResiliencePipelineBuilderBase\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -871,7 +1183,11 @@
           "relative_path": "api/Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.ChaosOutcomePipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.ChaosOutcomePipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods for adding chaos outcome strategy to a <xref href=\"Polly.ResiliencePipelineBuilder\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -881,7 +1197,11 @@
           "relative_path": "api/Polly.Simmy.ChaosStrategy-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.ChaosStrategy<T>",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.ChaosStrategy-1.yml\" sourcestartlinenumber=\"1\">Base class for generic (reactive) chaos strategies.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -891,7 +1211,11 @@
           "relative_path": "api/Polly.Simmy.ChaosStrategy.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.ChaosStrategy",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.ChaosStrategy.yml\" sourcestartlinenumber=\"1\">Base class for chaos strategies.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -901,7 +1225,11 @@
           "relative_path": "api/Polly.Simmy.ChaosStrategyOptions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.ChaosStrategyOptions",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.ChaosStrategyOptions.yml\" sourcestartlinenumber=\"1\">The options associated with the <xref href=\"Polly.Simmy.ChaosStrategy\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -911,7 +1239,11 @@
           "relative_path": "api/Polly.Simmy.EnabledGeneratorArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.EnabledGeneratorArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.EnabledGeneratorArguments.yml\" sourcestartlinenumber=\"1\">Defines the arguments for the <xref href=\"Polly.Simmy.ChaosStrategyOptions.EnabledGenerator\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -921,7 +1253,11 @@
           "relative_path": "api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Fault.ChaosFaultStrategyOptions",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Fault.ChaosFaultStrategyOptions.yml\" sourcestartlinenumber=\"1\">Represents the options for the fault chaos strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -931,7 +1267,11 @@
           "relative_path": "api/Polly.Simmy.Fault.FaultGenerator.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Fault.FaultGenerator",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Fault.FaultGenerator.yml\" sourcestartlinenumber=\"1\">A generator for creating faults (exceptions) using registered delegate functions.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -941,7 +1281,11 @@
           "relative_path": "api/Polly.Simmy.Fault.FaultGeneratorArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Fault.FaultGeneratorArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Fault.FaultGeneratorArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by the fault chaos strategy to ge the fault that is going to be injected.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -951,7 +1295,11 @@
           "relative_path": "api/Polly.Simmy.Fault.OnFaultInjectedArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Fault.OnFaultInjectedArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Fault.OnFaultInjectedArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by the fault chaos strategy to notify that an fault was injected.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -961,7 +1309,11 @@
           "relative_path": "api/Polly.Simmy.Fault.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Fault",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -971,7 +1323,11 @@
           "relative_path": "api/Polly.Simmy.InjectionRateGeneratorArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.InjectionRateGeneratorArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.InjectionRateGeneratorArguments.yml\" sourcestartlinenumber=\"1\">Defines the arguments for the <xref href=\"Polly.Simmy.ChaosStrategyOptions.InjectionRateGenerator\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -981,7 +1337,11 @@
           "relative_path": "api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Latency.ChaosLatencyStrategyOptions",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Latency.ChaosLatencyStrategyOptions.yml\" sourcestartlinenumber=\"1\">Represents the options for the latency chaos strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -991,7 +1351,11 @@
           "relative_path": "api/Polly.Simmy.Latency.LatencyGeneratorArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Latency.LatencyGeneratorArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Latency.LatencyGeneratorArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by the <xref href=\"Polly.Simmy.Latency.ChaosLatencyStrategyOptions.LatencyGenerator\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1001,7 +1365,11 @@
           "relative_path": "api/Polly.Simmy.Latency.OnLatencyInjectedArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Latency.OnLatencyInjectedArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Latency.OnLatencyInjectedArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by the latency chaos strategy to notify that a latency was injected.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1011,7 +1379,11 @@
           "relative_path": "api/Polly.Simmy.Latency.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Latency",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -1021,7 +1393,11 @@
           "relative_path": "api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions-1.yml\" sourcestartlinenumber=\"1\">Represents the options for the outcome chaos strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1031,7 +1407,11 @@
           "relative_path": "api/Polly.Simmy.Outcomes.OnOutcomeInjectedArguments-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Outcomes.OnOutcomeInjectedArguments<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Outcomes.OnOutcomeInjectedArguments-1.yml\" sourcestartlinenumber=\"1\">Arguments used by the outcome chaos strategy to notify that an outcome was injected.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1041,7 +1421,11 @@
           "relative_path": "api/Polly.Simmy.Outcomes.OutcomeGenerator-1.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Outcomes.OutcomeGenerator<TResult>",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Outcomes.OutcomeGenerator-1.yml\" sourcestartlinenumber=\"1\">Generator that produces outcomes such as exceptions or results.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1051,7 +1435,11 @@
           "relative_path": "api/Polly.Simmy.Outcomes.OutcomeGeneratorArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Outcomes.OutcomeGeneratorArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Simmy.Outcomes.OutcomeGeneratorArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by <xref href=\"Polly.Simmy.Outcomes.ChaosOutcomeStrategyOptions%601.OutcomeGenerator\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1061,7 +1449,11 @@
           "relative_path": "api/Polly.Simmy.Outcomes.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy.Outcomes",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -1071,7 +1463,11 @@
           "relative_path": "api/Polly.Simmy.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Simmy",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -1081,7 +1477,11 @@
           "relative_path": "api/Polly.StrategyBuilderContext.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.StrategyBuilderContext",
+      "Summary": "<p sourcefile=\"api/Polly.StrategyBuilderContext.yml\" sourcestartlinenumber=\"1\">The context used for building an individual resilience strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1091,7 +1491,11 @@
           "relative_path": "api/Polly.Telemetry.EnrichmentContext-2.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.EnrichmentContext<TResult, TArgs>",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.EnrichmentContext-2.yml\" sourcestartlinenumber=\"1\">Enrichment context used when reporting resilience events.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1101,7 +1505,11 @@
           "relative_path": "api/Polly.Telemetry.ExecutionAttemptArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.ExecutionAttemptArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.ExecutionAttemptArguments.yml\" sourcestartlinenumber=\"1\">Arguments that encapsulate the execution attempt for retries or hedging.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1111,7 +1519,11 @@
           "relative_path": "api/Polly.Telemetry.MeteringEnricher.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.MeteringEnricher",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.MeteringEnricher.yml\" sourcestartlinenumber=\"1\">Enricher used to enrich the metrics with additional information.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1121,7 +1533,11 @@
           "relative_path": "api/Polly.Telemetry.PipelineExecutedArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.PipelineExecutedArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.PipelineExecutedArguments.yml\" sourcestartlinenumber=\"1\">Arguments that indicate the pipeline execution started.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1131,7 +1547,11 @@
           "relative_path": "api/Polly.Telemetry.PipelineExecutingArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.PipelineExecutingArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.PipelineExecutingArguments.yml\" sourcestartlinenumber=\"1\">Arguments that indicate the pipeline execution started.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1141,7 +1561,11 @@
           "relative_path": "api/Polly.Telemetry.ResilienceEvent.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.ResilienceEvent",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.ResilienceEvent.yml\" sourcestartlinenumber=\"1\">Represents a resilience event that has been reported.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1151,7 +1575,11 @@
           "relative_path": "api/Polly.Telemetry.ResilienceEventSeverity.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.ResilienceEventSeverity",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.ResilienceEventSeverity.yml\" sourcestartlinenumber=\"1\">The severity of reported resilience event.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1161,7 +1589,11 @@
           "relative_path": "api/Polly.Telemetry.ResilienceStrategyTelemetry.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.ResilienceStrategyTelemetry",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.ResilienceStrategyTelemetry.yml\" sourcestartlinenumber=\"1\">Resilience telemetry is used by individual resilience strategies to report some important events.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1171,7 +1603,11 @@
           "relative_path": "api/Polly.Telemetry.ResilienceTelemetrySource.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.ResilienceTelemetrySource",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.ResilienceTelemetrySource.yml\" sourcestartlinenumber=\"1\">The source of resilience telemetry events.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1181,7 +1617,11 @@
           "relative_path": "api/Polly.Telemetry.SeverityProviderArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.SeverityProviderArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.SeverityProviderArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by <xref href=\"Polly.Telemetry.TelemetryOptions.SeverityProvider\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1191,7 +1631,11 @@
           "relative_path": "api/Polly.Telemetry.TelemetryEventArguments-2.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.TelemetryEventArguments<TResult, TArgs>",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.TelemetryEventArguments-2.yml\" sourcestartlinenumber=\"1\">Represents the information about the resilience event.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1201,7 +1645,11 @@
           "relative_path": "api/Polly.Telemetry.TelemetryListener.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.TelemetryListener",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.TelemetryListener.yml\" sourcestartlinenumber=\"1\">Listener of resilience telemetry events.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1211,7 +1659,11 @@
           "relative_path": "api/Polly.Telemetry.TelemetryOptions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry.TelemetryOptions",
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.TelemetryOptions.yml\" sourcestartlinenumber=\"1\">The options that are used to configure the telemetry that is produced by the resilience strategies.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1221,7 +1673,11 @@
           "relative_path": "api/Polly.Telemetry.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Telemetry",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -1231,7 +1687,11 @@
           "relative_path": "api/Polly.TelemetryResiliencePipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.TelemetryResiliencePipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.TelemetryResiliencePipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">The telemetry extensions for the <xref href=\"Polly.ResiliencePipelineBuilder\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1241,7 +1701,11 @@
           "relative_path": "api/Polly.Testing.ResiliencePipelineDescriptor.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Testing.ResiliencePipelineDescriptor",
+      "Summary": "<p sourcefile=\"api/Polly.Testing.ResiliencePipelineDescriptor.yml\" sourcestartlinenumber=\"1\">Describes the resilience pipeline.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1251,7 +1715,11 @@
           "relative_path": "api/Polly.Testing.ResiliencePipelineExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Testing.ResiliencePipelineExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.Testing.ResiliencePipelineExtensions.yml\" sourcestartlinenumber=\"1\">The test-related extensions for <xref href=\"Polly.ResiliencePipeline\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"Polly.ResiliencePipeline%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1261,7 +1729,11 @@
           "relative_path": "api/Polly.Testing.ResilienceStrategyDescriptor.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Testing.ResilienceStrategyDescriptor",
+      "Summary": "<p sourcefile=\"api/Polly.Testing.ResilienceStrategyDescriptor.yml\" sourcestartlinenumber=\"1\">This class provides additional information about a <xref href=\"Polly.ResiliencePipeline\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1271,7 +1743,11 @@
           "relative_path": "api/Polly.Testing.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Testing",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -1281,7 +1757,11 @@
           "relative_path": "api/Polly.Timeout.OnTimeoutArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Timeout.OnTimeoutArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Timeout.OnTimeoutArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by the timeout strategy to notify that a timeout occurred.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1291,7 +1771,11 @@
           "relative_path": "api/Polly.Timeout.TimeoutGeneratorArguments.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Timeout.TimeoutGeneratorArguments",
+      "Summary": "<p sourcefile=\"api/Polly.Timeout.TimeoutGeneratorArguments.yml\" sourcestartlinenumber=\"1\">Arguments used by the timeout strategy to retrieve a timeout for current execution.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1301,7 +1785,11 @@
           "relative_path": "api/Polly.Timeout.TimeoutRejectedException.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Timeout.TimeoutRejectedException",
+      "Summary": "<p sourcefile=\"api/Polly.Timeout.TimeoutRejectedException.yml\" sourcestartlinenumber=\"1\">Exception thrown when a delegate executed through a timeout resilience strategy does not complete, before the configured timeout.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1311,7 +1799,11 @@
           "relative_path": "api/Polly.Timeout.TimeoutStrategyOptions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Timeout.TimeoutStrategyOptions",
+      "Summary": "<p sourcefile=\"api/Polly.Timeout.TimeoutStrategyOptions.yml\" sourcestartlinenumber=\"1\">Represents the options for the timeout strategy.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1321,7 +1813,11 @@
           "relative_path": "api/Polly.Timeout.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.Timeout",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -1331,7 +1827,11 @@
           "relative_path": "api/Polly.TimeoutResiliencePipelineBuilderExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly.TimeoutResiliencePipelineBuilderExtensions",
+      "Summary": "<p sourcefile=\"api/Polly.TimeoutResiliencePipelineBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Extensions for adding timeout to <xref href=\"Polly.ResiliencePipelineBuilder\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1341,7 +1841,11 @@
           "relative_path": "api/Polly.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Polly",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -1351,7 +1855,11 @@
           "relative_path": "api/Snippets.Docs.MyApi.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Snippets.Docs.MyApi",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -1361,7 +1869,11 @@
           "relative_path": "api/Snippets.Docs.MyApiExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Snippets.Docs.MyApiExtensions",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -1371,7 +1883,11 @@
           "relative_path": "api/Snippets.Docs.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Snippets.Docs",
+      "Summary": null
     },
     {
       "type": "Conceptual",
