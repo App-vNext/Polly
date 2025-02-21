@@ -62,6 +62,15 @@ public class WaitAndRetryTResultSpecs : IDisposable
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("sleepDurationProvider");
+
+        Func<int, DelegateResult<ResultPrimitive>, Context, TimeSpan> sleepDurationProviderKitchenSink = null!;
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(1, sleepDurationProviderKitchenSink, (_, _, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("sleepDurationProvider");
     }
 
     [Fact]
@@ -151,6 +160,13 @@ public class WaitAndRetryTResultSpecs : IDisposable
         policy = () =>
             Policy.HandleResult(ResultPrimitive.Fault)
                   .WaitAndRetry([], onRetryAttempts);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetry");
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetry(1, (_, _, _) => TimeSpan.Zero, onRetryAttempts);
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("onRetry");

@@ -87,6 +87,13 @@ public class WaitAndRetryForeverTResultSpecs : IDisposable
 
         policy = () =>
             Policy.HandleResult(ResultPrimitive.Fault)
+                  .WaitAndRetryForever(sleepDurationProviderResult, (_, _, _) => { });
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("sleepDurationProvider");
+
+        policy = () =>
+            Policy.HandleResult(ResultPrimitive.Fault)
                   .WaitAndRetryForever(sleepDurationProviderResult, (_, _, _, _) => { });
 
         Should.Throw<ArgumentNullException>(policy)

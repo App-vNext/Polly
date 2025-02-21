@@ -17,7 +17,7 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             .WaitAndRetryForeverAsync(sleepDurationProviderContext);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("sleepDurationProvider");
+            .ParamName.ShouldBe("sleepDurationProvider");
 
         Func<int, TimeSpan> sleepDurationProvider = null!;
         Action<Exception, TimeSpan> onRetry = (_, _) => { };
@@ -27,7 +27,7 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             .WaitAndRetryForeverAsync(sleepDurationProvider, onRetry);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("sleepDurationProvider");
+            .ParamName.ShouldBe("sleepDurationProvider");
 
         Func<Exception, int, TimeSpan, Task> onRetryAsync = (_, _, _) => TaskHelper.EmptyTask;
 
@@ -36,33 +36,53 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             .WaitAndRetryForeverAsync(sleepDurationProvider, onRetryAsync);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("sleepDurationProvider");
-    }
+            .ParamName.ShouldBe("sleepDurationProvider");
 
-    [Fact]
-    public void Should_throw_when_sleep_duration_provider_is_null_with_exception_and_context()
-    {
-        Action<Exception, TimeSpan, Context> onRetry = (_, _, _) => { };
-
-        Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .WaitAndRetryForeverAsync(null, onRetry);
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForeverAsync(sleepDurationProviderContext, (_, _, _) => TaskHelper.EmptyTask);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("sleepDurationProvider");
-    }
+            .ParamName.ShouldBe("sleepDurationProvider");
 
-    [Fact]
-    public void Should_throw_when_sleep_duration_provider_is_null_with_attempts_and_context()
-    {
-        Func<int, Context, TimeSpan> sleepDurationProvider = null!;
-
-        Action policy = () => Policy
-                                  .Handle<DivideByZeroException>()
-                                  .WaitAndRetryForeverAsync(sleepDurationProvider);
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForeverAsync(sleepDurationProviderContext, (_, _, _, _) => TaskHelper.EmptyTask);
 
         Should.Throw<ArgumentNullException>(policy)
-              .ParamName.ShouldBe("sleepDurationProvider");
+            .ParamName.ShouldBe("sleepDurationProvider");
+
+        Action<Exception, TimeSpan, Context> onRetryTimeSpanContext = (_, _, _) => { };
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForeverAsync(null, onRetryTimeSpanContext);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("sleepDurationProvider");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForeverAsync(sleepDurationProvider);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("sleepDurationProvider");
+
+        Func<int, Exception, Context, TimeSpan> sleepDurationProviderKitchenSink = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForeverAsync(sleepDurationProviderKitchenSink, (_, _, _) => TaskHelper.EmptyTask);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("sleepDurationProvider");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryForeverAsync(sleepDurationProviderKitchenSink, (_, _, _, _) => TaskHelper.EmptyTask);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("sleepDurationProvider");
     }
 
     [Fact]
@@ -121,6 +141,15 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
         Action policy = () => Policy
             .Handle<Exception>()
             .WaitAndRetryForeverAsync(provider, default(Func<Exception, int, TimeSpan, Task>));
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+
+        Func<Exception, int, TimeSpan, Context, Task> onRetryAsync = null!;
+
+        policy = () => Policy
+            .Handle<Exception>()
+            .WaitAndRetryForeverAsync((_, _, _) => TimeSpan.Zero, onRetryAsync);
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("onRetryAsync");

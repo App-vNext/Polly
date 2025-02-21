@@ -2918,15 +2918,26 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         var samplingDuration = TimeSpan.FromMinutes(1);
         int mimimumThroughput = 60;
         var breakDuration = TimeSpan.FromSeconds(1);
-        var builder = Policy.HandleResult(ResultPrimitive.Fault);
 
-        Action action = () => builder.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (null as Action<DelegateResult<ResultPrimitive>, CircuitState, TimeSpan, Context>)!, (_) => { }, () => { });
+        var builder = Policy.Handle<DivideByZeroException>();
+        var builderOfT = Policy.HandleResult(ResultPrimitive.Fault);
+
+        Action action = () => builderOfT.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (null as Action<DelegateResult<ResultPrimitive>, CircuitState, TimeSpan, Context>)!, (_) => { }, () => { });
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onBreak");
 
-        action = () => builder.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, null!, () => { });
+        action = () => builderOfT.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, null!, () => { });
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onReset");
 
-        action = () => builder.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, (_) => { }, null!);
+        action = () => builderOfT.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, (_) => { }, null!);
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onHalfOpen");
+
+        action = () => builder.AdvancedCircuitBreakerAsync(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (null as Action<Exception, CircuitState, TimeSpan, Context>)!, (_) => { }, () => { });
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onBreak");
+
+        action = () => builder.AdvancedCircuitBreakerAsync(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, null!, () => { });
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onReset");
+
+        action = () => builder.AdvancedCircuitBreakerAsync(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, (_) => { }, null!);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onHalfOpen");
     }
 

@@ -36,15 +36,41 @@ public class NoOpSpecs
     [Fact]
     public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
     {
-        NoOpPolicy policy = Policy.NoOp();
+        var policy = Policy.NoOp();
         bool executed = false;
 
-        using (var cts = new CancellationTokenSource())
-        {
-            cts.Cancel();
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
 
-            Should.NotThrow(() => policy.Execute(_ => executed = true, cts.Token));
-        }
+        Should.NotThrow(
+            () => policy.Execute((token) =>
+            {
+                token.ShouldBe(cts.Token);
+                executed = true;
+            }, cts.Token));
+
+        executed.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Should_execute_user_delegate_with_specified_context_and_token()
+    {
+        var policy = Policy.NoOp();
+
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        var context = new Context();
+
+        bool executed = false;
+
+        policy.Execute((ctx, token) =>
+        {
+            ctx.ShouldBeSameAs(context);
+            token.ShouldBe(cts.Token);
+
+            executed = true;
+        }, context, cts.Token);
 
         executed.ShouldBeTrue();
     }

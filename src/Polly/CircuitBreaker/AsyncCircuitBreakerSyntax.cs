@@ -23,17 +23,12 @@ public static class AsyncCircuitBreakerSyntax
     /// <returns>The policy instance.</returns>
     /// <remarks>(see "Release It!" by Michael T. Nygard fi).</remarks>
     /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
-    {
-        Action<Exception, TimeSpan> doNothingOnBreak = (_, _) => { };
-        Action doNothingOnReset = () => { };
-
-        return policyBuilder.CircuitBreakerAsync(
-           exceptionsAllowedBeforeBreaking,
-           durationOfBreak,
-           doNothingOnBreak,
-           doNothingOnReset);
-    }
+    public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak) =>
+        policyBuilder.CircuitBreakerAsync(
+            exceptionsAllowedBeforeBreaking,
+            durationOfBreak,
+            static (_, _) => { },
+            static () => { });
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
@@ -86,17 +81,13 @@ public static class AsyncCircuitBreakerSyntax
     /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
-    public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
-    {
-        Action doNothingOnHalfOpen = () => { };
-
-        return policyBuilder.CircuitBreakerAsync(
+    public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset) =>
+        policyBuilder.CircuitBreakerAsync(
             exceptionsAllowedBeforeBreaking,
             durationOfBreak,
             onBreak,
             onReset,
-            doNothingOnHalfOpen);
-    }
+            static () => { });
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>

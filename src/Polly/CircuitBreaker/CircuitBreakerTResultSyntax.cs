@@ -24,17 +24,12 @@ public static class CircuitBreakerTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <remarks>(see "Release It!" by Michael T. Nygard fi).</remarks>
     /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-    public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak)
-    {
-        Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, _) => { };
-        Action doNothingOnReset = () => { };
-
-        return policyBuilder.CircuitBreaker(
+    public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak) =>
+        policyBuilder.CircuitBreaker(
             handledEventsAllowedBeforeBreaking,
             durationOfBreak,
-            doNothingOnBreak,
-            doNothingOnReset);
-    }
+            static (_, _) => { },
+            static () => { });
 
     /// <summary>
     /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -89,16 +84,12 @@ public static class CircuitBreakerTResultSyntax
     /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
-    public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
-    {
-        Action doNothingOnHalfOpen = () => { };
-
-        return policyBuilder.CircuitBreaker(handledEventsAllowedBeforeBreaking,
+    public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset) =>
+        policyBuilder.CircuitBreaker(handledEventsAllowedBeforeBreaking,
             durationOfBreak,
             onBreak,
             onReset,
-            doNothingOnHalfOpen);
-    }
+            EmptyCallback);
 
     /// <summary>
     /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -227,5 +218,10 @@ public static class CircuitBreakerTResultSyntax
         return new CircuitBreakerPolicy<TResult>(
             policyBuilder,
             breakerController);
+    }
+
+    private static void EmptyCallback()
+    {
+        // No-op
     }
 }

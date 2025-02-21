@@ -90,11 +90,6 @@ public static class FallbackSyntax
             throw new ArgumentNullException(nameof(fallbackAction));
         }
 
-        if (onFallback == null)
-        {
-            throw new ArgumentNullException(nameof(onFallback));
-        }
-
         return policyBuilder.Fallback((_, ctx, _) => fallbackAction(ctx), onFallback);
     }
 
@@ -112,11 +107,6 @@ public static class FallbackSyntax
         if (fallbackAction == null)
         {
             throw new ArgumentNullException(nameof(fallbackAction));
-        }
-
-        if (onFallback == null)
-        {
-            throw new ArgumentNullException(nameof(onFallback));
         }
 
         return policyBuilder.Fallback((_, ctx, ct) => fallbackAction(ctx, ct), onFallback);
@@ -297,11 +287,6 @@ public static class FallbackTResultSyntax
             throw new ArgumentNullException(nameof(fallbackAction));
         }
 
-        if (onFallback == null)
-        {
-            throw new ArgumentNullException(nameof(onFallback));
-        }
-
         return policyBuilder.Fallback((_, ctx, _) => fallbackAction(ctx), onFallback);
     }
 
@@ -320,11 +305,6 @@ public static class FallbackTResultSyntax
         if (fallbackAction == null)
         {
             throw new ArgumentNullException(nameof(fallbackAction));
-        }
-
-        if (onFallback == null)
-        {
-            throw new ArgumentNullException(nameof(onFallback));
         }
 
         return policyBuilder.Fallback((_, ctx, ct) => fallbackAction(ctx, ct), onFallback);

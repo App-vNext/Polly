@@ -911,5 +911,57 @@ public class FallbackTResultSpecs
         fallbackActionExecuted.ShouldBeTrue();
     }
 
+    [Fact]
+    public void Should_return_fallback_value_when_executed_delegate_throws_exception_handled_by_policy()
+    {
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Or<InvalidTimeZoneException>()
+            .Fallback(ResultPrimitive.Substitute);
+
+        fallbackPolicy.RaiseResultAndOrExceptionSequence([new InvalidTimeZoneException()])
+                      .ShouldBe(ResultPrimitive.Substitute);
+    }
+
+    [Fact]
+    public void Should_return_fallback_value_when_executed_delegate_throws_exception_matching_predicate_by_policy()
+    {
+        var exception = new InvalidTimeZoneException();
+
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .Or<InvalidTimeZoneException>(ex => ex == exception)
+            .Fallback(ResultPrimitive.Substitute);
+
+        fallbackPolicy.RaiseResultAndOrExceptionSequence([exception])
+                      .ShouldBe(ResultPrimitive.Substitute);
+    }
+
+    [Fact]
+    public void Should_return_fallback_value_when_executed_delegate_throws_inner_exception_handled_by_policy()
+    {
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .OrInner<InvalidTimeZoneException>()
+            .Fallback(ResultPrimitive.Substitute);
+
+        fallbackPolicy.RaiseResultAndOrExceptionSequence([new NotImplementedException("Timey wimey", new InvalidTimeZoneException())])
+                      .ShouldBe(ResultPrimitive.Substitute);
+    }
+
+    [Fact]
+    public void Should_return_fallback_value_when_executed_delegate_throws_inner_exception_matching_predicate_by_policy()
+    {
+        var exception = new InvalidTimeZoneException();
+
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+            .HandleResult(ResultPrimitive.Fault)
+            .OrInner<InvalidTimeZoneException>(ex => ex == exception)
+            .Fallback(ResultPrimitive.Substitute);
+
+        fallbackPolicy.RaiseResultAndOrExceptionSequence([new NotImplementedException("Timey wimey", exception)])
+                      .ShouldBe(ResultPrimitive.Substitute);
+    }
+
     #endregion
 }

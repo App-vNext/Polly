@@ -124,24 +124,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="ttlStrategy"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="cacheKeyStrategy"/> is <see langword="null"/>.</exception>
     public static CachePolicy Cache(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
-    {
-        if (cacheProvider == null)
-        {
-            throw new ArgumentNullException(nameof(cacheProvider));
-        }
-
-        if (ttlStrategy == null)
-        {
-            throw new ArgumentNullException(nameof(ttlStrategy));
-        }
-
-        if (cacheKeyStrategy == null)
-        {
-            throw new ArgumentNullException(nameof(cacheKeyStrategy));
-        }
-
-        return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy, EmptyCallback, EmptyCallback, EmptyCallback, onCacheError, onCacheError);
-    }
+        => Cache(cacheProvider, ttlStrategy, cacheKeyStrategy, EmptyCallback, EmptyCallback, EmptyCallback, onCacheError, onCacheError);
 
     /// <summary>
     /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>

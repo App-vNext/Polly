@@ -117,31 +117,27 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
         if (GetArgs<TArgs, PipelineExecutedArguments>(args.Arguments, out var executionFinished))
         {
-            if (!ExecutionDuration.Enabled)
+            if (ExecutionDuration.Enabled)
             {
-                return;
+                var tags = TagsList.Get();
+                var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
+                UpdateEnrichmentContext(in context, severity);
+                ExecutionDuration.Record(executionFinished.Duration.TotalMilliseconds, tags.TagsSpan);
+                TagsList.Return(tags);
             }
-
-            var tags = TagsList.Get();
-            var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
-            UpdateEnrichmentContext(in context, severity);
-            ExecutionDuration.Record(executionFinished.Duration.TotalMilliseconds, tags.TagsSpan);
-            TagsList.Return(tags);
         }
         else if (GetArgs<TArgs, ExecutionAttemptArguments>(args.Arguments, out var executionAttempt))
         {
-            if (!AttemptDuration.Enabled)
+            if (AttemptDuration.Enabled)
             {
-                return;
+                var tags = TagsList.Get();
+                var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
+                UpdateEnrichmentContext(in context, severity);
+                context.Tags.Add(new(ResilienceTelemetryTags.AttemptNumber, executionAttempt.AttemptNumber.AsBoxedInt()));
+                context.Tags.Add(new(ResilienceTelemetryTags.AttemptHandled, executionAttempt.Handled.AsBoxedBool()));
+                AttemptDuration.Record(executionAttempt.Duration.TotalMilliseconds, tags.TagsSpan);
+                TagsList.Return(tags);
             }
-
-            var tags = TagsList.Get();
-            var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
-            UpdateEnrichmentContext(in context, severity);
-            context.Tags.Add(new(ResilienceTelemetryTags.AttemptNumber, executionAttempt.AttemptNumber.AsBoxedInt()));
-            context.Tags.Add(new(ResilienceTelemetryTags.AttemptHandled, executionAttempt.Handled.AsBoxedBool()));
-            AttemptDuration.Record(executionAttempt.Duration.TotalMilliseconds, tags.TagsSpan);
-            TagsList.Return(tags);
         }
         else if (Counter.Enabled)
         {

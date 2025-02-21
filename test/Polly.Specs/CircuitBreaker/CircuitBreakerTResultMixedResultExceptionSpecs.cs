@@ -113,6 +113,7 @@ public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
         var exception = Should.Throw<BrokenCircuitException<ResultPrimitive>>(() => breaker.RaiseResultSequence(ResultPrimitive.Good));
         exception.Message.ShouldBe("The circuit is now open and is not allowing calls.");
         exception.Result.ShouldBe(ResultPrimitive.Fault);
+        exception.InnerException.ShouldBeNull();
 
         breaker.CircuitState.ShouldBe(CircuitState.Open);
     }
@@ -539,6 +540,21 @@ public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
 
         breaker.LastHandledResult.ShouldBe(default);
         breaker.LastException.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Should_set_throw_if_callbacks_are_null()
+    {
+        var builder = Policy.HandleResult(ResultPrimitive.Fault);
+
+        Action<DelegateResult<ResultPrimitive>, CircuitState, TimeSpan, Context> nullOnBreak = null!;
+        Action<DelegateResult<ResultPrimitive>, CircuitState, TimeSpan, Context> onBreak = (_, _, _, _) => { };
+        Action<Context> onReset = (_) => { };
+        Action onHalfOpen = () => { };
+
+        Should.Throw<ArgumentNullException>(() => builder.CircuitBreaker(1, TimeSpan.Zero, nullOnBreak, onReset, onHalfOpen)).ParamName.ShouldBe("onBreak");
+        Should.Throw<ArgumentNullException>(() => builder.CircuitBreaker(1, TimeSpan.Zero, onBreak, null!, onHalfOpen)).ParamName.ShouldBe("onReset");
+        Should.Throw<ArgumentNullException>(() => builder.CircuitBreaker(1, TimeSpan.Zero, onBreak, onReset, null!)).ParamName.ShouldBe("onHalfOpen");
     }
 
     #endregion
