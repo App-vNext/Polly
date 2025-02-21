@@ -5,7 +5,7 @@
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ProjectType>Test</ProjectType>
-    <Threshold>93,93,90</Threshold>
+    <Threshold>94,94,91</Threshold>
     <Include>[Polly]*</Include>
     <IncludePollyUsings>true</IncludePollyUsings>
   </PropertyGroup>
