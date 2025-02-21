@@ -22,7 +22,7 @@ permissions:
 jobs:
   mutations:
     name: 'mutations-${{ matrix.name }}'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     timeout-minutes: 60
 
     strategy:
