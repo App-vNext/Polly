@@ -116,7 +116,7 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void Report_ShouldThrow()
     {
-        var resilienceEvent = new ResilienceEvent();
+        ResilienceEvent resilienceEvent = default;
 
         Assert.Throws<ArgumentNullException>("context", () => _sut.Report(resilienceEvent, null!, string.Empty));
     }
