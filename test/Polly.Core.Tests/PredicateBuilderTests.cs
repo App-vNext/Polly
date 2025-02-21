@@ -136,6 +136,39 @@ public class PredicateBuilderTests
         handled.ShouldBeTrue();
     }
 
+    [Fact]
+    public void Handle_Throws_If_Predicate_Null()
+    {
+        var builder = new PredicateBuilder();
+        Assert.Throws<ArgumentNullException>("predicate", () => builder.Handle<Exception>(null!));
+
+        var builderGeneric = new PredicateBuilder<string>();
+        Assert.Throws<ArgumentNullException>("predicate", () => builderGeneric.HandleInner<Exception>(null!));
+    }
+
+    [Fact]
+    public void HandleInner_Throws_If_Predicate_Null()
+    {
+        var builder = new PredicateBuilder();
+        var builderGeneric = new PredicateBuilder<string>();
+
+        Assert.Throws<ArgumentNullException>("predicate", () => builder.HandleInner<Exception>(null!));
+        Assert.Throws<ArgumentNullException>("predicate", () => builderGeneric.HandleInner<Exception>(null!));
+    }
+
+    [Fact]
+    public void Operators_Throw_If_Builder_Null()
+    {
+        PredicateBuilder<string> builder = null!;
+
+        Assert.Throws<ArgumentNullException>("builder", () => Cast<CircuitBreakerPredicateArguments<string>>(builder));
+        Assert.Throws<ArgumentNullException>("builder", () => Cast<FallbackPredicateArguments<string>>(builder));
+        Assert.Throws<ArgumentNullException>("builder", () => Cast<HedgingPredicateArguments<string>>(builder));
+        Assert.Throws<ArgumentNullException>("builder", () => Cast<RetryPredicateArguments<string>>(builder));
+
+        static Func<T, ValueTask<bool>> Cast<T>(Func<T, ValueTask<bool>> self) => self;
+    }
+
     private static Outcome<string> CreateOutcome(Exception exception)
         => Outcome.FromException<string>(exception);
 

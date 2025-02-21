@@ -93,4 +93,51 @@ public partial class ResiliencePipelineTests
 
         execute(pipeline);
     }
+
+    [Fact]
+    public void Execute_GenericStrategy_NullArgument_Throws()
+    {
+        var pipeline = new ResiliencePipeline<string>(PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()), DisposeBehavior.Allow, null);
+        var context = new ResilienceContext();
+
+        Assert.Throws<ArgumentNullException>("callback", () => pipeline.Execute<string>(null!));
+        Assert.Throws<ArgumentNullException>("callback", () => pipeline.Execute<string>(null!, context));
+        Assert.Throws<ArgumentNullException>("callback", () => pipeline.Execute<string, string>(null!, context, string.Empty));
+        Assert.Throws<ArgumentNullException>("context", () => pipeline.Execute((_) => string.Empty, null!));
+        Assert.Throws<ArgumentNullException>("context", () => pipeline.Execute((_, _) => string.Empty, null!, string.Empty));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_GenericStrategy_NullArgument_Throws()
+    {
+        var pipeline = new ResiliencePipeline<string>(PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()), DisposeBehavior.Allow, null);
+        var context = new ResilienceContext();
+
+        await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync<string>(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync<string>(null!, context));
+        await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync<string, string>(null!, context, string.Empty));
+    }
+
+    [Fact]
+    public void Execute_Strategy_NullArgument_Throws()
+    {
+        var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()), DisposeBehavior.Allow, null);
+        var context = new ResilienceContext();
+
+        Assert.Throws<ArgumentNullException>("callback", () => pipeline.Execute(null!));
+        Assert.Throws<ArgumentNullException>("callback", () => pipeline.Execute(null!, context));
+        Assert.Throws<ArgumentNullException>("context", () => pipeline.Execute((_) => string.Empty, null!));
+        Assert.Throws<ArgumentNullException>("context", () => pipeline.Execute((_, _) => string.Empty, null!, string.Empty));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Strategy_NullArgument_Throws()
+    {
+        var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()), DisposeBehavior.Allow, null);
+        var context = new ResilienceContext();
+
+        await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync(null!, context));
+        await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync(null!, context, string.Empty));
+    }
 }

@@ -19,12 +19,7 @@ public partial class ResiliencePipeline<T>
         ResilienceContext context,
         TState state)
         where TResult : T
-    {
-        Guard.NotNull(callback);
-        Guard.NotNull(context);
-
-        return Pipeline.Execute(callback, context, state);
-    }
+        => Pipeline.Execute(callback, context, state);
 
     /// <summary>
     /// Executes the specified callback.
@@ -38,12 +33,7 @@ public partial class ResiliencePipeline<T>
         Func<ResilienceContext, TResult> callback,
         ResilienceContext context)
         where TResult : T
-    {
-        Guard.NotNull(callback);
-        Guard.NotNull(context);
-
-        return Pipeline.Execute(callback, context);
-    }
+        => Pipeline.Execute(callback, context);
 
     /// <summary>
     /// Executes the specified callback.
@@ -57,11 +47,7 @@ public partial class ResiliencePipeline<T>
         Func<CancellationToken, TResult> callback,
         CancellationToken cancellationToken = default)
         where TResult : T
-    {
-        Guard.NotNull(callback);
-
-        return Pipeline.Execute(callback, cancellationToken);
-    }
+        => Pipeline.Execute(callback, cancellationToken);
 
     /// <summary>
     /// Executes the specified callback.
@@ -72,11 +58,7 @@ public partial class ResiliencePipeline<T>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public TResult Execute<TResult>(Func<TResult> callback)
         where TResult : T
-    {
-        Guard.NotNull(callback);
-
-        return Pipeline.Execute(callback);
-    }
+        => Pipeline.Execute(callback);
 
     /// <summary>
     /// Executes the specified callback.
@@ -89,11 +71,7 @@ public partial class ResiliencePipeline<T>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public TResult Execute<TResult, TState>(Func<TState, TResult> callback, TState state)
         where TResult : T
-    {
-        Guard.NotNull(callback);
-
-        return Pipeline.Execute(callback, state);
-    }
+        => Pipeline.Execute(callback, state);
 
     /// <summary>
     /// Executes the specified callback.
@@ -110,9 +88,5 @@ public partial class ResiliencePipeline<T>
         TState state,
         CancellationToken cancellationToken = default)
         where TResult : T
-    {
-        Guard.NotNull(callback);
-
-        return Pipeline.Execute(callback, state, cancellationToken);
-    }
+        => Pipeline.Execute(callback, state, cancellationToken);
 }

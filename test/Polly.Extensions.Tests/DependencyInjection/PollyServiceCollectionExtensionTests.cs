@@ -345,6 +345,13 @@ public class PollyServiceCollectionExtensionTests
     }
 
     [Fact]
+    public void AddResiliencePipelineRegistry_Throws_If_Services_Null()
+    {
+        ServiceCollection serviceCollection = null!;
+        Assert.Throws<ArgumentNullException>("services", () => serviceCollection.AddResiliencePipelineRegistry<string>());
+    }
+
+    [Fact]
     public void AddResiliencePipelineRegistry_Ok()
     {
         var provider = new ServiceCollection().AddResiliencePipelineRegistry<string>().BuildServiceProvider();
