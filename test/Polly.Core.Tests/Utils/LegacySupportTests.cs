@@ -20,10 +20,10 @@ public class LegacySupportTests
     {
         var resilienceProperties = new ResilienceProperties();
 
-        Assert.Throws<ArgumentNullException>("resilienceProperties", () => resilienceProperties.SetProperties(null!, out _));
+        Assert.Throws<ArgumentNullException>("properties", () => resilienceProperties.SetProperties(null!, out _));
 
         resilienceProperties = null!;
 
-        Assert.Throws<ArgumentNullException>("properties", () => resilienceProperties.SetProperties(new Dictionary<string, object?>(), out _));
+        Assert.Throws<ArgumentNullException>("resilienceProperties", () => resilienceProperties.SetProperties(new Dictionary<string, object?>(), out _));
     }
 }
