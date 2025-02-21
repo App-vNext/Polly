@@ -49,11 +49,9 @@ internal static class TelemetryUtil
         Outcome<TResult> outcome,
         ExecutionAttemptArguments args)
     {
-        if (!telemetry.Enabled)
+        if (telemetry.Enabled)
         {
-            return;
+            telemetry.Report(resilienceEvent, context, outcome, args);
         }
-
-        telemetry.Report<ExecutionAttemptArguments, TResult>(resilienceEvent, context, outcome, args);
     }
 }

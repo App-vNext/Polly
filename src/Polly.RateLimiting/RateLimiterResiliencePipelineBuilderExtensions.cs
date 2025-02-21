@@ -27,8 +27,6 @@ public static class RateLimiterResiliencePipelineBuilderExtensions
         int queueLimit = 0)
         where TBuilder : ResiliencePipelineBuilderBase
     {
-        Guard.NotNull(builder);
-
         return builder.AddConcurrencyLimiter(new ConcurrencyLimiterOptions
         {
             PermitLimit = permitLimit,

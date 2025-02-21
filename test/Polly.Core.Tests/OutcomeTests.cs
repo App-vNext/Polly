@@ -60,4 +60,12 @@ public class OutcomeTests
 
         Should.Throw<InvalidOperationException>(outcome.ThrowIfException);
     }
+
+    [Fact]
+    public void FromException_Throws_If_Null() =>
+        Assert.Throws<ArgumentNullException>("exception", () => Outcome.FromException<Exception>(null!));
+
+    [Fact]
+    public async Task FromExceptionAsValueTask_Throws_If_Null() =>
+        await Assert.ThrowsAsync<ArgumentNullException>("exception", async () => await Outcome.FromExceptionAsValueTask<Exception>(null!));
 }

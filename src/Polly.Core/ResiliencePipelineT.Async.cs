@@ -19,12 +19,7 @@ public partial class ResiliencePipeline<T>
         ResilienceContext context,
         TState state)
         where TResult : T
-    {
-        Guard.NotNull(callback);
-        Guard.NotNull(context);
-
-        return Pipeline.ExecuteAsync(callback, context, state);
-    }
+        => Pipeline.ExecuteAsync(callback, context, state);
 
     /// <summary>
     /// Executes the specified callback.
@@ -38,12 +33,7 @@ public partial class ResiliencePipeline<T>
         Func<ResilienceContext, ValueTask<TResult>> callback,
         ResilienceContext context)
         where TResult : T
-    {
-        Guard.NotNull(callback);
-        Guard.NotNull(context);
-
-        return Pipeline.ExecuteAsync(callback, context);
-    }
+        => Pipeline.ExecuteAsync(callback, context);
 
     /// <summary>
     /// Executes the specified callback.
@@ -60,11 +50,7 @@ public partial class ResiliencePipeline<T>
         TState state,
         CancellationToken cancellationToken = default)
         where TResult : T
-    {
-        Guard.NotNull(callback);
-
-        return Pipeline.ExecuteAsync(callback, state, cancellationToken);
-    }
+        => Pipeline.ExecuteAsync(callback, state, cancellationToken);
 
     /// <summary>
     /// Executes the specified callback.
@@ -78,11 +64,7 @@ public partial class ResiliencePipeline<T>
         Func<CancellationToken, ValueTask<TResult>> callback,
         CancellationToken cancellationToken = default)
         where TResult : T
-    {
-        Guard.NotNull(callback);
-
-        return Pipeline.ExecuteAsync(callback, cancellationToken);
-    }
+        => Pipeline.ExecuteAsync(callback, cancellationToken);
 
     /// <summary>
     /// Executes the specified outcome-based callback.
@@ -103,10 +85,5 @@ public partial class ResiliencePipeline<T>
         ResilienceContext context,
         TState state)
         where TResult : T
-    {
-        Guard.NotNull(callback);
-        Guard.NotNull(context);
-
-        return Pipeline.ExecuteOutcomeAsync(callback, context, state);
-    }
+        => Pipeline.ExecuteOutcomeAsync(callback, context, state);
 }

@@ -191,6 +191,12 @@ public class RetryAsyncSpecs
             .RetryAsync(3, (Func<Exception, int, Task>)null!);
 
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onRetryAsync");
+
+        action = () => Policy
+            .Handle<DivideByZeroException>()
+            .RetryAsync(3, (Func<Exception, int, Context, Task>)null!);
+
+        Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onRetryAsync");
     }
 
     [Fact]

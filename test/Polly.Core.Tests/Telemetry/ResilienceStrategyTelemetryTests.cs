@@ -112,4 +112,12 @@ public class ResilienceStrategyTelemetryTests
 
         Should.Throw<ArgumentNullException>(() => _sut.SetTelemetrySource(exception!));
     }
+
+    [Fact]
+    public void Report_ShouldThrow()
+    {
+        ResilienceEvent resilienceEvent = default;
+
+        Assert.Throws<ArgumentNullException>("context", () => _sut.Report(resilienceEvent, null!, string.Empty));
+    }
 }

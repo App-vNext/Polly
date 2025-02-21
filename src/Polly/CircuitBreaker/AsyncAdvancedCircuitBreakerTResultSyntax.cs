@@ -29,17 +29,12 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// <exception cref="ArgumentOutOfRangeException">samplingDuration;Value must be equal to or greater than the minimum resolution of the CircuitBreaker timer.</exception>
     /// <exception cref="ArgumentOutOfRangeException">minimumThroughput;Value must be greater than one.</exception>
     /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero.</exception>
-    public static AsyncCircuitBreakerPolicy<TResult> AdvancedCircuitBreakerAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak)
-    {
-        Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, _) => { };
-        Action doNothingOnReset = () => { };
-
-        return policyBuilder.AdvancedCircuitBreakerAsync(
+    public static AsyncCircuitBreakerPolicy<TResult> AdvancedCircuitBreakerAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak) =>
+        policyBuilder.AdvancedCircuitBreakerAsync(
            failureThreshold, samplingDuration, minimumThroughput,
            durationOfBreak,
-           doNothingOnBreak,
-           doNothingOnReset);
-    }
+           static (_, _) => { },
+           static () => { });
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -104,17 +99,13 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onBreak"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="onReset"/> is <see langword="null"/>.</exception>
-    public static AsyncCircuitBreakerPolicy<TResult> AdvancedCircuitBreakerAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
-    {
-        Action doNothingOnHalfOpen = () => { };
-
-        return policyBuilder.AdvancedCircuitBreakerAsync(
+    public static AsyncCircuitBreakerPolicy<TResult> AdvancedCircuitBreakerAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset) =>
+        policyBuilder.AdvancedCircuitBreakerAsync(
             failureThreshold, samplingDuration, minimumThroughput,
             durationOfBreak,
             onBreak,
             onReset,
-            doNothingOnHalfOpen);
-    }
+            static () => { });
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy{TResult}"/> that will function like a Circuit Breaker.</para>

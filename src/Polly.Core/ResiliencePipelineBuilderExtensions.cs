@@ -147,12 +147,7 @@ public static class ResiliencePipelineBuilderExtensions
         this TBuilder builder,
         Func<StrategyBuilderContext, ResilienceStrategy> factory)
         where TBuilder : ResiliencePipelineBuilderBase
-    {
-        Guard.NotNull(builder);
-        Guard.NotNull(factory);
-
-        return builder.AddStrategy(factory, EmptyOptions.Instance);
-    }
+        => builder.AddStrategy(factory, EmptyOptions.Instance);
 
     /// <summary>
     /// Adds a proactive resilience strategy to the builder.
@@ -170,12 +165,7 @@ public static class ResiliencePipelineBuilderExtensions
     public static ResiliencePipelineBuilder AddStrategy(
         this ResiliencePipelineBuilder builder,
         Func<StrategyBuilderContext, ResilienceStrategy<object>> factory)
-    {
-        Guard.NotNull(builder);
-        Guard.NotNull(factory);
-
-        return builder.AddStrategy(factory, EmptyOptions.Instance);
-    }
+        => builder.AddStrategy(factory, EmptyOptions.Instance);
 
     /// <summary>
     /// Adds a reactive resilience strategy to the builder.
@@ -194,12 +184,7 @@ public static class ResiliencePipelineBuilderExtensions
     public static ResiliencePipelineBuilder<TResult> AddStrategy<TResult>(
         this ResiliencePipelineBuilder<TResult> builder,
         Func<StrategyBuilderContext, ResilienceStrategy<TResult>> factory)
-    {
-        Guard.NotNull(builder);
-        Guard.NotNull(factory);
-
-        return builder.AddStrategy(factory, EmptyOptions.Instance);
-    }
+        => builder.AddStrategy(factory, EmptyOptions.Instance);
 
     internal sealed class EmptyOptions : ResilienceStrategyOptions
     {

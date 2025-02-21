@@ -1658,6 +1658,21 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         attemptsInvoked.ShouldBe(1);
     }
 
+    [Fact]
+    public void Should_set_throw_if_callbacks_are_null()
+    {
+        var builder = Policy.HandleResult(ResultPrimitive.Fault);
+
+        Action<DelegateResult<ResultPrimitive>, CircuitState, TimeSpan, Context> nullOnBreak = null!;
+        Action<DelegateResult<ResultPrimitive>, CircuitState, TimeSpan, Context> onBreak = (_, _, _, _) => { };
+        Action<Context> onReset = (_) => { };
+        Action onHalfOpen = () => { };
+
+        Should.Throw<ArgumentNullException>(() => builder.CircuitBreakerAsync(1, TimeSpan.Zero, nullOnBreak, onReset, onHalfOpen)).ParamName.ShouldBe("onBreak");
+        Should.Throw<ArgumentNullException>(() => builder.CircuitBreakerAsync(1, TimeSpan.Zero, onBreak, null!, onHalfOpen)).ParamName.ShouldBe("onReset");
+        Should.Throw<ArgumentNullException>(() => builder.CircuitBreakerAsync(1, TimeSpan.Zero, onBreak, onReset, null!)).ParamName.ShouldBe("onHalfOpen");
+    }
+
     #endregion
     public void Dispose() =>
         SystemClock.Reset();

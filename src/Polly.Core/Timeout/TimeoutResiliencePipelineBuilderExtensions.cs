@@ -20,14 +20,10 @@ public static class TimeoutResiliencePipelineBuilderExtensions
     /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
     public static TBuilder AddTimeout<TBuilder>(this TBuilder builder, TimeSpan timeout)
         where TBuilder : ResiliencePipelineBuilderBase
-    {
-        Guard.NotNull(builder);
-
-        return builder.AddTimeout(new TimeoutStrategyOptions
+        => builder.AddTimeout(new TimeoutStrategyOptions
         {
             Timeout = timeout
         });
-    }
 
     /// <summary>
     /// Adds a timeout to the builder.

@@ -12,9 +12,7 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(int seconds)
     {
         TimeoutValidator.ValidateSecondsTimeout(seconds);
-
-        Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
-        return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothingAsync);
+        return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, EmptyHandlerOfT<TResult>);
     }
 
     /// <summary>
@@ -28,9 +26,7 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(int seconds, TimeoutStrategy timeoutStrategy)
     {
         TimeoutValidator.ValidateSecondsTimeout(seconds);
-
-        Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
-        return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothingAsync);
+        return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, EmptyHandlerOfT<TResult>);
     }
 
     /// <summary>
@@ -119,9 +115,7 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(TimeSpan timeout)
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
-
-        Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
-        return TimeoutAsync<TResult>(_ => timeout, TimeoutStrategy.Optimistic, doNothingAsync);
+        return TimeoutAsync<TResult>(_ => timeout, TimeoutStrategy.Optimistic, EmptyHandlerOfT<TResult>);
     }
 
     /// <summary>
@@ -135,9 +129,7 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
-
-        Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
-        return TimeoutAsync<TResult>(_ => timeout, timeoutStrategy, doNothingAsync);
+        return TimeoutAsync<TResult>(_ => timeout, timeoutStrategy, EmptyHandlerOfT<TResult>);
     }
 
     /// <summary>
@@ -153,11 +145,6 @@ public partial class Policy
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(TimeSpan timeout, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
     {
         TimeoutValidator.ValidateTimeSpanTimeout(timeout);
-        if (onTimeoutAsync == null)
-        {
-            throw new ArgumentNullException(nameof(onTimeoutAsync));
-        }
-
         return TimeoutAsync<TResult>(_ => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
     }
 
@@ -176,11 +163,6 @@ public partial class Policy
         if (timeout <= TimeSpan.Zero)
         {
             throw new ArgumentOutOfRangeException(nameof(timeout));
-        }
-
-        if (onTimeoutAsync == null)
-        {
-            throw new ArgumentNullException(nameof(onTimeoutAsync));
         }
 
         return TimeoutAsync<TResult>(_ => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
@@ -238,8 +220,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(timeoutProvider));
         }
 
-        Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
-        return TimeoutAsync<TResult>(_ => timeoutProvider(), TimeoutStrategy.Optimistic, doNothingAsync);
+        return TimeoutAsync<TResult>(_ => timeoutProvider(), TimeoutStrategy.Optimistic, EmptyHandlerOfT<TResult>);
     }
 
     /// <summary>
@@ -257,8 +238,7 @@ public partial class Policy
             throw new ArgumentNullException(nameof(timeoutProvider));
         }
 
-        Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
-        return TimeoutAsync<TResult>(_ => timeoutProvider(), timeoutStrategy, doNothingAsync);
+        return TimeoutAsync<TResult>(_ => timeoutProvider(), timeoutStrategy, EmptyHandlerOfT<TResult>);
     }
 
     /// <summary>
@@ -351,10 +331,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider)
-    {
-        Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
-        return TimeoutAsync<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, doNothingAsync);
-    }
+        => TimeoutAsync<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, EmptyHandlerOfT<TResult>);
 
     /// <summary>
     /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
@@ -365,10 +342,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeoutProvider"/> is <see langword="null"/>.</exception>
     /// <returns>The policy instance.</returns>
     public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
-    {
-        Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
-        return TimeoutAsync<TResult>(timeoutProvider, timeoutStrategy, doNothingAsync);
-    }
+        => TimeoutAsync<TResult>(timeoutProvider, timeoutStrategy, EmptyHandlerOfT<TResult>);
 
     /// <summary>
     /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
@@ -445,4 +419,7 @@ public partial class Policy
             timeoutStrategy,
             onTimeoutAsync);
     }
+
+    private static Task EmptyHandlerOfT<T>(Context context, TimeSpan timeout, Task action, Exception exception)
+        => Task.FromResult(default(T));
 }

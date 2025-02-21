@@ -567,6 +567,24 @@ public class WaitAndRetryAsyncSpecs : IDisposable
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("sleepDurationProvider");
+
+        Func<int, Context, TimeSpan> sleepDurationProvider = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync(1, sleepDurationProvider, (_, _, _, _) => TaskHelper.EmptyTask);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("sleepDurationProvider");
+
+        Func<int, Exception, Context, TimeSpan> sleepDurationProviderException = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync(1, sleepDurationProviderException, (_, _, _, _) => TaskHelper.EmptyTask);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("sleepDurationProvider");
     }
 
     [Fact]
@@ -612,9 +630,34 @@ public class WaitAndRetryAsyncSpecs : IDisposable
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("onRetryAsync");
 
+        Func<Exception, TimeSpan, Task> onRetryExceptionAsync = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync(1, (_) => TimeSpan.Zero, onRetryExceptionAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+
         policy = () => Policy
             .Handle<DivideByZeroException>()
             .WaitAndRetryAsync(1, (_, _) => TimeSpan.Zero, onRetryWithContextAsync);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+
+        Func<Exception, TimeSpan, int, Context, Task> onRetryContextAsyncAttempts = null!;
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync(1, (_, _, _) => TimeSpan.Zero, onRetryContextAsyncAttempts);
+
+        Should.Throw<ArgumentNullException>(policy)
+              .ParamName.ShouldBe("onRetryAsync");
+
+        policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync([], onRetryContextAsyncAttempts);
 
         Should.Throw<ArgumentNullException>(policy)
               .ParamName.ShouldBe("onRetryAsync");

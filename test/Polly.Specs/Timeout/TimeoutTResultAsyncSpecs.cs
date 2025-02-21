@@ -277,15 +277,6 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
     }
 
     [Fact]
-    public void Should_throw_when_timeoutProvider_is_null()
-    {
-        Action policy = () => Policy.TimeoutAsync<ResultPrimitive>((Func<TimeSpan>)null!);
-
-        Should.Throw<ArgumentNullException>(policy)
-            .ParamName.ShouldBe("timeoutProvider");
-    }
-
-    [Fact]
     public void Should_throw_when_onTimeout_is_null_with_timeoutprovider()
     {
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = null!;
@@ -310,6 +301,31 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
     {
         Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.FromSeconds(1));
 
+        Should.NotThrow(policy);
+    }
+
+    [Fact]
+    public void Should_not_throw_if_arguments_valid()
+    {
+        Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(1, TimeoutStrategy.Pessimistic, (_, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(1, TimeoutStrategy.Pessimistic, (_, _, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.Zero, TimeoutStrategy.Pessimistic);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.Zero, TimeoutStrategy.Pessimistic, (_, _, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>((_) => TimeSpan.Zero);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>((_) => TimeSpan.Zero, TimeoutStrategy.Pessimistic);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>((_) => TimeSpan.Zero, (_, _, _) => TaskHelper.EmptyTask);
         Should.NotThrow(policy);
     }
 
@@ -570,44 +586,83 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
     }
 
     [Fact]
-    public void Should_throw_when_timeoutProvider_is_null_with_strategy()
+    public void Should_throw_when_timeoutProvider_is_null()
     {
+        Action policy = () => Policy.TimeoutAsync<ResultPrimitive>((Func<TimeSpan>)null!);
+
+        Should.Throw<ArgumentNullException>(policy)
+            .ParamName.ShouldBe("timeoutProvider");
+
         // Arrange
         Func<TimeSpan> timeoutProvider = null!;
-        Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(timeoutProvider, TimeoutStrategy.Pessimistic);
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(timeoutProvider, TimeoutStrategy.Pessimistic);
 
         // Act
         var exception = Should.Throw<ArgumentNullException>(policy);
 
         // Assert
         exception.ParamName.ShouldBe("timeoutProvider");
-    }
 
-    [Fact]
-    public void Should_throw_when_timeoutProvider_is_null_with_strategy_and_ontimeout()
-    {
         // Arrange
-        Func<TimeSpan> timeoutProvider = null!;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, _) => TaskHelper.EmptyTask;
-        Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(timeoutProvider, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(timeoutProvider, TimeoutStrategy.Pessimistic, (_, _, _) => TaskHelper.EmptyTask);
 
         // Act
-        var exception = Should.Throw<ArgumentNullException>(policy);
+        exception = Should.Throw<ArgumentNullException>(policy);
 
         // Assert
         exception.ParamName.ShouldBe("timeoutProvider");
-    }
 
-    [Fact]
-    public void Should_throw_when_timeoutProvider_is_null_with_strategy_and_ontimeout_with_exception()
-    {
         // Arrange
-        Func<TimeSpan> timeoutProvider = null!;
-        Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (_, _, _, _) => TaskHelper.EmptyTask;
-        Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(timeoutProvider, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(timeoutProvider, TimeoutStrategy.Pessimistic, (_, _, _, _) => TaskHelper.EmptyTask);
 
         // Act
-        var exception = Should.Throw<ArgumentNullException>(policy);
+        exception = Should.Throw<ArgumentNullException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("timeoutProvider");
+
+        // Arrange
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(timeoutProvider, (_, _, _) => TaskHelper.EmptyTask);
+
+        // Act
+        exception = Should.Throw<ArgumentNullException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("timeoutProvider");
+
+        // Arrange
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(timeoutProvider, (_, _, _, _) => TaskHelper.EmptyTask);
+
+        // Act
+        exception = Should.Throw<ArgumentNullException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("timeoutProvider");
+
+        // Arrange
+        Func<Context, TimeSpan> timeoutProviderContext = null!;
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(timeoutProviderContext, (_, _, _, _) => TaskHelper.EmptyTask);
+
+        // Act
+        exception = Should.Throw<ArgumentNullException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("timeoutProvider");
+
+        // Arrange
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(timeoutProvider, TimeoutStrategy.Pessimistic, (_, _, _, _) => TaskHelper.EmptyTask);
+
+        // Act
+        exception = Should.Throw<ArgumentNullException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("timeoutProvider");
+
+        // Arrange
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(timeoutProviderContext, TimeoutStrategy.Pessimistic, (_, _, _, _) => TaskHelper.EmptyTask);
+
+        // Act
+        exception = Should.Throw<ArgumentNullException>(policy);
 
         // Assert
         exception.ParamName.ShouldBe("timeoutProvider");
