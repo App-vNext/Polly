@@ -304,6 +304,31 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
         Should.NotThrow(policy);
     }
 
+    [Fact]
+    public void Should_not_throw_if_arguments_valid()
+    {
+        Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(1, TimeoutStrategy.Pessimistic, (_, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(1, TimeoutStrategy.Pessimistic, (_, _, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.Zero, TimeoutStrategy.Pessimistic);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.Zero, TimeoutStrategy.Pessimistic, (_, _, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>((_) => TimeSpan.Zero);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>((_) => TimeSpan.Zero, TimeoutStrategy.Pessimistic);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync<ResultPrimitive>((_) => TimeSpan.Zero, (_, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+    }
+
     #endregion
 
     #region Timeout operation - pessimistic

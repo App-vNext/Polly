@@ -337,6 +337,43 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         Should.NotThrow(policy);
     }
 
+    [Fact]
+    public void Should_not_throw_if_arguments_valid()
+    {
+        Action policy = () => Policy.TimeoutAsync(1, TimeoutStrategy.Optimistic, (_, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync(1, TimeoutStrategy.Optimistic, (_, _, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(1), (_, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(1), (_, _, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic, (_, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic, (_, _, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync((_) => TimeSpan.FromSeconds(1));
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync((_) => TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync((_) => TimeSpan.FromSeconds(1), (_, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+
+        policy = () => Policy.TimeoutAsync((_) => TimeSpan.FromSeconds(1), (_, _, _, _) => TaskHelper.EmptyTask);
+        Should.NotThrow(policy);
+    }
+
     #endregion
 
     #region Timeout operation - pessimistic
@@ -697,6 +734,21 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     {
         // Arrange
         Func<TimeSpan> timeoutProvider = null!;
+        Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (_, _, _, _) => TaskHelper.EmptyTask;
+        Action policy = () => Policy.TimeoutAsync(timeoutProvider, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+
+        // Act
+        var exception = Should.Throw<ArgumentNullException>(policy);
+
+        // Assert
+        exception.ParamName.ShouldBe("timeoutProvider");
+    }
+
+    [Fact]
+    public void Should_throw_when_timeoutProvider_is_null_with_everything()
+    {
+        // Arrange
+        Func<Context, TimeSpan> timeoutProvider = null!;
         Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (_, _, _, _) => TaskHelper.EmptyTask;
         Action policy = () => Policy.TimeoutAsync(timeoutProvider, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 

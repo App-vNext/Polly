@@ -2931,14 +2931,44 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         action = () => builderOfT.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, (_) => { }, null!);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onHalfOpen");
 
-        action = () => builder.AdvancedCircuitBreakerAsync(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (null as Action<Exception, CircuitState, TimeSpan, Context>)!, (_) => { }, () => { });
+        action = () => builder.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (null as Action<Exception, CircuitState, TimeSpan, Context>)!, (_) => { }, () => { });
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onBreak");
 
-        action = () => builder.AdvancedCircuitBreakerAsync(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, null!, () => { });
+        action = () => builder.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, null!, () => { });
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onReset");
 
-        action = () => builder.AdvancedCircuitBreakerAsync(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, (_) => { }, null!);
+        action = () => builder.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, (_) => { }, null!);
         Should.Throw<ArgumentNullException>(action).ParamName.ShouldBe("onHalfOpen");
+    }
+
+    [Fact]
+    public void Should_not_throw_if_arguments_are_valid()
+    {
+        double failureThreshold = 1;
+        var samplingDuration = TimeSpan.FromMinutes(1);
+        int mimimumThroughput = 60;
+        var breakDuration = TimeSpan.FromSeconds(1);
+
+        var builder = Policy.Handle<DivideByZeroException>();
+        var builderOfT = Policy.HandleResult(ResultPrimitive.Fault);
+
+        Action action = () => builderOfT.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration);
+        Should.NotThrow(action);
+
+        action = () => builderOfT.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _) => { }, () => { });
+        Should.NotThrow(action);
+
+        action = () => builderOfT.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _) => { }, (_) => { });
+        Should.NotThrow(action);
+
+        action = () => builderOfT.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _) => { }, () => { }, () => { });
+        Should.NotThrow(action);
+
+        action = () => builderOfT.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _) => { }, (_) => { }, () => { });
+        Should.NotThrow(action);
+
+        action = () => builder.AdvancedCircuitBreaker(failureThreshold, samplingDuration, mimimumThroughput, breakDuration, (_, _, _, _) => { }, (_) => { }, () => { });
+        Should.NotThrow(action);
     }
 
     #endregion
