@@ -20,6 +20,6 @@ if ($Interactive -ne $true) {
 
 $project = Join-Path "Polly.Core.Benchmarks" "Polly.Core.Benchmarks.csproj"
 
-dotnet run --configuration $Configuration --framework net9.0 --project $project $additionalArgs
+dotnet run --configuration $Configuration --framework net10.0 --project $project $additionalArgs
 
 exit $LASTEXITCODE
