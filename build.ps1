@@ -30,7 +30,7 @@ Param(
     [ValidateSet("Default", "MutationCore", "MutationLegacy")]
     [string]$Configuration = "Release",
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
-    [string]$Verbosity = "Verbose",
+    [string]$Verbosity = "Diagnostic",
     [Alias("DryRun","Noop")]
     [switch]$WhatIf,
     [switch]$SkipToolPackageRestore,
