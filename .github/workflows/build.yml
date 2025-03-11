@@ -70,7 +70,7 @@ jobs:
       id: setup-dotnet
 
     - name: Setup NuGet cache
-      uses: actions/cache@0c907a75c2c80ebcb7f088228285e798b750cf8f # v4.2.1
+      uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
@@ -83,7 +83,7 @@ jobs:
 
     - name: Upload Coverage Reports
       if: always()
-      uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
         name: coverage-${{ matrix.os_name }}
         path: ./artifacts/coverage-reports
@@ -91,20 +91,20 @@ jobs:
 
     - name: Upload coverage to Codecov
       if: always() && github.event.repository.fork == false
-      uses: codecov/codecov-action@13ce06bfc6bbe3ecf90edbbf1bc32fe5978ca1d3 # v5.3.1
+      uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
       with:
         flags: ${{ matrix.os_name }}
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Publish NuGet packages
-      uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
         name: packages-${{ matrix.os_name }}
         path: ./artifacts/package/release
         if-no-files-found: error
 
     - name: Upload signing file list
-      uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       if: matrix.os_name == 'windows'
       with:
         name: signing-config
@@ -127,7 +127,7 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+      uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
       with:
         name: packages-windows
 
@@ -165,13 +165,13 @@ jobs:
     steps:
 
     - name: Download unsigned packages
-      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+      uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
       with:
         name: packages-windows
         path: packages
 
     - name: Download signing configuration
-      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+      uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
       with:
         name: signing-config
         path: signing-config
@@ -213,7 +213,7 @@ jobs:
         }
 
     - name: Upload signed packages
-      uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
         name: signed-packages
         path: packages
@@ -225,7 +225,7 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+      uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
       with:
         name: signed-packages
 
@@ -342,7 +342,7 @@ jobs:
     steps:
 
     - name: Download signed packages
-      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+      uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
       with:
         name: signed-packages
 

@@ -54,7 +54,7 @@
         {
             try
             {
-                System.IO.File.WriteAllLines(File, lines);
+                System.IO.File.AppendAllLines(File, lines);
                 break;
             }
             catch (System.IO.IOException)
