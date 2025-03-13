@@ -52,7 +52,7 @@ public class RetryStrategyOptionsTests
         exception.Message.Trim().ShouldBe("""
             Invalid Options
             Validation Errors:
-            The field MaxRetryAttempts must be between 1 and 2147483647.
+            The field MaxRetryAttempts must be between 0 and 2147483647.
             The field Delay must be between 00:00:00 and 1.00:00:00.
             The field MaxDelay must be between 00:00:00 and 1.00:00:00.
             The ShouldHandle field is required.

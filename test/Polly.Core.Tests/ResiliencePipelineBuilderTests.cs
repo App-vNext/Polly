@@ -159,7 +159,7 @@ public class ResiliencePipelineBuilderTests
         exception.Message.Trim().ShouldBe("""
             The primary message.
             Validation Errors:
-            The field MaxRetryAttempts must be between 1 and 2147483647.
+            The field MaxRetryAttempts must be between 0 and 2147483647.
             """);
     }
 
