@@ -160,9 +160,9 @@ jobs:
   sign:
     needs: [ build, validate-packages ]
     runs-on: windows-latest
-    #if: |
-    #  github.event.repository.fork == false &&
-    #  startsWith(github.ref, 'refs/tags/')
+    if: |
+      github.event.repository.fork == false &&
+      startsWith(github.ref, 'refs/tags/')
 
     steps:
 
@@ -312,7 +312,6 @@ jobs:
         }
 
   publish-nuget:
-    if: false
     needs: [ build, validate-signed-packages ]
     runs-on: ubuntu-latest
     steps:
