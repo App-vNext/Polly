@@ -280,7 +280,7 @@ jobs:
 
           $invalidDlls = 0
           foreach ($dll in $dlls) {
-            dotnet authlint -in $dll -verbose
+            authlint -in $dll -verbose
             if ($LASTEXITCODE -ne 0) {
               Write-Output "::warning::$dll in NuGet package $package failed signature validation."
               $invalidDlls++
