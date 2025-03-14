@@ -32,6 +32,7 @@ jobs:
     timeout-minutes: 20
 
     outputs:
+      authenticodelint-version: ${{ steps.get-dotnet-tools-versions.outputs.authenticodelint-version }}
       dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
       dotnet-sign-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-sign-version }}
       dotnet-validate-version: '0.0.1-preview.304' # HACK Hardcoded until https://github.com/dotnet/sdk/issues/46857 resolved
@@ -115,8 +116,10 @@ jobs:
       shell: pwsh
       run: |
         $manifest = (Get-Content "./.config/dotnet-tools.json" | Out-String | ConvertFrom-Json)
+        $authenticodelintVersion = $manifest.tools.authenticodelint.version
         $dotnetSignVersion = $manifest.tools.sign.version
         $dotnetValidateVersion = $manifest.tools.'dotnet-validate'.version
+        "authenticodelint-version=${authenticodelintVersion}" >> ${env:GITHUB_OUTPUT}
         "dotnet-sign-version=${dotnetSignVersion}" >> ${env:GITHUB_OUTPUT}
         "dotnet-validate-version=${dotnetValidateVersion}" >> ${env:GITHUB_OUTPUT}
 
@@ -157,9 +160,9 @@ jobs:
   sign:
     needs: [ build, validate-packages ]
     runs-on: windows-latest
-    if: |
-      github.event.repository.fork == false &&
-      startsWith(github.ref, 'refs/tags/')
+    #if: |
+    #  github.event.repository.fork == false &&
+    #  startsWith(github.ref, 'refs/tags/')
 
     steps:
 
@@ -239,6 +242,10 @@ jobs:
         DOTNET_VALIDATE_VERSION: ${{ needs.build.outputs.dotnet-validate-version }}
       run: |
         dotnet tool install --global dotnet-validate --version ${env:DOTNET_VALIDATE_VERSION} --allow-roll-forward
+        if ($LASTEXITCODE -ne 0) {
+          Write-Output "::error::Failed to install dotnet-validate tool."
+          exit 1
+        }
         $packages = Get-ChildItem -Filter "*.nupkg" | ForEach-Object { $_.FullName }
         $invalidPackages = 0
         foreach ($package in $packages) {
@@ -252,46 +259,17 @@ jobs:
           exit 1
         }
 
-    - name: Checkout vcsjones/AuthenticodeLint
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      with:
-        filter: 'tree:0'
-        path: AuthenticodeLint
-        ref: 90dd05293effe918b149c7f8323540b7730c06d2
-        repository: martincostello/AuthenticodeLint
-        show-progress: false
-        submodules: recursive
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
-      with:
-        global-json-file: AuthenticodeLint/global.json
-
     - name: Validate signatures
       shell: pwsh
+      env:
+        AUTHENTICODELINT_VERSION: ${{ needs.build.outputs.authenticodelint-version }}
       run: |
-        $authlintSource = Join-Path "." "AuthenticodeLint"
-        $authLintProject = Join-Path $authlintSource "AuthenticodeLint" "AuthenticodeLint.csproj"
-        $artifacts = Join-Path $authlintSource "artifacts"
-        $authlint = Join-Path $artifacts "authlint.exe"
-
-        dotnet publish $authLintProject `
-          --configuration Release `
-          --output $artifacts `
-          --runtime win-x64 `
-          --self-contained false `
-          /p:NoWarn=NU1902
-
+        dotnet tool install --global AuthenticodeLint --version ${env:AUTHENTICODELINT_VERSION} --allow-roll-forward
         if ($LASTEXITCODE -ne 0) {
-          throw "Failed to publish AuthenticodeLint."
+          Write-Output "::error::Failed to install AuthenticodeLint tool."
+          exit 1
         }
-
         $packages = Get-ChildItem -Filter "*.nupkg" | ForEach-Object { $_.FullName }
-
-        if ($packages.Length -eq 0) {
-          throw "Failed to publish AuthenticodeLint."
-        }
-
         $invalidPackages = 0
         foreach ($package in $packages) {
           $packageName = Split-Path $package -Leaf
@@ -302,10 +280,8 @@ jobs:
 
           $invalidDlls = 0
           foreach ($dll in $dlls) {
-            $authlintProcess = Start-Process -FilePath $authlint -ArgumentList @("-in", $dll, "-verbose") -PassThru
-            $authlintProcess.WaitForExit()
-
-            if ($authlintProcess.ExitCode -ne 0) {
+            dotnet authlint -in $dll -verbose
+            if ($LASTEXITCODE -ne 0) {
               Write-Output "::warning::$dll in NuGet package $package failed signature validation."
               $invalidDlls++
             } else {
@@ -330,12 +306,13 @@ jobs:
         }
         if ($invalidPackages -gt 0) {
           Write-Output "::error::$invalidPackages NuGet package(s) failed signature validation."
-          throw "One or more NuGet packages failed signature validation."
+          exit 1
         } else {
           Write-Output "All $($packages.Length) NuGet packages have valid signatures."
         }
 
   publish-nuget:
+    if: false
     needs: [ build, validate-signed-packages ]
     runs-on: ubuntu-latest
     steps:
