@@ -2,6 +2,13 @@
   "version": 1,
   "isRoot": true,
   "tools": {
+    "authenticodelint": {
+      "version": "0.13.0",
+      "commands": [
+        "authlint"
+      ],
+      "rollForward": false
+    },
     "cake.tool": {
       "version": "5.0.0",
       "commands": [
@@ -38,7 +45,7 @@
       "rollForward": false
     },
     "sign": {
-      "version": "0.9.1-beta.25157.1",
+      "version": "0.9.1-beta.24529.1",
       "commands": [
         "sign"
       ],
