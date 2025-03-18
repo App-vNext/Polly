@@ -30,6 +30,12 @@
       ],
       "rollForward": false
     },
+    "dotnet-validate": {
+      "version": "0.0.1-preview.304",
+      "commands": [
+        "dotnet-validate"
+      ]
+    },
     "markdownsnippets.tool": {
       "version": "27.0.2",
       "commands": [
