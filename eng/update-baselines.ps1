@@ -37,8 +37,9 @@ foreach ($file in $files) {
 
     $edited = $false
 
-    # Skip the "#nullable enable" header
-    $index = (($additions.Count -gt 0) -And ($additions[0] -eq "#nullable enable")) ? 1 : 0
+    # Skip any "#nullable enable" header
+    $nullableHeader = "#nullable enable"
+    $index = (($additions.Count -gt 0) -And ($additions[0] -eq $nullableHeader)) ? 1 : 0
     while ($additions.Count -gt $index) {
         $addition = $additions[$index]
         $additions.RemoveAt($index)
@@ -50,7 +51,12 @@ foreach ($file in $files) {
         $additions.Sort($comparer)
         $baseline.Sort($comparer)
 
-        $additions | Set-Content $changesPath -Encoding $encoding
+        if (($additions.Count -eq 1) -and ($additions[0] -eq $nullableHeader)) {
+            $additions | Set-Content $changesPath -Encoding $encoding
+        } else {
+            $null | Set-Content $changesPath -Encoding $encoding
+        }
+
         $baseline | Set-Content $baselinePath -Encoding $encoding
     }
 }

@@ -2,6 +2,13 @@
   "version": 1,
   "isRoot": true,
   "tools": {
+    "authenticodelint": {
+      "version": "0.13.0",
+      "commands": [
+        "authlint"
+      ],
+      "rollForward": false
+    },
     "cake.tool": {
       "version": "5.0.0",
       "commands": [
@@ -23,6 +30,12 @@
       ],
       "rollForward": false
     },
+    "dotnet-validate": {
+      "version": "0.0.1-preview.304",
+      "commands": [
+        "dotnet-validate"
+      ]
+    },
     "markdownsnippets.tool": {
       "version": "27.0.2",
       "commands": [
@@ -38,7 +51,7 @@
       "rollForward": false
     },
     "sign": {
-      "version": "0.9.1-beta.25114.1",
+      "version": "0.9.1-beta.24529.1",
       "commands": [
         "sign"
       ],
