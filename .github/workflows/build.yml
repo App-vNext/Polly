@@ -35,7 +35,7 @@ jobs:
       authenticodelint-version: ${{ steps.get-dotnet-tools-versions.outputs.authenticodelint-version }}
       dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
       dotnet-sign-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-sign-version }}
-      dotnet-validate-version: '0.0.1-preview.304' # HACK Hardcoded until https://github.com/dotnet/sdk/issues/46857 resolved
+      dotnet-validate-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-validate-version }}
       package-names: ${{ steps.build.outputs.package-names }}
       package-version: ${{ steps.build.outputs.package-version }}
 
