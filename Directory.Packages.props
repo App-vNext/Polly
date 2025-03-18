@@ -6,11 +6,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0'))">
     <MicrosoftExtensionsVersion>9.0.0</MicrosoftExtensionsVersion>
-    <MicrosoftExtensionsTimeProviderVersion>9.0.0</MicrosoftExtensionsTimeProviderVersion>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0'))">
-    <MicrosoftExtensionsVersion>10.0.0-preview.1.25080.5</MicrosoftExtensionsVersion>
-    <MicrosoftExtensionsTimeProviderVersion>9.2.0</MicrosoftExtensionsTimeProviderVersion>
+    <MicrosoftExtensionsVersion>10.0.0-preview.2.25163.2</MicrosoftExtensionsVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
