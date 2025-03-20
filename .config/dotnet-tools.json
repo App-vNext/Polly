@@ -51,7 +51,7 @@
       "rollForward": false
     },
     "sign": {
-      "version": "0.9.1-beta.24529.1",
+      "version": "0.9.1-beta.25169.2",
       "commands": [
         "sign"
       ],
