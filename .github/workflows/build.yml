@@ -333,11 +333,11 @@ jobs:
 
     - name: Generate GitHub application token
       id: generate-application-token
-      uses: peter-murray/workflow-application-token-action@d17e3a9a36850ea89f35db16c1067dd2b68ee343 # v4.0.1
+      uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5 # v2.0.2
       with:
-        application_id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
-        application_private_key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
-        permissions: 'contents:write'
+        app-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
+        private-key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
+        permission-contents: write
 
     - name: Publish nuget_packages_published
       uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3.0.0
