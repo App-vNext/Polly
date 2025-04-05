@@ -194,7 +194,7 @@ internal static class Retry
         var retry = new ResiliencePipelineBuilder()
             .AddRetry(new()
             {
-                ShouldHandle = ex => new ValueTask<bool>(retryableExceptions.Contains(ex.GetType())),
+                ShouldHandle = args => ValueTask.FromResult(retryableExceptions.Contains(args.Outcome.Exception?.GetType())),
                 MaxRetryAttempts = 3,
             })
             .Build();
