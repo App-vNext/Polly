@@ -53,6 +53,22 @@ jobs:
 
     steps:
 
+    - name: Update agent configuration
+      shell: pwsh
+      run: |
+        if ($IsWindows) {
+          "DOTNET_INSTALL_DIR=D:\tools\dotnet" >> ${env:GITHUB_ENV}
+          "DOTNET_ROOT=D:\tools\dotnet" >> ${env:GITHUB_ENV}
+          "NUGET_PACKAGES=D:\.nuget\packages" >> ${env:GITHUB_ENV}
+        } else {
+          $nugetHome = "~/.nuget/packages"
+          if (-Not (Test-Path $nugetHome)) {
+            New-Item -Path $nugetHome -Type Directory -Force | Out-Null
+          }
+          $nugetHome = Resolve-Path $nugetHome
+          "NUGET_PACKAGES=$nugetHome" >> ${env:GITHUB_ENV}
+        }
+
     - name: Checkout code
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
@@ -72,7 +88,7 @@ jobs:
     - name: Setup NuGet cache
       uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
       with:
-        path: ~/.nuget/packages
+        path: ${{ env.NUGET_PACKAGES }}
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
         restore-keys: ${{ runner.os }}-nuget-
 
