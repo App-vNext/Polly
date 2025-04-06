@@ -174,18 +174,18 @@ internal static class Retry
     {
         #region retry-pattern-overusing-builder
 
-        ImmutableArray<Type> networkExceptions = new[]
-        {
+        ImmutableArray<Type> networkExceptions =
+        [
             typeof(SocketException),
             typeof(HttpRequestException),
-        }.ToImmutableArray();
+        ];
 
-        ImmutableArray<Type> strategyExceptions = new[]
-        {
+        ImmutableArray<Type> strategyExceptions =
+        [
             typeof(TimeoutRejectedException),
             typeof(BrokenCircuitException),
             typeof(RateLimitRejectedException),
-        }.ToImmutableArray();
+        ];
 
         ImmutableArray<Type> retryableExceptions = networkExceptions
             .Union(strategyExceptions)
@@ -194,7 +194,9 @@ internal static class Retry
         var retry = new ResiliencePipelineBuilder()
             .AddRetry(new()
             {
-                ShouldHandle = args => ValueTask.FromResult(retryableExceptions.Contains(args.Outcome.Exception?.GetType())),
+                ShouldHandle = args
+                    => ValueTask.FromResult(args.Outcome.Exception is not null
+                        && retryableExceptions.Contains(args.Outcome.Exception.GetType())),
                 MaxRetryAttempts = 3,
             })
             .Build();
