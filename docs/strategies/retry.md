@@ -474,18 +474,18 @@ Use collections and simple predicate functions:
 
 <!-- snippet: retry-pattern-overusing-builder -->
 ```cs
-ImmutableArray<Type> networkExceptions = new[]
-{
+ImmutableArray<Type> networkExceptions =
+[
     typeof(SocketException),
     typeof(HttpRequestException),
-}.ToImmutableArray();
+];
 
-ImmutableArray<Type> strategyExceptions = new[]
-{
+ImmutableArray<Type> strategyExceptions =
+[
     typeof(TimeoutRejectedException),
     typeof(BrokenCircuitException),
     typeof(RateLimitRejectedException),
-}.ToImmutableArray();
+];
 
 ImmutableArray<Type> retryableExceptions = networkExceptions
     .Union(strategyExceptions)
@@ -494,7 +494,8 @@ ImmutableArray<Type> retryableExceptions = networkExceptions
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
     {
-        ShouldHandle = ex => new ValueTask<bool>(retryableExceptions.Contains(ex.GetType())),
+        ShouldHandle = args
+            => ValueTask.FromResult(args.Outcome.Exception != null && retryableExceptions.Contains(args.Outcome.Exception.GetType())),
         MaxRetryAttempts = 3,
     })
     .Build();
