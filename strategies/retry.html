@@ -613,18 +613,18 @@ recurring patterns may not be ideal. The sections below highlight anti-patterns 
 <p>✅ DO</p>
 <p>Use collections and simple predicate functions:</p>
 <!-- snippet: retry-pattern-overusing-builder -->
-<pre><code class="lang-cs">ImmutableArray&lt;Type&gt; networkExceptions = new[]
-{
+<pre><code class="lang-cs">ImmutableArray&lt;Type&gt; networkExceptions =
+[
     typeof(SocketException),
     typeof(HttpRequestException),
-}.ToImmutableArray();
+];
 
-ImmutableArray&lt;Type&gt; strategyExceptions = new[]
-{
+ImmutableArray&lt;Type&gt; strategyExceptions =
+[
     typeof(TimeoutRejectedException),
     typeof(BrokenCircuitException),
     typeof(RateLimitRejectedException),
-}.ToImmutableArray();
+];
 
 ImmutableArray&lt;Type&gt; retryableExceptions = networkExceptions
     .Union(strategyExceptions)
@@ -633,7 +633,8 @@ ImmutableArray&lt;Type&gt; retryableExceptions = networkExceptions
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
     {
-        ShouldHandle = ex =&gt; new ValueTask&lt;bool&gt;(retryableExceptions.Contains(ex.GetType())),
+        ShouldHandle = args
+            =&gt; ValueTask.FromResult(args.Outcome.Exception != null &amp;&amp; retryableExceptions.Contains(args.Outcome.Exception.GetType())),
         MaxRetryAttempts = 3,
     })
     .Build();
