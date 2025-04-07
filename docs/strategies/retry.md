@@ -495,7 +495,8 @@ var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
     {
         ShouldHandle = args
-            => ValueTask.FromResult(args.Outcome.Exception != null && retryableExceptions.Contains(args.Outcome.Exception.GetType())),
+            => ValueTask.FromResult(args.Outcome.Exception is not null
+                && retryableExceptions.Contains(args.Outcome.Exception.GetType())),
         MaxRetryAttempts = 3,
     })
     .Build();
