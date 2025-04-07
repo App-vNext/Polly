@@ -494,9 +494,9 @@ ImmutableArray<Type> retryableExceptions = networkExceptions
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
     {
-        ShouldHandle = args
-            => ValueTask.FromResult(args.Outcome.Exception is not null
-                && retryableExceptions.Contains(args.Outcome.Exception.GetType())),
+        ShouldHandle = args =>
+            ValueTask.FromResult(args.Outcome.Exception is not null &&
+            retryableExceptions.Contains(args.Outcome.Exception.GetType())),
         MaxRetryAttempts = 3,
     })
     .Build();
