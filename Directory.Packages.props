@@ -8,7 +8,7 @@
     <MicrosoftExtensionsVersion>9.0.0</MicrosoftExtensionsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0'))">
-    <MicrosoftExtensionsVersion>10.0.0-preview.2.25163.2</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>10.0.0-preview.3.25171.5</MicrosoftExtensionsVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
