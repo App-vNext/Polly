@@ -207,6 +207,8 @@ Both `AddReloadToken(...)` and `OnPipelineDisposed(...)` are used to implement t
 
 Resource disposal occurs when the registry is disposed of or when the pipeline undergoes changes due to [dynamic reloads](#dynamic-reloads). Upon disposal, all callbacks registered through the `OnPipelineDisposed` method are invoked. However, actual resource disposal is deferred until the pipeline completes all outgoing executions. It's vital to note that dispose callbacks are associated only with a specific instance of the pipeline.
 
+### Disposal of encapsulated rate limiters
+
 If one is using custom rate limiters and wants to dispose them on pipeline reload or when a registry is disposed, then one should use the `OnPipelineDisposed` callback.
 
 Consider the following runnable example. It creates a registry with a concurrency strategy and a chained rate limiter strategy (which contains multiple rate limiters):
