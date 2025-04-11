@@ -209,7 +209,7 @@ Resource disposal occurs when the registry is disposed of or when the pipeline u
 
 ### Disposal of encapsulated rate limiters
 
-If one is using custom rate limiters and wants to dispose them on pipeline reload or when a registry is disposed, then one should use the `OnPipelineDisposed` callback.
+If you are using custom rate limiters and want to dispose them on pipeline reload or when a registry is disposed, then you should use the `OnPipelineDisposed` callback.
 
 Consider the following runnable example. It creates a registry with a concurrency strategy and a chained rate limiter strategy (which contains multiple rate limiters):
 
