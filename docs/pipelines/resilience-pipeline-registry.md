@@ -219,9 +219,9 @@ public static class Program
 {
     public static void Main()
     {
-        using var pra = new PipelineRegistryAdapter();
-        pra.GetOrCreateResiliencePipeline("Pipeline foo", 1, 10, 100, 1000);
-        pra.GetOrCreateResiliencePipeline("Pipeline bar", 2, 20, 200, 2000);
+        using var registryAdapter = new PipelineRegistryAdapter();
+        registryAdapter.GetOrCreateResiliencePipeline("Pipeline foo", 1, 10, 100, 1000);
+        registryAdapter.GetOrCreateResiliencePipeline("Pipeline bar", 2, 20, 200, 2000);
     }
 }
 
