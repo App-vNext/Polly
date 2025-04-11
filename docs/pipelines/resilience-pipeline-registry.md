@@ -232,13 +232,11 @@ public sealed class PipelineRegistryAdapter : IDisposable
 
     public void Dispose()
     {
-        if (_disposed)
+        if (!_disposed)
         {
-            return;
+            _resiliencePipelineRegistry.Dispose();
+            _disposed = true;
         }
-
-        _resiliencePipelineRegistry.Dispose();
-        _disposed = true;
     }
 
     private static PartitionedRateLimiter<ResilienceContext> CreateConcurrencyLimiter(string partitionKey, int permitLimit) =>
@@ -255,14 +253,7 @@ public sealed class PipelineRegistryAdapter : IDisposable
 
     public ResiliencePipeline GetOrCreateResiliencePipeline(string partitionKey, int maximumConcurrentThreads, int sendLimitPerSecond, int sendLimitPerHour, int sendLimitPerDay)
     {
-        // return pipeline if exists
-        if (_resiliencePipelineRegistry.TryGetPipeline(partitionKey, out var pipeline))
-        {
-            return pipeline;
-        }
-
-        // else create pipeline with multiple strategies
-        var wasCreated = _resiliencePipelineRegistry.TryAddBuilder(partitionKey, (builder, context) =>
+        return _resiliencePipelineRegistry.GetOrAddPipeline(partitionKey, (builder, context) =>
         {
             PartitionedRateLimiter<ResilienceContext>? threadLimiter = null;
             PartitionedRateLimiter<ResilienceContext>? requestLimiter = null;
@@ -283,10 +274,10 @@ public sealed class PipelineRegistryAdapter : IDisposable
                 RateLimiter = args =>
                 {
                     PartitionedRateLimiter<ResilienceContext>[] limiters = [
-                    CreateFixedWindowLimiter(partitionKey, sendLimitPerSecond, TimeSpan.FromSeconds(1)),
-            CreateFixedWindowLimiter(partitionKey, sendLimitPerHour,   TimeSpan.FromHours(1)),
-            CreateFixedWindowLimiter(partitionKey, sendLimitPerDay,    TimeSpan.FromDays(1)),
-            ];
+                        CreateFixedWindowLimiter(partitionKey, sendLimitPerSecond, TimeSpan.FromSeconds(1)),
+                        CreateFixedWindowLimiter(partitionKey, sendLimitPerHour,   TimeSpan.FromHours(1)),
+                        CreateFixedWindowLimiter(partitionKey, sendLimitPerDay,    TimeSpan.FromDays(1)),
+                    ];
                     requestLimiter = PartitionedRateLimiter.CreateChained(limiters);
                     return requestLimiter.AcquireAsync(args.Context, permitCount: 1, args.Context.CancellationToken);
                 }
@@ -297,27 +288,14 @@ public sealed class PipelineRegistryAdapter : IDisposable
             {
                 threadLimiter?.Dispose();
                 requestLimiter?.Dispose();
-                Console.WriteLine($"Disposed pipeline '{partitionKey}'");
             });
-
         });
-
-        if (wasCreated)
-        {
-            Console.WriteLine($"Created pipeline '{partitionKey}'");
-        }
-        else
-        {
-            throw new InvalidOperationException($"Failed to create pipeline '{partitionKey}'");
-        }
-
-        return _resiliencePipelineRegistry.GetPipeline(partitionKey);
     }
 }
 ```
 <!-- endSnippet -->
 
-Notice how the rate limiters are disposed manually in the callback.
+Notice how the rate limiters are disposed manually in the `OnPipelineDisposed` callback.
 
 ## Complex registry keys
 
