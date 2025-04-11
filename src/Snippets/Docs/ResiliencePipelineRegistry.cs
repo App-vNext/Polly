@@ -201,15 +201,15 @@ internal static class ResiliencePipelineRegistry
 
         private static PartitionedRateLimiter<ResilienceContext> CreateConcurrencyLimiter(string partitionKey, int permitLimit) =>
             PartitionedRateLimiter.Create<ResilienceContext, string>(context =>
-            RateLimitPartition.GetConcurrencyLimiter(
-                partitionKey: partitionKey,
-                factory: partitionKey => new ConcurrencyLimiterOptions { PermitLimit = permitLimit, QueueLimit = 0 }));
+                RateLimitPartition.GetConcurrencyLimiter(
+                    partitionKey: partitionKey,
+                    factory: partitionKey => new ConcurrencyLimiterOptions { PermitLimit = permitLimit, QueueLimit = 0 }));
 
         private static PartitionedRateLimiter<ResilienceContext> CreateFixedWindowLimiter(string partitionKey, int permitLimit, TimeSpan window) =>
             PartitionedRateLimiter.Create<ResilienceContext, string>(context =>
-            RateLimitPartition.GetFixedWindowLimiter(
-                partitionKey: partitionKey,
-                factory: partitionKey => new FixedWindowRateLimiterOptions { PermitLimit = permitLimit, QueueLimit = 0, Window = window }));
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: partitionKey,
+                    factory: partitionKey => new FixedWindowRateLimiterOptions { PermitLimit = permitLimit, QueueLimit = 0, Window = window }));
 
         public ResiliencePipeline GetOrCreateResiliencePipeline(string partitionKey, int maximumConcurrentThreads, int sendLimitPerSecond, int sendLimitPerHour, int sendLimitPerDay)
         {
