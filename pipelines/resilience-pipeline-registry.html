@@ -295,6 +295,90 @@ registry.TryAddBuilder(&quot;A&quot;, (builder, context) =&gt;
 <p>Both <code>AddReloadToken(...)</code> and <code>OnPipelineDisposed(...)</code> are used to implement the <code>EnableReloads&lt;TOptions&gt;(...)</code> extension method that is used by the <a href="../advanced/dependency-injection.html#dynamic-reloads">Dependency Injection layer</a>.</p>
 <h3 id="how-resource-disposal-works">How resource disposal works</h3>
 <p>Resource disposal occurs when the registry is disposed of or when the pipeline undergoes changes due to <a href="#dynamic-reloads">dynamic reloads</a>. Upon disposal, all callbacks registered through the <code>OnPipelineDisposed</code> method are invoked. However, actual resource disposal is deferred until the pipeline completes all outgoing executions. It's vital to note that dispose callbacks are associated only with a specific instance of the pipeline.</p>
+<h3 id="disposal-of-encapsulated-rate-limiters">Disposal of encapsulated rate limiters</h3>
+<p>If you are using custom rate limiters and want to dispose them on pipeline reload or when a registry is disposed, then you should use the <code>OnPipelineDisposed</code> callback.</p>
+<p>Consider the following runnable example. It creates a registry with a concurrency strategy and a chained rate limiter strategy (which contains multiple rate limiters):</p>
+<!-- snippet: registry-ratelimiter-dispose -->
+<pre><code class="lang-cs">public static class Program
+{
+    public static void Main()
+    {
+        using var registryAdapter = new PipelineRegistryAdapter();
+        registryAdapter.GetOrCreateResiliencePipeline(&quot;Pipeline foo&quot;, 1, 10, 100, 1000);
+        registryAdapter.GetOrCreateResiliencePipeline(&quot;Pipeline bar&quot;, 2, 20, 200, 2000);
+    }
+}
+
+public sealed class PipelineRegistryAdapter : IDisposable
+{
+    private readonly ResiliencePipelineRegistry&lt;string&gt; _resiliencePipelineRegistry = new();
+    private bool _disposed;
+
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            _resiliencePipelineRegistry.Dispose();
+            _disposed = true;
+        }
+    }
+
+    private static PartitionedRateLimiter&lt;ResilienceContext&gt; CreateConcurrencyLimiter(string partitionKey, int permitLimit) =&gt;
+        PartitionedRateLimiter.Create&lt;ResilienceContext, string&gt;(context =&gt;
+            RateLimitPartition.GetConcurrencyLimiter(
+                partitionKey: partitionKey,
+                factory: partitionKey =&gt; new ConcurrencyLimiterOptions { PermitLimit = permitLimit, QueueLimit = 0 }));
+
+    private static PartitionedRateLimiter&lt;ResilienceContext&gt; CreateFixedWindowLimiter(string partitionKey, int permitLimit, TimeSpan window) =&gt;
+        PartitionedRateLimiter.Create&lt;ResilienceContext, string&gt;(context =&gt;
+            RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey: partitionKey,
+                factory: partitionKey =&gt; new FixedWindowRateLimiterOptions { PermitLimit = permitLimit, QueueLimit = 0, Window = window }));
+
+    public ResiliencePipeline GetOrCreateResiliencePipeline(string partitionKey, int maximumConcurrentThreads, int sendLimitPerSecond, int sendLimitPerHour, int sendLimitPerDay)
+    {
+        return _resiliencePipelineRegistry.GetOrAddPipeline(partitionKey, (builder, context) =&gt;
+        {
+            PartitionedRateLimiter&lt;ResilienceContext&gt;? threadLimiter = null;
+            PartitionedRateLimiter&lt;ResilienceContext&gt;? requestLimiter = null;
+
+            // outer strategy: limit threads
+            builder.AddRateLimiter(new RateLimiterStrategyOptions
+            {
+                RateLimiter = args =&gt;
+                {
+                    threadLimiter = CreateConcurrencyLimiter(partitionKey, maximumConcurrentThreads);
+                    return threadLimiter.AcquireAsync(args.Context, permitCount: 1, args.Context.CancellationToken);
+                }
+            });
+
+            // inner strategy: limit requests (by second, hour, day)
+            builder.AddRateLimiter(new RateLimiterStrategyOptions
+            {
+                RateLimiter = args =&gt;
+                {
+                    PartitionedRateLimiter&lt;ResilienceContext&gt;[] limiters = [
+                        CreateFixedWindowLimiter(partitionKey, sendLimitPerSecond, TimeSpan.FromSeconds(1)),
+                        CreateFixedWindowLimiter(partitionKey, sendLimitPerHour,   TimeSpan.FromHours(1)),
+                        CreateFixedWindowLimiter(partitionKey, sendLimitPerDay,    TimeSpan.FromDays(1)),
+                    ];
+                    requestLimiter = PartitionedRateLimiter.CreateChained(limiters);
+                    return requestLimiter.AcquireAsync(args.Context, permitCount: 1, args.Context.CancellationToken);
+                }
+            });
+
+            // unlike other strategies, rate limiters disposed manually
+            context.OnPipelineDisposed(() =&gt;
+            {
+                threadLimiter?.Dispose();
+                requestLimiter?.Dispose();
+            });
+        });
+    }
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Notice how the rate limiters are disposed manually in the <code>OnPipelineDisposed</code> callback.</p>
 <h2 id="complex-registry-keys">Complex registry keys</h2>
 <p>Though the pipeline registry supports complex keys, we suggest you use them when defining pipelines with the <a href="../advanced/dependency-injection.html">Dependency Injection</a> (DI) containers. For further information, see the <a href="../advanced/dependency-injection.html#complex-pipeline-keys">section on complex pipeline keys</a>.</p>
 
