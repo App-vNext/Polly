@@ -345,9 +345,15 @@ void RunMutationTests(FilePath target, FilePath testProject)
 
     Information($"Running mutation tests for '{targetFileName}'. Test Project: '{testProject}'");
 
-    var args = $"stryker --project {targetFileName} --test-project {testProject.FullPath} --break-at {score} --config-file {strykerConfigPath} --output {strykerOutput}/{targetFileName}";
+    var args = $"stryker --project {targetFileName} --test-project {testProject.GetFilename()} --break-at {score} --config-file {strykerConfigPath} --output {strykerOutput}/{targetFileName}";
 
-    var result = StartProcess("dotnet", args);
+    var testProjectDir = testProject.GetDirectory();
+    var result = StartProcess("dotnet", new ProcessSettings
+    {
+        Arguments = args,
+        WorkingDirectory = testProjectDir.FullPath,
+    });
+
     if (result != 0)
     {
         throw new InvalidOperationException($"The mutation testing of '{targetFileName}' project failed.");
