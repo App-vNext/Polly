@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Company>App vNext</Company>
-    <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
+    <Copyright>Copyright (c) 2015-$([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -35,6 +35,7 @@
   <ItemGroup>
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageIcon)" Pack="true" PackagePath="" />
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageReadmeFile)" Pack="true" PackagePath="" />
+    <None Include="$(MsBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
