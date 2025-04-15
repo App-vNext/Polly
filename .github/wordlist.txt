@@ -12,6 +12,7 @@ circuitbreaker
 comparer
 contrib
 deserialization
+dependencyinjection
 dotnet
 dotnetrocks
 durations
@@ -21,6 +22,8 @@ extensibility
 flurl
 fs
 hangfire
+httpclient
+httpclientfactory
 interop
 jetbrains
 jitter
@@ -50,6 +53,7 @@ rebase
 rebased
 rebasing
 resharper
+restsharp
 rethrow
 rethrows
 retryable
