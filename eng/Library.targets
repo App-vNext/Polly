@@ -34,8 +34,8 @@
 
   <ItemGroup>
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageIcon)" Pack="true" PackagePath="" />
-    <None Include="$(MsBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="" />
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageReadmeFile)" Pack="true" PackagePath="" />
+    <None Include="$(MsBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
