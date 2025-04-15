@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Company>App vNext</Company>
-    <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
+    <Copyright>Copyright (c) 2015-$([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -26,7 +26,7 @@
   <PropertyGroup Label="SharedNuspecProperties">
     <PackageIcon>package-icon.png</PackageIcon>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
     <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md for details</PackageReleaseNotes>
     <PackageReadmeFile>package-readme.md</PackageReadmeFile>
@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageIcon)" Pack="true" PackagePath="" />
+    <None Include="$(MsBuildThisFileDirectory)..\$(PackageLicenseFile)" Pack="true" PackagePath="" />
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageReadmeFile)" Pack="true" PackagePath="" />
   </ItemGroup>
 
