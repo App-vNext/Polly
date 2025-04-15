@@ -26,7 +26,7 @@
   <PropertyGroup Label="SharedNuspecProperties">
     <PackageIcon>package-icon.png</PackageIcon>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
     <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md for details</PackageReleaseNotes>
     <PackageReadmeFile>package-readme.md</PackageReadmeFile>
@@ -34,7 +34,7 @@
 
   <ItemGroup>
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageIcon)" Pack="true" PackagePath="" />
-    <None Include="$(MsBuildThisFileDirectory)..\$(PackageLicenseFile)" Pack="true" PackagePath="" />
+    <None Include="$(MsBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="" />
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageReadmeFile)" Pack="true" PackagePath="" />
   </ItemGroup>
 
