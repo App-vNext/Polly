@@ -8,3 +8,5 @@
   href: git-workflow.md
 - name: Cheat sheets
   href: cheat-sheets.md
+- name: HTTP client integration samples
+  href: http-client-integrations.md
