@@ -6618,6 +6618,25 @@ references:
   commentId: N:Snippets.Docs
   fullName: Snippets.Docs
   nameWithType: Snippets.Docs
+- uid: Snippets.Docs.IHttpStatusApi
+  name: IHttpStatusApi
+  href: api/Snippets.Docs.IHttpStatusApi.html
+  commentId: T:Snippets.Docs.IHttpStatusApi
+  fullName: Snippets.Docs.IHttpStatusApi
+  nameWithType: IHttpStatusApi
+- uid: Snippets.Docs.IHttpStatusApi.GetRequestTimeoutEndpointAsync
+  name: GetRequestTimeoutEndpointAsync()
+  href: api/Snippets.Docs.IHttpStatusApi.html#Snippets_Docs_IHttpStatusApi_GetRequestTimeoutEndpointAsync
+  commentId: M:Snippets.Docs.IHttpStatusApi.GetRequestTimeoutEndpointAsync
+  fullName: Snippets.Docs.IHttpStatusApi.GetRequestTimeoutEndpointAsync()
+  nameWithType: IHttpStatusApi.GetRequestTimeoutEndpointAsync()
+- uid: Snippets.Docs.IHttpStatusApi.GetRequestTimeoutEndpointAsync*
+  name: GetRequestTimeoutEndpointAsync
+  href: api/Snippets.Docs.IHttpStatusApi.html#Snippets_Docs_IHttpStatusApi_GetRequestTimeoutEndpointAsync_
+  commentId: Overload:Snippets.Docs.IHttpStatusApi.GetRequestTimeoutEndpointAsync
+  isSpec: "True"
+  fullName: Snippets.Docs.IHttpStatusApi.GetRequestTimeoutEndpointAsync
+  nameWithType: IHttpStatusApi.GetRequestTimeoutEndpointAsync
 - uid: Snippets.Docs.MyApi
   name: MyApi
   href: api/Snippets.Docs.MyApi.html

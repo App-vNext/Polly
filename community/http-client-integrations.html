@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>HTTP client integration samples | Polly </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="HTTP client integration samples | Polly ">
+      
+      
+      <link rel="icon" href="../icon.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/App-vNext/Polly/blob/main/docs/community/http-client-integrations.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../icon.png" alt="Polly">
+            Polly
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="http-client-integration-samples">HTTP client integration samples</h1>
+
+<p>Transient failures are inevitable for HTTP based communication as well. It is not a surprise that many developers use Polly with an HTTP client to make there applications more robust.</p>
+<p>Here we have collected some popular HTTP client libraries and show how to integrate them with Polly.</p>
+<h2 id="setting-the-stage">Setting the stage</h2>
+<p>In the examples below we will register HTTP clients into a Dependency Injection container.</p>
+<p>The same resilience strategy will be used each time to keep the samples focused on the HTTP client library integration.</p>
+<!-- snippet: http-client-integrations-handle-transient-errors -->
+<pre><code class="lang-cs">private static ValueTask&lt;bool&gt; HandleTransientHttpError(Outcome&lt;HttpResponseMessage&gt; outcome) =&gt;
+outcome switch
+{
+    { Exception: HttpRequestException } =&gt; PredicateResult.True(),
+    { Result.StatusCode: HttpStatusCode.RequestTimeout } =&gt; PredicateResult.True(),
+    { Result.StatusCode: &gt;= HttpStatusCode.InternalServerError } =&gt; PredicateResult.True(),
+    _ =&gt; PredicateResult.False()
+};
+
+private static RetryStrategyOptions&lt;HttpResponseMessage&gt; GetRetryOptions() =&gt;
+new()
+{
+    ShouldHandle = args =&gt; HandleTransientHttpError(args.Outcome),
+    MaxRetryAttempts = 3,
+    BackoffType = DelayBackoffType.Exponential,
+    Delay = TimeSpan.FromSeconds(2)
+};
+</code></pre>
+<!-- endSnippet -->
+<p>Here we create a strategy which will retry the HTTP request if the status code is either <code>408</code>, greater than or equal to <code>500</code>, or an <code>HttpRequestException</code> is thrown.</p>
+<p>The <code>HandleTransientHttpError</code> method is equivalent to the <a href="https://github.com/App-vNext/Polly.Extensions.Http/blob/93b91c4359f436bda37f870c4453f25555b9bfd8/src/Polly.Extensions.Http/HttpPolicyExtensions.cs"><code>HttpPolicyExtensions.HandleTransientHttpError</code></a> method in the <a href="https://github.com/App-vNext/Polly.Extensions.Http">App-vNext/Polly.Extensions.Http</a> repository.</p>
+<h2 id="with-httpclient">With HttpClient</h2>
+<p>We use the <a href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.resiliencehttpclientbuilderextensions.addresiliencehandler"><code>AddResilienceHandler</code></a> method to register our resilience strategy with the built-in <a href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient"><code>HttpClient</code></a>.</p>
+<!-- snippet: http-client-integrations-httpclient -->
+<pre><code class="lang-cs">var services = new ServiceCollection();
+
+// Register a named HttpClient and decorate with a resilience pipeline
+services.AddHttpClient(HttpClientName)
+        .ConfigureHttpClient(client =&gt; client.BaseAddress = BaseAddress)
+        .AddResilienceHandler(&quot;httpclient_based_pipeline&quot;,
+            builder =&gt; builder.AddRetry(GetRetryOptions()));
+
+using var provider = services.BuildServiceProvider();
+
+// Resolve the named HttpClient
+var httpClientFactory = provider.GetRequiredService&lt;IHttpClientFactory&gt;();
+var httpClient = httpClientFactory.CreateClient(HttpClientName);
+
+// Use the HttpClient by making a request
+var response = await httpClient.GetAsync(&quot;/408&quot;);
+</code></pre>
+<!-- endSnippet -->
+<div class="NOTE">
+<h5>Note</h5>
+<p>The following packages are required to the above example:</p>
+<ul>
+<li><a href="https://www.nuget.org/packages/microsoft.extensions.dependencyinjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
+<li><a href="https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience">Microsoft.Extensions.Http.Resilience</a>: Required for the <code>AddResilienceHandler</code> extension</li>
+</ul>
+</div>
+<h3 id="further-reading-for-httpclient">Further reading for HttpClient</h3>
+<ul>
+<li><a href="https://learn.microsoft.com/dotnet/core/resilience/http-resilience">Build resilient HTTP apps: Key development patterns</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/building-resilient-cloud-services-with-dotnet-8/">Building resilient cloud services with .NET 8</a></li>
+</ul>
+<h2 id="with-flurl">With Flurl</h2>
+<p><a href="https://flurl.dev/">Flurl</a> is a URL builder and HTTP client library for .NET.</p>
+<p>The named <code>HttpClient</code> registration and its decoration with our resilience strategy are the same as the built-in <code>HttpClient</code>.</p>
+<p>Here we create a <code>FlurlClient</code> which uses the decorated, named <code>HttpClient</code> for HTTP requests.</p>
+<!-- snippet: http-client-integrations-flurl -->
+<pre><code class="lang-cs">var services = new ServiceCollection();
+
+// Register a named HttpClient and decorate with a resilience pipeline
+services.AddHttpClient(HttpClientName)
+        .ConfigureHttpClient(client =&gt; client.BaseAddress = BaseAddress)
+        .AddResilienceHandler(&quot;flurl_based_pipeline&quot;,
+            builder =&gt; builder.AddRetry(GetRetryOptions()));
+
+using var provider = services.BuildServiceProvider();
+
+// Resolve the named HttpClient and create a new FlurlClient
+var httpClientFactory = provider.GetRequiredService&lt;IHttpClientFactory&gt;();
+var flurlClient = new FlurlClient(httpClientFactory.CreateClient(HttpClientName));
+
+// Use the FlurlClient by making a request
+var response = await flurlClient.Request(&quot;/408&quot;).GetAsync();
+</code></pre>
+<!-- endSnippet -->
+<div class="NOTE">
+<h5>Note</h5>
+<p>The following packages are required to the above example:</p>
+<ul>
+<li><a href="https://www.nuget.org/packages/microsoft.extensions.dependencyinjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
+<li><a href="https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience">Microsoft.Extensions.Http.Resilience</a>: Required for the <code>AddResilienceHandler</code> extension</li>
+<li><a href="https://www.nuget.org/packages/Flurl.Http/">Flurl.Http</a>: Required for the <code>FlurlClient</code></li>
+</ul>
+</div>
+<h3 id="further-reading-for-flurl">Further reading for Flurl</h3>
+<ul>
+<li><a href="https://flurl.dev/">Flurl home page</a></li>
+</ul>
+<h2 id="with-refit">With Refit</h2>
+<p><a href="https://github.com/reactiveui/refit">Refit</a> is an automatic type-safe REST library for .NET.</p>
+<p>First let's define the API interface:</p>
+<!-- snippet: http-client-integrations-refit-interface -->
+<pre><code class="lang-cs">public interface IHttpStatusApi
+{
+    [Get(&quot;/408&quot;)]
+    Task&lt;HttpResponseMessage&gt; GetRequestTimeoutEndpointAsync();
+}
+</code></pre>
+<!-- endSnippet -->
+<p>Then use the <code>AddRefitClient</code> method to register the interface as a typed <code>HttpClient</code>. Finally we call <code>AddResilienceHandler</code> to decorate the underlying <code>HttpClient</code> with our resilience strategy.</p>
+<!-- snippet: http-client-integrations-refit -->
+<pre><code class="lang-cs">var services = new ServiceCollection();
+
+// Register a Refit generated typed HttpClient and decorate with a resilience pipeline
+services.AddRefitClient&lt;IHttpStatusApi&gt;()
+        .ConfigureHttpClient(client =&gt; client.BaseAddress = BaseAddress)
+        .AddResilienceHandler(&quot;refit_based_pipeline&quot;,
+            builder =&gt; builder.AddRetry(GetRetryOptions()));
+
+// Resolve the typed HttpClient
+using var provider = services.BuildServiceProvider();
+var apiClient = provider.GetRequiredService&lt;IHttpStatusApi&gt;();
+
+// Use the Refit generated typed HttpClient by making a request
+var response = await apiClient.GetRequestTimeoutEndpointAsync();
+</code></pre>
+<!-- endSnippet -->
+<div class="NOTE">
+<h5>Note</h5>
+<p>The following packages are required to the above example:</p>
+<ul>
+<li><a href="https://www.nuget.org/packages/microsoft.extensions.dependencyinjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
+<li><a href="https://www.nuget.org/packages/Refit.HttpClientFactory">Refit.HttpClientFactory</a>: Required for the <code>AddRefitClient</code> extension</li>
+</ul>
+</div>
+<h3 id="further-readings-for-refit">Further readings for Refit</h3>
+<ul>
+<li><a href="https://www.hanselman.com/blog/using-aspnet-core-21s-httpclientfactory-with-refits-rest-library">Using ASP.NET Core 2.1's HttpClientFactory with Refit's REST library</a></li>
+<li><a href="https://www.milanjovanovic.tech/blog/refit-in-dotnet-building-robust-api-clients-in-csharp">Refit in .NET: Building Robust API Clients in C#</a></li>
+<li><a href="https://medium.com/@jaimin_99136/understand-the-refit-in-net-core-ba0097c5e620">Understand Refit in .NET Core</a></li>
+</ul>
+<h2 id="with-restsharp">With RestSharp</h2>
+<p><a href="https://restsharp.dev/">RestSharp</a> is a simple REST and HTTP API Client for .NET.</p>
+<p>The named <code>HttpClient</code> registration and its decoration with our resilience strategy are the same as the built-in <code>HttpClient</code>.</p>
+<p>Here we create a <code>RestClient</code> which uses the decorated, named <code>HttpClient</code> for HTTP requests.</p>
+<!-- snippet: http-client-integrations-restsharp -->
+<pre><code class="lang-cs">var services = new ServiceCollection();
+
+// Register a named HttpClient and decorate with a resilience pipeline
+services.AddHttpClient(HttpClientName)
+        .ConfigureHttpClient(client =&gt; client.BaseAddress = BaseAddress)
+        .AddResilienceHandler(&quot;restsharp_based_pipeline&quot;,
+            builder =&gt; builder.AddRetry(GetRetryOptions()));
+
+using var provider = services.BuildServiceProvider();
+
+// Resolve the named HttpClient and create a RestClient
+var httpClientFactory = provider.GetRequiredService&lt;IHttpClientFactory&gt;();
+var restClient = new RestClient(httpClientFactory.CreateClient(HttpClientName));
+
+// Use the RestClient by making a request
+var request = new RestRequest(&quot;/408&quot;, Method.Get);
+var response = await restClient.ExecuteAsync(request);
+</code></pre>
+<!-- endSnippet -->
+<div class="NOTE">
+<h5>Note</h5>
+<p>The following packages are required to the above example:</p>
+<ul>
+<li><a href="https://www.nuget.org/packages/microsoft.extensions.dependencyinjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
+<li><a href="https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience">Microsoft.Extensions.Http.Resilience</a>: Required for the <code>AddResilienceHandler</code> extension</li>
+<li><a href="https://www.nuget.org/packages/RestSharp">RestSharp</a>: Required for the <code>RestClient</code>, <code>RestRequest</code>, <code>RestResponse</code>, etc. types</li>
+</ul>
+</div>
+<h3 id="further-reading-for-restsharp">Further reading for RestSharp</h3>
+<ul>
+<li><a href="https://restsharp.dev/">RestSharp home page</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/App-vNext/Polly/blob/main/docs/community/http-client-integrations.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1849,6 +1849,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Snippets.Docs.IHttpStatusApi.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Snippets.Docs.IHttpStatusApi.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Snippets.Docs.IHttpStatusApi",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Snippets.Docs.MyApi.yml",
       "output": {
         ".html": {
@@ -1991,6 +2005,16 @@
       "output": {
         ".html": {
           "relative_path": "community/git-workflow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "community/http-client-integrations.md",
+      "output": {
+        ".html": {
+          "relative_path": "community/http-client-integrations.html"
         }
       },
       "version": ""
