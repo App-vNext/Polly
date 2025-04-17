@@ -10,11 +10,12 @@ namespace Snippets.Docs;
 
 internal static class HttpClientIntegrations
 {
-    private static readonly Uri DownstreamUri = new("https://httpstat.us/408");
+    private const string HttpClientName = "httpclient";
+    private static readonly Uri BaseAddress = new("https://httpstat.us/");
 
     #region http-client-integrations-handle-transient-errors
-    private static ValueTask<bool> HandleTransientHttpError(Outcome<HttpResponseMessage> outcome)
-    => outcome switch
+    private static ValueTask<bool> HandleTransientHttpError(Outcome<HttpResponseMessage> outcome) =>
+    outcome switch
     {
         { Exception: HttpRequestException } => PredicateResult.True(),
         { Result.StatusCode: HttpStatusCode.RequestTimeout } => PredicateResult.True(),
@@ -22,8 +23,8 @@ internal static class HttpClientIntegrations
         _ => PredicateResult.False()
     };
 
-    private static RetryStrategyOptions<HttpResponseMessage> GetRetryOptions()
-    => new()
+    private static RetryStrategyOptions<HttpResponseMessage> GetRetryOptions() =>
+    new()
     {
         ShouldHandle = args => HandleTransientHttpError(args.Outcome),
         MaxRetryAttempts = 3,
@@ -32,44 +33,46 @@ internal static class HttpClientIntegrations
     };
     #endregion
 
+#pragma warning disable CA2234
     public static async Task HttpClientExample()
     {
         #region http-client-integrations-httpclient
-        ServiceCollection services = new();
+        var services = new ServiceCollection();
 
         // Register a named HttpClient and decorate with a resilience pipeline
-        services.AddHttpClient(string.Empty)
-                .ConfigureHttpClient(client => client.BaseAddress = DownstreamUri)
+        services.AddHttpClient(HttpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = BaseAddress)
                 .AddResilienceHandler("httpclient_based_pipeline",
                     builder => builder.AddRetry(GetRetryOptions()));
 
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
 
         // Resolve the named HttpClient
         var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
-        var httpClient = httpClientFactory.CreateClient();
+        var httpClient = httpClientFactory.CreateClient(HttpClientName);
 
         // Use the HttpClient by making a request
-        var response = await httpClient.GetAsync(new Uri("/408"));
+        var response = await httpClient.GetAsync("/408");
         #endregion
     }
+#pragma warning restore CA2234
 
     public static async Task RefitExample()
     {
         #region http-client-integrations-refit
-        ServiceCollection services = new();
+        var services = new ServiceCollection();
 
-        // Register a refit generated typed HttpClient and decorate with a resilience pipeline
+        // Register a Refit generated typed HttpClient and decorate with a resilience pipeline
         services.AddRefitClient<IHttpStatusApi>()
-                .ConfigureHttpClient(client => client.BaseAddress = DownstreamUri)
+                .ConfigureHttpClient(client => client.BaseAddress = BaseAddress)
                 .AddResilienceHandler("refit_based_pipeline",
                     builder => builder.AddRetry(GetRetryOptions()));
 
         // Resolve the typed HttpClient
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
         var apiClient = provider.GetRequiredService<IHttpStatusApi>();
 
-        // Use the refit generated typed HttpClient by making a request
+        // Use the Refit generated typed HttpClient by making a request
         var response = await apiClient.GetRequestTimeoutEndpointAsync();
         #endregion
     }
@@ -77,41 +80,41 @@ internal static class HttpClientIntegrations
     public static async Task FlurlExample()
     {
         #region http-client-integrations-flurl
-        ServiceCollection services = new();
+        var services = new ServiceCollection();
 
         // Register a named HttpClient and decorate with a resilience pipeline
-        services.AddHttpClient(string.Empty)
-                .ConfigureHttpClient(client => client.BaseAddress = DownstreamUri)
+        services.AddHttpClient(HttpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = BaseAddress)
                 .AddResilienceHandler("flurl_based_pipeline",
                     builder => builder.AddRetry(GetRetryOptions()));
 
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
 
         // Resolve the named HttpClient and create a new FlurlClient
         var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
-        var apiClient = new FlurlClient(httpClientFactory.CreateClient());
+        var flurlClient = new FlurlClient(httpClientFactory.CreateClient(HttpClientName));
 
         // Use the FlurlClient by making a request
-        var res = await apiClient.Request("/408").GetAsync();
+        var response = await flurlClient.Request("/408").GetAsync();
         #endregion
     }
 
     public static async Task RestSharpExample()
     {
         #region http-client-integrations-restsharp
-        ServiceCollection services = new();
+        var services = new ServiceCollection();
 
         // Register a named HttpClient and decorate with a resilience pipeline
-        services.AddHttpClient(string.Empty)
-                .ConfigureHttpClient(client => client.BaseAddress = DownstreamUri)
+        services.AddHttpClient(HttpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = BaseAddress)
                 .AddResilienceHandler("restsharp_based_pipeline",
                     builder => builder.AddRetry(GetRetryOptions()));
 
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
 
         // Resolve the named HttpClient and create a RestClient
         var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
-        var restClient = new RestClient(httpClientFactory.CreateClient());
+        var restClient = new RestClient(httpClientFactory.CreateClient(HttpClientName));
 
         // Use the RestClient by making a request
         var request = new RestRequest("/408", Method.Get);
