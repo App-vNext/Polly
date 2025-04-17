@@ -14,8 +14,7 @@ internal static class HttpClientIntegrations
     private static readonly Uri BaseAddress = new("https://httpstat.us/");
 
     #region http-client-integrations-handle-transient-errors
-    private static ValueTask<bool> HandleTransientHttpError(Outcome<HttpResponseMessage> outcome) =>
-    outcome switch
+    private static ValueTask<bool> HandleTransientHttpError(Outcome<HttpResponseMessage> outcome) => outcome switch
     {
         { Exception: HttpRequestException } => PredicateResult.True(),
         { Result.StatusCode: HttpStatusCode.RequestTimeout } => PredicateResult.True(),

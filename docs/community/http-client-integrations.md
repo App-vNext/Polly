@@ -12,8 +12,7 @@ The same resilience strategy will be used each time to keep the samples focused 
 
 <!-- snippet: http-client-integrations-handle-transient-errors -->
 ```cs
-private static ValueTask<bool> HandleTransientHttpError(Outcome<HttpResponseMessage> outcome) =>
-outcome switch
+private static ValueTask<bool> HandleTransientHttpError(Outcome<HttpResponseMessage> outcome) => outcome switch
 {
     { Exception: HttpRequestException } => PredicateResult.True(),
     { Result.StatusCode: HttpStatusCode.RequestTimeout } => PredicateResult.True(),
@@ -64,8 +63,8 @@ var response = await httpClient.GetAsync("/408");
 > [!NOTE]
 > The following packages are required to the above example:
 >
-> - [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/microsoft.extensions.dependencyinjection): Required for the dependency injection functionality
-> - [Microsoft.Extensions.Http.Resilience](https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience): Required for the `AddResilienceHandler` extension
+> - [Microsoft.Extensions.DependencyInjection][m.e.dependencyinjection]: Required for the dependency injection functionality
+> - [Microsoft.Extensions.Http.Resilience][m.e.http.resilience]: Required for the `AddResilienceHandler` extension
 
 ### Further reading for HttpClient
 
@@ -74,7 +73,7 @@ var response = await httpClient.GetAsync("/408");
 
 ## With Flurl
 
-[Flurl](https://flurl.dev/) is a URL builder and HTTP client library for .NET.
+[Flurl][flurl] is a URL builder and HTTP client library for .NET.
 
 The named `HttpClient` registration and its decoration with our resilience strategy are the same as the built-in `HttpClient`.
 
@@ -104,13 +103,13 @@ var response = await flurlClient.Request("/408").GetAsync();
 > [!NOTE]
 > The following packages are required to the above example:
 >
-> - [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/microsoft.extensions.dependencyinjection): Required for the dependency injection functionality
-> - [Microsoft.Extensions.Http.Resilience](https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience): Required for the `AddResilienceHandler` extension
+> - [Microsoft.Extensions.DependencyInjection][m.e.dependencyinjection]: Required for the dependency injection functionality
+> - [Microsoft.Extensions.Http.Resilience][m.e.http.resilience]: Required for the `AddResilienceHandler` extension
 > - [Flurl.Http](https://www.nuget.org/packages/Flurl.Http/): Required for the `FlurlClient`
 
 ### Further reading for Flurl
 
-- [Flurl home page](https://flurl.dev/)
+- [Flurl home page][flurl]
 
 ## With Refit
 
@@ -152,7 +151,7 @@ var response = await apiClient.GetRequestTimeoutEndpointAsync();
 > [!NOTE]
 > The following packages are required to the above example:
 >
-> - [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/microsoft.extensions.dependencyinjection): Required for the dependency injection functionality
+> - [Microsoft.Extensions.DependencyInjection][m.e.dependencyinjection]: Required for the dependency injection functionality
 > - [Refit.HttpClientFactory](https://www.nuget.org/packages/Refit.HttpClientFactory): Required for the `AddRefitClient` extension
 
 ### Further readings for Refit
@@ -163,7 +162,7 @@ var response = await apiClient.GetRequestTimeoutEndpointAsync();
 
 ## With RestSharp
 
-[RestSharp](https://restsharp.dev/) is a simple REST and HTTP API Client for .NET.
+[RestSharp][restsharp] is a simple REST and HTTP API Client for .NET.
 
 The named `HttpClient` registration and its decoration with our resilience strategy are the same as the built-in `HttpClient`.
 
@@ -194,10 +193,15 @@ var response = await restClient.ExecuteAsync(request);
 > [!NOTE]
 > The following packages are required to the above example:
 >
-> - [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/microsoft.extensions.dependencyinjection): Required for the dependency injection functionality
-> - [Microsoft.Extensions.Http.Resilience](https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience): Required for the `AddResilienceHandler` extension
+> - [Microsoft.Extensions.DependencyInjection][m.e.dependencyinjection]: Required for the dependency injection functionality
+> - [Microsoft.Extensions.Http.Resilience][m.e.http.resilience]: Required for the `AddResilienceHandler` extension
 > - [RestSharp](https://www.nuget.org/packages/RestSharp): Required for the `RestClient`, `RestRequest`, `RestResponse`, etc. types
 
 ### Further reading for RestSharp
 
-- [RestSharp home page](https://restsharp.dev/)
+- [RestSharp home page][restsharp]
+
+[flurl]: https://flurl.dev/
+[m.e.dependencyinjection]: https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection
+[m.e.http.resilience]: https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience
+[restsharp]: https://restsharp.dev/
