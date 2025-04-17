@@ -34,7 +34,7 @@ new()
 
 Here we create a strategy which will retry the HTTP request if the status code is either `408`, greater than or equal to `500`, or an `HttpRequestException` is thrown.
 
-The `HandleTransientHttpError` is method is equivalent to the [`HttpPolicyExtensions.HandleTransientHttpError`](https://github.com/App-vNext/Polly.Extensions.Http/blob/93b91c4359f436bda37f870c4453f25555b9bfd8/src/Polly.Extensions.Http/HttpPolicyExtensions.cs) method in the [App-vNext/Polly.Extensions.Http](https://github.com/App-vNext/Polly.Extensions.Http) repository.
+The `HandleTransientHttpError` method is equivalent to the [`HttpPolicyExtensions.HandleTransientHttpError`](https://github.com/App-vNext/Polly.Extensions.Http/blob/93b91c4359f436bda37f870c4453f25555b9bfd8/src/Polly.Extensions.Http/HttpPolicyExtensions.cs) method in the [App-vNext/Polly.Extensions.Http](https://github.com/App-vNext/Polly.Extensions.Http) repository.
 
 ## With HttpClient
 

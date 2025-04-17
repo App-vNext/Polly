@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="flurl.http.signed" />
-    <PackageReference Include="refit.HttpClientFactory" />
-    <PackageReference Include="Restsharp" />
+    <PackageReference Include="Flurl.Http.Signed" />
+    <PackageReference Include="Refit.HttpClientFactory" />
+    <PackageReference Include="RestSharp" />
     <ProjectReference Include="..\Polly.Extensions\Polly.Extensions.csproj" />
     <ProjectReference Include="..\Polly.RateLimiting\Polly.RateLimiting.csproj" />
     <ProjectReference Include="..\Polly.Testing\Polly.Testing.csproj" />
