@@ -93,8 +93,7 @@
 <p>In the examples below we will register HTTP clients into a Dependency Injection container.</p>
 <p>The same resilience strategy will be used each time to keep the samples focused on the HTTP client library integration.</p>
 <!-- snippet: http-client-integrations-handle-transient-errors -->
-<pre><code class="lang-cs">private static ValueTask&lt;bool&gt; HandleTransientHttpError(Outcome&lt;HttpResponseMessage&gt; outcome) =&gt;
-outcome switch
+<pre><code class="lang-cs">private static ValueTask&lt;bool&gt; HandleTransientHttpError(Outcome&lt;HttpResponseMessage&gt; outcome) =&gt; outcome switch
 {
     { Exception: HttpRequestException } =&gt; PredicateResult.True(),
     { Result.StatusCode: HttpStatusCode.RequestTimeout } =&gt; PredicateResult.True(),
@@ -139,7 +138,7 @@ var response = await httpClient.GetAsync(&quot;/408&quot;);
 <h5>Note</h5>
 <p>The following packages are required to the above example:</p>
 <ul>
-<li><a href="https://www.nuget.org/packages/microsoft.extensions.dependencyinjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
+<li><a href="https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
 <li><a href="https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience">Microsoft.Extensions.Http.Resilience</a>: Required for the <code>AddResilienceHandler</code> extension</li>
 </ul>
 </div>
@@ -175,7 +174,7 @@ var response = await flurlClient.Request(&quot;/408&quot;).GetAsync();
 <h5>Note</h5>
 <p>The following packages are required to the above example:</p>
 <ul>
-<li><a href="https://www.nuget.org/packages/microsoft.extensions.dependencyinjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
+<li><a href="https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
 <li><a href="https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience">Microsoft.Extensions.Http.Resilience</a>: Required for the <code>AddResilienceHandler</code> extension</li>
 <li><a href="https://www.nuget.org/packages/Flurl.Http/">Flurl.Http</a>: Required for the <code>FlurlClient</code></li>
 </ul>
@@ -217,7 +216,7 @@ var response = await apiClient.GetRequestTimeoutEndpointAsync();
 <h5>Note</h5>
 <p>The following packages are required to the above example:</p>
 <ul>
-<li><a href="https://www.nuget.org/packages/microsoft.extensions.dependencyinjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
+<li><a href="https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
 <li><a href="https://www.nuget.org/packages/Refit.HttpClientFactory">Refit.HttpClientFactory</a>: Required for the <code>AddRefitClient</code> extension</li>
 </ul>
 </div>
@@ -255,7 +254,7 @@ var response = await restClient.ExecuteAsync(request);
 <h5>Note</h5>
 <p>The following packages are required to the above example:</p>
 <ul>
-<li><a href="https://www.nuget.org/packages/microsoft.extensions.dependencyinjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
+<li><a href="https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection">Microsoft.Extensions.DependencyInjection</a>: Required for the dependency injection functionality</li>
 <li><a href="https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience">Microsoft.Extensions.Http.Resilience</a>: Required for the <code>AddResilienceHandler</code> extension</li>
 <li><a href="https://www.nuget.org/packages/RestSharp">RestSharp</a>: Required for the <code>RestClient</code>, <code>RestRequest</code>, <code>RestResponse</code>, etc. types</li>
 </ul>
