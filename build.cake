@@ -141,7 +141,7 @@ Task("__RunTests")
 
     if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
     {
-        loggers = [.. "GitHubActions;report-warnings=false"];
+        loggers = [.. loggers, "GitHubActions;report-warnings=false"];
     }
 
     var projects = GetFiles("./test/**/*.csproj");
