@@ -116,7 +116,6 @@ jobs:
       uses: codecov/test-results-action@f2dba722c67b86c6caa034178c6e4d35335f6706 # v1.1.0
       if: ${{ !cancelled() }}
       with:
-        files: ./test/Polly.Core.Tests/TestResults/TestResults.xml,./test/Polly.Extensions.Tests/TestResults/TestResults.xml,./test/Polly.RateLimiting.Tests/TestResults/TestResults.xml,./test/Polly.Specs/TestResults/TestResults.xml,./test/Polly.Testing.Tests/TestResults/TestResults.xml
         flags: ${{ matrix.os_name }}
         token: ${{ secrets.CODECOV_TOKEN }}
 
