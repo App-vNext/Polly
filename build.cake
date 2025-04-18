@@ -137,11 +137,15 @@ Task("__ValidateAot")
 Task("__RunTests")
     .Does(() =>
 {
-    string[] loggers = ["junit"];
+    var loggers = Array.Empty<string>();
 
     if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
     {
-        loggers = [.. loggers, "GitHubActions;report-warnings=false"];
+        loggers =
+        [
+            "junit;LogFilePath=junit.xml",
+            "GitHubActions;report-warnings=false",
+        ];
     }
 
     var projects = GetFiles("./test/**/*.csproj");
