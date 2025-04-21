@@ -9,6 +9,11 @@ The resilience context exposes several properties:
 - `Properties`: An instance of `ResilienceProperties` for attaching custom data to the context.
 - `ContinueOnCapturedContext`: Specifies whether the asynchronous execution should continue on the captured context.
 
+> [!IMPORTANT]
+> When using a custom `ResilienceContext`, ensure that your usage is correct to avoid the context being treated as custom
+> _state_ for the execution instead of as the _context_ for the execution. Otherwise, the delegate invoked by the resilience
+> pipeline will be a different instance obtained from the shared pool, rather than the value specified for your execution.
+
 ## Usage
 
 Below is an example demonstrating how to work with `ResilienceContext`:
