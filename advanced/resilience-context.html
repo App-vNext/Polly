@@ -95,6 +95,12 @@
 <li><code>Properties</code>: An instance of <code>ResilienceProperties</code> for attaching custom data to the context.</li>
 <li><code>ContinueOnCapturedContext</code>: Specifies whether the asynchronous execution should continue on the captured context.</li>
 </ul>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>When using a custom <code>ResilienceContext</code>, ensure that your usage is correct to avoid the context being treated as custom
+<em>state</em> for the execution instead of as the <em>context</em> for the execution. Otherwise, the delegate invoked by the resilience
+pipeline will be a different instance obtained from the shared pool, rather than the value specified for your execution.</p>
+</div>
 <h2 id="usage">Usage</h2>
 <p>Below is an example demonstrating how to work with <code>ResilienceContext</code>:</p>
 <!-- snippet: resilience-context -->
