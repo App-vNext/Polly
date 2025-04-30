@@ -16,10 +16,12 @@ public readonly struct HedgingPredicateArguments<TResult> : IOutcomeArguments<TR
     /// </summary>
     /// <param name="outcome">The context in which the resilience operation or event occurred.</param>
     /// <param name="context">The outcome of the resilience operation or event.</param>
-    public HedgingPredicateArguments(ResilienceContext context, Outcome<TResult> outcome)
+    /// <param name="attemptNumber">The zero-based attempt number.</param>
+    public HedgingPredicateArguments(ResilienceContext context, Outcome<TResult> outcome, int attemptNumber)
     {
         Context = context;
         Outcome = outcome;
+        AttemptNumber = attemptNumber;
     }
 
     /// <summary>
@@ -31,4 +33,9 @@ public readonly struct HedgingPredicateArguments<TResult> : IOutcomeArguments<TR
     /// Gets the context of this event.
     /// </summary>
     public ResilienceContext Context { get; }
+
+    /// <summary>
+    /// Gets the zero-based attempt number.
+    /// </summary>
+    public int AttemptNumber { get; }
 }

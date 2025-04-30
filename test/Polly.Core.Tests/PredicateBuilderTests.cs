@@ -117,7 +117,7 @@ public class PredicateBuilderTests
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
         };
 
-        var handled = await options.ShouldHandle(new(context, CreateOutcome("error")));
+        var handled = await options.ShouldHandle(new(context, CreateOutcome("error"), 0));
 
         handled.ShouldBeTrue();
     }
