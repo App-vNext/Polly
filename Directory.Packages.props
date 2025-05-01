@@ -43,7 +43,7 @@
     <PackageVersion Include="ReportGenerator" Version="5.4.5" />
     <PackageVersion Include="RestSharp" Version="112.1.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.8.0.113526" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.9.0.115408" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="4.5.0" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="$(MicrosoftExtensionsVersion)" />
