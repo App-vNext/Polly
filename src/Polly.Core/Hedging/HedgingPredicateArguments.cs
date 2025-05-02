@@ -16,13 +16,20 @@ public readonly struct HedgingPredicateArguments<TResult> : IOutcomeArguments<TR
     /// </summary>
     /// <param name="outcome">The context in which the resilience operation or event occurred.</param>
     /// <param name="context">The outcome of the resilience operation or event.</param>
-    /// <param name="attemptNumber">The zero-based attempt number.</param>
-    public HedgingPredicateArguments(ResilienceContext context, Outcome<TResult> outcome, int attemptNumber)
+    public HedgingPredicateArguments(ResilienceContext context, Outcome<TResult> outcome)
     {
         Context = context;
         Outcome = outcome;
-        AttemptNumber = attemptNumber;
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HedgingPredicateArguments{TResult}"/> struct.
+    /// </summary>
+    /// <param name="outcome">The context in which the resilience operation or event occurred.</param>
+    /// <param name="context">The outcome of the resilience operation or event.</param>
+    /// <param name="attemptNumber">The zero-based attempt number.</param>
+    public HedgingPredicateArguments(ResilienceContext context, Outcome<TResult> outcome, int attemptNumber)
+    : this(context, outcome) => AttemptNumber = attemptNumber;
 
     /// <summary>
     /// Gets the outcome of the user-specified callback.
@@ -37,5 +44,5 @@ public readonly struct HedgingPredicateArguments<TResult> : IOutcomeArguments<TR
     /// <summary>
     /// Gets the zero-based attempt number.
     /// </summary>
-    public int AttemptNumber { get; }
+    public int? AttemptNumber { get; } = null;
 }

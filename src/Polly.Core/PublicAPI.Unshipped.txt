@@ -1,3 +1,3 @@
 ﻿#nullable enable
-Polly.Hedging.HedgingPredicateArguments<TResult>.AttemptNumber.get -> int
+Polly.Hedging.HedgingPredicateArguments<TResult>.AttemptNumber.get -> int?
 Polly.Hedging.HedgingPredicateArguments<TResult>.HedgingPredicateArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome, int attemptNumber) -> void
