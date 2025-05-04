@@ -29,7 +29,7 @@ public readonly struct HedgingPredicateArguments<TResult> : IOutcomeArguments<TR
     /// <param name="context">The outcome of the resilience operation or event.</param>
     /// <param name="attemptNumber">The zero-based attempt number.</param>
     public HedgingPredicateArguments(ResilienceContext context, Outcome<TResult> outcome, int attemptNumber)
-    : this(context, outcome) => AttemptNumber = attemptNumber;
+        : this(context, outcome) => AttemptNumber = attemptNumber;
 
     /// <summary>
     /// Gets the outcome of the user-specified callback.

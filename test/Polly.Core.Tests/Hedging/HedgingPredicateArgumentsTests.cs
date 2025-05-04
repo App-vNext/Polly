@@ -26,11 +26,11 @@ public static class HedgingPredicateArgumentsTests
         var context = ResilienceContextPool.Shared.Get();
 
         // Act
-        var args = new HedgingPredicateArguments<int>(context, Outcome.FromResult(1), 0);
+        var args = new HedgingPredicateArguments<int>(context, Outcome.FromResult(1), 10);
 
         // Assert
         args.Context.ShouldBe(context);
         args.Outcome.Result.ShouldBe(1);
-        args.AttemptNumber.ShouldBe(0);
+        args.AttemptNumber.ShouldBe(10);
     }
 }
