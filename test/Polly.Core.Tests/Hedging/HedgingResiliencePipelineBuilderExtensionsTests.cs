@@ -91,4 +91,40 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
         var result = await strategy.ExecuteAsync(token => new ValueTask<string>("error"));
         result.ShouldBe("success");
     }
+
+    [Fact]
+    public async Task AddHedging_AttemptNumbers_Are_Incremented()
+    {
+        const string Error = "error";
+        const string Success = "success";
+        int shouldHandleAttemptNumber = 0;
+        int actionGeneratorAttemptNumber = 1;
+
+        var strategy = _builder.AddHedging(new()
+        {
+            MaxHedgedAttempts = 4,
+            ShouldHandle = args =>
+            {
+                args.AttemptNumber.ShouldBe(shouldHandleAttemptNumber++);
+                return args.Outcome.Result switch
+                {
+                    Error => PredicateResult.True(),
+                    _ => PredicateResult.False()
+                };
+            },
+            ActionGenerator = args =>
+            {
+                args.AttemptNumber.ShouldBe(actionGeneratorAttemptNumber++);
+                return async () =>
+                {
+                    await Task.Delay(20);
+                    return Outcome.FromResult(args.AttemptNumber == 3 ? Success : Error);
+                };
+            }
+        })
+        .Build();
+
+        var result = await strategy.ExecuteAsync(token => new ValueTask<string>(Error));
+        result.ShouldBe(Success);
+    }
 }

@@ -57,9 +57,9 @@ public class HedgingStrategyOptionsTests
         var options = new HedgingStrategyOptions<int>();
         var context = ResilienceContextPool.Shared.Get();
 
-        (await options.ShouldHandle(new HedgingPredicateArguments<int>(context, Outcome.FromResult(0)))).ShouldBe(false);
-        (await options.ShouldHandle(new HedgingPredicateArguments<int>(context, Outcome.FromException<int>(new OperationCanceledException())))).ShouldBe(false);
-        (await options.ShouldHandle(new HedgingPredicateArguments<int>(context, Outcome.FromException<int>(new InvalidOperationException())))).ShouldBe(true);
+        (await options.ShouldHandle(new HedgingPredicateArguments<int>(context, Outcome.FromResult(0), 0))).ShouldBe(false);
+        (await options.ShouldHandle(new HedgingPredicateArguments<int>(context, Outcome.FromException<int>(new OperationCanceledException()), 1))).ShouldBe(false);
+        (await options.ShouldHandle(new HedgingPredicateArguments<int>(context, Outcome.FromException<int>(new InvalidOperationException()), 2))).ShouldBe(true);
     }
 
     [Fact]
