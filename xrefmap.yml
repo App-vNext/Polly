@@ -1548,6 +1548,15 @@ references:
   fullName.vb: Polly.Hedging.HedgingPredicateArguments(Of TResult).New(Polly.ResilienceContext, Polly.Outcome(Of TResult))
   nameWithType: HedgingPredicateArguments<TResult>.HedgingPredicateArguments(ResilienceContext, Outcome<TResult>)
   nameWithType.vb: HedgingPredicateArguments(Of TResult).New(ResilienceContext, Outcome(Of TResult))
+- uid: Polly.Hedging.HedgingPredicateArguments`1.#ctor(Polly.ResilienceContext,Polly.Outcome{`0},System.Int32)
+  name: HedgingPredicateArguments(ResilienceContext, Outcome<TResult>, int)
+  href: api/Polly.Hedging.HedgingPredicateArguments-1.html#Polly_Hedging_HedgingPredicateArguments_1__ctor_Polly_ResilienceContext_Polly_Outcome__0__System_Int32_
+  commentId: M:Polly.Hedging.HedgingPredicateArguments`1.#ctor(Polly.ResilienceContext,Polly.Outcome{`0},System.Int32)
+  name.vb: New(ResilienceContext, Outcome(Of TResult), Integer)
+  fullName: Polly.Hedging.HedgingPredicateArguments<TResult>.HedgingPredicateArguments(Polly.ResilienceContext, Polly.Outcome<TResult>, int)
+  fullName.vb: Polly.Hedging.HedgingPredicateArguments(Of TResult).New(Polly.ResilienceContext, Polly.Outcome(Of TResult), Integer)
+  nameWithType: HedgingPredicateArguments<TResult>.HedgingPredicateArguments(ResilienceContext, Outcome<TResult>, int)
+  nameWithType.vb: HedgingPredicateArguments(Of TResult).New(ResilienceContext, Outcome(Of TResult), Integer)
 - uid: Polly.Hedging.HedgingPredicateArguments`1.#ctor*
   name: HedgingPredicateArguments
   href: api/Polly.Hedging.HedgingPredicateArguments-1.html#Polly_Hedging_HedgingPredicateArguments_1__ctor_
@@ -1558,6 +1567,23 @@ references:
   fullName.vb: Polly.Hedging.HedgingPredicateArguments(Of TResult).New
   nameWithType: HedgingPredicateArguments<TResult>.HedgingPredicateArguments
   nameWithType.vb: HedgingPredicateArguments(Of TResult).New
+- uid: Polly.Hedging.HedgingPredicateArguments`1.AttemptNumber
+  name: AttemptNumber
+  href: api/Polly.Hedging.HedgingPredicateArguments-1.html#Polly_Hedging_HedgingPredicateArguments_1_AttemptNumber
+  commentId: P:Polly.Hedging.HedgingPredicateArguments`1.AttemptNumber
+  fullName: Polly.Hedging.HedgingPredicateArguments<TResult>.AttemptNumber
+  fullName.vb: Polly.Hedging.HedgingPredicateArguments(Of TResult).AttemptNumber
+  nameWithType: HedgingPredicateArguments<TResult>.AttemptNumber
+  nameWithType.vb: HedgingPredicateArguments(Of TResult).AttemptNumber
+- uid: Polly.Hedging.HedgingPredicateArguments`1.AttemptNumber*
+  name: AttemptNumber
+  href: api/Polly.Hedging.HedgingPredicateArguments-1.html#Polly_Hedging_HedgingPredicateArguments_1_AttemptNumber_
+  commentId: Overload:Polly.Hedging.HedgingPredicateArguments`1.AttemptNumber
+  isSpec: "True"
+  fullName: Polly.Hedging.HedgingPredicateArguments<TResult>.AttemptNumber
+  fullName.vb: Polly.Hedging.HedgingPredicateArguments(Of TResult).AttemptNumber
+  nameWithType: HedgingPredicateArguments<TResult>.AttemptNumber
+  nameWithType.vb: HedgingPredicateArguments(Of TResult).AttemptNumber
 - uid: Polly.Hedging.HedgingPredicateArguments`1.Context
   name: Context
   href: api/Polly.Hedging.HedgingPredicateArguments-1.html#Polly_Hedging_HedgingPredicateArguments_1_Context
