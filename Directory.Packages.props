@@ -40,7 +40,7 @@
     <PackageVersion Include="Polly.Testing" Version="$(PollyVersion)" />
     <PackageVersion Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
-    <PackageVersion Include="ReportGenerator" Version="5.4.5" />
+    <PackageVersion Include="ReportGenerator" Version="5.4.6" />
     <PackageVersion Include="RestSharp" Version="112.1.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.9.0.115408" />
