@@ -15,7 +15,7 @@ jobs:
     steps:
 
       - name: Get dependabot metadata
-        uses: dependabot/fetch-metadata@d7267f607e9d3fb96fc2fbe83e0af444713e90b7 # v2.3.0
+        uses: dependabot/fetch-metadata@08eff52bf64351f401fb50d4972fa95b9f2c2d1b # v2.4.0
         id: dependabot-metadata
 
       - name: Generate GitHub application token
