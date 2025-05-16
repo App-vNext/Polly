@@ -1,6 +1,7 @@
 using Polly.Timeout;
 
 namespace Polly.Core.Tests.Timeout;
+
 public class TimeoutUtilTests
 {
     public static readonly TheoryData<TimeSpan, bool> ShouldApplyTimeoutData = new()

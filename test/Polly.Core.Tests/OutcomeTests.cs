@@ -1,4 +1,5 @@
 namespace Polly.Core.Tests;
+
 public class OutcomeTests
 {
     [Fact]

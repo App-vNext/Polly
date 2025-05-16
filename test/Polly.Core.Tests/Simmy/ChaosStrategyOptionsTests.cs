@@ -3,6 +3,7 @@ using Polly.Simmy;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Simmy;
+
 public class ChaosStrategyOptionsTests
 {
     [Fact]

@@ -1,4 +1,5 @@
 ﻿namespace Polly.Utils;
+
 internal static class DefaultPredicates<TArgs, TResult>
     where TArgs : IOutcomeArguments<TResult>
 {
@@ -6,6 +7,6 @@ internal static class DefaultPredicates<TArgs, TResult>
     {
         OperationCanceledException => PredicateResult.False(),
         Exception => PredicateResult.True(),
-        _ => PredicateResult.False()
+        _ => PredicateResult.False(),
     };
 }
