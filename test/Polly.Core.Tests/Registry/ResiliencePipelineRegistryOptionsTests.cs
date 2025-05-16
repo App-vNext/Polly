@@ -1,6 +1,7 @@
 using Polly.Registry;
 
 namespace Polly.Core.Tests.Registry;
+
 public class ResiliencePipelineRegistryOptionsTests
 {
     [Fact]
