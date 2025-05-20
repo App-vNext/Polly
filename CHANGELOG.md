@@ -7,6 +7,28 @@
 ## 8.6.0
 
 * Add `AttemptNumber` to `HedgingPredicateArguments` by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2603
+* Fix chaos example issue and enrich notes & diagram by [@caigen](https://github.com/caigen) in https://github.com/App-vNext/Polly/pull/2482
+* Add diagram for the main chaos page sample by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2484
+* Use Stryker Mutator Dashboard by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2500
+* Fix Polly.Testing mutations by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2503
+* Improve Polly coverage by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2505
+* Improve mutation score by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2506
+* Add missing mutations by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2508
+* Add missing coverage by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2514
+* Improve mutation test perf by [@slang25](https://github.com/slang25) in https://github.com/App-vNext/Polly/pull/2520
+* Improve coverage by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2526
+* Remove System.Text.Json reference by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2532
+* Use AuthenticodeLint by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2553
+* Fix Retry strategy ShouldHandle in example code by [@marcrocny](https://github.com/marcrocny) in https://github.com/App-vNext/Polly/pull/2527
+* Tweak docs formatting by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2575
+* [Docs] Dispose registry which contains rate limiters by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2578
+* Improve mutation tests performance by ensuring solution file isn't discovered by [@slang25](https://github.com/slang25) in https://github.com/App-vNext/Polly/pull/2589
+* Update LICENSE metadata by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2590
+* [Docs] Add HTTP client integration samples by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2587
+* Add test analytics by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2593
+* Add note about context/state mix-ups by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2598
+* .NET 10 preparation by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2620
+* Migrate to slnx by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2623
 
 ## 8.5.2
 
