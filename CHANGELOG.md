@@ -4,6 +4,10 @@
 
 <!-- next-release -->
 
+## 8.6.0
+
+* Add `AttemptNumber` to `HedgingPredicateArguments` by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2603
+
 ## 8.5.2
 
 * Fix build badges by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2445
