@@ -18,7 +18,7 @@ var configuration = Argument<string>("configuration", "Release");
 
 var projectName = "Polly";
 
-var solutions = GetFiles("./**/*.sln");
+var solutions = GetFiles("./**/*.slnx");
 var solutionPaths = solutions.Select(solution => solution.GetDirectory());
 
 var srcDir = Directory("./src");
