@@ -3,7 +3,7 @@
   "tasks": [
     {
       "label": "build",
-      "command": "dotnet build ./src/Polly.sln",
+      "command": "dotnet build ./src/Polly.slnx",
       "type": "shell",
       "group": "build",
       "presentation": {

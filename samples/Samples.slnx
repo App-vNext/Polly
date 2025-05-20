@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../Directory.Packages.props" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="Chaos/Chaos.csproj" />
+  <Project Path="DependencyInjection/DependencyInjection.csproj" />
+  <Project Path="Extensibility/Extensibility.csproj" />
+  <Project Path="GenericPipelines/GenericPipelines.csproj" />
+  <Project Path="Intro.FSharp/Intro.FSharp.fsproj" />
+  <Project Path="Intro.VisualBasic/Intro.VisualBasic.vbproj" />
+  <Project Path="Intro/Intro.csproj" />
+  <Project Path="Retries/Retries.csproj" />
+</Solution>
