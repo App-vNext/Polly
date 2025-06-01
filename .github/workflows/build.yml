@@ -22,8 +22,7 @@ env:
   NUGET_XMLDOC_MODE: skip
   TERM: xterm
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   build:
@@ -38,6 +37,9 @@ jobs:
       dotnet-validate-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-validate-version }}
       package-names: ${{ steps.build.outputs.package-names }}
       package-version: ${{ steps.build.outputs.package-version }}
+
+    permissions:
+      contents: read
 
     strategy:
       fail-fast: false
@@ -187,6 +189,9 @@ jobs:
     #  github.event.repository.fork == false &&
     #  startsWith(github.ref, 'refs/tags/')
 
+    permissions:
+      id-token: write
+
     steps:
 
     - name: Download unsigned packages
@@ -251,6 +256,7 @@ jobs:
   validate-signed-packages:
     needs: [ build, sign ]
     runs-on: windows-latest
+
     steps:
 
     - name: Download packages
@@ -342,6 +348,7 @@ jobs:
     if: false # TODO Remove once signing is tested as working again
     needs: [ build, validate-signed-packages ]
     runs-on: ubuntu-latest
+
     steps:
 
     - name: Download signed packages
