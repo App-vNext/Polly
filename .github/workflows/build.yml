@@ -183,9 +183,9 @@ jobs:
   sign:
     needs: [ build, validate-packages ]
     runs-on: windows-latest
-    if: |
-      github.event.repository.fork == false &&
-      startsWith(github.ref, 'refs/tags/')
+    #if: |
+    #  github.event.repository.fork == false &&
+    #  startsWith(github.ref, 'refs/tags/')
 
     steps:
 
@@ -211,14 +211,18 @@ jobs:
         DOTNET_SIGN_VERSION: ${{ needs.build.outputs.dotnet-sign-version }}
       run: dotnet tool install --tool-path . sign --version ${env:DOTNET_SIGN_VERSION}
 
+    - name: Azure log in
+      uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5 # v2.3.0
+      with:
+        client-id: ${{ secrets.SIGN_CLI_APPLICATION_ID }}
+        subscription-id: ${{ secrets.SIGN_CLI_SUBSCRIPTION_ID }}
+        tenant-id: ${{ secrets.SIGN_CLI_TENANT_ID }}
+
     - name: Sign artifacts
       shell: pwsh
       env:
-        AZURE_CLIENT_ID: ${{ secrets.SIGN_CLI_APPLICATION_ID }}
-        AZURE_CLIENT_SECRET: ${{ secrets.SIGN_CLI_SECRET }}
         AZURE_KEY_VAULT_CERTIFICATE: ${{ secrets.SIGN_CLI_CERT_NAME }}
         AZURE_KEY_VAULT_URL: ${{ secrets.SIGN_CLI_VAULT_URI }}
-        AZURE_TENANT_ID: ${{ secrets.SIGN_CLI_TENANT_ID }}
         VERBOSITY: ${{ runner.debug == '1' && 'Debug' || 'Warning' }}
       run: |
         ./sign code azure-key-vault `
@@ -335,6 +339,7 @@ jobs:
         }
 
   publish-nuget:
+    if: false # TODO Remove once signing is tested as working again
     needs: [ build, validate-signed-packages ]
     runs-on: ubuntu-latest
     steps:
