@@ -14,8 +14,8 @@ public readonly struct OnRetryArguments<TResult> : IOutcomeArguments<TResult>
     /// <summary>
     /// Initializes a new instance of the <see cref="OnRetryArguments{TResult}"/> struct.
     /// </summary>
-    /// <param name="outcome">The context in which the resilience operation or event occurred.</param>
-    /// <param name="context">The outcome of the resilience operation or event.</param>
+    /// <param name="context">The context in which the resilience operation or event occurred.</param>
+    /// <param name="outcome">The outcome of the resilience operation or event.</param>
     /// <param name="attemptNumber">The zero-based attempt number.</param>
     /// <param name="retryDelay">The delay before the next retry.</param>
     /// <param name="duration">The duration of this attempt.</param>
