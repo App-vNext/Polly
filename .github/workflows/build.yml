@@ -219,6 +219,7 @@ jobs:
     - name: Azure log in
       uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5 # v2.3.0
       with:
+        auth-type: IDENTITY
         client-id: ${{ secrets.SIGN_CLI_APPLICATION_ID }}
         subscription-id: ${{ secrets.SIGN_CLI_SUBSCRIPTION_ID }}
         tenant-id: ${{ secrets.SIGN_CLI_TENANT_ID }}
