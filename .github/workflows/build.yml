@@ -216,12 +216,12 @@ jobs:
         DOTNET_SIGN_VERSION: ${{ needs.build.outputs.dotnet-sign-version }}
       run: dotnet tool install --tool-path . sign --version ${env:DOTNET_SIGN_VERSION}
 
-    #- name: Azure log in
-    #  uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5 # v2.3.0
-    #  with:
-    #    client-id: ${{ secrets.SIGN_CLI_APPLICATION_ID }}
-    #    subscription-id: ${{ secrets.SIGN_CLI_SUBSCRIPTION_ID }}
-    #    tenant-id: ${{ secrets.SIGN_CLI_TENANT_ID }}
+    - name: Azure log in
+      uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5 # v2.3.0
+      with:
+        client-id: ${{ secrets.SIGN_CLI_APPLICATION_ID }}
+        subscription-id: ${{ secrets.SIGN_CLI_SUBSCRIPTION_ID }}
+        tenant-id: ${{ secrets.SIGN_CLI_TENANT_ID }}
 
     - name: Sign artifacts
       shell: pwsh
