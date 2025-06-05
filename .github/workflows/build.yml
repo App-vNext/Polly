@@ -185,9 +185,9 @@ jobs:
   sign:
     needs: [ build, validate-packages ]
     runs-on: windows-latest
-    #if: |
-    #  github.event.repository.fork == false &&
-    #  startsWith(github.ref, 'refs/tags/')
+    if: |
+      github.event.repository.fork == false &&
+      startsWith(github.ref, 'refs/tags/')
 
     permissions:
       id-token: write
@@ -345,7 +345,6 @@ jobs:
         }
 
   publish-nuget:
-    if: false # TODO Remove once signing is tested as working again
     needs: [ build, validate-signed-packages ]
     runs-on: ubuntu-latest
 
