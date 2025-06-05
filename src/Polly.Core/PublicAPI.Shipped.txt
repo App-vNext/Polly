@@ -138,9 +138,11 @@ Polly.Hedging.HedgingDelayGeneratorArguments.Context.get -> Polly.ResilienceCont
 Polly.Hedging.HedgingDelayGeneratorArguments.HedgingDelayGeneratorArguments() -> void
 Polly.Hedging.HedgingDelayGeneratorArguments.HedgingDelayGeneratorArguments(Polly.ResilienceContext! context, int attemptNumber) -> void
 Polly.Hedging.HedgingPredicateArguments<TResult>
+Polly.Hedging.HedgingPredicateArguments<TResult>.AttemptNumber.get -> int?
 Polly.Hedging.HedgingPredicateArguments<TResult>.Context.get -> Polly.ResilienceContext!
 Polly.Hedging.HedgingPredicateArguments<TResult>.HedgingPredicateArguments() -> void
 Polly.Hedging.HedgingPredicateArguments<TResult>.HedgingPredicateArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome) -> void
+Polly.Hedging.HedgingPredicateArguments<TResult>.HedgingPredicateArguments(Polly.ResilienceContext! context, Polly.Outcome<TResult> outcome, int attemptNumber) -> void
 Polly.Hedging.HedgingPredicateArguments<TResult>.Outcome.get -> Polly.Outcome<TResult>
 Polly.Hedging.HedgingStrategyOptions<TResult>
 Polly.Hedging.HedgingStrategyOptions<TResult>.ActionGenerator.get -> System.Func<Polly.Hedging.HedgingActionGeneratorArguments<TResult>, System.Func<System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>>?>!

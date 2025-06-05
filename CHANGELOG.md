@@ -4,6 +4,44 @@
 
 <!-- next-release -->
 
+## 8.6.0
+
+* Bump Stryker by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2476
+* Fix chaos example issue and enrich notes & diagram by [@caigen](https://github.com/caigen) in https://github.com/App-vNext/Polly/pull/2482
+* Add diagram for the main chaos page sample by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2484
+* Fix broken CI by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2497
+* Remove .NET 6 SDK by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2501
+* Use Stryker Mutator Dashboard by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2500
+* Fix Polly.Testing mutations by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2503
+* Lint PowerShell scripts by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2504
+* Improve Polly coverage by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2505
+* Improve mutation score by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2506
+* Run CodeQL for GitHub Actions by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2498
+* Add missing mutations by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2508
+* Remove dotnet tool restore by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2513
+* Add missing coverage by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2514
+* Improve mutation test perf by [@slang25](https://github.com/slang25) in https://github.com/App-vNext/Polly/pull/2520
+* Improve coverage by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2526
+* Remove System.Text.Json reference by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2532
+* Fix test summary reliability by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2543
+* Use AuthenticodeLint by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2553
+* Use actions/create-github-app-token by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2572
+* Fix Retry strategy ShouldHandle in example code by [@marcrocny](https://github.com/marcrocny) in https://github.com/App-vNext/Polly/pull/2527
+* Tweak docs formatting by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2575
+* Dispose registry which contains rate limiters by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2578
+* Improve mutation tests performance by ensuring solution file isn't discovered by [@slang25](https://github.com/slang25) in https://github.com/App-vNext/Polly/pull/2589
+* Update LICENSE metadata by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2590
+* Add HTTP client integration samples by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2587
+* Dedupe links by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2592
+* Add test analytics by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2593
+* Add note about context/state mix-ups by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2598
+* Emit annotation for packages by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2601
+* Add `AttemptNumber` to `HedgingPredicateArguments` by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2603
+* .NET 10 preparation by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2620
+* Migrate to slnx by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2623
+* Fix `OnRetryArguments` comments by [@lchaoer](https://github.com/lchaoer) in https://github.com/App-vNext/Polly/pull/2627
+* Fix package signing by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2631
+
 ## 8.5.2
 
 * Fix build badges by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2445
