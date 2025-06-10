@@ -54,6 +54,15 @@ public class BulkheadSpecs(ITestOutputHelper testOutputHelper) : BulkheadSpecsBa
     }
 
     [Fact]
+    public void Should_not_throw_when_maxQueuingActions_is_int_MaxValue()
+    {
+        Action policy = () => Policy
+            .Bulkhead(1, int.MaxValue);
+
+        policy.ShouldNotThrow();
+    }
+
+    [Fact]
     public void Should_throw_when_maxQueuedActions_less_than_zero()
     {
         Action policy = () => Policy
