@@ -64,6 +64,15 @@ public class BulkheadAsyncSpecs(ITestOutputHelper testOutputHelper) : BulkheadSp
     }
 
     [Fact]
+    public void Should_not_throw_when_maxQueuingActions_is_int_MaxValue()
+    {
+        Action policy = () => Policy
+            .BulkheadAsync(1, int.MaxValue);
+
+        policy.ShouldNotThrow();
+    }
+
+    [Fact]
     public void Should_throw_when_onBulkheadRejected_is_null()
     {
         Action policy = () => Policy
