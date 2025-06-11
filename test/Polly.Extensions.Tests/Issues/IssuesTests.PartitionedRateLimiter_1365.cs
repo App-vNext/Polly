@@ -48,12 +48,14 @@ public partial class IssuesTests
         await Assert.ThrowsAsync<RateLimiterRejectedException>(() => ExecuteBatch("guest-user", asserted));
         asserted.Set();
 
+#pragma warning disable CA2025
         // assert admin is not limited
         using var adminAsserted = new ManualResetEvent(false);
         var task = ExecuteBatch("admin", adminAsserted);
         task.Wait(100).ShouldBeFalse();
         adminAsserted.Set();
         await task;
+#pragma warning restore CA2025
 
         async Task ExecuteBatch(string user, ManualResetEvent waitAsserted)
         {

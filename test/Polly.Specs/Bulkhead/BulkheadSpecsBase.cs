@@ -107,7 +107,9 @@ public abstract class BulkheadSpecsBase : IDisposable
             Tasks = new Task[totalActions];
             for (int i = 0; i < totalActions; i++)
             {
+#pragma warning disable CA2025
                 Tasks[i] = ExecuteOnBulkhead(bulkhead, Actions[i]);
+#pragma warning restore CA2025
             }
 
             OutputStatus("Immediately after queueing...");
