@@ -21,8 +21,10 @@ public static class PolicyExtensionsAsync
             NumberOfTimesToRaiseException = 1
         };
 
-        using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+#pragma warning disable CA2025
+        using var cancellationTokenSource = new CancellationTokenSource();
         return policy.RaiseExceptionAndOrCancellationAsync(scenario, cancellationTokenSource, () => { }, _ => instance);
+#pragma warning restore CA2025
     }
 
     public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, Action<TException, int>? configureException = null)
@@ -47,8 +49,10 @@ public static class PolicyExtensionsAsync
             return exception;
         };
 
-        using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+#pragma warning disable CA2025
+        using var cancellationTokenSource = new CancellationTokenSource();
         return policy.RaiseExceptionAndOrCancellationAsync(scenario, cancellationTokenSource, () => { }, exceptionFactory);
+#pragma warning restore CA2025
     }
 
     public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute)
