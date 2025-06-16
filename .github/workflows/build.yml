@@ -200,6 +200,9 @@ jobs:
       github.event.repository.fork == false &&
       startsWith(github.ref, 'refs/tags/')
 
+    environment:
+      name: Azure
+
     permissions:
       id-token: write
 
@@ -393,6 +396,10 @@ jobs:
   publish-nuget:
     needs: [ build, validate-signed-packages ]
     runs-on: ubuntu-latest
+
+    environment:
+      name: NuGet.org
+      url: https://www.nuget.org/profiles/Polly
 
     steps:
 
