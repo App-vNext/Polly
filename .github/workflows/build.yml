@@ -39,7 +39,9 @@ jobs:
       package-version: ${{ steps.build.outputs.package-version }}
 
     permissions:
+      attestations: write
       contents: read
+      id-token: write
 
     strategy:
       fail-fast: false
