@@ -160,12 +160,26 @@ jobs:
   validate-packages:
     needs: build
     runs-on: ubuntu-latest
+
+    # TODO Move this to after the packages are signed once tested
+    permissions:
+      attestations: write
+      contents: read
+      id-token: write
+
     steps:
 
     - name: Download packages
       uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
       with:
         name: packages-windows
+
+    # TODO Move this to after the packages are signed once tested
+    - name: Download SBOM
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      with:
+        name: polly.spdx.json
+        path: ./artifacts
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
@@ -190,6 +204,35 @@ jobs:
           Write-Output "::error::$invalidPackages NuGet package(s) failed validation."
           exit 1
         }
+
+    # TODO Move this to after the packages are signed once tested
+    - name: Extract NuGet package contents
+      shell: pwsh
+      run: |
+        $packages = Get-ChildItem -Filter "*.nupkg" | ForEach-Object { $_.FullName }
+        $artifactsPath = Join-Path ${env:GITHUB_WORKSPACE} "artifacts"
+
+        foreach ($package in $packages) {
+          $packageName = [System.IO.Path]::GetFileNameWithoutExtension($package)
+          $packagePath = Join-Path $artifactsPath $packageName
+
+          if (-Not (Test-Path -Path $packagePath)) {
+            New-Item -ItemType Directory -Path $packagePath | Out-Null
+          }
+
+          Expand-Archive -Path $package -DestinationPath $packagePath -Force | Out-Null
+        }
+
+    - name: Attest artifacts
+      uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+      # TODO Enable condition once tested
+      #if: |
+      #  github.event.repository.fork == false &&
+      #  (github.ref_name == github.event.repository.default_branch || startsWith(github.ref, 'refs/tags/v'))
+      with:
+        subject-path: |
+          ./artifacts/polly.spdx.json
+          ./artifacts/*/lib/**/*
 
   sign:
     needs: [ build, validate-packages ]
