@@ -4,6 +4,12 @@
 
 <!-- next-release -->
 
+## 8.6.1
+
+* Fix integer overflow in `BulkheadSemaphoreFactory` by [@ahusseini](https://github.com/ahusseini) in https://github.com/App-vNext/Polly/pull/2638
+* Generate SBOM by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2640
+* Attest artifacts by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2647
+
 ## 8.6.0
 
 * Bump Stryker by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2476
