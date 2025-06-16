@@ -57,7 +57,7 @@ jobs:
         env:
           PACKAGE_NAMES: ${{ github.event.client_payload.packages }}
           PACKAGE_VERSION: ${{ github.event.client_payload.version }}
-          PUBLISH_TIMEOUT: '00:25:00'
+          PUBLISH_TIMEOUT: '01:00:00'
         run: |
           $packageNames = ${env:PACKAGE_NAMES} -Split ','
           $packageVersion = ${env:PACKAGE_VERSION}.TrimStart('v')
