@@ -196,9 +196,6 @@ jobs:
   sign:
     needs: [ build, validate-packages ]
     runs-on: windows-latest
-    if: |
-      github.event.repository.fork == false &&
-      startsWith(github.ref, 'refs/tags/')
 
     environment:
       name: Azure
@@ -386,13 +383,6 @@ jobs:
           Expand-Archive -Path $package -DestinationPath $packagePath -Force | Out-Null
         }
 
-    - name: Attest artifacts
-      uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
-      with:
-        subject-path: |
-          ./artifacts/polly.spdx.json
-          ./artifacts/*/lib/**/*
-
   publish-nuget:
     needs: [ build, validate-signed-packages ]
     runs-on: ubuntu-latest
@@ -412,29 +402,3 @@ jobs:
       uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
-
-    - name: Push signed NuGet packages to NuGet.org
-      env:
-        API_KEY: ${{ secrets.NUGET_TOKEN }}
-        PACKAGE_VERSION: ${{ needs.build.outputs.package-version }}
-        SOURCE: https://api.nuget.org/v3/index.json
-      run: dotnet nuget push "*.nupkg" --api-key "${API_KEY}" --skip-duplicate --source "${SOURCE}" && echo "::notice title=nuget.org::Published version ${PACKAGE_VERSION} to NuGet.org."
-
-    - name: Generate GitHub application token
-      id: generate-application-token
-      uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2.0.6
-      with:
-        app-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
-        private-key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
-        permission-contents: write
-
-    - name: Publish nuget_packages_published
-      uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3.0.0
-      with:
-        event-type: nuget_packages_published
-        token: ${{ steps.generate-application-token.outputs.token }}
-        client-payload: |-
-          {
-            "packages": "${{ needs.build.outputs.package-names }}",
-            "version": "${{ needs.build.outputs.package-version }}"
-          }
