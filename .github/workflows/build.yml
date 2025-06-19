@@ -138,7 +138,7 @@ jobs:
         if-no-files-found: error
 
     - name: Generate SBOM
-      uses: anchore/sbom-action@e11c554f704a0b820cbf8c51673f6945e0731532 # v0.20.0
+      uses: anchore/sbom-action@9246b90769f852b3a8921f330c59e0b3f439d6e9 # v0.20.1
       if: runner.os == 'Windows'
       with:
         artifact-name: polly.spdx.json
