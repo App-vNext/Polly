@@ -1,1 +1,18 @@
 ﻿#nullable enable
+Polly.PolicyProvider.DefaultPolicyProvider
+Polly.PolicyProvider.DefaultPolicyProvider.DefaultPolicyProvider(Microsoft.Extensions.Options.IOptionsMonitor<Polly.PolicyProvider.PolicyProviderOptions!> optionsMonitor) -> void
+Polly.PolicyProvider.DefaultPolicyProvider.Dispose() -> void
+Polly.PolicyProvider.DefaultPolicyProvider.GetPolicy(Polly.PolicyProvider.PolicyType policyType) -> Polly.ResiliencePipeline!
+Polly.PolicyProvider.IPolicyProvider
+Polly.PolicyProvider.IPolicyProvider.GetPolicy(Polly.PolicyProvider.PolicyType policyType) -> Polly.ResiliencePipeline!
+Polly.PolicyProvider.PolicyProviderOptions
+Polly.PolicyProvider.PolicyProviderOptions.HttpClientRetryAttempts.get -> int
+Polly.PolicyProvider.PolicyProviderOptions.HttpClientRetryAttempts.set -> void
+Polly.PolicyProvider.PolicyProviderOptions.HttpClientTimeout.get -> System.TimeSpan
+Polly.PolicyProvider.PolicyProviderOptions.HttpClientTimeout.set -> void
+Polly.PolicyProvider.PolicyProviderOptions.PolicyProviderOptions() -> void
+Polly.PolicyProvider.PolicyType
+Polly.PolicyProvider.PolicyType.HttpClient = 0 -> Polly.PolicyProvider.PolicyType
+Polly.PolicyProviderServiceCollectionExtensions
+static Polly.PolicyProviderServiceCollectionExtensions.AddPolicyProvider(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static Polly.PolicyProviderServiceCollectionExtensions.AddPolicyProvider(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<Polly.PolicyProvider.PolicyProviderOptions!>! configureOptions) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
