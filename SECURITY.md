@@ -22,7 +22,7 @@ on holiday/vacation, or otherwise unavailable, so please be patient. We take any
 > [!TIP]
 > Further details on how to privately report a vulnerability using GitHub can be found in the [GitHub documentation][privately-reporting].
 
-## Incident Reponse Process
+## Incident Response Process
 
 > [!NOTE]
 > Information about how we handle security incidents can be found in our [Incident Response Plan][irp].
