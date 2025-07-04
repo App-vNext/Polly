@@ -37,24 +37,31 @@ internal sealed class ChaosLatencyStrategy : ChaosStrategy
             if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext))
             {
                 var latency = await LatencyGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
-                if (latency <= TimeSpan.Zero)
+                if (latency > TimeSpan.Zero)
                 {
-                    // do nothing
-                    return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-                }
+                    var args = new OnLatencyInjectedArguments(context, latency);
+                    _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosLatencyConstants.OnLatencyInjectedEvent), context, args);
 
-                var args = new OnLatencyInjectedArguments(context, latency);
-                _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosLatencyConstants.OnLatencyInjectedEvent), context, args);
+                    await _timeProvider.DelayAsync(latency, context).ConfigureAwait(context.ContinueOnCapturedContext);
 
-                await _timeProvider.DelayAsync(latency, context).ConfigureAwait(context.ContinueOnCapturedContext);
-
-                if (OnLatencyInjected is not null)
-                {
-                    await OnLatencyInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
+                    if (OnLatencyInjected is not null)
+                    {
+                        await OnLatencyInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
+                    }
                 }
             }
 
-            return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            try
+            {
+                context.CancellationToken.ThrowIfCancellationRequested();
+                return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            }
+#pragma warning disable CA1031
+            catch (Exception ex)
+            {
+                return new(ex);
+            }
+#pragma warning restore CA1031
         }
         catch (OperationCanceledException e)
         {

@@ -6,7 +6,7 @@ namespace Polly.Core.Tests.Retry;
 
 public class RetryHelperTests
 {
-    private Func<double> _randomizer = new RandomUtil(0).NextDouble;
+    private Func<double> _randomizer = new Random(0).NextDouble;
 
     public static TheoryData<int> Attempts()
 #pragma warning disable IDE0028
@@ -204,7 +204,7 @@ public class RetryHelperTests
         var baseDelay = TimeSpan.FromSeconds(2);
         TimeSpan? maxDelay = null;
 
-        var random = new RandomUtil(0).NextDouble;
+        var random = new Random(0).NextDouble;
         double state = 0;
 
         var first = RetryHelper.GetRetryDelay(type, jitter, attempt, baseDelay, maxDelay, ref state, random);
@@ -224,7 +224,7 @@ public class RetryHelperTests
         var baseDelay = TimeSpan.FromSeconds(2);
         var maxDelay = TimeSpan.FromSeconds(30);
 
-        var random = new RandomUtil(0).NextDouble;
+        var random = new Random(0).NextDouble;
         double state = 0;
 
         var first = RetryHelper.GetRetryDelay(type, jitter, attempt, baseDelay, maxDelay, ref state, random);
@@ -254,8 +254,8 @@ public class RetryHelperTests
     public void ExponentialWithJitter_EnsureRandomness()
     {
         var delay = TimeSpan.FromSeconds(7.8);
-        var delays1 = GetExponentialWithJitterBackoff(false, delay, 100, RandomUtil.Instance.NextDouble);
-        var delays2 = GetExponentialWithJitterBackoff(false, delay, 100, RandomUtil.Instance.NextDouble);
+        var delays1 = GetExponentialWithJitterBackoff(false, delay, 100, RandomUtil.NextDouble);
+        var delays2 = GetExponentialWithJitterBackoff(false, delay, 100, RandomUtil.NextDouble);
 
         delays1.SequenceEqual(delays2).ShouldBeFalse();
         delays1.ShouldAllBe(delay => delay > TimeSpan.Zero);
@@ -268,7 +268,7 @@ public class RetryHelperTests
             return Backoff.DecorrelatedJitterBackoffV2(baseDelay, retryCount, 0, false).Take(retryCount).ToArray();
         }
 
-        var random = randomizer ?? new RandomUtil(0).NextDouble;
+        var random = randomizer ?? new Random(0).NextDouble;
         double state = 0;
         var result = new List<TimeSpan>();
 

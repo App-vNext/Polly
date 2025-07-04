@@ -31,15 +31,20 @@ internal sealed class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
                     await _onOutcomeInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
                 }
 
-                if (outcome.HasResult)
-                {
-                    return new Outcome<T>(outcome.Result);
-                }
-
-                return new Outcome<T>(outcome.Exception!);
+                return outcome;
             }
 
-            return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            try
+            {
+                context.CancellationToken.ThrowIfCancellationRequested();
+                return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            }
+#pragma warning disable CA1031
+            catch (Exception ex)
+            {
+                return new(ex);
+            }
+#pragma warning restore CA1031
         }
         catch (OperationCanceledException e)
         {
