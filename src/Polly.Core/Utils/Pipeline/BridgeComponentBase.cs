@@ -19,4 +19,14 @@ internal abstract class BridgeComponentBase : PipelineComponent
 
         return default;
     }
+
+    protected static Outcome<TTo> ConvertOutcome<TFrom, TTo>(Outcome<TFrom> outcome)
+    {
+        if (outcome.ExceptionDispatchInfo is not null)
+        {
+            return new(outcome.ExceptionDispatchInfo);
+        }
+
+        return outcome.Result is null ? default : new((TTo)(object)outcome.Result);
+    }
 }

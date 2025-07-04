@@ -11,7 +11,7 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy, IDispo
         Func<RateLimiterArguments, ValueTask<RateLimitLease>> limiter,
         Func<OnRateLimiterRejectedArguments, ValueTask>? onRejected,
         ResilienceStrategyTelemetry telemetry,
-        DisposeWrapper? wrapper)
+        RateLimiter? wrapper)
     {
         Limiter = limiter;
         OnLeaseRejected = onRejected;
@@ -24,7 +24,7 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy, IDispo
 
     public Func<OnRateLimiterRejectedArguments, ValueTask>? OnLeaseRejected { get; }
 
-    public DisposeWrapper? Wrapper { get; }
+    public RateLimiter? Wrapper { get; }
 
     public void Dispose() => Wrapper?.Dispose();
 

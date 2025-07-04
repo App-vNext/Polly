@@ -39,8 +39,6 @@ public abstract class ChaosStrategy : ResilienceStrategy
     /// <param name="context">The <see cref="ResilienceContext"/> instance.</param>
     /// <returns>A boolean value that indicates whether or not the chaos strategy should be injected.</returns>
     /// <remarks>Use this method before injecting any chaos strategy to evaluate whether a given chaos strategy needs to be injected during the execution.</remarks>
-    protected async ValueTask<bool> ShouldInjectAsync(ResilienceContext context) =>
-        await ChaosStrategyHelper
-            .ShouldInjectAsync(context, InjectionRateGenerator, EnabledGenerator, _randomizer)
-            .ConfigureAwait(false);
+    protected ValueTask<bool> ShouldInjectAsync(ResilienceContext context) =>
+        ChaosStrategyHelper.ShouldInjectAsync(context, InjectionRateGenerator, EnabledGenerator, _randomizer);
 }
