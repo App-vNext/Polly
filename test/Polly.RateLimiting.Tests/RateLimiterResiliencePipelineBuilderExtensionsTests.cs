@@ -15,7 +15,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         builder =>
         {
             builder.AddConcurrencyLimiter(2, 2);
-            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper!.Limiter.ShouldBeOfType<ConcurrencyLimiter>());
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper.ShouldBeOfType<ConcurrencyLimiter>());
         },
         builder =>
         {
@@ -26,7 +26,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
                     QueueLimit = 2
                 });
 
-            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper!.Limiter.ShouldBeOfType<ConcurrencyLimiter>());
+            AssertRateLimiterStrategy(builder, strategy => strategy.Wrapper.ShouldBeOfType<ConcurrencyLimiter>());
         },
         builder =>
         {

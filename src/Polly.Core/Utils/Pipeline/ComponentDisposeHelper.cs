@@ -26,9 +26,11 @@ internal sealed class ComponentDisposeHelper : IAsyncDisposable
     {
         if (_disposed)
         {
-            throw new ObjectDisposedException("ResiliencePipeline", "This resilience pipeline has been disposed and cannot be used anymore.");
+            ThrowDisposed();
         }
     }
+
+    private static void ThrowDisposed() => throw new ObjectDisposedException("ResiliencePipeline", "This resilience pipeline has been disposed and cannot be used anymore.");
 
     public ValueTask ForceDisposeAsync()
     {

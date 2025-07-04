@@ -121,7 +121,7 @@ public abstract class ResiliencePipelineBuilderBase
 
         _used = true;
 
-        var components = _entries.Select(CreateComponent).ToList();
+        var components = _entries.ConvertAll(CreateComponent);
 
         if (components.Count == 0)
         {

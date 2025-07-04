@@ -21,13 +21,7 @@ public sealed class OutcomeGenerator<TResult>
     /// <summary>
     /// Initializes a new instance of the <see cref="OutcomeGenerator{TResult}"/> class.
     /// </summary>
-    public OutcomeGenerator()
-        : this(RandomUtil.Instance.Next)
-    {
-    }
-
-    internal OutcomeGenerator(Func<int, int> weightGenerator)
-        => _helper = new GeneratorHelper<TResult>(weightGenerator);
+    public OutcomeGenerator() => _helper = new(RandomUtil.Next);
 
     /// <summary>
     /// Registers an exception generator delegate.

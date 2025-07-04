@@ -554,7 +554,7 @@ public class CircuitStateControllerTests
         var context = ResilienceContextPool.Shared.Get(cancellationToken);
 
         var source = new TaskCompletionSource<string>();
-        var task = CircuitStateController<string>.ExecuteScheduledTaskAsync(source.Task, context.Initialize<string>(isSynchronous: false)).AsTask();
+        var task = CircuitStateController<string>.ExecuteScheduledTaskAsync(source.Task, context.Initialize<string>(isSynchronous: false));
 
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         task.Wait(3, cancellationToken).ShouldBeFalse();
