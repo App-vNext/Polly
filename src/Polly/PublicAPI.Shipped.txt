@@ -1051,7 +1051,9 @@ static readonly Polly.Caching.DefaultCacheKeyStrategy.Instance -> Polly.Caching.
 static readonly Polly.ExceptionPredicates.None -> Polly.ExceptionPredicates
 static readonly Polly.ResultPredicates<TResult>.None -> Polly.ResultPredicates<TResult>
 virtual Polly.AsyncPolicy.ImplementationAsync(System.Func<Polly.Context, System.Threading.CancellationToken, System.Threading.Tasks.Task> action, Polly.Context context, System.Threading.CancellationToken cancellationToken, bool continueOnCapturedContext) -> System.Threading.Tasks.Task
+virtual Polly.ExceptionPredicate.Invoke(System.Exception ex) -> System.Exception
 virtual Polly.Policy.Implementation(System.Action<Polly.Context, System.Threading.CancellationToken> action, Polly.Context context, System.Threading.CancellationToken cancellationToken) -> void
+virtual Polly.ResultPredicate<TResult>.Invoke(TResult result) -> bool
 Polly.CircuitBreaker.BrokenCircuitException<TResult>
 Polly.CircuitBreaker.BrokenCircuitException<TResult>.BrokenCircuitException(string message, System.Exception inner, TResult result) -> void
 Polly.CircuitBreaker.BrokenCircuitException<TResult>.BrokenCircuitException(string message, TResult result) -> void
