@@ -17,7 +17,7 @@ internal sealed class ExecutionTrackingComponent : PipelineComponent
 
     public PipelineComponent Component { get; }
 
-    public bool HasPendingExecutions => Interlocked.CompareExchange(ref _pendingExecutions, 0, 0) > 0;
+    public bool HasPendingExecutions => Volatile.Read(ref _pendingExecutions) > 0;
 
     internal override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
@@ -39,7 +39,6 @@ internal sealed class ExecutionTrackingComponent : PipelineComponent
     public override async ValueTask DisposeAsync()
     {
         var start = _timeProvider.GetTimestamp();
-        var stopwatch = Stopwatch.StartNew();
 
         // We don't want to introduce locks or any synchronization primitives to main execution path
         // so we will do "dummy" retries until there are no more executions.

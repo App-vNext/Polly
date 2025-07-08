@@ -20,8 +20,8 @@ internal sealed class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
     {
         try
         {
-            if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext)
-                && await _outcomeGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext) is Outcome<T> outcome)
+            if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext) &&
+                await _outcomeGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext) is Outcome<T> outcome)
             {
                 var args = new OnOutcomeInjectedArguments<T>(context, outcome);
                 _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosOutcomeConstants.OnOutcomeInjectedEvent), context, args);
@@ -31,12 +31,7 @@ internal sealed class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
                     await _onOutcomeInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
                 }
 
-                if (outcome.HasResult)
-                {
-                    return new Outcome<T>(outcome.Result);
-                }
-
-                return new Outcome<T>(outcome.Exception!);
+                return outcome;
             }
 
             return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
