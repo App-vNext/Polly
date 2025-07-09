@@ -228,6 +228,11 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// </remarks>
     public async ValueTask DisposeAsync()
     {
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
 
         foreach (var kv in _pipelines)
