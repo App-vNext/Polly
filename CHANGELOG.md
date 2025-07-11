@@ -4,6 +4,12 @@
 
 <!-- next-release -->
 
+## 8.6.2
+
+* Performance tweaks by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2667
+* Update dependencies by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2668
+* Update benchmark results by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2669
+
 ## 8.6.1
 
 * Fix integer overflow in `BulkheadSemaphoreFactory` by [@ahusseini](https://github.com/ahusseini) in https://github.com/App-vNext/Polly/pull/2638
