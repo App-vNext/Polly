@@ -107,12 +107,12 @@ public static class RateLimiterResiliencePipelineBuilderExtensions
         return builder.AddStrategy(
             context =>
             {
-                DisposeWrapper? wrapper = default;
+                RateLimiter? wrapper = default;
                 var limiter = options.RateLimiter;
                 if (limiter is null)
                 {
                     var defaultLimiter = new ConcurrencyLimiter(options.DefaultRateLimiterOptions);
-                    wrapper = new DisposeWrapper(defaultLimiter);
+                    wrapper = defaultLimiter;
                     limiter = args => defaultLimiter.AcquireAsync(cancellationToken: args.Context.CancellationToken);
                 }
 
