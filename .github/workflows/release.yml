@@ -50,7 +50,7 @@ jobs:
               repo,
               tag_name: version,
               target_commitish: process.env.DEFAULT_BRANCH,
-              name: tag_name,
+              name: version,
               body,
               draft,
               generate_release_notes: true,
