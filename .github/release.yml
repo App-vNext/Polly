@@ -1,0 +1,5 @@
+changelog:
+  exclude:
+    authors:
+      - dependabot[bot]
+      - polly-updater-bot[bot]
