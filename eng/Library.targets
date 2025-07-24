@@ -69,7 +69,7 @@
       <Output TaskParameter="Filtered" ItemName="_UniquePackageNames" />
     </RemoveDuplicates>
     <PropertyGroup>
-      <_UniquePackageNames>@(_UniquePackageNames-&gt;'%(Identity)', ',')</_UniquePackageNames>
+      <_UniquePackageNames>@(_UniquePackageNames->'%(Identity)', ',')</_UniquePackageNames>
     </PropertyGroup>
     <WriteLinesToFile File="$(_PackageNamesPath)" Lines="@(_UniquePackageNames)" Overwrite="true" WriteOnlyWhenDifferent="true" />
     <WriteLinesToFile File="$(GITHUB_OUTPUT)" Lines="package-names=$(_UniquePackageNames)" />

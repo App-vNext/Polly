@@ -16,22 +16,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
-    <PackageReference Include="xunit" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Flurl.Http.Signed" />
-    <PackageReference Include="Refit.HttpClientFactory" />
-    <PackageReference Include="RestSharp" />
     <ProjectReference Include="..\Polly.Extensions\Polly.Extensions.csproj" />
     <ProjectReference Include="..\Polly.RateLimiting\Polly.RateLimiting.csproj" />
     <ProjectReference Include="..\Polly.Testing\Polly.Testing.csproj" />
     <ProjectReference Include="..\Polly\Polly.csproj" />
-    <PackageReference Include="NSubstitute" />
-    <PackageReference Include="System.Text.Json" />
+  </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Flurl.Http.Signed" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Refit.HttpClientFactory" />
+    <PackageReference Include="RestSharp" />
+    <PackageReference Include="System.Text.Json" />
+    <PackageReference Include="xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Polly" />
   </ItemGroup>
 
