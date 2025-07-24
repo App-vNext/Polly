@@ -29,7 +29,6 @@
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="Refit.HttpClientFactory" />
     <PackageReference Include="RestSharp" />
-    <PackageReference Include="System.Text.Json" />
     <PackageReference Include="xunit" />
   </ItemGroup>
 
