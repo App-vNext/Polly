@@ -15,7 +15,7 @@ internal sealed class ScheduledTaskExecutor : IDisposable
 
     public Task ProcessingTask { get; }
 
-    public void ScheduleTask(Func<Task> taskFactory, ResilienceContext context, out Task task)
+    public Task ScheduleTask(Func<Task> taskFactory)
     {
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -27,10 +27,10 @@ internal sealed class ScheduledTaskExecutor : IDisposable
 #endif
 
         var source = new TaskCompletionSource<object>();
-        task = source.Task;
 
-        _tasks.Enqueue(new Entry(taskFactory, context.ContinueOnCapturedContext, source));
+        _tasks.Enqueue(new Entry(taskFactory, source));
         _semaphore.Release();
+        return source.Task;
     }
 
     public void Dispose()
@@ -53,36 +53,29 @@ internal sealed class ScheduledTaskExecutor : IDisposable
 
     private async Task StartProcessingAsync()
     {
-        while (true)
+        while (!_disposed)
         {
             await _semaphore.WaitAsync().ConfigureAwait(false);
-            if (_disposed)
+            if (_disposed || !_tasks.TryDequeue(out var entry))
             {
                 return;
             }
-
-            _ = _tasks.TryDequeue(out var entry);
 
             try
             {
-                await entry!.TaskFactory().ConfigureAwait(entry.ContinueOnCapturedContext);
-                entry.TaskCompletion.SetResult(null!);
+                await entry.TaskFactory().ConfigureAwait(false);
+                entry.TaskCompletion.TrySetResult(null!);
             }
             catch (OperationCanceledException)
             {
-                entry!.TaskCompletion.SetCanceled();
+                entry.TaskCompletion.TrySetCanceled();
             }
             catch (Exception e)
             {
-                entry!.TaskCompletion.SetException(e);
-            }
-
-            if (_disposed)
-            {
-                return;
+                entry.TaskCompletion.TrySetException(e);
             }
         }
     }
 
-    private sealed record Entry(Func<Task> TaskFactory, bool ContinueOnCapturedContext, TaskCompletionSource<object> TaskCompletion);
+    private sealed record Entry(Func<Task> TaskFactory, TaskCompletionSource<object> TaskCompletion);
 }
