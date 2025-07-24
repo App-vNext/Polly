@@ -30,6 +30,7 @@
     <ProjectReference Include="..\Polly.Testing\Polly.Testing.csproj" />
     <ProjectReference Include="..\Polly\Polly.csproj" />
     <PackageReference Include="NSubstitute" />
+    <PackageReference Include="System.Text.Json" />
 
     <Using Include="Polly" />
   </ItemGroup>
