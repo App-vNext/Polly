@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ProjectType>Library</ProjectType>
@@ -29,7 +29,6 @@
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="Refit.HttpClientFactory" />
     <PackageReference Include="RestSharp" />
-    <PackageReference Include="System.Text.Json" />
     <PackageReference Include="xunit" />
   </ItemGroup>
 
