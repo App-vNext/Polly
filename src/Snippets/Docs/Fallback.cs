@@ -98,7 +98,7 @@ internal static class Fallback
     }
 
     private static readonly ResiliencePipeline<HttpResponseMessage> WhateverPipeline = ResiliencePipeline<HttpResponseMessage>.Empty;
-    private static ValueTask<Outcome<HttpResponseMessage>> Action(ResilienceContext context, string state) => Outcome.FromResultAsValueTask(new HttpResponseMessage());
+    private static ValueTask<HttpResponseMessage> Action(ResilienceContext context, string state) => new ValueTask<HttpResponseMessage>(new HttpResponseMessage());
     public static async Task Pattern_ReplaceException()
     {
         var context = ResilienceContextPool.Shared.Get();
