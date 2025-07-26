@@ -126,4 +126,62 @@ public partial class ResiliencePipelineTests
 
         result.Result.ShouldBe(12345);
     }
+
+    [Fact]
+    public async Task ExecuteOutcomeAsync_ConvenienceOverload_Success()
+    {
+        // Test the new convenience overload that handles exception-to-outcome conversion
+        var result = await ResiliencePipeline.Empty.ExecuteOutcomeAsync(
+            (context, state) =>
+            {
+                state.ShouldBe("state");
+                context.IsSynchronous.ShouldBeFalse();
+                context.ResultType.ShouldBe(typeof(int));
+                return ValueTask.FromResult(12345);
+            },
+            ResilienceContextPool.Shared.Get(),
+            "state");
+
+        result.Result.ShouldBe(12345);
+        result.Exception.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task ExecuteOutcomeAsync_ConvenienceOverload_Exception()
+    {
+        // Test that exceptions are properly converted to outcomes
+        var testException = new InvalidOperationException("Test exception");
+        
+        var result = await ResiliencePipeline.Empty.ExecuteOutcomeAsync(
+            (context, state) =>
+            {
+                state.ShouldBe("state");
+                throw testException;
+            },
+            ResilienceContextPool.Shared.Get(),
+            "state");
+
+        result.Exception.ShouldBe(testException);
+        result.HasResult.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ExecuteOutcomeAsync_ConvenienceOverload_AsyncException()
+    {
+        // Test async method with exception
+        var testException = new InvalidOperationException("Async test exception");
+        
+        var result = await ResiliencePipeline.Empty.ExecuteOutcomeAsync(
+            async (context, state) =>
+            {
+                state.ShouldBe("state");
+                await Task.Delay(1); // Make it actually async
+                throw testException;
+            },
+            ResilienceContextPool.Shared.Get(),
+            "state");
+
+        result.Exception.ShouldBe(testException);
+        result.HasResult.ShouldBeFalse();
+    }
 }

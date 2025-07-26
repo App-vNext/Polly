@@ -96,4 +96,62 @@ public partial class ResiliencePipelineTests
 
         result.Result.ShouldBe(12345);
     }
+
+    [Fact]
+    public async Task ExecuteOutcomeAsync_GenericStrategy_ConvenienceOverload_Success()
+    {
+        // Test the new convenience overload for generic pipeline
+        var result = await ResiliencePipeline<int>.Empty.ExecuteOutcomeAsync(
+            (context, state) =>
+            {
+                state.ShouldBe("state");
+                context.IsSynchronous.ShouldBeFalse();
+                context.ResultType.ShouldBe(typeof(int));
+                return ValueTask.FromResult(12345);
+            },
+            ResilienceContextPool.Shared.Get(CancellationToken),
+            "state");
+
+        result.Result.ShouldBe(12345);
+        result.Exception.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task ExecuteOutcomeAsync_GenericStrategy_ConvenienceOverload_Exception()
+    {
+        // Test that exceptions are properly converted to outcomes in generic pipeline
+        var testException = new InvalidOperationException("Test exception");
+        
+        var result = await ResiliencePipeline<int>.Empty.ExecuteOutcomeAsync(
+            (context, state) =>
+            {
+                state.ShouldBe("state");
+                throw testException;
+            },
+            ResilienceContextPool.Shared.Get(CancellationToken),
+            "state");
+
+        result.Exception.ShouldBe(testException);
+        result.HasResult.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ExecuteOutcomeAsync_GenericStrategy_ConvenienceOverload_AsyncException()
+    {
+        // Test async method with exception in generic pipeline
+        var testException = new InvalidOperationException("Async test exception");
+        
+        var result = await ResiliencePipeline<string>.Empty.ExecuteOutcomeAsync(
+            async (context, state) =>
+            {
+                state.ShouldBe("state");
+                await Task.Delay(1); // Make it actually async
+                throw testException;
+            },
+            ResilienceContextPool.Shared.Get(CancellationToken),
+            "state");
+
+        result.Exception.ShouldBe(testException);
+        result.HasResult.ShouldBeFalse();
+    }
 }
