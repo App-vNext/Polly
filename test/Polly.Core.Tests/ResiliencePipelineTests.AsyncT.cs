@@ -126,4 +126,59 @@ public partial class ResiliencePipelineTests
 
         result.Result.ShouldBe(12345);
     }
+
+    [Fact]
+    public async Task TryExecuteAsync_Success()
+    {
+        var result = await ResiliencePipeline.Empty.TryExecuteAsync(
+            (context, state) =>
+            {
+                state.ShouldBe("state");
+                context.IsSynchronous.ShouldBeFalse();
+                context.ResultType.ShouldBe(typeof(int));
+                return new ValueTask<int>(12345);
+            },
+            ResilienceContextPool.Shared.Get(),
+            "state");
+
+        result.Result.ShouldBe(12345);
+        result.Exception.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task TryExecuteAsync_Exception()
+    {
+        var testException = new InvalidOperationException("Test exception");
+
+        var result = await ResiliencePipeline.Empty.TryExecuteAsync<int, string>(
+            (_, state) =>
+            {
+                state.ShouldBe("state");
+                throw testException;
+            },
+            ResilienceContextPool.Shared.Get(),
+            "state");
+
+        result.Exception.ShouldBe(testException);
+        result.HasResult.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task TryExecuteAsync_AsyncException()
+    {
+        var testException = new InvalidOperationException("Async test exception");
+
+        var result = await ResiliencePipeline.Empty.TryExecuteAsync<int, string>(
+            async (_, state) =>
+            {
+                state.ShouldBe("state");
+                await Task.Delay(1); // Make it actually async
+                throw testException;
+            },
+            ResilienceContextPool.Shared.Get(),
+            "state");
+
+        result.Exception.ShouldBe(testException);
+        result.HasResult.ShouldBeFalse();
+    }
 }
