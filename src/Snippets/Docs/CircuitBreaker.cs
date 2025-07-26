@@ -278,7 +278,7 @@ internal static class CircuitBreaker
             })
             .Build();
 
-        Outcome<HttpResponseMessage> outcome = await circuitBreaker.ExecuteOutcomeAsync(
+        Outcome<HttpResponseMessage> outcome = await circuitBreaker.TryExecuteAsync(
             static async (ctx, state) => await IssueRequest(),
             context,
             "state");

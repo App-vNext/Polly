@@ -89,9 +89,9 @@ internal static class Performance
         // Acquire a context from the pool
         ResilienceContext context = ResilienceContextPool.Shared.Get(cancellationToken);
 
-        // Instead of wrapping pipeline execution with try-catch, use ExecuteOutcomeAsync(...).
-        // Certain strategies are optimized for this method, returning an exception instance without actually throwing it.
-        Outcome<Member> outcome = await pipeline.ExecuteOutcomeAsync(
+        // Instead of wrapping pipeline execution with try-catch, use TryExecuteAsync(...).
+        // This method automatically converts any exceptions to outcomes without throwing them.
+        Outcome<Member> outcome = await pipeline.TryExecuteAsync(
             static async (context, state) => await GetMemberAsync(state, context.CancellationToken),
             context,
             id);

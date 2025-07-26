@@ -128,16 +128,15 @@ public partial class ResiliencePipelineTests
     }
 
     [Fact]
-    public async Task ExecuteOutcomeAsync_ConvenienceOverload_Success()
+    public async Task TryExecuteAsync_Success()
     {
-        // Test the new convenience overload that handles exception-to-outcome conversion
-        var result = await ResiliencePipeline.Empty.ExecuteOutcomeAsync(
+        var result = await ResiliencePipeline.Empty.TryExecuteAsync(
             (context, state) =>
             {
                 state.ShouldBe("state");
                 context.IsSynchronous.ShouldBeFalse();
                 context.ResultType.ShouldBe(typeof(int));
-                return ValueTask.FromResult(12345);
+                return new ValueTask<int>(12345);
             },
             ResilienceContextPool.Shared.Get(),
             "state");
@@ -147,13 +146,12 @@ public partial class ResiliencePipelineTests
     }
 
     [Fact]
-    public async Task ExecuteOutcomeAsync_ConvenienceOverload_Exception()
+    public async Task TryExecuteAsync_Exception()
     {
-        // Test that exceptions are properly converted to outcomes
         var testException = new InvalidOperationException("Test exception");
-        
-        var result = await ResiliencePipeline.Empty.ExecuteOutcomeAsync(
-            (context, state) =>
+
+        var result = await ResiliencePipeline.Empty.TryExecuteAsync<int, string>(
+            (_, state) =>
             {
                 state.ShouldBe("state");
                 throw testException;
@@ -166,13 +164,12 @@ public partial class ResiliencePipelineTests
     }
 
     [Fact]
-    public async Task ExecuteOutcomeAsync_ConvenienceOverload_AsyncException()
+    public async Task TryExecuteAsync_AsyncException()
     {
-        // Test async method with exception
         var testException = new InvalidOperationException("Async test exception");
-        
-        var result = await ResiliencePipeline.Empty.ExecuteOutcomeAsync(
-            async (context, state) =>
+
+        var result = await ResiliencePipeline.Empty.TryExecuteAsync<int, string>(
+            async (_, state) =>
             {
                 state.ShouldBe("state");
                 await Task.Delay(1); // Make it actually async

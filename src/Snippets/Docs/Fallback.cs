@@ -104,7 +104,7 @@ internal static class Fallback
         var context = ResilienceContextPool.Shared.Get();
         #region fallback-pattern-replace-exception
 
-        var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, "state");
+        var outcome = await WhateverPipeline.TryExecuteAsync(Action, context, "state");
         if (outcome.Exception is HttpRequestException requestException)
         {
             throw new CustomNetworkException("Replace thrown exception", requestException);
@@ -118,7 +118,7 @@ internal static class Fallback
     public static async ValueTask<HttpResponseMessage> Action()
     {
         var context = ResilienceContextPool.Shared.Get();
-        var outcome = await WhateverPipeline.ExecuteOutcomeAsync<HttpResponseMessage, string>(
+        var outcome = await WhateverPipeline.TryExecuteAsync<HttpResponseMessage, string>(
             async (ctx, state) => await ActionCore(),
             context,
             "state");
@@ -161,7 +161,7 @@ internal static class Fallback
             .Build();
 
         var context = ResilienceContextPool.Shared.Get();
-        var outcome = await fallback.ExecuteOutcomeAsync<HttpResponseMessage, string>(
+        var outcome = await fallback.TryExecuteAsync<HttpResponseMessage, string>(
             async (ctx, state) => await CallPrimary(ctx.CancellationToken),
             context,
             "none");
