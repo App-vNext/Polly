@@ -119,11 +119,9 @@ internal static class Fallback
     {
         var context = ResilienceContextPool.Shared.Get();
         var outcome = await WhateverPipeline.ExecuteOutcomeAsync<HttpResponseMessage, string>(
-            async (ctx, state) =>
-            {
-                var result = await ActionCore();
-                return Outcome.FromResult(result);
-            }, context, "state");
+            async (ctx, state) => await ActionCore(),
+            context,
+            "state");
 
         if (outcome.Exception is HttpRequestException requestException)
         {
@@ -164,11 +162,9 @@ internal static class Fallback
 
         var context = ResilienceContextPool.Shared.Get();
         var outcome = await fallback.ExecuteOutcomeAsync<HttpResponseMessage, string>(
-            async (ctx, state) =>
-            {
-                var result = await CallPrimary(ctx.CancellationToken);
-                return Outcome.FromResult(result);
-            }, context, "none");
+            async (ctx, state) => await CallPrimary(ctx.CancellationToken),
+            context,
+            "none");
 
         var result = outcome.Result is not null
             ? outcome.Result

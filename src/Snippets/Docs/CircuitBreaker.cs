@@ -278,11 +278,10 @@ internal static class CircuitBreaker
             })
             .Build();
 
-        Outcome<HttpResponseMessage> outcome = await circuitBreaker.ExecuteOutcomeAsync(static async (ctx, state) =>
-        {
-            var response = await IssueRequest();
-            return Outcome.FromResult(response);
-        }, context, "state");
+        Outcome<HttpResponseMessage> outcome = await circuitBreaker.ExecuteOutcomeAsync(
+            static async (ctx, state) => await IssueRequest(),
+            context,
+            "state");
 
         ResilienceContextPool.Shared.Return(context);
 
