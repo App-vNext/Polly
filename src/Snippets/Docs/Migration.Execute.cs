@@ -59,8 +59,10 @@ internal static partial class Migration
 
         // Asynchronous execution
         var context = ResilienceContextPool.Shared.Get();
-        Outcome<int> pipelineResult = await pipeline.ExecuteOutcomeAsync(
-            static async (ctx, state) => Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, "state");
+        Outcome<int> pipelineResult = await pipeline.TryExecuteAsync(
+            static async (ctx, state) => await MethodAsync(ctx.CancellationToken),
+            context,
+            "state");
         ResilienceContextPool.Shared.Return(context);
 
         // Assess policy result
@@ -95,8 +97,10 @@ internal static partial class Migration
             .Build();
 
         context = ResilienceContextPool.Shared.Get();
-        pipelineResult = await pipelineWithContext.ExecuteOutcomeAsync(
-            static async (ctx, state) => Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, "state");
+        pipelineResult = await pipelineWithContext.TryExecuteAsync(
+            static async (ctx, state) => await MethodAsync(ctx.CancellationToken),
+            context,
+            "state");
 
         context.Properties.TryGetValue(contextKey, out var ctxValue);
         ResilienceContextPool.Shared.Return(context);
