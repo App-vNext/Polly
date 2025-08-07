@@ -131,5 +131,5 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [Required]
-    public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;
+    public Func<double> Randomizer { get; set; } = RandomUtil.NextDouble;
 }

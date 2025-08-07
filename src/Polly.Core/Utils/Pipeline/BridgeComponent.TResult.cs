@@ -18,9 +18,9 @@ internal sealed class BridgeComponent<T> : BridgeComponentBase
         // Check if we can cast directly, thus saving some cycles and improving the performance
         if (callback is Func<ResilienceContext, TState, ValueTask<Outcome<T>>> casted)
         {
-            return ConvertValueTask<TResult>(
-                Strategy.ExecuteCore(casted, context, state),
-                context);
+#pragma warning disable CA2012
+            return (ValueTask<Outcome<TResult>>)(object)Strategy.ExecuteCore(casted, context, state);
+#pragma warning restore CA2012
         }
         else
         {
@@ -33,46 +33,18 @@ internal sealed class BridgeComponent<T> : BridgeComponentBase
                 context,
                 (callback, state));
 
-            return ConvertValueTask<TResult>(valueTask, context);
-        }
-    }
+            if (valueTask.IsCompletedSuccessfully)
+            {
+                return new ValueTask<Outcome<TResult>>(ConvertOutcome<T, TResult>(valueTask.Result));
+            }
 
-    private static ValueTask<Outcome<TTo>> ConvertValueTask<TTo>(ValueTask<Outcome<T>> valueTask, ResilienceContext resilienceContext)
-    {
-        if (valueTask.IsCompletedSuccessfully)
-        {
-            return new ValueTask<Outcome<TTo>>(ConvertOutcome<T, TTo>(valueTask.Result));
+            return ConvertValueTaskAsync(valueTask, context);
         }
 
-        return ConvertValueTaskAsync(valueTask, resilienceContext);
-
-        static async ValueTask<Outcome<TTo>> ConvertValueTaskAsync(ValueTask<Outcome<T>> valueTask, ResilienceContext resilienceContext)
+        static async ValueTask<Outcome<TResult>> ConvertValueTaskAsync(ValueTask<Outcome<T>> valueTask, ResilienceContext resilienceContext)
         {
             var outcome = await valueTask.ConfigureAwait(resilienceContext.ContinueOnCapturedContext);
-            return ConvertOutcome<T, TTo>(outcome);
+            return ConvertOutcome<T, TResult>(outcome);
         }
-    }
-
-    private static Outcome<TTo> ConvertOutcome<TFrom, TTo>(Outcome<TFrom> outcome)
-    {
-        if (outcome.ExceptionDispatchInfo is not null)
-        {
-            return new Outcome<TTo>(outcome.ExceptionDispatchInfo);
-        }
-
-        if (outcome.Result is null)
-        {
-            return new Outcome<TTo>(default(TTo));
-        }
-
-        if (typeof(TTo) == typeof(TFrom))
-        {
-            var result = outcome.Result;
-
-            // We can use the unsafe cast here because we know for sure these two types are the same
-            return new Outcome<TTo>(Unsafe.As<TFrom, TTo>(ref result));
-        }
-
-        return new Outcome<TTo>((TTo)(object)outcome.Result);
     }
 }
