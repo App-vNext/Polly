@@ -73,7 +73,7 @@ jobs:
 
           git checkout -b $BranchName
           git add .
-          git commit -m "Update the code-snippets in the documentation"
+          git commit -m "Update the code-snippets in the documentation" -s
           git push -u origin $BranchName
           "updated-docs=true" >> ${env:GITHUB_OUTPUT}
 

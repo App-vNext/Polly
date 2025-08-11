@@ -82,7 +82,7 @@ jobs:
 
           git checkout -b $branchName
           git add .
-          git commit -m "Update CHANGELOG`n`nUpdate CHANGELOG and samples for v${env:RELEASE_VERSION}."
+          git commit -m "Update CHANGELOG`n`nUpdate CHANGELOG and samples for v${env:RELEASE_VERSION}." -s
           git push -u origin $branchName
 
           "branch-name=${branchName}" >> ${env:GITHUB_OUTPUT}
