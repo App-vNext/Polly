@@ -89,7 +89,7 @@ jobs:
       id: setup-dotnet
 
     - name: Setup NuGet cache
-      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+      uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
         path: ${{ env.NUGET_PACKAGES }}
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
@@ -138,7 +138,7 @@ jobs:
         if-no-files-found: error
 
     - name: Generate SBOM
-      uses: anchore/sbom-action@cee1b8e05ae5b2593a75e197229729eabaa9f8ec # v0.20.2
+      uses: anchore/sbom-action@7b36ad622f042cab6f59a75c2ac24ccb256e9b45 # v0.20.4
       if: runner.os == 'Windows'
       with:
         artifact-name: polly.spdx.json
@@ -165,7 +165,7 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: packages-windows
 
@@ -209,13 +209,13 @@ jobs:
     steps:
 
     - name: Download unsigned packages
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: packages-windows
         path: packages
 
     - name: Download signing configuration
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: signing-config
         path: signing-config
@@ -279,12 +279,12 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: signed-packages
 
     - name: Download SBOM
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: polly.spdx.json
         path: ./artifacts
@@ -404,7 +404,7 @@ jobs:
     steps:
 
     - name: Download signed packages
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: signed-packages
 

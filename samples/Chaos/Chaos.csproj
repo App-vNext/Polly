@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
     <PackageReference Include="Polly.Core" />
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
 </Project>

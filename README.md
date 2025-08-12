@@ -483,10 +483,12 @@ Thanks to the following companies for sponsoring the ongoing development of Poll
 
 - [.NET on AWS Open Source Software Fund](https://github.com/aws/dotnet-foss)
 - [Microsoft's Free and Open Source Software Fund](https://github.com/microsoft/foss-fund)
+- [GitHub's Secure Open Source Fund](https://resources.github.com/github-secure-open-source-fund/)
 
 <!-- markdownlint-disable MD042 -->
 [![AWS logo](./logos/aws.png)](#)
 [![Microsoft logo](./logos/microsoft.png)](#)
+[![GitHub logo](./logos/github.png)](#)
 <!-- markdownlint-enable MD034 -->
 
 Help support this project by becoming a sponsor through [GitHub Sponsors](https://github.com/sponsors/martincostello).

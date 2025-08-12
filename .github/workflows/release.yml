@@ -45,30 +45,14 @@ jobs:
               version = version.slice(1);
             }
 
-            const tag_name = version;
-            const name = tag_name;
-
-            const { data: notes } = await github.rest.repos.generateReleaseNotes({
-              owner,
-              repo,
-              tag_name,
-              target_commitish: process.env.DEFAULT_BRANCH,
-            });
-
-            const body = notes.body
-              .split('\n')
-              .filter((line) => !line.includes(' @dependabot '))
-              .filter((line) => !line.includes(' @github-actions '))
-              .filter((line) => !line.includes(' @polly-updater-bot '))
-              .join('\n');
-
             const { data: release } = await github.rest.repos.createRelease({
               owner,
               repo,
-              tag_name,
-              name,
-              body,
+              tag_name: version,
+              target_commitish: process.env.DEFAULT_BRANCH,
+              name: version,
               draft,
+              generate_release_notes: true,
             });
 
             core.notice(`Created release ${release.name}: ${release.html_url}`);

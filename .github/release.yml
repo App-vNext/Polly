@@ -1,0 +1,6 @@
+changelog:
+  exclude:
+    authors:
+      - dependabot[bot]
+      - github-actions[bot]
+      - polly-updater-bot[bot]
