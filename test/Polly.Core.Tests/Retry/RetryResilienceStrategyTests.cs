@@ -2,7 +2,6 @@ using Microsoft.Extensions.Time.Testing;
 using Polly.Retry;
 using Polly.Telemetry;
 using Polly.Testing;
-using Xunit.Sdk;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -256,7 +255,7 @@ public class RetryResilienceStrategyTests
         int generatedValues = 0;
 
         var delay = TimeSpan.Zero;
-        var provider = new ThrowingFakeTimeProvider();
+        var provider = new FakeTimeProvider();
 
         _options.ShouldHandle = _ => PredicateResult.True();
         _options.MaxRetryAttempts = 3;
@@ -287,14 +286,6 @@ public class RetryResilienceStrategyTests
 
         sut.IsLastAttempt(int.MaxValue, out var increment).ShouldBeFalse();
         increment.ShouldBeFalse();
-    }
-
-    private sealed class ThrowingFakeTimeProvider : FakeTimeProvider
-    {
-        public override DateTimeOffset GetUtcNow() => throw new XunitException("TimeProvider should not be used.");
-
-        public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
-            => throw new XunitException("TimeProvider should not be used.");
     }
 
     [Fact]
