@@ -1,14 +1,17 @@
 <Project>
 
   <PropertyGroup>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnablePackageValidation>false</EnablePackageValidation>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <NoWarn>$(NoWarn);SA1123;SA1515;CA2000;CA2007;CA1303;IDE0021;RS0037;RS0016;CS1591</NoWarn>
+    <Nullable>enable</Nullable>
+    <ProjectType>Library</ProjectType>
     <RunAnalyzers>true</RunAnalyzers>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <AnalysisLevel>latest</AnalysisLevel>
-    <ProjectType>Library</ProjectType>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);SA1123;SA1515;CA2000;CA2007;CA1303;IDE0021;RS0037;RS0016;CS1591</NoWarn>
-    <EnablePackageValidation>false</EnablePackageValidation>
   </PropertyGroup>
 
   <Import Project="$(MsBuildThisFileDirectory)..\eng\Library.targets" />
