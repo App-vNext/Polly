@@ -1,6 +1,6 @@
 name: dependabot-approve
 
-on: pull_request_target
+on: pull_request_target # zizmor: ignore[dangerous-triggers] Workflow is gated on pull request triggering account and only checks out main
 
 permissions: {}
 
@@ -32,6 +32,8 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           filter: 'tree:0'
+          persist-credentials: false
+          ref: ${{ github.event.repository.default_branch }}
           show-progress: false
 
       - name: Approve pull request and enable auto-merge
