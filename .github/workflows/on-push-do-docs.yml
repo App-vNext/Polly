@@ -18,7 +18,7 @@ jobs:
 
       - name: Generate GitHub application token
         id: generate-application-token
-        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2.0.6
+        uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
         with:
           app-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
           private-key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
