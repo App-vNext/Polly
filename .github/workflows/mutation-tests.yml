@@ -2,9 +2,14 @@ name: mutation-tests
 
 on:
   push:
-    branches: [ main, release/* ]
+    branches:
+      - main
+      - release/*
   pull_request:
-    branches: [ main, release/* ]
+    branches:
+      - main
+      - release/*
+      - dotnet-vnext
   workflow_dispatch:
 
 env:
