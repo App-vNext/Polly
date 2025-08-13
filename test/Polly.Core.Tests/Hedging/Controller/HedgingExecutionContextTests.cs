@@ -87,9 +87,12 @@ public class HedgingExecutionContextTests : IDisposable
         (await task).ShouldBeNull();
     }
 
-    [Fact]
-    public async Task TryWaitForCompletedExecutionAsync_FinishedTask_Ok()
+    [InlineData(false)]
+    [InlineData(true)]
+    [Theory]
+    public async Task TryWaitForCompletedExecutionAsync_FinishedTask_Ok(bool continueOnCapturedContext)
     {
+        _resilienceContext.ContinueOnCapturedContext = continueOnCapturedContext;
         var context = Create();
         context.Initialize(_resilienceContext);
         await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsValueTask(new DisposableResult("dummy")), "state");

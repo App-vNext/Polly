@@ -27,6 +27,6 @@ internal abstract class BridgeComponentBase : PipelineComponent
             return new(outcome.ExceptionDispatchInfo);
         }
 
-        return outcome.Result is null ? default : new((TTo)(object)outcome.Result);
+        return new((TTo?)(object?)outcome.Result);
     }
 }

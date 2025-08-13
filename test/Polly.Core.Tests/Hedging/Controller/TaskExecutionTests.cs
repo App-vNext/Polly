@@ -10,11 +10,11 @@ public class TaskExecutionTests : IDisposable
 {
     private const string Handled = "Handled";
     private readonly ResiliencePropertyKey<string> _myKey = new("my-key");
-    private readonly HedgingHandler<DisposableResult> _hedgingHandler;
     private readonly CancellationTokenSource _cts;
     private readonly HedgingTimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly List<ExecutionAttemptArguments> _args = [];
+    private HedgingHandler<DisposableResult> _hedgingHandler;
     private ResilienceContext _primaryContext;
 
     public TaskExecutionTests()
@@ -101,6 +101,31 @@ public class TaskExecutionTests : IDisposable
 
         execution.Outcome.Result!.Name.ShouldBe(value);
         execution.IsHandled.ShouldBe(handled);
+        AssertContext(execution.Context);
+    }
+
+    [InlineData(false)]
+    [InlineData(true)]
+    [Theory]
+    public async Task Initialize_Secondary_DefaultHandler_Ok(bool sync)
+    {
+        _hedgingHandler = HedgingHelper.CreateHandler(_ => false, new HedgingStrategyOptions<DisposableResult>().ActionGenerator);
+        _primaryContext.Initialize<string>(sync);
+        var execution = Create();
+
+        Func<ResilienceContext, string, ValueTask<Outcome<DisposableResult>>> primaryCallback = (context, state) =>
+        {
+            AssertContext(context);
+            state.ShouldBe("dummy-state");
+            return Outcome.FromResultAsValueTask(new DisposableResult { Name = "Unhandled" });
+        };
+
+        (await execution.InitializeAsync(HedgedTaskType.Secondary, _primaryContext, primaryCallback, "dummy-state", 4)).ShouldBeTrue();
+
+        await execution.ExecutionTaskSafe!;
+
+        execution.Outcome.Result!.Name.ShouldBe("Unhandled");
+        execution.IsHandled.ShouldBe(false);
         AssertContext(execution.Context);
     }
 

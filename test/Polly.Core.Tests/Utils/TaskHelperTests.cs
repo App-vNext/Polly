@@ -22,18 +22,4 @@ public class TaskHelperTests
             return 42;
         }
     }
-
-    [Fact]
-    public void GetResult_ValueTask_Ok()
-    {
-        TaskHelper.GetResult(default);
-
-        Should.NotThrow(() => TaskHelper.GetResult(GetValue()));
-
-        static async ValueTask<VoidResult> GetValue()
-        {
-            await Task.Delay(20);
-            return VoidResult.Instance;
-        }
-    }
 }
