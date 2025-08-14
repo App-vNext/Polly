@@ -29,7 +29,7 @@ public class PipelineComponentFactoryTests
     public void WithDisposableCallbacks_NoCallbacks_ReturnsOriginalComponent(IEnumerable<Action> callbacks)
     {
         var component = Substitute.For<PipelineComponent>();
-        var result = PipelineComponentFactory.WithDisposableCallbacks(component, callbacks);
+        var result = PipelineComponentFactory.WithDisposableCallbacks(component, callbacks.ToList());
         result.ShouldBeSameAs(component);
     }
 
@@ -41,7 +41,7 @@ public class PipelineComponentFactoryTests
     {
         var component = Substitute.For<PipelineComponent>();
 
-        var result = PipelineComponentFactory.WithDisposableCallbacks(component, callbacks);
+        var result = PipelineComponentFactory.WithDisposableCallbacks(component, callbacks.ToList());
 
         result.ShouldBeOfType<ComponentWithDisposeCallbacks>();
     }

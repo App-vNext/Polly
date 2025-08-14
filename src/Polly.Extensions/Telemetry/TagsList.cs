@@ -1,33 +1,29 @@
+#if NET
+using System.Runtime.InteropServices;
+#endif
 using Polly.Utils;
 
 namespace Polly.Telemetry;
 
 internal sealed class TagsList
 {
-    private const int InitialArraySize = 20;
+    private static readonly ObjectPool<TagsList> ContextPool = new(static () => new TagsList(), static _ => true);
 
-    private static readonly ObjectPool<TagsList> ContextPool = new(static () => new TagsList(), static context =>
-    {
-        context.Tags.Clear();
-        return true;
-    });
-
-    private KeyValuePair<string, object?>[] _tagsArray = new KeyValuePair<string, object?>[InitialArraySize];
+#if !NET
+    private KeyValuePair<string, object?>[] _tagsArray = new KeyValuePair<string, object?>[20];
+#endif
 
     private TagsList()
     {
     }
 
-    internal static TagsList Get()
-    {
-        var context = ContextPool.Get();
-
-        return context;
-    }
+    internal static TagsList Get() => ContextPool.Get();
 
     internal static void Return(TagsList context)
     {
+#if !NET
         Array.Clear(context._tagsArray, 0, context.Tags.Count);
+#endif
         context.Tags.Clear();
         ContextPool.Return(context);
     }
@@ -35,12 +31,15 @@ internal sealed class TagsList
     /// <summary>
     /// Gets the tags associated with the resilience event.
     /// </summary>
-    public IList<KeyValuePair<string, object?>> Tags { get; } = [];
+    public List<KeyValuePair<string, object?>> Tags { get; } = [];
 
     internal ReadOnlySpan<KeyValuePair<string, object?>> TagsSpan
     {
         get
         {
+#if NET
+            return CollectionsMarshal.AsSpan(Tags);
+#else
             // stryker disable once equality : no means to test this
             if (Tags.Count > _tagsArray.Length)
             {
@@ -53,6 +52,7 @@ internal sealed class TagsList
             }
 
             return _tagsArray.AsSpan(0, Tags.Count);
+#endif
         }
     }
 }

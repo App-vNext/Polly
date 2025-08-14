@@ -120,14 +120,19 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
             return TryRemoveExecutedTask();
         }
 
-        using var delayTaskCancellation = CancellationTokenSource.CreateLinkedTokenSource(PrimaryContext!.CancellationToken);
-
 #if NET8_0_OR_GREATER
-        var delayTask = Task.Delay(hedgingDelay, _timeProvider, delayTaskCancellation.Token);
+        var whenAnyHedgedTask = WaitForTaskCompetitionAsync();
+        await whenAnyHedgedTask.WaitAsync(hedgingDelay, _timeProvider, PrimaryContext!.CancellationToken)
+            .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing | (ContinueOnCapturedContext ? ConfigureAwaitOptions.ContinueOnCapturedContext : 0));
+
+        if (!whenAnyHedgedTask.IsCompleted)
+        {
+            return null;
+        }
 #else
+        using var delayTaskCancellation = CancellationTokenSource.CreateLinkedTokenSource(PrimaryContext!.CancellationToken);
         var delayTask = _timeProvider.Delay(hedgingDelay, delayTaskCancellation.Token);
-#endif
-        Task<Task> whenAnyHedgedTask = WaitForTaskCompetitionAsync();
+        var whenAnyHedgedTask = WaitForTaskCompetitionAsync();
         var completedTask = await Task.WhenAny(whenAnyHedgedTask, delayTask).ConfigureAwait(ContinueOnCapturedContext);
 
         if (completedTask == delayTask)
@@ -135,15 +140,8 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
             return null;
         }
 
-        // cancel the ongoing delay task
-        // Stryker disable once boolean : no means to test this
-#if NET8_0_OR_GREATER
-        await delayTaskCancellation.CancelAsync().ConfigureAwait(ContinueOnCapturedContext);
-#else
-        delayTaskCancellation.Cancel(throwOnFirstException: false);
+        delayTaskCancellation.Cancel();
 #endif
-
-        await whenAnyHedgedTask.ConfigureAwait(ContinueOnCapturedContext);
 
         return TryRemoveExecutedTask();
     }
@@ -162,30 +160,25 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
         return new ExecutionInfo<T>(null, false, null);
     }
 
-    private Task<Task> WaitForTaskCompetitionAsync()
+    private Task WaitForTaskCompetitionAsync()
     {
 #pragma warning disable S109 // Magic numbers should not be used
         return _executingTasks.Count switch
         {
-            1 => AwaitTask(_executingTasks[0], ContinueOnCapturedContext),
+            1 => _executingTasks[0].ExecutionTaskSafe!,
             2 => Task.WhenAny(_executingTasks[0].ExecutionTaskSafe!, _executingTasks[1].ExecutionTaskSafe!),
             _ => Task.WhenAny(_executingTasks.Select(v => v.ExecutionTaskSafe!))
         };
 #pragma warning restore S109 // Magic numbers should not be used
-
-        static async Task<Task> AwaitTask(TaskExecution<T> task, bool continueOnCapturedContext)
-        {
-            // ExecutionTask never fails
-            await task.ExecutionTaskSafe!.ConfigureAwait(continueOnCapturedContext);
-            return Task.FromResult(task);
-        }
     }
 
     private TaskExecution<T>? TryRemoveExecutedTask()
     {
-        if (_executingTasks.Find(static v => v.ExecutionTaskSafe!.IsCompleted) is TaskExecution<T> execution)
+        var i = _executingTasks.FindIndex(static v => v.ExecutionTaskSafe!.IsCompleted);
+        if (i != -1)
         {
-            _executingTasks.Remove(execution);
+            var execution = _executingTasks[i];
+            _executingTasks.RemoveAt(i);
             return execution;
         }
 
@@ -194,12 +187,7 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
 
     private void UpdateOriginalContext()
     {
-        if (LoadedTasks == 0)
-        {
-            return;
-        }
-
-        if (Tasks.FirstOrDefault(static t => t.IsAccepted) is TaskExecution<T> acceptedExecution)
+        if (_tasks.Find(static t => t.IsAccepted) is TaskExecution<T> acceptedExecution)
         {
             PrimaryContext!.Properties.AddOrReplaceProperties(acceptedExecution.Context.Properties);
         }

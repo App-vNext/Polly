@@ -25,21 +25,7 @@ public partial class ResiliencePipeline
 
         InitializeSyncContext<TResult>(context);
 
-        return Component.ExecuteCoreSync(
-           [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
-           {
-               try
-               {
-                   var result = state.callback(context, state.state);
-                   return Outcome.FromResult(result);
-               }
-               catch (Exception e)
-               {
-                   return Outcome.FromException<TResult>(e);
-               }
-           },
-           context,
-           (callback, state)).GetResultOrRethrow();
+        return Component.ExecuteCoreSync(callback, context, state);
     }
 
     /// <summary>
@@ -50,31 +36,8 @@ public partial class ResiliencePipeline
     /// <param name="context">The context associated with the callback.</param>
     /// <returns>An instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public TResult Execute<TResult>(
-        Func<ResilienceContext, TResult> callback,
-        ResilienceContext context)
-    {
-        Guard.NotNull(callback);
-        Guard.NotNull(context);
-
-        InitializeSyncContext<TResult>(context);
-
-        return Component.ExecuteCoreSync(
-            [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
-            {
-                try
-                {
-                    var result = state(context);
-                    return Outcome.FromResult(result);
-                }
-                catch (Exception e)
-                {
-                    return Outcome.FromException<TResult>(e);
-                }
-            },
-            context,
-            callback).GetResultOrRethrow();
-    }
+    public TResult Execute<TResult>(Func<ResilienceContext, TResult> callback, ResilienceContext context)
+        => Execute(static (context, state) => state(context), context, Guard.NotNull(callback));
 
     /// <summary>
     /// Executes the specified callback.
@@ -95,19 +58,9 @@ public partial class ResiliencePipeline
         try
         {
             return Component.ExecuteCoreSync(
-                [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
-                {
-                    try
-                    {
-                        return Outcome.FromResult(state(context.CancellationToken));
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException<TResult>(e);
-                    }
-                },
+                static (context, state) => state(context.CancellationToken),
                 context,
-                callback).GetResultOrRethrow();
+                callback);
         }
         finally
         {
@@ -131,19 +84,9 @@ public partial class ResiliencePipeline
         try
         {
             return Component.ExecuteCoreSync(
-                [DebuggerDisableUserUnhandledExceptions] static (_, state) =>
-                {
-                    try
-                    {
-                        return Outcome.FromResult(state());
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException<TResult>(e);
-                    }
-                },
+                static (_, state) => state(),
                 context,
-                callback).GetResultOrRethrow();
+                callback);
         }
         finally
         {
@@ -169,19 +112,9 @@ public partial class ResiliencePipeline
         try
         {
             return Component.ExecuteCoreSync(
-                [DebuggerDisableUserUnhandledExceptions] static (_, state) =>
-                {
-                    try
-                    {
-                        return Outcome.FromResult(state.callback(state.state));
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException<TResult>(e);
-                    }
-                },
+                static (_, state) => state.callback(state.state),
                 context,
-                (callback, state)).GetResultOrRethrow();
+                (callback, state));
         }
         finally
         {
@@ -211,19 +144,9 @@ public partial class ResiliencePipeline
         try
         {
             return Component.ExecuteCoreSync(
-                [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
-                {
-                    try
-                    {
-                        return Outcome.FromResult(state.callback(state.state, context.CancellationToken));
-                    }
-                    catch (Exception e)
-                    {
-                        return Outcome.FromException<TResult>(e);
-                    }
-                },
+                static (context, state) => state.callback(state.state, context.CancellationToken),
                 context,
-                (callback, state)).GetResultOrRethrow();
+                (callback, state));
         }
         finally
         {

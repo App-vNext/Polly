@@ -21,8 +21,7 @@ public sealed class FaultGenerator
     /// <summary>
     /// Initializes a new instance of the <see cref="FaultGenerator"/> class.
     /// </summary>
-    public FaultGenerator()
-        => _helper = new GeneratorHelper<VoidResult>(RandomUtil.Instance.Next);
+    public FaultGenerator() => _helper = new(RandomUtil.Next);
 
     /// <summary>
     /// Registers an exception generator delegate.

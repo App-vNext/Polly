@@ -17,15 +17,23 @@ internal abstract class PipelineComponent : IAsyncDisposable
         ResilienceContext context,
         TState state);
 
-    internal Outcome<TResult> ExecuteCoreSync<TResult, TState>(
-        Func<ResilienceContext, TState, Outcome<TResult>> callback,
+    internal TResult ExecuteCoreSync<TResult, TState>(
+        Func<ResilienceContext, TState, TResult> callback,
         ResilienceContext context,
         TState state)
-        => ExecuteCore(
-            static (context, state) => new ValueTask<Outcome<TResult>>(state.callbackMethod(context, state.stateObject)),
-            context,
-            (callbackMethod: callback, stateObject: state))
-        .GetResult();
+        => ExecuteCore([DebuggerDisableUserUnhandledExceptions] static (context, state) =>
+        {
+            try
+            {
+                return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(state.callback(context, state.state)));
+            }
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch (Exception e)
+            {
+                return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(e));
+            }
+        },
+        context, (callback, state)).GetResult().GetResultOrRethrow();
 
     public abstract ValueTask DisposeAsync();
 

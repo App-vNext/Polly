@@ -45,7 +45,18 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 
         var registration = CreateRegistration(cancellationSource, previousToken);
 
-        var outcome = await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        Outcome<TResult> outcome;
+        try
+        {
+            outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
+#pragma warning disable CA1031
+        catch (Exception ex)
+        {
+            outcome = new(ex);
+        }
+#pragma warning restore CA1031
+
         var isCancellationRequested = cancellationSource.IsCancellationRequested;
 
         // execution is finished, clean up
