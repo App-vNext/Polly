@@ -5,6 +5,6 @@
     "rollForward": "latestMajor"
   },
   "msbuild-sdks": {
-    "Cake.Sdk": "5.0.25198.49-beta"
+    "Cake.Sdk": "5.0.25225.53-beta"
   }
 }
