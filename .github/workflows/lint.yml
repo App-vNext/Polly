@@ -27,7 +27,7 @@ jobs:
       POWERSHELL_YAML_VERSION: '0.4.12'
       PSSCRIPTANALYZER_VERSION: '1.24.0'
       TERM: xterm
-      ZIZMOR_VERSION: '1.11.0'
+      ZIZMOR_VERSION: '1.12.0'
 
     permissions:
       actions: read
