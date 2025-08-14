@@ -86,4 +86,26 @@ public partial class ResiliencePipeline<T>
         TState state)
         where TResult : T
         => Pipeline.ExecuteOutcomeAsync(callback, context, state);
+
+    /// <summary>
+    /// Executes the specified callback and wraps the result in an <see cref="Outcome{TResult}"/>, converting any exceptions to outcomes.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
+    /// <param name="callback">The user-provided callback.</param>
+    /// <param name="context">The context associated with the callback.</param>
+    /// <param name="state">The state associated with the callback.</param>
+    /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
+    /// <remarks>
+    /// This method provides a convenient way to execute asynchronous callbacks without throwing exceptions.
+    /// Any exception thrown by the callback is captured and returned as part of the outcome.
+    /// For advanced scenarios requiring custom exception handling, use <see cref="ExecuteOutcomeAsync{TResult, TState}(Func{ResilienceContext, TState, ValueTask{Outcome{TResult}}}, ResilienceContext, TState)"/>.
+    /// </remarks>
+    public ValueTask<Outcome<TResult>> TryExecuteAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<TResult>> callback,
+        ResilienceContext context,
+        TState state)
+        where TResult : T
+        => Pipeline.TryExecuteAsync(callback, context, state);
 }

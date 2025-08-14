@@ -1,1 +1,3 @@
 ﻿#nullable enable
+Polly.ResiliencePipeline.TryExecuteAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>
+Polly.ResiliencePipeline<T>.TryExecuteAsync<TResult, TState>(System.Func<Polly.ResilienceContext!, TState, System.Threading.Tasks.ValueTask<TResult>>! callback, Polly.ResilienceContext! context, TState state) -> System.Threading.Tasks.ValueTask<Polly.Outcome<TResult>>

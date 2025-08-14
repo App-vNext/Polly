@@ -98,13 +98,13 @@ internal static class Fallback
     }
 
     private static readonly ResiliencePipeline<HttpResponseMessage> WhateverPipeline = ResiliencePipeline<HttpResponseMessage>.Empty;
-    private static ValueTask<Outcome<HttpResponseMessage>> Action(ResilienceContext context, string state) => Outcome.FromResultAsValueTask(new HttpResponseMessage());
+    private static ValueTask<HttpResponseMessage> Action(ResilienceContext context, string state) => new ValueTask<HttpResponseMessage>(new HttpResponseMessage());
     public static async Task Pattern_ReplaceException()
     {
         var context = ResilienceContextPool.Shared.Get();
         #region fallback-pattern-replace-exception
 
-        var outcome = await WhateverPipeline.ExecuteOutcomeAsync(Action, context, "state");
+        var outcome = await WhateverPipeline.TryExecuteAsync(Action, context, "state");
         if (outcome.Exception is HttpRequestException requestException)
         {
             throw new CustomNetworkException("Replace thrown exception", requestException);
@@ -118,12 +118,10 @@ internal static class Fallback
     public static async ValueTask<HttpResponseMessage> Action()
     {
         var context = ResilienceContextPool.Shared.Get();
-        var outcome = await WhateverPipeline.ExecuteOutcomeAsync<HttpResponseMessage, string>(
-            async (ctx, state) =>
-            {
-                var result = await ActionCore();
-                return Outcome.FromResult(result);
-            }, context, "state");
+        var outcome = await WhateverPipeline.TryExecuteAsync<HttpResponseMessage, string>(
+            async (ctx, state) => await ActionCore(),
+            context,
+            "state");
 
         if (outcome.Exception is HttpRequestException requestException)
         {
@@ -163,12 +161,10 @@ internal static class Fallback
             .Build();
 
         var context = ResilienceContextPool.Shared.Get();
-        var outcome = await fallback.ExecuteOutcomeAsync<HttpResponseMessage, string>(
-            async (ctx, state) =>
-            {
-                var result = await CallPrimary(ctx.CancellationToken);
-                return Outcome.FromResult(result);
-            }, context, "none");
+        var outcome = await fallback.TryExecuteAsync<HttpResponseMessage, string>(
+            async (ctx, state) => await CallPrimary(ctx.CancellationToken),
+            context,
+            "none");
 
         var result = outcome.Result is not null
             ? outcome.Result
