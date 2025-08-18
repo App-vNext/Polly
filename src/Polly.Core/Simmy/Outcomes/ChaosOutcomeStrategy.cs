@@ -34,17 +34,8 @@ internal sealed class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
                 return outcome;
             }
 
-            try
-            {
-                context.CancellationToken.ThrowIfCancellationRequested();
-                return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            }
-#pragma warning disable CA1031
-            catch (Exception ex)
-            {
-                return new(ex);
-            }
-#pragma warning restore CA1031
+            context.CancellationToken.ThrowIfCancellationRequested();
+            return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         catch (OperationCanceledException e)
         {

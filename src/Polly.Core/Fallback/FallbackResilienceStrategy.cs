@@ -19,16 +19,7 @@ internal sealed class FallbackResilienceStrategy<T> : ResilienceStrategy<T>
 
     protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
-        Outcome<T> outcome;
-        try
-        {
-            outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-        }
-        catch (Exception ex)
-        {
-            outcome = new(ex);
-        }
-
+        var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         var handleFallbackArgs = new FallbackPredicateArguments<T>(context, outcome);
         if (!await _handler.ShouldHandle(handleFallbackArgs).ConfigureAwait(context.ContinueOnCapturedContext))
         {

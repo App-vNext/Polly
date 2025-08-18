@@ -52,18 +52,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
         while (true)
         {
             var startTimestamp = _timeProvider.GetTimestamp();
-            Outcome<T> outcome;
-            try
-            {
-                outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            }
-#pragma warning disable CA1031
-            catch (Exception ex)
-            {
-                outcome = new(ex);
-            }
-#pragma warning restore CA1031
-
+            var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
             var shouldRetryArgs = new RetryPredicateArguments<T>(context, outcome, attempt);
             var handle = await ShouldHandle(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext);
             var executionTime = _timeProvider.GetElapsedTime(startTimestamp);

@@ -34,17 +34,8 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T
             return outcome;
         }
 
-        try
-        {
-            context.CancellationToken.ThrowIfCancellationRequested();
-            outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-        }
-#pragma warning disable CA1031
-        catch (Exception ex)
-        {
-            outcome = new(ex);
-        }
-#pragma warning restore CA1031
+        context.CancellationToken.ThrowIfCancellationRequested();
+        outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         var args = new CircuitBreakerPredicateArguments<T>(context, outcome);
         if (await _handler(args).ConfigureAwait(context.ContinueOnCapturedContext))

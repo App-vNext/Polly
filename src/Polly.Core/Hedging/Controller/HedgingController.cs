@@ -32,11 +32,12 @@ internal sealed class HedgingController<T>
             return true;
         });
 
+        Action<HedgingExecutionContext<T>> onReset = null!;
         _contextPool = new ObjectPool<HedgingExecutionContext<T>>(
             () =>
             {
                 Interlocked.Increment(ref _rentedContexts);
-                return new HedgingExecutionContext<T>(_executionPool, provider, maxAttempts, ReturnContext);
+                return new HedgingExecutionContext<T>(_executionPool, provider, maxAttempts, onReset);
             },
             _ =>
             {
@@ -45,6 +46,7 @@ internal sealed class HedgingController<T>
                 // Stryker disable once Boolean : no means to test this
                 return true;
             });
+        onReset = _contextPool.Return;
     }
 
     public int RentedContexts => _rentedContexts;
@@ -57,6 +59,4 @@ internal sealed class HedgingController<T>
         executionContext.Initialize(context);
         return executionContext;
     }
-
-    private void ReturnContext(HedgingExecutionContext<T> context) => _contextPool.Return(context);
 }
