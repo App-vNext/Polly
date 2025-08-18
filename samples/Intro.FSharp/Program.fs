@@ -18,7 +18,7 @@ let demo () =
         // and for both void and result-returning user-callbacks.
         let pipeline =
             ResiliencePipelineBuilder()
-                .AddTimeout(TimeSpan.FromSeconds(5))
+                .AddTimeout(TimeSpan.FromSeconds(5.0))
                 .Build()
 
         let token = CancellationToken.None
