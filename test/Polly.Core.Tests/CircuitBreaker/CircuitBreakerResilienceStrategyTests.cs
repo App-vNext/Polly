@@ -117,6 +117,18 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
     }
 
+    [Fact]
+    public async Task ExecuteOutcomeAsync_UnhandledException_OnActionSuccess()
+    {
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Outcome.Exception is InvalidOperationException);
+        var strategy = Create();
+
+        var outcome = await strategy.ExecuteOutcomeAsync<int, string>((_, _) => throw new ArgumentException(), new(), "dummy-state");
+        outcome.Exception.ShouldBeOfType<ArgumentException>();
+
+        _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
+    }
+
     public void Dispose() => _controller.Dispose();
 
     [Fact]

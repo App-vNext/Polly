@@ -18,9 +18,11 @@ internal sealed class BridgeComponent<T> : BridgeComponentBase
         // Check if we can cast directly, thus saving some cycles and improving the performance
         if (callback is Func<ResilienceContext, TState, ValueTask<Outcome<T>>> casted)
         {
-#pragma warning disable CA2012
-            return (ValueTask<Outcome<TResult>>)(object)Strategy.ExecuteCore(casted, context, state);
-#pragma warning restore CA2012
+            var task = Strategy.ExecuteCore(casted, context, state);
+
+            // Using Unsafe.As avoids boxing allocations that would occur with a cast through object.
+            Debug.Assert(task is ValueTask<Outcome<TResult>>, "Callback return type is identical to strategy return type");
+            return Unsafe.As<ValueTask<Outcome<T>>, ValueTask<Outcome<TResult>>>(ref task);
         }
         else
         {

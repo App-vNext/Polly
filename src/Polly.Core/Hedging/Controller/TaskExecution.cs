@@ -26,7 +26,7 @@ internal sealed class TaskExecution<T>
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly HedgingHandler<T> _handler;
     private CancellationTokenSource? _cancellationSource;
-    private CancellationTokenRegistration? _cancellationRegistration;
+    private CancellationTokenRegistration _cancellationRegistration;
     private ResilienceContext? _activeContext;
     private long _startExecutionTimestamp;
     private long _stopExecutionTimestamp;
@@ -99,10 +99,11 @@ internal sealed class TaskExecution<T>
         _activeContext = _cachedContext;
         _activeContext.InitializeFrom(primaryContext, _cancellationSource!.Token);
 
-        if (primaryContext.CancellationToken.CanBeCanceled)
-        {
-            _cancellationRegistration = primaryContext.CancellationToken.Register(o => ((CancellationTokenSource)o!).Cancel(), _cancellationSource);
-        }
+#if NET
+        _cancellationRegistration = primaryContext.CancellationToken.UnsafeRegister(static o => ((CancellationTokenSource)o!).Cancel(), _cancellationSource);
+#else
+        _cancellationRegistration = primaryContext.CancellationToken.Register(static o => ((CancellationTokenSource)o!).Cancel(), _cancellationSource);
+#endif
 
         if (type == HedgedTaskType.Secondary)
         {
@@ -154,16 +155,10 @@ internal sealed class TaskExecution<T>
     {
         OnReset?.Invoke(this);
 
-        if (_cancellationRegistration is { } registration)
-        {
-#if NETCOREAPP
-            await registration.DisposeAsync().ConfigureAwait(false);
-#else
-            registration.Dispose();
-#endif
-        }
-
-        _cancellationRegistration = null;
+#pragma warning disable CA1849, S6966 // Call async methods when in an async method, OK here as the callback is synchronous
+        _cancellationRegistration.Dispose();
+        _cancellationRegistration = default;
+#pragma warning restore CA1849, S6966
 
         if (!IsAccepted)
         {

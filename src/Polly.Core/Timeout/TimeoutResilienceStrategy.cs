@@ -94,11 +94,10 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 
     private static CancellationTokenRegistration CreateRegistration(CancellationTokenSource cancellationSource, CancellationToken previousToken)
     {
-        if (previousToken.CanBeCanceled)
-        {
-            return previousToken.Register(static state => ((CancellationTokenSource)state!).Cancel(), cancellationSource, useSynchronizationContext: false);
-        }
-
-        return default;
+#if NET
+        return previousToken.UnsafeRegister(static state => ((CancellationTokenSource)state!).Cancel(), cancellationSource);
+#else
+        return previousToken.Register(static state => ((CancellationTokenSource)state!).Cancel(), cancellationSource);
+#endif
     }
 }

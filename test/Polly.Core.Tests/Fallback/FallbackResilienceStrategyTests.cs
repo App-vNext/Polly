@@ -118,6 +118,23 @@ public class FallbackResilienceStrategyTests
         fallbackActionCalled.ShouldBeFalse();
     }
 
+    [Fact]
+    public async Task ExecuteOutcomeAsync_UnhandledException_Ok()
+    {
+        var called = false;
+        var fallbackActionCalled = false;
+
+        _options.OnFallback = _ => { called = true; return default; };
+        SetHandler(outcome => outcome.Exception is InvalidOperationException, () => { fallbackActionCalled = true; return Outcome.FromResult("secondary"); });
+
+        var outcome = await Create().ExecuteOutcomeAsync<string, string>((_, _) => throw new ArgumentException(), new(), "dummy-state");
+        outcome.Exception.ShouldBeOfType<ArgumentException>();
+
+        _args.ShouldBeEmpty();
+        called.ShouldBeFalse();
+        fallbackActionCalled.ShouldBeFalse();
+    }
+
     private void SetHandler(
         Func<Outcome<string>, bool> shouldHandle,
         Func<Outcome<string>> fallback) =>

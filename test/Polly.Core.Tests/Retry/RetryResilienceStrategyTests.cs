@@ -70,6 +70,14 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_ExceptionInExecution_EnsureResultReturned()
+    {
+        var sut = CreateSut();
+        var result = await sut.ExecuteOutcomeAsync<object, object?>((_, _) => throw new ArgumentException(), ResilienceContextPool.Shared.Get(), default);
+        result.Exception.ShouldBeOfType<ArgumentException>();
+    }
+
+    [Fact]
     public async Task ExecuteAsync_CanceledDuringExecution_EnsureNotExecutedAgain()
     {
         var reported = false;
