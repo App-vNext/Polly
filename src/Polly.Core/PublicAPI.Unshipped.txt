@@ -1,1 +1,5 @@
 ﻿#nullable enable
+# Caching
+Polly.CacheResiliencePipelineBuilderExtensions
+Polly.Caching.CacheStrategyOptions
+Polly.Caching.CacheStrategyOptions<TResult>
