@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net6.0;netstandard2.0;net472;net462</TargetFrameworks>
+    <AssemblyTitle>Polly.Caching</AssemblyTitle>
+    <RootNamespace>Polly</RootNamespace>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <ProjectType>Library</ProjectType>
+    <EnablePackageValidation>false</EnablePackageValidation>
+    <LegacySupport>true</LegacySupport>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>Polly.Caching provides caching strategies for Polly v8 built on Microsoft.Extensions.Caching.*.</Description>
+    <PackageTags>Polly Caching IMemoryCache IDistributedCache Resilience</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Polly.Utils" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
+    <PackageReference Include="Microsoft.Bcl.TimeProvider" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net8.0'))" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
+    <PackageReference Include="System.ValueTuple" Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETFramework'" />
+    <PackageReference Include="System.ComponentModel.Annotations" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Polly.Utils" />
+    <Compile Include="..\Polly.Core\Utils\ExceptionUtilities.cs" Link="utils\ExceptionUtilities.cs" />
+    <Compile Include="..\Polly.Core\Utils\Guard.cs" Link="Utils\Guard.cs" />
+    <InternalsVisibleToProject Include="Polly.Caching.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
+  </ItemGroup>
+
+</Project>
