@@ -30,7 +30,7 @@ public class CacheStrategyOptions<TResult> : ResilienceStrategyOptions
 
     /// <summary>
     /// Gets or sets a function that generates the cache key from the resilience context.
-    /// If null, <see cref="ResilienceContext.OperationKey"/> is used.
+    /// If <see langword="null"/>, <see cref="ResilienceContext.OperationKey"/> is used.
     /// </summary>
     public Func<ResilienceContext, string?>? CacheKeyGenerator { get; set; }
 }
