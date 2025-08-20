@@ -34,7 +34,6 @@
     <PackageReference Include="System.Threading.Tasks.Extensions" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
     <PackageReference Include="System.ValueTuple" Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETFramework'" />
     <PackageReference Include="System.ComponentModel.Annotations" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
   </ItemGroup>
 
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0'))">

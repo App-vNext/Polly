@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Polly.Utils;
 
 namespace Polly.Caching;
@@ -12,22 +12,27 @@ internal sealed class CacheResilienceStrategy<TResult> : ResilienceStrategy<TRes
 
     public CacheResilienceStrategy(CacheStrategyOptions<TResult> options)
     {
-        _cache = options.Cache ?? throw new ArgumentNullException(nameof(options.Cache));
+        Guard.NotNull(options);
+        if (options.Cache is null)
+        {
+            throw new ArgumentException("Cache must not be null.", nameof(options));
+        }
+
+        _cache = options.Cache;
         _ttl = options.Ttl;
         _useSliding = options.UseSlidingExpiration;
         _keyGen = options.CacheKeyGenerator ?? (ctx => ctx.OperationKey);
     }
 
-    protected internal override async ValueTask<Outcome<TResult>> ExecuteCore<TState>(
-	Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-	ResilienceContext context,
-	TState state)
+    protected override async ValueTask<Outcome<TResult>> ExecuteCore<TState>(
+    Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+    ResilienceContext context,
+    TState state)
     {
         var key = _keyGen(context);
         if (string.IsNullOrEmpty(key))
         {
-            return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state)
-                .ConfigureAwait(context.ContinueOnCapturedContext);
+            return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
         var cacheKey = key!;
@@ -37,8 +42,7 @@ internal sealed class CacheResilienceStrategy<TResult> : ResilienceStrategy<TRes
             return Outcome.FromResult(cached!);
         }
 
-        var outcome = await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state)
-            .ConfigureAwait(context.ContinueOnCapturedContext);
+        var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         if (outcome.Exception is null)
         {
@@ -52,7 +56,8 @@ internal sealed class CacheResilienceStrategy<TResult> : ResilienceStrategy<TRes
                 options.AbsoluteExpirationRelativeToNow = _ttl;
             }
 
-            var value = outcome.GetResultOrRethrow();
+            outcome.ThrowIfException();
+            var value = outcome.Result!;
             _cache.Set(cacheKey, value, options);
         }
 
