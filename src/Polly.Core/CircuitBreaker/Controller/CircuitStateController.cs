@@ -320,7 +320,11 @@ internal sealed class CircuitStateController<T> : IDisposable
     private BrokenCircuitException CreateBrokenCircuitException()
     {
         TimeSpan retryAfter = _blockedUntil - _timeProvider.GetUtcNow();
-        var exception = new BrokenCircuitException(BrokenCircuitException.DefaultMessage, retryAfter, _breakingException!);
+        var exception = _breakingException switch
+        {
+            Exception ex => new BrokenCircuitException(BrokenCircuitException.DefaultMessage, retryAfter, ex),
+            _ => new BrokenCircuitException(BrokenCircuitException.DefaultMessage, retryAfter)
+        };
         _telemetry.SetTelemetrySource(exception);
         return exception;
     }
