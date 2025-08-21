@@ -168,6 +168,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         }
 
 #pragma warning disable CA1849 // Call async methods when in an async method
+        Debug.Assert(task.IsCompleted, "Async flow is handled separately");
         task.GetAwaiter().GetResult();
 #pragma warning restore CA1849
         return default;
