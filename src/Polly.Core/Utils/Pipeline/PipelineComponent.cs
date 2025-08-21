@@ -29,6 +29,7 @@ internal abstract class PipelineComponent : IAsyncDisposable
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
+#pragma warning restore CA1031
             {
                 return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(e));
             }

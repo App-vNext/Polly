@@ -4,6 +4,8 @@ namespace Polly.Core.Tests.CircuitBreaker.Controller;
 
 public class ScheduledTaskExecutorTests
 {
+    private static CancellationToken CancellationToken => CancellationToken.None;
+
     [Fact]
     public async Task ScheduleTask_Success_EnsureExecuted()
     {
@@ -61,7 +63,7 @@ public class ScheduledTaskExecutorTests
         var otherTask = scheduler.ScheduleTask(() => Task.CompletedTask);
 
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
-        otherTask.Wait(50).ShouldBeFalse();
+        otherTask.Wait(50, CancellationToken).ShouldBeFalse();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
 
         verified.Set();
@@ -119,7 +121,11 @@ public class ScheduledTaskExecutorTests
         disposed.Set();
 
 #pragma warning disable xUnit1031
+#if NET
+        scheduler.ProcessingTask.Wait(timeout, CancellationToken).ShouldBeTrue();
+#else
         scheduler.ProcessingTask.Wait(timeout).ShouldBeTrue();
+#endif
 #pragma warning restore xUnit1031
     }
 

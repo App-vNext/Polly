@@ -91,7 +91,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         context.Initialize<T>(isSynchronous: false);
 
-        Task? task;
+        Task task;
 
         lock (_lock)
         {
@@ -111,7 +111,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         context.Initialize<T>(isSynchronous: false);
 
-        Task? task;
+        Task task;
 
         lock (_lock)
         {
@@ -121,14 +121,14 @@ internal sealed class CircuitStateController<T> : IDisposable
         return ExecuteScheduledTaskAsync(task, context);
     }
 
-    public async ValueTask<Outcome<T>?> OnActionPreExecuteAsync(ResilienceContext context)
+    public ValueTask<Outcome<T>?> OnActionPreExecuteAsync(ResilienceContext context)
     {
         EnsureNotDisposed();
 
         BrokenCircuitException? exception = null;
         bool isHalfOpen = false;
 
-        Task? task = null;
+        var task = Task.CompletedTask;
 
         lock (_lock)
         {
@@ -155,14 +155,27 @@ internal sealed class CircuitStateController<T> : IDisposable
             }
         }
 
-        await ExecuteScheduledTaskAsync(task, context).ConfigureAwait(context.ContinueOnCapturedContext);
-
         if (exception is not null)
         {
             _telemetry.SetTelemetrySource(exception);
-            return Outcome.FromException<T>(exception);
+            return new(result: new(exception));
         }
 
+        task = ExecuteScheduledTaskAsync(task, context);
+        if (!task.IsCompleted)
+        {
+            return WaitHalfOpenTask(task, context.ContinueOnCapturedContext);
+        }
+
+#pragma warning disable CA1849 // Call async methods when in an async method
+        task.GetAwaiter().GetResult();
+#pragma warning restore CA1849
+        return default;
+    }
+
+    private static async ValueTask<Outcome<T>?> WaitHalfOpenTask(Task task, bool continueOnCapturedContext)
+    {
+        await task.ConfigureAwait(continueOnCapturedContext);
         return null;
     }
 
@@ -170,7 +183,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     {
         EnsureNotDisposed();
 
-        Task? task = null;
+        var task = Task.CompletedTask;
 
         lock (_lock)
         {
@@ -196,7 +209,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     {
         EnsureNotDisposed();
 
-        Task? task = null;
+        var task = Task.CompletedTask;
 
         lock (_lock)
         {
@@ -227,35 +240,17 @@ internal sealed class CircuitStateController<T> : IDisposable
         _disposed = true;
     }
 
-    internal static Task ExecuteScheduledTaskAsync(Task? task, ResilienceContext context)
+    internal static Task ExecuteScheduledTaskAsync(Task task, ResilienceContext context)
     {
-        if (task is not null)
+        if (context.IsSynchronous && !task.IsCompleted)
         {
-            if (context.IsSynchronous && !task.IsCompleted)
-            {
 #pragma warning disable CA1849 // Call async methods when in an async method
-                // because this is synchronous execution we need to block
-#if NET8_0_OR_GREATER
-                task.ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing).GetAwaiter().GetResult();
-#else
-                try
-                {
-                    task.GetAwaiter().GetResult();
-                }
-#pragma warning disable CA1031
-                catch
-                {
-                    // exception will be observed by the awaiter of this method
-                }
-#pragma warning restore CA1031
-#endif
+            // because this is synchronous execution we need to block
+            task.GetAwaiter().GetResult();
 #pragma warning restore CA1849 // Call async methods when in an async method
-            }
-
-            return task;
         }
 
-        return Task.CompletedTask;
+        return task;
     }
 
     private static bool IsDateTimeOverflow(DateTimeOffset utcNow, TimeSpan breakDuration)
@@ -279,7 +274,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     }
 #endif
 
-    private Task? CloseCircuit_NeedsLock(Outcome<T> outcome, bool manual, ResilienceContext context)
+    private Task CloseCircuit_NeedsLock(Outcome<T> outcome, bool manual, ResilienceContext context)
     {
         _blockedUntil = DateTimeOffset.MinValue;
         _lastOutcome = null;
@@ -300,9 +295,7 @@ internal sealed class CircuitStateController<T> : IDisposable
             }
         }
 
-#pragma warning disable S4586
-        return null;
-#pragma warning restore S4586
+        return Task.CompletedTask;
     }
 
     private bool PermitHalfOpenCircuitTest_NeedsLock()
@@ -331,7 +324,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         return exception;
     }
 
-    private Task? OpenCircuitFor_NeedsLock(Outcome<T> outcome, TimeSpan breakDuration, bool manual, ResilienceContext context)
+    private Task OpenCircuitFor_NeedsLock(Outcome<T> outcome, TimeSpan breakDuration, bool manual, ResilienceContext context)
     {
         var utcNow = _timeProvider.GetUtcNow();
 
@@ -355,9 +348,7 @@ internal sealed class CircuitStateController<T> : IDisposable
             return _executor.ScheduleTask(() => _onOpened(args).AsTask());
         }
 
-#pragma warning disable S4586
-        return null;
-#pragma warning restore S4586
+        return Task.CompletedTask;
     }
 
     private Task ScheduleHalfOpenTask(ResilienceContext context)
