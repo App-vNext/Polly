@@ -104,7 +104,9 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
         if (LoadedTasks == _maxAttempts)
         {
             await WaitForTaskCompetitionAsync().ConfigureAwait(ContinueOnCapturedContext);
-            return TryRemoveExecutedTask();
+            var task = TryRemoveExecutedTask();
+            Debug.Assert(task != null, "There must be a completed task after awaiting for an executing task");
+            return task;
         }
 
         if (hedgingDelay == TimeSpan.Zero || LoadedTasks == 0)
@@ -117,7 +119,9 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
         if (hedgingDelay < TimeSpan.Zero)
         {
             await WaitForTaskCompetitionAsync().ConfigureAwait(ContinueOnCapturedContext);
-            return TryRemoveExecutedTask();
+            var task = TryRemoveExecutedTask();
+            Debug.Assert(task != null, "There must be a completed task after awaiting for an executing task");
+            return task;
         }
 
 #if NET8_0_OR_GREATER
@@ -143,7 +147,9 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
         delayTaskCancellation.Cancel();
 #endif
 
-        return TryRemoveExecutedTask();
+        var completed = TryRemoveExecutedTask();
+        Debug.Assert(completed != null, "There must be a completed task after awaiting for an executing task");
+        return completed;
     }
 
     private ExecutionInfo<T> CreateExecutionInfoWhenNoExecution()
