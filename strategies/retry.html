@@ -626,9 +626,7 @@ ImmutableArray&lt;Type&gt; strategyExceptions =
     typeof(RateLimitRejectedException),
 ];
 
-ImmutableArray&lt;Type&gt; retryableExceptions = networkExceptions
-    .Union(strategyExceptions)
-    .ToImmutableArray();
+ImmutableArray&lt;Type&gt; retryableExceptions = [.. networkExceptions.Union(strategyExceptions)];
 
 var retry = new ResiliencePipelineBuilder()
     .AddRetry(new()
