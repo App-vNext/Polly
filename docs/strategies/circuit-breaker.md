@@ -690,7 +690,7 @@ Outcome<HttpResponseMessage> outcome =
         {
             try
             {
-                var response = await IssueRequest(ctx.CancellationToken);
+                var response = await IssueRequest();
                 return Outcome.FromResult(response);
             }
             catch (Exception e)

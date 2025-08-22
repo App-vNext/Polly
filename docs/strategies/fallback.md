@@ -245,7 +245,7 @@ public static async ValueTask<HttpResponseMessage> Action()
         {
             try
             {
-                var result = await ActionCore(ctx.CancellationToken);
+                var result = await ActionCore();
                 return Outcome.FromResult(result);
             }
             catch (Exception e)
