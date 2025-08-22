@@ -48,7 +48,7 @@ public static class ResiliencePipelineExtensions
 
         return new ResiliencePipelineDescriptor(
             descriptors,
-            isReloadable: components.Exists(s => s is ReloadableComponent));
+            isReloadable: components.Exists(static s => s is ReloadableComponent));
     }
 
     private static object GetStrategyInstance<T>(PipelineComponent component)
