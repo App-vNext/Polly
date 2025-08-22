@@ -148,9 +148,12 @@ public class HedgingExecutionContextTests : IDisposable
         context.Tasks[0].AcceptOutcome();
     }
 
-    [Fact]
-    public async Task TryWaitForCompletedExecutionAsync_HedgedExecution_Ok()
+    [InlineData(false)]
+    [InlineData(true)]
+    [Theory]
+    public async Task TryWaitForCompletedExecutionAsync_HedgedExecution_Ok(bool continueOnCapturedContext)
     {
+        _resilienceContext.ContinueOnCapturedContext = continueOnCapturedContext;
         var context = Create();
         context.Initialize(_resilienceContext);
         ConfigureSecondaryTasks(TimeSpan.FromHours(1), TimeSpan.FromHours(1));

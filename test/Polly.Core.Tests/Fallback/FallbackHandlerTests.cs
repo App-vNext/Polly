@@ -8,7 +8,7 @@ public class FallbackHandlerTests
     {
         var handler = FallbackHelper.CreateHandler(_ => true, () => Outcome.FromResult("secondary"));
         var context = ResilienceContextPool.Shared.Get();
-        var outcome = await handler.GetFallbackOutcomeAsync(new FallbackActionArguments<string>(context, Outcome.FromResult("primary")))!;
+        var outcome = await handler.ActionGenerator(new FallbackActionArguments<string>(context, Outcome.FromResult("primary")))!;
 
         outcome.Result.ShouldBe("secondary");
     }

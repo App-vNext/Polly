@@ -120,7 +120,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
             if (ExecutionDuration.Enabled)
             {
                 var tags = TagsList.Get();
-                var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
+                var context = new EnrichmentContext<TResult, TArgs>(in args, tags);
                 UpdateEnrichmentContext(in context, severity);
                 ExecutionDuration.Record(executionFinished.Duration.TotalMilliseconds, tags.TagsSpan);
                 TagsList.Return(tags);
@@ -131,7 +131,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
             if (AttemptDuration.Enabled)
             {
                 var tags = TagsList.Get();
-                var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
+                var context = new EnrichmentContext<TResult, TArgs>(in args, tags);
                 UpdateEnrichmentContext(in context, severity);
                 context.Tags.Add(new(ResilienceTelemetryTags.AttemptNumber, executionAttempt.AttemptNumber.AsBoxedInt()));
                 context.Tags.Add(new(ResilienceTelemetryTags.AttemptHandled, executionAttempt.Handled.AsBoxedBool()));
@@ -142,7 +142,7 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
         else if (Counter.Enabled)
         {
             var tags = TagsList.Get();
-            var context = new EnrichmentContext<TResult, TArgs>(in args, tags.Tags);
+            var context = new EnrichmentContext<TResult, TArgs>(in args, tags);
             UpdateEnrichmentContext(in context, severity);
             Counter.Add(1, tags.TagsSpan);
             TagsList.Return(tags);

@@ -122,20 +122,16 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
             return pipeline;
         }
 
-        return _pipelines.GetOrAdd(key, k =>
-        {
-            var componentBuilder = new RegistryPipelineComponentBuilder<ResiliencePipelineBuilder, TKey>(
-                _activator,
-                k,
-                _builderNameFormatter(k),
-                _instanceNameFormatter?.Invoke(k),
-                configure)
-            ;
+        var componentBuilder = new RegistryPipelineComponentBuilder<ResiliencePipelineBuilder, TKey>(
+            _activator,
+            key,
+            _builderNameFormatter(key),
+            _instanceNameFormatter?.Invoke(key),
+            configure);
 
-            (var contextPool, var component) = componentBuilder.CreateComponent();
+        (var contextPool, var component) = componentBuilder.CreateComponent();
 
-            return new ResiliencePipeline(component, DisposeBehavior.Reject, contextPool);
-        });
+        return _pipelines.GetOrAdd(key, new ResiliencePipeline(component, DisposeBehavior.Reject, contextPool));
     }
 
     /// <summary>
@@ -232,22 +228,21 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
     /// </remarks>
     public async ValueTask DisposeAsync()
     {
-        _disposed = true;
-
-        var pipelines = _pipelines.Values.ToList();
-        _pipelines.Clear();
-
-        var registries = _genericRegistry.Values.Cast<IAsyncDisposable>().ToList();
-        _genericRegistry.Clear();
-
-        foreach (var pipeline in pipelines)
+        if (_disposed)
         {
-            await pipeline.DisposeHelper.ForceDisposeAsync().ConfigureAwait(false);
+            return;
         }
 
-        foreach (var disposable in registries)
+        _disposed = true;
+
+        foreach (var kv in _pipelines)
         {
-            await disposable.DisposeAsync().ConfigureAwait(false);
+            await kv.Value.DisposeHelper.ForceDisposeAsync().ConfigureAwait(false);
+        }
+
+        foreach (var kv in _genericRegistry)
+        {
+            await ((IAsyncDisposable)kv.Value).DisposeAsync().ConfigureAwait(false);
         }
     }
 
@@ -258,15 +253,12 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
             return (GenericRegistry<TResult>)genericRegistry;
         }
 
-        return (GenericRegistry<TResult>)_genericRegistry.GetOrAdd(typeof(TResult), _ =>
-        {
-            return new GenericRegistry<TResult>(
-                () => new ResiliencePipelineBuilder<TResult>(_activator()),
-                _builderComparer,
-                _pipelineComparer,
-                _builderNameFormatter,
-                _instanceNameFormatter);
-        });
+        return (GenericRegistry<TResult>)_genericRegistry.GetOrAdd(typeof(TResult), new GenericRegistry<TResult>(
+            () => new ResiliencePipelineBuilder<TResult>(_activator()),
+            _builderComparer,
+            _pipelineComparer,
+            _builderNameFormatter,
+            _instanceNameFormatter));
     }
 
     private void EnsureNotDisposed()

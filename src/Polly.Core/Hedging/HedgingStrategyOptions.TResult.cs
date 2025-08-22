@@ -52,16 +52,18 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// The default generator executes the original callback that was passed to the hedging resilience strategy. This property is required.
     /// </value>
     [Required]
-    public Func<HedgingActionGeneratorArguments<TResult>, Func<ValueTask<Outcome<TResult>>>?> ActionGenerator { get; set; } = args =>
+    public Func<HedgingActionGeneratorArguments<TResult>, Func<ValueTask<Outcome<TResult>>>?> ActionGenerator { get; set; } = DefaultActionGenerator;
+
+    internal static readonly Func<HedgingActionGeneratorArguments<TResult>, Func<ValueTask<Outcome<TResult>>>?> DefaultActionGenerator = args =>
     {
-        return async () =>
+        return () =>
         {
             if (args.PrimaryContext.IsSynchronous)
             {
-                return await Task.Run(() => args.Callback(args.ActionContext).AsTask()).ConfigureAwait(args.ActionContext.ContinueOnCapturedContext);
+                return new(Task.Run(() => args.Callback(args.ActionContext).AsTask()));
             }
 
-            return await args.Callback(args.ActionContext).ConfigureAwait(args.ActionContext.ContinueOnCapturedContext);
+            return args.Callback(args.ActionContext);
         };
     };
 

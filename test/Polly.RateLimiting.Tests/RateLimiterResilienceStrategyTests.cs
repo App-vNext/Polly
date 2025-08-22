@@ -94,8 +94,7 @@ public class RateLimiterResilienceStrategyTests
     public async Task Dispose_DisposableResourcesShouldBeDisposed(bool isAsync)
     {
         using var limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = 1 });
-        using var wrapper = new DisposeWrapper(limiter);
-        var strategy = new RateLimiterResilienceStrategy(null!, null, null!, wrapper);
+        var strategy = new RateLimiterResilienceStrategy(null!, null, null!, limiter);
 
         if (isAsync)
         {
