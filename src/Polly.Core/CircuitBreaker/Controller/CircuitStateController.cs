@@ -162,6 +162,8 @@ internal sealed class CircuitStateController<T> : IDisposable
         }
 
         task = ExecuteScheduledTaskAsync(task, context);
+
+        // stryker disable once all : no means to test this
         if (!task.IsCompleted)
         {
             return WaitHalfOpenTask(task, context.ContinueOnCapturedContext);
@@ -243,6 +245,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
     internal static Task ExecuteScheduledTaskAsync(Task task, ResilienceContext context)
     {
+        // stryker disable once all : no means to test this
         if (context.IsSynchronous && !task.IsCompleted)
         {
 #pragma warning disable CA1849 // Call async methods when in an async method
