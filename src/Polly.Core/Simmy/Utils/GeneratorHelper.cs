@@ -1,14 +1,12 @@
 ﻿namespace Polly.Simmy.Utils;
 
-internal sealed class GeneratorHelper<TResult>
+internal sealed class GeneratorHelper<TResult>(Func<int, int> weightGenerator)
 {
-    private readonly Func<int, int> _weightGenerator;
+    private readonly Func<int, int> _weightGenerator = weightGenerator;
 
     private readonly List<int> _weights = [];
     private readonly List<Func<ResilienceContext, Outcome<TResult>>> _factories = [];
     private int _totalWeight;
-
-    public GeneratorHelper(Func<int, int> weightGenerator) => _weightGenerator = weightGenerator;
 
     public void AddOutcome(Func<ResilienceContext, Outcome<TResult>> generator, int weight)
     {
