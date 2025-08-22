@@ -936,8 +936,23 @@ ResiliencePipeline<int> pipeline = new ResiliencePipelineBuilder<int>()
 
 // Asynchronous execution
 var context = ResilienceContextPool.Shared.Get();
-Outcome<int> pipelineResult = await pipeline.ExecuteOutcomeAsync(
-    static async (ctx, state) => Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, "state");
+
+Outcome<int> pipelineResult =
+    await pipeline.ExecuteOutcomeAsync<int, string>(
+        static async (ctx, state) =>
+        {
+            try
+            {
+                return Outcome.FromResult(await MethodAsync(ctx.CancellationToken));
+            }
+            catch (Exception e)
+            {
+                return Outcome.FromException<int>(e);
+            }
+        },
+        context,
+        "state");
+
 ResilienceContextPool.Shared.Return(context);
 
 // Assess policy result
@@ -950,7 +965,6 @@ if (pipelineResult.Exception is null)
 else
 {
     Exception exception = pipelineResult.Exception;
-
     // Process failure
 
     // If needed you can rethrow the exception
@@ -972,8 +986,22 @@ ResiliencePipeline<int> pipelineWithContext = new ResiliencePipelineBuilder<int>
     .Build();
 
 context = ResilienceContextPool.Shared.Get();
-pipelineResult = await pipelineWithContext.ExecuteOutcomeAsync(
-    static async (ctx, state) => Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, "state");
+
+pipelineResult =
+    await pipelineWithContext.ExecuteOutcomeAsync<int, string>(
+        static async (ctx, state) =>
+        {
+            try
+            {
+                return Outcome.FromResult(await MethodAsync(ctx.CancellationToken));
+            }
+            catch (Exception e)
+            {
+                return Outcome.FromException<int>(e);
+            }
+        },
+        context,
+        "state");
 
 context.Properties.TryGetValue(contextKey, out var ctxValue);
 ResilienceContextPool.Shared.Return(context);

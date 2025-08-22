@@ -270,6 +270,7 @@ internal static class CircuitBreaker
         #region circuit-breaker-pattern-reduce-thrown-exceptions
 
         var context = ResilienceContextPool.Shared.Get();
+
         var circuitBreaker = new ResiliencePipelineBuilder()
             .AddCircuitBreaker(new()
             {
@@ -278,11 +279,22 @@ internal static class CircuitBreaker
             })
             .Build();
 
-        Outcome<HttpResponseMessage> outcome = await circuitBreaker.ExecuteOutcomeAsync(static async (ctx, state) =>
-        {
-            var response = await IssueRequest();
-            return Outcome.FromResult(response);
-        }, context, "state");
+        Outcome<HttpResponseMessage> outcome =
+            await circuitBreaker.ExecuteOutcomeAsync<HttpResponseMessage, string>(
+                static async (ctx, state) =>
+                {
+                    try
+                    {
+                        var response = await IssueRequest();
+                        return Outcome.FromResult(response);
+                    }
+                    catch (Exception e)
+                    {
+                        return Outcome.FromException<HttpResponseMessage>(e);
+                    }
+                },
+                context,
+                "state");
 
         ResilienceContextPool.Shared.Return(context);
 
