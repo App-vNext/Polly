@@ -11,10 +11,10 @@ LaunchCount=2  WarmupCount=10
 ```
 | Method                                         | Mean     | Error    | StdDev   | Median   | Ratio | RatioSD | Allocated | Alloc Ratio |
 |----------------------------------------------- |---------:|---------:|---------:|---------:|------:|--------:|----------:|------------:|
-| ExecuteOutcomeAsync                            | 28.96 ns | 0.189 ns | 0.271 ns | 29.03 ns |  1.00 |    0.01 |         - |          NA |
-| ExecuteAsync_ResilienceContextAndState         | 55.90 ns | 0.282 ns | 0.376 ns | 55.86 ns |  1.93 |    0.02 |         - |          NA |
-| ExecuteAsync_CancellationToken                 | 59.75 ns | 1.010 ns | 1.512 ns | 59.97 ns |  2.06 |    0.05 |         - |          NA |
-| ExecuteAsync_GenericStrategy_CancellationToken | 62.98 ns | 1.785 ns | 2.672 ns | 63.49 ns |  2.17 |    0.09 |         - |          NA |
-| Execute_ResilienceContextAndState              | 44.60 ns | 0.528 ns | 0.791 ns | 44.29 ns |  1.54 |    0.03 |         - |          NA |
-| Execute_CancellationToken                      | 45.80 ns | 0.330 ns | 0.494 ns | 45.54 ns |  1.58 |    0.02 |         - |          NA |
-| Execute_GenericStrategy_CancellationToken      | 46.75 ns | 0.310 ns | 0.463 ns | 46.46 ns |  1.61 |    0.02 |         - |          NA |
+| ExecuteOutcomeAsync                            | 28.16 ns | 0.739 ns | 1.083 ns | 29.14 ns |  1.00 |    0.05 |         - |          NA |
+| ExecuteAsync_ResilienceContextAndState         | 54.02 ns | 0.356 ns | 0.510 ns | 54.04 ns |  1.92 |    0.08 |         - |          NA |
+| ExecuteAsync_CancellationToken                 | 58.20 ns | 0.551 ns | 0.790 ns | 57.59 ns |  2.07 |    0.08 |         - |          NA |
+| ExecuteAsync_GenericStrategy_CancellationToken | 58.45 ns | 0.245 ns | 0.360 ns | 58.26 ns |  2.08 |    0.08 |         - |          NA |
+| Execute_ResilienceContextAndState              | 31.65 ns | 0.245 ns | 0.367 ns | 31.64 ns |  1.13 |    0.04 |         - |          NA |
+| Execute_CancellationToken                      | 36.59 ns | 0.382 ns | 0.560 ns | 36.69 ns |  1.30 |    0.05 |         - |          NA |
+| Execute_GenericStrategy_CancellationToken      | 36.80 ns | 0.245 ns | 0.367 ns | 36.97 ns |  1.31 |    0.05 |         - |          NA |

@@ -9,9 +9,9 @@ Job=MediumRun  Toolchain=InProcessEmitToolchain  IterationCount=15
 LaunchCount=2  WarmupCount=10  
 
 ```
-| Method  | Telemetry | Enrichment | Mean      | Error     | StdDev    | Allocated |
-|-------- |---------- |----------- |----------:|----------:|----------:|----------:|
-| **Execute** | **False**     | **False**      |  **43.26 ns** |  **0.092 ns** |  **0.138 ns** |         **-** |
-| **Execute** | **False**     | **True**       |  **44.97 ns** |  **1.299 ns** |  **1.862 ns** |         **-** |
-| **Execute** | **True**      | **False**      | **316.54 ns** |  **2.804 ns** |  **4.198 ns** |         **-** |
-| **Execute** | **True**      | **True**       | **435.78 ns** | **12.809 ns** | **19.172 ns** |         **-** |
+| Method  | Telemetry | Enrichment | Mean      | Error    | StdDev   | Allocated |
+|-------- |---------- |----------- |----------:|---------:|---------:|----------:|
+| **Execute** | **False**     | **False**      |  **39.50 ns** | **0.864 ns** | **1.212 ns** |         **-** |
+| **Execute** | **False**     | **True**       |  **41.71 ns** | **0.242 ns** | **0.354 ns** |         **-** |
+| **Execute** | **True**      | **False**      | **271.68 ns** | **3.107 ns** | **4.650 ns** |         **-** |
+| **Execute** | **True**      | **True**       | **323.94 ns** | **2.002 ns** | **2.996 ns** |         **-** |
