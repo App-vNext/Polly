@@ -363,7 +363,7 @@ public class TelemetryListenerImplTests : IDisposable
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Count.ShouldBe(1);
         messages[0].Message.ShouldBe("Resilience pipeline executing. Source: 'my-pipeline/my-instance', Operation Key: 'op-key'");
-        messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
+        messages = [.. _logger.GetRecords(new EventId(2, "StrategyExecuted"))];
         messages.Count.ShouldBe(1);
         messages[0].Message.ShouldMatch($"Resilience pipeline executed. Source: 'my-pipeline/my-instance', Operation Key: 'op-key', Result: '{result}', Execution Time: 10000ms");
         messages[0].LogLevel.ShouldBe(LogLevel.Debug);
@@ -489,7 +489,7 @@ public class TelemetryListenerImplTests : IDisposable
         called.ShouldBeTrue();
     }
 
-    private List<Dictionary<string, object?>> GetEvents(string eventName) => _events.Where(e => e.Name == eventName).Select(v => v.Tags).ToList();
+    private List<Dictionary<string, object?>> GetEvents(string eventName) => [.. _events.Where(e => e.Name == eventName).Select(v => v.Tags)];
 
     private TelemetryListenerImpl Create(IEnumerable<MeteringEnricher>? enrichers = null, Action<TelemetryOptions>? configure = null)
     {

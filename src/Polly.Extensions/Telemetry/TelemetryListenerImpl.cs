@@ -16,10 +16,10 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
 
     public TelemetryListenerImpl(TelemetryOptions options)
     {
-        _enrichers = options.MeteringEnrichers.ToList();
+        _enrichers = [.. options.MeteringEnrichers];
         _logger = options.LoggerFactory.CreateLogger(TelemetryUtil.PollyDiagnosticSource);
         _resultFormatter = options.ResultFormatter;
-        _listeners = options.TelemetryListeners.ToList();
+        _listeners = [.. options.TelemetryListeners];
         _severityProvider = options.SeverityProvider;
 
         Counter = Meter.CreateCounter<int>(

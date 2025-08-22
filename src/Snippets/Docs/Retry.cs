@@ -187,9 +187,7 @@ internal static class Retry
             typeof(RateLimitRejectedException),
         ];
 
-        ImmutableArray<Type> retryableExceptions = networkExceptions
-            .Union(strategyExceptions)
-            .ToImmutableArray();
+        ImmutableArray<Type> retryableExceptions = [.. networkExceptions.Union(strategyExceptions)];
 
         var retry = new ResiliencePipelineBuilder()
             .AddRetry(new()

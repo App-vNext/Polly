@@ -26,9 +26,9 @@ public class TelemetryOptions
     {
         Guard.NotNull(other);
 
-        TelemetryListeners = other.TelemetryListeners.ToList();
+        TelemetryListeners = [.. other.TelemetryListeners];
         LoggerFactory = other.LoggerFactory;
-        MeteringEnrichers = other.MeteringEnrichers.ToList();
+        MeteringEnrichers = [.. other.MeteringEnrichers];
         ResultFormatter = other.ResultFormatter;
         SeverityProvider = other.SeverityProvider;
     }

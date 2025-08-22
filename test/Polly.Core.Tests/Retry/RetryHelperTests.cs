@@ -265,7 +265,7 @@ public class RetryHelperTests
     {
         if (contrib)
         {
-            return Backoff.DecorrelatedJitterBackoffV2(baseDelay, retryCount, 0, false).Take(retryCount).ToArray();
+            return [.. Backoff.DecorrelatedJitterBackoffV2(baseDelay, retryCount, 0, false).Take(retryCount)];
         }
 
         var random = randomizer ?? new Random(0).NextDouble;

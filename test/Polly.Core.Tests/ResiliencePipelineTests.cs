@@ -181,5 +181,5 @@ public partial class ResiliencePipelineTests
         public override string ToString() => Caption;
     }
 
-    public static IEnumerable<object[]> ConvertExecuteParameters(Func<IEnumerable<ExecuteParameters>> parameters) => parameters().Select(p => new object[] { p }).ToArray();
+    public static IEnumerable<object[]> ConvertExecuteParameters(Func<IEnumerable<ExecuteParameters>> parameters) => [.. parameters().Select(p => new object[] { p })];
 }

@@ -68,7 +68,7 @@ public sealed class CircuitBreakerManualControl
         Func<ResilienceContext, Task>[] callbacks;
         lock (_lock)
         {
-            callbacks = _onIsolate.ToArray();
+            callbacks = [.. _onIsolate];
             _isolated = true;
         }
 
@@ -98,7 +98,7 @@ public sealed class CircuitBreakerManualControl
         Func<ResilienceContext, Task>[] callbacks;
         lock (_lock)
         {
-            callbacks = _onReset.ToArray();
+            callbacks = [.. _onReset];
             _isolated = false;
         }
 

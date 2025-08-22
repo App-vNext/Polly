@@ -202,7 +202,7 @@ public partial class Policy
             < MinimumPoliciesRequiredForWrap => throw new ArgumentException(
                 "The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
             MinimumPoliciesRequiredForWrap => new PolicyWrap<TResult>((Policy<TResult>)policies[0], policies[1]),
-            _ => Wrap(policies[0], Wrap(policies.Skip(1).ToArray())),
+            _ => Wrap(policies[0], Wrap([.. policies.Skip(1)])),
         };
 #pragma warning restore S3215 // "interface" instances should not be cast to concrete types
     }
