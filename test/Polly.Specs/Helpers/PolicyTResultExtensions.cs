@@ -24,8 +24,7 @@ public static class PolicyTResultExtensions
     public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy, params object[] resultsOrExceptionsToRaise) =>
         policy.RaiseResultAndOrExceptionSequence(resultsOrExceptionsToRaise.ToList());
 
-    public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy,
-        IEnumerable<object> resultsOrExceptionsToRaise)
+    public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy, IEnumerable<object> resultsOrExceptionsToRaise)
     {
         using var enumerator = resultsOrExceptionsToRaise.GetEnumerator();
         return policy.Execute(() =>
@@ -58,13 +57,24 @@ public static class PolicyTResultExtensions
         public bool ActionObservesCancellation = true;
     }
 
-    public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this Policy<TResult> policy,
-        Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute,
+    public static TResult RaiseResultSequenceAndOrCancellation<TResult>(
+        this Policy<TResult> policy,
+        Scenario scenario,
+        CancellationTokenSource cancellationTokenSource,
+        Action onExecute,
         params TResult[] resultsToRaise) =>
-        policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+        policy.RaiseResultSequenceAndOrCancellation(
+            scenario,
+            cancellationTokenSource,
+            onExecute,
             resultsToRaise.ToList());
 
-    public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this Policy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, IEnumerable<TResult> resultsToRaise)
+    public static TResult RaiseResultSequenceAndOrCancellation<TResult>(
+        this Policy<TResult> policy,
+        Scenario scenario,
+        CancellationTokenSource cancellationTokenSource,
+        Action onExecute,
+        IEnumerable<TResult> resultsToRaise)
     {
         int counter = 0;
 
