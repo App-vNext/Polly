@@ -4,6 +4,18 @@
 
 <!-- next-release -->
 
+## 8.6.3
+
+* Add release notes configuration by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2678
+* Simplify release workflow by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2679
+* Sign-off commits by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2694
+* Add GitHub sponsorship by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2695
+* Refactor project dependencies by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2696
+* Add zizmor by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2698
+* Update benchmarks by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2712
+* Reduce async overhead by [@pentp](https://github.com/pentp) in https://github.com/App-vNext/Polly/pull/2664
+* Update benchmarks by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2713
+
 ## 8.6.2
 
 * Performance tweaks by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2667
