@@ -9,7 +9,7 @@ $repo = Join-Path $PSScriptRoot ".."
 $properties = Join-Path $repo "Directory.Packages.props"
 
 $xml = [xml](Get-Content $properties)
-$pollyVersion = $xml.SelectSingleNode('Project/PropertyGroup/PollyVersion')
+$pollyVersion = $xml.SelectSingleNode("//PackageVersion[@Include='Polly']/@Version")
 
 if ($ReleaseVersion.StartsWith("v")) {
     $ReleaseVersion = $ReleaseVersion.Substring(1)
@@ -18,7 +18,7 @@ if ($ReleaseVersion.StartsWith("v")) {
 $version = [System.Version]::new($ReleaseVersion)
 $releasedVersion = $version.ToString()
 
-Write-Output "Bumping version from $($pollyVersion.InnerText) to $releasedVersion"
+Write-Output "Bumping version from $($pollyVersion.Value) to $releasedVersion"
 
 $pollyVersion.InnerText = $releasedVersion
 
