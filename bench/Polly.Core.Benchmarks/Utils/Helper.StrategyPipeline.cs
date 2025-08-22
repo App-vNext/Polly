@@ -10,7 +10,7 @@ internal static partial class Helper
         {
             for (var i = 0; i < count; i++)
             {
-                builder.AddStrategy(_ => new EmptyResilienceStrategy(), new EmptyResilienceOptions());
+                builder.AddStrategy(static _ => new EmptyResilienceStrategy(), new EmptyResilienceOptions());
             }
         }),
         _ => throw new NotSupportedException()
