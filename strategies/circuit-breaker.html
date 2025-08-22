@@ -760,6 +760,7 @@ if (stateProvider.CircuitState
 <p>Use <code>ExecuteOutcomeAsync</code> to avoid throwing exception:</p>
 <!-- snippet: circuit-breaker-pattern-reduce-thrown-exceptions -->
 <pre><code class="lang-cs">var context = ResilienceContextPool.Shared.Get();
+
 var circuitBreaker = new ResiliencePipelineBuilder()
     .AddCircuitBreaker(new()
     {
@@ -768,11 +769,22 @@ var circuitBreaker = new ResiliencePipelineBuilder()
     })
     .Build();
 
-Outcome&lt;HttpResponseMessage&gt; outcome = await circuitBreaker.ExecuteOutcomeAsync(static async (ctx, state) =&gt;
-{
-    var response = await IssueRequest();
-    return Outcome.FromResult(response);
-}, context, &quot;state&quot;);
+Outcome&lt;HttpResponseMessage&gt; outcome =
+    await circuitBreaker.ExecuteOutcomeAsync&lt;HttpResponseMessage, string&gt;(
+        static async (ctx, state) =&gt;
+        {
+            try
+            {
+                var response = await IssueRequest(ctx.CancellationToken);
+                return Outcome.FromResult(response);
+            }
+            catch (Exception e)
+            {
+                return Outcome.FromException&lt;HttpResponseMessage&gt;(e);
+            }
+        },
+        context,
+        &quot;state&quot;);
 
 ResilienceContextPool.Shared.Return(context);
 

@@ -434,7 +434,7 @@ and provides a unified way to execute them. This includes overloads for synchron
 
   <h3 id="Polly_ResiliencePipeline_1_ExecuteOutcomeAsync__2_System_Func_Polly_ResilienceContext___1_System_Threading_Tasks_ValueTask_Polly_Outcome___0____Polly_ResilienceContext___1_" data-uid="Polly.ResiliencePipeline`1.ExecuteOutcomeAsync``2(System.Func{Polly.ResilienceContext,``1,System.Threading.Tasks.ValueTask{Polly.Outcome{``0}}},Polly.ResilienceContext,``1)">
   ExecuteOutcomeAsync&lt;TResult, TState&gt;(Func&lt;ResilienceContext, TState, ValueTask&lt;Outcome&lt;TResult&gt;&gt;&gt;, ResilienceContext, TState)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineT.Async.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/ResiliencePipelineT.Async.cs/#L86"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Executes the specified outcome-based callback.</p>
@@ -481,8 +481,11 @@ and provides a unified way to execute them. This includes overloads for synchron
 
 
   <h4 class="section" id="Polly_ResiliencePipeline_1_ExecuteOutcomeAsync__2_System_Func_Polly_ResilienceContext___1_System_Threading_Tasks_ValueTask_Polly_Outcome___0____Polly_ResilienceContext___1__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This method is for advanced and high performance scenarios. The caller must make sure that the <code class="paramref">callback</code>
-does not throw any exceptions. Instead, it converts them to <a class="xref" href="Polly.Outcome-1.html">Outcome&lt;TResult&gt;</a>.</p>
+  <div class="markdown level1 remarks"><p><strong>Important:</strong> This method targets advanced, low-allocation scenarios. The user callback
+must not throw an exception. Wrap your code and return <a class="xref" href="Polly.Outcome-1.html">Outcome&lt;TResult&gt;</a>:
+use <a class="xref" href="Polly.Outcome.html#Polly_Outcome_FromResult__1___0_">FromResult&lt;TResult&gt;(TResult?)</a> on success, or <a class="xref" href="Polly.Outcome.html#Polly_Outcome_FromException__1_System_Exception_">FromException&lt;TResult&gt;(Exception)</a> on failure.
+Do not rely on strategies to catch your exceptions; any such behavior is an implementation detail and
+is not guaranteed across strategies or future versions.</p>
 </div>
 
   <h4 class="section">Exceptions</h4>

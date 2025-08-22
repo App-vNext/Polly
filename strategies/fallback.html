@@ -325,12 +325,22 @@ if (outcome.Exception is HttpRequestException requestException)
 <pre><code class="lang-cs">public static async ValueTask&lt;HttpResponseMessage&gt; Action()
 {
     var context = ResilienceContextPool.Shared.Get();
+
     var outcome = await WhateverPipeline.ExecuteOutcomeAsync&lt;HttpResponseMessage, string&gt;(
-        async (ctx, state) =&gt;
+        static async (ctx, state) =&gt;
         {
-            var result = await ActionCore();
-            return Outcome.FromResult(result);
-        }, context, &quot;state&quot;);
+            try
+            {
+                var result = await ActionCore(ctx.CancellationToken);
+                return Outcome.FromResult(result);
+            }
+            catch (Exception e)
+            {
+                return Outcome.FromException&lt;HttpResponseMessage&gt;(e);
+            }
+        },
+        context,
+        &quot;state&quot;);
 
     if (outcome.Exception is HttpRequestException requestException)
     {

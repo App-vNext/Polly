@@ -941,8 +941,23 @@ string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault(Key) as string;
 
 // Asynchronous execution
 var context = ResilienceContextPool.Shared.Get();
-Outcome&lt;int&gt; pipelineResult = await pipeline.ExecuteOutcomeAsync(
-    static async (ctx, state) =&gt; Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, &quot;state&quot;);
+
+Outcome&lt;int&gt; pipelineResult =
+    await pipeline.ExecuteOutcomeAsync&lt;int, string&gt;(
+        static async (ctx, state) =&gt;
+        {
+            try
+            {
+                return Outcome.FromResult(await MethodAsync(ctx.CancellationToken));
+            }
+            catch (Exception e)
+            {
+                return Outcome.FromException&lt;int&gt;(e);
+            }
+        },
+        context,
+        &quot;state&quot;);
+
 ResilienceContextPool.Shared.Return(context);
 
 // Assess policy result
@@ -955,7 +970,6 @@ if (pipelineResult.Exception is null)
 else
 {
     Exception exception = pipelineResult.Exception;
-
     // Process failure
 
     // If needed you can rethrow the exception
@@ -977,8 +991,22 @@ ResiliencePipeline&lt;int&gt; pipelineWithContext = new ResiliencePipelineBuilde
     .Build();
 
 context = ResilienceContextPool.Shared.Get();
-pipelineResult = await pipelineWithContext.ExecuteOutcomeAsync(
-    static async (ctx, state) =&gt; Outcome.FromResult(await MethodAsync(ctx.CancellationToken)), context, &quot;state&quot;);
+
+pipelineResult =
+    await pipelineWithContext.ExecuteOutcomeAsync&lt;int, string&gt;(
+        static async (ctx, state) =&gt;
+        {
+            try
+            {
+                return Outcome.FromResult(await MethodAsync(ctx.CancellationToken));
+            }
+            catch (Exception e)
+            {
+                return Outcome.FromException&lt;int&gt;(e);
+            }
+        },
+        context,
+        &quot;state&quot;);
 
 context.Properties.TryGetValue(contextKey, out var ctxValue);
 ResilienceContextPool.Shared.Return(context);
