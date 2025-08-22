@@ -11,8 +11,8 @@ LaunchCount=2  WarmupCount=10
 ```
 | Method                                         | Mean       | Error    | StdDev   | Ratio | RatioSD | Gen0   | Allocated | Alloc Ratio |
 |----------------------------------------------- |-----------:|---------:|---------:|------:|--------:|-------:|----------:|------------:|
-| ExecuteStrategyPipeline_Generic_V7             |   994.4 ns | 82.26 ns | 123.1 ns |  1.02 |    0.18 | 0.2184 |    2744 B |        1.00 |
-| ExecuteStrategyPipeline_Generic_V8             |   900.6 ns | 74.47 ns | 111.5 ns |  0.92 |    0.16 | 0.0029 |      40 B |        0.01 |
-| ExecuteStrategyPipeline_GenericTelemetry_V8    | 1,277.0 ns | 87.67 ns | 131.2 ns |  1.30 |    0.21 | 0.0019 |      40 B |        0.01 |
-| ExecuteStrategyPipeline_NonGeneric_V8          |   953.5 ns | 87.32 ns | 130.7 ns |  0.97 |    0.18 | 0.0029 |      40 B |        0.01 |
-| ExecuteStrategyPipeline_NonGenericTelemetry_V8 | 1,297.5 ns | 85.24 ns | 127.6 ns |  1.32 |    0.21 | 0.0019 |      40 B |        0.01 |
+| ExecuteStrategyPipeline_Generic_V7             |   926.0 ns | 54.27 ns | 81.23 ns |  1.01 |    0.13 | 0.2184 |    2744 B |        1.00 |
+| ExecuteStrategyPipeline_Generic_V8             |   766.3 ns | 45.05 ns | 67.42 ns |  0.83 |    0.10 | 0.0029 |      40 B |        0.01 |
+| ExecuteStrategyPipeline_GenericTelemetry_V8    | 1,042.7 ns | 55.46 ns | 83.01 ns |  1.13 |    0.13 | 0.0029 |      40 B |        0.01 |
+| ExecuteStrategyPipeline_NonGeneric_V8          |   872.1 ns | 58.58 ns | 87.67 ns |  0.95 |    0.13 | 0.0029 |      40 B |        0.01 |
+| ExecuteStrategyPipeline_NonGenericTelemetry_V8 | 1,125.7 ns | 57.02 ns | 85.35 ns |  1.22 |    0.14 | 0.0019 |      40 B |        0.01 |

@@ -11,5 +11,5 @@ LaunchCount=2  WarmupCount=10
 ```
 | Method                   | Mean     | Error   | StdDev  | Ratio | RatioSD | Gen0   | Allocated | Alloc Ratio |
 |------------------------- |---------:|--------:|--------:|------:|--------:|-------:|----------:|------------:|
-| ExecuteCircuitBreaker_V7 | 111.6 ns | 2.26 ns | 3.38 ns |  1.00 |    0.04 | 0.0370 |     464 B |        1.00 |
-| ExecuteCircuitBreaker_V8 | 190.2 ns | 1.73 ns | 2.53 ns |  1.71 |    0.06 |      - |         - |        0.00 |
+| ExecuteCircuitBreaker_V7 | 105.5 ns | 0.82 ns | 1.15 ns |  1.00 |    0.02 | 0.0370 |     464 B |        1.00 |
+| ExecuteCircuitBreaker_V8 | 137.7 ns | 1.03 ns | 1.55 ns |  1.31 |    0.02 |      - |         - |        0.00 |
