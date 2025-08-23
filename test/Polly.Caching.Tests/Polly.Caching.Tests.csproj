@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
+    <ProjectType>Test</ProjectType>
+    <Nullable>enable</Nullable>
+    <Threshold>100</Threshold>
+    <Include>[Polly.Caching]*</Include>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Polly.Core.Tests\Utils\ExceptionUtilitiesTests.cs" Link="ExceptionUtilitiesTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Polly.Caching\Polly.Caching.csproj" />
+    <ProjectReference Include="..\..\src\Polly.Testing\Polly.Testing.csproj" />
+    <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
+  </ItemGroup>
+
+</Project>
