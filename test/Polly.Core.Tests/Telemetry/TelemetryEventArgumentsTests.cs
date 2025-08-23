@@ -9,7 +9,7 @@ public class TelemetryEventArgumentsTests
     [Fact]
     public void Ctor_Ok()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         var args = new TelemetryEventArguments<string, string>(_source, new ResilienceEvent(ResilienceEventSeverity.Warning, "ev"), context, "arg", Outcome.FromResult("dummy"));
 
         args.Outcome!.Value.Result.ShouldBe("dummy");

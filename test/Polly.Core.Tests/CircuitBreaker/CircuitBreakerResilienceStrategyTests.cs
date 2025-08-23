@@ -30,7 +30,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
             null);
     }
 
-    private static CancellationToken CancellationToken => CancellationToken.None;
+    private static CancellationToken CancellationToken => TestCancellation.Token;
 
     [Fact]
     public void Ctor_Ok() =>

@@ -5,10 +5,10 @@ namespace Polly.Core.Tests.Timeout;
 public static class TimeoutTestUtils
 {
     public static OnTimeoutArguments OnTimeoutArguments()
-        => new(ResilienceContextPool.Shared.Get(), TimeSpan.FromSeconds(1));
+        => new(ResilienceContextPool.Shared.Get(TestCancellation.Token), TimeSpan.FromSeconds(1));
 
     public static TimeoutGeneratorArguments TimeoutGeneratorArguments()
-        => new(ResilienceContextPool.Shared.Get());
+        => new(ResilienceContextPool.Shared.Get(TestCancellation.Token));
 
 #pragma warning disable IDE0028
     public static readonly TheoryData<TimeSpan> InvalidTimeouts = new()

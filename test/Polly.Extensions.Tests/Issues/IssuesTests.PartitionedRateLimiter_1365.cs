@@ -52,7 +52,7 @@ public partial class IssuesTests
         // assert admin is not limited
         using var adminAsserted = new ManualResetEvent(false);
         var task = ExecuteBatch("admin", adminAsserted);
-        task.Wait(100).ShouldBeFalse();
+        task.Wait(100, TestCancellation.Token).ShouldBeFalse();
         adminAsserted.Set();
         await task;
 #pragma warning restore CA2025
@@ -63,7 +63,7 @@ public partial class IssuesTests
             {
                 return Task.Run(async () =>
                 {
-                    var context = ResilienceContextPool.Shared.Get();
+                    var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
                     context.Properties.Set(userKey, user);
 
                     await pipeline.ExecuteAsync(async _ =>

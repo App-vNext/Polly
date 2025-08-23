@@ -27,7 +27,7 @@ public partial class IssuesTests
         var executed = false;
 
         // Act
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         context.Properties.Set(key, propertyValue);
 
         var actual = await Should.ThrowAsync<InvalidOperationException>(

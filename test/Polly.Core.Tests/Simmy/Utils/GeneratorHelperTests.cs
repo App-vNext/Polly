@@ -9,7 +9,7 @@ public class GeneratorHelperTests
     {
         var helper = new GeneratorHelper<int>(_ => 10);
 
-        helper.CreateGenerator()(ResilienceContextPool.Shared.Get()).ShouldBeNull();
+        helper.CreateGenerator()(ResilienceContextPool.Shared.Get(TestCancellation.Token)).ShouldBeNull();
     }
 
     [Fact]
@@ -17,7 +17,7 @@ public class GeneratorHelperTests
     {
         int weight = 0;
         int maxWeight = 0;
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         var helper = new GeneratorHelper<int>(max =>
         {
@@ -44,7 +44,7 @@ public class GeneratorHelperTests
     [Fact]
     public void Generator_OutsideRange_ReturnsNull()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         var helper = new GeneratorHelper<int>(_ => 1000);
 
         helper.AddOutcome(_ => Outcome.FromResult(1), 40);

@@ -45,6 +45,6 @@ public class FaultGeneratorTests
 
         return func(
             new FaultGeneratorArguments(
-                ResilienceContextPool.Shared.Get())).AsTask().Result;
+                ResilienceContextPool.Shared.Get(TestCancellation.Token))).AsTask().Result;
     }
 }

@@ -82,7 +82,7 @@ public class CancellationTokenSourcePoolTests
             fakeTimeProvider.Advance(TimeSpan.FromSeconds(1));
         }
 
-        await Task.Delay(100);
+        await Task.Delay(100, TestCancellation.Token);
 
         await TestUtilities.AssertWithTimeoutAsync(() => cts.IsCancellationRequested.ShouldBeTrue());
     }
@@ -96,7 +96,7 @@ public class CancellationTokenSourcePoolTests
         var pool = CancellationTokenSourcePool.Create(GetTimeProvider(timeProvider));
         var cts = pool.Get(System.Threading.Timeout.InfiniteTimeSpan);
 
-        await Task.Delay(20);
+        await Task.Delay(20, TestCancellation.Token);
 
         cts.IsCancellationRequested.ShouldBeFalse();
     }

@@ -23,7 +23,7 @@ public class ExecutionTrackingComponentTests
         };
 
         var component = new ExecutionTrackingComponent(inner, _timeProvider);
-        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }));
+        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }), TestCancellation.Token);
         executing.WaitOne();
 
         var disposeTask = component.DisposeAsync().AsTask();
@@ -56,7 +56,7 @@ public class ExecutionTrackingComponentTests
         };
 
         await using var component = new ExecutionTrackingComponent(inner, _timeProvider);
-        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }));
+        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }), TestCancellation.Token);
         executing.WaitOne();
 
         component.HasPendingExecutions.ShouldBeTrue();
@@ -82,7 +82,7 @@ public class ExecutionTrackingComponentTests
         };
 
         var component = new ExecutionTrackingComponent(inner, _timeProvider);
-        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }));
+        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }), TestCancellation.Token);
         executing.WaitOne();
 
         var disposeTask = component.DisposeAsync().AsTask();
@@ -115,14 +115,16 @@ public class ExecutionTrackingComponentTests
         var component = new ExecutionTrackingComponent(inner, TimeProvider.System);
         var pipeline = new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null);
 
+        var allTasks = new List<Task>();
+
         for (int i = 0; i < 10; i++)
         {
-            _ = Task.Run(() => pipeline.Execute(() => { }));
+            allTasks.Add(Task.Run(() => pipeline.Execute(() => { }), TestCancellation.Token));
         }
 
         while (tasks.Count != 10)
         {
-            await Task.Delay(1);
+            await Task.Delay(1, TestCancellation.Token);
         }
 
         var disposeTask = component.DisposeAsync().AsTask();
@@ -132,7 +134,7 @@ public class ExecutionTrackingComponentTests
             tasks.TryDequeue(out var ev).ShouldBeTrue();
             ev!.Set();
             ev.Dispose();
-            disposeTask.Wait(1).ShouldBeFalse();
+            disposeTask.Wait(1, TestCancellation.Token).ShouldBeFalse();
             inner.Disposed.ShouldBeFalse();
         }
 
@@ -142,6 +144,8 @@ public class ExecutionTrackingComponentTests
         last.Dispose();
         await disposeTask;
         inner.Disposed.ShouldBeTrue();
+
+        await Task.WhenAll(allTasks);
     }
 
     private class Inner : PipelineComponent

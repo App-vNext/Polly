@@ -33,14 +33,14 @@ public partial class ResiliencePipelineTests
             AssertContext = AssertResilienceContextAndToken,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteAsync(async (_, s) => { s.ShouldBe("dummy-state"); }, ResilienceContextPool.Shared.Get(), "dummy-state"))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(async (_, s) => { s.ShouldBe("dummy-state"); }, ResilienceContextPool.Shared.Get(TestCancellation.Token), "dummy-state"))
         {
             Caption = "ExecuteAsync_ResilienceContextAndState",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextInitialized,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteAsync(context => default, ResilienceContextPool.Shared.Get()))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(context => default, ResilienceContextPool.Shared.Get(TestCancellation.Token)))
         {
             Caption = "ExecuteAsync_ResilienceContext",
             AssertContext = AssertResilienceContext,
@@ -87,7 +87,7 @@ public partial class ResiliencePipelineTests
     [Fact]
     public async Task ExecuteAsync_EnsureCallStackPreserved()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod()));
         await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod(), context));

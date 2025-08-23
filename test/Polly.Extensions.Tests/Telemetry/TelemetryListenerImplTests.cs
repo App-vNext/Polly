@@ -185,7 +185,7 @@ public class TelemetryListenerImplTests : IDisposable
             true when exception => Outcome.FromException<object>(new InvalidOperationException("Dummy message.")),
             _ => Outcome.FromResult<object>(true)
         };
-        ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>());
+        ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key", TestCancellation.Token).WithResultType<bool>());
 
         var events = GetEvents("resilience.polly.strategy.events");
         events.Count.ShouldBe(1);
@@ -233,7 +233,7 @@ public class TelemetryListenerImplTests : IDisposable
             true when exception => Outcome.FromException<object>(new InvalidOperationException("Dummy message.")),
             _ => Outcome.FromResult<object>(true)
         };
-        ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
+        ReportEvent(telemetry, outcome, context: ResilienceContextPool.Shared.Get("op-key", TestCancellation.Token).WithResultType<bool>(), arg: attemptArg);
 
         var events = GetEvents("resilience.polly.strategy.attempt.duration");
         events.Count.ShouldBe(1);
@@ -276,7 +276,7 @@ public class TelemetryListenerImplTests : IDisposable
 
         var telemetry = Create();
         var attemptArg = new ExecutionAttemptArguments(5, TimeSpan.FromSeconds(50), true);
-        ReportEvent(telemetry, Outcome.FromResult<object>(true), context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
+        ReportEvent(telemetry, Outcome.FromResult<object>(true), context: ResilienceContextPool.Shared.Get("op-key", TestCancellation.Token).WithResultType<bool>(), arg: attemptArg);
 
         var events = GetEvents("resilience.polly.strategy.attempt.duration");
         events.ShouldBeEmpty();
@@ -352,7 +352,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Theory]
     public void PipelineExecution_Logged(bool exception)
     {
-        var context = ResilienceContextPool.Shared.Get("op-key").WithResultType<int>();
+        var context = ResilienceContextPool.Shared.Get("op-key", TestCancellation.Token).WithResultType<int>();
         var telemetry = Create();
         var outcome = exception ? Outcome.FromException<object>(new InvalidOperationException("dummy message")) : Outcome.FromResult((object)10);
         var result = exception ? "dummy message" : "10";
@@ -372,7 +372,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Fact]
     public void PipelineExecution_VoidResult_Ok()
     {
-        var context = ResilienceContextPool.Shared.Get("op-key").WithVoidResultType();
+        var context = ResilienceContextPool.Shared.Get("op-key", TestCancellation.Token).WithVoidResultType();
         var telemetry = Create();
         ReportEvent(telemetry, outcome: null, arg: default(PipelineExecutingArguments), context: context);
 
@@ -384,7 +384,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Fact]
     public void PipelineExecution_NoOutcome_Logged()
     {
-        var context = ResilienceContextPool.Shared.Get("op-key").WithResultType<int>();
+        var context = ResilienceContextPool.Shared.Get("op-key", TestCancellation.Token).WithResultType<int>();
         var telemetry = Create();
 
         ReportEvent(telemetry, outcome: null, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
@@ -400,7 +400,7 @@ public class TelemetryListenerImplTests : IDisposable
     {
         using var metering = TestUtilities.EnablePollyMetering(_events);
 
-        var context = ResilienceContextPool.Shared.Get("op-key").WithResultType<int>();
+        var context = ResilienceContextPool.Shared.Get("op-key", TestCancellation.Token).WithResultType<int>();
         var outcome = exception ? Outcome.FromException<object>(new InvalidOperationException("dummy message")) : Outcome.FromResult((object)10);
         var result = exception ? "dummy message" : "10";
 
@@ -447,7 +447,7 @@ public class TelemetryListenerImplTests : IDisposable
 
         var telemetry = Create();
         var attemptArg = new PipelineExecutedArguments(TimeSpan.FromSeconds(50));
-        ReportEvent(telemetry, Outcome.FromResult<object>(true), context: ResilienceContextPool.Shared.Get("op-key").WithResultType<bool>(), arg: attemptArg);
+        ReportEvent(telemetry, Outcome.FromResult<object>(true), context: ResilienceContextPool.Shared.Get("op-key", TestCancellation.Token).WithResultType<bool>(), arg: attemptArg);
 
         var events = GetEvents("resilience.polly.pipeline.duration");
         events.ShouldBeEmpty();

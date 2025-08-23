@@ -381,7 +381,7 @@ public class PollyServiceCollectionExtensionTests
         // arrange
         using var loggerFactory = new FakeLoggerFactory();
 
-        var context = ResilienceContextPool.Shared.Get("my-operation_key");
+        var context = ResilienceContextPool.Shared.Get("my-operation_key", TestCancellation.Token);
         var services = new ServiceCollection();
         var listener = new FakeTelemetryListener();
         var registry = services

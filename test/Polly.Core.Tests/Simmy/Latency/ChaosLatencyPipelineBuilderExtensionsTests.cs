@@ -8,7 +8,7 @@ public class ChaosLatencyPipelineBuilderExtensionsTests
 {
     public static IEnumerable<object[]> AddLatency_Ok_Data()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         Func<ValueTask> behavior = () => new ValueTask(Task.CompletedTask);
         yield return new object[]
         {

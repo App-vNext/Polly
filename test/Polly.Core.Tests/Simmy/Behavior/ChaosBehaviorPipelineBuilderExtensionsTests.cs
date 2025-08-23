@@ -9,7 +9,7 @@ public class ChaosBehaviorPipelineBuilderExtensionsTests
 {
     public static IEnumerable<object[]> AddBehavior_Ok_Data()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         Func<CancellationToken, ValueTask> behavior = _ => default;
         yield return new object[]
         {

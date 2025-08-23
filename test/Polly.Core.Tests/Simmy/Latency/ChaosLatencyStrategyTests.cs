@@ -42,7 +42,7 @@ public class ChaosLatencyStrategyTests : IDisposable
 
         var before = _timeProvider.GetUtcNow();
         var sut = CreateSut();
-        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; });
+        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; }, TestCancellation.Token);
         _timeProvider.Advance(_delay);
         await task;
 
@@ -65,7 +65,7 @@ public class ChaosLatencyStrategyTests : IDisposable
 
         var before = _timeProvider.GetUtcNow();
         var sut = CreateSut();
-        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; });
+        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; }, TestCancellation.Token);
         _timeProvider.Advance(_delay);
         await task;
 
@@ -85,7 +85,7 @@ public class ChaosLatencyStrategyTests : IDisposable
 
         var before = _timeProvider.GetUtcNow();
         var sut = CreateSut();
-        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; });
+        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; }, TestCancellation.Token);
         _timeProvider.Advance(_delay);
         await task;
 
@@ -114,7 +114,7 @@ public class ChaosLatencyStrategyTests : IDisposable
 
         var before = _timeProvider.GetUtcNow();
         var sut = CreateSut();
-        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; });
+        var task = sut.ExecuteAsync(async _ => { _userDelegateExecuted = true; await Task.CompletedTask; }, TestCancellation.Token);
         _timeProvider.Advance(_delay);
         await task;
 

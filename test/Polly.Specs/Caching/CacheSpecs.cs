@@ -8,7 +8,7 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_throw_when_action_is_null()
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var flags = BindingFlags.NonPublic | BindingFlags.Instance;
         Func<Context, CancellationToken, EmptyStruct> action = null!;
         Action<Context, CancellationToken> actionVoid = null!;

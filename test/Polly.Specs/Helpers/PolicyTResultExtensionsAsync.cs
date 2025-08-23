@@ -31,7 +31,7 @@ public static class PolicyTResultExtensionsAsync
         policy.RaiseResultAndOrExceptionSequenceAsync(resultsOrExceptionsToRaise.ToList());
 
     public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, IEnumerable<object> resultsOrExceptionsToRaise) =>
-        policy.RaiseResultAndOrExceptionSequenceAsync(CancellationToken.None, resultsOrExceptionsToRaise);
+        policy.RaiseResultAndOrExceptionSequenceAsync(TestCancellation.Token, resultsOrExceptionsToRaise);
 
     public static async Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(
         this AsyncPolicy<TResult> policy,

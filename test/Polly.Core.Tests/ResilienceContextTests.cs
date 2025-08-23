@@ -7,7 +7,7 @@ public class ResilienceContextTests
     [InlineData(false)]
     public void Initialize_Typed_Ok(bool synchronous)
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         context.Initialize<bool>(synchronous);
 
         context.ResultType.ShouldBe(typeof(bool));
@@ -22,7 +22,7 @@ public class ResilienceContextTests
     [InlineData(false)]
     public void Initialize_From_Ok(bool synchronous)
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var context = ResilienceContextPool.Shared.Get("some-key", cancellationToken);
         context.Initialize<bool>(synchronous);
         context.ContinueOnCapturedContext = true;
@@ -46,7 +46,7 @@ public class ResilienceContextTests
     [Theory]
     public void Initialize_Void_Ok(bool synchronous)
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         context.Initialize<VoidResult>(synchronous);
 
         context.ResultType.ShouldBe(typeof(VoidResult));

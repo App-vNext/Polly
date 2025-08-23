@@ -5,7 +5,7 @@ public class AsyncSerializingCacheProviderSpecs
 {
     #region Object-to-TSerialized serializer
 
-    private static CancellationToken CancellationToken => CancellationToken.None;
+    private static CancellationToken CancellationToken => TestCancellation.Token;
 
     [Fact]
     public void Single_generic_constructor_should_throw_on_no_wrapped_cache_provider()
