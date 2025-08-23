@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <Threshold>100</Threshold>
     <NoWarn>$(NoWarn);S6966</NoWarn>
+    <OutputType>Exe</OutputType>
     <Include>[Polly.Core]*</Include>
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
   </PropertyGroup>
