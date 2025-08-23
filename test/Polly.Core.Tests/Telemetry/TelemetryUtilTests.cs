@@ -10,7 +10,7 @@ public static class TelemetryUtilTests
     public static void ReportExecutionAttempt_Ok(bool handled, ResilienceEventSeverity severity)
     {
         var asserted = false;
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         var listener = TestUtilities.CreateResilienceTelemetry(args =>
         {
             args.Event.Severity.ShouldBe(severity);
@@ -27,7 +27,7 @@ public static class TelemetryUtilTests
     public static void ReportFinalExecutionAttempt_Ok(bool handled, ResilienceEventSeverity severity)
     {
         var asserted = false;
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         var listener = TestUtilities.CreateResilienceTelemetry(args =>
         {
             args.Event.Severity.ShouldBe(severity);

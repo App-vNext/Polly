@@ -462,7 +462,8 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             ], (_, _, context) => contextData = context);
 
         await policy.RaiseExceptionAsync<DivideByZeroException>(
-            CreateDictionary("key1", "value1", "key2", "value2"));
+            CreateDictionary("key1", "value1", "key2", "value2"),
+            cancellationToken: TestCancellation.Token);
 
         contextData.ShouldNotBeNull();
         contextData.ShouldContainKeyAndValue("key1", "value1");
@@ -490,6 +491,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_create_new_context_for_each_call_to_execute()
     {
+        var cancellationToken = TestCancellation.Token;
         string? contextValue = null;
 
         var policy = Policy
@@ -498,12 +500,14 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             (_, _, context) => contextValue = context["key"].ToString());
 
         await policy.RaiseExceptionAsync<DivideByZeroException>(
-            CreateDictionary("key", "original_value"));
+            CreateDictionary("key", "original_value"),
+            cancellationToken: cancellationToken);
 
         contextValue.ShouldBe("original_value");
 
         await policy.RaiseExceptionAsync<DivideByZeroException>(
-            CreateDictionary("key", "new_value"));
+            CreateDictionary("key", "new_value"),
+            cancellationToken: cancellationToken);
 
         contextValue.ShouldBe("new_value");
     }
@@ -768,7 +772,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
             }
         },
             CreateDictionary("RetryAfter", defaultRetryAfter), // Can also set an initial value for RetryAfter, in the Context passed into the call.
-            CancellationToken.None);
+            TestCancellation.Token);
 
         actualRetryDuration.ShouldBe(expectedRetryDuration);
     }

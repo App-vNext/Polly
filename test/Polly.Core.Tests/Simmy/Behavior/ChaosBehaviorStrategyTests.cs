@@ -44,7 +44,7 @@ public class ChaosBehaviorStrategyTests
         _options.BehaviorGenerator = (_) => { _behaviorGeneratorExecuted = true; return default; };
 
         var sut = CreateSut();
-        await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; });
+        await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; }, TestCancellation.Token);
 
         _userDelegateExecuted.ShouldBeTrue();
         _behaviorGeneratorExecuted.ShouldBeTrue();
@@ -66,7 +66,7 @@ public class ChaosBehaviorStrategyTests
         };
 
         var sut = CreateSut();
-        await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; });
+        await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; }, TestCancellation.Token);
 
         _onBehaviorInjectedExecuted.ShouldBeTrue();
         _userDelegateExecuted.ShouldBeTrue();
@@ -84,7 +84,7 @@ public class ChaosBehaviorStrategyTests
         _options.BehaviorGenerator = (_) => { _behaviorGeneratorExecuted = true; return default; };
 
         var sut = CreateSut();
-        await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; });
+        await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; }, TestCancellation.Token);
 
         _userDelegateExecuted.ShouldBeTrue();
         _behaviorGeneratorExecuted.ShouldBeFalse();
@@ -104,7 +104,7 @@ public class ChaosBehaviorStrategyTests
         };
 
         var sut = CreateSut();
-        await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; });
+        await sut.ExecuteAsync((_) => { _userDelegateExecuted = true; return default; }, TestCancellation.Token);
 
         _userDelegateExecuted.ShouldBeTrue();
         _behaviorGeneratorExecuted.ShouldBeTrue();

@@ -8,7 +8,6 @@
     <EnablePackageValidation>false</EnablePackageValidation>
     <UsePublicApiAnalyzers>false</UsePublicApiAnalyzers>
   </PropertyGroup>
-
   <ItemGroup>
     <Using Remove="System.Net.Http" />
     <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />

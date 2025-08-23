@@ -7,7 +7,7 @@ public class HedgingControllerTests
     [Fact]
     public async Task Pooling_Ok()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         var telemetry = TestUtilities.CreateResilienceTelemetry(_ => { });
         var controller = new HedgingController<int>(telemetry, new HedgingTimeProvider(), HedgingHelper.CreateHandler<int>(_ => false, args => null), 3);
 

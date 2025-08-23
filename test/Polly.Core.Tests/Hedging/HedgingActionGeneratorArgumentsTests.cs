@@ -8,7 +8,7 @@ public static class HedgingActionGeneratorArgumentsTests
     public static void Ctor_Ok()
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var primaryContext = ResilienceContextPool.Shared.Get(cancellationToken);
         var actionContext = ResilienceContextPool.Shared.Get(cancellationToken);
 

@@ -99,7 +99,7 @@ public class BulkheadAsyncSpecs(ITestOutputHelper testOutputHelper) : BulkheadSp
         TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
         using (var cancellationSource = new CancellationTokenSource())
         {
-            _ = Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task; }); }, CancellationToken);
+            var task = Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task; }); }, CancellationToken);
 
             Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
@@ -113,6 +113,8 @@ public class BulkheadAsyncSpecs(ITestOutputHelper testOutputHelper) : BulkheadSp
 #else
             tcs.SetCanceled();
 #endif
+
+            await task;
         }
 
         contextPassedToOnRejected!.ShouldNotBeNull();

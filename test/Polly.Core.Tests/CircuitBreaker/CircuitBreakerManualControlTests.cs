@@ -29,7 +29,7 @@ public class CircuitBreakerManualControlTests
     [Theory]
     public async Task IsolateAsync_NotInitialized_Ok(bool closedAfter)
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var control = new CircuitBreakerManualControl();
         await control.IsolateAsync(cancellationToken);
         if (closedAfter)
@@ -56,14 +56,14 @@ public class CircuitBreakerManualControlTests
     {
         var control = new CircuitBreakerManualControl();
 
-        await Should.NotThrowAsync(() => control.CloseAsync());
+        await Should.NotThrowAsync(() => control.CloseAsync(TestCancellation.Token));
     }
 
     [Fact]
     public async Task Initialize_Twice_Ok()
     {
         int called = 0;
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var control = new CircuitBreakerManualControl();
         control.Initialize(_ => Task.CompletedTask, _ => Task.CompletedTask);
         control.Initialize(_ => { called++; return Task.CompletedTask; }, _ => { called++; return Task.CompletedTask; });
@@ -78,7 +78,7 @@ public class CircuitBreakerManualControlTests
     public async Task Initialize_DisposeRegistration_ShuldBeCancelled()
     {
         int called = 0;
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var control = new CircuitBreakerManualControl();
         var reg = control.Initialize(_ => { called++; return Task.CompletedTask; }, _ => { called++; return Task.CompletedTask; });
 
@@ -96,7 +96,7 @@ public class CircuitBreakerManualControlTests
     [Fact]
     public async Task Initialize_Ok()
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var control = new CircuitBreakerManualControl();
         var isolateCalled = false;
         var resetCalled = false;

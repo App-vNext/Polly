@@ -10,7 +10,7 @@ public class CircuitBreakerOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new CircuitBreakerStrategyOptions();
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         (await options.ShouldHandle(new CircuitBreakerPredicateArguments<object>(context, Outcome.FromResult<object>("dummy")))).ShouldBe(false);
         (await options.ShouldHandle(new CircuitBreakerPredicateArguments<object>(context, Outcome.FromException<object>(new OperationCanceledException())))).ShouldBe(false);

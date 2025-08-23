@@ -73,6 +73,6 @@ public class OutcomeGeneratorTests
 
         return func(
             new OutcomeGeneratorArguments(
-                ResilienceContextPool.Shared.Get())).AsTask().Result;
+                ResilienceContextPool.Shared.Get(TestCancellation.Token))).AsTask().Result;
     }
 }

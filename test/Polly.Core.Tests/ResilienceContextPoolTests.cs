@@ -12,12 +12,12 @@ public class ResilienceContextPoolTests
 
     [Fact]
     public void Get_EnsureNotNull() =>
-        ResilienceContextPool.Shared.Get().ShouldNotBeNull();
+        ResilienceContextPool.Shared.Get(TestCancellation.Token).ShouldNotBeNull();
 
     [Fact]
     public void Get_EnsureDefaults()
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var context = ResilienceContextPool.Shared.Get(cancellationToken);
 
         AssertDefaults(context, cancellationToken);
@@ -38,7 +38,7 @@ public class ResilienceContextPoolTests
     {
         using var token = new CancellationTokenSource();
 
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         context.ContinueOnCapturedContext.ShouldBeFalse();
     }
@@ -46,7 +46,7 @@ public class ResilienceContextPoolTests
     [Fact]
     public void Get_ContinueOnCapturedContext_Ok()
     {
-        var context = ResilienceContextPool.Shared.Get(true);
+        var context = ResilienceContextPool.Shared.Get(true, TestCancellation.Token);
 
         context.ContinueOnCapturedContext.ShouldBe(true);
     }

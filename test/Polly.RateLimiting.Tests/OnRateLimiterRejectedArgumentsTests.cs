@@ -9,7 +9,7 @@ public static class OnRateLimiterRejectedArgumentsTests
     public static void Ctor_Ok()
     {
         var args = new OnRateLimiterRejectedArguments(
-            ResilienceContextPool.Shared.Get(CancellationToken.None),
+            ResilienceContextPool.Shared.Get(TestCancellation.Token),
             Substitute.For<RateLimitLease>());
 
         args.Context.ShouldNotBeNull();

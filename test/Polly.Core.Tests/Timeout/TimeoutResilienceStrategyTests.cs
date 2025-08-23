@@ -46,7 +46,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         var sut = CreateSut();
 
-        sut.Execute(_ => { });
+        sut.Execute(_ => { }, TestCancellation.Token);
 
         called.ShouldBeTrue();
     }
@@ -91,7 +91,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         var called = false;
         SetTimeout(timeout());
         var sut = CreateSut();
-        sut.Execute(_ => { });
+        sut.Execute(_ => { }, TestCancellation.Token);
 
         called.ShouldBeFalse();
     }

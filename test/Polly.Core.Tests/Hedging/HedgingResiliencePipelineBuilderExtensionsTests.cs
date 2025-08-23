@@ -56,7 +56,7 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
         })
         .Build();
 
-        var result = await strategy.ExecuteAsync(token => new ValueTask<string>("error"));
+        var result = await strategy.ExecuteAsync(token => new ValueTask<string>("error"), TestCancellation.Token);
         result.ShouldBe("success");
         hedgingCount.ShouldBe(3);
     }
@@ -88,7 +88,7 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
         })
         .Build();
 
-        var result = await strategy.ExecuteAsync(token => new ValueTask<string>("error"));
+        var result = await strategy.ExecuteAsync(token => new ValueTask<string>("error"), TestCancellation.Token);
         result.ShouldBe("success");
     }
 
@@ -124,7 +124,7 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
         })
         .Build();
 
-        var result = await strategy.ExecuteAsync(token => new ValueTask<string>(Error));
+        var result = await strategy.ExecuteAsync(token => new ValueTask<string>(Error), TestCancellation.Token);
         result.ShouldBe(Success);
     }
 }

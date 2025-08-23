@@ -8,7 +8,7 @@ public static class HedgingDelayGeneratorArgumentsTests
     public static void Ctor_Ok()
     {
         // Arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         // Act
         var args = new HedgingDelayGeneratorArguments(context, 5);

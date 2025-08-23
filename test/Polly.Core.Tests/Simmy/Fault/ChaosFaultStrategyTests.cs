@@ -91,7 +91,7 @@ public class ChaosFaultStrategyTests
         {
             _userDelegateExecuted = true;
             return await Task.FromResult(HttpStatusCode.OK);
-        });
+        }, TestCancellation.Token);
 
         response.ShouldBe(HttpStatusCode.OK);
         _userDelegateExecuted.ShouldBeTrue();
@@ -187,7 +187,7 @@ public class ChaosFaultStrategyTests
         {
             _userDelegateExecuted = true;
             return 200;
-        });
+        }, TestCancellation.Token);
 
         result.ShouldBe(200);
         _userDelegateExecuted.ShouldBeTrue();
@@ -208,7 +208,7 @@ public class ChaosFaultStrategyTests
         sut.Execute(_ =>
         {
             _userDelegateExecuted = true;
-        });
+        }, TestCancellation.Token);
 
         _userDelegateExecuted.ShouldBeTrue();
         _onFaultInjectedExecuted.ShouldBeFalse();

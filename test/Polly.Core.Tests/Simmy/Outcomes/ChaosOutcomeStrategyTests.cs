@@ -30,7 +30,7 @@ public class ChaosOutcomeStrategyTests
             ],
         ];
 
-    private static CancellationToken CancellationToken => CancellationToken.None;
+    private static CancellationToken CancellationToken => TestCancellation.Token;
 
     [Theory]
 #pragma warning disable xUnit1042 // The member referenced by the MemberData attribute returns untyped data rows

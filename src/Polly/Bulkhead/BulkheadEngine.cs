@@ -26,12 +26,24 @@ internal static class BulkheadEngine
             }
             finally
             {
-                maxParallelizationSemaphore.Release();
+                SafeRelease(maxParallelizationSemaphore);
             }
         }
         finally
         {
-            maxQueuedActionsSemaphore.Release();
+            SafeRelease(maxQueuedActionsSemaphore);
+        }
+
+        static void SafeRelease(SemaphoreSlim semaphore)
+        {
+            try
+            {
+                semaphore.Release();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Ignore - this can happen if the semaphore was not acquired.
+            }
         }
     }
 }

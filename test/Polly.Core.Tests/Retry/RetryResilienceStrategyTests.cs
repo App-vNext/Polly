@@ -73,7 +73,7 @@ public class RetryResilienceStrategyTests
     public async Task ExecuteAsync_ExceptionInExecution_EnsureResultReturned()
     {
         var sut = CreateSut();
-        var result = await sut.ExecuteOutcomeAsync<object, object?>((_, _) => throw new ArgumentException(), ResilienceContextPool.Shared.Get(), default);
+        var result = await sut.ExecuteOutcomeAsync<object, object?>((_, _) => throw new ArgumentException(), ResilienceContextPool.Shared.Get(TestCancellation.Token), default);
         result.Exception.ShouldBeOfType<ArgumentException>();
     }
 
@@ -180,7 +180,7 @@ public class RetryResilienceStrategyTests
             var r = new DisposableResult();
             results.Add(r);
             return r;
-        });
+        }, TestCancellation.Token);
 
         // assert
         result.IsDisposed.ShouldBeFalse();
@@ -250,7 +250,7 @@ public class RetryResilienceStrategyTests
             return new ValueTask<TimeSpan?>(delay);
         };
 
-        CreateSut(TimeProvider.System).Execute(_ => "dummy");
+        CreateSut(TimeProvider.System).Execute(_ => "dummy", TestCancellation.Token);
 
         retries.ShouldBe(3);
         generatedValues.ShouldBe(3);
@@ -281,7 +281,7 @@ public class RetryResilienceStrategyTests
         };
 
         var sut = CreateSut(provider);
-        await sut.ExecuteAsync(_ => new ValueTask<string>("dummy"));
+        await sut.ExecuteAsync(_ => new ValueTask<string>("dummy"), TestCancellation.Token);
 
         retries.ShouldBe(3);
         generatedValues.ShouldBe(3);
@@ -376,7 +376,7 @@ public class RetryResilienceStrategyTests
         {
             _timeProvider.Advance(TimeSpan.FromMinutes(1));
             return new ValueTask<int>(0);
-        }).AsTask();
+        }, TestCancellation.Token).AsTask();
     }
 
     [Fact]

@@ -60,7 +60,7 @@ public partial class IssuesTests
 
         var pipeline = provider.GetPipeline(key);
 
-        await pipeline.ExecuteAsync(async ct => await default(ValueTask));
+        await pipeline.ExecuteAsync(async ct => await default(ValueTask), TestCancellation.Token);
 
         strategy.HitCount.ShouldBeGreaterThan(0);
     }

@@ -1,4 +1,6 @@
-﻿namespace Polly.Specs.Bulkhead;
+﻿using System.Threading.Tasks;
+
+namespace Polly.Specs.Bulkhead;
 
 [Collection(Constants.ParallelThreadDependentTestCollection)]
 public class BulkheadTResultSpecs(ITestOutputHelper testOutputHelper) : BulkheadSpecsBase(testOutputHelper)
@@ -86,7 +88,7 @@ public class BulkheadTResultSpecs(ITestOutputHelper testOutputHelper) : Bulkhead
     #region onBulkheadRejected delegate
 
     [Fact]
-    public void Should_call_onBulkheadRejected_with_passed_context()
+    public async Task Should_call_onBulkheadRejected_with_passed_context()
     {
         string operationKey = "SomeKey";
         Context contextPassedToExecute = new Context(operationKey);
@@ -98,14 +100,14 @@ public class BulkheadTResultSpecs(ITestOutputHelper testOutputHelper) : Bulkhead
         TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
         using (var cancellationSource = new CancellationTokenSource())
         {
-            Task.Run(() =>
+            var task = Task.Run(() =>
             {
                 bulkhead.Execute(() =>
                 {
                     tcs.Task.Wait();
                     return 0;
                 });
-            }, CancellationToken.None);
+            }, TestCancellation.Token);
 
             Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
@@ -114,10 +116,12 @@ public class BulkheadTResultSpecs(ITestOutputHelper testOutputHelper) : Bulkhead
             cancellationSource.Cancel();
 
 #if NET
-            tcs.SetCanceled(CancellationToken.None);
+            tcs.SetCanceled(TestCancellation.Token);
 #else
             tcs.SetCanceled();
 #endif
+
+            await Should.ThrowAsync<Exception>(task);
         }
 
         contextPassedToOnRejected!.ShouldNotBeNull();

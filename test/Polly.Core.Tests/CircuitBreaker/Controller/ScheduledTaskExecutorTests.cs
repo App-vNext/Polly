@@ -4,7 +4,7 @@ namespace Polly.Core.Tests.CircuitBreaker.Controller;
 
 public class ScheduledTaskExecutorTests
 {
-    private static CancellationToken CancellationToken => CancellationToken.None;
+    private static CancellationToken CancellationToken => TestCancellation.Token;
 
     [Fact]
     public async Task ScheduleTask_Success_EnsureExecuted()

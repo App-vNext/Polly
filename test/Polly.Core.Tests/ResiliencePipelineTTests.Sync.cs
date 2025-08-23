@@ -78,8 +78,10 @@ public partial class ResiliencePipelineTests
     };
 #pragma warning restore IDE0028
 
-    [MemberData(nameof(ExecuteGenericStrategyData))]
+#pragma warning disable xUnit1044
     [Theory]
+    [MemberData(nameof(ExecuteGenericStrategyData))]
+#pragma warning restore xUnit1044
     public void Execute_GenericStrategy_Ok(Action<ResiliencePipeline<string>> execute)
     {
         var pipeline = new ResiliencePipeline<string>(PipelineComponentFactory.FromStrategy(new TestResilienceStrategy
@@ -113,7 +115,7 @@ public partial class ResiliencePipelineTests
         var pipeline = new ResiliencePipeline<string>(PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()), DisposeBehavior.Allow, null);
         var context = new ResilienceContext();
 
-        await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync<string>(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync<string>(null!, TestCancellation.Token));
         await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync<string>(null!, context));
         await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync<string, string>(null!, context, string.Empty));
     }
@@ -136,7 +138,7 @@ public partial class ResiliencePipelineTests
         var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()), DisposeBehavior.Allow, null);
         var context = new ResilienceContext();
 
-        await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync(null!, TestCancellation.Token));
         await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync(null!, context));
         await Assert.ThrowsAsync<ArgumentNullException>("callback", async () => await pipeline.ExecuteAsync(null!, context, string.Empty));
     }

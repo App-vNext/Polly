@@ -13,7 +13,7 @@ public class BridgePipelineComponentTests
     [Fact]
     public void Execute_NonGeneric_Ok()
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var values = new List<object?>();
 
         var pipeline = new ResiliencePipeline(PipelineComponentFactory.FromStrategy(new Strategy<object>(outcome =>
@@ -42,7 +42,7 @@ public class BridgePipelineComponentTests
             values.Add(outcome.Result);
         })), DisposeBehavior.Allow, null);
 
-        pipeline.Execute(args => "dummy");
+        pipeline.Execute(args => "dummy", TestCancellation.Token);
 
         values.Count.ShouldBe(1);
         values[0].ShouldBe("dummy");
