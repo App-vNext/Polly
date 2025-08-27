@@ -29,6 +29,8 @@ public class AnnotatedOutputHelper : ITestOutputHelper
 
     private readonly ITestOutputHelper _innerOutputHelper;
 
+    public string Output => _innerOutputHelper.Output;
+
     public AnnotatedOutputHelper(ITestOutputHelper innerOutputHelper) =>
         _innerOutputHelper = innerOutputHelper ?? throw new ArgumentNullException(nameof(innerOutputHelper));
 

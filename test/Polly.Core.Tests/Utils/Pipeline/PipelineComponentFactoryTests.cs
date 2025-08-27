@@ -8,17 +8,17 @@ public class PipelineComponentFactoryTests
 #pragma warning disable IDE0028
     public static TheoryData<IEnumerable<Action>> EmptyCallbacks = new()
     {
-        Array.Empty<Action>(),
+        Array.Empty<Action>() as IEnumerable<Action>,
         Enumerable.Empty<Action>(),
-        new List<Action>(),
-        new EmptyActionEnumerable(), // Explicitly does not provide TryGetNonEnumeratedCount()
+        new List<Action>() as IEnumerable<Action>,
+        new EmptyActionEnumerable() as IEnumerable<Action>, // Explicitly does not provide TryGetNonEnumeratedCount()
     };
 
     public static TheoryData<IEnumerable<Action>> NonEmptyCallbacks = new()
     {
-        new[] { () => { } },
+        new[] { () => { } } as IEnumerable<Action>,
         Enumerable.TakeWhile(Enumerable.Repeat(() => { }, 50), (_, i) => i < 1), // Defeat optimisation for TryGetNonEnumeratedCount()
-        new List<Action> { () => { } },
+        new List<Action> { () => { } } as IEnumerable<Action>,
     };
 #pragma warning restore IDE0028
 
