@@ -1,0 +1,37 @@
+name: moderation
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+permissions: {}
+
+jobs:
+  spam-detection:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write
+      models: read
+      pull-requests: write
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          show-progress: false
+
+      - uses: github/ai-moderator@6bcdb2a79c2e564db8d76d7d4439d91a044c4eb6 # v1.1.2
+        with:
+          ai-label: 'ai-generated'
+          minimize-detected-comments: true
+          spam-label: 'spam'
+          token: ${{ secrets.GITHUB_TOKEN }}
