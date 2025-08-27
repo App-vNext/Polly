@@ -2,8 +2,10 @@
 
 Polly is a .NET resilience and transient-fault-handling library that allows developers to express resilience strategies such as Retry, Circuit Breaker, Hedging, Timeout, Rate Limiter and Fallback in a fluent and thread-safe manner.
 
+<!-- markdownlint-disable MD042 -->
 [![NuGet][package-badge-version]](#)
 [![NuGet Downloads][package-badge-downloads]](#)
+<!-- markdownlint-enable MD042 -->
 
 [<img align="right" src="https://github.com/dotnet/swag/raw/main/logo/dotnetfoundation_v4_small.png" width="100" alt="The .NET Foundation logo" />](https://www.dotnetfoundation.org/)
 We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
