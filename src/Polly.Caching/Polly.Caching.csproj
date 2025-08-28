@@ -1,33 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net6.0;netstandard2.0;net472;net462</TargetFrameworks>
+    <TargetFrameworks>net9.0</TargetFrameworks>
     <AssemblyTitle>Polly.Caching</AssemblyTitle>
-    <RootNamespace>Polly</RootNamespace>
+    <RootNamespace>Polly.Caching</RootNamespace>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ProjectType>Library</ProjectType>
-    <UsePublicApiAnalyzers>false</UsePublicApiAnalyzers>
+    <UsePublicApiAnalyzers>true</UsePublicApiAnalyzers>
+    <!-- TODO: Enable after first NuGet release with a published baseline -->
     <EnablePackageValidation>false</EnablePackageValidation>
     <LegacySupport>true</LegacySupport>
+    <MutationScore>100</MutationScore>
   </PropertyGroup>
-
-  <PropertyGroup>
-    <Description>Polly.Caching provides caching strategies for Polly v8 built on Microsoft.Extensions.Caching.*.</Description>
-    <PackageTags>Polly Caching IMemoryCache IDistributedCache Resilience</PackageTags>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Using Include="Polly.Utils" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" VersionOverride="8.0.0" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
-    <PackageReference Include="Microsoft.Bcl.TimeProvider" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net8.0'))" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
-    <PackageReference Include="System.ValueTuple" Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETFramework'" />
-    <PackageReference Include="System.ComponentModel.Annotations" VersionOverride="5.0.0" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
-  </ItemGroup>
 
   <ItemGroup>
     <Using Include="Polly.Utils" />
@@ -37,7 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" VersionOverride="9.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
+  </ItemGroup>
 </Project>
