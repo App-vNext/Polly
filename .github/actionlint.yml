@@ -1,4 +1,0 @@
-paths:
-  .github/workflows/moderation.yml:
-    ignore:
-      - 'unknown permission scope \"models\"'
