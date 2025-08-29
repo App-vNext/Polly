@@ -106,4 +106,32 @@ public class HybridCacheResilienceStrategyTests
         options.Ttl.ShouldBe(TimeSpan.FromMinutes(5));
         options.UseSlidingExpiration.ShouldBeFalse();
     }
+
+    [Fact]
+    public async Task ValueFactory_Propagates_Callback_Exception()
+    {
+        var services = new ServiceCollection();
+        services.AddHybridCache();
+        using var provider = services.BuildServiceProvider();
+
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions<string>
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "err-key"
+        };
+
+        var pipeline = new ResiliencePipelineBuilder<string>()
+            .AddHybridCache(options)
+            .Build();
+
+        await Should.ThrowAsync<InvalidOperationException>(async () =>
+        {
+            _ = await pipeline.ExecuteAsync(
+                (Func<CancellationToken, ValueTask<string>>)(static _ =>
+                    new(Task.FromException<string>(new InvalidOperationException("boom")))),
+                CancellationToken.None);
+        });
+    }
 }
