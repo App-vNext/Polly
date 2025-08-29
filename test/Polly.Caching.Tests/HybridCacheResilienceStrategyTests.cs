@@ -41,6 +41,37 @@ public class HybridCacheResilienceStrategyTests
     }
 
     [Fact]
+    public async Task KeyGenerator_Uses_Returned_Key_And_Caches()
+    {
+        var services = new ServiceCollection();
+        services.AddHybridCache();
+        using var provider = services.BuildServiceProvider();
+
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions<string>
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "op-key"
+        };
+
+        var pipeline = new ResiliencePipelineBuilder<string>()
+            .AddHybridCache(options)
+            .Build();
+
+        var r1 = await pipeline.ExecuteAsync(
+            (Func<CancellationToken, ValueTask<string>>)(static _ => new("v1")),
+            CancellationToken.None);
+
+        var r2 = await pipeline.ExecuteAsync(
+            (Func<CancellationToken, ValueTask<string>>)(static _ => new("v2")),
+            CancellationToken.None);
+
+        r1.ShouldBe("v1");
+        r2.ShouldBe("v1");
+    }
+
+    [Fact]
     public async Task EmptyKey_Throws()
     {
         var services = new ServiceCollection();
@@ -66,5 +97,13 @@ public class HybridCacheResilienceStrategyTests
                 (Func<CancellationToken, ValueTask<string>>)(static _ => new("x")),
                 CancellationToken.None);
         });
+    }
+
+    [Fact]
+    public void Options_Defaults_Are_Documented()
+    {
+        var options = new HybridCacheStrategyOptions<string>();
+        options.Ttl.ShouldBe(TimeSpan.FromMinutes(5));
+        options.UseSlidingExpiration.ShouldBeFalse();
     }
 }
