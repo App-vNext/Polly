@@ -134,4 +134,40 @@ public class HybridCacheResilienceStrategyTests
                 CancellationToken.None);
         });
     }
+
+    [Fact]
+    public async Task DefaultKeyGenerator_NullOperationKey_Throws()
+    {
+        var services = new ServiceCollection();
+        services.AddHybridCache();
+        using var provider = services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions<string>
+        {
+            Cache = cache,
+            CacheKeyGenerator = null
+        };
+
+        var pipeline = new ResiliencePipelineBuilder<string>()
+            .AddHybridCache(options)
+            .Build();
+
+        await Should.ThrowAsync<InvalidOperationException>(async () =>
+        {
+            _ = await pipeline.ExecuteAsync(
+                (Func<CancellationToken, ValueTask<string>>)(static _ => new("v")),
+                CancellationToken.None);
+        });
+    }
+
+    [Fact]
+    public void NullCache_Throws_ValidationException()
+    {
+        var options = new HybridCacheStrategyOptions<string> { Cache = null };
+
+        var builder = new ResiliencePipelineBuilder<string>();
+        Should.Throw<System.ComponentModel.DataAnnotations.ValidationException>(() =>
+            builder.AddHybridCache(options).Build());
+    }
 }
