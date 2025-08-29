@@ -170,4 +170,12 @@ public class HybridCacheResilienceStrategyTests
         Should.Throw<System.ComponentModel.DataAnnotations.ValidationException>(() =>
             builder.AddHybridCache(options).Build());
     }
+
+    [Fact]
+    public void StrategyCtor_NullCache_Throws_ArgumentException()
+    {
+        // Directly construct the internal strategy to bypass builder validation
+        var options = new HybridCacheStrategyOptions<string>(); // Cache is null by default
+        Should.Throw<ArgumentException>(() => new HybridCacheResilienceStrategy<string>(options));
+    }
 }
