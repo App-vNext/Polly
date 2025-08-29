@@ -8,6 +8,7 @@
     <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Polly.Caching\Polly.Caching.csproj" />
     <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />
     <ProjectReference Include="..\..\src\Polly.Extensions\Polly.Extensions.csproj" />
     <ProjectReference Include="..\..\src\Polly.RateLimiting\Polly.RateLimiting.csproj" />

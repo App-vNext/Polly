@@ -41,7 +41,7 @@ public class HybridCacheResilienceStrategyTests
     }
 
     [Fact]
-    public async Task EmptyKey_Bypasses_Cache()
+    public async Task EmptyKey_Throws()
     {
         var services = new ServiceCollection();
         services.AddHybridCache();
@@ -60,15 +60,11 @@ public class HybridCacheResilienceStrategyTests
             .AddHybridCache(options)
             .Build();
 
-        var r1 = await pipeline.ExecuteAsync(
-            (Func<CancellationToken, ValueTask<string>>)(static _ => new("x")),
-            CancellationToken.None);
-
-        var r2 = await pipeline.ExecuteAsync(
-            (Func<CancellationToken, ValueTask<string>>)(static _ => new("y")),
-            CancellationToken.None);
-
-        r1.ShouldBe("x");
-        r2.ShouldBe("y");
+        await Should.ThrowAsync<InvalidOperationException>(async () =>
+        {
+            _ = await pipeline.ExecuteAsync(
+                (Func<CancellationToken, ValueTask<string>>)(static _ => new("x")),
+                CancellationToken.None);
+        });
     }
 }

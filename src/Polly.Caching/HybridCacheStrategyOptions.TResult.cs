@@ -11,19 +11,25 @@ namespace Polly.Caching;
 [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Members preserved via builder validation.")]
 public class HybridCacheStrategyOptions<TResult> : ResilienceStrategyOptions
 {
-    /// <summary>Gets or sets the HybridCache instance to use.</summary>
+    /// <summary>Gets or sets the <see cref="HybridCache"/> instance to use.</summary>
     [Required]
     public HybridCache? Cache { get; set; }
 
-    /// <summary>Gets or sets the time-to-live for cached entries.</summary>
+    /// <summary>
+    /// Gets or sets the time-to-live for cached entries.
+    /// The default is 5 minutes.
+    /// </summary>
     [Range(typeof(TimeSpan), "00:00:00", "365.00:00:00")]
     public TimeSpan Ttl { get; set; } = TimeSpan.FromMinutes(5);
 
-    /// <summary>Gets or sets a value indicating whether sliding expiration should be used.</summary>
+    /// <summary>
+    /// Gets or sets a value indicating whether sliding expiration should be used.
+    /// The default is <see langword="false"/>.
+    /// </summary>
     public bool UseSlidingExpiration { get; set; }
 
     /// <summary>
-    /// Gets or sets a function that generates the cache key from the resilience context.
+    /// Gets or sets a delegate that generates the cache key from the resilience context.
     /// If <see langword="null"/>, <see cref="ResilienceContext.OperationKey"/> is used.
     /// </summary>
     public Func<ResilienceContext, string?>? CacheKeyGenerator { get; set; }

@@ -183,6 +183,7 @@ Task("__CreateNuGetPackages")
         System.IO.Path.Combine(srcDir, "Polly.RateLimiting", "Polly.RateLimiting.csproj"),
         System.IO.Path.Combine(srcDir, "Polly.Extensions", "Polly.Extensions.csproj"),
         System.IO.Path.Combine(srcDir, "Polly.Testing", "Polly.Testing.csproj"),
+        System.IO.Path.Combine(srcDir, "Polly.Caching", "Polly.Caching.csproj"),
     ];
 
     Information("Building NuGet packages");
@@ -268,12 +269,22 @@ Task("MutationTestsLegacy")
     RunMutationTests(File("./src/Polly/Polly.csproj"), File("./test/Polly.Specs/Polly.Specs.csproj"));
 });
 
+Task("MutationTestsCaching")
+  .IsDependentOn("__Setup")
+  .Does((context) =>
+{
+  RunMutationTests(
+    File("./src/Polly.Caching/Polly.Caching.csproj"),
+    File("./test/Polly.Caching.Tests/Polly.Caching.Tests.csproj"));
+});
+
 Task("MutationTests")
     .IsDependentOn("MutationTestsCore")
     .IsDependentOn("MutationTestsRateLimiting")
     .IsDependentOn("MutationTestsExtensions")
     .IsDependentOn("MutationTestsTesting")
-    .IsDependentOn("MutationTestsLegacy");
+    .IsDependentOn("MutationTestsLegacy")
+    .IsDependentOn("MutationTestsCaching");
 
 ///////////////////////////////////////////////////////////////////////////////
 // EXECUTION
