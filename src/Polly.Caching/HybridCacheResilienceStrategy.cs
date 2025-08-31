@@ -4,6 +4,7 @@ using Polly.Utils;
 
 namespace Polly.Caching;
 
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrategy<TResult>
 {
     private const string EmptyKeyPlaceholder = "Polly:HybridCache:EmptyKey";
