@@ -1,15 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net9.0</TargetFrameworks>
+    <TargetFramework>net9.0</TargetFramework>
     <ProjectType>Test</ProjectType>
     <Nullable>enable</Nullable>
     <Threshold>100</Threshold>
     <Include>[Polly.Caching]*</Include>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\Polly.Core.Tests\Utils\ExceptionUtilitiesTests.cs" Link="ExceptionUtilitiesTests.cs" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Polly.Caching\Polly.Caching.csproj" />

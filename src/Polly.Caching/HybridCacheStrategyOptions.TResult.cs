@@ -11,7 +11,9 @@ namespace Polly.Caching;
 [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Members preserved via builder validation.")]
 public class HybridCacheStrategyOptions<TResult> : ResilienceStrategyOptions
 {
-    /// <summary>Gets or sets the <see cref="HybridCache"/> instance to use.</summary>
+    /// <summary>
+    /// Gets or sets the <see cref="HybridCache"/> instance to use.
+    /// </summary>
     [Required]
     public HybridCache? Cache { get; set; }
 

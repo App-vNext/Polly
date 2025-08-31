@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.DependencyInjection;
 using Polly.Caching;
-using Polly.Testing;
 using Shouldly;
 
 namespace Polly.Caching.Tests;
@@ -9,22 +8,23 @@ namespace Polly.Caching.Tests;
 public class HybridCacheResiliencePipelineBuilderExtensionsTests
 {
     [Fact]
-    public void NonGeneric_AddHybridCache_BuildsStrategy()
+    public async Task NonGeneric_AddHybridCache_BuildsAndCaches()
     {
         var services = new ServiceCollection().AddHybridCache();
         using var provider = services.Services.BuildServiceProvider();
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache };
+        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "builder-key" };
 
-        var builder = new ResiliencePipelineBuilder()
-            .AddHybridCache(options);
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
 
-        builder.Build()
-            .GetPipelineDescriptor()
-            .FirstStrategy
-            .StrategyInstance
-            .ShouldBeOfType<HybridCacheResilienceStrategy<object>>();
+        var r1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("a"));
+        var r2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("b"));
+
+        r1.ShouldBe("a");
+        r2.ShouldBe("a");
     }
 
     [Fact]

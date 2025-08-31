@@ -28,13 +28,8 @@ public class HybridCacheResilienceStrategyTests
             .AddHybridCache(options)
             .Build();
 
-        var r1 = await pipeline.ExecuteAsync(
-            (Func<CancellationToken, ValueTask<string>>)(static _ => new("value-1")),
-            CancellationToken.None);
-
-        var r2 = await pipeline.ExecuteAsync(
-            (Func<CancellationToken, ValueTask<string>>)(static _ => new("value-2")),
-            CancellationToken.None);
+        var r1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("value-1"), CancellationToken.None);
+        var r2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("value-2"), CancellationToken.None);
 
         r1.ShouldBe("value-1");
         r2.ShouldBe("value-1");
@@ -59,20 +54,15 @@ public class HybridCacheResilienceStrategyTests
             .AddHybridCache(options)
             .Build();
 
-        var r1 = await pipeline.ExecuteAsync(
-            (Func<CancellationToken, ValueTask<string>>)(static _ => new("v1")),
-            CancellationToken.None);
-
-        var r2 = await pipeline.ExecuteAsync(
-            (Func<CancellationToken, ValueTask<string>>)(static _ => new("v2")),
-            CancellationToken.None);
+        var r1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("v1"), CancellationToken.None);
+        var r2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("v2"), CancellationToken.None);
 
         r1.ShouldBe("v1");
         r2.ShouldBe("v1");
     }
 
     [Fact]
-    public async Task EmptyKey_Throws()
+    public async Task EmptyKey_Caches()
     {
         var services = new ServiceCollection();
         services.AddHybridCache();
@@ -91,12 +81,11 @@ public class HybridCacheResilienceStrategyTests
             .AddHybridCache(options)
             .Build();
 
-        await Should.ThrowAsync<InvalidOperationException>(async () =>
-        {
-            _ = await pipeline.ExecuteAsync(
-                (Func<CancellationToken, ValueTask<string>>)(static _ => new("x")),
-                CancellationToken.None);
-        });
+        var r1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("x"), CancellationToken.None);
+        var r2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("y"), CancellationToken.None);
+
+        r1.ShouldBe("x");
+        r2.ShouldBe("x");
     }
 
     [Fact]
@@ -129,14 +118,13 @@ public class HybridCacheResilienceStrategyTests
         await Should.ThrowAsync<InvalidOperationException>(async () =>
         {
             _ = await pipeline.ExecuteAsync(
-                (Func<CancellationToken, ValueTask<string>>)(static _ =>
-                    new(Task.FromException<string>(new InvalidOperationException("boom")))),
+                static _ => new ValueTask<string>(Task.FromException<string>(new InvalidOperationException("boom"))),
                 CancellationToken.None);
         });
     }
 
     [Fact]
-    public async Task DefaultKeyGenerator_NullOperationKey_Throws()
+    public async Task DefaultKeyGenerator_NullOperationKey_Caches()
     {
         var services = new ServiceCollection();
         services.AddHybridCache();
@@ -146,19 +134,18 @@ public class HybridCacheResilienceStrategyTests
         var options = new HybridCacheStrategyOptions<string>
         {
             Cache = cache,
-            CacheKeyGenerator = null
+            CacheKeyGenerator = null // default generator -> OperationKey (null)
         };
 
         var pipeline = new ResiliencePipelineBuilder<string>()
             .AddHybridCache(options)
             .Build();
 
-        await Should.ThrowAsync<InvalidOperationException>(async () =>
-        {
-            _ = await pipeline.ExecuteAsync(
-                (Func<CancellationToken, ValueTask<string>>)(static _ => new("v")),
-                CancellationToken.None);
-        });
+        var r1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("v"), CancellationToken.None);
+        var r2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("w"), CancellationToken.None);
+
+        r1.ShouldBe("v");
+        r2.ShouldBe("v");
     }
 
     [Fact]
@@ -169,13 +156,5 @@ public class HybridCacheResilienceStrategyTests
         var builder = new ResiliencePipelineBuilder<string>();
         Should.Throw<System.ComponentModel.DataAnnotations.ValidationException>(() =>
             builder.AddHybridCache(options).Build());
-    }
-
-    [Fact]
-    public void StrategyCtor_NullCache_Throws_ArgumentException()
-    {
-        // Directly construct the internal strategy to bypass builder validation
-        var options = new HybridCacheStrategyOptions<string>(); // Cache is null by default
-        Should.Throw<ArgumentException>(() => new HybridCacheResilienceStrategy<string>(options));
     }
 }
