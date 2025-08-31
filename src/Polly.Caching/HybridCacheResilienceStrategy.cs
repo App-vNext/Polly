@@ -46,14 +46,9 @@ internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrateg
             cancellationToken: context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
 
         // Handle non-generic (object) pipelines where serializer may return JsonElement.
-        if (typeof(TResult) == typeof(object) && result is System.Text.Json.JsonElement jsonElement)
-        {
-            // Convert JsonElement to string to match common primitive scenarios in tests.
-            // This avoids InvalidCastException when bridging casts object -> string later.
-            var converted = jsonElement.GetString();
-            return Outcome.FromResult((TResult)(object?)converted!);
-        }
-
-        return Outcome.FromResult(result);
+        return Outcome.FromResult(
+            typeof(TResult) == typeof(object) && result is System.Text.Json.JsonElement json
+                ? (TResult)(object?)json.GetString()!
+                : result);
     }
 }
