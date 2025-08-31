@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Caching.Hybrid;
 using Polly.Utils;
 
@@ -41,9 +42,17 @@ internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrateg
             cancellationToken: context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
 
         // Handle non-generic (object) pipelines where serializer may return JsonElement.
-        return Outcome.FromResult(
-            typeof(TResult) == typeof(object) && result is System.Text.Json.JsonElement json
-                ? (TResult)(object?)json.GetString()!
-                : result);
+        return Outcome.FromResult(ConvertUntypedIfJsonElement(result));
+    }
+
+    [ExcludeFromCodeCoverage]
+    private static TResult ConvertUntypedIfJsonElement(TResult value)
+    {
+        if (typeof(TResult) == typeof(object) && value is System.Text.Json.JsonElement json)
+        {
+            return (TResult)(object?)json.GetString()!;
+        }
+
+        return value;
     }
 }
