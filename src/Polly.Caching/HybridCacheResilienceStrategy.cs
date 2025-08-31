@@ -13,12 +13,7 @@ internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrateg
     public HybridCacheResilienceStrategy(HybridCacheStrategyOptions<TResult> options)
     {
         Guard.NotNull(options);
-        if (options.Cache is null)
-        {
-            throw new ArgumentException("Cache must not be null.", nameof(options));
-        }
-
-        _cache = options.Cache;
+        _cache = options.Cache!;
         _keyGenerator = options.CacheKeyGenerator ?? (static ctx => ctx.OperationKey);
     }
 
