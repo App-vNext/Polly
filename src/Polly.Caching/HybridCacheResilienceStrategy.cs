@@ -1,10 +1,8 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Caching.Hybrid;
 using Polly.Utils;
 
 namespace Polly.Caching;
 
-[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrategy<TResult>
 {
     private const string EmptyKeyPlaceholder = "Polly:HybridCache:EmptyKey";
@@ -46,7 +44,6 @@ internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrateg
         return Outcome.FromResult(ConvertUntypedIfJsonElement(result));
     }
 
-    [ExcludeFromCodeCoverage]
     private static TResult ConvertUntypedIfJsonElement(TResult value)
     {
         if (typeof(TResult) == typeof(object) && value is System.Text.Json.JsonElement json)

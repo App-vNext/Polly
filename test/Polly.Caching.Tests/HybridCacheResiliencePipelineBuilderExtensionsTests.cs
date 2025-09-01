@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.DependencyInjection;
 using Polly.Caching;
@@ -22,6 +23,29 @@ public class HybridCacheResiliencePipelineBuilderExtensionsTests
 
         var r1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("a"));
         var r2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("b"));
+
+        r1.ShouldBe("a");
+        r2.ShouldBe("a");
+    }
+
+    [Fact]
+    public async Task NonGeneric_AddHybridCache_JsonElement_Converts_To_String()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "json-key" };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        using var d1 = JsonDocument.Parse("\"a\"");
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d1.RootElement));
+
+        using var d2 = JsonDocument.Parse("\"b\"");
+        var r2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d2.RootElement));
 
         r1.ShouldBe("a");
         r2.ShouldBe("a");
