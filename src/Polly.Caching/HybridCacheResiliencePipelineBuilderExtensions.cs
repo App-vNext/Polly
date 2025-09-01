@@ -6,6 +6,7 @@ namespace Polly;
 /// <summary>
 /// Extensions for integrating HybridCache with <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class HybridCacheResiliencePipelineBuilderExtensions
 {
     /// <summary>
