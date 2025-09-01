@@ -36,6 +36,34 @@ public class HybridCacheResilienceStrategyTests
     }
 
     [Fact]
+    public async Task SlidingExpiration_True_Caches()
+    {
+        var services = new ServiceCollection();
+        services.AddHybridCache();
+        using var provider = services.BuildServiceProvider();
+
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions<string>
+        {
+            Cache = cache,
+            Ttl = TimeSpan.FromMinutes(5),
+            UseSlidingExpiration = true,
+            CacheKeyGenerator = _ => "sliding"
+        };
+
+        var pipeline = new ResiliencePipelineBuilder<string>()
+            .AddHybridCache(options)
+            .Build();
+
+        var r1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("s1"), CancellationToken.None);
+        var r2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("s2"), CancellationToken.None);
+
+        r1.ShouldBe("s1");
+        r2.ShouldBe("s1");
+    }
+
+    [Fact]
     public async Task KeyGenerator_Uses_Returned_Key_And_Caches()
     {
         var services = new ServiceCollection();
