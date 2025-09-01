@@ -64,4 +64,28 @@ public class HybridCacheResiliencePipelineBuilderExtensionsTests
         var builder = new ResiliencePipelineBuilder<string>();
         Should.Throw<ArgumentNullException>(() => builder.AddHybridCache(options: null!));
     }
+
+    [Fact]
+    public void AddHybridCache_NonGeneric_NullBuilder_Throws()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions { Cache = cache };
+
+        Should.Throw<ArgumentNullException>(() => HybridCacheResiliencePipelineBuilderExtensions.AddHybridCache(null!, options));
+    }
+
+    [Fact]
+    public void AddHybridCache_Typed_NullBuilder_Throws()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions<string> { Cache = cache };
+
+        Should.Throw<ArgumentNullException>(() => HybridCacheResiliencePipelineBuilderExtensions.AddHybridCache<string>(null!, options));
+    }
 }
