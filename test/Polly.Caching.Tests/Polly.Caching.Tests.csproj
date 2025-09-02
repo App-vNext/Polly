@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <Threshold>100</Threshold>
     <Include>[Polly.Caching]*</Include>
+    <Exclude>[Polly.Caching]Polly.Utils.ExceptionUtilities</Exclude>
   </PropertyGroup>
 
 

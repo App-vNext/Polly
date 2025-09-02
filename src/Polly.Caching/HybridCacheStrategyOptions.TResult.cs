@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Caching.Hybrid;
@@ -9,7 +10,6 @@ namespace Polly.Caching;
 /// </summary>
 /// <typeparam name="TResult">The result type.</typeparam>
 [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Members preserved via builder validation.")]
-[ExcludeFromCodeCoverage]
 public class HybridCacheStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>

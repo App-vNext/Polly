@@ -88,4 +88,36 @@ public class HybridCacheResiliencePipelineBuilderExtensionsTests
 
         Should.Throw<ArgumentNullException>(() => HybridCacheResiliencePipelineBuilderExtensions.AddHybridCache<string>(null!, options));
     }
+
+    [Fact]
+    public void AddHybridCache_NonGeneric_ValidOptions_BuildsSuccessfully()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "test-key" };
+
+        var builder = new ResiliencePipelineBuilder();
+        var result = builder.AddHybridCache(options);
+
+        result.ShouldNotBeNull();
+        result.ShouldBe(builder);
+    }
+
+    [Fact]
+    public void AddHybridCache_Typed_ValidOptions_BuildsSuccessfully()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions<string> { Cache = cache, CacheKeyGenerator = _ => "test-key" };
+
+        var builder = new ResiliencePipelineBuilder<string>();
+        var result = builder.AddHybridCache(options);
+
+        result.ShouldNotBeNull();
+        result.ShouldBe(builder);
+    }
 }

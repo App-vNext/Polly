@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<coverage line-rate="1" branch-rate="1" version="1.9" timestamp="1756829413" lines-covered="51" lines-valid="51" branches-covered="18" branches-valid="18">
+  <sources>
+    <source>C:\Users\moham\Documents\polly\Polly\src\Polly.Caching\</source>
+  </sources>
+  <packages>
+    <package name="Polly.Caching" line-rate="1" branch-rate="1" complexity="25">
+      <classes>
+        <class name="Polly.HybridCacheResiliencePipelineBuilderExtensions" filename="HybridCacheResiliencePipelineBuilderExtensions.cs" line-rate="1" branch-rate="1" complexity="2">
+          <methods>
+            <method name="AddHybridCache" signature="(Polly.ResiliencePipelineBuilder,Polly.Caching.HybridCacheStrategyOptions)" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="23" hits="20" branch="False" />
+                <line number="24" hits="20" branch="False" />
+                <line number="25" hits="19" branch="False" />
+                <line number="27" hits="18" branch="False" />
+                <line number="28" hits="17" branch="False" />
+                <line number="29" hits="18" branch="False" />
+                <line number="30" hits="18" branch="False" />
+              </lines>
+            </method>
+            <method name="AddHybridCache" signature="(Polly.ResiliencePipelineBuilder`1&lt;TResult&gt;,Polly.Caching.HybridCacheStrategyOptions`1&lt;TResult&gt;)" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="46" hits="12" branch="False" />
+                <line number="47" hits="12" branch="False" />
+                <line number="48" hits="11" branch="False" />
+                <line number="50" hits="10" branch="False" />
+                <line number="51" hits="8" branch="False" />
+                <line number="52" hits="10" branch="False" />
+                <line number="53" hits="9" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="23" hits="20" branch="False" />
+            <line number="24" hits="20" branch="False" />
+            <line number="25" hits="19" branch="False" />
+            <line number="27" hits="18" branch="False" />
+            <line number="28" hits="17" branch="False" />
+            <line number="29" hits="18" branch="False" />
+            <line number="30" hits="18" branch="False" />
+            <line number="46" hits="12" branch="False" />
+            <line number="47" hits="12" branch="False" />
+            <line number="48" hits="11" branch="False" />
+            <line number="50" hits="10" branch="False" />
+            <line number="51" hits="8" branch="False" />
+            <line number="52" hits="10" branch="False" />
+            <line number="53" hits="9" branch="False" />
+          </lines>
+        </class>
+        <class name="Polly.Caching.HybridCacheResilienceStrategy`1" filename="HybridCacheResilienceStrategy.cs" line-rate="1" branch-rate="1" complexity="12">
+          <methods>
+            <method name="ConvertUntypedIfJsonElement" signature="(TResult)" line-rate="1" branch-rate="1" complexity="8">
+              <lines>
+                <line number="50" hits="49" branch="False" />
+                <line number="51" hits="49" branch="True" condition-coverage="100% (6/6)">
+                  <conditions>
+                    <condition number="26" type="jump" coverage="100%" />
+                    <condition number="39" type="jump" coverage="100%" />
+                    <condition number="67" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="52" hits="31" branch="False" />
+                <line number="53" hits="31" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="82" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="54" hits="1" branch="False" />
+                <line number="55" hits="1" branch="False" />
+                <line number="58" hits="30" branch="False" />
+                <line number="61" hits="18" branch="False" />
+                <line number="62" hits="49" branch="False" />
+              </lines>
+            </method>
+            <method name=".ctor" signature="(Polly.Caching.HybridCacheStrategyOptions`1&lt;TResult&gt;)" line-rate="1" branch-rate="1" complexity="4">
+              <lines>
+                <line number="15" hits="25" branch="False" />
+                <line number="16" hits="25" branch="False" />
+                <line number="17" hits="25" branch="False" />
+                <line number="18" hits="25" branch="False" />
+                <line number="19" hits="27" branch="True" condition-coverage="100% (4/4)">
+                  <conditions>
+                    <condition number="40" type="jump" coverage="100%" />
+                    <condition number="49" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="20" hits="25" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="50" hits="49" branch="False" />
+            <line number="51" hits="49" branch="True" condition-coverage="100% (6/6)">
+              <conditions>
+                <condition number="26" type="jump" coverage="100%" />
+                <condition number="39" type="jump" coverage="100%" />
+                <condition number="67" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="52" hits="31" branch="False" />
+            <line number="53" hits="31" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="82" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="54" hits="1" branch="False" />
+            <line number="55" hits="1" branch="False" />
+            <line number="58" hits="30" branch="False" />
+            <line number="61" hits="18" branch="False" />
+            <line number="62" hits="49" branch="False" />
+            <line number="15" hits="25" branch="False" />
+            <line number="16" hits="25" branch="False" />
+            <line number="17" hits="25" branch="False" />
+            <line number="18" hits="25" branch="False" />
+            <line number="19" hits="27" branch="True" condition-coverage="100% (4/4)">
+              <conditions>
+                <condition number="40" type="jump" coverage="100%" />
+                <condition number="49" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="20" hits="25" branch="False" />
+          </lines>
+        </class>
+        <class name="Polly.Caching.HybridCacheResilienceStrategy`1/&lt;&gt;c__4`1/&lt;&lt;ExecuteCore&gt;b__4_0&gt;d" filename="HybridCacheResilienceStrategy.cs" line-rate="1" branch-rate="1" complexity="1">
+          <methods>
+            <method name="MoveNext" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="38" hits="25" branch="False" />
+                <line number="39" hits="25" branch="False" />
+                <line number="40" hits="25" branch="False" />
+                <line number="41" hits="24" branch="False" />
+                <line number="42" hits="24" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="38" hits="25" branch="False" />
+            <line number="39" hits="25" branch="False" />
+            <line number="40" hits="25" branch="False" />
+            <line number="41" hits="24" branch="False" />
+            <line number="42" hits="24" branch="False" />
+          </lines>
+        </class>
+        <class name="Polly.Caching.HybridCacheResilienceStrategy`1/&lt;ExecuteCore&gt;d__4`1" filename="HybridCacheResilienceStrategy.cs" line-rate="1" branch-rate="1" complexity="6">
+          <methods>
+            <method name="MoveNext" signature="()" line-rate="1" branch-rate="1" complexity="6">
+              <lines>
+                <line number="26" hits="49" branch="False" />
+                <line number="27" hits="49" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="42" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="28" hits="49" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="71" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="29" hits="4" branch="False" />
+                <line number="31" hits="4" branch="False" />
+                <line number="32" hits="4" branch="False" />
+                <line number="34" hits="49" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="132" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="35" hits="49" branch="False" />
+                <line number="36" hits="49" branch="False" />
+                <line number="37" hits="49" branch="False" />
+                <line number="43" hits="49" branch="False" />
+                <line number="46" hits="48" branch="False" />
+                <line number="47" hits="48" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="26" hits="49" branch="False" />
+            <line number="27" hits="49" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="42" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="28" hits="49" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="71" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="29" hits="4" branch="False" />
+            <line number="31" hits="4" branch="False" />
+            <line number="32" hits="4" branch="False" />
+            <line number="34" hits="49" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="132" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="35" hits="49" branch="False" />
+            <line number="36" hits="49" branch="False" />
+            <line number="37" hits="49" branch="False" />
+            <line number="43" hits="49" branch="False" />
+            <line number="46" hits="48" branch="False" />
+            <line number="47" hits="48" branch="False" />
+          </lines>
+        </class>
+        <class name="Polly.Caching.HybridCacheStrategyOptions`1" filename="HybridCacheStrategyOptions.TResult.cs" line-rate="1" branch-rate="1" complexity="4">
+          <methods>
+            <method name="get_Cache" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="19" hits="95" branch="False" />
+              </lines>
+            </method>
+            <method name="get_Ttl" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="26" hits="80" branch="False" />
+              </lines>
+            </method>
+            <method name="get_UseSlidingExpiration" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="32" hits="5" branch="False" />
+              </lines>
+            </method>
+            <method name="get_CacheKeyGenerator" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="38" hits="55" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="19" hits="95" branch="False" />
+            <line number="26" hits="80" branch="False" />
+            <line number="32" hits="5" branch="False" />
+            <line number="38" hits="55" branch="False" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>

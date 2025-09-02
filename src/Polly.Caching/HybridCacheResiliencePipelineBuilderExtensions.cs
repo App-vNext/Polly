@@ -6,7 +6,6 @@ namespace Polly;
 /// <summary>
 /// Extensions for integrating HybridCache with <see cref="ResiliencePipelineBuilder"/>.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public static class HybridCacheResiliencePipelineBuilderExtensions
 {
     /// <summary>
@@ -39,7 +38,7 @@ public static class HybridCacheResiliencePipelineBuilderExtensions
     /// <returns>The same typed builder instance.</returns>
     [UnconditionalSuppressMessage(
         "Trimming",
-        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise break functionality when trimming application code",
         Justification = "Options are validated and all members preserved.")]
     public static ResiliencePipelineBuilder<TResult> AddHybridCache<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TResult>(
         this ResiliencePipelineBuilder<TResult> builder,

@@ -1,5 +1,7 @@
+using System;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Hybrid;
-using Polly.Utils;
 
 namespace Polly.Caching;
 
@@ -48,7 +50,12 @@ internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrateg
     {
         if (typeof(TResult) == typeof(object) && value is System.Text.Json.JsonElement json)
         {
-            return (TResult)(object?)json.GetString()!;
+            if (json.ValueKind == System.Text.Json.JsonValueKind.Null)
+            {
+                return (TResult)(object?)null!;
+            }
+
+            return (TResult)(object?)json.ToString()!;
         }
 
         return value;
