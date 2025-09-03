@@ -24,8 +24,8 @@ internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrateg
         ResilienceContext context,
         TState state)
     {
-        var key = _keyGenerator(context) ?? string.Empty;
-        if (key.Length == 0)
+        var key = _keyGenerator(context);
+        if (string.IsNullOrEmpty(key))
         {
             // Use a stable placeholder to represent an intentionally empty key
             key = EmptyKeyPlaceholder;
