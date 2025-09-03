@@ -12,7 +12,7 @@
     <LegacySupport>true</LegacySupport>
     <MutationScore>100</MutationScore>
   </PropertyGroup>
-<PropertyGroup>
+  <PropertyGroup>
     <Description>Polly.Caching provides caching strategies for Polly.Core.</Description>
     <PackageTags>Polly Caching HybridCache Resilience Policy </PackageTags>
   </PropertyGroup>
