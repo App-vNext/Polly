@@ -12,7 +12,10 @@
     <LegacySupport>true</LegacySupport>
     <MutationScore>100</MutationScore>
   </PropertyGroup>
-
+<PropertyGroup>
+    <Description>Polly.Caching provides caching strategies for Polly.Core.</Description>
+    <PackageTags>Polly Caching HybridCache Resilience Policy </PackageTags>
+  </PropertyGroup>
   <ItemGroup>
     <Using Include="Polly.Utils" />
     <Compile Include="..\Polly.Core\Utils\ExceptionUtilities.cs" Link="utils\ExceptionUtilities.cs" />
