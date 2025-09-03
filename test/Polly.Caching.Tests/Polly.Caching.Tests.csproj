@@ -7,9 +7,6 @@
     <Include>[Polly.Caching]*</Include>
     <Exclude>[Polly.Caching]Polly.Utils.ExceptionUtilities</Exclude>
   </PropertyGroup>
-
-
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Polly.Caching\Polly.Caching.csproj" />
     <ProjectReference Include="..\..\src\Polly.Testing\Polly.Testing.csproj" />
