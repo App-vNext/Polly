@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<coverage line-rate="1" branch-rate="1" version="1.9" timestamp="1756829413" lines-covered="51" lines-valid="51" branches-covered="18" branches-valid="18">
+<coverage line-rate="1" branch-rate="1" version="1.9" timestamp="1756915594" lines-covered="51" lines-valid="51" branches-covered="16" branches-valid="16">
   <sources>
     <source>C:\Users\moham\Documents\polly\Polly\src\Polly.Caching\</source>
   </sources>
   <packages>
-    <package name="Polly.Caching" line-rate="1" branch-rate="1" complexity="25">
+    <package name="Polly.Caching" line-rate="1" branch-rate="1" complexity="23">
       <classes>
         <class name="Polly.HybridCacheResiliencePipelineBuilderExtensions" filename="HybridCacheResiliencePipelineBuilderExtensions.cs" line-rate="1" branch-rate="1" complexity="2">
           <methods>
@@ -142,19 +142,15 @@
             <line number="42" hits="24" branch="False" />
           </lines>
         </class>
-        <class name="Polly.Caching.HybridCacheResilienceStrategy`1/&lt;ExecuteCore&gt;d__4`1" filename="HybridCacheResilienceStrategy.cs" line-rate="1" branch-rate="1" complexity="6">
+        <class name="Polly.Caching.HybridCacheResilienceStrategy`1/&lt;ExecuteCore&gt;d__4`1" filename="HybridCacheResilienceStrategy.cs" line-rate="1" branch-rate="1" complexity="4">
           <methods>
-            <method name="MoveNext" signature="()" line-rate="1" branch-rate="1" complexity="6">
+            <method name="MoveNext" signature="()" line-rate="1" branch-rate="1" complexity="4">
               <lines>
                 <line number="26" hits="49" branch="False" />
-                <line number="27" hits="49" branch="True" condition-coverage="100% (2/2)">
-                  <conditions>
-                    <condition number="42" type="jump" coverage="100%" />
-                  </conditions>
-                </line>
+                <line number="27" hits="49" branch="False" />
                 <line number="28" hits="49" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
-                    <condition number="71" type="jump" coverage="100%" />
+                    <condition number="59" type="jump" coverage="100%" />
                   </conditions>
                 </line>
                 <line number="29" hits="4" branch="False" />
@@ -162,7 +158,7 @@
                 <line number="32" hits="4" branch="False" />
                 <line number="34" hits="49" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
-                    <condition number="132" type="jump" coverage="100%" />
+                    <condition number="120" type="jump" coverage="100%" />
                   </conditions>
                 </line>
                 <line number="35" hits="49" branch="False" />
@@ -176,14 +172,10 @@
           </methods>
           <lines>
             <line number="26" hits="49" branch="False" />
-            <line number="27" hits="49" branch="True" condition-coverage="100% (2/2)">
-              <conditions>
-                <condition number="42" type="jump" coverage="100%" />
-              </conditions>
-            </line>
+            <line number="27" hits="49" branch="False" />
             <line number="28" hits="49" branch="True" condition-coverage="100% (2/2)">
               <conditions>
-                <condition number="71" type="jump" coverage="100%" />
+                <condition number="59" type="jump" coverage="100%" />
               </conditions>
             </line>
             <line number="29" hits="4" branch="False" />
@@ -191,7 +183,7 @@
             <line number="32" hits="4" branch="False" />
             <line number="34" hits="49" branch="True" condition-coverage="100% (2/2)">
               <conditions>
-                <condition number="132" type="jump" coverage="100%" />
+                <condition number="120" type="jump" coverage="100%" />
               </conditions>
             </line>
             <line number="35" hits="49" branch="False" />
@@ -206,30 +198,30 @@
           <methods>
             <method name="get_Cache" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="19" hits="95" branch="False" />
+                <line number="18" hits="95" branch="False" />
               </lines>
             </method>
             <method name="get_Ttl" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="26" hits="80" branch="False" />
+                <line number="25" hits="80" branch="False" />
               </lines>
             </method>
             <method name="get_UseSlidingExpiration" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="32" hits="5" branch="False" />
+                <line number="31" hits="5" branch="False" />
               </lines>
             </method>
             <method name="get_CacheKeyGenerator" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="38" hits="55" branch="False" />
+                <line number="37" hits="55" branch="False" />
               </lines>
             </method>
           </methods>
           <lines>
-            <line number="19" hits="95" branch="False" />
-            <line number="26" hits="80" branch="False" />
-            <line number="32" hits="5" branch="False" />
-            <line number="38" hits="55" branch="False" />
+            <line number="18" hits="95" branch="False" />
+            <line number="25" hits="80" branch="False" />
+            <line number="31" hits="5" branch="False" />
+            <line number="37" hits="55" branch="False" />
           </lines>
         </class>
       </classes>

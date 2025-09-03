@@ -39,7 +39,11 @@ public class HybridCacheResiliencePipelineBuilderExtensionsTests
         using var provider = services.Services.BuildServiceProvider();
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "json-key" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "json-key"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -76,7 +80,10 @@ public class HybridCacheResiliencePipelineBuilderExtensionsTests
         using var provider = services.Services.BuildServiceProvider();
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache
+        };
 
         Should.Throw<ArgumentNullException>(() => HybridCacheResiliencePipelineBuilderExtensions.AddHybridCache(null!, options));
     }
@@ -88,7 +95,10 @@ public class HybridCacheResiliencePipelineBuilderExtensionsTests
         using var provider = services.Services.BuildServiceProvider();
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions<string> { Cache = cache };
+        var options = new HybridCacheStrategyOptions<string>
+        {
+            Cache = cache
+        };
 
         Should.Throw<ArgumentNullException>(() => HybridCacheResiliencePipelineBuilderExtensions.AddHybridCache<string>(null!, options));
     }
@@ -100,7 +110,11 @@ public class HybridCacheResiliencePipelineBuilderExtensionsTests
         using var provider = services.Services.BuildServiceProvider();
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "test-key" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "test-key"
+        };
 
         var builder = new ResiliencePipelineBuilder();
         var result = builder.AddHybridCache(options);
@@ -116,7 +130,11 @@ public class HybridCacheResiliencePipelineBuilderExtensionsTests
         using var provider = services.Services.BuildServiceProvider();
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions<string> { Cache = cache, CacheKeyGenerator = _ => "test-key" };
+        var options = new HybridCacheStrategyOptions<string>
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "test-key"
+        };
 
         var builder = new ResiliencePipelineBuilder<string>();
         var result = builder.AddHybridCache(options);

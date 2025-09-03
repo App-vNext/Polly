@@ -183,7 +183,10 @@ public class HybridCacheResilienceStrategyTests
     [Fact]
     public void NullCache_Throws_ValidationException()
     {
-        var options = new HybridCacheStrategyOptions<string> { Cache = null };
+        var options = new HybridCacheStrategyOptions<string>
+        {
+            Cache = null
+        };
 
         var builder = new ResiliencePipelineBuilder<string>();
         Should.Throw<System.ComponentModel.DataAnnotations.ValidationException>(() =>
@@ -199,7 +202,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -231,7 +238,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions<string> { Cache = cache, CacheKeyGenerator = _ => "typed-string" };
+        var options = new HybridCacheStrategyOptions<string>
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "typed-string"
+        };
 
         var pipeline = new ResiliencePipelineBuilder<string>()
             .AddHybridCache(options)
@@ -362,7 +373,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-small-decimal" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-small-decimal"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -394,7 +409,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-nonstring" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-nonstring"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -426,7 +445,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-null" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-null"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -505,7 +528,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-bool" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-bool"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -537,7 +564,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-obj" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-obj"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -569,7 +600,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-array" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-array"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -601,7 +636,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-decimal" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-decimal"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -633,7 +672,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-non-json" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-non-json"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -663,7 +706,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions<string> { Cache = cache, CacheKeyGenerator = _ => "typed-string-path" };
+        var options = new HybridCacheStrategyOptions<string>
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "typed-string-path"
+        };
 
         var pipeline = new ResiliencePipelineBuilder<string>()
             .AddHybridCache(options)
@@ -691,7 +738,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-special" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-special"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -723,7 +774,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-long" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-long"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -758,7 +813,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-empty" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-empty"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -792,7 +851,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-large-number" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-large-number"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
@@ -824,7 +887,11 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "untyped-json-negative" };
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "untyped-json-negative"
+        };
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddHybridCache(options)
