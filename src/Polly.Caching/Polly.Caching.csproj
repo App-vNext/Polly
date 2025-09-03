@@ -25,7 +25,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" VersionOverride="9.3.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
   </ItemGroup>
