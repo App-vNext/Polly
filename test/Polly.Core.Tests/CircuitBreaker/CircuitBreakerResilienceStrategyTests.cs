@@ -30,7 +30,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
             null);
     }
 
-    private static CancellationToken CancellationToken => CancellationToken.None;
+    private static CancellationToken CancellationToken => TestCancellation.Token;
 
     [Fact]
     public void Ctor_Ok() =>
@@ -113,6 +113,18 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         var strategy = Create();
 
         Should.Throw<ArgumentException>(() => strategy.Execute<int>(_ => throw new ArgumentException()));
+
+        _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
+    }
+
+    [Fact]
+    public async Task ExecuteOutcomeAsync_UnhandledException_OnActionSuccess()
+    {
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Outcome.Exception is InvalidOperationException);
+        var strategy = Create();
+
+        var outcome = await strategy.ExecuteOutcomeAsync<int, string>((_, _) => throw new ArgumentException(), new(), "dummy-state");
+        outcome.Exception.ShouldBeOfType<ArgumentException>();
 
         _behavior.Received(1).OnActionSuccess(CircuitState.Closed);
     }

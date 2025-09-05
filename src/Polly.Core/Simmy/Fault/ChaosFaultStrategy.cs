@@ -43,7 +43,8 @@ internal sealed class ChaosFaultStrategy : ChaosStrategy
                 }
             }
 
-            return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            context.CancellationToken.ThrowIfCancellationRequested();
+            return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         catch (OperationCanceledException e)
         {

@@ -17,8 +17,8 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T
 
         stateProvider?.Initialize(() => _controller.CircuitState);
         _manualControlRegistration = manualControl?.Initialize(
-            async c => await _controller.IsolateCircuitAsync(c).ConfigureAwait(c.ContinueOnCapturedContext),
-            async c => await _controller.CloseCircuitAsync(c).ConfigureAwait(c.ContinueOnCapturedContext));
+            _controller.IsolateCircuitAsync,
+            _controller.CloseCircuitAsync);
     }
 
     public void Dispose()
@@ -34,7 +34,17 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T
             return outcome;
         }
 
-        outcome = await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        try
+        {
+            context.CancellationToken.ThrowIfCancellationRequested();
+            outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
+#pragma warning disable CA1031
+        catch (Exception ex)
+        {
+            outcome = new(ex);
+        }
+#pragma warning restore CA1031
 
         var args = new CircuitBreakerPredicateArguments<T>(context, outcome);
         if (await _handler(args).ConfigureAwait(context.ContinueOnCapturedContext))

@@ -8,9 +8,11 @@
     <Include>[Polly.RateLimiting]*</Include>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\TestCancellation.cs" Link="TestCancellation.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\Polly.Core.Tests\Utils\ExceptionUtilitiesTests.cs" Link="ExceptionUtilitiesTests.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Polly.RateLimiting\Polly.RateLimiting.csproj" />
     <ProjectReference Include="..\..\src\Polly.Testing\Polly.Testing.csproj" />

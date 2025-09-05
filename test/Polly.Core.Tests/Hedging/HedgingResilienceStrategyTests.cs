@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Polly.Hedging;
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
@@ -688,7 +689,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     }
 
     [Fact]
-    public void ExecuteAsync_InfiniteHedgingDelay_EnsureNoConcurrentExecutions()
+    public async Task ExecuteAsync_InfiniteHedgingDelay_EnsureNoConcurrentExecutions()
     {
         // arrange
         bool executing = false;
@@ -701,6 +702,8 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         // assert
         allExecutions.WaitOne(AssertTimeout).ShouldBeTrue();
+
+        await Should.ThrowAsync<InvalidOperationException>(async () => await pending);
 
         async ValueTask<string> Execute(CancellationToken token)
         {

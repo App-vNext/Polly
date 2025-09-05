@@ -28,7 +28,7 @@ public class RetryStrategyOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new RetryStrategyOptions<int>();
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         (await options.ShouldHandle(new RetryPredicateArguments<int>(context, Outcome.FromResult(0), 0))).ShouldBe(false);
         (await options.ShouldHandle(new RetryPredicateArguments<int>(context, Outcome.FromException<int>(new OperationCanceledException()), 0))).ShouldBe(false);

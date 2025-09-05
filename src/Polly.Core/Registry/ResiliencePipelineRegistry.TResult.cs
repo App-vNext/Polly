@@ -47,33 +47,31 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
 
         public ResiliencePipeline<TResult> GetOrAdd(TKey key, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
         {
-            var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _instanceNameFormatter?.Invoke(key));
-
-            return _pipelines.GetOrAdd(key, k =>
+            if (_pipelines.TryGetValue(key, out var pipeline))
             {
-                var componentBuilder = new RegistryPipelineComponentBuilder<ResiliencePipelineBuilder<TResult>, TKey>(
-                    _activator,
-                    k,
-                    _builderNameFormatter(k),
-                    _instanceNameFormatter?.Invoke(k),
-                    configure);
+                return pipeline;
+            }
 
-                (var contextPool, var component) = componentBuilder.CreateComponent();
+            var componentBuilder = new RegistryPipelineComponentBuilder<ResiliencePipelineBuilder<TResult>, TKey>(
+                _activator,
+                key,
+                _builderNameFormatter(key),
+                _instanceNameFormatter?.Invoke(key),
+                configure);
 
-                return new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject, contextPool);
-            });
+            (var contextPool, var component) = componentBuilder.CreateComponent();
+
+            return _pipelines.GetOrAdd(key, new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject, contextPool));
         }
 
         public bool TryAddBuilder(TKey key, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);
 
         public async ValueTask DisposeAsync()
         {
-            foreach (var strategy in _pipelines.Values)
+            foreach (var kv in _pipelines)
             {
-                await strategy.DisposeHelper.ForceDisposeAsync().ConfigureAwait(false);
+                await kv.Value.DisposeHelper.ForceDisposeAsync().ConfigureAwait(false);
             }
-
-            _pipelines.Clear();
         }
     }
 }

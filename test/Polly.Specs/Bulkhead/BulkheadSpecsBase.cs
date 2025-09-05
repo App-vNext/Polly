@@ -16,7 +16,7 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     #endregion
 
-    protected static CancellationToken CancellationToken => CancellationToken.None;
+    protected static CancellationToken CancellationToken => TestCancellation.Token;
 
     protected BulkheadSpecsBase(ITestOutputHelper testOutputHelper)
     {

@@ -30,7 +30,7 @@ public class TimeProviderExtensionsTests
     public async Task DelayAsync_SystemSynchronous_Ok()
     {
         var delay = TimeSpan.FromMilliseconds(5);
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         context.Initialize<VoidResult>(isSynchronous: true);
 
         await TestUtilities.AssertWithTimeoutAsync(async () =>

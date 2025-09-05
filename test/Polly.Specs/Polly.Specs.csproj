@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
@@ -9,7 +8,9 @@
     <Include>[Polly]*</Include>
     <IncludePollyUsings>true</IncludePollyUsings>
   </PropertyGroup>
-
+  <ItemGroup>
+    <Compile Include="..\Shared\TestCancellation.cs" Link="TestCancellation.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Using Include="NSubstitute" />
     <Using Include="Polly.Specs.DictionaryHelpers" Static="true" />
@@ -23,7 +24,6 @@
     <Using Include="Xunit.Abstractions" />
     <Using Include="Xunit.Sdk" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
     <ProjectReference Include="..\..\src\Polly\Polly.csproj" />

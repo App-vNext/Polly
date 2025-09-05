@@ -1,4 +1,5 @@
 ﻿#nullable enable
+
 namespace Polly.Bulkhead;
 
 internal static class BulkheadEngine
@@ -26,12 +27,25 @@ internal static class BulkheadEngine
             }
             finally
             {
-                maxParallelizationSemaphore.Release();
+                SafeRelease(maxParallelizationSemaphore);
             }
         }
         finally
         {
-            maxQueuedActionsSemaphore.Release();
+            SafeRelease(maxQueuedActionsSemaphore);
+        }
+
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        static void SafeRelease(SemaphoreSlim semaphore)
+        {
+            try
+            {
+                semaphore.Release();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Ignore - this can happen if the caller disposed the semaphore
+            }
         }
     }
 }

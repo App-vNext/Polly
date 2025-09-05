@@ -26,7 +26,7 @@ public class CircuitStateControllerTests
     public async Task IsolateAsync_Ok()
     {
         // arrange
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         bool called = false;
         _options.OnOpened = args =>
         {
@@ -69,7 +69,7 @@ public class CircuitStateControllerTests
     public async Task BreakAsync_Ok()
     {
         // arrange
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         bool called = false;
         _options.OnClosed = args =>
         {
@@ -102,7 +102,7 @@ public class CircuitStateControllerTests
     [Fact]
     public async Task Disposed_EnsureThrows()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         var controller = CreateController();
         controller.Dispose();
@@ -121,7 +121,7 @@ public class CircuitStateControllerTests
     [Fact]
     public async Task OnActionPreExecute_CircuitOpenedByValue()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         using var controller = CreateController();
 
         await OpenCircuit(controller, Outcome.FromResult(99));
@@ -138,7 +138,7 @@ public class CircuitStateControllerTests
     public async Task OnActionPreExecute_CircuitOpened_EnsureExceptionStackTraceDoesNotGrow(bool innerException)
     {
         var stacks = new List<string>();
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         using var controller = CreateController();
 
         await OpenCircuit(
@@ -175,7 +175,7 @@ public class CircuitStateControllerTests
     [Fact]
     public async Task HalfOpen_EnsureBreakDuration()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         using var controller = CreateController();
 
         await TransitionToState(controller, CircuitState.HalfOpen, context);
@@ -187,7 +187,7 @@ public class CircuitStateControllerTests
     [Theory]
     public async Task HalfOpen_EnsureCorrectStateTransitionAfterExecution(bool success)
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         using var controller = CreateController();
 
         await TransitionToState(controller, CircuitState.HalfOpen, context);
@@ -213,7 +213,7 @@ public class CircuitStateControllerTests
     [Fact]
     public async Task OnActionPreExecute_CircuitOpenedByException()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         using var controller = CreateController();
 
         await OpenCircuit(controller, Outcome.FromException<int>(new InvalidOperationException()));
@@ -227,7 +227,7 @@ public class CircuitStateControllerTests
     public async Task OnActionFailure_EnsureLock()
     {
         // arrange
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var context = ResilienceContextPool.Shared.Get(cancellationToken);
 
         using var executing = new ManualResetEvent(false);
@@ -244,9 +244,9 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         // act
-        var executeAction = Task.Run(() => controller.OnHandledOutcomeAsync(Outcome.FromResult(0), context));
+        var executeAction = Task.Run(() => controller.OnHandledOutcomeAsync(Outcome.FromResult(0), context), cancellationToken);
         executing.WaitOne();
-        var executeAction2 = Task.Run(() => controller.OnHandledOutcomeAsync(Outcome.FromResult(0), context));
+        var executeAction2 = Task.Run(() => controller.OnHandledOutcomeAsync(Outcome.FromResult(0), context), cancellationToken);
 
         // assert
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
@@ -261,7 +261,7 @@ public class CircuitStateControllerTests
     public async Task OnActionPreExecute_HalfOpen()
     {
         // arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         var called = false;
         _options.OnHalfOpened = _ =>
         {
@@ -293,7 +293,7 @@ public class CircuitStateControllerTests
     public async Task OnActionSuccess_EnsureCorrectBehavior(CircuitState state, CircuitState expectedState)
     {
         // arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         var called = false;
         _options.OnClosed = args =>
         {
@@ -329,7 +329,7 @@ public class CircuitStateControllerTests
     public async Task OnActionFailureAsync_EnsureCorrectBehavior(CircuitState state, CircuitState expectedState, bool shouldBreak)
     {
         // arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         var called = false;
         _options.OnOpened = args =>
         {
@@ -370,7 +370,7 @@ public class CircuitStateControllerTests
     public async Task OnActionFailureAsync_EnsureBreakDurationGeneration()
     {
         // arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         _options.BreakDurationGenerator = static args =>
         {
             args.FailureCount.ShouldBe(1);
@@ -402,7 +402,7 @@ public class CircuitStateControllerTests
     public async Task BreakDurationGenerator_EnsureHalfOpenAttempts()
     {
         // arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         var halfOpenAttempts = new List<int>();
 
         _options.BreakDurationGenerator = args =>
@@ -440,7 +440,7 @@ public class CircuitStateControllerTests
     public async Task OnActionFailureAsync_EnsureBreakDurationNotOverflow(bool overflow)
     {
         // arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         using var controller = CreateController();
         var shouldBreak = true;
         await TransitionToState(controller, CircuitState.HalfOpen, context);
@@ -475,7 +475,7 @@ public class CircuitStateControllerTests
     public async Task OnActionFailureAsync_VoidResult_EnsureBreakingExceptionNotSet()
     {
         // arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         using var controller = CreateController();
         bool shouldBreak = true;
         await TransitionToState(controller, CircuitState.Open, context);
@@ -497,7 +497,7 @@ public class CircuitStateControllerTests
     [Fact]
     public async Task Flow_Closed_HalfOpen_Closed()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
         using var controller = CreateController();
 
         await TransitionToState(controller, CircuitState.HalfOpen, context);
@@ -512,7 +512,7 @@ public class CircuitStateControllerTests
     [Fact]
     public async Task Flow_Closed_HalfOpen_Open_HalfOpen_Closed()
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var context = ResilienceContextPool.Shared.Get(cancellationToken);
 
         using var controller = CreateController();
@@ -550,11 +550,11 @@ public class CircuitStateControllerTests
     [Fact]
     public async Task ExecuteScheduledTask_Async_Ok()
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var context = ResilienceContextPool.Shared.Get(cancellationToken);
 
         var source = new TaskCompletionSource<string>();
-        var task = CircuitStateController<string>.ExecuteScheduledTaskAsync(source.Task, context.Initialize<string>(isSynchronous: false)).AsTask();
+        var task = CircuitStateController<string>.ExecuteScheduledTaskAsync(source.Task, context.Initialize<string>(isSynchronous: false));
 
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         task.Wait(3, cancellationToken).ShouldBeFalse();
@@ -605,7 +605,7 @@ public class CircuitStateControllerTests
 
         await controller.OnHandledOutcomeAsync(
             outcome ?? Outcome.FromResult(10),
-            ResilienceContextPool.Shared.Get().Initialize<int>(true));
+            ResilienceContextPool.Shared.Get(TestCancellation.Token).Initialize<int>(true));
     }
 
     private void AdvanceTime(TimeSpan timespan) => _timeProvider.Advance(timespan);

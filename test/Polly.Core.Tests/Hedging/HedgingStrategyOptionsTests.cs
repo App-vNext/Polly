@@ -25,7 +25,7 @@ public class HedgingStrategyOptionsTests
     public async Task HedgingActionGenerator_EnsureDefaults(bool synchronous)
     {
         var options = new HedgingStrategyOptions<int>();
-        var context = ResilienceContextPool.Shared.Get().Initialize<int>(synchronous);
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token).Initialize<int>(synchronous);
         var threadId = Thread.CurrentThread.ManagedThreadId;
         using var semaphore = new SemaphoreSlim(0);
 
@@ -46,7 +46,7 @@ public class HedgingStrategyOptionsTests
 
         var task = action();
         semaphore
-            .Wait(TimeSpan.FromSeconds(20))
+            .Wait(TimeSpan.FromSeconds(20), TestCancellation.Token)
             .ShouldBeTrue("The test thread failed to complete within the timeout");
         (await task).Result.ShouldBe(99);
     }
@@ -55,7 +55,7 @@ public class HedgingStrategyOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new HedgingStrategyOptions<int>();
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         (await options.ShouldHandle(new HedgingPredicateArguments<int>(context, Outcome.FromResult(0), 0))).ShouldBe(false);
         (await options.ShouldHandle(new HedgingPredicateArguments<int>(context, Outcome.FromException<int>(new OperationCanceledException()), 1))).ShouldBe(false);

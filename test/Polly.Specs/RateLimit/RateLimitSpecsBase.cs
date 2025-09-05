@@ -12,7 +12,7 @@ public abstract class RateLimitSpecsBase
         TimeSpan retryInterval = TimeSpan.FromSeconds(0.2);
 
         Stopwatch watch = Stopwatch.StartNew();
-        var token = CancellationToken.None;
+        var token = TestCancellation.Token;
 
         while (!token.IsCancellationRequested)
         {

@@ -20,7 +20,7 @@ public abstract class TimeoutSpecsBase : IDisposable
     private DateTimeOffset _offsetUtcNow = DateTimeOffset.UtcNow;
     private DateTime _utcNow = DateTime.UtcNow;
 
-    protected static CancellationToken CancellationToken => CancellationToken.None;
+    protected static CancellationToken CancellationToken => TestCancellation.Token;
 
     protected TimeoutSpecsBase()
     {

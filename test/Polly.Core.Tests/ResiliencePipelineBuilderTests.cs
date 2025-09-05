@@ -65,7 +65,7 @@ public class ResiliencePipelineBuilderTests
         var pipeline = builder.Build();
 
         // assert
-        pipeline.Execute(_ => executions.Add(2));
+        pipeline.Execute(_ => executions.Add(2), TestCancellation.Token);
 
         pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance.ShouldBeOfType<TestResilienceStrategy>();
         executions.ShouldBeInOrder();
@@ -108,7 +108,7 @@ public class ResiliencePipelineBuilderTests
             .ShouldBe(3);
 
         // assert
-        strategy.Execute(_ => executions.Add(4));
+        strategy.Execute(_ => executions.Add(4), TestCancellation.Token);
 
         executions.ShouldBeInOrder();
         executions.Count.ShouldBe(7);
@@ -156,11 +156,14 @@ public class ResiliencePipelineBuilderTests
         var exception = Should.Throw<ValidationException>(
             () => builder.Validator(new ResilienceValidationContext(new RetryStrategyOptions { MaxRetryAttempts = -4 }, "The primary message.")));
 
-        exception.Message.Trim().ShouldBe("""
-            The primary message.
-            Validation Errors:
-            The field MaxRetryAttempts must be between 1 and 2147483647.
-            """);
+        exception.Message
+            .Replace(Environment.NewLine, "\n").Trim()
+            .ShouldBe(
+                string.Join(
+                    "\n",
+                    "The primary message.",
+                    "Validation Errors:",
+                    "The field MaxRetryAttempts must be between 1 and 2147483647."));
     }
 
     [Fact]
@@ -193,7 +196,7 @@ public class ResiliencePipelineBuilderTests
         var strategy = builder.Build();
 
         // assert
-        strategy.Execute(_ => executions.Add(4));
+        strategy.Execute(_ => executions.Add(4), TestCancellation.Token);
 
         executions.ShouldBeInOrder();
         executions.Count.ShouldBe(7);
@@ -292,7 +295,7 @@ public class ResiliencePipelineBuilderTests
             .AddPipelineComponent(_ => internalComponent, new TestResilienceStrategyOptions());
         var pipeline = builder.Build();
 
-        pipeline.Execute(_ => string.Empty);
+        pipeline.Execute(_ => string.Empty, TestCancellation.Token);
 
         await pipeline.DisposeHelper.DisposeAsync();
         await externalComponent.Received(0).DisposeAsync();
@@ -328,7 +331,7 @@ public class ResiliencePipelineBuilderTests
         var strategy = new ResiliencePipelineBuilder().AddPipeline(pipeline1).AddPipeline(pipeline2).Build();
 
         // assert
-        strategy.Execute(_ => executions.Add(4));
+        strategy.Execute(_ => executions.Add(4), TestCancellation.Token);
 
         executions.ShouldBeInOrder();
         executions.Count.ShouldBe(7);
@@ -410,7 +413,7 @@ public class ResiliencePipelineBuilderTests
         var strategy = new ResiliencePipelineBuilder().AddPipeline(first).AddPipeline(second).AddPipeline(third).Build();
 
         // act
-        strategy.Execute(_ => executions.Add("execute"));
+        strategy.Execute(_ => executions.Add("execute"), TestCancellation.Token);
 
         // assert
         executions.SequenceEqual(

@@ -13,7 +13,7 @@ public class NoOpTResultAsyncSpecs
         var methods = instanceType.GetMethods(flags);
         var methodInfo = methods.First(method => method is { Name: "ImplementationAsync", ReturnType.Name: "Task`1" });
 
-        var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None, false]);
+        var func = () => methodInfo.Invoke(instance, [action, new Context(), TestCancellation.Token, false]);
 
         var exceptionAssertions = Should.Throw<TargetInvocationException>(func);
         exceptionAssertions.Message.ShouldBe("Exception has been thrown by the target of an invocation.");

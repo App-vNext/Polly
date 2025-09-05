@@ -23,7 +23,7 @@ public class FallbackResilienceStrategyTests
         _options.OnFallback = _ => { called = true; return default; };
         SetHandler(outcome => outcome.Result == "error", () => Outcome.FromResult("success"));
 
-        Create().Execute(_ => "error").ShouldBe("success");
+        Create().Execute(_ => "error", TestCancellation.Token).ShouldBe("success");
 
         _args.Count(v => v.Arguments is OnFallbackArguments<string>).ShouldBe(1);
         called.ShouldBeTrue();
@@ -53,7 +53,7 @@ public class FallbackResilienceStrategyTests
                 return Outcome.FromResultAsValueTask("fallback");
             });
 
-        var result = Create().Execute(_ => "ok");
+        var result = Create().Execute(_ => "ok", TestCancellation.Token);
 
         if (handle)
         {
@@ -81,7 +81,7 @@ public class FallbackResilienceStrategyTests
         _options.OnFallback = _ => { called = true; return default; };
 
         SetHandler(outcome => outcome.Exception is InvalidOperationException, () => Outcome.FromResult("secondary"));
-        Create().Execute<string>(_ => throw new InvalidOperationException()).ShouldBe("secondary");
+        Create().Execute<string>(_ => throw new InvalidOperationException(), TestCancellation.Token).ShouldBe("secondary");
 
         _args.Count(v => v.Arguments is OnFallbackArguments<string>).ShouldBe(1);
         called.ShouldBeTrue();
@@ -112,7 +112,24 @@ public class FallbackResilienceStrategyTests
         _options.OnFallback = _ => { called = true; return default; };
         SetHandler(outcome => false, () => Outcome.FromResult("secondary"));
 
-        Create().Execute(_ => "primary").ShouldBe("primary");
+        Create().Execute(_ => "primary", TestCancellation.Token).ShouldBe("primary");
+        _args.ShouldBeEmpty();
+        called.ShouldBeFalse();
+        fallbackActionCalled.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ExecuteOutcomeAsync_UnhandledException_Ok()
+    {
+        var called = false;
+        var fallbackActionCalled = false;
+
+        _options.OnFallback = _ => { called = true; return default; };
+        SetHandler(outcome => outcome.Exception is InvalidOperationException, () => { fallbackActionCalled = true; return Outcome.FromResult("secondary"); });
+
+        var outcome = await Create().ExecuteOutcomeAsync<string, string>((_, _) => throw new ArgumentException(), new(), "dummy-state");
+        outcome.Exception.ShouldBeOfType<ArgumentException>();
+
         _args.ShouldBeEmpty();
         called.ShouldBeFalse();
         fallbackActionCalled.ShouldBeFalse();

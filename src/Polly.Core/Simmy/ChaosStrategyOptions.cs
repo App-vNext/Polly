@@ -47,5 +47,5 @@ public abstract class ChaosStrategyOptions : ResilienceStrategyOptions
     /// The default randomizer is thread safe and returns values between <c>0.0</c> and <c>1.0</c>.
     /// </value>
     [Required]
-    public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;
+    public Func<double> Randomizer { get; set; } = RandomUtil.NextDouble;
 }

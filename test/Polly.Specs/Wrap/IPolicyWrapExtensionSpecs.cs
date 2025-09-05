@@ -20,7 +20,7 @@ public class IPolicyWrapExtensionSpecs
 
         PolicyWrap policyWrap = Policy.Wrap(policy0, policy1, policy2);
 
-        List<IsPolicy> policies = policyWrap.GetPolicies().ToList();
+        List<IsPolicy> policies = [.. policyWrap.GetPolicies()];
         policies.Count.ShouldBe(3);
         policies[0].ShouldBe(policy0);
         policies[1].ShouldBe(policy1);

@@ -34,7 +34,8 @@ internal sealed class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
                 return outcome;
             }
 
-            return await StrategyHelper.ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            context.CancellationToken.ThrowIfCancellationRequested();
+            return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         catch (OperationCanceledException e)
         {

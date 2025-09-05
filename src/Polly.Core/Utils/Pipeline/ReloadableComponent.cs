@@ -14,19 +14,16 @@ internal sealed class ReloadableComponent : PipelineComponent
 
     private readonly Func<Entry> _factory;
     private ResilienceStrategyTelemetry _telemetry;
-    private CancellationTokenSource _tokenSource = null!;
-    private CancellationTokenRegistration _registration;
-    private List<CancellationToken> _reloadTokens;
+    private CancellationTokenSource? _tokenSource;
 
     public ReloadableComponent(Entry entry, Func<Entry> factory)
     {
         Component = entry.Component;
 
-        _reloadTokens = entry.ReloadTokens;
         _factory = factory;
         _telemetry = entry.Telemetry;
 
-        TryRegisterOnReload();
+        TryRegisterOnReload(entry.ReloadTokens);
     }
 
     public PipelineComponent Component { get; private set; }
@@ -38,64 +35,62 @@ internal sealed class ReloadableComponent : PipelineComponent
 
     public override ValueTask DisposeAsync()
     {
-        DisposeRegistration();
+        _tokenSource?.Dispose();
         return Component.DisposeAsync();
     }
 
-    private void TryRegisterOnReload()
+    private void TryRegisterOnReload(List<CancellationToken> reloadTokens)
     {
-        if (_reloadTokens.Count == 0)
+        if (reloadTokens.Count == 0)
         {
             return;
         }
 
-#pragma warning disable S3878 // Arrays should not be created for params parameters
-        _tokenSource = CancellationTokenSource.CreateLinkedTokenSource([.. _reloadTokens]);
-#pragma warning restore S3878 // Arrays should not be created for params parameters
-        _registration = _tokenSource.Token.Register(() =>
+        _tokenSource = CancellationTokenSource.CreateLinkedTokenSource([.. reloadTokens]);
+#if NET
+        _ = _tokenSource.Token.UnsafeRegister(static s => ((ReloadableComponent)s!).Reload(), this);
+#else
+        _ = _tokenSource.Token.Register(static s => ((ReloadableComponent)s!).Reload(), this);
+#endif
+    }
+
+    private void Reload()
+    {
+        _tokenSource!.Dispose();
+        _tokenSource = null;
+
+        var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
+        _telemetry.Report(new(ResilienceEventSeverity.Information, OnReloadEvent), context, new OnReloadArguments());
+        ResilienceContextPool.Shared.Return(context);
+
+        var previousComponent = Component;
+        List<CancellationToken> reloadTokens;
+        try
         {
-            var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
-            var previousComponent = Component;
+            (Component, reloadTokens, _telemetry) = _factory();
+        }
+        catch (Exception e)
+        {
+            context = new ResilienceContext().Initialize<VoidResult>(isSynchronous: true);
+            _telemetry.Report(new(ResilienceEventSeverity.Error, ReloadFailedEvent), context, Outcome.FromException(e), new ReloadFailedArguments(e));
+            return;
+        }
 
-            try
-            {
-                _telemetry.Report(new(ResilienceEventSeverity.Information, OnReloadEvent), context, new OnReloadArguments());
-                (Component, _reloadTokens, _telemetry) = _factory();
-            }
-            catch (Exception e)
-            {
-                _reloadTokens = [];
-                _telemetry.Report(new(ResilienceEventSeverity.Error, ReloadFailedEvent), context, Outcome.FromException(e), new ReloadFailedArguments(e));
-                ResilienceContextPool.Shared.Return(context);
-            }
-
-            DisposeRegistration();
-            TryRegisterOnReload();
-
-            _ = DisposeDiscardedComponentSafeAsync(previousComponent);
-        });
+        TryRegisterOnReload(reloadTokens);
+        _ = DisposeDiscardedComponentSafeAsync(previousComponent);
     }
 
     private async Task DisposeDiscardedComponentSafeAsync(PipelineComponent component)
     {
-        var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: false);
-
         try
         {
             await component.DisposeAsync().ConfigureAwait(false);
         }
         catch (Exception e)
         {
+            var context = new ResilienceContext().Initialize<VoidResult>(isSynchronous: false);
             _telemetry.Report(new(ResilienceEventSeverity.Error, DisposeFailedEvent), context, Outcome.FromException(e), new DisposedFailedArguments(e));
         }
-
-        ResilienceContextPool.Shared.Return(context);
-    }
-
-    private void DisposeRegistration()
-    {
-        _registration.Dispose();
-        _tokenSource.Dispose();
     }
 
     internal sealed record ReloadFailedArguments(Exception Exception);

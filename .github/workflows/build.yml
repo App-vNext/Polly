@@ -80,14 +80,14 @@ jobs:
         show-progress: false
 
     - name: Setup .NET SDKs
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
       with:
         dotnet-version: |
           8.0.x
           9.0.x
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
       id: setup-dotnet
 
     - name: Build, Test and Package
@@ -105,7 +105,7 @@ jobs:
 
     - name: Upload coverage to Codecov
       if: always() && github.event.repository.fork == false
-      uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
+      uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
       with:
         flags: ${{ matrix.os_name }}
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -133,7 +133,7 @@ jobs:
         if-no-files-found: error
 
     - name: Generate SBOM
-      uses: anchore/sbom-action@7b36ad622f042cab6f59a75c2ac24ccb256e9b45 # v0.20.4
+      uses: anchore/sbom-action@da167eac915b4e86f08b264dbdbc867b61be6f0c # v0.20.5
       if: runner.os == 'Windows'
       with:
         artifact-name: polly.spdx.json
@@ -165,7 +165,7 @@ jobs:
         name: packages-windows
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -216,7 +216,7 @@ jobs:
         path: signing-config
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -285,7 +285,7 @@ jobs:
         path: ./artifacts
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -382,7 +382,7 @@ jobs:
         }
 
     - name: Attest artifacts
-      uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+      uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
       with:
         subject-path: |
           ./artifacts/polly.spdx.json
@@ -404,7 +404,7 @@ jobs:
         name: signed-packages
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 

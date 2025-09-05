@@ -30,7 +30,7 @@ public class RateLimiterResilienceStrategyTests
 
         strategy.Execute(_ => { }, cts.Token);
 
-        await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, default);
+        await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, TestCancellation.Token);
         _lease.Received().Dispose();
     }
 
@@ -82,7 +82,7 @@ public class RateLimiterResilienceStrategyTests
 
         eventCalled.ShouldBe(hasEvents);
 
-        await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, default);
+        await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, TestCancellation.Token);
         _lease.Received().Dispose();
 
         _listener.GetArgs<OnRateLimiterRejectedArguments>().Count().ShouldBe(1);
@@ -94,8 +94,7 @@ public class RateLimiterResilienceStrategyTests
     public async Task Dispose_DisposableResourcesShouldBeDisposed(bool isAsync)
     {
         using var limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = 1 });
-        using var wrapper = new DisposeWrapper(limiter);
-        var strategy = new RateLimiterResilienceStrategy(null!, null, null!, wrapper);
+        var strategy = new RateLimiterResilienceStrategy(null!, null, null!, limiter);
 
         if (isAsync)
         {

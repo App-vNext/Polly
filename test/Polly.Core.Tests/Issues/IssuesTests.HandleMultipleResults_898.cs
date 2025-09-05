@@ -7,7 +7,7 @@ public partial class IssuesTests
     [Fact]
     public void HandleMultipleResults_898()
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var isRetryKey = new ResiliencePropertyKey<bool>("is-retry");
         var options = new RetryStrategyOptions
         {

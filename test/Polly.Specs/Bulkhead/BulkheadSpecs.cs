@@ -1,4 +1,6 @@
-﻿namespace Polly.Specs.Bulkhead;
+﻿using System.Threading.Tasks;
+
+namespace Polly.Specs.Bulkhead;
 
 [Collection(Constants.ParallelThreadDependentTestCollection)]
 public class BulkheadSpecs(ITestOutputHelper testOutputHelper) : BulkheadSpecsBase(testOutputHelper)
@@ -87,7 +89,7 @@ public class BulkheadSpecs(ITestOutputHelper testOutputHelper) : BulkheadSpecsBa
     #region onBulkheadRejected delegate
 
     [Fact]
-    public void Should_call_onBulkheadRejected_with_passed_context()
+    public async Task Should_call_onBulkheadRejected_with_passed_context()
     {
         string operationKey = "SomeKey";
         Context contextPassedToExecute = new Context(operationKey);
@@ -98,7 +100,7 @@ public class BulkheadSpecs(ITestOutputHelper testOutputHelper) : BulkheadSpecsBa
         using BulkheadPolicy bulkhead = Policy.Bulkhead(1, onRejected);
         TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
-        Task.Run(() => { bulkhead.Execute(() => { tcs.Task.Wait(); }); }, CancellationToken);
+        var task = Task.Run(() => { bulkhead.Execute(() => { tcs.Task.Wait(); }); }, CancellationToken);
 
         // Time for the other thread to kick up and take the bulkhead.
         Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
@@ -115,6 +117,8 @@ public class BulkheadSpecs(ITestOutputHelper testOutputHelper) : BulkheadSpecsBa
         contextPassedToOnRejected!.ShouldNotBeNull();
         contextPassedToOnRejected!.OperationKey.ShouldBe(operationKey);
         contextPassedToOnRejected!.ShouldBeSameAs(contextPassedToExecute);
+
+        await Should.ThrowAsync<Exception>(task);
     }
 
     #endregion

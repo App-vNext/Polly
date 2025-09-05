@@ -118,12 +118,22 @@ internal static class Fallback
     public static async ValueTask<HttpResponseMessage> Action()
     {
         var context = ResilienceContextPool.Shared.Get();
+
         var outcome = await WhateverPipeline.ExecuteOutcomeAsync<HttpResponseMessage, string>(
-            async (ctx, state) =>
+            static async (ctx, state) =>
             {
-                var result = await ActionCore();
-                return Outcome.FromResult(result);
-            }, context, "state");
+                try
+                {
+                    var result = await ActionCore();
+                    return Outcome.FromResult(result);
+                }
+                catch (Exception e)
+                {
+                    return Outcome.FromException<HttpResponseMessage>(e);
+                }
+            },
+            context,
+            "state");
 
         if (outcome.Exception is HttpRequestException requestException)
         {

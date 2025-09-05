@@ -10,8 +10,10 @@ public static class PolicyTResultExtensionsAsync
     public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise) =>
         policy.RaiseResultSequenceAsync(default, resultsToRaise);
 
-    public static async Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
-        CancellationToken cancellationToken, IEnumerable<TResult> resultsToRaise)
+    public static async Task<TResult> RaiseResultSequenceAsync<TResult>(
+        this AsyncPolicy<TResult> policy,
+        CancellationToken cancellationToken,
+        IEnumerable<TResult> resultsToRaise)
     {
         using var enumerator = resultsToRaise.GetEnumerator();
         return await policy.ExecuteAsync(_ =>
@@ -28,12 +30,13 @@ public static class PolicyTResultExtensionsAsync
     public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, params object[] resultsOrExceptionsToRaise) =>
         policy.RaiseResultAndOrExceptionSequenceAsync(resultsOrExceptionsToRaise.ToList());
 
-    public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
-        IEnumerable<object> resultsOrExceptionsToRaise) =>
-        policy.RaiseResultAndOrExceptionSequenceAsync(CancellationToken.None, resultsOrExceptionsToRaise);
+    public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, IEnumerable<object> resultsOrExceptionsToRaise) =>
+        policy.RaiseResultAndOrExceptionSequenceAsync(TestCancellation.Token, resultsOrExceptionsToRaise);
 
-    public static async Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
-        CancellationToken cancellationToken, IEnumerable<object> resultsOrExceptionsToRaise)
+    public static async Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(
+        this AsyncPolicy<TResult> policy,
+        CancellationToken cancellationToken,
+        IEnumerable<object> resultsOrExceptionsToRaise)
     {
         using var enumerator = resultsOrExceptionsToRaise.GetEnumerator();
         return await policy.ExecuteAsync(_ =>
@@ -67,15 +70,21 @@ public static class PolicyTResultExtensionsAsync
         public bool ActionObservesCancellation = true;
     }
 
-    public static Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(this AsyncPolicy<TResult> policy,
-        Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute,
+    public static Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(
+        this AsyncPolicy<TResult> policy,
+        Scenario scenario,
+        CancellationTokenSource cancellationTokenSource,
+        Action onExecute,
         params TResult[] resultsToRaise) =>
         policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
             resultsToRaise.ToList());
 
     public static async Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(
-        this AsyncPolicy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource,
-        Action onExecute, IEnumerable<TResult> resultsToRaise)
+        this AsyncPolicy<TResult> policy,
+        Scenario scenario,
+        CancellationTokenSource cancellationTokenSource,
+        Action onExecute,
+        IEnumerable<TResult> resultsToRaise)
     {
         int counter = 0;
 

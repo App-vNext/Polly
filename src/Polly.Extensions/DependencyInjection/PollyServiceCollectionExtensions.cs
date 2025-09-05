@@ -258,7 +258,7 @@ public static class PollyServiceCollectionExtensions
             .AddOptions<ResiliencePipelineRegistryOptions<TKey>>()
             .Configure<IServiceProvider>((options, serviceProvider) =>
             {
-                options.BuilderFactory = () => serviceProvider.GetRequiredService<ResiliencePipelineBuilder>();
+                options.BuilderFactory = serviceProvider.GetRequiredService<ResiliencePipelineBuilder>;
             });
 
         return services;

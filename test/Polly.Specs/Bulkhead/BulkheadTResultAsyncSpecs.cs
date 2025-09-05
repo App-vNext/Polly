@@ -97,7 +97,7 @@ public class BulkheadTResultAsyncSpecs(ITestOutputHelper testOutputHelper) : Bul
         TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
         using (var cancellationSource = new CancellationTokenSource())
         {
-            _ = Task.Run(() =>
+            var task = Task.Run(() =>
             {
                 bulkhead.ExecuteAsync(async () =>
                 {
@@ -117,6 +117,8 @@ public class BulkheadTResultAsyncSpecs(ITestOutputHelper testOutputHelper) : Bul
 #else
             tcs.SetCanceled();
 #endif
+
+            await task;
         }
 
         contextPassedToOnRejected.ShouldNotBeNull();

@@ -8,7 +8,7 @@ public static class OnRetryArgumentsTests
     public static void Ctor_Ok()
     {
         // Arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         // Act
         var args = new OnRetryArguments<int>(context, Outcome.FromResult(1), 2, TimeSpan.FromSeconds(3), TimeSpan.MaxValue);

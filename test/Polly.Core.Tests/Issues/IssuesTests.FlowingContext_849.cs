@@ -24,7 +24,7 @@ public partial class IssuesTests
             .Build();
 
         // execute the retry
-        strategy.Execute(_ => 0);
+        strategy.Execute(_ => 0, TestCancellation.Token);
 
         contextChecked.ShouldBeTrue();
     }

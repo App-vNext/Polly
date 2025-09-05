@@ -21,7 +21,7 @@ public class FallbackStrategyOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new FallbackStrategyOptions<int>();
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         (await options.ShouldHandle(new FallbackPredicateArguments<int>(context, Outcome.FromResult(0)))).ShouldBe(false);
         (await options.ShouldHandle(new FallbackPredicateArguments<int>(context, Outcome.FromException<int>(new OperationCanceledException())))).ShouldBe(false);

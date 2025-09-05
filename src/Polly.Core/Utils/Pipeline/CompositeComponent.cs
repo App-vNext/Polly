@@ -38,20 +38,19 @@ internal sealed class CompositeComponent : PipelineComponent
         }
 
         // convert all components to delegating ones (except the last one as it's not required)
-        var delegatingComponents = components
+        DelegatingComponent[] delegatingComponents = [.. components
             .Take(components.Count - 1)
-            .Select(strategy => new DelegatingComponent(strategy))
-            .ToList();
+            .Select(static strategy => new DelegatingComponent(strategy))];
 
 #if NET6_0_OR_GREATER
         // link the last one
         delegatingComponents[^1].Next = components[^1];
 #else
-        delegatingComponents[delegatingComponents.Count - 1].Next = components[components.Count - 1];
+        delegatingComponents[delegatingComponents.Length - 1].Next = components[components.Count - 1];
 #endif
 
         // link the remaining ones
-        for (var i = 0; i < delegatingComponents.Count - 1; i++)
+        for (var i = 0; i < delegatingComponents.Length - 1; i++)
         {
             delegatingComponents[i].Next = delegatingComponents[i + 1];
         }

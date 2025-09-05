@@ -57,7 +57,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
     [Fact]
     public void AddCircuitBreaker_IntegrationTest()
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         int opened = 0;
         int closed = 0;
         int halfOpened = 0;
@@ -120,7 +120,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
     [Fact]
     public void AddCircuitBreaker_IntegrationTest_WithBreakDurationGenerator()
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         int opened = 0;
         int closed = 0;
         int halfOpened = 0;
@@ -184,7 +184,7 @@ public class CircuitBreakerResiliencePipelineBuilderTests
     [Fact]
     public async Task AddCircuitBreakers_WithIsolatedManualControl_ShouldBeIsolated()
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestCancellation.Token;
         var manualControl = new CircuitBreakerManualControl();
         await manualControl.IsolateAsync(cancellationToken);
 

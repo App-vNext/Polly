@@ -7,11 +7,12 @@
     <Threshold>100</Threshold>
     <Include>[Polly.Extensions]*</Include>
   </PropertyGroup>
-
+  <ItemGroup>
+    <Compile Include="..\Shared\TestCancellation.cs" Link="TestCancellation.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Polly.Core.Tests\Utils\ObjectPoolTests.cs" Link="Utils\ObjectPoolTests.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <Using Include="Polly.TestUtils" />
     <ProjectReference Include="..\..\src\Polly.Extensions\Polly.Extensions.csproj" />

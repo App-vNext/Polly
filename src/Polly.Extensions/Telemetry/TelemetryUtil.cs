@@ -6,7 +6,7 @@ internal static class TelemetryUtil
 {
     private const int MaxIntegers = 100;
 
-    private static readonly object[] Integers = Enumerable.Range(0, MaxIntegers).Select(v => (object)v).ToArray();
+    private static readonly object[] Integers = [.. Enumerable.Range(0, MaxIntegers).Select(v => (object)v)];
 
     private static readonly object True = true;
 

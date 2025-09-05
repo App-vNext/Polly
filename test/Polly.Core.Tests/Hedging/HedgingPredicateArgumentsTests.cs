@@ -8,7 +8,7 @@ public static class HedgingPredicateArgumentsTests
     public static void Ctor_Ok()
     {
         // Arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         // Act
         var args = new HedgingPredicateArguments<int>(context, Outcome.FromResult(1));
@@ -23,7 +23,7 @@ public static class HedgingPredicateArgumentsTests
     public static void Ctor_With_AttemptNumber_Ok()
     {
         // Arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         // Act
         var args = new HedgingPredicateArguments<int>(context, Outcome.FromResult(1), 10);
