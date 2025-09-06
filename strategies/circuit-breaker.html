@@ -770,7 +770,7 @@ var circuitBreaker = new ResiliencePipelineBuilder()
     .Build();
 
 Outcome&lt;HttpResponseMessage&gt; outcome =
-    await circuitBreaker.ExecuteOutcomeAsync&lt;HttpResponseMessage, string&gt;(
+    await circuitBreaker.ExecuteOutcomeAsync(
         static async (ctx, state) =&gt;
         {
             try

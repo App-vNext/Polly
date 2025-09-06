@@ -326,7 +326,7 @@ if (outcome.Exception is HttpRequestException requestException)
 {
     var context = ResilienceContextPool.Shared.Get();
 
-    var outcome = await WhateverPipeline.ExecuteOutcomeAsync&lt;HttpResponseMessage, string&gt;(
+    var outcome = await WhateverPipeline.ExecuteOutcomeAsync(
         static async (ctx, state) =&gt;
         {
             try
@@ -377,7 +377,7 @@ private static ValueTask&lt;HttpResponseMessage&gt; ActionCore()
     .Build();
 
 var context = ResilienceContextPool.Shared.Get();
-var outcome = await fallback.ExecuteOutcomeAsync&lt;HttpResponseMessage, string&gt;(
+var outcome = await fallback.ExecuteOutcomeAsync(
     async (ctx, state) =&gt;
     {
         var result = await CallPrimary(ctx.CancellationToken);

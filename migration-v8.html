@@ -943,7 +943,7 @@ string? ctxValue = asyncPolicyResult.Context.GetValueOrDefault(Key) as string;
 var context = ResilienceContextPool.Shared.Get();
 
 Outcome&lt;int&gt; pipelineResult =
-    await pipeline.ExecuteOutcomeAsync&lt;int, string&gt;(
+    await pipeline.ExecuteOutcomeAsync(
         static async (ctx, state) =&gt;
         {
             try
@@ -993,7 +993,7 @@ ResiliencePipeline&lt;int&gt; pipelineWithContext = new ResiliencePipelineBuilde
 context = ResilienceContextPool.Shared.Get();
 
 pipelineResult =
-    await pipelineWithContext.ExecuteOutcomeAsync&lt;int, string&gt;(
+    await pipelineWithContext.ExecuteOutcomeAsync(
         static async (ctx, state) =&gt;
         {
             try
@@ -1104,7 +1104,7 @@ registry.TryAddBuilder(PipelineKey, (builder, context) =&gt; builder.AddTimeout(
 registry.TryGetPipeline(PipelineKey, out ResiliencePipeline? pipeline);
 
 // Try get a generic pipeline
-registry.TryGetPipeline&lt;string&gt;(PipelineKey, out ResiliencePipeline&lt;string&gt;? genericPipeline);
+registry.TryGetPipeline(PipelineKey, out ResiliencePipeline&lt;string&gt;? genericPipeline);
 
 // Get or add pipeline
 registry.GetOrAddPipeline(PipelineKey, builder =&gt; builder.AddTimeout(TimeSpan.FromSeconds(10)));
