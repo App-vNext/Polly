@@ -938,7 +938,7 @@ ResiliencePipeline<int> pipeline = new ResiliencePipelineBuilder<int>()
 var context = ResilienceContextPool.Shared.Get();
 
 Outcome<int> pipelineResult =
-    await pipeline.ExecuteOutcomeAsync<int, string>(
+    await pipeline.ExecuteOutcomeAsync(
         static async (ctx, state) =>
         {
             try
@@ -988,7 +988,7 @@ ResiliencePipeline<int> pipelineWithContext = new ResiliencePipelineBuilder<int>
 context = ResilienceContextPool.Shared.Get();
 
 pipelineResult =
-    await pipelineWithContext.ExecuteOutcomeAsync<int, string>(
+    await pipelineWithContext.ExecuteOutcomeAsync(
         static async (ctx, state) =>
         {
             try
@@ -1088,7 +1088,7 @@ registry.TryAddBuilder(PipelineKey, (builder, context) => builder.AddTimeout(Tim
 registry.TryGetPipeline(PipelineKey, out ResiliencePipeline? pipeline);
 
 // Try get a generic pipeline
-registry.TryGetPipeline<string>(PipelineKey, out ResiliencePipeline<string>? genericPipeline);
+registry.TryGetPipeline(PipelineKey, out ResiliencePipeline<string>? genericPipeline);
 
 // Get or add pipeline
 registry.GetOrAddPipeline(PipelineKey, builder => builder.AddTimeout(TimeSpan.FromSeconds(10)));
