@@ -280,7 +280,7 @@ internal static class CircuitBreaker
             .Build();
 
         Outcome<HttpResponseMessage> outcome =
-            await circuitBreaker.ExecuteOutcomeAsync<HttpResponseMessage, string>(
+            await circuitBreaker.ExecuteOutcomeAsync(
                 static async (ctx, state) =>
                 {
                     try

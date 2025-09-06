@@ -25,7 +25,7 @@ public class AsyncFallbackPolicy : AsyncPolicy, IFallbackPolicy
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext) =>
-        AsyncFallbackEngine.ImplementationAsync<EmptyStruct>(
+        AsyncFallbackEngine.ImplementationAsync(
             async (ctx, ct) =>
             {
                 await action(ctx, ct).ConfigureAwait(continueOnCapturedContext);

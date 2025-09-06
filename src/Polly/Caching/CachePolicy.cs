@@ -58,7 +58,7 @@ public class CachePolicy : Policy, ICachePolicy
             throw new ArgumentNullException(nameof(action));
         }
 
-        return CacheEngine.Implementation<TResult>(
+        return CacheEngine.Implementation(
             _syncCacheProvider.For<TResult>(),
             _ttlStrategy.For<TResult>(),
             _cacheKeyStrategy,
