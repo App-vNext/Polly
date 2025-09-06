@@ -14,7 +14,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <Description>Polly.Caching provides caching strategies for Polly.Core.</Description>
-    <PackageTags>Polly Caching HybridCache Resilience Policy </PackageTags>
+    <PackageTags>Polly Caching HybridCache Resilience Policy</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <Using Include="Polly.Utils" />

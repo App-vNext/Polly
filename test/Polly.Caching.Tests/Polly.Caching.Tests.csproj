@@ -6,7 +6,6 @@
     <Threshold>100</Threshold>
     <Include>[Polly.Caching]*</Include>
     <Exclude>[Polly.Caching]Polly.Utils.ExceptionUtilities</Exclude>
-    <!-- Trigger CI refresh to investigate Polly.Core coverage issue -->
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Polly.Caching\Polly.Caching.csproj" />

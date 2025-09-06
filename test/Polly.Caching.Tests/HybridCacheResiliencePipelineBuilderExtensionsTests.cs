@@ -60,10 +60,180 @@ public class HybridCacheResiliencePipelineBuilderExtensionsTests
     }
 
     [Fact]
+    public async Task NonGeneric_AddHybridCache_BuildsAndCaches_ValueType()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "builder-key"
+        };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        var r1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult(1));
+        var r2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult(2));
+
+        r1.ShouldBe(1);
+        r2.ShouldBe(1);
+    }
+
+    [Fact]
     public void AddHybridCache_NonGeneric_NullOptions_Throws()
     {
         var builder = new ResiliencePipelineBuilder();
         Should.Throw<ArgumentNullException>(() => builder.AddHybridCache(options: null!));
+    }
+
+    [Fact]
+    public async Task NonGeneric_AddHybridCache_BuildsAndCaches_IntJsonElement()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "int-json"
+        };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        using var d1 = JsonDocument.Parse("123");
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d1.RootElement));
+
+        using var d2 = JsonDocument.Parse("456");
+        var r2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d2.RootElement));
+
+        r1.ShouldBe(123);
+        r2.ShouldBe(123);
+    }
+
+    [Fact]
+    public async Task NonGeneric_AddHybridCache_BuildsAndCaches_DoubleJsonElement()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "double-json"
+        };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        using var d1 = JsonDocument.Parse("3.14");
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d1.RootElement));
+
+        using var d2 = JsonDocument.Parse("2.71");
+        var r2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d2.RootElement));
+
+        r1.ShouldBe(3.14);
+        r2.ShouldBe(3.14);
+    }
+
+    [Fact]
+    public async Task NonGeneric_AddHybridCache_BuildsAndCaches_BoolJsonElement()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "bool-json"
+        };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        using var d1 = JsonDocument.Parse("true");
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d1.RootElement));
+
+        r1.ShouldBe(true);
+    }
+
+    [Fact]
+    public async Task NonGeneric_AddHybridCache_BuildsAndCaches_NullJsonElement()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "null-json"
+        };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        using var d1 = JsonDocument.Parse("null");
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d1.RootElement));
+
+        r1.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task NonGeneric_AddHybridCache_BuildsAndCaches_ObjectJsonElement_ToString()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "object-json"
+        };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        using var d1 = JsonDocument.Parse("{\"a\":1}");
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d1.RootElement));
+
+        r1.ShouldBe("{\"a\":1}");
+    }
+
+    [Fact]
+    public async Task NonGeneric_AddHybridCache_BuildsAndCaches_NullJsonElement_ThroughWrapper()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "json-null-through-wrapper"
+        };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        using var d1 = JsonDocument.Parse("null");
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d1.RootElement));
+
+        r1.ShouldBeNull();
     }
 
     [Fact]

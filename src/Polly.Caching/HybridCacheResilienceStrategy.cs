@@ -1,4 +1,3 @@
-using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Hybrid;
@@ -7,8 +6,6 @@ namespace Polly.Caching;
 
 internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrategy<TResult>
 {
-    private const string EmptyKeyPlaceholder = "Polly:HybridCache:EmptyKey";
-
     private readonly HybridCache _cache;
     private readonly Func<ResilienceContext, string?> _keyGenerator;
 
@@ -24,38 +21,73 @@ internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrateg
         ResilienceContext context,
         TState state)
     {
-        var key = _keyGenerator(context);
-        if (string.IsNullOrEmpty(key))
+        var key = _keyGenerator(context) ?? string.Empty;
+
+        // For non-generic (object) pipelines, use a wrapper to avoid JsonElement serialization issues
+        if (typeof(TResult) == typeof(object))
         {
-            // Use a stable placeholder to represent an intentionally empty key
-            key = EmptyKeyPlaceholder;
+            var result = await _cache.GetOrCreateAsync<CacheObject>(
+                key,
+                async (_) =>
+                {
+                    var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+                    outcome.ThrowIfException();
+                    return new CacheObject(outcome.Result!);
+                },
+                cancellationToken: context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            var normalized = NormalizeValue(result.Value);
+            return Outcome.FromResult((TResult)normalized!);
         }
 
-        var result = await _cache.GetOrCreateAsync(
+        // For typed pipelines, use direct caching (no wrapper needed)
+        var typedResult = await _cache.GetOrCreateAsync(
             key,
-            (callback, context, state),
-            static async (s, _) =>
+            async (_) =>
             {
-                var outcome = await s.callback(s.context, s.state).ConfigureAwait(s.context.ContinueOnCapturedContext);
+                var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
                 outcome.ThrowIfException();
                 return outcome.Result!;
             },
             cancellationToken: context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
 
-        // Handle non-generic (object) pipelines where serializer may return JsonElement.
-        return Outcome.FromResult(ConvertUntypedIfJsonElement(result));
+        return Outcome.FromResult(typedResult);
     }
 
-    private static TResult ConvertUntypedIfJsonElement(TResult value)
-    {
-        if (typeof(TResult) == typeof(object) && value is System.Text.Json.JsonElement json)
-        {
-            if (json.ValueKind == System.Text.Json.JsonValueKind.Null)
-            {
-                return (TResult)(object?)null!;
-            }
+    // wrapper moved to top-level public type
 
-            return (TResult)(object?)json.ToString()!;
+    private static object? NormalizeValue(object? value)
+    {
+        if (value is JsonElement json)
+        {
+            switch (json.ValueKind)
+            {
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                    return json.GetBoolean();
+                case JsonValueKind.String:
+                    return json.GetString();
+                case JsonValueKind.Number:
+                {
+                    if (json.TryGetInt32(out var i))
+                    {
+                        return i;
+                    }
+
+                    if (json.TryGetInt64(out var l))
+                    {
+                        return l;
+                    }
+
+                    // Fallback: represent as double
+                    return json.GetDouble();
+                }
+
+                default:
+                {
+                    return json.ToString();
+                }
+            }
         }
 
         return value;

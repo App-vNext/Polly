@@ -117,7 +117,9 @@ public class HybridCacheResilienceStrategyTests
         var r2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("y"), CancellationToken.None);
 
         r1.ShouldBe("x");
-        r2.ShouldBe("x");
+
+        // HybridCache bypasses caching for empty keys
+        r2.ShouldBe("y");
     }
 
     [Fact]
@@ -176,8 +178,9 @@ public class HybridCacheResilienceStrategyTests
         var r1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("v"), CancellationToken.None);
         var r2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("w"), CancellationToken.None);
 
+        // Default generator returns null -> HybridCache bypasses caching
         r1.ShouldBe("v");
-        r2.ShouldBe("v");
+        r2.ShouldBe("w");
     }
 
     [Fact]
@@ -391,13 +394,9 @@ public class HybridCacheResilienceStrategyTests
         using var doc2 = System.Text.Json.JsonDocument.Parse("0.0000000002");
         var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
 
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe("0.0000000001");
-        result2.ShouldBe("0.0000000001");
-
-        // Verify the conversion actually happened by checking types
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
+        // Both should return the cached double value
+        result1.ShouldBe(1e-10d);
+        result2.ShouldBe(1e-10d);
     }
 
     [Fact]
@@ -427,13 +426,9 @@ public class HybridCacheResilienceStrategyTests
         using var doc2 = System.Text.Json.JsonDocument.Parse("99");
         var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
 
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe("42");
-        result2.ShouldBe("42");
-
-        // Verify the conversion actually happened by checking types
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
+        // Both should return the cached integer value
+        result1.ShouldBe(42);
+        result2.ShouldBe(42);
     }
 
     [Fact]
@@ -495,28 +490,20 @@ public class HybridCacheResilienceStrategyTests
     }
 
     [Fact]
-    public void ConvertUntypedIfJsonElement_NullJsonElement_ReturnsNull()
+    public async Task UntypedPipeline_JsonElement_Null_Yields_Null()
     {
-        // Test the conversion method directly using reflection to ensure we hit the null branch
-        // Now we can access it since we added InternalsVisibleTo
-        var strategyType = typeof(HybridCacheResilienceStrategy<object>);
-        var convertMethod = strategyType.GetMethod("ConvertUntypedIfJsonElement",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        var services = new ServiceCollection();
+        services.AddHybridCache();
+        using var provider = services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
 
-        convertMethod.ShouldNotBeNull("ConvertUntypedIfJsonElement method should exist");
+        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "json-null-direct" };
+        var pipeline = new ResiliencePipelineBuilder().AddHybridCache(options).Build();
 
-        // Create a JsonElement with ValueKind.Null
         using var doc = System.Text.Json.JsonDocument.Parse("null");
-        var nullElement = doc.RootElement;
-        nullElement.ValueKind.ShouldBe(System.Text.Json.JsonValueKind.Null);
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc.RootElement));
 
-        // Call the conversion method directly with the null JsonElement
-        // The method signature is: private static TResult ConvertUntypedIfJsonElement(TResult value)
-        // So for TResult = object, we pass the JsonElement as object
-        var result = convertMethod.Invoke(null, new object[] { nullElement });
-
-        // Should return null (JsonElement null gets converted to actual null)
-        result.ShouldBeNull();
+        r1.ShouldBeNull();
     }
 
     [Fact]
@@ -546,13 +533,9 @@ public class HybridCacheResilienceStrategyTests
         using var doc2 = System.Text.Json.JsonDocument.Parse("false");
         var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
 
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe("True");
-        result2.ShouldBe("True");
-
-        // Verify the conversion actually happened by checking types
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
+        // Both should return the cached boolean value
+        result1.ShouldBe(true);
+        result2.ShouldBe(true);
     }
 
     [Fact]
@@ -654,13 +637,9 @@ public class HybridCacheResilienceStrategyTests
         using var doc2 = System.Text.Json.JsonDocument.Parse("2.71828");
         var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
 
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe("3.14159");
-        result2.ShouldBe("3.14159");
-
-        // Verify the conversion actually happened by checking types
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
+        // Both should return the cached double value
+        result1.ShouldBe(3.14159d);
+        result2.ShouldBe(3.14159d);
     }
 
     [Fact]
@@ -869,13 +848,9 @@ public class HybridCacheResilienceStrategyTests
         using var doc2 = System.Text.Json.JsonDocument.Parse("123456789");
         var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
 
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe("9223372036854775807");
-        result2.ShouldBe("9223372036854775807");
-
-        // Verify the conversion actually happened by checking types
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
+        // Both should return the cached long value
+        result1.ShouldBe(9_223_372_036_854_775_807L);
+        result2.ShouldBe(9_223_372_036_854_775_807L);
     }
 
     [Fact]
@@ -905,12 +880,8 @@ public class HybridCacheResilienceStrategyTests
         using var doc2 = System.Text.Json.JsonDocument.Parse("2.71828");
         var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
 
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe("-3.14159");
-        result2.ShouldBe("-3.14159");
-
-        // Verify the conversion actually happened by checking types
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
+        // Both should return the cached double value
+        result1.ShouldBe(-3.14159d);
+        result2.ShouldBe(-3.14159d);
     }
 }
