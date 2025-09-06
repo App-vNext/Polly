@@ -211,7 +211,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
 
         await Should.NotThrowAsync(async () =>
         {
-            var lease = await externalLimiter.AcquireAsync(1, System.Threading.CancellationToken.None);
+            var lease = await externalLimiter.AcquireAsync(1, CancellationToken.None);
             try
             {
                 lease.IsAcquired.ShouldBeTrue();

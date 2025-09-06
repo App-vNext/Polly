@@ -56,7 +56,7 @@ public abstract class ResiliencePipelineBuilderBase
     public string? InstanceName { get; set; }
 
     /// <summary>
-    /// Gets or sets the <see cref="Polly.ResilienceContextPool"/> associated with the builder.
+    /// Gets or sets the <see cref="ResilienceContextPool"/> associated with the builder.
     /// </summary>
     /// <remarks>
     /// A custom pool can be used to configure custom behavior for  creation.
@@ -76,7 +76,7 @@ public abstract class ResiliencePipelineBuilderBase
     public TimeProvider? TimeProvider { get; set; }
 
     /// <summary>
-    /// Gets or sets the <see cref="Polly.Telemetry.TelemetryListener"/> that is used by Polly to report resilience events.
+    /// Gets or sets the <see cref="Telemetry.TelemetryListener"/> that is used by Polly to report resilience events.
     /// </summary>
     /// <remarks>
     /// This property is used by the telemetry infrastructure and should not be used directly by user code.

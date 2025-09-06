@@ -27,7 +27,7 @@ internal static class AsyncPolicyWrapEngine
         IAsyncPolicy innerPolicy,
         CancellationToken cancellationToken) =>
         outerPolicy.ExecuteAsync(
-            (ctx, ct) => innerPolicy.ExecuteAsync<TResult>(
+            (ctx, ct) => innerPolicy.ExecuteAsync(
                 func,
                 ctx,
                 ct,
@@ -43,7 +43,7 @@ internal static class AsyncPolicyWrapEngine
         IAsyncPolicy outerPolicy,
         IAsyncPolicy<TResult> innerPolicy,
         CancellationToken cancellationToken) =>
-        outerPolicy.ExecuteAsync<TResult>(
+        outerPolicy.ExecuteAsync(
             (ctx, ct) => innerPolicy.ExecuteAsync(
                 func,
                 ctx,
@@ -60,8 +60,8 @@ internal static class AsyncPolicyWrapEngine
         IAsyncPolicy outerPolicy,
         IAsyncPolicy innerPolicy,
         CancellationToken cancellationToken) =>
-        outerPolicy.ExecuteAsync<TResult>(
-            (ctx, ct) => innerPolicy.ExecuteAsync<TResult>(
+        outerPolicy.ExecuteAsync(
+            (ctx, ct) => innerPolicy.ExecuteAsync(
                 func,
                 ctx,
                 ct,

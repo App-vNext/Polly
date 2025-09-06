@@ -16,7 +16,7 @@ public abstract partial class AsyncPolicy
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext) =>
-        ImplementationAsync<EmptyStruct>(async (ctx, token) =>
+        ImplementationAsync(async (ctx, token) =>
 #pragma warning restore CA1068
         {
             await action(ctx, token).ConfigureAwait(continueOnCapturedContext);
