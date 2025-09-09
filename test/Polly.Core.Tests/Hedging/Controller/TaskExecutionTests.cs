@@ -72,7 +72,7 @@ public class TaskExecutionTests : IDisposable
     public async Task Initialize_PrimaryCallbackThrows_EnsureExceptionHandled()
     {
         var execution = Create();
-        await execution.InitializeAsync<string>(HedgedTaskType.Primary, _primaryContext,
+        await execution.InitializeAsync(HedgedTaskType.Primary, _primaryContext,
             (_, _) => throw new InvalidOperationException(),
             "dummy-state",
             1);
@@ -95,7 +95,7 @@ public class TaskExecutionTests : IDisposable
             return () => Outcome.FromResultAsValueTask(new DisposableResult { Name = value });
         };
 
-        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).ShouldBeTrue();
+        (await execution.InitializeAsync(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).ShouldBeTrue();
 
         await execution.ExecutionTaskSafe!;
 
@@ -172,7 +172,7 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args => throw new FormatException();
 
-        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).ShouldBeTrue();
+        (await execution.InitializeAsync(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).ShouldBeTrue();
 
         await execution.ExecutionTaskSafe!;
         execution.Outcome.Exception.ShouldBeOfType<FormatException>();
@@ -184,7 +184,7 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args => throw new FormatException();
 
-        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).ShouldBeTrue();
+        (await execution.InitializeAsync(HedgedTaskType.Secondary, _primaryContext, null!, "dummy-state", 4)).ShouldBeTrue();
 
         await Should.NotThrowAsync(async () => await execution.ExecutionTaskSafe!);
     }

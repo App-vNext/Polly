@@ -1123,6 +1123,31 @@ public class CacheTResultSpecs : IDisposable
     }
 
     [Fact]
+    public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value_with_ICacheKeyStrategy()
+    {
+        const string ValueToReturnFromCache = "valueToReturnFromCache";
+        const string ValueToReturnFromExecution = "valueToReturnFromExecution";
+        const string OperationKey = "SomeOperationKey";
+
+        var stubCacheProvider = new StubCacheProvider();
+        var cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey);
+
+        var cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
+        stubCacheProvider.Put(OperationKey, ValueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
+
+        bool delegateExecuted = false;
+
+        cache.Execute(_ =>
+        {
+            delegateExecuted = true;
+            return ValueToReturnFromExecution;
+        }, new Context(OperationKey))
+            .ShouldBe(ValueToReturnFromCache);
+
+        delegateExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
     public void Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value()
     {
         const string ValueToReturn = "valueToReturn";

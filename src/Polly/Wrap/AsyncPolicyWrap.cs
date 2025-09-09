@@ -44,7 +44,7 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
         bool continueOnCapturedContext) =>
-        AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+        AsyncPolicyWrapEngine.ImplementationAsync(
             action,
             context,
             continueOnCapturedContext,
@@ -104,7 +104,7 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
         {
             if (_innerNonGeneric != null)
             {
-                return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                return AsyncPolicyWrapEngine.ImplementationAsync(
                     action,
                     context,
                     continueOnCapturedContext,
@@ -114,7 +114,7 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
             }
             else if (_innerGeneric != null)
             {
-                return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                return AsyncPolicyWrapEngine.ImplementationAsync(
                     action,
                     context,
                     continueOnCapturedContext,
@@ -132,7 +132,7 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
         {
             if (_innerNonGeneric != null)
             {
-                return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                return AsyncPolicyWrapEngine.ImplementationAsync(
                     action,
                     context,
                     continueOnCapturedContext,
@@ -143,7 +143,7 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
             }
             else if (_innerGeneric != null)
             {
-                return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                return AsyncPolicyWrapEngine.ImplementationAsync(
                     action,
                     context,
                     continueOnCapturedContext,

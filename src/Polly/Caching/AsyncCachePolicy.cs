@@ -66,7 +66,7 @@ public class AsyncCachePolicy : AsyncPolicy
             throw new ArgumentNullException(nameof(action));
         }
 
-        return AsyncCacheEngine.ImplementationAsync<TResult>(
+        return AsyncCacheEngine.ImplementationAsync(
             _asyncCacheProvider.AsyncFor<TResult>(),
             _ttlStrategy.For<TResult>(),
             _cacheKeyStrategy,
@@ -133,7 +133,7 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
             throw new ArgumentNullException(nameof(action));
         }
 
-        return AsyncCacheEngine.ImplementationAsync<TResult>(
+        return AsyncCacheEngine.ImplementationAsync(
             _asyncCacheProvider,
             _ttlStrategy,
             _cacheKeyStrategy,

@@ -45,7 +45,7 @@ internal static partial class Migration
         registry.TryGetPipeline(PipelineKey, out ResiliencePipeline? pipeline);
 
         // Try get a generic pipeline
-        registry.TryGetPipeline<string>(PipelineKey, out ResiliencePipeline<string>? genericPipeline);
+        registry.TryGetPipeline(PipelineKey, out ResiliencePipeline<string>? genericPipeline);
 
         // Get or add pipeline
         registry.GetOrAddPipeline(PipelineKey, builder => builder.AddTimeout(TimeSpan.FromSeconds(10)));

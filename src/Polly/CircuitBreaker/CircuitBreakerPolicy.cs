@@ -41,7 +41,7 @@ public class CircuitBreakerPolicy : Policy, ICircuitBreakerPolicy
     protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
     {
         TResult result = default;
-        CircuitBreakerEngine.Implementation<EmptyStruct>(
+        CircuitBreakerEngine.Implementation(
             (ctx, ct) => { result = action(ctx, ct); return EmptyStruct.Instance; },
             context,
             ExceptionPredicates,

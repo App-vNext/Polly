@@ -240,7 +240,7 @@ public static async ValueTask<HttpResponseMessage> Action()
 {
     var context = ResilienceContextPool.Shared.Get();
 
-    var outcome = await WhateverPipeline.ExecuteOutcomeAsync<HttpResponseMessage, string>(
+    var outcome = await WhateverPipeline.ExecuteOutcomeAsync(
         static async (ctx, state) =>
         {
             try
@@ -297,7 +297,7 @@ var fallback = new ResiliencePipelineBuilder<HttpResponseMessage>()
     .Build();
 
 var context = ResilienceContextPool.Shared.Get();
-var outcome = await fallback.ExecuteOutcomeAsync<HttpResponseMessage, string>(
+var outcome = await fallback.ExecuteOutcomeAsync(
     async (ctx, state) =>
     {
         var result = await CallPrimary(ctx.CancellationToken);

@@ -148,7 +148,7 @@ public class ChaosOutcomeStrategyTests
         };
 
         var sut = CreateSut(options);
-        var response = await sut.ExecuteAsync<HttpStatusCode?>(_ =>
+        var response = await sut.ExecuteAsync(_ =>
         {
             _userDelegateExecuted = true;
             return new ValueTask<HttpStatusCode?>(HttpStatusCode.OK);
