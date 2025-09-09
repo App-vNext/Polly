@@ -20,7 +20,6 @@ env:
   DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
   NUGET_XMLDOC_MODE: skip
   TERM: xterm
-  LangVersion: preview # TODO Remove once stryker supports C# 14
 
 permissions:
   contents: read
