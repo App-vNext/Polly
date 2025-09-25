@@ -35,14 +35,14 @@ internal static partial class Log
         Exception? exception);
 
     [LoggerMessage(
-        1,
-        LogLevel.Debug,
-        "Resilience pipeline executing. " +
+        EventId = 1,
+        Message = "Resilience pipeline executing. " +
         SourceWithoutStrategy + Separator +
         OperationKey,
         EventName = "StrategyExecuting")]
     public static partial void PipelineExecuting(
         this ILogger logger,
+        LogLevel logLevel,
         string pipelineName,
         string pipelineInstance,
         string? operationKey);
@@ -74,8 +74,7 @@ internal static partial class Log
                 "Handled: '{Handled}', " +
                 "Attempt: '{Attempt}', " +
                 ExecutionTime,
-        EventName = "ExecutionAttempt",
-        SkipEnabledCheck = true)]
+        EventName = "ExecutionAttempt")]
     public static partial void ExecutionAttempt(
         this ILogger logger,
         LogLevel level,

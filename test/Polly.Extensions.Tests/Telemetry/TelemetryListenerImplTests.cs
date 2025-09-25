@@ -291,8 +291,8 @@ public class TelemetryListenerImplTests : IDisposable
 
         const int DefaultDimensions = 6;
 
-        var telemetry = Create(new[]
-        {
+        var telemetry = Create(
+        [
             new CallbackEnricher(context =>
             {
                 for (int i = 0; i < count; i++)
@@ -305,7 +305,7 @@ public class TelemetryListenerImplTests : IDisposable
             {
                 context.Tags.Add(new KeyValuePair<string, object?>("other", "other-value"));
             })
-        });
+        ]);
 
         ReportEvent(telemetry, Outcome.FromResult<object>(true));
 
@@ -357,16 +357,17 @@ public class TelemetryListenerImplTests : IDisposable
         var outcome = exception ? Outcome.FromException<object>(new InvalidOperationException("dummy message")) : Outcome.FromResult((object)10);
         var result = exception ? "dummy message" : "10";
 
-        ReportEvent(telemetry, outcome: outcome, arg: default(PipelineExecutingArguments), context: context);
-        ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
+        ReportEvent(telemetry, outcome: outcome, arg: default(PipelineExecutingArguments), context: context, severity: ResilienceEventSeverity.Debug);
+        ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context, severity: ResilienceEventSeverity.Information);
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Count.ShouldBe(1);
         messages[0].Message.ShouldBe("Resilience pipeline executing. Source: 'my-pipeline/my-instance', Operation Key: 'op-key'");
+        messages[0].LogLevel.ShouldBe(LogLevel.Debug);
         messages = [.. _logger.GetRecords(new EventId(2, "StrategyExecuted"))];
         messages.Count.ShouldBe(1);
         messages[0].Message.ShouldMatch($"Resilience pipeline executed. Source: 'my-pipeline/my-instance', Operation Key: 'op-key', Result: '{result}', Execution Time: 10000ms");
-        messages[0].LogLevel.ShouldBe(LogLevel.Debug);
+        messages[0].LogLevel.ShouldBe(LogLevel.Information);
     }
 
     [Fact]
@@ -404,8 +405,8 @@ public class TelemetryListenerImplTests : IDisposable
         var outcome = exception ? Outcome.FromException<object>(new InvalidOperationException("dummy message")) : Outcome.FromResult((object)10);
         var result = exception ? "dummy message" : "10";
 
-        var telemetry = Create(new[]
-        {
+        var telemetry = Create(
+        [
             new CallbackEnricher(context =>
             {
                 if (exception)
@@ -415,7 +416,7 @@ public class TelemetryListenerImplTests : IDisposable
 
                 context.Tags.Add(new("custom-tag", "custom-tag-value"));
             })
-        });
+        ]);
 
         ReportEvent(telemetry, outcome: outcome, arg: new PipelineExecutedArguments(TimeSpan.FromSeconds(10)), context: context);
 
@@ -489,6 +490,59 @@ public class TelemetryListenerImplTests : IDisposable
         called.ShouldBeTrue();
     }
 
+    [Fact]
+    public void SeverityProvider_EnsureRespected_For_PipelineEvents()
+    {
+        var context = ResilienceContextPool.Shared.Get("op-key", TestCancellation.Token).WithResultType<int>();
+        var outcome = Outcome.FromException<object>(new InvalidOperationException("dummy message"));
+
+        var severity = ResilienceEventSeverity.Critical;
+        var expectedLogLevel = LogLevel.Critical;
+
+        const string PipelineExecuting = nameof(PipelineExecuting);
+        const string PipelineExecuted = nameof(PipelineExecuted);
+
+        var telemetry = Create(configure: options =>
+        {
+            options.SeverityProvider = args =>
+            {
+                return args.Event.EventName switch
+                {
+                    PipelineExecuting => severity,
+                    PipelineExecuted => severity,
+                    _ => ResilienceEventSeverity.None
+                };
+            };
+        });
+
+        ReportEvent(telemetry, outcome: outcome, arg: default(PipelineExecutingArguments), context: context, eventName: PipelineExecuting);
+        ReportEvent(telemetry, outcome: outcome, arg: default(PipelineExecutedArguments), context: context, eventName: PipelineExecuted);
+
+        _logger.GetRecords(new EventId(1, "StrategyExecuting")).Single().LogLevel.ShouldBe(expectedLogLevel);
+        _logger.GetRecords(new EventId(2, "StrategyExecuted")).Single().LogLevel.ShouldBe(expectedLogLevel);
+    }
+
+    [InlineData((ResilienceEventSeverity)(-1))]
+    [InlineData((ResilienceEventSeverity)6)]
+    [Theory]
+    public void SeverityProvider_EnsureLogLevelChecked(ResilienceEventSeverity severity)
+    {
+        var context = ResilienceContextPool.Shared.Get("op-key", TestCancellation.Token).WithResultType<int>();
+        var outcome = Outcome.FromException<object>(new InvalidOperationException("dummy message"));
+        var telemetry = Create(configure: options => options.SeverityProvider = args => severity);
+
+        ReportEvent(telemetry, outcome: outcome, arg: default(PipelineExecutingArguments), context: context, eventName: "PipelineExecuting");
+        ReportEvent(telemetry, outcome: outcome, arg: default(ExecutionAttemptArguments), context: context, eventName: "ExecutionAttempt");
+        ReportEvent(telemetry, outcome: outcome, arg: default(Retry.OnRetryArguments<object>), context: context, eventName: "OnRetry");
+        ReportEvent(telemetry, outcome: outcome, arg: default(PipelineExecutedArguments), context: context, eventName: "PipelineExecuted");
+
+        var expectedLogLevel = LogLevel.None;
+        _logger.GetRecords(new EventId(0, "ResilienceEvent")).Single().LogLevel.ShouldBe(expectedLogLevel);
+        _logger.GetRecords(new EventId(1, "StrategyExecuting")).Single().LogLevel.ShouldBe(expectedLogLevel);
+        _logger.GetRecords(new EventId(2, "StrategyExecuted")).Single().LogLevel.ShouldBe(expectedLogLevel);
+        _logger.GetRecords(new EventId(3, "ExecutionAttempt")).Single().LogLevel.ShouldBe(expectedLogLevel);
+    }
+
     private List<Dictionary<string, object?>> GetEvents(string eventName) => [.. _events.Where(e => e.Name == eventName).Select(v => v.Tags)];
 
     private TelemetryListenerImpl Create(IEnumerable<MeteringEnricher>? enrichers = null, Action<TelemetryOptions>? configure = null)
@@ -522,7 +576,9 @@ public class TelemetryListenerImplTests : IDisposable
         string? instanceName = "my-instance",
         ResilienceContext? context = null,
         TestArguments? arg = null,
-        ResilienceEventSeverity severity = ResilienceEventSeverity.Warning) => ReportEvent<TestArguments>(telemetry, outcome, instanceName, context, arg!, severity);
+        ResilienceEventSeverity severity = ResilienceEventSeverity.Warning,
+        string eventName = "my-event")
+        => ReportEvent<TestArguments>(telemetry, outcome, instanceName, context, arg!, severity, eventName);
 
     private static void ReportEvent<TArgs>(
         TelemetryListenerImpl telemetry,
@@ -530,11 +586,12 @@ public class TelemetryListenerImplTests : IDisposable
         string? instanceName = "my-instance",
         ResilienceContext? context = null,
         TArgs arg = default!,
-        ResilienceEventSeverity severity = ResilienceEventSeverity.Warning) =>
+        ResilienceEventSeverity severity = ResilienceEventSeverity.Warning,
+        string eventName = "my-event") =>
         telemetry.Write(
             new TelemetryEventArguments<object, TArgs>(
                 new ResilienceTelemetrySource("my-pipeline", instanceName, "my-strategy"),
-                new ResilienceEvent(severity, "my-event"),
+                new ResilienceEvent(severity, eventName),
                 context ?? ResilienceContextPool.Shared.Get("op-key"),
                 arg!,
                 outcome));

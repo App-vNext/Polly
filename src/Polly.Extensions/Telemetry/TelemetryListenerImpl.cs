@@ -54,12 +54,9 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
             }
         }
 
-        var severity = args.Event.Severity;
-
-        if (_severityProvider is { } provider)
-        {
-            severity = provider(new SeverityProviderArguments(args.Source, args.Event, args.Context));
-        }
+        var severity = _severityProvider is { } provider
+            ? provider(new SeverityProviderArguments(args.Source, args.Event, args.Context))
+            : args.Event.Severity;
 
         LogEvent(in args, severity);
         MeterEvent(in args, severity);
@@ -166,53 +163,56 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
     {
         var result = GetResult(args.Context, args.Outcome);
         var level = severity.AsLogLevel();
+        var pipelineName = args.Source.PipelineName.GetValueOrPlaceholder();
+        var pipelineInstanceName = args.Source.PipelineInstanceName.GetValueOrPlaceholder();
+        var strategyName = args.Source.StrategyName.GetValueOrPlaceholder();
+        var operationKey = args.Context.OperationKey;
+        var exception = args.Outcome?.Exception;
 
         if (GetArgs<TArgs, PipelineExecutingArguments>(args.Arguments, out _))
         {
             _logger.PipelineExecuting(
-                args.Source.PipelineName.GetValueOrPlaceholder(),
-                args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
-                args.Context.OperationKey);
+                level,
+                pipelineName,
+                pipelineInstanceName,
+                operationKey);
         }
         else if (GetArgs<TArgs, PipelineExecutedArguments>(args.Arguments, out var pipelineExecuted))
         {
             _logger.PipelineExecuted(
-                LogLevel.Debug,
-                args.Source.PipelineName.GetValueOrPlaceholder(),
-                args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
-                args.Context.OperationKey,
-                GetResult(args.Context, args.Outcome),
+                level,
+                pipelineName,
+                pipelineInstanceName,
+                operationKey,
+                result,
                 pipelineExecuted.Duration.TotalMilliseconds,
-                args.Outcome?.Exception);
+                exception);
         }
         else if (GetArgs<TArgs, ExecutionAttemptArguments>(args.Arguments, out var executionAttempt))
         {
-            if (_logger.IsEnabled(level))
-            {
-                _logger.ExecutionAttempt(
-                    level,
-                    args.Source.PipelineName.GetValueOrPlaceholder(),
-                    args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
-                    args.Source.StrategyName.GetValueOrPlaceholder(),
-                    args.Context.OperationKey,
-                    result,
-                    executionAttempt.Handled,
-                    executionAttempt.AttemptNumber,
-                    executionAttempt.Duration.TotalMilliseconds,
-                    args.Outcome?.Exception);
-            }
+            _logger.ExecutionAttempt(
+                level,
+                pipelineName,
+                pipelineInstanceName,
+                strategyName,
+                operationKey,
+                result,
+                executionAttempt.Handled,
+                executionAttempt.AttemptNumber,
+                executionAttempt.Duration.TotalMilliseconds,
+                exception);
         }
         else
         {
             _logger.ResilienceEvent(
                 level,
                 args.Event.EventName,
-                args.Source.PipelineName.GetValueOrPlaceholder(),
-                args.Source.PipelineInstanceName.GetValueOrPlaceholder(),
-                args.Source.StrategyName.GetValueOrPlaceholder(),
-                args.Context.OperationKey,
+                pipelineName,
+                pipelineInstanceName,
+                strategyName,
+                operationKey,
                 result,
-                args.Outcome?.Exception);
+                exception);
         }
     }
 
