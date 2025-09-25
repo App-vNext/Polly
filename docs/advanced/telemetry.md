@@ -291,6 +291,7 @@ There are telemetry events which are specific to strategies. Like the above over
 > then use the `args.Source.StrategyName` information as well inside the switch expression.
 
 There are also pipeline specific telemetry events
+
 - `PipelineExecuting`: by default reported on `Debug` level
 - `PipelineExecuted`: by default reported on `Information` level
 
