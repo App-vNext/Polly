@@ -283,3 +283,19 @@ services.AddResiliencePipeline("my-strategy", (builder, context) =>
 });
 ```
 <!-- endSnippet -->
+
+There are telemetry events which are specific to strategies. Like the above overrides are specific to Retry (and partially to Hedging).
+
+> [!TIP]
+> If you want to define *X* severity for the `ExecutionAttempt` event of Retry and *Y* severity for the `ExecutionAttempt` event of Hedging
+> then use the `args.Source.StrategyName` information as well inside the switch expression.
+
+There are also pipeline specific telemetry events
+
+- `PipelineExecuting`: by default reported at `Debug` level
+- `PipelineExecuted`: by default reported at `Information` level
+
+In general the suggestion is to use `SeverityProvider` to override strategy specific telemetry events' severity.
+
+> [!TIP]
+> If you want to suppress the specific event completely then use `ResilienceEventSeverity.None`.
