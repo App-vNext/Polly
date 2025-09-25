@@ -292,10 +292,10 @@ There are telemetry events which are specific to strategies. Like the above over
 
 There are also pipeline specific telemetry events
 
-- `PipelineExecuting`: by default reported on `Debug` level
-- `PipelineExecuted`: by default reported on `Information` level
+- `PipelineExecuting`: by default reported at `Debug` level
+- `PipelineExecuted`: by default reported at `Information` level
 
 In general the suggestion is to use `SeverityProvider` to override strategy specific telemetry events' severity.
 
 > [!TIP]
-> If you want to suppress the specific event emission then use `ResilienceEventSeverity.None`.
+> If you want to suppress the specific event completely then use `ResilienceEventSeverity.None`.
