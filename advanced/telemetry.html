@@ -409,6 +409,22 @@ Execution attempt. Source: '{PipelineName}/{PipelineInstance}/{StrategyName}', O
 });
 </code></pre>
 <!-- endSnippet -->
+<p>There are telemetry events which are specific to strategies. Like the above overrides are specific to Retry (and partially to Hedging).</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>If you want to define <em>X</em> severity for the <code>ExecutionAttempt</code> event of Retry and <em>Y</em> severity for the <code>ExecutionAttempt</code> event of Hedging
+then use the <code>args.Source.StrategyName</code> information as well inside the switch expression.</p>
+</div>
+<p>There are also pipeline specific telemetry events</p>
+<ul>
+<li><code>PipelineExecuting</code>: by default reported at <code>Debug</code> level</li>
+<li><code>PipelineExecuted</code>: by default reported at <code>Information</code> level</li>
+</ul>
+<p>In general the suggestion is to use <code>SeverityProvider</code> to override strategy specific telemetry events' severity.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>If you want to suppress the specific event completely then use <code>ResilienceEventSeverity.None</code>.</p>
+</div>
 
 </article>
 
