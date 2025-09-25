@@ -287,7 +287,7 @@ services.AddResiliencePipeline("my-strategy", (builder, context) =>
 There are telemetry events which are specific to strategies. Like the above overrides are specific to Retry (and partially to Hedging).
 
 > [!TIP]
-> If you want to define different severities for the Retry's `ExecutionAttempt` and for the Hedging's `ExecutionAttempt` telemetry events
+> If you want to define _X_ severity for the `ExecutionAttempt` event of Retry and _Y_ severity for the `ExecutionAttempt` event of Hedging
 > then use the `args.Source.StrategyName` information as well inside the switch expression.
 
 There are also pipeline specific telemetry events
