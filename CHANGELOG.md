@@ -4,6 +4,26 @@
 
 <!-- next-release -->
 
+## 8.6.4
+
+* Fix after-release and update CHANGELOG by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2714
+* Use collection expressions by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2715
+* Fix flaky mutants by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2717
+* fix documentation for ExecuteOutcomeAsync by [@carvex21](https://github.com/carvex21) in https://github.com/App-vNext/Polly/pull/2710
+* Bump MartinCostello.WaitForNuGetPackage by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2721
+* Bump sign tool by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2722
+* xunit v3 preparation by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2723
+* Add summary NuGet badges by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2724
+* Delete actionlint config by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2730
+* RateLimiting: add typed builder/guard tests and external limiter lifetime test by [@mohammed-saalim](https://github.com/mohammed-saalim) in https://github.com/App-vNext/Polly/pull/2711
+* Update Dependabot auto-merge conditions by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2736
+* Bump NuGet packages by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2738
+* Bump dotnet-stryker to 4.8.1 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2739
+* Simplify code by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2740
+* Update zizmor by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2746
+* Use NuGet Trusted Publishing by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2751
+* Respect override for PipelineExecuting and PipelineExecuted by [@peter-csala](https://github.com/peter-csala) in https://github.com/App-vNext/Polly/pull/2752
+
 ## 8.6.3
 
 * Add release notes configuration by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2678
