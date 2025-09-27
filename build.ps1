@@ -25,7 +25,7 @@ https://cakebuild.net
 #>
 
 Param(
-    [string]$Script = "build.cake",
+    [string]$Script = "cake.cs",
     [string]$Target = "Default",
     [ValidateSet("Default", "MutationCore", "MutationLegacy")]
     [string]$Configuration = "Release",
@@ -82,6 +82,6 @@ if ($WhatIf.IsPresent) {
 # Start Cake
 Write-Output "Running build script..."
 
-& dotnet cake $Script "--target=$Target" "--configuration=$Configuration" "--verbosity=$Verbosity" $additionalArgs
+& dotnet $Script -- "--target=$Target" "--configuration=$Configuration" "--verbosity=$Verbosity" $additionalArgs
 
 exit $LASTEXITCODE
