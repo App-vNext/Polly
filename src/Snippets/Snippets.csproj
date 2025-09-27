@@ -30,7 +30,7 @@
     <PackageReference Include="Refit.HttpClientFactory" />
     <PackageReference Include="RestSharp" />
     <PackageReference Include="System.Text.Json" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.v3.assert" />
   </ItemGroup>
 
   <ItemGroup>
