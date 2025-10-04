@@ -427,7 +427,7 @@ public class HybridCacheResiliencePipelineBuilderExtensionsTests
             .AddHybridCache(options)
             .Build();
 
-        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object?)null));
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)null!));
         r1.ShouldBeNull();
     }
 }
