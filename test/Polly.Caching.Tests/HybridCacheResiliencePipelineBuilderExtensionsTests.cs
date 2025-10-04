@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.DependencyInjection;
@@ -311,5 +312,122 @@ public class HybridCacheResiliencePipelineBuilderExtensionsTests
 
         result.ShouldNotBeNull();
         result.ShouldBe(builder);
+    }
+
+    [Fact]
+    public async Task NonGeneric_AddHybridCache_For_Custom_Object_WithOptIn_Preserves_Type()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "custom-object-key",
+            PreserveComplexUntypedValues = true,
+        };
+
+        var bandit = new Dog { Name = "Bandit" };
+        var chilli = new Dog { Name = "Chilli" };
+        var bluey = new Dog { Name = "Bluey", Father = bandit, Mother = chilli };
+        var bingo = new Dog { Name = "Bingo", Father = bandit, Mother = chilli };
+
+        var family = new List<Dog> { bandit, bingo, bluey, chilli };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        var r1 = await pipeline.ExecuteAsync(_ => ValueTask.FromResult((object)family));
+        var r2 = await pipeline.ExecuteAsync(_ => ValueTask.FromResult((object)family));
+
+        r1.ShouldBeOfType<List<Dog>>();
+        r2.ShouldBeOfType<List<Dog>>();
+
+        // Validate content equality (order and names)
+        var names1 = ((List<Dog>)r1).Select(d => d.Name).ToArray();
+        var names2 = ((List<Dog>)r2).Select(d => d.Name).ToArray();
+        names1.ShouldBe(new[] { "Bandit", "Bingo", "Bluey", "Chilli" });
+        names2.ShouldBe(new[] { "Bandit", "Bingo", "Bluey", "Chilli" });
+    }
+
+    private sealed class Dog
+    {
+        public required string Name { get; init; }
+
+        public Dog? Father { get; set; }
+
+        public Dog? Mother { get; set; }
+    }
+
+    [Fact]
+    public async Task NonGeneric_AddHybridCache_BoolJsonElement_WithOptIn()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "bool-json-optin",
+            PreserveComplexUntypedValues = true,
+        };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        using var d1 = JsonDocument.Parse("true");
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d1.RootElement));
+
+        r1.ShouldBe(true);
+    }
+
+    [Fact]
+    public async Task NonGeneric_AddHybridCache_ObjectJsonElement_WithOptIn_ToString()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "obj-json-optin",
+            PreserveComplexUntypedValues = true,
+        };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        using var d1 = JsonDocument.Parse("{\"a\":1}");
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)d1.RootElement));
+
+        r1.ShouldBe("{\"a\":1}");
+    }
+
+    [Fact]
+    public async Task NonGeneric_AddHybridCache_NullValue_WithOptIn_ReturnsNull()
+    {
+        var services = new ServiceCollection().AddHybridCache();
+        using var provider = services.Services.BuildServiceProvider();
+        var cache = provider.GetRequiredService<HybridCache>();
+
+        var options = new HybridCacheStrategyOptions
+        {
+            Cache = cache,
+            CacheKeyGenerator = _ => "null-optin",
+            PreserveComplexUntypedValues = true,
+        };
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddHybridCache(options)
+            .Build();
+
+        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object?)null));
+        r1.ShouldBeNull();
     }
 }

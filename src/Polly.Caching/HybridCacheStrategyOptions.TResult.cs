@@ -35,4 +35,11 @@ public class HybridCacheStrategyOptions<TResult> : ResilienceStrategyOptions
     /// If <see langword="null"/>, <see cref="ResilienceContext.OperationKey"/> is used.
     /// </summary>
     public Func<ResilienceContext, string?>? CacheKeyGenerator { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether complex objects should be preserved for untyped (object) pipelines.
+    /// When <see langword="true"/>, complex values serialized as <see cref="System.Text.Json.JsonElement"/> are
+    /// deserialized back to their original runtime type. Defaults to <see langword="false"/> to preserve existing semantics.
+    /// </summary>
+    public bool PreserveComplexUntypedValues { get; set; }
 }

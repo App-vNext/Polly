@@ -8,7 +8,18 @@ namespace Polly.Caching;
 /// </summary>
 internal sealed class CacheObject
 {
-    public CacheObject(object value) => Value = value;
-    public object? Value { get; }
+    public CacheObject()
+    {
+    }
+
+    public CacheObject(object value)
+    {
+        Value = value;
+        TypeName = value?.GetType().AssemblyQualifiedName;
+    }
+
+    public string? TypeName { get; init; }
+
+    public object? Value { get; init; }
 }
 

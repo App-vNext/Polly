@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Hybrid;
@@ -14,6 +15,7 @@ internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrateg
         Guard.NotNull(options);
         _cache = options.Cache!;
         _keyGenerator = options.CacheKeyGenerator ?? (static ctx => ctx.OperationKey);
+        _preserveComplexUntypedValues = options.PreserveComplexUntypedValues;
     }
 
     protected override async ValueTask<Outcome<TResult>> ExecuteCore<TState>(
@@ -36,7 +38,7 @@ internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrateg
                 },
                 cancellationToken: context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
 
-            var normalized = NormalizeValue(result.Value);
+            var normalized = _preserveComplexUntypedValues ? NormalizeComplex(result) : NormalizeValue(result.Value);
             return Outcome.FromResult((TResult)normalized!);
         }
 
@@ -55,6 +57,7 @@ internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrateg
     }
 
     // wrapper moved to top-level public type
+    private readonly bool _preserveComplexUntypedValues;
 
     private static object? NormalizeValue(object? value)
     {
@@ -91,5 +94,28 @@ internal sealed class HybridCacheResilienceStrategy<TResult> : ResilienceStrateg
         }
 
         return value;
+    }
+
+    private static object? NormalizeComplex(CacheObject wrapper)
+    {
+        if (wrapper.Value is null)
+        {
+            return null;
+        }
+
+        if (wrapper.Value is JsonElement json && !string.IsNullOrEmpty(wrapper.TypeName))
+        {
+            var type = Type.GetType(wrapper.TypeName!, throwOnError: false);
+            if (type != null && type != typeof(JsonElement))
+            {
+                var restored = json.Deserialize(type);
+                if (restored != null)
+                {
+                    return restored;
+                }
+            }
+        }
+
+        return NormalizeValue(wrapper.Value);
     }
 }
