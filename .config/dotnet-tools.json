@@ -34,7 +34,8 @@
       "version": "0.0.1-preview.537",
       "commands": [
         "dotnet-validate"
-      ]
+      ],
+      "rollForward": false
     },
     "markdownsnippets.tool": {
       "version": "27.0.2",
@@ -47,6 +48,13 @@
       "version": "1.1.2",
       "commands": [
         "dotnet-wait-for-package"
+      ],
+      "rollForward": false
+    },
+    "meziantou.framework.nugetpackagevalidation.tool": {
+      "version": "1.0.31",
+      "commands": [
+        "meziantou.validate-nuget-package"
       ],
       "rollForward": false
     },

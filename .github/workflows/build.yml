@@ -35,6 +35,7 @@ jobs:
       dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
       dotnet-sign-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-sign-version }}
       dotnet-validate-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-validate-version }}
+      nuget-package-validation-version: ${{ steps.get-dotnet-tools-versions.outputs.nuget-package-validation-version }}
       package-names: ${{ steps.build.outputs.package-names }}
       package-version: ${{ steps.build.outputs.package-version }}
 
@@ -148,9 +149,11 @@ jobs:
         $authenticodelintVersion = $manifest.tools.authenticodelint.version
         $dotnetSignVersion = $manifest.tools.sign.version
         $dotnetValidateVersion = $manifest.tools.'dotnet-validate'.version
+        $nugetPackageValidationVersion = $manifest.tools.'meziantou.framework.nugetpackagevalidation.tool'.version
         "authenticodelint-version=${authenticodelintVersion}" >> ${env:GITHUB_OUTPUT}
         "dotnet-sign-version=${dotnetSignVersion}" >> ${env:GITHUB_OUTPUT}
         "dotnet-validate-version=${dotnetValidateVersion}" >> ${env:GITHUB_OUTPUT}
+        "nuget-package-validation-version=${nugetPackageValidationVersion}" >> ${env:GITHUB_OUTPUT}
 
   validate-packages:
     needs: build
@@ -168,17 +171,33 @@ jobs:
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
-    - name: Validate NuGet packages
+    - name: Install NuGet package validation tools
       shell: pwsh
       env:
         DOTNET_VALIDATE_VERSION: ${{ needs.build.outputs.dotnet-validate-version }}
+        NUGET_PACKAGE_VALIDATION_VERSION: ${{ needs.build.outputs.nuget-package-validation-version }}
       run: |
         dotnet tool install --global dotnet-validate --version ${env:DOTNET_VALIDATE_VERSION} --allow-roll-forward
+        dotnet tool install --global Meziantou.Framework.NuGetPackageValidation.Tool --version ${env:NUGET_PACKAGE_VALIDATION_VERSION} --allow-roll-forward
+
+    - name: Validate NuGet packages
+      shell: pwsh
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
         $packages = Get-ChildItem -Filter "*.nupkg" | ForEach-Object { $_.FullName }
         $invalidPackages = 0
         foreach ($package in $packages) {
+          $isValid = $true
           dotnet validate package local $package
           if ($LASTEXITCODE -ne 0) {
+            $isValid = $false
+          }
+          meziantou.validate-nuget-package $package --github-token ${env:GH_TOKEN}
+          if ($LASTEXITCODE -ne 0) {
+            $isValid = $false
+          }
+          if (-Not $isValid) {
             $invalidPackages++
           }
         }
