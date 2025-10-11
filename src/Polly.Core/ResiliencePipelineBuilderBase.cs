@@ -59,7 +59,7 @@ public abstract class ResiliencePipelineBuilderBase
     /// Gets or sets the <see cref="ResilienceContextPool"/> associated with the builder.
     /// </summary>
     /// <remarks>
-    /// A custom pool can be used to configure custom behavior for  creation.
+    /// A custom pool can be used to configure custom behavior for creation.
     /// This can include setting a default <c>continueOnCapturedContext</c> parameter or custom operation key resolution.
     /// </remarks>
     /// <value>
@@ -112,7 +112,7 @@ public abstract class ResiliencePipelineBuilderBase
             throw new InvalidOperationException("Cannot add any more resilience strategies to the builder after it has been used to build a pipeline once.");
         }
 
-        _entries.Add(new Entry(factory, options));
+        _entries.Add(new(factory, options));
     }
 
     internal PipelineComponent BuildPipelineComponent()
