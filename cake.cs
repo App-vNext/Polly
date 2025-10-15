@@ -2,6 +2,7 @@
 #:package Cake.FileHelpers
 #:package Newtonsoft.Json
 #:property ProjectType=Test
+#:property SignAssembly=false
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -9,7 +10,6 @@
 
 var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Release");
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -283,11 +283,6 @@ await RunTargetAsync(target);
 //////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 //////////////////////////////////////////////////////////////////////
-
-string ToolsExePath(string exeFileName) {
-    var exePath = System.IO.Directory.GetFiles("./tools", exeFileName, SearchOption.AllDirectories).FirstOrDefault();
-    return exePath;
-}
 
 string PatchStrykerConfig(string path, Action<Newtonsoft.Json.Linq.JObject> patch)
 {
