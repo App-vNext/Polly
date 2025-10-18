@@ -22,7 +22,7 @@
     "concurrency": 4,
     "configuration": "Debug",
     "language-version": "Preview",
-    "target-framework": "net8.0",
+    "target-framework": "net10.0",
     "thresholds": {
       "high": 100,
       "low": 100
