@@ -5,9 +5,13 @@ using Microsoft.Extensions.Caching.Hybrid;
 namespace Polly.Caching;
 
 /// <summary>
-/// Options for the HybridCache-based caching strategy.
+/// Options for the HybridCache-based caching strategy for typed resilience pipelines.
 /// </summary>
-/// <typeparam name="TResult">The result type.</typeparam>
+/// <typeparam name="TResult">The result type of the resilience pipeline.</typeparam>
+/// <remarks>
+/// This strategy is designed for use with typed resilience pipelines (<see cref="ResiliencePipelineBuilder{TResult}"/>).
+/// HybridCache requires concrete types for proper serialization and deserialization support.
+/// </remarks>
 [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Members preserved via builder validation.")]
 public class HybridCacheStrategyOptions<TResult> : ResilienceStrategyOptions
 {
@@ -35,11 +39,4 @@ public class HybridCacheStrategyOptions<TResult> : ResilienceStrategyOptions
     /// If <see langword="null"/>, <see cref="ResilienceContext.OperationKey"/> is used.
     /// </summary>
     public Func<ResilienceContext, string?>? CacheKeyGenerator { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether complex objects should be preserved for untyped (object) pipelines.
-    /// When <see langword="true"/>, complex values serialized as <see cref="System.Text.Json.JsonElement"/> are
-    /// deserialized back to their original runtime type. Defaults to <see langword="false"/> to preserve existing semantics.
-    /// </summary>
-    public bool PreserveComplexUntypedValues { get; set; }
 }

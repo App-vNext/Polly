@@ -1,8 +1,6 @@
 #nullable enable
 Polly.HybridCacheResiliencePipelineBuilderExtensions
-Polly.Caching.HybridCacheStrategyOptions
 Polly.Caching.HybridCacheStrategyOptions<TResult>
-Polly.Caching.HybridCacheStrategyOptions.HybridCacheStrategyOptions() -> void
 Polly.Caching.HybridCacheStrategyOptions<TResult>.HybridCacheStrategyOptions() -> void
 Polly.Caching.HybridCacheStrategyOptions<TResult>.Cache.get -> Microsoft.Extensions.Caching.Hybrid.HybridCache?
 Polly.Caching.HybridCacheStrategyOptions<TResult>.Cache.set -> void
@@ -12,7 +10,4 @@ Polly.Caching.HybridCacheStrategyOptions<TResult>.UseSlidingExpiration.get -> bo
 Polly.Caching.HybridCacheStrategyOptions<TResult>.UseSlidingExpiration.set -> void
 Polly.Caching.HybridCacheStrategyOptions<TResult>.CacheKeyGenerator.get -> System.Func<Polly.ResilienceContext!, string?>?
 Polly.Caching.HybridCacheStrategyOptions<TResult>.CacheKeyGenerator.set -> void
-Polly.Caching.HybridCacheStrategyOptions<TResult>.PreserveComplexUntypedValues.get -> bool
-Polly.Caching.HybridCacheStrategyOptions<TResult>.PreserveComplexUntypedValues.set -> void
-static Polly.HybridCacheResiliencePipelineBuilderExtensions.AddHybridCache(this Polly.ResiliencePipelineBuilder! builder, Polly.Caching.HybridCacheStrategyOptions! options) -> Polly.ResiliencePipelineBuilder!
 static Polly.HybridCacheResiliencePipelineBuilderExtensions.AddHybridCache<TResult>(this Polly.ResiliencePipelineBuilder<TResult>! builder, Polly.Caching.HybridCacheStrategyOptions<TResult>! options) -> Polly.ResiliencePipelineBuilder<TResult>!

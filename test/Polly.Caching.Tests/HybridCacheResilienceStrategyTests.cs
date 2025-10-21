@@ -94,7 +94,7 @@ public class HybridCacheResilienceStrategyTests
     }
 
     [Fact]
-    public async Task EmptyKey_Caches()
+    public async Task EmptyKey_BypassesCache()
     {
         var services = new ServiceCollection();
         services.AddHybridCache();
@@ -158,7 +158,7 @@ public class HybridCacheResilienceStrategyTests
     }
 
     [Fact]
-    public async Task DefaultKeyGenerator_NullOperationKey_Caches()
+    public async Task DefaultKeyGenerator_NullOperationKey_BypassesCache()
     {
         var services = new ServiceCollection();
         services.AddHybridCache();
@@ -197,43 +197,7 @@ public class HybridCacheResilienceStrategyTests
     }
 
     [Fact]
-    public async Task UntypedPipeline_JsonElement_Conversion_Covers_All_Branches()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // First execution - cache miss, stores JsonElement
-        using var doc1 = System.Text.Json.JsonDocument.Parse("\"cached-value\"");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
-
-        // Second execution - cache hit, should convert JsonElement to string
-        using var doc2 = System.Text.Json.JsonDocument.Parse("\"new-value\"");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe("cached-value");
-        result2.ShouldBe("cached-value");
-
-        // Verify the conversion actually happened by checking types
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
-    }
-
-    [Fact]
-    public async Task TypedPipeline_String_No_JsonElement_Conversion()
+    public async Task TypedPipeline_String_Caches_Correctly()
     {
         var services = new ServiceCollection();
         services.AddHybridCache();
@@ -251,28 +215,13 @@ public class HybridCacheResilienceStrategyTests
             .AddHybridCache(options)
             .Build();
 
-        // Execute with string values - no JsonElement conversion should happen
         var result1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("typed-value-1"));
         var result2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("typed-value-2"));
 
-        // Both should return the cached string value
         result1.ShouldBe("typed-value-1");
         result2.ShouldBe("typed-value-1");
-
-        // Verify no conversion happened - should still be string
         result1.ShouldBeOfType<string>();
         result2.ShouldBeOfType<string>();
-    }
-
-    [Fact]
-    public void HybridCacheStrategyOptions_NonGeneric_CanBeInstantiated()
-    {
-        var options = new HybridCacheStrategyOptions();
-        options.ShouldNotBeNull();
-        options.ShouldBeOfType<HybridCacheStrategyOptions>();
-
-        // Verify it inherits from the generic version
-        options.ShouldBeAssignableTo<HybridCacheStrategyOptions<object>>();
     }
 
     [Fact]
@@ -368,7 +317,7 @@ public class HybridCacheResilienceStrategyTests
     }
 
     [Fact]
-    public async Task UntypedPipeline_JsonElement_SmallDecimal_Conversion_Covers_All_Branches()
+    public async Task TypedPipeline_ComplexType_Caches_Correctly()
     {
         var services = new ServiceCollection();
         services.AddHybridCache();
@@ -376,31 +325,33 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions
+        var options = new HybridCacheStrategyOptions<MyComplexType>
         {
             Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-small-decimal"
+            CacheKeyGenerator = _ => "complex-type"
         };
 
-        var pipeline = new ResiliencePipelineBuilder()
+        var pipeline = new ResiliencePipelineBuilder<MyComplexType>()
             .AddHybridCache(options)
             .Build();
 
-        // First execution - cache miss, stores JsonElement with very small decimal
-        using var doc1 = System.Text.Json.JsonDocument.Parse("0.0000000001");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
+        var obj1 = new MyComplexType { Id = 1, Name = "First" };
+        var obj2 = new MyComplexType { Id = 2, Name = "Second" };
 
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("0.0000000002");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
+        var result1 = await pipeline.ExecuteAsync(_ => ValueTask.FromResult(obj1));
+        var result2 = await pipeline.ExecuteAsync(_ => ValueTask.FromResult(obj2));
 
-        // Both should return the cached double value
-        result1.ShouldBe(1e-10d);
-        result2.ShouldBe(1e-10d);
+        // First result should be cached
+        result1.Id.ShouldBe(1);
+        result1.Name.ShouldBe("First");
+
+        // Second execution should return cached value
+        result2.Id.ShouldBe(1);
+        result2.Name.ShouldBe("First");
     }
 
     [Fact]
-    public async Task UntypedPipeline_JsonElement_NonString_Conversion_Covers_All_Branches()
+    public async Task TypedPipeline_IntegerType_Caches_Correctly()
     {
         var services = new ServiceCollection();
         services.AddHybridCache();
@@ -408,480 +359,26 @@ public class HybridCacheResilienceStrategyTests
 
         var cache = provider.GetRequiredService<HybridCache>();
 
-        var options = new HybridCacheStrategyOptions
+        var options = new HybridCacheStrategyOptions<int>
         {
             Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-nonstring"
+            CacheKeyGenerator = _ => "int-key"
         };
 
-        var pipeline = new ResiliencePipelineBuilder()
+        var pipeline = new ResiliencePipelineBuilder<int>()
             .AddHybridCache(options)
             .Build();
 
-        // First execution - cache miss, stores JsonElement with non-string value
-        using var doc1 = System.Text.Json.JsonDocument.Parse("42");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
+        var result1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult(42));
+        var result2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult(99));
 
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("99");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached integer value
         result1.ShouldBe(42);
-        result2.ShouldBe(42);
+        result2.ShouldBe(42); // Cached value
     }
 
-    [Fact]
-    public async Task UntypedPipeline_JsonElement_Null_Conversion_Covers_All_Branches()
+    private class MyComplexType
     {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-null"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // First execution - cache miss, stores JsonElement with null value
-        using var doc1 = System.Text.Json.JsonDocument.Parse("null");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
-
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("null");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached null value, not the new JsonElement
-        result1.ShouldBeNull();
-        result2.ShouldBeNull();
-
-        // Verify JSON null becomes actual null
-        (result1 == null).ShouldBeTrue();
-        (result2 == null).ShouldBeTrue();
-
-        // Create a test to specifically hit the JsonElement null branch
-        // We'll use a separate cache key and force the scenario by caching then retrieving
-        var nullTestPipeline = new ResiliencePipelineBuilder().AddHybridCache(new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "force-json-null-branch"
-        }).Build();
-
-        // Store a JsonElement null directly through our pipeline
-        using var nullDoc = System.Text.Json.JsonDocument.Parse("null");
-        var nullElement = nullDoc.RootElement;
-
-        // First call stores the JsonElement null
-        var nullResult1 = await nullTestPipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)nullElement));
-
-        // Second call should hit cache and trigger conversion if JsonElement is cached
-        var nullResult2 = await nullTestPipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)"should-not-execute"));
-
-        // Verify both results are null
-        nullResult1.ShouldBeNull();
-        nullResult2.ShouldBeNull();
-    }
-
-    [Fact]
-    public async Task UntypedPipeline_JsonElement_Null_Yields_Null()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions { Cache = cache, CacheKeyGenerator = _ => "json-null-direct" };
-        var pipeline = new ResiliencePipelineBuilder().AddHybridCache(options).Build();
-
-        using var doc = System.Text.Json.JsonDocument.Parse("null");
-        var r1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc.RootElement));
-
-        r1.ShouldBeNull();
-    }
-
-    [Fact]
-    public async Task UntypedPipeline_JsonElement_Boolean_Conversion_Covers_All_Branches()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-bool"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // First execution - cache miss, stores JsonElement with boolean value
-        using var doc1 = System.Text.Json.JsonDocument.Parse("true");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
-
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("false");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached boolean value
-        result1.ShouldBe(true);
-        result2.ShouldBe(true);
-    }
-
-    [Fact]
-    public async Task UntypedPipeline_JsonElement_Object_Conversion_Covers_All_Branches()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-obj"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // First execution - cache miss, stores JsonElement with object value
-        using var doc1 = System.Text.Json.JsonDocument.Parse("{\"key\":\"value\"}");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
-
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("{\"other\":\"data\"}");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe("{\"key\":\"value\"}");
-        result2.ShouldBe("{\"key\":\"value\"}");
-
-        // Verify the conversion actually happened by checking types
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
-    }
-
-    [Fact]
-    public async Task UntypedPipeline_JsonElement_Array_Conversion_Covers_All_Branches()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-array"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // First execution - cache miss, stores JsonElement with array value
-        using var doc1 = System.Text.Json.JsonDocument.Parse("[\"item1\",\"item2\"]");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
-
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("[\"item3\",\"item4\"]");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe("[\"item1\",\"item2\"]");
-        result2.ShouldBe("[\"item1\",\"item2\"]");
-
-        // Verify the conversion actually happened by checking types
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
-    }
-
-    [Fact]
-    public async Task UntypedPipeline_JsonElement_Decimal_Conversion_Covers_All_Branches()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-decimal"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // First execution - cache miss, stores JsonElement with decimal value
-        using var doc1 = System.Text.Json.JsonDocument.Parse("3.14159");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
-
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("2.71828");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached double value
-        result1.ShouldBe(3.14159d);
-        result2.ShouldBe(3.14159d);
-    }
-
-    [Fact]
-    public async Task UntypedPipeline_NonJsonElement_No_Conversion_Needed()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-non-json"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // First execution - cache miss, stores a regular object (not JsonElement)
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)"regular-string"));
-
-        // Second execution - cache hit, should return the cached value without conversion
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)"different-string"));
-
-        // Both should return the cached value
-        result1.ShouldBe("regular-string");
-        result2.ShouldBe("regular-string");
-
-        // Verify no conversion happened - should still be string
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
-    }
-
-    [Fact]
-    public async Task TypedPipeline_String_No_JsonElement_Conversion_Path()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions<string>
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "typed-string-path"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder<string>()
-            .AddHybridCache(options)
-            .Build();
-
-        // Execute with string values - this should hit the early return path in ConvertUntypedIfJsonElement
-        var result1 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("typed-value-1"));
-        var result2 = await pipeline.ExecuteAsync(static _ => ValueTask.FromResult("typed-value-2"));
-
-        // Both should return the cached string value
-        result1.ShouldBe("typed-value-1");
-        result2.ShouldBe("typed-value-1");
-
-        // Verify no conversion happened - should still be string
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
-    }
-
-    [Fact]
-    public async Task UntypedPipeline_JsonElement_StringWithSpecialChars_Conversion_Covers_All_Branches()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-special"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // First execution - cache miss, stores JsonElement with string containing special characters
-        using var doc1 = System.Text.Json.JsonDocument.Parse("\"Hello\\nWorld\\t!@#$%^&*()\"");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
-
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("\"Different\\nString\\t!@#$%^&*()\"");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe("Hello\nWorld\t!@#$%^&*()");
-        result2.ShouldBe("Hello\nWorld\t!@#$%^&*()");
-
-        // Verify the conversion actually happened by checking types
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
-    }
-
-    [Fact]
-    public async Task UntypedPipeline_JsonElement_LongString_Conversion_Covers_All_Branches()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-long"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // Create a very long string to test edge cases
-        var longString = new string('x', 10000);
-        using var doc1 = System.Text.Json.JsonDocument.Parse($"\"{longString}\"");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
-
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("\"different-long-string\"");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe(longString);
-        result2.ShouldBe(longString);
-
-        // Verify the conversion actually happened by checking types and length
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
-        ((string)result1).Length.ShouldBe(10000);
-        ((string)result2).Length.ShouldBe(10000);
-    }
-
-    [Fact]
-    public async Task UntypedPipeline_JsonElement_EmptyString_Conversion_Covers_All_Branches()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-empty"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // First execution - cache miss, stores JsonElement with empty string
-        using var doc1 = System.Text.Json.JsonDocument.Parse("\"\"");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
-
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("\"non-empty\"");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached string value, not the new JsonElement
-        result1.ShouldBe("");
-        result2.ShouldBe("");
-
-        // Verify the conversion actually happened by checking types and length
-        result1.ShouldBeOfType<string>();
-        result2.ShouldBeOfType<string>();
-        ((string)result1).Length.ShouldBe(0);
-        ((string)result2).Length.ShouldBe(0);
-    }
-
-    [Fact]
-    public async Task UntypedPipeline_JsonElement_LargeNumber_Conversion_Covers_All_Branches()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-large-number"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // First execution - cache miss, stores JsonElement with very large number
-        using var doc1 = System.Text.Json.JsonDocument.Parse("9223372036854775807");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
-
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("123456789");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached long value
-        result1.ShouldBe(9_223_372_036_854_775_807L);
-        result2.ShouldBe(9_223_372_036_854_775_807L);
-    }
-
-    [Fact]
-    public async Task UntypedPipeline_JsonElement_NegativeNumber_Conversion_Covers_All_Branches()
-    {
-        var services = new ServiceCollection();
-        services.AddHybridCache();
-        using var provider = services.BuildServiceProvider();
-
-        var cache = provider.GetRequiredService<HybridCache>();
-
-        var options = new HybridCacheStrategyOptions
-        {
-            Cache = cache,
-            CacheKeyGenerator = _ => "untyped-json-negative"
-        };
-
-        var pipeline = new ResiliencePipelineBuilder()
-            .AddHybridCache(options)
-            .Build();
-
-        // First execution - cache miss, stores JsonElement with negative number
-        using var doc1 = System.Text.Json.JsonDocument.Parse("-3.14159");
-        var result1 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc1.RootElement));
-
-        // Second execution - cache hit, should convert JsonElement to string representation
-        using var doc2 = System.Text.Json.JsonDocument.Parse("2.71828");
-        var result2 = await pipeline.ExecuteAsync<object>(_ => ValueTask.FromResult((object)doc2.RootElement));
-
-        // Both should return the cached double value
-        result1.ShouldBe(-3.14159d);
-        result2.ShouldBe(-3.14159d);
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
     }
 }
