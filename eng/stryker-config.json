@@ -21,7 +21,8 @@
     ],
     "concurrency": 4,
     "configuration": "Debug",
-    "target-framework": "net8.0",
+    "language-version": "Preview",
+    "target-framework": "net10.0",
     "thresholds": {
       "high": 100,
       "low": 100
