@@ -37,6 +37,7 @@
     <File Path="eng/analyzers/Test.globalconfig" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src/Polly.Caching/Polly.Caching.csproj" />
     <Project Path="src/Polly.Core/Polly.Core.csproj" />
     <Project Path="src/Polly.Extensions/Polly.Extensions.csproj" />
     <Project Path="src/Polly.RateLimiting/Polly.RateLimiting.csproj" />
@@ -46,6 +47,7 @@
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/Polly.AotTest/Polly.AotTest.csproj" />
+    <Project Path="test/Polly.Caching.Tests/Polly.Caching.Tests.csproj" />
     <Project Path="test/Polly.Core.Tests/Polly.Core.Tests.csproj" />
     <Project Path="test/Polly.Extensions.Tests/Polly.Extensions.Tests.csproj" />
     <Project Path="test/Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj" />
