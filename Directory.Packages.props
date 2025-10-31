@@ -8,7 +8,7 @@
     <PackageVersion Include="GitHubActionsTestLogger" Version="2.4.1" />
     <PackageVersion Include="IcedTasks" Version="0.11.4" />
     <PackageVersion Include="JunitXml.TestLogger" Version="7.0.2" />
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.10" />
     <PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="4.14.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="4.14.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
@@ -43,7 +43,7 @@
   </ItemGroup>
   <!-- Dependencies below are pinned for the libraries we ship to NuGet.org -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Bcl.TimeProvider" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Bcl.TimeProvider" Version="9.0.10" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.0" />
