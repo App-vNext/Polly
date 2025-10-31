@@ -10,7 +10,6 @@ public class BulkheadPolicy : Policy, IBulkheadPolicy
 {
     private readonly SemaphoreSlim _maxParallelizationSemaphore;
     private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
-    private readonly int _maxQueueingActions;
     private readonly Action<Context> _onBulkheadRejected;
 
     internal BulkheadPolicy(
@@ -18,11 +17,13 @@ public class BulkheadPolicy : Policy, IBulkheadPolicy
         int maxQueueingActions,
         Action<Context> onBulkheadRejected)
     {
-        _maxQueueingActions = maxQueueingActions;
+        MaxQueueingActions = maxQueueingActions;
         _onBulkheadRejected = onBulkheadRejected;
 
         (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
     }
+
+    private int MaxQueueingActions { get; }
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
@@ -50,7 +51,7 @@ public class BulkheadPolicy : Policy, IBulkheadPolicy
     /// <summary>
     /// Gets the number of slots currently available for queuing actions for execution through the bulkhead.
     /// </summary>
-    public int QueueAvailableCount => Math.Min(_maxQueuedActionsSemaphore.CurrentCount, _maxQueueingActions);
+    public int QueueAvailableCount => Math.Min(_maxQueuedActionsSemaphore.CurrentCount, MaxQueueingActions);
 
 #pragma warning disable CA1063
     /// <summary>
@@ -76,7 +77,6 @@ public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
 {
     private readonly SemaphoreSlim _maxParallelizationSemaphore;
     private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
-    private readonly int _maxQueueingActions;
     private readonly Action<Context> _onBulkheadRejected;
 
     internal BulkheadPolicy(
@@ -84,11 +84,13 @@ public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
         int maxQueueingActions,
         Action<Context> onBulkheadRejected)
     {
-        _maxQueueingActions = maxQueueingActions;
+        MaxQueueingActions = maxQueueingActions;
         _onBulkheadRejected = onBulkheadRejected;
 
         (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
     }
+
+    private int MaxQueueingActions { get; }
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
@@ -115,7 +117,7 @@ public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
     /// <summary>
     /// Gets the number of slots currently available for queuing actions for execution through the bulkhead.
     /// </summary>
-    public int QueueAvailableCount => Math.Min(_maxQueuedActionsSemaphore.CurrentCount, _maxQueueingActions);
+    public int QueueAvailableCount => Math.Min(_maxQueuedActionsSemaphore.CurrentCount, MaxQueueingActions);
 
 #pragma warning disable CA1063
     /// <summary>
