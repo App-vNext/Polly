@@ -24,6 +24,7 @@ updates:
   ignore:
     # Ignore the libraries which are pinned
     - dependency-name: "Microsoft.Bcl.AsyncInterfaces"
+    - dependency-name: "Microsoft.Bcl.TimeProvider"
     - dependency-name: "Microsoft.Extensions.Caching.Memory"
     - dependency-name: "Microsoft.Extensions.Logging"
     - dependency-name: "Microsoft.Extensions.Logging.Abstractions"
