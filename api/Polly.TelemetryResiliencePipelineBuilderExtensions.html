@@ -223,7 +223,8 @@ Additionally, the telemetry strategy that logs and meters the executions is adde
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static TBuilder ConfigureTelemetry&lt;TBuilder&gt;(this TBuilder builder, TelemetryOptions options) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
+    <pre><code class="lang-csharp hljs">[DynamicDependency((DynamicallyAccessedMemberTypes)-1, typeof(TelemetryOptions))]
+public static TBuilder ConfigureTelemetry&lt;TBuilder&gt;(this TBuilder builder, TelemetryOptions options) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>

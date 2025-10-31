@@ -234,6 +234,7 @@ Class TimeoutStrategyOptions  <a class="header-action link-secondary" title="Vie
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Range(typeof(TimeSpan), &quot;00:00:00.010&quot;, &quot;1.00:00:00&quot;)]
+[UnconditionalSuppressMessage(&quot;Trimming&quot;, &quot;IL2026&quot;, Justification = &quot;Addressed with DynamicDependency on ValidationHelper.Validate method&quot;)]
 public TimeSpan Timeout { get; set; }</code></pre>
   </div>
 

@@ -165,7 +165,8 @@ Class ChaosLatencyPipelineBuilderExtensions  <a class="header-action link-second
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static TBuilder AddChaosLatency&lt;TBuilder&gt;(this TBuilder builder, ChaosLatencyStrategyOptions options) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
+    <pre><code class="lang-csharp hljs">[UnconditionalSuppressMessage(&quot;Trimming&quot;, &quot;IL2026:Members annotated with &#39;RequiresUnreferencedCodeAttribute&#39; require dynamic access otherwise can break functionality when trimming application code&quot;, Justification = &quot;All options members preserved.&quot;)]
+public static TBuilder AddChaosLatency&lt;TBuilder&gt;(this TBuilder builder, ChaosLatencyStrategyOptions options) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>

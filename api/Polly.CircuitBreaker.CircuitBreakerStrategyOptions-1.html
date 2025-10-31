@@ -227,6 +227,7 @@ again for another <a class="xref" href="Polly.CircuitBreaker.CircuitBreakerStrat
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Range(typeof(TimeSpan), &quot;00:00:00.500&quot;, &quot;1.00:00:00&quot;)]
+[UnconditionalSuppressMessage(&quot;Trimming&quot;, &quot;IL2026&quot;, Justification = &quot;Addressed with DynamicDependency on ValidationHelper.Validate method&quot;)]
 public TimeSpan BreakDuration { get; set; }</code></pre>
   </div>
 
@@ -528,6 +529,7 @@ maintained to ensure the correct sequence of state transitions.
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Range(typeof(TimeSpan), &quot;00:00:00.500&quot;, &quot;1.00:00:00&quot;)]
+[UnconditionalSuppressMessage(&quot;Trimming&quot;, &quot;IL2026&quot;, Justification = &quot;Addressed with DynamicDependency on ValidationHelper.Validate method&quot;)]
 public TimeSpan SamplingDuration { get; set; }</code></pre>
   </div>
 

@@ -165,7 +165,8 @@ Class HedgingResiliencePipelineBuilderExtensions  <a class="header-action link-s
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ResiliencePipelineBuilder&lt;TResult&gt; AddHedging&lt;TResult&gt;(this ResiliencePipelineBuilder&lt;TResult&gt; builder, HedgingStrategyOptions&lt;TResult&gt; options)</code></pre>
+    <pre><code class="lang-csharp hljs">[UnconditionalSuppressMessage(&quot;Trimming&quot;, &quot;IL2026:Members annotated with &#39;RequiresUnreferencedCodeAttribute&#39; require dynamic access otherwise can break functionality when trimming application code&quot;, Justification = &quot;All options members preserved.&quot;)]
+public static ResiliencePipelineBuilder&lt;TResult&gt; AddHedging&lt;TResult&gt;(this ResiliencePipelineBuilder&lt;TResult&gt; builder, HedgingStrategyOptions&lt;TResult&gt; options)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>

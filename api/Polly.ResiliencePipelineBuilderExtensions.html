@@ -165,7 +165,8 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ResiliencePipelineBuilder&lt;TResult&gt; AddPipeline&lt;TResult&gt;(this ResiliencePipelineBuilder&lt;TResult&gt; builder, ResiliencePipeline&lt;TResult&gt; pipeline)</code></pre>
+    <pre><code class="lang-csharp hljs">[UnconditionalSuppressMessage(&quot;Trimming&quot;, &quot;IL2026:Members annotated with &#39;RequiresUnreferencedCodeAttribute&#39; require dynamic access otherwise can break functionality when trimming application code&quot;, Justification = &quot;The EmptyOptions have nothing to validate.&quot;)]
+public static ResiliencePipelineBuilder&lt;TResult&gt; AddPipeline&lt;TResult&gt;(this ResiliencePipelineBuilder&lt;TResult&gt; builder, ResiliencePipeline&lt;TResult&gt; pipeline)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -222,7 +223,8 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static TBuilder AddPipeline&lt;TBuilder&gt;(this TBuilder builder, ResiliencePipeline pipeline) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
+    <pre><code class="lang-csharp hljs">[UnconditionalSuppressMessage(&quot;Trimming&quot;, &quot;IL2026:Members annotated with &#39;RequiresUnreferencedCodeAttribute&#39; require dynamic access otherwise can break functionality when trimming application code&quot;, Justification = &quot;The EmptyOptions have nothing to validate.&quot;)]
+public static TBuilder AddPipeline&lt;TBuilder&gt;(this TBuilder builder, ResiliencePipeline pipeline) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -279,7 +281,9 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ResiliencePipelineBuilder AddStrategy(this ResiliencePipelineBuilder builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;object&gt;&gt; factory)</code></pre>
+    <pre><code class="lang-csharp hljs">[DynamicDependency((DynamicallyAccessedMemberTypes)-1, typeof(ResiliencePipelineBuilderExtensions.EmptyOptions))]
+[UnconditionalSuppressMessage(&quot;Trimming&quot;, &quot;IL2026:Members annotated with &#39;RequiresUnreferencedCodeAttribute&#39; require dynamic access otherwise can break functionality when trimming application code&quot;, Justification = &quot;All options members preserved for the empty options.&quot;)]
+public static ResiliencePipelineBuilder AddStrategy(this ResiliencePipelineBuilder builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;object&gt;&gt; factory)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -330,7 +334,8 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ResiliencePipelineBuilder AddStrategy(this ResiliencePipelineBuilder builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;object&gt;&gt; factory, ResilienceStrategyOptions options)</code></pre>
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;This call validates the options using the data annotations attributes.\nMake sure that the options are included by adding the &#39;[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OptionsType))]&#39; attribute to the calling method.&quot;)]
+public static ResiliencePipelineBuilder AddStrategy(this ResiliencePipelineBuilder builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;object&gt;&gt; factory, ResilienceStrategyOptions options)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -387,7 +392,9 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ResiliencePipelineBuilder&lt;TResult&gt; AddStrategy&lt;TResult&gt;(this ResiliencePipelineBuilder&lt;TResult&gt; builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;TResult&gt;&gt; factory)</code></pre>
+    <pre><code class="lang-csharp hljs">[DynamicDependency((DynamicallyAccessedMemberTypes)-1, typeof(ResiliencePipelineBuilderExtensions.EmptyOptions))]
+[UnconditionalSuppressMessage(&quot;Trimming&quot;, &quot;IL2026:Members annotated with &#39;RequiresUnreferencedCodeAttribute&#39; require dynamic access otherwise can break functionality when trimming application code&quot;, Justification = &quot;All options members preserved for the empty options.&quot;)]
+public static ResiliencePipelineBuilder&lt;TResult&gt; AddStrategy&lt;TResult&gt;(this ResiliencePipelineBuilder&lt;TResult&gt; builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;TResult&gt;&gt; factory)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -444,7 +451,8 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ResiliencePipelineBuilder&lt;TResult&gt; AddStrategy&lt;TResult&gt;(this ResiliencePipelineBuilder&lt;TResult&gt; builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;TResult&gt;&gt; factory, ResilienceStrategyOptions options)</code></pre>
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;This call validates the options using the data annotations attributes.\nMake sure that the options are included by adding the &#39;[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OptionsType))]&#39; attribute to the calling method.&quot;)]
+public static ResiliencePipelineBuilder&lt;TResult&gt; AddStrategy&lt;TResult&gt;(this ResiliencePipelineBuilder&lt;TResult&gt; builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&lt;TResult&gt;&gt; factory, ResilienceStrategyOptions options)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -507,7 +515,9 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static TBuilder AddStrategy&lt;TBuilder&gt;(this TBuilder builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&gt; factory) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
+    <pre><code class="lang-csharp hljs">[DynamicDependency((DynamicallyAccessedMemberTypes)-1, typeof(ResiliencePipelineBuilderExtensions.EmptyOptions))]
+[UnconditionalSuppressMessage(&quot;Trimming&quot;, &quot;IL2026:Members annotated with &#39;RequiresUnreferencedCodeAttribute&#39; require dynamic access otherwise can break functionality when trimming application code&quot;, Justification = &quot;All options members preserved for the empty options.&quot;)]
+public static TBuilder AddStrategy&lt;TBuilder&gt;(this TBuilder builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&gt; factory) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -564,7 +574,8 @@ Class ResiliencePipelineBuilderExtensions  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static TBuilder AddStrategy&lt;TBuilder&gt;(this TBuilder builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&gt; factory, ResilienceStrategyOptions options) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;This call validates the options using the data annotations attributes.\nMake sure that the options are included by adding the &#39;[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OptionsType))]&#39; attribute to the calling method.&quot;)]
+public static TBuilder AddStrategy&lt;TBuilder&gt;(this TBuilder builder, Func&lt;StrategyBuilderContext, ResilienceStrategy&gt; factory, ResilienceStrategyOptions options) where TBuilder : ResiliencePipelineBuilderBase</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
