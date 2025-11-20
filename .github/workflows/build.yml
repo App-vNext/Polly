@@ -451,7 +451,7 @@ jobs:
         permission-contents: write
 
     - name: Publish nuget_packages_published
-      uses: peter-evans/repository-dispatch@5fc4efd1a4797ddb68ffd0714a238564e4cc0e6f # v4.0.0
+      uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
       with:
         event-type: nuget_packages_published
         token: ${{ steps.generate-application-token.outputs.token }}
