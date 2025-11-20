@@ -23,7 +23,7 @@ Polly categorizes resilience strategies into two main groups:
 | Strategy | Premise | AKA | How does the strategy prevent? |
 | -------- | ------- | :-: | ------------- |
 | [Timeout](timeout.md) | Beyond a certain wait, a success result is unlikely. | *Don't wait forever* | Guarantees the caller won't have to wait beyond the timeout. |
-| [Rate Limiter](rate-limiter.md) | Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?* |Constrains executions to not exceed a certain rate. |
+| [Rate Limiter](rate-limiter.md) | Limiting the rate a system handles requests is another way to control load. <br/><br/> This can apply to the way your system accepts incoming calls, and/or to the way you call downstream services. | *Slow down a bit, will you?* | Constrains executions to not exceed a certain rate. |
 
 ## Usage
 
