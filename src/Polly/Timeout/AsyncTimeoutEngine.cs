@@ -46,7 +46,7 @@ internal static class AsyncTimeoutEngine
             if (ex is OperationCanceledException && timeoutCancellationTokenSource.IsCancellationRequested)
             {
                 await onTimeoutAsync(context, timeout, actionTask, ex).ConfigureAwait(continueOnCapturedContext);
-                throw new TimeoutRejectedException("The delegate executed asynchronously through TimeoutPolicy did not complete within the timeout.", ex);
+                throw new TimeoutRejectedException("The delegate executed asynchronously through TimeoutPolicy did not complete within the timeout.", timeout, ex);
             }
 
             throw;

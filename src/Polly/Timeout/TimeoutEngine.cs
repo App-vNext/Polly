@@ -62,7 +62,7 @@ internal static class TimeoutEngine
             if (ex is OperationCanceledException && timeoutCancellationTokenSource.IsCancellationRequested)
             {
                 onTimeout(context, timeout, actionTask, ex);
-                throw new TimeoutRejectedException("The delegate executed through TimeoutPolicy did not complete within the timeout.", ex);
+                throw new TimeoutRejectedException("The delegate executed through TimeoutPolicy did not complete within the timeout.", timeout, ex);
             }
 
             throw;
