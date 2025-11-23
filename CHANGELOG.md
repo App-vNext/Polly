@@ -4,6 +4,13 @@
 
 <!-- next-release -->
 
+## 8.6.5
+
+* Extend NuGet package validation by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2762
+* Suppress S2094 warning by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2765
+* Refactor cake script by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2769
+* Pass timeout to `TimeoutRejectedException` by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2827
+
 ## 8.6.4
 
 * Fix after-release and update CHANGELOG by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2714
