@@ -1,3 +1,5 @@
+using FsCheck;
+using FsCheck.Fluent;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Retry;
 using Polly.Utils;
@@ -261,7 +263,38 @@ public class RetryHelperTests
         delays1.ShouldAllBe(delay => delay > TimeSpan.Zero);
     }
 
-    private static IReadOnlyList<TimeSpan> GetExponentialWithJitterBackoff(bool contrib, TimeSpan baseDelay, int retryCount, Func<double>? randomizer = null)
+#if !NETFRAMEWORK
+    [FsCheck.Xunit.Property(Arbitrary = [typeof(Arbitraries)], MaxTest = 10_000)]
+    public void ApplyJitter_Meets_Specification(TimeSpan value)
+    {
+        var delta = value / 2;
+        var floor = value - delta;
+        var ceiling = value + delta;
+
+        var actual = RetryHelper.ApplyJitter(value, RandomUtil.NextDouble);
+
+        actual.ShouldBeGreaterThan(floor);
+        actual.ShouldBeLessThanOrEqualTo(ceiling);
+    }
+
+    [FsCheck.Xunit.Property(Arbitrary = [typeof(Arbitraries)], MaxTest = 10_000)]
+    public void DecorrelatedJitterBackoffV2_Meets_Specification(TimeSpan value, int attempt)
+    {
+        var rawCeiling = value.Ticks * Math.Pow(2, attempt) * 4;
+        var clamped = (long)Math.Clamp(rawCeiling, value.Ticks, TimeSpan.MaxValue.Ticks);
+
+        var floor = value;
+        var ceiling = TimeSpan.FromTicks(clamped - 1);
+
+        var _ = default(double);
+        var actual = RetryHelper.DecorrelatedJitterBackoffV2(attempt, value, ref _, RandomUtil.NextDouble);
+
+        actual.ShouldBeGreaterThan(floor);
+        actual.ShouldBeLessThanOrEqualTo(ceiling);
+    }
+#endif
+
+    private static List<TimeSpan> GetExponentialWithJitterBackoff(bool contrib, TimeSpan baseDelay, int retryCount, Func<double>? randomizer = null)
     {
         if (contrib)
         {
@@ -278,5 +311,27 @@ public class RetryHelperTests
         }
 
         return result;
+    }
+
+    public static class Arbitraries
+    {
+        public static Arbitrary<int> PositiveInteger()
+        {
+            var minimum = 1;
+            var maximum = 2056;
+            var generator = Gen.Choose(minimum, maximum);
+
+            return Arb.From(generator);
+        }
+
+        public static Arbitrary<TimeSpan> PositiveTimeSpan()
+        {
+            var minimum = (int)TimeSpan.FromMilliseconds(1).Ticks;
+            var maximum = (int)TimeSpan.FromMinutes(60).Ticks;
+            var generator = Gen.Choose(minimum, maximum)
+                               .Select((p) => TimeSpan.FromTicks(p));
+
+            return Arb.From(generator);
+        }
     }
 }
