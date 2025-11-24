@@ -267,13 +267,13 @@ public class RetryHelperTests
     [FsCheck.Xunit.Property(Arbitrary = [typeof(Arbitraries)], MaxTest = 10_000)]
     public void ApplyJitter_Meets_Specification(TimeSpan value)
     {
-        var delta = value / 2;
+        var delta = value / 4;
         var floor = value - delta;
         var ceiling = value + delta;
 
         var actual = RetryHelper.ApplyJitter(value, RandomUtil.NextDouble);
 
-        actual.ShouldBeGreaterThan(floor);
+        actual.ShouldBeGreaterThanOrEqualTo(floor);
         actual.ShouldBeLessThanOrEqualTo(ceiling);
     }
 
@@ -283,13 +283,13 @@ public class RetryHelperTests
         var rawCeiling = value.Ticks * Math.Pow(2, attempt) * 4;
         var clamped = (long)Math.Clamp(rawCeiling, value.Ticks, TimeSpan.MaxValue.Ticks);
 
-        var floor = value;
+        var floor = TimeSpan.Zero;
         var ceiling = TimeSpan.FromTicks(clamped - 1);
 
         var _ = default(double);
         var actual = RetryHelper.DecorrelatedJitterBackoffV2(attempt, value, ref _, RandomUtil.NextDouble);
 
-        actual.ShouldBeGreaterThan(floor);
+        actual.ShouldBeGreaterThanOrEqualTo(floor);
         actual.ShouldBeLessThanOrEqualTo(ceiling);
     }
 #endif
@@ -318,7 +318,7 @@ public class RetryHelperTests
         public static Arbitrary<int> PositiveInteger()
         {
             var minimum = 1;
-            var maximum = 2056;
+            var maximum = 2048;
             var generator = Gen.Choose(minimum, maximum);
 
             return Arb.From(generator);

@@ -54,7 +54,7 @@ internal static class RetryHelper
 
         return TimeSpan.FromMilliseconds(newDelay);
     }
-#pragma warning disable IDE0047 // Remove unnecessary parentheses which offer less mental gymnastics
+#pragma warning restore IDE0047 // Remove unnecessary parentheses which offer less mental gymnastics
 
     /// <summary>
     /// Generates sleep durations in an exponentially backing-off, jittered manner, making sure to mitigate any correlations.
