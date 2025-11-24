@@ -134,8 +134,8 @@ internal static class RetryHelper
 #pragma warning disable IDE0047 // Remove unnecessary parentheses which offer less mental gymnastics
     private static TimeSpan ApplyJitter(TimeSpan delay, Func<double> randomizer)
     {
-        var offset = (delay.TotalMilliseconds * JitterFactor) / 2;
-        var randomDelay = (delay.TotalMilliseconds * JitterFactor * randomizer()) - offset;
+        var offset = delay.TotalMilliseconds * JitterFactor;
+        var randomDelay = offset * (randomizer() - 0.5);
         var newDelay = delay.TotalMilliseconds + randomDelay;
 
         return TimeSpan.FromMilliseconds(newDelay);
