@@ -4,6 +4,7 @@
     <PackageVersion Include="Cake.FileHelpers" Version="7.0.0" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
     <PackageVersion Include="Flurl.Http.Signed" Version="4.0.2" />
+    <PackageVersion Include="FsCheck.Xunit" Version="3.3.2" />
     <PackageVersion Include="FSharp.Core" Version="8.0.200" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="2.4.1" />
     <PackageVersion Include="IcedTasks" Version="0.11.4" />
