@@ -58,7 +58,7 @@ jobs:
         version: ${{ env.ZIZMOR_VERSION }}
 
     - name: Lint PowerShell in workflows
-      uses: martincostello/lint-actions-powershell@5942e3350ee5bd8f8933cec4e1185d13f0ea688f # v1.0.0
+      uses: martincostello/lint-actions-powershell@e088367ebeb113cd7c1ebee5c541175d93e945b7 # v1.0.1
       with:
         powershell-yaml-version: ${{ env.POWERSHELL_YAML_VERSION }}
         psscriptanalyzer-version: ${{ env.PSSCRIPTANALYZER_VERSION }}
