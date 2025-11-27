@@ -81,13 +81,13 @@ jobs:
         show-progress: false
 
     - name: Setup .NET SDKs
-      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       with:
         dotnet-version: |
           8.0.x
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       id: setup-dotnet
 
     - name: Build, Test and Package
@@ -167,7 +167,7 @@ jobs:
         name: packages-windows
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -234,7 +234,7 @@ jobs:
         path: signing-config
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -303,7 +303,7 @@ jobs:
         path: ./artifacts
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -425,7 +425,7 @@ jobs:
         name: signed-packages
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
