@@ -29,7 +29,7 @@
     <PackageVersion Include="Polly.Extensions" Version="8.6.2" />
     <PackageVersion Include="Polly.RateLimiting" Version="8.6.2" />
     <PackageVersion Include="Polly.Testing" Version="8.6.2" />
-    <PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
+    <PackageVersion Include="Refit.HttpClientFactory" Version="9.0.2" />
     <PackageVersion Include="ReportGenerator" Version="5.4.18" />
     <PackageVersion Include="RestSharp" Version="112.1.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
