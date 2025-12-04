@@ -13,6 +13,7 @@
     <NoWarn>$(NoWarn);RS0016;SA1402;SA1600;RS0037;CA1062;SA1204</NoWarn>
     <RootNamespace>Snippets</RootNamespace>
     <EnablePackageValidation>false</EnablePackageValidation>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
