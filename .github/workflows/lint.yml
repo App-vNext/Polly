@@ -37,7 +37,7 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       with:
         filter: 'tree:0'
         persist-credentials: false
@@ -52,13 +52,13 @@ jobs:
         args: -color
 
     - name: Lint workflows with zizmor
-      uses: zizmorcore/zizmor-action@e673c3917a1aef3c65c972347ed84ccd013ecda4 # v0.2.0
+      uses: zizmorcore/zizmor-action@e639db99335bc9038abc0e066dfcd72e23d26fb4 # v0.3.0
       with:
         persona: pedantic
         version: ${{ env.ZIZMOR_VERSION }}
 
     - name: Lint PowerShell in workflows
-      uses: martincostello/lint-actions-powershell@5942e3350ee5bd8f8933cec4e1185d13f0ea688f # v1.0.0
+      uses: martincostello/lint-actions-powershell@e088367ebeb113cd7c1ebee5c541175d93e945b7 # v1.0.1
       with:
         powershell-yaml-version: ${{ env.POWERSHELL_YAML_VERSION }}
         psscriptanalyzer-version: ${{ env.PSSCRIPTANALYZER_VERSION }}

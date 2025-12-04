@@ -24,7 +24,7 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 ## NuGet Packages
 
 | **Package** | **Latest Version** | **About** |
-|:--|:--|:--|
+| :---------- | :----------------- | :-------- |
 | `Polly.Core` | [![NuGet](https://img.shields.io/nuget/v/Polly.Core?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/Polly.Core/ "Download Polly.Core from NuGet.org") | The core abstractions and [built-in strategies](https://www.pollydocs.org/strategies/index). |
 | `Polly.Extensions` | [![NuGet](https://img.shields.io/nuget/v/Polly.Extensions?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/Polly.Extensions/ "Download Polly.Extensions from NuGet.org") | [Telemetry](https://www.pollydocs.org/advanced/telemetry) and [dependency injection](https://www.pollydocs.org/advanced/dependency-injection) support. |
 | `Polly.RateLimiting` | [![NuGet](https://img.shields.io/nuget/v/Polly.RateLimiting?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") | Integration with [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) APIs. |

@@ -80,10 +80,10 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
 
 ## Defaults
 
-| Property            | Default Value | Description                                                                                                                 |
-|---------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------|
+| Property            | Default Value | Description                                                                                                            |
+|---------------------|---------------|------------------------------------------------------------------------------------------------------------------------|
 | `OutcomeGenerator`  | `null`        | This required delegate allows you to inject custom outcome by utilizing information that is only available at runtime. |
-| `OnOutcomeInjected` | `null`        | If provided then it will be invoked after the outcome injection occurred.                                                   |
+| `OnOutcomeInjected` | `null`        | If provided then it will be invoked after the outcome injection occurred.                                              |
 
 > [!NOTE]
 > Please note this strategy is a reactive chaos strategy, but it does not have a `ShouldHandle` delegate.

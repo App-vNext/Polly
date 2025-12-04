@@ -340,9 +340,12 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_timeout_is_less_than_execution_duration__pessimistic()
     {
-        var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Pessimistic);
+        var timeout = TimeSpan.FromMilliseconds(50);
+        var policy = Policy.Timeout(timeout, TimeoutStrategy.Pessimistic);
 
-        Should.Throw<TimeoutRejectedException>(() => policy.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken)));
+        var exception = Should.Throw<TimeoutRejectedException>(() => policy.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken)));
+
+        exception.Timeout.ShouldBe(timeout);
     }
 
     [Fact]

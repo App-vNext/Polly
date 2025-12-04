@@ -45,37 +45,16 @@ internal static class RetryHelper
         }
     }
 
-    private static TimeSpan GetRetryDelayCore(DelayBackoffType type, bool jitter, int attempt, TimeSpan baseDelay, ref double state, Func<double> randomizer)
+#pragma warning disable IDE0047 // Remove unnecessary parentheses which offer less mental gymnastics
+    internal static TimeSpan ApplyJitter(TimeSpan delay, Func<double> randomizer)
     {
-        if (baseDelay == TimeSpan.Zero)
-        {
-            return baseDelay;
-        }
+        var offset = (delay.TotalMilliseconds * JitterFactor) / 2;
+        var randomDelay = (delay.TotalMilliseconds * JitterFactor * randomizer()) - offset;
+        var newDelay = delay.TotalMilliseconds + randomDelay;
 
-        if (jitter)
-        {
-            return type switch
-            {
-                DelayBackoffType.Constant => ApplyJitter(baseDelay, randomizer),
-                DelayBackoffType.Linear => ApplyJitter(TimeSpan.FromMilliseconds((attempt + 1) * baseDelay.TotalMilliseconds), randomizer),
-                DelayBackoffType.Exponential => DecorrelatedJitterBackoffV2(attempt, baseDelay, ref state, randomizer),
-                _ => throw new ArgumentOutOfRangeException(nameof(type), type, "The retry backoff type is not supported.")
-            };
-        }
-
-        return type switch
-        {
-            DelayBackoffType.Constant => baseDelay,
-#if !NETCOREAPP
-            DelayBackoffType.Linear => TimeSpan.FromMilliseconds((attempt + 1) * baseDelay.TotalMilliseconds),
-            DelayBackoffType.Exponential => TimeSpan.FromMilliseconds(Math.Pow(ExponentialFactor, attempt) * baseDelay.TotalMilliseconds),
-#else
-            DelayBackoffType.Linear => (attempt + 1) * baseDelay,
-            DelayBackoffType.Exponential => Math.Pow(ExponentialFactor, attempt) * baseDelay,
-#endif
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "The retry backoff type is not supported.")
-        };
+        return TimeSpan.FromMilliseconds(newDelay);
     }
+#pragma warning restore IDE0047 // Remove unnecessary parentheses which offer less mental gymnastics
 
     /// <summary>
     /// Generates sleep durations in an exponentially backing-off, jittered manner, making sure to mitigate any correlations.
@@ -93,7 +72,7 @@ internal static class RetryHelper
     /// <remarks>
     /// This code was adopted from https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry/blob/master/src/Polly.Contrib.WaitAndRetry/Backoff.DecorrelatedJitterV2.cs.
     /// </remarks>
-    private static TimeSpan DecorrelatedJitterBackoffV2(int attempt, TimeSpan baseDelay, ref double prev, Func<double> randomizer)
+    internal static TimeSpan DecorrelatedJitterBackoffV2(int attempt, TimeSpan baseDelay, ref double prev, Func<double> randomizer)
     {
         // The original author/credit for this jitter formula is @george-polevoy .
         // Jitter formula used with permission as described at https://github.com/App-vNext/Polly/issues/530#issuecomment-526555979
@@ -131,14 +110,35 @@ internal static class RetryHelper
         return TimeSpan.FromTicks(ticks);
     }
 
-#pragma warning disable IDE0047 // Remove unnecessary parentheses which offer less mental gymnastics
-    private static TimeSpan ApplyJitter(TimeSpan delay, Func<double> randomizer)
+    private static TimeSpan GetRetryDelayCore(DelayBackoffType type, bool jitter, int attempt, TimeSpan baseDelay, ref double state, Func<double> randomizer)
     {
-        var offset = (delay.TotalMilliseconds * JitterFactor) / 2;
-        var randomDelay = (delay.TotalMilliseconds * JitterFactor * randomizer()) - offset;
-        var newDelay = delay.TotalMilliseconds + randomDelay;
+        if (baseDelay == TimeSpan.Zero)
+        {
+            return baseDelay;
+        }
 
-        return TimeSpan.FromMilliseconds(newDelay);
+        if (jitter)
+        {
+            return type switch
+            {
+                DelayBackoffType.Constant => ApplyJitter(baseDelay, randomizer),
+                DelayBackoffType.Linear => ApplyJitter(TimeSpan.FromMilliseconds((attempt + 1) * baseDelay.TotalMilliseconds), randomizer),
+                DelayBackoffType.Exponential => DecorrelatedJitterBackoffV2(attempt, baseDelay, ref state, randomizer),
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, "The retry backoff type is not supported.")
+            };
+        }
+
+        return type switch
+        {
+            DelayBackoffType.Constant => baseDelay,
+#if !NETCOREAPP
+            DelayBackoffType.Linear => TimeSpan.FromMilliseconds((attempt + 1) * baseDelay.TotalMilliseconds),
+            DelayBackoffType.Exponential => TimeSpan.FromMilliseconds(Math.Pow(ExponentialFactor, attempt) * baseDelay.TotalMilliseconds),
+#else
+            DelayBackoffType.Linear => (attempt + 1) * baseDelay,
+            DelayBackoffType.Exponential => Math.Pow(ExponentialFactor, attempt) * baseDelay,
+#endif
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "The retry backoff type is not supported.")
+        };
     }
-#pragma warning restore IDE0047 // Remove unnecessary parentheses which offer less mental gymnastics
 }
