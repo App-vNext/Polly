@@ -20,6 +20,7 @@
     <File Path="eng/Analyzers.targets" />
     <File Path="eng/Benchmark.targets" />
     <File Path="eng/bump-version.ps1" />
+    <File Path="eng/Common.props" />
     <File Path="eng/Common.targets" />
     <File Path="eng/Library.targets" />
     <File Path="eng/stryker-config.json" />
