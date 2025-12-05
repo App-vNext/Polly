@@ -11,6 +11,7 @@
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\StrongNameTests.cs" Link="StrongNameTests.cs" />
     <Compile Include="..\Shared\TestCancellation.cs" Link="TestCancellation.cs" />
   </ItemGroup>
   <ItemGroup>
