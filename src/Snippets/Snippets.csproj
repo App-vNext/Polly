@@ -1,19 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <ProjectType>Library</ProjectType>
+    <EnablePackageValidation>false</EnablePackageValidation>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
     <IsTestProject>false</IsTestProject>
     <NoWarn>$(NoWarn);SA1123;SA1515;CA2000;CA2007;CA1303;IDE0021;IDE0017;IDE0022;IDE0060;CS1998;CA1064;S3257;IDE0028;CA1031;CA1848</NoWarn>
     <NoWarn>$(NoWarn);RS0016;SA1402;SA1600;RS0037;CA1062;SA1204</NoWarn>
+    <Nullable>enable</Nullable>
+    <ProjectType>Library</ProjectType>
     <RootNamespace>Snippets</RootNamespace>
-    <EnablePackageValidation>false</EnablePackageValidation>
     <SignAssembly>false</SignAssembly>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
