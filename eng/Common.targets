@@ -1,4 +1,5 @@
 <Project>
+  <Import Project="$(MsBuildThisFileDirectory)Analyzers.targets" />
   <Target Name="CustomizeVersions" AfterTargets="MinVer" Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <PropertyGroup>
       <FileVersion>$([MSBuild]::ValueOrDefault('$(MinVerMajor)', '8')).$([MSBuild]::ValueOrDefault('$(MinVerMinor)', '6')).$([MSBuild]::ValueOrDefault('$(MinVerPatch)', '0')).$([MSBuild]::ValueOrDefault('$(GITHUB_RUN_NUMBER)', '0'))</FileVersion>
