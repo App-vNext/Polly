@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Text.Json" />
     <ProjectReference Include="..\..\src\Polly\Polly.csproj" />
   </ItemGroup>
 </Project>

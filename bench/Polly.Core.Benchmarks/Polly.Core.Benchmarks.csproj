@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Text.Json" />
     <Using Include="Polly.Core.Benchmarks" />
     <Using Include="Polly.Core.Benchmarks.Utils" />
     <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />
