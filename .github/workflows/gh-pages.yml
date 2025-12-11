@@ -33,7 +33,7 @@ jobs:
         show-progress: false
 
     - name: Lint Markdown files
-      uses: DavidAnson/markdownlint-cli2-action@30a0e04f1870d58f8d717450cc6134995f993c63 # v21.0.0
+      uses: DavidAnson/markdownlint-cli2-action@07035fd053f7be764496c0f8d8f9f41f98305101 # v22.0.0
       with:
         config: '.markdownlint.json'
         globs: |
