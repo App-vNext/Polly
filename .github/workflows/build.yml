@@ -112,10 +112,11 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Upload test results to Codecov
-      uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # v1.1.1
+      uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
       if: ${{ !cancelled() }}
       with:
         flags: ${{ matrix.os_name }}
+        report_type: test_results
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Publish NuGet packages
