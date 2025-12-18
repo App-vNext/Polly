@@ -2,7 +2,7 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ProjectType>Benchmark</ProjectType>
     <NoWarn>$(NoWarn);CA1822;IDE0060</NoWarn>

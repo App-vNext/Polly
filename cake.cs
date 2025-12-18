@@ -1,16 +1,15 @@
+#:sdk Cake.Sdk
+#:package Cake.FileHelpers
+#:package Newtonsoft.Json
+#:property ProjectType=Test
+#:property SignAssembly=false
+
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 ///////////////////////////////////////////////////////////////////////////////
 
 var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Release");
-
-//////////////////////////////////////////////////////////////////////
-// EXTERNAL NUGET LIBRARIES
-//////////////////////////////////////////////////////////////////////
-
-#addin nuget:?package=Cake.FileHelpers&version=7.0.0
-#addin nuget:?package=Newtonsoft.Json&version=13.0.3
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -144,7 +143,7 @@ Task("__RunTests")
         loggers =
         [
             "junit;LogFilePath=junit.xml",
-            "GitHubActions;report-warnings=false",
+            "GitHubActions;report-warnings=false;summary-include-passed=false",
         ];
     }
 
@@ -284,11 +283,6 @@ await RunTargetAsync(target);
 //////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 //////////////////////////////////////////////////////////////////////
-
-string ToolsExePath(string exeFileName) {
-    var exePath = System.IO.Directory.GetFiles("./tools", exeFileName, SearchOption.AllDirectories).FirstOrDefault();
-    return exePath;
-}
 
 string PatchStrykerConfig(string path, Action<Newtonsoft.Json.Linq.JObject> patch)
 {
