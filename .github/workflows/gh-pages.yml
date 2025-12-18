@@ -33,7 +33,7 @@ jobs:
         show-progress: false
 
     - name: Lint Markdown files
-      uses: DavidAnson/markdownlint-cli2-action@30a0e04f1870d58f8d717450cc6134995f993c63 # v21.0.0
+      uses: DavidAnson/markdownlint-cli2-action@07035fd053f7be764496c0f8d8f9f41f98305101 # v22.0.0
       with:
         config: '.markdownlint.json'
         globs: |
@@ -55,7 +55,7 @@ jobs:
         dotnet docfx docs/docfx.json
 
     - name: Publish documentation
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         name: docs
         path: docs/_site
@@ -79,7 +79,7 @@ jobs:
     steps:
 
     - name: Download documentation
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: docs
         path: docs
