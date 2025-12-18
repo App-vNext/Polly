@@ -143,7 +143,7 @@ Task("__RunTests")
         loggers =
         [
             "junit;LogFilePath=junit.xml",
-            "GitHubActions;report-warnings=false",
+            "GitHubActions;report-warnings=false;summary-include-passed=false",
         ];
     }
 
