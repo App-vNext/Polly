@@ -24,7 +24,7 @@
       "rollForward": false
     },
     "dotnet-stryker": {
-      "version": "4.8.1",
+      "version": "4.9.0",
       "commands": [
         "dotnet-stryker"
       ],
