@@ -7,7 +7,7 @@ on:
     - cron: '0 8 * * MON'
   workflow_dispatch:
 
-permissions: read-all
+permissions: read-all # zizmor: ignore[excessive-permissions] Recommended permissions for OSSF Scorecard
 
 jobs:
   analysis:
