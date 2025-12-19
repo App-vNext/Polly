@@ -2,6 +2,8 @@ version: 2
 updates:
 - package-ecosystem: "github-actions"
   directory: "/"
+  cooldown:
+    default-days: 3
   schedule:
     interval: weekly
     day: thursday
@@ -9,6 +11,8 @@ updates:
     timezone: "America/New_York"
 - package-ecosystem: nuget
   directory: "/"
+  cooldown:
+    default-days: 3
   groups:
     polly:
       patterns:
