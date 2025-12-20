@@ -154,7 +154,7 @@ var response = await apiClient.GetRequestTimeoutEndpointAsync();
 > - [Microsoft.Extensions.DependencyInjection][m.e.dependencyinjection]: Required for the dependency injection functionality
 > - [Refit.HttpClientFactory](https://www.nuget.org/packages/Refit.HttpClientFactory): Required for the `AddRefitClient` extension
 
-### Further readings for Refit
+### Further reading for Refit
 
 - [Using ASP.NET Core 2.1's HttpClientFactory with Refit's REST library](https://www.hanselman.com/blog/using-aspnet-core-21s-httpclientfactory-with-refits-rest-library)
 - [Refit in .NET: Building Robust API Clients in C#](https://www.milanjovanovic.tech/blog/refit-in-dotnet-building-robust-api-clients-in-csharp)
