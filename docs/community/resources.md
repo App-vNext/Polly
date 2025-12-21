@@ -31,6 +31,7 @@ This includes Blogs, podcasts, courses, e-books, architecture samples and videos
 - [Building resilient cloud services with .NET 8](https://devblogs.microsoft.com/dotnet/building-resilient-cloud-services-with-dotnet-8/) by [Martin Tomka](https://github.com/martintmk)
 - [Resilience and chaos engineering](https://devblogs.microsoft.com/dotnet/resilience-and-chaos-engineering/) by [Martin Tomka](https://github.com/martintmk)
 - [Securing the supply chain at scale - Starting with 71 important open source projects](https://github.blog/open-source/maintainers/securing-the-supply-chain-at-scale-starting-with-71-important-open-source-projects/) by [Gregg Cochran](https://github.com/dubsopenhub)
+- [Preparing for the IETF RateLimit header standard in .NET](https://dev.to/alexisfranorge/preparing-for-the-ietf-ratelimit-header-standard-in-net-3ebk) - by [Alexis Pujo](https://github.com/Alexis-)
 
 ## Podcasts
 
