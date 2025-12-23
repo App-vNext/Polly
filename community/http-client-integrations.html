@@ -113,6 +113,36 @@ new()
 <!-- endSnippet -->
 <p>Here we create a strategy which will retry the HTTP request if the status code is either <code>408</code>, greater than or equal to <code>500</code>, or an <code>HttpRequestException</code> is thrown.</p>
 <p>The <code>HandleTransientHttpError</code> method is equivalent to the <a href="https://github.com/App-vNext/Polly.Extensions.Http/blob/93b91c4359f436bda37f870c4453f25555b9bfd8/src/Polly.Extensions.Http/HttpPolicyExtensions.cs"><code>HttpPolicyExtensions.HandleTransientHttpError</code></a> method in the <a href="https://github.com/App-vNext/Polly.Extensions.Http">App-vNext/Polly.Extensions.Http</a> repository.</p>
+<h3 id="optional-auto-throttling-with-ratelimitheaders">Optional: Auto-throttling with RateLimitHeaders</h3>
+<p><a href="https://github.com/Alos-no/RateLimitHeaders">RateLimitHeaders</a> is a library that parses <a href="https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/">IETF RateLimit headers</a> and can proactively throttle requests to avoid HTTP 429 errors before they happen. It provides a <a href="https://www.nuget.org/packages/RateLimitHeaders.Polly">Polly.Core integration package</a> that you can add to any of the pipelines below:</p>
+<pre><code class="lang-cs">builder.AddRateLimitHeaders(options =&gt;
+{
+    options.EnableProactiveThrottling = true;
+});
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>The order of strategies in your pipeline matters. Place rate limit handling before retry strategies so that proactive throttling occurs before any retry attempts.</p>
+</div>
+<p>For example, adding it to the <code>HttpClient</code> sample:</p>
+<pre><code class="lang-cs">services.AddHttpClient(HttpClientName)
+        .ConfigureHttpClient(client =&gt; client.BaseAddress = BaseAddress)
+        .AddResilienceHandler(&quot;ratelimit_aware_pipeline&quot;, builder =&gt;
+        {
+            builder.AddRateLimitHeaders(options =&gt; options.EnableProactiveThrottling = true);
+            builder.AddRetry(GetRetryOptions());
+        });
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The <a href="https://www.nuget.org/packages/RateLimitHeaders.Polly">RateLimitHeaders.Polly</a> package is required for the <code>AddRateLimitHeaders</code> extension.</p>
+</div>
+<h4 id="further-reading-for-ratelimitheaders">Further reading for RateLimitHeaders</h4>
+<ul>
+<li><a href="https://github.com/Alos-no/RateLimitHeaders">RateLimitHeaders on GitHub</a></li>
+<li><a href="https://alos.no/ratelimitheaders/articles/polly-integration.html">Polly.Core integration documentation</a></li>
+<li><a href="https://dev.to/alexisfranorge/preparing-for-the-ietf-ratelimit-header-standard-in-net-3ebk">Preparing for the IETF RateLimit header standard in .NET</a></li>
+</ul>
 <h2 id="with-httpclient">With HttpClient</h2>
 <p>We use the <a href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.resiliencehttpclientbuilderextensions.addresiliencehandler"><code>AddResilienceHandler</code></a> method to register our resilience strategy with the built-in <a href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient"><code>HttpClient</code></a>.</p>
 <!-- snippet: http-client-integrations-httpclient -->
