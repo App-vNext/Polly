@@ -35,6 +35,41 @@ Here we create a strategy which will retry the HTTP request if the status code i
 
 The `HandleTransientHttpError` method is equivalent to the [`HttpPolicyExtensions.HandleTransientHttpError`](https://github.com/App-vNext/Polly.Extensions.Http/blob/93b91c4359f436bda37f870c4453f25555b9bfd8/src/Polly.Extensions.Http/HttpPolicyExtensions.cs) method in the [App-vNext/Polly.Extensions.Http](https://github.com/App-vNext/Polly.Extensions.Http) repository.
 
+### Optional: Auto-throttling with RateLimitHeaders
+
+[RateLimitHeaders][ratelimitheaders] is a library that parses [IETF RateLimit headers](https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/) and can proactively throttle requests to avoid HTTP 429 errors before they happen. It provides a [Polly.Core integration package][ratelimitheaders.polly] that you can add to any of the pipelines below:
+
+```cs
+builder.AddRateLimitHeaders(options =>
+{
+    options.EnableProactiveThrottling = true;
+});
+```
+
+> [!TIP]
+> The order of strategies in your pipeline matters. Place rate limit handling before retry strategies so that proactive throttling occurs before any retry attempts.
+
+For example, adding it to the `HttpClient` sample:
+
+```cs
+services.AddHttpClient(HttpClientName)
+        .ConfigureHttpClient(client => client.BaseAddress = BaseAddress)
+        .AddResilienceHandler("ratelimit_aware_pipeline", builder =>
+        {
+            builder.AddRateLimitHeaders(options => options.EnableProactiveThrottling = true);
+            builder.AddRetry(GetRetryOptions());
+        });
+```
+
+> [!NOTE]
+> The [RateLimitHeaders.Polly][ratelimitheaders.polly] package is required for the `AddRateLimitHeaders` extension.
+
+#### Further reading for RateLimitHeaders
+
+- [RateLimitHeaders on GitHub][ratelimitheaders]
+- [Polly.Core integration documentation](https://alos.no/ratelimitheaders/articles/polly-integration.html)
+- [Preparing for the IETF RateLimit header standard in .NET](https://dev.to/alexisfranorge/preparing-for-the-ietf-ratelimit-header-standard-in-net-3ebk)
+
 ## With HttpClient
 
 We use the [`AddResilienceHandler`](https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.resiliencehttpclientbuilderextensions.addresiliencehandler) method to register our resilience strategy with the built-in [`HttpClient`](https://learn.microsoft.com/dotnet/api/system.net.http.httpclient).
@@ -204,4 +239,6 @@ var response = await restClient.ExecuteAsync(request);
 [flurl]: https://flurl.dev/
 [m.e.dependencyinjection]: https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection
 [m.e.http.resilience]: https://www.nuget.org/packages/Microsoft.Extensions.Http.Resilience
+[ratelimitheaders]: https://github.com/Alos-no/RateLimitHeaders
+[ratelimitheaders.polly]: https://www.nuget.org/packages/RateLimitHeaders.Polly
 [restsharp]: https://restsharp.dev/
