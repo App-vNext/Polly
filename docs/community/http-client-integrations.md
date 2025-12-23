@@ -37,7 +37,7 @@ The `HandleTransientHttpError` method is equivalent to the [`HttpPolicyExtension
 
 ### Optional: Auto-throttling with RateLimitHeaders
 
-[RateLimitHeaders][ratelimitheaders] is a library that parses [IETF RateLimit headers](https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/) and can proactively throttle requests to avoid 429 errors before they happen. It provides a [Polly integration package][ratelimitheaders.polly] that you can add to any of the pipelines below:
+[RateLimitHeaders][ratelimitheaders] is a library that parses [IETF RateLimit headers](https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/) and can proactively throttle requests to avoid HTTP 429 errors before they happen. It provides a [Polly.Core integration package][ratelimitheaders.polly] that you can add to any of the pipelines below:
 
 ```cs
 builder.AddRateLimitHeaders(options =>
@@ -49,7 +49,7 @@ builder.AddRateLimitHeaders(options =>
 > [!TIP]
 > The order of strategies in your pipeline matters. Place rate limit handling before retry strategies so that proactive throttling occurs before any retry attempts.
 
-For example, adding it to the HttpClient sample:
+For example, adding it to the `HttpClient` sample:
 
 ```cs
 services.AddHttpClient(HttpClientName)
@@ -66,8 +66,8 @@ services.AddHttpClient(HttpClientName)
 
 #### Further reading for RateLimitHeaders
 
-- [RateLimitHeaders GitHub][ratelimitheaders]
-- [Polly integration documentation](https://alos.no/ratelimitheaders/articles/polly-integration.html)
+- [RateLimitHeaders on GitHub][ratelimitheaders]
+- [Polly.Core integration documentation](https://alos.no/ratelimitheaders/articles/polly-integration.html)
 - [Preparing for the IETF RateLimit header standard in .NET](https://dev.to/alexisfranorge/preparing-for-the-ietf-ratelimit-header-standard-in-net-3ebk)
 
 ## With HttpClient
