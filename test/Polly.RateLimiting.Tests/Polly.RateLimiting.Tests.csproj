@@ -5,6 +5,7 @@
     <ProjectType>Test</ProjectType>
     <Nullable>enable</Nullable>
     <Threshold>100</Threshold>
+    <OutputType>Exe</OutputType>
     <Include>[Polly.RateLimiting]*</Include>
   </PropertyGroup>
   <ItemGroup>
