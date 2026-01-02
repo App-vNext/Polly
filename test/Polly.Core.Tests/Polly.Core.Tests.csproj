@@ -16,7 +16,7 @@
     <Compile Include="..\Shared\TestCancellation.cs" Link="TestCancellation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FsCheck.Xunit" />
+    <PackageReference Include="FsCheck.Xunit.v3" />
     <PackageReference Include="Microsoft.Bcl.TimeProvider" />
     <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
     <PackageReference Include="Polly.Contrib.WaitAndRetry" />
