@@ -18,7 +18,7 @@ public partial class ResiliencePipeline
     /// <remarks>
     /// <para><strong>Important:</strong> This API targets advanced, low-allocation scenarios. The user callback
     /// must not throw an exception. Wrap your code and return <see cref="Outcome{TResult}"/>:
-    /// use <see cref="Outcome.FromResult{TResult}(TResult)"/> on success, or <see cref="Outcome.FromException{TResult}(System.Exception)"/> on failure.
+    /// use <see cref="Outcome.FromResult{TResult}(TResult)"/> on success, or <see cref="Outcome.FromException{TResult}(Exception)"/> on failure.
     /// Do not rely on strategies to catch your exceptions; any such behavior is an implementation detail and is not
     /// guaranteed across strategies or future versions.</para>
     /// </remarks>

@@ -13,15 +13,13 @@ public class TraceableAction(int id, AutoResetEvent statusChanged, ITestOutputHe
     private readonly CancellationTokenSource _cancellationSource = new();
     private readonly AutoResetEvent _statusChanged = statusChanged;
 
-    private TraceableActionStatus _status;
-
     public TraceableActionStatus Status
     {
-        get => _status;
+        get;
         set
         {
-            _status = value;
-            _testOutputHelper.WriteLine(_id + "Updated status to {0}, signalling AutoResetEvent.", _status);
+            field = value;
+            _testOutputHelper.WriteLine(_id + "Updated status to {0}, signalling AutoResetEvent.", field);
             SignalStateChange();
         }
     }

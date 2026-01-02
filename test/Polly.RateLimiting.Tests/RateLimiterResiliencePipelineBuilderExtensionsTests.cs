@@ -161,6 +161,68 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         Should.Throw<ObjectDisposedException>(() => strategy.AsPipeline().Execute(() => { }));
     }
 
+    [Fact]
+    public void TypedBuilder_AddConcurrencyLimiter_BuildsRateLimiterStrategy()
+    {
+        var pipeline = new ResiliencePipelineBuilder<int>()
+            .AddConcurrencyLimiter(permitLimit: 2, queueLimit: 1);
+
+        pipeline.Build()
+            .GetPipelineDescriptor()
+            .FirstStrategy
+            .StrategyInstance
+            .ShouldBeOfType<RateLimiterResilienceStrategy>();
+    }
+
+    [Fact]
+    public void AddRateLimiter_WithNullLimiter_Throws()
+    {
+        var builder = new ResiliencePipelineBuilder();
+        Should.Throw<ArgumentNullException>(() => builder.AddRateLimiter(limiter: null!));
+    }
+
+    [Fact]
+    public void AddRateLimiter_WithNullOptions_Throws()
+    {
+        var builder = new ResiliencePipelineBuilder();
+        Should.Throw<ArgumentNullException>(() => builder.AddRateLimiter(options: null!));
+    }
+
+    [Fact]
+    public void AddConcurrencyLimiter_WithNullOptions_Throws()
+    {
+        var builder = new ResiliencePipelineBuilder();
+        Should.Throw<ArgumentNullException>(() => builder.AddConcurrencyLimiter(options: null!));
+    }
+
+    [Fact]
+    public async Task RegistryDispose_DoesNotDisposeExternalLimiter()
+    {
+        using var externalLimiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions
+        {
+            PermitLimit = 1,
+            QueueLimit = 0
+        });
+
+        var registry = new ResiliencePipelineRegistry<string>();
+        _ = registry.GetOrAddPipeline("ext", p => p.AddRateLimiter(externalLimiter));
+
+        await registry.DisposeAsync();
+
+        await Should.NotThrowAsync(async () =>
+        {
+            var lease = await externalLimiter.AcquireAsync(1, CancellationToken.None);
+            try
+            {
+                lease.IsAcquired.ShouldBeTrue();
+            }
+            finally
+            {
+                lease.Dispose();
+            }
+        });
+    }
+
     private static void AssertRateLimiterStrategy(ResiliencePipelineBuilder builder, Action<RateLimiterResilienceStrategy>? assert = null, bool hasEvents = false)
     {
         ResiliencePipeline strategy = builder.Build();

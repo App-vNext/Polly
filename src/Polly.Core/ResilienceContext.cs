@@ -99,10 +99,10 @@ public sealed class ResilienceContext
         return true;
     }
 
+#pragma warning disable S2094 // Classes should not be empty
     /// <summary>
     /// Marker class that represents an unknown result.
     /// </summary>
-    private static class UnknownResult
-    {
-    }
+    private static class UnknownResult;
+#pragma warning restore S2094 // Classes should not be empty
 }

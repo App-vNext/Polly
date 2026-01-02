@@ -56,10 +56,10 @@ public abstract class ResiliencePipelineBuilderBase
     public string? InstanceName { get; set; }
 
     /// <summary>
-    /// Gets or sets the <see cref="Polly.ResilienceContextPool"/> associated with the builder.
+    /// Gets or sets the <see cref="ResilienceContextPool"/> associated with the builder.
     /// </summary>
     /// <remarks>
-    /// A custom pool can be used to configure custom behavior for  creation.
+    /// A custom pool can be used to configure custom behavior for creation.
     /// This can include setting a default <c>continueOnCapturedContext</c> parameter or custom operation key resolution.
     /// </remarks>
     /// <value>
@@ -76,7 +76,7 @@ public abstract class ResiliencePipelineBuilderBase
     public TimeProvider? TimeProvider { get; set; }
 
     /// <summary>
-    /// Gets or sets the <see cref="Polly.Telemetry.TelemetryListener"/> that is used by Polly to report resilience events.
+    /// Gets or sets the <see cref="Telemetry.TelemetryListener"/> that is used by Polly to report resilience events.
     /// </summary>
     /// <remarks>
     /// This property is used by the telemetry infrastructure and should not be used directly by user code.
@@ -112,7 +112,7 @@ public abstract class ResiliencePipelineBuilderBase
             throw new InvalidOperationException("Cannot add any more resilience strategies to the builder after it has been used to build a pipeline once.");
         }
 
-        _entries.Add(new Entry(factory, options));
+        _entries.Add(new(factory, options));
     }
 
     internal PipelineComponent BuildPipelineComponent()

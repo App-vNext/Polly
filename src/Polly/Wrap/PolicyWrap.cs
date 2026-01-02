@@ -38,7 +38,7 @@ public partial class PolicyWrap : Policy, IPolicyWrap
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        PolicyWrapEngine.Implementation<TResult>(
+        PolicyWrapEngine.Implementation(
             action,
             context,
             _outer,
@@ -96,7 +96,7 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
         {
             if (_innerNonGeneric != null)
             {
-                return PolicyWrapEngine.Implementation<TResult>(
+                return PolicyWrapEngine.Implementation(
                     action,
                     context,
                     _outerNonGeneric,
@@ -105,7 +105,7 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
             }
             else if (_innerGeneric != null)
             {
-                return PolicyWrapEngine.Implementation<TResult>(
+                return PolicyWrapEngine.Implementation(
                     action,
                     context,
                     _outerNonGeneric,
@@ -121,7 +121,7 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
         {
             if (_innerNonGeneric != null)
             {
-                return PolicyWrapEngine.Implementation<TResult>(
+                return PolicyWrapEngine.Implementation(
                     action,
                     context,
                     _outerGeneric,
@@ -131,7 +131,7 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
             }
             else if (_innerGeneric != null)
             {
-                return PolicyWrapEngine.Implementation<TResult>(
+                return PolicyWrapEngine.Implementation(
                     action,
                     context,
                     _outerGeneric,

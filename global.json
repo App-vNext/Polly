@@ -1,7 +1,10 @@
 {
   "sdk": {
-    "version": "9.0.304",
+    "version": "10.0.101",
     "allowPrerelease": false,
-    "rollForward": "latestMajor"
+    "rollForward": "latestMinor"
+  },
+  "msbuild-sdks": {
+    "Cake.Sdk": "6.0.0"
   }
 }

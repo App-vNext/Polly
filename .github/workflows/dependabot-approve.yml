@@ -20,7 +20,7 @@ jobs:
 
       - name: Generate GitHub application token
         id: generate-application-token
-        uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
         with:
           app-id: ${{ secrets.POLLY_REVIEWER_BOT_APP_ID }}
           private-key: ${{ secrets.POLLY_REVIEWER_BOT_KEY }}
@@ -29,7 +29,7 @@ jobs:
           permission-workflows: write
 
       - name: Checkout code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           filter: 'tree:0'
           persist-credentials: false
@@ -39,11 +39,13 @@ jobs:
       - name: Approve pull request and enable auto-merge
         shell: bash
         if: |
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/attest-build-provenance') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/cache') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/checkout') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/create-github-app-token') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/dependency-review-action') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/download-artifact') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/github-script') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/setup-dotnet') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/stale') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/upload-artifact') ||

@@ -1,16 +1,15 @@
+#:sdk Cake.Sdk
+#:package Cake.FileHelpers
+#:package Newtonsoft.Json
+#:property ProjectType=Test
+#:property SignAssembly=false
+
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 ///////////////////////////////////////////////////////////////////////////////
 
 var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Release");
-
-//////////////////////////////////////////////////////////////////////
-// EXTERNAL NUGET LIBRARIES
-//////////////////////////////////////////////////////////////////////
-
-#addin nuget:?package=Cake.FileHelpers&version=7.0.0
-#addin nuget:?package=Newtonsoft.Json&version=13.0.3
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -144,7 +143,7 @@ Task("__RunTests")
         loggers =
         [
             "junit;LogFilePath=junit.xml",
-            "GitHubActions;report-warnings=false",
+            "GitHubActions;report-warnings=false;summary-include-passed=false",
         ];
     }
 
@@ -235,35 +234,35 @@ Task("Default")
 
 Task("MutationTestsCore")
     .IsDependentOn("__Setup")
-    .Does((context) =>
+    .Does((_) =>
 {
     RunMutationTests(File("./src/Polly.Core/Polly.Core.csproj"), File("./test/Polly.Core.Tests/Polly.Core.Tests.csproj"));
 });
 
 Task("MutationTestsRateLimiting")
     .IsDependentOn("__Setup")
-    .Does((context) =>
+    .Does((_) =>
 {
     RunMutationTests(File("./src/Polly.RateLimiting/Polly.RateLimiting.csproj"), File("./test/Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj"));
 });
 
 Task("MutationTestsExtensions")
     .IsDependentOn("__Setup")
-    .Does((context) =>
+    .Does((_) =>
 {
     RunMutationTests(File("./src/Polly.Extensions/Polly.Extensions.csproj"), File("./test/Polly.Extensions.Tests/Polly.Extensions.Tests.csproj"));
 });
 
 Task("MutationTestsTesting")
     .IsDependentOn("__Setup")
-    .Does((context) =>
+    .Does((_) =>
 {
     RunMutationTests(File("./src/Polly.Testing/Polly.Testing.csproj"), File("./test/Polly.Testing.Tests/Polly.Testing.Tests.csproj"));
 });
 
 Task("MutationTestsLegacy")
     .IsDependentOn("__Setup")
-    .Does((context) =>
+    .Does((_) =>
 {
     RunMutationTests(File("./src/Polly/Polly.csproj"), File("./test/Polly.Specs/Polly.Specs.csproj"));
 });
@@ -279,23 +278,18 @@ Task("MutationTests")
 // EXECUTION
 ///////////////////////////////////////////////////////////////////////////////
 
-RunTarget(target);
+await RunTargetAsync(target);
 
 //////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 //////////////////////////////////////////////////////////////////////
-
-string ToolsExePath(string exeFileName) {
-    var exePath = System.IO.Directory.GetFiles("./tools", exeFileName, SearchOption.AllDirectories).FirstOrDefault();
-    return exePath;
-}
 
 string PatchStrykerConfig(string path, Action<Newtonsoft.Json.Linq.JObject> patch)
 {
     var json = System.IO.File.ReadAllText(path);
     var config = Newtonsoft.Json.Linq.JObject.Parse(json);
 
-    patch(config.Value<Newtonsoft.Json.Linq.JObject>("stryker-config"));
+    patch(config.Value<Newtonsoft.Json.Linq.JObject>("stryker-config")!);
 
     // Create a new file to avoid polluting the Git tree
     var tempPath = System.IO.Path.GetTempFileName();
@@ -331,11 +325,11 @@ void RunMutationTests(FilePath target, FilePath testProject)
 
         strykerConfigPath = PatchStrykerConfig(strykerConfigPath, (config) =>
         {
-            var reporters = config.Value<Newtonsoft.Json.Linq.JArray>("reporters");
+            var reporters = config.Value<Newtonsoft.Json.Linq.JArray>("reporters")!;
             reporters.Add("dashboard");
 
             config["reporters"] = reporters;
-            config["project-info"] = new Newtonsoft.Json.Linq.JObject()
+            config["project-info"] = new Newtonsoft.Json.Linq.JObject
             {
                 ["module"] = moduleName,
                 ["name"] = projectName,

@@ -26,7 +26,7 @@ jobs:
 
       - name: Generate GitHub application token
         id: generate-application-token
-        uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
         with:
           app-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
           private-key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
@@ -34,7 +34,7 @@ jobs:
           permission-pull-requests: write
 
       - name: Checkout code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           filter: 'tree:0'
           persist-credentials: true # zizmor: ignore[artipacked] Needed to push commits
@@ -91,7 +91,7 @@ jobs:
 
       - name: Create pull request
         if: steps.push-changes.outputs.updated-version == 'true'
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
           HEAD_BRANCH: ${{ steps.push-changes.outputs.branch-name }}
@@ -134,7 +134,7 @@ jobs:
     steps:
 
       - name: Close milestone
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
             const { repo, owner } = context.repo;

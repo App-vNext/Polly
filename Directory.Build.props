@@ -1,7 +1,10 @@
 <Project>
+  <Import Project="$(MsBuildThisFileDirectory)eng/Common.props" />
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <UseArtifactsOutput>true</UseArtifactsOutput>
+    <!-- HACK Workaround until stryker supports C# 14 (.NET 10) -->
+    <NoWarn>$(NoWarn);IDE0032</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(CI)' == 'true' ">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>

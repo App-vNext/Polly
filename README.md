@@ -2,6 +2,11 @@
 
 Polly is a .NET resilience and transient-fault-handling library that allows developers to express resilience strategies such as Retry, Circuit Breaker, Hedging, Timeout, Rate Limiter and Fallback in a fluent and thread-safe manner.
 
+<!-- markdownlint-disable MD042 -->
+[![NuGet][package-badge-version]](#)
+[![NuGet Downloads][package-badge-downloads]](#)
+<!-- markdownlint-enable MD042 -->
+
 [<img align="right" src="https://github.com/dotnet/swag/raw/main/logo/dotnetfoundation_v4_small.png" width="100" alt="The .NET Foundation logo" />](https://www.dotnetfoundation.org/)
 We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
 
@@ -19,7 +24,7 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 ## NuGet Packages
 
 | **Package** | **Latest Version** | **About** |
-|:--|:--|:--|
+| :---------- | :----------------- | :-------- |
 | `Polly.Core` | [![NuGet](https://img.shields.io/nuget/v/Polly.Core?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/Polly.Core/ "Download Polly.Core from NuGet.org") | The core abstractions and [built-in strategies](https://www.pollydocs.org/strategies/index). |
 | `Polly.Extensions` | [![NuGet](https://img.shields.io/nuget/v/Polly.Extensions?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/Polly.Extensions/ "Download Polly.Extensions from NuGet.org") | [Telemetry](https://www.pollydocs.org/advanced/telemetry) and [dependency injection](https://www.pollydocs.org/advanced/dependency-injection) support. |
 | `Polly.RateLimiting` | [![NuGet](https://img.shields.io/nuget/v/Polly.RateLimiting?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/Polly.RateLimiting/ "Download Polly.RateLimiting from NuGet.org") | Integration with [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting) APIs. |
@@ -497,4 +502,6 @@ Help support this project by becoming a sponsor through [GitHub Sponsors](https:
 
 Licensed under the terms of the [New BSD License](https://opensource.org/license/bsd-3-clause/)
 
+[package-badge-downloads]: https://img.shields.io/nuget/dt/Polly?logo=nuget&label=Downloads&color=blue
+[package-badge-version]: https://img.shields.io/nuget/v/Polly?logo=nuget&label=Latest&color=blue
 [polly-docs]: https://www.pollydocs.org/

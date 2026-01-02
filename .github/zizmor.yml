@@ -1,0 +1,10 @@
+rules:
+  anonymous-definition:
+    disable: true
+  concurrency-limits:
+    disable: true
+  dependabot-cooldown:
+    config:
+      days: 3
+  undocumented-permissions:
+    disable: true

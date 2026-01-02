@@ -385,10 +385,12 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
 
         var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic);
 
-        await Should.ThrowAsync<TimeoutRejectedException>(() => policy.ExecuteAsync(async () =>
+        var exception = await Should.ThrowAsync<TimeoutRejectedException>(() => policy.ExecuteAsync(async () =>
         {
             await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken);
         }));
+
+        exception.Timeout.ShouldBe(timeout);
     }
 
     [Fact]

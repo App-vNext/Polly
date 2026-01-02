@@ -35,6 +35,7 @@ jobs:
       dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
       dotnet-sign-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-sign-version }}
       dotnet-validate-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-validate-version }}
+      nuget-package-validation-version: ${{ steps.get-dotnet-tools-versions.outputs.nuget-package-validation-version }}
       package-names: ${{ steps.build.outputs.package-names }}
       package-version: ${{ steps.build.outputs.package-version }}
 
@@ -73,20 +74,21 @@ jobs:
         }
 
     - name: Checkout code
-      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       with:
         fetch-depth: 0
         persist-credentials: false
         show-progress: false
 
     - name: Setup .NET SDKs
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       with:
         dotnet-version: |
           8.0.x
+          9.0.x
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       id: setup-dotnet
 
     - name: Build, Test and Package
@@ -96,7 +98,7 @@ jobs:
 
     - name: Upload Coverage Reports
       if: always()
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         name: coverage-${{ matrix.os_name }}
         path: ./artifacts/coverage-reports
@@ -104,27 +106,28 @@ jobs:
 
     - name: Upload coverage to Codecov
       if: always() && github.event.repository.fork == false
-      uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
+      uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
       with:
         flags: ${{ matrix.os_name }}
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Upload test results to Codecov
-      uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # v1.1.1
+      uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
       if: ${{ !cancelled() }}
       with:
         flags: ${{ matrix.os_name }}
+        report_type: test_results
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Publish NuGet packages
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         name: packages-${{ matrix.os_name }}
         path: ./artifacts/package/release
         if-no-files-found: error
 
     - name: Upload signing file list
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       if: matrix.os_name == 'windows'
       with:
         name: signing-config
@@ -132,7 +135,7 @@ jobs:
         if-no-files-found: error
 
     - name: Generate SBOM
-      uses: anchore/sbom-action@da167eac915b4e86f08b264dbdbc867b61be6f0c # v0.20.5
+      uses: anchore/sbom-action@a930d0ac434e3182448fe678398ba5713717112a # v0.21.0
       if: runner.os == 'Windows'
       with:
         artifact-name: polly.spdx.json
@@ -148,9 +151,11 @@ jobs:
         $authenticodelintVersion = $manifest.tools.authenticodelint.version
         $dotnetSignVersion = $manifest.tools.sign.version
         $dotnetValidateVersion = $manifest.tools.'dotnet-validate'.version
+        $nugetPackageValidationVersion = $manifest.tools.'meziantou.framework.nugetpackagevalidation.tool'.version
         "authenticodelint-version=${authenticodelintVersion}" >> ${env:GITHUB_OUTPUT}
         "dotnet-sign-version=${dotnetSignVersion}" >> ${env:GITHUB_OUTPUT}
         "dotnet-validate-version=${dotnetValidateVersion}" >> ${env:GITHUB_OUTPUT}
+        "nuget-package-validation-version=${nugetPackageValidationVersion}" >> ${env:GITHUB_OUTPUT}
 
   validate-packages:
     needs: build
@@ -159,26 +164,42 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: packages-windows
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
+
+    - name: Install NuGet package validation tools
+      shell: pwsh
+      env:
+        DOTNET_VALIDATE_VERSION: ${{ needs.build.outputs.dotnet-validate-version }}
+        NUGET_PACKAGE_VALIDATION_VERSION: ${{ needs.build.outputs.nuget-package-validation-version }}
+      run: |
+        dotnet tool install --global dotnet-validate --version ${env:DOTNET_VALIDATE_VERSION} --allow-roll-forward
+        dotnet tool install --global Meziantou.Framework.NuGetPackageValidation.Tool --version ${env:NUGET_PACKAGE_VALIDATION_VERSION} --allow-roll-forward
 
     - name: Validate NuGet packages
       shell: pwsh
       env:
-        DOTNET_VALIDATE_VERSION: ${{ needs.build.outputs.dotnet-validate-version }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        dotnet tool install --global dotnet-validate --version ${env:DOTNET_VALIDATE_VERSION} --allow-roll-forward
         $packages = Get-ChildItem -Filter "*.nupkg" | ForEach-Object { $_.FullName }
         $invalidPackages = 0
         foreach ($package in $packages) {
+          $isValid = $true
           dotnet validate package local $package
           if ($LASTEXITCODE -ne 0) {
+            $isValid = $false
+          }
+          meziantou.validate-nuget-package $package --github-token ${env:GH_TOKEN}
+          if ($LASTEXITCODE -ne 0) {
+            $isValid = $false
+          }
+          if (-Not $isValid) {
             $invalidPackages++
           }
         }
@@ -203,19 +224,19 @@ jobs:
     steps:
 
     - name: Download unsigned packages
-      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: packages-windows
         path: packages
 
     - name: Download signing configuration
-      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: signing-config
         path: signing-config
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -255,7 +276,7 @@ jobs:
         }
 
     - name: Upload signed packages
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         name: signed-packages
         path: packages
@@ -273,18 +294,18 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: signed-packages
 
     - name: Download SBOM
-      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: polly.spdx.json
         path: ./artifacts
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
@@ -381,7 +402,7 @@ jobs:
         }
 
     - name: Attest artifacts
-      uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+      uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
       with:
         subject-path: |
           ./artifacts/polly.spdx.json
@@ -395,35 +416,44 @@ jobs:
       name: NuGet.org
       url: https://www.nuget.org/profiles/Polly
 
+    permissions:
+      id-token: write
+
     steps:
 
     - name: Download signed packages
-      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: signed-packages
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+      uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
       with:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
+    - name: NuGet log in
+      uses: NuGet/login@d22cc5f58ff5b88bf9bd452535b4335137e24544 # v1.1.0
+      id: nuget-login
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
     - name: Push signed NuGet packages to NuGet.org
       env:
-        API_KEY: ${{ secrets.NUGET_TOKEN }}
+        API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         PACKAGE_VERSION: ${{ needs.build.outputs.package-version }}
         SOURCE: https://api.nuget.org/v3/index.json
       run: dotnet nuget push "*.nupkg" --api-key "${API_KEY}" --skip-duplicate --source "${SOURCE}" && echo "::notice title=nuget.org::Published version ${PACKAGE_VERSION} to NuGet.org."
 
     - name: Generate GitHub application token
       id: generate-application-token
-      uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
+      uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
       with:
         app-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
         private-key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
         permission-contents: write
 
     - name: Publish nuget_packages_published
-      uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3.0.0
+      uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
       with:
         event-type: nuget_packages_published
         token: ${{ steps.generate-application-token.outputs.token }}

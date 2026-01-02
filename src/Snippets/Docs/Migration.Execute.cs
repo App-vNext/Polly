@@ -61,7 +61,7 @@ internal static partial class Migration
         var context = ResilienceContextPool.Shared.Get();
 
         Outcome<int> pipelineResult =
-            await pipeline.ExecuteOutcomeAsync<int, string>(
+            await pipeline.ExecuteOutcomeAsync(
                 static async (ctx, state) =>
                 {
                     try
@@ -111,7 +111,7 @@ internal static partial class Migration
         context = ResilienceContextPool.Shared.Get();
 
         pipelineResult =
-            await pipelineWithContext.ExecuteOutcomeAsync<int, string>(
+            await pipelineWithContext.ExecuteOutcomeAsync(
                 static async (ctx, state) =>
                 {
                     try
