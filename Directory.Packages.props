@@ -38,8 +38,9 @@
     <PackageVersion Include="System.ComponentModel.Annotations" Version="4.5.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
     <PackageVersion Include="xunit.v3.assert" Version="3.2.1" />
-    <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.1" />
+    <PackageVersion Include="xunit.v3.mtp-off" Version="3.2.1" />
   </ItemGroup>
   <!-- Dependencies below are pinned for the libraries we ship to NuGet.org -->
   <ItemGroup>
