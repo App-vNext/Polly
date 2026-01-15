@@ -31,7 +31,7 @@
     <PackageVersion Include="Polly.Testing" Version="8.6.2" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="9.0.2" />
     <PackageVersion Include="ReportGenerator" Version="5.5.1" />
-    <PackageVersion Include="RestSharp" Version="113.0.0" />
+    <PackageVersion Include="RestSharp" Version="113.1.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.17.0.131074" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
