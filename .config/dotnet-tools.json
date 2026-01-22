@@ -45,7 +45,7 @@
       "rollForward": false
     },
     "MartinCostello.WaitForNuGetPackage": {
-      "version": "1.2.1",
+      "version": "1.2.2",
       "commands": [
         "dotnet-wait-for-package"
       ],
