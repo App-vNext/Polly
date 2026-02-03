@@ -23,6 +23,7 @@
     "configuration": "Debug",
     "language-version": "Preview",
     "target-framework": "net10.0",
+    "testrunner": "mtp",
     "thresholds": {
       "high": 100,
       "low": 100

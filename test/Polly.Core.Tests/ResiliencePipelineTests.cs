@@ -11,7 +11,7 @@ public partial class ResiliencePipelineTests
 #pragma warning disable IDE0028
     public static TheoryData<ResilienceContextPool?> ResilienceContextPools = new()
     {
-        null,
+        null as ResilienceContextPool,
         ResilienceContextPool.Shared,
     };
 #pragma warning restore IDE0028
