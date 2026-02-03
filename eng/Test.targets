@@ -4,8 +4,9 @@
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <!-- Use public signing for test projects to allow referencing non-strong-named test dependencies
-         while still satisfying InternalsVisibleTo requirements from the main libraries -->
-    <PublicSign>true</PublicSign>
+         while still satisfying InternalsVisibleTo requirements from the main libraries.
+         Only enable when SignAssembly is true (i.e., not during Cake builds which set SignAssembly=false) -->
+    <PublicSign Condition=" '$(SignAssembly)' == 'true' ">true</PublicSign>
     <!-- Suppress CS8002 warning about referencing non-strong-named assemblies (GitHubActionsTestLogger) -->
     <NoWarn>$(NoWarn);CS8002</NoWarn>
   </PropertyGroup>
