@@ -3,6 +3,11 @@
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <!-- Use public signing for test projects to allow referencing non-strong-named test dependencies
+         while still satisfying InternalsVisibleTo requirements from the main libraries -->
+    <PublicSign>true</PublicSign>
+    <!-- Suppress CS8002 warning about referencing non-strong-named assemblies (GitHubActionsTestLogger) -->
+    <NoWarn>$(NoWarn);CS8002</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
