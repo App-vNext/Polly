@@ -151,7 +151,7 @@ Task("__RunTests")
 
     foreach (var proj in projects)
     {
-        DotNetTest(null, new DotNetTestSettings
+        DotNetTest(string.Empty, new DotNetTestSettings
         {
             Configuration = configuration,
             Loggers = loggers,
