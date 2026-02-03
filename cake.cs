@@ -151,12 +151,14 @@ Task("__RunTests")
 
     foreach (var proj in projects)
     {
-        DotNetTest(proj.FullPath, new DotNetTestSettings
+        DotNetTest(null, new DotNetTestSettings
         {
             Configuration = configuration,
             Loggers = loggers,
             NoBuild = true,
             ToolTimeout = System.TimeSpan.FromMinutes(10),
+            // Use --project flag for Microsoft Testing Platform (MTP) compatibility
+            ArgumentCustomization = args => args.Prepend($"--project \"{proj.FullPath}\""),
         });
     }
 });
