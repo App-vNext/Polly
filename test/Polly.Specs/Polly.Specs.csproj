@@ -1,8 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
     <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
     <ProjectType>Test</ProjectType>
     <Threshold>94,94,91</Threshold>
     <Include>[Polly]*</Include>
@@ -22,7 +23,6 @@
     <Using Include="Polly.Specs.Helpers.Custom.PreExecute" />
     <Using Include="Polly.Specs.Helpers.RateLimit" />
     <Using Include="Xunit" />
-    <Using Include="Xunit.Abstractions" />
     <Using Include="Xunit.Sdk" />
   </ItemGroup>
   <ItemGroup>
