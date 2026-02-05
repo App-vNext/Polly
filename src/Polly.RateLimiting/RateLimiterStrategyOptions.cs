@@ -45,5 +45,5 @@ public class RateLimiterStrategyOptions : ResilienceStrategyOptions
     /// <value>
     /// The default value is <see langword="null"/>.
     /// </value>
-    public Func<OnRateLimiterRejectedArguments, ValueTask>? OnRejected { get; set; }
+    public Func<OnRateLimiterRejectedArguments, ValueTask<bool>>? OnRejected { get; set; }
 }

@@ -9,7 +9,7 @@ public class RateLimiterResilienceStrategyTests
     private readonly RateLimiter _limiter = Substitute.For<RateLimiter>();
     private readonly RateLimitLease _lease = Substitute.For<RateLimitLease>();
     private readonly FakeTelemetryListener _listener = new();
-    private Func<OnRateLimiterRejectedArguments, ValueTask>? _event;
+    private Func<OnRateLimiterRejectedArguments, ValueTask<bool>>? _event;
 
     [Fact]
     public void Ctor_Ok() =>

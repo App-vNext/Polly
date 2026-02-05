@@ -9,7 +9,7 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy, IDispo
 
     public RateLimiterResilienceStrategy(
         Func<RateLimiterArguments, ValueTask<RateLimitLease>> limiter,
-        Func<OnRateLimiterRejectedArguments, ValueTask>? onRejected,
+        Func<OnRateLimiterRejectedArguments, ValueTask<bool>>? onRejected,
         ResilienceStrategyTelemetry telemetry,
         RateLimiter? wrapper)
     {
@@ -22,7 +22,7 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy, IDispo
 
     public Func<RateLimiterArguments, ValueTask<RateLimitLease>> Limiter { get; }
 
-    public Func<OnRateLimiterRejectedArguments, ValueTask>? OnLeaseRejected { get; }
+    public Func<OnRateLimiterRejectedArguments, ValueTask<bool>>? OnLeaseRejected { get; }
 
     public RateLimiter? Wrapper { get; }
 
@@ -62,7 +62,11 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy, IDispo
 
         if (OnLeaseRejected != null)
         {
-            await OnLeaseRejected(new OnRateLimiterRejectedArguments(context, lease)).ConfigureAwait(context.ContinueOnCapturedContext);
+            var handled = await OnLeaseRejected(new OnRateLimiterRejectedArguments(context, lease)).ConfigureAwait(context.ContinueOnCapturedContext);
+            if (handled)
+            {
+                return Outcome.FromResult<TResult>(default);
+            }
         }
 
         var exception = retryAfter is not null
