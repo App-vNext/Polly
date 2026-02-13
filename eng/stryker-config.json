@@ -22,6 +22,7 @@
     "concurrency": 4,
     "configuration": "Debug",
     "language-version": "Preview",
+    "_comment": "TODO Update to net11.0 when Stryker supports it",
     "target-framework": "net10.0",
     "thresholds": {
       "high": 100,
