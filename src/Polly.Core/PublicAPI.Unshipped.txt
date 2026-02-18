@@ -1,1 +1,3 @@
 ﻿#nullable enable
+Polly.ResiliencePipelineBuilderBase.TracerFactory.get -> System.Func<Polly.ResilienceContext!, System.IDisposable?>?
+Polly.ResiliencePipelineBuilderBase.TracerFactory.set -> void

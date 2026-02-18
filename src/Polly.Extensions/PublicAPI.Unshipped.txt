@@ -1,1 +1,3 @@
 ﻿#nullable enable
+Polly.Telemetry.TelemetryOptions.ActivitySource.get -> System.Diagnostics.ActivitySource?
+Polly.Telemetry.TelemetryOptions.ActivitySource.set -> void

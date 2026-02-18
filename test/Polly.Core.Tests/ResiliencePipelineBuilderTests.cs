@@ -39,13 +39,20 @@ public class ResiliencePipelineBuilderTests
             TimeProvider = Substitute.For<TimeProvider>(),
             Name = "dummy",
             TelemetryListener = Substitute.For<TelemetryListener>(),
+            TracerFactory = (_) => null,
         };
 
         var other = new ResiliencePipelineBuilder<double>(builder);
         other.Name.ShouldBe(builder.Name);
         other.TimeProvider.ShouldBe(builder.TimeProvider);
         other.TelemetryListener.ShouldBeSameAs(builder.TelemetryListener);
+        other.TracerFactory.ShouldBeSameAs(builder.TracerFactory);
     }
+
+    [Fact]
+    public void CopyCtor_Reminder() =>
+        typeof(ResiliencePipelineBuilder).GetRuntimeProperties().Count()
+        .ShouldBe(8, "Make sure that when you increase this number, you also update the copy constructor to assign the new property.");
 
     [Fact]
     public void AddPipeline_Single_Ok()
