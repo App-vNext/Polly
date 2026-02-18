@@ -12,8 +12,6 @@ internal static class TelemetryUtil
 
     private static readonly object False = false;
 
-    internal const string PollyDiagnosticSource = "Polly";
-
     public static string GetValueOrPlaceholder(this string? value) => value ?? "(null)";
 
     public static object AsBoxedBool(this bool value) => value switch
