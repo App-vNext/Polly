@@ -39,6 +39,7 @@ public class TelemetryOptionsTests
             LoggerFactory = Substitute.For<ILoggerFactory>(),
             SeverityProvider = _ => ResilienceEventSeverity.Error,
             ResultFormatter = (_, _) => "x",
+            ActivitySource = new(Guid.NewGuid().ToString()),
         };
 
         options.MeteringEnrichers.Add(Substitute.For<MeteringEnricher>());
@@ -49,16 +50,17 @@ public class TelemetryOptionsTests
         other.ResultFormatter.ShouldBe(options.ResultFormatter);
         other.LoggerFactory.ShouldBe(options.LoggerFactory);
         other.SeverityProvider.ShouldBe(options.SeverityProvider);
+        other.ActivitySource.ShouldBe(options.ActivitySource);
         other.MeteringEnrichers.ShouldBeEquivalentTo(options.MeteringEnrichers);
         other.TelemetryListeners.ShouldBeEquivalentTo(options.TelemetryListeners);
         other.TelemetryListeners.ShouldNotBeSameAs(options.TelemetryListeners);
         other.MeteringEnrichers.ShouldNotBeSameAs(options.MeteringEnrichers);
 
-        typeof(TelemetryOptions).GetRuntimeProperties().Count().ShouldBe(5);
+        typeof(TelemetryOptions).GetRuntimeProperties().Count().ShouldBe(6);
     }
 
     [Fact]
     public void CopyCtor_Reminder()
         => typeof(TelemetryOptions).GetRuntimeProperties().Count()
-        .ShouldBe(5, "Make sure that when you increase this number, you also update the copy constructor to assign the new property.");
+        .ShouldBe(6, "Make sure that when you increase this number, you also update the copy constructor to assign the new property.");
 }

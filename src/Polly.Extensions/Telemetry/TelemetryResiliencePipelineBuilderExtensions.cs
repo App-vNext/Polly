@@ -53,6 +53,28 @@ public static class TelemetryResiliencePipelineBuilderExtensions
         ValidationHelper.ValidateObject(new(options, $"The '{nameof(TelemetryOptions)}' are invalid."));
         builder.TelemetryListener = new TelemetryListenerImpl(options);
 
+        if (options.ActivitySource is { } activitySource)
+        {
+            var factory = new ActivityFactory(activitySource);
+            builder.TracerFactory = factory.CreateActivity;
+        }
+
         return builder;
+    }
+
+    private sealed class ActivityFactory(ActivitySource activitySource)
+    {
+        public IDisposable? CreateActivity(ResilienceContext context)
+        {
+            // What should the activity name be?
+            var activity = activitySource.StartActivity("Polly");
+
+            if (context.OperationKey != null)
+            {
+                // Set tags from context
+            }
+
+            return activity;
+        }
     }
 }
