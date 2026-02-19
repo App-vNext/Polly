@@ -31,7 +31,7 @@
       "rollForward": false
     },
     "dotnet-validate": {
-      "version": "0.0.1-preview.537",
+      "version": "0.0.1-preview.582",
       "commands": [
         "dotnet-validate"
       ],
