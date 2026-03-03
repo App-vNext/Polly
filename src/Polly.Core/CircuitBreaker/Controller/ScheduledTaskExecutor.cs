@@ -26,7 +26,7 @@ internal sealed class ScheduledTaskExecutor : IDisposable
         }
 #endif
 
-        var source = new TaskCompletionSource<object>();
+        var source = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         _tasks.Enqueue(new Entry(taskFactory, source));
         _semaphore.Release();
