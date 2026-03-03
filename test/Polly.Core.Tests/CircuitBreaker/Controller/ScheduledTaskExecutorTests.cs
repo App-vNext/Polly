@@ -143,7 +143,7 @@ public class ScheduledTaskExecutorTests
                 var secondTask = scheduler.ScheduleTask(() => Task.CompletedTask);
                 secondTask.Wait(timeout);
             },
-            CancellationToken.None,
+            CancellationToken,
             TaskContinuationOptions.ExecuteSynchronously,
             TaskScheduler.Default);
 
