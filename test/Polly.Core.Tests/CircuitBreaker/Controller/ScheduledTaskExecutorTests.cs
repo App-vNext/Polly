@@ -147,7 +147,9 @@ public class ScheduledTaskExecutorTests
             TaskContinuationOptions.ExecuteSynchronously,
             TaskScheduler.Default);
 
-        continuationTask.Wait(timeout).ShouldBeTrue();
+#pragma warning disable xUnit1031
+        Task.WaitAll([firstTask, continuationTask], timeout).ShouldBeTrue();
+#pragma warning restore xUnit1031
     }
 
     [Fact]
