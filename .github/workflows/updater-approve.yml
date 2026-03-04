@@ -2,10 +2,6 @@ name: updater-approve
 
 on:
   pull_request:
-    branches:
-      - main
-      - release/*
-      - dotnet-vnext
 
 permissions: {}
 
