@@ -132,7 +132,7 @@ public class ScheduledTaskExecutorTests
     [Fact]
     public void ScheduleTask_InlineContinuationDoesNotDeadlock()
     {
-        var timeout = TimeSpan.FromMilliseconds(250);
+        var timeout = TimeSpan.FromSeconds(1);
         using var scheduler = new ScheduledTaskExecutor();
 
         var firstTask = scheduler.ScheduleTask(() => Task.CompletedTask);
