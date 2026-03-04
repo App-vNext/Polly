@@ -6,10 +6,6 @@ on:
       - main
       - release/*
   pull_request:
-    branches:
-      - main
-      - release/*
-      - dotnet-vnext
   workflow_dispatch:
 
 env:
