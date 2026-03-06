@@ -33,7 +33,7 @@ public class SlidingTtlSpecs
 
         SlidingTtl ttlStrategy = new SlidingTtl(ttl);
 
-        Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), null);
+        Ttl retrieved = ttlStrategy.GetTtl([with("someOperationKey")], null);
         retrieved.Timespan.ShouldBe(ttl);
         retrieved.SlidingExpiration.ShouldBeTrue();
     }
