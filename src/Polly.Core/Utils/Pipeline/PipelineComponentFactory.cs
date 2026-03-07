@@ -25,4 +25,7 @@ internal static class PipelineComponentFactory
     public static PipelineComponent CreateReloadable(
         ReloadableComponent.Entry initial,
         Func<ReloadableComponent.Entry> factory) => new ReloadableComponent(initial, factory);
+
+    public static PipelineComponent WithTracing(PipelineComponent component, Func<ResilienceContext, IDisposable?> tracerFactory)
+        => new TracingComponent(component, tracerFactory);
 }

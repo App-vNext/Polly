@@ -462,5 +462,67 @@ public class ResiliencePipelineRegistryTests
         Should.Throw<ObjectDisposedException>(() => registry.TryGetPipeline("dummy", out _));
     }
 
+    [Fact]
+    public void GetPipeline_WithTracing_Ok()
+    {
+        // arrange
+        var cancellationToken = TestCancellation.Token;
+        var expectedContext = ResilienceContextPool.Shared.Get(cancellationToken);
+        using var tracer = new Tracer();
+
+        using var registry = new ResiliencePipelineRegistry<string>(new()
+        {
+            BuilderFactory = () => new ResiliencePipelineBuilder
+            {
+                TracerFactory = (actualContext) =>
+                {
+                    actualContext.ShouldBe(expectedContext);
+                    tracer.Start();
+                    return tracer;
+                },
+            },
+        });
+
+        var retryCount = 2;
+
+        registry.TryAddBuilder("dummy", (builder, _) =>
+        {
+            builder.AddRetry(new RetryStrategyOptions
+            {
+                ShouldHandle = _ => PredicateResult.True(),
+                MaxRetryAttempts = retryCount,
+                Delay = TimeSpan.FromMilliseconds(2),
+            });
+        });
+
+        // act
+        var strategy = registry.GetPipeline("dummy");
+
+        // assert
+        var tries = 0;
+        strategy.Execute((_) => tries++, expectedContext);
+        tries.ShouldBe(retryCount + 1);
+
+        tracer.Executions.ShouldBe(1);
+        tracer.IsRunning.ShouldBeFalse();
+    }
+
     private ResiliencePipelineRegistry<StrategyId> CreateRegistry() => new(_options);
+
+    private sealed class Tracer : IDisposable
+    {
+        public int Executions { get; private set; }
+        public bool IsRunning { get; private set; }
+
+        public void Start()
+        {
+            IsRunning = true;
+            Executions++;
+        }
+
+        public void Dispose()
+        {
+            IsRunning = false;
+        }
+    }
 }

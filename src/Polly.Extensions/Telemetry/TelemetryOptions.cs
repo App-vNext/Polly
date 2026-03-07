@@ -31,6 +31,7 @@ public class TelemetryOptions
         MeteringEnrichers = [.. other.MeteringEnrichers];
         ResultFormatter = other.ResultFormatter;
         SeverityProvider = other.SeverityProvider;
+        ActivitySource = other.ActivitySource;
     }
 
     /// <summary>
@@ -79,4 +80,12 @@ public class TelemetryOptions
     /// The default value is <see langword="null"/>.
     /// </value>
     public Func<SeverityProviderArguments, ResilienceEventSeverity>? SeverityProvider { get; set; }
+
+    /// <summary>
+    /// Gets or sets the <see cref="ActivitySource"/> to use for tracing, if any.
+    /// </summary>
+    /// <remarks>
+    /// Defaults to an activity source named <c>Polly</c>.
+    /// </remarks>
+    public ActivitySource? ActivitySource { get; set; } = TelemetrySource.Instance.ActivitySource;
 }

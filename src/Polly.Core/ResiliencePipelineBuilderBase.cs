@@ -30,6 +30,7 @@ public abstract class ResiliencePipelineBuilderBase
         Name = other.Name;
         TimeProvider = other.TimeProvider;
         TelemetryListener = other.TelemetryListener;
+        TracerFactory = other.TracerFactory;
     }
 
     /// <summary>
@@ -86,6 +87,18 @@ public abstract class ResiliencePipelineBuilderBase
     /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public TelemetryListener? TelemetryListener { get; set; }
+
+    /// <summary>
+    /// Gets or sets a delegate to a method that is used by Polly to trace execution.
+    /// </summary>
+    /// <remarks>
+    /// This property is used by the telemetry infrastructure and should not be used directly by user code.
+    /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>.
+    /// </value>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Func<ResilienceContext, IDisposable?>? TracerFactory { get; set; }
 
     internal TimeProvider TimeProviderInternal => TimeProvider ?? TimeProvider.System;
 
