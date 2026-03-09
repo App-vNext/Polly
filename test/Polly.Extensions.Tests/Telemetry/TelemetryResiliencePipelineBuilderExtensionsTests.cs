@@ -30,6 +30,64 @@ public class TelemetryResiliencePipelineBuilderExtensionsTests
     }
 
     [Fact]
+    public void ConfigureTelemetry_EnsureTracing()
+    {
+        var options = new TelemetryOptions();
+
+        _builder.ConfigureTelemetry(options);
+        var pipeline = _builder.AddStrategy(new TestResilienceStrategy()).Build();
+
+        using var listener = new ActivityListener
+        {
+            Sample = (ref _) => ActivitySamplingResult.AllDataAndRecorded,
+            ShouldListenTo = (source) => source.Name == "Polly",
+        };
+
+        ActivitySource.AddActivityListener(listener);
+
+        Should.NotThrow(() => pipeline.Execute(
+            _ =>
+            {
+                var activity = Activity.Current;
+
+                activity.ShouldNotBeNull();
+                activity.Source.ShouldBe(options.ActivitySource);
+            },
+            TestCancellation.Token));
+    }
+
+    [Fact]
+    public void ConfigureTelemetry_EnsureTracing_CustomActivitySource()
+    {
+        var sourceName = Guid.NewGuid().ToString();
+        var options = new TelemetryOptions
+        {
+            ActivitySource = new ActivitySource(sourceName),
+        };
+
+        _builder.ConfigureTelemetry(options);
+        var pipeline = _builder.AddStrategy(new TestResilienceStrategy()).Build();
+
+        using var listener = new ActivityListener
+        {
+            Sample = (ref _) => ActivitySamplingResult.AllDataAndRecorded,
+            ShouldListenTo = (source) => source.Name == sourceName,
+        };
+
+        ActivitySource.AddActivityListener(listener);
+
+        Should.NotThrow(() => pipeline.Execute(
+            _ =>
+            {
+                var activity = Activity.Current;
+
+                activity.ShouldNotBeNull();
+                activity.Source.ShouldBe(options.ActivitySource);
+            },
+            TestCancellation.Token));
+    }
+
+    [Fact]
     public void ConfigureTelemetry_NullArguments_Throws()
     {
         ResiliencePipelineBuilder builder = null!;
