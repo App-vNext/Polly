@@ -10,10 +10,14 @@ namespace Polly.Telemetry;
 /// </remarks>
 public sealed class ResilienceStrategyTelemetry
 {
-    internal ResilienceStrategyTelemetry(ResilienceTelemetrySource source, TelemetryListener? listener)
+    internal ResilienceStrategyTelemetry(
+        ResilienceTelemetrySource source,
+        TelemetryListener? listener,
+        Func<ResilienceContext, IDisposable?>? tracerFactory)
     {
         TelemetrySource = source;
         Listener = listener;
+        TracerFactory = tracerFactory;
         Enabled = listener is not null;
     }
 
@@ -22,6 +26,8 @@ public sealed class ResilienceStrategyTelemetry
     internal TelemetryListener? Listener { get; }
 
     internal ResilienceTelemetrySource TelemetrySource { get; }
+
+    internal Func<ResilienceContext, IDisposable?>? TracerFactory { get; set; }
 
     /// <summary>
     ///  Sets the source of the telemetry on the provided exception.

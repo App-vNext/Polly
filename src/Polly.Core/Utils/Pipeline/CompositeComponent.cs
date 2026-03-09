@@ -73,12 +73,15 @@ internal sealed class CompositeComponent : PipelineComponent
         ResilienceContext context,
         TState state)
     {
-        if (!_telemetry.Enabled)
+        using (_telemetry.TracerFactory?.Invoke(context))
         {
-            return ExecuteCoreWithoutTelemetry(callback, context, state);
-        }
+            if (!_telemetry.Enabled)
+            {
+                return ExecuteCoreWithoutTelemetry(callback, context, state);
+            }
 
-        return ExecuteCoreWithTelemetry(callback, context, state);
+            return ExecuteCoreWithTelemetry(callback, context, state);
+        }
     }
 
     private ValueTask<Outcome<TResult>> ExecuteCoreWithoutTelemetry<TResult, TState>(

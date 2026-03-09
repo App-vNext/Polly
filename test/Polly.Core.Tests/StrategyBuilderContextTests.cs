@@ -13,11 +13,13 @@ public static class StrategyBuilderContextTests
         var context = new StrategyBuilderContext(
             new ResilienceStrategyTelemetry(
                 new ResilienceTelemetrySource("builder-name", "instance", "strategy_name"),
-                Substitute.For<TelemetryListener>()),
+                Substitute.For<TelemetryListener>(),
+                _ => null),
             timeProvider);
 
         context.TimeProvider.ShouldBe(timeProvider);
         context.Telemetry.ShouldNotBeNull();
+        context.Telemetry.TracerFactory.ShouldNotBeNull();
         context.Telemetry.TelemetrySource.ShouldNotBeNull();
         context.Telemetry.TelemetrySource.PipelineName.ShouldBe("builder-name");
         context.Telemetry.TelemetrySource.PipelineInstanceName.ShouldBe("instance");

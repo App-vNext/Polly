@@ -24,20 +24,22 @@ public class ResilienceStrategyTelemetryTests
     {
         // Arrange
         var listener = new FakeTelemetryListener((_) => { });
+        Func<ResilienceContext, IDisposable?> tracerFactory = (_) => null;
 
         // Act
-        var sut = new ResilienceStrategyTelemetry(_source, listener);
+        var sut = new ResilienceStrategyTelemetry(_source, listener, tracerFactory);
 
         // Assert
         sut.Enabled.ShouldBeTrue();
         sut.Listener.ShouldBe(listener);
+        sut.TracerFactory.ShouldBe(tracerFactory);
     }
 
     [Fact]
     public void Enabled_Ok()
     {
         _sut.Enabled.ShouldBeTrue();
-        new ResilienceStrategyTelemetry(_source, null).Enabled.ShouldBeFalse();
+        new ResilienceStrategyTelemetry(_source, null, null).Enabled.ShouldBeFalse();
     }
 
     [Fact]
@@ -62,7 +64,7 @@ public class ResilienceStrategyTelemetryTests
     public void ResiliencePipelineTelemetry_NoDiagnosticSource_Ok()
     {
         var source = new ResilienceTelemetrySource("builder", "instance", "strategy_name");
-        var sut = new ResilienceStrategyTelemetry(source, null);
+        var sut = new ResilienceStrategyTelemetry(source, null, null);
         var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
         Should.NotThrow(() => sut.Report(new(ResilienceEventSeverity.Warning, "dummy"), context, new TestArguments()));
@@ -99,7 +101,7 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void Report_NoListener_ShouldNotThrow()
     {
-        var sut = new ResilienceStrategyTelemetry(_source, null);
+        var sut = new ResilienceStrategyTelemetry(_source, null, null);
 
         var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
 
@@ -111,7 +113,7 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void SetTelemetrySource_Ok()
     {
-        var sut = new ResilienceStrategyTelemetry(_source, null);
+        var sut = new ResilienceStrategyTelemetry(_source, null, null);
         var exception = new TimeoutRejectedException();
 
         sut.SetTelemetrySource(exception);

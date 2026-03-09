@@ -52,17 +52,11 @@ internal sealed class RegistryPipelineComponentBuilder<TBuilder, TKey>(
         var timeProvider = builder.TimeProviderInternal;
         var telemetry = new ResilienceStrategyTelemetry(
             new ResilienceTelemetrySource(builder.Name, builder.InstanceName, null),
-            builder.TelemetryListener);
+            builder.TelemetryListener,
+            builder.TracerFactory);
 
         var innerComponent = PipelineComponentFactory.WithDisposableCallbacks(builder.BuildPipelineComponent(), context.DisposeCallbacks);
         var component = PipelineComponentFactory.WithExecutionTracking(innerComponent, timeProvider);
-
-        if (builder.TracerFactory is { } tracerFactory)
-        {
-#pragma warning disable CA2000
-            component = PipelineComponentFactory.WithTracing(component, tracerFactory);
-#pragma warning restore CA2000
-        }
 
         return new(component, context.ReloadTokens, telemetry, builder);
     }
