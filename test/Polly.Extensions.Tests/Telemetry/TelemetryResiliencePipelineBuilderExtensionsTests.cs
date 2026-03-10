@@ -45,6 +45,9 @@ public class TelemetryResiliencePipelineBuilderExtensionsTests
 
         ActivitySource.AddActivityListener(listener);
 
+        var operationKey = Guid.NewGuid().ToString();
+        var context = ResilienceContextPool.Shared.Get(operationKey, TestCancellation.Token);
+
         Should.NotThrow(() => pipeline.Execute(
             _ =>
             {
@@ -52,8 +55,10 @@ public class TelemetryResiliencePipelineBuilderExtensionsTests
 
                 activity.ShouldNotBeNull();
                 activity.Source.ShouldBe(options.ActivitySource);
+                activity.DisplayName.ShouldBe("Polly");
+                activity.GetTagItem("polly.operationkey").ShouldBe(operationKey);
             },
-            TestCancellation.Token));
+            context));
     }
 
     [Fact]
@@ -83,6 +88,7 @@ public class TelemetryResiliencePipelineBuilderExtensionsTests
 
                 activity.ShouldNotBeNull();
                 activity.Source.ShouldBe(options.ActivitySource);
+                activity.DisplayName.ShouldBe("Polly");
             },
             TestCancellation.Token));
     }

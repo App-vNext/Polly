@@ -62,19 +62,22 @@ public static class TelemetryResiliencePipelineBuilderExtensions
         return builder;
     }
 
+#pragma warning disable S1135
     private sealed class ActivityFactory(ActivitySource activitySource)
     {
         public IDisposable? CreateActivity(ResilienceContext context)
         {
-            // What should the activity name be?
+            // TODO What should the activity name be?
             var activity = activitySource.StartActivity("Polly");
 
-            if (context.OperationKey != null)
+            if (activity is { } && context.OperationKey is { })
             {
-                // Set tags from context
+                // TODO What tags should be added and what should their names be?
+                activity.SetTag("polly.operationkey", context.OperationKey);
             }
 
             return activity;
         }
     }
+#pragma warning restore S1135
 }
