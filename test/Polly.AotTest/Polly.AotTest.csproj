@@ -17,4 +17,8 @@
     <TrimmerRootAssembly Include="Polly.Extensions" />
     <TrimmerRootAssembly Include="Polly.RateLimiting" />
   </ItemGroup>
+  <!-- HACK https://github.com/dotnet/runtime/issues/125435 -->
+  <ItemGroup>
+    <LinkerArg Include="-Wl,--no-warn-execstack" />
+  </ItemGroup>
 </Project>
