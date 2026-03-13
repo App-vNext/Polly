@@ -24,7 +24,7 @@
       "rollForward": false
     },
     "dotnet-stryker": {
-      "version": "4.12.0",
+      "version": "4.13.0",
       "commands": [
         "dotnet-stryker"
       ],
@@ -38,7 +38,7 @@
       "rollForward": false
     },
     "markdownsnippets.tool": {
-      "version": "28.0.0",
+      "version": "28.0.1",
       "commands": [
         "mdsnippets"
       ],
