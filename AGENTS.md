@@ -28,7 +28,7 @@ dotnet test ./test/Polly.Core.Tests --framework net10.0
 ./build.ps1 -Target MutationTestsExtensions
 ./build.ps1 -Target MutationTestsLegacy
 ./build.ps1 -Target MutationTestsRateLimiting
-./build.ps1 -Target MutationTestsTestingSupport
+./build.ps1 -Target MutationTestsTesting
 ```
 
 Lint runs in CI via GitHub Actions workflows (actionlint, zizmor, PSScriptAnalyzer).
@@ -87,8 +87,8 @@ Predicates for which outcomes to handle are declared via the `PredicateBuilder` 
 ### Testing patterns
 
 - **xUnit** for unit tests; **FsCheck** for property-based/fuzz tests.
-- Test projects access internals via `InternalsVisibleTo` declared in `Directory.Build.props`.
-- `Polly.TestUtils` is a shared utilities project referenced by all test projects.
+- Test projects access internals via `InternalsVisibleTo` declared in `eng/Library.targets` (brought in via the shared MSBuild imports).
+- `Polly.TestUtils` is a shared utilities project referenced by several test projects.
 - `Polly.AotTest` validates AOT compatibility by publishing a trimmed app.
 - Coverage is collected in CI and uploaded to Codecov.
 
