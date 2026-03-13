@@ -1,14 +1,18 @@
+actionlint
 alloc
+aot
 apis
 ASP.NET
 astask
 async
 azurefunctions
+backoff
 bcl
 bdd
 cancellable
 changelog
 circuitbreaker
+codecov
 comparer
 contrib
 deserialization
@@ -21,6 +25,8 @@ eshoponcontainers
 extensibility
 flurl
 fs
+fscheck
+halfopen
 hangfire
 httpclient
 httpclientfactory
@@ -35,10 +41,13 @@ markdownsnippets
 middleware
 minver
 moq
+msbuild
 namespace
 natively
 ndc
 nuget
+nullable
+opentelemetry
 oss
 paas
 parallelize
@@ -46,6 +55,7 @@ pcl
 pluralsight
 pollydocs
 pre
+PSScriptAnalyzer
 rabbitmq
 ratelimit
 ratelimitheaders
@@ -65,6 +75,7 @@ runnable
 runtime
 saas
 sdk
+semver
 serializers
 silverlight
 simmy
@@ -84,3 +95,4 @@ vnext
 waitandretry
 wpf
 xunit
+zizmor
