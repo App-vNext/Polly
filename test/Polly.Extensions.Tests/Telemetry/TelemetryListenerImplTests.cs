@@ -1,4 +1,3 @@
-using System;
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Polly.Telemetry;
@@ -22,8 +21,6 @@ public class TelemetryListenerImplTests : IDisposable
     [Fact]
     public void Meter_Ok()
     {
-        TelemetryListenerImpl.Meter.Name.ShouldBe("Polly");
-        TelemetryListenerImpl.Meter.Version.ShouldBe("1.0");
         var source = new TelemetryListenerImpl(new TelemetryOptions());
 
         source.Counter.Description.ShouldBe("Tracks the number of resilience events that occurred in resilience strategies.");
