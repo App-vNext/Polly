@@ -5,7 +5,7 @@ namespace Polly.Extensions.Tests.Telemetry;
 public static class TelemetrySourceTests
 {
     [Fact]
-    public static void TelemetrySource_CreatesActivitySourceAndMeter()
+    public static void TelemetrySource_CreatesMeter()
     {
         var source = TelemetrySource.Instance;
 
