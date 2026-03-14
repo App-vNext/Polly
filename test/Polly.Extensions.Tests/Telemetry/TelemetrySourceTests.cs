@@ -14,6 +14,9 @@ public static class TelemetrySourceTests
         source.Meter.ShouldNotBeNull();
         source.Meter.Name.ShouldBe("Polly");
         source.Meter.Version.ShouldNotBeNullOrEmpty();
-        Version.TryParse(source.Meter.Version, out _).ShouldBeTrue();
+        source.Meter.Version.ShouldNotContain('-');
+        source.Meter.Version.ShouldNotContain('+');
+        Version.TryParse(source.Meter.Version, out var version).ShouldBeTrue();
+        version.ShouldBeGreaterThan(new(0, 0, 0));
     }
 }
