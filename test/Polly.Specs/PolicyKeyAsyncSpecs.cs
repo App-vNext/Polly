@@ -146,7 +146,7 @@ public class PolicyKeyAsyncSpecs
                 firstExecution = false;
                 throw new Exception();
             }
-        }, new Context(operationKey));
+        }, [with(operationKey)]);
 
         operationKeySetOnContext.ShouldBe(operationKey);
     }
@@ -196,7 +196,7 @@ public class PolicyKeyAsyncSpecs
             }
 
             return 0;
-        }, new Context(operationKey));
+        }, [with(operationKey)]);
 
         operationKeySetOnContext.ShouldBe(operationKey);
     }
