@@ -151,7 +151,7 @@ public class HedgingExecutionContextTests : IDisposable
     [InlineData(false)]
     [InlineData(true)]
     [Theory]
-    public async Task TryWaitForCompletedExecutionAsync_HedgedExecution_Ok(bool continueOnCapturedContext)
+    public async Task TryWaitForCompletedExecutionAsync_HedgedExecution_DelayFiresFirst_ReturnsNull(bool continueOnCapturedContext)
     {
         _resilienceContext.ContinueOnCapturedContext = continueOnCapturedContext;
         var context = Create();
@@ -171,10 +171,46 @@ public class HedgingExecutionContextTests : IDisposable
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
         _timeProvider.TimerEntries.Count.ShouldBe(count + 1);
         _timeProvider.TimerEntries.Last().Delay.ShouldBe(hedgingDelay);
-        _timeProvider.Advance(TimeSpan.FromDays(1));
-        await task;
+
+        // Advance only past the hedging delay (5 s) but NOT past the primary task delay (1 h).
+        // This ensures the hedging delay fires first while the primary task is still running,
+        // so whenAnyHedgedTask.IsCompleted is deterministically false and null is returned.
+        _timeProvider.Advance(TimeSpan.FromSeconds(10));
+        var result = await task;
+        result.ShouldBeNull();
+
+        // Advance past the primary task delay for cleanup.
+        _timeProvider.Advance(TimeSpan.FromHours(2));
         await context.Tasks[0].ExecutionTaskSafe!;
         context.Tasks[0].AcceptOutcome();
+    }
+
+    [InlineData(false)]
+    [InlineData(true)]
+    [Theory]
+    public async Task TryWaitForCompletedExecutionAsync_HedgedExecution_TaskCompletesBeforeDelay_ReturnsTask(bool continueOnCapturedContext)
+    {
+        _resilienceContext.ContinueOnCapturedContext = continueOnCapturedContext;
+        var context = Create();
+        context.Initialize(_resilienceContext);
+
+        // Primary task delay (5 s) is shorter than the hedging delay (1 h).
+        await LoadExecutionAsync(context, TimeSpan.FromSeconds(5));
+
+        var hedgingDelay = TimeSpan.FromHours(1);
+        var task = context.TryWaitForCompletedExecutionAsync(hedgingDelay).AsTask();
+#pragma warning disable xUnit1031 // Do not use blocking task operations in test method
+        task.Wait(20, TestCancellation.Token).ShouldBeFalse();
+#pragma warning restore xUnit1031 // Do not use blocking task operations in test method
+
+        // Advance only past the primary task delay (5 s) but NOT past the hedging delay (1 h).
+        // This ensures the primary task completes first while the hedging delay timer is still
+        // pending, so whenAnyHedgedTask.IsCompleted is deterministically true and the completed
+        // task is returned (non-null).
+        _timeProvider.Advance(TimeSpan.FromSeconds(10));
+        var result = await task;
+        result.ShouldNotBeNull();
+        result!.AcceptOutcome();
     }
 
     [Fact]
