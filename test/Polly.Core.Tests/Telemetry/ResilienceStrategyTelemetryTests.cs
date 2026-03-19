@@ -16,7 +16,21 @@ public class ResilienceStrategyTelemetryTests
             "instance",
             "strategy_name");
 
-        _sut = TestUtilities.CreateResilienceTelemetry(args => _args.Add(args));
+        _sut = TestUtilities.CreateResilienceTelemetry(_args.Add);
+    }
+
+    [Fact]
+    public void Ctor_Ok()
+    {
+        // Arrange
+        var listener = new FakeTelemetryListener((_) => { });
+
+        // Act
+        var sut = new ResilienceStrategyTelemetry(_source, listener);
+
+        // Assert
+        sut.Enabled.ShouldBeTrue();
+        sut.Listener.ShouldBe(listener);
     }
 
     [Fact]

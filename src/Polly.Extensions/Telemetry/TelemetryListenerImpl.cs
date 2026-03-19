@@ -6,8 +6,6 @@ namespace Polly.Telemetry;
 
 internal sealed class TelemetryListenerImpl : TelemetryListener
 {
-    internal static readonly Meter Meter = new(TelemetryUtil.PollyDiagnosticSource, "1.0");
-
     private readonly ILogger _logger;
     private readonly Func<ResilienceContext, object?, object?> _resultFormatter;
     private readonly List<TelemetryListener> _listeners;
@@ -17,21 +15,23 @@ internal sealed class TelemetryListenerImpl : TelemetryListener
     public TelemetryListenerImpl(TelemetryOptions options)
     {
         _enrichers = [.. options.MeteringEnrichers];
-        _logger = options.LoggerFactory.CreateLogger(TelemetryUtil.PollyDiagnosticSource);
+        _logger = options.LoggerFactory.CreateLogger(TelemetrySource.Name);
         _resultFormatter = options.ResultFormatter;
         _listeners = [.. options.TelemetryListeners];
         _severityProvider = options.SeverityProvider;
 
-        Counter = Meter.CreateCounter<int>(
+        var meter = TelemetrySource.Instance.Meter;
+
+        Counter = meter.CreateCounter<int>(
             "resilience.polly.strategy.events",
             description: "Tracks the number of resilience events that occurred in resilience strategies.");
 
-        AttemptDuration = Meter.CreateHistogram<double>(
+        AttemptDuration = meter.CreateHistogram<double>(
             "resilience.polly.strategy.attempt.duration",
             unit: "ms",
             description: "Tracks the duration of execution attempts.");
 
-        ExecutionDuration = Meter.CreateHistogram<double>(
+        ExecutionDuration = meter.CreateHistogram<double>(
             "resilience.polly.pipeline.duration",
             unit: "ms",
             description: "The execution duration of resilience pipelines.");

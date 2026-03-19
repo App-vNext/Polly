@@ -1,6 +1,6 @@
 # HTTP client integration samples
 
-Transient failures are inevitable for HTTP based communication as well. It is not a surprise that many developers use Polly with an HTTP client to make there applications more robust.
+Transient failures are inevitable for HTTP based communication as well. It is not a surprise that many developers use Polly with an HTTP client to make their applications more robust.
 
 Here we have collected some popular HTTP client libraries and show how to integrate them with Polly.
 

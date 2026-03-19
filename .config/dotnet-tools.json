@@ -24,7 +24,7 @@
       "rollForward": false
     },
     "dotnet-stryker": {
-      "version": "4.13.0",
+      "version": "4.14.0",
       "commands": [
         "dotnet-stryker"
       ],
@@ -52,7 +52,7 @@
       "rollForward": false
     },
     "meziantou.framework.nugetpackagevalidation.tool": {
-      "version": "1.0.44",
+      "version": "1.0.45",
       "commands": [
         "meziantou.validate-nuget-package"
       ],
