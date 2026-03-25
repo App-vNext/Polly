@@ -6,29 +6,20 @@ namespace Polly.Registry;
 /// <summary>
 /// Builds a <see cref="PipelineComponent"/> used by the registry.
 /// </summary>
-internal sealed class RegistryPipelineComponentBuilder<TBuilder, TKey>
+internal sealed class RegistryPipelineComponentBuilder<TBuilder, TKey>(
+    Func<TBuilder> activator,
+    TKey key,
+    string builderName,
+    string? instanceName,
+    Action<TBuilder, ConfigureBuilderContext<TKey>> configure)
     where TBuilder : ResiliencePipelineBuilderBase
     where TKey : notnull
 {
-    private readonly Func<TBuilder> _activator;
-    private readonly TKey _key;
-    private readonly string _builderName;
-    private readonly string? _instanceName;
-    private readonly Action<TBuilder, ConfigureBuilderContext<TKey>> _configure;
-
-    public RegistryPipelineComponentBuilder(
-        Func<TBuilder> activator,
-        TKey key,
-        string builderName,
-        string? instanceName,
-        Action<TBuilder, ConfigureBuilderContext<TKey>> configure)
-    {
-        _activator = activator;
-        _key = key;
-        _builderName = builderName;
-        _instanceName = instanceName;
-        _configure = configure;
-    }
+    private readonly Func<TBuilder> _activator = activator;
+    private readonly TKey _key = key;
+    private readonly string _builderName = builderName;
+    private readonly string? _instanceName = instanceName;
+    private readonly Action<TBuilder, ConfigureBuilderContext<TKey>> _configure = configure;
 
     internal (ResilienceContextPool? ContextPool, PipelineComponent Component) CreateComponent()
     {

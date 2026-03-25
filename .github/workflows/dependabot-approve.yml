@@ -39,7 +39,7 @@ jobs:
       - name: Approve pull request and enable auto-merge
         shell: bash
         if: |
-          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/attest-build-provenance') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/attest') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/cache') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/checkout') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/create-github-app-token') ||

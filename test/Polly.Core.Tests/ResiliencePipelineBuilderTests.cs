@@ -48,6 +48,11 @@ public class ResiliencePipelineBuilderTests
     }
 
     [Fact]
+    public void CopyCtor_Reminder() =>
+        typeof(ResiliencePipelineBuilder).GetRuntimeProperties().Count()
+        .ShouldBe(7, "Make sure that when you increase this number, you also update the copy constructor to assign the new property.");
+
+    [Fact]
     public void AddPipeline_Single_Ok()
     {
         // arrange

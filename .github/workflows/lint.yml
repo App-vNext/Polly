@@ -10,10 +10,6 @@ on:
       - '**/*.gitignore'
       - '**/*.md'
   pull_request:
-    branches:
-      - main
-      - release/*
-      - dotnet-vnext
   workflow_dispatch:
 
 permissions: {}
@@ -27,7 +23,7 @@ jobs:
       POWERSHELL_YAML_VERSION: '0.4.12'
       PSSCRIPTANALYZER_VERSION: '1.24.0'
       TERM: xterm
-      ZIZMOR_VERSION: '1.21.0'
+      ZIZMOR_VERSION: '1.23.1'
 
     permissions:
       actions: read
@@ -52,7 +48,7 @@ jobs:
         args: -color
 
     - name: Lint workflows with zizmor
-      uses: zizmorcore/zizmor-action@135698455da5c3b3e55f73f4419e481ab68cdd95 # v0.4.1
+      uses: zizmorcore/zizmor-action@71321a20a9ded102f6e9ce5718a2fcec2c4f70d8 # v0.5.2
       with:
         persona: pedantic
         version: ${{ env.ZIZMOR_VERSION }}

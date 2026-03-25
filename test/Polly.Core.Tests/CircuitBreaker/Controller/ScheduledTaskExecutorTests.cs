@@ -130,6 +130,29 @@ public class ScheduledTaskExecutorTests
     }
 
     [Fact]
+    public void ScheduleTask_InlineContinuationDoesNotDeadlock()
+    {
+        var timeout = TimeSpan.FromSeconds(10);
+        using var scheduler = new ScheduledTaskExecutor();
+
+        var firstTask = scheduler.ScheduleTask(() => Task.CompletedTask);
+
+        var continuationTask = firstTask.ContinueWith(
+            _ =>
+            {
+                var secondTask = scheduler.ScheduleTask(() => Task.CompletedTask);
+                secondTask.Wait(timeout);
+            },
+            CancellationToken,
+            TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default);
+
+#pragma warning disable xUnit1031
+        Task.WaitAll([firstTask, continuationTask], timeout).ShouldBeTrue();
+#pragma warning restore xUnit1031
+    }
+
+    [Fact]
     public async Task Dispose_EnsureNoBackgroundProcessing()
     {
         var scheduler = new ScheduledTaskExecutor();

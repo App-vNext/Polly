@@ -26,13 +26,16 @@ public class HedgingExecutionContextTests : IDisposable
     {
         _timeProvider = new HedgingTimeProvider();
         _cts = new CancellationTokenSource();
-        _hedgingHandler = HedgingHelper.CreateHandler<DisposableResult>(outcome => outcome switch
-        {
-            { Exception: ApplicationException } => true,
-            { Result: DisposableResult result } when result.Name == Handled => true,
-            _ => false
-        },
-        args => Generator(args));
+
+        _hedgingHandler = HedgingHelper.CreateHandler<DisposableResult>(
+            outcome => outcome switch
+            {
+                { Exception: ApplicationException } => true,
+                { Result: DisposableResult result } when result.Name == Handled => true,
+                _ => false
+            },
+            args => Generator(args));
+
         _resilienceContext = ResilienceContextPool.Shared.Get(_cts.Token).Initialize<string>(false);
         _resilienceContext.Properties.Set(_myKey, "dummy");
 
@@ -70,17 +73,16 @@ public class HedgingExecutionContextTests : IDisposable
         context.IsInitialized.ShouldBeTrue();
     }
 
+    [Theory]
     [InlineData(0)]
     [InlineData(1)]
     [InlineData(-1)]
-    [Theory]
     public async Task TryWaitForCompletedExecutionAsync_Initialized_Ok(int delay)
     {
         var context = Create();
         context.Initialize(_resilienceContext);
-        var delayTimeSpan = TimeSpan.FromSeconds(delay);
 
-        var task = context.TryWaitForCompletedExecutionAsync(delayTimeSpan);
+        var task = context.TryWaitForCompletedExecutionAsync(TimeSpan.FromSeconds(delay));
 
         _timeProvider.Advance(TimeSpan.FromHours(1));
 
@@ -92,6 +94,7 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
+
         await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsValueTask(new DisposableResult("dummy")), "state");
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
@@ -109,11 +112,14 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
-        ConfigureSecondaryTasks(TimeSpan.FromHours(1), TimeSpan.FromHours(1));
+
+        var oneHour = TimeSpan.FromHours(1);
+
+        ConfigureSecondaryTasks(oneHour, oneHour);
 
         for (int i = 0; i < _maxAttempts - 1; i++)
         {
-            await LoadExecutionAsync(context, TimeSpan.FromHours(1));
+            await LoadExecutionAsync(context, oneHour);
         }
 
         for (int i = 0; i < _maxAttempts; i++)
@@ -122,7 +128,11 @@ public class HedgingExecutionContextTests : IDisposable
         }
 
         _timeProvider.Advance(TimeSpan.FromDays(1));
+
         await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
+
+        context.Tasks.Count.ShouldBeGreaterThanOrEqualTo(1);
+
         await context.Tasks[0].ExecutionTaskSafe!;
         context.Tasks[0].AcceptOutcome();
     }
@@ -132,49 +142,108 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
-        ConfigureSecondaryTasks(TimeSpan.FromHours(1), TimeSpan.FromHours(1));
+
+        var oneHour = TimeSpan.FromHours(1);
+
+        ConfigureSecondaryTasks(oneHour, oneHour);
 
         for (int i = 0; i < _maxAttempts - 1; i++)
         {
-            await LoadExecutionAsync(context, TimeSpan.FromHours(1));
+            await LoadExecutionAsync(context, oneHour);
         }
 
         var task = context.TryWaitForCompletedExecutionAsync(System.Threading.Timeout.InfiniteTimeSpan).AsTask();
+
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         task.Wait(20, TestCancellation.Token).ShouldBeFalse();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
+
         _timeProvider.Advance(TimeSpan.FromDays(1));
+
         await task;
+
+        context.Tasks.Count.ShouldBeGreaterThanOrEqualTo(1);
         context.Tasks[0].AcceptOutcome();
     }
 
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    [Theory]
-    public async Task TryWaitForCompletedExecutionAsync_HedgedExecution_Ok(bool continueOnCapturedContext)
+    public async Task TryWaitForCompletedExecutionAsync_HedgedExecution_DelayFiresFirst_ReturnsNull(bool continueOnCapturedContext)
     {
         _resilienceContext.ContinueOnCapturedContext = continueOnCapturedContext;
+
+        var oneHour = TimeSpan.FromHours(1);
+
         var context = Create();
         context.Initialize(_resilienceContext);
-        ConfigureSecondaryTasks(TimeSpan.FromHours(1), TimeSpan.FromHours(1));
+
+        ConfigureSecondaryTasks(oneHour, oneHour);
 
         for (int i = 0; i < _maxAttempts - 1; i++)
         {
-            await LoadExecutionAsync(context, TimeSpan.FromHours(1));
+            await LoadExecutionAsync(context, oneHour);
         }
 
         var hedgingDelay = TimeSpan.FromSeconds(5);
         var count = _timeProvider.TimerEntries.Count;
         var task = context.TryWaitForCompletedExecutionAsync(hedgingDelay).AsTask();
+
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         task.Wait(20, TestCancellation.Token).ShouldBeFalse();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
+
         _timeProvider.TimerEntries.Count.ShouldBe(count + 1);
         _timeProvider.TimerEntries.Last().Delay.ShouldBe(hedgingDelay);
-        _timeProvider.Advance(TimeSpan.FromDays(1));
-        await task;
+
+        // Advance only past the hedging delay (5 s) but NOT past the primary task delay (1 h).
+        // This ensures the hedging delay fires first while the primary task is still running,
+        // so whenAnyHedgedTask.IsCompleted is deterministically false and null is returned.
+        _timeProvider.Advance(TimeSpan.FromSeconds(10));
+
+        var result = await task;
+        result.ShouldBeNull();
+
+        // Advance past the primary task delay for cleanup.
+        _timeProvider.Advance(TimeSpan.FromHours(2));
+
+        context.Tasks.Count.ShouldBeGreaterThanOrEqualTo(1);
+
         await context.Tasks[0].ExecutionTaskSafe!;
+
         context.Tasks[0].AcceptOutcome();
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task TryWaitForCompletedExecutionAsync_HedgedExecution_TaskCompletesBeforeDelay_ReturnsTask(bool continueOnCapturedContext)
+    {
+        _resilienceContext.ContinueOnCapturedContext = continueOnCapturedContext;
+
+        var context = Create();
+        context.Initialize(_resilienceContext);
+
+        // Primary task delay (5 s) is shorter than the hedging delay (1 h).
+        await LoadExecutionAsync(context, TimeSpan.FromSeconds(5));
+
+        var hedgingDelay = TimeSpan.FromHours(1);
+        var task = context.TryWaitForCompletedExecutionAsync(hedgingDelay).AsTask();
+
+#pragma warning disable xUnit1031 // Do not use blocking task operations in test method
+        task.Wait(20, TestCancellation.Token).ShouldBeFalse();
+#pragma warning restore xUnit1031 // Do not use blocking task operations in test method
+
+        // Advance only past the primary task delay (5 s) but NOT past the hedging delay (1 h).
+        // This ensures the primary task completes first while the hedging delay timer is still
+        // pending, so whenAnyHedgedTask.IsCompleted is deterministically true and the completed
+        // task is returned (non-null).
+        _timeProvider.Advance(TimeSpan.FromSeconds(10));
+
+        var result = await task;
+
+        result.ShouldNotBeNull();
+        result!.AcceptOutcome();
     }
 
     [Fact]
@@ -184,6 +253,7 @@ public class HedgingExecutionContextTests : IDisposable
 
         var context = Create();
         context.Initialize(_resilienceContext);
+
         await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsValueTask(new DisposableResult("dummy")), "state");
         await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsValueTask(new DisposableResult("dummy")), "state");
 
@@ -198,15 +268,20 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
+
         await LoadExecutionAsync(context);
         await LoadExecutionAsync(context);
 
         Generator = args => () => Outcome.FromResultAsValueTask(new DisposableResult { Name = "secondary" });
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
+
         task!.Type.ShouldBe(HedgedTaskType.Primary);
         task!.AcceptOutcome();
+
         context.LoadedTasks.ShouldBe(2);
+
+        context.Tasks.Count.ShouldBeGreaterThanOrEqualTo(2);
         context.Tasks[0].Type.ShouldBe(HedgedTaskType.Primary);
         context.Tasks[1].Type.ShouldBe(HedgedTaskType.Secondary);
     }
@@ -215,9 +290,13 @@ public class HedgingExecutionContextTests : IDisposable
     public async Task LoadExecutionAsync_MaxTasks_NoMoreTasksAdded()
     {
         _maxAttempts = 3;
+
         var context = Create();
         context.Initialize(_resilienceContext);
-        ConfigureSecondaryTasks(TimeSpan.FromHours(1), TimeSpan.FromHours(1), TimeSpan.FromHours(1), TimeSpan.FromHours(1));
+
+        var oneHour = TimeSpan.FromHours(1);
+
+        ConfigureSecondaryTasks(oneHour, oneHour, oneHour, oneHour);
 
         for (int i = 0; i < _maxAttempts; i++)
         {
@@ -227,7 +306,10 @@ public class HedgingExecutionContextTests : IDisposable
         (await LoadExecutionAsync(context)).Loaded.ShouldBeFalse();
 
         context.LoadedTasks.ShouldBe(_maxAttempts);
+
+        context.Tasks.Count.ShouldBeGreaterThanOrEqualTo(1);
         context.Tasks[0].AcceptOutcome();
+
         _returnedExecutions.ShouldBeEmpty();
     }
 
@@ -235,9 +317,11 @@ public class HedgingExecutionContextTests : IDisposable
     public async Task LoadExecutionAsync_EnsureCorrectAttemptNumber()
     {
         var attempt = -1;
+
         var context = Create();
         context.Initialize(_resilienceContext);
-        Generator = args =>
+
+        Generator = (args) =>
         {
             attempt = args.AttemptNumber;
             return null;
@@ -250,14 +334,16 @@ public class HedgingExecutionContextTests : IDisposable
         attempt.ShouldBe(1);
     }
 
+    [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    [Theory]
     public async Task LoadExecutionAsync_NoMoreSecondaryTasks_AcceptFinishedOutcome(bool allExecuted)
     {
         _maxAttempts = 4;
+
         var context = Create();
         context.Initialize(_resilienceContext);
+
         ConfigureSecondaryTasks(allExecuted ? TimeSpan.Zero : TimeSpan.FromHours(1));
 
         // primary
@@ -277,24 +363,29 @@ public class HedgingExecutionContextTests : IDisposable
         pair.Loaded.ShouldBeFalse();
 
         _returnedExecutions.Count.ShouldBe(1);
+        context.Tasks.Count.ShouldBeGreaterThanOrEqualTo(1);
+
+        var task = context.Tasks[0];
+
         if (allExecuted)
         {
             pair.Outcome.ShouldNotBeNull();
-            context.Tasks[0].IsAccepted.ShouldBeTrue();
+            task.IsAccepted.ShouldBeTrue();
         }
         else
         {
             pair.Outcome.ShouldBeNull();
-            context.Tasks[0].IsAccepted.ShouldBeFalse();
+            task.IsAccepted.ShouldBeFalse();
         }
 
-        context.Tasks[0].AcceptOutcome();
+        task.AcceptOutcome();
     }
 
     [Fact]
     public async Task LoadExecution_NoMoreTasks_Throws()
     {
         _maxAttempts = 0;
+
         var context = Create();
         context.Initialize(_resilienceContext);
 
@@ -308,11 +399,16 @@ public class HedgingExecutionContextTests : IDisposable
     {
         // arrange
         var type = primary ? HedgedTaskType.Primary : HedgedTaskType.Secondary;
+        var expectedCount = primary ? 1 : 2;
+
         var context = Create();
         var originalProps = _resilienceContext.Properties;
         context.Initialize(_resilienceContext);
+
         ConfigureSecondaryTasks(TimeSpan.Zero);
+
         await ExecuteAllTasksAsync(context, 2);
+
         context.Tasks.First(v => v.Type == type).AcceptOutcome();
 
         // act
@@ -320,23 +416,19 @@ public class HedgingExecutionContextTests : IDisposable
 
         // assert
         _resilienceContext.Properties.ShouldBeSameAs(originalProps);
-        if (primary)
-        {
-            _resilienceContext.Properties.Options.Count.ShouldBe(1);
-        }
-        else
-        {
-            _resilienceContext.Properties.Options.Count.ShouldBe(2);
-        }
+        _resilienceContext.Properties.Options.Count.ShouldBe(expectedCount);
     }
 
     [Fact]
     public async Task Complete_NoTasks_EnsureCleaned()
     {
         var props = _resilienceContext.Properties;
+
         var context = Create();
         context.Initialize(_resilienceContext);
+
         await context.DisposeAsync();
+
         _resilienceContext.Properties.ShouldBeSameAs(props);
     }
 
@@ -345,7 +437,9 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
+
         ConfigureSecondaryTasks(TimeSpan.Zero);
+
         await ExecuteAllTasksAsync(context, 2);
 
         Should.NotThrow(() => context.DisposeAsync().AsTask().Wait());
@@ -356,8 +450,12 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
+
         ConfigureSecondaryTasks(TimeSpan.Zero);
+
         await ExecuteAllTasksAsync(context, 2);
+
+        context.Tasks.Count.ShouldBe(2);
         context.Tasks[0].AcceptOutcome();
         context.Tasks[1].AcceptOutcome();
 
@@ -372,7 +470,9 @@ public class HedgingExecutionContextTests : IDisposable
 
         var context = Create();
         context.Initialize(_resilienceContext);
+
         ConfigureSecondaryTasks(TimeSpan.FromHours(1));
+
         (await LoadExecutionAsync(context)).Execution!.OnReset = (execution) =>
         {
             execution.Outcome.Result.ShouldBeOfType<DisposableResult>();
@@ -388,6 +488,7 @@ public class HedgingExecutionContextTests : IDisposable
         await context.TryWaitForCompletedExecutionAsync(System.Threading.Timeout.InfiniteTimeSpan);
 
         var pending = context.Tasks[1].ExecutionTaskSafe!;
+
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
         pending.Wait(10, TestCancellation.Token).ShouldBeFalse();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
@@ -406,8 +507,12 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
+
         ConfigureSecondaryTasks(TimeSpan.Zero);
+
         await ExecuteAllTasksAsync(context, 2);
+
+        context.Tasks.Count.ShouldBeGreaterThanOrEqualTo(1);
         context.Tasks[0].AcceptOutcome();
 
         await context.DisposeAsync();
@@ -416,6 +521,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.PrimaryContext!.ShouldBeNull();
 
         _onReset.WaitOne(AssertTimeout);
+
         _resets.Count.ShouldBe(1);
         _returnedExecutions.Count.ShouldBe(2);
     }

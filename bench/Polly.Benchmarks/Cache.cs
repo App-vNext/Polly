@@ -45,12 +45,9 @@ public class Cache
     private static Task<object> GetObjectAsync(CancellationToken cancellationToken) =>
         Task.FromResult(new object());
 
-    private sealed class MemoryCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
+    private sealed class MemoryCacheProvider(IMemoryCache memoryCache) : ISyncCacheProvider, IAsyncCacheProvider
     {
-        private readonly IMemoryCache _cache;
-
-        public MemoryCacheProvider(IMemoryCache memoryCache) =>
-            _cache = memoryCache;
+        private readonly IMemoryCache _cache = memoryCache;
 
         public (bool, object?) TryGet(string key)
         {

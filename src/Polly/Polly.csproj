@@ -8,7 +8,7 @@
     <MutationScore>100</MutationScore>
     <IncludePollyUsings>true</IncludePollyUsings>
     <!-- We do not plan on enabling nullable annotations for Polly -->
-    <NoWarn>$(NoWarn);RS0037</NoWarn>
+    <NoWarn>$(NoWarn);CA1510;RS0037</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>

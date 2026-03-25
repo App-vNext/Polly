@@ -4,6 +4,10 @@
 
 <!-- next-release -->
 
+## 8.6.6
+
+* Fix `ScheduledTaskExecutor` deadlock when `TrySetResult` runs continuations inline by [@crnhrv](https://github.com/crnhrv) in https://github.com/App-vNext/Polly/pull/2953
+
 ## 8.6.5
 
 * Extend NuGet package validation by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2762

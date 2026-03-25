@@ -14,6 +14,12 @@ updates:
   cooldown:
     default-days: 3
   groups:
+    dotnet:
+      patterns:
+        - Microsoft.Extensions.DependencyInjection
+        - Microsoft.Extensions.Http.Resilience
+        - Microsoft.Extensions.Logging.Console
+        - Microsoft.Extensions.Options.ConfigurationExtensions
     polly:
       patterns:
         - Polly*
