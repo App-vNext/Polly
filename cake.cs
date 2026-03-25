@@ -136,27 +136,28 @@ Task("__ValidateAot")
 Task("__RunTests")
     .Does(() =>
 {
-    var loggers = Array.Empty<string>();
-
-    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
-    {
-        loggers =
-        [
-            "junit;LogFilePath=junit.xml",
-            "GitHubActions;report-warnings=false;summary-include-passed=false",
-        ];
-    }
-
     var projects = GetFiles("./test/**/*.csproj");
 
     foreach (var proj in projects)
     {
+        var loggers = Array.Empty<string>();
+
+        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
+        {
+            loggers =
+            [
+                "--report-junit",
+                "--report-junit-filename",
+                $"{System.IO.Path.GetFileNameWithoutExtension(proj.FullPath)}.junit.xml",
+            ];
+        }
+
         var settings = new DotNetTestSettings
         {
             Configuration = configuration,
             Loggers = loggers,
             NoBuild = true,
-            ToolTimeout = System.TimeSpan.FromMinutes(10),
+            ToolTimeout = TimeSpan.FromMinutes(10),
         };
 
         // Use --project flag for Microsoft Testing Platform (MTP) compatibility
@@ -164,7 +165,7 @@ Task("__RunTests")
         arguments.Append("--project");
         arguments.AppendQuoted(proj.FullPath);
 
-        DotNetTest(null, arguments, settings);
+        DotNetTest(null!, arguments, settings);
     }
 });
 
