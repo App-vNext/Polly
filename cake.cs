@@ -165,7 +165,7 @@ Task("__RunTests")
         arguments.Append("--project");
         arguments.AppendQuoted(proj.FullPath);
 
-        DotNetTest(null!, arguments, settings);
+        DotNetTest(null, arguments, settings);
     }
 });
 
