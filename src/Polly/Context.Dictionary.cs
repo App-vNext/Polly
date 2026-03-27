@@ -36,7 +36,7 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
             throw new ArgumentNullException(nameof(contextData));
         }
 
-        WrappedDictionary = new Dictionary<string, object>(contextData);
+        WrappedDictionary = [with(contextData)];
     }
 
     #region IDictionary<string,object> implementation
