@@ -131,7 +131,7 @@ jobs:
         if-no-files-found: error
 
     - name: Generate SBOM
-      uses: anchore/sbom-action@57aae528053a48a3f6235f2d9461b05fbcb7366d # v0.23.1
+      uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
       if: runner.os == 'Windows'
       with:
         artifact-name: polly.spdx.json
@@ -239,7 +239,7 @@ jobs:
       run: dotnet tool install --tool-path . sign --version ${env:DOTNET_SIGN_VERSION}
 
     - name: Azure log in
-      uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5 # v2.3.0
+      uses: azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43 # v3.0.0
       with:
         client-id: ${{ secrets.SIGN_CLI_APPLICATION_ID }}
         subscription-id: ${{ secrets.SIGN_CLI_SUBSCRIPTION_ID }}
