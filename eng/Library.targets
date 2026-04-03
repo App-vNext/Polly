@@ -53,6 +53,19 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <AdditionalFiles Include=".PublicAPI\PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include=".PublicAPI\PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+  <PropertyGroup>
+    <_TargetFrameworkIdentifier>$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)'))</_TargetFrameworkIdentifier>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(UsePublicApiAnalyzers)' != 'false' AND Exists('.PublicAPI\$(_TargetFrameworkIdentifier)')">
+    <AdditionalFiles Include=".PublicAPI\$(_TargetFrameworkIdentifier)\PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include=".PublicAPI\$(_TargetFrameworkIdentifier)\PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UsePublicApiAnalyzers)' != 'false' AND Exists('.PublicAPI\$(TargetFramework)')">
+    <AdditionalFiles Include=".PublicAPI\$(TargetFramework)\PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include=".PublicAPI\$(TargetFramework)\PublicAPI.Unshipped.txt" />
   </ItemGroup>
 
   <Target Name="SetNuGetPackageOutputs" AfterTargets="Pack" Condition=" '$(GITHUB_OUTPUT)' != '' ">
