@@ -13,6 +13,17 @@ public class OutcomeTests
         outcome.TryGetResult(out var result).ShouldBeTrue();
         result.ShouldBe(10);
         outcome.ToString().ShouldBe("10");
+
+#if UNION_TYPES
+        int value = outcome switch
+        {
+            int x => x,
+            Exception => Fail<int>(),
+            null => Fail<int>(),
+        };
+
+        value.ShouldBe(10);
+#endif
     }
 
     [Fact]
@@ -25,6 +36,17 @@ public class OutcomeTests
         outcome.TryGetResult(out var result).ShouldBeFalse();
         outcome.Result.ShouldBe(VoidResult.Instance);
         outcome.ToString().ShouldBe("void");
+
+#if UNION_TYPES
+        VoidResult value = outcome switch
+        {
+            VoidResult x => x,
+            Exception => Fail<VoidResult>(),
+            null => Fail<VoidResult>(),
+        };
+
+        value.ShouldBe(VoidResult.Instance);
+#endif
     }
 
     [Fact]
@@ -37,6 +59,18 @@ public class OutcomeTests
         outcome.IsVoidResult.ShouldBeFalse();
         outcome.TryGetResult(out var result).ShouldBeFalse();
         outcome.ToString().ShouldBe("Dummy message.");
+
+#if UNION_TYPES
+        Exception value = outcome switch
+        {
+            Exception ex => ex,
+            VoidResult => Fail<Exception>(),
+            null => Fail<Exception>(),
+        };
+
+        value.ShouldNotBeNull();
+        value.Message.ShouldBe("Dummy message.");
+#endif
     }
 
     [Fact]
@@ -69,4 +103,12 @@ public class OutcomeTests
     [Fact]
     public async Task FromExceptionAsValueTask_Throws_If_Null() =>
         await Assert.ThrowsAsync<ArgumentNullException>("exception", async () => await Outcome.FromExceptionAsValueTask<Exception>(null!));
+
+#if UNION_TYPES
+    private static T Fail<T>()
+    {
+        Assert.Fail($"The outcome does not represent the correct union type.");
+        return default;
+    }
+#endif
 }

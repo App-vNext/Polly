@@ -99,12 +99,21 @@ public static class TestUtilities
 
     public static TelemetryEventArguments<object, object> AsObjectArguments<T, TArgs>(this TelemetryEventArguments<T, TArgs> args)
     {
+#if UNION_TYPES
+        Outcome<object>? outcome = args.Outcome switch
+        {
+            Exception ex => Outcome.FromException<object>(ex),
+            T result => Outcome.FromResult<object>(result),
+            null => new Nullable<Outcome<object>>(),
+        };
+#else
         Outcome<object>? outcome = args.Outcome switch
         {
             null => null,
             { Exception: { } ex } => Outcome.FromException<object>(ex),
             _ => Outcome.FromResult<object>(args.Outcome!.Value.Result),
         };
+#endif
 
         return new(
             args.Source,

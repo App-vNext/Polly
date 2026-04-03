@@ -1,1 +1,3 @@
 ﻿#nullable enable
+Polly.Outcome<TResult>.Outcome(System.Exception! exception) -> void
+Polly.Outcome<TResult>.Outcome(TResult? result) -> void

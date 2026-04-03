@@ -38,7 +38,7 @@ public class TelemetryListenerImplTests : IDisposable
     {
         var telemetry = Create();
         using var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
-        ReportEvent(telemetry, noOutcome ? null : Outcome.FromResult<object>(response));
+        ReportEvent(telemetry, noOutcome ? new Nullable<Outcome<object>>() : Outcome.FromResult<object>(response));
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
         messages.Count.ShouldBe(1);
@@ -59,7 +59,7 @@ public class TelemetryListenerImplTests : IDisposable
     public void WriteEvent_LoggingWithException_Ok(bool noOutcome)
     {
         var telemetry = Create();
-        ReportEvent(telemetry, noOutcome ? null : Outcome.FromException<object>(new InvalidOperationException("Dummy message.")));
+        ReportEvent(telemetry, noOutcome ? default : Outcome.FromException<object>(new InvalidOperationException("Dummy message.")));
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
 
@@ -137,7 +137,7 @@ public class TelemetryListenerImplTests : IDisposable
     {
         var telemetry = Create();
         using var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
-        ReportEvent(telemetry, noOutcome ? null : Outcome.FromResult<object>(response), arg: new ExecutionAttemptArguments(4, TimeSpan.FromMilliseconds(123), handled));
+        ReportEvent(telemetry, noOutcome ? default : Outcome.FromResult<object>(response), arg: new ExecutionAttemptArguments(4, TimeSpan.FromMilliseconds(123), handled));
 
         var messages = _logger.GetRecords(new EventId(3, "ExecutionAttempt")).ToList();
         messages.Count.ShouldBe(1);
@@ -178,7 +178,7 @@ public class TelemetryListenerImplTests : IDisposable
         var telemetry = Create();
         Outcome<object>? outcome = noOutcome switch
         {
-            false => null,
+            false => new Nullable<Outcome<object>>(),
             true when exception => Outcome.FromException<object>(new InvalidOperationException("Dummy message.")),
             _ => Outcome.FromResult<object>(true)
         };
@@ -226,7 +226,7 @@ public class TelemetryListenerImplTests : IDisposable
         var attemptArg = new ExecutionAttemptArguments(5, TimeSpan.FromSeconds(50), true);
         Outcome<object>? outcome = noOutcome switch
         {
-            false => null,
+            false => default,
             true when exception => Outcome.FromException<object>(new InvalidOperationException("Dummy message.")),
             _ => Outcome.FromResult<object>(true)
         };

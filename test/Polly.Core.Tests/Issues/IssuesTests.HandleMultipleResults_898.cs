@@ -14,6 +14,30 @@ public partial class IssuesTests
             BackoffType = DelayBackoffType.Constant,
             MaxRetryAttempts = 1,
             Delay = TimeSpan.FromMilliseconds(1),
+#if UNION_TYPES
+            ShouldHandle = args => args.Outcome switch
+            {
+                object result => result switch
+                {
+                    // handle string results
+                    string res when res == "error" => PredicateResult.True(),
+
+                    // handle int results
+                    int res when res == -1 => PredicateResult.True(),
+                    _ => PredicateResult.False(),
+                },
+                ////object result => result switch
+                ////{
+                ////    // handle string results
+                ////    string res when res == "error" => PredicateResult.True(),
+                ////
+                ////    // handle int results
+                ////    int res when res == -1 => PredicateResult.True(),
+                ////    _ => PredicateResult.False(),
+                ////},
+                ////_ => PredicateResult.False(),
+            },
+#else
             ShouldHandle = args => args.Outcome switch
             {
                 // handle string results
@@ -23,6 +47,7 @@ public partial class IssuesTests
                 { Result: int res } when res == -1 => PredicateResult.True(),
                 _ => PredicateResult.False(),
             },
+#endif
             OnRetry = args =>
             {
                 // add a callback updates the resilience context with the retry marker

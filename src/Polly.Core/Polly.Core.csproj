@@ -40,4 +40,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Shared\DebuggerDisableUserUnhandledExceptionsAttribute.cs" Link="DebuggerDisableUserUnhandledExceptionsAttribute.cs" />
   </ItemGroup>
 
+  <!-- TODO Make this conditional on TFM once [Union] is built into .NET 11 -->
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)..\Shared\UnionsPolyfill.cs" Link="UnionsPolyfill.cs" />
+  </ItemGroup>
+
 </Project>

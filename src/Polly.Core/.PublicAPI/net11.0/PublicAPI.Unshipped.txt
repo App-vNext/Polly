@@ -1,0 +1,5 @@
+﻿#nullable enable
+Polly.Outcome<TResult>.HasValue.get -> bool
+Polly.Outcome<TResult>.TryGetValue(out System.Exception? value) -> bool
+Polly.Outcome<TResult>.TryGetValue(out TResult? value) -> bool
+Polly.Outcome<TResult>.Value.get -> object?
