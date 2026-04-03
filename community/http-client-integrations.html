@@ -98,7 +98,7 @@
     { Exception: HttpRequestException } =&gt; PredicateResult.True(),
     { Result.StatusCode: HttpStatusCode.RequestTimeout } =&gt; PredicateResult.True(),
     { Result.StatusCode: &gt;= HttpStatusCode.InternalServerError } =&gt; PredicateResult.True(),
-    _ =&gt; PredicateResult.False()
+    _ =&gt; PredicateResult.False(),
 };
 
 private static RetryStrategyOptions&lt;HttpResponseMessage&gt; GetRetryOptions() =&gt;

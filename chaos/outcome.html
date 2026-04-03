@@ -144,7 +144,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddChaosOutcome(0.1, 
         ShouldHandle = static args =&gt; args.Outcome switch
         {
             { Result.StatusCode: HttpStatusCode.InternalServerError } =&gt; PredicateResult.True(),
-            _ =&gt; PredicateResult.False()
+            _ =&gt; PredicateResult.False(),
         },
         BackoffType = DelayBackoffType.Exponential,
         UseJitter = true,

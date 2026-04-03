@@ -236,7 +236,7 @@
         { Exception: HttpRequestException } =&gt; PredicateResult.True(),
         { Exception: TimeoutRejectedException } =&gt; PredicateResult.True(), // You can handle multiple exceptions
         { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode =&gt; PredicateResult.True(),
-        _ =&gt; PredicateResult.False()
+        _ =&gt; PredicateResult.False(),
     }
 };
 </code></pre>

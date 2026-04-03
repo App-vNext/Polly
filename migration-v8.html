@@ -443,8 +443,8 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddRetry(new RetryStr
     ShouldHandle = static args =&gt; args.Outcome switch
     {
         { Exception: SomeExceptionType } =&gt; PredicateResult.True(),
-        { Result: { StatusCode: HttpStatusCode.InternalServerError } } =&gt; PredicateResult.True(),
-        _ =&gt; PredicateResult.False()
+        { Result.StatusCode: HttpStatusCode.InternalServerError } =&gt; PredicateResult.True(),
+        _ =&gt; PredicateResult.False(),
     },
     MaxRetryAttempts = 3,
 })
