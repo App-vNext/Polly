@@ -6,12 +6,12 @@
 
 namespace System.Runtime.CompilerServices;
 
-public interface IUnion
+internal interface IUnion
 {
     object? Value { get; }
 }
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]
-public sealed class UnionAttribute : Attribute;
+internal sealed class UnionAttribute : Attribute;
 
 #endif

@@ -26,16 +26,7 @@ public partial class IssuesTests
                     int res when res == -1 => PredicateResult.True(),
                     _ => PredicateResult.False(),
                 },
-                ////object result => result switch
-                ////{
-                ////    // handle string results
-                ////    string res when res == "error" => PredicateResult.True(),
-                ////
-                ////    // handle int results
-                ////    int res when res == -1 => PredicateResult.True(),
-                ////    _ => PredicateResult.False(),
-                ////},
-                ////_ => PredicateResult.False(),
+                _ => PredicateResult.False(),
             },
 #else
             ShouldHandle = args => args.Outcome switch

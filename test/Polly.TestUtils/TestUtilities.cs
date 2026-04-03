@@ -104,7 +104,9 @@ public static class TestUtilities
         {
             Exception ex => Outcome.FromException<object>(ex),
             T result => Outcome.FromResult<object>(result),
+#pragma warning disable SA1125, SA1129
             null => new Nullable<Outcome<object>>(),
+#pragma warning restore SA1125, SA1129
         };
 #else
         Outcome<object>? outcome = args.Outcome switch

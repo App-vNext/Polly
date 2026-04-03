@@ -40,7 +40,9 @@ public class OutcomeTests
 #if UNION_TYPES
         VoidResult value = outcome switch
         {
+#pragma warning disable CA1508
             VoidResult x => x,
+#pragma warning restore CA1508
             Exception => Fail<VoidResult>(),
             null => Fail<VoidResult>(),
         };
@@ -63,7 +65,9 @@ public class OutcomeTests
 #if UNION_TYPES
         Exception value = outcome switch
         {
+#pragma warning disable CA1508
             Exception ex => ex,
+#pragma warning restore CA1508
             VoidResult => Fail<Exception>(),
             null => Fail<Exception>(),
         };

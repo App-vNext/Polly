@@ -38,7 +38,7 @@ public class TelemetryListenerImplTests : IDisposable
     {
         var telemetry = Create();
         using var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
-        ReportEvent(telemetry, noOutcome ? new Nullable<Outcome<object>>() : Outcome.FromResult<object>(response));
+        ReportEvent(telemetry, noOutcome ? default : Outcome.FromResult<object>(response));
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
         messages.Count.ShouldBe(1);
@@ -178,7 +178,7 @@ public class TelemetryListenerImplTests : IDisposable
         var telemetry = Create();
         Outcome<object>? outcome = noOutcome switch
         {
-            false => new Nullable<Outcome<object>>(),
+            false => default,
             true when exception => Outcome.FromException<object>(new InvalidOperationException("Dummy message.")),
             _ => Outcome.FromResult<object>(true)
         };
@@ -204,7 +204,9 @@ public class TelemetryListenerImplTests : IDisposable
         ev["operation.key"].ShouldBe("op-key");
         ev["strategy.name"].ShouldBe("my-strategy");
 
+#pragma warning disable CA1508
         if (outcome?.Exception is not null)
+#pragma warning restore CA1508
         {
             ev["exception.type"].ShouldBe("System.InvalidOperationException");
         }
@@ -254,7 +256,9 @@ public class TelemetryListenerImplTests : IDisposable
         ev["attempt.number"].ShouldBe(5);
         ev["attempt.handled"].ShouldBe(true);
 
+#pragma warning disable CA1508
         if (outcome?.Exception is not null)
+#pragma warning restore CA1508
         {
             ev["exception.type"].ShouldBe("System.InvalidOperationException");
         }
