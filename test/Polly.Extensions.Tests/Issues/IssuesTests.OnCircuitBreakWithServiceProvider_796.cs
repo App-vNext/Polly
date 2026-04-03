@@ -33,8 +33,8 @@ public partial class IssuesTests
                     ShouldHandle = args => args.Outcome.Result switch
                     {
                         string result when result == "error" => PredicateResult.True(),
-                        _ => PredicateResult.False()
-                    }
+                        _ => PredicateResult.False(),
+                    },
                 });
         });
 
@@ -55,11 +55,9 @@ public partial class IssuesTests
         contextChecked.ShouldBeTrue();
     }
 
-    private class ServiceProviderStrategy : ResilienceStrategy
+    private class ServiceProviderStrategy(IServiceProvider serviceProvider) : ResilienceStrategy
     {
-        private readonly IServiceProvider _serviceProvider;
-
-        public ServiceProviderStrategy(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
 
         protected override ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,

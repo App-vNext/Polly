@@ -56,8 +56,8 @@ internal static partial class Helper
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True(),
                         { Result: string result } when result == Failure => PredicateResult.True(),
-                        _ => PredicateResult.False()
-                    }
+                        _ => PredicateResult.False(),
+                    },
                 });
             }),
             _ => throw new NotSupportedException()
@@ -81,5 +81,4 @@ internal static partial class Helper
             return result;
         }
     }
-
 }

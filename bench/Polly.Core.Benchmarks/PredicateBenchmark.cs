@@ -19,7 +19,7 @@ public class PredicateBenchmark
             { Exception: IOException } => PredicateResult.True(),
             { Exception: InvalidOperationException } => PredicateResult.False(),
             _ => PredicateResult.False(),
-        }
+        },
     };
 
     private readonly RetryStrategyOptions<HttpResponseMessage> _builder = new()
