@@ -32,7 +32,7 @@ public class HedgingExecutionContextTests : IDisposable
             {
                 { Exception: ApplicationException } => true,
                 { Result: DisposableResult result } when result.Name == Handled => true,
-                _ => false
+                _ => false,
             },
             args => Generator(args));
 

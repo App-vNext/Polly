@@ -106,11 +106,11 @@ public static class TestUtilities
             _ => Outcome.FromResult<object>(args.Outcome!.Value.Result),
         };
 
-        return new TelemetryEventArguments<object, object>(
-                args.Source,
-                args.Event,
-                args.Context,
-                args.Arguments!,
-                outcome);
+        return new(
+            args.Source,
+            args.Event,
+            args.Context,
+            args.Arguments!,
+            outcome);
     }
 }
