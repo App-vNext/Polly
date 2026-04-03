@@ -405,8 +405,8 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(new RetryStrategyO
     ShouldHandle = static args => args.Outcome switch
     {
         { Exception: SomeExceptionType } => PredicateResult.True(),
-        { Result: { StatusCode: HttpStatusCode.InternalServerError } } => PredicateResult.True(),
-        _ => PredicateResult.False()
+        { Result.StatusCode: HttpStatusCode.InternalServerError } => PredicateResult.True(),
+        _ => PredicateResult.False(),
     },
     MaxRetryAttempts = 3,
 })

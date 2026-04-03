@@ -17,7 +17,7 @@ private static ValueTask<bool> HandleTransientHttpError(Outcome<HttpResponseMess
     { Exception: HttpRequestException } => PredicateResult.True(),
     { Result.StatusCode: HttpStatusCode.RequestTimeout } => PredicateResult.True(),
     { Result.StatusCode: >= HttpStatusCode.InternalServerError } => PredicateResult.True(),
-    _ => PredicateResult.False()
+    _ => PredicateResult.False(),
 };
 
 private static RetryStrategyOptions<HttpResponseMessage> GetRetryOptions() =>
