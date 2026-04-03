@@ -58,7 +58,7 @@ var pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
         ShouldHandle = static args => args.Outcome switch
         {
             { Result.StatusCode: HttpStatusCode.InternalServerError } => PredicateResult.True(),
-            _ => PredicateResult.False()
+            _ => PredicateResult.False(),
         },
         BackoffType = DelayBackoffType.Exponential,
         UseJitter = true,

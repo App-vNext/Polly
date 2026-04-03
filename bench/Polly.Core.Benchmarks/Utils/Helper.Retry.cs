@@ -25,12 +25,12 @@ internal static partial class Helper
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True(),
                         { Result: string result } when result == Failure => PredicateResult.True(),
-                        _ => PredicateResult.False()
+                        _ => PredicateResult.False(),
                     },
-                    OnRetry = _ => default
+                    OnRetry = _ => default,
                 });
             }),
-            _ => throw new NotSupportedException()
+            _ => throw new NotSupportedException(),
         };
     }
 }

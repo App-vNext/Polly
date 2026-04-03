@@ -32,7 +32,7 @@ internal static class ResilienceStrategies
                 { Exception: HttpRequestException } => PredicateResult.True(),
                 { Exception: TimeoutRejectedException } => PredicateResult.True(), // You can handle multiple exceptions
                 { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
-                _ => PredicateResult.False()
+                _ => PredicateResult.False(),
             }
         };
 

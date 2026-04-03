@@ -1,10 +1,8 @@
 ﻿namespace Polly.Utils.Pipeline;
 
-internal abstract class BridgeComponentBase : PipelineComponent
+internal abstract class BridgeComponentBase(object strategy) : PipelineComponent
 {
-    private readonly object _strategy;
-
-    protected BridgeComponentBase(object strategy) => _strategy = strategy;
+    private readonly object _strategy = strategy;
 
     public override ValueTask DisposeAsync()
     {

@@ -92,9 +92,9 @@ new ResiliencePipelineBuilder()
         ShouldHandle = args => args.Outcome switch
         {
             { Exception: InvalidOperationException } => PredicateResult.True(),
-            { Result: string result } when result == "Failure" => PredicateResult.True(),
-            { Result: int result } when result == -1 => PredicateResult.True(),
-            _ => PredicateResult.False()
+            { Result: string result } when result is "Failure" => PredicateResult.True(),
+            { Result: int result } when result is -1 => PredicateResult.True(),
+            _ => PredicateResult.False(),
         },
     })
     .Build();
@@ -107,7 +107,7 @@ new ResiliencePipelineBuilder<string>()
         {
             { Exception: InvalidOperationException } => PredicateResult.True(),
             { Result: { } result } when result == "Failure" => PredicateResult.True(),
-            _ => PredicateResult.False()
+            _ => PredicateResult.False(),
         },
     })
     .Build();

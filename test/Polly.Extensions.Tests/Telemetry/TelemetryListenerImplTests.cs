@@ -593,11 +593,9 @@ public class TelemetryListenerImplTests : IDisposable
                 arg!,
                 outcome));
 
-    private class CallbackEnricher : MeteringEnricher
+    private class CallbackEnricher(Action<EnrichmentContext<object, object>> callback) : MeteringEnricher
     {
-        private readonly Action<EnrichmentContext<object, object>> _callback;
-
-        public CallbackEnricher(Action<EnrichmentContext<object, object>> callback) => _callback = callback;
+        private readonly Action<EnrichmentContext<object, object>> _callback = callback;
 
         public override void Enrich<TResult, TArgs>(in EnrichmentContext<TResult, TArgs> context) =>
             _callback(new EnrichmentContext<object, object>(context.TelemetryEvent.AsObjectArguments(), context.Tags));
