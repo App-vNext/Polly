@@ -128,7 +128,7 @@ public class PolicyTResultKeySpecs
             }
 
             return ResultPrimitive.Good;
-        }, new Context(operationKey));
+        }, [with(operationKey)]);
 
         operationKeySetOnContext.ShouldBe(operationKey);
     }
