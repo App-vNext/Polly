@@ -21,7 +21,7 @@ public partial class IssuesTests
 
                 // handle int results
                 { Result: int res } when res == -1 => PredicateResult.True(),
-                _ => PredicateResult.False()
+                _ => PredicateResult.False(),
             },
             OnRetry = args =>
             {
