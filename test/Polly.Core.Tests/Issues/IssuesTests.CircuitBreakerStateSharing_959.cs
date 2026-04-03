@@ -15,10 +15,10 @@ public partial class IssuesTests
             ShouldHandle = args => args.Outcome.Result switch
             {
                 // handle int results
-                int intVal when intVal == -1 => new ValueTask<bool>(true),
+                int intVal when intVal is -1 => new ValueTask<bool>(true),
 
                 // handle string results
-                string stringVal when stringVal == "error" => new ValueTask<bool>(true),
+                string stringVal when stringVal is "error" => new ValueTask<bool>(true),
                 _ => new ValueTask<bool>(false),
             },
         };

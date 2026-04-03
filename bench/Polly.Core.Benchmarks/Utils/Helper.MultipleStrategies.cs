@@ -19,7 +19,7 @@ internal static partial class Helper
                 .AddConcurrencyLimiter(new ConcurrencyLimiterOptions
                 {
                     QueueLimit = 10,
-                    PermitLimit = 10
+                    PermitLimit = 10,
                 })
                 .AddTimeout(TimeSpan.FromSeconds(10))
                 .AddRetry(new()
@@ -31,8 +31,8 @@ internal static partial class Helper
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True(),
                         { Result: string result } when result == Failure => PredicateResult.True(),
-                        _ => PredicateResult.False()
-                    }
+                        _ => PredicateResult.False(),
+                    },
                 })
                 .AddTimeout(TimeSpan.FromSeconds(1))
                 .AddCircuitBreaker(new()
@@ -45,8 +45,8 @@ internal static partial class Helper
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True(),
                         { Result: string result } when result == Failure => PredicateResult.True(),
-                        _ => PredicateResult.False()
-                    }
+                        _ => PredicateResult.False(),
+                    },
                 });
 
             if (telemetry)
@@ -63,7 +63,7 @@ internal static partial class Helper
             .AddConcurrencyLimiter(new ConcurrencyLimiterOptions
             {
                 QueueLimit = 10,
-                PermitLimit = 10
+                PermitLimit = 10,
             })
             .AddTimeout(TimeSpan.FromSeconds(10))
             .AddRetry(new()
@@ -75,7 +75,7 @@ internal static partial class Helper
                 {
                     { Exception: InvalidOperationException } => PredicateResult.True(),
                     { Result: string result } when result == Failure => PredicateResult.True(),
-                    _ => PredicateResult.False()
+                    _ => PredicateResult.False(),
                 }
             })
             .AddTimeout(TimeSpan.FromSeconds(1))
@@ -89,8 +89,8 @@ internal static partial class Helper
                 {
                     { Exception: InvalidOperationException } => PredicateResult.True(),
                     { Result: string result } when result == Failure => PredicateResult.True(),
-                    _ => PredicateResult.False()
-                }
+                    _ => PredicateResult.False(),
+                },
             });
 
         if (telemetry)

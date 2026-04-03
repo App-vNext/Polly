@@ -95,17 +95,11 @@ public class ReloadableResiliencePipelineTests
         }
     }
 
-    public class ReloadableStrategy : ResilienceStrategy, IDisposable
+    public class ReloadableStrategy(string tag, IDisposable disposableResource) : ResilienceStrategy, IDisposable
     {
-        public ReloadableStrategy(string tag, IDisposable disposableResource)
-        {
-            Tag = tag;
-            DisposableResource = disposableResource;
-        }
+        public string Tag { get; } = tag;
 
-        public string Tag { get; }
-
-        public IDisposable DisposableResource { get; }
+        public IDisposable DisposableResource { get; } = disposableResource;
 
         public void Dispose() => DisposableResource.Dispose();
 
