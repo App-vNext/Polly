@@ -5,16 +5,23 @@ public class OutcomeTests
     [Fact]
     public void Ctor_Result_Ok()
     {
-        var outcome = Outcome.FromResult(10);
+        int expected = 10;
+        var outcome = Outcome.FromResult(expected);
         outcome.HasResult.ShouldBeTrue();
         outcome.Exception.ShouldBeNull();
         outcome.ExceptionDispatchInfo.ShouldBeNull();
         outcome.IsVoidResult.ShouldBeFalse();
         outcome.TryGetResult(out var result).ShouldBeTrue();
-        result.ShouldBe(10);
+        result.ShouldBe(expected);
         outcome.ToString().ShouldBe("10");
 
 #if UNION_TYPES
+        outcome.HasValue.ShouldBeTrue();
+        outcome.Value.ShouldBe(expected);
+        outcome.TryGetValue(out Exception? _).ShouldBeFalse();
+        outcome.TryGetValue(out int actual).ShouldBeTrue();
+        actual.ShouldBe(expected);
+
         int value = outcome switch
         {
             int x => x,
@@ -22,7 +29,7 @@ public class OutcomeTests
             null => Fail<int>(),
         };
 
-        value.ShouldBe(10);
+        value.ShouldBe(expected);
 #endif
     }
 
@@ -38,6 +45,12 @@ public class OutcomeTests
         outcome.ToString().ShouldBe("void");
 
 #if UNION_TYPES
+        outcome.HasValue.ShouldBeTrue();
+        outcome.Value.ShouldBe(VoidResult.Instance);
+        outcome.TryGetValue(out Exception? _).ShouldBeFalse();
+        outcome.TryGetValue(out VoidResult? actual).ShouldBeTrue();
+        actual.ShouldBe(VoidResult.Instance);
+
         VoidResult value = outcome switch
         {
 #pragma warning disable CA1508
@@ -54,7 +67,8 @@ public class OutcomeTests
     [Fact]
     public void Ctor_Exception_Ok()
     {
-        var outcome = Outcome.FromException(new InvalidOperationException("Dummy message."));
+        var expected = new InvalidOperationException("Dummy message.");
+        var outcome = Outcome.FromException(expected);
         outcome.HasResult.ShouldBeFalse();
         outcome.Exception.ShouldNotBeNull();
         outcome.ExceptionDispatchInfo.ShouldNotBeNull();
@@ -63,6 +77,12 @@ public class OutcomeTests
         outcome.ToString().ShouldBe("Dummy message.");
 
 #if UNION_TYPES
+        outcome.HasValue.ShouldBeTrue();
+        outcome.Value.ShouldBe(expected);
+        outcome.TryGetValue(out VoidResult? _).ShouldBeFalse();
+        outcome.TryGetValue(out Exception? exceptionValue).ShouldBeTrue();
+        exceptionValue.ShouldBe(expected);
+
         Exception value = outcome switch
         {
 #pragma warning disable CA1508
@@ -73,7 +93,25 @@ public class OutcomeTests
         };
 
         value.ShouldNotBeNull();
+        value.ShouldBe(expected);
         value.Message.ShouldBe("Dummy message.");
+#endif
+    }
+
+    [Fact]
+    public void Ctor_Default_Ok()
+    {
+        Outcome<int> outcome = default;
+
+        outcome.Exception.ShouldBeNull();
+        outcome.Result.ShouldBe(default);
+
+#if UNION_TYPES
+        outcome.HasValue.ShouldBeTrue();
+        outcome.Value.ShouldBe(default(int));
+        outcome.TryGetValue(out Exception? _).ShouldBeFalse();
+        outcome.TryGetValue(out int actual).ShouldBeTrue();
+        actual.ShouldBe(default(int));
 #endif
     }
 
