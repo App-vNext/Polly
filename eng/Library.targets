@@ -53,6 +53,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(UsePublicApiAnalyzers)' != 'false' AND Exists('.PublicAPI')">
     <AdditionalFiles Include=".PublicAPI\PublicAPI.Shipped.txt" />
     <AdditionalFiles Include=".PublicAPI\PublicAPI.Unshipped.txt" />
   </ItemGroup>
