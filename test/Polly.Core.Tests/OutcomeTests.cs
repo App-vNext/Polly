@@ -111,7 +111,7 @@ public class OutcomeTests
         outcome.Value.ShouldBe(default(int));
         outcome.TryGetValue(out Exception? _).ShouldBeFalse();
         outcome.TryGetValue(out int actual).ShouldBeTrue();
-        actual.ShouldBe(default(int));
+        actual.ShouldBe(default);
 #endif
     }
 
