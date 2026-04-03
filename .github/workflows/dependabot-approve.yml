@@ -15,12 +15,12 @@ jobs:
     steps:
 
       - name: Get dependabot metadata
-        uses: dependabot/fetch-metadata@21025c705c08248db411dc16f3619e6b5f9ea21a # v2.5.0
+        uses: dependabot/fetch-metadata@ffa630c65fa7e0ecfa0625b5ceda64399aea1b36 # v3.0.0
         id: dependabot-metadata
 
       - name: Generate GitHub application token
         id: generate-application-token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
         with:
           app-id: ${{ secrets.POLLY_REVIEWER_BOT_APP_ID }}
           private-key: ${{ secrets.POLLY_REVIEWER_BOT_KEY }}

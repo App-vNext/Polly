@@ -1,11 +1,16 @@
 ﻿using Polly.Telemetry;
 
+#if !NET10_0_OR_GREATER
+#pragma warning disable SA1121
+using Lock = System.Object;
+#endif
+
 namespace Polly.TestUtils;
 
 public sealed class FakeTelemetryListener : TelemetryListener
 {
     private readonly Action<TelemetryEventArguments<object, object>> _callback;
-    private readonly object _syncRoot = new();
+    private readonly Lock _syncRoot = new();
 
     public FakeTelemetryListener(Action<TelemetryEventArguments<object, object>> callback) => _callback = callback;
 
