@@ -136,28 +136,50 @@ Task("__ValidateAot")
 Task("__RunTests")
     .Does(() =>
 {
-    var loggers = Array.Empty<string>();
-
-    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
-    {
-        loggers =
-        [
-            "junit;LogFilePath=junit.xml",
-            "GitHubActions;report-warnings=false;summary-include-passed=false",
-        ];
-    }
-
     var projects = GetFiles("./test/**/*.csproj");
 
     foreach (var proj in projects)
     {
-        DotNetTest(proj.FullPath, new DotNetTestSettings
+        var projectName = proj.GetFilenameWithoutExtension().ToString();
+        var configLower = configuration.ToLowerInvariant();
+        var outputBase = MakeAbsolute(Directory($"./artifacts/bin/{projectName}"));
+
+        foreach (var tfmDir in GetDirectories($"{outputBase}/{configLower}_*"))
         {
-            Configuration = configuration,
-            Loggers = loggers,
-            NoBuild = true,
-            ToolTimeout = System.TimeSpan.FromMinutes(10),
-        });
+            var dll = tfmDir.CombineWithFilePath($"{projectName}.dll");
+            var runtimeConfig = tfmDir.CombineWithFilePath($"{projectName}.runtimeconfig.json");
+            if (!FileExists(dll) || !FileExists(runtimeConfig))
+                continue;
+
+            var tfmName = tfmDir.GetDirectoryName().Substring(configLower.Length + 1);
+            Information($"Testing {projectName} ({tfmName})");
+
+            var args = new ProcessArgumentBuilder();
+            FilePath executable;
+
+            if (tfmName.StartsWith("net4"))
+            {
+                executable = tfmDir.CombineWithFilePath($"{projectName}.exe");
+            }
+            else
+            {
+                executable = Context.Tools.Resolve("dotnet") ?? new FilePath("dotnet");
+                args.Append("exec");
+                args.AppendQuoted(dll.FullPath);
+            }
+
+            if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
+            {
+                args.Append("-jUnit");
+                args.AppendQuoted($"{projectName}-{tfmName}.junit.xml");
+            }
+
+            var result = StartProcess(executable, new ProcessSettings { Arguments = args });
+            if (result != 0)
+            {
+                throw new InvalidOperationException($"Tests failed for '{projectName}' ({tfmName}).");
+            }
+        }
     }
 });
 

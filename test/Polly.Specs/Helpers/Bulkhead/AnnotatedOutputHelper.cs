@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace Polly.Specs.Helpers.Bulkhead;
 
@@ -28,6 +28,8 @@ public class AnnotatedOutputHelper : ITestOutputHelper
     private readonly object[] _noArgs = [];
 
     private readonly ITestOutputHelper _innerOutputHelper;
+
+    public string Output => _innerOutputHelper.Output;
 
     public AnnotatedOutputHelper(ITestOutputHelper innerOutputHelper) =>
         _innerOutputHelper = innerOutputHelper ?? throw new ArgumentNullException(nameof(innerOutputHelper));
