@@ -39,7 +39,7 @@
     <None Include="$(MsBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(Language)' == 'C#'">
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyVersion.cs" LinkBase="Properties" />
   </ItemGroup>
 
