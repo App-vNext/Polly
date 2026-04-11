@@ -22,7 +22,6 @@
     "concurrency": 4,
     "configuration": "Debug",
     "language-version": "Preview",
-    "target-framework": "net8.0",
     "test-runner": "mtp",
     "thresholds": {
       "high": 100,
