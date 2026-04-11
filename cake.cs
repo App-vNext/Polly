@@ -344,7 +344,9 @@ void PatchStrykerMtpRunner()
 
     var strykerVersion = "4.14.1";
     var strykerTag = $"dotnet-stryker@{strykerVersion}";
-    var patchFile = MakeAbsolute(File("./eng/stryker-mtp-runner.patch"));
+    // Resolve relative to the directory containing cake.cs, not the process working directory
+    var scriptDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath("cake.cs")) ?? ".";
+    var patchFile = System.IO.Path.Combine(scriptDir, "eng", "stryker-mtp-runner.patch");
     var tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"stryker-patch-{strykerVersion}");
     var targetDll = System.IO.Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
@@ -373,11 +375,20 @@ void PatchStrykerMtpRunner()
             throw new InvalidOperationException("Failed to clone stryker-net repository.");
         }
     }
+    else
+    {
+        // Reset any leftover changes from a previous failed run
+        StartProcess("git", new ProcessSettings
+        {
+            Arguments = "checkout -- .",
+            WorkingDirectory = tempDir,
+        });
+    }
 
     // Apply the patch
     var applyResult = StartProcess("git", new ProcessSettings
     {
-        Arguments = $"apply {patchFile.FullPath}",
+        Arguments = $"apply {patchFile}",
         WorkingDirectory = tempDir,
     });
     if (applyResult != 0)
@@ -385,12 +396,13 @@ void PatchStrykerMtpRunner()
         throw new InvalidOperationException("Failed to apply Stryker MTP runner patch.");
     }
 
-    // Build the patched project
-    var projectPath = System.IO.Path.Combine(tempDir, "src", "Stryker.TestRunner.MicrosoftTestPlatform",
+    // Build the patched project (must run from tempDir so NuGet packages resolve correctly)
+    var projectPath = System.IO.Path.Combine("src", "Stryker.TestRunner.MicrosoftTestPlatform",
         "Stryker.TestRunner.MicrosoftTestPlatform.csproj");
     var buildResult = StartProcess("dotnet", new ProcessSettings
     {
         Arguments = $"build \"{projectPath}\" -c Release",
+        WorkingDirectory = tempDir,
     });
     if (buildResult != 0)
     {
@@ -402,7 +414,7 @@ void PatchStrykerMtpRunner()
         "bin", "Release", "net8.0", "Stryker.TestRunner.MicrosoftTestPlatform.dll");
 
     System.IO.File.Copy(builtDll, targetDll, overwrite: true);
-    System.IO.File.WriteAllText(markerFile, $"Patched from {patchFile.GetFilename()} at {DateTime.UtcNow:O}");
+    System.IO.File.WriteAllText(markerFile, $"Patched from {System.IO.Path.GetFileName(patchFile)} at {DateTime.UtcNow:O}");
 
     Information("Stryker MTP runner patched successfully.");
 }
