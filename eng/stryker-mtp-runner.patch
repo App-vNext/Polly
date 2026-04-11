@@ -1,0 +1,78 @@
+diff --git a/src/Stryker.TestRunner.MicrosoftTestPlatform/SingleMicrosoftTestPlatformRunner.cs b/src/Stryker.TestRunner.MicrosoftTestPlatform/SingleMicrosoftTestPlatformRunner.cs
+index cfc34d6..1d45845 100644
+--- a/src/Stryker.TestRunner.MicrosoftTestPlatform/SingleMicrosoftTestPlatformRunner.cs
++++ b/src/Stryker.TestRunner.MicrosoftTestPlatform/SingleMicrosoftTestPlatformRunner.cs
+@@ -86,6 +86,22 @@ public class SingleMicrosoftTestPlatformRunner : IDisposable
+         _logger.LogDebug("{RunnerId}: Testing mutant(s) [{Mutants}] with active mutation ID: {MutantId}",
+             RunnerId, string.Join(",", mutants.Select(m => m.Id)), mutantId);
+ 
++
++        // Static mutations (e.g. static field initializers) require a fresh process
++        // because the static value is set once during class loading and cannot change.
++        if (mutants.Any(m => m.IsStaticValue))
++        {
++            _logger.LogDebug("{RunnerId}: Resetting servers for static mutation(s)", RunnerId);
++            lock (_serverLock)
++            {
++                foreach (var server in _assemblyServers.Values)
++                {
++                    server.Dispose();
++                }
++                _assemblyServers.Clear();
++            }
++        }
++
+         return RunAllTestsAsync(assemblies, mutantId, mutants, update, timeoutCalc);
+     }
+ 
+@@ -351,6 +367,7 @@ public class SingleMicrosoftTestPlatformRunner : IDisposable
+     {
+         private readonly List<string> _executedTests = [];
+         private readonly List<string> _failedTests = [];
++        private bool _allTestsFailed;
+         private readonly List<string> _messages = [];
+         private readonly List<string> _errorMessages = [];
+         private int _totalDiscoveredTests;
+@@ -373,7 +390,14 @@ public class SingleMicrosoftTestPlatformRunner : IDisposable
+                 _totalExecutedTests += executedIds.Count;
+             }
+ 
+-            _failedTests.AddRange(result.FailingTests.GetIdentifiers());
++            if (result.FailingTests.IsEveryTest)
++            {
++                _allTestsFailed = true;
++            }
++            else
++            {
++                _failedTests.AddRange(result.FailingTests.GetIdentifiers());
++            }
+             TotalDuration += result.Duration;
+             _messages.AddRange(result.Messages ?? []);
+ 
+@@ -390,7 +414,7 @@ public class SingleMicrosoftTestPlatformRunner : IDisposable
+                 ? TestIdentifierList.EveryTest()
+                 : new TestIdentifierList(_executedTests);
+ 
+-        public ITestIdentifiers BuildFailedTests() => new TestIdentifierList(_failedTests);
++        public ITestIdentifiers BuildFailedTests() => _allTestsFailed ? TestIdentifierList.EveryTest() : new TestIdentifierList(_failedTests);
+ 
+         public ITestIdentifiers BuildTimedOutTests() => new TestIdentifierList(TimedOutTests);
+ 
+@@ -525,7 +549,7 @@ public class SingleMicrosoftTestPlatformRunner : IDisposable
+ 
+             var duration = DateTime.UtcNow - startTime;
+             var finishedTests = testResults.Where(x => x.Node.ExecutionState is not "in-progress").ToList();
+-            var failedTests = finishedTests.Where(x => x.Node.ExecutionState is "failed").Select(x => x.Node.Uid).ToList();
++            var failedTests = finishedTests.Where(x => x.Node.ExecutionState is "failed" or "error").Select(x => x.Node.Uid).ToList();
+ 
+             lock (_discoveryLock)
+             {
+@@ -542,7 +566,7 @@ public class SingleMicrosoftTestPlatformRunner : IDisposable
+             }
+ 
+             var errorMessagesStr = string.Join(Environment.NewLine,
+-                finishedTests.Where(x => x.Node.ExecutionState is "failed")
++                finishedTests.Where(x => x.Node.ExecutionState is "failed" or "error")
+                     .Select(x => $"{x.Node.DisplayName}{Environment.NewLine}{Environment.NewLine}Test failed"));
+ 
+             var messages = finishedTests.Select(x =>

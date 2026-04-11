@@ -5,6 +5,7 @@
     <Copyright>Copyright (c) 2015-$([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>Michael Wolfenden, App vNext</Authors>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -36,6 +37,10 @@
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageIcon)" Pack="true" PackagePath="" />
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageReadmeFile)" Pack="true" PackagePath="" />
     <None Include="$(MsBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyVersion.cs" LinkBase="Properties" />
   </ItemGroup>
 
   <ItemGroup>
