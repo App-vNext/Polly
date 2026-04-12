@@ -462,14 +462,7 @@ void RunMutationTests(FilePath target, FilePath testProject)
 
     Information($"Running mutation tests for '{targetFileName}'. Test Project: '{testProject}'");
 
-    var extraArgs = "";
-    if (moduleName == "Polly")
-    {
-        // Enable debug logging for legacy project to diagnose MTP runner deadlock on CI
-        extraArgs = " --verbosity debug --log-to-file";
-    }
-
-    var args = $"stryker --project {targetFileName} --test-project {testProject.GetFilename()} --break-at {score} --config-file {strykerConfigPath} --output {strykerOutput}/{targetFileName}{extraArgs}";
+    var args = $"stryker --project {targetFileName} --test-project {testProject.GetFilename()} --break-at {score} --config-file {strykerConfigPath} --output {strykerOutput}/{targetFileName}";
 
     var testProjectDir = testProject.GetDirectory();
     var result = StartProcess("dotnet", new ProcessSettings
