@@ -434,15 +434,6 @@ void RunMutationTests(FilePath target, FilePath testProject)
         strykerConfigPath = PatchStrykerConfig(strykerConfigPath, (config) => config.Remove("ignore-mutations"));
     }
 
-    if (moduleName == "Polly")
-    {
-        // The legacy Polly source project targets net6.0 (no net8.0), while the test project
-        // targets net8.0+. This TFM mismatch triggers a deadlock in Stryker's MTP runner
-        // during mutation testing (the MTP server hangs without sending completion signals).
-        // Use the default test runner for this project until the MTP runner handles this case.
-        strykerConfigPath = PatchStrykerConfig(strykerConfigPath, (config) => config.Remove("test-runner"));
-    }
-
     if (isGitHubActions &&
         !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("STRYKER_DASHBOARD_API_KEY")))
     {
