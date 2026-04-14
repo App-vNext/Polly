@@ -158,8 +158,10 @@ public class CircuitStateControllerTests
             try
             {
                 var outcome = await controller.OnActionPreExecuteAsync(context);
+
                 Assert.True(outcome.HasValue);
-                (await controller.OnActionPreExecuteAsync(context)).GetValueOrDefault().ThrowIfException();
+
+                outcome.GetValueOrDefault().ThrowIfException();
             }
             catch (BrokenCircuitException e)
             {
