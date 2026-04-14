@@ -53,7 +53,7 @@ public class CircuitStateControllerTests
         called.ShouldBeTrue();
 
         var outcome = await controller.OnActionPreExecuteAsync(context);
-        var exception = outcome.Value.Exception.ShouldBeOfType<IsolatedCircuitException>();
+        var exception = outcome.GetValueOrDefault().Exception.ShouldBeOfType<IsolatedCircuitException>();
         exception.RetryAfter.ShouldBeNull();
         exception.TelemetrySource.ShouldNotBeNull();
 
@@ -125,7 +125,7 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         await OpenCircuit(controller, Outcome.FromResult(99));
-        var exception = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(context)).Value.Exception!;
+        var exception = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(context)).GetValueOrDefault().Exception!;
         exception.RetryAfter.ShouldNotBeNull();
         exception.TelemetrySource.ShouldNotBeNull();
 
@@ -149,7 +149,7 @@ public class CircuitStateControllerTests
         {
             try
             {
-                (await controller.OnActionPreExecuteAsync(context)).Value.ThrowIfException();
+                (await controller.OnActionPreExecuteAsync(context)).GetValueOrDefault().ThrowIfException();
             }
             catch (BrokenCircuitException e)
             {
@@ -217,7 +217,7 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         await OpenCircuit(controller, Outcome.FromException<int>(new InvalidOperationException()));
-        var exception = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(context)).Value.Exception!;
+        var exception = (BrokenCircuitException)(await controller.OnActionPreExecuteAsync(context)).GetValueOrDefault().Exception!;
         exception.InnerException.ShouldBeOfType<InvalidOperationException>();
         exception.RetryAfter.ShouldNotBeNull();
         exception.TelemetrySource.ShouldNotBeNull();
@@ -276,7 +276,7 @@ public class CircuitStateControllerTests
 
         // act
         await controller.OnActionPreExecuteAsync(context);
-        var error = (await controller.OnActionPreExecuteAsync(context)).Value.Exception;
+        var error = (await controller.OnActionPreExecuteAsync(context)).GetValueOrDefault().Exception;
 
         // assert
         var exception = error.ShouldBeOfType<BrokenCircuitException>();
@@ -489,7 +489,7 @@ public class CircuitStateControllerTests
         // assert
         controller.LastException.ShouldBeNull();
         var outcome = await controller.OnActionPreExecuteAsync(context);
-        var exception = outcome.Value.Exception.ShouldBeOfType<BrokenCircuitException>();
+        var exception = outcome.GetValueOrDefault().Exception.ShouldBeOfType<BrokenCircuitException>();
         exception.RetryAfter.ShouldNotBeNull();
         exception.TelemetrySource.ShouldNotBeNull();
     }
@@ -530,7 +530,7 @@ public class CircuitStateControllerTests
         TimeSpan advanceTimeRejected = TimeSpan.FromMilliseconds(1);
         AdvanceTime(advanceTimeRejected);
         var outcome = await controller.OnActionPreExecuteAsync(context);
-        var exception = outcome.Value.Exception.ShouldBeOfType<BrokenCircuitException>();
+        var exception = outcome.GetValueOrDefault().Exception.ShouldBeOfType<BrokenCircuitException>();
         exception.RetryAfter.ShouldBe(_options.BreakDuration - advanceTimeRejected);
         exception.TelemetrySource.ShouldNotBeNull();
 
