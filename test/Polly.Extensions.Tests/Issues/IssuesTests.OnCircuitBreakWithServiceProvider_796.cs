@@ -30,11 +30,24 @@ public partial class IssuesTests
                         // do asynchronous call
                         await Task.Yield();
                     },
+#if UNION_TYPES
+                    ShouldHandle = args => args.Outcome switch
+                    {
+                        Exception => PredicateResult.True(),
+                        object result => result switch
+                        {
+                            string value when value is "error" => PredicateResult.True(),
+                            _ => PredicateResult.False(),
+                        },
+                        _ => PredicateResult.False(),
+                    },
+#else
                     ShouldHandle = args => args.Outcome.Result switch
                     {
                         string result when result == "error" => PredicateResult.True(),
                         _ => PredicateResult.False(),
                     },
+#endif
                 });
         });
 

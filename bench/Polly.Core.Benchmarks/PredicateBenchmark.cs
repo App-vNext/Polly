@@ -14,10 +14,24 @@ public class PredicateBenchmark
     {
         ShouldHandle = args => args.Outcome switch
         {
+#if UNION_TYPES
+            HttpResponseMessage message => message.StatusCode switch
+            {
+                HttpStatusCode.InternalServerError => PredicateResult.True(),
+                _ => PredicateResult.False(),
+            },
+            Exception ex => ex switch
+            {
+                HttpRequestException => PredicateResult.True(),
+                IOException => PredicateResult.True(),
+                _ => PredicateResult.False(),
+            },
+#else
             { Result: { StatusCode: HttpStatusCode.InternalServerError } } => PredicateResult.True(),
             { Exception: HttpRequestException } => PredicateResult.True(),
             { Exception: IOException } => PredicateResult.True(),
             { Exception: InvalidOperationException } => PredicateResult.False(),
+#endif
             _ => PredicateResult.False(),
         },
     };

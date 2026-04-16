@@ -182,8 +182,13 @@ internal static partial class Migration
             // Note that PredicateResult.True() is just a shortcut for "new ValueTask<bool>(true)".
             ShouldHandle = static args => args.Outcome switch
             {
+#if UNION_TYPES
+                Exception ex when ex is SomeExceptionType => PredicateResult.True(),
+                HttpResponseMessage response when response.StatusCode is HttpStatusCode.InternalServerError => PredicateResult.True(),
+#else
                 { Exception: SomeExceptionType } => PredicateResult.True(),
                 { Result.StatusCode: HttpStatusCode.InternalServerError } => PredicateResult.True(),
+#endif
                 _ => PredicateResult.False(),
             },
             MaxRetryAttempts = 3,
