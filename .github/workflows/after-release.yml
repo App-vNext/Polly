@@ -26,9 +26,9 @@ jobs:
 
       - name: Generate GitHub application token
         id: generate-application-token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
         with:
-          app-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
+          client-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
           private-key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
           permission-contents: write
           permission-pull-requests: write
@@ -91,7 +91,7 @@ jobs:
 
       - name: Create pull request
         if: steps.push-changes.outputs.updated-version == 'true'
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
           HEAD_BRANCH: ${{ steps.push-changes.outputs.branch-name }}
@@ -134,7 +134,7 @@ jobs:
     steps:
 
       - name: Close milestone
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const { repo, owner } = context.repo;
