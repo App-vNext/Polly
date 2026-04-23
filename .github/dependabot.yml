@@ -16,6 +16,7 @@ updates:
   groups:
     dotnet:
       patterns:
+        - Microsoft.Extensions.Configuration
         - Microsoft.Extensions.DependencyInjection
         - Microsoft.Extensions.Http.Resilience
         - Microsoft.Extensions.Logging.Console
