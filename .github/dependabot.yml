@@ -6,7 +6,7 @@ updates:
     default-days: 3
   schedule:
     interval: weekly
-    day: thursday
+    day: friday
     time: "12:00"
     timezone: "America/New_York"
 - package-ecosystem: nuget
@@ -16,6 +16,7 @@ updates:
   groups:
     dotnet:
       patterns:
+        - Microsoft.Extensions.Configuration
         - Microsoft.Extensions.DependencyInjection
         - Microsoft.Extensions.Http.Resilience
         - Microsoft.Extensions.Logging.Console
@@ -28,7 +29,7 @@ updates:
         - xunit*
   schedule:
     interval: weekly
-    day: thursday
+    day: friday
     time: "12:00"
     timezone: "America/New_York"
   ignore:

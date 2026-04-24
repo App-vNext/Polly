@@ -38,21 +38,21 @@
       "rollForward": false
     },
     "markdownsnippets.tool": {
-      "version": "28.0.2",
+      "version": "28.2.0",
       "commands": [
         "mdsnippets"
       ],
       "rollForward": false
     },
     "MartinCostello.WaitForNuGetPackage": {
-      "version": "1.2.3",
+      "version": "1.2.4",
       "commands": [
         "dotnet-wait-for-package"
       ],
       "rollForward": false
     },
     "meziantou.framework.nugetpackagevalidation.tool": {
-      "version": "1.0.46",
+      "version": "1.0.47",
       "commands": [
         "meziantou.validate-nuget-package"
       ],
