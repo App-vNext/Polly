@@ -136,28 +136,50 @@ Task("__ValidateAot")
 Task("__RunTests")
     .Does(() =>
 {
-    var loggers = Array.Empty<string>();
-
-    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
-    {
-        loggers =
-        [
-            "junit;LogFilePath=junit.xml",
-            "GitHubActions;report-warnings=false;summary-include-passed=false",
-        ];
-    }
-
     var projects = GetFiles("./test/**/*.csproj");
 
     foreach (var proj in projects)
     {
-        DotNetTest(proj.FullPath, new DotNetTestSettings
+        var projectName = proj.GetFilenameWithoutExtension().ToString();
+        var configLower = configuration.ToLowerInvariant();
+        var outputBase = MakeAbsolute(Directory($"./artifacts/bin/{projectName}"));
+
+        foreach (var tfmDir in GetDirectories($"{outputBase}/{configLower}_*"))
         {
-            Configuration = configuration,
-            Loggers = loggers,
-            NoBuild = true,
-            ToolTimeout = System.TimeSpan.FromMinutes(10),
-        });
+            var dll = tfmDir.CombineWithFilePath($"{projectName}.dll");
+            var runtimeConfig = tfmDir.CombineWithFilePath($"{projectName}.runtimeconfig.json");
+            if (!FileExists(dll) || !FileExists(runtimeConfig))
+                continue;
+
+            var tfmName = tfmDir.GetDirectoryName().Substring(configLower.Length + 1);
+            Information($"Testing {projectName} ({tfmName})");
+
+            var args = new ProcessArgumentBuilder();
+            FilePath executable;
+
+            if (tfmName.StartsWith("net4"))
+            {
+                executable = tfmDir.CombineWithFilePath($"{projectName}.exe");
+            }
+            else
+            {
+                executable = Context.Tools.Resolve("dotnet") ?? new FilePath("dotnet");
+                args.Append("exec");
+                args.AppendQuoted(dll.FullPath);
+            }
+
+            if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
+            {
+                args.Append("-jUnit");
+                args.AppendQuoted($"{projectName}-{tfmName}.junit.xml");
+            }
+
+            var result = StartProcess(executable, new ProcessSettings { Arguments = args });
+            if (result != 0)
+            {
+                throw new InvalidOperationException($"Tests failed for '{projectName}' ({tfmName}).");
+            }
+        }
     }
 });
 
@@ -232,8 +254,15 @@ Task("Default")
 // MUTATION TESTING TARGETS
 ///////////////////////////////////////////////////////////////////////////////
 
+Task("PatchStryker")
+    .Does((_) =>
+{
+    PatchStrykerMtpRunner();
+});
+
 Task("MutationTestsCore")
     .IsDependentOn("__Setup")
+    .IsDependentOn("PatchStryker")
     .Does((_) =>
 {
     RunMutationTests(File("./src/Polly.Core/Polly.Core.csproj"), File("./test/Polly.Core.Tests/Polly.Core.Tests.csproj"));
@@ -241,6 +270,7 @@ Task("MutationTestsCore")
 
 Task("MutationTestsRateLimiting")
     .IsDependentOn("__Setup")
+    .IsDependentOn("PatchStryker")
     .Does((_) =>
 {
     RunMutationTests(File("./src/Polly.RateLimiting/Polly.RateLimiting.csproj"), File("./test/Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj"));
@@ -248,6 +278,7 @@ Task("MutationTestsRateLimiting")
 
 Task("MutationTestsExtensions")
     .IsDependentOn("__Setup")
+    .IsDependentOn("PatchStryker")
     .Does((_) =>
 {
     RunMutationTests(File("./src/Polly.Extensions/Polly.Extensions.csproj"), File("./test/Polly.Extensions.Tests/Polly.Extensions.Tests.csproj"));
@@ -255,6 +286,7 @@ Task("MutationTestsExtensions")
 
 Task("MutationTestsTesting")
     .IsDependentOn("__Setup")
+    .IsDependentOn("PatchStryker")
     .Does((_) =>
 {
     RunMutationTests(File("./src/Polly.Testing/Polly.Testing.csproj"), File("./test/Polly.Testing.Tests/Polly.Testing.Tests.csproj"));
@@ -262,6 +294,7 @@ Task("MutationTestsTesting")
 
 Task("MutationTestsLegacy")
     .IsDependentOn("__Setup")
+    .IsDependentOn("PatchStryker")
     .Does((_) =>
 {
     RunMutationTests(File("./src/Polly/Polly.csproj"), File("./test/Polly.Specs/Polly.Specs.csproj"));
@@ -298,6 +331,92 @@ string PatchStrykerConfig(string path, Action<Newtonsoft.Json.Linq.JObject> patc
     System.IO.File.WriteAllText(tempPath, config.ToString());
 
     return tempPath;
+}
+
+void PatchStrykerMtpRunner()
+{
+    // Patches Stryker's MTP test runner to fix three bugs:
+    // 1. "error" execution state not counted as test failure (only "failed" was checked)
+    // 2. EveryTest() sentinel not properly accumulated when server crashes
+    // 3. Static field initializer mutations not killed due to MTP process reuse
+    // See: https://github.com/stryker-mutator/stryker-net/issues/3117
+    // This patch can be removed once Stryker fixes these issues upstream.
+
+    var strykerVersion = "4.14.1";
+    var strykerTag = $"dotnet-stryker@{strykerVersion}";
+    // Resolve relative to the directory containing cake.cs, not the process working directory
+    var scriptDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath("cake.cs")) ?? ".";
+    var patchFile = System.IO.Path.Combine(scriptDir, "eng", "stryker-mtp-runner.patch");
+    var tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"stryker-patch-{strykerVersion}");
+    var targetDll = System.IO.Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+        ".nuget", "packages", "dotnet-stryker", strykerVersion, "tools", "net8.0", "any",
+        "Stryker.TestRunner.MicrosoftTestPlatform.dll");
+
+    // Check if already patched (by presence of a marker file)
+    var markerFile = targetDll + ".patched";
+    if (System.IO.File.Exists(markerFile))
+    {
+        Information("Stryker MTP runner already patched.");
+        return;
+    }
+
+    Information("Patching Stryker MTP runner...");
+
+    // Clone stryker-net at the correct tag
+    if (!System.IO.Directory.Exists(tempDir))
+    {
+        var cloneResult = StartProcess("git", new ProcessSettings
+        {
+            Arguments = $"clone --depth 1 --branch {strykerTag} https://github.com/stryker-mutator/stryker-net.git {tempDir}",
+        });
+        if (cloneResult != 0)
+        {
+            throw new InvalidOperationException("Failed to clone stryker-net repository.");
+        }
+    }
+    else
+    {
+        // Reset any leftover changes from a previous failed run
+        StartProcess("git", new ProcessSettings
+        {
+            Arguments = "checkout -- .",
+            WorkingDirectory = tempDir,
+        });
+    }
+
+    // Apply the patch
+    var applyResult = StartProcess("git", new ProcessSettings
+    {
+        Arguments = $"apply {patchFile}",
+        WorkingDirectory = tempDir,
+    });
+    if (applyResult != 0)
+    {
+        throw new InvalidOperationException("Failed to apply Stryker MTP runner patch.");
+    }
+
+    // Build the patched project (must run from tempDir so NuGet packages resolve correctly)
+    var projectPath = System.IO.Path.Combine("src", "Stryker.TestRunner.MicrosoftTestPlatform",
+        "Stryker.TestRunner.MicrosoftTestPlatform.csproj");
+    var buildResult = StartProcess("dotnet", new ProcessSettings
+    {
+        Arguments = $"build \"{projectPath}\" -c Release",
+        WorkingDirectory = tempDir,
+    });
+    if (buildResult != 0)
+    {
+        throw new InvalidOperationException("Failed to build patched Stryker MTP runner.");
+    }
+
+    // Copy the patched DLL
+    var builtDll = System.IO.Path.Combine(tempDir, "src", "Stryker.TestRunner.MicrosoftTestPlatform",
+        "bin", "Release", "net8.0", "Stryker.TestRunner.MicrosoftTestPlatform.dll");
+
+    System.IO.File.Copy(builtDll, targetDll, overwrite: true);
+    System.IO.File.WriteAllText(markerFile, $"Patched from {System.IO.Path.GetFileName(patchFile)} at {DateTime.UtcNow:O}");
+
+    Information("Stryker MTP runner patched successfully.");
 }
 
 void RunMutationTests(FilePath target, FilePath testProject)
