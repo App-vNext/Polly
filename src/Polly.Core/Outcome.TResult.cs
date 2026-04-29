@@ -1,5 +1,9 @@
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
+using System.ComponentModel;
+#if UNION_TYPES
+using System.Runtime.CompilerServices;
+#endif
 using System.Runtime.ExceptionServices;
 
 namespace Polly;
@@ -11,12 +15,27 @@ namespace Polly;
 /// <remarks>
 /// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
+#if UNION_TYPES
+[Union]
+public readonly struct Outcome<TResult> : IUnion
+#else
 public readonly struct Outcome<TResult>
+#endif
 {
-    internal Outcome(Exception exception)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Outcome{TResult}"/> struct.
+    /// </summary>
+    /// <param name="exception">The exception that occurred during the operation.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Outcome(Exception exception)
         : this() => ExceptionDispatchInfo = ExceptionDispatchInfo.Capture(Guard.NotNull(exception));
 
-    internal Outcome(TResult? result)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Outcome{TResult}"/> struct.
+    /// </summary>
+    /// <param name="result">The result of the operation.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Outcome(TResult? result)
         : this() => Result = result;
 
     internal Outcome(ExceptionDispatchInfo exceptionDispatchInfo)
@@ -36,6 +55,71 @@ public readonly struct Outcome<TResult>
     /// Gets the result of the operation, if any.
     /// </summary>
     public TResult? Result { get; }
+
+#if UNION_TYPES
+    /// <summary>
+    /// Gets a value indicating whether the result or an exception is present.
+    /// </summary>
+    /// <remarks>
+    /// This property is used to support C# union compiler infrastructure and should not be used directly by user code.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public bool HasValue => HasResult || Exception is not null;
+
+    /// <inheritdoc/>
+    public object? Value => HasResult switch
+    {
+        true => Result,
+        false => Exception,
+    };
+
+    /// <summary>
+    /// Tries to get the exception associated with the outcome, if any.
+    /// </summary>
+    /// <param name="value">
+    /// The exception that occurred during the operation, if any; otherwise, <see langword="null"/>.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if <see cref="Exception"/> is not <see langword="null"/>;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
+    /// <remarks>
+    /// This method is used to support C# union compiler infrastructure and should not be used directly by user code.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public bool TryGetValue(out Exception? value)
+    {
+        value = Exception;
+        return value is not null;
+    }
+
+    /// <summary>
+    /// Tries to get the result associated with the outcome, if any.
+    /// </summary>
+    /// <param name="value">
+    /// The result of the operation, if any; otherwise, <see langword="null"/>.
+    /// </param>
+    /// <returns>
+    /// <see langword="false"/> if <see cref="Exception"/> is not <see langword="null"/>;
+    /// otherwise <see langword="true"/>.
+    /// </returns>
+    /// <remarks>
+    /// This method is used to support C# union compiler infrastructure and should not be used directly by user code.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public bool TryGetValue(out TResult? value)
+    {
+        value = default;
+
+        if (!HasResult)
+        {
+            return false;
+        }
+
+        value = Result;
+        return true;
+    }
+#endif
 
     /// <summary>
     /// Gets a value indicating whether the operation produced a result.

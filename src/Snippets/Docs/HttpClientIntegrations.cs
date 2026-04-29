@@ -16,9 +16,19 @@ internal static class HttpClientIntegrations
     #region http-client-integrations-handle-transient-errors
     private static ValueTask<bool> HandleTransientHttpError(Outcome<HttpResponseMessage> outcome) => outcome switch
     {
+#if UNION_TYPES
+        HttpResponseMessage message => message.StatusCode switch
+        {
+            HttpStatusCode.RequestTimeout => PredicateResult.True(),
+            HttpStatusCode.InternalServerError => PredicateResult.True(),
+            _ => PredicateResult.False(),
+        },
+        Exception ex when ex is HttpRequestException => PredicateResult.True(),
+#else
         { Exception: HttpRequestException } => PredicateResult.True(),
         { Result.StatusCode: HttpStatusCode.RequestTimeout } => PredicateResult.True(),
         { Result.StatusCode: >= HttpStatusCode.InternalServerError } => PredicateResult.True(),
+#endif
         _ => PredicateResult.False(),
     };
 

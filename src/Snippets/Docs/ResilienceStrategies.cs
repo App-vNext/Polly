@@ -29,9 +29,15 @@ internal static class ResilienceStrategies
             // For greater flexibility, you can directly use the ShouldHandle delegate with switch expressions.
             ShouldHandle = args => args.Outcome switch
             {
+#if UNION_TYPES
+                Exception ex when ex is HttpRequestException => PredicateResult.True(),
+                Exception ex when ex is TimeoutRejectedException => PredicateResult.True(), // You can handle multiple exceptions
+                HttpResponseMessage response when !response.IsSuccessStatusCode => PredicateResult.True(),
+#else
                 { Exception: HttpRequestException } => PredicateResult.True(),
                 { Exception: TimeoutRejectedException } => PredicateResult.True(), // You can handle multiple exceptions
                 { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
+#endif
                 _ => PredicateResult.False(),
             }
         };
