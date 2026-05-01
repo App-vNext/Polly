@@ -428,7 +428,7 @@ jobs:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
     - name: NuGet log in
-      uses: NuGet/login@d22cc5f58ff5b88bf9bd452535b4335137e24544 # v1.1.0
+      uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
       id: nuget-login
       with:
         user: ${{ secrets.NUGET_USER }}
