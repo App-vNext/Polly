@@ -30,7 +30,7 @@
     <PackageVersion Include="Polly.RateLimiting" Version="8.6.2" />
     <PackageVersion Include="Polly.Testing" Version="8.6.2" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="10.1.6" />
-    <PackageVersion Include="ReportGenerator" Version="5.5.6" />
+    <PackageVersion Include="ReportGenerator" Version="5.5.7" />
     <PackageVersion Include="RestSharp" Version="114.0.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.24.0.138807" />
