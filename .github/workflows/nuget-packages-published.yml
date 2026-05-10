@@ -10,7 +10,7 @@ permissions: {}
 jobs:
 
   wait-for-publish:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ ubuntu-24.04 ]
     timeout-minutes: 30
 
     concurrency:
@@ -79,7 +79,7 @@ jobs:
           "published=true" >> ${env:GITHUB_OUTPUT}
 
   notify-release:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ ubuntu-24.04 ]
     needs: [wait-for-publish]
     if: needs.wait-for-publish.outputs.published == 'true'
 

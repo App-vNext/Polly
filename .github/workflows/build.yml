@@ -42,13 +42,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-latest ]
         include:
-          - os: macos-latest
+          - os: macos-26
             os_name: macos
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             os_name: linux
-          - os: windows-latest
+          - os: windows-2025
             os_name: windows
 
     steps:
@@ -155,7 +154,7 @@ jobs:
 
   validate-packages:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
 
@@ -206,7 +205,7 @@ jobs:
 
   sign:
     needs: [ build, validate-packages ]
-    runs-on: windows-latest
+    runs-on: windows-2025
     if: |
       github.event.repository.fork == false &&
       startsWith(github.ref, 'refs/tags/')
@@ -280,7 +279,7 @@ jobs:
 
   validate-signed-packages:
     needs: [ build, sign ]
-    runs-on: windows-latest
+    runs-on: windows-2025
 
     permissions:
       attestations: write
@@ -406,7 +405,7 @@ jobs:
 
   publish-nuget:
     needs: [ build, validate-signed-packages ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     environment:
       name: NuGet.org

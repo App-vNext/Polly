@@ -13,7 +13,7 @@ permissions: {}
 jobs:
 
   build-docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
 
     permissions:
@@ -59,7 +59,7 @@ jobs:
 
   publish-docs:
     needs: [ build-docs ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: |
       github.event.repository.fork == false &&
       github.ref_name == github.event.repository.default_branch

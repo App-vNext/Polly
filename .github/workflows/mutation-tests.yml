@@ -23,7 +23,7 @@ permissions:
 jobs:
   mutations:
     name: 'mutations-${{ matrix.name }}'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
 
     strategy:
@@ -78,7 +78,7 @@ jobs:
   mutation-tests:
     needs: [ mutations ]
     if: ${{ always() }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       MUTATIONS_SUCCESS: ${{ !contains(needs.*.result, 'failure') }}
       STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}

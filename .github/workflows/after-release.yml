@@ -15,7 +15,7 @@ env:
 jobs:
 
   update-changelog:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ ubuntu-24.04 ]
     if: github.event_name == 'release' && github.event.repository.fork == false
 
     concurrency:
@@ -121,7 +121,7 @@ jobs:
             core.notice(`Created pull request ${owner}/${repo}#${pr.number}: ${pr.html_url}`);
 
   update-milestone:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ ubuntu-24.04 ]
     if: github.event.repository.fork == false
 
     concurrency:
