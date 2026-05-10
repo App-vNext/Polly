@@ -22,8 +22,8 @@ permissions: {}
 
 jobs:
   build:
-    name: ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.job-name }}
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
 
     outputs:
@@ -43,12 +43,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-26
-            os_name: macos
-          - os: ubuntu-24.04
-            os_name: linux
-          - os: windows-2025
-            os_name: windows
+          - job-name: macos-latest
+            os-name: macos
+            runner: macos-26
+          - job-name: ubuntu-latest
+            os-name: linux
+            runner: ubuntu-24.04
+          - job-name: windows-latest
+            os-name: windows
+            runner: windows-2025
 
     steps:
 
@@ -95,7 +98,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
-        name: coverage-${{ matrix.os_name }}
+        name: coverage-${{ matrix.os-name }}
         path: ./artifacts/coverage-reports
         if-no-files-found: ignore
 
@@ -103,27 +106,27 @@ jobs:
       if: always() && github.event.repository.fork == false
       uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
       with:
-        flags: ${{ matrix.os_name }}
+        flags: ${{ matrix.os-name }}
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Upload test results to Codecov
       uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
       if: ${{ !cancelled() }}
       with:
-        flags: ${{ matrix.os_name }}
+        flags: ${{ matrix.os-name }}
         report_type: test_results
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Publish NuGet packages
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
-        name: packages-${{ matrix.os_name }}
+        name: packages-${{ matrix.os-name }}
         path: ./artifacts/package/release
         if-no-files-found: error
 
     - name: Upload signing file list
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-      if: matrix.os_name == 'windows'
+      if: matrix.os-name == 'windows'
       with:
         name: signing-config
         path: eng/signing
