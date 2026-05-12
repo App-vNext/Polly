@@ -45,21 +45,21 @@
       "rollForward": false
     },
     "MartinCostello.WaitForNuGetPackage": {
-      "version": "1.2.4",
+      "version": "1.3.0",
       "commands": [
         "dotnet-wait-for-package"
       ],
       "rollForward": false
     },
     "meziantou.framework.nugetpackagevalidation.tool": {
-      "version": "1.0.47",
+      "version": "1.0.50",
       "commands": [
         "meziantou.validate-nuget-package"
       ],
       "rollForward": false
     },
     "sign": {
-      "version": "0.9.1-beta.26179.1",
+      "version": "0.9.1-beta.26227.3",
       "commands": [
         "sign"
       ],

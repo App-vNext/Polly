@@ -25,7 +25,7 @@ jobs:
     needs: update-dotnet-sdk
     permissions:
       pull-requests: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if : |
       needs.update-dotnet-sdk.outputs.sdk-updated =='true' &&
       needs.update-dotnet-sdk.outputs.security == 'true'
