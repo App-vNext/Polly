@@ -21,7 +21,7 @@
     <MinVerMinimumMajorMinor>8.6</MinVerMinimumMajorMinor>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net11.0'))">
     <DefineConstants>$(DefineConstants);UNION_TYPES</DefineConstants>
   </PropertyGroup>
 
