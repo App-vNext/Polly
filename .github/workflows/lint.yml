@@ -16,14 +16,13 @@ permissions: {}
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     env:
       FORCE_COLOR: 3
       POWERSHELL_YAML_VERSION: '0.4.12'
       PSSCRIPTANALYZER_VERSION: '1.24.0'
       TERM: xterm
-      ZIZMOR_VERSION: '1.23.1'
 
     permissions:
       actions: read
@@ -48,10 +47,9 @@ jobs:
         args: -color
 
     - name: Lint workflows with zizmor
-      uses: zizmorcore/zizmor-action@71321a20a9ded102f6e9ce5718a2fcec2c4f70d8 # v0.5.2
+      uses: zizmorcore/zizmor-action@b1d7e1fb5de872772f31590499237e7cce841e8e # v0.5.3
       with:
         persona: pedantic
-        version: ${{ env.ZIZMOR_VERSION }}
 
     - name: Lint PowerShell in workflows
       uses: martincostello/lint-actions-powershell@e088367ebeb113cd7c1ebee5c541175d93e945b7 # v1.0.1

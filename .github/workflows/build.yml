@@ -22,8 +22,8 @@ permissions: {}
 
 jobs:
   build:
-    name: ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.job-name }}
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
 
     outputs:
@@ -42,14 +42,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-latest ]
         include:
-          - os: macos-latest
-            os_name: macos
-          - os: ubuntu-latest
-            os_name: linux
-          - os: windows-latest
-            os_name: windows
+          - job-name: macos-latest
+            os-name: macos
+            runner: macos-26
+          - job-name: ubuntu-latest
+            os-name: linux
+            runner: ubuntu-24.04
+          - job-name: windows-latest
+            os-name: windows
+            runner: windows-2025
 
     steps:
 
@@ -94,9 +96,9 @@ jobs:
 
     - name: Upload Coverage Reports
       if: always()
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
-        name: coverage-${{ matrix.os_name }}
+        name: coverage-${{ matrix.os-name }}
         path: ./artifacts/coverage-reports
         if-no-files-found: ignore
 
@@ -104,27 +106,27 @@ jobs:
       if: always() && github.event.repository.fork == false
       uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
       with:
-        flags: ${{ matrix.os_name }}
+        flags: ${{ matrix.os-name }}
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Upload test results to Codecov
       uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
       if: ${{ !cancelled() }}
       with:
-        flags: ${{ matrix.os_name }}
+        flags: ${{ matrix.os-name }}
         report_type: test_results
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Publish NuGet packages
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
-        name: packages-${{ matrix.os_name }}
+        name: packages-${{ matrix.os-name }}
         path: ./artifacts/package/release
         if-no-files-found: error
 
     - name: Upload signing file list
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-      if: matrix.os_name == 'windows'
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      if: matrix.os-name == 'windows'
       with:
         name: signing-config
         path: eng/signing
@@ -155,7 +157,7 @@ jobs:
 
   validate-packages:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
 
@@ -206,7 +208,7 @@ jobs:
 
   sign:
     needs: [ build, validate-packages ]
-    runs-on: windows-latest
+    runs-on: windows-2025
     if: |
       github.event.repository.fork == false &&
       startsWith(github.ref, 'refs/tags/')
@@ -272,7 +274,7 @@ jobs:
         }
 
     - name: Upload signed packages
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: signed-packages
         path: packages
@@ -280,7 +282,7 @@ jobs:
 
   validate-signed-packages:
     needs: [ build, sign ]
-    runs-on: windows-latest
+    runs-on: windows-2025
 
     permissions:
       attestations: write
@@ -406,7 +408,7 @@ jobs:
 
   publish-nuget:
     needs: [ build, validate-signed-packages ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     environment:
       name: NuGet.org
@@ -428,7 +430,7 @@ jobs:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
     - name: NuGet log in
-      uses: NuGet/login@d22cc5f58ff5b88bf9bd452535b4335137e24544 # v1.1.0
+      uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
       id: nuget-login
       with:
         user: ${{ secrets.NUGET_USER }}
@@ -442,9 +444,9 @@ jobs:
 
     - name: Generate GitHub application token
       id: generate-application-token
-      uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+      uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
       with:
-        app-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
+        client-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
         private-key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
         permission-contents: write
 

@@ -10,7 +10,7 @@ permissions: {}
 jobs:
 
   wait-for-publish:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ ubuntu-24.04 ]
     timeout-minutes: 30
 
     concurrency:
@@ -79,7 +79,7 @@ jobs:
           "published=true" >> ${env:GITHUB_OUTPUT}
 
   notify-release:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ ubuntu-24.04 ]
     needs: [wait-for-publish]
     if: needs.wait-for-publish.outputs.published == 'true'
 
@@ -94,7 +94,7 @@ jobs:
     steps:
 
       - name: Comment on issues and pull requests
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           VERSION: ${{ github.event.client_payload.version }}
         with:

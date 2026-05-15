@@ -24,7 +24,7 @@
       "rollForward": false
     },
     "dotnet-stryker": {
-      "version": "4.14.0",
+      "version": "4.14.1",
       "commands": [
         "dotnet-stryker"
       ],
@@ -38,28 +38,28 @@
       "rollForward": false
     },
     "markdownsnippets.tool": {
-      "version": "28.0.2",
+      "version": "28.2.0",
       "commands": [
         "mdsnippets"
       ],
       "rollForward": false
     },
     "MartinCostello.WaitForNuGetPackage": {
-      "version": "1.2.3",
+      "version": "1.3.0",
       "commands": [
         "dotnet-wait-for-package"
       ],
       "rollForward": false
     },
     "meziantou.framework.nugetpackagevalidation.tool": {
-      "version": "1.0.46",
+      "version": "1.0.50",
       "commands": [
         "meziantou.validate-nuget-package"
       ],
       "rollForward": false
     },
     "sign": {
-      "version": "0.9.1-beta.26179.1",
+      "version": "0.9.1-beta.26227.3",
       "commands": [
         "sign"
       ],
