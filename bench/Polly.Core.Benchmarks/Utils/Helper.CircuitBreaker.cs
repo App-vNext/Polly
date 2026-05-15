@@ -54,8 +54,13 @@ internal static partial class Helper
                     BreakDuration = TimeSpan.FromSeconds(5),
                     ShouldHandle = args => args.Outcome switch
                     {
+#if UNION_TYPES
+                        Exception ex when ex is InvalidOperationException => PredicateResult.True(),
+                        string result when result == Failure => PredicateResult.True(),
+#else
                         { Exception: InvalidOperationException } => PredicateResult.True(),
                         { Result: string result } when result == Failure => PredicateResult.True(),
+#endif
                         _ => PredicateResult.False(),
                     },
                 });

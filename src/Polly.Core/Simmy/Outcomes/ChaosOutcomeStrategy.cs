@@ -20,18 +20,23 @@ internal sealed class ChaosOutcomeStrategy<T> : ChaosStrategy<T>
     {
         try
         {
-            if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext) &&
-                await _outcomeGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext) is Outcome<T> outcome)
+            if (await ShouldInjectAsync(context).ConfigureAwait(context.ContinueOnCapturedContext))
             {
-                var args = new OnOutcomeInjectedArguments<T>(context, outcome);
-                _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosOutcomeConstants.OnOutcomeInjectedEvent), context, args);
+                var maybeOutcome = await _outcomeGenerator(new(context)).ConfigureAwait(context.ContinueOnCapturedContext);
 
-                if (_onOutcomeInjected is not null)
+                // HACK Workaround https://github.com/dotnet/roslyn/issues/83050
+                if (maybeOutcome.HasValue)
                 {
-                    await _onOutcomeInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
-                }
+                    var args = new OnOutcomeInjectedArguments<T>(context, maybeOutcome.GetValueOrDefault());
+                    _telemetry.Report(new(ResilienceEventSeverity.Information, ChaosOutcomeConstants.OnOutcomeInjectedEvent), context, args);
 
-                return outcome;
+                    if (_onOutcomeInjected is not null)
+                    {
+                        await _onOutcomeInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
+                    }
+
+                    return maybeOutcome.Value;
+                }
             }
 
             context.CancellationToken.ThrowIfCancellationRequested();

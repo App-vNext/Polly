@@ -12,6 +12,14 @@ public partial class IssuesTests
         {
             FailureRatio = 1,
             MinimumThroughput = 10,
+#if UNION_TYPES
+            ShouldHandle = args => args.Outcome switch
+            {
+                object result when result is int intVal && intVal is -1 => new ValueTask<bool>(true),
+                object result when result is string stringVal && stringVal is "error" => new ValueTask<bool>(true),
+                _ => new ValueTask<bool>(false),
+            },
+#else
             ShouldHandle = args => args.Outcome.Result switch
             {
                 // handle int results
@@ -21,6 +29,7 @@ public partial class IssuesTests
                 string stringVal when stringVal is "error" => new ValueTask<bool>(true),
                 _ => new ValueTask<bool>(false),
             },
+#endif
         };
 
         // create the strategy

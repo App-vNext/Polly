@@ -30,8 +30,13 @@ public class HedgingExecutionContextTests : IDisposable
         _hedgingHandler = HedgingHelper.CreateHandler<DisposableResult>(
             outcome => outcome switch
             {
+#if UNION_TYPES
+                Exception ex when ex is ApplicationException => true,
+                DisposableResult result when result.Name == Handled => true,
+#else
                 { Exception: ApplicationException } => true,
                 { Result: DisposableResult result } when result.Name == Handled => true,
+#endif
                 _ => false,
             },
             args => Generator(args));

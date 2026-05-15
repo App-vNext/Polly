@@ -29,10 +29,22 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T
 
     protected internal override async ValueTask<Outcome<T>> ExecuteCore<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
-        if (await _controller.OnActionPreExecuteAsync(context).ConfigureAwait(context.ContinueOnCapturedContext) is Outcome<T> outcome)
+        var maybeOutcome = await _controller.OnActionPreExecuteAsync(context).ConfigureAwait(context.ContinueOnCapturedContext);
+
+#if UNION_TYPES
+        // HACK Workaround https://github.com/dotnet/roslyn/issues/83050
+        if (maybeOutcome.HasValue)
+        {
+            return maybeOutcome.GetValueOrDefault();
+        }
+
+        Outcome<T> outcome;
+#else
+        if (maybeOutcome is Outcome<T> outcome)
         {
             return outcome;
         }
+#endif
 
         try
         {

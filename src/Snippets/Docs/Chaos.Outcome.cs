@@ -53,7 +53,13 @@ internal static partial class Chaos
             {
                 ShouldHandle = static args => args.Outcome switch
                 {
-                    { Result.StatusCode: HttpStatusCode.InternalServerError } => PredicateResult.True(),
+#if UNION_TYPES
+                    Exception ex when ex is HttpRequestException => PredicateResult.True(),
+                    HttpResponseMessage response when !response.IsSuccessStatusCode => PredicateResult.True(),
+#else
+                    { Exception: HttpRequestException } => PredicateResult.True(),
+                    { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True(),
+#endif
                     _ => PredicateResult.False(),
                 },
                 BackoffType = DelayBackoffType.Exponential,

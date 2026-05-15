@@ -55,9 +55,10 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
 
                 var loadedExecution = await hedgingContext.LoadExecutionAsync(callback, state).ConfigureAwait(continueOnCapturedContext);
 
-                if (loadedExecution.Outcome is Outcome<T> outcome)
+                // HACK Workaround https://github.com/dotnet/roslyn/issues/83050
+                if (loadedExecution.Outcome.HasValue)
                 {
-                    return outcome;
+                    return loadedExecution.Outcome.GetValueOrDefault();
                 }
 
                 var delay = await GetHedgingDelayAsync(context, hedgingContext.LoadedTasks).ConfigureAwait(continueOnCapturedContext);
@@ -67,7 +68,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
                     continue;
                 }
 
-                outcome = execution.Outcome;
+                var outcome = execution.Outcome;
 
                 if (!execution.IsHandled)
                 {
