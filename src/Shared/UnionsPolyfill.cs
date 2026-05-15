@@ -1,4 +1,4 @@
-#if UNION_TYPES
+#if UNION_TYPES && !NET11_0_OR_GREATER
 #pragma warning disable CS1591
 #pragma warning disable RS0016
 #pragma warning disable SA1600
