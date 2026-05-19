@@ -27,6 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
-    <PackageReference Include="System.Threading.RateLimiting" />
+    <PackageReference Include="System.Threading.RateLimiting" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))" />
   </ItemGroup>
 </Project>
