@@ -935,6 +935,36 @@ public class HedgingResilienceStrategyTests : IDisposable
         _events.Select(v => v.Event.EventName).Distinct().Count().ShouldBe(2);
     }
 
+    [Fact]
+    public async Task ExecuteCore_CallerCancellation_EnsureExceptionCarriesCallerToken()
+    {
+        // arrange
+        using var cancellationSource = new CancellationTokenSource();
+        _options.MaxHedgedAttempts = 1;
+        _options.Delay = LongDelay; // ensure no secondary attempt starts before the primary completes
+        ConfigureHedging(); // ShouldHandle returns false, so the primary's outcome is accepted as-is
+
+        var strategy = (HedgingResilienceStrategy<string>)Create().GetPipelineDescriptor().FirstStrategy.StrategyInstance;
+
+        var context = ResilienceContextPool.Shared.Get(CancellationToken);
+        context.CancellationToken = cancellationSource.Token;
+
+        // act
+        var outcome = await strategy.ExecuteCore(
+            (ctx, _) =>
+            {
+                cancellationSource.Cancel();
+                ctx.CancellationToken.ThrowIfCancellationRequested();
+                return Outcome.FromResultAsValueTask("unreachable");
+            },
+            context,
+            "state");
+
+        // assert
+        var exception = outcome.Exception.ShouldBeOfType<OperationCanceledException>();
+        exception.CancellationToken.ShouldBe(cancellationSource.Token);
+    }
+
     private void ConfigureHedging() =>
         ConfigureHedging(_ => false, _actions.Generator);
 

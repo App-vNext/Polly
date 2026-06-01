@@ -226,6 +226,28 @@ public class TimeoutResilienceStrategyTests : IDisposable
     }
 
     [Fact]
+    public async Task Execute_CallerCancellation_EnsureExceptionCarriesCallerToken()
+    {
+        var delay = TimeSpan.FromSeconds(10);
+
+        using var cts = new CancellationTokenSource();
+        SetTimeout(TimeSpan.FromSeconds(10));
+
+        var sut = CreateSut();
+
+        var exception = await Should.ThrowAsync<OperationCanceledException>(
+            () => sut.ExecuteAsync(async token =>
+            {
+                var task = _timeProvider.Delay(delay, token);
+                cts.Cancel();
+                await task;
+            },
+            cts.Token).AsTask());
+
+        exception.CancellationToken.ShouldBe(cts.Token);
+    }
+
+    [Fact]
     public async Task Execute_NoTimeoutOrCancellation_EnsureCancellationTokenRestored()
     {
         var delay = TimeSpan.FromSeconds(10);
