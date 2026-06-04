@@ -168,7 +168,7 @@ public partial class IssuesTests
             pipeline.ExecuteAsync(
                 async token =>
                 {
-                    var delay = Task.Delay(TimeSpan.FromSeconds(10), TimeProvider, token);
+                    var delay = TimeProvider.Delay(TimeSpan.FromSeconds(10), token);
                     TimeProvider.Advance(TimeSpan.FromSeconds(2));
                     await delay;
                 },
