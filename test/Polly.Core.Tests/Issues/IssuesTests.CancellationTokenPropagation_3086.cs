@@ -22,7 +22,7 @@ public partial class IssuesTests
             pipeline.ExecuteAsync(
                 async token =>
                 {
-                    await cts.CancelAsync(); // simulate cancellation request from upstream caller
+                    cts.Cancel(); // simulate cancellation request from upstream caller
                     token.ThrowIfCancellationRequested(); // simulate cancellation response from downstream code
                 },
                 cts.Token).AsTask());
@@ -44,7 +44,7 @@ public partial class IssuesTests
             pipeline.ExecuteAsync(
                 async token =>
                 {
-                    await cts.CancelAsync();
+                    cts.Cancel();
                     token.ThrowIfCancellationRequested();
                 },
                 cts.Token).AsTask());
@@ -66,7 +66,7 @@ public partial class IssuesTests
             pipeline.ExecuteAsync(
                 async token =>
                 {
-                    await cts.CancelAsync();
+                    cts.Cancel();
                     token.ThrowIfCancellationRequested();
                 },
                 cts.Token).AsTask());
@@ -97,7 +97,7 @@ public partial class IssuesTests
             pipeline.ExecuteAsync(
                 async token =>
                 {
-                    await cts.CancelAsync();
+                    cts.Cancel();
                     token.ThrowIfCancellationRequested();
                 },
                 cts.Token).AsTask());
@@ -123,7 +123,7 @@ public partial class IssuesTests
             pipeline.ExecuteAsync(
                 async token =>
                 {
-                    await cts.CancelAsync();
+                    cts.Cancel();
                     token.ThrowIfCancellationRequested();
                     return "unreachable";
                 },
@@ -147,7 +147,7 @@ public partial class IssuesTests
             pipeline.ExecuteAsync(
                 async token =>
                 {
-                    await cts.CancelAsync();
+                    cts.Cancel();
                     token.ThrowIfCancellationRequested();
                 },
                 cts.Token).AsTask());
@@ -186,7 +186,8 @@ public partial class IssuesTests
 
         using var callerCts = new CancellationTokenSource();
         using var unrelatedCts = new CancellationTokenSource();
-        await unrelatedCts.CancelAsync();
+
+        unrelatedCts.Cancel();
 
         var exception = await Should.ThrowAsync<OperationCanceledException>(() =>
             pipeline.ExecuteAsync(
