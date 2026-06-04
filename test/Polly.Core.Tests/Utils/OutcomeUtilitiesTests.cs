@@ -10,12 +10,14 @@ public class OutcomeUtilitiesTests
         using var caller = new CancellationTokenSource();
         using var other = new CancellationTokenSource();
         caller.Cancel();
-        var outcome = Outcome.FromException<int>(new OperationCanceledException(other.Token));
+        var original = new OperationCanceledException(other.Token);
+        var outcome = Outcome.FromException<int>(original);
 
         var result = outcome.WithCallerCancellationToken(caller.Token);
 
         var exception = result.Exception.ShouldBeOfType<OperationCanceledException>();
         exception.CancellationToken.ShouldBe(caller.Token);
+        exception.InnerException.ShouldBeSameAs(original);
         exception.StackTrace.ShouldNotBeNull();
     }
 

@@ -12,7 +12,8 @@ internal static class OutcomeUtilities
     /// <param name="callerToken">The cancellation token that was associated with the execution before the strategy substituted it.</param>
     /// <returns>
     /// An outcome whose <see cref="OperationCanceledException"/> carries <paramref name="callerToken"/> when the caller
-    /// requested cancellation; otherwise the original <paramref name="outcome"/> unchanged.
+    /// requested cancellation, preserving the original exception as its <see cref="Exception.InnerException"/>;
+    /// otherwise the original <paramref name="outcome"/> unchanged.
     /// </returns>
     /// <remarks>
     /// The rewrite happens only when <paramref name="callerToken"/> actually requested cancellation. This preserves
@@ -23,7 +24,7 @@ internal static class OutcomeUtilities
     {
         if (callerToken.IsCancellationRequested && outcome.Exception is OperationCanceledException oce && oce.CancellationToken != callerToken)
         {
-            return Outcome.FromException<T>(new OperationCanceledException(callerToken).TrySetStackTrace());
+            return Outcome.FromException<T>(new OperationCanceledException(oce.Message, oce, callerToken).TrySetStackTrace());
         }
 
         return outcome;

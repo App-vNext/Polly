@@ -77,12 +77,17 @@ public partial class IssuesTests
     [Fact]
     public async Task NestedTimeouts_CallerCancellation_ExceptionCarriesCallerToken_3086()
     {
-        var inner = new ResiliencePipelineBuilder()
+        var innermost = new ResiliencePipelineBuilder()
             .AddTimeout(TimeSpan.FromMinutes(1))
             .Build();
 
-        var pipeline = new ResiliencePipelineBuilder()
+        var inner = new ResiliencePipelineBuilder()
             .AddTimeout(TimeSpan.FromMinutes(2))
+            .AddPipeline(innermost)
+            .Build();
+
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddTimeout(TimeSpan.FromMinutes(3))
             .AddPipeline(inner)
             .Build();
 
