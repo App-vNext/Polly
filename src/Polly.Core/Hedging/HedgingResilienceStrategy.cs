@@ -1,5 +1,6 @@
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
+using Polly.Utils;
 
 namespace Polly.Hedging;
 
@@ -57,7 +58,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
 
                 if (loadedExecution.Outcome is Outcome<T> outcome)
                 {
-                    return outcome;
+                    return outcome.WithCallerCancellationToken(cancellationToken);
                 }
 
                 var delay = await GetHedgingDelayAsync(context, hedgingContext.LoadedTasks).ConfigureAwait(continueOnCapturedContext);
@@ -72,7 +73,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy<T>
                 if (!execution.IsHandled)
                 {
                     execution.AcceptOutcome();
-                    return outcome;
+                    return outcome.WithCallerCancellationToken(cancellationToken);
                 }
             }
         }
