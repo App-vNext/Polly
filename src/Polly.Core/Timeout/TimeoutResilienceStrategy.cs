@@ -1,4 +1,5 @@
 using Polly.Telemetry;
+using Polly.Utils;
 
 namespace Polly.Timeout;
 
@@ -89,7 +90,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
             return Outcome.FromException<TResult>(timeoutException.TrySetStackTrace());
         }
 
-        return outcome;
+        return outcome.WithCallerCancellationToken(previousToken);
     }
 
     private static CancellationTokenRegistration CreateRegistration(CancellationTokenSource cancellationSource, CancellationToken previousToken)
