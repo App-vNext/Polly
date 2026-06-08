@@ -11,7 +11,7 @@ jobs:
 
   wait-for-publish:
     runs-on: [ ubuntu-24.04 ]
-    timeout-minutes: 30
+    timeout-minutes: 75
 
     concurrency:
       group: '${{ github.workflow }}-${{ github.event.client_payload.version }}'
