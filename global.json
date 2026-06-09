@@ -1,6 +1,6 @@
 {
   "sdk": {
-    "version": "11.0.100-preview.4.26230.115",
+    "version": "11.0.100-preview.5.26302.115",
     "allowPrerelease": false
   },
   "msbuild-sdks": {
