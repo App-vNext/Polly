@@ -4,6 +4,11 @@
 
 <!-- next-release -->
 
+## 8.7.0
+
+* Adds caller cancellation token propagation in hedging and timeout strategies by [@DaRosenberg](https://github.com/DaRosenberg) in https://github.com/App-vNext/Polly/pull/3094
+* Telemetry refactoring by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/2985
+
 ## 8.6.6
 
 * Fix `ScheduledTaskExecutor` deadlock when `TrySetResult` runs continuations inline by [@crnhrv](https://github.com/crnhrv) in https://github.com/App-vNext/Polly/pull/2953
