@@ -7,7 +7,7 @@
 
   <!-- TODO Move to common when this is no longer a preview feature -->
   <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net11.0'))">
-    <Features>runtime-async=on</Features>
+    <Features>$(Features);runtime-async=on</Features>
   </PropertyGroup>
 
   <ItemGroup>
