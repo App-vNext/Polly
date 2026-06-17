@@ -446,10 +446,10 @@ jobs:
 
     - name: Push signed NuGet packages to NuGet.org
       env:
-        API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+        NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         PACKAGE_VERSION: ${{ needs.build.outputs.package-version }}
         SOURCE: https://api.nuget.org/v3/index.json
-      run: dotnet nuget push "*.nupkg" --api-key "${API_KEY}" --skip-duplicate --source "${SOURCE}" && echo "::notice title=nuget.org::Published version ${PACKAGE_VERSION} to NuGet.org."
+      run: dotnet nuget push "*.nupkg" --skip-duplicate --source "${SOURCE}" && echo "::notice title=nuget.org::Published version ${PACKAGE_VERSION} to NuGet.org."
 
     - name: Generate GitHub application token
       id: generate-application-token
