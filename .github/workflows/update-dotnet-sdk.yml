@@ -9,7 +9,7 @@ permissions: {}
 
 jobs:
   update-dotnet-sdk:
-    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@65c17eb6cecd15acfc1be78fffc0456add88690d # v6.1.0
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@46a749340f1074b411229cc31dde7a3678d70b23 # v6.1.2
     permissions:
       contents: read
     with:
