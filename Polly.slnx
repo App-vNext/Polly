@@ -7,7 +7,7 @@
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
-    <File Path="build.cake" />
+    <File Path="cake.cs" />
     <File Path="CHANGELOG.md" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
@@ -15,6 +15,9 @@
     <File Path="global.json" />
     <File Path="NuGet.config" />
     <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Solution Items/.config/">
+    <File Path=".config/dotnet-tools.json" />
   </Folder>
   <Folder Name="/Solution Items/eng/">
     <File Path="eng/Analyzers.targets" />

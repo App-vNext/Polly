@@ -2,13 +2,11 @@
   <ItemGroup>
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
     <PackageVersion Include="Cake.FileHelpers" Version="7.0.0" />
-    <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
     <PackageVersion Include="Flurl.Http.Signed" Version="4.0.2" />
     <PackageVersion Include="FsCheck.Xunit.v3" Version="3.3.3" />
     <PackageVersion Include="FSharp.Core" Version="8.0.200" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="3.0.4" />
     <PackageVersion Include="IcedTasks" Version="0.11.4" />
-    <PackageVersion Include="JunitXml.TestLogger" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="4.14.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="4.14.0" />
@@ -20,6 +18,8 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.9" />
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.4.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.8.0" />
+    <PackageVersion Include="Microsoft.Testing.Platform" Version="2.2.3" />
     <PackageVersion Include="MinVer" Version="7.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
@@ -30,7 +30,6 @@
     <PackageVersion Include="Polly.RateLimiting" Version="8.7.0" />
     <PackageVersion Include="Polly.Testing" Version="8.7.0" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="11.2.0" />
-    <PackageVersion Include="ReportGenerator" Version="5.5.10" />
     <PackageVersion Include="RestSharp" Version="114.0.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.27.0.140913" />
@@ -40,7 +39,7 @@
     <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
     <PackageVersion Include="xunit.v3.assert" Version="3.2.2" />
-    <PackageVersion Include="xunit.v3.mtp-off" Version="3.2.2" />
+    <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.2" />
   </ItemGroup>
   <!-- Dependencies below are pinned for the libraries we ship to NuGet.org -->
   <ItemGroup>
