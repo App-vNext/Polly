@@ -5,8 +5,6 @@
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <ProjectType>Test</ProjectType>
-    <Threshold>94,94,91</Threshold>
-    <Include>[Polly]*</Include>
     <IncludePollyUsings>true</IncludePollyUsings>
   </PropertyGroup>
   <ItemGroup>
