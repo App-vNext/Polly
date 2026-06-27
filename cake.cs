@@ -147,11 +147,6 @@ Task("__RunTests")
             Configuration = configuration,
             NoBuild = true,
             ToolTimeout = System.TimeSpan.FromMinutes(10),
-            ArgumentCustomization = (args) => args
-                .Append("--")
-                .Append("--report-junit")
-                .Append("--report-junit-filename")
-                .Append($"{projectName}.junit.xml")
         });
     }
 });
