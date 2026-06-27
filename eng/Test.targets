@@ -21,4 +21,29 @@
     <PackageReference Include="xunit.v3.mtp-v2" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <CoverageFormat>cobertura</CoverageFormat>
+    <CoverageOutputPath>$([MSBuild]::ValueOrDefault('$(CoverageOutputPath)', '$([System.IO.Path]::Combine($(ArtifactsPath), 'coverage'))'))</CoverageOutputPath>
+    <CoverageOutput>$([MSBuild]::ValueOrDefault('$(CoverageOutput)', '$([System.IO.Path]::Combine($(CoverageOutputPath), '$(MSBuildProjectName)', 'coverage.xml'))'))</CoverageOutput>
+    <CoverletOutput>$([System.IO.Path]::Combine($(CoverageOutputPath), '$(MSBuildProjectName)', 'coverage-reports'))</CoverletOutput>
+  </PropertyGroup>
+
+  <Target Name="_UpdateTestPlatformProperties" BeforeTargets="_MTPAddArguments;InvokeTestingPlatform">
+    <PropertyGroup>
+      <TestResultsDirectory>$([MSBuild]::ValueOrDefault('$(TestResultsDirectory)', '$([System.IO.Path]::Combine($(ArtifactsPath), 'tests'))'))</TestResultsDirectory>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(TestResultsDirectory)' != '' ">
+      <_TestingPlatformCommandLineArguments>--results-directory %22$(TestResultsDirectory)%22</_TestingPlatformCommandLineArguments>
+    </PropertyGroup>
+    <PropertyGroup>
+      <_TestingPlatformCommandLineArguments>$(_TestingPlatformCommandLineArguments) --coverage</_TestingPlatformCommandLineArguments>
+      <_TestingPlatformCommandLineArguments Condition=" '$(CoverageFormat)' != '' ">$(_TestingPlatformCommandLineArguments) --coverage-output-format %22$(CoverageFormat)%22</_TestingPlatformCommandLineArguments>
+      <_TestingPlatformCommandLineArguments Condition=" '$(CoverageOutput)' != '' ">$(_TestingPlatformCommandLineArguments) --coverage-output %22$(CoverageOutput)%22</_TestingPlatformCommandLineArguments>
+      <_TestingPlatformCommandLineArguments Condition=" '$(CoverageRunSettings)' != '' ">$(_TestingPlatformCommandLineArguments) --coverage-settings %22$(CoverageRunSettings)%22</_TestingPlatformCommandLineArguments>
+    </PropertyGroup>
+    <CreateProperty Value="$(TestingPlatformCommandLineArguments) $(_TestingPlatformCommandLineArguments)" Condition=" '$(_TestingPlatformCommandLineArguments)' != '' ">
+      <Output TaskParameter="Value" PropertyName="TestingPlatformCommandLineArguments" />
+    </CreateProperty>
+  </Target>
+
 </Project>
