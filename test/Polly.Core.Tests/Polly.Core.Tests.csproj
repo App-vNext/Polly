@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <Threshold>100</Threshold>
     <NoWarn>$(NoWarn);S6966</NoWarn>
+    <OutputType>Exe</OutputType>
     <Include>[Polly.Core]*</Include>
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
   </PropertyGroup>
@@ -15,7 +16,7 @@
     <Compile Include="..\Shared\TestCancellation.cs" Link="TestCancellation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FsCheck.Xunit" />
+    <PackageReference Include="FsCheck.Xunit.v3" />
     <PackageReference Include="Microsoft.Bcl.TimeProvider" />
     <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
     <PackageReference Include="Polly.Contrib.WaitAndRetry" />
