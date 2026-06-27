@@ -148,7 +148,7 @@ Task("__RunTests")
         ];
     }
 
-    var projects = GetFiles("./test/**/*.csproj");
+    var projects = GetFiles("./test/**/*{Tests,Specs}.csproj");
 
     foreach (var proj in projects)
     {
