@@ -41,6 +41,7 @@
       <_TestingPlatformCommandLineArguments Condition=" '$(CoverageRunSettings)' != '' ">$(_TestingPlatformCommandLineArguments) --coverage-settings %22$(CoverageRunSettings)%22</_TestingPlatformCommandLineArguments>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(CI)' == 'true' ">
+      <_TestingPlatformCommandLineArguments Condition=" '$(CoverageOutput)' != '' ">$(_TestingPlatformCommandLineArguments) --report-github</_TestingPlatformCommandLineArguments>
       <_TestingPlatformCommandLineArguments Condition=" '$(CoverageOutput)' != '' ">$(_TestingPlatformCommandLineArguments) --report-github-summary-include-passed false</_TestingPlatformCommandLineArguments>
       <_TestingPlatformCommandLineArguments>$(_TestingPlatformCommandLineArguments) --report-junit</_TestingPlatformCommandLineArguments>
       <_TestingPlatformCommandLineArguments Condition=" '$(CoverageOutput)' != '' ">$(_TestingPlatformCommandLineArguments) --report-junit-filename %22$(MSBuildProjectName).$(TargetFramework).junit.xml%22</_TestingPlatformCommandLineArguments>
