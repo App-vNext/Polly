@@ -352,6 +352,31 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     }
 
     [Fact]
+    public async Task Should_not_sleep_when_the_retry_wait_duration_is_zero()
+    {
+        var sleepInvocations = 0;
+
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetryAsync(
+            [
+               TimeSpan.Zero,
+               TimeSpan.Zero,
+               TimeSpan.Zero,
+            ]);
+
+        SystemClock.SleepAsync = (_, _) =>
+        {
+            sleepInvocations++;
+            return TaskHelper.EmptyTask;
+        };
+
+        await Should.NotThrowAsync(() => policy.RaiseExceptionAsync<DivideByZeroException>(3));
+
+        sleepInvocations.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task Should_call_onretry_on_each_retry_with_the_current_timespan()
     {
         var expectedRetryWaits = new[]

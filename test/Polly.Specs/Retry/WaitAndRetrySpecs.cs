@@ -388,6 +388,27 @@ public class WaitAndRetrySpecs : IDisposable
     }
 
     [Fact]
+    public void Should_not_sleep_when_the_retry_wait_duration_is_zero()
+    {
+        var sleepInvocations = 0;
+
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .WaitAndRetry(
+            [
+               TimeSpan.Zero,
+               TimeSpan.Zero,
+               TimeSpan.Zero,
+            ]);
+
+        SystemClock.Sleep = (_, _) => sleepInvocations++;
+
+        Should.NotThrow(() => policy.RaiseException<DivideByZeroException>(3));
+
+        sleepInvocations.ShouldBe(0);
+    }
+
+    [Fact]
     public void Should_call_onretry_on_each_retry_with_the_current_timespan()
     {
         var expectedRetryWaits = new[]
