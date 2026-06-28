@@ -126,7 +126,7 @@ public class PolicyKeySpecs
                 firstExecution = false;
                 throw new Exception();
             }
-        }, new Context(operationKey));
+        }, [with(operationKey)]);
 
         operationKeySetOnContext.ShouldBe(operationKey);
     }
@@ -174,7 +174,7 @@ public class PolicyKeySpecs
             }
 
             return 0;
-        }, new Context(operationKey));
+        }, [with(operationKey)]);
 
         operationKeySetOnContext.ShouldBe(operationKey);
     }
