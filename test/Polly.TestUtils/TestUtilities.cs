@@ -52,7 +52,10 @@ public static class TestUtilities
         return loggerFactory;
     }
 
-    public static IDisposable EnablePollyMetering(ICollection<MeteringEvent> events, Predicate<Instrument>? shouldListen = null)
+    public static IDisposable EnablePollyMetering(
+        ICollection<MeteringEvent> events,
+        Predicate<Instrument>? shouldListen = null,
+        Predicate<MeteringEvent>? shouldRecord = null)
     {
         var stateStr = Guid.NewGuid().ToString();
         var meterListener = new MeterListener
@@ -78,12 +81,24 @@ public static class TestUtilities
         {
             if (stateObj is string str && str == stateStr)
             {
-                events.Add(new MeteringEvent(measurement!, instrument.Name, tags.ToArray().ToDictionary(v => v.Key, v => v.Value)));
+                var @event = new MeteringEvent(measurement!, instrument.Name, tags.ToArray().ToDictionary(v => v.Key, v => v.Value));
+
+                if (shouldRecord is null || shouldRecord(@event))
+                {
+                    events.Add(@event);
+                }
             }
         }
 
         return meterListener;
     }
+
+    /// <summary>
+    /// Creates a <see cref="Predicate{MeteringEvent}"/> that matches metering events emitted by the
+    /// pipelines with the specified <paramref name="pipelineNames"/>, for use with <see cref="EnablePollyMetering"/>.
+    /// </summary>
+    public static Predicate<MeteringEvent> ForPipelines(params string[] pipelineNames) =>
+        (p) => p.Tags.TryGetValue("pipeline.name", out var name) && name is string actual && pipelineNames.Contains(actual);
 
     public static ResilienceContext WithResultType<T>(this ResilienceContext context)
     {
