@@ -4,6 +4,7 @@ namespace Polly.Utils;
 internal sealed class ObjectPool<T>
     where T : class
 {
+    // Stryker disable once arithmetic : no means to test this
     internal static readonly int MaxCapacity = (Environment.ProcessorCount * 2) - 1; // the - 1 is to account for _fastItem
 
     private readonly Func<T> _createFunc;
