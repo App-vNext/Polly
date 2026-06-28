@@ -137,25 +137,15 @@ Task("__ValidateAot")
 Task("__RunTests")
     .Does(() =>
 {
-    var loggers = Array.Empty<string>();
-
-    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
-    {
-        loggers =
-        [
-            "junit;LogFilePath=junit.xml",
-            "GitHubActions;report-warnings=false;summary-include-passed=false",
-        ];
-    }
-
     var projects = GetFiles("./test/**/*{Tests,Specs}.csproj");
 
     foreach (var proj in projects)
     {
+        var projectName = proj.GetFilenameWithoutExtension().ToString();
+
         DotNetTest(proj.FullPath, new DotNetTestSettings
         {
             Configuration = configuration,
-            Loggers = loggers,
             NoBuild = true,
             ToolTimeout = System.TimeSpan.FromMinutes(10),
         });

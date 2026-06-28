@@ -23,6 +23,13 @@
       ],
       "rollForward": false
     },
+    "dotnet-reportgenerator-globaltool": {
+      "version": "5.5.10",
+      "commands": [
+        "reportgenerator"
+      ],
+      "rollForward": false
+    },
     "dotnet-stryker": {
       "version": "4.15.0",
       "commands": [
