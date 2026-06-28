@@ -14,7 +14,11 @@ public partial class IssuesTests
     public void StrategiesPerEndpoint_1365()
     {
         var events = new List<MeteringEvent>(1024);
-        using var listener = TestUtilities.EnablePollyMetering(events);
+
+        using var listener = TestUtilities.EnablePollyMetering(
+            events,
+            shouldRecord: TestUtilities.ForPipelines("endpoint-pipeline", "rate-limiter/Endpoint 1"));
+
         var services = new ServiceCollection();
 
         services.AddResiliencePipelineRegistry<string>();
