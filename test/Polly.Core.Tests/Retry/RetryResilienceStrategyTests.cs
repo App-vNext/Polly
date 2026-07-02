@@ -207,6 +207,29 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public void Retry_RetryAttemptNumberSet_RetryCount_Respected()
+    {
+        int calls = 0;
+
+        _options.OnRetry = _ =>
+        {
+            calls++;
+            return default;
+        };
+
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
+        _options.MaxRetryAttempts = 12;
+        SetupNoDelay();
+        var sut = CreateSut();
+
+        var context = new ResilienceContext();
+        context.SetRetryAttemptNumber(5);
+        sut.Execute(_ => 0, context);
+
+        calls.ShouldBe(7);
+    }
+
+    [Fact]
     public void RetryException_RetryCount_Respected()
     {
         int calls = 0;
@@ -225,6 +248,29 @@ public class RetryResilienceStrategyTests
         Assert.Throws<InvalidOperationException>(() => sut.Execute<int>(() => throw new InvalidOperationException()));
 
         calls.ShouldBe(3);
+    }
+
+    [Fact]
+    public void RetryException_RetryAttemptNumberSet_RetryCount_Respected()
+    {
+        int calls = 0;
+        _options.OnRetry = args =>
+        {
+            args.Outcome.Exception.ShouldBeOfType<InvalidOperationException>();
+            calls++;
+            return default;
+        };
+
+        _options.ShouldHandle = args => args.Outcome.ExceptionPredicateAsync<InvalidOperationException>();
+        _options.MaxRetryAttempts = 3;
+        SetupNoDelay();
+        var sut = CreateSut();
+
+        var context = new ResilienceContext();
+        context.SetRetryAttemptNumber(1);
+        Assert.Throws<InvalidOperationException>(() => sut.Execute<int>(_ => throw new InvalidOperationException(), context));
+
+        calls.ShouldBe(2);
     }
 
     [Fact]
@@ -329,6 +375,36 @@ public class RetryResilienceStrategyTests
         delays[0].ShouldBe(TimeSpan.FromSeconds(2));
         delays[1].ShouldBe(TimeSpan.FromSeconds(4));
         delays[2].ShouldBe(TimeSpan.FromSeconds(6));
+    }
+
+    [Fact]
+    public async Task OnRetry_RetryAttemptNumberSet_EnsureCorrectArguments()
+    {
+        var attempts = new List<int>();
+        var delays = new List<TimeSpan>();
+
+        _options.OnRetry = args =>
+        {
+            attempts.Add(args.AttemptNumber);
+            delays.Add(args.RetryDelay);
+
+            args.Outcome.Exception.ShouldBeNull();
+            args.Outcome.Result.ShouldBe(0);
+            return default;
+        };
+
+        _options.ShouldHandle = args => PredicateResult.True();
+        _options.MaxRetryAttempts = 3;
+        _options.BackoffType = DelayBackoffType.Linear;
+
+        var sut = CreateSut();
+
+        var executing = ExecuteAndAdvanceWithRetryAttemptNumber(sut, 1);
+
+        await executing;
+
+        attempts.ShouldBe([1, 2]);
+        delays.ShouldBe([TimeSpan.FromSeconds(4), TimeSpan.FromSeconds(6)]);
     }
 
     [Fact]
@@ -485,6 +561,28 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public void Execute_RetryAttemptNumberSet_AttemptNumberAccessibleFromContext()
+    {
+        var attempts = new List<int>();
+
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
+        _options.MaxRetryAttempts = 7;
+        SetupNoDelay();
+        var sut = CreateSut();
+
+        var context = new ResilienceContext();
+        context.SetRetryAttemptNumber(3);
+
+        sut.Execute(_ =>
+        {
+            attempts.Add(context.GetRetryAttemptNumber());
+            return 0;
+        }, context);
+
+        attempts.ShouldBe([3, 4, 5, 6, 7]);
+    }
+
+    [Fact]
     public async Task OnRetry_EnsureTelemetry()
     {
         var attempts = new List<int>();
@@ -531,6 +629,34 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public void RetryDelayGenerator_RetryAttemptNumberSet_EnsureCorrectArguments()
+    {
+        var attempts = new List<int>();
+
+        _options.DelayGenerator = args =>
+        {
+            attempts.Add(args.AttemptNumber);
+
+            args.Outcome.Exception.ShouldBeNull();
+            args.Outcome.Result.ShouldBe(0);
+
+            return new ValueTask<TimeSpan?>(TimeSpan.Zero);
+        };
+
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
+        _options.MaxRetryAttempts = 3;
+        _options.BackoffType = DelayBackoffType.Linear;
+
+        var sut = CreateSut();
+
+        var context = new ResilienceContext();
+        context.SetRetryAttemptNumber(2);
+        sut.Execute(_ => 0, context);
+
+        attempts.ShouldBe([2]);
+    }
+
+    [Fact]
     public void RetryDelayGenerator_ReturnsNull_EnsureDefaultRetry()
     {
         var delays = new List<TimeSpan>();
@@ -559,6 +685,20 @@ public class RetryResilienceStrategyTests
     private async ValueTask<int> ExecuteAndAdvance(ResiliencePipeline<object> sut)
     {
         var executing = sut.ExecuteAsync(_ => new ValueTask<int>(0)).AsTask();
+
+        while (!executing.IsCompleted)
+        {
+            _timeProvider.Advance(TimeSpan.FromMinutes(1));
+        }
+
+        return await executing;
+    }
+
+    private async ValueTask<int> ExecuteAndAdvanceWithRetryAttemptNumber(ResiliencePipeline<object> sut, int retryAttemptNumber)
+    {
+        var context = new ResilienceContext();
+        context.SetRetryAttemptNumber(retryAttemptNumber);
+        var executing = sut.ExecuteAsync(_ => new ValueTask<int>(0), context).AsTask();
 
         while (!executing.IsCompleted)
         {

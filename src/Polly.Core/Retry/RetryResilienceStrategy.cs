@@ -47,7 +47,7 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
     {
         double retryState = 0;
 
-        int attempt = 0;
+        var attempt = context.GetRetryAttemptNumber();
 
         while (true)
         {
@@ -131,6 +131,8 @@ internal sealed class RetryResilienceStrategy<T> : ResilienceStrategy<T>
             {
                 attempt++;
             }
+
+            context.SetRetryAttemptNumber(attempt);
         }
     }
 
