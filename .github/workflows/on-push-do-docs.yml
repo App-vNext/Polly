@@ -34,7 +34,7 @@ jobs:
           token: ${{ steps.generate-application-token.outputs.token }}
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@9a946fdbd5fb07b82b2f5a4466058b876ab72bb2 # v5.3.0
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5.4.0
 
       - name: Update documentation
         id: update-docs
