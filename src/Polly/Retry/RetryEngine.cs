@@ -64,6 +64,7 @@ internal static class RetryEngine
                     outcome = new DelegateResult<TResult>(handledException);
                 }
 
+                // Stryker disable once equality : no means to test this
                 if (tryCount < int.MaxValue)
                 {
                     tryCount++;

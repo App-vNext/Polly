@@ -9,6 +9,8 @@ namespace Polly.Extensions.Tests.Telemetry;
 [Collection(nameof(NonParallelizableCollection))]
 public class TelemetryListenerImplTests : IDisposable
 {
+    private const string PipelineName = "my-pipeline";
+
     private readonly FakeLogger _logger;
     private readonly ILoggerFactory _loggerFactory;
     private readonly List<MeteringEvent> _events = [with(1024)];
@@ -101,7 +103,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Theory]
     public void WriteEvent_EnsureSeverityRespected(ResilienceEventSeverity severity, LogLevel logLevel)
     {
-        using var metering = TestUtilities.EnablePollyMetering(_events);
+        using var metering = EnableMetering();
 
         var telemetry = Create();
         ReportEvent(telemetry, null, severity: severity);
@@ -174,7 +176,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Theory]
     public void WriteEvent_MeteringWithoutEnrichers_Ok(bool noOutcome, bool exception)
     {
-        using var metering = TestUtilities.EnablePollyMetering(_events);
+        using var metering = EnableMetering();
         var telemetry = Create();
         Outcome<object>? outcome = noOutcome switch
         {
@@ -221,7 +223,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Theory]
     public void WriteExecutionAttemptEvent_Metering_Ok(bool noOutcome, bool exception)
     {
-        using var metering = TestUtilities.EnablePollyMetering(_events);
+        using var metering = EnableMetering();
         var telemetry = Create();
         var attemptArg = new ExecutionAttemptArguments(5, TimeSpan.FromSeconds(50), true);
         Outcome<object>? outcome = noOutcome switch
@@ -284,7 +286,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Theory]
     public void WriteEvent_MeteringWithEnrichers_Ok(int count)
     {
-        using var metering = TestUtilities.EnablePollyMetering(_events);
+        using var metering = EnableMetering();
 
         const int DefaultDimensions = 6;
 
@@ -320,7 +322,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Fact]
     public void WriteEvent_MeteringWithoutBuilderInstance_Ok()
     {
-        using var metering = TestUtilities.EnablePollyMetering(_events);
+        using var metering = EnableMetering();
         var telemetry = Create();
         ReportEvent(telemetry, null, instanceName: null);
         GetEvents("resilience.polly.strategy.events")[0].ShouldNotContainKey("pipeline.instance");
@@ -396,7 +398,7 @@ public class TelemetryListenerImplTests : IDisposable
     [Theory]
     public void PipelineExecution_Metered(bool exception)
     {
-        using var metering = TestUtilities.EnablePollyMetering(_events);
+        using var metering = EnableMetering();
 
         var context = ResilienceContextPool.Shared.Get("op-key", TestCancellation.Token).WithResultType<int>();
         var outcome = exception ? Outcome.FromException<object>(new InvalidOperationException("dummy message")) : Outcome.FromResult((object)10);
@@ -540,6 +542,11 @@ public class TelemetryListenerImplTests : IDisposable
         _logger.GetRecords(new EventId(3, "ExecutionAttempt")).Single().LogLevel.ShouldBe(expectedLogLevel);
     }
 
+    // Only capture metering events emitted by this test's pipeline, as the "Polly" meter is process-wide
+    // and other tests running concurrently can emit events into the same listener.
+    private IDisposable EnableMetering() =>
+        TestUtilities.EnablePollyMetering(_events, shouldRecord: TestUtilities.ForPipelines(PipelineName));
+
     private List<Dictionary<string, object?>> GetEvents(string eventName) => [.. _events.Where(e => e.Name == eventName).Select(v => v.Tags)];
 
     private TelemetryListenerImpl Create(IEnumerable<MeteringEnricher>? enrichers = null, Action<TelemetryOptions>? configure = null)
@@ -587,7 +594,7 @@ public class TelemetryListenerImplTests : IDisposable
         string eventName = "my-event") =>
         telemetry.Write(
             new TelemetryEventArguments<object, TArgs>(
-                new ResilienceTelemetrySource("my-pipeline", instanceName, "my-strategy"),
+                new ResilienceTelemetrySource(PipelineName, instanceName, "my-strategy"),
                 new ResilienceEvent(severity, eventName),
                 context ?? ResilienceContextPool.Shared.Get("op-key"),
                 arg!,

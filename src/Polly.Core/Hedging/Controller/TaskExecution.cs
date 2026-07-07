@@ -198,6 +198,7 @@ internal sealed class TaskExecution<T>
 
         try
         {
+            // Stryker disable once Conditional : no means to test this
             var task = action?.Invoke() ?? (isSynchronous ? ExecuteSecondaryActionSync(primaryCallback, state) : primaryCallback(Context, state));
             outcome = await task.ConfigureAwait(Context.ContinueOnCapturedContext);
         }
