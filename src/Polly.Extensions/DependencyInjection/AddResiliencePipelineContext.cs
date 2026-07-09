@@ -4,8 +4,6 @@ using Microsoft.Extensions.Options;
 using Polly.Registry;
 using Polly.Utils;
 
-#pragma warning disable RS0026 // Do not add multiple public overloads with optional parameters
-
 namespace Polly.DependencyInjection;
 
 /// <summary>
@@ -48,8 +46,26 @@ public sealed class AddResiliencePipelineContext<TKey>
     /// You can listen for changes from multiple options by calling this method with different <typeparamref name="TOptions"/> types.
     /// </para>
     /// </remarks>
+#pragma warning disable RS0027 // API with optional parameter(s) should have the most parameters amongst its public overloads
     public void EnableReloads<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(string? name = null)
         => RegistryContext.EnableReloads(ServiceProvider.GetRequiredService<IOptionsMonitor<TOptions>>(), name);
+#pragma warning restore RS0027
+
+    /// <summary>
+    /// Enables dynamic reloading of the resilience pipeline whenever the options produced by <paramref name="monitor"/> are changed.
+    /// </summary>
+    /// <typeparam name="TOptions">The options type to listen to.</typeparam>
+    /// <param name="monitor">The options monitor to listen to for changes.</param>
+    /// <remarks>
+    /// Use this overload when the <see cref="IOptionsMonitor{TOptions}"/> instance is not registered in the
+    /// dependency injection container (for example, when wrapping a custom configuration source or feature flag system).
+    /// <para>
+    /// You can listen for changes from multiple options by calling this method with different <typeparamref name="TOptions"/> types.
+    /// </para>
+    /// </remarks>
+    public void EnableReloads<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(
+        IOptionsMonitor<TOptions> monitor)
+        => EnableReloads(monitor, name: null);
 
     /// <summary>
     /// Enables dynamic reloading of the resilience pipeline whenever the options produced by <paramref name="monitor"/> are changed.
@@ -66,7 +82,7 @@ public sealed class AddResiliencePipelineContext<TKey>
     /// </remarks>
     public void EnableReloads<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(
         IOptionsMonitor<TOptions> monitor,
-        string? name = null)
+        string? name)
     {
         Guard.NotNull(monitor);
         RegistryContext.EnableReloads(monitor, name);
