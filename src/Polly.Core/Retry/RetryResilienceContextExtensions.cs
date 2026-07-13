@@ -25,7 +25,7 @@ public static class RetryResilienceContextExtensions
     /// Sets the attempt number in the <see cref="ResilienceContext"/>.
     /// </summary>
     /// <param name="context">The <see cref="ResilienceContext"/> instance.</param>
-    /// <param name="attemptNumber">The attempt number to set.</param>
+    /// <param name="attemptNumber">The non-negative attempt number to set.</param>
     /// <remarks>
     /// Application code can use this method to set the initial attempt number when executing a retry strategy.
     /// The strategy will update the attempt number on each retry, and it can be retrieved using <see cref="GetRetryAttemptNumber"/>.
