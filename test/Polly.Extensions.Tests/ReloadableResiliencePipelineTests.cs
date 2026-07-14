@@ -100,7 +100,7 @@ public class ReloadableResiliencePipelineTests
     [InlineData("custom-name")]
     [InlineData("")]
     [Theory]
-    public void EnableReloads_WithCustomMonitor_EnsureReloadable(string? name)
+    public void EnableReloadsWithMonitor_EnsureReloadable(string? name)
     {
         var resList = new List<IDisposable>();
         var monitor = new FakeOptionsMonitor<ReloadableStrategyOptions>(
@@ -142,7 +142,7 @@ public class ReloadableResiliencePipelineTests
     }
 
     [Fact]
-    public void EnableReloads_WithCustomMonitor_NullMonitor_Throws()
+    public void EnableReloadsWithMonitor_NullMonitor_Throws()
     {
         var services = new ServiceCollection();
         services.AddResiliencePipeline("my-pipeline", (_, context) =>
