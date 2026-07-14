@@ -109,7 +109,7 @@ public class ReloadableResiliencePipelineTests
         var services = new ServiceCollection();
         services.AddResiliencePipeline("my-pipeline", (builder, context) =>
         {
-            context.EnableReloads(monitor, name);
+            context.EnableReloadsWithMonitor(monitor, name);
 
             var options = monitor.Get(name);
             builder.AddStrategy(_ =>
@@ -148,7 +148,7 @@ public class ReloadableResiliencePipelineTests
         services.AddResiliencePipeline("my-pipeline", (_, context) =>
         {
             Assert.Throws<ArgumentNullException>("monitor",
-                () => context.EnableReloads((IOptionsMonitor<ReloadableStrategyOptions>)null!));
+                () => context.EnableReloadsWithMonitor((IOptionsMonitor<ReloadableStrategyOptions>)null!));
         });
 
         services.BuildServiceProvider()

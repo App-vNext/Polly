@@ -1,3 +1,2 @@
 ﻿#nullable enable
-Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.EnableReloads<TOptions>(Microsoft.Extensions.Options.IOptionsMonitor<TOptions>! monitor) -> void
-Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.EnableReloads<TOptions>(Microsoft.Extensions.Options.IOptionsMonitor<TOptions>! monitor, string? name) -> void
+Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.EnableReloadsWithMonitor<TOptions>(Microsoft.Extensions.Options.IOptionsMonitor<TOptions>! monitor, string? name = null) -> void
