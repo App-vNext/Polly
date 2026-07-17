@@ -27,7 +27,7 @@ public class ConfigureBuilderContextExtensionsTests
     public async Task ConfigureReloads_MonitorRegistrationReturnsNull_DoesNotThrow()
     {
         var monitor = Substitute.For<IOptionsMonitor<Options>>();
-        monitor.OnChange(default!).ReturnsNullForAnyArgs();
+        monitor.OnChange(default!)!.ReturnsNullForAnyArgs();
 
         var listener = new FakeTelemetryListener();
         var registry = new ResiliencePipelineRegistry<string>();
