@@ -138,15 +138,18 @@ public class ReloadableResiliencePipelineTests
         resList[1].Received(0).Dispose();
 
         serviceProvider.Dispose();
+        resList[0].Received(1).Dispose();
         resList[1].Received(1).Dispose();
     }
 
     [Fact]
     public void EnableReloadsWithMonitor_NullMonitor_Throws()
     {
+        var called = false;
         var services = new ServiceCollection();
         services.AddResiliencePipeline("my-pipeline", (_, context) =>
         {
+            called = true;
             Assert.Throws<ArgumentNullException>("monitor",
                 () => context.EnableReloadsWithMonitor((IOptionsMonitor<ReloadableStrategyOptions>)null!));
         });
@@ -154,6 +157,8 @@ public class ReloadableResiliencePipelineTests
         services.BuildServiceProvider()
             .GetRequiredService<ResiliencePipelineProvider<string>>()
             .GetPipeline("my-pipeline");
+
+        called.ShouldBeTrue();
     }
 
     public class ReloadableStrategy(string tag, IDisposable disposableResource) : ResilienceStrategy, IDisposable

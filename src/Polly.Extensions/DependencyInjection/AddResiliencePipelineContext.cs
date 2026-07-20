@@ -47,7 +47,7 @@ public sealed class AddResiliencePipelineContext<TKey>
     /// </para>
     /// </remarks>
     public void EnableReloads<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions>(string? name = null)
-        => RegistryContext.EnableReloads(ServiceProvider.GetRequiredService<IOptionsMonitor<TOptions>>(), name);
+        => EnableReloadsWithMonitor(ServiceProvider.GetRequiredService<IOptionsMonitor<TOptions>>(), name);
 
     /// <summary>
     /// Enables dynamic reloading of the resilience pipeline whenever the options produced by <paramref name="monitor"/> are changed.
