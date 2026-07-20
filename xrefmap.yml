@@ -897,6 +897,24 @@ references:
   fullName.vb: Polly.DependencyInjection.AddResiliencePipelineContext(Of TKey).EnableReloads
   nameWithType: AddResiliencePipelineContext<TKey>.EnableReloads
   nameWithType.vb: AddResiliencePipelineContext(Of TKey).EnableReloads
+- uid: Polly.DependencyInjection.AddResiliencePipelineContext`1.EnableReloadsWithMonitor*
+  name: EnableReloadsWithMonitor
+  href: api/Polly.DependencyInjection.AddResiliencePipelineContext-1.html#Polly_DependencyInjection_AddResiliencePipelineContext_1_EnableReloadsWithMonitor_
+  commentId: Overload:Polly.DependencyInjection.AddResiliencePipelineContext`1.EnableReloadsWithMonitor
+  isSpec: "True"
+  fullName: Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.EnableReloadsWithMonitor
+  fullName.vb: Polly.DependencyInjection.AddResiliencePipelineContext(Of TKey).EnableReloadsWithMonitor
+  nameWithType: AddResiliencePipelineContext<TKey>.EnableReloadsWithMonitor
+  nameWithType.vb: AddResiliencePipelineContext(Of TKey).EnableReloadsWithMonitor
+- uid: Polly.DependencyInjection.AddResiliencePipelineContext`1.EnableReloadsWithMonitor``1(Microsoft.Extensions.Options.IOptionsMonitor{``0},System.String)
+  name: EnableReloadsWithMonitor<TOptions>(IOptionsMonitor<TOptions>, string?)
+  href: api/Polly.DependencyInjection.AddResiliencePipelineContext-1.html#Polly_DependencyInjection_AddResiliencePipelineContext_1_EnableReloadsWithMonitor__1_Microsoft_Extensions_Options_IOptionsMonitor___0__System_String_
+  commentId: M:Polly.DependencyInjection.AddResiliencePipelineContext`1.EnableReloadsWithMonitor``1(Microsoft.Extensions.Options.IOptionsMonitor{``0},System.String)
+  name.vb: EnableReloadsWithMonitor(Of TOptions)(IOptionsMonitor(Of TOptions), String)
+  fullName: Polly.DependencyInjection.AddResiliencePipelineContext<TKey>.EnableReloadsWithMonitor<TOptions>(Microsoft.Extensions.Options.IOptionsMonitor<TOptions>, string?)
+  fullName.vb: Polly.DependencyInjection.AddResiliencePipelineContext(Of TKey).EnableReloadsWithMonitor(Of TOptions)(Microsoft.Extensions.Options.IOptionsMonitor(Of TOptions), String)
+  nameWithType: AddResiliencePipelineContext<TKey>.EnableReloadsWithMonitor<TOptions>(IOptionsMonitor<TOptions>, string?)
+  nameWithType.vb: AddResiliencePipelineContext(Of TKey).EnableReloadsWithMonitor(Of TOptions)(IOptionsMonitor(Of TOptions), String)
 - uid: Polly.DependencyInjection.AddResiliencePipelineContext`1.EnableReloads``1(System.String)
   name: EnableReloads<TOptions>(string?)
   href: api/Polly.DependencyInjection.AddResiliencePipelineContext-1.html#Polly_DependencyInjection_AddResiliencePipelineContext_1_EnableReloads__1_System_String_

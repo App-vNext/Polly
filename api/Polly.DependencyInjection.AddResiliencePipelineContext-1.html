@@ -89,7 +89,7 @@
 
 
   <h1 id="Polly_DependencyInjection_AddResiliencePipelineContext_1" data-uid="Polly.DependencyInjection.AddResiliencePipelineContext`1" class="text-break">
-Class AddResiliencePipelineContext&lt;TKey&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class AddResiliencePipelineContext&lt;TKey&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L13"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -160,7 +160,7 @@ Class AddResiliencePipelineContext&lt;TKey&gt;  <a class="header-action link-sec
 
   <h3 id="Polly_DependencyInjection_AddResiliencePipelineContext_1_PipelineKey" data-uid="Polly.DependencyInjection.AddResiliencePipelineContext`1.PipelineKey">
   PipelineKey
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the pipeline key for the pipeline being created.</p>
@@ -192,7 +192,7 @@ Class AddResiliencePipelineContext&lt;TKey&gt;  <a class="header-action link-sec
 
   <h3 id="Polly_DependencyInjection_AddResiliencePipelineContext_1_ServiceProvider" data-uid="Polly.DependencyInjection.AddResiliencePipelineContext`1.ServiceProvider">
   ServiceProvider
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a> that provides access to the dependency injection container.</p>
@@ -224,11 +224,60 @@ Class AddResiliencePipelineContext&lt;TKey&gt;  <a class="header-action link-sec
 </h2>
 
 
+  <a id="Polly_DependencyInjection_AddResiliencePipelineContext_1_EnableReloadsWithMonitor_" data-uid="Polly.DependencyInjection.AddResiliencePipelineContext`1.EnableReloadsWithMonitor*"></a>
+
+  <h3 id="Polly_DependencyInjection_AddResiliencePipelineContext_1_EnableReloadsWithMonitor__1_Microsoft_Extensions_Options_IOptionsMonitor___0__System_String_" data-uid="Polly.DependencyInjection.AddResiliencePipelineContext`1.EnableReloadsWithMonitor``1(Microsoft.Extensions.Options.IOptionsMonitor{``0},System.String)">
+  EnableReloadsWithMonitor&lt;TOptions&gt;(IOptionsMonitor&lt;TOptions&gt;, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables dynamic reloading of the resilience pipeline whenever the options produced by <code class="paramref">monitor</code> are changed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void EnableReloadsWithMonitor&lt;TOptions&gt;(IOptionsMonitor&lt;TOptions&gt; monitor, string? name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>monitor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.ioptionsmonitor-1">IOptionsMonitor</a>&lt;TOptions&gt;</dt>
+    <dd><p>The options monitor to listen to for changes.</p>
+</dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The named options, if any.</p>
+</dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TOptions</code></dt>
+    <dd><p>The options type to listen to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Polly_DependencyInjection_AddResiliencePipelineContext_1_EnableReloadsWithMonitor__1_Microsoft_Extensions_Options_IOptionsMonitor___0__System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this method when the <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.ioptionsmonitor-1">IOptionsMonitor&lt;TOptions&gt;</a> instance is not registered in the
+dependency injection container (for example, when wrapping a custom configuration source or feature flag system).</p>
+<p>
+You can listen for changes from multiple options by calling this method with different <code class="typeparamref">TOptions</code> types.
+</p>
+</div>
+
+
+
+
   <a id="Polly_DependencyInjection_AddResiliencePipelineContext_1_EnableReloads_" data-uid="Polly.DependencyInjection.AddResiliencePipelineContext`1.EnableReloads*"></a>
 
   <h3 id="Polly_DependencyInjection_AddResiliencePipelineContext_1_EnableReloads__1_System_String_" data-uid="Polly.DependencyInjection.AddResiliencePipelineContext`1.EnableReloads``1(System.String)">
   EnableReloads&lt;TOptions&gt;(string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Enables dynamic reloading of the resilience pipeline whenever the <code class="typeparamref">TOptions</code> options are changed.</p>
@@ -274,7 +323,7 @@ You can listen for changes from multiple options by calling this method with dif
 
   <h3 id="Polly_DependencyInjection_AddResiliencePipelineContext_1_GetOptions__1_System_String_" data-uid="Polly.DependencyInjection.AddResiliencePipelineContext`1.GetOptions``1(System.String)">
   GetOptions&lt;TOptions&gt;(string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L82"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the options identified by <code class="paramref">name</code>.</p>
@@ -322,7 +371,7 @@ You can listen for changes from multiple options by calling this method with dif
 
   <h3 id="Polly_DependencyInjection_AddResiliencePipelineContext_1_OnPipelineDisposed_System_Action_" data-uid="Polly.DependencyInjection.AddResiliencePipelineContext`1.OnPipelineDisposed(System.Action)">
   OnPipelineDisposed(Action)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L92"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Registers a callback that is called when the pipeline instance being configured is disposed.</p>
@@ -355,7 +404,7 @@ You can listen for changes from multiple options by calling this method with dif
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/DependencyInjection/AddResiliencePipelineContext.cs/#L13" class="edit-link">Edit this page</a>
         </div>
 
 
