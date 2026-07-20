@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using Polly.Registry;
 using Polly.Telemetry;
@@ -95,6 +96,71 @@ public class ReloadableResiliencePipelineTests
         }
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("custom-name")]
+    public void EnableReloadsWithMonitor_EnsureReloadable(string? name)
+    {
+        var resList = new List<IDisposable>();
+        var monitor = new FakeOptionsMonitor<ReloadableStrategyOptions>(
+            new ReloadableStrategyOptions { Tag = "initial-tag", OptionsName = name });
+
+        var services = new ServiceCollection();
+        services.AddResiliencePipeline("my-pipeline", (builder, context) =>
+        {
+            context.EnableReloadsWithMonitor(monitor, name);
+
+            var options = monitor.Get(name);
+            builder.AddStrategy(_ =>
+            {
+                var res = Substitute.For<IDisposable>();
+                resList.Add(res);
+                return new ReloadableStrategy(options.Tag, res);
+            },
+            options);
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        var pipeline = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>().GetPipeline("my-pipeline");
+        var ctx = ResilienceContextPool.Shared.Get(TestCancellation.Token);
+
+        pipeline.Execute(_ => "dummy", ctx);
+        ctx.Properties.GetValue(TagKey, string.Empty).ShouldBe("initial-tag");
+
+        monitor.TriggerChange(new ReloadableStrategyOptions { Tag = "reloaded-tag", OptionsName = name }, name ?? string.Empty);
+
+        pipeline.Execute(_ => "dummy", ctx);
+        ctx.Properties.GetValue(TagKey, string.Empty).ShouldBe("reloaded-tag");
+
+        resList.Count.ShouldBe(2);
+        resList[0].Received(1).Dispose();
+        resList[1].Received(0).Dispose();
+
+        serviceProvider.Dispose();
+        resList[0].Received(1).Dispose();
+        resList[1].Received(1).Dispose();
+    }
+
+    [Fact]
+    public void EnableReloadsWithMonitor_NullMonitor_Throws()
+    {
+        var called = false;
+        var services = new ServiceCollection();
+        services.AddResiliencePipeline("my-pipeline", (_, context) =>
+        {
+            called = true;
+            Assert.Throws<ArgumentNullException>("monitor",
+                () => context.EnableReloadsWithMonitor((IOptionsMonitor<ReloadableStrategyOptions>)null!));
+        });
+
+        services.BuildServiceProvider()
+            .GetRequiredService<ResiliencePipelineProvider<string>>()
+            .GetPipeline("my-pipeline");
+
+        called.ShouldBeTrue();
+    }
+
     public class ReloadableStrategy(string tag, IDisposable disposableResource) : ResilienceStrategy, IDisposable
     {
         public string Tag { get; } = tag;
@@ -128,6 +194,37 @@ public class ReloadableResiliencePipelineTests
         {
             Data = new Dictionary<string, string?>(data, StringComparer.OrdinalIgnoreCase);
             OnReload();
+        }
+    }
+
+    private sealed class FakeOptionsMonitor<TOptions> : IOptionsMonitor<TOptions>
+    {
+        private readonly List<Action<TOptions, string?>> _listeners = [];
+
+        public FakeOptionsMonitor(TOptions initialValue) => CurrentValue = initialValue;
+
+        public TOptions CurrentValue { get; private set; }
+
+        public TOptions Get(string? name) => CurrentValue;
+
+        public IDisposable? OnChange(Action<TOptions, string?> listener)
+        {
+            _listeners.Add(listener);
+            return new CallbackDisposable(() => _listeners.Remove(listener));
+        }
+
+        public void TriggerChange(TOptions newValue, string? name = null)
+        {
+            CurrentValue = newValue;
+            foreach (var listener in _listeners.ToList())
+            {
+                listener(newValue, name);
+            }
+        }
+
+        private sealed class CallbackDisposable(Action callback) : IDisposable
+        {
+            public void Dispose() => callback();
         }
     }
 }
