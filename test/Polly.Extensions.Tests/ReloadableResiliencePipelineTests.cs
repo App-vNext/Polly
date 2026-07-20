@@ -96,10 +96,10 @@ public class ReloadableResiliencePipelineTests
         }
     }
 
-    [InlineData(null)]
-    [InlineData("custom-name")]
-    [InlineData("")]
     [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("custom-name")]
     public void EnableReloadsWithMonitor_EnsureReloadable(string? name)
     {
         var resList = new List<IDisposable>();
