@@ -88,7 +88,7 @@ public class BulkheadTResultAsyncSpecs(ITestOutputHelper testOutputHelper) : Bul
     public async Task Should_call_onBulkheadRejected_with_passed_context()
     {
         string operationKey = "SomeKey";
-        Context contextPassedToExecute = new Context(operationKey);
+        Context contextPassedToExecute = [with(operationKey)];
 
         Context? contextPassedToOnRejected = null;
         Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask; };
