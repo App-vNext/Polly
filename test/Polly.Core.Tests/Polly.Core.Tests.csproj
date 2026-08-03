@@ -21,6 +21,9 @@
     <PackageReference Include="Polly.Contrib.WaitAndRetry" />
   </ItemGroup>
   <ItemGroup Condition="'$([MSBuild]::GetTargetFrameworkIdentifier(`$(TargetFramework)`))' == '.NETFramework'">
+    <PackageReference Include="System.Memory" />
+  </ItemGroup>
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0'))">
     <PackageReference Update="Microsoft.Bcl.TimeProvider" VersionOverride="8.0.1" />
   </ItemGroup>
   <ItemGroup>

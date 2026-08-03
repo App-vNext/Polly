@@ -284,7 +284,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         var mockSynchronizationContext = Substitute.For<SynchronizationContext>();
         mockSynchronizationContext
             .When(x => x.Post(Arg.Any<SendOrPostCallback>(), Arg.Any<object>()))
-            .Do((p) => ((SendOrPostCallback)p[1])(p[2]));
+            .Do((p) => ((SendOrPostCallback)p[1]!)(p[2]));
 
         mockSynchronizationContext.CreateCopy()
             .Returns(mockSynchronizationContext);
