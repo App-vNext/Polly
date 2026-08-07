@@ -102,7 +102,7 @@ public class ObjectPoolTests
 
     private class ListPolicy
     {
-        public static List<int> Create() => new(17);
+        public static List<int> Create() => [with(17)];
 
         public static bool Return(List<int> obj) => obj.Capacity == 17;
     }
