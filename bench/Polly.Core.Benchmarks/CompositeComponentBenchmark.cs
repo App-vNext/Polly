@@ -18,7 +18,7 @@ public class CompositeComponentBenchmark
         var components = new[] { first, second };
 
         _component = CompositeComponent.Create(components, telemetry, TimeProvider.System);
-        _context = ResilienceContextPool.Shared.Get();
+        _context = ResilienceContextPool.Shared.Get(CancellationToken.None);
     }
 
     [Benchmark]

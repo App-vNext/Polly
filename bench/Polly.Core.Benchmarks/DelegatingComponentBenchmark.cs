@@ -14,7 +14,7 @@ public class DelegatingComponentBenchmark : IAsyncDisposable
         var second = PipelineComponent.Empty;
 
         _component = new DelegatingComponent(first) { Next = second };
-        _context = ResilienceContextPool.Shared.Get();
+        _context = ResilienceContextPool.Shared.Get(CancellationToken.None);
     }
 
     public async ValueTask DisposeAsync()

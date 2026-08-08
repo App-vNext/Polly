@@ -78,7 +78,7 @@ internal static class AsyncTimeoutEngine
         // stryker disable once all : no means to test this
         registration = cancellationToken.Register(() =>
         {
-            tcs.TrySetCanceled();
+            tcs.TrySetCanceled(CancellationToken.None);
             registration.Dispose();
         }, useSynchronizationContext: false);
 
