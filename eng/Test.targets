@@ -3,6 +3,7 @@
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <NoWarn>$(NoWarn);S8949</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

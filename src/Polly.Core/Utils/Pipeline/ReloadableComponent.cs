@@ -59,7 +59,7 @@ internal sealed class ReloadableComponent : PipelineComponent
         _tokenSource!.Dispose();
         _tokenSource = null;
 
-        var context = ResilienceContextPool.Shared.Get().Initialize<VoidResult>(isSynchronous: true);
+        var context = ResilienceContextPool.Shared.Get(CancellationToken.None).Initialize<VoidResult>(isSynchronous: true);
         _telemetry.Report(new(ResilienceEventSeverity.Information, OnReloadEvent), context, new OnReloadArguments());
         ResilienceContextPool.Shared.Return(context);
 

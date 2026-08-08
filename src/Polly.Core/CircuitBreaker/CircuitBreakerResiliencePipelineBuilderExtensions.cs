@@ -88,7 +88,7 @@ public static class CircuitBreakerResiliencePipelineBuilderExtensions
             options.BreakDurationGenerator);
 
         return new CircuitBreakerResilienceStrategy<TResult>(
-            options.ShouldHandle!,
+            options.ShouldHandle,
             controller,
             options.StateProvider,
             options.ManualControl);
