@@ -92,7 +92,7 @@ Here are some sample events:
 The reported `Execution Attempt` telemetry events' severity depends on the action's outcome:
 
 - If it succeeded then the severity is `Information`
-- It it failed then the severity is `Warning`
+- If it failed then the severity is `Warning`
 
 ```none
 Resilience event occurred. EventName: 'OnHedging', Source: 'MyPipeline/MyPipelineInstance/Hedging', Operation Key: 'MyHedgingOperation', Result: ''
