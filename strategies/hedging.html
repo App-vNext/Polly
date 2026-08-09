@@ -225,7 +225,7 @@ new ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;().AddHedging(optionsDef
 <p>The reported <code>Execution Attempt</code> telemetry events' severity depends on the action's outcome:</p>
 <ul>
 <li>If it succeeded then the severity is <code>Information</code></li>
-<li>It it failed then the severity is <code>Warning</code></li>
+<li>If it failed then the severity is <code>Warning</code></li>
 </ul>
 <pre><code class="lang-none">Resilience event occurred. EventName: 'OnHedging', Source: 'MyPipeline/MyPipelineInstance/Hedging', Operation Key: 'MyHedgingOperation', Result: ''
 
