@@ -31,7 +31,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         var timeout = DefaultTimeout;
         if (TimeoutGenerator is not null)
         {
-            timeout = await TimeoutGenerator!(new TimeoutGeneratorArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
+            timeout = await TimeoutGenerator(new TimeoutGeneratorArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
         if (!TimeoutUtil.ShouldApplyTimeout(timeout))

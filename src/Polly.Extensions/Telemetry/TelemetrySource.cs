@@ -34,9 +34,9 @@ internal sealed class TelemetrySource
         }
 
 #if NET
-        index = informationalVersion!.IndexOf('-', StringComparison.Ordinal);
+        index = informationalVersion.IndexOf('-', StringComparison.Ordinal);
 #else
-        index = informationalVersion!.IndexOf('-');
+        index = informationalVersion.IndexOf('-');
 #endif
 
         if (index > 0)
