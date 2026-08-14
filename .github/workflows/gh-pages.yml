@@ -37,7 +37,7 @@ jobs:
           !**/BenchmarkDotNet.Artifacts/**/*.md
 
     - name: Spellcheck
-      uses: rojopolis/spellcheck-github-actions@26a39cd487140d628757554605a8ad02f9f7caf8 # 0.64.0
+      uses: rojopolis/spellcheck-github-actions@c1934c57e61c734261d7905b525486b12f8eb670 # 0.66.0
       with:
         config_path: .github/spellcheck.yml
 
