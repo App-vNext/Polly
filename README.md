@@ -1,5 +1,10 @@
 # Polly
 
+> [!IMPORTANT]
+> **Polly now participates in the Open Source Maintenance Fee (OSMF).**
+> Starting **November 16, 2026**, companies that earn at least US $20,000 from a product or project that uses Polly will be asked to pay a US $20/month maintenance fee to help fund Polly's ongoing upkeep. The source code stays free and open, and individuals, hobbyists, and organizations below the threshold owe nothing.
+> Read the announcement: [Introducing the Open Source Maintenance Fee for Polly](https://thepollyproject.org/2026/07/14/polly-osmf-announcement.html) · Learn about the [OSMF](https://opensourcemaintenancefee.org) · [Become a sponsor](https://github.com/sponsors/App-vNext)
+
 Polly is a .NET resilience and transient-fault-handling library that allows developers to express resilience strategies such as Retry, Circuit Breaker, Hedging, Timeout, Rate Limiter and Fallback in a fluent and thread-safe manner.
 
 <!-- markdownlint-disable MD042 -->
@@ -496,7 +501,13 @@ Thanks to the following companies for sponsoring the ongoing development of Poll
 [![GitHub logo](./logos/github.png)](#)
 <!-- markdownlint-enable MD034 -->
 
-Help support this project by becoming a sponsor through [GitHub Sponsors](https://github.com/sponsors/martincostello).
+### Open Source Maintenance Fee
+ 
+Polly participates in the [Open Source Maintenance Fee (OSMF)](https://opensourcemaintenancefee.org). Starting **November 16, 2026**, companies that earn at least US $20,000 from a product or project that uses Polly are asked to pay a US $20/month maintenance fee, regardless of how many of their projects use Polly. This helps fund the ongoing work of keeping the project secure, current, and well maintained.
+ 
+The source code remains free and open under its existing license. Individuals, hobbyists, students, non-profits, and organizations below the revenue threshold owe nothing. For full details, see the [announcement post](https://thepollyproject.org/2026/07/14/polly-osmf-announcement.html) and the [OSMF FAQ](https://opensourcemaintenancefee.org/consumers/faq/).
+ 
+Help support this project by becoming a sponsor through [GitHub Sponsors](https://github.com/sponsors/App-vNext).
 
 ## License
 
