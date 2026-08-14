@@ -502,11 +502,11 @@ Thanks to the following companies for sponsoring the ongoing development of Poll
 <!-- markdownlint-enable MD034 -->
 
 ### Open Source Maintenance Fee
- 
+
 Polly participates in the [Open Source Maintenance Fee (OSMF)](https://opensourcemaintenancefee.org). Starting **November 16, 2026**, companies that earn at least US $20,000 from a product or project that uses Polly are asked to pay a US $20/month maintenance fee, regardless of how many of their projects use Polly. This helps fund the ongoing work of keeping the project secure, current, and well maintained.
- 
+
 The source code remains free and open under its existing license. Individuals, hobbyists, students, non-profits, and organizations below the revenue threshold owe nothing. For full details, see the [announcement post](https://thepollyproject.org/2026/07/14/polly-osmf-announcement.html) and the [OSMF FAQ](https://opensourcemaintenancefee.org/consumers/faq/).
- 
+
 Help support this project by becoming a sponsor through [GitHub Sponsors](https://github.com/sponsors/App-vNext).
 
 ## License
