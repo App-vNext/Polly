@@ -47,6 +47,7 @@ natively
 ndc
 nuget
 nullable
+OSMF
 opentelemetry
 oss
 paas
