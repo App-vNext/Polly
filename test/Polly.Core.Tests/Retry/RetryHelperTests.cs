@@ -264,33 +264,54 @@ public class RetryHelperTests
     }
 
 #if !NETFRAMEWORK
-    [FsCheck.Xunit.Property(Arbitrary = [typeof(Arbitraries)], MaxTest = 10_000)]
-    public void ApplyJitter_Meets_Specification(TimeSpan value)
+    [Fact]
+    public void ApplyJitter_Meets_Specification()
     {
-        var delta = value / 4;
-        var floor = value - delta;
-        var ceiling = value + delta;
+        Run((value) =>
+        {
+            var delta = value / 4;
+            var floor = value - delta;
+            var ceiling = value + delta;
 
-        var actual = RetryHelper.ApplyJitter(value, RandomUtil.NextDouble);
+            var actual = RetryHelper.ApplyJitter(value, RandomUtil.NextDouble);
 
-        actual.ShouldBeGreaterThanOrEqualTo(floor);
-        actual.ShouldBeLessThanOrEqualTo(ceiling);
+            actual.ShouldBeGreaterThanOrEqualTo(floor);
+            actual.ShouldBeLessThanOrEqualTo(ceiling);
+        });
+
+        static void Run(Action<TimeSpan> property) =>
+            Check.One(
+                Config.QuickThrowOnFailure.WithMaxTest(10_000),
+                Prop.ForAll(
+                    Arbitraries.PositiveTimeSpan(),
+                    property));
     }
 
-    [FsCheck.Xunit.Property(Arbitrary = [typeof(Arbitraries)], MaxTest = 10_000)]
-    public void DecorrelatedJitterBackoffV2_Meets_Specification(TimeSpan value, int attempt)
+    [Fact]
+    public void DecorrelatedJitterBackoffV2_Meets_Specification()
     {
-        var rawCeiling = value.Ticks * Math.Pow(2, attempt) * 4;
-        var clamped = (long)Math.Clamp(rawCeiling, value.Ticks, TimeSpan.MaxValue.Ticks);
+        Run((value, attempt) =>
+        {
+            var rawCeiling = value.Ticks * Math.Pow(2, attempt) * 4;
+            var clamped = (long)Math.Clamp(rawCeiling, value.Ticks, TimeSpan.MaxValue.Ticks);
 
-        var floor = TimeSpan.Zero;
-        var ceiling = TimeSpan.FromTicks(clamped - 1);
+            var floor = TimeSpan.Zero;
+            var ceiling = TimeSpan.FromTicks(clamped - 1);
 
-        var _ = default(double);
-        var actual = RetryHelper.DecorrelatedJitterBackoffV2(attempt, value, ref _, RandomUtil.NextDouble);
+            var _ = default(double);
+            var actual = RetryHelper.DecorrelatedJitterBackoffV2(attempt, value, ref _, RandomUtil.NextDouble);
 
-        actual.ShouldBeGreaterThanOrEqualTo(floor);
-        actual.ShouldBeLessThanOrEqualTo(ceiling);
+            actual.ShouldBeGreaterThanOrEqualTo(floor);
+            actual.ShouldBeLessThanOrEqualTo(ceiling);
+        });
+
+        static void Run(Action<TimeSpan, int> property) =>
+            Check.One(
+                Config.QuickThrowOnFailure.WithMaxTest(10_000),
+                Prop.ForAll(
+                    Arbitraries.PositiveTimeSpan(),
+                    Arbitraries.PositiveInteger(),
+                    property));
     }
 #endif
 
@@ -313,6 +334,7 @@ public class RetryHelperTests
         return result;
     }
 
+#if !NETFRAMEWORK
     public static class Arbitraries
     {
         public static Arbitrary<int> PositiveInteger()
@@ -334,4 +356,5 @@ public class RetryHelperTests
             return Arb.From(generator);
         }
     }
+#endif
 }
