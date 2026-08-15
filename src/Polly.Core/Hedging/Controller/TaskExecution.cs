@@ -97,7 +97,7 @@ internal sealed class TaskExecution<T>
         _cancellationSource = _cancellationTokenSourcePool.Get(System.Threading.Timeout.InfiniteTimeSpan);
         _startExecutionTimestamp = _timeProvider.GetTimestamp();
         _activeContext = _cachedContext;
-        _activeContext.InitializeFrom(primaryContext, _cancellationSource!.Token);
+        _activeContext.InitializeFrom(primaryContext, _cancellationSource.Token);
 
 #if NET
         _cancellationRegistration = primaryContext.CancellationToken.UnsafeRegister(static o => ((CancellationTokenSource)o!).Cancel(), _cancellationSource);
@@ -212,7 +212,7 @@ internal sealed class TaskExecution<T>
     }
 
     private ValueTask<Outcome<T>> ExecuteSecondaryActionSync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback, TState state)
-        => new(Task.Run(() => primaryCallback(Context, state).AsTask()));
+        => new(Task.Run(() => primaryCallback(Context, state).AsTask(), CancellationToken.None));
 
     [DebuggerDisableUserUnhandledExceptions]
     private async Task ExecutePrimaryActionAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback, TState state)

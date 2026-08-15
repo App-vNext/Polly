@@ -45,7 +45,7 @@
       "rollForward": false
     },
     "markdownsnippets.tool": {
-      "version": "28.4.1",
+      "version": "28.4.2",
       "commands": [
         "mdsnippets"
       ],
@@ -59,14 +59,14 @@
       "rollForward": false
     },
     "meziantou.framework.nugetpackagevalidation.tool": {
-      "version": "2.0.1",
+      "version": "2.0.2",
       "commands": [
         "meziantou.validate-nuget-package"
       ],
       "rollForward": false
     },
     "sign": {
-      "version": "0.9.1-beta.26330.1",
+      "version": "0.9.1-beta.26371.2",
       "commands": [
         "sign"
       ],

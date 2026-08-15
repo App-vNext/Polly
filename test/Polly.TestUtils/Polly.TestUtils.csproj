@@ -15,4 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="NSubstitute" />
   </ItemGroup>
+  <ItemGroup Condition="'$([MSBuild]::GetTargetFrameworkIdentifier(`$(TargetFramework)`))' == '.NETFramework'">
+    <PackageReference Include="System.Memory" />
+  </ItemGroup>
 </Project>

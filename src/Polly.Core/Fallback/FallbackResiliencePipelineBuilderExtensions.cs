@@ -37,7 +37,7 @@ public static class FallbackResiliencePipelineBuilderExtensions
         FallbackStrategyOptions<TResult> options)
     {
         var handler = new FallbackHandler<TResult>(
-            options.ShouldHandle!,
+            options.ShouldHandle,
             options.FallbackAction!);
 
         return new FallbackResilienceStrategy<TResult>(

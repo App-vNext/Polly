@@ -37,7 +37,7 @@ public class TaskExecutionTests : IDisposable
             _ => false,
         }, args => Generator(args));
 
-        CreateSnapshot();
+        CreateSnapshot(_cts.Token);
     }
 
     public void Dispose() => _cts.Dispose();

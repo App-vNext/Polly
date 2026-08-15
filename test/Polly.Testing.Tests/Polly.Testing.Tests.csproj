@@ -15,4 +15,7 @@
     <ProjectReference Include="..\..\src\Polly.RateLimiting\Polly.RateLimiting.csproj" />
     <ProjectReference Include="..\..\src\Polly.Testing\Polly.Testing.csproj" />
   </ItemGroup>
+  <ItemGroup Condition="'$([MSBuild]::GetTargetFrameworkIdentifier(`$(TargetFramework)`))' == '.NETFramework'">
+    <PackageReference Include="System.Memory" />
+  </ItemGroup>
 </Project>
