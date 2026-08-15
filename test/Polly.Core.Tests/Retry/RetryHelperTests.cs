@@ -1,5 +1,7 @@
+#if !NETFRAMEWORK
 using FsCheck;
 using FsCheck.Fluent;
+#endif
 using Polly.Contrib.WaitAndRetry;
 using Polly.Retry;
 using Polly.Utils;
