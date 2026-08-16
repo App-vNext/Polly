@@ -1537,7 +1537,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Polly.Telemetry.PipelineExecutedArguments",
-      "Summary": "<p sourcefile=\"api/Polly.Telemetry.PipelineExecutedArguments.yml\" sourcestartlinenumber=\"1\">Arguments that indicate the pipeline execution started.</p>\n"
+      "Summary": "<p sourcefile=\"api/Polly.Telemetry.PipelineExecutedArguments.yml\" sourcestartlinenumber=\"1\">Arguments that indicate the pipeline execution finished.</p>\n"
     },
     {
       "type": "ManagedReference",
