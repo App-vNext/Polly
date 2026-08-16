@@ -35,22 +35,21 @@ public partial class IssuesTests
         var strategy = new RetryResilienceStrategy<bool>(options, timeProvider, telemetry);
         var pipeline = strategy.AsPipeline();
 
-        using var cts = new CancellationTokenSource(
-            Debugger.IsAttached ? TimeSpan.MaxValue : TimeSpan.FromSeconds(20));
+        using var timeout = new CancellationTokenSource(Debugger.IsAttached ? TimeSpan.MaxValue : TimeSpan.FromSeconds(20));
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(timeout.Token, TestContext.Current.CancellationToken);
 
         // Act
-        var executing = pipeline.ExecuteAsync((_) =>
-        {
-            return new ValueTask<bool>(attempts >= succeedAfter);
-        }, cts.Token);
+        var executing = pipeline.ExecuteAsync(
+            (_) => new ValueTask<bool>(attempts >= succeedAfter),
+            linked.Token);
 
-        while (!executing.IsCompleted && !cts.IsCancellationRequested)
+        while (!executing.IsCompleted && !linked.IsCancellationRequested)
         {
             timeProvider.Advance(TimeSpan.FromSeconds(1));
         }
 
         // Assert
-        cts.Token.ThrowIfCancellationRequested();
+        linked.Token.ThrowIfCancellationRequested();
 
         var actual = await executing;
 

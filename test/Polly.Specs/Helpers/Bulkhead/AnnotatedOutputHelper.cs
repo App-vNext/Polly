@@ -32,6 +32,8 @@ public class AnnotatedOutputHelper : ITestOutputHelper
     public AnnotatedOutputHelper(ITestOutputHelper innerOutputHelper) =>
         _innerOutputHelper = innerOutputHelper ?? throw new ArgumentNullException(nameof(innerOutputHelper));
 
+    public string Output => _innerOutputHelper.Output;
+
     public void Flush()
     {
         // Some IDEs limit the number of lines of output displayed in a test result. Display the lines in reverse order so that we always see the most recent.
