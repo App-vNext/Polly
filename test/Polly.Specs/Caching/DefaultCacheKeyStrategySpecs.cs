@@ -15,7 +15,7 @@ public class DefaultCacheKeyStrategySpecs
     {
         string operationKey = "SomeKey";
 
-        Context context = new Context(operationKey);
+        Context context = [with(operationKey)];
 
         DefaultCacheKeyStrategy.Instance.GetCacheKey(context)
             .ShouldBe(operationKey);
