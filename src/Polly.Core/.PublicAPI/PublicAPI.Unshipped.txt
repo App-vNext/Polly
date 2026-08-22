@@ -1,1 +1,4 @@
 ﻿#nullable enable
+Polly.RetryResilienceContextExtensions
+static Polly.RetryResilienceContextExtensions.GetRetryAttemptNumber(this Polly.ResilienceContext! context) -> int
+static Polly.RetryResilienceContextExtensions.SetRetryAttemptNumber(this Polly.ResilienceContext! context, int attemptNumber) -> void
