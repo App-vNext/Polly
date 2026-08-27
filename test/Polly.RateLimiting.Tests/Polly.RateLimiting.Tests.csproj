@@ -4,8 +4,7 @@
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
     <ProjectType>Test</ProjectType>
     <Nullable>enable</Nullable>
-    <Threshold>100</Threshold>
-    <Include>[Polly.RateLimiting]*</Include>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Shared\StrongNameTests.cs" Link="StrongNameTests.cs" />
