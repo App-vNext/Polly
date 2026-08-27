@@ -3,7 +3,7 @@
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
 /// <summary>
-/// Arguments that indicate the pipeline execution started.
+/// Arguments that indicate the pipeline execution finished.
 /// </summary>
 /// <remarks>
 /// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
