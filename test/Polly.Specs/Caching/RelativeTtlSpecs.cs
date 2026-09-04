@@ -33,7 +33,7 @@ public class RelativeTtlSpecs
 
         RelativeTtl ttlStrategy = new RelativeTtl(ttl);
 
-        Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), null);
+        Ttl retrieved = ttlStrategy.GetTtl([with("someOperationKey")], null);
         retrieved.Timespan.ShouldBe(ttl);
         retrieved.SlidingExpiration.ShouldBeFalse();
     }
@@ -49,7 +49,7 @@ public class RelativeTtlSpecs
 
         SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(delay);
 
-        Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), null);
+        Ttl retrieved = ttlStrategy.GetTtl([with("someOperationKey")], null);
         retrieved.Timespan.ShouldBe(ttl);
         retrieved.SlidingExpiration.ShouldBeFalse();
     }

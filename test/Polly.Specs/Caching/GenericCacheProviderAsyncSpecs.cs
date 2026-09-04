@@ -22,7 +22,7 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         {
             await TaskHelper.EmptyTask;
             return ResultPrimitive.Substitute;
-        }, new Context(OperationKey));
+        }, [with(OperationKey)]);
 
         onErrorCalled.ShouldBeFalse();
     }
@@ -45,7 +45,7 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         {
             await TaskHelper.EmptyTask;
             return ResultPrimitive.Substitute;
-        }, new Context(OperationKey))).ShouldBe(ValueToReturn);
+        }, [with(OperationKey)])).ShouldBe(ValueToReturn);
 
         (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(OperationKey, cancellationToken, false);
         cacheHit2.ShouldBeTrue();

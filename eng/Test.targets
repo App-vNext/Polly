@@ -6,6 +6,11 @@
     <NoWarn>$(NoWarn);S8949</NoWarn>
   </PropertyGroup>
 
+  <!-- TODO Move to common when this is no longer a preview feature -->
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net11.0'))">
+    <Features>$(Features);runtime-async=on</Features>
+  </PropertyGroup>
+
   <ItemGroup>
     <Using Include="Shouldly" />
     <Using Include="Xunit" />
