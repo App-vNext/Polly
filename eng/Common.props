@@ -4,7 +4,7 @@
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\Polly.snk</AssemblyOriginatorKeyFile>
     <CheckSdkVulnerabilities>true</CheckSdkVulnerabilities>
     <ImplicitUsings>enable</ImplicitUsings>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>latest</LangVersion>
     <NoWarn>$(NoWarn);S8969;S8970</NoWarn>
     <NuGetAuditMode>direct</NuGetAuditMode>
     <SignAssembly>true</SignAssembly>
