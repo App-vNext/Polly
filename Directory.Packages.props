@@ -3,7 +3,7 @@
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
     <PackageVersion Include="Cake.FileHelpers" Version="7.0.0" />
     <PackageVersion Include="Flurl.Http.Signed" Version="4.0.2" />
-    <PackageVersion Include="FsCheck.Xunit.v3" Version="3.3.4" />
+    <PackageVersion Include="FsCheck.Xunit.v3" Version="3.4.0" />
     <PackageVersion Include="FSharp.Core" Version="8.0.200" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="3.0.5" />
     <PackageVersion Include="IcedTasks" Version="0.11.4" />
@@ -32,7 +32,7 @@
     <PackageVersion Include="Refit.HttpClientFactory" Version="15.2.0" />
     <PackageVersion Include="RestSharp" Version="114.0.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.32.0.713" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.33.0.1635" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="4.5.0" />
     <PackageVersion Include="System.Memory" Version="4.6.3" />

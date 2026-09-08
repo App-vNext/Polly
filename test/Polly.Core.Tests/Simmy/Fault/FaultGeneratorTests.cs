@@ -39,6 +39,24 @@ public class FaultGeneratorTests
         Generate(generator).ShouldBeOfType<InvalidOperationException>();
     }
 
+    [Fact]
+    public void NoExceptionRegistered_ShouldReturnNull()
+    {
+        var generator = new FaultGenerator();
+
+        Generate(generator).ShouldBeNull();
+    }
+
+    [Fact]
+    public void AllWeightsZero_ShouldReturnNull()
+    {
+        var generator = new FaultGenerator();
+
+        generator.AddException<InvalidOperationException>(weight: 0);
+
+        Generate(generator).ShouldBeNull();
+    }
+
     private static Exception? Generate(FaultGenerator generator)
     {
         Func<FaultGeneratorArguments, ValueTask<Exception?>> func = generator;
