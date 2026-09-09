@@ -7,5 +7,6 @@
   <PropertyGroup Condition=" '$(CI)' == 'true' ">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <Deterministic>true</Deterministic>
+    <DeterministicTimestamp>true</DeterministicTimestamp>
   </PropertyGroup>
 </Project>
