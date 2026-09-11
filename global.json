@@ -5,5 +5,8 @@
   },
   "msbuild-sdks": {
     "Cake.Sdk": "6.2.0"
+  },
+  "test": {
+    "runner": "Microsoft.Testing.Platform"
   }
 }

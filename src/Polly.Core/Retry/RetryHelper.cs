@@ -7,8 +7,9 @@ internal static class RetryHelper
     private const double ExponentialFactor = 2.0;
 
     // Upper-bound to prevent overflow beyond TimeSpan.MaxValue. Potential truncation during conversion from double to long
-    // (as described at https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/numeric-conversions)
+    // (as described at https://docs.microsoft.com/dotnet/csharp/language-reference/builtin-types/numeric-conversions)
     // is avoided by the arbitrary subtraction of 1,000.
+    // stryker disable once all : per-test coverage capture cannot attribute static field initialization to a specific test
     private static readonly double MaxTimeSpanTicks = (double)TimeSpan.MaxValue.Ticks - 1_000;
 
     public static bool IsValidDelay(TimeSpan delay) => delay >= TimeSpan.Zero;

@@ -8,8 +8,10 @@ internal static class TelemetryUtil
 
     private static readonly object[] Integers = [.. Enumerable.Range(0, MaxIntegers).Select(v => (object)v)];
 
+    // stryker disable once all : per-test coverage capture cannot attribute static field initialization to a specific test
     private static readonly object True = true;
 
+    // stryker disable once all : per-test coverage capture cannot attribute static field initialization to a specific test
     private static readonly object False = false;
 
     public static string GetValueOrPlaceholder(this string? value) => value ?? "(null)";

@@ -1,5 +1,7 @@
+#if !NETFRAMEWORK
 using FsCheck;
 using FsCheck.Fluent;
+#endif
 using Polly.Contrib.WaitAndRetry;
 using Polly.Retry;
 using Polly.Utils;
@@ -263,6 +265,17 @@ public class RetryHelperTests
         delays1.ShouldAllBe(delay => delay > TimeSpan.Zero);
     }
 
+    [Fact]
+    public void DecorrelatedJitterBackoffV2_AttemptCausesInfinity_ReturnsMaxTimeSpanTicksMinusOneThousand()
+    {
+        // At t >= 1024, Math.Pow(2, t) overflows to double.PositiveInfinity. See https://github.com/App-vNext/Polly/issues/2163.
+        double state = 0;
+
+        var actual = RetryHelper.DecorrelatedJitterBackoffV2(1024, TimeSpan.FromSeconds(1), ref state, () => 0.0);
+
+        actual.ShouldBe(TimeSpan.FromTicks((long)((double)TimeSpan.MaxValue.Ticks - 1_000)));
+    }
+
 #if !NETFRAMEWORK
     [FsCheck.Xunit.Property(Arbitrary = [typeof(Arbitraries)], MaxTest = 10_000)]
     public void ApplyJitter_Meets_Specification(TimeSpan value)
@@ -313,6 +326,7 @@ public class RetryHelperTests
         return result;
     }
 
+#if !NETFRAMEWORK
     public static class Arbitraries
     {
         public static Arbitrary<int> PositiveInteger()
@@ -334,4 +348,5 @@ public class RetryHelperTests
             return Arb.From(generator);
         }
     }
+#endif
 }
