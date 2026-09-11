@@ -5,7 +5,7 @@ public static class ContextDictionarySpecs
     [Fact]
     public static void Generic_dictionary_members_should_delegate_to_the_wrapped_dictionary()
     {
-        Context context = new Context("operation-key");
+        var context = new Context("operation-key");
         IDictionary<string, object> dictionary = context;
         ICollection<KeyValuePair<string, object>> collection = context;
         IReadOnlyDictionary<string, object> readOnlyDictionary = context;

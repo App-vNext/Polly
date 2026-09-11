@@ -29,13 +29,13 @@ public class TimeoutOverloadSmokeSpecs : TimeoutSpecsBase
             () =>
             {
                 bool onTimeoutCalled = false;
-                ShouldTimeout(Policy.Timeout(_ => TimeSpan.FromSeconds(1), (_, _, _) => onTimeoutCalled = true), new Context("operation-key"));
+                ShouldTimeout(Policy.Timeout(_ => TimeSpan.FromSeconds(1), (_, _, _) => onTimeoutCalled = true), CreateContext());
                 onTimeoutCalled.ShouldBeTrue();
             },
             () =>
             {
                 bool onTimeoutCalled = false;
-                ShouldTimeout(Policy.Timeout(_ => TimeSpan.FromSeconds(1), (_, _, _, _) => onTimeoutCalled = true), new Context("operation-key"));
+                ShouldTimeout(Policy.Timeout(_ => TimeSpan.FromSeconds(1), (_, _, _, _) => onTimeoutCalled = true), CreateContext());
                 onTimeoutCalled.ShouldBeTrue();
             }
         };
@@ -84,7 +84,7 @@ public class TimeoutOverloadSmokeSpecs : TimeoutSpecsBase
                 {
                     onTimeoutCalled = true;
                     return TaskHelper.EmptyTask;
-                }), new Context("operation-key"));
+                }), CreateContext());
                 onTimeoutCalled.ShouldBeTrue();
             },
             async () =>
@@ -94,7 +94,7 @@ public class TimeoutOverloadSmokeSpecs : TimeoutSpecsBase
                 {
                     onTimeoutCalled = true;
                     return TaskHelper.EmptyTask;
-                }), new Context("operation-key"));
+                }), CreateContext());
                 onTimeoutCalled.ShouldBeTrue();
             }
         };
@@ -131,13 +131,13 @@ public class TimeoutOverloadSmokeSpecs : TimeoutSpecsBase
             () =>
             {
                 bool onTimeoutCalled = false;
-                ShouldTimeout(Policy.Timeout<ResultPrimitive>(_ => TimeSpan.FromSeconds(1), (_, _, _) => onTimeoutCalled = true), new Context("operation-key"));
+                ShouldTimeout(Policy.Timeout<ResultPrimitive>(_ => TimeSpan.FromSeconds(1), (_, _, _) => onTimeoutCalled = true), CreateContext());
                 onTimeoutCalled.ShouldBeTrue();
             },
             () =>
             {
                 bool onTimeoutCalled = false;
-                ShouldTimeout(Policy.Timeout<ResultPrimitive>(_ => TimeSpan.FromSeconds(1), (_, _, _, _) => onTimeoutCalled = true), new Context("operation-key"));
+                ShouldTimeout(Policy.Timeout<ResultPrimitive>(_ => TimeSpan.FromSeconds(1), (_, _, _, _) => onTimeoutCalled = true), CreateContext());
                 onTimeoutCalled.ShouldBeTrue();
             }
         };
@@ -186,7 +186,7 @@ public class TimeoutOverloadSmokeSpecs : TimeoutSpecsBase
                 {
                     onTimeoutCalled = true;
                     return TaskHelper.EmptyTask;
-                }), new Context("operation-key"));
+                }), CreateContext());
                 onTimeoutCalled.ShouldBeTrue();
             },
             async () =>
@@ -196,7 +196,7 @@ public class TimeoutOverloadSmokeSpecs : TimeoutSpecsBase
                 {
                     onTimeoutCalled = true;
                     return TaskHelper.EmptyTask;
-                }), new Context("operation-key"));
+                }), CreateContext());
                 onTimeoutCalled.ShouldBeTrue();
             }
         };
@@ -266,4 +266,6 @@ public class TimeoutOverloadSmokeSpecs : TimeoutSpecsBase
 
         await Should.ThrowAsync<TimeoutRejectedException>(action);
     }
+
+    private static Context CreateContext() => new("operation-key");
 }

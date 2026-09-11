@@ -160,6 +160,27 @@ public static class PolicyOverloadSmokeSpecs
             return Task.FromResult(47);
         }, contextData, cancellationToken)).Result.ShouldBe(47);
 
+        (await policy.ExecuteAsync((context, token) =>
+        {
+            capturedContext = context;
+            capturedToken = token;
+            return Task.FromResult(53);
+        }, contextData, cancellationToken, true)).ShouldBe(53);
+
+        (await policy.ExecuteAndCaptureAsync((context, token) =>
+        {
+            capturedContext = context;
+            capturedToken = token;
+            return TaskHelper.EmptyTask;
+        }, contextData, cancellationToken, true)).Context["key"].ShouldBe("value");
+
+        (await policy.ExecuteAndCaptureAsync((context, token) =>
+        {
+            capturedContext = context;
+            capturedToken = token;
+            return Task.FromResult(59);
+        }, contextData, cancellationToken, true)).Result.ShouldBe(59);
+
         AsyncPolicy<ResultPrimitive> genericPolicy = Policy.NoOpAsync<ResultPrimitive>();
 
         (await genericPolicy.ExecuteAsync(token =>
