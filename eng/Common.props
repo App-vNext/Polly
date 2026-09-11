@@ -2,6 +2,7 @@
   <PropertyGroup>
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\Polly.snk</AssemblyOriginatorKeyFile>
+    <CheckSdkVulnerabilities>true</CheckSdkVulnerabilities>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <NoWarn>$(NoWarn);S8969;S8970</NoWarn>
