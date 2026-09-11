@@ -357,8 +357,8 @@ Task("Build")
     .IsDependentOn("__CommonBuild")
     .IsDependentOn("__ValidateAot")
     .IsDependentOn("__RunTests")
-    .IsDependentOn("__VerifyCoverageThresholds")
     .IsDependentOn("__GenerateCoverageReports")
+    .IsDependentOn("__VerifyCoverageThresholds")
     .IsDependentOn("__CreateNuGetPackages");
 
 ///////////////////////////////////////////////////////////////////////////////
