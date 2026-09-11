@@ -107,9 +107,9 @@ internal sealed class TaskExecution<T>
 
         if (type == HedgedTaskType.Secondary)
         {
-            var (shouldReturn, result, action) = await TryCreateSecondaryActionAsync(primaryCallback, primaryContext, state, attemptNumber).ConfigureAwait(false);
+            var (earlyReturn, action) = await TryCreateSecondaryActionAsync(primaryCallback, primaryContext, state, attemptNumber).ConfigureAwait(false);
 
-            if (shouldReturn)
+            if (earlyReturn is { } result)
             {
                 return result;
             }
@@ -132,7 +132,7 @@ internal sealed class TaskExecution<T>
         return true;
     }
 
-    private async ValueTask<(bool ShouldReturn, bool Result, Func<ValueTask<Outcome<T>>>? Action)> TryCreateSecondaryActionAsync<TState>(
+    private async ValueTask<(bool? EarlyReturn, Func<ValueTask<Outcome<T>>>? Action)> TryCreateSecondaryActionAsync<TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback,
         ResilienceContext primaryContext,
         TState state,
@@ -140,7 +140,7 @@ internal sealed class TaskExecution<T>
     {
         if (_handler.IsDefaultActionGenerator)
         {
-            return (false, false, null);
+            return (null, null);
         }
 
         try
@@ -149,16 +149,16 @@ internal sealed class TaskExecution<T>
             if (action == null)
             {
                 await ResetAsync().ConfigureAwait(false);
-                return (true, false, null);
+                return (false, null);
             }
 
-            return (false, false, action);
+            return (null, action);
         }
         catch (Exception e)
         {
             _stopExecutionTimestamp = _timeProvider.GetTimestamp();
             ExecutionTaskSafe = UpdateOutcomeAsync(new(e));
-            return (true, true, null);
+            return (true, null);
         }
     }
 
