@@ -1,7 +1,11 @@
 ﻿namespace Polly.Specs.Caching;
 
-public class RelativeTtlSpecs
+[Collection(Constants.SystemClockDependentTestCollection)]
+public class RelativeTtlSpecs : IDisposable
 {
+    public void Dispose() =>
+        SystemClock.Reset();
+
     [Fact]
     public void Should_throw_when_timespan_is_less_than_zero()
     {

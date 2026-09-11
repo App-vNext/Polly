@@ -26,6 +26,10 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
 
+    # HACK Workaround for https://github.com/stryker-mutator/stryker-net/issues/3094
+    env:
+      MinVerSkip: true
+
     strategy:
       fail-fast: false
       matrix:
