@@ -23,6 +23,7 @@ public class TelemetryOptions
     /// </summary>
     /// <param name="other">The telemetry options instance to copy the data from.</param>
     public TelemetryOptions(TelemetryOptions other)
+        : this()
     {
         Guard.NotNull(other);
 

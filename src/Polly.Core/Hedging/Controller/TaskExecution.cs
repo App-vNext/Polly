@@ -107,24 +107,11 @@ internal sealed class TaskExecution<T>
 
         if (type == HedgedTaskType.Secondary)
         {
-            Func<ValueTask<Outcome<T>>>? action = null;
-            if (!_handler.IsDefaultActionGenerator)
+            var (shouldReturn, result, action) = await TryCreateSecondaryActionAsync(primaryCallback, primaryContext, state, attemptNumber).ConfigureAwait(false);
+
+            if (shouldReturn)
             {
-                try
-                {
-                    action = _handler.ActionGenerator(CreateArguments(primaryCallback, primaryContext, state, attemptNumber));
-                    if (action == null)
-                    {
-                        await ResetAsync().ConfigureAwait(false);
-                        return false;
-                    }
-                }
-                catch (Exception e)
-                {
-                    _stopExecutionTimestamp = _timeProvider.GetTimestamp();
-                    ExecutionTaskSafe = UpdateOutcomeAsync(new(e));
-                    return true;
-                }
+                return result;
             }
 
             var args = new OnHedgingArguments<T>(primaryContext, Context, attemptNumber - 1);
@@ -143,6 +130,36 @@ internal sealed class TaskExecution<T>
         }
 
         return true;
+    }
+
+    private async ValueTask<(bool ShouldReturn, bool Result, Func<ValueTask<Outcome<T>>>? Action)> TryCreateSecondaryActionAsync<TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback,
+        ResilienceContext primaryContext,
+        TState state,
+        int attemptNumber)
+    {
+        if (_handler.IsDefaultActionGenerator)
+        {
+            return (false, false, null);
+        }
+
+        try
+        {
+            var action = _handler.ActionGenerator(CreateArguments(primaryCallback, primaryContext, state, attemptNumber));
+            if (action == null)
+            {
+                await ResetAsync().ConfigureAwait(false);
+                return (true, false, null);
+            }
+
+            return (false, false, action);
+        }
+        catch (Exception e)
+        {
+            _stopExecutionTimestamp = _timeProvider.GetTimestamp();
+            ExecutionTaskSafe = UpdateOutcomeAsync(new(e));
+            return (true, true, null);
+        }
     }
 
     private HedgingActionGeneratorArguments<T> CreateArguments<TState>(

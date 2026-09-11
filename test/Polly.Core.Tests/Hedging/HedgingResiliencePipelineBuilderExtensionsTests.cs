@@ -127,4 +127,35 @@ public class HedgingResiliencePipelineBuilderExtensionsTests
         var result = await strategy.ExecuteAsync(token => new ValueTask<string>(Error), TestCancellation.Token);
         result.ShouldBe(Success);
     }
+
+    [Fact]
+    public async Task AddHedging_ActionGeneratorUsesCallback_InvokesPrimaryCallback()
+    {
+        var primaryCallCount = 0;
+
+        var strategy = _builder.AddHedging(new()
+        {
+            MaxHedgedAttempts = 2,
+            ShouldHandle = args => args.Outcome.Result switch
+            {
+                "error" => PredicateResult.True(),
+                _ => PredicateResult.False()
+            },
+
+            // Reuse the original callback via args.Callback, as demonstrated at https://www.pollydocs.org/strategies/hedging#action-generator.
+            ActionGenerator = args => () => args.Callback(args.ActionContext)
+        })
+        .Build();
+
+        var result = await strategy.ExecuteAsync(
+            _ =>
+            {
+                primaryCallCount++;
+                return new ValueTask<string>(primaryCallCount == 1 ? "error" : "success");
+            },
+            TestCancellation.Token);
+
+        result.ShouldBe("success");
+        primaryCallCount.ShouldBe(2);
+    }
 }
