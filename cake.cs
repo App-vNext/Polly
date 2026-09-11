@@ -232,6 +232,73 @@ Task("__GenerateCoverageReports")
     }
 });
 
+Task("__VerifyCoverageThresholds")
+    .IsDependentOn("__RunTests")
+    .Does(() =>
+{
+    var projects = GetFiles("./test/**/*{Tests,Specs}.csproj");
+    var violations = new List<string>();
+
+    foreach (var proj in projects)
+    {
+        var thresholds = GetCoverageThresholds(proj.FullPath);
+
+        if (thresholds.Count == 0)
+        {
+            continue;
+        }
+
+        var projectName = proj.GetFilenameWithoutExtension().ToString();
+        var assemblyName = GetCoverageAssemblyName(projectName);
+        var projectCoverageDir = System.IO.Path.Combine(coverageDir, projectName);
+
+        if (!DirectoryExists(projectCoverageDir))
+        {
+            continue;
+        }
+
+        var coverageFiles = GetFiles(System.IO.Path.Combine(projectCoverageDir, "coverage.*.xml"));
+
+        foreach (var coverageFile in coverageFiles.OrderBy((file) => file.FullPath))
+        {
+            var tag = coverageFile.GetFilenameWithoutExtension().ToString()["coverage.".Length..];
+            var coverage = GetAssemblyCoverage(coverageFile.FullPath, assemblyName);
+
+            if (coverage is null)
+            {
+                violations.Add($"{projectName} ({tag}): no coverage data was found for assembly '{assemblyName}'.");
+                continue;
+            }
+
+            foreach (var (type, required) in thresholds)
+            {
+                var actual = type switch
+                {
+                    "line" => coverage.Value.Line,
+                    "branch" => coverage.Value.Branch,
+                    "method" => coverage.Value.Method,
+                    _ => throw new InvalidOperationException($"Unsupported <ThresholdType> value '{type}'.")
+                };
+
+                if (actual < required)
+                {
+                    violations.Add($"{projectName} ({tag}): {type} coverage of {actual:0.##}% for '{assemblyName}' is below the required threshold of {required}%.");
+                }
+            }
+        }
+    }
+
+    if (violations.Count > 0)
+    {
+        foreach (var violation in violations)
+        {
+            Error(violation);
+        }
+
+        throw new InvalidOperationException($"{violations.Count} coverage threshold violation(s) found. See the errors above.");
+    }
+});
+
 Task("__CreateNuGetPackages")
     .Does(() =>
 {
@@ -290,6 +357,7 @@ Task("Build")
     .IsDependentOn("__CommonBuild")
     .IsDependentOn("__ValidateAot")
     .IsDependentOn("__RunTests")
+    .IsDependentOn("__VerifyCoverageThresholds")
     .IsDependentOn("__GenerateCoverageReports")
     .IsDependentOn("__CreateNuGetPackages");
 
@@ -355,6 +423,55 @@ await RunTargetAsync(target);
 //////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 //////////////////////////////////////////////////////////////////////
+
+List<(string Type, double Required)> GetCoverageThresholds(string csprojPath)
+{
+    var thresholdRaw = XmlPeek(csprojPath, "/Project/PropertyGroup/Threshold/text()", new XmlPeekSettings { SuppressWarning = true });
+
+    if (string.IsNullOrWhiteSpace(thresholdRaw))
+    {
+        return [];
+    }
+
+    var thresholdTypeRaw = XmlPeek(csprojPath, "/Project/PropertyGroup/ThresholdType/text()", new XmlPeekSettings { SuppressWarning = true });
+
+    var types = string.IsNullOrWhiteSpace(thresholdTypeRaw)
+        ? ["line", "branch", "method"]
+        : thresholdTypeRaw.Split(',').Select((type) => type.Trim()).ToArray();
+
+    var values = thresholdRaw.Split(',').Select((value) => double.Parse(value.Trim(), System.Globalization.CultureInfo.InvariantCulture)).ToArray();
+
+    // Mirrors coverlet's Threshold parsing: when fewer values are supplied than types, the last value is reused for the remaining types.
+    return [.. types.Select((type, index) => (type, values[Math.Min(index, values.Length - 1)]))];
+}
+
+string GetCoverageAssemblyName(string projectName) => projectName switch
+{
+    _ when projectName.EndsWith(".Tests", StringComparison.Ordinal) => projectName[..^".Tests".Length],
+    _ when projectName.EndsWith(".Specs", StringComparison.Ordinal) => projectName[..^".Specs".Length],
+    _ => projectName
+};
+
+(double Line, double Branch, double Method)? GetAssemblyCoverage(string coberturaPath, string assemblyName)
+{
+    var doc = System.Xml.Linq.XDocument.Load(coberturaPath);
+    var package = doc.Descendants("package").FirstOrDefault((p) => (string?)p.Attribute("name") == assemblyName);
+
+    if (package is null)
+    {
+        return null;
+    }
+
+    var line = (double)package.Attribute("line-rate")! * 100;
+    var branch = (double)package.Attribute("branch-rate")! * 100;
+
+    var methods = package.Descendants("method").ToList();
+    var method = methods.Count == 0
+        ? 100
+        : methods.Count((m) => (double)m.Attribute("line-rate")! > 0) * 100.0 / methods.Count;
+
+    return (line, branch, method);
+}
 
 void AppendAllLinesWithRetry(string path, IEnumerable<string> lines)
 {

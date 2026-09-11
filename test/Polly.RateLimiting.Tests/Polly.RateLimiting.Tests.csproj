@@ -5,6 +5,7 @@
     <ProjectType>Test</ProjectType>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
+    <Threshold>100</Threshold>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Shared\StrongNameTests.cs" Link="StrongNameTests.cs" />
