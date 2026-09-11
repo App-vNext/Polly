@@ -270,6 +270,8 @@ Task("__VerifyCoverageThresholds")
                 continue;
             }
 
+            Information($"{projectName} ({tag}): line={coverage.Value.Line:0.##}%, branch={coverage.Value.Branch:0.##}%, method={coverage.Value.Method:0.##}% for '{assemblyName}'.");
+
             foreach (var (type, required) in thresholds)
             {
                 var actual = type switch
