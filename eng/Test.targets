@@ -32,9 +32,6 @@
     <PropertyGroup>
       <TestResultsDirectory>$([MSBuild]::ValueOrDefault('$(TestResultsDirectory)', '$([System.IO.Path]::Combine($(ArtifactsPath), 'tests'))'))</TestResultsDirectory>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(TestResultsDirectory)' != '' ">
-      <_TestingPlatformCommandLineArguments>--results-directory %22$(TestResultsDirectory)%22</_TestingPlatformCommandLineArguments>
-    </PropertyGroup>
     <PropertyGroup>
       <_TestingPlatformCommandLineArguments>$(_TestingPlatformCommandLineArguments) --coverage</_TestingPlatformCommandLineArguments>
       <_TestingPlatformCommandLineArguments Condition=" '$(CoverageFormat)' != '' ">$(_TestingPlatformCommandLineArguments) --coverage-output-format %22$(CoverageFormat)%22</_TestingPlatformCommandLineArguments>

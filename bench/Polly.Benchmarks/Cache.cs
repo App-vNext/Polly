@@ -14,8 +14,8 @@ public class Cache
     private static readonly Policy SyncPolicyHit = Policy.Cache(CacheProvider, TimeSpan.MaxValue);
     private static readonly AsyncPolicy AsyncPolicyHit = Policy.CacheAsync(CacheProvider, TimeSpan.MaxValue);
 
-    private static readonly Context HitContext = new(nameof(HitContext));
-    private static readonly Context MissContext = new(nameof(MissContext));
+    private static readonly Context HitContext = [with(nameof(HitContext))];
+    private static readonly Context MissContext = [with(nameof(MissContext))];
 
     [GlobalSetup]
     public Task GlobalSetup()

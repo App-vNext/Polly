@@ -267,5 +267,5 @@ public class TimeoutOverloadSmokeSpecs : TimeoutSpecsBase
         await Should.ThrowAsync<TimeoutRejectedException>(action);
     }
 
-    private static Context CreateContext() => new("operation-key");
+    private static Context CreateContext() => [with("operation-key")];
 }

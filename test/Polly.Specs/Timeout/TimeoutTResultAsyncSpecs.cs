@@ -562,7 +562,7 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
     public async Task Should_call_ontimeout_with_passed_context__pessimistic()
     {
         string operationKey = "SomeKey";
-        Context contextPassedToExecute = new Context(operationKey);
+        Context contextPassedToExecute = [with(operationKey)];
 
         Context? contextPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (ctx, _, _) =>
@@ -834,7 +834,7 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
     public async Task Should_call_ontimeout_with_passed_context__optimistic()
     {
         string operationKey = "SomeKey";
-        Context contextPassedToExecute = new Context(operationKey);
+        Context contextPassedToExecute = [with(operationKey)];
 
         Context? contextPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (ctx, _, _) =>
