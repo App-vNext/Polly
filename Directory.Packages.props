@@ -32,7 +32,7 @@
     <PackageVersion Include="Refit.HttpClientFactory" Version="15.2.0" />
     <PackageVersion Include="RestSharp" Version="114.0.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.33.0.1635" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="4.5.0" />
     <PackageVersion Include="System.Memory" Version="4.6.3" />
