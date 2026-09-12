@@ -3,7 +3,7 @@ namespace Polly.Utils;
 internal abstract partial class CancellationTokenSourcePool
 {
 #if NET6_0_OR_GREATER
-    private sealed class PooledCancellationTokenSourcePool : CancellationTokenSourcePool
+    internal sealed class PooledCancellationTokenSourcePool : CancellationTokenSourcePool
     {
         public static readonly PooledCancellationTokenSourcePool SystemInstance = new(TimeProvider.System);
 

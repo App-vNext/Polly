@@ -30,7 +30,15 @@ public class CancellationTokenSourcePoolTests
     [Theory]
     public void RentReturn_Reusable_EnsureProperBehavior(object timeProvider)
     {
+        // Use a dedicated pool instance instead of CancellationTokenSourcePool.Create(...), which
+        // returns a process-wide shared singleton for TimeProvider.System. Using the shared singleton
+        // makes this test flaky, as other tests running in parallel can rent/return CancellationTokenSource
+        // instances from the same pool concurrently, changing which instance is returned by Get().
+#if NET6_0_OR_GREATER
+        var pool = new CancellationTokenSourcePool.PooledCancellationTokenSourcePool(GetTimeProvider(timeProvider));
+#else
         var pool = CancellationTokenSourcePool.Create(GetTimeProvider(timeProvider));
+#endif
         var cts = pool.Get(System.Threading.Timeout.InfiniteTimeSpan);
         pool.Return(cts);
 
