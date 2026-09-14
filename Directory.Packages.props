@@ -23,12 +23,12 @@
     <PackageVersion Include="MinVer" Version="8.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="NSubstitute" Version="6.2.0" />
-    <PackageVersion Include="Polly" Version="8.7.0" />
+    <PackageVersion Include="Polly" Version="8.8.0" />
     <PackageVersion Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
-    <PackageVersion Include="Polly.Core" Version="8.7.0" />
-    <PackageVersion Include="Polly.Extensions" Version="8.7.0" />
-    <PackageVersion Include="Polly.RateLimiting" Version="8.7.0" />
-    <PackageVersion Include="Polly.Testing" Version="8.7.0" />
+    <PackageVersion Include="Polly.Core" Version="8.8.0" />
+    <PackageVersion Include="Polly.Extensions" Version="8.8.0" />
+    <PackageVersion Include="Polly.RateLimiting" Version="8.8.0" />
+    <PackageVersion Include="Polly.Testing" Version="8.8.0" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="15.2.0" />
     <PackageVersion Include="RestSharp" Version="114.0.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
