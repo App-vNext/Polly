@@ -112,13 +112,13 @@ jobs:
 
     - name: Upload coverage to Codecov
       if: always() && github.event.repository.fork == false
-      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+      uses: codecov/codecov-action@0b35c9ecc4f0529d0eb674914510c22f85b196b4 # v7.1.0
       with:
         flags: ${{ matrix.os-name }}
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Upload test results to Codecov
-      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+      uses: codecov/codecov-action@0b35c9ecc4f0529d0eb674914510c22f85b196b4 # v7.1.0
       if: ${{ !cancelled() }}
       with:
         flags: ${{ matrix.os-name }}
@@ -253,7 +253,7 @@ jobs:
       run: dotnet tool install --tool-path . sign --version ${env:DOTNET_SIGN_VERSION}
 
     - name: Azure log in
-      uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
+      uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
       with:
         client-id: ${{ secrets.SIGN_CLI_APPLICATION_ID }}
         subscription-id: ${{ secrets.SIGN_CLI_SUBSCRIPTION_ID }}
