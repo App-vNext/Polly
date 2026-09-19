@@ -42,7 +42,7 @@ public class ResultTtlSpecs
 
         ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
-        Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl });
+        Ttl retrieved = ttlStrategy.GetTtl([with("someOperationKey")], new { Ttl = ttl });
         retrieved.Timespan.ShouldBe(ttl);
         retrieved.SlidingExpiration.ShouldBeFalse();
     }
@@ -57,7 +57,7 @@ public class ResultTtlSpecs
 
         ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
-        ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl }).Timespan.ShouldBe(ttl);
-        ttlStrategy.GetTtl(new Context(SpecialKey), new { Ttl = ttl }).Timespan.ShouldBe(TimeSpan.Zero);
+        ttlStrategy.GetTtl([with("someOperationKey")], new { Ttl = ttl }).Timespan.ShouldBe(ttl);
+        ttlStrategy.GetTtl([with(SpecialKey)], new { Ttl = ttl }).Timespan.ShouldBe(TimeSpan.Zero);
     }
 }
