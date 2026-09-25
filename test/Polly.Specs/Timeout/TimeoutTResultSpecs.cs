@@ -658,7 +658,7 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     public void Should_call_ontimeout_with_passed_context__pessimistic()
     {
         string operationKey = "SomeKey";
-        Context contextPassedToExecute = new Context(operationKey);
+        Context contextPassedToExecute = [with(operationKey)];
 
         Context? contextPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (ctx, _, _) => contextPassedToOnTimeout = ctx;
@@ -821,7 +821,7 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     public void Should_call_ontimeout_with_passed_context__optimistic()
     {
         string operationKey = "SomeKey";
-        Context contextPassedToExecute = new Context(operationKey);
+        Context contextPassedToExecute = [with(operationKey)];
 
         Context? contextPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (ctx, _, _) => contextPassedToOnTimeout = ctx;

@@ -105,7 +105,7 @@ public class PolicyTResultSpecs
     public void Executing_the_policy_function_should_pass_context_to_executed_delegate()
     {
         string operationKey = "SomeKey";
-        Context executionContext = new Context(operationKey);
+        Context executionContext = [with(operationKey)];
         Context? capturedContext = null;
 
         Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
@@ -141,7 +141,7 @@ public class PolicyTResultSpecs
     public void Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
     {
         string operationKey = "SomeKey";
-        Context executionContext = new Context(operationKey);
+        Context executionContext = [with(operationKey)];
         Context? capturedContext = null;
 
         Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
@@ -156,7 +156,7 @@ public class PolicyTResultSpecs
     public void Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
     {
         string operationKey = "SomeKey";
-        Context executionContext = new Context(operationKey);
+        Context executionContext = [with(operationKey)];
 
         Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 
