@@ -132,5 +132,3 @@ coverage.*.json
 coverage-reports/
 
 !eng/**
-
-!**/BenchmarkDotNet.Artifacts/**/*.md
