@@ -100,3 +100,24 @@ Predicates for which outcomes to handle are declared via the `PredicateBuilder` 
 - Bug fixes should **always** include a test that would fail without the corresponding fix.
 - Do not introduce new dependencies unless specifically requested.
 - Do not update existing dependencies unless specifically requested.
+
+## Pull requests
+
+- Pull request descriptions must follow the [pull request template](.github/pull_request_template.md).
+- Pull request descriptions authored by an agent **must** disclose which agent was used to create the pull request. Add a note at the bottom of the description, for example:
+
+  ```markdown
+  > [!NOTE]
+  > This PR description was generated with GitHub Copilot.
+  ```
+
+- The same applies to PR reviews, PR comments and issue comments posted by an agent under a user's own account, rather than a dedicated bot account or app.
+
+## Skills
+
+Agent skills for common tasks in this repository are in [`.github/skills`](.github/skills):
+
+- [`code-review`](.github/skills/code-review/SKILL.md) — review a pull request or code change against Polly's conventions.
+- [`performance-benchmark`](.github/skills/performance-benchmark/SKILL.md) — write and run BenchmarkDotNet benchmarks to validate the performance impact of a change.
+
+Path-specific coding conventions, used both when authoring code and by GitHub Copilot code review, are in [`.github/instructions`](.github/instructions).
