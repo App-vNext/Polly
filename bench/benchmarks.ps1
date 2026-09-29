@@ -6,9 +6,9 @@ Param(
     [Parameter(Mandatory = $false)][string] $Job = "",
     [Parameter(Mandatory = $false)][string[]] $Runtimes = @("net10.0"),
     [Parameter(Mandatory = $false)][string] $Affinity = "",
+    [Parameter(Mandatory = $false)][string] $Filter = "*",
     [Parameter(Mandatory = $false)][switch] $EnableMemoryDiagnoser,
-    [Parameter(Mandatory = $false)][switch] $EnableEventPipeProfiler,
-    [switch]$Interactive
+    [Parameter(Mandatory = $false)][switch] $EnableEventPipeProfiler
 )
 
 $ErrorActionPreference = "Stop"
@@ -31,6 +31,11 @@ if (-Not [string]::IsNullOrEmpty($Affinity)) {
     $additionalArgs += $Affinity
 }
 
+if (-Not [string]::IsNullOrEmpty($Filter)) {
+    $additionalArgs += "--filter"
+    $additionalArgs += $Filter
+}
+
 if ($EnableMemoryDiagnoser) {
     $additionalArgs += "--memory"
 }
@@ -38,11 +43,6 @@ if ($EnableMemoryDiagnoser) {
 if ($EnableEventPipeProfiler) {
     $additionalArgs += "--profiler"
     $additionalArgs += "EP"
-}
-
-if ($Interactive -ne $true) {
-    $additionalArgs += "--filter"
-    $additionalArgs += "*"
 }
 
 $project = (Join-Path $PSScriptRoot "Polly.Core.Benchmarks" "Polly.Core.Benchmarks.csproj")
