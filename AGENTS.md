@@ -103,6 +103,7 @@ Predicates for which outcomes to handle are declared via the `PredicateBuilder` 
 
 ## Pull requests
 
+- Pull request descriptions must follow the [pull request template](.github/pull_request_template.md).
 - Pull request descriptions authored by an agent **must** disclose which agent was used to create the pull request. Add a note at the bottom of the description, for example:
 
   ```markdown
