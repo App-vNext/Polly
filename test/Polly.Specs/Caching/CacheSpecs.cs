@@ -385,7 +385,7 @@ public class CacheSpecs : IDisposable
         {
             delegateExecuted = true;
             return ValueToReturnFromExecution;
-        }, new Context(OperationKey))
+        }, [with(OperationKey)])
             .ShouldBe(ValueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -404,7 +404,7 @@ public class CacheSpecs : IDisposable
         cacheHit1.ShouldBeFalse();
         fromCache1.ShouldBeNull();
 
-        cache.Execute(_ => ValueToReturn, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        cache.Execute(_ => ValueToReturn, [with(OperationKey)]).ShouldBe(ValueToReturn);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
         cacheHit2.ShouldBeTrue();
@@ -436,7 +436,7 @@ public class CacheSpecs : IDisposable
         SystemClock.DateTimeOffsetUtcNow = () => fixedTime;
 
         // First execution should execute delegate and put result in the cache.
-        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        cache.Execute(func, [with(OperationKey)]).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(1);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
@@ -446,14 +446,14 @@ public class CacheSpecs : IDisposable
         // Second execution (before cache expires) should get it from the cache - no further delegate execution.
         // (Manipulate time so just prior cache expiry).
         SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddSeconds(-1);
-        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        cache.Execute(func, [with(OperationKey)]).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(1);
 
         // Manipulate time to force cache expiry.
         SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddSeconds(1);
 
         // Third execution (cache expired) should not get it from the cache - should cause further delegate execution.
-        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        cache.Execute(func, [with(OperationKey)]).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(2);
     }
 
@@ -470,7 +470,7 @@ public class CacheSpecs : IDisposable
         cacheHit1.ShouldBeFalse();
         fromCache1.ShouldBeNull();
 
-        cache.Execute(_ => ValueToReturn, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        cache.Execute(_ => ValueToReturn, [with(OperationKey)]).ShouldBe(ValueToReturn);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
         cacheHit2.ShouldBeFalse();
@@ -492,13 +492,13 @@ public class CacheSpecs : IDisposable
             return ValueToReturn;
         };
 
-        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        cache.Execute(func, [with(OperationKey)]).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(1);
 
-        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        cache.Execute(func, [with(OperationKey)]).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(1);
 
-        cache.Execute(func, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        cache.Execute(func, [with(OperationKey)]).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(1);
     }
 
@@ -565,7 +565,7 @@ public class CacheSpecs : IDisposable
         cacheHit1.ShouldBeFalse();
         fromCache1.ShouldBeNull();
 
-        cache.Execute(_ => valueToReturn, new Context(OperationKey)).ShouldBe(valueToReturn);
+        cache.Execute(_ => valueToReturn, [with(OperationKey)]).ShouldBe(valueToReturn);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
         cacheHit2.ShouldBeTrue();
@@ -589,7 +589,7 @@ public class CacheSpecs : IDisposable
             {
                 delegateExecuted = true;
                 return valueToReturnFromExecution;
-            }, new Context(OperationKey))
+            }, [with(OperationKey)])
             .ShouldBe(valueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -608,7 +608,7 @@ public class CacheSpecs : IDisposable
         cacheHit1.ShouldBeFalse();
         fromCache1.ShouldBeNull();
 
-        cache.Execute(_ => valueToReturn, new Context(OperationKey)).ShouldBe(valueToReturn);
+        cache.Execute(_ => valueToReturn, [with(OperationKey)]).ShouldBe(valueToReturn);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
         cacheHit2.ShouldBeTrue();
@@ -633,7 +633,7 @@ public class CacheSpecs : IDisposable
             {
                 delegateExecuted = true;
                 return valueToReturnFromExecution;
-            }, new Context(OperationKey))
+            }, [with(OperationKey)])
             .ShouldBe(valueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -663,7 +663,7 @@ public class CacheSpecs : IDisposable
         {
             delegateExecuted = true;
             return ValueToReturnFromExecution;
-        }, new Context(OperationKey))
+        }, [with(OperationKey)])
             .ShouldBe(ValueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -689,7 +689,7 @@ public class CacheSpecs : IDisposable
         {
             delegateExecuted = true;
             return ValueToReturnFromExecution;
-        }, new Context(OperationKey))
+        }, [with(OperationKey)])
             .ShouldBe(ValueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -715,7 +715,7 @@ public class CacheSpecs : IDisposable
         {
             delegateExecuted = true;
             return ValueToReturnFromExecution;
-        }, new Context(OperationKey))
+        }, [with(OperationKey)])
             .ShouldBe(ValueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -756,10 +756,10 @@ public class CacheSpecs : IDisposable
         int delegateInvocations = 0;
         Action<Context> action = _ => { delegateInvocations++; };
 
-        cache.Execute(action, new Context(operationKey));
+        cache.Execute(action, [with(operationKey)]);
         delegateInvocations.ShouldBe(1);
 
-        cache.Execute(action, new Context(operationKey));
+        cache.Execute(action, [with(operationKey)]);
         delegateInvocations.ShouldBe(2);
     }
 
@@ -786,12 +786,12 @@ public class CacheSpecs : IDisposable
                 return ValueToReturn;
             };
 
-            policy.Execute(func, new Context(OperationKey), tokenSource.Token).ShouldBe(ValueToReturn);
+            policy.Execute(func, [with(OperationKey)], tokenSource.Token).ShouldBe(ValueToReturn);
             delegateInvocations.ShouldBe(1);
 
             tokenSource.Cancel();
 
-            Should.Throw<OperationCanceledException>(() => policy.Execute(func, new Context(OperationKey), tokenSource.Token));
+            Should.Throw<OperationCanceledException>(() => policy.Execute(func, [with(OperationKey)], tokenSource.Token));
         }
 
         delegateInvocations.ShouldBe(1);
@@ -815,7 +815,7 @@ public class CacheSpecs : IDisposable
                 return ValueToReturn;
             };
 
-            Should.Throw<OperationCanceledException>(() => policy.Execute(func, new Context(OperationKey), tokenSource.Token));
+            Should.Throw<OperationCanceledException>(() => policy.Execute(func, [with(OperationKey)], tokenSource.Token));
         }
 
         (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(OperationKey);
@@ -852,7 +852,7 @@ public class CacheSpecs : IDisposable
             {
                 delegateExecuted = true;
                 return ValueToReturnFromExecution;
-            }, new Context(OperationKey))
+            }, [with(OperationKey)])
             .ShouldBe(ValueToReturnFromExecution);
         delegateExecuted.ShouldBeTrue();
 
@@ -879,7 +879,7 @@ public class CacheSpecs : IDisposable
         cacheHit1.ShouldBeFalse();
         fromCache1.ShouldBeNull();
 
-        cache.Execute(_ => ValueToReturn, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        cache.Execute(_ => ValueToReturn, [with(OperationKey)]).ShouldBe(ValueToReturn);
 
         // error should be captured by onError delegate.
         exceptionFromCacheProvider.ShouldBe(ex);
@@ -900,7 +900,7 @@ public class CacheSpecs : IDisposable
         const string OperationKey = "SomeOperationKey";
         string? keyPassedToDelegate = null;
 
-        Context contextToExecute = new Context(OperationKey);
+        Context contextToExecute = [with(OperationKey)];
         Context? contextPassedToDelegate = null;
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
@@ -937,7 +937,7 @@ public class CacheSpecs : IDisposable
         string? keyPassedToOnCacheMiss = null;
         string? keyPassedToOnCachePut = null;
 
-        Context contextToExecute = new Context(OperationKey);
+        Context contextToExecute = [with(OperationKey)];
         Context? contextPassedToOnCacheMiss = null;
         Context? contextPassedToOnCachePut = null;
 
@@ -975,7 +975,7 @@ public class CacheSpecs : IDisposable
         string? keyPassedToOnCacheMiss = null;
         string? keyPassedToOnCachePut = null;
 
-        Context contextToExecute = new Context(OperationKey);
+        Context contextToExecute = [with(OperationKey)];
         Context? contextPassedToOnCacheMiss = null;
         Context? contextPassedToOnCachePut = null;
 

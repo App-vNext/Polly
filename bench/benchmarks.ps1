@@ -2,9 +2,9 @@
 
 Param(
     [string]$Configuration = "Release",
-    [string]$Framework = "net10.0",
+    [string]$Framework = "net11.0",
     [Parameter(Mandatory = $false)][string] $Job = "",
-    [Parameter(Mandatory = $false)][string[]] $Runtimes = @("net10.0"),
+    [Parameter(Mandatory = $false)][string[]] $Runtimes = @("net11.0"),
     [Parameter(Mandatory = $false)][string] $Affinity = "",
     [Parameter(Mandatory = $false)][string] $Filter = "*",
     [Parameter(Mandatory = $false)][switch] $EnableMemoryDiagnoser,
