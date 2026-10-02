@@ -530,7 +530,7 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             // Wait for the onRetry delegate to complete.
         }
 
-        executeDelegateInvocationsWhenOnRetryExits.ShouldBe(1); // If the async onRetry delegate is genuinely awaited, only one execution of the .Execute delegate should have occurred by the time onRetry completes.  If the async onRetry delegate were instead assigned to an Action<...>, then onRetry will return, and the second action execution will commence, before await Task.Delay() completes, leaving executeDelegateInvocationsWhenOnRetryExits as 2.
+        executeDelegateInvocationsWhenOnRetryExits.ShouldBe(1);
         executeDelegateInvocations.ShouldBe(2);
     }
 
