@@ -1,5 +1,8 @@
 blank_issues_enabled: true
 contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/App-vNext/Polly/security/advisories/new
+    about: Please do not open public issues for anything with a security implication. Report it privately here. See SECURITY.md.
   - name: Contact us
     url: https://pollytalk.slack.com
     about: You can also contact us on Slack.
