@@ -341,7 +341,7 @@ public class CacheAsyncSpecs : IDisposable
             delegateExecuted = true;
             await TaskHelper.EmptyTask;
             return ValueToReturnFromExecution;
-        }, new Context(OperationKey)))
+        }, [with(OperationKey)]))
             .ShouldBe(ValueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -360,7 +360,7 @@ public class CacheAsyncSpecs : IDisposable
         cacheHit1.ShouldBeFalse();
         fromCache1.ShouldBeNull();
 
-        (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return ValueToReturn; }, new Context(OperationKey))).ShouldBe(ValueToReturn);
+        (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return ValueToReturn; }, [with(OperationKey)])).ShouldBe(ValueToReturn);
 
         (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken, false);
         cacheHit2.ShouldBeTrue();
@@ -393,7 +393,7 @@ public class CacheAsyncSpecs : IDisposable
         SystemClock.DateTimeOffsetUtcNow = () => fixedTime;
 
         // First execution should execute delegate and put result in the cache.
-        (await cache.ExecuteAsync(func, new Context(OperationKey))).ShouldBe(ValueToReturn);
+        (await cache.ExecuteAsync(func, [with(OperationKey)])).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(1);
         (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken, false);
         cacheHit2.ShouldBeTrue();
@@ -402,14 +402,14 @@ public class CacheAsyncSpecs : IDisposable
         // Second execution (before cache expires) should get it from the cache - no further delegate execution.
         // (Manipulate time so just prior cache expiry).
         SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddSeconds(-1);
-        (await cache.ExecuteAsync(func, new Context(OperationKey))).ShouldBe(ValueToReturn);
+        (await cache.ExecuteAsync(func, [with(OperationKey)])).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(1);
 
         // Manipulate time to force cache expiry.
         SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddSeconds(1);
 
         // Third execution (cache expired) should not get it from the cache - should cause further delegate execution.
-        (await cache.ExecuteAsync(func, new Context(OperationKey))).ShouldBe(ValueToReturn);
+        (await cache.ExecuteAsync(func, [with(OperationKey)])).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(2);
     }
 
@@ -426,7 +426,7 @@ public class CacheAsyncSpecs : IDisposable
         cacheHit1.ShouldBeFalse();
         fromCache1.ShouldBeNull();
 
-        (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return ValueToReturn; }, new Context(OperationKey))).ShouldBe(ValueToReturn);
+        (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return ValueToReturn; }, [with(OperationKey)])).ShouldBe(ValueToReturn);
 
         (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken, false);
         cacheHit2.ShouldBeFalse();
@@ -449,13 +449,13 @@ public class CacheAsyncSpecs : IDisposable
             return ValueToReturn;
         };
 
-        (await cache.ExecuteAsync(func, new Context(OperationKey))).ShouldBe(ValueToReturn);
+        (await cache.ExecuteAsync(func, [with(OperationKey)])).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(1);
 
-        (await cache.ExecuteAsync(func, new Context(OperationKey))).ShouldBe(ValueToReturn);
+        (await cache.ExecuteAsync(func, [with(OperationKey)])).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(1);
 
-        (await cache.ExecuteAsync(func, new Context(OperationKey))).ShouldBe(ValueToReturn);
+        (await cache.ExecuteAsync(func, [with(OperationKey)])).ShouldBe(ValueToReturn);
         delegateInvocations.ShouldBe(1);
     }
 
@@ -522,7 +522,7 @@ public class CacheAsyncSpecs : IDisposable
         cacheHit1.ShouldBeFalse();
         fromCache1.ShouldBeNull();
 
-        (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, new Context(OperationKey))).ShouldBe(valueToReturn);
+        (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, [with(OperationKey)])).ShouldBe(valueToReturn);
 
         (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken, false);
         cacheHit2.ShouldBeTrue();
@@ -547,7 +547,7 @@ public class CacheAsyncSpecs : IDisposable
                     delegateExecuted = true;
                     await TaskHelper.EmptyTask;
                     return valueToReturnFromExecution;
-                }, new Context(OperationKey)))
+                }, [with(OperationKey)]))
             .ShouldBe(valueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -566,7 +566,7 @@ public class CacheAsyncSpecs : IDisposable
         cacheHit1.ShouldBeFalse();
         fromCache1.ShouldBeNull();
 
-        (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, new Context(OperationKey))).ShouldBe(valueToReturn);
+        (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, [with(OperationKey)])).ShouldBe(valueToReturn);
 
         (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken, false);
         cacheHit2.ShouldBeTrue();
@@ -592,7 +592,7 @@ public class CacheAsyncSpecs : IDisposable
                     delegateExecuted = true;
                     await TaskHelper.EmptyTask;
                     return valueToReturnFromExecution;
-                }, new Context(OperationKey)))
+                }, [with(OperationKey)]))
             .ShouldBe(valueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -623,7 +623,7 @@ public class CacheAsyncSpecs : IDisposable
             delegateExecuted = true;
             await TaskHelper.EmptyTask;
             return ValueToReturnFromExecution;
-        }, new Context(OperationKey)))
+        }, [with(OperationKey)]))
             .ShouldBe(ValueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -650,7 +650,7 @@ public class CacheAsyncSpecs : IDisposable
             delegateExecuted = true;
             await TaskHelper.EmptyTask;
             return ValueToReturnFromExecution;
-        }, new Context(OperationKey)))
+        }, [with(OperationKey)]))
             .ShouldBe(ValueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -677,7 +677,7 @@ public class CacheAsyncSpecs : IDisposable
             delegateExecuted = true;
             await TaskHelper.EmptyTask;
             return ValueToReturnFromExecution;
-        }, new Context(OperationKey)))
+        }, [with(OperationKey)]))
             .ShouldBe(ValueToReturnFromCache);
 
         delegateExecuted.ShouldBeFalse();
@@ -719,10 +719,10 @@ public class CacheAsyncSpecs : IDisposable
         int delegateInvocations = 0;
         Func<Context, Task> action = async _ => { delegateInvocations++; await TaskHelper.EmptyTask; };
 
-        cache.ExecuteAsync(action, new Context(operationKey));
+        cache.ExecuteAsync(action, [with(operationKey)]);
         delegateInvocations.ShouldBe(1);
 
-        cache.ExecuteAsync(action, new Context(operationKey));
+        cache.ExecuteAsync(action, [with(operationKey)]);
         delegateInvocations.ShouldBe(2);
     }
 
@@ -750,12 +750,12 @@ public class CacheAsyncSpecs : IDisposable
                 return ValueToReturn;
             };
 
-            (await policy.ExecuteAsync(func, new Context(OperationKey), tokenSource.Token)).ShouldBe(ValueToReturn);
+            (await policy.ExecuteAsync(func, [with(OperationKey)], tokenSource.Token)).ShouldBe(ValueToReturn);
             delegateInvocations.ShouldBe(1);
 
             tokenSource.Cancel();
 
-            await Should.ThrowAsync<OperationCanceledException>(() => policy.ExecuteAsync(func, new Context(OperationKey), tokenSource.Token));
+            await Should.ThrowAsync<OperationCanceledException>(() => policy.ExecuteAsync(func, [with(OperationKey)], tokenSource.Token));
         }
 
         delegateInvocations.ShouldBe(1);
@@ -780,7 +780,7 @@ public class CacheAsyncSpecs : IDisposable
                 return ValueToReturn;
             };
 
-            await Should.ThrowAsync<OperationCanceledException>(() => policy.ExecuteAsync(func, new Context(OperationKey), tokenSource.Token));
+            await Should.ThrowAsync<OperationCanceledException>(() => policy.ExecuteAsync(func, [with(OperationKey)], tokenSource.Token));
         }
 
         (bool cacheHit, object? fromCache) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken, false);
@@ -819,7 +819,7 @@ public class CacheAsyncSpecs : IDisposable
             await TaskHelper.EmptyTask;
             return ValueToReturnFromExecution;
 
-        }, new Context(OperationKey)))
+        }, [with(OperationKey)]))
            .ShouldBe(ValueToReturnFromExecution);
         delegateExecuted.ShouldBeTrue();
 
@@ -846,7 +846,7 @@ public class CacheAsyncSpecs : IDisposable
         cacheHit1.ShouldBeFalse();
         fromCache1.ShouldBeNull();
 
-        (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return ValueToReturn; }, new Context(OperationKey))).ShouldBe(ValueToReturn);
+        (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return ValueToReturn; }, [with(OperationKey)])).ShouldBe(ValueToReturn);
 
         // error should be captured by onError delegate.
         exceptionFromCacheProvider.ShouldBe(ex);
@@ -866,7 +866,7 @@ public class CacheAsyncSpecs : IDisposable
         const string OperationKey = "SomeOperationKey";
         string? keyPassedToDelegate = null;
 
-        Context contextToExecute = new Context(OperationKey);
+        Context contextToExecute = [with(OperationKey)];
         Context? contextPassedToDelegate = null;
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
@@ -904,7 +904,7 @@ public class CacheAsyncSpecs : IDisposable
         string? keyPassedToOnCacheMiss = null;
         string? keyPassedToOnCachePut = null;
 
-        Context contextToExecute = new Context(OperationKey);
+        Context contextToExecute = [with(OperationKey)];
         Context? contextPassedToOnCacheMiss = null;
         Context? contextPassedToOnCachePut = null;
 
@@ -941,7 +941,7 @@ public class CacheAsyncSpecs : IDisposable
         string? keyPassedToOnCacheMiss = null;
         string? keyPassedToOnCachePut = null;
 
-        Context contextToExecute = new Context(OperationKey);
+        Context contextToExecute = [with(OperationKey)];
         Context? contextPassedToOnCacheMiss = null;
         Context? contextPassedToOnCachePut = null;
 
