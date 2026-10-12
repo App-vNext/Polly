@@ -3,6 +3,11 @@
 > [!IMPORTANT]
 > **Polly now participates in the Open Source Maintenance Fee (OSMF).**
 > Starting **November 16, 2026**, companies that earn at least US $20,000 from a product or project that uses Polly will be asked to pay a US $20/month maintenance fee to help fund Polly's ongoing upkeep. The source code stays free and open, and individuals, hobbyists, and organizations below the threshold owe nothing.
+> 
+> **We've heard your questions and want to clarify two points:**
+> - The fee applies only to the next major version of Polly released after November 16, 2026. Existing versions of Polly are not subject to the fee.
+> - Only direct references to Polly are subject to the fee. If Polly is a dependency of a different library, such as Microsoft.Extensions.Resilience or Microsoft.Extensions.Http.Resilience, the fee does not apply.
+> 
 > Read the announcement: [Introducing the Open Source Maintenance Fee for Polly](https://thepollyproject.org/2026/07/14/polly-osmf-announcement.html) · Learn about the [OSMF](https://opensourcemaintenancefee.org) · [Become a sponsor](https://github.com/sponsors/App-vNext)
 
 Polly is a .NET resilience and transient-fault-handling library that allows developers to express resilience strategies such as Retry, Circuit Breaker, Hedging, Timeout, Rate Limiter and Fallback in a fluent and thread-safe manner.
