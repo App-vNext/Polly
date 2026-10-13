@@ -25,4 +25,4 @@ jobs:
       - name: Review dependencies
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
-          allow-licenses: 'Apache-2.0,BSD-3-Clause,MIT'
+          config-file: './.github/dependency-review-config.yml'
