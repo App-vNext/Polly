@@ -2,4 +2,5 @@ allow-licenses:
   - 'Apache-2.0'
   - 'BSD-3-Clause'
   - 'MIT'
+  - 'LicenseRef-scancode-ms-net-library-2018-11'
   - 'LicenseRef-scancode-sonar-sal-1.0'
