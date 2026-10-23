@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Polly.CircuitBreaker;
 
 namespace Polly.Core.Tests.CircuitBreaker.Controller;
@@ -166,5 +167,39 @@ public class ScheduledTaskExecutorTests
         await scheduler.ProcessingTask;
 
         scheduler.ProcessingTask.IsCompleted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Constructor_DoesNotCaptureAmbientExecutionContext()
+    {
+        // The background processing loop outlives the code that creates the executor,
+        // so it must not capture (and keep alive) the ambient ExecutionContext.
+        var (executor, reference) = CreateExecutorWithAmbientValue();
+
+        for (var i = 0; i < 3; i++)
+        {
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: true);
+            GC.WaitForPendingFinalizers();
+        }
+
+        // Keep the executor (and its background processing task) alive for the check:
+        // without the fix, the task's captured ExecutionContext keeps the ambient value alive.
+        GC.KeepAlive(executor);
+        reference.IsAlive.ShouldBeFalse();
+
+        executor.Dispose();
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static (ScheduledTaskExecutor Executor, WeakReference Reference) CreateExecutorWithAmbientValue()
+    {
+        var asyncLocal = new AsyncLocal<object?>();
+        var value = new object();
+        asyncLocal.Value = value;
+
+        var executor = new ScheduledTaskExecutor();
+
+        asyncLocal.Value = null;
+        return (executor, new WeakReference(value));
     }
 }
