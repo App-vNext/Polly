@@ -201,16 +201,16 @@ jobs:
           if ($LASTEXITCODE -ne 0) {
             $isValid = $false
           }
-          meziantou.validate-nuget-package $package --github-token ${env:GH_TOKEN}
-          if ($LASTEXITCODE -ne 0) {
-            $isValid = $false
-          }
           if (-Not $isValid) {
             $invalidPackages++
           }
         }
+        meziantou.validate-nuget-package @($packages) --github-token ${env:GH_TOKEN}
+        if ($LASTEXITCODE -ne 0) {
+          $invalidPackages++
+        }
         if ($invalidPackages -gt 0) {
-          Write-Output "::error::$invalidPackages NuGet package(s) failed validation."
+          Write-Output "::error::One or more NuGet packages failed validation."
           exit 1
         }
 
