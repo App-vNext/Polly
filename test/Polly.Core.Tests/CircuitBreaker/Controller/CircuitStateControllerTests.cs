@@ -306,6 +306,42 @@ public class CircuitStateControllerTests
         called.ShouldBeTrue();
     }
 
+    [Fact]
+    public async Task OnActionPreExecute_HalfOpen_OnHalfOpenedNotCompleted_WaitsForCompletion()
+    {
+        // arrange
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
+        var halfOpenedStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var halfOpenedCanComplete = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        _options.OnHalfOpened = async _ =>
+        {
+            halfOpenedStarted.SetResult(true);
+            await halfOpenedCanComplete.Task;
+        };
+
+        using var controller = CreateController();
+
+        await OpenCircuit(controller, Outcome.FromResult(10));
+        AdvanceTime(_options.BreakDuration);
+
+        // act
+        var pending = controller.OnActionPreExecuteAsync(context);
+
+        // assert
+        await halfOpenedStarted.Task;
+
+        pending.IsCompleted.ShouldBeFalse();
+        controller.CircuitState.ShouldBe(CircuitState.HalfOpen);
+
+        halfOpenedCanComplete.SetResult(true);
+
+        var outcome = await pending;
+
+        outcome.ShouldBeNull();
+        controller.CircuitState.ShouldBe(CircuitState.HalfOpen);
+    }
+
     [InlineData(CircuitState.HalfOpen, CircuitState.Closed)]
     [InlineData(CircuitState.Isolated, CircuitState.Isolated)]
     [InlineData(CircuitState.Closed, CircuitState.Closed)]
