@@ -1,6 +1,6 @@
 {
   "sdk": {
-    "version": "10.0.402",
+    "version": "11.0.100-rc.2.26504.105",
     "allowPrerelease": false
   },
   "msbuild-sdks": {
