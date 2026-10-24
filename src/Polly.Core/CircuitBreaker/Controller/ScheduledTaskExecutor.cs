@@ -11,7 +11,15 @@ internal sealed class ScheduledTaskExecutor : IDisposable
     private readonly SemaphoreSlim _semaphore = new(0);
     private bool _disposed;
 
-    public ScheduledTaskExecutor() => ProcessingTask = Task.Run(StartProcessingAsync);
+    public ScheduledTaskExecutor()
+    {
+        // The processing loop is infrastructure that outlives the code creating the executor,
+        // so it must not capture (and keep alive) the ambient ExecutionContext.
+        using (ExecutionContext.SuppressFlow())
+        {
+            ProcessingTask = Task.Run(StartProcessingAsync);
+        }
+    }
 
     public Task ProcessingTask { get; }
 

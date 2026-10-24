@@ -6,7 +6,7 @@ public class AbsoluteTtlSpecs : IDisposable
     [Fact]
     public void Should_be_able_to_configure_for_near_future_time()
     {
-        Action configure = () => _ = new AbsoluteTtl(DateTimeOffset.UtcNow.Date.AddDays(1));
+        Action configure = () => _ = new AbsoluteTtl(DateTimeOffset.UtcNow.AddDays(1));
 
         Should.NotThrow(configure);
     }
@@ -41,7 +41,8 @@ public class AbsoluteTtlSpecs : IDisposable
     [Fact]
     public void Should_return_timespan_reflecting_time_until_expiry()
     {
-        DateTimeOffset today = DateTimeOffset.UtcNow.Date;
+        DateTimeOffset today = DateTimeOffset.UtcNow;
+        today -= today.TimeOfDay;
         DateTimeOffset tomorrow = today.AddDays(1);
 
         AbsoluteTtl ttlStrategy = new AbsoluteTtl(tomorrow);

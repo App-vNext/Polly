@@ -104,7 +104,7 @@ jobs:
 
     - name: Upload Coverage Reports
       if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: coverage-${{ matrix.os-name }}
         path: ./artifacts/coverage-reports
@@ -126,14 +126,14 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Publish NuGet packages
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: packages-${{ matrix.os-name }}
         path: ./artifacts/package/release
         if-no-files-found: error
 
     - name: Upload signing file list
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       if: matrix.os-name == 'windows'
       with:
         name: signing-config
@@ -170,7 +170,7 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         name: packages-windows
 
@@ -201,16 +201,16 @@ jobs:
           if ($LASTEXITCODE -ne 0) {
             $isValid = $false
           }
-          meziantou.validate-nuget-package $package --github-token ${env:GH_TOKEN}
-          if ($LASTEXITCODE -ne 0) {
-            $isValid = $false
-          }
           if (-Not $isValid) {
             $invalidPackages++
           }
         }
+        meziantou.validate-nuget-package @($packages) --github-token ${env:GH_TOKEN}
+        if ($LASTEXITCODE -ne 0) {
+          $invalidPackages++
+        }
         if ($invalidPackages -gt 0) {
-          Write-Output "::error::$invalidPackages NuGet package(s) failed validation."
+          Write-Output "::error::One or more NuGet packages failed validation."
           exit 1
         }
 
@@ -231,13 +231,13 @@ jobs:
     steps:
 
     - name: Download unsigned packages
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         name: packages-windows
         path: packages
 
     - name: Download signing configuration
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         name: signing-config
         path: signing-config
@@ -283,7 +283,7 @@ jobs:
         }
 
     - name: Upload signed packages
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: signed-packages
         path: packages
@@ -301,12 +301,12 @@ jobs:
     steps:
 
     - name: Download packages
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         name: signed-packages
 
     - name: Download SBOM
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         name: polly.spdx.json
         path: ./artifacts
@@ -429,7 +429,7 @@ jobs:
     steps:
 
     - name: Download signed packages
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         name: signed-packages
 
@@ -453,7 +453,7 @@ jobs:
 
     - name: Generate GitHub application token
       id: generate-application-token
-      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+      uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
       with:
         client-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
         private-key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
