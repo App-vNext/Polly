@@ -69,6 +69,55 @@ public class CircuitStateControllerTests
     }
 
     [Fact]
+    public async Task OnActionPreExecute_CircuitClosedConcurrently_Ok()
+    {
+        // arrange
+        var cancellationToken = TestCancellation.Token;
+        using var controller = CreateController();
+        await TransitionToState(controller, CircuitState.Isolated, ResilienceContextPool.Shared.Get(cancellationToken));
+
+        var context = ResilienceContextPool.Shared.Get(cancellationToken);
+        var syncRoot = controller.GetType().GetField("_lock", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(controller)!;
+
+        ValueTask<Outcome<int>?> pending = default;
+        var thread = new Thread(() => pending = controller.OnActionPreExecuteAsync(context));
+
+        Task closeTask;
+
+        // act
+        Monitor.Enter(syncRoot);
+
+        try
+        {
+            // The circuit is not closed so the thread skips the fast path and blocks waiting for the lock
+            thread.Start();
+
+            var stopwatch = Stopwatch.StartNew();
+
+            while (!thread.ThreadState.HasFlag(System.Threading.ThreadState.WaitSleepJoin))
+            {
+                stopwatch.Elapsed.ShouldBeLessThan(TimeSpan.FromSeconds(30));
+                Thread.Yield();
+            }
+
+            // The lock is re-entrant, so the circuit can be closed before the blocked thread acquires it
+            closeTask = controller.CloseCircuitAsync(ResilienceContextPool.Shared.Get(cancellationToken));
+        }
+        finally
+        {
+            Monitor.Exit(syncRoot);
+        }
+
+        await closeTask;
+        thread.Join(TimeSpan.FromSeconds(30)).ShouldBeTrue();
+
+        // assert
+        var outcome = await pending;
+        outcome.ShouldBeNull();
+        controller.CircuitState.ShouldBe(CircuitState.Closed);
+    }
+
+    [Fact]
     public async Task BreakAsync_Ok()
     {
         // arrange

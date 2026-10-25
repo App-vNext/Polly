@@ -90,6 +90,16 @@ internal sealed class CompositeComponent : PipelineComponent
         {
             return Outcome.FromExceptionAsValueTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
         }
+        else if (FirstComponent is DelegatingComponent delegating)
+        {
+            // Avoid the generic virtual method dispatch for the common case of multiple components.
+            return delegating.Execute(callback, context, state);
+        }
+        else if (FirstComponent is BridgeComponent bridge)
+        {
+            // Single non-generic strategy, skip the bridge and its generic virtual method dispatch.
+            return bridge.Strategy.ExecuteCore(callback, context, state);
+        }
         else
         {
             return FirstComponent.ExecuteCore(callback, context, state);

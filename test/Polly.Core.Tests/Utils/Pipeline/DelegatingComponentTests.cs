@@ -40,7 +40,49 @@ public static class DelegatingComponentTests
 
         actual.Result.ShouldBe(2);
     }
+
+    [Fact]
+    public static async Task ExecuteComponentAot_WithBridgeComponent_ExecutesStrategy()
+    {
+        var executed = false;
+        var strategy = new TestResilienceStrategy { Before = (_, _) => executed = true };
+        await using var component = new BridgeComponent(strategy);
+        var next = new CallbackComponent();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
+        var state = 1;
+
+        await using var delegating = new DelegatingComponent(component) { Next = next };
+
+        var actual = await delegating.ExecuteComponentAot(
+            async static (_, state) => await Outcome.FromResultAsValueTask(state + 1),
+            context,
+            state);
+
+        actual.Result.ShouldBe(2);
+        executed.ShouldBeTrue();
+    }
 #endif
+
+    [Fact]
+    public static async Task ExecuteComponent_WithBridgeComponent_ExecutesStrategy()
+    {
+        var executed = false;
+        var strategy = new TestResilienceStrategy { Before = (_, _) => executed = true };
+        await using var component = new BridgeComponent(strategy);
+        var next = new CallbackComponent();
+        var context = ResilienceContextPool.Shared.Get(TestCancellation.Token);
+        var state = 1;
+
+        await using var delegating = new DelegatingComponent(component) { Next = next };
+
+        var actual = await delegating.ExecuteComponent(
+            async static (_, state) => await Outcome.FromResultAsValueTask(state + 1),
+            context,
+            state);
+
+        actual.Result.ShouldBe(2);
+        executed.ShouldBeTrue();
+    }
 
     private sealed class CallbackComponent : PipelineComponent
     {
