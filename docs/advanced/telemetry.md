@@ -153,6 +153,8 @@ The `event.name` tag is reported by individual resilience strategies. The built-
 - [`Chaos.OnLatency`](../chaos/latency.md#telemetry)
 - [`Chaos.OnBehavior`](../chaos/behavior.md#telemetry)
 
+Pipeline infrastructure also reports `DisposeFailed` with `Error` severity when cleanup fails for a pipeline replaced during reload or discarded during concurrent registry initialization. The event includes the disposal exception. Cleanup failures do not prevent the retained pipeline from being returned.
+
 ### Instrument: `resilience.polly.strategy.attempt.duration`
 
 - Type: *Histogram*

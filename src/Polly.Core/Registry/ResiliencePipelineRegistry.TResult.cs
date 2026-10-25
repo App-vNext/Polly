@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Polly.Utils.Pipeline;
 
 namespace Polly.Registry;
 
@@ -59,9 +60,16 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
                 _instanceNameFormatter?.Invoke(key),
                 configure);
 
-            (var contextPool, var component) = componentBuilder.CreateComponent();
+            (var contextPool, var component, var telemetry) = componentBuilder.CreateComponent();
+            var candidate = new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject, contextPool);
+            pipeline = _pipelines.GetOrAdd(key, candidate);
 
-            return _pipelines.GetOrAdd(key, new ResiliencePipeline<TResult>(component, DisposeBehavior.Reject, contextPool));
+            if (!ReferenceEquals(pipeline, candidate))
+            {
+                _ = ReloadableComponent.DisposeDiscardedComponentSafeAsync(component, telemetry);
+            }
+
+            return pipeline;
         }
 
         public bool TryAddBuilder(TKey key, Action<ResiliencePipelineBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);

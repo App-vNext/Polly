@@ -77,10 +77,10 @@ internal sealed class ReloadableComponent : PipelineComponent
         }
 
         TryRegisterOnReload(reloadTokens);
-        _ = DisposeDiscardedComponentSafeAsync(previousComponent);
+        _ = DisposeDiscardedComponentSafeAsync(previousComponent, _telemetry);
     }
 
-    private async Task DisposeDiscardedComponentSafeAsync(PipelineComponent component)
+    internal static async Task DisposeDiscardedComponentSafeAsync(PipelineComponent component, ResilienceStrategyTelemetry telemetry)
     {
         try
         {
@@ -89,7 +89,7 @@ internal sealed class ReloadableComponent : PipelineComponent
         catch (Exception e)
         {
             var context = new ResilienceContext().Initialize<VoidResult>(isSynchronous: false);
-            _telemetry.Report(new(ResilienceEventSeverity.Error, DisposeFailedEvent), context, Outcome.FromException(e), new DisposedFailedArguments(e));
+            telemetry.Report(new(ResilienceEventSeverity.Error, DisposeFailedEvent), context, Outcome.FromException(e), new DisposedFailedArguments(e));
         }
     }
 

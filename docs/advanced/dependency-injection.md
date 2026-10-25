@@ -249,6 +249,13 @@ services.AddResiliencePipeline("my-pipeline", (builder, context) =>
 This feature ensures that resources are properly disposed when a pipeline
 reloads, discarding the old version.
 
+Concurrent initialization can construct multiple pipelines for the same key. Only
+one is cached; the discarded candidates are cleaned up and their reload
+registrations are removed. As with cleanup after a reload, asynchronous disposal
+is started without blocking the lookup. Registry shutdown does not wait for this
+background cleanup. Disposal failures are reported through the `DisposeFailed`
+telemetry event.
+
 ## Complex pipeline keys
 
 The `AddResiliencePipeline(...)` method supports complex pipeline keys. This
