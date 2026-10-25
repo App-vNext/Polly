@@ -18,7 +18,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     private readonly TimeSpan _breakDuration;
     private readonly Func<BreakDurationGeneratorArguments, ValueTask<TimeSpan>>? _breakDurationGenerator;
     private DateTimeOffset _blockedUntil;
-    private CircuitState _circuitState = CircuitState.Closed;
+    private volatile CircuitState _circuitState = CircuitState.Closed;
     private Outcome<T>? _lastOutcome;
     private Exception? _breakingException;
     private bool _disposed;
@@ -124,6 +124,15 @@ internal sealed class CircuitStateController<T> : IDisposable
     public ValueTask<Outcome<T>?> OnActionPreExecuteAsync(ResilienceContext context)
     {
         EnsureNotDisposed();
+
+        // Fast path for the common case. A closed circuit cannot transition to another state in this method,
+        // so there is no need to take the lock. The state is only ever changed while holding the lock and
+        // the field is volatile, so the read observes the latest state. A concurrent transition after the
+        // read is indistinguishable from one that happens right after the lock would have been released.
+        if (_circuitState == CircuitState.Closed)
+        {
+            return default;
+        }
 
         BrokenCircuitException? exception = null;
         bool isHalfOpen = false;
