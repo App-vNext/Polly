@@ -97,6 +97,32 @@ public partial class IssuesTests
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ReentrantRegistryInitialization_RemovesDiscardedReloadRegistration(bool generic)
+    {
+        using var registry = new ResiliencePipelineRegistry<string>();
+        using var reload = new CancellationTokenSource();
+        var builds = 0;
+        var disposals = 0;
+        object? retained = null;
+
+        var returned = GetRegistryPipeline(registry, generic, (_, context) =>
+        {
+            builds++;
+            retained = GetRegistryPipeline(registry, generic, (_, _) => { });
+            context.OnPipelineDisposed(() => disposals++);
+            context.AddReloadToken(reload.Token);
+        });
+
+        returned.ShouldBeSameAs(retained);
+        disposals.ShouldBe(1);
+        reload.Cancel();
+        builds.ShouldBe(1);
+        disposals.ShouldBe(1);
+    }
+
+    [Theory]
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]

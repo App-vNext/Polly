@@ -131,10 +131,12 @@ public sealed partial class ResiliencePipelineRegistry<TKey> : ResiliencePipelin
             configure);
 
         (var contextPool, var component, var telemetry) = componentBuilder.CreateComponent();
-        var candidate = new ResiliencePipeline(component, DisposeBehavior.Reject, contextPool);
-        pipeline = _pipelines.GetOrAdd(key, candidate);
+        if (!_pipelines.TryGetValue(key, out pipeline))
+        {
+            pipeline = _pipelines.GetOrAdd(key, new ResiliencePipeline(component, DisposeBehavior.Reject, contextPool));
+        }
 
-        if (!ReferenceEquals(pipeline, candidate))
+        if (!ReferenceEquals(pipeline.Component, component))
         {
             _ = ReloadableComponent.DisposeDiscardedComponentSafeAsync(component, telemetry);
         }
