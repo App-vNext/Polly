@@ -4,6 +4,12 @@
 
 <!-- next-release -->
 
+## 8.8.1
+
+* Prevent the circuit breaker from capturing the ambient ExecutionContext by [@Nacl-HCl](https://github.com/Nacl-HCl) in https://github.com/App-vNext/Polly/pull/3284
+* Improve pipeline execution performance by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/3287
+* Fix cleanup of discarded registry pipelines by [@harshvarudkar](https://github.com/harshvarudkar) in https://github.com/App-vNext/Polly/pull/3288
+
 ## 8.8.0
 
 * Add `EnableReloadsWithMonitor()` accepting custom `IOptionsMonitor` by [@arashzjahangiri](https://github.com/arashzjahangiri) in https://github.com/App-vNext/Polly/pull/3140
