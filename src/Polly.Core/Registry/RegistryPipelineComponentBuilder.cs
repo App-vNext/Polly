@@ -21,13 +21,13 @@ internal sealed class RegistryPipelineComponentBuilder<TBuilder, TKey>(
     private readonly string? _instanceName = instanceName;
     private readonly Action<TBuilder, ConfigureBuilderContext<TKey>> _configure = configure;
 
-    internal (ResilienceContextPool? ContextPool, PipelineComponent Component) CreateComponent()
+    internal (ResilienceContextPool? ContextPool, PipelineComponent Component, ResilienceStrategyTelemetry Telemetry) CreateComponent()
     {
         var (component, reloadTokens, telemetry, instance) = CreateBuilder();
 
         if (reloadTokens.Count == 0)
         {
-            return (instance.ContextPool, component);
+            return (instance.ContextPool, component, telemetry);
         }
 
         component = PipelineComponentFactory.CreateReloadable(
@@ -38,7 +38,7 @@ internal sealed class RegistryPipelineComponentBuilder<TBuilder, TKey>(
                 return new ReloadableComponent.Entry(component, reloadTokens, telemetry);
             });
 
-        return (instance.ContextPool, component);
+        return (instance.ContextPool, component, telemetry);
     }
 
     private (PipelineComponent Component, List<CancellationToken> ReloadTokens, ResilienceStrategyTelemetry Telemetry, TBuilder Instance) CreateBuilder()
