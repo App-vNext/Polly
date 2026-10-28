@@ -158,7 +158,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var result = await strategy.ExecuteAsync(_primaryTasks.SlowTask, CancellationToken);
 
         result.ShouldNotBeNull();
-#if NET8_0_OR_GREATER
+#if NET
         _timeProvider.TimerEntries.Count.ShouldBe(8);
 #else
         _timeProvider.TimerEntries.Count.ShouldBe(5);

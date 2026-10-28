@@ -42,27 +42,11 @@
   </ItemGroup>
   <!-- Dependencies below are pinned for the libraries we ship to NuGet.org -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Bcl.TimeProvider" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.0" />
-    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
-    <PackageVersion Include="System.Threading.RateLimiting" Version="8.0.0" />
-  </ItemGroup>
-  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net9.0'))">
-    <PackageVersion Update="Microsoft.Bcl.TimeProvider" Version="9.0.0" />
-    <PackageVersion Update="Microsoft.Extensions.Logging" Version="9.0.0" />
-    <PackageVersion Update="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
-    <PackageVersion Update="Microsoft.Extensions.Options" Version="9.0.0" />
-    <PackageVersion Update="System.Diagnostics.DiagnosticSource" Version="9.0.0" />
-    <PackageVersion Update="System.Threading.RateLimiting" Version="9.0.0" />
-  </ItemGroup>
-  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0'))">
-    <PackageVersion Update="Microsoft.Bcl.TimeProvider" Version="10.0.0" />
-    <PackageVersion Update="Microsoft.Extensions.Logging" Version="10.0.0" />
-    <PackageVersion Update="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
-    <PackageVersion Update="Microsoft.Extensions.Options" Version="10.0.0" />
-    <PackageVersion Update="System.Diagnostics.DiagnosticSource" Version="10.0.0" />
-    <PackageVersion Update="System.Threading.RateLimiting" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Bcl.TimeProvider" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.0" />
+    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="10.0.0" />
+    <PackageVersion Include="System.Threading.RateLimiting" Version="10.0.0" />
   </ItemGroup>
 </Project>

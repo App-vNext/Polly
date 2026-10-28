@@ -2,7 +2,7 @@ namespace Polly.Utils;
 
 internal abstract partial class CancellationTokenSourcePool
 {
-#if !NET8_0_OR_GREATER
+#if !NET
     private sealed class DisposableCancellationTokenSourcePool : CancellationTokenSourcePool
     {
         private readonly TimeProvider _timeProvider;

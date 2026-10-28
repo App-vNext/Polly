@@ -34,7 +34,7 @@ public class CancellationTokenSourcePoolTests
         // returns a process-wide shared singleton for TimeProvider.System. Using the shared singleton
         // makes this test flaky, as other tests running in parallel can rent/return CancellationTokenSource
         // instances from the same pool concurrently, changing which instance is returned by Get().
-#if NET6_0_OR_GREATER
+#if NET
         var pool = new CancellationTokenSourcePool.PooledCancellationTokenSourcePool(GetTimeProvider(timeProvider));
 #else
         var pool = CancellationTokenSourcePool.Create(GetTimeProvider(timeProvider));
@@ -44,7 +44,7 @@ public class CancellationTokenSourcePoolTests
 
         var cts2 = pool.Get(System.Threading.Timeout.InfiniteTimeSpan);
 
-#if NET6_0_OR_GREATER
+#if NET
         if (timeProvider == TimeProvider.System)
         {
             cts2.ShouldBeSameAs(cts);

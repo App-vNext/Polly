@@ -22,7 +22,7 @@ public static class DelegatingComponentTests
         actual.Result.ShouldBe(2);
     }
 
-#if NET6_0_OR_GREATER
+#if NET
     [Fact]
     public static async Task ExecuteComponentAot_ReturnsCorrectResult()
     {

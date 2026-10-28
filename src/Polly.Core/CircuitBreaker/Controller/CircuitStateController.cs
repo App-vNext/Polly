@@ -274,7 +274,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         return breakDuration > maxDifference;
     }
 
-#if NET8_0_OR_GREATER
+#if NET
     private void EnsureNotDisposed()
         => ObjectDisposedException.ThrowIf(_disposed, this);
 #else

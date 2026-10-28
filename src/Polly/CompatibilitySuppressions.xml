@@ -5,48 +5,48 @@
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Polly.Bulkhead.BulkheadRejectedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
     <Left>lib/netstandard2.0/Polly.dll</Left>
-    <Right>lib/net462/Polly.dll</Right>
+    <Right>lib/net472/Polly.dll</Right>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Polly.RateLimit.RateLimitRejectedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
     <Left>lib/netstandard2.0/Polly.dll</Left>
-    <Right>lib/net462/Polly.dll</Right>
+    <Right>lib/net472/Polly.dll</Right>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Polly.Bulkhead.BulkheadRejectedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
     <Left>lib/netstandard2.0/Polly.dll</Left>
-    <Right>lib/net6.0/Polly.dll</Right>
+    <Right>lib/net10.0/Polly.dll</Right>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Polly.CircuitBreaker.BrokenCircuitException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
     <Left>lib/netstandard2.0/Polly.dll</Left>
-    <Right>lib/net6.0/Polly.dll</Right>
+    <Right>lib/net10.0/Polly.dll</Right>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Polly.CircuitBreaker.BrokenCircuitException`1.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
     <Left>lib/netstandard2.0/Polly.dll</Left>
-    <Right>lib/net6.0/Polly.dll</Right>
+    <Right>lib/net10.0/Polly.dll</Right>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Polly.CircuitBreaker.IsolatedCircuitException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
     <Left>lib/netstandard2.0/Polly.dll</Left>
-    <Right>lib/net6.0/Polly.dll</Right>
+    <Right>lib/net10.0/Polly.dll</Right>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Polly.ExecutionRejectedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
     <Left>lib/netstandard2.0/Polly.dll</Left>
-    <Right>lib/net6.0/Polly.dll</Right>
+    <Right>lib/net10.0/Polly.dll</Right>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Polly.RateLimit.RateLimitRejectedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
     <Left>lib/netstandard2.0/Polly.dll</Left>
-    <Right>lib/net6.0/Polly.dll</Right>
+    <Right>lib/net10.0/Polly.dll</Right>
   </Suppression>
 </Suppressions>
