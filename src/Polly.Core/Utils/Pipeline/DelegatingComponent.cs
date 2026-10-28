@@ -45,7 +45,7 @@ internal sealed class DelegatingComponent : PipelineComponent
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state) =>
-#if NET6_0_OR_GREATER
+#if NET
         RuntimeFeature.IsDynamicCodeSupported ? ExecuteComponent(callback, context, state) : ExecuteComponentAot(callback, context, state);
 #else
         ExecuteComponent(callback, context, state);
@@ -99,7 +99,7 @@ internal sealed class DelegatingComponent : PipelineComponent
             (Next, callback, state));
     }
 
-#if NET6_0_OR_GREATER
+#if NET
     // Custom state object is used to cast the callback and state to prevent infinite
     // generic type recursion warning IL3054 when referenced in a native AoT application.
     // See https://github.com/App-vNext/Polly/issues/1732 for further context.

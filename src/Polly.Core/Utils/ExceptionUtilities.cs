@@ -4,7 +4,7 @@
 
 internal static class ExceptionUtilities
 {
-#if !NET6_0_OR_GREATER
+#if !NET
     private static readonly FieldInfo StackTraceString = typeof(Exception).GetField("_stackTraceString", BindingFlags.NonPublic | BindingFlags.Instance)!;
     private static readonly Type TraceFormat = typeof(StackTrace).GetNestedType("TraceFormat", BindingFlags.NonPublic)!;
     private static readonly MethodInfo TraceToString = typeof(StackTrace).GetMethod("ToString", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { TraceFormat }, null)!;
@@ -19,7 +19,7 @@ internal static class ExceptionUtilities
             return exception;
         }
 
-#if NET6_0_OR_GREATER
+#if NET
         System.Runtime.ExceptionServices.ExceptionDispatchInfo.SetCurrentStackTrace(exception);
 #else
         SetStackTrace(exception, new StackTrace());
@@ -27,7 +27,7 @@ internal static class ExceptionUtilities
         return exception;
     }
 
-#if !NET6_0_OR_GREATER
+#if !NET
     private static void SetStackTrace(this Exception target, StackTrace stack)
     {
         var getStackTraceString = TraceToString.Invoke(stack, TraceToStringArgs);
