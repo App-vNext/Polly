@@ -42,7 +42,7 @@ internal sealed class CompositeComponent : PipelineComponent
             .Take(components.Count - 1)
             .Select(static strategy => new DelegatingComponent(strategy))];
 
-#if NET6_0_OR_GREATER
+#if NET
         // link the last one
         delegatingComponents[^1].Next = components[^1];
 #else
