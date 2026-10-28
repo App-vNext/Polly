@@ -12,11 +12,7 @@ internal abstract partial class CancellationTokenSourcePool
         public PooledCancellationTokenSourcePool(TimeProvider timeProvider) => _pool = new(
             () =>
             {
-#if NET8_0_OR_GREATER
                 return new CancellationTokenSource(System.Threading.Timeout.InfiniteTimeSpan, timeProvider);
-#else
-                return new CancellationTokenSource();
-#endif
             },
             static cts => true);
 

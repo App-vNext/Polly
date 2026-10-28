@@ -9,7 +9,7 @@ internal static class Guard
     public static T NotNull<T>(T value, [CallerArgumentExpression("value")] string argumentName = "")
         where T : class
     {
-#if NET8_0_OR_GREATER
+#if NET
         ArgumentNullException.ThrowIfNull(value, argumentName);
 #else
         if (value is null)

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net10.0;net8.0;net6.0;netstandard2.0;net472;net462</TargetFrameworks>
+    <TargetFrameworks>net10.0;netstandard2.0;net472</TargetFrameworks>
     <AssemblyTitle>Polly.Extensions</AssemblyTitle>
     <RootNamespace>Polly</RootNamespace>
     <Nullable>enable</Nullable>
@@ -9,7 +9,7 @@
     <MutationScore>100</MutationScore>
     <LegacySupport>true</LegacySupport>
   </PropertyGroup>
-  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))">
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
@@ -37,7 +37,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net6.0'))" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0'))" />
     <Reference Include="System.Net.Http" Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'" />
   </ItemGroup>
 </Project>
