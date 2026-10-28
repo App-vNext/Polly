@@ -4,6 +4,10 @@
 
 <!-- next-release -->
 
+## 8.9.0
+
+* Add `net10.0` plus `net8.0` for `Polly` by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/3292
+
 ## 8.8.1
 
 * Prevent the circuit breaker from capturing the ambient ExecutionContext by [@Nacl-HCl](https://github.com/Nacl-HCl) in https://github.com/App-vNext/Polly/pull/3284
