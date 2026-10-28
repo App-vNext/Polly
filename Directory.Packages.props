@@ -7,10 +7,10 @@
     <PackageVersion Include="FSharp.Core" Version="8.0.200" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="3.0.5" />
     <PackageVersion Include="IcedTasks" Version="0.11.4" />
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="5.6.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="5.6.0" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.13" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.13" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.11.0" />
