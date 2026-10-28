@@ -57,7 +57,7 @@ body:
     label: .NET Version
     description: |
       Run `dotnet --version` to get the .NET SDK version you're using.
-      Alternatively, which target framework(s) (e.g. `net6.0`) does the project you're using Polly in target?
+      Alternatively, which target framework(s) (e.g. `net10.0`) does the project you're using Polly in target?
   validations:
     required: false
 - type: textarea
