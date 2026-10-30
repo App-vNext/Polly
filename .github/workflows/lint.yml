@@ -52,7 +52,7 @@ jobs:
         persona: pedantic
 
     - name: Lint PowerShell in workflows
-      uses: martincostello/lint-actions-powershell@e088367ebeb113cd7c1ebee5c541175d93e945b7 # v1.0.1
+      uses: martincostello/lint-actions-powershell@a16e0262b175979d7de6d719f08500049c1c2f45 # v1.0.2
       with:
         powershell-yaml-version: ${{ env.POWERSHELL_YAML_VERSION }}
         psscriptanalyzer-version: ${{ env.PSSCRIPTANALYZER_VERSION }}
