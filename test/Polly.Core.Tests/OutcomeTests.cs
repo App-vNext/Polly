@@ -69,4 +69,144 @@ public class OutcomeTests
     [Fact]
     public async Task FromExceptionAsValueTask_Throws_If_Null() =>
         await Assert.ThrowsAsync<ArgumentNullException>("exception", async () => await Outcome.FromExceptionAsValueTask<Exception>(null!));
+
+    [Fact]
+    public async Task FromValueTask_CompletedSuccessfully_ReturnsVoidSynchronously()
+    {
+        var result = Outcome.FromValueTask(default, continueOnCapturedContext: false);
+
+        result.IsCompletedSuccessfully.ShouldBeTrue();
+
+        var outcome = await result;
+        outcome.IsVoidResult.ShouldBeTrue();
+        outcome.Exception.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task FromValueTask_Pending_ReturnsVoidAfterCompletion()
+    {
+        var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        var result = Outcome.FromValueTask(new ValueTask(tcs.Task), continueOnCapturedContext: false);
+
+        result.IsCompleted.ShouldBeFalse();
+
+        tcs.SetResult(true);
+
+        var outcome = await result;
+        outcome.IsVoidResult.ShouldBeTrue();
+        outcome.Exception.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task FromValueTask_Pending_CapturesException()
+    {
+        var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var exception = new InvalidOperationException("Dummy message.");
+
+        var result = Outcome.FromValueTask(new ValueTask(tcs.Task), continueOnCapturedContext: false);
+
+        result.IsCompleted.ShouldBeFalse();
+
+        tcs.SetException(exception);
+
+        var outcome = await result;
+        outcome.HasResult.ShouldBeFalse();
+        outcome.Exception.ShouldBeSameAs(exception);
+    }
+
+    [Fact]
+    public async Task FromValueTask_Faulted_CapturesException()
+    {
+        var exception = new InvalidOperationException("Dummy message.");
+
+        var result = Outcome.FromValueTask(new ValueTask(Task.FromException(exception)), continueOnCapturedContext: false);
+
+        var outcome = await result;
+        outcome.HasResult.ShouldBeFalse();
+        outcome.Exception.ShouldBeSameAs(exception);
+    }
+
+    [Fact]
+    public async Task FromValueTask_Canceled_CapturesException()
+    {
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        var result = Outcome.FromValueTask(new ValueTask(Task.FromCanceled(cts.Token)), continueOnCapturedContext: false);
+
+        var outcome = await result;
+        outcome.HasResult.ShouldBeFalse();
+        outcome.Exception.ShouldBeOfType<TaskCanceledException>();
+    }
+
+    [Fact]
+    public async Task FromValueTask_Generic_CompletedSuccessfully_ReturnsResultSynchronously()
+    {
+        var result = Outcome.FromValueTask(new ValueTask<int>(42), continueOnCapturedContext: false);
+
+        result.IsCompletedSuccessfully.ShouldBeTrue();
+
+        var outcome = await result;
+        outcome.Result.ShouldBe(42);
+        outcome.Exception.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task FromValueTask_Generic_Pending_ReturnsResultAfterCompletion()
+    {
+        var tcs = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        var result = Outcome.FromValueTask(new ValueTask<int>(tcs.Task), continueOnCapturedContext: false);
+
+        result.IsCompleted.ShouldBeFalse();
+
+        tcs.SetResult(42);
+
+        var outcome = await result;
+        outcome.Result.ShouldBe(42);
+        outcome.Exception.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task FromValueTask_Generic_Pending_CapturesException()
+    {
+        var tcs = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var exception = new InvalidOperationException("Dummy message.");
+
+        var result = Outcome.FromValueTask(new ValueTask<int>(tcs.Task), continueOnCapturedContext: false);
+
+        result.IsCompleted.ShouldBeFalse();
+
+        tcs.SetException(exception);
+
+        var outcome = await result;
+        outcome.HasResult.ShouldBeFalse();
+        outcome.Exception.ShouldBeSameAs(exception);
+    }
+
+    [Fact]
+    public async Task FromValueTask_Generic_Faulted_CapturesException()
+    {
+        var exception = new InvalidOperationException("Dummy message.");
+
+        var result = Outcome.FromValueTask(new ValueTask<int>(Task.FromException<int>(exception)), continueOnCapturedContext: false);
+
+        var outcome = await result;
+        outcome.HasResult.ShouldBeFalse();
+        outcome.Exception.ShouldBeSameAs(exception);
+    }
+
+    [Fact]
+    public async Task FromValueTask_Generic_Canceled_CapturesException()
+    {
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        var result = Outcome.FromValueTask(new ValueTask<int>(Task.FromCanceled<int>(cts.Token)), continueOnCapturedContext: false);
+
+        var outcome = await result;
+        outcome.HasResult.ShouldBeFalse();
+        outcome.Exception.ShouldBeOfType<TaskCanceledException>();
+    }
 }
