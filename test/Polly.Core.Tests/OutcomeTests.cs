@@ -209,4 +209,36 @@ public class OutcomeTests
         outcome.HasResult.ShouldBeFalse();
         outcome.Exception.ShouldBeOfType<TaskCanceledException>();
     }
+
+    [Fact]
+    public async Task FromValueTask_CompletedValueTaskSource_ConsumesSourceExactlyOnce()
+    {
+        var source = new CompletedValueTaskSource();
+
+        var result = Outcome.FromValueTask(source.AsValueTask(), continueOnCapturedContext: false);
+
+        result.IsCompletedSuccessfully.ShouldBeTrue();
+        source.GetResultCalls.ShouldBe(1);
+
+        var outcome = await result;
+        outcome.IsVoidResult.ShouldBeTrue();
+        outcome.Exception.ShouldBeNull();
+        source.GetResultCalls.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task FromValueTask_Generic_CompletedValueTaskSource_ConsumesSourceExactlyOnce()
+    {
+        var source = new CompletedValueTaskSource();
+
+        var result = Outcome.FromValueTask(source.AsGenericValueTask(), continueOnCapturedContext: false);
+
+        result.IsCompletedSuccessfully.ShouldBeTrue();
+        source.GetResultCalls.ShouldBe(1);
+
+        var outcome = await result;
+        outcome.Result.ShouldBe(CompletedValueTaskSource.Value);
+        outcome.Exception.ShouldBeNull();
+        source.GetResultCalls.ShouldBe(1);
+    }
 }
