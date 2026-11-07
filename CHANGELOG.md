@@ -4,6 +4,10 @@
 
 <!-- next-release -->
 
+## 8.9.1
+
+* Improve synchronous async callback execution by [@martincostello](https://github.com/martincostello) with [@Copilot](https://github.com/Copilot) in https://github.com/App-vNext/Polly/pull/3313
+
 ## 8.9.0
 
 * Add `net10.0` plus `net8.0` for `Polly` by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/3292
