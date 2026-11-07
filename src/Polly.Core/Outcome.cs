@@ -49,6 +49,53 @@ public static class Outcome
         return new(FromException<TResult>(exception));
     }
 
+    internal static ValueTask<Outcome<TResult>> FromValueTask<TResult>(ValueTask<TResult> valueTask, bool continueOnCapturedContext)
+    {
+        if (valueTask.IsCompletedSuccessfully)
+        {
+            return FromResultAsValueTask(valueTask.Result);
+        }
+
+        return FromValueTaskAsync(valueTask, continueOnCapturedContext);
+    }
+
+    internal static ValueTask<Outcome<VoidResult>> FromValueTask(ValueTask valueTask, bool continueOnCapturedContext)
+    {
+        if (valueTask.IsCompletedSuccessfully)
+        {
+            return new ValueTask<Outcome<VoidResult>>(Void);
+        }
+
+        return FromValueTaskAsync(valueTask, continueOnCapturedContext);
+    }
+
+#pragma warning disable CA1031 // Do not catch general exception types
+    private static async ValueTask<Outcome<TResult>> FromValueTaskAsync<TResult>(ValueTask<TResult> valueTask, bool continueOnCapturedContext)
+    {
+        try
+        {
+            return FromResult(await valueTask.ConfigureAwait(continueOnCapturedContext));
+        }
+        catch (Exception e)
+        {
+            return FromException<TResult>(e);
+        }
+    }
+
+    private static async ValueTask<Outcome<VoidResult>> FromValueTaskAsync(ValueTask valueTask, bool continueOnCapturedContext)
+    {
+        try
+        {
+            await valueTask.ConfigureAwait(continueOnCapturedContext);
+            return Void;
+        }
+        catch (Exception e)
+        {
+            return FromException(e);
+        }
+    }
+#pragma warning restore CA1031
+
     internal static Outcome<VoidResult> Void => FromResult(VoidResult.Instance);
 
     internal static Outcome<VoidResult> FromException(Exception exception) => FromException<VoidResult>(exception);
