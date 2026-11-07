@@ -177,4 +177,24 @@ public partial class ResiliencePipelineTests
             error.ShouldBeSameAs(exception);
         }
     }
+
+    [Fact]
+    public async Task ExecuteAsync_T_CompletedValueTaskSource_EnsureConsumedExactlyOnce()
+    {
+        await AssertConsumedExactlyOnce(static (s, source) => s.ExecuteAsync(_ => source.AsGenericValueTask()));
+        await AssertConsumedExactlyOnce(static (s, source) => s.ExecuteAsync(_ => source.AsGenericValueTask(), ResilienceContextPool.Shared.Get(TestCancellation.Token)));
+        await AssertConsumedExactlyOnce(static (s, source) => s.ExecuteAsync((_, _) => source.AsGenericValueTask(), ResilienceContextPool.Shared.Get(TestCancellation.Token), "state"));
+        await AssertConsumedExactlyOnce(static (s, source) => s.ExecuteAsync((_, _) => source.AsGenericValueTask(), "state"));
+
+        static async Task AssertConsumedExactlyOnce(Func<ResiliencePipeline, CompletedValueTaskSource, ValueTask<int>> execute)
+        {
+            var source = new CompletedValueTaskSource();
+            var strategy = new TestResilienceStrategy().AsPipeline();
+
+            var result = await execute(strategy, source);
+
+            result.ShouldBe(CompletedValueTaskSource.Value);
+            source.GetResultCalls.ShouldBe(1);
+        }
+    }
 }

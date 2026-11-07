@@ -63,6 +63,11 @@ public static class Outcome
     {
         if (valueTask.IsCompletedSuccessfully)
         {
+            // Consume the ValueTask so that IValueTaskSource-backed instances are released.
+            // The ValueTask has already completed, so this does not block.
+#pragma warning disable CA1849 // Call async methods when in an async method
+            valueTask.GetAwaiter().GetResult();
+#pragma warning restore CA1849
             return new ValueTask<Outcome<VoidResult>>(Void);
         }
 
