@@ -140,7 +140,7 @@ public class PolicyTResultKeyAsyncSpecs
             }
 
             return ResultPrimitive.Good;
-        }, new Context(operationKey));
+        }, [with(operationKey)]);
 
         operationKeySetOnContext.ShouldBe(operationKey);
     }

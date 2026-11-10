@@ -5,7 +5,7 @@ public class ContextSpecs
     [Fact]
     public void Should_assign_OperationKey_from_constructor()
     {
-        Context context = new Context("SomeKey");
+        Context context = [with("SomeKey")];
 
         context.OperationKey.ShouldBe("SomeKey");
 
@@ -33,7 +33,7 @@ public class ContextSpecs
     [Fact]
     public void Should_assign_CorrelationId_when_accessed()
     {
-        Context context = new Context("SomeKey");
+        Context context = [with("SomeKey")];
 
         context.OperationKey.ShouldBe("SomeKey");
     }
@@ -41,7 +41,7 @@ public class ContextSpecs
     [Fact]
     public void Should_return_consistent_CorrelationId()
     {
-        Context context = new Context("SomeKey");
+        Context context = [with("SomeKey")];
 
         Guid retrieved1 = context.CorrelationId;
         Guid retrieved2 = context.CorrelationId;

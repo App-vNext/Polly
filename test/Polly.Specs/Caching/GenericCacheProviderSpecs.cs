@@ -18,7 +18,7 @@ public class GenericCacheProviderSpecs : IDisposable
         cacheHit.ShouldBeFalse();
         fromCache.ShouldBeNull();
 
-        ResultPrimitive result = cache.Execute(_ => ResultPrimitive.Substitute, new Context(OperationKey));
+        ResultPrimitive result = cache.Execute(_ => ResultPrimitive.Substitute, [with(OperationKey)]);
 
         onErrorCalled.ShouldBeFalse();
     }
@@ -37,7 +37,7 @@ public class GenericCacheProviderSpecs : IDisposable
         cacheHit1.ShouldBeFalse();
         fromCache1.ShouldBeNull();
 
-        cache.Execute(_ => ValueToReturn, new Context(OperationKey)).ShouldBe(ValueToReturn);
+        cache.Execute(_ => ValueToReturn, [with(OperationKey)]).ShouldBe(ValueToReturn);
 
         (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(OperationKey);
 
