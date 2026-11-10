@@ -56,15 +56,15 @@ public partial class ResiliencePipeline
         InitializeAsyncContext<TResult>(context);
 
         var outcome = await Component.ExecuteCore(
-            [DebuggerDisableUserUnhandledExceptions] static async (context, state) =>
+            [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
             {
                 try
                 {
-                    return Outcome.FromResult(await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext));
+                    return Outcome.FromValueTask(state.callback(context, state.state), context.ContinueOnCapturedContext);
                 }
                 catch (Exception e)
                 {
-                    return Outcome.FromException<TResult>(e);
+                    return Outcome.FromExceptionAsValueTask<TResult>(e);
                 }
             },
             context,
@@ -91,15 +91,15 @@ public partial class ResiliencePipeline
         InitializeAsyncContext<TResult>(context);
 
         var outcome = await Component.ExecuteCore(
-            [DebuggerDisableUserUnhandledExceptions] static async (context, state) =>
+            [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
             {
                 try
                 {
-                    return Outcome.FromResult(await state(context).ConfigureAwait(context.ContinueOnCapturedContext));
+                    return Outcome.FromValueTask(state(context), context.ContinueOnCapturedContext);
                 }
                 catch (Exception e)
                 {
-                    return Outcome.FromException<TResult>(e);
+                    return Outcome.FromExceptionAsValueTask<TResult>(e);
                 }
             },
             context,
@@ -130,15 +130,15 @@ public partial class ResiliencePipeline
         try
         {
             var outcome = await Component.ExecuteCore(
-                [DebuggerDisableUserUnhandledExceptions] static async (context, state) =>
+                [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
                 {
                     try
                     {
-                        return Outcome.FromResult(await state.callback(state.state, context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
+                        return Outcome.FromValueTask(state.callback(state.state, context.CancellationToken), context.ContinueOnCapturedContext);
                     }
                     catch (Exception e)
                     {
-                        return Outcome.FromException<TResult>(e);
+                        return Outcome.FromExceptionAsValueTask<TResult>(e);
                     }
                 },
                 context,
@@ -171,15 +171,15 @@ public partial class ResiliencePipeline
         try
         {
             var outcome = await Component.ExecuteCore(
-                [DebuggerDisableUserUnhandledExceptions] static async (context, state) =>
+                [DebuggerDisableUserUnhandledExceptions] static (context, state) =>
                 {
                     try
                     {
-                        return Outcome.FromResult(await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
+                        return Outcome.FromValueTask(state(context.CancellationToken), context.ContinueOnCapturedContext);
                     }
                     catch (Exception e)
                     {
-                        return Outcome.FromException<TResult>(e);
+                        return Outcome.FromExceptionAsValueTask<TResult>(e);
                     }
                 },
                 context,

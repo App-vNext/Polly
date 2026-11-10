@@ -49,7 +49,61 @@ public static class Outcome
         return new(FromException<TResult>(exception));
     }
 
+    internal static ValueTask<Outcome<TResult>> FromValueTask<TResult>(ValueTask<TResult> valueTask, bool continueOnCapturedContext)
+    {
+        if (valueTask.IsCompletedSuccessfully)
+        {
+            return FromResultAsValueTask(valueTask.Result);
+        }
+
+        return FromValueTaskAsync(valueTask, continueOnCapturedContext);
+    }
+
+    internal static ValueTask<Outcome<VoidResult>> FromValueTask(ValueTask valueTask, bool continueOnCapturedContext)
+    {
+        if (valueTask.IsCompletedSuccessfully)
+        {
+            // Consume the ValueTask so that IValueTaskSource-backed instances are released.
+            // The ValueTask has already completed, so this does not block.
+#pragma warning disable CA1849 // Call async methods when in an async method
+            valueTask.GetAwaiter().GetResult();
+#pragma warning restore CA1849
+            return new ValueTask<Outcome<VoidResult>>(Void);
+        }
+
+        return FromValueTaskAsync(valueTask, continueOnCapturedContext);
+    }
+
     internal static Outcome<VoidResult> Void => FromResult(VoidResult.Instance);
 
     internal static Outcome<VoidResult> FromException(Exception exception) => FromException<VoidResult>(exception);
+
+    private static async ValueTask<Outcome<TResult>> FromValueTaskAsync<TResult>(ValueTask<TResult> valueTask, bool continueOnCapturedContext)
+    {
+        try
+        {
+            return FromResult(await valueTask.ConfigureAwait(continueOnCapturedContext));
+        }
+#pragma warning disable CA1031
+        catch (Exception e)
+#pragma warning restore CA1031
+        {
+            return FromException<TResult>(e);
+        }
+    }
+
+    private static async ValueTask<Outcome<VoidResult>> FromValueTaskAsync(ValueTask valueTask, bool continueOnCapturedContext)
+    {
+        try
+        {
+            await valueTask.ConfigureAwait(continueOnCapturedContext);
+            return Void;
+        }
+#pragma warning disable CA1031
+        catch (Exception e)
+#pragma warning restore CA1031
+        {
+            return FromException(e);
+        }
+    }
 }

@@ -126,4 +126,75 @@ public partial class ResiliencePipelineTests
 
         result.Result.ShouldBe(12345);
     }
+
+    [Fact]
+    public async Task ExecuteAsync_T_AsynchronousCallback_Ok()
+    {
+        await AssertCompletesAsynchronously(static (s, t) => s.ExecuteAsync(_ => new ValueTask<string>(t)));
+        await AssertCompletesAsynchronously(static (s, t) => s.ExecuteAsync(_ => new ValueTask<string>(t), ResilienceContextPool.Shared.Get(TestCancellation.Token)));
+        await AssertCompletesAsynchronously(static (s, t) => s.ExecuteAsync((_, _) => new ValueTask<string>(t), ResilienceContextPool.Shared.Get(TestCancellation.Token), "state"));
+        await AssertCompletesAsynchronously(static (s, t) => s.ExecuteAsync((_, _) => new ValueTask<string>(t), "state"));
+
+        static async Task AssertCompletesAsynchronously(Func<ResiliencePipeline, Task<string>, ValueTask<string>> execute)
+        {
+            var tcs = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var strategy = new TestResilienceStrategy().AsPipeline();
+
+            var task = execute(strategy, tcs.Task);
+
+            task.IsCompleted.ShouldBeFalse();
+
+            tcs.SetResult("dummy");
+
+            var result = await task;
+
+            result.ShouldBe("dummy");
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_T_AsynchronousCallback_EnsureExceptionRethrown()
+    {
+        await AssertThrowsAsynchronously(static (s, t) => s.ExecuteAsync(_ => new ValueTask<string>(t)));
+        await AssertThrowsAsynchronously(static (s, t) => s.ExecuteAsync(_ => new ValueTask<string>(t), ResilienceContextPool.Shared.Get(TestCancellation.Token)));
+        await AssertThrowsAsynchronously(static (s, t) => s.ExecuteAsync((_, _) => new ValueTask<string>(t), ResilienceContextPool.Shared.Get(TestCancellation.Token), "state"));
+        await AssertThrowsAsynchronously(static (s, t) => s.ExecuteAsync((_, _) => new ValueTask<string>(t), "state"));
+
+        static async Task AssertThrowsAsynchronously(Func<ResiliencePipeline, Task<string>, ValueTask<string>> execute)
+        {
+            var tcs = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var exception = new FormatException("Dummy message.");
+            var strategy = new TestResilienceStrategy().AsPipeline();
+
+            var task = execute(strategy, tcs.Task).AsTask();
+
+            task.IsCompleted.ShouldBeFalse();
+
+            tcs.SetException(exception);
+
+            var error = await Should.ThrowAsync<FormatException>(() => task);
+
+            error.ShouldBeSameAs(exception);
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_T_CompletedValueTaskSource_EnsureConsumedExactlyOnce()
+    {
+        await AssertConsumedExactlyOnce(static (s, source) => s.ExecuteAsync(_ => source.AsGenericValueTask()));
+        await AssertConsumedExactlyOnce(static (s, source) => s.ExecuteAsync(_ => source.AsGenericValueTask(), ResilienceContextPool.Shared.Get(TestCancellation.Token)));
+        await AssertConsumedExactlyOnce(static (s, source) => s.ExecuteAsync((_, _) => source.AsGenericValueTask(), ResilienceContextPool.Shared.Get(TestCancellation.Token), "state"));
+        await AssertConsumedExactlyOnce(static (s, source) => s.ExecuteAsync((_, _) => source.AsGenericValueTask(), "state"));
+
+        static async Task AssertConsumedExactlyOnce(Func<ResiliencePipeline, CompletedValueTaskSource, ValueTask<int>> execute)
+        {
+            var source = new CompletedValueTaskSource();
+            var strategy = new TestResilienceStrategy().AsPipeline();
+
+            var result = await execute(strategy, source);
+
+            result.ShouldBe(CompletedValueTaskSource.Value);
+            source.GetResultCalls.ShouldBe(1);
+        }
+    }
 }

@@ -46,6 +46,18 @@ public class ResiliencePipelineBenchmark
     public void Execute_GenericStrategy_CancellationToken() =>
         ResiliencePipeline<string>.Empty.Execute(_ => "dummy", CancellationToken.None);
 
+    [Benchmark]
+    public async ValueTask ExecuteAsync_Void_ResilienceContextAndState()
+    {
+        var context = ResilienceContextPool.Shared.Get();
+        await ResiliencePipeline.Empty.ExecuteAsync((_, _) => default, context, "state").ConfigureAwait(false);
+        ResilienceContextPool.Shared.Return(context);
+    }
+
+    [Benchmark]
+    public async ValueTask ExecuteAsync_Void_CancellationToken() =>
+        await ResiliencePipeline.Empty.ExecuteAsync(_ => default, CancellationToken.None).ConfigureAwait(false);
+
     public class NonGenericStrategy
     {
         [MethodImpl(MethodImplOptions.NoOptimization)]
