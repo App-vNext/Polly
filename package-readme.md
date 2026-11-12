@@ -6,6 +6,12 @@ Polly is a .NET resilience and transient-fault-handling library that allows deve
 
 ![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)
 
+## Open Source Maintenance Fee
+
+Polly participates in the [Open Source Maintenance Fee (OSMF)](https://opensourcemaintenancefee.org). Polly v9 and later are subject to the fee, for all of Polly's NuGet packages. Companies that earn at least US $20,000 from a product or project that uses Polly are asked to pay US $20/month by [sponsoring App-vNext](https://github.com/sponsors/App-vNext). The fee does not apply to individuals, hobbyists, students, non-profits, organizations below the threshold, or when Polly is only a dependency of another library. Versions of Polly before v9 are not subject to the fee.
+
+The source code remains free and open under the [BSD 3-Clause License](https://github.com/App-vNext/Polly/blob/main/LICENSE). See the [announcement](https://thepollyproject.org/2026/07/14/polly-osmf-announcement.html) and the [agreement](https://github.com/App-vNext/Polly/blob/main/OsmfEula.txt) for details.
+
 ## Release notes
 
 - The repository's [changelog](https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md) describes changes by release.
