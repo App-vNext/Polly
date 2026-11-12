@@ -25,7 +25,7 @@ internal sealed class ScheduledTaskExecutor : IDisposable
 
     public Task ScheduleTask(Func<Task> taskFactory)
     {
-#if NET8_0_OR_GREATER
+#if NET
         ObjectDisposedException.ThrowIf(_disposed, this);
 #else
         if (_disposed)

@@ -124,7 +124,7 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
             return task;
         }
 
-#if NET8_0_OR_GREATER
+#if NET
         var whenAnyHedgedTask = WaitForTaskCompetitionAsync();
         await whenAnyHedgedTask.WaitAsync(hedgingDelay, _timeProvider, PrimaryContext!.CancellationToken)
             .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing | (ContinueOnCapturedContext ? ConfigureAwaitOptions.ContinueOnCapturedContext : 0));

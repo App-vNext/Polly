@@ -44,7 +44,7 @@ internal sealed class ExecutionTrackingComponent : PipelineComponent
         // so we will do "dummy" retries until there are no more executions.
         while (HasPendingExecutions)
         {
-#if NET8_0_OR_GREATER
+#if NET
             await Task.Delay(SleepDelay, _timeProvider).ConfigureAwait(false);
 #else
             await _timeProvider.Delay(SleepDelay).ConfigureAwait(false);

@@ -59,7 +59,7 @@ internal static class AsyncTimeoutEngine
             // stryker disable once all : no means to test this
             if (!combinedTokenSource.IsCancellationRequested && timeoutCancellationTokenSource.IsCancellationRequested)
             {
-#if NET8_0_OR_GREATER
+#if NET
                 await combinedTokenSource.CancelAsync().ConfigureAwait(false);
 #else
                 combinedTokenSource.Cancel();

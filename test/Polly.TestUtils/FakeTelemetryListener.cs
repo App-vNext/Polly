@@ -1,6 +1,6 @@
 ﻿using Polly.Telemetry;
 
-#if !NET10_0_OR_GREATER
+#if !NET
 #pragma warning disable SA1121
 using Lock = System.Object;
 #endif
