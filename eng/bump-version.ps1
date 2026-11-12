@@ -47,3 +47,16 @@ try {
     }
     $writer = $null
 }
+
+$targets = Join-Path $repo "eng" "Library.targets"
+$pattern = '(<PackageValidationBaselineVersion\b[^>]*>)[^<]+(</PackageValidationBaselineVersion>)'
+$content = Get-Content $targets -Raw
+
+if ($content -notmatch $pattern) {
+    throw "Unable to find PackageValidationBaselineVersion in $targets."
+}
+
+Write-Output "Bumping PackageValidationBaselineVersion to $releasedVersion"
+
+$content = $content -replace $pattern, "`${1}$releasedVersion`${2}"
+[System.IO.File]::WriteAllText($targets, $content, (New-Object System.Text.UTF8Encoding($false)))
