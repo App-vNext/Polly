@@ -45,7 +45,7 @@
       "rollForward": false
     },
     "markdownsnippets.tool": {
-      "version": "28.5.1",
+      "version": "29.0.0",
       "commands": [
         "mdsnippets"
       ],
