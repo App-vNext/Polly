@@ -2,7 +2,7 @@
   <Import Project="$(MsBuildThisFileDirectory)Analyzers.targets" />
   <Target Name="CustomizeVersions" AfterTargets="MinVer" Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <PropertyGroup>
-      <FileVersion>$([MSBuild]::ValueOrDefault('$(MinVerMajor)', '8')).$([MSBuild]::ValueOrDefault('$(MinVerMinor)', '6')).$([MSBuild]::ValueOrDefault('$(MinVerPatch)', '0')).$([MSBuild]::ValueOrDefault('$(GITHUB_RUN_NUMBER)', '0'))</FileVersion>
+      <FileVersion>$([MSBuild]::ValueOrDefault('$(MinVerMajor)', '9')).$([MSBuild]::ValueOrDefault('$(MinVerMinor)', '0')).$([MSBuild]::ValueOrDefault('$(MinVerPatch)', '0')).$([MSBuild]::ValueOrDefault('$(GITHUB_RUN_NUMBER)', '0'))</FileVersion>
     </PropertyGroup>
     <PropertyGroup Condition="$(GITHUB_REF.StartsWith(`refs/pull/`))">
       <PackageVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)-pr.$(GITHUB_REF_NAME.Replace(`/merge`, ``)).$([MSBuild]::ValueOrDefault('$(GITHUB_RUN_NUMBER)', '0'))</PackageVersion>

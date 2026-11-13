@@ -26,7 +26,8 @@
   <PropertyGroup Label="SharedNuspecProperties">
     <PackageIcon>package-icon.png</PackageIcon>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <PackageLicenseFile>OsmfEula.txt</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
     <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md for details</PackageReleaseNotes>
     <PackageReadmeFile>package-readme.md</PackageReadmeFile>
@@ -36,6 +37,7 @@
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageIcon)" Pack="true" PackagePath="" />
     <None Include="$(MsBuildThisFileDirectory)..\$(PackageReadmeFile)" Pack="true" PackagePath="" />
     <None Include="$(MsBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="" />
+    <None Include="$(MsBuildThisFileDirectory)..\$(PackageLicenseFile)" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
