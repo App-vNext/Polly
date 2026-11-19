@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <PropertyGroup Label="MinVer">
-    <MinVerMinimumMajorMinor>8.7</MinVerMinimumMajorMinor>
+    <MinVerMinimumMajorMinor>9.0</MinVerMinimumMajorMinor>
   </PropertyGroup>
 
 </Project>

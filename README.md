@@ -1,12 +1,10 @@
 # Polly
 
 > [!IMPORTANT]
-> **Polly now participates in the Open Source Maintenance Fee (OSMF).**
-> Starting **November 16, 2026**, companies that earn at least US $20,000 from a product or project that uses Polly will be asked to pay a US $20/month maintenance fee to help fund Polly's ongoing upkeep. The source code stays free and open, and individuals, hobbyists, and organizations below the threshold owe nothing.
+> **Polly participates in the Open Source Maintenance Fee (OSMF).**
+> Polly v9 and later are subject to the fee. Companies that earn at least US $20,000 from a product or project that uses Polly v9 or later are asked to pay a US $20/month maintenance fee to help fund Polly's ongoing upkeep. The source code stays free and open, and individuals, hobbyists, and organizations below the threshold owe nothing.
 >
-> **We've heard your questions and want to clarify two points:**
->
-> - The fee applies only to the next major version of Polly released after November 16, 2026. Existing versions of Polly are not subject to the fee.
+> - Previous versions of Polly (v8 and earlier) are not subject to the fee.
 > - Only direct references to Polly are subject to the fee. If Polly is a dependency of a different library, such as Microsoft.Extensions.Resilience or Microsoft.Extensions.Http.Resilience, the fee does not apply.
 >
 > Read the announcement: [Introducing the Open Source Maintenance Fee for Polly](https://thepollyproject.org/2026/07/14/polly-osmf-announcement.html) · Learn about the [OSMF](https://opensourcemaintenancefee.org) · [Become a sponsor](https://github.com/sponsors/App-vNext)
@@ -30,7 +28,7 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 <!-- markdownlint-enable MD034 -->
 
 > [!IMPORTANT]
-> This documentation describes the new Polly v8 API. If you are using the v7 API, please refer to the [previous version](https://github.com/App-vNext/Polly/tree/7.2.4) of the documentation.
+> This documentation describes the Polly v8 and later API. If you are using the v7 API, please refer to the [previous version](https://github.com/App-vNext/Polly/tree/7.2.4) of the documentation.
 
 ## NuGet Packages
 
@@ -509,15 +507,19 @@ Thanks to the following companies for sponsoring the ongoing development of Poll
 
 ### Open Source Maintenance Fee
 
-Polly participates in the [Open Source Maintenance Fee (OSMF)](https://opensourcemaintenancefee.org). Starting **November 16, 2026**, companies that earn at least US $20,000 from a product or project that uses Polly are asked to pay a US $20/month maintenance fee, regardless of how many of their projects use Polly. This helps fund the ongoing work of keeping the project secure, current, and well maintained.
+Polly participates in the [Open Source Maintenance Fee (OSMF)](https://opensourcemaintenancefee.org). The fee applies to Polly v9 and later versions of all of its NuGet packages. Companies that earn at least US $20,000 from a product or project that uses Polly are asked to pay a US $20/month maintenance fee, per organization, regardless of how many of their projects use Polly. This helps fund the ongoing work of keeping the project secure, current, and well maintained.
 
-The source code remains free and open under its existing license. Individuals, hobbyists, students, non-profits, and organizations below the revenue threshold owe nothing. For full details, see the [announcement post](https://thepollyproject.org/2026/07/14/polly-osmf-announcement.html) and the [OSMF FAQ](https://opensourcemaintenancefee.org/consumers/faq/).
+The fee covers the use of the official binary releases of Polly (the NuGet packages published to NuGet.org) by organizations that generate revenue from them, and is paid by sponsoring [App-vNext](https://github.com/sponsors/App-vNext) through [GitHub Sponsors](https://github.com/sponsors/App-vNext). The [Open Source Maintenance Fee Agreement](OsmfEula.txt) (based on the OSMF [EULA template](https://opensourcemaintenancefee.org/maintainers/eulas/) v1.1) is included in the NuGet packages, and the payment terms it refers to are those described in this section.
+
+The source code remains free and open under the [BSD 3-Clause License](LICENSE), and the fee is not a license fee. Individuals, hobbyists, students, non-profits, and organizations below the revenue threshold owe nothing. Existing versions of Polly (v8 and earlier) are not subject to the fee, and the fee does not apply when Polly is only a dependency of another library. For full details, see the [announcement post](https://thepollyproject.org/2026/07/14/polly-osmf-announcement.html) and the [OSMF FAQ](https://opensourcemaintenancefee.org/consumers/faq/).
 
 Help support this project by becoming a sponsor through [GitHub Sponsors](https://github.com/sponsors/App-vNext).
 
 ## License
 
-Licensed under the terms of the [New BSD License](https://opensource.org/license/bsd-3-clause/)
+The source code is licensed under the terms of the [New BSD License](https://opensource.org/license/bsd-3-clause/).
+
+Use of the official binary releases of Polly v9 and later (the NuGet packages) is additionally subject to the [Open Source Maintenance Fee Agreement](OsmfEula.txt). See [Open Source Maintenance Fee](#open-source-maintenance-fee) for details.
 
 [package-badge-downloads]: https://img.shields.io/nuget/dt/Polly?logo=nuget&label=Downloads&color=blue
 [package-badge-version]: https://img.shields.io/nuget/v/Polly?logo=nuget&label=Latest&color=blue
