@@ -111,6 +111,11 @@ new ResiliencePipelineBuilder<HttpResponseMessage>().AddRetry(optionsExtractDela
 | `DelayGenerator`   | `null`                                                  | This optional delegate allows you to **dynamically** calculate the retry delay by utilizing information that is only available at runtime (like the attempt number). |
 | `OnRetry`          | `null`                                                  | If provided then it will be invoked before the strategy delays the next attempt.                                                                                     |
 
+> [!IMPORTANT]
+> The retry strategy re-executes the callback, so the work it performs can be applied more than once. With the defaults, any exception other than `OperationCanceledException` is retried, including failures that happen after the work has already taken effect. For example, if the connection is lost after a database transaction has been committed but before the reply reaches the client, the retry runs the transaction again, its changes are applied twice and the call returns normally.
+>
+> Only retry operations that are idempotent, or make them safe to retry, for example by sending a unique key that lets the receiver detect duplicates or by checking the outcome of the previous attempt before trying again. You can also use `ShouldHandle` to limit retries to failures where the operation is known not to have taken effect.
+
 ## Telemetry
 
 The retry strategy reports the following telemetry events:
