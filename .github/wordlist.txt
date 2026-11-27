@@ -32,6 +32,7 @@ halfopen
 hangfire
 httpclient
 httpclientfactory
+idempotent
 ietf
 interop
 jetbrains
