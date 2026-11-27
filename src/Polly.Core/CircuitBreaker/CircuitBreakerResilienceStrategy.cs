@@ -3,16 +3,19 @@ namespace Polly.CircuitBreaker;
 internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T>, IDisposable
 {
     private readonly Func<CircuitBreakerPredicateArguments<T>, ValueTask<bool>> _handler;
+    private readonly Func<CircuitBreakerPredicateArguments<T>, ValueTask<bool>>? _ignore;
     private readonly CircuitStateController<T> _controller;
     private readonly IDisposable? _manualControlRegistration;
 
     public CircuitBreakerResilienceStrategy(
         Func<CircuitBreakerPredicateArguments<T>, ValueTask<bool>> handler,
+        Func<CircuitBreakerPredicateArguments<T>, ValueTask<bool>>? ignore,
         CircuitStateController<T> controller,
         CircuitBreakerStateProvider? stateProvider,
         CircuitBreakerManualControl? manualControl)
     {
         _handler = handler;
+        _ignore = ignore;
         _controller = controller;
 
         stateProvider?.Initialize(() => _controller.CircuitState);
@@ -47,7 +50,11 @@ internal sealed class CircuitBreakerResilienceStrategy<T> : ResilienceStrategy<T
 #pragma warning restore CA1031
 
         var args = new CircuitBreakerPredicateArguments<T>(context, outcome);
-        if (await _handler(args).ConfigureAwait(context.ContinueOnCapturedContext))
+        if (_ignore is not null && await _ignore(args).ConfigureAwait(context.ContinueOnCapturedContext))
+        {
+            _controller.OnIgnoredOutcome();
+        }
+        else if (await _handler(args).ConfigureAwait(context.ContinueOnCapturedContext))
         {
             await _controller.OnHandledOutcomeAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
         }

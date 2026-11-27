@@ -57,6 +57,14 @@ var optionsShouldHandle = new CircuitBreakerStrategyOptions<HttpResponseMessage>
         .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError)
 };
 
+// Ignore outcomes that don't tell you anything about the health of the resource, e.g. cancellations.
+// They aren't counted as a success or a failure:
+var optionsShouldIgnore = new CircuitBreakerStrategyOptions<HttpResponseMessage>
+{
+    ShouldIgnore = new PredicateBuilder<HttpResponseMessage>()
+        .Handle<OperationCanceledException>()
+};
+
 // Monitor the circuit state, useful for health reporting:
 var stateProvider = new CircuitBreakerStateProvider();
 var optionsStateProvider = new CircuitBreakerStrategyOptions<HttpResponseMessage>
@@ -156,6 +164,7 @@ The `TelemetrySource` property is a [`ResilienceTelemetrySource`](xref:Polly.Tel
 | Property                 | Default Value                                           | Description                                                                                                                                               |
 |--------------------------|---------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `ShouldHandle`           | Any exceptions other than `OperationCanceledException`. | Defines a predicate to determine what results and/or exceptions are handled by the circuit breaker strategy.                                              |
+| `ShouldIgnore`           | `null`                                                  | Defines a predicate to determine what results and/or exceptions are ignored, i.e. recorded neither as successes nor as failures.                          |
 | `FailureRatio`           | 0.1                                                     | The failure-success ratio that will cause the circuit to break/open. `0.1` means 10% failed of all sampled executions.                                    |
 | `MinimumThroughput`      | 100                                                     | The minimum number of executions that must occur within the specified sampling duration.                                                                  |
 | `SamplingDuration`       | 30 seconds                                              | The time period over which the failure-success ratio is calculated.                                                                                       |
@@ -169,6 +178,10 @@ The `TelemetrySource` property is a [`ResilienceTelemetrySource`](xref:Polly.Tel
 
 > [!NOTE]
 > If both `BreakDuration` and `BreakDurationGenerator` are specified then `BreakDuration` will be ignored.
+>
+> `ShouldIgnore` is evaluated before `ShouldHandle`. If it returns `true` then `ShouldHandle` is not called and the outcome counts neither as a success nor as a failure, so it does not count toward `MinimumThroughput` either.
+>
+> If the probe executed in the `HalfOpen` state is ignored then the probe is inconclusive: the circuit returns to the `Open` state and the next execution is permitted to probe it immediately.
 
 ---
 
@@ -206,6 +219,8 @@ Resilience event occurred. EventName: 'OnCircuitClosed', Source: 'MyPipeline/MyP
 > Remember in case of `ManualControl` the `OnCircuitHalfOpened` telemetry event will not be emitted.
 >
 > Also the `Result` will be **always empty** for the `OnCircuitHalfOpened` telemetry event.
+>
+> When the probe is ignored via `ShouldIgnore` the circuit returns to the `Open` state without reporting an `OnCircuitOpened` event, and the next probe reports another `OnCircuitHalfOpened` event.
 
 For further information please check out the [telemetry page](../advanced/telemetry.md).
 

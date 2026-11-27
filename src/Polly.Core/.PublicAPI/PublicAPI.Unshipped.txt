@@ -1,1 +1,3 @@
 ﻿#nullable enable
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.ShouldIgnore.get -> System.Func<Polly.CircuitBreaker.CircuitBreakerPredicateArguments<TResult>, System.Threading.Tasks.ValueTask<bool>>?
+Polly.CircuitBreaker.CircuitBreakerStrategyOptions<TResult>.ShouldIgnore.set -> void

@@ -88,6 +88,19 @@ public class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
     public Func<CircuitBreakerPredicateArguments<TResult>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<CircuitBreakerPredicateArguments<TResult>, TResult>.HandleOutcome;
 
     /// <summary>
+    /// Gets or sets a predicate that determines whether the outcome should be ignored by the circuit breaker.
+    /// </summary>
+    /// <remarks>
+    /// This runs before <see cref="ShouldHandle"/>. If it returns <see langword="true"/>, <see cref="ShouldHandle"/> isn't called
+    /// and the outcome isn't recorded at all, so it doesn't count toward <see cref="MinimumThroughput"/> either.
+    /// If the half-open probe is ignored, the circuit goes back to <see cref="CircuitState.Open"/> and the next call can probe straight away.
+    /// </remarks>
+    /// <value>
+    /// The default value is <see langword="null"/>, i.e. every outcome is recorded.
+    /// </value>
+    public Func<CircuitBreakerPredicateArguments<TResult>, ValueTask<bool>>? ShouldIgnore { get; set; }
+
+    /// <summary>
     /// Gets or sets the event that is raised when the circuit resets to a <see cref="CircuitState.Closed"/> state.
     /// </summary>
     /// <remarks>

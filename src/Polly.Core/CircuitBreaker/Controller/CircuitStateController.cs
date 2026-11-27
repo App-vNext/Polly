@@ -217,6 +217,23 @@ internal sealed class CircuitStateController<T> : IDisposable
         return ExecuteScheduledTaskAsync(task, context);
     }
 
+    public void OnIgnoredOutcome()
+    {
+        EnsureNotDisposed();
+
+        lock (_lock)
+        {
+            // HalfOpen - the probe didn't tell us anything, so go back to Open and let the next call probe right away
+            // Closed, Open, Isolated - nothing to do, we just don't record it
+            if (_circuitState == CircuitState.HalfOpen)
+            {
+                _circuitState = CircuitState.Open;
+                _blockedUntil = _timeProvider.GetUtcNow();
+                _halfOpenAttempts--;
+            }
+        }
+    }
+
     public Task OnHandledOutcomeAsync(Outcome<T> outcome, ResilienceContext context)
     {
         EnsureNotDisposed();

@@ -269,6 +269,14 @@ var optionsShouldHandle = new CircuitBreakerStrategyOptions<HttpResponseMessage>
         .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError)
 };
 
+// Ignore outcomes that don't tell you anything about the health of the resource, e.g. cancellations.
+// They aren't counted as a success or a failure:
+var optionsShouldIgnore = new CircuitBreakerStrategyOptions<HttpResponseMessage>
+{
+    ShouldIgnore = new PredicateBuilder<HttpResponseMessage>()
+        .Handle<OperationCanceledException>()
+};
+
 // Monitor the circuit state, useful for health reporting:
 var stateProvider = new CircuitBreakerStateProvider();
 var optionsStateProvider = new CircuitBreakerStrategyOptions<HttpResponseMessage>

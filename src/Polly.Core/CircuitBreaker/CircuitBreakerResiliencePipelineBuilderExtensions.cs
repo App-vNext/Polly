@@ -89,6 +89,7 @@ public static class CircuitBreakerResiliencePipelineBuilderExtensions
 
         return new CircuitBreakerResilienceStrategy<TResult>(
             options.ShouldHandle,
+            options.ShouldIgnore,
             controller,
             options.StateProvider,
             options.ManualControl);

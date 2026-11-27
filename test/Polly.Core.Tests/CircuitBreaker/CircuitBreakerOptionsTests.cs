@@ -30,6 +30,7 @@ public class CircuitBreakerOptionsTests
         options.OnClosed.ShouldBeNull();
         options.OnHalfOpened.ShouldBeNull();
         options.ShouldHandle.ShouldNotBeNull();
+        options.ShouldIgnore.ShouldBeNull();
         options.Name.ShouldBe("CircuitBreaker");
 
         // now set to min values

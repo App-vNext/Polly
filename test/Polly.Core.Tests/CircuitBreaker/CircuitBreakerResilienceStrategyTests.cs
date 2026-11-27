@@ -143,6 +143,6 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
 
     private ResiliencePipeline<int> Create()
 #pragma warning disable CA2000 // Dispose objects before losing scope
-        => new CircuitBreakerResilienceStrategy<int>(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl).AsPipeline();
+        => new CircuitBreakerResilienceStrategy<int>(_options.ShouldHandle!, _options.ShouldIgnore, _controller, _options.StateProvider, _options.ManualControl).AsPipeline();
 #pragma warning restore CA2000 // Dispose objects before losing scope
 }
